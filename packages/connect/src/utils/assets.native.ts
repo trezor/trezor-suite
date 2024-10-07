@@ -1,3 +1,3 @@
-import { getAssetByUrl } from './assetUtils';
+import { tryLocalAssetRequire } from './assetUtils';
 
-export const httpRequest = (url: string, _type: string): any => getAssetByUrl(url);
+export const httpRequest = (url: string, _type: string): any => tryLocalAssetRequire(url);
