@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import {
     addIdsToQuotes,
+    coinmarketGetSuccessQuotes,
     filterQuotesAccordingTags,
     getUnusedAddressFromAccount,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -30,7 +31,6 @@ import {
     FORM_OUTPUT_FIAT,
     FORM_PAYMENT_METHOD_SELECT,
 } from 'src/constants/wallet/coinmarket/form';
-import { getFilteredSuccessQuotes } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { useCoinmarketRecomposeAndSign } from 'src/hooks/wallet/useCoinmarketRecomposeAndSign';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
@@ -96,7 +96,7 @@ export const useCoinmarketSellForm = ({
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
     const [sellStep, setSellStep] = useState<CoinmarketSellStepType>('BANK_ACCOUNT');
     const [innerQuotes, setInnerQuotes] = useState<SellFiatTrade[] | undefined>(
-        getFilteredSuccessQuotes<CoinmarketTradeSellType>(quotes),
+        coinmarketGetSuccessQuotes<CoinmarketTradeSellType>(quotes),
     );
     const [isSubmittingHelper, setIsSubmittingHelper] = useState(false);
     const abortControllerRef = useRef<AbortController | null>(null);
@@ -244,7 +244,7 @@ export const useCoinmarketSellForm = ({
                 );
                 // without errors
                 const quotesSuccess =
-                    getFilteredSuccessQuotes<CoinmarketTradeSellType>(quotesDefault) ?? [];
+                    coinmarketGetSuccessQuotes<CoinmarketTradeSellType>(quotesDefault) ?? [];
 
                 const bestQuote = quotesSuccess?.[0];
                 const bestQuotePaymentMethod = bestQuote?.paymentMethod;
