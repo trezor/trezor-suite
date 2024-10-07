@@ -1,5 +1,4 @@
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { useCoinmarketSellForm } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellForm';
 import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common';
@@ -12,13 +11,10 @@ const CoinmarketSellOffersComponent = ({ selectedAccount }: UseCoinmarketProps) 
         pageType: 'offers',
     });
 
-    // CoinmarketOffersContext.Provider is temporary FIX
     return (
         <CoinmarketFormContext.Provider value={coinmarketSellFormContextValues}>
-            <CoinmarketOffersContext.Provider value={coinmarketSellFormContextValues}>
-                <CoinmarketOffers />
-                <CoinmarketFooter />
-            </CoinmarketOffersContext.Provider>
+            <CoinmarketOffers />
+            <CoinmarketFooter />
         </CoinmarketFormContext.Provider>
     );
 };

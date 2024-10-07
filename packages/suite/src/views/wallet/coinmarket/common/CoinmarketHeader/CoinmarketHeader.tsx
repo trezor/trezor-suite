@@ -6,13 +6,13 @@ import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import {
-    isCoinmarketExchangeOffers,
-    useCoinmarketOffersContext,
-} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import { getCryptoQuoteAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+    getCryptoQuoteAmountProps,
+    isCoinmarketExchangeContext,
+} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { CoinmarketHeaderSummary } from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketHeaderSummary';
 import { CoinmarketRefreshTime } from 'src/views/wallet/coinmarket/common';
 import { CoinmarketHeaderFilter } from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketHeaderFilter';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const Header = styled.div`
     padding-top: ${spacingsPx.sm};
@@ -58,7 +58,7 @@ interface CoinmarketHeaderProps {
 }
 
 export const CoinmarketHeader = ({ title, titleTimer }: CoinmarketHeaderProps) => {
-    const context = useCoinmarketOffersContext();
+    const context = useCoinmarketFormContext();
     const { timer, quotes } = context;
     const headerProps = getCryptoQuoteAmountProps(quotes?.[0], context);
 
@@ -69,7 +69,7 @@ export const CoinmarketHeader = ({ title, titleTimer }: CoinmarketHeaderProps) =
                     <Translation id={title} />
                 </H2>
             </HeaderTop>
-            {headerProps && isCoinmarketExchangeOffers(context) && (
+            {headerProps && isCoinmarketExchangeContext(context) && (
                 <CoinmarketHeaderSummaryWrap {...headerProps} />
             )}
             <HeaderBottom>

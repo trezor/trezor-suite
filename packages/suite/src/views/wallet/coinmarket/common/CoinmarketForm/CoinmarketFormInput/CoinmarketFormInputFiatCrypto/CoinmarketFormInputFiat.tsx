@@ -13,9 +13,9 @@ import {
     CoinmarketSellExchangeFormProps,
 } from 'src/types/coinmarket/coinmarketForm';
 import styled from 'styled-components';
-import { isCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { FieldErrors, UseControllerProps } from 'react-hook-form';
 import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_FIAT } from 'src/constants/wallet/coinmarket/form';
+import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 
 const CoinmarketFormInputCurrencyWrapper = styled(CoinmarketFormInputCurrency)`
     width: 64px;
@@ -53,7 +53,7 @@ export const CoinmarketFormInputFiat = <TFieldValues extends CoinmarketAllFormPr
             : undefined;
 
     const fiatInputRules: UseControllerProps['rules'] = {
-        ...(isCoinmarketExchangeOffers(context)
+        ...(isCoinmarketExchangeContext(context)
             ? {
                   validate: {
                       min: validateMin(translationString),

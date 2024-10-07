@@ -3,16 +3,13 @@ import { Badge, Button, Card, Row, Text } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
-import {
-    isCoinmarketExchangeOffers,
-    isCoinmarketSellOffers,
-    useCoinmarketOffersContext,
-} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketTradeDetailMapProps } from 'src/types/coinmarket/coinmarket';
 import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
     getSelectQuoteTyped,
+    isCoinmarketExchangeContext,
+    isCoinmarketSellContext,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { SellFiatTrade } from 'invity-api';
@@ -20,6 +17,7 @@ import { CoinmarketUtilsKyc } from 'src/views/wallet/coinmarket/common/Coinmarke
 import { CoinmarketTestWrapper } from 'src/views/wallet/coinmarket';
 import { CoinmarketUtilsPrice } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsPrice';
 import { CoinmarketUtilsProvider } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsProvider';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const Offer = styled.div`
     display: flex;
@@ -94,7 +92,7 @@ export interface CoinmarketOffersItemProps {
 
 export const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
     const theme = useTheme();
-    const context = useCoinmarketOffersContext();
+    const context = useCoinmarketFormContext();
     const { callInProgress } = context;
     const providers = getProvidersInfoProps(context);
     const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
@@ -130,7 +128,7 @@ export const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                     <AmountOfferColumn>
                         <Row alignItems="flex-end">
                             <CoinmarketUtilsPrice {...cryptoAmountProps} />
-                            {isCoinmarketExchangeOffers(context) && (
+                            {isCoinmarketExchangeContext(context) && (
                                 <CoinmarketUtilsKyc
                                     exchange={exchange}
                                     providers={context.exchangeInfo?.providerInfos}
@@ -155,7 +153,7 @@ export const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                                 >
                                     <Translation
                                         id={
-                                            isCoinmarketSellOffers(context) &&
+                                            isCoinmarketSellContext(context) &&
                                             context.needToRegisterOrVerifyBankAccount(
                                                 quote as SellFiatTrade,
                                             )

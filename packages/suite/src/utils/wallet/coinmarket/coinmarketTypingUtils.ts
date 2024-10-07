@@ -5,30 +5,42 @@ import {
     FORM_OUTPUT_CURRENCY,
 } from 'src/constants/wallet/coinmarket/form';
 import {
-    isCoinmarketBuyOffers,
-    isCoinmarketExchangeOffers,
-    isCoinmarketSellOffers,
-} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import {
     CoinmarketCryptoListProps,
     CoinmarketGetCryptoQuoteAmountProps,
     CoinmarketGetFiatCurrenciesProps,
     CoinmarketGetPaymentMethodProps,
     CoinmarketGetProvidersInfoProps,
+    CoinmarketTradeBuyType,
     CoinmarketTradeDetailMapProps,
     CoinmarketTradeDetailType,
+    CoinmarketTradeExchangeType,
+    CoinmarketTradeSellType,
     CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
-import { CoinmarketOffersContextValues } from 'src/types/coinmarket/coinmarketOffers';
+import {
+    CoinmarketFormContextValues,
+    CoinmarketFormMapProps,
+} from 'src/types/coinmarket/coinmarketForm';
+
+export const isCoinmarketBuyContext = (
+    context: CoinmarketFormMapProps[keyof CoinmarketFormMapProps],
+): context is CoinmarketFormMapProps[CoinmarketTradeBuyType] => context.type === 'buy';
+
+export const isCoinmarketSellContext = (
+    context: CoinmarketFormMapProps[keyof CoinmarketFormMapProps],
+): context is CoinmarketFormMapProps[CoinmarketTradeSellType] => context.type === 'sell';
+
+export const isCoinmarketExchangeContext = (
+    context: CoinmarketFormMapProps[keyof CoinmarketFormMapProps],
+): context is CoinmarketFormMapProps[CoinmarketTradeExchangeType] => context.type === 'exchange';
 
 export const getCryptoQuoteAmountProps = (
     quoteInput: CoinmarketTradeDetailType | undefined,
-    context: CoinmarketOffersContextValues<CoinmarketTradeType>,
+    context: CoinmarketFormContextValues<CoinmarketTradeType>,
 ): CoinmarketGetCryptoQuoteAmountProps | null => {
     if (!quoteInput) return null;
 
-    if (isCoinmarketBuyOffers(context)) {
+    if (isCoinmarketBuyContext(context)) {
         const amountInCrypto = context.quotesRequest?.wantCrypto;
         const quote = quoteInput as BuyTrade;
 
@@ -43,7 +55,7 @@ export const getCryptoQuoteAmountProps = (
         };
     }
 
-    if (isCoinmarketSellOffers(context)) {
+    if (isCoinmarketSellContext(context)) {
         const amountInCrypto = context.quotesRequest?.amountInCrypto;
         const quote = quoteInput as SellFiatTrade;
 
@@ -70,15 +82,13 @@ export const getCryptoQuoteAmountProps = (
 };
 
 export const getProvidersInfoProps = (
-    context:
-        | CoinmarketOffersContextValues<CoinmarketTradeType>
-        | CoinmarketFormContextValues<CoinmarketTradeType>,
+    context: CoinmarketFormContextValues<CoinmarketTradeType>,
 ): CoinmarketGetProvidersInfoProps => {
-    if (isCoinmarketBuyOffers(context)) {
+    if (isCoinmarketBuyContext(context)) {
         return context.buyInfo?.providerInfos;
     }
 
-    if (isCoinmarketSellOffers(context)) {
+    if (isCoinmarketSellContext(context)) {
         return context.sellInfo?.providerInfos;
     }
 
@@ -88,14 +98,14 @@ export const getProvidersInfoProps = (
 export const getFiatCurrenciesProps = (
     context: CoinmarketFormContextValues<CoinmarketTradeType>,
 ): CoinmarketGetFiatCurrenciesProps | null => {
-    if (isCoinmarketBuyOffers(context)) {
+    if (isCoinmarketBuyContext(context)) {
         return {
             supportedFiatCurrencies: context.buyInfo?.supportedFiatCurrencies,
             defaultAmountsOfFiatCurrencies: context.buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies,
         };
     }
 
-    if (isCoinmarketSellOffers(context)) {
+    if (isCoinmarketSellContext(context)) {
         return {
             supportedFiatCurrencies: context.sellInfo?.supportedFiatCurrencies,
         };
@@ -117,11 +127,11 @@ export const getSelectQuoteTyped = (
 export const getSelectedCrypto = (
     context: CoinmarketFormContextValues<CoinmarketTradeType>,
 ): CoinmarketCryptoListProps | null | undefined => {
-    if (isCoinmarketExchangeOffers(context)) {
+    if (isCoinmarketExchangeContext(context)) {
         return context.getValues().receiveCryptoSelect;
     }
 
-    if (isCoinmarketSellOffers(context)) {
+    if (isCoinmarketSellContext(context)) {
         return context.getValues().sendCryptoSelect;
     }
 
@@ -131,11 +141,11 @@ export const getSelectedCrypto = (
 export const getSelectedCurrency = (
     context: CoinmarketFormContextValues<CoinmarketTradeType>,
 ): CurrencyOption => {
-    if (isCoinmarketExchangeOffers(context)) {
+    if (isCoinmarketExchangeContext(context)) {
         return context.getValues(FORM_OUTPUT_CURRENCY);
     }
 
-    if (isCoinmarketSellOffers(context)) {
+    if (isCoinmarketSellContext(context)) {
         return context.getValues(FORM_OUTPUT_CURRENCY);
     }
 
@@ -146,7 +156,7 @@ export const getPaymentMethod = (
     selectedQuote: SellFiatTrade | ExchangeTrade | BuyTrade,
     context: CoinmarketFormContextValues<CoinmarketTradeType>,
 ): CoinmarketGetPaymentMethodProps => {
-    if (isCoinmarketExchangeOffers(context)) return {};
+    if (isCoinmarketExchangeContext(context)) return {};
 
     const selectedQuoteTyped = selectedQuote as SellFiatTrade | BuyTrade;
 

@@ -1,7 +1,5 @@
-import {
-    isCoinmarketExchangeOffers,
-    useCoinmarketOffersContext,
-} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { getBestRatedQuote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketHeader } from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketHeader';
 import { CoinmarketOffersEmpty } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffersEmpty';
@@ -9,13 +7,13 @@ import { CoinmarketOffersExchange } from 'src/views/wallet/coinmarket/common/Coi
 import { CoinmarketOffersItem } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffersItem';
 
 export const CoinmarketOffers = () => {
-    const context = useCoinmarketOffersContext();
+    const context = useCoinmarketFormContext();
     const { type, quotes } = context;
     const hasLoadingFailed = !quotes;
     const noOffers = hasLoadingFailed || quotes.length === 0;
     const bestRatedQuote = getBestRatedQuote(quotes, type);
 
-    const offers = isCoinmarketExchangeOffers(context) ? (
+    const offers = isCoinmarketExchangeContext(context) ? (
         <CoinmarketOffersExchange />
     ) : (
         quotes?.map(quote => (

@@ -11,10 +11,6 @@ import {
 } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import {
-    isCoinmarketExchangeOffers,
-    isCoinmarketSellOffers,
-} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import {
     CoinmarketBuyFormProps,
     CoinmarketExchangeFormProps,
     CoinmarketSellFormProps,
@@ -34,6 +30,10 @@ import { TokenAddress } from '@suite-common/wallet-types';
 import { formatAmount } from '@suite-common/wallet-utils';
 import { getNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import {
+    isCoinmarketExchangeContext,
+    isCoinmarketSellContext,
+} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 
 const CoinmarketFeesWrapper = styled.div`
     margin-bottom: ${spacingsPx.md};
@@ -42,7 +42,7 @@ const CoinmarketFeesWrapper = styled.div`
 export const CoinmarketFormInputs = () => {
     const context = useCoinmarketFormContext();
 
-    if (isCoinmarketSellOffers(context)) {
+    if (isCoinmarketSellContext(context)) {
         const {
             control,
             feeInfo,
@@ -128,7 +128,7 @@ export const CoinmarketFormInputs = () => {
         );
     }
 
-    if (isCoinmarketExchangeOffers(context)) {
+    if (isCoinmarketExchangeContext(context)) {
         const {
             control,
             feeInfo,

@@ -8,6 +8,7 @@ import {
     getProvidersInfoProps,
     getSelectedCrypto,
     getSelectQuoteTyped,
+    isCoinmarketExchangeContext,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { useState } from 'react';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
@@ -26,7 +27,6 @@ import {
     parseCryptoId,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketFormOfferFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferFiatAmount';
-import { isCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { ExchangeTrade } from 'invity-api';
 import { CoinmarketTradeDetailType, CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
@@ -74,7 +74,7 @@ const getSelectedQuote = (
     context: CoinmarketFormContextValues<CoinmarketTradeType>,
     bestScoredQuote: CoinmarketTradeDetailType | undefined,
 ) => {
-    if (isCoinmarketExchangeOffers(context)) {
+    if (isCoinmarketExchangeContext(context)) {
         return context.getValues(FORM_EXCHANGE_TYPE) === FORM_EXCHANGE_DEX
             ? context.dexQuotes?.[0]
             : context.quotes?.[0];
@@ -110,7 +110,7 @@ export const CoinmarketFormOffer = () => {
             : '0';
 
     const selectQuote = getSelectQuoteTyped(context);
-    const shouldDisplayFiatAmount = isCoinmarketExchangeOffers(context) ? false : amountInCrypto;
+    const shouldDisplayFiatAmount = isCoinmarketExchangeContext(context) ? false : amountInCrypto;
     const { networkId, contractAddress } = parseCryptoId(selectedCrypto?.value ?? ('' as CryptoId));
     const network = selectedCrypto?.value ? cryptoIdToPlatformName(networkId) : undefined;
 
@@ -139,7 +139,7 @@ export const CoinmarketFormOffer = () => {
                     }
                 />
             )}
-            {isCoinmarketExchangeOffers(context) && contractAddress && network && (
+            {isCoinmarketExchangeContext(context) && contractAddress && network && (
                 <CoinmarketFormOfferChain>
                     <Translation
                         id="TR_COINMARKET_ON_NETWORK_CHAIN"
@@ -167,7 +167,7 @@ export const CoinmarketFormOffer = () => {
                     <Translation id="TR_COINMARKET_COMPARE_OFFERS" />
                 </CoinmarketFormOfferHeaderButton>
             </CoinmarketFormOfferHeader>
-            {isCoinmarketExchangeOffers(context) ? (
+            {isCoinmarketExchangeContext(context) ? (
                 <CoinmarketFormOffersSwitcher
                     context={context}
                     isFormLoading={state.isFormLoading}

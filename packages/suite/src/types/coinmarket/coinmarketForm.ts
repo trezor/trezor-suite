@@ -47,10 +47,7 @@ import {
 import { FeeLevel } from '@trezor/connect';
 import { SendContextValues } from 'src/types/wallet/sendForm';
 import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
-import {
-    CoinmarketExchangeStepType,
-    CoinmarketSellStepType,
-} from 'src/types/coinmarket/coinmarketOffers';
+
 import { AccountsState } from '@suite-common/wallet-core';
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import {
@@ -135,6 +132,12 @@ export interface CoinmarketExchangeFormDefaultValuesProps {
     defaultValues: CoinmarketExchangeFormProps;
     defaultCurrency: Option;
 }
+
+export type CoinmarketSellStepType = 'BANK_ACCOUNT' | 'SEND_TRANSACTION';
+export type CoinmarketExchangeStepType =
+    | 'RECEIVING_ADDRESS'
+    | 'SEND_TRANSACTION'
+    | 'SEND_APPROVAL_TRANSACTION';
 
 interface CoinmarketFormStateProps {
     isFormLoading: boolean;
@@ -265,7 +268,7 @@ export interface CoinmarketExchangeFormContextProps
     verifyAddress: CoinmarketVerifyAccountProps;
 }
 
-type CoinmarketFormMapProps = {
+export type CoinmarketFormMapProps = {
     buy: CoinmarketBuyFormContextProps;
     sell: CoinmarketSellFormContextProps;
     exchange: CoinmarketExchangeFormContextProps;

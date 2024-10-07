@@ -2,11 +2,6 @@ import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 import { CoinmarketFormInputCountry } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCountry';
 import {
-    isCoinmarketBuyOffers,
-    isCoinmarketExchangeOffers,
-    useCoinmarketOffersContext,
-} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import {
     CoinmarketBuyFormProps,
     CoinmarketSellFormProps,
 } from 'src/types/coinmarket/coinmarketForm';
@@ -22,6 +17,11 @@ import { CoinmarketFormInputFiatCrypto } from 'src/views/wallet/coinmarket/commo
 import { Row } from '@trezor/components';
 import { CoinmarketOffersExchangeFiltersPanel } from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketOffersExchangeFiltersPanel';
 import { CoinmarketFormInputPaymentMethod } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputPaymentMethod';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import {
+    isCoinmarketBuyContext,
+    isCoinmarketExchangeContext,
+} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 
 const InputWrapper = styled.div`
     width: 254px;
@@ -30,9 +30,9 @@ const InputWrapper = styled.div`
 `;
 
 export const CoinmarketHeaderFilter = () => {
-    const context = useCoinmarketOffersContext();
+    const context = useCoinmarketFormContext();
 
-    if (isCoinmarketExchangeOffers(context)) {
+    if (isCoinmarketExchangeContext(context)) {
         return (
             <Row data-testid="@coinmarket/filter" flexWrap="wrap">
                 <CoinmarketOffersExchangeFiltersPanel />
@@ -42,7 +42,7 @@ export const CoinmarketHeaderFilter = () => {
 
     return (
         <Row data-testid="@coinmarket/filter" flexWrap="wrap" alignItems="flex-start">
-            {isCoinmarketBuyOffers(context) ? (
+            {isCoinmarketBuyContext(context) ? (
                 <InputWrapper>
                     <CoinmarketFormInputFiatCrypto<CoinmarketBuyFormProps>
                         showLabel={false}

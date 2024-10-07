@@ -4,12 +4,10 @@ import {
     getCryptoQuoteAmountProps,
     getPaymentMethod,
     getProvidersInfoProps,
+    isCoinmarketBuyContext,
+    isCoinmarketExchangeContext,
+    isCoinmarketSellContext,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import {
-    isCoinmarketBuyOffers,
-    isCoinmarketExchangeOffers,
-    isCoinmarketSellOffers,
-} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketOfferSell } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferSell/CoinmarketOfferSell';
 import { CoinmarketOfferBuy } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferBuy/CoinmarketOfferBuy';
 import { CoinmarketOfferExchange } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferExchange/CoinmarketOfferExchange';
@@ -31,7 +29,7 @@ export const CoinmarketSelectedOffer = () => {
 
     return (
         <Wrapper>
-            {isCoinmarketBuyOffers(context) && (
+            {isCoinmarketBuyContext(context) && (
                 <CoinmarketOfferBuy
                     account={account}
                     selectedQuote={context.selectedQuote}
@@ -41,7 +39,7 @@ export const CoinmarketSelectedOffer = () => {
                     {...paymentMethod}
                 />
             )}
-            {isCoinmarketSellOffers(context) && (
+            {isCoinmarketSellContext(context) && (
                 <CoinmarketOfferSell
                     account={account}
                     selectedQuote={context.selectedQuote}
@@ -51,7 +49,7 @@ export const CoinmarketSelectedOffer = () => {
                     {...paymentMethod}
                 />
             )}
-            {isCoinmarketExchangeOffers(context) && (
+            {isCoinmarketExchangeContext(context) && (
                 <CoinmarketOfferExchange
                     account={account}
                     selectedQuote={context.selectedQuote}
