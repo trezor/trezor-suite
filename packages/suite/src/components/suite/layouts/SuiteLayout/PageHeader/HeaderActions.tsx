@@ -19,6 +19,7 @@ import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 const Container = styled.div`
     display: flex;
@@ -158,20 +159,22 @@ export const HeaderActions = () => {
                             <Translation id="TR_COINMARKET_BUY_AND_SELL" />
                         </ButtonComponent>
                     </ShowOnLargeDesktopWrapper>
-                    <ButtonComponent
-                        icon="arrowsLeftRight"
-                        onClick={() => {
-                            goToWithAnalytics('wallet-coinmarket-exchange', {
-                                preserveParams: true,
-                            });
-                        }}
-                        data-testid="@wallet/menu/wallet-coinmarket-exchange"
-                        variant="tertiary"
-                        size="small"
-                        isDisabled={isAccountLoading}
-                    >
-                        <Translation id="TR_COINMARKET_SWAP" />
-                    </ButtonComponent>
+                    {!hasBitcoinOnlyFirmware(device) && (
+                        <ButtonComponent
+                            icon="arrowsLeftRight"
+                            onClick={() => {
+                                goToWithAnalytics('wallet-coinmarket-exchange', {
+                                    preserveParams: true,
+                                });
+                            }}
+                            data-testid="@wallet/menu/wallet-coinmarket-exchange"
+                            variant="tertiary"
+                            size="small"
+                            isDisabled={isAccountLoading}
+                        >
+                            <Translation id="TR_COINMARKET_SWAP" />
+                        </ButtonComponent>
+                    )}
                 </AppNavigationTooltip>
             )}
 
