@@ -18,16 +18,17 @@ import {
 } from '@shopify/react-native-skia';
 
 import { useNativeStyles } from '@trezor/styles';
-import { Color, nativeBorders } from '@trezor/theme';
+import { Color, NativeRadius } from '@trezor/theme';
 
 import { ENDLESS_ANIMATION_VALUE } from '../constants';
 import { SurfaceElevation } from '../types';
+import { nativeRadiusToNumber } from '../utils';
 
 type BoxSkeletonProps = {
     height: number;
     width: number;
     elevation?: SurfaceElevation;
-    borderRadius?: number;
+    borderRadius?: NativeRadius | number;
 };
 
 const ANIMATION_DURATION = 1200;
@@ -49,7 +50,7 @@ export const BoxSkeleton = ({
     height,
     width,
     elevation = '1',
-    borderRadius = nativeBorders.radii.r8,
+    borderRadius = 'r8',
 }: BoxSkeletonProps) => {
     const {
         utils: { colors },
@@ -71,8 +72,9 @@ export const BoxSkeleton = ({
 
     const rct = useMemo(() => {
         const coreRect = rect(0, 0, width, height);
+        const radius = nativeRadiusToNumber(borderRadius);
 
-        return rrect(coreRect, borderRadius, borderRadius);
+        return rrect(coreRect, radius, radius);
     }, [width, height, borderRadius]);
 
     const gradientColors = useMemo(
