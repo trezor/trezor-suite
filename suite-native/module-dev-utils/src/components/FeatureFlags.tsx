@@ -3,7 +3,7 @@ import { FeatureFlag as FeatureFlagEnum, useFeatureFlag } from '@suite-native/fe
 
 const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsDeviceConnectEnabled]: 'Connect device',
-    [FeatureFlagEnum.IsSendEnabled]: 'Send',
+    [FeatureFlagEnum.IsBitcoinLikeSendEnabled]: 'Bitcoin-like coins send',
     [FeatureFlagEnum.IsRegtestEnabled]: 'Regtest',
     [FeatureFlagEnum.IsPolygonEnabled]: 'Polygon',
     [FeatureFlagEnum.IsBscEnabled]: 'BNB Smart Chain',

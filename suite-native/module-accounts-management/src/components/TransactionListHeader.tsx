@@ -20,14 +20,14 @@ import {
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { FeatureFlag, FeatureFlagsRootState, useFeatureFlag } from '@suite-native/feature-flags';
 import { isCoinWithTokens } from '@suite-native/tokens';
 
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import { IncludeTokensToggle } from './IncludeTokensToggle';
 import { CoinPriceCard } from './CoinPriceCard';
+import { selectIsNetworkSendFlowEnabled } from '../selectors';
 
 type AccountDetailHeaderProps = {
     accountKey: AccountKey;
@@ -46,8 +46,6 @@ type AccountsNavigationProps = TabToStackCompositeNavigationProp<
     RootStackRoutes.ReceiveModal,
     RootStackParamList
 >;
-
-const SEND_NETWORK_WHITELIST: Readonly<NetworkSymbol[]> = ['btc', 'test', 'regtest'];
 
 const TransactionListHeaderContent = ({
     accountKey,
@@ -99,7 +97,7 @@ export const TransactionListHeader = memo(
         tokenContract,
     }: AccountDetailHeaderProps) => {
         const navigation = useNavigation<AccountsNavigationProps>();
-        const [isSendEnabled] = useFeatureFlag(FeatureFlag.IsSendEnabled);
+        const [isDeviceConnectEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
         const account = useSelector((state: AccountsRootState) =>
             selectAccountByKey(state, accountKey),
@@ -109,6 +107,9 @@ export const TransactionListHeader = memo(
         );
         const isTestnetAccount = useSelector((state: AccountsRootState) =>
             selectIsTestnetAccount(state, accountKey),
+        );
+        const isNetworkSendFlowEnabled = useSelector((state: FeatureFlagsRootState) =>
+            selectIsNetworkSendFlowEnabled(state, account?.symbol),
         );
         const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
@@ -136,9 +137,7 @@ export const TransactionListHeader = memo(
         const isPriceCardDisplayed = !isTestnetAccount && !isTokenDetail;
 
         const isSendButtonDisplayed =
-            isSendEnabled &&
-            SEND_NETWORK_WHITELIST.includes(account.symbol) &&
-            !isPortfolioTrackerDevice;
+            isDeviceConnectEnabled && isNetworkSendFlowEnabled && !isPortfolioTrackerDevice;
 
         return (
             <Box marginBottom="sp8">
