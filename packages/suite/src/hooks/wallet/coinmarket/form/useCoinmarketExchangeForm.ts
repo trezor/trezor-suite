@@ -397,7 +397,11 @@ export const useCoinmarketExchangeForm = ({
         } else {
             // CONFIRMING, SUCCESS
             dispatch(
-                coinmarketExchangeActions.saveTrade(response, account, new Date().toISOString()),
+                coinmarketExchangeActions.saveTrade(
+                    response,
+                    selectedAccount.account,
+                    new Date().toISOString(),
+                ),
             );
             dispatch(coinmarketExchangeActions.saveTransactionId(response.orderId));
             ok = true;
@@ -437,7 +441,7 @@ export const useCoinmarketExchangeForm = ({
                     dispatch(
                         coinmarketExchangeActions.saveTrade(
                             quote,
-                            account,
+                            selectedAccount.account,
                             new Date().toISOString(),
                         ),
                     );
@@ -490,7 +494,7 @@ export const useCoinmarketExchangeForm = ({
                 dispatch(
                     coinmarketExchangeActions.saveTrade(
                         selectedQuote,
-                        account,
+                        selectedAccount.account,
                         new Date().toISOString(),
                     ),
                 );

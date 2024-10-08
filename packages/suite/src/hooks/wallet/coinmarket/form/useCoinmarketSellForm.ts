@@ -355,7 +355,7 @@ export const useCoinmarketSellForm = ({
                     dispatch(
                         coinmarketSellActions.saveTrade(
                             response.trade,
-                            account,
+                            selectedAccount.account,
                             new Date().toISOString(),
                         ),
                     );
@@ -499,15 +499,19 @@ export const useCoinmarketSellForm = ({
                 }
 
                 dispatch(
-                    coinmarketSellActions.saveTrade(response, account, new Date().toISOString()),
+                    coinmarketSellActions.saveTrade(
+                        response,
+                        selectedAccount.account,
+                        new Date().toISOString(),
+                    ),
                 );
                 dispatch(coinmarketSellActions.saveTransactionId(selectedQuote.orderId));
                 dispatch(
                     routerActions.goto('wallet-coinmarket-sell-detail', {
                         params: {
-                            symbol: account.symbol,
-                            accountIndex: account.index,
-                            accountType: account.accountType,
+                            symbol: selectedAccount.account.symbol,
+                            accountIndex: selectedAccount.account.index,
+                            accountType: selectedAccount.account.accountType,
                         },
                     }),
                 );
