@@ -755,7 +755,7 @@ export default defineMessages({
     },
     TR_SELL_MODAL_TERMS_1: {
         defaultMessage:
-            "You're here to sell cryptocurrency. If you were directed to this site for any other reason, please contact support before proceeding.",
+            "You're here to sell cryptocurrency. If you were directed to this site for any other reason, please contact Trezor Support before proceeding.",
         id: 'TR_SELL_MODAL_TERMS_1',
         dynamic: true,
     },
@@ -1570,9 +1570,8 @@ export default defineMessages({
         defaultMessage: 'Connection lost',
         id: 'TR_CONNECTION_LOST',
     },
-
     TR_UPGRADE_FIRMWARE_TO_DISCOVER_ACCOUNT_ERROR: {
-        defaultMessage: 'Upgrade firmware to discover this account. (See the blue banner above.)',
+        defaultMessage: 'Upgrade your firmware to access this account. See the blue banner above.',
         id: 'TR_UPGRADE_FIRMWARE_TO_DISCOVER_ACCOUNT_ERROR',
     },
     TR_DISCONNECT: {
@@ -1929,7 +1928,7 @@ export default defineMessages({
         id: 'TR_CONNECTED',
     },
     TR_CONTACT_SUPPORT: {
-        defaultMessage: 'Contact support',
+        defaultMessage: 'Contact Trezor Support',
         description: 'Button to click to contact support',
         id: 'TR_CONTACT_SUPPORT',
     },
@@ -2246,7 +2245,7 @@ export default defineMessages({
     },
     TR_SECURITY_CHECK_HOLOGRAM: {
         defaultMessage:
-            "Please note that device packaging, including holograms and security seals, have been updated over time. You can verify packaging details <packaging>here</packaging>. Ensure that your device was purchased from either the official Trezor Shop or from one of <reseller>our trusted sellers</reseller>. Otherwise, there's a risk that your device might be a counterfeit. If you suspect that your device is not genuine, please  <support>contact Trezor support</support>.",
+            "Please note that device packaging, including holograms and security seals, have been updated over time. You can verify packaging details <packaging>here</packaging>. Ensure that your device was purchased from either the official Trezor Shop or from one of <reseller>our trusted sellers</reseller>. Otherwise, there's a risk that your device might be a counterfeit. If you suspect that your device is not genuine, please  <support>contact Trezor Support</support>.",
         id: 'TR_SECURITY_CHECK_HOLOGRAM',
     },
     TR_DISCONNECT_YOUR_DEVICE: {
@@ -2649,7 +2648,7 @@ export default defineMessages({
     TR_LOG_DESCRIPTION: {
         id: 'TR_LOG_DESCRIPTION',
         defaultMessage:
-            'The log contains all necessary technical information about Trezor Suite. It may be needed when connecting with Trezor Support.',
+            'This log contains essential technical information about Trezor Suite and may be needed when contacting Trezor Support.',
     },
     TR_LTC_ADDRESS_INFO: {
         defaultMessage:
@@ -3277,7 +3276,7 @@ export default defineMessages({
         id: 'TR_TRANSACTION_DETAILS',
     },
     TR_NO_TRANSPORT: {
-        defaultMessage: "Browser can't communicate with device",
+        defaultMessage: "Your browser can't communicate with your device",
         description: '',
         id: 'TR_NO_TRANSPORT',
     },
@@ -6595,7 +6594,7 @@ export default defineMessages({
     },
     TR_GUIDE_SUPPORT: {
         id: 'TR_GUIDE_SUPPORT',
-        defaultMessage: 'Contact support',
+        defaultMessage: 'Contact Trezor Support',
     },
     TR_GUIDE_FORUM: {
         id: 'TR_GUIDE_FORUM',
@@ -7020,7 +7019,7 @@ export default defineMessages({
         defaultMessage: 'Language, user count, etc.',
     },
     TR_TROUBLESHOOTING_DEVICE_NOT_DETECTED: {
-        defaultMessage: 'Steps required to enable communication',
+        defaultMessage: 'Try these steps to solve this issue.',
         id: 'TR_TROUBLESHOOTING_DEVICE_NOT_DETECTED',
     },
     TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_TITLE: {
@@ -7037,7 +7036,7 @@ export default defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_DESCRIPTION: {
         defaultMessage:
-            'Only Chromium-based browsers currently allow direct communication with USB devices',
+            'Only Chromium-based browsers currently allow direct communication with USB devices.',
         id: 'TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_DESCRIPTION',
     },
     TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TITLE: {
@@ -7093,11 +7092,12 @@ export default defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE',
-        defaultMessage: 'Try restarting your computer',
+        defaultMessage: 'Restart your computer',
     },
     TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_DESCRIPTION',
-        defaultMessage: 'Just in case',
+        defaultMessage:
+            'Restarting your computer may fix the communication issue between your browser and device.',
     },
     TR_TROUBLESHOOTING_UNREADABLE_WEBUSB: {
         id: 'TR_TROUBLESHOOTING_UNREADABLE_WEBUSB',
@@ -7118,7 +7118,7 @@ export default defineMessages({
     },
     TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE: {
         id: 'TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE',
-        defaultMessage: 'Seedless setup is not supported by Trezor Suite',
+        defaultMessage: "Seedless setup isn't supported in Trezor Suite",
     },
     TR_VERIFYING_PIN: {
         id: 'TR_VERIFYING_PIN',
@@ -8973,7 +8973,7 @@ export default defineMessages({
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM3: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM3',
-        defaultMessage: 'No one can recover it, not even Trezor support',
+        defaultMessage: 'No one can recover it, not even Trezor Support',
     },
     TR_CONNECT_DEVICE_SEND_PROMO_TITLE: {
         id: 'TR_CONNECT_DEVICE_SEND_PROMO_TITLE',
