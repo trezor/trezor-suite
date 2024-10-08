@@ -200,8 +200,5 @@
   "TR_NAV_ANONYMIZE": "Anonimizuj monety",
   "TR_NORMAL_ACCOUNTS": "Domyślne konta",
   "TR_NOT_PRIVATE": "Nieprywatne",
-  "TR_P2P_AMOUNT_RANGE_TOOLTIP": "Minimalna i maksymalna kwota, za jaką użytkownik może sprzedać {symbol}.",
-  "TR_P2P_GET_STARTED_INTRO": "Należy zainicjować transakcję na {providerName} – zastosuj się do poniższych kroków.",
-  "TR_P2P_GET_STARTED_ITEM_1": "Wybierz “Przejdź do {providerName}”, aby przejść na stronę internetową naszego partnera.",
   "TR_UPDATE_MODAL_NOT_NOW": "Nie teraz"
 }
