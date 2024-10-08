@@ -2,11 +2,12 @@ import { ReactNode } from 'react';
 import { ActivityIndicator } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color, nativeBorders } from '@trezor/theme';
+import { Color, NativeRadius } from '@trezor/theme';
 import { Icon, IconName } from '@suite-common/icons-deprecated';
 
 import { Box } from './Box';
 import { Text } from './Text';
+import { nativeRadiusToNumber } from './utils';
 
 export type AlertBoxVariant = 'info' | 'success' | 'warning' | 'loading' | 'error';
 
@@ -80,7 +81,7 @@ const variantToIconName = {
 export type AlertBoxProps = {
     variant: AlertBoxVariant;
     title: ReactNode;
-    borderRadius?: number;
+    borderRadius?: NativeRadius | number;
 };
 
 const AlertSpinner = ({ color }: { color: Color }) => {
@@ -91,18 +92,14 @@ const AlertSpinner = ({ color }: { color: Color }) => {
     return <ActivityIndicator size={16} color={colors[color]} />;
 };
 
-export const AlertBox = ({
-    title,
-    variant = 'info',
-    borderRadius = nativeBorders.radii.r16,
-}: AlertBoxProps) => {
+export const AlertBox = ({ title, variant = 'info', borderRadius = 'r16' }: AlertBoxProps) => {
     const { applyStyle } = useNativeStyles();
     const { contentColor, backgroundColor, borderColor } = variantToColorMap[variant];
 
     return (
         <Box
             style={applyStyle(alertWrapperStyle, {
-                borderRadius,
+                borderRadius: nativeRadiusToNumber(borderRadius),
                 borderColor,
                 backgroundColor,
             })}
