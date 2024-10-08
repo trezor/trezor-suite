@@ -1166,6 +1166,10 @@ export default defineMessages({
         defaultMessage: 'Last transactions',
         id: 'TR_COINMARKET_LAST_TRANSACTIONS',
     },
+    TR_COINMARKET_TRANSACTION_COUNTER: {
+        defaultMessage: '{totalBuys} buys • {totalSells} sells • {totalSwaps} swaps',
+        id: 'TR_COINMARKET_TRANSACTION_COUNTER',
+    },
     TR_COINMARKET_PAYMENT_METHOD: {
         defaultMessage: 'Payment method',
         id: 'TR_COINMARKET_PAYMENT_METHOD',
@@ -1419,6 +1423,7 @@ export default defineMessages({
         defaultMessage: 'Swap',
         id: 'TR_COINMARKET_SWAP',
     },
+
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',
         id: 'TR_ADDRESS_MODAL_CLIPBOARD',
@@ -4439,18 +4444,6 @@ export default defineMessages({
         id: 'TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
         defaultMessage:
             'This is the specific alphanumeric address that will receive your coins. Verify this address on your Trezor.',
-    },
-    TR_TRADE_BUYS: {
-        id: 'TR_TRADE_BUYS',
-        defaultMessage: 'buys',
-    },
-    TR_TRADE_SELLS: {
-        id: 'TR_TRADE_SELLS',
-        defaultMessage: 'sells',
-    },
-    TR_TRADE_EXCHANGES: {
-        id: 'TR_TRADE_EXCHANGES',
-        defaultMessage: 'exchanges',
     },
     TR_PAYMENT_METHOD_CREDITCARD: {
         id: 'TR_PAYMENT_METHOD_CREDITCARD',
