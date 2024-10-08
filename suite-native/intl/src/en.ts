@@ -913,7 +913,7 @@ export const en = {
             },
             levels: {
                 low: 'Low',
-                medium: 'Medium',
+                normal: 'Normal',
                 high: 'High',
             },
             error: 'You don’t have enough balance to use this fee.',

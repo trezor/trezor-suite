@@ -28,6 +28,8 @@ export const FeeOptionsList = ({ feeLevels, networkSymbol, accountKey }: FeeOpti
     const normalLevel = predefinedFeeLevels.normal as PrecomposedTransactionFinal;
     const transactionBytes = normalLevel.bytes;
 
+    const isMultipleOptionsDisplayed = Object.keys(predefinedFeeLevels).length > 1;
+
     return (
         <VStack spacing="sp12">
             {Object.entries(predefinedFeeLevels).map(([feeKey, feeLevel]) => (
@@ -38,6 +40,7 @@ export const FeeOptionsList = ({ feeLevels, networkSymbol, accountKey }: FeeOpti
                     accountKey={accountKey}
                     networkSymbol={networkSymbol}
                     transactionBytes={transactionBytes}
+                    isInteractive={isMultipleOptionsDisplayed}
                 />
             ))}
         </VStack>
