@@ -767,6 +767,18 @@ export const en = {
             button: 'Learn more @ Trezor.io',
         },
     },
+    deviceSettings: {
+        title: 'Device info', // TODO: Change to "Device settings" once something may be changed
+        firmware: {
+            title: 'Firmware',
+            version: 'Version',
+            type: 'Type',
+            typeUniversal: 'Universal',
+            typeBitcoinOnly: 'Bitcoin-only',
+            upToDate: 'You’re all up to date',
+            newVersionAvailable: 'New version available ({version})',
+        },
+    },
     qrCode: {
         addressCopied: 'Address copied',
         copyButton: 'Copy',

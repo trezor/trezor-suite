@@ -36,3 +36,4 @@ export const nativeBorders = {
 } as const;
 
 export type NativeBorders = typeof nativeBorders;
+export type NativeRadius = keyof typeof nativeBorders.radii;

@@ -2,8 +2,9 @@ import { ReactNode } from 'react';
 
 import { RequireOneOrNone } from 'type-fest';
 
-import { Box, Text } from '@suite-native/atoms';
+import { Box, nativeSpacingToNumber, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { NativeSpacing } from '@trezor/theme';
 
 import { GoBackIcon } from './GoBackIcon';
 import { CloseActionType } from '../navigators';
@@ -14,19 +15,19 @@ export type ScreenSubHeaderProps = RequireOneOrNone<
         rightIcon?: ReactNode;
         leftIcon?: ReactNode;
         closeActionType?: CloseActionType;
-        customHorizontalPadding?: number;
+        customHorizontalPadding?: NativeSpacing | number;
     },
     'leftIcon' | 'closeActionType'
 >;
 
 const ICON_SIZE = 48;
 
-const headerStyle = prepareNativeStyle<{ customHorizontalPadding?: number }>(
+const headerStyle = prepareNativeStyle<{ customHorizontalPadding: number }>(
     (utils, { customHorizontalPadding }) => ({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: customHorizontalPadding || utils.spacings.sp8,
+        padding: customHorizontalPadding,
         backgroundColor: utils.colors.backgroundSurfaceElevation0,
         height: ICON_SIZE + 2 * utils.spacings.sp8,
     }),
@@ -42,12 +43,16 @@ export const ScreenSubHeader = ({
     rightIcon,
     leftIcon,
     closeActionType,
-    customHorizontalPadding,
+    customHorizontalPadding = 'sp8',
 }: ScreenSubHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Box style={applyStyle(headerStyle, { customHorizontalPadding })}>
+        <Box
+            style={applyStyle(headerStyle, {
+                customHorizontalPadding: nativeSpacingToNumber(customHorizontalPadding),
+            })}
+        >
             <Box style={applyStyle(iconWrapperStyle)}>
                 {leftIcon || <GoBackIcon closeActionType={closeActionType} />}
             </Box>
