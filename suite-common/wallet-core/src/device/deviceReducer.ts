@@ -34,6 +34,7 @@ export type State = {
     deviceAuthenticity?: Record<string, StoredAuthenticateDeviceResult>;
     dismissedSecurityChecks?: {
         firmwareRevision?: string[];
+        firmwareHash?: string[];
     };
 };
 
@@ -593,10 +594,16 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             if (!state.dismissedSecurityChecks.firmwareRevision) {
                 state.dismissedSecurityChecks.firmwareRevision = [];
             }
-            state.dismissedSecurityChecks.firmwareRevision = [
-                payload,
-                ...state.dismissedSecurityChecks.firmwareRevision,
-            ];
+            state.dismissedSecurityChecks.firmwareRevision.unshift(payload);
+        })
+        .addCase(deviceActions.dismissFirmwareHashCheck, (state, { payload }) => {
+            if (!state.dismissedSecurityChecks) {
+                state.dismissedSecurityChecks = {};
+            }
+            if (!state.dismissedSecurityChecks.firmwareHash) {
+                state.dismissedSecurityChecks.firmwareHash = [];
+            }
+            state.dismissedSecurityChecks.firmwareHash.unshift(payload);
         })
         .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
         .addCase(
@@ -787,6 +794,14 @@ export const selectIsFirmwareRevisionCheckDismissed = (state: DeviceRootState): 
 
     return !!(
         device?.id && state.device.dismissedSecurityChecks?.firmwareRevision?.includes(device.id)
+    );
+};
+
+export const selectIsFirmwareHashCheckDismissed = (state: DeviceRootState): boolean => {
+    const device = selectDevice(state);
+
+    return !!(
+        device?.id && state.device.dismissedSecurityChecks?.firmwareHash?.includes(device.id)
     );
 };
 

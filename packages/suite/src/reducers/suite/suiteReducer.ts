@@ -99,6 +99,7 @@ export interface SuiteSettings {
     autodetect: AutodetectSettings;
     isDeviceAuthenticityCheckDisabled: boolean;
     isFirmwareRevisionCheckDisabled: boolean;
+    isFirmwareHashCheckDisabled: boolean;
     addressDisplayType: AddressDisplayOptions;
     defaultWalletLoading: WalletType;
     experimental?: ExperimentalFeature[];
@@ -164,6 +165,7 @@ const initialState: SuiteState = {
         isDesktopSuitePromoHidden: false,
         isDeviceAuthenticityCheckDisabled: false,
         isFirmwareRevisionCheckDisabled: false,
+        isFirmwareHashCheckDisabled: false,
         debug: {
             invityServerEnvironment: undefined,
             showDebugMenu: false,
@@ -330,6 +332,9 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             case SUITE.DEVICE_FIRMWARE_REVISION_CHECK:
                 draft.settings.isFirmwareRevisionCheckDisabled = action.payload.isDisabled;
                 break;
+            case SUITE.DEVICE_FIRMWARE_HASH_CHECK:
+                draft.settings.isFirmwareHashCheckDisabled = action.payload.isDisabled;
+                break;
             case SUITE.LOCK_UI:
                 changeLock(draft, SUITE.LOCK_TYPE.UI, action.payload);
                 break;
@@ -436,14 +441,8 @@ export const selectIsFirmwareRevisionCheckEnabledAndFailed = (
     state: SuiteRootState & DeviceRootState & MessageSystemRootState,
 ) => {
     const { isFirmwareRevisionCheckDisabled } = state.suite.settings;
-    const isFirmwareRevisionCheckDisabledByMessageSystem = selectIsFeatureDisabled(
-        state,
-        Feature.firmwareRevisionCheck,
-    );
-
-    if (isFirmwareRevisionCheckDisabled || isFirmwareRevisionCheckDisabledByMessageSystem) {
-        return false;
-    }
+    const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.firmwareRevisionCheck);
+    if (isFirmwareRevisionCheckDisabled || isDisabledByMessageSystem) return false;
 
     const device = selectDevice(state);
 
@@ -454,6 +453,25 @@ export const selectIsFirmwareRevisionCheckEnabledAndFailed = (
         // If Suite is offline and cannot perform check or there is some unexpected error, an error banner is shown but Suite is otherwise unaffected.
         !['cannot-perform-check-offline', 'other-error'].includes(
             device.authenticityChecks.firmwareRevision.error,
+        )
+    );
+};
+
+export const selectIsFirmwareHashCheckEnabledAndFailed = (
+    state: SuiteRootState & DeviceRootState & MessageSystemRootState,
+) => {
+    const { isFirmwareHashCheckDisabled } = state.suite.settings;
+    const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.firmwareHashCheck);
+    if (isFirmwareHashCheckDisabled || isDisabledByMessageSystem) return false;
+
+    const device = selectDevice(state);
+
+    return (
+        isDeviceAcquired(device) &&
+        // If `check` is null, it means that it was not performed yet.
+        device.authenticityChecks?.firmwareHash?.success === false &&
+        !['check-skipped', 'check-unsupported'].includes(
+            device.authenticityChecks.firmwareHash.error,
         )
     );
 };

@@ -47,6 +47,7 @@ import { CryptoId } from 'invity-api';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { PassphraseMismatchModal } from './PassphraseMismatchModal';
 import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
+import { FirmwareHashOptOutModal } from './FirmwareHashOptOutModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({
@@ -92,6 +93,8 @@ export const UserContextModal = ({
             return <DeviceAuthenticityOptOutModal onCancel={onCancel} />;
         case 'firmware-revision-opt-out':
             return <FirmwareRevisionOptOutModal onCancel={onCancel} />;
+        case 'firmware-hash-opt-out':
+            return <FirmwareHashOptOutModal onCancel={onCancel} />;
         case 'qr-reader':
             return <QrScannerModal decision={payload.decision} onCancel={onCancel} />;
         case 'transaction-detail':

@@ -11,7 +11,7 @@ import { useDevice, useDispatch } from 'src/hooks/suite';
 import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 
-export const DeviceCompromised = () => {
+export const DeviceCompromisedHashCheck = () => {
     const dispatch = useDispatch();
     const { device } = useDevice();
 
@@ -19,14 +19,14 @@ export const DeviceCompromised = () => {
     const version = getFirmwareVersion(device);
     const vendor = device?.features?.fw_vendor;
     const authenticityError =
-        isDeviceAcquired(device) && device.authenticityChecks?.firmwareRevision?.success === false
-            ? device.authenticityChecks.firmwareRevision?.error
+        isDeviceAcquired(device) && device.authenticityChecks?.firmwareHash?.success === false
+            ? device.authenticityChecks.firmwareHash?.error
             : undefined;
 
     const goToSuite = () => {
         // Condition to satisfy TypeScript, device.id is always defined at this point.
         if (device?.id) {
-            dispatch(deviceActions.dismissFirmwareRevisionCheck(device.id));
+            dispatch(deviceActions.dismissFirmwareHashCheck(device.id));
         }
     };
 
@@ -35,9 +35,9 @@ export const DeviceCompromised = () => {
 
         withSentryScope(scope => {
             scope.setLevel('error');
-            scope.setTag('deviceAuthenticityError', 'firmware revision check failed');
+            scope.setTag('deviceAuthenticityError', 'firmware hash check failed');
             captureSentryMessage(
-                `Firmware revision check failed! ${JSON.stringify(contextData)}`,
+                `Firmware hash check failed! ${JSON.stringify(contextData)}`,
                 scope,
             );
         });
@@ -45,7 +45,9 @@ export const DeviceCompromised = () => {
 
     return (
         <WelcomeLayout>
-            <Card data-testid="@device-compromised">
+            <Card data-testid="@device-compromised/hash-check">
+                {/* TODO #14766 REMOVE ME ! */}
+                (THIS IS HASH CHECK..)
                 <SecurityCheckFail
                     goBack={goToSuite}
                     supportUrl={TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL}

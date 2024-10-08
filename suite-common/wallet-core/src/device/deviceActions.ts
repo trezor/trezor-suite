@@ -85,12 +85,18 @@ const dismissFirmwareRevisionCheck = createAction(
     (payload: string) => ({ payload }),
 );
 
+const dismissFirmwareHashCheck = createAction(
+    `${DEVICE_MODULE_PREFIX}/dismissFirmwareHashCheck`,
+    (payload: string) => ({ payload }),
+);
+
 export const deviceActions = {
     connectDevice,
     connectUnacquiredDevice,
     deviceChanged,
     deviceDisconnect,
     dismissFirmwareRevisionCheck,
+    dismissFirmwareHashCheck,
     updatePassphraseMode,
     receiveAuthConfirm,
     rememberDevice,

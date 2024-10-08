@@ -102,6 +102,9 @@ export type UserContextPayload =
           type: 'firmware-revision-opt-out';
       }
     | {
+          type: 'firmware-hash-opt-out';
+      }
+    | {
           type: 'disconnect-device';
       }
     | {
