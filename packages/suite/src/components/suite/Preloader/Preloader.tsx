@@ -14,15 +14,21 @@ import {
     selectIsLoggedOut,
     selectSuiteFlags,
     selectIsFirmwareRevisionCheckEnabledAndFailed,
+    selectIsFirmwareHashCheckEnabledAndFailed,
 } from 'src/reducers/suite/suiteReducer';
 import { SuiteStart } from 'src/views/start/SuiteStart';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
-import { selectDevice, selectIsFirmwareRevisionCheckDismissed } from '@suite-common/wallet-core';
-import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
+import {
+    selectDevice,
+    selectIsFirmwareHashCheckDismissed,
+    selectIsFirmwareRevisionCheckDismissed,
+} from '@suite-common/wallet-core';
+import { DeviceCompromisedRevisionCheck } from '../SecurityCheck/DeviceCompromisedRevisionCheck';
 import { RouterAppWithParams } from '../../../constants/suite/routes';
+import { DeviceCompromisedHashCheck } from '../SecurityCheck/DeviceCompromisedHashCheck';
 
 const ROUTES_TO_SKIP_REVISION_CHECK: RouterAppWithParams['app'][] = [
     'settings',
@@ -57,7 +63,9 @@ export const Preloader = ({ children }: PreloaderProps) => {
     const selectedDevice = useSelector(selectDevice);
     const { initialRun, viewOnlyPromoClosed } = useSelector(selectSuiteFlags);
     const isRevisionCheckFailed = useSelector(selectIsFirmwareRevisionCheckEnabledAndFailed);
+    const isFwHashCheckFailed = useSelector(selectIsFirmwareHashCheckEnabledAndFailed);
     const isFirmwareRevisionCheckDismissed = useSelector(selectIsFirmwareRevisionCheckDismissed);
+    const isFirmwareHashCheckDismissed = useSelector(selectIsFirmwareHashCheckDismissed);
 
     const dispatch = useDispatch();
 
@@ -82,12 +90,15 @@ export const Preloader = ({ children }: PreloaderProps) => {
     }
 
     if (
-        (router.route?.app === undefined ||
-            !ROUTES_TO_SKIP_REVISION_CHECK.includes(router.route?.app)) &&
-        !isFirmwareRevisionCheckDismissed &&
-        isRevisionCheckFailed
+        router.route?.app === undefined ||
+        !ROUTES_TO_SKIP_REVISION_CHECK.includes(router.route?.app)
     ) {
-        return <DeviceCompromised />;
+        if (!isFirmwareRevisionCheckDismissed && isRevisionCheckFailed) {
+            return <DeviceCompromisedRevisionCheck />;
+        }
+        if (!isFirmwareHashCheckDismissed && isFwHashCheckFailed) {
+            return <DeviceCompromisedHashCheck />;
+        }
     }
 
     if (

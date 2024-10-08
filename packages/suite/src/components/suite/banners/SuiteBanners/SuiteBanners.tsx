@@ -20,6 +20,7 @@ import { SafetyChecksBanner } from './SafetyChecksBanner';
 import { TranslationMode } from './TranslationModeBanner';
 import { FirmwareHashMismatch } from './FirmwareHashMismatchBanner';
 import { FirmwareRevisionCheckBanner } from './FirmwareRevisionCheckBanner';
+import { FirmwareHashCheckBanner } from './FirmwareHashCheckBanner';
 
 const Container = styled.div<{ $isVisible?: boolean }>`
     width: 100%;
@@ -36,7 +37,9 @@ export const SuiteBanners = () => {
     const isOnline = useSelector(state => state.suite.online);
     const firmwareHashInvalid = useSelector(state => state.firmware.firmwareHashInvalid);
     const bannerMessage = useSelector(selectBannerMessage);
-    const { isFirmwareRevisionCheckDisabled } = useSelector(state => state.suite.settings);
+    const { isFirmwareRevisionCheckDisabled, isFirmwareHashCheckDisabled } = useSelector(
+        state => state.suite.settings,
+    );
 
     // The dismissal doesn't need to outlive the session. Use local state.
     const [safetyChecksDismissed, setSafetyChecksDismissed] = useState(false);
@@ -58,14 +61,26 @@ export const SuiteBanners = () => {
 
     let banner = null;
     let priority = 0;
+    // firmware hash invalid after a firmware update, not the regular check
     if (device?.id && firmwareHashInvalid.includes(device.id)) {
         banner = <FirmwareHashMismatch />;
         priority = 92;
+    }
+    // the regular firmware check
+    else if (
+        !isFirmwareHashCheckDisabled &&
+        isDeviceAcquired(device) &&
+        device.authenticityChecks !== undefined &&
+        device.authenticityChecks.firmwareHash !== null && // only if check was performed
+        device.authenticityChecks.firmwareHash.success === false
+    ) {
+        banner = <FirmwareHashCheckBanner />;
+        priority = 91.1;
     } else if (
         !isFirmwareRevisionCheckDisabled &&
         isDeviceAcquired(device) &&
         device.authenticityChecks !== undefined &&
-        device.authenticityChecks.firmwareRevision !== null && // check was performed
+        device.authenticityChecks.firmwareRevision !== null && // only if check was performed
         device.authenticityChecks.firmwareRevision.success === false
     ) {
         banner = <FirmwareRevisionCheckBanner />;

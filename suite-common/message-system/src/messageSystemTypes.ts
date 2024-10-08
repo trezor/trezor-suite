@@ -23,6 +23,7 @@ export const Feature = {
     ethUnstake: 'eth.staking.unstake',
     ethClaim: 'eth.staking.claim',
     firmwareRevisionCheck: 'security.firmware.check',
+    firmwareHashCheck: 'security.firmware.hashCheck',
 } as const;
 
 export type FeatureDomain = (typeof Feature)[keyof typeof Feature];

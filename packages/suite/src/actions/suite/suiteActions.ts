@@ -40,6 +40,7 @@ export type SuiteAction =
     | { type: typeof SUITE.COINJOIN_RECEIVE_WARNING; payload: boolean }
     | { type: typeof SUITE.DEVICE_AUTHENTICITY_OPT_OUT; payload: boolean }
     | { type: typeof SUITE.DEVICE_FIRMWARE_REVISION_CHECK; payload: { isDisabled: boolean } }
+    | { type: typeof SUITE.DEVICE_FIRMWARE_HASH_CHECK; payload: { isDisabled: boolean } }
     | { type: typeof SUITE.COINJOIN_RECEIVE_WARNING; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | ReturnType<typeof lockDevice>
@@ -307,6 +308,17 @@ export const checkFirmwareRevision =
 
         dispatch({
             type: SUITE.DEVICE_FIRMWARE_REVISION_CHECK,
+            payload: { isDisabled },
+        });
+    };
+
+export const checkFirmwareHash =
+    ({ isDisabled }: { isDisabled: boolean }) =>
+    (dispatch: Dispatch) => {
+        dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
+
+        dispatch({
+            type: SUITE.DEVICE_FIRMWARE_HASH_CHECK,
             payload: { isDisabled },
         });
     };

@@ -21,6 +21,7 @@ export const COINJOIN_RECEIVE_WARNING = '@suite/coinjoin-receive-warning';
 export const DESKTOP_SUITE_PROMO = '@suite/desktop-suite-promo';
 export const DEVICE_AUTHENTICITY_OPT_OUT = '@suite/device-authenticity-opt-out';
 export const DEVICE_FIRMWARE_REVISION_CHECK = '@suite/firmware-revision-opt-out-check';
+export const DEVICE_FIRMWARE_HASH_CHECK = '@suite/firmware-hash-opt-out-check';
 export const EVM_CONFIRM_EXPLANATION_MODAL = '@suite/evm-confirm-explanation-modal';
 export const EVM_CLOSE_EXPLANATION_BANNER = '@suite/evm-close-explanation-banner';
 export const LOCK_UI = '@suite/lock-ui';
