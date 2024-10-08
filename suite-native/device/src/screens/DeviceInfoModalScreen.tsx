@@ -1,41 +1,28 @@
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 
-import { G } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 
 import { DeviceModelInternal } from '@trezor/connect';
-import {
-    Image,
-    Box,
-    Card,
-    HStack,
-    VStack,
-    Button,
-    IconButton,
-    ScreenHeaderWrapper,
-    Text,
-} from '@suite-native/atoms';
+import { Image, VStack, Button, Text } from '@suite-native/atoms';
 import {
     AppTabsRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     Screen,
+    ScreenSubHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import {
     selectDevice,
-    selectDeviceLabel,
     selectDeviceModel,
     selectDeviceReleaseInfo,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { getFirmwareVersion } from '@trezor/device-utils';
-import { useOpenLink } from '@suite-native/link';
 
+import { DeviceFirmwareCard } from '../components/DeviceFirmwareCard';
 import { HowToUpdateBottomSheet } from '../components/HowToUpdateBottomSheet';
 
 const deviceImageMap: Record<DeviceModelInternal, string> = {
@@ -46,50 +33,20 @@ const deviceImageMap: Record<DeviceModelInternal, string> = {
     [DeviceModelInternal.T3T1]: require('../assets/t3t1.png'),
 };
 
-const emptyBoxStyle = prepareNativeStyle(() => ({
-    width: 48,
-}));
-
-const contentStyle = prepareNativeStyle(() => ({
-    flexGrow: 1,
-}));
-
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.DeviceInfo>;
 
 export const DeviceInfoModalScreen = () => {
     const navigation = useNavigation<NavigationProp>();
     const { translate } = useTranslate();
-    const openLink = useOpenLink();
 
-    const deviceModel = useSelector(selectDeviceModel);
-    const deviceLabel = useSelector(selectDeviceLabel);
     const device = useSelector(selectDevice);
+    const deviceModel = useSelector(selectDeviceModel);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
-    const { applyStyle } = useNativeStyles();
 
     const [isUpdateSheetOpen, setIsUpdateSheetOpen] = useState<boolean>(false);
 
     const isUpgradable = deviceReleaseInfo?.isNewer ?? false;
-
-    const getCardAlertProps = () => {
-        if (G.isNotNullable(deviceReleaseInfo)) {
-            if (isUpgradable) {
-                return {
-                    alertTitle: <Translation id="deviceInfo.outdatedFw" />,
-                    alertVariant: 'warning',
-                } as const;
-            }
-
-            return {
-                alertTitle: <Translation id="deviceInfo.upToDateFw" />,
-                alertVariant: 'success',
-            } as const;
-        }
-
-        return { alertTitle: undefined, alertVariant: undefined } as const;
-    };
-    const cardAlertProps = getCardAlertProps();
 
     useEffect(() => {
         if (isPortfolioTrackerDevice) {
@@ -102,61 +59,29 @@ export const DeviceInfoModalScreen = () => {
         }
     }, [isPortfolioTrackerDevice, navigation]);
 
-    if (!deviceModel) return null;
-
-    const currentFwVersion = getFirmwareVersion(device);
-
-    const handleGoBack = () => {
-        navigation.goBack();
-    };
-
-    const handleAccessoriesClick = () => {
-        openLink('https://trezor.io/accessories');
-    };
+    if (!device || !deviceModel) {
+        return null;
+    }
 
     const handleUpdateClick = () => setIsUpdateSheetOpen(true);
 
     return (
         <Screen
             screenHeader={
-                // TODO once https://github.com/trezor/trezor-suite/issues/9856 is done, this should be removed
-                <ScreenHeaderWrapper>
-                    <IconButton
-                        iconName="close"
-                        colorScheme="tertiaryElevation0"
-                        onPress={handleGoBack}
-                    />
-                    <Text>Device info</Text>
-                    <Box style={applyStyle(emptyBoxStyle)} />
-                </ScreenHeaderWrapper>
+                <ScreenSubHeader
+                    customHorizontalPadding="sp16"
+                    content={translate('deviceSettings.title')}
+                    closeActionType="close"
+                />
             }
+            customHorizontalPadding="sp16"
         >
-            <Box style={applyStyle(contentStyle)}>
-                <Card {...cardAlertProps}>
-                    <HStack spacing="sp24">
-                        <Image width={92} height={151} source={deviceImageMap[deviceModel]} />
-                        <VStack spacing="sp4" justifyContent="center">
-                            {deviceLabel && <Text variant="titleSmall">{deviceLabel}</Text>}
-                            <Text variant="label" color="textSubdued">
-                                {device?.name}
-                            </Text>
-                            <Text variant="hint">
-                                {translate('deviceInfo.installedFw', {
-                                    version: currentFwVersion,
-                                })}
-                            </Text>
-                        </VStack>
-                    </HStack>
-                </Card>
-            </Box>
-            <VStack spacing="sp16">
-                <Button
-                    colorScheme="tertiaryElevation0"
-                    onPress={handleAccessoriesClick}
-                    viewRight="arrowUpRight"
-                >
-                    <Translation id="deviceInfo.goToAccessories" />
-                </Button>
+            <VStack marginVertical="sp32" spacing="sp24" alignItems="center">
+                <Image width={92} height={151} source={deviceImageMap[deviceModel]} />
+                <Text variant="titleMedium">{device.name}</Text>
+            </VStack>
+            <VStack spacing="sp24">
+                <DeviceFirmwareCard />
                 {isUpgradable && (
                     <Button colorScheme="primary" onPress={handleUpdateClick}>
                         <Translation id="deviceInfo.updateHowTo.title" />

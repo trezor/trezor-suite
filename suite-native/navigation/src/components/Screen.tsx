@@ -10,9 +10,9 @@ import { useRoute } from '@react-navigation/native';
 
 import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color, nativeSpacings } from '@trezor/theme';
+import { Color, NativeSpacing } from '@trezor/theme';
 import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
-import { Box } from '@suite-native/atoms';
+import { Box, nativeSpacingToNumber } from '@suite-native/atoms';
 
 import { ScreenContentWrapper } from './ScreenContentWrapper';
 
@@ -24,8 +24,8 @@ type ScreenProps = {
     hasStatusBar?: boolean;
     isScrollable?: boolean;
     backgroundColor?: Color;
-    customVerticalPadding?: number;
-    customHorizontalPadding?: number;
+    customVerticalPadding?: NativeSpacing | number;
+    customHorizontalPadding?: NativeSpacing | number;
     extraKeyboardAvoidingViewHeight?: number;
     hasBottomInset?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
@@ -106,8 +106,8 @@ export const Screen = ({
     isScrollable = true,
     hasStatusBar = true,
     backgroundColor = 'backgroundSurfaceElevation0',
-    customVerticalPadding = nativeSpacings.sp8,
-    customHorizontalPadding = nativeSpacings.sp8,
+    customVerticalPadding = 'sp8',
+    customHorizontalPadding = 'sp8',
     extraKeyboardAvoidingViewHeight = 0,
     hasBottomInset = true,
 }: ScreenProps) => {
@@ -139,7 +139,7 @@ export const Screen = ({
         <View
             style={applyStyle(screenContainerStyle, {
                 backgroundColor,
-                customVerticalPadding,
+                customVerticalPadding: nativeSpacingToNumber(customVerticalPadding),
                 insets,
                 hasPaddingBottom,
                 isMessageBannerDisplayed,
@@ -163,8 +163,8 @@ export const Screen = ({
                 <Box
                     style={applyStyle(screenContentBaseStyle, {
                         insets,
-                        customHorizontalPadding,
-                        customVerticalPadding,
+                        customHorizontalPadding: nativeSpacingToNumber(customHorizontalPadding),
+                        customVerticalPadding: nativeSpacingToNumber(customVerticalPadding),
                         isScrollable,
                     })}
                 >

@@ -3,7 +3,13 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/icons-deprecated"
+        },
+        {
             "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
         },
         {
             "path": "../../suite-common/wallet-core"
