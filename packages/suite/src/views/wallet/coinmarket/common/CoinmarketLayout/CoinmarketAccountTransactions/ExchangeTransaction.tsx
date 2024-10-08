@@ -130,19 +130,24 @@ export const ExchangeTransaction = ({ trade, providers, account }: ExchangeTrans
         );
     };
 
+    if (!send || !receive) return null;
+
     return (
         <Wrapper>
             <Column>
                 <Row>
                     <Amount>
-                        <FormattedCryptoAmount value={sendStringAmount} symbol={send} />
+                        <FormattedCryptoAmount
+                            value={sendStringAmount}
+                            symbol={cryptoIdToCoinSymbol(send)}
+                        />
                     </Amount>
                     <Arrow>
                         <Icon color={theme.legacy.TYPE_LIGHT_GREY} size={13} name="caretRight" />
                     </Arrow>
                     <FormattedCryptoAmount
                         value={receiveStringAmount}
-                        symbol={cryptoIdToCoinSymbol(receive!)}
+                        symbol={cryptoIdToCoinSymbol(receive)}
                     />
                     {/* TODO FIX THIS LOGO */}
                     {/* <StyledCoinLogo size={13} symbol={symbol} /> */}
