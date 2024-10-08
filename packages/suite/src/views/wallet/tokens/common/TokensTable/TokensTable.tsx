@@ -59,7 +59,7 @@ export const TokensTable = ({
                         { minWidth: '200px', maxWidth: '250px' },
                         { minWidth: '140px', maxWidth: '250px' }, // due to HiddenPlaceholder - it changes content width when hovered
                     ]}
-                    highlightRowOnHover={true}
+                    isRowHighlightedOnHover
                 >
                     <Table.Header>
                         <Table.Row>
@@ -95,7 +95,10 @@ export const TokensTable = ({
                         ))}
                         {tokensWithoutBalance.length !== 0 && (
                             <>
-                                <Table.Row onClick={() => setIsZeroBalanceOpen(!isZeroBalanceOpen)}>
+                                <Table.Row
+                                    onClick={() => setIsZeroBalanceOpen(!isZeroBalanceOpen)}
+                                    isHighlightedOnHover={false}
+                                >
                                     <Table.Cell colSpan={5}>
                                         <ZeroBalanceToggle>
                                             <Row gap={spacings.xs} margin={{ top: spacings.md }}>
