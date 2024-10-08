@@ -12,7 +12,6 @@ export interface CoinSelectOptions {
     coinbase?: number;
     baseFee?: number;
     floorBaseFee?: boolean;
-    skipPermutation?: boolean;
     feePolicy?: 'bitcoin' | 'doge' | 'zcash';
 }
 

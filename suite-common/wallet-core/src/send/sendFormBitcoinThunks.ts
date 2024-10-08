@@ -123,7 +123,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             baseFee: formState.baseFee,
             sequence,
             outputs: composeOutputs,
-            skipPermutation: !!formState.rbfParams,
+            // skipPermutation: !!formState.rbfParams,
             coin: account.symbol,
         };
 

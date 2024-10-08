@@ -1014,7 +1014,7 @@ export default [
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
             dustThreshold: 546,
             feeRate: '10',
-            skipPermutation: true,
+            // skipPermutation: true,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
