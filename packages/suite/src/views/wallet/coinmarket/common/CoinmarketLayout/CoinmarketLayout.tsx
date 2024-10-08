@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common';
 import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { CoinmarketLayoutNavigation } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketLayoutNavigation/CoinmarketLayoutNavigation';
@@ -31,7 +30,6 @@ export const CoinmarketLayout = ({ children, selectedAccount }: CoinmarketLayout
             <WalletSubpageHeading title="TR_NAV_TRADE" />
             <CoinmarketLayoutNavigation selectedAccount={selectedAccount} />
             <CoinmarketFormWrapper>{children}</CoinmarketFormWrapper>
-            <CoinmarketFooter />
         </CoinmarketWrapper>
     </WalletLayout>
 );
