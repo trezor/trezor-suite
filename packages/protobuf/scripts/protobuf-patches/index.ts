@@ -1,12 +1,54 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const UINT_TYPE = 'UintType';
-const SINT_TYPE = 'SintType';
+export const UINT_TYPE = 'UintType';
+export const SINT_TYPE = 'SintType';
 const DeviceModelInternal = 'DeviceModelInternal';
 
+// proto types to javascript types
+export const FIELD_TYPES = {
+    uint32: 'number',
+    uint64: 'number',
+    sint32: 'number',
+    sint64: 'number',
+    bool: 'boolean',
+    bytes: 'string',
+    // 'bytes': 'Uint8Array | number[] | Buffer | string', // protobuf will handle conversion
+};
+
+// Types needs reordering (used before defined).
+// The Type in the Value NEEDs (depends on) the Type in the Key.
+export const ORDER = {
+    BinanceCoin: 'BinanceInputOutput',
+    HDNodeType: 'HDNodePathType',
+    TxAck: 'TxAckInputWrapper',
+    EthereumFieldType: 'EthereumStructMember',
+    EthereumDataType: 'EthereumFieldType',
+    PaymentRequestMemo: 'TxAckPaymentRequest',
+    RecoveryDevice: 'Features',
+    RecoveryType: 'RecoveryDevice',
+    RecoveryDeviceInputMethod: 'RecoveryType',
+};
+
+// enums used as keys (string), used as values (number) by default
+export const ENUM_KEYS = [
+    'InputScriptType',
+    'OutputScriptType',
+    'RequestType',
+    'BackupType',
+    'Capability',
+    'SafetyCheckLevel',
+    'ButtonRequestType',
+    'PinMatrixRequestType',
+    'WordRequestType',
+    'HomescreenFormat',
+    'RecoveryStatus',
+    'BackupAvailability',
+    'RecoveryType',
+];
+
 // type rule fixes, ideally it should not be here
-const RULE_PATCH = {
+export const RULE_PATCH = {
     'BackupDevice.groups': 'optional', // protobuf repeated bytes are always optional (fallback to [])
     'MultisigRedeemScriptType.nodes': 'optional', // its valid to be undefined according to implementation/tests
     'MultisigRedeemScriptType.address_n': 'optional', // its valid to be undefined according to implementation/tests
@@ -82,7 +124,7 @@ const RULE_PATCH = {
 // custom types IN to trezor
 // protobuf lib will handle the translation to required type
 // connect or other 3rd party libs are using compatible types (string as number etc...)
-const TYPE_PATCH = {
+export const TYPE_PATCH = {
     'Features.bootloader_mode': 'boolean | null',
     'Features.device_id': 'string | null',
     'Features.pin_protection': 'boolean | null',
@@ -207,14 +249,20 @@ const TYPE_PATCH = {
     'Features.recovery_type': 'RecoveryType',
 };
 
-const DEFINITION_PATCH = {
-    TxInputType: fs.readFileSync(path.join(__dirname, './TxInputType.js'), 'utf8'),
-    TxOutputType: fs.readFileSync(path.join(__dirname, './TxOutputType.js'), 'utf8'),
-    TxAck: fs.readFileSync(path.join(__dirname, './TxAck.js'), 'utf8'),
+const readPatch = (file: string) => {
+    return fs
+        .readFileSync(path.join(__dirname, file), 'utf8')
+        .replace(/^\/\/ @ts-nocheck.*\n?/gm, '');
+};
+
+export const DEFINITION_PATCH = {
+    TxInputType: () => readPatch('./TxInputType.ts'),
+    TxOutputType: () => readPatch('./TxOutputType.ts'),
+    TxAck: () => readPatch('./TxAck.ts'),
 };
 
 // skip unnecessary types
-const SKIP = [
+export const SKIP = [
     'MessageType', // connect uses custom definition
     'TransactionType', // connect uses custom definition
     'TxInput', // declared in TxInputType patch
@@ -296,12 +344,3 @@ const SKIP = [
     'WebAuthnCredential',
     'WebAuthnCredentials',
 ];
-
-module.exports = {
-    RULE_PATCH,
-    TYPE_PATCH,
-    DEFINITION_PATCH,
-    SKIP,
-    UINT_TYPE,
-    SINT_TYPE,
-};

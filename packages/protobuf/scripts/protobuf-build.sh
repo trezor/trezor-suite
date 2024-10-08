@@ -40,7 +40,7 @@ cd ..
 cd "$SCRIPTS_PATH"
 
 yarn tsx ./protobuf-definitions.ts "$REPO_PATH/common/protob"
-node ./protobuf-types.js typescript
+yarn tsx ./protobuf-types.ts
 
 yarn workspace @trezor/protobuf g:prettier --write {messages.json,src/messages.ts} 
 yarn workspace @trezor/protobuf g:eslint --fix ./src/messages.ts
