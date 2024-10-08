@@ -2,8 +2,17 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { AccountAddress } from '@trezor/connect';
-import { Card, Button, Column, GradientOverlay, Tooltip } from '@trezor/components';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
+import {
+    Card,
+    Button,
+    Column,
+    Row,
+    GradientOverlay,
+    Tooltip,
+    Table,
+    Text,
+} from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 
@@ -15,93 +24,27 @@ import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { selectIsFirmwareRevisionCheckEnabledAndFailed } from 'src/reducers/suite/suiteReducer';
 
-const GridTable = styled.div`
-    display: grid;
-    grid-template-columns: auto 0.3fr 0.3fr;
-    width: 100%;
-    ${typography.hint}
-`;
-
-// min-width: 0; // to resolve an issue with truncate text
-const GridItem = styled.div<{
-    $revealed?: boolean;
-    onClick?: () => void;
-    $align?: 'left' | 'right';
-}>`
-    min-width: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    white-space: nowrap;
-    padding: ${spacingsPx.md} 0 ${spacingsPx.sm};
-    font-variant-numeric: tabular-nums;
-    ${typography.hint}
-    ${({ $align }) => ($align === 'right' ? `justify-content:flex-end` : '')};
-    cursor: ${({ onClick }) => onClick && 'pointer'};
-
-    :nth-child(3n + 2) {
-        padding-right: ${spacingsPx.md};
-    }
-
-    :nth-last-child(-n + 3) {
-        border: 0;
-    }
-`;
-
-const GridItemRevealAddress = styled(GridItem)`
-    justify-content: flex-end;
-`;
-
-const GridItemAddress = styled(GridItem)`
-    font-variant-numeric: tabular-nums slashed-zero;
-
-    /* these two ensure proper metadata behavior */
-    white-space: nowrap;
-    overflow: hidden;
-`;
-
 const AddressActions = styled.div<{ $isVisible?: boolean }>`
     opacity: ${({ $isVisible }) => ($isVisible ? '1' : '0')};
 `;
 
-const Gray = styled.span`
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-const HeaderItem = styled(GridItem)`
-    position: sticky;
-    top: 0;
-    color: ${({ theme }) => theme.textSubdued};
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
-    padding: 0 0 ${spacingsPx.sm};
-`;
-
-const Actions = styled.div`
-    display: flex;
-    justify-content: center;
-    margin: 16px 0;
-
-    button + button {
-        margin-left: 16px;
-    }
-`;
-
-const AddressWrapper = styled.span`
-    text-overflow: ellipsis;
+const AddressWrapper = styled.div`
+    white-space: nowrap;
     overflow: hidden;
     position: relative;
+    font-variant-numeric: tabular-nums slashed-zero;
 `;
 
 const DEFAULT_LIMIT = 10;
 
-interface ItemProps {
+type ItemProps = {
     index: number;
     addr: AccountAddress;
     locked: boolean;
     symbol: NetworkSymbol;
     metadataPayload: MetadataAddPayload;
     onClick: () => void;
-}
+};
 
 const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
     const isRevisionCheckFailed = useSelector(selectIsFirmwareRevisionCheckEnabledAndFailed);
@@ -116,30 +59,25 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
     ) : null;
 
     return (
-        <>
-            <GridItemAddress
-                data-testid={`@wallet/receive/used-address/${index}`}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-            >
-                <MetadataLabeling
-                    payload={{
-                        ...metadataPayload,
-                    }}
-                    visible={isHovered}
-                    // if metadata is present, confirm on device option will become available in dropdown
-                    defaultVisibleValue={
-                        <AddressWrapper>
-                            <GradientOverlay hiddenFrom="120px" />
-                            {address}
-                        </AddressWrapper>
-                    }
-                />
-            </GridItemAddress>
-            <GridItemRevealAddress
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-            >
+        <Table.Row onHover={setIsHovered}>
+            <Table.Cell>
+                <Text typographyStyle="hint" data-testid={`@wallet/receive/used-address/${index}`}>
+                    <MetadataLabeling
+                        payload={{
+                            ...metadataPayload,
+                        }}
+                        visible={isHovered}
+                        // if metadata is present, confirm on device option will become available in dropdown
+                        defaultVisibleValue={
+                            <AddressWrapper>
+                                <GradientOverlay hiddenFrom="120px" />
+                                {address}
+                            </AddressWrapper>
+                        }
+                    />
+                </Text>
+            </Table.Cell>
+            <Table.Cell align="right">
                 <AddressActions $isVisible={isHovered}>
                     <Tooltip content={tooltipContent}>
                         <Button
@@ -154,22 +92,20 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
                         </Button>
                     </Tooltip>
                 </AddressActions>
-            </GridItemRevealAddress>
+            </Table.Cell>
 
-            <GridItem
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                $align="right"
-            >
-                {!fresh && <FormattedCryptoAmount value={amount} symbol={symbol} />}
-
-                {fresh && (
-                    <Gray>
-                        <Translation id="RECEIVE_TABLE_NOT_USED" />
-                    </Gray>
-                )}
-            </GridItem>
-        </>
+            <Table.Cell align="right">
+                <Text typographyStyle="hint">
+                    {fresh ? (
+                        <Text variant="tertiary">
+                            <Translation id="RECEIVE_TABLE_NOT_USED" />
+                        </Text>
+                    ) : (
+                        <FormattedCryptoAmount value={amount} symbol={symbol} />
+                    )}
+                </Text>
+            </Table.Cell>
+        </Table.Row>
     );
 };
 
@@ -226,37 +162,42 @@ export const UsedAddresses = ({
     const actionHideVisible = limit > DEFAULT_LIMIT;
 
     return (
-        <Card margin={{ bottom: spacings.xxxl }} overflow="hidden" paddingType="large">
-            <Column>
-                <GridTable>
-                    <HeaderItem>
-                        <Translation id="RECEIVE_TABLE_ADDRESS" />
-                    </HeaderItem>
-                    <HeaderItem />
-                    <HeaderItem $align="right">
-                        <Translation id="RECEIVE_TABLE_RECEIVED" />
-                    </HeaderItem>
-
-                    {list.slice(0, limit).map((addr, index) => (
-                        <Item
-                            index={index}
-                            key={addr.path}
-                            addr={addr}
-                            symbol={account.symbol}
-                            locked={locked}
-                            metadataPayload={{
-                                type: 'addressLabel',
-                                entityKey: account.key,
-                                defaultValue: addr.address,
-                                value: addressLabels[addr.address],
-                            }}
-                            onClick={() => dispatch(showAddress(addr.path, addr.address))}
-                        />
-                    ))}
-                </GridTable>
+        <Card margin={{ bottom: spacings.xxxl }} overflow="hidden" paddingType="normal">
+            <Column alignItems="stretch" gap={spacings.md}>
+                <Table>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.Cell>
+                                <Translation id="RECEIVE_TABLE_ADDRESS" />
+                            </Table.Cell>
+                            <Table.Cell />
+                            <Table.Cell align="right">
+                                <Translation id="RECEIVE_TABLE_RECEIVED" />
+                            </Table.Cell>
+                        </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                        {list.slice(0, limit).map((addr, index) => (
+                            <Item
+                                index={index}
+                                key={addr.path}
+                                addr={addr}
+                                symbol={account.symbol}
+                                locked={locked}
+                                metadataPayload={{
+                                    type: 'addressLabel',
+                                    entityKey: account.key,
+                                    defaultValue: addr.address,
+                                    value: addressLabels[addr.address],
+                                }}
+                                onClick={() => dispatch(showAddress(addr.path, addr.address))}
+                            />
+                        ))}
+                    </Table.Body>
+                </Table>
 
                 {actionButtonsVisible && (
-                    <Actions>
+                    <Row justifyContent="center" gap={spacings.md}>
                         {actionShowVisible && (
                             <Button
                                 variant="tertiary"
@@ -278,7 +219,7 @@ export const UsedAddresses = ({
                                 <Translation id="TR_SHOW_LESS" />
                             </Button>
                         )}
-                    </Actions>
+                    </Row>
                 )}
             </Column>
         </Card>

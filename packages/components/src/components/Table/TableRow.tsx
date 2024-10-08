@@ -15,7 +15,7 @@ import { useTableHeader } from './TableHeader';
 export const Row = styled.tr<{
     $elevation: Elevation;
     $isCollapsed: boolean;
-    $highlight: boolean;
+    $isHighlighted: boolean;
     $isHeader: boolean;
 }>`
     border-top: 1px solid ${mapElevationToBorder};
@@ -24,8 +24,8 @@ export const Row = styled.tr<{
         border-top: 0;
     }
 
-    ${({ $highlight, theme, $elevation, $isHeader }) =>
-        $highlight &&
+    ${({ $isHighlighted, theme, $elevation, $isHeader }) =>
+        $isHighlighted &&
         !$isHeader &&
         css`
             &:hover {
@@ -68,21 +68,31 @@ export const Row = styled.tr<{
 export interface TableRowProps {
     children: ReactNode;
     isCollapsed?: boolean;
+    isHighlightedOnHover?: boolean;
     onClick?: () => void;
+    onHover?: (isHovering: boolean) => void;
 }
 
-export const TableRow = ({ children, isCollapsed = false, onClick }: TableRowProps) => {
+export const TableRow = ({
+    children,
+    isCollapsed = false,
+    onClick,
+    onHover,
+    isHighlightedOnHover,
+}: TableRowProps) => {
     const { elevation } = useElevation();
     const isHeader = useTableHeader();
-    const { highlightRowOnHover } = useTable();
+    const { isRowHighlightedOnHover } = useTable();
 
     return (
         <Row
             $elevation={elevation}
             $isCollapsed={isCollapsed}
-            $highlight={highlightRowOnHover}
+            $isHighlighted={isHighlightedOnHover ?? isRowHighlightedOnHover}
             $isHeader={isHeader}
             onClick={onClick}
+            onMouseEnter={() => onHover?.(true)}
+            onMouseLeave={() => onHover?.(false)}
         >
             {children}
         </Row>

@@ -16,7 +16,7 @@ export default meta;
 
 interface TableProps {
     colWidths?: { minWidth?: string | undefined; maxWidth?: string | undefined }[];
-    highlightRowOnHover?: boolean;
+    isRowHighlightedOnHover?: boolean;
 }
 
 export const Table: StoryObj = {
@@ -33,7 +33,7 @@ export const Table: StoryObj = {
                 {EXAMPLE_TOKENS.map((token, i) => (
                     <TableComponent.Row
                         key={i}
-                        onClick={props.highlightRowOnHover ? () => {} : undefined}
+                        onClick={props.isRowHighlightedOnHover ? () => {} : undefined}
                     >
                         <TableComponent.Cell>{token.name}</TableComponent.Cell>
                         <TableComponent.Cell>{token.balance}</TableComponent.Cell>
@@ -46,7 +46,7 @@ export const Table: StoryObj = {
     args: {
         ...getFramePropsStory(allowedTableFrameProps).args,
         colWidths: 'none',
-        highlightRowOnHover: 'true',
+        isRowHighlightedOnHover: true,
     },
     argTypes: {
         ...getFramePropsStory(allowedTableFrameProps).argTypes,
@@ -64,18 +64,9 @@ export const Table: StoryObj = {
                 },
             },
         },
-        highlightRowOnHover: {
-            options: ['true', 'false'],
-            mapping: {
-                true: true,
-                false: false,
-            },
+        isRowHighlightedOnHover: {
             control: {
-                type: 'select',
-                labels: {
-                    true: 'true',
-                    false: 'false',
-                },
+                type: 'boolean',
             },
         },
     },

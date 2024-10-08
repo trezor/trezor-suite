@@ -15,10 +15,10 @@ export const allowedTableFrameProps = ['margin'] as const satisfies FramePropsKe
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTableFrameProps)[number]>;
 
 interface TableContextProps {
-    highlightRowOnHover: boolean;
+    isRowHighlightedOnHover: boolean;
 }
 
-const TableContext = createContext<TableContextProps>({ highlightRowOnHover: false });
+const TableContext = createContext<TableContextProps>({ isRowHighlightedOnHover: false });
 
 export const useTable = () => useContext(TableContext);
 
@@ -41,15 +41,20 @@ export type TableProps = AllowedFrameProps & {
         minWidth?: string;
         maxWidth?: string;
     }[];
-    highlightRowOnHover?: boolean;
+    isRowHighlightedOnHover?: boolean;
 };
 
-export const Table = ({ children, margin, colWidths, highlightRowOnHover = false }: TableProps) => {
+export const Table = ({
+    children,
+    margin,
+    colWidths,
+    isRowHighlightedOnHover = false,
+}: TableProps) => {
     const { scrollElementRef, onScroll, ShadowContainer, ShadowRight } = useScrollShadow();
     const { parentElevation } = useElevation();
 
     return (
-        <TableContext.Provider value={{ highlightRowOnHover }}>
+        <TableContext.Provider value={{ isRowHighlightedOnHover }}>
             <ShadowContainer>
                 <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
                     <Container {...makePropsTransient({ margin })}>
