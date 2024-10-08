@@ -2461,9 +2461,19 @@ export default defineMessages({
         defaultMessage: 'Skip PIN',
         id: 'TR_SKIP_PIN',
     },
+    TR_SKIP_PIN_DESCRIPTION: {
+        defaultMessage:
+            'A device PIN prevents unauthorized access to your Trezor. Without it, anyone with your device can access your funds.',
+        id: 'TR_SKIP_PIN_DESCRIPTION',
+    },
     TR_SKIP_BACKUP: {
-        defaultMessage: 'Skip Backup',
+        defaultMessage: 'Skip backup',
         id: 'TR_SKIP_BACKUP',
+    },
+    TR_SKIP_BACKUP_DESCRIPTION: {
+        defaultMessage:
+            'A wallet backup lets you recover your funds if your Trezor is lost, stolen, or damaged. Without a backup, you could lose access to your crypto permanently.',
+        id: 'TR_SKIP_BACKUP_DESCRIPTION',
     },
     TR_DONT_SKIP: {
         defaultMessage: "Don't skip",

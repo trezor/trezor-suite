@@ -1,30 +1,47 @@
+import { ReactNode } from 'react';
 import * as STEP from 'src/constants/onboarding/steps';
 import { AnyStepId } from 'src/types/onboarding';
 import { NewModal } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useOnboarding } from 'src/hooks/suite';
 
-interface SkipStepConfirmationProps {
+type SkipStepConfirmationProps = {
     onCancel: () => void;
-}
+};
 
-export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) => {
-    const { activeStepId, goToNextStep } = useOnboarding();
+type SkipModalContent = {
+    heading?: ReactNode;
+    secondaryButtonText?: ReactNode;
+    body?: ReactNode;
+    nextStep?: AnyStepId;
+};
 
-    let text;
-    let nextStep: AnyStepId;
+const getModalContent = (activeStepId: AnyStepId): SkipModalContent => {
     switch (activeStepId) {
         case STEP.ID_SECURITY_STEP:
         case STEP.ID_BACKUP_STEP:
-            text = <Translation id="TR_SKIP_BACKUP" />;
-            nextStep = STEP.ID_SET_PIN_STEP;
-            break;
+            return {
+                heading: <Translation id="TR_SKIP_BACKUP" />,
+                secondaryButtonText: <Translation id="TR_SKIP_BACKUP" />,
+                body: <Translation id="TR_SKIP_BACKUP_DESCRIPTION" />,
+                nextStep: STEP.ID_SET_PIN_STEP,
+            };
         case STEP.ID_SET_PIN_STEP:
-            text = <Translation id="TR_SKIP_PIN" />;
-            break;
+            return {
+                heading: <Translation id="TR_SKIP_PIN" />,
+                secondaryButtonText: <Translation id="TR_SKIP_PIN" />,
+                body: <Translation id="TR_SKIP_PIN_DESCRIPTION" />,
+            };
         default:
-            throw new Error(`Unexpected step to skip: ${activeStepId}`);
+            return {};
     }
+};
+
+export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) => {
+    const { activeStepId, goToNextStep } = useOnboarding();
+    const { heading, secondaryButtonText, body, nextStep } = getModalContent(activeStepId);
+
+    if (!heading) return;
 
     const handleSkipStepConfirm = () => {
         goToNextStep(nextStep);
@@ -32,7 +49,7 @@ export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) =>
 
     return (
         <NewModal
-            heading={text}
+            heading={heading}
             onCancel={onCancel}
             size="small"
             bottomContent={
@@ -45,12 +62,12 @@ export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) =>
                         data-testid="@onboarding/skip-button-confirm"
                         onClick={handleSkipStepConfirm}
                     >
-                        {text}
+                        {secondaryButtonText}
                     </NewModal.Button>
                 </>
             }
         >
-            <Translation id="TR_DO_YOU_REALLY_WANT_TO_SKIP" />
+            {body}
         </NewModal>
     );
 };
