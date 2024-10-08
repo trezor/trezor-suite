@@ -45,7 +45,6 @@ type Params = {
     baseFee?: PrecomposeParams['baseFee'];
     floorBaseFee?: PrecomposeParams['floorBaseFee'];
     sequence?: PrecomposeParams['sequence'];
-    skipPermutation?: PrecomposeParams['skipPermutation'];
     total: BigNumber;
 };
 
@@ -67,7 +66,6 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             { name: 'baseFee', type: 'number' },
             { name: 'floorBaseFee', type: 'boolean' },
             { name: 'sequence', type: 'number' },
-            { name: 'skipPermutation', type: 'boolean' },
         ]);
 
         const coinInfo = getBitcoinNetwork(payload.coin);
@@ -115,7 +113,6 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             baseFee: payload.baseFee,
             floorBaseFee: payload.floorBaseFee,
             sequence: payload.sequence,
-            skipPermutation: payload.skipPermutation,
             push: typeof payload.push === 'boolean' ? payload.push : false,
             total,
         };
@@ -143,7 +140,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         account: PrecomposeParams['account'],
         feeLevels: PrecomposeParams['feeLevels'],
     ): Promise<PrecomposedResult[]> {
-        const { coinInfo, outputs, baseFee, skipPermutation } = this.params;
+        const { coinInfo, outputs, baseFee } = this.params;
         const address_n = pathUtils.validatePath(account.path);
         const composer = new TransactionComposer({
             account: {
@@ -157,7 +154,6 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             coinInfo,
             outputs,
             baseFee,
-            skipPermutation,
         });
 
         // This is mandatory, @trezor/utxo-lib/compose expects current block height
