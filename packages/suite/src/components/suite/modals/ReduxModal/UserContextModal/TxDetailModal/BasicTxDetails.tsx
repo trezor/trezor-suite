@@ -267,7 +267,7 @@ export const BasicTxDetails = ({
                         <Title>
                             <Icon
                                 margin={{ right: spacings.xs }}
-                                name="gas"
+                                name="receipt"
                                 size={15}
                                 variant="tertiary"
                             />
@@ -290,7 +290,7 @@ export const BasicTxDetails = ({
                     <>
                         <Title>
                             <Icon
-                                name="gasPump"
+                                name="receipt"
                                 size={15}
                                 margin={{ right: spacings.xs }}
                                 variant="tertiary"
@@ -301,7 +301,7 @@ export const BasicTxDetails = ({
 
                         <Title>
                             <Icon
-                                name="gasPump"
+                                name="receipt"
                                 size={15}
                                 margin={{ right: spacings.xs }}
                                 variant="tertiary"
@@ -318,7 +318,7 @@ export const BasicTxDetails = ({
 
                         <Title>
                             <Icon
-                                name="gasPump"
+                                name="receipt"
                                 size={15}
                                 margin={{ right: spacings.xs }}
                                 variant="tertiary"
