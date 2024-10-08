@@ -1,56 +1,46 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const json = require('../messages.json');
-const {
+import json from '../messages.json';
+import {
     RULE_PATCH,
     TYPE_PATCH,
     DEFINITION_PATCH,
     SKIP,
     UINT_TYPE,
     SINT_TYPE,
-} = require('./protobuf-patches');
+    FIELD_TYPES,
+    ENUM_KEYS,
+    ORDER,
+} from './protobuf-patches';
 
-CONSOLE_RED = "\x1b[31m"
-CONSOLE_RESET = "\x1b[0m"
+const CONSOLE_RED = '\x1b[31m';
+const CONSOLE_RESET = '\x1b[0m';
 
-const logError = (text) => {
+const logError = (text: string) => {
     console.error(`Error: ${CONSOLE_RED}${text}${CONSOLE_RESET}`);
-}
+};
 
 const INDENT = ' '.repeat(4);
 
-// proto types to javascript types
-const FIELD_TYPES = {
-    uint32: 'number',
-    uint64: 'number',
-    sint32: 'number',
-    sint64: 'number',
-    bool: 'boolean',
-    bytes: 'string',
-    // 'bytes': 'Uint8Array | number[] | Buffer | string', // protobuf will handle conversion
+type TypeItem = {
+    type: 'enum' | 'message';
+    name: string;
+    value: string;
 };
 
-const types = []; // { type: 'enum | message', name: string, value: string[], exact?: boolean };
+type Definition = {
+    options?: Record<string, unknown>;
+    rule?: string;
+    type: string;
+    nested?: Record<string, Definition>;
+    fields?: Record<string, Definition>;
+    values?: Record<string, unknown>;
+};
 
-// enums used as keys (string), used as values (number) by default
-const ENUM_KEYS = [
-    'InputScriptType',
-    'OutputScriptType',
-    'RequestType',
-    'BackupType',
-    'Capability',
-    'SafetyCheckLevel',
-    'ButtonRequestType',
-    'PinMatrixRequestType',
-    'WordRequestType',
-    'HomescreenFormat',
-    "RecoveryStatus",
-    "BackupAvailability",
-    "RecoveryType",
-];
+const types: TypeItem[] = [];
 
-const parseEnum = (itemName, item) => {
+const parseEnum = (itemName: string, item: Definition) => {
     const IS_KEY = ENUM_KEYS.includes(itemName);
 
     // declare enum
@@ -58,7 +48,9 @@ const parseEnum = (itemName, item) => {
     const value = [`export enum ${enumName} {`];
 
     // declare fields
-    value.push(...Object.entries(item.values).map(([name, id]) => `${INDENT}${name} = ${id},`));
+    value.push(
+        ...Object.entries(item.values || {}).map(([name, id]) => `${INDENT}${name} = ${id},`),
+    );
 
     // close enum declaration
     value.push('}', '');
@@ -74,24 +66,22 @@ const parseEnum = (itemName, item) => {
     });
 };
 
-const parseMessage = (messageName, message, depth = 0) => {
-    if (messageName === 'google') return;
-    const value = [];
+const parseMessage = (messageName: string, message: Definition, depth = 0) => {
+    const value: string[] = [];
     // add comment line
     if (!depth) value.push(`// ${messageName}`);
     // declare nested enums
 
     // declare nested values
-    if (message.nested) {
-        Object.keys(message.nested).map(item =>
-            parseMessage(item, message.nested[item], depth + 1),
-        );
+    const { nested, fields } = message;
+    if (nested) {
+        Object.keys(nested).map(item => parseMessage(item, nested[item], depth + 1));
     }
 
     if (message.values) {
         return parseEnum(messageName, message);
     }
-    if (!message.fields || !Object.keys(message.fields).length) {
+    if (!fields || !Object.keys(fields).length) {
         // few types are just empty objects, make it one line
         value.push(`export type ${messageName} = {};`);
         value.push('');
@@ -100,12 +90,12 @@ const parseMessage = (messageName, message, depth = 0) => {
         const definition = DEFINITION_PATCH[messageName];
         if (definition) {
             // replace whole declaration
-            value.push(definition);
+            value.push(definition());
         } else {
             // declare type
             value.push(`export type ${messageName} = {`);
-            Object.keys(message.fields).forEach(fieldName => {
-                const field = message.fields[fieldName];
+            Object.keys(fields).forEach(fieldName => {
+                const field = fields[fieldName];
                 const fieldKey = `${messageName}.${fieldName}`;
                 // find patch for "rule"
                 const fieldRule = RULE_PATCH[fieldKey] || field.rule;
@@ -128,47 +118,30 @@ const parseMessage = (messageName, message, depth = 0) => {
             value.push('');
         }
     }
-    // type doest have to be e
-    const exact = message.fields && Object.values(message.fields).find(f => f.rule === 'required');
     types.push({
         type: 'message',
         name: messageName,
         value: value.join('\n'),
-        exact,
     });
 };
 
 // top level messages and nested messages
 Object.keys(json.nested).map(e => parseMessage(e, json.nested[e]));
 
-// Types needs reordering (used before defined).
-// The Type in the Value NEEDs (depends on) the Type in the Key.
-const ORDER = {
-    BinanceCoin: 'BinanceInputOutput',
-    HDNodeType: 'HDNodePathType',
-    TxAck: 'TxAckInputWrapper',
-    EthereumFieldType: 'EthereumStructMember',
-    EthereumDataType: 'EthereumFieldType',
-    PaymentRequestMemo: 'TxAckPaymentRequest',
-    RecoveryDevice: 'Features',
-    RecoveryType: 'RecoveryDevice',
-    RecoveryDeviceInputMethod: 'RecoveryType',
-};
-
 Object.keys(ORDER).forEach(key => {
     if (key === ORDER[key]) {
-        logError(`ORDER map cannot have key=value`)
+        logError(`ORDER map cannot have key=value`);
     }
 
     // find indexes
     const indexOfDependency = types.findIndex(t => t && t.name === key);
     if (indexOfDependency === -1) {
-        logError(`Type from key: '${key}' not found in the 'types' variable!`)
+        logError(`Type from key: '${key}' not found in the 'types' variable!`);
     }
 
     const indexOfDependant = types.findIndex(t => t && t.name === ORDER[key]);
     if (indexOfDependant === -1) {
-        logError(`Type from value: '${ORDER[key]}' not found in the 'types' variable!`)
+        logError(`Type from value: '${ORDER[key]}' not found in the 'types' variable!`);
     }
 
     const dependency = types[indexOfDependency];
@@ -186,7 +159,7 @@ SKIP.forEach(key => {
 // create content from types
 const content = types.flatMap(t => (t ? [t.value] : [])).join('\n');
 
-const lines = []; // string[]
+const lines: string[] = [];
 
 lines.push('// This file is auto generated from data/messages/message.json', '');
 lines.push('// custom type uint32/64 may be represented as string');
@@ -236,5 +209,5 @@ export type TypedCall = <T extends MessageKey, R extends MessageKey>(
 const filePath = path.join(__dirname, '../src/messages.ts');
 
 fs.writeFile(filePath, lines.join('\n'), err => {
-    if (err) return console.log(err);
+    if (err) return logError(err.message);
 });
