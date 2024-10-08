@@ -127,7 +127,7 @@ export const Inputs = () => {
             )}
 
             {isAdviceForWithdrawalWarningShown && (
-                <Banner variant="info" margin={{ top: spacings.md }}>
+                <Banner variant="info">
                     <Translation
                         id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
                         values={{
