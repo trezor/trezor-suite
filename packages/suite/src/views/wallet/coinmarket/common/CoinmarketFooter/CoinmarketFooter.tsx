@@ -1,20 +1,20 @@
-import { variables, Icon, Link, Image } from '@trezor/components';
+import { variables, Icon, Link, Image, Row } from '@trezor/components';
 import { useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { useOnClickOutside } from '@trezor/react-utils';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
 import { Translation } from 'src/components/suite';
-import { borders, spacingsPx, zIndices } from '@trezor/theme';
+import { borders, spacings, spacingsPx, zIndices } from '@trezor/theme';
 import { CoinmarketFooterLogoWrapper } from 'src/views/wallet/coinmarket';
 import { CoinmarketProvidedByInvity } from 'src/views/wallet/coinmarket/common/CoinmarketFooter/CoinmarketProvidedByInvity';
 
 const Wrapper = styled.div`
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-    padding-top: 20px;
     margin-top: ${spacingsPx.xxxl};
+    padding: ${spacings.zero} ${spacingsPx.lg};
+`;
+
+const WrapperBorder = styled.div`
+    padding-top: ${spacingsPx.lg};
     border-top: 1px solid ${({ theme }) => theme.borderElevation1};
 `;
 
@@ -117,44 +117,48 @@ export const CoinmarketFooter = () => {
 
     return (
         <Wrapper>
-            <Left>
-                <CoinmarketProvidedByInvity />
-            </Left>
-            <Right>
-                {toggled && (
-                    <FooterBox ref={menuRef}>
-                        <Header>
-                            <BoxLeft>
-                                <CoinmarketFooterLogoWrapper>
-                                    <Link href={INVITY_URL} target="_blank">
-                                        <Image width={70} image="INVITY_LOGO" />
-                                    </Link>
-                                </CoinmarketFooterLogoWrapper>
-                            </BoxLeft>
-                            <BoxRight>
-                                <Link href={INVITY_URL}>invity.io</Link>
-                                <IconWrapper onClick={() => setToggled(false)}>
-                                    <Icon name="close" size={16} />
-                                </IconWrapper>
-                            </BoxRight>
-                        </Header>
-                        <FooterText>
-                            <Translation id="TR_BUY_FOOTER_TEXT_1" />
-                        </FooterText>
-                        <FooterText>
-                            <Translation id="TR_BUY_FOOTER_TEXT_2" />
-                        </FooterText>
-                    </FooterBox>
-                )}
+            <WrapperBorder>
+                <Row justifyContent="center">
+                    <Left>
+                        <CoinmarketProvidedByInvity />
+                    </Left>
+                    <Right>
+                        {toggled && (
+                            <FooterBox ref={menuRef}>
+                                <Header>
+                                    <BoxLeft>
+                                        <CoinmarketFooterLogoWrapper>
+                                            <Link href={INVITY_URL} target="_blank">
+                                                <Image width={70} image="INVITY_LOGO" />
+                                            </Link>
+                                        </CoinmarketFooterLogoWrapper>
+                                    </BoxLeft>
+                                    <BoxRight>
+                                        <Link href={INVITY_URL}>invity.io</Link>
+                                        <IconWrapper onClick={() => setToggled(false)}>
+                                            <Icon name="close" size={16} />
+                                        </IconWrapper>
+                                    </BoxRight>
+                                </Header>
+                                <FooterText>
+                                    <Translation id="TR_BUY_FOOTER_TEXT_1" />
+                                </FooterText>
+                                <FooterText>
+                                    <Translation id="TR_BUY_FOOTER_TEXT_2" />
+                                </FooterText>
+                            </FooterBox>
+                        )}
 
-                <StyledLink href={DATA_TOS_INVITY_URL} variant="nostyle">
-                    <Translation id="TR_TERMS_OF_USE_INVITY" />
-                </StyledLink>
-                <VerticalDivider />
-                <LearnMoreToggle ref={toggleRef} onClick={() => setToggled(true)}>
-                    <Translation id="TR_BUY_LEARN_MORE" />
-                </LearnMoreToggle>
-            </Right>
+                        <StyledLink href={DATA_TOS_INVITY_URL} variant="nostyle">
+                            <Translation id="TR_TERMS_OF_USE_INVITY" />
+                        </StyledLink>
+                        <VerticalDivider />
+                        <LearnMoreToggle ref={toggleRef} onClick={() => setToggled(true)}>
+                            <Translation id="TR_BUY_LEARN_MORE" />
+                        </LearnMoreToggle>
+                    </Right>
+                </Row>
+            </WrapperBorder>
         </Wrapper>
     );
 };

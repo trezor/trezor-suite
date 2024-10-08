@@ -5,6 +5,7 @@ import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { WalletLayout } from 'src/components/wallet';
 import { useLayout, useSelector, useTranslation } from 'src/hooks/suite';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common/CoinmarketFooter/CoinmarketFooter';
 
 interface CoinmarketContainerProps {
     title?: Extract<
@@ -36,5 +37,10 @@ export const CoinmarketContainer = ({
         return <WalletLayout title="TR_NAV_TRADE" isSubpage account={selectedAccount} />;
     }
 
-    return <SectionComponent selectedAccount={selectedAccount} />;
+    return (
+        <>
+            <SectionComponent selectedAccount={selectedAccount} />
+            <CoinmarketFooter />
+        </>
+    );
 };

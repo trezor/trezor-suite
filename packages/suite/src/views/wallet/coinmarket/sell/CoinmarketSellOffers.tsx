@@ -1,7 +1,6 @@
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { useCoinmarketSellForm } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellForm';
-import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common';
 import { CoinmarketOffers } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffers';
 import { CoinmarketContainer } from 'src/views/wallet/coinmarket/common/CoinmarketContainer';
 
@@ -14,7 +13,6 @@ const CoinmarketSellOffersComponent = ({ selectedAccount }: UseCoinmarketProps) 
     return (
         <CoinmarketFormContext.Provider value={coinmarketSellFormContextValues}>
             <CoinmarketOffers />
-            <CoinmarketFooter />
         </CoinmarketFormContext.Provider>
     );
 };
