@@ -641,3 +641,36 @@ export const validateStakingMax =
             });
         }
     };
+export const simulateUnstake = async ({
+    amount,
+    from,
+    symbol,
+}: StakeTxBaseArgs & { amount: string }) => {
+    const ethNetwork = getEthNetworkForWalletSdk(symbol);
+    const { address_pool: poolAddress, contract_pool: contractPool } = selectNetwork(ethNetwork);
+
+    if (!amount || !from || !symbol) return null;
+
+    const amountWei = toWei(amount, 'ether');
+    const interchanges = 0;
+
+    const data = contractPool.methods
+        .unstake(amountWei, interchanges, WALLET_SDK_SOURCE)
+        .encodeABI();
+    if (!data) return null;
+
+    const ethereumData = await TrezorConnect.blockchainEvmRpcCall({
+        coin: symbol,
+        from,
+        to: poolAddress,
+        data,
+    });
+
+    if (!ethereumData.success) {
+        throw new Error(ethereumData.payload.error);
+    }
+
+    const approximatedAmount = ethereumData.payload.data;
+
+    return fromWei(approximatedAmount, 'ether');
+};

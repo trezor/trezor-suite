@@ -2,6 +2,7 @@ import TrezorConnect, {
     AccountInfo,
     InternalTransfer,
     Success,
+    SuccessWithDevice,
     Unsuccessful,
 } from '@trezor/connect';
 import {
@@ -23,6 +24,7 @@ import {
     getInstantStakeTypeFixture,
     getChangedInternalTxFixture,
     getUnstakingAmountFixtures,
+    simulateUnstakeFixture,
 } from '../__fixtures__/stake';
 import {
     getUnstakingAmount,
@@ -43,6 +45,7 @@ import {
     getEthNetworkForWalletSdk,
     getInstantStakeType,
     getChangedInternalTx,
+    simulateUnstake,
 } from '../stake';
 import {
     BlockchainEstimatedFee,
@@ -261,6 +264,21 @@ describe('getChangedInternalTx', () => {
                 test.args.selectedAccountAddress,
                 test.args.symbol as NetworkSymbol,
             );
+            expect(result).toEqual(test.result);
+        });
+    });
+});
+
+type BlockchainEvmRpcCallResult = Unsuccessful | SuccessWithDevice<{ data: string }>;
+type SimulateUnstakeArgs = StakeTxBaseArgs & { amount: string };
+
+describe('simulateUnstake', () => {
+    simulateUnstakeFixture.forEach(test => {
+        it(test.description, async () => {
+            jest.spyOn(TrezorConnect, 'blockchainEvmRpcCall').mockImplementation(() =>
+                Promise.resolve(test.blockchainEvmRpcCallResult as BlockchainEvmRpcCallResult),
+            );
+            const result = await simulateUnstake(test.args as SimulateUnstakeArgs);
             expect(result).toEqual(test.result);
         });
     });

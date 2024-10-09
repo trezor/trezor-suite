@@ -8827,6 +8827,16 @@ export default defineMessages({
         id: 'TR_STAKE_UNSTAKING_PERIOD',
         defaultMessage: 'Unstaking period',
     },
+    TR_STAKE_UNSTAKING_APPROXIMATE: {
+        id: 'TR_STAKE_UNSTAKING_APPROXIMATE',
+        defaultMessage: 'Approximate {symbol} available instantly',
+    },
+
+    TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION: {
+        id: 'TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION',
+        defaultMessage:
+            'Liquidity of the staking pool can allow for instant unstake of some funds. Remaining funds will follow the unstaking period',
+    },
     TR_UP_TO_DAYS: {
         id: 'TR_UP_TO_DAYS',
         defaultMessage: 'up to {count, plural, one {# day} other {# days}}',
