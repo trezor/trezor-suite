@@ -6,6 +6,7 @@ import type {
     GetFiatRatesForTimestampsParams,
     GetFiatRatesTickersListParams,
     EstimateFeeParams,
+    EthereumCallParams,
     AccountInfoParams,
 } from './params';
 
@@ -77,6 +78,11 @@ export interface EstimateFee {
     payload: EstimateFeeParams;
 }
 
+export interface EthereumCall {
+    type: typeof MESSAGES.ETHEREUM_CALL;
+    payload: EthereumCallParams;
+}
+
 export interface Subscribe {
     type: typeof MESSAGES.SUBSCRIBE;
     payload:
@@ -144,6 +150,7 @@ export type Message =
     | ChannelMessage<GetAccountBalanceHistory>
     | ChannelMessage<GetFiatRatesTickersList>
     | ChannelMessage<EstimateFee>
+    | ChannelMessage<EthereumCall>
     | ChannelMessage<Subscribe>
     | ChannelMessage<Unsubscribe>
     | ChannelMessage<PushTransaction>;
