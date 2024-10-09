@@ -4,3 +4,4 @@ export { default as ethereumSignMessage } from './ethereumSignMessage';
 export { default as ethereumSignTransaction } from './ethereumSignTransaction';
 export { default as ethereumSignTypedData } from './ethereumSignTypedData';
 export { default as ethereumVerifyMessage } from './ethereumVerifyMessage';
+export { default as ethereumCall } from './ethereumCall';

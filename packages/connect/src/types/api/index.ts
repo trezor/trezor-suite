@@ -40,6 +40,7 @@ import { ethereumSignMessage } from './ethereumSignMessage';
 import { ethereumSignTransaction } from './ethereumSignTransaction';
 import { ethereumSignTypedData } from './ethereumSignTypedData';
 import { ethereumVerifyMessage } from './ethereumVerifyMessage';
+import { ethereumCall } from './ethereumCall';
 import { firmwareUpdate } from './firmwareUpdate';
 import { getAccountDescriptor } from './getAccountDescriptor';
 import { getAccountInfo } from './getAccountInfo';
@@ -216,6 +217,8 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/ethereum/ethereumVerifyMessage/
     ethereumVerifyMessage: typeof ethereumVerifyMessage;
+
+    ethereumCall: typeof ethereumCall;
 
     // https://connect.trezor.io/9/methods/device/firmwareUpdate/
     firmwareUpdate: typeof firmwareUpdate;
