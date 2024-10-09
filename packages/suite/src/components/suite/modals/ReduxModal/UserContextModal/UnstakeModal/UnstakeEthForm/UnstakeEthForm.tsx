@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button, Divider, Paragraph, Tooltip, Banner } from '@trezor/components';
+import { Button, Divider, Icon, Paragraph, Tooltip, Banner } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
@@ -12,6 +12,7 @@ import UnstakeFees from './Fees';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { ApproximateEthAmount } from 'src/views/wallet/staking/components/EthStakingDashboard/components/ApproximateEthAmount';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const GreyP = styled(Paragraph)`
@@ -47,6 +48,19 @@ const UpToDaysWrapper = styled.div`
     border-top: 1px solid ${({ theme }) => theme.borderElevation2};
 `;
 
+const ApproximateEthWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: ${spacingsPx.xxs} 0 ${spacingsPx.md};
+`;
+
+const ApproximateEthTitleWrapper = styled.div`
+    display: flex;
+    gap: ${spacingsPx.xxs};
+    align-items: center;
+`;
+
 export const UnstakeEthForm = () => {
     const { device, isLocked } = useDevice();
     const selectedAccount = useSelector(selectSelectedAccount);
@@ -59,6 +73,8 @@ export const UnstakeEthForm = () => {
         handleSubmit,
         watch,
         signTx,
+        approximatedEthAmount,
+        unstakeOption,
     } = useUnstakeEthFormContext();
 
     const { symbol } = account;
@@ -70,6 +86,7 @@ export const UnstakeEthForm = () => {
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
+    const isUnstakeOptionOther = unstakeOption === 'other';
 
     const { canClaim = false, claimableAmount = '0' } =
         getAccountEverstakeStakingPool(selectedAccount) ?? {};
@@ -119,6 +136,38 @@ export const UnstakeEthForm = () => {
                     }}
                 />
             </UpToDaysWrapper>
+
+            {isUnstakeOptionOther && (
+                <ApproximateEthWrapper>
+                    <ApproximateEthTitleWrapper>
+                        <GreyP>
+                            <Translation
+                                id="TR_STAKE_UNSTAKING_APPROXIMATE"
+                                values={{
+                                    symbol: symbol.toUpperCase(),
+                                }}
+                            />
+                        </GreyP>
+
+                        <Tooltip
+                            maxWidth={328}
+                            content={
+                                <Translation id="TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION" />
+                            }
+                        >
+                            <Icon name="info" size={14} />
+                        </Tooltip>
+                    </ApproximateEthTitleWrapper>
+
+                    {approximatedEthAmount && (
+                        <ApproximateEthAmount
+                            value={approximatedEthAmount}
+                            symbol={symbol.toUpperCase()}
+                        />
+                    )}
+                </ApproximateEthWrapper>
+            )}
+
             <Tooltip content={unstakingMessageContent}>
                 <Button
                     type="submit"
