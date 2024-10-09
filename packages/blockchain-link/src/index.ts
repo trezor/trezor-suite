@@ -229,6 +229,15 @@ class BlockchainLink extends TypedEmitter<Events> {
         });
     }
 
+    ethereumCall(
+        payload: MessageTypes.EthereumCall['payload'],
+    ): Promise<ResponseTypes.EthereumCall['payload']> {
+        return this.sendMessage({
+            type: MESSAGES.ETHEREUM_CALL,
+            payload,
+        });
+    }
+
     /**
      * Subscribe for live changes in
      * - blockchain i.e new blocks mined.
