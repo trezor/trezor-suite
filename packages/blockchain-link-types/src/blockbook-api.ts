@@ -33,6 +33,10 @@ export interface EthereumSpecific {
     gasLimit: number;
     gasUsed?: number;
     gasPrice?: string;
+    l1Fee?: number;
+    l1FeeScalar?: string;
+    l1GasPrice?: string;
+    l1GasUsed?: number;
     data?: string;
     parsedData?: EthereumParsedInputData;
     internalTransfers?: EthereumInternalTransfer[];
@@ -46,14 +50,11 @@ export interface TokenTransfer {
     from: string;
     to: string;
     contract: string;
-    name: string;
+    name?: string;
     symbol?: string;
-    decimals: number;
+    decimals: number; // it is optional #14796
     value?: string;
     multiTokenValues?: MultiTokenValue[];
-    fingerprint?: string;
-    policyId?: string;
-    unit?: string;
 }
 export interface Vout {
     value?: string;
@@ -114,6 +115,7 @@ export interface FeeStats {
 }
 export interface StakingPool {
     contract: string;
+    name: string;
     pendingBalance: string;
     pendingDepositedBalance: string;
     depositedBalance: string;
@@ -121,7 +123,6 @@ export interface StakingPool {
     claimableAmount: string;
     restakedReward: string;
     autocompoundBalance: string;
-    name: string;
 }
 export interface ContractInfo {
     type: string;
@@ -175,6 +176,7 @@ export interface Address {
     contractInfo?: ContractInfo;
     erc20Contract?: ContractInfo;
     addressAliases?: { [key: string]: AddressAlias };
+    stakingPools?: StakingPool[];
 }
 export interface Utxo {
     txid: string;
@@ -259,6 +261,7 @@ export interface InternalStateColumn {
 }
 export interface BlockbookInfo {
     coin: string;
+    network: string;
     host: string;
     version: string;
     gitCommit: string;
@@ -278,6 +281,7 @@ export interface BlockbookInfo {
     currentFiatRatesTime?: string;
     historicalFiatRatesTime?: string;
     historicalTokenFiatRatesTime?: string;
+    supportedStakingPools?: string[];
     dbSizeFromColumns?: number;
     dbColumns?: InternalStateColumn[];
     about: string;
@@ -352,6 +356,7 @@ export interface WsBackendInfo {
 export interface WsInfoRes {
     name: string;
     shortcut: string;
+    network: string;
     decimals: number;
     version: string;
     bestHeight: number;
@@ -372,11 +377,15 @@ export interface WsBlockReq {
     page?: number;
 }
 export interface WsBlockFilterReq {
+    scriptType: string;
     blockHash: string;
+    M?: number;
 }
 export interface WsBlockFiltersBatchReq {
+    scriptType: string;
     bestKnownBlockHash: string;
     pageSize?: number;
+    M?: number;
 }
 export interface WsAccountUtxoReq {
     descriptor: string;
@@ -437,7 +446,17 @@ export interface WsFiatRatesTickersListReq {
 export interface WsMempoolFiltersReq {
     scriptType: string;
     fromTimestamp: number;
+    M?: number;
+}
+export interface WsRpcCallReq {
+    from?: string;
+    to: string;
+    data: string;
+}
+export interface WsRpcCallRes {
+    data: string;
 }
 export interface MempoolTxidFilterEntries {
     entries?: { [key: string]: string };
+    usedZeroedKey?: boolean;
 }
