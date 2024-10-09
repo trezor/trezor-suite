@@ -138,7 +138,8 @@ const init = async () => {
     // Daemon mode with no UI
     const { wasOpenedAtLogin } = app.getLoginItemSettings();
     const daemon = app.commandLine.hasSwitch('bridge-daemon') || wasOpenedAtLogin;
-    if (daemon) {
+    const daemonShowUI = app.commandLine.hasSwitch('bridge-daemon-show-ui'); // show UI immediately even in daemon mode
+    if (daemon && !daemonShowUI) {
         logger.info('main', 'App is hidden, starting bridge only');
         app.dock?.hide(); // hide dock icon on macOS
         const waitForFullStart = createDeferred<void>();
