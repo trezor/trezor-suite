@@ -1,22 +1,29 @@
-import { app } from 'electron';
-
 import { mergeDeepObject } from '@trezor/utils';
+
+import { app } from '../typed-electron';
 
 export const restartApp = () => {
     const { logger } = global;
 
     logger.info('app', `Relaunching app with ${process.argv.slice(1).join(', ')} arguments.`);
 
-    const options: Electron.RelaunchOptions = { args: process.argv };
+    const options: Electron.RelaunchOptions = { args: process.argv ?? [] };
     if (process.env.APPIMAGE) {
         options.execPath = process.env.APPIMAGE;
-        options.args = options.args ?? [];
-        options.args.unshift('--appimage-extract-and-run');
+        options.args?.unshift('--appimage-extract-and-run');
     }
 
-    // too: not sure why it was here
-    // app.removeAllListeners('before-quit');
-    app.relaunch();
+    // If in daemon/autostart mode, add a flag to show the UI right after restart
+    if (app.getLoginItemSettings().openAtLogin) {
+        options.args?.push('--bridge-daemon');
+    }
+    if (options.args?.includes('--bridge-daemon')) {
+        options.args?.push('--bridge-daemon-show-ui');
+        // In daemon mode, first quit call only hides the app
+        app.quit();
+    }
+
+    app.relaunch(options);
     app.quit();
 };
 
