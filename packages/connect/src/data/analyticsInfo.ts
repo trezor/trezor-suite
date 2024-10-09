@@ -1,11 +1,7 @@
-// import { EventType } from '@trezor/connect-analytics';
+import { EventType } from '@trezor/connect-analytics';
 import { CoreEventMessage, UI_REQUEST } from '../events';
 import type { Device } from '../types';
 
-// TODO: imho this belongs somewhere to packages/connect-iframe package.
-// There I can freely import from anyplace within monorepo without needing
-// to release new packages. Having it here means that I would need to
-// release 2 new packages to npm which is unjustifiable burden
 export const enhanceMessageWithAnalytics = (
     message: CoreEventMessage,
     data: { device?: Device },
@@ -16,13 +12,10 @@ export const enhanceMessageWithAnalytics = (
 
             return {
                 ...message,
-                // @ts-expect-error (EventType.DeviceSelected is inlined here)
                 payload: {
                     ...message.payload,
                     analytics: {
-                        // todo: type inlined temporarily
-                        // type: EventType.DeviceSelected,
-                        type: 'device/selected',
+                        type: EventType.DeviceSelected,
                         payload: {
                             mode: device?.mode || '',
                             pinProtection: device?.features?.pin_protection || '',
