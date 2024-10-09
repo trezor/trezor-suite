@@ -147,7 +147,7 @@ const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Devi
         return {
             type: 'unreadable',
             path: dev && dev.path ? dev.path : '1',
-            label: dev && dev.label ? dev.label : 'My Trezor',
+            label: 'Unreadable device',
             name: 'name of unreadable device',
             error: 'unreadable device',
         };
@@ -157,7 +157,7 @@ const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Devi
         return {
             type: dev.type,
             path: dev && dev.path ? dev.path : '1',
-            label: dev && dev.label ? dev.label : 'My Trezor',
+            label: 'Unacquired device',
             name: 'name of unacquired device',
         };
     }
