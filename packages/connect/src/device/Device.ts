@@ -906,21 +906,25 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     // simplified object to pass via postMessage
     toMessageObject(): DeviceTyped {
+        const { path } = this.originalDescriptor;
+        const { name } = this;
+        const base = {
+            path,
+            name,
+        };
         if (this.unreadableError) {
             return {
+                ...base,
                 type: 'unreadable',
-                path: this.originalDescriptor.path,
                 error: this.unreadableError, // provide error details
                 label: 'Unreadable device',
-                name: this.name,
             };
         }
         if (this.isUnacquired()) {
             return {
+                ...base,
                 type: 'unacquired',
-                path: this.originalDescriptor.path,
                 label: 'Unacquired device',
-                name: this.name,
             };
         }
         const defaultLabel = 'My Trezor';
@@ -930,15 +934,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (this.featuresNeedsReload) status = 'used';
 
         return {
+            ...base,
             type: 'acquired',
             id: this.features.device_id,
-            path: this.originalDescriptor.path,
             label,
             _state: this.getState(),
             state: this.getState()?.staticSessionId,
             status,
             mode: this.getMode(),
-            name: this.name,
             color: this.color,
             firmware: this.firmwareStatus,
             firmwareRelease: this.firmwareRelease,
