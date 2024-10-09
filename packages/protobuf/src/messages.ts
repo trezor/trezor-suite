@@ -1910,13 +1910,6 @@ export type SetBrightness = {
     value?: number;
 };
 
-export enum MoneroNetworkType {
-    MAINNET = 0,
-    TESTNET = 1,
-    STAGENET = 2,
-    FAKECHAIN = 3,
-}
-
 // NEMGetAddress
 export type NEMGetAddress = {
     address_n: number[];

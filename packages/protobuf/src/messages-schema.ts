@@ -2681,16 +2681,6 @@ export const SetBrightness = Type.Object(
     { $id: 'SetBrightness' },
 );
 
-export enum MoneroNetworkType {
-    MAINNET = 0,
-    TESTNET = 1,
-    STAGENET = 2,
-    FAKECHAIN = 3,
-}
-
-export type EnumMoneroNetworkType = Static<typeof EnumMoneroNetworkType>;
-export const EnumMoneroNetworkType = Type.Enum(MoneroNetworkType);
-
 export type NEMGetAddress = Static<typeof NEMGetAddress>;
 export const NEMGetAddress = Type.Object(
     {
