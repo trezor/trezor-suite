@@ -35,6 +35,12 @@ export interface EstimateFeeParams {
     };
 }
 
+export interface RpcCallParams {
+    from: string;
+    to: string;
+    data: string;
+}
+
 export interface AccountInfoParams {
     descriptor: string; // address or xpub
     details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs'; // depth, default: 'basic'

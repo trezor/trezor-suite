@@ -18,6 +18,7 @@ import type {
     AccountInfoParams,
     EstimateFeeParams,
     AccountBalanceHistoryParams,
+    RpcCallParams,
 } from '@trezor/blockchain-link-types/src/params';
 
 import { BaseWebsocket } from '../baseWebsocket';
@@ -124,6 +125,10 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
 
     estimateFee(payload: EstimateFeeParams) {
         return this.send('estimateFee', payload);
+    }
+
+    rpcCall(payload: RpcCallParams) {
+        return this.send('rpcCall', payload);
     }
 
     getCurrentFiatRates(payload: GetCurrentFiatRates['payload']) {
