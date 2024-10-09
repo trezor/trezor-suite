@@ -46,6 +46,8 @@ export const HELP_CENTER_DRY_RUN_T3B1_URL: Url =
     'https://trezor.io/learn/a/check-backup-on-trezor-safe-3';
 export const HELP_CENTER_DRY_RUN_T3T1_URL: Url =
     'https://trezor.io/learn/a/check-backup-on-trezor-safe-5';
+export const HELP_CENTER_DRY_RUN_T3W1_URL: Url =
+    'https://trezor.io/learn/a/check-backup-on-trezor-safe-5';
 export const HELP_CENTER_PASSPHRASE_URL: Url =
     'https://trezor.io/learn/a/passphrases-and-hidden-wallets';
 export const HELP_CENTER_RECOVERY_SEED_URL: Url =
@@ -58,6 +60,8 @@ export const HELP_CENTER_PACKAGING_T2B1_URL: Url =
 export const HELP_CENTER_PACKAGING_T3B1_URL: Url =
     'https://trezor.io/learn/a/authenticate-trezor-safe-3';
 export const HELP_CENTER_PACKAGING_T3T1_URL: Url =
+    'https://trezor.io/learn/a/authenticate-trezor-safe-5';
+export const HELP_CENTER_PACKAGING_T3W1_URL: Url =
     'https://trezor.io/learn/a/authenticate-trezor-safe-5';
 export const HELP_CENTER_XRP_URL: Url = 'https://trezor.io/learn/a/ripple-xrp-on-trezor-model-t';
 export const HELP_CENTER_CASHADDR_URL: Url = 'https://trezor.io/learn/a/glossary#CashAddr';
@@ -78,6 +82,8 @@ export const HELP_CENTER_FW_DOWNGRADE_T2B1_URL: Url =
 export const HELP_CENTER_FW_DOWNGRADE_T3B1_URL: Url =
     'https://trezor.io/learn/a/downgrade-firmware-trezor-safe-3';
 export const HELP_CENTER_FW_DOWNGRADE_T3T1_URL: Url =
+    'https://trezor.io/learn/a/downgrade-firmware-trezor-safe-5';
+export const HELP_CENTER_FW_DOWNGRADE_T3W1_URL: Url =
     'https://trezor.io/learn/a/downgrade-firmware-trezor-safe-5';
 export const HELP_CENTER_RECOVERY_ISSUES_URL: Url =
     'https://trezor.io/support/a/trezor-recovery-issues';

@@ -54,6 +54,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
             DeviceModelInternal.T2B1,
             DeviceModelInternal.T3B1,
             DeviceModelInternal.T3T1,
+            DeviceModelInternal.T3W1,
         ].includes(deviceModelInternal)
             ? ''
             : `_${theme.legacy.THEME}`;
