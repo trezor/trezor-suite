@@ -118,6 +118,7 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
                     inputRef={cryptoRef}
                     isDisabled={!isCryptoSelected}
                     networkSymbol={networkSymbol}
+                    onPress={!isCryptoSelected ? handleSwitchInputs : undefined}
                     onFocus={handleInputFocus}
                 />
                 {isFiatDisplayed && (
@@ -130,6 +131,7 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
                             inputRef={fiatRef}
                             isDisabled={isCryptoSelected}
                             networkSymbol={networkSymbol}
+                            onPress={isCryptoSelected ? handleSwitchInputs : undefined}
                             onFocus={handleInputFocus}
                         />
                     </>

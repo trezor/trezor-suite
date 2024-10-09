@@ -17,5 +17,6 @@ export type SendAmountInputProps = {
     scaleValue: SharedValue<number>;
     translateValue: SharedValue<number>;
     isDisabled?: boolean;
+    onPress?: TextInputProps['onPress'];
     onFocus?: TextInputProps['onFocus'];
 };

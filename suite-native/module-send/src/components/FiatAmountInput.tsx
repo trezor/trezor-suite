@@ -1,3 +1,4 @@
+import { Pressable } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
@@ -19,6 +20,7 @@ export const FiatAmountInput = ({
     translateValue,
     inputRef,
     networkSymbol,
+    onPress,
     onFocus,
     isDisabled = false,
 }: SendAmountInputProps) => {
@@ -61,24 +63,27 @@ export const FiatAmountInput = ({
         <Animated.View
             style={[applyStyle(sendAmountInputWrapperStyle, { isDisabled }), fiatAnimatedStyle]}
         >
-            <Input
-                ref={inputRef}
-                value={value}
-                placeholder="0"
-                keyboardType="numeric"
-                accessibilityLabel="amount to send input"
-                testID={fiatFieldName}
-                editable={!isDisabled}
-                onChangeText={handleChangeValue}
-                onBlur={onBlur}
-                onFocus={onFocus}
-                hasError={!isDisabled && hasError}
-                rightIcon={
-                    <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
-                        {fiatCurrencyCode.toUpperCase()}
-                    </SendAmountCurrencyLabelWrapper>
-                }
-            />
+            <Pressable onPress={onPress} /* onPress doesn't work on Android for disabled Input */>
+                <Input
+                    ref={inputRef}
+                    value={value}
+                    placeholder="0"
+                    keyboardType="numeric"
+                    accessibilityLabel="amount to send input"
+                    testID={fiatFieldName}
+                    editable={!isDisabled}
+                    onChangeText={handleChangeValue}
+                    onBlur={onBlur}
+                    onPress={onPress}
+                    onFocus={onFocus}
+                    hasError={!isDisabled && hasError}
+                    rightIcon={
+                        <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
+                            {fiatCurrencyCode.toUpperCase()}
+                        </SendAmountCurrencyLabelWrapper>
+                    }
+                />
+            </Pressable>
         </Animated.View>
     );
 };

@@ -6,14 +6,11 @@ import { Box } from '@suite-native/atoms';
 
 type SwitchAmountsButtonProps = { onPress: () => void };
 
-const BUTTON_TOP_OFFSET = 40;
+const BUTTON_TOP_OFFSET = 42;
 const BUTTON_PADDING = 6;
 
 const buttonWrapperStyle = prepareNativeStyle(() => ({
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
+    alignSelf: 'center',
     top: BUTTON_TOP_OFFSET,
     zIndex: 3, // To stay above both of the absolute inputs.
 }));

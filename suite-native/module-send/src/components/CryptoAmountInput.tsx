@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { Pressable } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 import { Text, Input } from '@suite-native/atoms';
@@ -41,6 +42,7 @@ export const CryptoAmountInput = ({
     scaleValue,
     translateValue,
     networkSymbol,
+    onPress,
     onFocus,
     isDisabled = false,
 }: SendAmountInputProps) => {
@@ -83,24 +85,27 @@ export const CryptoAmountInput = ({
         <Animated.View
             style={[applyStyle(sendAmountInputWrapperStyle, { isDisabled }), cryptoAnimatedStyle]}
         >
-            <Input
-                ref={inputRef}
-                value={value}
-                placeholder="0"
-                keyboardType="numeric"
-                accessibilityLabel="amount to send input"
-                testID={cryptoFieldName}
-                editable={!isDisabled}
-                onChangeText={handleChangeValue}
-                onBlur={handleBlur}
-                onFocus={onFocus}
-                hasError={!isDisabled && hasError}
-                rightIcon={
-                    <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
-                        {formatter.format(networkSymbol)}
-                    </SendAmountCurrencyLabelWrapper>
-                }
-            />
+            <Pressable onPress={onPress} /* onPress doesn't work on Android for disabled Input */>
+                <Input
+                    ref={inputRef}
+                    value={value}
+                    placeholder="0"
+                    keyboardType="numeric"
+                    accessibilityLabel="amount to send input"
+                    testID={cryptoFieldName}
+                    editable={!isDisabled}
+                    onChangeText={handleChangeValue}
+                    onBlur={handleBlur}
+                    onPress={onPress}
+                    onFocus={onFocus}
+                    hasError={!isDisabled && hasError}
+                    rightIcon={
+                        <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
+                            {formatter.format(networkSymbol)}
+                        </SendAmountCurrencyLabelWrapper>
+                    }
+                />
+            </Pressable>
         </Animated.View>
     );
 };
