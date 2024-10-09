@@ -3,15 +3,16 @@
 
 describe('Onboarding - create wallet', () => {
     beforeEach(() => {
+        cy.task('startEmu', { model: 'T1B1', version: '1-latest', wipe: true });
         cy.task('startBridge');
         cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
+        cy.disableFirmwareHashCheck();
     });
 
     // todo: skipping for it is too flaky..
     // after calling "resetDevice" we almost always receive "device disconnected during action" which is error sent by bridge.
     it.skip('Success (basic)', () => {
-        cy.task('startEmu', { model: 'T1B1', version: '1-latest', wipe: true });
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@firmware/continue-button').click();

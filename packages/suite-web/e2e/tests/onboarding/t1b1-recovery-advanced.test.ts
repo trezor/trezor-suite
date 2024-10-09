@@ -8,6 +8,7 @@ describe('Onboarding - recover wallet T1B1', () => {
 
         cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
+        cy.disableFirmwareHashCheck();
     });
 
     it('Incomplete run of advanced recovery', () => {
