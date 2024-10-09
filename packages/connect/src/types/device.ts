@@ -55,17 +55,20 @@ export type FirmwareRevisionCheckResult =
           error: FirmwareRevisionCheckError;
       };
 
-export type KnownDevice = {
+type BaseDevice = {
+    path: string;
+    name: string;
+};
+
+export type KnownDevice = BaseDevice & {
     type: 'acquired';
     id: string | null;
-    path: string;
     /** @deprecated, use features.label instead */
     label: string;
     error?: typeof undefined;
     firmware: DeviceFirmwareStatus;
     firmwareRelease?: ReleaseInfo | null;
     firmwareType?: FirmwareType;
-    name: string;
     color?: string;
     status: DeviceStatus;
     mode: DeviceMode;
@@ -81,18 +84,16 @@ export type KnownDevice = {
     };
 };
 
-export type UnknownDevice = {
+export type UnknownDevice = BaseDevice & {
     type: 'unacquired';
-    id?: null;
-    path: string;
     /** @deprecated, use features.label instead */
-    label: string;
+    label: 'Unacquired device';
+    id?: typeof undefined;
     error?: typeof undefined;
     features?: typeof undefined;
     firmware?: typeof undefined;
     firmwareRelease?: typeof undefined;
     firmwareType?: typeof undefined;
-    name: string;
     color?: typeof undefined;
     status?: typeof undefined;
     mode?: typeof undefined;
@@ -102,18 +103,16 @@ export type UnknownDevice = {
     availableTranslations?: typeof undefined;
 };
 
-export type UnreadableDevice = {
+export type UnreadableDevice = BaseDevice & {
     type: 'unreadable';
-    id?: null;
-    path: string;
     /** @deprecated, use features.label instead */
-    label: string;
+    label: 'Unreadable device';
     error: string;
+    id?: typeof undefined;
     features?: typeof undefined;
     firmware?: typeof undefined;
     firmwareRelease?: typeof undefined;
     firmwareType?: typeof undefined;
-    name: string;
     color?: typeof undefined;
     status?: typeof undefined;
     mode?: typeof undefined;

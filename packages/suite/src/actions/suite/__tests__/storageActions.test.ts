@@ -23,7 +23,7 @@ import graphReducer from 'src/reducers/wallet/graphReducer';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import { configureStore } from 'src/support/tests/configureStore';
-import { AppState } from 'src/types/suite';
+import { AcquiredDevice, AppState } from 'src/types/suite';
 import { SETTINGS } from 'src/config/suite';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -424,7 +424,7 @@ describe('Storage actions', () => {
         // Change device label inside a reducer
         await store.dispatch(
             deviceActions.updateSelectedDevice({
-                ...dev1Connected,
+                ...(dev1Connected as AcquiredDevice),
                 label: 'New Label',
             }),
         );
