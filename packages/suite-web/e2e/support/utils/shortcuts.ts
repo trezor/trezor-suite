@@ -1,5 +1,6 @@
 import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
 import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
+import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
 import { EventPayload, Requests } from '../types';
 import { onNavBar } from '../pageObjects/topBarObject';
 
@@ -9,6 +10,7 @@ import { onNavBar } from '../pageObjects/topBarObject';
 export const toggleDeviceMenu = () => cy.getTestElement('@menu/switch-device').click();
 
 export const passThroughInitialRun = ({ viewOnly = true } = {}) => {
+    cy.disableFirmwareHashCheck();
     cy.getTestElement('@analytics/continue-button', { timeout: 30_000 })
         .click()
         .getTestElement('@onboarding/exit-app-button')
@@ -84,7 +86,21 @@ export const passThroughSetPin = () => {
 
 export const enableDebugMode = () => {
     cy.window().then(window => {
-        window.store.dispatch({ type: '@suite/set-debug-mode', payload: { showDebugMenu: true } });
+        window.store.dispatch({
+            type: SuiteActions.SET_DEBUG_MODE,
+            payload: { showDebugMenu: true },
+        });
+    });
+};
+
+export const disableFirmwareHashCheck = () => {
+    // window.store may not be ready at this point, we need to wait for app to load
+    cy.getTestElement('@welcome-layout/body');
+    cy.window().then(window => {
+        window.store.dispatch({
+            type: SuiteActions.DEVICE_FIRMWARE_HASH_CHECK,
+            payload: { isDisabled: true },
+        });
     });
 };
 

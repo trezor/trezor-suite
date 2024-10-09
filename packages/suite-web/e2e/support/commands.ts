@@ -12,6 +12,7 @@ import { resetDb } from './utils/test-env';
 import {
     toggleDeviceMenu,
     enableDebugMode,
+    disableFirmwareHashCheck,
     toggleDebugModeInSettings,
     passThroughInitialRun,
     passThroughAuthenticityCheck,
@@ -113,6 +114,7 @@ declare global {
             discoveryMightAppearAndShouldFinish: () => Chainable<Subject>;
             toggleDeviceMenu: () => Chainable<Subject>;
             enableDebugMode: () => Chainable<Subject>;
+            disableFirmwareHashCheck: () => Chainable<Subject>;
             toggleDebugModeInSettings: () => Chainable<Subject>;
             text: () => Chainable<Subject>;
             passThroughInitialRun: (
@@ -174,6 +176,7 @@ Cypress.Commands.add('hoverTestElement', hoverTestElement);
 // various shortcuts
 Cypress.Commands.add('toggleDeviceMenu', toggleDeviceMenu);
 Cypress.Commands.add('enableDebugMode', enableDebugMode);
+Cypress.Commands.add('disableFirmwareHashCheck', disableFirmwareHashCheck);
 Cypress.Commands.add('toggleDebugModeInSettings', toggleDebugModeInSettings);
 Cypress.Commands.add('passThroughInitialRun', passThroughInitialRun);
 Cypress.Commands.add('passThroughAuthenticityCheck', passThroughAuthenticityCheck);

@@ -3,13 +3,13 @@
 
 // todo: this started to fail mysteriously after merging new base image. Skipping it for now and will investigate.
 describe.skip('Onboarding - recover wallet T1B1', () => {
-    before(() => {
+    beforeEach(() => {
         cy.task('startEmu', { model: 'T1B1', version: '1-latest', wipe: true });
         cy.task('startBridge');
 
         cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
-        cy.task('startEmu', { wipe: true });
+        cy.disableFirmwareHashCheck();
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@analytics/continue-button').click();
         cy.onboardingShouldLoad();
