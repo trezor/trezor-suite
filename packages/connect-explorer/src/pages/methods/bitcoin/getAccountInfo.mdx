@@ -42,7 +42,7 @@ export const UsingPathSchema = Type.Object({
 
 export const UsingPubkeySchema = Type.Object({
     descriptor: Type.String({
-        description: 'public key of account',
+        description: 'public key or address of account',
     }),
     coin: Type.String({
         description:
@@ -106,7 +106,7 @@ export const GetAccountInfoSchema = Type.Intersect([
 export const paramDescriptions = {
     path: 'minimum length is `3`. [read more](/details/path)',
     coin: 'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.',
-    descriptor: 'public key of account',
+    descriptor: 'public key or address of account',
     page: 'transaction history page index, subject of `details: txs`',
     pageSize: 'transaction history page size, subject of `details: txs`',
     from: 'transaction history from block filter, subject of `details: txs`',
@@ -136,7 +136,7 @@ const result = await TrezorConnect.getAccountInfo(params);
 
 <ParamsTable schema={UsingPathSchema} />
 
-#### Using public key
+#### Using public key or address
 
 <ParamsTable schema={UsingPubkeySchema} />
 
