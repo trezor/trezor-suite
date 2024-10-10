@@ -12,6 +12,7 @@
         "type-check": "yarn g:tsc -b",
         "pods": "npx pod-install",
         "prebuild": "expo prebuild",
+        "build:adhoc": "npx eas-cli build --profile adhoc",
         "eas-build-post-install": "yarn workspace @suite-common/message-system sign-config",
         "eas-build-on-success": "./eas-post-success.sh",
         "prebuild:clean": "expo prebuild --clean",
