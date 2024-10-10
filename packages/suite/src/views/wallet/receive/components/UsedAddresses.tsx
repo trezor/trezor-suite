@@ -22,10 +22,7 @@ import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
-import {
-    selectIsFirmwareHashCheckEnabledAndFailed,
-    selectIsFirmwareRevisionCheckEnabledAndFailed,
-} from 'src/reducers/suite/suiteReducer';
+import { selectIsFirmwareAuthenticityCheckEnabledAndFailed } from 'src/reducers/suite/suiteReducer';
 
 const AddressActions = styled.div<{ $isVisible?: boolean }>`
     opacity: ${({ $isVisible }) => ($isVisible ? '1' : '0')};
@@ -50,18 +47,18 @@ type ItemProps = {
 };
 
 const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
-    const isRevisionCheckFailed = useSelector(selectIsFirmwareRevisionCheckEnabledAndFailed);
-    const isFwHashCheckFailed = useSelector(selectIsFirmwareHashCheckEnabledAndFailed);
+    const isAuthenticityCheckFailed = useSelector(
+        selectIsFirmwareAuthenticityCheckEnabledAndFailed,
+    );
     const [isHovered, setIsHovered] = useState(false);
 
     const amount = formatNetworkAmount(addr.received || '0', symbol);
     const fresh = !addr.transfers;
     const address = addr.address.substring(0, 20);
-    const isDisabled = locked || isRevisionCheckFailed || isFwHashCheckFailed;
-    const tooltipContent =
-        isRevisionCheckFailed || isFwHashCheckFailed ? (
-            <Translation id="TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED" />
-        ) : null;
+    const isDisabled = locked || isAuthenticityCheckFailed;
+    const tooltipContent = isAuthenticityCheckFailed ? (
+        <Translation id="TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED" />
+    ) : null;
 
     return (
         <Table.Row onHover={setIsHovered}>

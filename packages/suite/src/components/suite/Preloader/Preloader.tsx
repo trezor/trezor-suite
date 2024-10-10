@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, PropsWithChildren } from 'react';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Onboarding } from 'src/views/onboarding';
@@ -13,8 +13,7 @@ import {
     selectPrerequisite,
     selectIsLoggedOut,
     selectSuiteFlags,
-    selectIsFirmwareRevisionCheckEnabledAndFailed,
-    selectIsFirmwareHashCheckEnabledAndFailed,
+    selectIsFirmwareAuthenticityCheckEnabledAndFailed,
 } from 'src/reducers/suite/suiteReducer';
 import { SuiteStart } from 'src/views/start/SuiteStart';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
@@ -23,14 +22,12 @@ import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
 import {
     selectDevice,
-    selectIsFirmwareHashCheckDismissed,
-    selectIsFirmwareRevisionCheckDismissed,
+    selectIsFirmwareAuthenticityCheckDismissed,
 } from '@suite-common/wallet-core';
-import { DeviceCompromisedRevisionCheck } from '../SecurityCheck/DeviceCompromisedRevisionCheck';
+import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { RouterAppWithParams } from '../../../constants/suite/routes';
-import { DeviceCompromisedHashCheck } from '../SecurityCheck/DeviceCompromisedHashCheck';
 
-const ROUTES_TO_SKIP_REVISION_CHECK: RouterAppWithParams['app'][] = [
+const ROUTES_TO_SKIP_FIRMWARE_CHECK: RouterAppWithParams['app'][] = [
     'settings',
     'firmware',
     'firmware-type',
@@ -48,13 +45,9 @@ const getFullscreenApp = (route: AppState['router']['route']): FC | undefined =>
     }
 };
 
-interface PreloaderProps {
-    children: React.ReactNode;
-}
-
 // Preloader is a top level wrapper used in _app.tsx.
 // Decides which content should be displayed basing on route and prerequisites.
-export const Preloader = ({ children }: PreloaderProps) => {
+export const Preloader = ({ children }: PropsWithChildren) => {
     const lifecycle = useSelector(state => state.suite.lifecycle);
     const transport = useSelector(state => state.suite.transport);
     const router = useSelector(state => state.router);
@@ -62,10 +55,10 @@ export const Preloader = ({ children }: PreloaderProps) => {
     const isLoggedOut = useSelector(selectIsLoggedOut);
     const selectedDevice = useSelector(selectDevice);
     const { initialRun, viewOnlyPromoClosed } = useSelector(selectSuiteFlags);
-    const isRevisionCheckFailed = useSelector(selectIsFirmwareRevisionCheckEnabledAndFailed);
-    const isFwHashCheckFailed = useSelector(selectIsFirmwareHashCheckEnabledAndFailed);
-    const isFirmwareRevisionCheckDismissed = useSelector(selectIsFirmwareRevisionCheckDismissed);
-    const isFirmwareHashCheckDismissed = useSelector(selectIsFirmwareHashCheckDismissed);
+    const isFirmwareCheckFailed = useSelector(selectIsFirmwareAuthenticityCheckEnabledAndFailed);
+    const isFirmwareAuthenticityCheckDismissed = useSelector(
+        selectIsFirmwareAuthenticityCheckDismissed,
+    );
 
     const dispatch = useDispatch();
 
@@ -90,15 +83,12 @@ export const Preloader = ({ children }: PreloaderProps) => {
     }
 
     if (
-        router.route?.app === undefined ||
-        !ROUTES_TO_SKIP_REVISION_CHECK.includes(router.route?.app)
+        (router.route?.app === undefined ||
+            !ROUTES_TO_SKIP_FIRMWARE_CHECK.includes(router.route?.app)) &&
+        !isFirmwareAuthenticityCheckDismissed &&
+        isFirmwareCheckFailed
     ) {
-        if (!isFirmwareRevisionCheckDismissed && isRevisionCheckFailed) {
-            return <DeviceCompromisedRevisionCheck />;
-        }
-        if (!isFirmwareHashCheckDismissed && isFwHashCheckFailed) {
-            return <DeviceCompromisedHashCheck />;
-        }
+        return <DeviceCompromised />;
     }
 
     if (

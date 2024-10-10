@@ -1,32 +1,52 @@
 import { TranslationKey } from '@suite-common/intl-types';
-import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { selectDevice } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
-import { FirmwareRevisionCheckError } from '@trezor/connect';
+import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
 import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+import {
+    selectFirmwareHashCheckError,
+    selectFirmwareRevisionCheckError,
+} from 'src/reducers/suite/suiteReducer';
 
-const messages: Record<FirmwareRevisionCheckError, TranslationKey> = {
+const revisionCheckMessages: Record<FirmwareRevisionCheckError, TranslationKey> = {
     'cannot-perform-check-offline': 'TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM',
     'other-error': 'TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR',
     'revision-mismatch': 'TR_FIRMWARE_REVISION_CHECK_FAILED',
     'firmware-version-unknown': 'TR_FIRMWARE_REVISION_CHECK_FAILED',
 };
 
-export const FirmwareRevisionCheckBanner = () => {
-    const device = useSelector(selectDevice);
+const hashCheckMessages: Record<
+    Exclude<FirmwareHashCheckError, 'check-skipped'>,
+    TranslationKey
+> = {
+    'hash-mismatch': 'TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH',
+    'check-unsupported': 'TR_DEVICE_FIRMWARE_HASH_CHECK_CHECK_UNSUPPORTED',
+    'unknown-release': 'TR_DEVICE_FIRMWARE_HASH_CHECK_UNKNOWN_RELEASE',
+    'other-error': 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR',
+};
 
-    if (
-        !isDeviceAcquired(device) ||
-        device.authenticityChecks?.firmwareRevision?.success !== false
-    ) {
-        return null;
+const useAuthenticityCheckMessage = (): TranslationKey | null => {
+    const firmwareRevisionError = useSelector(selectFirmwareRevisionCheckError);
+    const firmwareHashError = useSelector(selectFirmwareHashCheckError);
+
+    if (firmwareRevisionError) {
+        return revisionCheckMessages[firmwareRevisionError];
+    }
+    if (firmwareHashError && firmwareHashError !== 'check-skipped') {
+        return hashCheckMessages[firmwareHashError];
     }
 
-    const wasOffline =
-        device.authenticityChecks.firmwareRevision.error === 'cannot-perform-check-offline';
+    return null;
+};
+
+export const FirmwareRevisionCheckBanner = () => {
+    const firmwareRevisionError = useSelector(selectFirmwareRevisionCheckError);
+    const wasOffline = firmwareRevisionError === 'cannot-perform-check-offline';
+
+    const message = useAuthenticityCheckMessage();
+    if (message === null) return null;
 
     return (
         <Banner
@@ -42,7 +62,7 @@ export const FirmwareRevisionCheckBanner = () => {
                 )
             }
         >
-            <Translation id={messages[device.authenticityChecks.firmwareRevision.error]} />
+            <Translation id={message} />
         </Banner>
     );
 };
