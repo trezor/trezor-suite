@@ -7,6 +7,21 @@ import TerserPlugin from 'terser-webpack-plugin';
 
 const DIST = path.resolve(__dirname, '../build');
 
+console.log('prod.webpack.config');
+console.log('prod.webpack.config');
+console.log('prod.webpack.config');
+console.log('prod.webpack.config');
+console.log('prod.webpack.config');
+console.log('prod.webpack.config');
+console.log('prod.webpack.config');
+console.log('prod.webpack.config');
+console.log('prod.webpack.config');
+console.log('prod.webpack.config');
+console.log('prod.webpack.config');
+console.log('prod.webpack.config');
+console.log('prod.webpack.config');
+console.log('prod.webpack.config');
+
 const config: webpack.Configuration = {
     target: 'web',
     mode: 'production',

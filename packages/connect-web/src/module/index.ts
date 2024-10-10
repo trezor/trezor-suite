@@ -1,11 +1,16 @@
 import { factory } from '@trezor/connect/src/factory';
 import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
-import { CoreInIframe } from './impl/core-in-iframe';
-import { CoreInPopup } from './impl/core-in-popup';
-import { getEnv } from './connectSettings';
+import { CoreInModule } from '../../build/js/core-in-module';
+import { CoreInIframe } from '../impl/core-in-iframe';
+import { CoreInPopup } from '../impl/core-in-popup';
+import { getEnv } from '../connectSettings';
 
 const impl = new TrezorConnectDynamic({
     implementations: [
+        {
+            type: 'core-in-module',
+            impl: new CoreInModule(),
+        },
         {
             type: 'iframe',
             impl: new CoreInIframe(),

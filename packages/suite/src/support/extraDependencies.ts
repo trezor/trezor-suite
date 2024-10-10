@@ -39,6 +39,7 @@ import {
 import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
 import { addWalletThunk, openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
 
+// TODO: just for dev, I want to trigger suite-web tests....
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
 // 'https://connect.corp.sldev.cz/develop/';

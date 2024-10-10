@@ -33,9 +33,10 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib && cp ./src/webextension/trezor-usb-permissions.html ./lib/webextension/trezor-usb-permissions.html",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && yarn build:core && ../../scripts/replace-imports.sh ./lib && cp ./src/webextension/trezor-usb-permissions.html ./lib/webextension/trezor-usb-permissions.html",
         "dev": "yarn g:rimraf build && TS_NODE_PROJECT=\"tsconfig.lib.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
         "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",
+        "build:core": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/core.webpack.config.ts",
         "build:webextension": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/prod.webpack.config.ts",
         "build": "rm -rf build && yarn build:inline && yarn build:webextension",
         "test:e2e": "yarn playwright install && yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
@@ -45,6 +46,7 @@
     "dependencies": {
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
+        "@trezor/connect-iframe": "workspace:*",
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {

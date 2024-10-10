@@ -11475,6 +11475,7 @@ __metadata:
     "@playwright/test": "npm:^1.46.1"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
+    "@trezor/connect-iframe": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/chrome": "npm:^0.0.270"
     "@types/w3c-web-usb": "npm:^1.0.10"

@@ -6,6 +6,18 @@ import prod from './prod.webpack.config';
 // Generate inline script hosted on https://connect.trezor.io/X/trezor-connect.js
 // This is compiled and polyfilled npm package without Core logic
 
+console.log('inline.webpack.config.ts');
+console.log('inline.webpack.config.ts');
+console.log('inline.webpack.config.ts');
+console.log('inline.webpack.config.ts');
+console.log('inline.webpack.config.ts');
+console.log('inline.webpack.config.ts');
+console.log('inline.webpack.config.ts');
+console.log('inline.webpack.config.ts');
+console.log('inline.webpack.config.ts');
+console.log('inline.webpack.config.ts');
+console.log('inline.webpack.config.ts');
+
 const config: webpack.Configuration = {
     target: 'web',
     mode: 'production',

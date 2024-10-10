@@ -115,6 +115,14 @@ jobs:
           path: node_modules
           key: node_modules/${{ github.ref }}/${{github.run_id}}
 
+      - name: Install adb (Android SDK Platform Tools)
+        run: |
+          wget https://dl.google.com/android/repository/platform-tools_r31.0.3-linux.zip
+          unzip platform-tools_r31.0.3-linux.zip
+          sudo mv platform-tools /usr/local/bin/
+          echo "export PATH=$PATH:/usr/local/bin/platform-tools" >> $GITHUB_ENV
+          export PATH=$PATH:/usr/local/bin/platform-tools
+
       - name: Install Yarn dependencies
         run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
@@ -144,6 +152,10 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+
+      # - name: Reverse callback deeplink port
+      #   run: |
+      #     /usr/local/bin/platform-tools/adb reverse tcp:8080 tcp:8080;
 
       - name: Run Detox E2E Android tests
         uses: reactivecircus/android-emulator-runner@v2
