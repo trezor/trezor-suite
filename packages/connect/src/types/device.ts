@@ -1,3 +1,4 @@
+import { Descriptor } from '@trezor/transport';
 import type { PROTO } from '../constants';
 import type { ReleaseInfo } from './firmware';
 
@@ -66,7 +67,7 @@ export type FirmwareHashCheckResult =
     | { success: false; error: FirmwareHashCheckError };
 
 type BaseDevice = {
-    path: string;
+    path: Descriptor['path'];
     name: string;
 };
 
