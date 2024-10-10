@@ -17,6 +17,8 @@ const icons = {
     T3T1: 'trezorT3T1',
 } as const satisfies Record<DeviceModelInternal, IconName>;
 
+export const deviceModelToIconName = (deviceModel: DeviceModelInternal) => icons[deviceModel];
+
 export const DeviceModelIcon = ({ deviceModel, size }: DeviceModelIconProps) => (
-    <Icon name={icons[deviceModel]} size={size} />
+    <Icon name={deviceModelToIconName(deviceModel)} size={size} />
 );
