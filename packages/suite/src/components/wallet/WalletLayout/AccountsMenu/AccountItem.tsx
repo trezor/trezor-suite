@@ -2,7 +2,7 @@ import { forwardRef, Ref } from 'react';
 import styled from 'styled-components';
 
 import { isTestnet } from '@suite-common/wallet-utils';
-import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 import {
     Icon,
     Column,
@@ -26,6 +26,7 @@ import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sid
 import { useFormatters } from '@suite-common/formatters';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { CoinLogo } from '@trezor/product-components';
+import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
 
 const ICON_SIZE = 24;
 
@@ -49,18 +50,6 @@ const Wrapper = styled(NavigationItemBase)<{
 
 export const Left = styled.div`
     position: relative;
-`;
-
-const TokensBadge = styled.div`
-    ${typography.label};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 ${spacingsPx.xxs};
-    min-width: ${ICON_SIZE}px;
-    height: ${ICON_SIZE}px;
-    border-radius: ${borders.radii.full};
-    background: ${({ theme }) => theme.borderDashed};
 `;
 
 const AccountLabelContainer = styled.div`
@@ -98,7 +87,6 @@ export const AccountItem = forwardRef(
             formattedBalance,
             customFiatValue,
             isGroup,
-            tokens,
             dataTestKey,
             onClick,
         }: AccountItemProps,
@@ -140,7 +128,7 @@ export const AccountItem = forwardRef(
                 case 'staking':
                     return <Icon name="piggyBankFilled" variant="tertiary" />;
                 case 'tokens':
-                    return <TokensBadge>{tokens?.length}</TokensBadge>;
+                    return <TokenIconSetWrapper account={account} />;
             }
         };
 
