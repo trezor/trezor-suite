@@ -554,15 +554,7 @@ export const fixtures = {
                 txType: 'self',
                 accountAddress: effects.negative.address,
             },
-            expectedOutput: [
-                {
-                    n: 0,
-                    addresses: [effects.negative.address],
-                    isAddress: true,
-                    amount: effects.negative.amount.abs().toString(),
-                    isAccountTarget: true,
-                },
-            ],
+            expectedOutput: [],
         },
         {
             description: 'should return an array with a target for "sent" transaction type',
@@ -641,7 +633,7 @@ export const fixtures = {
                 accountEffect: effects.negative,
                 txType: 'self',
             },
-            expectedOutput: effects.negative.amount.abs().toString(),
+            expectedOutput: '0',
         },
         {
             description: 'should return the amount as a string for other transaction types',
