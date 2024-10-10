@@ -168,14 +168,20 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 monochromeImage: './assets/appIcon_android.png',
                 ...appIconAndroid,
             },
-            intentFilters:
-                buildType === 'production'
-                    ? []
-                    : [
-                          {
-                              action: 'VIEW',
-                              autoVerify: true,
-                              data: [
+            intentFilters: [
+                {
+                    action: 'VIEW',
+                    autoVerify: true,
+                    data:
+                        buildType === 'production'
+                            ? [
+                                  {
+                                      scheme: 'https',
+                                      host: 'connect.trezor.io',
+                                      pathPattern: '/9/deeplink/.*',
+                                  },
+                              ]
+                            : [
                                   {
                                       scheme: 'https',
                                       host: 'dev.suite.sldev.cz',
@@ -188,9 +194,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                                       pathPattern: '/connect/.*/.*/deeplink/.*',
                                   },
                               ],
-                              category: ['BROWSABLE', 'DEFAULT'],
-                          },
-                      ],
+                    category: ['BROWSABLE', 'DEFAULT'],
+                },
+            ],
         },
         ios: {
             bundleIdentifier,
@@ -217,6 +223,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 },
                 UIRequiredDeviceCapabilities: ['armv7'],
             },
+            associatedDomains:
+                buildType === 'production'
+                    ? ['applinks:connect.trezor.io']
+                    : ['applinks:dev.suite.sldev.cz'],
         },
         plugins: getPlugins(),
         extra: {
