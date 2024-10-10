@@ -142,11 +142,15 @@ const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
  * @param {Partial<Features>} [feat]
  * @returns {Device}
  */
-const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Device => {
+const getConnectDevice = (
+    dev?: Partial<Omit<Device, 'path'> & { path: `${number}` }>,
+    feat?: Partial<Features>,
+): Device => {
+    const path = (dev && dev.path ? dev.path : '1') as `${number}` & { __type: 'PathPublic' };
     if (dev && typeof dev.type === 'string' && dev.type === 'unreadable') {
         return {
             type: 'unreadable',
-            path: dev && dev.path ? dev.path : '1',
+            path,
             label: 'Unreadable device',
             name: 'name of unreadable device',
             error: 'unreadable device',
@@ -156,7 +160,7 @@ const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Devi
     if (dev && typeof dev.type === 'string' && dev.type === 'unacquired') {
         return {
             type: dev.type,
-            path: dev && dev.path ? dev.path : '1',
+            path,
             label: 'Unacquired device',
             name: 'name of unacquired device',
         };
@@ -166,6 +170,7 @@ const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Devi
 
     return {
         id: features.device_id,
+        // @ts-expect-error
         path: '',
         label: 'My Trezor',
         firmware: 'valid',
@@ -197,7 +202,10 @@ const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Devi
  * @param {Partial<Features>} [feat]
  * @returns {TrezorDevice}
  */
-const getSuiteDevice = (dev?: Partial<TrezorDevice>, feat?: Partial<Features>): TrezorDevice => {
+const getSuiteDevice = (
+    dev?: Partial<Omit<TrezorDevice, 'path'> & { path: `${number}` }>,
+    feat?: Partial<Features>,
+): TrezorDevice => {
     const device = getConnectDevice(dev, feat);
     if (device.type === 'acquired') {
         return {

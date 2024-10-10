@@ -3,6 +3,7 @@ import { connectInitThunk } from '@suite-common/connect-init';
 
 import { AcquiredDevice } from 'src/types/suite';
 import { CoinjoinAccount } from 'src/types/wallet/coinjoin';
+import { DeviceWithEmptyPath } from '@suite-common/suite-types';
 
 /**
  * Strip unserializable fields from Discovery (eg. promises)
@@ -15,8 +16,11 @@ export const serializeDiscovery = (discovery: Discovery) => ({ ...discovery, run
  * Strip fields from Device
  * @param {AcquiredDevice} device
  */
-export const serializeDevice = (device: AcquiredDevice, forceRemember?: true) => {
-    const sd = {
+export const serializeDevice = (
+    device: AcquiredDevice,
+    forceRemember?: true,
+): DeviceWithEmptyPath => {
+    const sd: DeviceWithEmptyPath = {
         ...device,
         path: '',
         remember: true,
