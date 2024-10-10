@@ -1,107 +1,44 @@
-import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
+import { factory } from '@trezor/connect/src/factory';
+import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 import { CoreInIframe } from './impl/core-in-iframe';
 import { CoreInPopup } from './impl/core-in-popup';
-import ProxyEventEmitter from './utils/proxy-event-emitter';
-import type { ConnectSettings, ConnectSettingsPublic, Manifest } from '@trezor/connect/src/types';
-import EventEmitter from 'events';
-import { CallMethodPayload } from '@trezor/connect/src/events';
+import type { ConnectSettingsPublic } from '@trezor/connect';
 import { getEnv } from './connectSettings';
-
-type TrezorConnectType = 'core-in-popup' | 'iframe';
 
 const IFRAME_ERRORS = ['Init_IframeBlocked', 'Init_IframeTimeout', 'Transport_Missing'];
 
-/**
- * Implementation of TrezorConnect that can dynamically switch between iframe and core-in-popup implementations
- */
-export class TrezorConnectDynamicImpl implements ConnectFactoryDependencies {
-    public eventEmitter: EventEmitter;
-
-    private currentTarget: TrezorConnectType = 'iframe';
-    private coreInIframeImpl: CoreInIframe;
-    private coreInPopupImpl: CoreInPopup;
-
-    private lastSettings?: Partial<ConnectSettings>;
-
-    public constructor() {
-        this.coreInIframeImpl = new CoreInIframe();
-        this.coreInPopupImpl = new CoreInPopup();
-        this.eventEmitter = new ProxyEventEmitter([
-            this.coreInIframeImpl.eventEmitter,
-            this.coreInPopupImpl.eventEmitter,
-        ]);
-    }
-
-    private getTarget() {
-        return this.currentTarget === 'iframe' ? this.coreInIframeImpl : this.coreInPopupImpl;
-    }
-
-    private async switchTarget(target: TrezorConnectType) {
-        if (this.currentTarget === target) {
-            return;
-        }
-
-        await this.getTarget().dispose();
-        this.currentTarget = target;
-        await this.getTarget().init(this.lastSettings);
-    }
-
-    public manifest(manifest: Manifest) {
-        this.lastSettings = {
-            ...this.lastSettings,
-            manifest,
-        };
-
-        this.getTarget().manifest(manifest);
-    }
-
-    public async init(settings: Partial<ConnectSettingsPublic> = {}) {
+const impl = new TrezorConnectDynamic<'core-in-popup' | 'iframe'>({
+    implementations: [
+        {
+            type: 'iframe',
+            impl: new CoreInIframe(),
+        },
+        {
+            type: 'core-in-popup',
+            impl: new CoreInPopup(),
+        },
+    ],
+    getInitTarget: (settings: Partial<ConnectSettingsPublic>) => {
         const env = getEnv();
         if (settings.coreMode === 'iframe' || settings.popup === false || env === 'webextension') {
-            this.currentTarget = 'iframe';
+            return 'iframe';
         } else if (settings.coreMode === 'popup') {
-            this.currentTarget = 'core-in-popup';
+            return 'core-in-popup';
         } else {
-            // Default to auto mode with iframe as the first choice
-            settings.coreMode = 'auto';
-            this.currentTarget = 'iframe';
+            return 'iframe';
         }
+    },
+    handleErrorFallback: async (errorCode: string) => {
+        const isCoreModeAuto =
+            impl.lastSettings?.coreMode === 'auto' || impl.lastSettings?.coreMode === undefined;
 
-        // Save settings for later use
-        this.lastSettings = settings;
-
-        // Initialize the target
-        try {
-            return await this.getTarget().init(settings);
-        } catch (error) {
-            // Handle iframe errors by switching to core-in-popup
-            if (await this.handleErrorFallback(error.code)) {
-                return await this.getTarget().init(settings);
-            }
-
-            throw error;
-        }
-    }
-
-    public async call(params: CallMethodPayload) {
-        const response = await this.getTarget().call(params);
-        if (!response.success) {
-            if (await this.handleErrorFallback(response.payload.code)) {
-                return await this.getTarget().call(params);
-            }
-        }
-
-        return response;
-    }
-
-    private async handleErrorFallback(errorCode: string) {
         // Handle iframe errors by switching to core-in-popup
-        if (this.lastSettings?.coreMode === 'auto' && IFRAME_ERRORS.includes(errorCode)) {
+        if (isCoreModeAuto && IFRAME_ERRORS.includes(errorCode)) {
             // Check if WebUSB is available and enabled
-            const webUsbUnavailableInBrowser = !navigator.usb;
+            const webUsbUnavailableInBrowser = !(navigator as any)?.usb;
             const webUsbDisabledInSettings =
-                this.lastSettings.transports?.includes('WebUsbTransport') === false ||
-                this.lastSettings.webusb === false;
+                impl.lastSettings?.transports?.includes('WebUsbTransport') === false ||
+                impl.lastSettings?.webusb === false;
             if (
                 errorCode === 'Transport_Missing' &&
                 (webUsbUnavailableInBrowser || webUsbDisabledInSettings)
@@ -110,46 +47,14 @@ export class TrezorConnectDynamicImpl implements ConnectFactoryDependencies {
                 return false;
             }
 
-            await this.switchTarget('core-in-popup');
+            await impl.switchTarget('core-in-popup');
 
             return true;
         }
 
         return false;
-    }
-
-    public requestLogin(params: any) {
-        return this.getTarget().requestLogin(params);
-    }
-
-    public uiResponse(params: any) {
-        return this.getTarget().uiResponse(params);
-    }
-
-    public renderWebUSBButton() {
-        return this.getTarget().renderWebUSBButton();
-    }
-
-    public disableWebUSB() {
-        return this.getTarget().disableWebUSB();
-    }
-
-    public requestWebUSBDevice() {
-        return this.getTarget().requestWebUSBDevice();
-    }
-
-    public cancel(error?: string) {
-        return this.getTarget().cancel(error);
-    }
-
-    public dispose() {
-        this.eventEmitter.removeAllListeners();
-
-        return this.getTarget().dispose();
-    }
-}
-
-const impl = new TrezorConnectDynamicImpl();
+    },
+});
 
 const TrezorConnect = factory({
     eventEmitter: impl.eventEmitter,
