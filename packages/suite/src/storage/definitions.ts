@@ -3,11 +3,10 @@ import { FieldValues } from 'react-hook-form';
 
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
-import type { AcquiredDevice } from 'src/types/suite';
 import type { MetadataState } from 'src/types/suite/metadata';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import type { MessageState } from '@suite-common/message-system';
-import type { MessageSystem } from '@suite-common/suite-types';
+import type { DeviceWithEmptyPath, MessageSystem } from '@suite-common/suite-types';
 import type { Account, Discovery, WalletAccountTransaction } from 'src/types/wallet';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
@@ -60,7 +59,7 @@ export interface SuiteDBSchema extends DBSchema {
     };
     devices: {
         key: string;
-        value: AcquiredDevice;
+        value: DeviceWithEmptyPath;
     };
     accounts: {
         key: string[];
