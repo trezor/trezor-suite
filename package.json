@@ -74,6 +74,7 @@
         "native:ios": "yarn workspace @suite-native/app ios",
         "native:prebuild": "yarn workspace @suite-native/app prebuild",
         "native:prebuild:clean": "yarn workspace @suite-native/app prebuild:clean",
+        "native:adhoc": "yarn workspace @suite-native/app build:adhoc",
         "native:reverse-ports": "yarn workspace @suite-native/app reverse-ports",
         "_______ Aliases _______": "Aliases for longer commands which we often have to run manually. Names don't have to be pretty or make total sense.",
         "refs": "yarn update-project-references",

@@ -116,6 +116,7 @@ local.properties
 
 !**/suite-native/app/.env.debug
 !**/suite-native/app/.env.develop
+!**/suite-native/app/.env.preview
 !**/suite-native/app/.env.production
 !**/suite-native/app/.env.staging
 
