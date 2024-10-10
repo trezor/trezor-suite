@@ -68,6 +68,7 @@ export function getResult<
 
     const max =
         sendMaxOutputIndex >= 0 ? result.outputs[sendMaxOutputIndex].value.toString() : undefined;
+
     const bytes = transactionBytes(result.inputs, result.outputs);
     const feePerByte = result.fee / bytes;
 
