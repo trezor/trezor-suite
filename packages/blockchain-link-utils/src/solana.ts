@@ -565,15 +565,13 @@ export const transformTransaction = (
         type,
     );
 
-    const isSelfTransferWithZeroSolValue = type === 'self' && amount === tx.meta.fee.toString();
-
     const details = getDetails(tx, nativeEffects, accountAddress, type);
 
     return {
         type,
         txid: tx.transaction.signatures[0].toString(),
         blockTime: tx.blockTime,
-        amount: isSelfTransferWithZeroSolValue ? '0' : amount,
+        amount,
         fee: tx.meta.fee.toString(),
         targets,
         tokens,
