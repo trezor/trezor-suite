@@ -242,9 +242,9 @@ export const getTargets = (
 ): Transaction['targets'] =>
     effects
         .filter(effect => {
-            // for 'self` transaction there is only one effect
+            // exclude target for 'self` transaction because it is redundant with fee
             if (txType === 'self') {
-                return true;
+                return false;
             }
             // ignore all targets for unknown transactions
             if (txType === 'unknown') {
@@ -365,10 +365,12 @@ export const getDetails = (
 
     // include positive effects only on accountAddress for tx types other then sent, otherwise it
     // leads to foreign address being displayed next to users own address which might lead to confusion
-    const receivers = effects.filter(
-        ({ amount, address }) =>
-            amount.isPositive() && (txType !== 'sent' ? address === accountAddress : true),
-    );
+    const receivers = effects
+        .filter(
+            ({ amount, address }) =>
+                amount.isPositive() && (txType !== 'sent' ? address === accountAddress : true),
+        )
+        .filter(({ address }) => !(txType === 'self' && address === accountAddress));
 
     const getVin = ({ address, amount }: { address: string; amount?: BigNumber }, i: number) => ({
         txid: transaction.transaction.signatures[0].toString(),
@@ -409,7 +411,8 @@ export const getAmount = (
         return '0';
     }
     if (txType === 'self') {
-        return accountEffect.amount?.abs().toString();
+        // we do not want to show amount because its redundant with fee
+        return '0';
     }
 
     return accountEffect.amount.toString();
