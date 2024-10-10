@@ -9910,7 +9910,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/feature-flags@workspace:*, @suite-native/feature-flags@workspace:suite-native/feature-flags":
+"@suite-native/feature-flags@workspace:*, @suite-native/feature-flags@workspace:^, @suite-native/feature-flags@workspace:suite-native/feature-flags":
   version: 0.0.0-use.local
   resolution: "@suite-native/feature-flags@workspace:suite-native/feature-flags"
   dependencies:
@@ -10216,6 +10216,7 @@ __metadata:
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
+    "@suite-native/feature-flags": "workspace:^"
     "@suite-native/intl": "workspace:^"
     "@suite-native/navigation": "workspace:*"
     "@trezor/connect": "workspace:*"

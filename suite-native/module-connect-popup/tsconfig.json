@@ -12,6 +12,7 @@
         { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-manager" },
+        { "path": "../feature-flags" },
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../../packages/connect" },
