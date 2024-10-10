@@ -32,7 +32,6 @@ import { HapticFeedback } from './HapticFeedback';
 import { Brightness } from './Brightness';
 import { DefaultWalletLoading } from './DefaultWalletLoading';
 import { FirmwareRevisionCheck } from './FirmwareRevisionCheck';
-import { FirmwareHashCheck } from './FirmwareHashCheck';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '../../../constants/suite/device';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
@@ -177,7 +176,6 @@ export const SettingsDevice = () => {
                 <CustomFirmware />
                 {supportsDeviceAuthentication && <DeviceAuthenticityOptOut />}
                 <FirmwareRevisionCheck />
-                <FirmwareHashCheck />
             </SettingsSection>
         </SettingsLayout>
     );

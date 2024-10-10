@@ -301,7 +301,7 @@ export const deviceAuthenticityOptOut = (payload: boolean) => (dispatch: Dispatc
     });
 };
 
-export const checkFirmwareRevision =
+export const toggleCheckFirmwareAuthenticity =
     ({ isDisabled }: { isDisabled: boolean }) =>
     (dispatch: Dispatch) => {
         dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
@@ -310,13 +310,6 @@ export const checkFirmwareRevision =
             type: SUITE.DEVICE_FIRMWARE_REVISION_CHECK,
             payload: { isDisabled },
         });
-    };
-
-export const checkFirmwareHash =
-    ({ isDisabled }: { isDisabled: boolean }) =>
-    (dispatch: Dispatch) => {
-        dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
-
         dispatch({
             type: SUITE.DEVICE_FIRMWARE_HASH_CHECK,
             payload: { isDisabled },

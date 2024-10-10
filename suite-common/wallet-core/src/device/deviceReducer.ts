@@ -33,8 +33,7 @@ export type State = {
     selectedDevice?: TrezorDevice;
     deviceAuthenticity?: Record<string, StoredAuthenticateDeviceResult>;
     dismissedSecurityChecks?: {
-        firmwareRevision?: string[];
-        firmwareHash?: string[];
+        firmwareAuthenticity?: string[];
     };
 };
 
@@ -587,23 +586,14 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         .addCase(deviceAuthenticityActions.result, (state, { payload }) => {
             setDeviceAuthenticity(state, payload.device, payload.result);
         })
-        .addCase(deviceActions.dismissFirmwareRevisionCheck, (state, { payload }) => {
+        .addCase(deviceActions.dismissFirmwareAuthenticityCheck, (state, { payload }) => {
             if (!state.dismissedSecurityChecks) {
                 state.dismissedSecurityChecks = {};
             }
-            if (!state.dismissedSecurityChecks.firmwareRevision) {
-                state.dismissedSecurityChecks.firmwareRevision = [];
+            if (!state.dismissedSecurityChecks.firmwareAuthenticity) {
+                state.dismissedSecurityChecks.firmwareAuthenticity = [];
             }
-            state.dismissedSecurityChecks.firmwareRevision.unshift(payload);
-        })
-        .addCase(deviceActions.dismissFirmwareHashCheck, (state, { payload }) => {
-            if (!state.dismissedSecurityChecks) {
-                state.dismissedSecurityChecks = {};
-            }
-            if (!state.dismissedSecurityChecks.firmwareHash) {
-                state.dismissedSecurityChecks.firmwareHash = [];
-            }
-            state.dismissedSecurityChecks.firmwareHash.unshift(payload);
+            state.dismissedSecurityChecks.firmwareAuthenticity.unshift(payload);
         })
         .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
         .addCase(
@@ -789,19 +779,12 @@ export const selectSelectedDeviceAuthenticity = (state: DeviceRootState) => {
     return device?.id ? deviceAuthenticity?.[device.id] : undefined;
 };
 
-export const selectIsFirmwareRevisionCheckDismissed = (state: DeviceRootState): boolean => {
+export const selectIsFirmwareAuthenticityCheckDismissed = (state: DeviceRootState): boolean => {
     const device = selectDevice(state);
 
     return !!(
-        device?.id && state.device.dismissedSecurityChecks?.firmwareRevision?.includes(device.id)
-    );
-};
-
-export const selectIsFirmwareHashCheckDismissed = (state: DeviceRootState): boolean => {
-    const device = selectDevice(state);
-
-    return !!(
-        device?.id && state.device.dismissedSecurityChecks?.firmwareHash?.includes(device.id)
+        device?.id &&
+        state.device.dismissedSecurityChecks?.firmwareAuthenticity?.includes(device.id)
     );
 };
 

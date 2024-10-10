@@ -80,13 +80,8 @@ export const removeButtonRequests = createAction(
     }),
 );
 
-const dismissFirmwareRevisionCheck = createAction(
-    `${DEVICE_MODULE_PREFIX}/dismissFirmwareRevisionCheck`,
-    (payload: string) => ({ payload }),
-);
-
-const dismissFirmwareHashCheck = createAction(
-    `${DEVICE_MODULE_PREFIX}/dismissFirmwareHashCheck`,
+const dismissFirmwareAuthenticityCheck = createAction(
+    `${DEVICE_MODULE_PREFIX}/dismissFirmwareAuthenticityCheck`,
     (payload: string) => ({ payload }),
 );
 
@@ -95,8 +90,7 @@ export const deviceActions = {
     connectUnacquiredDevice,
     deviceChanged,
     deviceDisconnect,
-    dismissFirmwareRevisionCheck,
-    dismissFirmwareHashCheck,
+    dismissFirmwareAuthenticityCheck,
     updatePassphraseMode,
     receiveAuthConfirm,
     rememberDevice,
