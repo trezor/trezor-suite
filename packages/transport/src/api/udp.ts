@@ -188,7 +188,10 @@ export class UdpApi extends AbstractApi {
     }
 
     private handleDevicesChange(devices: DescriptorApiLevel[]) {
-        const [known, unknown] = arrayPartition(devices, device => this.devices.includes(device));
+        const [known, unknown] = arrayPartition(
+            devices,
+            device => !!this.devices.find(d => d.path === device.path),
+        );
 
         if (known.length !== this.devices.length || unknown.length > 0) {
             this.devices = devices;
