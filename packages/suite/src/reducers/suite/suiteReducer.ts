@@ -437,43 +437,64 @@ export const selectHasExperimentalFeature =
     (feature: ExperimentalFeature) => (state: SuiteRootState) =>
         state.suite.settings.experimental?.includes(feature) ?? false;
 
-export const selectIsFirmwareRevisionCheckEnabledAndFailed = (
-    state: SuiteRootState & DeviceRootState & MessageSystemRootState,
-) => {
+type StateForFirmwareChecks = SuiteRootState & DeviceRootState & MessageSystemRootState;
+
+/**
+ * Get firmware revision check error, or null if check was successful / skipped.
+ */
+export const selectFirmwareRevisionCheckError = (state: StateForFirmwareChecks) => {
+    const device = selectDevice(state);
+    if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
+
     const { isFirmwareRevisionCheckDisabled } = state.suite.settings;
-    const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.firmwareRevisionCheck);
-    if (isFirmwareRevisionCheckDisabled || isDisabledByMessageSystem) return false;
+    const isDisabledByMessage = selectIsFeatureDisabled(state, Feature.firmwareRevisionCheck);
+    const isCheckEnabled = !isFirmwareRevisionCheckDisabled && !isDisabledByMessage;
+    const checkResult = device.authenticityChecks.firmwareRevision; // null means not performed, then don't consider it failed
 
-    const device = selectDevice(state);
-
-    return (
-        isDeviceAcquired(device) &&
-        // If `check` is null, it means that it was not performed yet.
-        device.authenticityChecks?.firmwareRevision?.success === false &&
-        // If Suite is offline and cannot perform check or there is some unexpected error, an error banner is shown but Suite is otherwise unaffected.
-        !['cannot-perform-check-offline', 'other-error'].includes(
-            device.authenticityChecks.firmwareRevision.error,
-        )
-    );
+    return isCheckEnabled && checkResult?.success === false ? checkResult.error : null;
 };
 
-export const selectIsFirmwareHashCheckEnabledAndFailed = (
-    state: SuiteRootState & DeviceRootState & MessageSystemRootState,
-) => {
+/**
+ * Determine hard failure of firmware revision check - specific error types which are severe.
+ * If Suite is offline and cannot perform check or there is some unexpected error, a banner is shown but device is accessible.
+ */
+const selectIsFirmwareRevisionCheckEnabledAndFailed = (state: StateForFirmwareChecks): boolean => {
+    const error = selectFirmwareRevisionCheckError(state);
+
+    return error ? !['cannot-perform-check-offline', 'other-error'].includes(error) : false;
+};
+
+/**
+ * Get firmware hash check error, or null if check was successful / skipped.
+ */
+export const selectFirmwareHashCheckError = (state: StateForFirmwareChecks) => {
+    const device = selectDevice(state);
+    if (!isDeviceAcquired(device) || !device.authenticityChecks) return false;
+
     const { isFirmwareHashCheckDisabled } = state.suite.settings;
-    const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.firmwareHashCheck);
-    if (isFirmwareHashCheckDisabled || isDisabledByMessageSystem) return false;
+    const isDisabledByMessage = selectIsFeatureDisabled(state, Feature.firmwareHashCheck);
+    const isCheckEnabled = !isFirmwareHashCheckDisabled && !isDisabledByMessage;
+    const checkResult = device.authenticityChecks.firmwareHash; // null means not performed, then don't consider it failed
 
-    const device = selectDevice(state);
-
-    return (
-        isDeviceAcquired(device) &&
-        // If `check` is null, it means that it was not performed yet.
-        device.authenticityChecks?.firmwareHash?.success === false &&
-        !['check-skipped', 'check-unsupported'].includes(
-            device.authenticityChecks.firmwareHash.error,
-        )
-    );
+    return isCheckEnabled && checkResult?.success === false ? checkResult.error : null;
 };
+
+/**
+ * Determine hard failure of firmware hash check - specific error types which are severe.
+ * If check was skipped, don't consider it failed.
+ * If check is unsupported by device, a banner is shown but device is accessible.
+ */
+const selectIsFirmwareHashCheckEnabledAndFailed = (state: StateForFirmwareChecks): boolean => {
+    const error = selectFirmwareHashCheckError(state);
+
+    return error ? !['check-skipped', 'check-unsupported'].includes(error) : false;
+};
+
+/**
+ * Determine hard failure of either of firmware authenticity checks to block access to device.
+ */
+export const selectIsFirmwareAuthenticityCheckEnabledAndFailed = (state: StateForFirmwareChecks) =>
+    selectIsFirmwareRevisionCheckEnabledAndFailed(state) ||
+    selectIsFirmwareHashCheckEnabledAndFailed(state);
 
 export default suiteReducer;

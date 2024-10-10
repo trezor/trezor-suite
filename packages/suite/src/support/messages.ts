@@ -7022,6 +7022,24 @@ export default defineMessages({
         id: 'TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR',
         defaultMessage: "Couldn't perform firmware revision check.",
     },
+    TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH: {
+        id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH',
+        defaultMessage: 'Firmware hash check failed. Your Trezor may be counterfeit.',
+    },
+    TR_DEVICE_FIRMWARE_HASH_CHECK_CHECK_UNSUPPORTED: {
+        id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_CHECK_UNSUPPORTED',
+        defaultMessage:
+            'New Trezor firmware is available! Update your device now to get latest security features.',
+    },
+    TR_DEVICE_FIRMWARE_HASH_CHECK_UNKNOWN_RELEASE: {
+        id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_UNKNOWN_RELEASE',
+        defaultMessage: 'Firmware unrecognized. Your Trezor may be counterfeit.',
+    },
+    TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR: {
+        id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR',
+        defaultMessage:
+            "Firmware hash check couldn't be performed. Your Trezor may be counterfeit.",
+    },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
         defaultMessage: 'Activate coins',
