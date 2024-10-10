@@ -23,7 +23,7 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": ["https://bsc1.trezor.io"]
+                "url": ["https://bsc1.trezor.io", "https://bsc2.trezor.io"]
             },
             "chain": "bsc",
             "chain_id": 56,
@@ -83,7 +83,7 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": ["https://blockbook-dev.corp.sldev.cz:9302"]
+                "url": ["https://op1.trezor.io", "https://op2.trezor.io"]
             },
             "chain": "op",
             "chain_id": 10,
