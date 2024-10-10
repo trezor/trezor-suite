@@ -274,6 +274,7 @@ const disconnectDevice = (draft: State, device: Device) => {
         if (skip) {
             d.connected = false;
             d.available = false;
+            // @ts-expect-error
             d.path = '';
         } else {
             draft.devices.splice(draft.devices.indexOf(d), 1);

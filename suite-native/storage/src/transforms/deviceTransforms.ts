@@ -3,7 +3,7 @@ import { createTransform } from 'redux-persist';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 
-const serializeDevice = (device: TrezorDevice) => ({
+const serializeDevice = (device: TrezorDevice): Omit<TrezorDevice, 'path'> & { path: '' } => ({
     ...device,
     path: '',
     remember: true,
@@ -11,7 +11,10 @@ const serializeDevice = (device: TrezorDevice) => ({
     buttonRequests: [],
 });
 
-export const devicePersistTransform = createTransform<TrezorDevice[], Readonly<TrezorDevice[]>>(
+export const devicePersistTransform = createTransform<
+    TrezorDevice[],
+    Readonly<(Omit<TrezorDevice, 'path'> & { path: '' })[]>
+>(
     inboundState => {
         return pipe(
             inboundState,
