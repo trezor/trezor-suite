@@ -9,6 +9,7 @@ export const FeatureFlag = {
     IsRegtestEnabled: 'isRegtestEnabled',
     IsPolygonEnabled: 'IsPolygonEnabled',
     IsBscEnabled: 'IsBscEnabled',
+    IsConnectPopupEnabled: 'IsConnectPopupEnabled',
 } as const;
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
 
@@ -24,6 +25,7 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsRegtestEnabled]: isDebugEnv() || isDetoxTestBuild(),
     [FeatureFlag.IsPolygonEnabled]: false,
     [FeatureFlag.IsBscEnabled]: false,
+    [FeatureFlag.IsConnectPopupEnabled]: isDevelopOrDebugEnv(),
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
@@ -32,6 +34,7 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsRegtestEnabled,
     FeatureFlag.IsPolygonEnabled,
     FeatureFlag.IsBscEnabled,
+    FeatureFlag.IsConnectPopupEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({

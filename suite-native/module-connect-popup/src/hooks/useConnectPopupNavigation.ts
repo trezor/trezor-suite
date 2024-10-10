@@ -9,6 +9,7 @@ import {
     RootStackRoutes,
 } from '@suite-native/navigation';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList,
@@ -30,22 +31,23 @@ const isConnectPopupUrl = (url: string): boolean => {
 // TODO: will be necessary to handle if device is not connected/unlocked so we probably want to wait until user unlock device
 // we already have some modals like biometrics or coin enabled which are waiting for device to be connected
 export const useConnectPopupNavigation = () => {
+    const [featureFlagEnabled] = useFeatureFlag(FeatureFlag.IsConnectPopupEnabled);
     const navigation = useNavigation<NavigationProp>();
 
     const navigateToConnectPopup = useCallback(
         (url: string) => {
+            if (!featureFlagEnabled) return;
+            if (!isConnectPopupUrl(url)) return;
             const parsedUrl = Linking.parse(url);
             navigation.navigate(RootStackRoutes.ConnectPopup, { parsedUrl });
         },
-        [navigation],
+        [navigation, featureFlagEnabled],
     );
 
     useEffect(() => {
         const navigateToInitalUrl = async () => {
             const currentUrl = await Linking.getInitialURL();
-            if (currentUrl && isConnectPopupUrl(currentUrl)) {
-                // eslint-disable-next-line no-console
-                console.log('initial url', currentUrl);
+            if (currentUrl) {
                 navigateToConnectPopup(currentUrl);
             }
         };
@@ -56,8 +58,6 @@ export const useConnectPopupNavigation = () => {
         // there could be when you open same deep link for second time and in that case it will be ignored
         // this could be probably handed by Linking.addEventListener
         const subscription = Linking.addEventListener('url', event => {
-            // eslint-disable-next-line no-console
-            console.log('url event received', event.url);
             navigateToConnectPopup(event.url);
         });
 
