@@ -1,3 +1,5 @@
+import { randomInt } from 'crypto';
+
 import {
     ComposeRequest,
     CoinSelectSuccess,
@@ -36,19 +38,29 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
 ): ComposedTransaction<Input, ComposeFinalOutput, Change> {
     const convertedInputs = result.inputs.map(input => request.utxos[input.i]);
 
-    const defaultPermutation: number[] = [];
+    const nonChangeOutputPermutation: number[] = [];
+    const changeOutputPermutation: number[] = [];
+
     const convertedOutputs = result.outputs.map((output, index) => {
-        defaultPermutation.push(index);
         if (request.outputs[index]) {
+            nonChangeOutputPermutation.push(index);
+
             return convertOutput(output, request.outputs[index]);
         }
+
+        changeOutputPermutation.push(index);
 
         return convertOutput(output, { type: 'change', ...request.changeAddress });
     });
 
+    const permutation = [...nonChangeOutputPermutation];
+    const newPositionOfChange = randomInt(0, permutation.length);
+    permutation.splice(newPositionOfChange, 0, ...changeOutputPermutation);
+    const sortedOutputs = permutation.map(index => convertedOutputs[index]);
+
     return {
         inputs: convertedInputs,
-        outputs: convertedOutputs,
-        outputsPermutation: defaultPermutation,
+        outputs: sortedOutputs,
+        outputsPermutation: permutation,
     };
 }
