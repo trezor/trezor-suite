@@ -61,8 +61,10 @@ describe(`TrezorConnect methods`, () => {
                             throw new Error('Controller not found');
                         }
 
+                        console.warn('=======> SETUP START');
                         // single test may require a different setup
                         await setup(controller, t.setup || testCase.setup);
+                        console.warn('=======> SETUP END');
 
                         // @ts-expect-error, string + params union
                         const result = await TrezorConnect[testCase.method](t.params);

@@ -22,7 +22,7 @@ describe('TrezorConnect passphrase', () => {
             mnemonic: 'mnemonic_all',
             passphrase_protection: true,
         });
-        await initTrezorConnect(controller, { debug: false });
+        await initTrezorConnect(controller, { debug: true });
     });
 
     afterAll(async () => {
