@@ -10,7 +10,13 @@ import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { discoveryActions, DeviceRootState, selectDevice } from '@suite-common/wallet-core';
 import { versionUtils } from '@trezor/utils';
 import { isWeb } from '@trezor/env-utils';
-import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
+import {
+    TRANSPORT,
+    TransportInfo,
+    ConnectSettings,
+    FirmwareHashCheckError,
+    FirmwareRevisionCheckError,
+} from '@trezor/connect';
 
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
@@ -460,8 +466,12 @@ export const selectFirmwareRevisionCheckError = (state: StateForFirmwareChecks) 
  */
 const selectIsFirmwareRevisionCheckEnabledAndFailed = (state: StateForFirmwareChecks): boolean => {
     const error = selectFirmwareRevisionCheckError(state);
+    const softErrors: FirmwareRevisionCheckError[] = [
+        'cannot-perform-check-offline',
+        'other-error',
+    ];
 
-    return error ? !['cannot-perform-check-offline', 'other-error'].includes(error) : false;
+    return error !== null ? !softErrors.includes(error) : false;
 };
 
 /**
@@ -469,7 +479,7 @@ const selectIsFirmwareRevisionCheckEnabledAndFailed = (state: StateForFirmwareCh
  */
 export const selectFirmwareHashCheckError = (state: StateForFirmwareChecks) => {
     const device = selectDevice(state);
-    if (!isDeviceAcquired(device) || !device.authenticityChecks) return false;
+    if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
 
     const { isFirmwareHashCheckDisabled } = state.suite.settings;
     const isDisabledByMessage = selectIsFeatureDisabled(state, Feature.firmwareHashCheck);
@@ -486,8 +496,9 @@ export const selectFirmwareHashCheckError = (state: StateForFirmwareChecks) => {
  */
 const selectIsFirmwareHashCheckEnabledAndFailed = (state: StateForFirmwareChecks): boolean => {
     const error = selectFirmwareHashCheckError(state);
+    const softErrors: FirmwareHashCheckError[] = ['check-skipped', 'check-unsupported'];
 
-    return error ? !['check-skipped', 'check-unsupported'].includes(error) : false;
+    return error !== null ? !softErrors.includes(error) : false;
 };
 
 /**
