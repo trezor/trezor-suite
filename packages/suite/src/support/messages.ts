@@ -336,7 +336,7 @@ export default defineMessages({
     },
     TR_ALL_NETWORKS_TOOLTIP: {
         defaultMessage:
-            'View tokens from all {networkCount} networks. Use the buttons on the right to filter by top networks.',
+            'View tokens from all {networkCount} networks. Filter by the most popular networks on the right.',
         id: 'TR_ALL_NETWORKS_TOOLTIP',
     },
     TR_SELECT_TOKEN: {
@@ -344,7 +344,7 @@ export default defineMessages({
         id: 'TR_SELECT_TOKEN',
     },
     TR_SELECT_NAME_OR_ADDRESS: {
-        defaultMessage: 'Search by name, symbol, network or contract address',
+        defaultMessage: 'Search by name, symbol, network, or contract address',
         id: 'TR_SELECT_NAME_OR_ADDRESS',
     },
     TR_TOKEN_NOT_FOUND: {
@@ -352,15 +352,15 @@ export default defineMessages({
         id: 'TR_TOKEN_NOT_FOUND',
     },
     TR_TOKEN_NOT_FOUND_ON_NETWORK: {
-        defaultMessage: 'Token not found on the {networkName} network',
+        defaultMessage: 'Token not found on the {networkName} network.',
         id: 'TR_TOKEN_NOT_FOUND_ON_NETWORK',
     },
     TR_TOKEN_TRY_DIFFERENT_SEARCH: {
-        defaultMessage: 'Please try a different search.',
+        defaultMessage: 'Try a different search.',
         id: 'TR_TOKEN_TRY_DIFFERENT_SEARCH',
     },
     TR_TOKEN_TRY_DIFFERENT_SEARCH_OR_SWITCH: {
-        defaultMessage: 'Please try a different search or switch to another network.',
+        defaultMessage: 'Try a different search or switch to another network.',
         id: 'TR_TOKEN_TRY_DIFFERENT_SEARCH_OR_SWITCH',
     },
     TR_EXCHANGE_STATUS_ERROR: {
@@ -923,7 +923,7 @@ export default defineMessages({
     },
     TR_BUY_FOOTER_TEXT_2: {
         defaultMessage:
-            'Invity does not see any of your payment or KYC information; you share this only with the exchange provider if you choose to finish the transaction.',
+            "Invity doesn't see any of your payment or KYC information; you share this only with the exchange provider if you choose to finish the transaction.",
         id: 'TR_BUY_FOOTER_TEXT_2',
     },
     TR_BUY_MODAL_FOR_YOUR_SAFETY: {
@@ -1423,7 +1423,6 @@ export default defineMessages({
         defaultMessage: 'Swap',
         id: 'TR_COINMARKET_SWAP',
     },
-
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',
         id: 'TR_ADDRESS_MODAL_CLIPBOARD',
@@ -2169,7 +2168,7 @@ export default defineMessages({
         id: 'TR_SAFETY_CHECKS_PROMPT_LEVEL',
     },
     TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING: {
-        defaultMessage: "Do not change this unless you know what you're doing!",
+        defaultMessage: "Only change this if you know what you're doing!",
         id: 'TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING',
     },
     TR_SAFETY_CHECKS_PROMPT_LEVEL_DESC: {
@@ -2472,7 +2471,7 @@ export default defineMessages({
         id: 'TR_SKIP_PIN_DESCRIPTION',
     },
     TR_SKIP_BACKUP: {
-        defaultMessage: 'Skip backup',
+        defaultMessage: 'Skip Backup',
         id: 'TR_SKIP_BACKUP',
     },
     TR_SKIP_BACKUP_DESCRIPTION: {
@@ -3875,7 +3874,6 @@ export default defineMessages({
         id: 'TR_QUICK_ACTION_TOOLTIP_JUST_UPDATED',
         defaultMessage: 'Just updated ({currentVersion})',
     },
-
     TR_QUICK_ACTION_UPDATE_POPOVER_APP_UPDATE_AVAILABLE: {
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_UPDATE_AVAILABLE',
         defaultMessage: 'App update available',
@@ -3888,12 +3886,10 @@ export default defineMessages({
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_DOWNLOADED',
         defaultMessage: 'Suite downloaded a new Trezor update!',
     },
-
     TR_QUICK_ACTION_UPDATE_POPOVER_TREZOR_UPDATE_AVAILABLE: {
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_TREZOR_UPDATE_AVAILABLE',
         defaultMessage: 'Trezor update available',
     },
-
     TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE: {
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE',
         defaultMessage: 'Click to start update',
@@ -3906,7 +3902,6 @@ export default defineMessages({
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_WHATS_NEW',
         defaultMessage: 'What’s new?',
     },
-
     TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED: {
         id: 'TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED',
         defaultMessage: 'Enabled',
@@ -5563,7 +5558,7 @@ export default defineMessages({
     REVIEW_AND_SEND_TRANSACTION: {
         id: 'REVIEW_AND_SEND_TRANSACTION',
         description: 'Sign and send button used in send form',
-        defaultMessage: 'Review & Send',
+        defaultMessage: 'Review & send',
     },
     TR_CONNECT_TREZOR_TO_SEND_BUTTON: {
         id: 'TR_CONNECT_TREZOR_TO_SEND_BUTTON',
@@ -8223,7 +8218,7 @@ export default defineMessages({
     },
     TR_STEP_OF_TOTAL: {
         id: 'TR_STEP_OF_TOTAL',
-        defaultMessage: 'Step {index} of {total}',
+        defaultMessage: 'Select a token',
     },
     TR_COINJOIN_STEP_1_TITLE: {
         id: 'TR_COINJOIN_STEP_1_TITLE',
