@@ -147,6 +147,7 @@ export type FlexProps = AllowedFrameProps & {
     className?: string;
     onClick?: () => void;
     'data-testid'?: string;
+    as?: string;
 };
 
 const Flex = ({
@@ -160,6 +161,7 @@ const Flex = ({
     isReversed = false,
     className,
     'data-testid': dataTestId,
+    as = 'div',
     hasDivider = false,
     dividerColor,
     onClick,
@@ -186,6 +188,7 @@ const Flex = ({
                 elevation,
             })}
             onClick={onClick}
+            as={as}
             {...frameProps}
         >
             {children}

@@ -6,12 +6,12 @@ import { PassphraseWalletConfirmationStep1 } from './PassphraseWalletConfirmatio
 import { PassphraseWalletConfirmationStep2 } from './PassphraseWalletConfirmationStep2';
 import { PassphraseWalletConfirmationStep3 } from './PassphraseWalletConfirmationStep3';
 import { ContentType } from './types';
-import { NewModal } from '@trezor/components';
 
 type PassphraseWalletConfirmationContentProps = {
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     onDeviceOffer: boolean;
     onRetry: () => void;
+    onCancel: () => void;
     contentType: ContentType;
     setContentType: Dispatch<SetStateAction<ContentType>>;
 };
@@ -20,6 +20,7 @@ const PassphraseWalletConfirmationContent = ({
     onSubmit,
     onDeviceOffer,
     onRetry,
+    onCancel,
     contentType,
     setContentType,
 }: PassphraseWalletConfirmationContentProps): React.JSX.Element => {
@@ -29,6 +30,7 @@ const PassphraseWalletConfirmationContent = ({
                 <PassphraseWalletConfirmationStep1
                     setContentType={setContentType}
                     onRetry={onRetry}
+                    onCancel={onCancel}
                 />
             );
         case 'step2':
@@ -71,23 +73,22 @@ export const PassphraseWalletConfirmation = ({
     };
 
     return (
-        <NewModal.Backdrop onClick={onCancel} alignment={{ x: 'left', y: 'top' }} padding={5}>
-            <SwitchDeviceModal onCancel={onCancel}>
-                <CardWithDevice
+        <SwitchDeviceModal onCancel={onCancel}>
+            <CardWithDevice
+                onCancel={onCancel}
+                device={device}
+                onBackButtonClick={handleBackButtonClick}
+                isFullHeaderVisible
+            >
+                <PassphraseWalletConfirmationContent
+                    onSubmit={onSubmit}
+                    onDeviceOffer={onDeviceOffer}
+                    contentType={contentType}
+                    setContentType={setContentType}
+                    onRetry={onRetry}
                     onCancel={onCancel}
-                    device={device}
-                    onBackButtonClick={handleBackButtonClick}
-                    isFullHeaderVisible
-                >
-                    <PassphraseWalletConfirmationContent
-                        onSubmit={onSubmit}
-                        onDeviceOffer={onDeviceOffer}
-                        contentType={contentType}
-                        setContentType={setContentType}
-                        onRetry={onRetry}
-                    />
-                </CardWithDevice>
-            </SwitchDeviceModal>
-        </NewModal.Backdrop>
+                />
+            </CardWithDevice>
+        </SwitchDeviceModal>
     );
 };

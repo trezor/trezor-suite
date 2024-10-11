@@ -1,48 +1,54 @@
-import styled from 'styled-components';
-import { variables, H3, Image } from '@trezor/components';
+import { H3, Image, Row, Paragraph, Button, Column } from '@trezor/components';
+import { CoinLogo } from '@trezor/product-components';
+import { spacings } from '@trezor/theme';
+
 import { Translation } from 'src/components/suite';
+import { useSelector, useDispatch } from 'src/hooks/suite';
+import { selectIsDeviceUsingPassphrase } from '@suite-common/wallet-core';
+import { goto } from 'src/actions/suite/routerActions';
+import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 
-const Wrapper = styled.div`
-    display: flex;
-    padding: 54px 42px;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+export const EmptyWallet = () => {
+    const { enabledNetworks, mainnets } = useEnabledNetworks();
+    const isPassphraseType = useSelector(selectIsDeviceUsingPassphrase);
+    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
+    const dispatch = useDispatch();
 
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 54px 20px;
-    }
-`;
+    const supportedNetworks = mainnets.filter(({ symbol }) =>
+        deviceSupportedNetworkSymbols.includes(symbol),
+    );
 
-const Content = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`;
+    const areAllNetworksEnabled = supportedNetworks.length === enabledNetworks.length;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Title = styled(H3)`
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    margin-bottom: 30px;
-
-    @media (max-width: ${variables.SCREEN_SIZE.MD}) {
-        text-align: center;
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledImage = styled(Image)`
-    display: flex;
-    margin-bottom: 24px;
-`;
-
-export const EmptyWallet = () => (
-    <Wrapper data-testid="@dashboard/wallet-ready">
-        <StyledImage image="UNI_SUCCESS" />
-        <Content>
-            <Title>
+    return (
+        <Column gap={spacings.xxs} data-testid="@dashboard/wallet-ready">
+            <Image image="UNI_SUCCESS" />
+            <H3 margin={{ top: spacings.md }}>
                 <Translation id="TR_YOUR_WALLET_IS_READY_WHAT" />
-            </Title>
-        </Content>
-    </Wrapper>
-);
+            </H3>
+            {isPassphraseType && !areAllNetworksEnabled && (
+                <Row gap={spacings.xs} flexWrap="wrap">
+                    <Paragraph variant="tertiary" typographyStyle="hint">
+                        <Translation id="TR_CHECKED_BALANCES_ON" />:
+                    </Paragraph>
+                    <Row gap={spacings.xxs} flexWrap="wrap">
+                        {enabledNetworks.map(network => (
+                            <CoinLogo key={network} symbol={network} size={16} />
+                        ))}
+                    </Row>
+                    <Button
+                        variant="tertiary"
+                        icon="plus"
+                        size="tiny"
+                        onClick={() => {
+                            dispatch(goto('settings-coins'));
+                        }}
+                    >
+                        <Translation id="TR_ADD" />
+                    </Button>
+                </Row>
+            )}
+        </Column>
+    );
+};

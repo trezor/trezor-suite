@@ -1,4 +1,4 @@
-import { H3, Spinner, NewModal, Column } from '@trezor/components';
+import { H3, Spinner, Column } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
@@ -11,20 +11,18 @@ export const DiscoveryLoader = () => {
     if (!device) return null;
 
     return (
-        <NewModal.Backdrop alignment={{ x: 'left', y: 'top' }} padding={5}>
-            <SwitchDeviceModal data-testid="@discovery/loader">
-                <CardWithDevice device={device} isFullHeaderVisible={false}>
-                    <Column
-                        justifyContent="center"
-                        margin={{ top: spacings.xxxl, bottom: spacings.xl }}
-                    >
-                        <Spinner size={80} isGrey={false} />
-                        <H3 align="center" margin={{ top: spacings.xxxxl }}>
-                            <Translation id="TR_COIN_DISCOVERY_LOADER_DESCRIPTION" />
-                        </H3>
-                    </Column>
-                </CardWithDevice>
-            </SwitchDeviceModal>
-        </NewModal.Backdrop>
+        <SwitchDeviceModal data-testid="@discovery/loader">
+            <CardWithDevice device={device} isFullHeaderVisible={false}>
+                <Column
+                    justifyContent="center"
+                    margin={{ top: spacings.xxxl, bottom: spacings.xl }}
+                >
+                    <Spinner size={80} isGrey={false} />
+                    <H3 align="center" margin={{ top: spacings.xxxxl }}>
+                        <Translation id="TR_COIN_DISCOVERY_LOADER_DESCRIPTION" />
+                    </H3>
+                </Column>
+            </CardWithDevice>
+        </SwitchDeviceModal>
     );
 };
