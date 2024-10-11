@@ -2,6 +2,7 @@
  * messages to UI emitted as UI_EVENT
  */
 import type { EventTypeDeviceSelected } from '@trezor/connect-analytics';
+import type { ThpDeviceProperties } from '@trezor/protocol';
 
 import type { PROTO } from '../constants';
 import type { Device, CoinInfo, BitcoinNetworkInfo, SelectFeeLevel } from '../types';
@@ -40,6 +41,7 @@ export const UI_REQUEST = {
     REQUEST_PASSPHRASE: 'ui-request_passphrase',
     REQUEST_PASSPHRASE_ON_DEVICE: 'ui-request_passphrase_on_device',
     INVALID_PASSPHRASE: 'ui-invalid_passphrase',
+    REQUEST_THP_PAIRING: 'ui-request_thp_pairing',
     CONNECT: 'ui-connect',
     LOADING: 'ui-loading',
     SET_OPERATION: 'ui-set_operation',
@@ -121,6 +123,13 @@ export type UiRequestDeviceAction =
           payload: {
               device: Device;
               type?: typeof undefined;
+          };
+      }
+    | {
+          type: typeof UI_REQUEST.REQUEST_THP_PAIRING;
+          payload: {
+              device: Device;
+              type?: ThpDeviceProperties['pairing_methods'];
           };
       }
     | {

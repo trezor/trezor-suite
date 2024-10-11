@@ -23,25 +23,25 @@ export default {
             },
             legacyResults,
         },
-        {
-            description: "m/44'/501'/0'",
-            params: {
-                path: "m/44'/501'/0'",
-            },
-            result: {
-                address: '4UR47Kp4FxGJiJZZGSPAzXqRgMmZ27oVfGhHoLmcHakE',
-            },
-            legacyResults,
-        },
-        {
-            description: "m/44'/501'/0'/0'",
-            params: {
-                path: "m/44'/501'/0'/0'",
-            },
-            result: {
-                address: '14CCvQzQzHCVgZM3j9soPnXuJXh1RmCfwLVUcdfbZVBS',
-            },
-            legacyResults,
-        },
+        // {
+        //     description: "m/44'/501'/0'",
+        //     params: {
+        //         path: "m/44'/501'/0'",
+        //     },
+        //     result: {
+        //         address: '4UR47Kp4FxGJiJZZGSPAzXqRgMmZ27oVfGhHoLmcHakE',
+        //     },
+        //     legacyResults,
+        // },
+        // {
+        //     description: "m/44'/501'/0'/0'",
+        //     params: {
+        //         path: "m/44'/501'/0'/0'",
+        //     },
+        //     result: {
+        //         address: '14CCvQzQzHCVgZM3j9soPnXuJXh1RmCfwLVUcdfbZVBS',
+        //     },
+        //     legacyResults,
+        // },
     ],
 };

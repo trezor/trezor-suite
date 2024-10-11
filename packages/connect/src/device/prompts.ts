@@ -6,7 +6,11 @@ import type { Device, DeviceEvents } from './Device';
 
 export type PromptCallback<T> = (response: T | null, error?: Error) => void;
 
-type PromptEvents = typeof DEVICE.PIN | typeof DEVICE.PASSPHRASE | typeof DEVICE.WORD;
+type PromptEvents =
+    | typeof DEVICE.PIN
+    | typeof DEVICE.PASSPHRASE
+    | typeof DEVICE.WORD
+    | typeof DEVICE.THP_PAIRING;
 // infer all args of Device.emit but one (callback)
 type PromptArgs<T extends unknown[]> = T extends readonly [...infer Args, any] ? Args : never;
 // infer last arg of Device.emit (callback)
@@ -33,6 +37,8 @@ export const cancelPrompt = (device: Device, expectResponse = true) => {
         name: 'Cancel',
         data: {},
         protocol: device.protocol,
+        protocolState: device.protocolState,
+        // signal: abortController.signal, // TODO?
     };
 
     return expectResponse ? device.transport.call(cancelArgs) : device.transport.send(cancelArgs);
@@ -42,7 +48,7 @@ const prompt = <E extends PromptEvents>(event: E, ...[device, ...args]: DeviceEv
     // return non nullable first arg of PromptCallback<E>
     return new Promise<NonNullable<Parameters<DeviceEventCallback<E>>[0]>>((resolve, reject) => {
         const cancelAndReject = (error?: Error) =>
-            cancelPrompt(device).then(onCancel =>
+            cancelPrompt(device, event !== DEVICE.THP_PAIRING).then(onCancel =>
                 reject(
                     error ||
                         new Error(
@@ -59,7 +65,7 @@ const prompt = <E extends PromptEvents>(event: E, ...[device, ...args]: DeviceEv
             const callback = (...[response, error]: Parameters<DeviceEventCallback<E>>) => {
                 device.clearCancelableAction();
                 if (error || response == null) {
-                    cancelAndReject(error);
+                    cancelAndReject(error || new Error('Cancelled'));
                 } else {
                     resolve(response);
                 }
@@ -86,4 +92,8 @@ export const promptPin = (device: Device, type?: Messages.PinMatrixRequestType) 
 
 export const promptWord = (device: Device, type: Messages.WordRequestType) => {
     return prompt(DEVICE.WORD, device, type);
+};
+
+export const promptThpPairing = (device: Device) => {
+    return prompt(DEVICE.THP_PAIRING, device);
 };

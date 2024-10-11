@@ -20,7 +20,7 @@ export const DeviceAcquire = () => {
 
     const ctaButton = (
         <Button data-testid="@device-acquire" isLoading={isDeviceLocked} onClick={handleClick}>
-            <Translation id="TR_ACQUIRE_DEVICE" />
+            Pair Trezor with suite
         </Button>
     );
 

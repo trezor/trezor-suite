@@ -12,6 +12,7 @@ export const UI_RESPONSE = {
     RECEIVE_CONFIRMATION: 'ui-receive_confirmation',
     RECEIVE_PIN: 'ui-receive_pin',
     RECEIVE_PASSPHRASE: 'ui-receive_passphrase',
+    RECEIVE_THP_PAIRING_TAG: 'ui-receive_thp_pairing_tag',
     RECEIVE_DEVICE: 'ui-receive_device',
     RECEIVE_ACCOUNT: 'ui-receive_account',
     RECEIVE_FEE: 'ui-receive_fee',
@@ -68,6 +69,14 @@ export interface UiResponsePassphrase {
         | undefined;
 }
 
+export interface UiResponseThpPairingTag {
+    type: typeof UI_RESPONSE.RECEIVE_THP_PAIRING_TAG;
+    payload: {
+        source: 'code-entry' | 'qr-code' | 'nfc';
+        value: string;
+    };
+}
+
 export interface UiResponsePassphraseAction {
     type: typeof UI_RESPONSE.INVALID_PASSPHRASE_ACTION;
     payload: boolean;
@@ -110,6 +119,7 @@ export type UiResponseEvent =
     | UiResponsePin
     | UiResponseWord
     | UiResponsePassphrase
+    | UiResponseThpPairingTag
     | UiResponsePassphraseAction
     | UiResponseAccount
     | UiResponseFee
