@@ -55,7 +55,9 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
     });
 
     const permutation = [...nonChangeOutputPermutation];
-    const newPositionOfChange = randomInt(0, permutation.length);
+    // Min (0) is inclusive, max (permutation.length + 1) is exclusive
+    // Example: for array [0, 1, 2] the result can be: 0, 1, 2, 3
+    const newPositionOfChange = randomInt(0, permutation.length + 1);
     permutation.splice(newPositionOfChange, 0, ...changeOutputPermutation);
     const sortedOutputs = permutation.map(index => convertedOutputs[index]);
 
