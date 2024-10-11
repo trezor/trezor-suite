@@ -20,12 +20,13 @@ import {
     formatAmount,
     formatNetworkAmount,
     getFiatRateKey,
-    getIsPhishingTransaction,
     getNftTokenId,
     isNftTokenTransfer,
     localizeNumber,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
+
+import { getIsPhishingTransaction } from '@suite-common/token-definitions';
 
 type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & {
     targets: (TransactionTarget & { metadataLabel?: string })[];

@@ -16,7 +16,6 @@ export * from './settingsUtils';
 export * from './solanaUtils';
 export * from './transactionUtils';
 export * from './validationUtils';
-export * from './antiFraud';
 export * from './stakingUtils';
 export * from './reviewTransactionUtils';
 export * from './filterReceiveAccounts';

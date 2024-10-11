@@ -2,10 +2,11 @@ import { D } from '@mobily/ts-belt';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { TokenDefinitions, isTokenDefinitionKnown } from '@suite-common/token-definitions';
 import { getNetworkType } from '@suite-common/wallet-config';
+import { isNftTokenTransfer } from '@suite-common/wallet-utils';
 
-import { isNftTokenTransfer } from './transactionUtils';
+import type { TokenDefinitions } from './tokenDefinitionsTypes';
+import { isTokenDefinitionKnown } from './tokenDefinitionsUtils';
 
 export const getIsZeroValuePhishing = (transaction: WalletAccountTransaction) =>
     new BigNumber(transaction.amount).isEqualTo(0) &&
