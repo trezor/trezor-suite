@@ -116,6 +116,10 @@ export default defineMessages({
         id: 'TR_ACTIVE',
         defaultMessage: 'active',
     },
+    TR_ADD: {
+        id: 'TR_ADD',
+        defaultMessage: 'Add',
+    },
     TR_ADD_ACCOUNT: {
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
@@ -329,6 +333,14 @@ export default defineMessages({
     TR_CONFIRM_ADDRESS: {
         defaultMessage: 'Confirm address',
         id: 'TR_CONFIRM_ADDRESS',
+    },
+    TR_COINS_CHECKED: {
+        defaultMessage: 'Coins checked',
+        id: 'TR_COINS_CHECKED',
+    },
+    TR_CHECKED_BALANCES_ON: {
+        defaultMessage: 'Checked balances on',
+        id: 'TR_CHECKED_BALANCES_ON',
     },
     TR_ALL_NETWORKS: {
         defaultMessage: 'All networks ({networkCount})',

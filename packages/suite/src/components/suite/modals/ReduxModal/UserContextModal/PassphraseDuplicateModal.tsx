@@ -1,12 +1,13 @@
 import { Button, Column, H3, Text } from '@trezor/components';
 
 import { authorizeDeviceThunk, switchDuplicatedDevice } from '@suite-common/wallet-core';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
-import { SwitchDeviceRenderer } from 'src/views/suite/SwitchDevice/SwitchDeviceRenderer';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 type PassphraseDuplicateModalProps = {
     device: TrezorDevice;
@@ -23,34 +24,35 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
     const handleAuthorizeDevice = () => dispatch(authorizeDeviceThunk());
 
     return (
-        <SwitchDeviceRenderer isCancelable={false}>
+        <SwitchDeviceModal>
             <CardWithDevice device={device} isFullHeaderVisible={false}>
-                <H3 margin={{ top: 12 }} data-testid="@passphrase-duplicate-header">
-                    <Translation id="TR_WALLET_DUPLICATE_TITLE" />
-                </H3>
-                <Text color="textSubdued">
-                    <Translation id="TR_WALLET_DUPLICATE_DESC" />
-                </Text>
-
-                <Column gap={8} margin={{ top: 20 }}>
-                    <Button
-                        variant="primary"
-                        onClick={handleSwitchDevice}
-                        isDisabled={isDeviceLocked}
-                        isFullWidth
-                    >
-                        <Translation id="TR_WALLET_DUPLICATE_SWITCH" />
-                    </Button>
-                    <Button
-                        variant="tertiary"
-                        onClick={handleAuthorizeDevice}
-                        isDisabled={isDeviceLocked}
-                        isFullWidth
-                    >
-                        <Translation id="TR_WALLET_DUPLICATE_RETRY" />
-                    </Button>
+                <Column gap={spacings.xs} margin={{ top: spacings.xxs }} alignItems="stretch">
+                    <H3 data-testid="@passphrase-duplicate-header">
+                        <Translation id="TR_WALLET_DUPLICATE_TITLE" />
+                    </H3>
+                    <Text variant="tertiary">
+                        <Translation id="TR_WALLET_DUPLICATE_DESC" />
+                    </Text>
+                    <Column gap={spacings.xs} margin={{ top: spacings.lg }}>
+                        <Button
+                            variant="primary"
+                            onClick={handleSwitchDevice}
+                            isDisabled={isDeviceLocked}
+                            isFullWidth
+                        >
+                            <Translation id="TR_WALLET_DUPLICATE_SWITCH" />
+                        </Button>
+                        <Button
+                            variant="tertiary"
+                            onClick={handleAuthorizeDevice}
+                            isDisabled={isDeviceLocked}
+                            isFullWidth
+                        >
+                            <Translation id="TR_WALLET_DUPLICATE_RETRY" />
+                        </Button>
+                    </Column>
                 </Column>
             </CardWithDevice>
-        </SwitchDeviceRenderer>
+        </SwitchDeviceModal>
     );
 };

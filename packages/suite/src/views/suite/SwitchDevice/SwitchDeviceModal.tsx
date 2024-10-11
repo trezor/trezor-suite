@@ -1,13 +1,12 @@
 import { useEvent } from 'react-use';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
+import { NewModal, Column } from '@trezor/components';
 import { TrafficLightOffset } from '../../../components/suite/TrafficLightOffset';
 
 type SwitchDeviceModalProps = {
     children?: React.ReactNode;
-    isCancelable?: boolean;
-    onBackClick?: () => void;
     onCancel?: () => void;
     'data-testid'?: string;
     isAnimationEnabled?: boolean;
@@ -15,14 +14,6 @@ type SwitchDeviceModalProps = {
 
 const Container = styled.div`
     width: 378px;
-`;
-
-const DeviceItemsWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: ${spacingsPx.md};
-    flex: 1;
 `;
 
 const initial = {
@@ -43,25 +34,27 @@ export const SwitchDeviceModal = ({
     });
 
     return (
-        <TrafficLightOffset>
-            <Container
-                onClick={e => e.stopPropagation()} // needed because of the Backdrop implementation
-                data-testid={dataTest}
-            >
-                <DeviceItemsWrapper>
-                    <motion.div
-                        initial={isAnimationEnabled ? initial : false}
-                        exit={initial}
-                        animate={{
-                            width: 369,
-                            height: 'auto',
-                        }}
-                        style={{ originX: 0, originY: 0, overflow: 'hidden' }}
-                    >
-                        {children}
-                    </motion.div>
-                </DeviceItemsWrapper>
-            </Container>
-        </TrafficLightOffset>
+        <NewModal.Backdrop onClick={onCancel} alignment={{ x: 'left', y: 'top' }} padding={5}>
+            <TrafficLightOffset>
+                <Container
+                    onClick={e => e.stopPropagation()} // needed because of the Backdrop implementation
+                    data-testid={dataTest}
+                >
+                    <Column alignItems="flex-start" gap={spacings.md} flex="1">
+                        <motion.div
+                            initial={isAnimationEnabled ? initial : false}
+                            exit={initial}
+                            animate={{
+                                width: 369,
+                                height: 'auto',
+                            }}
+                            style={{ originX: 0, originY: 0, overflow: 'hidden' }}
+                        >
+                            {children}
+                        </motion.div>
+                    </Column>
+                </Container>
+            </TrafficLightOffset>
+        </NewModal.Backdrop>
     );
 };

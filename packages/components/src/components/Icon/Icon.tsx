@@ -120,19 +120,6 @@ const SVG = styled(ReactSVG)`
             stroke 0.15s,
             fill 0.15s;
     }
-
-    ${({ onClick }) =>
-        onClick &&
-        css`
-            cursor: pointer;
-
-            &:focus-visible {
-                svg {
-                    transition: opacity 0.2s;
-                    opacity: 0.5;
-                }
-            }
-        `}
 ` as typeof ReactSVG;
 
 export type IconName = IconNameNew | IconNameDeprecated;
@@ -193,7 +180,7 @@ export const Icon = forwardRef(
 
         return (
             <SvgWrapper
-                $cursorPointer={cursorPointer}
+                $cursorPointer={!!onClick || cursorPointer}
                 $hoverColor={hoverColor}
                 $color={color}
                 $variant={variant}
