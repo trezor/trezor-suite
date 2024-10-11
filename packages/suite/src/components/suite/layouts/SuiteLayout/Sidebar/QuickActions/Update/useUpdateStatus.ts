@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { useDevice, useSelector } from '../../../../../../../hooks/suite';
 import {
     DesktopUpdateState,
@@ -11,10 +9,6 @@ type UpdateStatusData = {
     updateStatus: UpdateStatus;
     updateStatusDevice: UpdateStatusDevice;
     updateStatusSuite: UpdateStatusSuite;
-
-    showBannerNotification: boolean;
-    setClosedNotificationSuite: (value: boolean) => void;
-    setClosedNotificationDevice: (value: boolean) => void;
 };
 
 type GetSuiteUpdateStatusArgs = {
@@ -50,9 +44,6 @@ const getSuiteUpdateStatus = ({ desktopUpdate }: GetSuiteUpdateStatusArgs): Upda
 };
 
 export const useUpdateStatus = (): UpdateStatusData => {
-    const [closedNotificationDevice, setClosedNotificationDevice] = useState(false);
-    const [closedNotificationSuite, setClosedNotificationSuite] = useState(false);
-
     const { device } = useDevice();
     const { desktopUpdate } = useSelector(state => state);
 
@@ -70,16 +61,9 @@ export const useUpdateStatus = (): UpdateStatusData => {
     const updateStatusDevice =
         isFirmwareOutdated && !isSuiteUpdateInProgress ? 'update-available' : 'up-to-date';
 
-    const showBannerNotification =
-        (updateStatusSuite !== 'up-to-date' && !closedNotificationSuite) ||
-        (updateStatusDevice !== 'up-to-date' && !closedNotificationDevice);
-
     const common: Omit<UpdateStatusData, 'updateStatus'> = {
         updateStatusDevice,
         updateStatusSuite,
-        showBannerNotification,
-        setClosedNotificationDevice,
-        setClosedNotificationSuite,
     };
 
     if (
