@@ -19,6 +19,9 @@
         {
             "path": "../../suite-common/wallet-config"
         },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../components" },
         { "path": "../connect" },
         { "path": "../dom-utils" },
