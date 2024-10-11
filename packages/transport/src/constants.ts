@@ -26,9 +26,14 @@ export const TREZOR_USB_DESCRIPTORS = [
 export const ACTION_TIMEOUT = 10000;
 
 export const TRANSPORT = {
+    /* events */
     START: 'transport-start',
     ERROR: 'transport-error',
-    UPDATE: 'transport-update',
+    DEVICE_CONNECTED: 'transport-device_connected',
+    DEVICE_DISCONNECTED: 'transport-device_disconnected',
+    DEVICE_SESSION_CHANGED: 'transport-device_session_changed',
+    DEVICE_REQUEST_RELEASE: 'transport-device_request_release',
+    /* messages */
     DISABLE_WEBUSB: 'transport-disable_webusb',
     REQUEST_DEVICE: 'transport-request_device',
     GET_INFO: 'transport-get_info',

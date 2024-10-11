@@ -1,11 +1,5 @@
 import * as protobuf from 'protobufjs/light';
-import {
-    arrayPartition,
-    scheduleAction,
-    ScheduleActionParams,
-    ScheduledAction,
-    Deferred,
-} from '@trezor/utils';
+import { scheduleAction, ScheduleActionParams, ScheduledAction } from '@trezor/utils';
 import { TypedEmitter } from '@trezor/utils';
 import { PROTOCOL_MALFORMED, TransportProtocol } from '@trezor/protocol';
 import { MessageFromTrezor } from '@trezor/protobuf';
@@ -36,14 +30,6 @@ export type ReleaseInput = {
     session: Session;
     onClose?: boolean;
 };
-
-export type DeviceDescriptorDiff = { descriptor: Descriptor } & (
-    | { type: 'connected' | 'disconnected' }
-    | {
-          type: 'acquired' | 'released';
-          subtype: 'here' | 'elsewhere';
-      }
-);
 
 export interface AbstractTransportParams {
     messages?: Record<string, any>;
@@ -88,7 +74,10 @@ type ReadWriteError =
     | typeof ERRORS.INTERFACE_DATA_TRANSFER;
 
 class TransportEmitter extends TypedEmitter<{
-    [TRANSPORT.UPDATE]: DeviceDescriptorDiff;
+    [TRANSPORT.DEVICE_CONNECTED]: Descriptor;
+    [TRANSPORT.DEVICE_DISCONNECTED]: Descriptor;
+    [TRANSPORT.DEVICE_SESSION_CHANGED]: Descriptor;
+    [TRANSPORT.DEVICE_REQUEST_RELEASE]: Descriptor;
     [TRANSPORT.ERROR]:
         | typeof ERRORS.HTTP_ERROR // most common error - bridge was killed
         // probably never happens, wrong shape of data came from bridge
@@ -123,38 +112,6 @@ export abstract class AbstractTransport extends TransportEmitter {
      * minimal data to track device on transport layer
      */
     protected descriptors: Descriptor[];
-    /**
-     * when calling acquire, after it resolves successfully, we store the result (session)
-     * and wait for next descriptors update (/listen in case of bridge or 'descriptors' message from sessions background)
-     * and compare it with acquiringSession. Typically both values would equal but in certain edgecases
-     * another application might have acquired session right after this application which means that
-     * the originally received session is not longer valid and device is used by another application
-     */
-    protected acquiredUnconfirmed: Record<string, Session> = {};
-    /**
-     * promise that resolves on when next descriptors are delivered
-     */
-    protected listenPromise: Record<
-        string,
-        Deferred<
-            ResultWithTypedError<
-                Session,
-                | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
-                | typeof ERRORS.SESSION_WRONG_PREVIOUS
-                | typeof ERRORS.DEVICE_NOT_FOUND
-                | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
-                | typeof ERRORS.UNEXPECTED_ERROR
-                | typeof ERRORS.ABORTED_BY_TIMEOUT
-                | typeof ERRORS.ABORTED_BY_SIGNAL
-            >
-        >
-    > = {};
-
-    /**
-     * used to postpone resolving of transport.release until next descriptors are delivered
-     */
-    protected releasePromise?: Deferred<any>;
-    protected releaseUnconfirmed: Record<string, Session> = {};
 
     /**
      * each transport class accepts signal parameter in constructor and implements it's own abort controller.
@@ -242,7 +199,7 @@ export abstract class AbstractTransport extends TransportEmitter {
      * Release session
      */
     abstract release(params: ReleaseInput & AbortableParam): AsyncResultWithTypedError<
-        void,
+        null,
         | typeof ERRORS.SESSION_NOT_FOUND
         // bridge
         | typeof ERRORS.HTTP_ERROR
@@ -312,46 +269,6 @@ export abstract class AbstractTransport extends TransportEmitter {
         this.abortController.abort();
         this.abortController = new AbortController();
         this.descriptors = [];
-        this.acquiredUnconfirmed = {};
-        this.listenPromise = {};
-        this.releaseUnconfirmed = {};
-        this.releasePromise = undefined;
-    }
-
-    private getDiff(nextDescriptors: Descriptor[]): DeviceDescriptorDiff[] {
-        const oldDescriptors = new Map(this.descriptors.map(d => [getKey(d), d]));
-        const newDescriptors = new Map(nextDescriptors.map(d => [getKey(d), d]));
-
-        const [remaining, connected] = arrayPartition(nextDescriptors, n =>
-            oldDescriptors.has(getKey(n)),
-        );
-
-        const disconnected = this.descriptors.filter(d => !newDescriptors.has(getKey(d)));
-
-        const changed = remaining.filter(d => oldDescriptors.get(getKey(d))?.session !== d.session);
-
-        return [
-            ...disconnected.map(descriptor => ({ type: 'disconnected', descriptor }) as const),
-            ...connected.map(descriptor => ({ type: 'connected', descriptor }) as const),
-            ...changed.map(descriptor => {
-                if (typeof descriptor.session === 'string') {
-                    const subtype =
-                        descriptor.session === this.acquiredUnconfirmed[descriptor.path]
-                            ? 'here'
-                            : 'elsewhere';
-
-                    return { type: 'acquired', subtype, descriptor } as const;
-                } else {
-                    const subtype =
-                        this.descriptors.find(prevD => prevD.path === descriptor.path)?.session ===
-                        this.releaseUnconfirmed[descriptor.path]
-                            ? 'here'
-                            : 'elsewhere';
-
-                    return { type: 'released', subtype, descriptor } as const;
-                }
-            }),
-        ];
     }
 
     /**
@@ -364,62 +281,40 @@ export abstract class AbstractTransport extends TransportEmitter {
         if (this.stopped) {
             return;
         }
-        const diff = this.getDiff(nextDescriptors);
-        this.logger?.debug('nextDescriptors', nextDescriptors, 'diff', diff);
+
+        const oldDescriptors = new Map(this.descriptors.map(d => [getKey(d), d]));
+        const newDescriptors = new Map(nextDescriptors.map(d => [getKey(d), d]));
+
+        // present descriptors
+        this.descriptors
+            .filter(d => !newDescriptors.has(getKey(d)))
+            .forEach(descriptor =>
+                // descriptor in present batch but not in incoming -> disconnected device
+                this.emit(TRANSPORT.DEVICE_DISCONNECTED, descriptor),
+            );
+
+        // incoming descriptors
+        nextDescriptors.forEach(descriptor => {
+            const prevDescriptor = oldDescriptors.get(getKey(descriptor));
+
+            if (!prevDescriptor) {
+                // descriptor in incoming batch but not in present -> connected device
+                this.emit(TRANSPORT.DEVICE_CONNECTED, descriptor);
+            } else if (prevDescriptor.session !== descriptor.session) {
+                // present session different than incoming -> device acquired or released
+                this.emit(TRANSPORT.DEVICE_SESSION_CHANGED, descriptor);
+            }
+        });
 
         // even when there is no change from our point of view (see diff.didUpdate) it makes sense to update local descriptors because the
         // last descriptors we handled might in fact be different to what we have saved locally from the previous update. the reason is that
         // legacy bridge backends might be working with a different set of fields (eg. debug, debugSession). and we need to save this since
         // we need to pass this data to the next /listen call
         this.descriptors = nextDescriptors;
+    }
 
-        if (!diff.length) {
-            return;
-        }
-
-        Object.keys(this.listenPromise).forEach(path => {
-            const descriptor = nextDescriptors.find(device => device.path === path);
-
-            if (!descriptor) {
-                return this.listenPromise[path].resolve(
-                    this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION }),
-                );
-            }
-
-            const listenedPathChanged = diff.find(
-                d => d.descriptor.path === path && ['acquired', 'released'].includes(d.type),
-            )?.descriptor;
-
-            if (!listenedPathChanged) {
-                return;
-            }
-
-            if (this.acquiredUnconfirmed[path]) {
-                if (listenedPathChanged.session === this.acquiredUnconfirmed[path]) {
-                    this.listenPromise[path].resolve(this.success(this.acquiredUnconfirmed[path]));
-                } else {
-                    // another app took over
-                    this.listenPromise[path].resolve(
-                        this.error({ error: ERRORS.SESSION_WRONG_PREVIOUS }),
-                    );
-                }
-                delete this.acquiredUnconfirmed[path];
-            }
-
-            if (this.releaseUnconfirmed[path]) {
-                if (!listenedPathChanged.session) {
-                    // todo: solve me! this value is not used anyway. should be typed better
-                    // @ts-expect-error
-                    this.listenPromise[path].resolve(this.success(null));
-                    delete this.releaseUnconfirmed[path];
-                }
-                // when releasing we don't really care about else
-            }
-        });
-
-        diff.forEach(diffItem => {
-            this.emit(TRANSPORT.UPDATE, diffItem);
-        });
+    public getDescriptor(path: PathPublic) {
+        return this.descriptors.find(d => d.path === path);
     }
 
     /**

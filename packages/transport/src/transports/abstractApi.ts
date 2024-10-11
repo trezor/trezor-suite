@@ -1,5 +1,4 @@
 import { SessionsBackground } from '../sessions/background';
-import { createDeferred } from '@trezor/utils';
 import { v1 as v1Protocol } from '@trezor/protocol';
 
 import {
@@ -14,6 +13,7 @@ import { SessionsClient } from '../sessions/client';
 import * as ERRORS from '../errors';
 import { Session } from '../types';
 import { SessionsBackgroundInterface } from '../sessions/types';
+import { TRANSPORT } from '../constants';
 
 interface ConstructorParams extends AbstractTransportParams {
     api: AbstractApi;
@@ -71,6 +71,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             this.handleDescriptorsChange(descriptors);
         });
 
+        this.sessionsClient.on('releaseRequest', descriptor => {
+            this.emit(TRANSPORT.DEVICE_REQUEST_RELEASE, descriptor);
+        });
+
         return this.success(undefined);
     }
 
@@ -102,17 +106,11 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             async signal => {
                 const { path } = input;
 
-                if (this.listening) {
-                    this.listenPromise[path] = createDeferred();
-                }
-
                 const acquireIntentResponse = await this.sessionsClient.acquireIntent(input);
 
                 if (!acquireIntentResponse.success) {
                     return this.error({ error: acquireIntentResponse.error });
                 }
-
-                this.acquiredUnconfirmed[path] = acquireIntentResponse.payload.session;
 
                 const reset = !!input.previous;
                 const openDeviceResult = await this.api.openDevice(
@@ -122,35 +120,26 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 );
 
                 if (!openDeviceResult.success) {
-                    if (this.listenPromise[path]) {
-                        this.listenPromise[path].resolve(openDeviceResult);
-                    }
-
                     return openDeviceResult;
                 }
 
                 this.sessionsClient.acquireDone({ path });
 
-                if (!this.listenPromise[path]) {
-                    return this.success(acquireIntentResponse.payload.session);
-                }
-
-                return this.listenPromise[path].promise.finally(() => {
-                    delete this.listenPromise[path];
-                });
+                return this.success(acquireIntentResponse.payload.session);
             },
             { signal },
             [ERRORS.DEVICE_DISCONNECTED_DURING_ACTION, ERRORS.SESSION_WRONG_PREVIOUS],
         );
     }
 
-    public release({ path, session, onClose, signal }: AbstractTransportMethodParams<'release'>) {
+    public release({
+        path: _,
+        session,
+        onClose,
+        signal,
+    }: AbstractTransportMethodParams<'release'>) {
         return this.scheduleAction(
             async () => {
-                if (this.listening) {
-                    this.releaseUnconfirmed[path] = session;
-                    this.listenPromise[path] = createDeferred();
-                }
                 const releaseIntentResponse = await this.sessionsClient.releaseIntent({
                     session,
                 });
@@ -160,7 +149,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 }
 
                 const releasePromise = this.releaseDevice(session);
-                if (onClose) return this.success(undefined);
+                if (onClose) return this.success(null);
 
                 await releasePromise;
 
@@ -168,15 +157,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     path: releaseIntentResponse.payload.path,
                 });
 
-                if (!this.listenPromise[path]) {
-                    return this.success(undefined);
-                }
-
-                return this.listenPromise[path].promise
-                    .then(() => this.success(undefined))
-                    .finally(() => {
-                        delete this.listenPromise[path];
-                    });
+                return this.success(null);
             },
             { signal },
         );
