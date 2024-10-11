@@ -53,10 +53,11 @@ export const TokenIconSet = ({ network, tokens }: TokenIconSetProps) => {
             {visibleTokens.map(token => (
                 <AssetLogo
                     key={token.contract}
-                    size={length > 1 ? 20 : 24}
+                    size={20}
                     coingeckoId={coingeckoId ?? ''}
                     contractAddress={getContractAddressForNetwork(network, token.contract)}
                     placeholder={token.symbol?.toUpperCase() ?? ''}
+                    placeholderWithTooltip={false}
                 />
             ))}
         </IconContainer>
