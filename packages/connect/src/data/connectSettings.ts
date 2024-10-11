@@ -154,5 +154,9 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.binFilesBaseUrl = input.binFilesBaseUrl;
     }
 
+    if (typeof input.enableFirmwareHashCheck === 'boolean') {
+        settings.enableFirmwareHashCheck = Boolean(input.enableFirmwareHashCheck);
+    }
+
     return settings;
 };

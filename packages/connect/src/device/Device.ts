@@ -608,17 +608,19 @@ export class Device extends TypedEmitter<DeviceEvents> {
     async checkFirmwareHash(): Promise<FirmwareHashCheckResult | null> {
         const createFailResult = (error: FirmwareHashCheckError) => ({ success: false, error });
 
+        const baseUrl = DataManager.getSettings('binFilesBaseUrl');
+        const enabled = DataManager.getSettings('enableFirmwareHashCheck');
+        if (!enabled || baseUrl === undefined) return createFailResult('check-skipped');
+
         const firmwareVersion = this.getVersion();
         // device has no features (not yet connected) or no firmware
         if (firmwareVersion === undefined || !this.features || this.features.bootloader_mode) {
             return null;
         }
 
-        // optional setting for `connect`, see types/settings.ts
-        const baseUrl = DataManager.getSettings('binFilesBaseUrl');
         // Initially rolled out only for Model One; in the future we may remove that condition and do it for all models
         const isModelOne = this.features.internal_model === DeviceModelInternal.T1B1;
-        if (baseUrl === undefined || !isModelOne) return createFailResult('check-skipped');
+        if (!isModelOne) return createFailResult('check-skipped');
 
         const checkSupported = this.atLeast(FIRMWARE.FW_HASH_SUPPORTED_VERSIONS);
         if (!checkSupported) return createFailResult('check-unsupported');
