@@ -7,10 +7,10 @@ import {
     DefinitionType,
     EnhancedTokenInfo,
     TokenManagementAction,
-    getContractAddressForNetwork,
     selectIsSpecificCoinDefinitionKnown,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
+import { getContractAddressForNetwork } from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { copyToClipboard } from '@trezor/dom-utils';
 import {

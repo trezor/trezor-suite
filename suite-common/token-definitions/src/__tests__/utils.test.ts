@@ -1,26 +1,13 @@
 import {
-    getContractAddressForNetworkFixtures,
     getSupportedDefinitionTypesFixtures,
     isTokenDefinitionKnownFixtures,
     buildTokenDefinitionsFromStorageFixtures,
 } from '../__fixtures__/utils';
 import {
     buildTokenDefinitionsFromStorage,
-    getContractAddressForNetwork,
     getSupportedDefinitionTypes,
     isTokenDefinitionKnown,
 } from '../tokenDefinitionsUtils';
-
-describe('getContractAddressForNetwork', () => {
-    getContractAddressForNetworkFixtures.forEach(
-        ({ testName, networkSymbol, contractAddress, expected }) => {
-            test(testName, () => {
-                const result = getContractAddressForNetwork(networkSymbol, contractAddress);
-                expect(result).toBe(expected);
-            });
-        },
-    );
-});
 
 describe('isTokenDefinitionKnown', () => {
     isTokenDefinitionKnownFixtures.forEach(
