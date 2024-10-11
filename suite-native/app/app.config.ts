@@ -53,14 +53,14 @@ const appSlugs = {
 } as const satisfies Record<BuildType, string>;
 
 const appOwners = {
-    debug: 'trezorcompany-develop',
+    debug: 'trezorcompany',
     preview: 'trezorcompany-develop',
-    develop: 'trezorcompany-develop',
+    develop: 'trezorcompany',
     production: 'trezorcompany',
 } as const satisfies Record<BuildType, string>;
 
 const projectIds = {
-    develop: '7deae0c5-11be-49ff-a872-f538223c57de',
+    develop: '3e4ea82b-6c9f-4cd3-8975-54bddda3ec2d',
     preview: '15998f8a-e75c-4b60-959d-6f68e5ff4936',
     production: 'b9bbf16c-3d44-4d58-8f0c-ba9e6265276a',
     debug: '',
