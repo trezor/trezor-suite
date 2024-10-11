@@ -10,10 +10,6 @@ const getNetwork = (name?: string) =>
     // @ts-expect-error expression of type string can't be used to index type
     typeof name === 'string' && NETWORKS[name] ? NETWORKS[name] : NETWORKS.bitcoin;
 
-// type WithAddress = { address?: string };
-// const compareSomethingWithAddress = (a: WithAddress, b: WithAddress) =>
-//     a?.address?.localeCompare(b?.address ?? '');
-
 describe('composeTx', () => {
     fixtures.forEach(f => {
         const network = getNetwork(f.request.network);
@@ -32,6 +28,13 @@ describe('composeTx', () => {
                 delete subject.outputs;
             }
 
+            if ('inputs' in tx) {
+                tx.inputs.sort((a, b) =>
+                    `${a.txid}:${a.vout}`.localeCompare(`${b.txid}:${b.vout}`),
+                );
+                expected.inputs?.sort((a, b) => a.txid.localeCompare(b.txid));
+            }
+
             expect(subject).toEqual(expected);
 
             if (tx.type === 'final') {
@@ -41,7 +44,7 @@ describe('composeTx', () => {
     });
 });
 
-describe.skip('composeTx addresses cross-check', () => {
+describe('composeTx addresses cross-check', () => {
     const txTypes = ['p2pkh', 'p2sh', 'p2tr', 'p2wpkh'] as const;
     const addrTypes = {
         p2pkh: '1BitcoinEaterAddressDontSendf59kuE',

@@ -9,6 +9,7 @@ import {
     ComposedTransaction,
     CoinSelectOutputFinal,
 } from '../types';
+import { arrayShuffle } from '@trezor/utils';
 
 function convertOutput(
     selectedOutput: CoinSelectOutputFinal,
@@ -59,7 +60,7 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
     const sortedOutputs = permutation.map(index => convertedOutputs[index]);
 
     return {
-        inputs: convertedInputs,
+        inputs: arrayShuffle(convertedInputs),
         outputs: sortedOutputs,
         outputsPermutation: permutation,
     };
