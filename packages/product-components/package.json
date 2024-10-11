@@ -19,6 +19,7 @@
     "dependencies": {
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
