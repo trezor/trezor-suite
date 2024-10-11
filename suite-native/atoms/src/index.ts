@@ -18,6 +18,7 @@ export * from './DiscreetText/useDiscreetMode';
 export * from './BottomSheetListItem';
 export * from './OrderedListIcon';
 export * from './Sheet/BottomSheet';
+export * from './Sheet/BottomSheetFlashList';
 export * from './Sheet/useBottomSheetAnimation';
 export * from './Button/Button';
 export * from './Button/IconButton';
