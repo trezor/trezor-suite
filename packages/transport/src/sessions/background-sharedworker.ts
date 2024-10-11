@@ -20,6 +20,12 @@ background.on('descriptors', descriptors => {
     });
 });
 
+background.on('releaseRequest', descriptor => {
+    ports.forEach(p => {
+        p.postMessage({ type: 'releaseRequest', payload: descriptor });
+    });
+});
+
 self.onconnect = function (e) {
     const port = e.ports[0];
 

@@ -19,6 +19,7 @@ import {
  */
 export class SessionsClient extends TypedEmitter<{
     descriptors: Descriptor[];
+    releaseRequest: Descriptor;
 }> {
     // used only for debugging - discriminating sessions clients in sessions background log
     private caller = getWeakRandomId(3);
@@ -30,6 +31,7 @@ export class SessionsClient extends TypedEmitter<{
         this.id = 0;
         this.background = background;
         background.on('descriptors', descriptors => this.emit('descriptors', descriptors));
+        background.on('releaseRequest', descriptor => this.emit('releaseRequest', descriptor));
     }
 
     public setBackground(background: SessionsBackgroundInterface) {
@@ -38,6 +40,7 @@ export class SessionsClient extends TypedEmitter<{
         this.id = 0;
         this.background = background;
         background.on('descriptors', descriptors => this.emit('descriptors', descriptors));
+        background.on('releaseRequest', descriptor => this.emit('releaseRequest', descriptor));
     }
 
     private request<M extends HandleMessageParams>(params: M) {

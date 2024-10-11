@@ -9,13 +9,6 @@ export const DEVICE = {
     CONNECT_UNACQUIRED: 'device-connect_unacquired',
     DISCONNECT: 'device-disconnect',
     CHANGED: 'device-changed',
-    ACQUIRE: 'device-acquire',
-    RELEASE: 'device-release',
-    ACQUIRED: 'device-acquired',
-    RELEASED: 'device-released',
-    USED_ELSEWHERE: 'device-used_elsewhere',
-
-    LOADING: 'device-loading',
 
     // trezor-link events in protobuf format
     BUTTON: 'button',

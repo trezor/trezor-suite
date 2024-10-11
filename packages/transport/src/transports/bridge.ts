@@ -1,4 +1,4 @@
-import { versionUtils, createDeferred, Deferred, createTimeoutPromise } from '@trezor/utils';
+import { versionUtils, createTimeoutPromise } from '@trezor/utils';
 import {
     PROTOCOL_MALFORMED,
     bridge as protocolBridge,
@@ -77,12 +77,6 @@ export class BridgeTransport extends AbstractTransport {
      */
     private url: string;
 
-    /**
-     * means that /acquire call is in progress. this is used to postpone /listen call so that it can be
-     * fired with updated descriptor
-     */
-    protected acquirePromise?: Deferred<boolean>;
-
     public name = 'BridgeTransport' as const;
 
     constructor(params: BridgeConstructorParameters) {
@@ -147,12 +141,7 @@ export class BridgeTransport extends AbstractTransport {
                 }
                 await createTimeoutPromise(1000);
             } else {
-                const acquirePromiseResult = (await this.acquirePromise?.promise) ?? true;
-                delete this.acquirePromise;
-
-                if (acquirePromiseResult) {
-                    this.handleDescriptorsChange(response.payload);
-                }
+                this.handleDescriptorsChange(response.payload);
             }
         }
     }
@@ -166,42 +155,12 @@ export class BridgeTransport extends AbstractTransport {
     public acquire({ input, signal }: AbstractTransportMethodParams<'acquire'>) {
         return this.scheduleAction(
             async signal => {
-                const previous = input.previous == null ? 'null' : input.previous;
-
-                if (this.listening) {
-                    // listenPromise is resolved on next listen
-                    this.listenPromise[input.path] = createDeferred();
-                }
-
-                // it is not quaranteed that /listen response will arrive after /acquire response (although in majority of cases it does)
-                // so, in order to be able to keep the logic "acquire -> wait for listen response -> return from acquire" we need to wait
-                // for /acquire response before resolving listenPromise
-                this.acquirePromise = createDeferred();
-
                 const response = await this.post('/acquire', {
-                    params: `${input.path}/${previous}`,
+                    params: `${input.path}/${input.previous ?? 'null'}`,
                     signal,
                 });
 
-                if (!response.success) {
-                    if (this.listenPromise[input.path]) {
-                        delete this.listenPromise[input.path];
-                    }
-                    this.acquirePromise.resolve(response.success);
-
-                    return response;
-                }
-
-                this.acquirePromise.resolve(response.success);
-                this.acquiredUnconfirmed[input.path] = response.payload;
-
-                if (!this.listenPromise[input.path]) {
-                    return this.success(response.payload);
-                }
-
-                return this.listenPromise[input.path].promise.finally(() => {
-                    delete this.listenPromise[input.path];
-                });
+                return response;
             },
             { signal },
             [ERRORS.DEVICE_DISCONNECTED_DURING_ACTION, ERRORS.SESSION_WRONG_PREVIOUS],
@@ -209,32 +168,26 @@ export class BridgeTransport extends AbstractTransport {
     }
 
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L354
-    public release({ path, session, onClose, signal }: AbstractTransportMethodParams<'release'>) {
+    public release({
+        path: _,
+        session,
+        onClose,
+        signal,
+    }: AbstractTransportMethodParams<'release'>) {
         return this.scheduleAction(
-            signal => {
-                if (this.listening && !onClose) {
-                    this.releaseUnconfirmed[path] = session;
-                    this.listenPromise[path] = createDeferred();
-                }
-
+            async signal => {
                 const releasePromise = this.post('/release', {
                     params: session,
                     signal,
                 });
 
                 if (onClose) {
-                    return Promise.resolve(this.success(undefined));
+                    return Promise.resolve(this.success(null));
                 }
 
-                if (!this.listenPromise[path]) {
-                    return releasePromise;
-                }
+                const response = await releasePromise;
 
-                return this.listenPromise[path].promise
-                    .then(() => this.success(undefined))
-                    .finally(() => {
-                        delete this.listenPromise[path];
-                    });
+                return response.success ? this.success(null) : response;
             },
             { signal },
         );
@@ -350,11 +303,6 @@ export class BridgeTransport extends AbstractTransport {
             },
             { signal, timeout: undefined },
         );
-    }
-
-    public stop() {
-        super.stop();
-        this.acquirePromise = undefined;
     }
 
     /**

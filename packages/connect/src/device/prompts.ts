@@ -20,7 +20,9 @@ type DeviceEventCallback<K extends keyof DeviceEvents> = DeviceEvents[K] extends
     : never;
 
 export const cancelPrompt = (device: Device, expectResponse = true) => {
-    if (!device.transportSession) {
+    const session = device.getLocalSession();
+
+    if (!session) {
         // device disconnected or acquired by someone else
         return Promise.resolve({
             success: false,
@@ -29,7 +31,7 @@ export const cancelPrompt = (device: Device, expectResponse = true) => {
     }
 
     const cancelArgs = {
-        session: device.transportSession,
+        session,
         name: 'Cancel',
         data: {},
         protocol: device.protocol,

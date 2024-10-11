@@ -43,6 +43,7 @@ export class SessionsBackground
          * note: we can't send diff from here (see abstract transport) although it would make sense, because we need to support also bridge which does not use this sessions background.
          */
         descriptors: Descriptor[];
+        releaseRequest: Descriptor;
     }>
     implements SessionsBackgroundInterface
 {
@@ -115,9 +116,15 @@ export class SessionsBackground
                 id: message.type,
             } as HandleMessageResponse<M>;
         } finally {
-            if (result && result.success && result.payload && 'descriptors' in result.payload) {
-                const { descriptors } = result.payload;
-                setTimeout(() => this.emit('descriptors', Object.values(descriptors)), 0);
+            if (result && result.success && result.payload) {
+                if ('descriptors' in result.payload) {
+                    const { descriptors } = result.payload;
+                    setTimeout(() => this.emit('descriptors', Object.values(descriptors)), 0);
+                }
+                if ('releaseRequest' in result.payload && result.payload.releaseRequest) {
+                    const { releaseRequest } = result.payload;
+                    setTimeout(() => this.emit('releaseRequest', releaseRequest));
+                }
             }
         }
     }
@@ -189,18 +196,11 @@ export class SessionsBackground
             return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
         }
 
-        // new "unconfirmed" descriptors are  broadcasted. we can't yet update this.sessions object as it needs
-        // to stay as it is. we can not allow 2 clients sending session:null to proceed. this way only one gets through
-        const unconfirmedSessions: DescriptorsDict = JSON.parse(JSON.stringify(this.descriptors));
-
         this.lastSessionId++;
-        unconfirmedSessions[pathInternal].session = Session(`${this.lastSessionId}`);
+        const session = Session(`${this.lastSessionId}`);
+        const releaseRequest = previous ? this.descriptors[pathInternal] : undefined;
 
-        return this.success({
-            session: unconfirmedSessions[pathInternal].session,
-            path: pathInternal,
-            descriptors: Object.values(unconfirmedSessions),
-        });
+        return this.success({ session, path: pathInternal, releaseRequest });
     }
 
     /**

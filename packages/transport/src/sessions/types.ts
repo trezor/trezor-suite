@@ -27,7 +27,7 @@ export type EnumerateDoneResponse = BackgroundResponse<{
 export type AcquireIntentRequest = AcquireInput;
 
 export type AcquireIntentResponse = BackgroundResponseWithError<
-    { session: Session; path: PathInternal },
+    { session: Session; path: PathInternal; releaseRequest?: Descriptor },
     typeof ERRORS.SESSION_WRONG_PREVIOUS | typeof ERRORS.DESCRIPTOR_NOT_FOUND
 >;
 
@@ -113,6 +113,7 @@ export type HandleMessageResponse<P> = P extends { type: infer T }
 
 export interface SessionsBackgroundInterface {
     on(event: 'descriptors', listener: (descriptors: Descriptor[]) => void): void;
+    on(event: 'releaseRequest', listener: (descriptor: Descriptor) => void): void;
     handleMessage<M extends HandleMessageParams>(message: M): Promise<HandleMessageResponse<M>>;
     dispose(): void;
 }
