@@ -139,11 +139,16 @@ const SuiteUpdateIcon = ({ iconSize, updateStatus, variant }: SuiteUpdateIconPro
     );
 };
 
-export const UpdateStatusActionBarIcon = () => {
+type UpdateStatusActionBarIconProps = {
+    showUpdateBannerNotification: boolean;
+};
+
+export const UpdateStatusActionBarIcon = ({
+    showUpdateBannerNotification,
+}: UpdateStatusActionBarIconProps) => {
     const theme = useTheme();
 
-    const { updateStatus, updateStatusDevice, updateStatusSuite, showBannerNotification } =
-        useUpdateStatus();
+    const { updateStatus, updateStatusDevice, updateStatusSuite } = useUpdateStatus();
 
     const { device } = useDevice();
     const dispatch = useDispatch();
@@ -173,7 +178,7 @@ export const UpdateStatusActionBarIcon = () => {
         <div>
             <QuickActionButton
                 tooltip={
-                    !showBannerNotification && (
+                    !showUpdateBannerNotification && (
                         <UpdateTooltip
                             updateStatusDevice={updateStatusDevice}
                             updateStatusSuite={updateStatusSuite}

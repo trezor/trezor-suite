@@ -20,9 +20,13 @@ const ActionsContainer = styled.div`
     }
 `;
 
-export const QuickActions = () => (
+type QuickActionsProps = {
+    showUpdateBannerNotification: boolean;
+};
+
+export const QuickActions = ({ showUpdateBannerNotification }: QuickActionsProps) => (
     <ActionsContainer>
-        <UpdateStatusActionBarIcon />
+        <UpdateStatusActionBarIcon showUpdateBannerNotification={showUpdateBannerNotification} />
         <DebugAndExperimental />
         <CustomBackend />
         <Tor />

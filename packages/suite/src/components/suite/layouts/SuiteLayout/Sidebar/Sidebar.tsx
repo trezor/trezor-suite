@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
 import { Navigation } from './Navigation';
@@ -31,15 +31,11 @@ const Content = styled.div`
 `;
 
 export const Sidebar = () => {
-    const { elevation } = useElevation();
+    const [closedNotificationDevice, setClosedNotificationDevice] = useState(false);
+    const [closedNotificationSuite, setClosedNotificationSuite] = useState(false);
 
-    const {
-        updateStatusDevice,
-        updateStatusSuite,
-        showBannerNotification,
-        setClosedNotificationDevice,
-        setClosedNotificationSuite,
-    } = useUpdateStatus();
+    const { elevation } = useElevation();
+    const { updateStatusDevice, updateStatusSuite } = useUpdateStatus();
 
     const sidebarWidth = useSelector(state => state.suite.settings.sidebarWidth);
     const { setSidebarWidth } = useActions({
@@ -54,6 +50,10 @@ export const Sidebar = () => {
             setClosedNotificationDevice(true);
         }
     };
+
+    const showUpdateBannerNotification =
+        (updateStatusSuite !== 'up-to-date' && !closedNotificationSuite) ||
+        (updateStatusDevice !== 'up-to-date' && !closedNotificationDevice);
 
     return (
         <Wrapper>
@@ -74,7 +74,7 @@ export const Sidebar = () => {
                                 <Navigation />
                                 <AccountsMenu />
 
-                                {showBannerNotification && (
+                                {showUpdateBannerNotification && (
                                     <UpdateNotificationBanner
                                         updateStatusDevice={updateStatusDevice}
                                         updateStatusSuite={updateStatusSuite}
@@ -82,7 +82,9 @@ export const Sidebar = () => {
                                     />
                                 )}
 
-                                <QuickActions />
+                                <QuickActions
+                                    showUpdateBannerNotification={showUpdateBannerNotification}
+                                />
                             </Content>
                         </TrafficLightOffset>
                     </ElevationUp>
