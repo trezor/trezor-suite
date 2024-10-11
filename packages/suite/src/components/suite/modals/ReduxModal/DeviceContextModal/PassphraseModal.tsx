@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { Paragraph, NewModal, Column, H3, List, Icon } from '@trezor/components';
+import { Paragraph, Column, H3, List, Icon } from '@trezor/components';
 import {
     selectIsDiscoveryAuthConfirmationRequired,
     onPassphraseSubmit,
@@ -76,107 +76,91 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
     }
 
     return (
-        <NewModal.Backdrop
-            onClick={onEnterPassphraseDialogCancel}
-            alignment={{ x: 'left', y: 'top' }}
-            padding={5}
-        >
-            <SwitchDeviceModal isAnimationEnabled onCancel={onEnterPassphraseDialogCancel}>
-                {hasDeviceState ? (
-                    // "view-only" is active, device is reconnected and you fired an action that needs passphrase (e.g. add coin, show receive address)
-                    <CardWithDevice
-                        onCancel={onEnterPassphraseDialogCancel}
-                        device={device}
-                        isFullHeaderVisible
-                        icon="x"
-                    >
-                        <Column
-                            gap={spacings.sm}
-                            margin={{ top: spacings.xxs }}
-                            alignItems="stretch"
-                        >
-                            <H3>
-                                <Translation id="TR_CONFIRM_PASSPHRASE" />
-                            </H3>
-                            <Paragraph>
-                                <Translation id="TR_CONFIRM_PASSPHRASE_WITHOUT_ADVICE_DESCRIPTION" />
-                            </Paragraph>
-                            <PassphraseTypeCard
-                                submitLabel={<Translation id="TR_CONFIRM" />}
-                                type="hidden"
-                                singleColModal
-                                offerPassphraseOnDevice={onDeviceOffer}
-                                onSubmit={onSubmit}
-                                deviceModel={deviceModel ?? undefined}
-                                learnMoreTooltipOnClick={
-                                    <OpenGuideFromTooltip
-                                        data-testid="@tooltip/guideAnchor"
-                                        id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
-                                    />
-                                }
-                            />
-                        </Column>
-                    </CardWithDevice>
-                ) : (
-                    // first step of adding passphrase wallet from switch device modal
-                    <CardWithDevice
-                        onCancel={onEnterPassphraseDialogCancel}
-                        device={device}
-                        onBackButtonClick={onEnterPassphraseDialogBack}
-                        isFullHeaderVisible
-                    >
-                        <Column
-                            gap={spacings.sm}
-                            margin={{ top: spacings.xxs }}
-                            alignItems="stretch"
-                        >
-                            <H3>
-                                <Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />
-                            </H3>
-                            <List gap={spacings.sm} bulletGap={spacings.md} typographyStyle="hint">
-                                <List.Item bulletComponent={<Icon name="info" size={16} />}>
-                                    <Translation
-                                        id="TR_PASSPHRASE_DESCRIPTION_ITEM1"
-                                        values={{
-                                            a: chunks => (
-                                                <TrezorLink
-                                                    target="_blank"
-                                                    variant="underline"
-                                                    href={HELP_CENTER_PASSPHRASE_URL}
-                                                >
-                                                    {chunks}
-                                                </TrezorLink>
-                                            ),
-                                        }}
-                                    />
-                                </List.Item>
-                                <List.Item bulletComponent={<Icon name="asterisk" size={16} />}>
-                                    <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM2" />
-                                </List.Item>
-                                <List.Item
-                                    bulletComponent={<Icon name="warningTriangle" size={16} />}
-                                >
-                                    <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM3" />
-                                </List.Item>
-                            </List>
-                            <PassphraseTypeCard
-                                submitLabel={<Translation id="TR_ACCESS_HIDDEN_WALLET" />}
-                                type="hidden"
-                                singleColModal
-                                offerPassphraseOnDevice={onDeviceOffer}
-                                onSubmit={onSubmit}
-                                deviceModel={deviceModel ?? undefined}
-                                learnMoreTooltipOnClick={
-                                    <OpenGuideFromTooltip
-                                        data-testid="@tooltip/guideAnchor"
-                                        id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
-                                    />
-                                }
-                            />
-                        </Column>
-                    </CardWithDevice>
-                )}
-            </SwitchDeviceModal>
-        </NewModal.Backdrop>
+        <SwitchDeviceModal isAnimationEnabled onCancel={onEnterPassphraseDialogCancel}>
+            {hasDeviceState ? (
+                // "view-only" is active, device is reconnected and you fired an action that needs passphrase (e.g. add coin, show receive address)
+                <CardWithDevice
+                    onCancel={onEnterPassphraseDialogCancel}
+                    device={device}
+                    isFullHeaderVisible
+                    icon="x"
+                >
+                    <Column gap={spacings.sm} margin={{ top: spacings.xxs }} alignItems="stretch">
+                        <H3>
+                            <Translation id="TR_CONFIRM_PASSPHRASE" />
+                        </H3>
+                        <Paragraph>
+                            <Translation id="TR_CONFIRM_PASSPHRASE_WITHOUT_ADVICE_DESCRIPTION" />
+                        </Paragraph>
+                        <PassphraseTypeCard
+                            submitLabel={<Translation id="TR_CONFIRM" />}
+                            type="hidden"
+                            singleColModal
+                            offerPassphraseOnDevice={onDeviceOffer}
+                            onSubmit={onSubmit}
+                            deviceModel={deviceModel ?? undefined}
+                            learnMoreTooltipOnClick={
+                                <OpenGuideFromTooltip
+                                    data-testid="@tooltip/guideAnchor"
+                                    id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
+                                />
+                            }
+                        />
+                    </Column>
+                </CardWithDevice>
+            ) : (
+                // first step of adding passphrase wallet from switch device modal
+                <CardWithDevice
+                    onCancel={onEnterPassphraseDialogCancel}
+                    device={device}
+                    onBackButtonClick={onEnterPassphraseDialogBack}
+                    isFullHeaderVisible
+                >
+                    <Column gap={spacings.sm} margin={{ top: spacings.xxs }} alignItems="stretch">
+                        <H3>
+                            <Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />
+                        </H3>
+                        <List gap={spacings.sm} bulletGap={spacings.md} typographyStyle="hint">
+                            <List.Item bulletComponent={<Icon name="info" size={16} />}>
+                                <Translation
+                                    id="TR_PASSPHRASE_DESCRIPTION_ITEM1"
+                                    values={{
+                                        a: chunks => (
+                                            <TrezorLink
+                                                target="_blank"
+                                                variant="underline"
+                                                href={HELP_CENTER_PASSPHRASE_URL}
+                                            >
+                                                {chunks}
+                                            </TrezorLink>
+                                        ),
+                                    }}
+                                />
+                            </List.Item>
+                            <List.Item bulletComponent={<Icon name="asterisk" size={16} />}>
+                                <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM2" />
+                            </List.Item>
+                            <List.Item bulletComponent={<Icon name="warningTriangle" size={16} />}>
+                                <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM3" />
+                            </List.Item>
+                        </List>
+                        <PassphraseTypeCard
+                            submitLabel={<Translation id="TR_ACCESS_HIDDEN_WALLET" />}
+                            type="hidden"
+                            singleColModal
+                            offerPassphraseOnDevice={onDeviceOffer}
+                            onSubmit={onSubmit}
+                            deviceModel={deviceModel ?? undefined}
+                            learnMoreTooltipOnClick={
+                                <OpenGuideFromTooltip
+                                    data-testid="@tooltip/guideAnchor"
+                                    id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
+                                />
+                            }
+                        />
+                    </Column>
+                </CardWithDevice>
+            )}
+        </SwitchDeviceModal>
     );
 };

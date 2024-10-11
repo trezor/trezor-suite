@@ -1,15 +1,14 @@
 import { ComponentProps } from 'react';
 
-import styled from 'styled-components';
-
 import {
     authConfirm,
     authorizeDeviceThunk,
     restartDiscoveryThunk as restartDiscovery,
 } from '@suite-common/wallet-core';
 import { getNetwork, NetworkType } from '@suite-common/wallet-config';
-import { variables, Button, H3, Image, IconName } from '@trezor/components';
+import { Button, H3, Image, IconName, Column, Row, Paragraph } from '@trezor/components';
 import { Discovery } from '@suite-common/wallet-types';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
@@ -17,38 +16,6 @@ import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { DiscoveryStatusType } from 'src/types/wallet';
 import { TranslationKey } from 'src/components/suite/Translation';
-
-const Wrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 20px;
-    width: 100%;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Title = styled(H3)`
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-`;
-
-const Description = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    text-align: center;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledImage = styled(Image)`
-    margin: 24px 0;
-`;
-
-const Actions = styled.div`
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    margin-top: 24px;
-`;
 
 interface CTA {
     label?: TranslationKey;
@@ -70,21 +37,21 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
     const actions = Array.isArray(cta) ? cta : [cta];
 
     return (
-        <Wrapper data-testid={`@exception/${dataTestBase}`}>
-            <StyledImage image="UNI_ERROR" />
-            <Title>
+        <Column gap={spacings.xxs} data-testid={`@exception/${dataTestBase}`}>
+            <Image image="UNI_ERROR" />
+            <H3 margin={{ top: spacings.md }}>
                 <Translation id={title} />
-            </Title>
+            </H3>
             {description && (
-                <Description>
+                <Paragraph variant="tertiary" typographyStyle="hint">
                     {typeof description === 'string' ? (
                         <Translation id={description} />
                     ) : (
                         description
                     )}
-                </Description>
+                </Paragraph>
             )}
-            <Actions>
+            <Row gap={spacings.sm} margin={{ top: spacings.md }}>
                 {actions.map(a => (
                     <Button
                         key={a.label || 'TR_RETRY'}
@@ -97,8 +64,8 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
                         <Translation id={a.label || 'TR_RETRY'} />
                     </Button>
                 ))}
-            </Actions>
-        </Wrapper>
+            </Row>
+        </Column>
     );
 };
 

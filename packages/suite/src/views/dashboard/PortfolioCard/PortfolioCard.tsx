@@ -1,7 +1,8 @@
 import { memo, useMemo } from 'react';
 import styled from 'styled-components';
 
-import { Dropdown, Card, Tooltip } from '@trezor/components';
+import { Dropdown, Card, Tooltip, Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { GraphScaleDropdownItem, GraphSkeleton, Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
@@ -17,14 +18,6 @@ import { DashboardGraph } from './DashboardGraph';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-
-const Body = styled.div`
-    align-items: center;
-    justify-content: center;
-    padding: 0 20px;
-    min-height: 329px;
-    flex: 1;
-`;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledDropdown = styled(Dropdown)`
@@ -165,7 +158,17 @@ export const PortfolioCard = memo(() => {
                     />
                 )}
 
-                {body && <Body>{body}</Body>}
+                {body && (
+                    <Column
+                        justifyContent="center"
+                        alignItems="stretch"
+                        minHeight={329}
+                        flex="1"
+                        margin={{ left: spacings.lg, right: spacings.lg }}
+                    >
+                        {body}
+                    </Column>
+                )}
             </Card>
         </DashboardSection>
     );

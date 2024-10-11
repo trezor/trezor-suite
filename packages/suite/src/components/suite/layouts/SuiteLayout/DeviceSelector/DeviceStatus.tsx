@@ -4,7 +4,8 @@ import { DeviceModelInternal } from '@trezor/connect';
 import { DeviceDetail } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceDetail';
 import { MouseEventHandler } from 'react';
 import { TrezorDevice } from 'src/types/suite';
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
+import { Row } from '@trezor/components';
 import { RotateDeviceImage } from '@trezor/product-components';
 import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
 import { selectDeviceLabelOrNameById } from '@suite-common/wallet-core';
@@ -18,24 +19,10 @@ type DeviceStatusProps = {
     forceConnectionInfo?: boolean;
 };
 
-const Container = styled.div`
-    display: flex;
-    gap: ${spacingsPx.md};
-    flex: 1;
-    align-items: center;
-`;
-
 const DeviceWrapper = styled.div<{ $isLowerOpacity: boolean }>`
     display: flex;
-    opacity: ${({ $isLowerOpacity }) => $isLowerOpacity && 0.4};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledRotateDeviceImage = styled(RotateDeviceImage)`
     width: 24px;
-
-    /* do not apply the darkening filter in dark mode on device images */
-    filter: none;
+    opacity: ${({ $isLowerOpacity }) => $isLowerOpacity && 0.4};
 `;
 
 export const DeviceStatus = ({
@@ -48,9 +35,9 @@ export const DeviceStatus = ({
     const deviceLabel = useSelector(state => selectDeviceLabelOrNameById(state, device?.id));
 
     return (
-        <Container>
+        <Row flex="1" gap={spacings.md}>
             <DeviceWrapper $isLowerOpacity={deviceNeedsRefresh}>
-                <StyledRotateDeviceImage
+                <RotateDeviceImage
                     deviceModel={deviceModel}
                     deviceColor={device?.features?.unit_color}
                     animationHeight="34px"
@@ -67,6 +54,6 @@ export const DeviceStatus = ({
                     />
                 </DeviceDetail>
             )}
-        </Container>
+        </Row>
     );
 };
