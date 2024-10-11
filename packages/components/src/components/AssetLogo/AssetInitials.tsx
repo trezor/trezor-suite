@@ -27,18 +27,24 @@ const Circle = styled.div<{ $size: number; $elevation: Elevation }>`
 `;
 type AssetInitialsProps = {
     children: string;
+    withTooltip?: boolean;
     size: number;
 };
 
-const AssetInitialsInner = ({ children, size }: AssetInitialsProps) => {
+const AssetInitialsInner = ({ children, size, withTooltip = true }: AssetInitialsProps) => {
     const { elevation } = useElevation();
+    const firstChar = children[0];
 
     return (
         <Circle $elevation={elevation} $size={size}>
             <Content>
-                <Tooltip content={children}>
-                    <Text typographyStyle="callout">{children[0]}</Text>
-                </Tooltip>
+                {withTooltip ? (
+                    <Tooltip content={children}>
+                        <Text typographyStyle="callout">{firstChar}</Text>
+                    </Tooltip>
+                ) : (
+                    <Text typographyStyle="callout">{firstChar}</Text>
+                )}
             </Content>
         </Circle>
     );

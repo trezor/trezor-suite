@@ -24,6 +24,7 @@ export type AssetLogoProps = AllowedFrameProps & {
     coingeckoId: string;
     contractAddress?: string;
     shouldTryToFetch?: boolean;
+    placeholderWithTooltip?: boolean;
     placeholder: string;
     'data-testid'?: string;
 };
@@ -54,6 +55,7 @@ export const AssetLogo = ({
     contractAddress,
     shouldTryToFetch = true,
     placeholder,
+    placeholderWithTooltip = true,
     'data-testid': dataTest,
     ...rest
 }: AssetLogoProps) => {
@@ -76,7 +78,11 @@ export const AssetLogo = ({
 
     return (
         <Container $size={size} {...frameProps}>
-            {isPlaceholder && <AssetInitials size={size}>{placeholder}</AssetInitials>}
+            {isPlaceholder && (
+                <AssetInitials size={size} withTooltip={placeholderWithTooltip}>
+                    {placeholder}
+                </AssetInitials>
+            )}
             {!isPlaceholder && (
                 <Logo
                     src={logoUrl}
