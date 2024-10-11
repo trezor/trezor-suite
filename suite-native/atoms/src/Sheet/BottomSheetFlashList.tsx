@@ -1,38 +1,42 @@
-import { useEffect, useRef, useState, ReactNode } from 'react';
+import { useEffect, useRef, ReactNode } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated from 'react-native-reanimated';
-import { ScrollView, PanGestureHandler } from 'react-native-gesture-handler';
-import { GestureResponderEvent, Pressable } from 'react-native';
+import { PanGestureHandler } from 'react-native-gesture-handler';
+import { GestureResponderEvent, Pressable, Dimensions } from 'react-native';
+
+import { FlashList, FlashListProps } from '@shopify/flash-list';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { Box, BoxProps } from '../Box';
+import { Box } from '../Box';
 import { BottomSheetContainer } from './BottomSheetContainer';
 import { useBottomSheetAnimation } from './useBottomSheetAnimation';
 import { BottomSheetHeader } from './BottomSheetHeader';
 
-export type BottomSheetProps = {
+export type BottomSheetFlashListProps<TItem> = {
     isVisible: boolean;
     isCloseDisplayed?: boolean;
     onClose: (isVisible: boolean) => void;
-    children: ReactNode;
     title?: ReactNode;
     subtitle?: ReactNode;
-    isScrollable?: boolean;
-} & BoxProps;
-
-type WrapperStyleProps = {
-    insetBottom: number;
-};
+    ExtraProvider?: React.ComponentType;
+    estimatedListHeight?: number;
+} & FlashListProps<TItem>;
 
 const DEFAULT_INSET_BOTTOM = 50;
 
-const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetBottom }) => ({
+const sheetWrapperStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
     borderTopLeftRadius: utils.borders.radii.r20,
     borderTopRightRadius: utils.borders.radii.r20,
+    maxHeight: '80%',
+}));
+
+const sheetContentContainerStyle = prepareNativeStyle<{
+    insetBottom: number;
+}>((utils, { insetBottom }) => ({
     paddingBottom: Math.max(insetBottom, utils.spacings.sp16),
-    maxHeight: '90%',
+    paddingHorizontal: utils.spacings.sp16,
 }));
 
 const sheetWithOverlayStyle = prepareNativeStyle(_ => ({
@@ -40,19 +44,18 @@ const sheetWithOverlayStyle = prepareNativeStyle(_ => ({
     justifyContent: 'flex-end',
 }));
 
-export const BottomSheet = ({
+export const BottomSheetFlashList = <TItem,>({
     isVisible,
     isCloseDisplayed = true,
     onClose,
     title,
     subtitle,
-    children,
-    isScrollable = true,
-    ...boxProps
-}: BottomSheetProps) => {
+    ExtraProvider,
+    estimatedListHeight = 0,
+    ...flashListProps
+}: BottomSheetFlashListProps<TItem>) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
-    const [isCloseScrollEnabled, setIsCloseScrollEnabled] = useState(true);
     const {
         animatedSheetWithOverlayStyle,
         animatedSheetWrapperStyle,
@@ -63,23 +66,15 @@ export const BottomSheet = ({
     } = useBottomSheetAnimation({
         onClose,
         isVisible,
-        isCloseScrollEnabled,
-        setIsCloseScrollEnabled: (isScrollEnabled: boolean) => {
-            setIsCloseScrollEnabled(isScrollEnabled);
-        },
     });
-    const panGestureRef = useRef();
-    const scrollViewRef = useRef();
+    const panGestureRef = useRef(null);
+    const scrollViewRef = useRef(null);
 
     useEffect(() => {
         if (isVisible) {
             openSheetAnimated();
         }
     }, [isVisible, openSheetAnimated]);
-
-    const handleCloseSheet = () => {
-        closeSheetAnimated();
-    };
 
     const handlePressOutside = (event: GestureResponderEvent) => {
         if (event.target === event.currentTarget) closeSheetAnimated();
@@ -88,13 +83,16 @@ export const BottomSheet = ({
     const insetBottom = Math.max(insets.bottom, DEFAULT_INSET_BOTTOM);
 
     return (
-        <BottomSheetContainer isVisible={isVisible} onClose={handleCloseSheet}>
+        <BottomSheetContainer
+            isVisible={isVisible}
+            onClose={closeSheetAnimated}
+            ExtraProvider={ExtraProvider}
+        >
             <Animated.View
                 style={[animatedSheetWithOverlayStyle, applyStyle(sheetWithOverlayStyle)]}
             >
                 <Pressable style={applyStyle(sheetWithOverlayStyle)} onPress={handlePressOutside}>
                     <PanGestureHandler
-                        enabled={isCloseScrollEnabled}
                         ref={panGestureRef}
                         activeOffsetY={5}
                         failOffsetY={-5}
@@ -114,28 +112,30 @@ export const BottomSheet = ({
                                 isCloseDisplayed={isCloseDisplayed}
                                 onCloseSheet={closeSheetAnimated}
                             />
-                            {isScrollable ? (
-                                <ScrollView
-                                    ref={scrollViewRef.current}
-                                    waitFor={
-                                        isCloseScrollEnabled
-                                            ? panGestureRef.current
-                                            : scrollViewRef.current
-                                    }
+
+                            <Box
+                                style={{
+                                    // only estimated height is used, so we need to add some buffer to prevent unnecessary scrolling, when list is shorter than estimated
+                                    height: Math.max(
+                                        estimatedListHeight * 1.1,
+                                        // We use this because minHeight doesn't work with `height set
+                                        Dimensions.get('window').height * 0.35,
+                                    ),
+                                    maxHeight: '100%',
+                                }}
+                            >
+                                <FlashList
+                                    {...flashListProps}
+                                    overrideProps={{
+                                        simultaneousHandlers: panGestureRef,
+                                    }}
+                                    contentContainerStyle={applyStyle(sheetContentContainerStyle, {
+                                        insetBottom,
+                                    })}
+                                    ref={scrollViewRef}
                                     onScroll={scrollEvent}
-                                    keyboardShouldPersistTaps="handled"
-                                >
-                                    <Animated.View>
-                                        <Box paddingHorizontal="sp16" {...boxProps}>
-                                            {children}
-                                        </Box>
-                                    </Animated.View>
-                                </ScrollView>
-                            ) : (
-                                <Box {...boxProps} style={{ height: '100%' }}>
-                                    {children}
-                                </Box>
-                            )}
+                                />
+                            </Box>
                         </Animated.View>
                     </PanGestureHandler>
                 </Pressable>

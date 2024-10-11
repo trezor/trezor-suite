@@ -8,6 +8,7 @@ type SheetProps = {
     children: ReactNode;
     isVisible: boolean;
     onClose: () => void;
+    ExtraProvider?: React.ComponentType;
 };
 
 const ContentWrapperStyle = prepareNativeStyle(_ => ({ flex: 1 }));
@@ -21,19 +22,28 @@ const BottomSheetGestureHandler = gestureHandlerRootHOC<{ children: ReactNode }>
     <>{children}</>
 ));
 
-export const BottomSheetContainer = ({ children, isVisible, onClose }: SheetProps) => {
+export const BottomSheetContainer = ({
+    children,
+    isVisible,
+    onClose,
+    ExtraProvider,
+}: SheetProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <RNModal transparent visible={isVisible} onRequestClose={onClose}>
-            <BottomSheetGestureHandler>
-                <KeyboardAvoidingView
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                    style={applyStyle(ContentWrapperStyle)}
-                >
-                    {children}
-                </KeyboardAvoidingView>
-            </BottomSheetGestureHandler>
+            <>
+                <BottomSheetGestureHandler>
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                        style={applyStyle(ContentWrapperStyle)}
+                    >
+                        {children}
+                    </KeyboardAvoidingView>
+                </BottomSheetGestureHandler>
+
+                {ExtraProvider && <ExtraProvider />}
+            </>
         </RNModal>
     );
 };

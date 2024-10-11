@@ -87,7 +87,7 @@ export const selectAccountFiatBalance = (state: NativeAccountsRootState, account
     return totalBalance;
 };
 
-const EMPTY_ARRAY: any[] = [];
+const EMPTY_ARRAY: AccountSelectBottomSheetSection[] = [];
 
 export const selectAccountListSections = memoizeWithArgs(
     (state: NativeAccountsRootState, accountKey?: AccountKey | null, hideStaking?: boolean) => {
