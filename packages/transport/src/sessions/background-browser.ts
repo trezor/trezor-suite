@@ -43,7 +43,9 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
         });
     }
 
-    on(_event: 'descriptors', listener: (descriptors: Descriptor[]) => void): void {
+    on(event: 'descriptors', listener: (descriptors: Descriptor[]) => void): void;
+    on(event: 'releaseRequest', listener: (descriptor: Descriptor) => void): void;
+    on(event: 'descriptors' | 'releaseRequest', listener: (descriptors: any) => void): void {
         this.background.port.addEventListener(
             'message',
             (
@@ -55,7 +57,7 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
                 >,
             ) => {
                 if ('type' in e?.data) {
-                    if (e.data.type === 'descriptors') {
+                    if (e.data.type === event) {
                         listener(e.data.payload);
                     }
                 }
