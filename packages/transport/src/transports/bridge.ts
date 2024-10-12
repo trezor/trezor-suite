@@ -1,4 +1,4 @@
-import { versionUtils, createDeferred, Deferred, createTimeoutPromise } from '@trezor/utils';
+import { versionUtils, createTimeoutPromise } from '@trezor/utils';
 import {
     PROTOCOL_MALFORMED,
     bridge as protocolBridge,
@@ -14,6 +14,7 @@ import {
     AbstractTransport,
     AbstractTransportParams,
     AbstractTransportMethodParams,
+    AcquireReleaseChange,
 } from './abstract';
 
 import * as ERRORS from '../errors';
@@ -77,12 +78,6 @@ export class BridgeTransport extends AbstractTransport {
      */
     private url: string;
 
-    /**
-     * means that /acquire call is in progress. this is used to postpone /listen call so that it can be
-     * fired with updated descriptor
-     */
-    protected acquirePromise?: Deferred<boolean>;
-
     public name = 'BridgeTransport' as const;
 
     constructor(params: BridgeConstructorParameters) {
@@ -134,12 +129,14 @@ export class BridgeTransport extends AbstractTransport {
         while (!this.stopped) {
             const listenTimestamp = Date.now();
 
+            console.log('LISTEN POSTING');
             const response = await this.post('/listen', {
                 body: this.descriptors,
                 signal: this.abortController.signal,
             });
 
             if (!response.success) {
+                console.log('LISTEN POSTED');
                 const time = Date.now() - listenTimestamp;
                 if (time <= 1100) {
                     this.emit('transport-error', response.error);
@@ -147,12 +144,12 @@ export class BridgeTransport extends AbstractTransport {
                 }
                 await createTimeoutPromise(1000);
             } else {
-                const acquirePromiseResult = (await this.acquirePromise?.promise) ?? true;
-                delete this.acquirePromise;
+                console.log(
+                    'LISTEN POSTED',
+                    response.payload.map(p => [p.path, p.session]),
+                );
 
-                if (acquirePromiseResult) {
-                    this.handleDescriptorsChange(response.payload);
-                }
+                this.handleDescriptorsChange(response.payload);
             }
         }
     }
@@ -166,42 +163,62 @@ export class BridgeTransport extends AbstractTransport {
     public acquire({ input, signal }: AbstractTransportMethodParams<'acquire'>) {
         return this.scheduleAction(
             async signal => {
-                const previous = input.previous == null ? 'null' : input.previous;
-
-                if (this.listening) {
-                    // listenPromise is resolved on next listen
-                    this.listenPromise[input.path] = createDeferred();
+                if (!this.listening) {
+                    return this.post('/acquire', {
+                        params: `${input.path}/${input.previous ?? 'null'}`,
+                        signal,
+                    });
                 }
+
+                // TODO use path plus product?
+                if (!this.descriptors.some(d => d.path === input.path)) {
+                    return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
+                }
+
+                const promise = new Promise<AcquireReleaseChange>(resolve =>
+                    this.acquireReleaseEmitter.once(input.path, resolve),
+                );
 
                 // it is not quaranteed that /listen response will arrive after /acquire response (although in majority of cases it does)
                 // so, in order to be able to keep the logic "acquire -> wait for listen response -> return from acquire" we need to wait
                 // for /acquire response before resolving listenPromise
-                this.acquirePromise = createDeferred();
+
+                console.log('ACQUIRE POSTING', input.path);
+                const unlock = await this.pathLock(input.path);
 
                 const response = await this.post('/acquire', {
-                    params: `${input.path}/${previous}`,
+                    params: `${input.path}/${input.previous ?? 'null'}`,
                     signal,
                 });
 
-                if (!response.success) {
-                    if (this.listenPromise[input.path]) {
-                        delete this.listenPromise[input.path];
-                    }
-                    this.acquirePromise.resolve(response.success);
+                if (response.success) {
+                    this.acquireUnconfirmed[input.path] = response.payload;
+                }
 
+                unlock();
+
+                console.log('ACQUIRE POSTED', input.path);
+
+                if (!response.success) {
                     return response;
                 }
 
-                this.acquirePromise.resolve(response.success);
-                this.acquiredUnconfirmed[input.path] = response.payload;
+                const change = await promise;
 
-                if (!this.listenPromise[input.path]) {
-                    return this.success(response.payload);
+                if (change.type === 'device-missing') {
+                    return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
                 }
 
-                return this.listenPromise[input.path].promise.finally(() => {
-                    delete this.listenPromise[input.path];
-                });
+                if (change.session !== response.payload) {
+                    // another app took over
+                    console.log('LISTEN RESOLVING - ELSEWHERE', input.path);
+
+                    return this.error({ error: ERRORS.SESSION_WRONG_PREVIOUS });
+                }
+
+                console.log('LISTEN RESOLVING - ACQUIRED', input.path);
+
+                return response;
             },
             { signal },
             [ERRORS.DEVICE_DISCONNECTED_DURING_ACTION, ERRORS.SESSION_WRONG_PREVIOUS],
@@ -211,30 +228,52 @@ export class BridgeTransport extends AbstractTransport {
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L354
     public release({ path, session, onClose, signal }: AbstractTransportMethodParams<'release'>) {
         return this.scheduleAction(
-            signal => {
-                if (this.listening && !onClose) {
-                    this.releaseUnconfirmed[path] = session;
-                    this.listenPromise[path] = createDeferred();
-                }
-
-                const releasePromise = this.post('/release', {
-                    params: session,
-                    signal,
-                });
-
+            async signal => {
                 if (onClose) {
+                    this.post('/release', { params: session, signal });
+
                     return Promise.resolve(this.success(undefined));
                 }
 
-                if (!this.listenPromise[path]) {
-                    return releasePromise;
+                if (!this.listening) {
+                    return this.post('/release', { params: session, signal });
                 }
 
-                return this.listenPromise[path].promise
-                    .then(() => this.success(undefined))
-                    .finally(() => {
-                        delete this.listenPromise[path];
-                    });
+                // TODO use path plus product?
+                if (!this.descriptors.some(d => d.path === path)) {
+                    return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
+                }
+
+                this.releaseUnconfirmed[path] = session;
+                const changePromise = new Promise<AcquireReleaseChange>(resolve =>
+                    this.acquireReleaseEmitter.once(path, resolve),
+                );
+
+                console.log('RELEASE POSTING', path);
+                const response = await this.post('/release', {
+                    params: session,
+                    signal,
+                });
+                console.log('RELEASE POSTED', path);
+
+                if (!response.success) {
+                    return response;
+                }
+
+                const change = await changePromise;
+
+                if (change.type === 'device-missing') {
+                    // TODO but it would be success before, is it ok? NO, it is success
+                    return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
+                }
+
+                // TODO is it ok even when session changed instead of released?
+
+                // todo: solve me! this value is not used anyway. should be typed better
+                console.log('LISTEN RESOLVING - RELEASE', path);
+
+                return this.success(undefined);
+                // when releasing we don't really care about else
             },
             { signal },
         );
@@ -354,7 +393,6 @@ export class BridgeTransport extends AbstractTransport {
 
     public stop() {
         super.stop();
-        this.acquirePromise = undefined;
     }
 
     /**
