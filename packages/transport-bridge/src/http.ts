@@ -273,6 +273,7 @@ export class TrezordNode {
 
             app.post('/acquire/:path/:previous', [
                 validateAcquireParams,
+                parseBodyJSON,
                 (req, res) => {
                     res.setHeader('Content-Type', 'text/plain');
                     const signal = this.createAbortSignal(res);
@@ -280,6 +281,8 @@ export class TrezordNode {
                         .acquire({
                             path: req.params.path,
                             previous: req.params.previous,
+                            // @ts-expect-error
+                            sessionOwner: req.body.sessionOwner,
                             signal,
                         })
                         .then(result => {
