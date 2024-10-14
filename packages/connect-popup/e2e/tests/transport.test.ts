@@ -129,8 +129,9 @@ fixtures.forEach(f => {
 
         const afterCleanup = await f.setup?.(context);
 
-        log(`going to: ${url}${f.queryString}#/method/verifyMessage`);
-        await page.goto(formatUrl(url, `methods/bitcoin/verifyMessage/${f.queryString}`));
+        const formattedUrl = formatUrl(url, `methods/bitcoin/verifyMessage/${f.queryString}`);
+        log(`going to: ${formattedUrl}`);
+        await page.goto(formattedUrl);
         log('waiting for explorer to load');
         await waitAndClick(page, ['@api-playground/collapsible-box']);
         await page.waitForSelector("button[data-testid='@submit-button']", {
