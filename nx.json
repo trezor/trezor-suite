@@ -6,16 +6,21 @@
             "{workspaceRoot}/patches/*.patch",
             "{workspaceRoot}/package.json"
         ],
-        "default": ["{projectRoot}/**/*", "sharedGlobals"],
-        "prod": ["default", "!{projectRoot}/**/*.test.{ts,tsx}"]
+        "default": ["sharedGlobals", "{projectRoot}/**/*"],
+        "lintDefault": [
+            "sharedGlobals",
+            "{projectRoot}/**/*",
+            "!{projectRoot}/**/*.test.{ts,tsx,js}"
+        ]
     },
     "targetDefaults": {
         "build:lib": {
             "dependsOn": [],
             "inputs": [
-                "^prod",
+                "^default",
                 "{workspaceRoot}/tsconfig.base.json",
-                "{workspaceRoot}/tsconfig.lib.json"
+                "{workspaceRoot}/tsconfig.lib.json",
+                "!{projectRoot}/**/*.test.{ts,tsx}"
             ],
             "outputs": ["{projectRoot}/lib", "{projectRoot}/build"],
             "cache": true
@@ -28,7 +33,7 @@
                 "@suite-common/message-system:build:lib"
             ],
             "inputs": [
-                "^prod",
+                "^default",
                 "{workspaceRoot}/tsconfig.base.json",
                 "{workspaceRoot}/tsconfig.lib.json"
             ],
@@ -38,24 +43,24 @@
         "test:unit": {
             "dependsOn": ["@suite-common/message-system:build:lib"],
             "inputs": [
-                "^prod",
+                "^default",
                 "{workspaceRoot}/jest.config.base.js",
                 "{workspaceRoot}/jest.config.native.js"
             ],
             "cache": true
         },
         "lint:js": {
-            "inputs": ["default", "{workspaceRoot}/.eslintrc.js"],
+            "inputs": ["lintDefault", "{workspaceRoot}/.eslintrc.js"],
             "outputs": ["{projectRoot}/.eslintcache"],
             "cache": true
         },
         "lint:styles": {
-            "inputs": ["default", "{workspaceRoot}/.stylelintrc"],
+            "inputs": ["lintDefault", "{workspaceRoot}/.stylelintrc"],
             "outputs": ["{projectRoot}/.stylelintcache"],
             "cache": true
         },
         "depcheck": {
-            "inputs": ["default"],
+            "inputs": ["lintDefault"],
             "cache": true
         }
     },
