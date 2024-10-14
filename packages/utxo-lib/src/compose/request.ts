@@ -242,5 +242,6 @@ export function validateAndParseRequest(request: Request): CoinSelectRequest | C
         dustThreshold: request.dustThreshold,
         baseFee: request.baseFee,
         floorBaseFee: request.floorBaseFee,
+        skipPermutation: request.skipPermutation,
     };
 }

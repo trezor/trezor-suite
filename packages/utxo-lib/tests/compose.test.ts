@@ -28,7 +28,8 @@ describe('composeTx', () => {
                 delete subject.outputs;
             }
 
-            if ('inputs' in tx) {
+            // sort unless we are skipping permutation, then we don't sort as we need to assert exact order
+            if ('inputs' in tx && request.skipPermutation !== true) {
                 tx.inputs.sort((a, b) =>
                     `${a.txid}:${a.vout}`.localeCompare(`${b.txid}:${b.vout}`),
                 );

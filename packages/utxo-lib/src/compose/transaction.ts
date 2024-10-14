@@ -54,6 +54,10 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
         return convertOutput(output, { type: 'change', ...request.changeAddress });
     });
 
+    /**
+     * The goal here is to randomly insert change outputs into the outputs array.,
+     * so you cannot tell what is the change just by the order of the transaction.
+     */
     const permutation = [...nonChangeOutputPermutation];
     // Min (0) is inclusive, max (permutation.length + 1) is exclusive
     // Example: for array [0, 1, 2] the result can be: 0, 1, 2, 3
@@ -62,7 +66,12 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
     const sortedOutputs = permutation.map(index => convertedOutputs[index]);
 
     return {
-        inputs: arrayShuffle(convertedInputs),
+        /**
+         * Randomly shuffle inputs to make it harder to fingerprint the Trezor Suite.
+         * If skipPermutation is set, do not shuffle the inputs (this is used for RBF,
+         * where the original order must be preserved).
+         */
+        inputs: request.skipPermutation ? convertedInputs : arrayShuffle(convertedInputs),
         outputs: sortedOutputs,
         outputsPermutation: permutation,
     };
