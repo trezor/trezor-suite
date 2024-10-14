@@ -10,3 +10,5 @@ export const DEFAULT_DOMAIN = isBeta
 
 // Increment with content script changes
 export const CONTENT_SCRIPT_VERSION = 1;
+// Increment with deeplink protocol changes
+export const DEEPLINK_VERSION = 1;

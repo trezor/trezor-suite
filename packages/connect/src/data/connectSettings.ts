@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/ConnectSettings.js
 
 import type { Manifest, ConnectSettings } from '../types';
-import { VERSION, DEFAULT_DOMAIN } from './version';
+import { VERSION, DEFAULT_DOMAIN, DEEPLINK_VERSION } from './version';
 
 /*
  * Initial settings for connect.
@@ -28,7 +28,7 @@ const initialSettings: ConnectSettings = {
     timestamp: new Date().getTime(),
     interactionTimeout: 600, // 5 minutes
     sharedLogger: true,
-    deeplinkUrl: `${DEFAULT_DOMAIN}deeplink/${VERSION}/`,
+    deeplinkUrl: `${DEFAULT_DOMAIN}deeplink/${DEEPLINK_VERSION}/`,
 };
 
 const parseManifest = (manifest?: Manifest) => {
@@ -84,7 +84,7 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
     settings.iframeSrc = `${src}iframe.html`;
     settings.popupSrc = `${src}popup.html`;
     settings.webusbSrc = `${src}webusb.html`;
-    settings.deeplinkUrl = `${src}deeplink/${VERSION}/`;
+    settings.deeplinkUrl = `${src}deeplink/${DEEPLINK_VERSION}/`;
 
     if (typeof input.transportReconnect === 'boolean') {
         settings.transportReconnect = input.transportReconnect;
