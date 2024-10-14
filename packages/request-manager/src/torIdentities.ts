@@ -29,13 +29,11 @@ export class TorIdentities {
         const { host, port } = this.getTorSettings();
 
         // TODO clean agents when host/port changes?
-
         if (!this.identities[user]) {
-            this.identities[user] = new SocksProxyAgent({
-                hostname: host,
-                port,
-                userId: user,
-                password: password || user,
+            const socksServerUrl = new URL(`socks://${host}:${port}`);
+            socksServerUrl.username = user;
+            socksServerUrl.password = password;
+            this.identities[user] = new SocksProxyAgent(socksServerUrl, {
                 timeout,
             });
         }
