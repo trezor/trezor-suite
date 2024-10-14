@@ -217,6 +217,10 @@ export class Blockchain {
         return this.link.getAccountUtxo(descriptor);
     }
 
+    ethereumCall(params: BlockchainLinkParams<'ethereumCall'>) {
+        return this.link.ethereumCall(params);
+    }
+
     async estimateFee(request: Parameters<typeof this.link.estimateFee>[0]) {
         const { blocks } = request;
         // cache should be used if there is no specific data (ethereum case) and requested blocks are already cached/downloaded
