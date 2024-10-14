@@ -6,7 +6,7 @@ import { FormatterProps } from '../types';
 import { AmountText } from './AmountText';
 import { convertTokenValueToDecimal } from '../utils';
 
-type EthereumTokenAmountFormatterProps = {
+type TokenAmountFormatterProps = {
     symbol: TokenSymbol | null;
     isDiscreetText?: boolean;
     decimals?: number;
@@ -14,7 +14,7 @@ type EthereumTokenAmountFormatterProps = {
 } & FormatterProps<number | string> &
     TextProps;
 
-export const EthereumTokenAmountFormatter = ({
+export const TokenAmountFormatter = ({
     value,
     symbol,
     isDiscreetText = true,
@@ -22,7 +22,7 @@ export const EthereumTokenAmountFormatter = ({
     variant = 'hint',
     color = 'textSubdued',
     ...rest
-}: EthereumTokenAmountFormatterProps) => {
+}: TokenAmountFormatterProps) => {
     const decimalValue = convertTokenValueToDecimal(value, decimals);
 
     const formattedValue = `${localizeNumber(decimalValue)} ${symbol}`;

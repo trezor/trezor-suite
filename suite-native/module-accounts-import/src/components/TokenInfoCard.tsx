@@ -6,14 +6,13 @@ import {
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import {
-    EthereumTokenAmountFormatter,
-    EthereumTokenToFiatAmountFormatter,
-} from '@suite-native/formatters';
+import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
 
-type EthereumTokenInfoProps = {
+type TokenInfoCardProps = {
+    networkSymbol: NetworkSymbol;
     symbol?: TokenSymbol;
     balance?: string;
     name?: string;
@@ -21,26 +20,27 @@ type EthereumTokenInfoProps = {
     contract: TokenAddress;
 };
 
-export const EthereumTokenInfo = ({
+export const TokenInfoCard = ({
+    networkSymbol,
     symbol,
     balance,
     name,
     decimals,
     contract,
-}: EthereumTokenInfoProps) => {
-    const ethereumSymbolHasFiatRates = useSelector((state: TokenDefinitionsRootState) =>
-        selectIsSpecificCoinDefinitionKnown(state, 'eth', contract),
+}: TokenInfoCardProps) => {
+    const isSpecificCoinDefinitionKnown = useSelector((state: TokenDefinitionsRootState) =>
+        selectIsSpecificCoinDefinitionKnown(state, networkSymbol, contract),
     );
 
-    if (!symbol || !balance || !name || !ethereumSymbolHasFiatRates) return null;
+    if (!symbol || !balance || !name || !isSpecificCoinDefinitionKnown) return null;
 
     return (
         <AccountImportOverviewCard
             coinName={name}
-            symbol="eth"
+            symbol={networkSymbol}
             shouldDisplayDeleteIcon={false}
             cryptoAmount={
-                <EthereumTokenAmountFormatter
+                <TokenAmountFormatter
                     value={balance}
                     symbol={symbol}
                     decimals={decimals}
@@ -49,7 +49,8 @@ export const EthereumTokenInfo = ({
             }
             icon={<CryptoIcon symbol={contract} />}
         >
-            <EthereumTokenToFiatAmountFormatter
+            <TokenToFiatAmountFormatter
+                networkSymbol={networkSymbol}
                 value={balance}
                 contract={contract}
                 decimals={decimals}
