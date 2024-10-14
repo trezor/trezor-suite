@@ -1,5 +1,3 @@
-// origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumCall.js
-
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { validateParams } from '../../common/paramsValidator';
 import { ERRORS } from '../../../constants';
