@@ -120,11 +120,12 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         acquireInput: Omit<AcquireInput, 'previous'> & {
             previous: Session | 'null';
             signal: AbortSignal;
-        },
+        } & { sessionOwner: string },
     ) => {
         const acquireIntentResult = await sessionsClient.acquireIntent({
             path: acquireInput.path,
             previous: acquireInput.previous === 'null' ? null : acquireInput.previous,
+            sessionOwner: acquireInput.sessionOwner,
         });
         if (!acquireIntentResult.success) {
             return acquireIntentResult;
@@ -140,7 +141,10 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         if (!openDeviceResult.success) {
             return openDeviceResult;
         }
-        await sessionsClient.acquireDone({ path: acquireInput.path });
+        await sessionsClient.acquireDone({
+            path: acquireInput.path,
+            sessionOwner: acquireInput.sessionOwner,
+        });
 
         return acquireIntentResult;
     };

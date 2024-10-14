@@ -194,7 +194,11 @@ export class SessionsBackground
         const unconfirmedSessions: DescriptorsDict = JSON.parse(JSON.stringify(this.descriptors));
 
         this.lastSessionId++;
-        unconfirmedSessions[pathInternal].session = Session(`${this.lastSessionId}`);
+        unconfirmedSessions[pathInternal] = {
+            ...unconfirmedSessions[pathInternal],
+            session: Session(`${this.lastSessionId}`),
+            sessionOwner: payload.sessionOwner,
+        };
 
         return this.success({
             session: unconfirmedSessions[pathInternal].session,
@@ -215,6 +219,7 @@ export class SessionsBackground
             return this.error(ERRORS.DESCRIPTOR_NOT_FOUND);
         }
         this.descriptors[pathInternal].session = Session(`${this.lastSessionId}`);
+        this.descriptors[pathInternal].sessionOwner = payload.sessionOwner;
 
         return Promise.resolve(
             this.success({
@@ -238,6 +243,7 @@ export class SessionsBackground
 
     private releaseDone(payload: ReleaseDoneRequest) {
         this.descriptors[payload.path].session = null;
+        this.descriptors[payload.path].sessionOwner = undefined;
 
         this.clearLock();
 
