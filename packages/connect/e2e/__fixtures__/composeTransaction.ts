@@ -113,7 +113,7 @@ export default {
                     },
                 ],
                 baseFee: 167,
-                // skipPermutation: true,
+                skipPermutation: true,
                 sequence: 1,
                 coin: 'btc',
             },

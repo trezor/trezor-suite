@@ -17,6 +17,7 @@ type Options = {
     outputs: ComposeOutput[];
     coinInfo: BitcoinNetworkInfo;
     baseFee?: number;
+    skipPermutation?: boolean;
 };
 
 export class TransactionComposer {
@@ -32,6 +33,8 @@ export class TransactionComposer {
 
     baseFee: number;
 
+    skipPermutation: boolean;
+
     feeLevels: FeeLevels;
 
     composed: { [key: string]: ComposeResult } = {};
@@ -42,6 +45,7 @@ export class TransactionComposer {
         this.coinInfo = options.coinInfo;
         this.blockHeight = 0;
         this.baseFee = options.baseFee || 0;
+        this.skipPermutation = options.skipPermutation || false;
         this.feeLevels = new FeeLevels(options.coinInfo);
 
         // map to @trezor/utxo-lib/compose format
@@ -160,6 +164,7 @@ export class TransactionComposer {
             outputs: this.outputs,
             feeRate,
             longTermFeeRate: this.feeLevels.longTermFeeRate,
+            skipPermutation: this.skipPermutation,
             network: coinInfo.network,
             changeAddress,
             dustThreshold: coinInfo.dustLimit,

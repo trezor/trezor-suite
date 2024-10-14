@@ -84,6 +84,7 @@ export interface ComposeRequest<
     baseFee?: number; // DOGE or RBF base fee
     floorBaseFee?: boolean; // DOGE floor base fee to the nearest integer
     skipUtxoSelection?: boolean; // use custom utxo selection, without algorithm
+    skipPermutation?: boolean; // Do not sort inputs/outputs and preserve the given order. Handy for RBF.
 }
 
 type ComposedTransactionOutputs<T> = T extends ComposeOutputSendMax

@@ -30,6 +30,7 @@ export interface ComposeParams {
     sequence?: number;
     baseFee?: number;
     floorBaseFee?: boolean;
+    skipPermutation?: boolean;
 }
 
 export type SignedTransaction = {
@@ -55,6 +56,7 @@ export interface PrecomposeParams {
     baseFee?: number;
     floorBaseFee?: boolean;
     sequence?: number;
+    skipPermutation?: boolean;
 }
 
 // @trezor/utxo-lib `composeTx` transaction.input (ComposeInput) response intersects AccountUtxo
