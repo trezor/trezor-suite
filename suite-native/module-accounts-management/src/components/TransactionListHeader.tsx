@@ -102,6 +102,7 @@ export const TransactionListHeader = memo(
         const account = useSelector((state: AccountsRootState) =>
             selectAccountByKey(state, accountKey),
         );
+
         const accountHasTransactions = useSelector((state: AccountsRootState) =>
             selectHasAccountTransactions(state, accountKey),
         );
@@ -192,6 +193,7 @@ export const TransactionListHeader = memo(
 
                 {canHaveTokens && accountHasTransactions && (
                     <IncludeTokensToggle
+                        networkSymbol={account.symbol}
                         isToggled={areTokensIncluded}
                         onToggle={toggleIncludeTokenTransactions}
                     />
