@@ -16,10 +16,10 @@
         <meta name="theme-color" content="#ffffff" />
         <meta http-equiv="Pragma" content="no-cache" />
         <meta http-equiv="Expires" content="-1" />
-        <link href="../popup.css" rel="stylesheet" />
-        <link rel="icon" type="image/png" href="../images/favicon.png" />
+        <link href="../../popup.css" rel="stylesheet" />
+        <link rel="icon" type="image/png" href="../../images/favicon.png" />
         <!-- suite-like fonts -->
-        <link media="all" rel="stylesheet" href="../fonts/fonts.css" />
+        <link media="all" rel="stylesheet" href="../../fonts/fonts.css" />
     </head>
     <body>
         <div id="deeplink-react"></div>
@@ -27,7 +27,7 @@
         <script type="text/javascript" async="false">
             const pageScript = document.createElement('script');
             pageScript.setAttribute('type', 'text/javascript');
-            pageScript.setAttribute('src', '../<%= htmlWebpackPlugin.files.js[0] %>');
+            pageScript.setAttribute('src', '../../<%= htmlWebpackPlugin.files.js[0] %>');
             pageScript.setAttribute('async', 'false');
             document.body.appendChild(pageScript);
         </script>
