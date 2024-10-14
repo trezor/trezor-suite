@@ -19,7 +19,13 @@
         "test-unit:watch": "yarn g:jest -o --watch"
     },
     "dependencies": {
+        "@effect/platform": "^0.68.2",
+        "@effect/schema": "^0.75.3",
         "@everstake/wallet-sdk": "^0.3.49",
+        "@evolu/common": "^5.4.5",
+        "@evolu/common-react": "^8.1.1",
+        "@evolu/common-web": "^8.2.2",
+        "@evolu/react": "^8.2.1",
         "@floating-ui/react": "^0.26.9",
         "@formatjs/intl": "2.10.0",
         "@hookform/resolvers": "3.9.0",
@@ -28,6 +34,7 @@
         "@sentry/core": "^7.100.1",
         "@solana/buffer-layout": "^4.0.1",
         "@solana/web3.js": "^1.95.0",
+        "@sqlite.org/sqlite-wasm": "^3.46.1-build3",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/assets": "workspace:*",
         "@suite-common/connect-init": "workspace:*",

@@ -63,6 +63,7 @@
         { "path": "suite-native/device-manager" },
         { "path": "suite-native/device-mutex" },
         { "path": "suite-native/discovery" },
+        { "path": "suite-native/evolu" },
         { "path": "suite-native/feature-flags" },
         { "path": "suite-native/formatters" },
         { "path": "suite-native/forms" },

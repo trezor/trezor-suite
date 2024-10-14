@@ -12,6 +12,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@evolu/react-native": "^11.1.1",
         "@react-navigation/native": "6.1.18",
         "@react-navigation/native-stack": "6.11.0",
         "@reduxjs/toolkit": "1.9.5",
@@ -25,6 +26,7 @@
         "@suite-native/device": "workspace:*",
         "@suite-native/device-manager": "workspace:*",
         "@suite-native/discovery": "workspace:*",
+        "@suite-native/evolu": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/graph": "workspace:*",
         "@suite-native/intl": "workspace:*",

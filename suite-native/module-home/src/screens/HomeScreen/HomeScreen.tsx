@@ -13,6 +13,7 @@ import { Box } from '@suite-native/atoms';
 
 import { BiometricsBottomSheet } from './components/BiometricsBottomSheet';
 import { EmptyHomeRenderer } from './components/EmptyHomeRenderer';
+import { Evolu } from './components/Evolu';
 import { PortfolioContent } from './components/PortfolioContent';
 import { useHomeRefreshControl } from './useHomeRefreshControl';
 import { EnableViewOnlyBottomSheet } from './components/EnableViewOnlyBottomSheet';
@@ -41,6 +42,9 @@ export const HomeScreen = () => {
             refreshControl={refreshControl}
             customHorizontalPadding={0}
         >
+            <Box marginHorizontal="sp8">
+                <Evolu />
+            </Box>
             {isEmptyHomeRendererShown ? (
                 <Box marginHorizontal="sp8">
                     <EmptyHomeRenderer />

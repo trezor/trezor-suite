@@ -1,4 +1,6 @@
 import 'react-native-gesture-handler';
+import 'fast-text-encoding';
+import 'react-native-get-random-values';
 import './globalPolyfills';
 
 import { registerRootComponent } from 'expo';

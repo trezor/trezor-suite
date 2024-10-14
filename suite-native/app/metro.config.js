@@ -20,6 +20,8 @@ const config = {
         }),
     },
     resolver: {
+        // THIS IS REQUIRED FOR EVOLU AND EFFECT
+        unstable_enablePackageExports: true,
         blockList: [/libDev/],
         extraNodeModules: {
             // modules needed for trezor-connect
@@ -29,6 +31,7 @@ const config = {
             http: nodejs.http,
             zlib: nodejs.zlib,
         },
+        sourceExts: ['js', 'jsx', 'json', 'ts', 'tsx', 'cjs'],
         resolveRequest: (context, moduleName, platform) => {
             // index 0 refers to suite-native/app node_modules directory
             const rootNodeModulesPath = context.nodeModulesPaths[1];
@@ -67,4 +70,5 @@ const config = {
         },
     },
 };
+
 module.exports = mergeConfig(getSentryExpoConfig(__dirname), config);

@@ -129,6 +129,7 @@
         "@typescript-eslint/eslint-plugin": "^8.5.0",
         "@typescript-eslint/parser": "^8.5.0",
         "babel-jest": "29.7.0",
+        "babel-plugin-module-resolver": "^5.0.2",
         "depcheck": "^1.4.7",
         "eslint": "^8.56.0",
         "eslint-plugin-chai-friendly": "^0.7.4",
@@ -167,5 +168,8 @@
             "built": true
         }
     },
-    "packageManager": "yarn@4.2.2"
+    "packageManager": "yarn@4.2.2",
+    "dependencies": {
+        "effect": "^3.9.1"
+    }
 }

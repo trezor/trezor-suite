@@ -14,6 +14,7 @@
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../discovery" },
+        { "path": "../evolu" },
         { "path": "../feature-flags" },
         { "path": "../graph" },
         { "path": "../intl" },

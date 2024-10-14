@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import * as SplashScreen from 'expo-splash-screen';
 import * as Sentry from '@sentry/react-native';
+import { EvoluProvider } from '@evolu/react-native';
 
 import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@suite-native/state';
 import { FormatterProvider } from '@suite-common/formatters';
@@ -13,6 +14,7 @@ import { FeatureMessageScreen, MessageSystemBannerRenderer } from '@suite-native
 import { configureNetInfo, OfflineBanner } from '@suite-native/connection-status';
 import { IntlProvider } from '@suite-native/intl';
 import { isDebugEnv } from '@suite-native/config';
+import { evolu } from '@suite-native/evolu';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
@@ -78,13 +80,15 @@ const PureApp = () => (
         <IntlProvider>
             <StoreProvider>
                 <SentryProvider>
-                    <SafeAreaProvider>
-                        <StylesProvider>
-                            <NavigationContainerWithAnalytics>
-                                <AppComponent />
-                            </NavigationContainerWithAnalytics>
-                        </StylesProvider>
-                    </SafeAreaProvider>
+                    <EvoluProvider value={evolu}>
+                        <SafeAreaProvider>
+                            <StylesProvider>
+                                <NavigationContainerWithAnalytics>
+                                    <AppComponent />
+                                </NavigationContainerWithAnalytics>
+                            </StylesProvider>
+                        </SafeAreaProvider>
+                    </EvoluProvider>
                 </SentryProvider>
             </StoreProvider>
         </IntlProvider>
