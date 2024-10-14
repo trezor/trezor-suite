@@ -33,6 +33,7 @@
         "@trezor/theme": "workspace:*",
         "@trezor/transport": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "crypto-browserify": "^3.12.0",
         "json-stable-stringify": "^1.1.1",
         "react": "18.2.0",
         "react-dom": "18.2.0",

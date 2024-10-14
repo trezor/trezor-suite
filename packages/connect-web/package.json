@@ -45,7 +45,8 @@
     "dependencies": {
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@trezor/utils": "workspace:*",
+        "crypto-browserify": "^3.12.0"
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.24.7",

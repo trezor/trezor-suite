@@ -44,7 +44,7 @@ const config: webpack.Configuration = {
             src: path.resolve(__dirname, '../../suite/src/'),
         },
         fallback: {
-            // Polyfills crypto API for NodeJS libraries in the browser. 'crypto' does not run without 'stream'
+            // Polyfills crypto API for Node.js libraries in the browser. 'crypto' does not run without 'stream'
             crypto: require.resolve('crypto-browserify'),
             stream: require.resolve('stream-browserify'),
             // Not required

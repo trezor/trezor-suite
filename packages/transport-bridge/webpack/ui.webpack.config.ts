@@ -58,6 +58,11 @@ const config: webpack.Configuration = {
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
         modules: ['node_modules'],
         mainFields: ['browser', 'module', 'main'],
+        fallback: {
+            // Polyfills crypto API for Node.js libraries in the browser. 'crypto' does not run without 'stream'
+            crypto: require.resolve('crypto-browserify'),
+            stream: require.resolve('stream-browserify'),
+        },
     },
     plugins: [
         new HtmlWebpackPlugin({

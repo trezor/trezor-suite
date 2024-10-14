@@ -188,7 +188,7 @@ describe(`CoinjoinRound`, () => {
 
     it('onPhaseChange lock cool off resolved', async () => {
         const delayMock = jest
-            .spyOn(trezorUtils, 'getRandomNumberInRange')
+            .spyOn(trezorUtils, 'getWeakRandomNumberInRange')
             .mockImplementation(() => 800);
 
         const constantsMock = jest
@@ -396,7 +396,7 @@ describe(`CoinjoinRound`, () => {
 
     it('unregisterAccount when round is locked', async () => {
         const delayMock = jest
-            .spyOn(trezorUtils, 'getRandomNumberInRange')
+            .spyOn(trezorUtils, 'getWeakRandomNumberInRange')
             .mockImplementation(() => 800);
 
         const constantsMock = jest

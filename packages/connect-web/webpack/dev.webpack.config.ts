@@ -24,6 +24,13 @@ const dev = {
         libraryTarget: 'umd',
         libraryExport: 'default',
     },
+    resolve: {
+        fallback: {
+            // Polyfills crypto API for NodeJS libraries in the browser. 'crypto' does not run without 'stream'
+            crypto: require.resolve('crypto-browserify'),
+            stream: require.resolve('stream-browserify'),
+        },
+    },
     plugins: [
         // connect-web dev needs to be served from https
         // to allow injection in 3rd party builds using trezor-connect-src param

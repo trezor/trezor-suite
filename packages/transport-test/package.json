@@ -14,7 +14,7 @@
         "test:e2e:new-bridge:hw": "USE_HW=true USE_NODE_BRIDGE=true yarn test:e2e:bridge",
         "test:e2e:new-bridge:emu": "USE_HW=false USE_NODE_BRIDGE=true yarn test:e2e:bridge",
         "build:e2e:api:node": "yarn esbuild ./e2e/api/api.test.ts --bundle --outfile=./e2e/dist/api.test.node.js --platform=node --target=node18 --external:usb",
-        "build:e2e:api:browser": "yarn esbuild ./e2e/api/api.test.ts --bundle --outfile=./e2e/dist/api.test.browser.js --platform=browser --external:usb  && cp e2e/ui/api.test.html e2e/dist/index.html",
+        "build:e2e:api:browser": "yarn esbuild ./e2e/api/api.test.ts --bundle --alias:crypto=crypto-browserify --alias:stream=stream-browserify --outfile=./e2e/dist/api.test.browser.js --platform=browser --external:usb  && cp e2e/ui/api.test.html e2e/dist/index.html",
         "test:e2e:api:node:hw": "yarn build:e2e:api:node && node ./e2e/dist/api.test.node.js",
         "test:e2e:api:browser:hw": "yarn build:e2e:api:browser && npx http-serve ./e2e/dist"
     },
@@ -25,6 +25,7 @@
         "@trezor/trezor-user-env-link": "workspace:^",
         "@trezor/utils": "workspace:*",
         "buffer": "^6.0.3",
+        "crypto-browserify": "^3.12.0",
         "esbuild": "^0.23.1",
         "jest": "^29.7.0",
         "jest-extended": "^4.0.2",
