@@ -128,7 +128,7 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
     }
 
     ethereumCall(payload: EthereumCallParams) {
-        return this.send('ethCall', payload);
+        return this.send('rpcCall', payload);
     }
 
     getCurrentFiatRates(payload: GetCurrentFiatRates['payload']) {
