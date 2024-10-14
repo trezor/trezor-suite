@@ -15,7 +15,7 @@ const TIMEOUT = 20000;
 const [bestKnownHash, batchSizeString = '500', torSocket = ''] = process.argv.slice(2);
 const batchSize = Number(batchSizeString);
 const [host, port] = torSocket.split(':');
-const agent = host && port ? new SocksProxyAgent({ host, port }) : undefined;
+const agent = host && port ? new SocksProxyAgent(`socks://${host}:${port}`) : undefined;
 
 // Copied from request-manager to remove disallowed headers because of Wasabi
 const stripHeaders = () => {
