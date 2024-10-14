@@ -2,13 +2,15 @@ import { TextProps, Box } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { SignValue } from '@suite-common/suite-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { FormatterProps } from '../types';
 import { AmountText } from './AmountText';
 import { SignValueFormatter } from './SignValueFormatter';
 import { useFiatFromCryptoValue } from '../hooks/useFiatFromCryptoValue';
 
-type EthereumTokenToFiatAmountFormatterProps = {
+type TokenToFiatAmountFormatterProps = {
+    networkSymbol: NetworkSymbol;
     contract: TokenAddress;
     isDiscreetText?: boolean;
     decimals?: number;
@@ -19,7 +21,8 @@ type EthereumTokenToFiatAmountFormatterProps = {
 } & FormatterProps<number | string> &
     TextProps;
 
-export const EthereumTokenToFiatAmountFormatter = ({
+export const TokenToFiatAmountFormatter = ({
+    networkSymbol,
     value,
     contract,
     isDiscreetText = true,
@@ -30,11 +33,11 @@ export const EthereumTokenToFiatAmountFormatter = ({
     historicRate,
     useHistoricRate,
     ...rest
-}: EthereumTokenToFiatAmountFormatterProps) => {
+}: TokenToFiatAmountFormatterProps) => {
     const { FiatAmountFormatter } = useFormatters();
     const fiatValue = useFiatFromCryptoValue({
         cryptoValue: String(value),
-        network: 'eth',
+        network: networkSymbol,
         tokenAddress: contract,
         tokenDecimals: decimals,
         historicRate,

@@ -33,7 +33,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { importAccountThunk } from '../accountsImportThunks';
 import { useShowImportError } from '../useShowImportError';
 import { AccountImportOverview } from './AccountImportOverview';
-import { EthereumTokenInfo } from './EthereumTokenInfo';
+import { TokenInfoCard } from './TokenInfoCard';
 
 type AccountImportSummaryFormProps = {
     networkSymbol: NetworkSymbol;
@@ -117,7 +117,8 @@ export const AccountImportSummaryForm = ({
     const renderItem = useCallback(
         ({ item }: { item: TokenInfo }) => (
             <Box marginBottom="sp8">
-                <EthereumTokenInfo
+                <TokenInfoCard
+                    networkSymbol={networkSymbol}
                     symbol={item.symbol as TokenSymbol}
                     balance={item.balance}
                     decimals={item.decimals}
@@ -126,7 +127,7 @@ export const AccountImportSummaryForm = ({
                 />
             </Box>
         ),
-        [],
+        [networkSymbol],
     );
 
     return (

@@ -1,10 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { Badge, Box, ErrorMessage, RoundedIcon, Text, VStack } from '@suite-native/atoms';
-import {
-    EthereumTokenAmountFormatter,
-    EthereumTokenToFiatAmountFormatter,
-} from '@suite-native/formatters';
+import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -52,10 +49,15 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
         selectAccountTokenSymbol(state, accountKey, contract),
     );
 
-    if (!token)
+    const network = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
+
+    if (!token || !network) {
         return (
             <ErrorMessage errorMessage={<Translation id="moduleReceive.tokens.errorMessage" />} />
         );
+    }
 
     const tokenName = getTokenName(token.name);
 
@@ -82,11 +84,12 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                     </Box>
                 </Box>
                 <Box style={applyStyle(valuesContainerStyle)}>
-                    <EthereumTokenToFiatAmountFormatter
+                    <TokenToFiatAmountFormatter
                         value={token.balance ?? '0'}
                         contract={contract}
+                        networkSymbol={network}
                     />
-                    <EthereumTokenAmountFormatter
+                    <TokenAmountFormatter
                         value={token.balance ?? '0'}
                         symbol={tokenSymbol}
                         numberOfLines={1}

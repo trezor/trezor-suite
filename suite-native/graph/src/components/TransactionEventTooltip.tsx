@@ -7,7 +7,7 @@ import { G, N } from '@mobily/ts-belt';
 import { Card, Box, Text } from '@suite-native/atoms';
 import {
     CryptoAmountFormatter,
-    EthereumTokenAmountFormatter,
+    TokenAmountFormatter,
     SignValueFormatter,
 } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -82,7 +82,7 @@ const TokenAmountTooltipFormatter = ({
     // We might want to add support for other networks in the future.
     if (getNetworkType(networkSymbol) === 'ethereum') {
         return (
-            <EthereumTokenAmountFormatter
+            <TokenAmountFormatter
                 color="textDefault"
                 variant="label"
                 value={value}

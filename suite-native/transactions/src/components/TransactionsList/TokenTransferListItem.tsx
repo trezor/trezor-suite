@@ -1,10 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { AccountKey } from '@suite-common/wallet-types';
-import {
-    EthereumTokenAmountFormatter,
-    EthereumTokenToFiatAmountFormatter,
-} from '@suite-native/formatters';
+import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { selectIsPhishingTransaction, TransactionsRootState } from '@suite-common/wallet-core';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
@@ -45,7 +42,8 @@ export const TokenTransferListItemValues = ({
 
     return (
         <>
-            <EthereumTokenToFiatAmountFormatter
+            <TokenToFiatAmountFormatter
+                networkSymbol={transaction.symbol}
                 value={tokenTransfer.amount}
                 contract={tokenTransfer.contract}
                 decimals={tokenTransfer.decimals}
@@ -56,7 +54,7 @@ export const TokenTransferListItemValues = ({
                 useHistoricRate
                 isForcedDiscreetMode={isPhishingTransaction}
             />
-            <EthereumTokenAmountFormatter
+            <TokenAmountFormatter
                 value={tokenTransfer.amount}
                 symbol={tokenTransfer.symbol}
                 decimals={tokenTransfer.decimals}

@@ -9,7 +9,7 @@ import { Box, Card, Text } from '@suite-native/atoms';
 import {
     AccountAddressFormatter,
     CryptoAmountFormatter,
-    EthereumTokenAmountFormatter,
+    TokenAmountFormatter,
 } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -45,7 +45,7 @@ const TransactionAddressAmount = ({
                     adjustsFontSizeToFit
                 />
             ) : (
-                <EthereumTokenAmountFormatter
+                <TokenAmountFormatter
                     value={amount}
                     symbol={symbol}
                     decimals={decimals}
