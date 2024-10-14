@@ -4,8 +4,8 @@ import { AccountKey } from '@suite-common/wallet-types';
 import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
-    EthereumTokenAmountFormatter,
-    EthereumTokenToFiatAmountFormatter,
+    TokenAmountFormatter,
+    TokenToFiatAmountFormatter,
     SignValueFormatter,
 } from '@suite-native/formatters';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
@@ -82,7 +82,7 @@ export const TransactionDetailHeader = ({
                         />
                         <Text> </Text>
                         {tokenTransfer ? (
-                            <EthereumTokenAmountFormatter
+                            <TokenAmountFormatter
                                 value={tokenTransfer.amount}
                                 symbol={tokenTransfer.symbol}
                                 decimals={tokenTransfer.decimals}
@@ -109,7 +109,8 @@ export const TransactionDetailHeader = ({
                     <Box flexDirection="row" style={applyStyle(fiatValueStyle)}>
                         <Text color="textSubdued">≈ </Text>
                         {tokenTransfer ? (
-                            <EthereumTokenToFiatAmountFormatter
+                            <TokenToFiatAmountFormatter
+                                networkSymbol={transaction.symbol}
                                 contract={tokenTransfer.contract}
                                 value={tokenTransfer.amount}
                                 decimals={tokenTransfer.decimals}

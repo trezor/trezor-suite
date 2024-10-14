@@ -3,10 +3,7 @@ import { useSelector } from 'react-redux';
 import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account, TokenInfoBranded } from '@suite-common/wallet-types';
 import { RoundedIcon } from '@suite-native/atoms';
-import {
-    EthereumTokenAmountFormatter,
-    EthereumTokenToFiatAmountFormatter,
-} from '@suite-native/formatters';
+import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { getTokenName, selectAccountTokenSymbol } from '@suite-native/tokens';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
@@ -43,10 +40,14 @@ export const AccountsListTokenItem = ({
             icon={<RoundedIcon name={token.contract} />}
             title={getTokenName(token.name)}
             mainValue={
-                <EthereumTokenToFiatAmountFormatter value={balance} contract={token.contract} />
+                <TokenToFiatAmountFormatter
+                    networkSymbol={account.symbol}
+                    value={balance}
+                    contract={token.contract}
+                />
             }
             secondaryValue={
-                <EthereumTokenAmountFormatter
+                <TokenAmountFormatter
                     value={balance}
                     symbol={tokenSymbol}
                     numberOfLines={1}
