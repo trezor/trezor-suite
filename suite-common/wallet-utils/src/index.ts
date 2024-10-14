@@ -20,5 +20,3 @@ export * from './stakingUtils';
 export * from './reviewTransactionUtils';
 export * from './filterReceiveAccounts';
 export * from './tokenUtils';
-
-export { analyzeTransactions as analyzeTransactionsFixtures } from './__fixtures__/transactionUtils';

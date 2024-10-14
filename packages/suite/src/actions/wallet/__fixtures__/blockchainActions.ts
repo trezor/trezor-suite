@@ -1,4 +1,4 @@
-import { analyzeTransactionsFixtures as analyzeTransactions } from '@suite-common/wallet-utils';
+import { analyzeTransactions } from '@suite-common/wallet-utils/src/__fixtures__/transactionUtils';
 import { blockchainActions, transactionsActions, accountsActions } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
 

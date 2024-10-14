@@ -1,3 +1,5 @@
+import '@suite-common/test-utils/src/mocks';
+
 import { db } from '..';
 
 describe('storage', () => {
