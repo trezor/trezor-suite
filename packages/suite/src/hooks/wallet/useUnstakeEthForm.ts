@@ -43,7 +43,7 @@ type UnstakeOptions = 'all' | 'rewards' | 'other';
 
 type UnstakeContextValues = UnstakeContextValuesBase & {
     amountLimits: AmountLimitsString;
-    approximatedEthAmount?: string | null;
+    approximatedInstantEthAmount?: string | null;
     unstakeOption: UnstakeOptions;
     setUnstakeOption: (option: UnstakeOptions) => void;
 };
@@ -55,7 +55,9 @@ export const useUnstakeEthForm = ({
     selectedAccount,
 }: UseStakeFormsProps): UnstakeContextValues => {
     const dispatch = useDispatch();
-    const [approximatedEthAmount, setApproximatedEthAmount] = useState<string | null>(null);
+    const [approximatedInstantEthAmount, setApproximatedInstantEthAmount] = useState<string | null>(
+        null,
+    );
     const [unstakeOption, setUnstakeOption] = useState<UnstakeOptions>('all');
 
     const { account, network } = selectedAccount;
@@ -117,7 +119,7 @@ export const useUnstakeEthForm = ({
         const { cryptoInput } = values;
 
         if (!cryptoInput || Object.keys(formState.errors).length) {
-            setApproximatedEthAmount(null);
+            setApproximatedInstantEthAmount(null);
 
             return;
         }
@@ -128,7 +130,7 @@ export const useUnstakeEthForm = ({
                 from: account.descriptor,
                 symbol: account.symbol,
             });
-            setApproximatedEthAmount(approximatedEthAmount);
+            setApproximatedInstantEthAmount(approximatedEthAmount);
         };
 
         simulateUnstakeAmount();
@@ -279,7 +281,7 @@ export const useUnstakeEthForm = ({
         currentRate,
         feeInfo,
         changeFeeLevel,
-        approximatedEthAmount,
+        approximatedInstantEthAmount,
         unstakeOption,
         setUnstakeOption,
     };

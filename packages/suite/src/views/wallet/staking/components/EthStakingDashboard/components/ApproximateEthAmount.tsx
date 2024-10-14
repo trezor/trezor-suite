@@ -1,33 +1,26 @@
 import { FormattedCryptoAmount } from 'src/components/suite';
-import styled from 'styled-components';
-import { Tooltip, variables } from '@trezor/components';
+import { Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-
-const StyledFormattedCryptoAmount = styled(FormattedCryptoAmount)`
-    display: block;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-`;
 
 interface ApproximateEthAmountProps {
     value: string | number;
     symbol: string;
 }
 
-const DEFAULT_MAX_DECIMAL_PLACES = 5;
+const DEFAULT_MAX_DECIMAL_PLACES = 2;
 
 export const ApproximateEthAmount = ({ value, symbol }: ApproximateEthAmountProps) => {
     const hasDecimals = value.toString().includes('.');
 
     if (!hasDecimals) {
-        return <StyledFormattedCryptoAmount value={value} symbol={symbol} />;
+        return <FormattedCryptoAmount value={value} symbol={symbol} />;
     }
 
-    const valueBig = new BigNumber(value);
-    const trimmedAmount = valueBig.toFixed(DEFAULT_MAX_DECIMAL_PLACES, 1);
+    const trimmedAmount = new BigNumber(value).toFixed(DEFAULT_MAX_DECIMAL_PLACES, 1);
 
     return (
-        <Tooltip content={<StyledFormattedCryptoAmount value={value} symbol={symbol} />}>
-            <StyledFormattedCryptoAmount value={trimmedAmount} symbol={symbol} />
+        <Tooltip content={<FormattedCryptoAmount value={value} symbol={symbol} />}>
+            <FormattedCryptoAmount value={trimmedAmount} symbol={symbol} />
         </Tooltip>
     );
 };

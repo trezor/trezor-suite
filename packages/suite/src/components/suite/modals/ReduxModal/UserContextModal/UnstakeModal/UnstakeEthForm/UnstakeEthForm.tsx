@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { Button, Divider, Icon, Paragraph, Tooltip, Banner } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Button, Divider, Icon, Paragraph, Tooltip, Banner, Row, Column } from '@trezor/components';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
@@ -13,11 +13,7 @@ import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { ApproximateEthAmount } from 'src/views/wallet/staking/components/EthStakingDashboard/components/ApproximateEthAmount';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const GreyP = styled(Paragraph)`
-    color: ${({ theme }) => theme.textSubdued};
-`;
+import { BigNumber } from '@trezor/utils';
 
 const DividerWrapper = styled.div`
     & > div {
@@ -39,28 +35,6 @@ const WarningsWrapper = styled.div`
     gap: ${spacingsPx.md};
 `;
 
-const UpToDaysWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 16px;
-    padding: ${spacingsPx.lg} 0 ${spacingsPx.md};
-    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
-`;
-
-const ApproximateEthWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: ${spacingsPx.xxs} 0 ${spacingsPx.md};
-`;
-
-const ApproximateEthTitleWrapper = styled.div`
-    display: flex;
-    gap: ${spacingsPx.xxs};
-    align-items: center;
-`;
-
 export const UnstakeEthForm = () => {
     const { device, isLocked } = useDevice();
     const selectedAccount = useSelector(selectSelectedAccount);
@@ -73,8 +47,7 @@ export const UnstakeEthForm = () => {
         handleSubmit,
         watch,
         signTx,
-        approximatedEthAmount,
-        unstakeOption,
+        approximatedInstantEthAmount,
     } = useUnstakeEthFormContext();
 
     const { symbol } = account;
@@ -86,7 +59,6 @@ export const UnstakeEthForm = () => {
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
-    const isUnstakeOptionOther = unstakeOption === 'other';
 
     const { canClaim = false, claimableAmount = '0' } =
         getAccountEverstakeStakingPool(selectedAccount) ?? {};
@@ -95,6 +67,8 @@ export const UnstakeEthForm = () => {
 
     const inputError = errors[CRYPTO_INPUT] || errors[FIAT_INPUT];
     const showError = inputError && inputError.type === 'compose';
+    const shouldShowInstantUnstakeEthAmount =
+        approximatedInstantEthAmount && BigNumber(approximatedInstantEthAmount).gt(0);
 
     return (
         <form onSubmit={handleSubmit(signTx)}>
@@ -123,50 +97,52 @@ export const UnstakeEthForm = () => {
                 <Divider />
             </DividerWrapper>
 
-            <UnstakeFees />
+            <Column gap={spacings.lg} alignItems="normal" hasDivider>
+                <UnstakeFees />
 
-            <UpToDaysWrapper>
-                <GreyP>
-                    <Translation id="TR_STAKE_UNSTAKING_PERIOD" />
-                </GreyP>
-                <Translation
-                    id="TR_UP_TO_DAYS"
-                    values={{
-                        count: unstakingPeriod,
-                    }}
-                />
-            </UpToDaysWrapper>
-
-            {isUnstakeOptionOther && (
-                <ApproximateEthWrapper>
-                    <ApproximateEthTitleWrapper>
-                        <GreyP>
-                            <Translation
-                                id="TR_STAKE_UNSTAKING_APPROXIMATE"
-                                values={{
-                                    symbol: symbol.toUpperCase(),
-                                }}
-                            />
-                        </GreyP>
-
-                        <Tooltip
-                            maxWidth={328}
-                            content={
-                                <Translation id="TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION" />
-                            }
-                        >
-                            <Icon name="info" size={14} />
-                        </Tooltip>
-                    </ApproximateEthTitleWrapper>
-
-                    {approximatedEthAmount && (
-                        <ApproximateEthAmount
-                            value={approximatedEthAmount}
-                            symbol={symbol.toUpperCase()}
+                <Column gap={spacings.md} alignItems="normal" margin={{ bottom: spacings.lg }}>
+                    <Row justifyContent="space-between">
+                        <Paragraph typographyStyle="body" variant="tertiary">
+                            <Translation id="TR_STAKE_UNSTAKING_PERIOD" />
+                        </Paragraph>
+                        <Translation
+                            id="TR_UP_TO_DAYS"
+                            values={{
+                                count: unstakingPeriod,
+                            }}
                         />
+                    </Row>
+
+                    {shouldShowInstantUnstakeEthAmount && (
+                        <Row justifyContent="space-between">
+                            <Row gap={spacings.xxs}>
+                                <Paragraph typographyStyle="body" variant="tertiary">
+                                    <Translation
+                                        id="TR_STAKE_UNSTAKING_APPROXIMATE"
+                                        values={{
+                                            symbol: symbol.toUpperCase(),
+                                        }}
+                                    />
+                                </Paragraph>
+
+                                <Tooltip
+                                    maxWidth={328}
+                                    content={
+                                        <Translation id="TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION" />
+                                    }
+                                >
+                                    <Icon name="info" size={14} />
+                                </Tooltip>
+                            </Row>
+
+                            <ApproximateEthAmount
+                                value={approximatedInstantEthAmount}
+                                symbol={symbol.toUpperCase()}
+                            />
+                        </Row>
                     )}
-                </ApproximateEthWrapper>
-            )}
+                </Column>
+            </Column>
 
             <Tooltip content={unstakingMessageContent}>
                 <Button
