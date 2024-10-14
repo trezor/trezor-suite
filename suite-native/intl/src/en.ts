@@ -726,6 +726,10 @@ export const en = {
                 inputs: 'Inputs & Outputs',
             },
         },
+        tokens: {
+            toggleTokens: 'Include tokens',
+            title: 'Note, your {networkName} balance doesn’t include tokens.',
+        },
     },
     deviceManager: {
         deviceButtons: {
