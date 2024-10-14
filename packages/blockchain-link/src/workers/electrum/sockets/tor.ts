@@ -17,7 +17,7 @@ export class TorSocket extends SocketBase {
     protected async openSocket(listener: SocketListener) {
         const { host, port } = this;
         const socket = await this.proxyAgent
-            .callback(null as any, { host, port, timeout: this.timeout, secureEndpoint: false })
+            .connect(null as any, { host, port, timeout: this.timeout, secureEndpoint: false })
             .catch(e => {
                 listener.onError(e);
                 throw e;

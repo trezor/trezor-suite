@@ -5,7 +5,7 @@
 // and
 // new BlockchainLink({ worker: () => new BlockchainLinkModule() });
 
-import SocksProxyAgent from 'socks-proxy-agent';
+import { SocksProxyAgent } from 'socks-proxy-agent';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import { WorkerState } from './state';
 import { prioritizeEndpoints } from './utils';
@@ -31,7 +31,7 @@ export type ContextType<API> = {
 
 export abstract class BaseWorker<API> {
     api: API | undefined;
-    proxyAgent: ReturnType<typeof SocksProxyAgent> | undefined;
+    proxyAgent: SocksProxyAgent | undefined;
     settings: Partial<BlockchainSettings> = {};
     state: WorkerState;
     post: (data: Response) => void;
@@ -141,9 +141,16 @@ export abstract class BaseWorker<API> {
 
         if (data.type === MESSAGES.HANDSHAKE) {
             this.settings = data.settings;
-            this.proxyAgent = data.settings.proxy
-                ? SocksProxyAgent(data.settings.proxy)
-                : undefined;
+            const { proxy } = data.settings;
+            if (proxy) {
+                const agentUri =
+                    typeof proxy === 'string' ? proxy : `socks://${proxy.host}:${proxy.port}`;
+                const socketOptions =
+                    typeof proxy === 'object' ? { timeout: proxy?.timeout } : undefined;
+                this.proxyAgent = new SocksProxyAgent(agentUri, socketOptions);
+            } else {
+                this.proxyAgent = undefined;
+            }
 
             return true;
         }
