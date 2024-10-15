@@ -34,19 +34,19 @@ export const CollapsibleBox: StoryObj = {
         hasDivider: { type: 'boolean' },
         fillType: {
             control: {
-                type: 'select',
+                type: 'radio',
             },
             options: fillTypes,
         },
         paddingType: {
             control: {
-                type: 'select',
+                type: 'radio',
             },
             options: paddingTypes,
         },
         headingSize: {
             control: {
-                type: 'select',
+                type: 'radio',
             },
             options: headingSizes,
         },
