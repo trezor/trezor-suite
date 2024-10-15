@@ -19,12 +19,13 @@ export const getFirmwareVersionArray = (device?: Device): VersionArray | null =>
     return [features.major_version, features.minor_version, features.patch_version];
 };
 
-export const getFirmwareVersion = (device?: Device) => {
+export const getFirmwareVersion = (device?: Device): '' | `${number}.${number}.${number}` => {
     if (!device?.features) {
         return '';
     }
     const { features } = device;
     if (isDeviceInBootloaderMode(device)) {
+        // @ts-expect-error fw_minor and fw_patch is imho always defined. maybe only for some very old firmwares only major version is defined.
         return features.fw_major
             ? `${features.fw_major}.${features.fw_minor}.${features.fw_patch}`
             : '';
