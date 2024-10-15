@@ -174,6 +174,51 @@ export const CollapsibleBox = ({
         setIsOpen(!isOpen);
     };
 
+    const headerContent = (
+        <Row gap={spacings.xs} justifyContent="space-between">
+            <Column alignItems="flex-start">
+                <Text
+                    as="div"
+                    typographyStyle={mapSizeToHeadingTypography({
+                        $headingSize: headingSize,
+                    })}
+                >
+                    {heading}
+                </Text>
+                {subHeading && (
+                    <Text
+                        as="div"
+                        typographyStyle={mapSizeToSubheadingTypography({
+                            $headingSize: headingSize,
+                        })}
+                        variant="tertiary"
+                    >
+                        {subHeading}
+                    </Text>
+                )}
+            </Column>
+            <Toggle>
+                <Row gap={spacings.sm}>
+                    {toggleLabel && (
+                        <Text typographyStyle="hint" variant="tertiary">
+                            {toggleLabel}
+                        </Text>
+                    )}
+                    <IconWrapper $isCollapsed={!isOpen}>
+                        {toggleComponent ?? (
+                            <Icon
+                                name="caretCircleDown"
+                                size={mapSizeToIconSize({ $headingSize: headingSize })}
+                                data-testid={`@collapsible-box/icon-${isOpen ? 'expanded' : 'collapsed'}`}
+                                variant="tertiary"
+                            />
+                        )}
+                    </IconWrapper>
+                </Row>
+            </Toggle>
+        </Row>
+    );
+
     return (
         <Container
             {...frameProps}
@@ -183,48 +228,7 @@ export const CollapsibleBox = ({
             data-testid={dataTest}
         >
             <Header $paddingType={paddingType} onClick={onClick}>
-                <Row gap={spacings.xs} justifyContent="space-between">
-                    <Column alignItems="flex-start">
-                        <Text
-                            as="div"
-                            typographyStyle={mapSizeToHeadingTypography({
-                                $headingSize: headingSize,
-                            })}
-                        >
-                            {heading}
-                        </Text>
-                        {subHeading && (
-                            <Text
-                                as="div"
-                                typographyStyle={mapSizeToSubheadingTypography({
-                                    $headingSize: headingSize,
-                                })}
-                                variant="tertiary"
-                            >
-                                {subHeading}
-                            </Text>
-                        )}
-                    </Column>
-                    <Toggle>
-                        <Row gap={spacings.sm}>
-                            {toggleLabel && (
-                                <Text typographyStyle="hint" variant="tertiary">
-                                    {toggleLabel}
-                                </Text>
-                            )}
-                            <IconWrapper $isCollapsed={!isOpen}>
-                                {toggleComponent ?? (
-                                    <Icon
-                                        name="caretCircleDown"
-                                        size={mapSizeToIconSize({ $headingSize: headingSize })}
-                                        data-testid={`@collapsible-box/icon-${isOpen ? 'expanded' : 'collapsed'}`}
-                                        variant="tertiary"
-                                    />
-                                )}
-                            </IconWrapper>
-                        </Row>
-                    </Toggle>
-                </Row>
+                {fillType === 'none' ? headerContent : <ElevationUp>{headerContent}</ElevationUp>}
             </Header>
             <Collapser
                 initial={false} // Prevents animation on mount when expanded === false
@@ -241,7 +245,7 @@ export const CollapsibleBox = ({
                 data-testid="@collapsible-box/body"
             >
                 <Content $elevation={elevation} $paddingType={paddingType} $hasDivider={hasDivider}>
-                    <ElevationUp>{children}</ElevationUp>
+                    {fillType === 'none' ? children : <ElevationUp>{children}</ElevationUp>}
                 </Content>
             </Collapser>
         </Container>
