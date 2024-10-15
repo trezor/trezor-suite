@@ -1,13 +1,14 @@
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import { CoreInIframe } from './impl/core-in-iframe';
 import { CoreInPopup } from './impl/core-in-popup';
+import { CoreInSuiteDesktop } from './impl/core-in-suite-desktop';
 import ProxyEventEmitter from './utils/proxy-event-emitter';
 import type { ConnectSettings, ConnectSettingsPublic, Manifest } from '@trezor/connect/src/types';
 import EventEmitter from 'events';
 import { CallMethodPayload } from '@trezor/connect/src/events';
 import { getEnv } from './connectSettings';
 
-type TrezorConnectType = 'core-in-popup' | 'iframe';
+type TrezorConnectType = 'core-in-popup' | 'iframe' | 'core-in-suite-desktop';
 
 const IFRAME_ERRORS = ['Init_IframeBlocked', 'Init_IframeTimeout', 'Transport_Missing'];
 
@@ -20,20 +21,30 @@ export class TrezorConnectDynamicImpl implements ConnectFactoryDependencies {
     private currentTarget: TrezorConnectType = 'iframe';
     private coreInIframeImpl: CoreInIframe;
     private coreInPopupImpl: CoreInPopup;
+    private coreInSuiteDesktopImpl: CoreInSuiteDesktop;
 
     private lastSettings?: Partial<ConnectSettings>;
 
     public constructor() {
         this.coreInIframeImpl = new CoreInIframe();
         this.coreInPopupImpl = new CoreInPopup();
+        this.coreInSuiteDesktopImpl = new CoreInSuiteDesktop();
         this.eventEmitter = new ProxyEventEmitter([
             this.coreInIframeImpl.eventEmitter,
             this.coreInPopupImpl.eventEmitter,
+            this.coreInSuiteDesktopImpl.eventEmitter,
         ]);
     }
 
     private getTarget() {
-        return this.currentTarget === 'iframe' ? this.coreInIframeImpl : this.coreInPopupImpl;
+        switch (this.currentTarget) {
+            case 'iframe':
+                return this.coreInIframeImpl;
+            case 'core-in-popup':
+                return this.coreInPopupImpl;
+            case 'core-in-suite-desktop':
+                return this.coreInSuiteDesktopImpl;
+        }
     }
 
     private async switchTarget(target: TrezorConnectType) {
@@ -61,6 +72,8 @@ export class TrezorConnectDynamicImpl implements ConnectFactoryDependencies {
             this.currentTarget = 'iframe';
         } else if (settings.coreMode === 'popup') {
             this.currentTarget = 'core-in-popup';
+        } else if (settings.coreMode === 'suite-desktop') {
+            this.currentTarget = 'core-in-suite-desktop';
         } else {
             // Default to auto mode with iframe as the first choice
             settings.coreMode = 'auto';

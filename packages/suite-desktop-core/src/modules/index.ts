@@ -70,6 +70,8 @@ interface MainThreadMessages {
     'module/request-interceptor': InterceptedEvent;
     'module/reset-tor-circuits': Extract<InterceptedEvent, { type: 'CIRCUIT_MISBEHAVING' }>;
     'module/tor-status-update': TorStatus;
+    'focus-window': void;
+    'blur-window': void;
 }
 export const mainThreadEmitter = new TypedEmitter<MainThreadMessages>();
 export type MainThreadEmitter = typeof mainThreadEmitter;

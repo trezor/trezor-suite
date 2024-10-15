@@ -35,9 +35,9 @@ export const getParam = (field: FieldBasic<any>, $params: Record<string, any> = 
     if (field.omit) {
         return params;
     }
-    if (field.optional && ((!field.value && field.value !== 0) || field.value === '')) {
-        return params;
-    }
+    // if (field.optional && ((!field.value && field.value !== 0) || field.value === '')) {
+    //     return params;
+    // }
 
     let value: any;
     if ('defaultValue' in field) {
