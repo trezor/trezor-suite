@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import * as SplashScreen from 'expo-splash-screen';
 import * as Sentry from '@sentry/react-native';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@suite-native/state';
 import { FormatterProvider } from '@suite-common/formatters';
@@ -65,7 +66,9 @@ const AppComponent = () => {
         <FormatterProvider config={formattersConfig}>
             <OfflineBanner />
             <MessageSystemBannerRenderer />
-            <RootStackNavigator />
+            <BottomSheetModalProvider>
+                <RootStackNavigator />
+            </BottomSheetModalProvider>
             <ModalsRenderer />
             {/* NOTE: Rendered as last item so that it covers the whole app screen */}
             <FeatureMessageScreen />

@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import { BottomSheetFlashList } from '@suite-native/atoms';
-import { ToastRenderer, useToast } from '@suite-native/toasts';
+import { useToast } from '@suite-native/toasts';
 import { Translation } from '@suite-native/intl';
 
 import { AccountSelectBottomSheetSection, OnSelectAccount } from '../types';
@@ -97,8 +97,7 @@ export const AccountSelectBottomSheet = React.memo(
                 data={data}
                 renderItem={renderItem}
                 estimatedItemSize={ESTIMATED_ITEM_SIZE}
-                estimatedListHeight={ESTIMATED_ITEM_SIZE * data.length}
-                ExtraProvider={ToastRenderer}
+                estimatedListHeight={ESTIMATED_ITEM_SIZE * data.length * 1.5}
             />
         );
     },
