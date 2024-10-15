@@ -1,65 +1,14 @@
 import styled from 'styled-components';
-import { Card, variables } from '@trezor/components';
+import { Card, Row, Column, Paragraph } from '@trezor/components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
 import { ReviewButton } from './ReviewButton';
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledCard = styled(Card)`
+const Container = styled.div`
     position: sticky;
-    top: 60px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: ${spacingsPx.md} 0;
-    align-items: start;
-    height: min-content;
-    background: transparent;
-    box-shadow: none;
-    border: 1px solid ${({ theme }) => theme.borderElevation1};
-`;
-
-const Left = styled.div`
-    display: flex;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    gap: 6px;
-    justify-content: center;
-    flex-direction: column;
-`;
-
-const Label = styled.div`
-    padding-right: 10px;
-    text-transform: capitalize;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-`;
-
-const SecondaryLabel = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-`;
-
-const Right = styled.div`
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 6px;
-`;
-
-const TotalSentCoin = styled.div`
-    display: flex;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-`;
-
-const TotalSentFiat = styled.div`
-    display: flex;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    top: 80px;
 `;
 
 export const TotalSent = () => {
@@ -72,58 +21,69 @@ export const TotalSent = () => {
     const selectedFee = getValues().selectedFee || 'normal';
     const transactionInfo = composedLevels ? composedLevels[selectedFee] : undefined;
     const isTokenTransfer = networkType === 'ethereum' && !!getValues('outputs.0.token');
-    const tokenInfo =
-        transactionInfo && transactionInfo.type !== 'error' ? transactionInfo.token : undefined;
+    const hasTransactionInfo = transactionInfo && transactionInfo.type !== 'error';
+    const tokenInfo = hasTransactionInfo ? transactionInfo.token : undefined;
 
     return (
-        <StyledCard>
-            <Left>
-                <Label>
-                    <Translation id="TOTAL_SENT" />
-                </Label>
-
-                <SecondaryLabel>
-                    {!isTokenTransfer ? <Translation id="INCLUDING_FEE" /> : ' '}
-                </SecondaryLabel>
-            </Left>
-
-            {transactionInfo && transactionInfo.type !== 'error' && (
-                <Right>
-                    <TotalSentCoin>
-                        <FormattedCryptoAmount
-                            disableHiddenPlaceholder
-                            value={
-                                tokenInfo
-                                    ? formatAmount(transactionInfo.totalSpent, tokenInfo.decimals)
-                                    : formatNetworkAmount(transactionInfo.totalSpent, symbol)
-                            }
-                            symbol={tokenInfo ? tokenInfo.symbol : symbol}
-                        />
-                    </TotalSentCoin>
-
-                    <TotalSentFiat>
-                        {tokenInfo ? (
-                            <>
-                                <Translation id="FEE" />
-                                &nbsp;
+        <Container>
+            <Card height="min-content" fillType="none">
+                <Column gap={spacings.xxs} alignItems="stretch" margin={{ bottom: spacings.xl }}>
+                    <Row justifyContent="space-between" gap={spacings.md}>
+                        <Translation id="TOTAL_SENT" />
+                        {hasTransactionInfo && (
+                            <Paragraph align="right">
                                 <FormattedCryptoAmount
                                     disableHiddenPlaceholder
-                                    value={formatNetworkAmount(transactionInfo.fee, symbol)}
-                                    symbol={symbol}
+                                    value={
+                                        tokenInfo
+                                            ? formatAmount(
+                                                  transactionInfo.totalSpent,
+                                                  tokenInfo.decimals,
+                                              )
+                                            : formatNetworkAmount(
+                                                  transactionInfo.totalSpent,
+                                                  symbol,
+                                              )
+                                    }
+                                    symbol={tokenInfo ? tokenInfo.symbol : symbol}
                                 />
-                            </>
-                        ) : (
-                            <FiatValue
-                                disableHiddenPlaceholder
-                                amount={formatNetworkAmount(transactionInfo.totalSpent, symbol)}
-                                symbol={symbol}
-                            />
+                            </Paragraph>
                         )}
-                    </TotalSentFiat>
-                </Right>
-            )}
-
-            <ReviewButton />
-        </StyledCard>
+                    </Row>
+                    <Row justifyContent="space-between" gap={spacings.md}>
+                        {!isTokenTransfer && (
+                            <Paragraph variant="tertiary" typographyStyle="hint">
+                                <Translation id="INCLUDING_FEE" />
+                            </Paragraph>
+                        )}
+                        {hasTransactionInfo && (
+                            <Paragraph align="right" variant="tertiary" typographyStyle="hint">
+                                {tokenInfo ? (
+                                    <>
+                                        <Translation id="FEE" />
+                                        &nbsp;
+                                        <FormattedCryptoAmount
+                                            disableHiddenPlaceholder
+                                            value={formatNetworkAmount(transactionInfo.fee, symbol)}
+                                            symbol={symbol}
+                                        />
+                                    </>
+                                ) : (
+                                    <FiatValue
+                                        disableHiddenPlaceholder
+                                        amount={formatNetworkAmount(
+                                            transactionInfo.totalSpent,
+                                            symbol,
+                                        )}
+                                        symbol={symbol}
+                                    />
+                                )}
+                            </Paragraph>
+                        )}
+                    </Row>
+                </Column>
+                <ReviewButton />
+            </Card>
+        </Container>
     );
 };
