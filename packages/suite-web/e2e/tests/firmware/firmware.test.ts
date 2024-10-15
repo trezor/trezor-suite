@@ -13,10 +13,7 @@ describe('Firmware', () => {
         cy.task('startBridge');
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-        cy.getTestElement('@suite-layout/body').matchImageSnapshot('outdated-notification-banner', {
-            clip: { x: 0, y: 0, height: 100, width: 1080 },
-        });
-        cy.getTestElement('@notification/update-firmware/button').click();
+        cy.getTestElement('@notification/update-notification-banner').click();
 
         // initial screen
         cy.getTestElement('@firmware/install-button').click();

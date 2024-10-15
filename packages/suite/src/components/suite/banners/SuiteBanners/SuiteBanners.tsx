@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { selectBannerMessage } from '@suite-common/message-system';
-import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectDevice } from '@suite-common/wallet-core';
 import { isArrayMember } from '@trezor/type-utils';
 import { isDesktop } from '@trezor/env-utils';
@@ -18,7 +17,6 @@ import {
 import { MessageSystemBanner } from '../MessageSystemBanner';
 import { NoConnectionBanner } from './NoConnectionBanner';
 import { UpdateBridge } from './UpdateBridgeBanner';
-import { UpdateFirmware } from './UpdateFirmwareBanner';
 import { NoBackup } from './NoBackupBanner';
 import { FailedBackup } from './FailedBackupBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
@@ -98,14 +96,6 @@ export const SuiteBanners = () => {
     } else if (showUpdateBridge()) {
         banner = <UpdateBridge />;
         priority = 30;
-    } else if (
-        device?.connected &&
-        isDeviceAcquired(device) &&
-        device.mode !== 'bootloader' &&
-        ['outdated'].includes(device.firmware)
-    ) {
-        banner = <UpdateFirmware />;
-        priority = 10;
     }
 
     // message system banners should always be visible in the app even if app body is blurred
