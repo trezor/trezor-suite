@@ -5,10 +5,14 @@
  *
  * This method does not mutate the original array.
  */
-export const arrayShuffle = <T>(array: readonly T[]): T[] => {
+export const arrayShuffle = <T>(
+    array: readonly T[],
+    { randomInt }: { randomInt: (min: number, max: number) => number },
+): T[] => {
     const shuffled = array.slice();
     for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+        const j = randomInt(0, i + 1);
+
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
 

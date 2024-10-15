@@ -1,4 +1,4 @@
-import { arrayShuffle } from '@trezor/utils';
+import { arrayShuffle, getWeakRandomInt } from '@trezor/utils';
 
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
@@ -234,7 +234,7 @@ export const transactionSigning = async (
 
         round.setSessionPhase(SessionPhase.SendingSignature);
         await Promise.all(
-            arrayShuffle(round.inputs).map(input =>
+            arrayShuffle(round.inputs, { randomInt: getWeakRandomInt }).map(input =>
                 sendTxSignature(round, resolvedTime, input, options),
             ),
         );

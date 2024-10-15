@@ -13,7 +13,7 @@ jest.mock('@trezor/utils', () => {
     return {
         __esModule: true,
         ...originalModule,
-        getRandomNumberInRange: jest.fn(() => 0),
+        getWeakRandomNumberInRange: jest.fn(() => 0),
     };
 });
 
