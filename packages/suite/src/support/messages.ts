@@ -2861,10 +2861,6 @@ export default defineMessages({
         defaultMessage: 'New Trezor Bridge is available.',
         id: 'TR_NEW_TREZOR_BRIDGE_IS_AVAILABLE',
     },
-    TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT: {
-        defaultMessage: 'New Trezor firmware is available! Update your device now.',
-        id: 'TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT',
-    },
     TR_NO_PASSPHRASE_WALLET: {
         defaultMessage: 'Standard wallet',
         id: 'TR_NO_PASSPHRASE_WALLET',
