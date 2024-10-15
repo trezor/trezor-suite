@@ -3,8 +3,12 @@ import { closeModalApp } from 'src/actions/suite/routerActions';
 import { useDispatch, useFirmware } from 'src/hooks/suite';
 import { FirmwareModal } from './FirmwareModal';
 
-export const FirmwareUpdate = () => {
-    const { firmwareUpdate, shouldSwitchFirmwareType, targetFirmwareType } = useFirmware();
+type FirmwareUpdateProps = {
+    shouldSwitchFirmwareType?: boolean;
+};
+
+export const FirmwareUpdate = ({ shouldSwitchFirmwareType }: FirmwareUpdateProps) => {
+    const { firmwareUpdate, targetFirmwareType } = useFirmware({ shouldSwitchFirmwareType });
     const dispatch = useDispatch();
 
     const close = () => dispatch(closeModalApp());
@@ -17,7 +21,11 @@ export const FirmwareUpdate = () => {
 
     return (
         <FirmwareModal heading={heading} install={installTargetFirmware}>
-            <FirmwareInitial standaloneFwUpdate onClose={close} />
+            <FirmwareInitial
+                shouldSwitchFirmwareType={shouldSwitchFirmwareType}
+                standaloneFwUpdate
+                onClose={close}
+            />
         </FirmwareModal>
     );
 };

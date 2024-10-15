@@ -110,22 +110,23 @@ const getNoFirmwareInstalledSubheading = (device: AcquiredDevice) => {
 };
 
 interface FirmwareInitialProps {
+    shouldSwitchFirmwareType?: boolean;
     // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
     // If it is set to true, then you know it is being rendered in standalone fw update modal
     standaloneFwUpdate?: boolean;
     onClose?: () => void;
 }
 
-export const FirmwareInitial = ({ standaloneFwUpdate = false, onClose }: FirmwareInitialProps) => {
+export const FirmwareInitial = ({
+    shouldSwitchFirmwareType = false,
+    standaloneFwUpdate = false,
+    onClose,
+}: FirmwareInitialProps) => {
     const [bitcoinOnlyOffer, setBitcoinOnlyOffer] = useState(false);
     const { device } = useDevice();
-    const {
-        deviceWillBeWiped,
-        firmwareUpdate,
-        setStatus,
+    const { deviceWillBeWiped, firmwareUpdate, setStatus, targetFirmwareType } = useFirmware({
         shouldSwitchFirmwareType,
-        targetFirmwareType,
-    } = useFirmware();
+    });
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const devices = useSelector(selectDevices);
 
