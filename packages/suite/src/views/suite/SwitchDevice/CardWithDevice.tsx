@@ -64,7 +64,7 @@ export const CardWithDevice = ({
     const { elevation } = useElevation();
 
     return (
-        <Card paddingType="small" forceElevation={0}>
+        <Card paddingType="small">
             <DeviceWrapper>
                 <DeviceHeader
                     isFindTrezorVisible={isFindTrezorVisible}
