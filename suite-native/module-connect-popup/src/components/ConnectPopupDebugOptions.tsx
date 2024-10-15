@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import * as Linking from 'expo-linking';
 
 import { BottomSheet, Button } from '@suite-native/atoms';
-import TrezorConnectDeeplink from '@trezor/connect-deeplink';
+import TrezorConnectDeeplink from '@trezor/connect-mobile';
 
 type ConnectPopupDebugOptionsProps = React.PropsWithChildren<{
     showDebug: boolean;

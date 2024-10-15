@@ -1,5 +1,5 @@
 {
-    "name": "connect-deeplink-expo-example",
+    "name": "connect-mobile-example",
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
@@ -9,7 +9,7 @@
         "web": "expo start --web"
     },
     "dependencies": {
-        "@trezor/connect-deeplink": "workspace:*",
+        "@trezor/connect-mobile": "workspace:*",
         "expo": "51.0.31",
         "expo-linking": "6.3.1",
         "expo-status-bar": "1.12.1",
