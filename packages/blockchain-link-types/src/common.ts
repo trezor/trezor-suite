@@ -34,7 +34,7 @@ export interface ServerInfo {
     consensusBranchId?: number; // zcash current branch id
 }
 
-export type TokenStandard = 'ERC20' | 'ERC1155' | 'ERC721' | 'SPL';
+export type TokenStandard = 'ERC20' | 'ERC1155' | 'ERC721' | 'SPL' | 'BEP20';
 
 export type TransferType = 'sent' | 'recv' | 'self' | 'unknown';
 

@@ -134,6 +134,7 @@ const getAccountHistoryMovementItemRipple = ({
     return { main: Array.from(summaryMap.values()).sort((a, b) => a.time - b.time), tokens: {} };
 };
 
+// this can be also used for networks of Ethereum type (like ETH, POL or BNB)
 export const getAccountHistoryMovementItemETH = ({
     transactions,
     from,
@@ -230,8 +231,10 @@ export const getAccountHistoryMovementItemETH = ({
         }
 
         tx.tokens.forEach(token => {
-            // skip empty amounts and non-ERC20 tokens
-            if (token.amount === '' || token.standard !== 'ERC20') return;
+            // skip empty amounts and non-ERC20 non-BEP20 tokens
+            // BEP20 is BNB Smart Chain (BSC) token standard
+            if (token.amount === '' || (token.standard !== 'ERC20' && token.standard !== 'BEP20'))
+                return;
 
             if (token.type === 'sent' || token.type === 'recv' || token.type === 'self') {
                 const tokenSummary: AccountHistoryMovementItem = {
@@ -320,6 +323,8 @@ export const getAccountHistoryMovementFromTransactions = ({
         case 'xrp':
             return getAccountHistoryMovementItemRipple({ transactions, from, to });
         case 'eth':
+        case 'pol':
+        case 'bnb':
             return getAccountHistoryMovementItemETH({ transactions, from, to });
         default:
             coin satisfies never;
