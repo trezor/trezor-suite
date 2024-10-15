@@ -53,6 +53,12 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.DashboardActions;
+          payload: {
+              type: string;
+          };
+      }
+    | {
           type: EventType.DeviceConnect;
           payload: {
               mode: 'normal' | 'bootloader' | 'initialize' | 'seedless';

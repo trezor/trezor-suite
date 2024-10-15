@@ -8,6 +8,8 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 import { HeaderActions } from './HeaderActions';
 import { PageName } from './PageNames/PageName';
+import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
+import { EventType } from '@trezor/suite-analytics';
 
 const HEADER_HEIGHT = 64;
 
@@ -41,6 +43,15 @@ export const PageHeader = ({ backRoute, children }: PageHeaderProps) => {
     // handle moment when children are not rendered yet in the Trade section
     if (routeName?.includes('wallet-coinmarket')) {
         return <Container>{children ?? null}</Container>;
+    }
+
+    if (routeName === 'suite-index') {
+        return (
+            <Container>
+                <PageName backRoute={backRoute} />
+                <TradeActions analyticsEventType={EventType.DashboardActions} />
+            </Container>
+        );
     }
 
     return children ? (
