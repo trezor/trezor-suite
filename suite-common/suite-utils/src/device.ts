@@ -140,7 +140,7 @@ export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: Trez
     return selected.id === device.id;
 };
 
-export const getFwUpdateVersion = (device: Device) =>
+export const getFwUpdateVersion = (device: TrezorDevice) =>
     device.firmwareRelease?.release?.version?.join('.') || null;
 
 export const getCoinUnavailabilityMessage = (reason: UnavailableCapability) => {

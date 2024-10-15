@@ -1,10 +1,10 @@
-import { Device } from '@trezor/connect';
-
 import { isDeviceInBootloaderMode } from './modeUtils';
+import { PartialDevice } from './types';
 
-export const getBootloaderHash = (device?: Device) => device?.features?.bootloader_hash || '';
+export const getBootloaderHash = (device?: PartialDevice) =>
+    device?.features?.bootloader_hash || '';
 
-export const getBootloaderVersion = (device?: Device) => {
+export const getBootloaderVersion = (device?: PartialDevice) => {
     if (!device?.features) {
         return '';
     }
