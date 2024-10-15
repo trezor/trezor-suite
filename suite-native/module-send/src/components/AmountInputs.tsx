@@ -1,6 +1,6 @@
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { useRef, useState } from 'react';
-import { NativeSyntheticEvent, TextInput, TextInputFocusEventData } from 'react-native';
+import { TextInput, View, findNodeHandle } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { VStack, HStack, Box, Text } from '@suite-native/atoms';
@@ -57,6 +57,7 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
 
     const [isCryptoSelected, setIsCryptoSelected] = useState(true);
     const scrollView = useScrollView();
+    const amountInputsWrapperRef = useRef<View>(null);
 
     const cryptoRef = useRef<TextInput>(null);
     const cryptoScale = useSharedValue(SCALE_FOCUSED);
@@ -91,53 +92,66 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
         setIsCryptoSelected(!isCryptoSelected);
     };
 
-    const handleInputFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-        e.target?.measureInWindow((_, y) => {
-            scrollView?.scrollTo({ x: 0, y, animated: true });
-        });
+    const handleInputFocus = () => {
+        const amountInputsWrapper = amountInputsWrapperRef.current;
+        const scrollViewNodeHandle = findNodeHandle(scrollView);
+
+        if (!amountInputsWrapper || !scrollViewNodeHandle) return;
+
+        // Timeout is needed so the position is calculated after keyboard and footer animations are finished.
+        setTimeout(
+            () =>
+                // Scroll so the whole amount inputs section is visible.
+                amountInputsWrapper.measureLayout(scrollViewNodeHandle, (_, y) => {
+                    scrollView?.scrollTo({ y, animated: true });
+                }),
+            400,
+        );
     };
 
     if (!networkSymbol) return null;
 
     return (
-        <VStack spacing="sp12">
-            <HStack flex={1} justifyContent="space-between" alignItems="center">
-                <Text variant="hint">
-                    <Translation id="moduleSend.outputs.recipients.amountLabel" />
-                </Text>
-                {/* TODO: SEND MAX button */}
-                {/* <Button size="small" colorScheme="tertiaryElevation0">
+        <View ref={amountInputsWrapperRef}>
+            <VStack spacing="sp12">
+                <HStack flex={1} justifyContent="space-between" alignItems="center">
+                    <Text variant="hint">
+                        <Translation id="moduleSend.outputs.recipients.amountLabel" />
+                    </Text>
+                    {/* TODO: SEND MAX button */}
+                    {/* <Button size="small" colorScheme="tertiaryElevation0">
                     Send max
-                </Button> */}
-            </HStack>
-            <Box style={applyStyle(inputsWrapperStyle, { isFiatDisplayed })}>
-                <CryptoAmountInput
-                    recipientIndex={index}
-                    scaleValue={cryptoScale}
-                    translateValue={cryptoTranslateY}
-                    inputRef={cryptoRef}
-                    isDisabled={!isCryptoSelected}
-                    networkSymbol={networkSymbol}
-                    onPress={!isCryptoSelected ? handleSwitchInputs : undefined}
-                    onFocus={handleInputFocus}
-                />
-                {isFiatDisplayed && (
-                    <>
-                        <SwitchAmountsButton onPress={handleSwitchInputs} />
-                        <FiatAmountInput
-                            recipientIndex={index}
-                            scaleValue={fiatScale}
-                            translateValue={fiatTranslateY}
-                            inputRef={fiatRef}
-                            isDisabled={isCryptoSelected}
-                            networkSymbol={networkSymbol}
-                            onPress={isCryptoSelected ? handleSwitchInputs : undefined}
-                            onFocus={handleInputFocus}
-                        />
-                    </>
-                )}
-            </Box>
-            <AmountErrorMessage outputIndex={index} isFiatDisplayed={isFiatDisplayed} />
-        </VStack>
+                    </Button> */}
+                </HStack>
+                <Box style={applyStyle(inputsWrapperStyle, { isFiatDisplayed })}>
+                    <CryptoAmountInput
+                        recipientIndex={index}
+                        scaleValue={cryptoScale}
+                        translateValue={cryptoTranslateY}
+                        inputRef={cryptoRef}
+                        isDisabled={!isCryptoSelected}
+                        networkSymbol={networkSymbol}
+                        onPress={!isCryptoSelected ? handleSwitchInputs : undefined}
+                        onFocus={handleInputFocus}
+                    />
+                    {isFiatDisplayed && (
+                        <>
+                            <SwitchAmountsButton onPress={handleSwitchInputs} />
+                            <FiatAmountInput
+                                recipientIndex={index}
+                                scaleValue={fiatScale}
+                                translateValue={fiatTranslateY}
+                                inputRef={fiatRef}
+                                isDisabled={isCryptoSelected}
+                                networkSymbol={networkSymbol}
+                                onPress={isCryptoSelected ? handleSwitchInputs : undefined}
+                                onFocus={handleInputFocus}
+                            />
+                        </>
+                    )}
+                </Box>
+                <AmountErrorMessage outputIndex={index} isFiatDisplayed={isFiatDisplayed} />
+            </VStack>
+        </View>
     );
 };
