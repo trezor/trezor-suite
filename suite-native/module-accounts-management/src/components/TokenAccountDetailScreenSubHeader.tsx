@@ -9,7 +9,11 @@ import {
     ScreenSubHeader,
     GoBackIcon,
 } from '@suite-native/navigation';
-import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    selectAccountLabel,
+    selectAccountNetworkSymbol,
+} from '@suite-common/wallet-core';
 import { CryptoIcon } from '@suite-common/icons-deprecated';
 import { useTranslate } from '@suite-native/intl';
 
@@ -26,6 +30,9 @@ export const TokenAccountDetailScreenSubHeader = ({
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
     );
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    )!;
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
     const { closeActionType } = route.params;
 
@@ -37,7 +44,7 @@ export const TokenAccountDetailScreenSubHeader = ({
                         {tokenName}
                     </Text>
                     <HStack spacing="sp4" alignItems="center">
-                        <CryptoIcon symbol="eth" size="extraSmall" />
+                        <CryptoIcon symbol={networkSymbol} size="extraSmall" />
                         <Text
                             variant="label"
                             color="textSubdued"

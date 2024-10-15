@@ -359,12 +359,16 @@ export const en = {
         screenTitle: '{coinSymbol} Receive address',
         accountNotFound: 'Account {accountKey} not found.',
         deviceCancelError: 'Address confirmation canceled.',
+        tokens: {
+            runOn: 'Run on {accountLabel}',
+            errorMessage: 'Token not found.',
+        },
         receiveAddressCard: {
             alert: {
                 success: 'Receive address has been confirmed on your Trezor.',
                 longCardanoAddress:
                     'Cardano (ADA) address exceeds Trezor device’s screen. Scroll here and on the device to view it and confirm.',
-                ethereumToken: 'Your receive address is your Ethereum address',
+                token: 'Your receive address is your {networkName} address',
             },
             unverifiedWarning: {
                 portfolioTracker: {

@@ -7,12 +7,17 @@ import {
 } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    selectAccountLabel,
+    selectAccountNetworkSymbol,
+} from '@suite-common/wallet-core';
 import {
     getTokenName,
     selectAccountTokenInfo,
     selectAccountTokenSymbol,
 } from '@suite-native/tokens';
+import { Translation } from '@suite-native/intl';
 
 type TokenReceiveCardProps = {
     accountKey: AccountKey;
@@ -36,7 +41,9 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
     );
-
+    const accountNetworkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    )!;
     const token = useSelector((state: AccountsRootState) =>
         selectAccountTokenInfo(state, accountKey, contract),
     );
@@ -45,7 +52,10 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
         selectAccountTokenSymbol(state, accountKey, contract),
     );
 
-    if (!token) return <ErrorMessage errorMessage="Token not found." />;
+    if (!token)
+        return (
+            <ErrorMessage errorMessage={<Translation id="moduleReceive.tokens.errorMessage" />} />
+        );
 
     const tokenName = getTokenName(token.name);
 
@@ -59,8 +69,13 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                     <Box style={applyStyle(tokenDescriptionStyle)}>
                         <Text>{tokenName}</Text>
                         <Badge
-                            label={`Run on ${accountLabel}`}
-                            icon="eth"
+                            label={
+                                <Translation
+                                    id="moduleReceive.tokens.runOn"
+                                    values={{ accountLabel }}
+                                />
+                            }
+                            icon={accountNetworkSymbol}
                             size="small"
                             iconSize="extraSmall"
                         />
