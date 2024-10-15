@@ -74,7 +74,10 @@ export const CryptoAmountInput = ({
         const transformedValue = cryptoAmountTransformer(newValue);
         onChange(transformedValue);
         setValue(fiatFieldName, converters?.convertCryptoToFiat?.(transformedValue));
-        debounce(() => trigger(cryptoFieldName));
+        debounce(() => {
+            trigger(cryptoFieldName);
+            onFocus?.();
+        });
     };
 
     const handleBlur = () => {
