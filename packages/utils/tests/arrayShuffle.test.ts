@@ -1,4 +1,5 @@
 import { arrayShuffle } from '../src/arrayShuffle';
+import { getWeakRandomInt } from '../src/getWeakRandomInt';
 
 const KEYS = ['a', 'b', 'c', 'd', 'e'];
 const SAMPLES = 10000;
@@ -13,7 +14,7 @@ describe(arrayShuffle.name, () => {
         const samples = Object.fromEntries(KEYS.map(key => [key, new Array(KEYS.length).fill(0)]));
 
         for (let sample = 0; sample < SAMPLES; ++sample) {
-            const shuffled = arrayShuffle(KEYS);
+            const shuffled = arrayShuffle(KEYS, { randomInt: getWeakRandomInt });
             for (let i = 0; i < shuffled.length; ++i) {
                 samples[shuffled[i]][i]++;
             }

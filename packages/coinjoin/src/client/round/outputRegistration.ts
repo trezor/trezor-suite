@@ -1,4 +1,4 @@
-import { getWeakRandomId, arrayShuffle } from '@trezor/utils';
+import { getWeakRandomId, arrayShuffle, getWeakRandomInt } from '@trezor/utils';
 
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
@@ -160,7 +160,7 @@ export const outputRegistration = async (
                 const assignedAddresses: AccountAddress[] = [];
 
                 return Promise.all(
-                    arrayShuffle(outputs).map(output =>
+                    arrayShuffle(outputs, { randomInt: getWeakRandomInt }).map(output =>
                         registerOutput(round, account, output, assignedAddresses, options),
                     ),
                 );
@@ -170,7 +170,9 @@ export const outputRegistration = async (
         round.setSessionPhase(SessionPhase.AwaitingOthersOutputs);
         // inform coordinator that each registered input is ready to sign
         await Promise.all(
-            arrayShuffle(round.inputs).map(input => readyToSign(round, input, options)),
+            arrayShuffle(round.inputs, { randomInt: getWeakRandomInt }).map(input =>
+                readyToSign(round, input, options),
+            ),
         );
         logger.info(`Ready to sign ~~${round.id}~~`);
     } catch (error) {
