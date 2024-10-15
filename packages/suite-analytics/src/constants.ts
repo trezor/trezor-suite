@@ -17,6 +17,8 @@ export enum EventType {
 
     AppUriHandler = 'app/uri-handler',
 
+    DashboardActions = 'dashboard/actions',
+
     DeviceConnect = 'device-connect',
     DeviceDisconnect = 'device-disconnect',
     DeviceUpdateFirmware = 'device-update-firmware',
