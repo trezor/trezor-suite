@@ -195,7 +195,7 @@ const initUi = async ({
         mainThreadEmitter,
     });
 
-    app.on('second-instance', () => {
+    const reactivateWindow = () => {
         // Someone tried to run a second instance, we should focus our window.
         logger.info('main', 'Second instance detected, focusing main window');
         let mainWindow = mainWindowProxy.getInstance();
@@ -210,7 +210,12 @@ const initUi = async ({
         if (!mainWindow.isVisible()) mainWindow.show();
         if (mainWindow.isMinimized()) mainWindow.restore();
         mainWindow.focus();
-    });
+    };
+    app.on('second-instance', reactivateWindow);
+    // restore window after click on the macOS Dock icon
+    if (process.platform === 'darwin') {
+        app.on('activate', reactivateWindow);
+    }
 
     // create handler for handshake/load-modules
     const loadModulesResponse = (clientData: HandshakeClient) =>
