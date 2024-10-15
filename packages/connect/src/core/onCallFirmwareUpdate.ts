@@ -414,16 +414,17 @@ export const onCallFirmwareUpdate = async ({
                 );
             }
         }
+
+        // This delay is crucial see https://github.com/trezor/trezor-firmware/issues/1983
+        if (device.features.major_version === 1) {
+            await createTimeoutPromise(2000);
+        }
         log.info(
             'onCallFirmwareUpdate',
             'waiting for disconnected event after rebootToBootloader...',
         );
         await disconnectedPromise;
 
-        // This delay is crucial see https://github.com/trezor/trezor-firmware/issues/1983
-        if (device.features.major_version === 1) {
-            await createTimeoutPromise(2000);
-        }
         reconnectedDevice = await waitForReconnectedDevice(
             { bootloader: true, method: 'auto' },
             { deviceList, device, log, postMessage, abortSignal },
