@@ -1,5 +1,5 @@
 import { networks } from '@trezor/utxo-lib';
-import { getRandomNumberInRange } from '@trezor/utils';
+import { getWeakRandomNumberInRange } from '@trezor/utils';
 
 import { transactionSigning } from '../../src/client/round/transactionSigning';
 import { createServer } from '../mocks/server';
@@ -529,7 +529,7 @@ describe('transactionSigning signature delay', () => {
         );
 
         // signature is sent in range 17-67 sec. (resolve time is less than 50 sec TX_SIGNING_DELAY)
-        expect(getRandomNumberInRange).toHaveBeenLastCalledWith(17000, 67000);
+        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(17000, 67000);
         expect(response.isSignedSuccessfully()).toBe(true);
     });
 
@@ -558,7 +558,7 @@ describe('transactionSigning signature delay', () => {
         );
 
         // signature is sent in range 0-46.21 sec. (resolve time is greater than 50 sec of TX_SIGNING_DELAY)
-        expect(getRandomNumberInRange).toHaveBeenLastCalledWith(0, 46210);
+        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 46210);
         expect(response.isSignedSuccessfully()).toBe(true);
     });
 
@@ -588,7 +588,7 @@ describe('transactionSigning signature delay', () => {
         );
 
         // signature is sent in default range 0-1 sec.
-        expect(getRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
+        expect(getWeakRandomNumberInRange).toHaveBeenLastCalledWith(0, 1000);
         expect(response.isSignedSuccessfully()).toBe(true);
     });
 });
