@@ -15,13 +15,21 @@ describe('composeTx', () => {
         const network = getNetwork(f.request.network);
         const request = { ...f.request, network };
         const expected = { ...f.result };
+
         it(f.description, () => {
             const tx = composeTx(request as any);
 
-            const deRandomizedOutputs =
-                'outputsPermutation' in tx
+            const deRandomize = () => {
+                if (!('outputsPermutation' in tx)) {
+                    return undefined;
+                }
+
+                return request.skipPermutation !== true
                     ? tx.outputs.map((_, i) => tx.outputs[tx.outputsPermutation.indexOf(i)])
-                    : undefined;
+                    : tx.outputs;
+            };
+
+            const deRandomizedOutputs = deRandomize();
 
             const subject = { ...tx, outputs: deRandomizedOutputs, outputsPermutation: undefined };
             if (subject.outputs === undefined) {

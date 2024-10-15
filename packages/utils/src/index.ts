@@ -41,7 +41,6 @@ export * from './topologicalSort';
 export * from './truncateMiddle';
 export * from './typedEventEmitter';
 export * from './urlToOnion';
-export * from './randomInt';
 export * from './logs';
 export * from './logsManager';
 export * from './bigNumber';

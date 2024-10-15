@@ -53,6 +53,14 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
         return convertOutput(output, { type: 'change', ...request.changeAddress });
     });
 
+    if (request.skipPermutation === true) {
+        return {
+            inputs: convertedInputs,
+            outputs: convertedOutputs,
+            outputsPermutation: Array.from(result.outputs.keys()),
+        };
+    }
+
     /**
      * The goal here is to randomly insert change outputs into the outputs array.,
      * so you cannot tell what is the change just by the order of the transaction.
@@ -70,9 +78,8 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
          * If skipPermutation is set, do not shuffle the inputs (this is used for RBF,
          * where the original order must be preserved).
          */
-        inputs: request.skipPermutation
-            ? convertedInputs
-            : arrayShuffle(convertedInputs, { randomInt: getRandomInt }),
+        inputs: arrayShuffle(convertedInputs, { randomInt: getRandomInt }),
+
         outputs: sortedOutputs,
         outputsPermutation: permutation,
     };
