@@ -18,7 +18,7 @@ type ReceiveAddressCardProps = {
     isUnverifiedAddressRevealed: boolean;
     networkSymbol: NetworkSymbol;
     onShowAddress: () => void;
-    isEthereumTokenAddress?: boolean;
+    isTokenAddress?: boolean;
 };
 
 export const ReceiveAddressCard = ({
@@ -27,12 +27,12 @@ export const ReceiveAddressCard = ({
     isReceiveApproved,
     onShowAddress,
     networkSymbol,
-    isEthereumTokenAddress = false,
+    isTokenAddress = false,
 }: ReceiveAddressCardProps) => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
 
-    const { networkType } = networks[networkSymbol];
+    const { networkType, name: networkName } = networks[networkSymbol];
 
     const getCardAlertProps = () => {
         if (isReceiveApproved && !isPortfolioTrackerDevice && !isDeviceInViewOnlyMode) {
@@ -49,10 +49,13 @@ export const ReceiveAddressCard = ({
                 alertVariant: 'info',
             } as const;
         }
-        if (isEthereumTokenAddress) {
+        if (isTokenAddress) {
             return {
                 alertTitle: (
-                    <Translation id="moduleReceive.receiveAddressCard.alert.ethereumToken" />
+                    <Translation
+                        id="moduleReceive.receiveAddressCard.alert.token"
+                        values={{ networkName }}
+                    />
                 ),
                 alertVariant: 'info',
             } as const;
