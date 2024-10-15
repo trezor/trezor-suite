@@ -11139,7 +11139,6 @@ __metadata:
     "@solana/web3.js": "npm:^1.95.0"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    socks-proxy-agent: "npm:8.0.4"
     tsx: "npm:^4.16.3"
   peerDependencies:
     tslib: ^2.6.2
