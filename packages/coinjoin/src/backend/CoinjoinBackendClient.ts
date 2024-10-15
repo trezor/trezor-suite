@@ -1,4 +1,4 @@
-import { scheduleAction, arrayShuffle, urlToOnion } from '@trezor/utils';
+import { scheduleAction, arrayShuffle, urlToOnion, getWeakRandomInt } from '@trezor/utils';
 import { TypedEmitter } from '@trezor/utils';
 import type { BlockbookAPI } from '@trezor/blockchain-link/src/workers/blockbook/websocket';
 
@@ -38,7 +38,7 @@ export class CoinjoinBackendClient {
 
     constructor(settings: CoinjoinBackendClientSettings) {
         this.logger = settings.logger;
-        this.blockbookUrls = arrayShuffle(settings.blockbookUrls);
+        this.blockbookUrls = arrayShuffle(settings.blockbookUrls, { randomInt: getWeakRandomInt });
         this.onionDomains = settings.onionDomains ?? {};
         this.blockbookRequestId = Math.floor(Math.random() * settings.blockbookUrls.length);
         this.websockets = new CoinjoinWebsocketController(settings);

@@ -22,6 +22,7 @@ export * from './getNumberFromPixelString';
 export * from './getWeakRandomNumberInRange';
 export * from './getSynchronize';
 export * from './getWeakRandomId';
+export * from './getWeakRandomInt';
 export * from './hasUppercaseLetter';
 export * from './isAscii';
 export * from './isHex';

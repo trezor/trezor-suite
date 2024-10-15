@@ -11,7 +11,7 @@ jest.mock('@trezor/utils', () => {
     return {
         __esModule: true,
         ...originalModule,
-        getRandomNumberInRange: () => 0,
+        getWeakRandomNumberInRange: () => 0,
     };
 });
 
