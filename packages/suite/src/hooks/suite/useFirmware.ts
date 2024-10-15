@@ -8,7 +8,6 @@ import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-util
 import { useSelector, useDevice, useTranslation } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { MODAL } from 'src/actions/suite/constants';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 /*
 There are three firmware update flows, depending on current firmware version:
@@ -17,20 +16,25 @@ There are three firmware update flows, depending on current firmware version:
 - reboot_and_upgrade: a device with firmware version >= 2.6.3 can reboot and upgrade in one step (not supported for reinstallation and downgrading)
 */
 
-export const useFirmware = () => {
+type UseFirmwareParams =
+    | {
+          shouldSwitchFirmwareType?: boolean;
+      }
+    | undefined;
+
+export const useFirmware = (
+    { shouldSwitchFirmwareType }: UseFirmwareParams = { shouldSwitchFirmwareType: false },
+) => {
     const { translationString } = useTranslation();
     const dispatch = useDispatch();
     const firmware = useSelector(selectFirmware);
     const transport = useSelector(state => state.suite.transport);
     const modal = useSelector(state => state.modal);
-    const routeName = useSelector(selectRouteName);
     const { device } = useDevice();
 
     // Device in its state before installation is cached when installation begins.
     // Until then, access device as normal.
     const originalDevice = firmware.cachedDevice || device;
-
-    const shouldSwitchFirmwareType = routeName === 'firmware-type';
 
     // To instruct user to reboot to bootloader manually, UI.FIRMWARE_DISCONNECT event is emitted first,
     // and UI.FIRMWARE_RECONNECT is emitted after the device disconnects.
@@ -52,20 +56,14 @@ export const useFirmware = () => {
         modal.context === MODAL.CONTEXT_DEVICE &&
         modal.windowType === 'ButtonRequest_FirmwareCheck';
 
+    const deviceModelInternal = originalDevice?.features?.internal_model;
     // Device may be wiped during firmware type switch because Universal and Bitcoin-only firmware have different vendor headers,
     // except T1B1 and T2T1. There may be some false negatives here during custom installation.
     // TODO: Determine this in Connect.
-    const willDeviceBeWiped = () => {
-        const deviceModelInternal = originalDevice?.features?.internal_model;
-
-        return (
-            shouldSwitchFirmwareType &&
-            deviceModelInternal !== undefined &&
-            ![DeviceModelInternal.T1B1, DeviceModelInternal.T2T1].includes(deviceModelInternal)
-        );
-    };
-
-    const deviceWillBeWiped = willDeviceBeWiped();
+    const deviceWillBeWiped =
+        !!shouldSwitchFirmwareType &&
+        deviceModelInternal !== undefined &&
+        ![DeviceModelInternal.T1B1, DeviceModelInternal.T2T1].includes(deviceModelInternal);
 
     const confirmOnDevice =
         // Show the confirmation pill before starting the installation using the "wait" or "manual" method,

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Button, Checkbox, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
-import { useDevice, useDispatch, useFirmware, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
@@ -39,15 +39,15 @@ const StyledSwitchWarning = styled(FirmwareSwitchWarning)`
 `;
 
 type CheckSeedStepProps = {
+    deviceWillBeWiped: boolean;
     onClose?: () => void;
     onSuccess: () => void;
 };
 
-export const CheckSeedStep = ({ onClose, onSuccess }: CheckSeedStepProps) => {
+export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSeedStepProps) => {
     const deviceLabel = useSelector(selectDeviceLabelOrName);
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const { deviceWillBeWiped } = useFirmware();
     const [isChecked, setIsChecked] = useState(false);
 
     const handleCheckboxClick = () => setIsChecked(prev => !prev);
