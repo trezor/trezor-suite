@@ -10259,7 +10259,7 @@ __metadata:
     "@suite-native/intl": "workspace:^"
     "@suite-native/navigation": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/connect-deeplink": "workspace:*"
+    "@trezor/connect-mobile": "workspace:*"
     expo-linking: "npm:^6.3.1"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
@@ -11279,15 +11279,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-deeplink@workspace:*, @trezor/connect-deeplink@workspace:packages/connect-deeplink":
-  version: 0.0.0-use.local
-  resolution: "@trezor/connect-deeplink@workspace:packages/connect-deeplink"
-  dependencies:
-    "@trezor/connect": "workspace:^"
-    "@trezor/utils": "workspace:^"
-  languageName: unknown
-  linkType: soft
-
 "@trezor/connect-explorer-theme@workspace:^, @trezor/connect-explorer-theme@workspace:packages/connect-explorer-theme":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-explorer-theme@workspace:packages/connect-explorer-theme"
@@ -11404,6 +11395,15 @@ __metadata:
     webpack-cli: "npm:^5.1.4"
     webpack-merge: "npm:^6.0.1"
     worker-loader: "npm:^3.0.8"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/connect-mobile@workspace:*, @trezor/connect-mobile@workspace:packages/connect-mobile":
+  version: 0.0.0-use.local
+  resolution: "@trezor/connect-mobile@workspace:packages/connect-mobile"
+  dependencies:
+    "@trezor/connect": "workspace:^"
+    "@trezor/utils": "workspace:^"
   languageName: unknown
   linkType: soft
 
@@ -18069,22 +18069,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"connect-deeplink-expo-example@workspace:packages/connect-examples/deeplink-expo":
-  version: 0.0.0-use.local
-  resolution: "connect-deeplink-expo-example@workspace:packages/connect-examples/deeplink-expo"
-  dependencies:
-    "@babel/core": "npm:^7.20.0"
-    "@trezor/connect-deeplink": "workspace:*"
-    "@types/react": "npm:18.2.45"
-    expo: "npm:51.0.31"
-    expo-linking: "npm:6.3.1"
-    expo-status-bar: "npm:1.12.1"
-    react: "npm:18.2.0"
-    react-native: "npm:0.75.2"
-    typescript: "npm:^5.3.3"
-  languageName: unknown
-  linkType: soft
-
 "connect-example-electron-main@workspace:packages/connect-examples/electron-main-process":
   version: 0.0.0-use.local
   resolution: "connect-example-electron-main@workspace:packages/connect-examples/electron-main-process"
@@ -18145,6 +18129,22 @@ __metadata:
   checksum: 10/3b26bf4041fdb33deacdcb3af9ae11e9a0b413fb14c95844d74a460b55e407625b364955dcf965c654605cde9d24ad5dad423c489aa430825aab2035859aba0c
   languageName: node
   linkType: hard
+
+"connect-mobile-example@workspace:packages/connect-examples/mobile-expo":
+  version: 0.0.0-use.local
+  resolution: "connect-mobile-example@workspace:packages/connect-examples/mobile-expo"
+  dependencies:
+    "@babel/core": "npm:^7.20.0"
+    "@trezor/connect-mobile": "workspace:*"
+    "@types/react": "npm:18.2.45"
+    expo: "npm:51.0.31"
+    expo-linking: "npm:6.3.1"
+    expo-status-bar: "npm:1.12.1"
+    react: "npm:18.2.0"
+    react-native: "npm:0.75.2"
+    typescript: "npm:^5.3.3"
+  languageName: unknown
+  linkType: soft
 
 "connect@npm:^3.6.5, connect@npm:^3.7.0":
   version: 3.7.0
