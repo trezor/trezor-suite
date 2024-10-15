@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { selectBannerMessage } from '@suite-common/message-system';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectDevice } from '@suite-common/wallet-core';
+import { isArrayMember } from '@trezor/type-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { spacingsPx } from '@trezor/theme';
 
@@ -23,7 +24,7 @@ import { FailedBackup } from './FailedBackupBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
 import { TranslationMode } from './TranslationModeBanner';
 import { FirmwareHashMismatch } from './FirmwareHashMismatchBanner';
-import { FirmwareRevisionCheckBanner } from './FirmwareRevisionCheckBanner';
+import { FirmwareRevisionCheckBanner, skippedHashCheckErrors } from './FirmwareRevisionCheckBanner';
 
 const Container = styled.div<{ $isVisible?: boolean }>`
     width: 100%;
@@ -71,7 +72,7 @@ export const SuiteBanners = () => {
     // the regular firmware hash check, and revision id check, either of them may fail
     else if (
         firmwareRevisionError ||
-        (firmwareHashError && firmwareHashError !== 'check-skipped')
+        (firmwareHashError && !isArrayMember(firmwareHashError, skippedHashCheckErrors))
     ) {
         banner = <FirmwareRevisionCheckBanner />;
         priority = 91;
