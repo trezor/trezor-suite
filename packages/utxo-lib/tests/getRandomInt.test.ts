@@ -12,6 +12,14 @@ describe(getRandomInt.name, () => {
         expect(() => getRandomInt(0, -1)).toThrowError(EXPECTED_ERROR);
     });
 
+    it('raises error for range > 2^32', () => {
+        const EXPECTED_ERROR = new RangeError(
+            'This function only provide 32 bits of entropy, therefore range cannot be more then 2^32.',
+        );
+
+        expect(() => getRandomInt(0, Math.pow(2, 32) + 1)).toThrowError(EXPECTED_ERROR);
+    });
+
     it('raises same error for unsafe integer', () => {
         const UNSAFE_INTEGER = 2 ** 53;
 
@@ -34,23 +42,32 @@ describe(getRandomInt.name, () => {
         expect(() => getRandomInt(0, UNSAFE_INTEGER)).toThrowError(EXPECTED_ERROR_MAX);
     });
 
-    it('returns same value when range is trivial', () => {
-        for (let i = 0; i < 10_000; i++) {
-            expect(randomInt(0, 1)).toEqual(0);
-            expect(getRandomInt(0, 1)).toEqual(0);
+    it('return value in given range and in uniform distribution', () => {
+        const SAMPLES = 100_000;
+        const RANGE = 100;
+        const MIN = 0;
+        const MAX = MIN + RANGE;
+        const TOLERANCE = 0.1;
+        const EXPECTED = SAMPLES / RANGE;
 
-            expect(randomInt(100, 101)).toEqual(100);
-            expect(getRandomInt(100, 101)).toEqual(100);
-        }
-    });
+        const LOWER_BOUND = (1 - TOLERANCE) * EXPECTED;
+        const UPPER_BOUND = (1 + TOLERANCE) * EXPECTED;
 
-    it('return value in given range', () => {
-        for (let i = 0; i < 10_000; i++) {
-            const result = getRandomInt(0, 100);
+        const distribution = new Map<number, number>();
+
+        for (let i = 0; i < SAMPLES; i++) {
+            const result = getRandomInt(MIN, MAX);
+
+            distribution.set(result, (distribution.get(result) ?? 0) + 1);
 
             expect(Number.isInteger(result)).toBe(true);
-            expect(result).toBeGreaterThanOrEqual(0);
-            expect(result).toBeLessThan(100);
+            expect(result).toBeGreaterThanOrEqual(MIN);
+            expect(result).toBeLessThan(MAX);
         }
+
+        Array.from(distribution.keys()).forEach(key => {
+            expect(distribution.get(key)).toBeGreaterThanOrEqual(LOWER_BOUND);
+            expect(distribution.get(key)).toBeLessThanOrEqual(UPPER_BOUND);
+        });
     });
 });

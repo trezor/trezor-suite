@@ -53,6 +53,8 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
         return convertOutput(output, { type: 'change', ...request.changeAddress });
     });
 
+    // If skipPermutation is set, do not shuffle the inputs or outputs.
+    // (this is used for RBF, where the original order must be preserved).
     if (request.skipPermutation === true) {
         return {
             inputs: convertedInputs,
@@ -73,13 +75,8 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
     const sortedOutputs = permutation.map(index => convertedOutputs[index]);
 
     return {
-        /**
-         * Randomly shuffle inputs to make it harder to fingerprint the Trezor Suite.
-         * If skipPermutation is set, do not shuffle the inputs (this is used for RBF,
-         * where the original order must be preserved).
-         */
+        /** Randomly shuffle inputs to make it harder to fingerprint the Trezor Suite. */
         inputs: arrayShuffle(convertedInputs, { randomInt: getRandomInt }),
-
         outputs: sortedOutputs,
         outputsPermutation: permutation,
     };

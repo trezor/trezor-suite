@@ -1,5 +1,14 @@
 import { randomBytes } from 'crypto';
 
+const MAX_32_BIT_INT = 0x100000000;
+
+/**
+ * Before changing anything here, see the Modulo Bias problem!
+ * @see https://research.kudelskisecurity.com/2020/07/28/the-definitive-guide-to-modulo-bias-and-how-to-avoid-it/
+ *
+ * @param min Inclusive
+ * @param max Exclusive
+ */
 export const getRandomInt = (min: number, max: number) => {
     if (!Number.isSafeInteger(min)) {
         throw new RangeError(
@@ -19,7 +28,19 @@ export const getRandomInt = (min: number, max: number) => {
         );
     }
 
-    const randomValue = parseInt(randomBytes(4).toString('hex'), 16);
+    if (max - min > MAX_32_BIT_INT) {
+        throw new RangeError(
+            `This function only provide 32 bits of entropy, therefore range cannot be more then 2^32.`,
+        );
+    }
 
-    return min + (randomValue % (max - min));
+    // This 4 bytes provide 32 bits of entropy, therefore the range of random number
+    // is limited to 2^32.
+    //
+    // If you need to change this, you need to use more bytes and handle the modulo bias.
+    // See: https://research.kudelskisecurity.com/2020/07/28/the-definitive-guide-to-modulo-bias-and-how-to-avoid-it/
+
+    const randomValue = randomBytes(4).readUInt32LE() / MAX_32_BIT_INT;
+
+    return Math.floor(min + randomValue * (max - min));
 };
