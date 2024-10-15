@@ -61,7 +61,7 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
                 <ReceiveAddressCard
                     networkSymbol={account.symbol}
                     address={address}
-                    isEthereumTokenAddress={!!tokenContract}
+                    isTokenAddress={!!tokenContract}
                     isReceiveApproved={isReceiveApproved}
                     isUnverifiedAddressRevealed={isUnverifiedAddressRevealed}
                     onShowAddress={handleShowAddressAndRemoveButtonRequests}
