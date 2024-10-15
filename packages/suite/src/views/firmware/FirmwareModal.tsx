@@ -41,18 +41,26 @@ type FirmwareModalProps = {
     heading: TranslationKey;
     install: () => void;
     isCustom?: boolean;
+    shouldSwitchFirmwareType?: boolean;
 };
 
-export const FirmwareModal = ({ children, heading, install, isCustom }: FirmwareModalProps) => {
+export const FirmwareModal = ({
+    children,
+    heading,
+    install,
+    isCustom,
+    shouldSwitchFirmwareType,
+}: FirmwareModalProps) => {
     const {
         resetReducer,
         status,
+        deviceWillBeWiped,
         error,
         firmwareHashInvalid,
         uiEvent,
         confirmOnDevice,
         showConfirmationPill,
-    } = useFirmware();
+    } = useFirmware({ shouldSwitchFirmwareType });
     const device = useSelector(selectDevice);
     const dispatch = useDispatch();
 
@@ -96,7 +104,13 @@ export const FirmwareModal = ({ children, heading, install, isCustom }: Firmware
             case 'initial':
                 return children;
             case 'check-seed':
-                return <CheckSeedStep onSuccess={install} onClose={onClose} />;
+                return (
+                    <CheckSeedStep
+                        deviceWillBeWiped={deviceWillBeWiped}
+                        onSuccess={install}
+                        onClose={onClose}
+                    />
+                );
             case 'started':
             case 'done':
                 return (
