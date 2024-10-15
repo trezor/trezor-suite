@@ -1,6 +1,9 @@
 import { Callout } from 'nextra/components';
+import { BetaOnly } from '../../components/BetaOnly';
 
 # Deep linking specification
+
+<BetaOnly>
 
 To support connecting to Trezor devices from 3rd party apps on mobile devices, Trezor Suite Lite provides a communication interface via deep linking.
 
@@ -64,3 +67,5 @@ trezorsuitelite://connect?method=getAddress&params=%7B%22coin%22%3A%22btc%22%2C%
 ```
 
 When the user returns to the app, the callback URL is called with the result of the method call.
+
+</BetaOnly>
