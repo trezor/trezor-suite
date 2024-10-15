@@ -1,5 +1,3 @@
-import { randomInt } from 'crypto';
-
 import {
     ComposeRequest,
     CoinSelectSuccess,
@@ -10,6 +8,7 @@ import {
     CoinSelectOutputFinal,
 } from '../types';
 import { arrayShuffle } from '@trezor/utils';
+import { getRandomInt } from '../getRandomInt';
 
 function convertOutput(
     selectedOutput: CoinSelectOutputFinal,
@@ -61,7 +60,7 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
     const permutation = [...nonChangeOutputPermutation];
     // Min (0) is inclusive, max (permutation.length + 1) is exclusive
     // Example: for array [0, 1, 2] the result can be: 0, 1, 2, 3
-    const newPositionOfChange = randomInt(0, permutation.length + 1);
+    const newPositionOfChange = getRandomInt(0, permutation.length + 1);
     permutation.splice(newPositionOfChange, 0, ...changeOutputPermutation);
     const sortedOutputs = permutation.map(index => convertedOutputs[index]);
 
@@ -71,7 +70,9 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
          * If skipPermutation is set, do not shuffle the inputs (this is used for RBF,
          * where the original order must be preserved).
          */
-        inputs: request.skipPermutation ? convertedInputs : arrayShuffle(convertedInputs),
+        inputs: request.skipPermutation
+            ? convertedInputs
+            : arrayShuffle(convertedInputs, { randomInt: getRandomInt }),
         outputs: sortedOutputs,
         outputsPermutation: permutation,
     };
