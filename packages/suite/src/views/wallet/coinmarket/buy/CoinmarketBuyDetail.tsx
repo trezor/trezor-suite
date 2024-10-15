@@ -22,7 +22,7 @@ const CoinmarketBuyDetailComponent = ({ selectedAccount }: UseCoinmarketProps) =
 export const CoinmarketBuyDetail = () => (
     <CoinmarketContainer
         title="TR_NAV_BUY"
-        backRoute="wallet-coinmarket-buy"
+        backRoute="wallet-coinmarket-transactions"
         SectionComponent={CoinmarketBuyDetailComponent}
     />
 );

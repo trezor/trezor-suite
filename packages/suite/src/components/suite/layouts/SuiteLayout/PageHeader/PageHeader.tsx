@@ -5,9 +5,10 @@ import { Route } from '@suite-common/suite-types';
 import { spacingsPx, zIndices } from '@trezor/theme';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { selectIsAccountTabPage } from 'src/reducers/suite/routerReducer';
+import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 import { HeaderActions } from './HeaderActions';
 import { PageName } from './PageNames/PageName';
+import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
 
 const HEADER_HEIGHT = 64;
 
@@ -36,13 +37,14 @@ export const PageHeader = ({ backRoute, children }: PageHeaderProps) => {
     const selectedAccount = useSelector(selectSelectedAccount);
     // TODO subpages + tabs could be in some router config? this approach feels a bit fragile
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
+    const routeName = useSelector(selectRouteName);
 
     return children ? (
         <Container>{children}</Container>
     ) : (
         <Container>
             <PageName backRoute={backRoute} />
-
+            {routeName === 'suite-index' && <TradeActions />}
             {!!selectedAccount && isAccountTabPage && <HeaderActions />}
         </Container>
     );

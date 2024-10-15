@@ -1,16 +1,6 @@
 import styled from 'styled-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import {
-    Button,
-    ButtonGroup,
-    ButtonProps,
-    Dropdown,
-    DropdownMenuItemProps,
-    IconButton,
-    IconButtonProps,
-    IconName,
-    variables,
-} from '@trezor/components';
+import { ButtonGroup, Dropdown, DropdownMenuItemProps, IconName } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { WalletParams } from 'src/types/wallet';
@@ -19,19 +9,13 @@ import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
+import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
 
 const Container = styled.div`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xxs};
-`;
-
-// instant without computing the layout
-const ShowOnLargeDesktopWrapper = styled.div`
-    ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
-        display: none;
-    }
 `;
 
 type ActionItem = {
@@ -41,28 +25,6 @@ type ActionItem = {
     title: JSX.Element;
     'data-testid'?: string;
     isHidden?: boolean;
-};
-
-const ButtonComponent = ({
-    icon,
-    onClick,
-    'data-testid': dataTestId,
-    variant,
-    size,
-    isDisabled,
-    children,
-}: Pick<ButtonProps, 'onClick' | 'data-testid' | 'variant' | 'size' | 'isDisabled' | 'children'> &
-    Pick<IconButtonProps, 'icon'>) => {
-    const layoutSize = useSelector(state => state.resize.size);
-
-    const isMobileLayout = layoutSize === 'TINY';
-    const commonProps = { icon, onClick, 'data-testid': dataTestId, variant, size, isDisabled };
-
-    return isMobileLayout ? (
-        <IconButton {...commonProps} />
-    ) : (
-        <Button {...commonProps}>{children}</Button>
-    );
 };
 
 export const HeaderActions = () => {
@@ -142,45 +104,12 @@ export const HeaderActions = () => {
             )}
 
             {isCoinmarketAvailable && (
-                <AppNavigationTooltip>
-                    <ShowOnLargeDesktopWrapper>
-                        <ButtonComponent
-                            icon="currencyCircleDollar"
-                            onClick={() => {
-                                goToWithAnalytics('wallet-coinmarket-buy', {
-                                    preserveParams: true,
-                                });
-                            }}
-                            data-testid="@wallet/menu/wallet-coinmarket-buy"
-                            variant="tertiary"
-                            size="small"
-                            isDisabled={isAccountLoading}
-                        >
-                            <Translation id="TR_COINMARKET_BUY_AND_SELL" />
-                        </ButtonComponent>
-                    </ShowOnLargeDesktopWrapper>
-                    {!hasBitcoinOnlyFirmware(device) && (
-                        <ButtonComponent
-                            icon="arrowsLeftRight"
-                            onClick={() => {
-                                goToWithAnalytics('wallet-coinmarket-exchange', {
-                                    preserveParams: true,
-                                });
-                            }}
-                            data-testid="@wallet/menu/wallet-coinmarket-exchange"
-                            variant="tertiary"
-                            size="small"
-                            isDisabled={isAccountLoading}
-                        >
-                            <Translation id="TR_COINMARKET_SWAP" />
-                        </ButtonComponent>
-                    )}
-                </AppNavigationTooltip>
+                <TradeActions selectedAccount={selectedAccount} hideBuyAndSellBelowDesktop />
             )}
 
             <AppNavigationTooltip>
                 <ButtonGroup size="small" isDisabled={isAccountLoading}>
-                    <ButtonComponent
+                    <HeaderActionButton
                         key="wallet-send"
                         icon="send"
                         onClick={() => {
@@ -190,9 +119,9 @@ export const HeaderActions = () => {
                         variant={isDeviceConnected ? 'primary' : 'tertiary'}
                     >
                         <Translation id="TR_NAV_SEND" />
-                    </ButtonComponent>
+                    </HeaderActionButton>
 
-                    <ButtonComponent
+                    <HeaderActionButton
                         key="wallet-receive"
                         icon="receive"
                         onClick={() => {
@@ -202,7 +131,7 @@ export const HeaderActions = () => {
                         variant={isDeviceConnected ? 'primary' : 'tertiary'}
                     >
                         <Translation id="TR_NAV_RECEIVE" />
-                    </ButtonComponent>
+                    </HeaderActionButton>
                 </ButtonGroup>
             </AppNavigationTooltip>
         </Container>

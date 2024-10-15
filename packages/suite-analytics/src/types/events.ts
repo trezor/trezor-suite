@@ -225,6 +225,12 @@ export type SuiteAnalyticsEvent =
           type: EventType.MenuGuide;
       }
     | {
+          type: EventType.MenuActions;
+          payload: {
+              type: string;
+          };
+      }
+    | {
           type: EventType.GuideHeaderNavigation;
           payload: {
               type: 'back' | 'close' | 'category';

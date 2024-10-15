@@ -10,6 +10,7 @@ import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchang
 import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
 import { UI } from '@trezor/connect';
 import { ROUTER, MODAL } from 'src/actions/suite/constants';
+import { CoinmarketSuiteBackRouteNameType } from 'src/reducers/wallet/coinmarketReducer';
 
 export const coinmarketMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -121,6 +122,8 @@ export const coinmarketMiddleware =
         if (action.type === ROUTER.LOCATION_CHANGE) {
             const isSell = newState.router.route?.name === 'wallet-coinmarket-sell';
             const isExchange = newState.router.route?.name === 'wallet-coinmarket-exchange';
+            const currentBackRouteName = action.payload.settingsBackRoute?.name;
+            const { suiteBackRouteName } = newState.wallet.coinmarket;
 
             // clean coinmarketAccount in sell
             if (isSell && sellCoinmarketAccount) {
@@ -130,6 +133,18 @@ export const coinmarketMiddleware =
             // clean coinmarketAccount in exchange
             if (isExchange && exchangeCoinmarketAccount) {
                 api.dispatch(coinmarketExchangeActions.setCoinmarketExchangeAccount(undefined));
+            }
+
+            if (
+                currentBackRouteName &&
+                ['wallet-index', 'suite-index'].includes(currentBackRouteName) &&
+                suiteBackRouteName !== currentBackRouteName
+            ) {
+                api.dispatch(
+                    coinmarketCommonActions.setSuiteBackRouteName(
+                        currentBackRouteName as CoinmarketSuiteBackRouteNameType,
+                    ),
+                );
             }
         }
 

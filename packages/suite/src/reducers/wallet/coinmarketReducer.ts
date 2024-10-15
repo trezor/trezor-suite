@@ -23,7 +23,7 @@ import {
     COINMARKET_INFO,
 } from 'src/actions/wallet/constants';
 import { STORAGE } from 'src/actions/suite/constants';
-import type { Action as SuiteAction } from 'src/types/suite';
+import type { Route, Action as SuiteAction } from 'src/types/suite';
 import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import type { FeeLevel } from '@trezor/connect';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
@@ -40,6 +40,11 @@ export interface ComposedTransactionInfo {
 export interface CoinmarketTradeCommonProps {
     transactionId?: string;
 }
+
+export type CoinmarketSuiteBackRouteNameType = Extract<
+    Route['name'],
+    'wallet-index' | 'suite-index'
+>;
 
 interface Info {
     platforms?: Platforms;
@@ -92,6 +97,7 @@ export interface State {
     modalAccount: Account | undefined;
     isLoading: boolean;
     lastLoadedTimestamp: number;
+    suiteBackRouteName: CoinmarketSuiteBackRouteNameType;
 }
 
 export const initialState: State = {
@@ -139,6 +145,7 @@ export const initialState: State = {
     modalAccount: undefined,
     modalCryptoId: undefined,
     lastLoadedTimestamp: 0,
+    suiteBackRouteName: 'wallet-index',
 };
 
 export const coinmarketReducer = (
@@ -254,6 +261,9 @@ export const coinmarketReducer = (
                 break;
             case COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY:
                 draft.modalCryptoId = action.modalCryptoId;
+                break;
+            case COINMARKET_COMMON.SET_SUITE_BACK_ROUTE_NAME:
+                draft.suiteBackRouteName = action.suiteBackRouteName;
                 break;
             // no default
         }

@@ -22,7 +22,7 @@ const CoinmarketExchangeDetailComponent = ({ selectedAccount }: UseCoinmarketPro
 export const CoinmarketExchangeDetail = () => (
     <CoinmarketContainer
         title="TR_COINMARKET_SWAP"
-        backRoute="wallet-coinmarket-exchange"
+        backRoute="wallet-coinmarket-transactions"
         SectionComponent={CoinmarketExchangeDetailComponent}
     />
 );

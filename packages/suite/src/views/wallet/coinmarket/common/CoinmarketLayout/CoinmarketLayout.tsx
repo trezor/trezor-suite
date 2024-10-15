@@ -28,7 +28,7 @@ export const CoinmarketLayout = ({ children, selectedAccount }: CoinmarketLayout
     <WalletLayout title="TR_NAV_TRADE" isSubpage account={selectedAccount}>
         <CoinmarketWrapper>
             <WalletSubpageHeading title="TR_NAV_TRADE" />
-            <CoinmarketLayoutNavigation selectedAccount={selectedAccount} />
+            <CoinmarketLayoutNavigation />
             <CoinmarketFormWrapper>{children}</CoinmarketFormWrapper>
         </CoinmarketWrapper>
     </WalletLayout>
