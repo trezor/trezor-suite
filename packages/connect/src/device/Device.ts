@@ -643,13 +643,20 @@ export class Device extends TypedEmitter<DeviceEvents> {
             randomBytes(32),
         );
 
-        const deviceResponse = await this.getCommands().typedCall(
-            'GetFirmwareHash',
-            'FirmwareHash',
-            { challenge },
-        );
+        // handle rejection of call by a counterfeit device. If unhandled, it crashes device initialization,
+        // so device can't be used, but it's preferable to display proper message about counterfeit device
+        const getFirmwareHashOptional = async () => {
+            try {
+                return await this.getCommands().typedCall('GetFirmwareHash', 'FirmwareHash', {
+                    challenge,
+                });
+            } catch (e) {
+                return null;
+            }
+        };
+        const deviceResponse = await getFirmwareHashOptional();
 
-        if (!deviceResponse.message.hash) return createFailResult('other-error');
+        if (!deviceResponse?.message?.hash) return createFailResult('other-error');
 
         if (deviceResponse.message.hash !== expectedHash) return createFailResult('hash-mismatch');
 
