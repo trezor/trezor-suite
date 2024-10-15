@@ -1,6 +1,4 @@
 import type tls from 'tls';
-import type { Url } from 'url';
-import type { SocksProxy } from 'socks';
 
 import type { Transaction as BlockbookTransaction, VinVout } from './blockbook';
 import type {
@@ -21,14 +19,15 @@ interface BaseSocksProxyAgentOptions {
     port?: string | number | null;
     username?: string | null;
     tls?: tls.ConnectionOptions | null;
+    ipaddress?: string;
+    type: 4 | 5;
+    userId?: string;
+    password?: string;
 }
 
 // todo: connect10 here we are using the old `SocksProxyAgentOptions` from older version of socks-proxy-agent
 // but we keep the old API so we do not introduce breaking changes.
-interface SocksProxyAgentOptions
-    extends AgentOptions,
-        BaseSocksProxyAgentOptions,
-        Partial<Omit<Url & SocksProxy, keyof BaseSocksProxyAgentOptions>> {}
+interface SocksProxyAgentOptions extends AgentOptions, BaseSocksProxyAgentOptions {}
 
 export interface BlockchainSettings {
     name: string;

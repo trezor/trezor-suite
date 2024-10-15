@@ -22,8 +22,7 @@
     "dependencies": {
         "@solana/web3.js": "^1.95.0",
         "@trezor/type-utils": "workspace:*",
-        "@trezor/utxo-lib": "workspace:*",
-        "socks-proxy-agent": "8.0.4"
+        "@trezor/utxo-lib": "workspace:*"
     },
     "devDependencies": {
         "tsx": "^4.16.3"
