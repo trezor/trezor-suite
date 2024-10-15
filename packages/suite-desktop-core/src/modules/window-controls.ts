@@ -16,11 +16,6 @@ export const init: Module = ({ mainWindowProxy }) => {
             // it is common for applications and their context menu to stay active until the user quits explicitly
             // with Cmd + Q or right-click > Quit from the context menu.
 
-            // restore window after click on the Dock icon
-            app.on('activate', () => {
-                logger.info(SERVICE_NAME, 'Showing main window on activate');
-                mainWindow.show();
-            });
             // hide window to the Dock
             // this event listener will be removed by app.on('before-quit')
             mainWindow.on('close', event => {
