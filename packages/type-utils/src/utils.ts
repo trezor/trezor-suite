@@ -58,3 +58,17 @@ export type PartialRecord<K extends keyof any, T> = {
 
 // distributive conditional types to the rescue! This way we can infer union literal type from ReturnType but exclude undefined
 export type DefinedUnionMember<T> = T extends string ? T : never;
+
+/**
+ * Type-guard if a value is a subset of an array.
+ * Useful to narrow down a union type `value` to a subset of the union (typeof `arr`).
+ *
+ * Example:
+ * type Variant = 'a' | 'b' | 'c' | 'd';
+ * const skippedVariants = ['a', 'b'] satisfies Variant[];
+ * if(isArrayMember(variant, skippedVariants)) // variant is 'a' | 'b', else 'c' | 'd'
+ */
+export const isArrayMember = <Value extends string, Subset extends Value>(
+    value: Value,
+    arr: Subset[],
+): value is Subset => arr.some(v => v === value);
