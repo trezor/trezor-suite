@@ -21,6 +21,7 @@ import IconWeb from '../components/icons/IconWeb';
 import IconExtension from '../components/icons/IconExtension';
 import IconMobile from '../components/icons/IconMobile';
 import ZoomableIllustration from '../components/ZoomableIllustration';
+import { BetaOnly } from '../components/BetaOnly';
 
 export const SectionCard = ({ children }) => (
     <TrezorCard margin={{ bottom: spacings.xl }}>{children}</TrezorCard>
@@ -111,7 +112,9 @@ export const ExampleHeading = styled.h3`
         <Card icon={<IconNode />} title="Node.js" href="#nodejs" />
         <Card icon={<IconWeb />} title="Web" href="#web" />
         <Card icon={<IconExtension />} title="Web extension" href="#web-extension" />
-        <Card icon={<IconMobile />} title="Mobile" href="#mobile" />
+        <BetaOnly>
+            <Card icon={<IconMobile />} title="Mobile" href="#mobile" />
+        </BetaOnly>
     </Cards>
 
     <CollapsibleBox heading="Still unsure?" margin={{ top: spacings.md }}>
@@ -501,6 +504,8 @@ export const ExampleHeading = styled.h3`
 
 </SectionCard>
 
+<BetaOnly>
+
 <HiddenNextraHeading>
 
 ### Mobile
@@ -632,3 +637,5 @@ export const ExampleHeading = styled.h3`
         </CollapsibleBox>
 
 </SectionCard>
+
+</BetaOnly>

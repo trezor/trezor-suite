@@ -2,9 +2,14 @@ import { RemoteContent } from 'nextra/data';
 import { buildDynamicMDX, buildDynamicMeta } from 'nextra/remote';
 import rehypeSectionize from '@hbsnow/rehype-sectionize';
 import remarkGemoji from 'remark-gemoji';
+import { isBetaOnly } from '../../components/BetaOnly';
 
 export const getStaticPaths = () => {
-    const packages = ["connect", "connect-web", "connect-webextension", "connect-mobile"]
+    const packages = ["connect", "connect-web", "connect-webextension"];
+    if(isBetaOnly) {
+        packages.push("connect-mobile");
+    }
+
     const paths = packages.map((name) => ({
         params: {
             name,

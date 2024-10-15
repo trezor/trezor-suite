@@ -6,6 +6,7 @@ import { Callout } from 'nextra/components';
 import * as trezorConnectActions from '../actions/trezorConnectActions';
 import { useSelector, useActions } from '../hooks';
 import { getField } from '../components/Method';
+import { isBetaOnly } from '../components/BetaOnly';
 
 export const SettingsContent = styled.section`
     flex: 1;
@@ -65,12 +66,12 @@ export const Settings = () => {
             key: 'connectSrc',
             value: connectOptions?.connectSrc || '',
         },
-        {
+        ...(isBetaOnly ? [{
             name: 'mobile deeplink',
             type: 'checkbox',
             key: 'deeplink',
             value: connectOptions?.deeplink || false
-        }
+        }] : [])
     ];
 
     return (
