@@ -4,8 +4,9 @@ import { Button, HStack, Loader, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     ConnectDeviceSettings,
+    DeviceRootState,
     deviceActions,
-    selectDeviceLabelOrName,
+    selectDeviceLabelOrNameById,
     selectHasDeviceDiscovery,
 } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@suite-native/analytics';
@@ -33,7 +34,9 @@ export const WalletRow = ({ device }: WalletRowProps) => {
     const { showToast } = useToast();
     const { applyStyle } = useNativeStyles();
     const hasDiscovery = useSelector(selectHasDeviceDiscovery);
-    const deviceLabel = useSelector(selectDeviceLabelOrName);
+    const deviceLabel = useSelector((state: DeviceRootState) =>
+        selectDeviceLabelOrNameById(state, device?.id),
+    );
 
     const walletNameLabel = device.useEmptyPassphrase ? (
         <Translation id="moduleSettings.viewOnly.wallet.standard" />
