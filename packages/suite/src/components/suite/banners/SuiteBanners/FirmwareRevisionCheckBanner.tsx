@@ -2,6 +2,7 @@ import { TranslationKey } from '@suite-common/intl-types';
 import { Banner } from '@trezor/components';
 import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
 import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
+import { isArrayMember } from '@trezor/type-utils';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -17,12 +18,17 @@ const revisionCheckMessages: Record<FirmwareRevisionCheckError, TranslationKey> 
     'firmware-version-unknown': 'TR_FIRMWARE_REVISION_CHECK_FAILED',
 };
 
+export const skippedHashCheckErrors = [
+    'check-skipped',
+    'check-unsupported',
+] satisfies FirmwareHashCheckError[];
+type SkippedHashCheckMessage = (typeof skippedHashCheckErrors)[number];
+
 const hashCheckMessages: Record<
-    Exclude<FirmwareHashCheckError, 'check-skipped'>,
+    Exclude<FirmwareHashCheckError, SkippedHashCheckMessage>,
     TranslationKey
 > = {
     'hash-mismatch': 'TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH',
-    'check-unsupported': 'TR_DEVICE_FIRMWARE_HASH_CHECK_CHECK_UNSUPPORTED',
     'unknown-release': 'TR_DEVICE_FIRMWARE_HASH_CHECK_UNKNOWN_RELEASE',
     'other-error': 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR',
 };
@@ -34,7 +40,7 @@ const useAuthenticityCheckMessage = (): TranslationKey | null => {
     if (firmwareRevisionError) {
         return revisionCheckMessages[firmwareRevisionError];
     }
-    if (firmwareHashError && firmwareHashError !== 'check-skipped') {
+    if (firmwareHashError && !isArrayMember(firmwareHashError, skippedHashCheckErrors)) {
         return hashCheckMessages[firmwareHashError];
     }
 
