@@ -1,6 +1,6 @@
-## Deep link example with Expo
+## Mobile example with Expo
 
-`@trezor/connect-deeplink` running with a React Native + Expo app
+`@trezor/connect-mobile` running with a React Native + Expo app
 
 ### Run it
 

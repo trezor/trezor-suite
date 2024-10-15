@@ -17,7 +17,7 @@
         { "path": "../navigation" },
         { "path": "../../packages/connect" },
         {
-            "path": "../../packages/connect-deeplink"
+            "path": "../../packages/connect-mobile"
         }
     ]
 }

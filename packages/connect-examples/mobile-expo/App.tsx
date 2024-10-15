@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import * as Linking from 'expo-linking';
 
-import TrezorConnect from '@trezor/connect-deeplink';
+import TrezorConnect from '@trezor/connect-mobile';
 
 const styles = StyleSheet.create({
     container: {

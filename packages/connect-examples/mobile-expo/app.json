@@ -1,7 +1,7 @@
 {
     "expo": {
-        "name": "connect-deeplink-example",
-        "slug": "connect-deeplink-example",
+        "name": "connect-mobile-example",
+        "slug": "connect-mobile-example",
         "version": "1.0.0",
         "orientation": "portrait",
         "userInterfaceStyle": "light",

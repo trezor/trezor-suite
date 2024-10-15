@@ -1,8 +1,8 @@
-# @trezor/connect-deeplink
+# @trezor/connect-mobile
 
-[![NPM](https://img.shields.io/npm/v/@trezor/connect-deeplink.svg)](https://www.npmjs.org/package/@trezor/connect-deeplink)
+[![NPM](https://img.shields.io/npm/v/@trezor/connect-mobile.svg)](https://www.npmjs.org/package/@trezor/connect-mobile)
 
-The `@trezor/connect-deeplink` package provides an implementation of `@trezor/connect` which uses deep links to communicate with the Trezor Suite Lite app.
+The `@trezor/connect-mobile` package provides an implementation of `@trezor/connect` which uses deep links to communicate with the Trezor Suite Lite app.
 
 Currently the library is still under development, only supports read-only methods and does not communicate with the production Suite Lite app.
 
@@ -13,7 +13,7 @@ To run a dev version of the Suite mobile app follow the instructions in [@suite-
 To use the library, you need to initialize it with the `deeplinkOpen` and `deeplinkCallbackUrl` settings.
 
 ```javascript
-import TrezorConnect from '@trezor/connect-deeplink';
+import TrezorConnect from '@trezor/connect-mobile';
 
 TrezorConnect.init({
     manifest: {
@@ -43,4 +43,4 @@ useEffect(() => {
 
 ## Example
 
-The [Connect deeplink example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/deeplink-expo) shows how to use the library in a React Native + Expo app.
+The [Connect mobile example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/mobile-expo) shows how to use the library in a React Native + Expo app.
