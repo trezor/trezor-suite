@@ -8,7 +8,7 @@ import {
     DeviceRootState,
     PORTFOLIO_TRACKER_DEVICE_ID,
     selectHasOnlyEmptyPortfolioTracker,
-    selectDeviceLabelOrName,
+    selectDeviceLabelOrNameById,
 } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TypographyStyle } from '@trezor/theme';
@@ -67,7 +67,7 @@ export const DeviceItemContent = React.memo(
             return {
                 id: d.id,
                 name: d.name,
-                label: selectDeviceLabelOrName(state),
+                label: selectDeviceLabelOrNameById(state, d.id),
                 walletNumber: d.walletNumber,
                 useEmptyPassphrase: d.useEmptyPassphrase,
             };
