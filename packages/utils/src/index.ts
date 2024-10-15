@@ -19,7 +19,7 @@ export * from './createTimeoutPromise';
 export * from './getLocaleSeparators';
 export * from './getMutex';
 export * from './getNumberFromPixelString';
-export * from './getRandomNumberInRange';
+export * from './getWeakRandomNumberInRange';
 export * from './getSynchronize';
 export * from './getWeakRandomId';
 export * from './hasUppercaseLetter';

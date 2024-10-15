@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { Card, Column, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { getRandomNumberInRange } from '@trezor/utils';
+import { getWeakRandomNumberInRange } from '@trezor/utils';
 import { typography } from '@trezor/theme';
 
 const NoResults = styled.div`
@@ -46,7 +46,7 @@ const getTip = (num: number) => {
 };
 
 export const NoSearchResults = () => {
-    const [tip] = useState(getRandomNumberInRange(1, 10));
+    const [tip] = useState(getWeakRandomNumberInRange(1, 10));
 
     return (
         <Card>

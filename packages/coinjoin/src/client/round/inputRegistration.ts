@@ -1,4 +1,4 @@
-import { getRandomNumberInRange } from '@trezor/utils';
+import { getWeakRandomNumberInRange } from '@trezor/utils';
 
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
@@ -56,7 +56,7 @@ const registerInput = async (
     // setup random delay for registration request. we want each input to be registered in different time as different TOR identity
     // note that this may cause that the input will not be registered if phase change before expected deadline
     const deadline = round.phaseDeadline - Date.now() - ROUND_SELECTION_REGISTRATION_OFFSET;
-    const delay = deadline > 0 ? getRandomNumberInRange(0, deadline) : 0;
+    const delay = deadline > 0 ? getWeakRandomNumberInRange(0, deadline) : 0;
     logger.info(
         `Trying to register ~~${input.outpoint}~~ to ~~${round.id}~~ with delay ${delay}ms and deadline ${round.phaseDeadline}`,
     );

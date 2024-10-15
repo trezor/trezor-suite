@@ -1,5 +1,5 @@
 import { bufferutils, Transaction, Network } from '@trezor/utxo-lib';
-import { getRandomNumberInRange } from '@trezor/utils';
+import { getWeakRandomNumberInRange } from '@trezor/utils';
 
 import {
     COORDINATOR_FEE_RATE_FALLBACK,
@@ -88,7 +88,7 @@ export const scheduleDelay = (
     // and at most 1 sec before the calculated max (so there's room for randomness)
     const min = clamp(minimumDelay, 0, max - 1000);
 
-    return getRandomNumberInRange(min, max);
+    return getWeakRandomNumberInRange(min, max);
 };
 
 // NOTE: deadlines are not accurate. phase may change earlier
