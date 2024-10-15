@@ -1,10 +1,11 @@
-import { FirmwareType, Device, VersionArray } from '@trezor/connect';
+import { FirmwareType, VersionArray } from '@trezor/connect';
 
 import { isDeviceInBootloaderMode } from './modeUtils';
+import { PartialDevice } from './types';
 
-export const getFirmwareRevision = (device?: Device) => device?.features?.revision || '';
+export const getFirmwareRevision = (device?: PartialDevice) => device?.features?.revision || '';
 
-export const getFirmwareVersionArray = (device?: Device): VersionArray | null => {
+export const getFirmwareVersionArray = (device?: PartialDevice): VersionArray | null => {
     if (!device?.features) {
         return null;
     }
@@ -19,7 +20,9 @@ export const getFirmwareVersionArray = (device?: Device): VersionArray | null =>
     return [features.major_version, features.minor_version, features.patch_version];
 };
 
-export const getFirmwareVersion = (device?: Device): '' | `${number}.${number}.${number}` => {
+export const getFirmwareVersion = (
+    device?: PartialDevice,
+): '' | `${number}.${number}.${number}` => {
     if (!device?.features) {
         return '';
     }
@@ -35,9 +38,9 @@ export const getFirmwareVersion = (device?: Device): '' | `${number}.${number}.$
 };
 
 // This can give a false negative in bootloader mode for T1B1 and T2T1.
-export const hasBitcoinOnlyFirmware = (device?: Device) =>
+export const hasBitcoinOnlyFirmware = (device?: PartialDevice) =>
     device?.firmwareType === FirmwareType.BitcoinOnly;
 
 // Bitcoin-only device with Universal firmware is treated as a regular device.
-export const isBitcoinOnlyDevice = (device?: Device) =>
+export const isBitcoinOnlyDevice = (device?: PartialDevice) =>
     !!device?.features?.unit_btconly && device?.firmwareType !== FirmwareType.Regular;
