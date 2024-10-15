@@ -107,7 +107,11 @@ export const UpdateNotificationBanner = ({
 
     return (
         <ElevationContext baseElevation={1}>
-            <Container $elevation={1} onClick={handleOnClick}>
+            <Container
+                $elevation={1}
+                onClick={handleOnClick}
+                data-testid="@notification/update-notification-banner"
+            >
                 <Row justifyContent="stretch">
                     <Column flex="1" alignItems="start">
                         <Text>
