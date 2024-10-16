@@ -13,6 +13,7 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "6.1.18",
+        "@react-navigation/native-stack": "6.11.0",
         "@suite-common/icons-deprecated": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -21,9 +22,12 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@suite-native/toasts": "workspace:*",
+        "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "react": "18.2.0",
+        "react-native": "0.75.2",
         "react-redux": "8.0.7"
     }
 }
