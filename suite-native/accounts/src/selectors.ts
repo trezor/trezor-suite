@@ -143,3 +143,13 @@ export const selectAccountListSections = memoizeWithArgs(
     // Some reasonable number of accounts that could be in app
     { size: 40 },
 );
+
+export const selectFirstUnusedAccountAddress = (
+    state: NativeAccountsRootState,
+    accountKey: AccountKey,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+    if (!account) return null;
+
+    return account.addresses?.unused[0]?.address ?? null;
+};
