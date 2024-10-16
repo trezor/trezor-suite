@@ -3,7 +3,7 @@ import { FormattedCryptoAmount } from 'src/components/suite';
 
 interface CoinBalanceProps {
     value: string;
-    symbol: Account['symbol'];
+    symbol: Account['symbol'] | (string & {});
 }
 
 export const CoinBalance = ({ value, symbol }: CoinBalanceProps) => (

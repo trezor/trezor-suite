@@ -30,7 +30,6 @@ import {
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
 import { formatTokenSymbol } from 'src/utils/wallet/tokenUtils';
-import { TokenSelect } from './TokenSelect';
 import { FiatInput } from './FiatInput';
 import { SendMaxSwitch } from './SendMaxSwitch';
 
@@ -277,7 +276,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                         control={control}
                         innerAddon={
                             withTokens ? (
-                                <TokenSelect output={output} outputId={outputId} />
+                                <Symbol>{token?.symbol?.toUpperCase()}</Symbol>
                             ) : (
                                 <Symbol>{symbolToUse}</Symbol>
                             )
