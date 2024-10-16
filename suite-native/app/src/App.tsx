@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Sentry from '@sentry/react-native';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { useFonts } from 'expo-font';
 
 import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@suite-native/state';
 import { FormatterProvider } from '@suite-common/formatters';
@@ -45,6 +46,13 @@ const AppComponent = () => {
     const formattersConfig = useFormattersConfig();
     const isAppReady = useSelector(selectIsAppReady);
     const isConnectInitialized = useSelector(selectIsConnectInitialized);
+
+    const [loaded, error] = useFonts({
+        IconFont: require('@suite-common/icons/iconFonts/icons.ttf'),
+    });
+
+    console.log('loaded', loaded);
+    console.log('error', error);
 
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
 

@@ -9,7 +9,8 @@ import {
 } from '@suite-common/wallet-core';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen } from '@suite-native/navigation';
-import { Box } from '@suite-native/atoms';
+import { Box, HStack } from '@suite-native/atoms';
+import { IconSVG, Icon } from '@suite-native/icons';
 
 import { BiometricsBottomSheet } from './components/BiometricsBottomSheet';
 import { EmptyHomeRenderer } from './components/EmptyHomeRenderer';
@@ -17,7 +18,6 @@ import { PortfolioContent } from './components/PortfolioContent';
 import { useHomeRefreshControl } from './useHomeRefreshControl';
 import { EnableViewOnlyBottomSheet } from './components/EnableViewOnlyBottomSheet';
 import { PortfolioGraphRef } from './components/PortfolioGraph';
-
 export const HomeScreen = () => {
     const isDiscoveredDeviceAccountless = useSelector(selectIsDiscoveredDeviceAccountless);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
@@ -41,6 +41,23 @@ export const HomeScreen = () => {
             refreshControl={refreshControl}
             customHorizontalPadding={0}
         >
+            <HStack spacing={0}>
+                <Icon name="airplaneInFlight" />
+                <Icon name="starFilled" />
+                <Icon name="arrowDown" />
+                <Icon name="circleDashed" />
+                <Icon name="star" />
+                <Icon name="arrowURightDown" />
+                <Icon name="starHalf" />
+                <Icon name="starFour" />
+                <Icon name="trezorSafe5" />
+                <Icon name="trezorSafe5Filled" />
+                <Icon name="trezorSafe3" />
+                <Icon name="trezorSafe3Filled" />
+                <Icon name="trezorModelT" />
+                <Icon name="trezorModelTFilled" />
+            </HStack>
+
             {isEmptyHomeRendererShown ? (
                 <Box marginHorizontal="sp8">
                     <EmptyHomeRenderer />
