@@ -10,6 +10,48 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.4.3-beta.1
+
+This release introduces `@trezor/connect-mobile`, which allows mobile apps to integrate with Trezor Suite mobile using deeplinks.
+This package is still beta and work in progress.
+
+### Connect Mobile related changes
+
+-   chore(connect-mobile): update package.json for publishing (fb157ef318)
+-   feat(connect-explorer): hiding beta-only content (21e0d42c6d)
+-   feat(connect-explorer): call deeplinks from method tester (f2a5f7460e)
+-   docs(connect): mobile connect popup (9f8f1c1bd2)
+-   chore(connect-popup): move deeplink fallback page to versioned url (e86e6aa5b3)
+-   chore: rename connect-deeplink to connect-mobile (d1c2bd7464)
+-   feat(connect): use separate versioning for deeplink protocol (40f3b53a34)
+-   feat(module-connect-popup): add version check to app link parser (fe8499ec1c)
+-   chore(connect-examples): change from deeplinkUrl to connectSrc (1ff479c545)
+-   feat(connect): take deeplinkUrl from connectSrc (1b88b3b72b)
+
+### Other changes
+
+-   refactor(connect-web): use dynamic from connect package (887889288f)
+-   refactor(connect): dynamic connect (96e81fe5bf)
+-   fix(connect): make getBinaryOptional async (e583e84c32)
+-   test(connect-popup): fix log going to (9dee606f43)
+-   feat(connect): fw hash check automatically for T1B1 (0fd023dbe8)
+-   docs(connect-web): Support matrix (44ed16a45d)
+-   chore: update backends for bsc and op (458f0fe3d9)
+-   docs(connect-explorer): mention address can be used in getAccountInfo (722a2b2b7f)
+-   chore(connect): cleanup some duplicities in fw download util (53456df94d)
+-   chore(connect): a cosmetic change in Device types (b718af4a2b)
+-   chore(connect): use import from @trezor/connect-analytics (1ee270b1cd)
+-   chore(protobuf): update messages.json (71bbde850b)
+-   feat(connect): add Optimism (c2fb244649)
+-   chore(connect): pol only to pol backend (fe589cf6bc)
+-   chore(connect): rename 'getAssetByUrl' to a more apt fn name 'tryLocalAssetRequire' (f5e8f256ae)
+-   docs(connect-explorer): remove trailing commas from json excerpts (dc0147900d)
+-   refactor(transport): background sessions improved (7644107353)
+-   refactor(connect): connect error codes typing (57815188d1)
+-   chore(connect): update device authenticity config (063d68379f)
+-   docs: fix header level in connect changelog (ac53d354cc)
+-   fix(connect): add other-error to FirmwareRevisionCheckResult errors (4361aba5b7)
+
 # 9.4.2
 
 This release fixes an issue with TypeScript and certain libraries not being resolved correctly in the previous version.
