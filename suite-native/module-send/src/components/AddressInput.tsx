@@ -2,13 +2,15 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { formInputsMaxLength } from '@suite-common/validators';
-import { VStack, Text } from '@suite-native/atoms';
+import { VStack, Text, HStack, Button } from '@suite-native/atoms';
 import { TextInputField, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { analytics, EventType } from '@suite-native/analytics';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { AccountKey } from '@suite-common/wallet-types';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { NativeAccountsRootState, selectFirstUnusedAccountAddress } from '@suite-native/accounts';
+import { isDebugEnv } from '@suite-native/config';
 
 import { QrCodeBottomSheetIcon } from './QrCodeBottomSheetIcon';
 import { getOutputFieldName } from '../utils';
@@ -24,6 +26,9 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
+    const unusedAccountAddress = useSelector((state: NativeAccountsRootState) =>
+        selectFirstUnusedAccountAddress(state, accountKey),
+    );
 
     const handleScanAddressQRCode = (qrCodeData: string) => {
         setValue(addressFieldName, qrCodeData, { shouldValidate: true });
@@ -38,11 +43,23 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
         }
     };
 
+    // Debug helper to fill opened account address.
+    const fillSelfAddress = () => {
+        setValue(addressFieldName, unusedAccountAddress, { shouldValidate: true });
+    };
+
     return (
         <VStack spacing="sp12">
-            <Text variant="hint">
-                <Translation id="moduleSend.outputs.recipients.addressLabel" />
-            </Text>
+            <HStack flex={1} justifyContent="space-between" alignItems="center">
+                <Text variant="hint">
+                    <Translation id="moduleSend.outputs.recipients.addressLabel" />
+                </Text>
+                {isDebugEnv() && (
+                    <Button size="small" colorScheme="tertiaryElevation0" onPress={fillSelfAddress}>
+                        self address
+                    </Button>
+                )}
+            </HStack>
             <TextInputField
                 multiline
                 name={addressFieldName}
