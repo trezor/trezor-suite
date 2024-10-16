@@ -14,7 +14,7 @@ import { Address } from './Address';
 import { Amount } from './Amount/Amount';
 import { OpReturn } from './OpReturn';
 import { CoinLogo } from '@trezor/product-components';
-
+import { TokenSelect } from './Amount/TokenSelect';
 const Container = styled.div<{ $height: number }>`
     height: ${({ $height }) => ($height ? `${$height}px` : 'auto')};
     transition: height 0.2s ${motionEasingStrings.transition};
@@ -79,6 +79,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                             ease: motionEasing.transition,
                         }}
                     >
+                        <TokenSelect outputId={index} />
                         <Card
                             label={
                                 account.networkType === 'ethereum' && (
