@@ -14,7 +14,7 @@ import type { Module } from './index';
 export const SERVICE_NAME = 'auto-start';
 
 // Linux autostart desktop file
-const getLiunxExecutable = () => {
+const getLinuxExecutable = () => {
     if (process.env.container) {
         return 'flatpak run io.trezor.suite';
     }
@@ -32,7 +32,7 @@ Type=Application
 Version=1.0
 Name=Trezor Suite
 Comment=Trezor Suite startup script
-Exec=${getLiunxExecutable()} --bridge-daemon
+Exec=${getLinuxExecutable()} --bridge-daemon
 StartupNotify=false
 Terminal=false
 `;
