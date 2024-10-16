@@ -21,6 +21,7 @@ export * from './getMutex';
 export * from './getNumberFromPixelString';
 export * from './getWeakRandomNumberInRange';
 export * from './getSynchronize';
+export * from './getRandomInt';
 export * from './getWeakRandomId';
 export * from './getWeakRandomInt';
 export * from './hasUppercaseLetter';
