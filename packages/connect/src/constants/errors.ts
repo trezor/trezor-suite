@@ -47,6 +47,7 @@ export const ERROR_CODES = {
     Failure_FirmwareError: 'Firmware installation failed',
     Failure_UnknownCode: 'Unknown error',
     Failure_PinCancelled: 'PIN cancelled',
+    Failure_PinInvalid: 'PIN invalid',
     Failure_PinMismatch: 'PIN mismatch',
     Failure_WipeCodeMismatch: 'Wipe code mismatch',
 

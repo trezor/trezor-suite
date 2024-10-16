@@ -17,7 +17,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AddHiddenWalletButton } from './AddHiddenWalletButton';
 import { DeviceList } from './DeviceList';
-import { DeviceInfoButton } from './DeviceInfoButton';
+import { DeviceSettingsButton } from './DeviceSettingsButton';
 import { DeviceManagerModal, MANAGER_MODAL_BOTTOM_RADIUS } from './DeviceManagerModal';
 import { DevicesToggleButton } from './DevicesToggleButton';
 import { WalletList } from './WalletList';
@@ -112,7 +112,9 @@ export const DeviceManagerContent = () => {
                             }
                             style={applyStyle(deviceButtonsStyle)}
                         >
-                            <DeviceInfoButton showAsFullWidth={!isAddHiddenWalletButtonVisible} />
+                            <DeviceSettingsButton
+                                showAsFullWidth={!isAddHiddenWalletButtonVisible}
+                            />
                             {isAddHiddenWalletButtonVisible && <AddHiddenWalletButton />}
                         </Stack>
                     </VStack>

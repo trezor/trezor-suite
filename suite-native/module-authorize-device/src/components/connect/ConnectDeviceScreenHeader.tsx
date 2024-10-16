@@ -12,7 +12,7 @@ import {
     RootStackParamList,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
-import { Box, IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
+import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
@@ -113,18 +113,16 @@ export const ConnectDeviceScreenHeader = ({
 
     return (
         <ScreenHeaderWrapper>
-            <Box>
-                {shouldDisplayCancelButton && (
-                    <IconButton
-                        iconName="close"
-                        size="medium"
-                        colorScheme="tertiaryElevation1"
-                        accessibilityRole="button"
-                        accessibilityLabel="close"
-                        onPress={handleCancel}
-                    />
-                )}
-            </Box>
+            {shouldDisplayCancelButton && (
+                <IconButton
+                    iconName="close"
+                    size="medium"
+                    colorScheme="tertiaryElevation0"
+                    accessibilityRole="button"
+                    accessibilityLabel="close"
+                    onPress={handleCancel}
+                />
+            )}
             <ConnectingTrezorHelp />
         </ScreenHeaderWrapper>
     );

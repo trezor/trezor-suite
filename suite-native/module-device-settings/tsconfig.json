@@ -11,12 +11,17 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        { "path": "../alerts" },
+        { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../device" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../toasts" },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
+        { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" }
     ]
 }

@@ -21,13 +21,15 @@ import {
     ScreenSubHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { DeviceModelInternal } from '@trezor/connect';
 
 import { DeviceFirmwareCard } from '../components/DeviceFirmwareCard';
+import { DevicePinProtectionCard } from '../components/DevicePinProtectionCard';
 import { HowToUpdateBottomSheet } from '../components/HowToUpdateBottomSheet';
 
-type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.DeviceInfo>;
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.DeviceSettingsStack>;
 
-export const DeviceInfoModalScreen = () => {
+export const DeviceSettingsModalScreen = () => {
     const navigation = useNavigation<NavigationProp>();
     const { translate } = useTranslate();
 
@@ -74,6 +76,7 @@ export const DeviceInfoModalScreen = () => {
             </VStack>
             <VStack spacing="sp24">
                 <DeviceFirmwareCard />
+                {deviceModel !== DeviceModelInternal.T1B1 && <DevicePinProtectionCard />}
                 {isUpgradable && (
                     <Button colorScheme="primary" onPress={handleUpdateClick}>
                         <Translation id="moduleDeviceSettings.updateHowTo.title" />

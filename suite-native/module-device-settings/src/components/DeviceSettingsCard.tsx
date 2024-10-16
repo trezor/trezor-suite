@@ -6,6 +6,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const contentStyle = prepareNativeStyle(() => ({
     flexGrow: 1,
+    flexShrink: 1,
 }));
 
 export type DeviceSettingsCardProps = {
