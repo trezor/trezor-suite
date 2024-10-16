@@ -1416,7 +1416,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_DCA_DOWNLOAD',
     },
     TR_COINMARKET_BUY_AND_SELL: {
-        defaultMessage: 'Buy & sell',
+        defaultMessage: 'Buy & Sell',
         id: 'TR_COINMARKET_BUY_AND_SELL',
     },
     TR_COINMARKET_SWAP: {

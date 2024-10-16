@@ -9,7 +9,7 @@ const CoinmarketExchangeFormComponent = ({ selectedAccount }: UseCoinmarketProps
     const coinmarketExchangeContextValue = useCoinmarketExchangeForm({ selectedAccount });
 
     return (
-        <CoinmarketLayout selectedAccount={selectedAccount}>
+        <CoinmarketLayout>
             <CoinmarketFormContext.Provider value={coinmarketExchangeContextValue}>
                 <CoinmarketFormLayout />
             </CoinmarketFormContext.Provider>

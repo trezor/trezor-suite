@@ -31,7 +31,7 @@ import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { AnyAction, Dispatch } from 'redux';
 import { State } from 'src/reducers/wallet/coinmarketReducer';
 import { AccountType } from '@suite-common/wallet-config';
-import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
+import { ExtendedMessageDescriptor, Route, TrezorDevice } from 'src/types/suite';
 import { Timer } from '@trezor/react-utils';
 import { AccountsState } from '@suite-common/wallet-core';
 import { TokenDefinitionsState } from '@suite-common/token-definitions';
@@ -276,4 +276,12 @@ export interface CoinmarketCryptoAmountProps {
     receiveAmount: string | number | undefined;
     receiveCurrency: CryptoId | undefined;
     className?: string;
+}
+
+export interface CoinmarketContainerCommonProps {
+    title?: Extract<
+        ExtendedMessageDescriptor['id'],
+        'TR_COINMARKET_BUY_AND_SELL' | 'TR_COINMARKET_SWAP' | 'TR_COINMARKET_LAST_TRANSACTIONS'
+    >;
+    backRoute?: Extract<Route['name'], `wallet-coinmarket-${string}`> | 'wallet-index';
 }
