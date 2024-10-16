@@ -15,6 +15,7 @@ export type ScreenSubHeaderProps = RequireOneOrNone<
         rightIcon?: ReactNode;
         leftIcon?: ReactNode;
         closeActionType?: CloseActionType;
+        closeAction?: () => void;
         customHorizontalPadding?: NativeSpacing | number;
     },
     'leftIcon' | 'closeActionType'
@@ -43,6 +44,7 @@ export const ScreenSubHeader = ({
     rightIcon,
     leftIcon,
     closeActionType,
+    closeAction,
     customHorizontalPadding = 'sp8',
 }: ScreenSubHeaderProps) => {
     const { applyStyle } = useNativeStyles();
@@ -54,7 +56,9 @@ export const ScreenSubHeader = ({
             })}
         >
             <Box style={applyStyle(iconWrapperStyle)} testID="@screen/sub-header/icon-left">
-                {leftIcon || <GoBackIcon closeActionType={closeActionType} />}
+                {leftIcon || (
+                    <GoBackIcon closeActionType={closeActionType} closeAction={closeAction} />
+                )}
             </Box>
             <Box alignItems="center">
                 {typeof content === 'string' ? (

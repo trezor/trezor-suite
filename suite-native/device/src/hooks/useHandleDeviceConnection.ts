@@ -45,8 +45,9 @@ export const useHandleDeviceConnection = () => {
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
 
-    const isSendStackFocused =
-        navigation.getState()?.routes.at(-1)?.name === RootStackRoutes.SendStack;
+    const lastRoute = navigation.getState()?.routes.at(-1)?.name;
+    const isDeviceSettingsStackFocused = lastRoute === RootStackRoutes.DeviceSettingsStack;
+    const isSendStackFocused = lastRoute === RootStackRoutes.SendStack;
     const shouldBlockSendReviewRedirect = isDeviceRemembered && isSendStackFocused;
 
     // At the moment when unauthorized physical device is selected,
@@ -113,10 +114,10 @@ export const useHandleDeviceConnection = () => {
     // When trezor gets locked, it is necessary to display a PIN matrix for T1 so that it can be unlocked
     // and then continue with the interaction. For T2, PIN is entered on device, but the screen is still displayed.
     useEffect(() => {
-        if (isOnboardingFinished && hasDeviceRequestedPin) {
+        if (isOnboardingFinished && hasDeviceRequestedPin && !isDeviceSettingsStackFocused) {
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                 screen: AuthorizeDeviceStackRoutes.PinMatrix,
             });
         }
-    }, [hasDeviceRequestedPin, isOnboardingFinished, navigation]);
+    }, [isOnboardingFinished, hasDeviceRequestedPin, isDeviceSettingsStackFocused, navigation]);
 };
