@@ -10,7 +10,7 @@ export enum RootStackRoutes {
     TransactionDetail = 'TransactionDetail',
     ReceiveModal = 'ReceiveModal',
     SendStack = 'SendStack',
-    DeviceInfo = 'DeviceInfo',
+    DeviceSettingsStack = 'DeviceSettingsStack',
     AddCoinAccountStack = 'AddCoinAccountStack',
     CoinEnablingInit = 'CoinEnablingInit',
     ConnectPopup = 'ConnectPopup',
@@ -36,6 +36,16 @@ export enum AccountsImportStackRoutes {
     XpubScan = 'XpubScan',
     AccountImportLoading = 'AccountImportLoading',
     AccountImportSummary = 'AccountImportSummary',
+}
+
+export enum DeviceStackRoutes {
+    DeviceSettings = 'DeviceSettings',
+    DevicePinProtection = 'DevicePinProtection',
+}
+
+export enum DevicePinProtectionStackRoutes {
+    ContinueOnTrezor = 'ContinueOnTrezor',
+    // TODO: Add T1 routes
 }
 
 export enum AuthorizeDeviceStackRoutes {

@@ -25,6 +25,8 @@ import {
     AuthorizeDeviceStackRoutes,
     AddCoinAccountStackRoutes,
     SendStackRoutes,
+    DeviceStackRoutes,
+    DevicePinProtectionStackRoutes,
 } from './routes';
 import { NavigateParameters } from './types';
 
@@ -139,6 +141,15 @@ export type AddCoinAccountStackParamList = {
     };
 };
 
+export type DeviceSettingsStackParamList = {
+    [DeviceStackRoutes.DeviceSettings]: undefined;
+    [DeviceStackRoutes.DevicePinProtection]: undefined;
+};
+
+export type DevicePinProtectionStackParamList = {
+    [DevicePinProtectionStackRoutes.ContinueOnTrezor]: undefined;
+};
+
 export type AuthorizeDeviceStackParamList = {
     [AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice]:
         | { onCancelNavigationTarget: NavigateParameters<RootStackParamList> }
@@ -172,7 +183,7 @@ export type RootStackParamList = {
     [RootStackRoutes.DevUtilsStack]: undefined;
     [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
-    [RootStackRoutes.DeviceInfo]: undefined;
+    [RootStackRoutes.DeviceSettingsStack]: undefined;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
     [RootStackRoutes.SendStack]: NavigatorScreenParams<SendStackParamList>;
     [RootStackRoutes.CoinEnablingInit]: undefined;

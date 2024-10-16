@@ -5,6 +5,7 @@ export * from './hooks/useDetectDeviceError';
 export * from './hooks/useReportDeviceConnectToAnalytics';
 export * from './components/ConnectDeviceAnimation';
 export * from './components/ConfirmOnTrezorImage';
+export * from './components/ConnectorImage';
 export * from './components/DeviceImage';
 export * from './utils';
 export * from './selectors';
