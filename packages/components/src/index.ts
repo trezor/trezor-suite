@@ -71,6 +71,7 @@ export { Table, type TableProps } from './components/Table/Table';
 export { VirtualizedList } from './components/VirtualizedList/VirtualizedList';
 export { List, type ListProps } from './components/List/List';
 export { StoryColumn, StoryWrapper } from './support/Story';
+export * from './components/ContractAddressWithTooltip/ContractAddressWithTooltip';
 
 export * from './constants/keyboardEvents';
 
