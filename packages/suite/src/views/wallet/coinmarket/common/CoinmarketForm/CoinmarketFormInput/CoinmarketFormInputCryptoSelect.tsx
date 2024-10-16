@@ -20,9 +20,16 @@ import {
     CoinmarketFormInputCryptoSelectProps,
 } from 'src/types/coinmarket/coinmarketForm';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    cryptoPlatformSeparator,
+    parseCryptoId,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { SelectAssetModal } from '@trezor/product-components';
+import {
+    SelectAssetModal,
+    SelectAssetOptionCurrencyProps,
+    SelectAssetOptionProps,
+} from '@trezor/product-components';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     FORM_CRYPTO_CURRENCY_SELECT,
@@ -49,19 +56,38 @@ export const CoinmarketFormInputCryptoSelect = <
         ? context.getValues()?.sendCryptoSelect?.value
         : null;
 
-    const options = useMemo(
+    const formOptions = useMemo(
         () =>
             buildCryptoOptions(
                 supportedCryptoCurrencies ?? new Set(),
                 sendCryptoSelectValue ? new Set([sendCryptoSelectValue]) : new Set(),
             ),
-        [buildCryptoOptions, supportedCryptoCurrencies, sendCryptoSelectValue],
+        [buildCryptoOptions, sendCryptoSelectValue, supportedCryptoCurrencies],
     );
 
-    const handleSelectChange = (selectedCryptoId: string) => {
-        const findOption = options.find(
-            option => option.type === 'currency' && option.value === selectedCryptoId,
-        ) as CoinmarketCryptoSelectItemProps | undefined;
+    const modalOptions: SelectAssetOptionProps[] = useMemo(
+        () =>
+            formOptions.map(option =>
+                option.type === 'currency'
+                    ? {
+                          ...option,
+                          symbol: option.label.toUpperCase(),
+                          networkSymbol: parseCryptoId(option.value).networkId,
+                          contractAddress: option.contractAddress ?? null,
+                      }
+                    : option,
+            ),
+        [formOptions],
+    );
+
+    const handleSelectChange = (selectedAsset: SelectAssetOptionCurrencyProps) => {
+        const findOption = formOptions.find(option => {
+            const cryptoId = selectedAsset.contractAddress
+                ? `${selectedAsset.networkSymbol}${cryptoPlatformSeparator}${selectedAsset.contractAddress}`
+                : selectedAsset.networkSymbol;
+
+            return option.type === 'currency' && option.value === cryptoId;
+        }) as CoinmarketCryptoSelectItemProps | undefined;
 
         if (!findOption) return;
 
@@ -93,7 +119,7 @@ export const CoinmarketFormInputCryptoSelect = <
             <CoinmarketFormInputLabel label={label} />
             {isModalActive && (
                 <SelectAssetModal
-                    options={options}
+                    options={modalOptions}
                     networkCategories={getNetworks()}
                     onSelectAssetModal={handleSelectChange}
                     onClose={() => setIsModalActive(false)}
@@ -105,7 +131,7 @@ export const CoinmarketFormInputCryptoSelect = <
                 render={({ field: { value } }) => (
                     <Select
                         value={value}
-                        options={options}
+                        options={formOptions}
                         onMenuOpen={() => setIsModalActive(true)}
                         formatOptionLabel={(option: CoinmarketAccountOptionsGroupOptionProps) => {
                             const { networkId, contractAddress } = parseCryptoId(option.value);
