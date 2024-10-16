@@ -106,6 +106,10 @@ export const en = {
             },
             subtitle: "Here's what you have in your account.",
         },
+        coinList: {
+            mainnets: 'Select a coin to sync',
+            testnets: 'Testnet coins (have no value – for testing purposes only)',
+        },
         xpubScanScreen: {
             alert: {
                 address: {
