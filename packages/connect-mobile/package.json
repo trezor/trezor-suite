@@ -1,17 +1,32 @@
 {
     "name": "@trezor/connect-mobile",
-    "version": "1.0.0",
-    "private": true,
+    "version": "0.0.0",
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
-    "main": "src/index",
+    "main": "src/index.ts",
+    "publishConfig": {
+        "main": "lib/index.js"
+    },
+    "npmPublishAccess": "public",
+    "files": [
+        "lib/"
+    ],
     "scripts": {
-        "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build"
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/prepublish.js"
+    },
+    "devDependencies": {
+        "tsx": "^4.16.3"
     },
     "dependencies": {
         "@trezor/connect": "workspace:^",
         "@trezor/utils": "workspace:^"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
     }
 }

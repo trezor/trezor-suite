@@ -1,0 +1,15 @@
+{
+    "extends": "../../tsconfig.lib.json",
+    "compilerOptions": {
+        "outDir": "lib"
+    },
+    "include": ["./src"],
+    "references": [
+        {
+            "path": "../connect"
+        },
+        {
+            "path": "../utils"
+        }
+    ]
+}
