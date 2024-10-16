@@ -27,17 +27,20 @@ type DeviceInfoButtonProps = {
     showAsFullWidth: boolean;
 };
 
-const contentStyle = prepareNativeStyle<{ showAsFullWidth: boolean }>((_, { showAsFullWidth }) => ({
-    extend: {
-        condition: showAsFullWidth,
-        style: {
-            flex: 1,
-            justifyContent: 'center',
+const contentStyle = prepareNativeStyle<{ showAsFullWidth: boolean }>(
+    (utils, { showAsFullWidth }) => ({
+        marginRight: utils.spacings.sp4,
+        extend: {
+            condition: showAsFullWidth,
+            style: {
+                flex: 1,
+                justifyContent: 'center',
+            },
         },
-    },
-}));
+    }),
+);
 
-export const DeviceInfoButton = ({ showAsFullWidth }: DeviceInfoButtonProps) => {
+export const DeviceSettingsButton = ({ showAsFullWidth }: DeviceInfoButtonProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
     const { setIsDeviceManagerVisible } = useDeviceManager();
@@ -45,8 +48,11 @@ export const DeviceInfoButton = ({ showAsFullWidth }: DeviceInfoButtonProps) => 
 
     const handleDeviceRedirect = () => {
         setIsDeviceManagerVisible(false);
-        navigation.navigate(RootStackRoutes.DeviceInfo);
-        analytics.report({ type: EventType.DeviceManagerClick, payload: { action: 'deviceInfo' } });
+        navigation.navigate(RootStackRoutes.DeviceSettingsStack);
+        analytics.report({
+            type: EventType.DeviceManagerClick,
+            payload: { action: 'deviceSettings' },
+        });
     };
 
     if (!selectedDevice) return null;
@@ -58,9 +64,9 @@ export const DeviceInfoButton = ({ showAsFullWidth }: DeviceInfoButtonProps) => 
             showAsFullWidth={showAsFullWidth}
         >
             <HStack spacing="sp8" style={applyStyle(contentStyle, { showAsFullWidth })}>
-                <Icon name="infoLight" size="mediumLarge" />
+                <Icon name="settings" size="mediumLarge" />
                 <Text variant="hint">
-                    <Translation id="deviceManager.deviceButtons.deviceInfo" />
+                    <Translation id="deviceManager.deviceButtons.deviceSettings" />
                 </Text>
             </HStack>
         </DeviceAction>

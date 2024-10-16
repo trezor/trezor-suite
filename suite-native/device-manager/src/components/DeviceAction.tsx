@@ -13,7 +13,7 @@ type DeviceActionProps = {
 };
 
 const contentStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.sp16,
+    paddingHorizontal: utils.spacings.sp12,
     paddingVertical: utils.spacings.sp12,
     alignItems: 'center',
     height: 44 * ACCESSIBILITY_FONTSIZE_MULTIPLIER,
