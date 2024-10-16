@@ -214,6 +214,12 @@ export const init: Module = ({ mainWindowProxy, store }) => {
         setImmediate(() => {
             // Removing listeners & closing window (https://github.com/electron-userland/electron-builder/issues/1604)
             app.removeAllListeners('window-all-closed');
+            if (process.platform === 'linux') {
+                // On Linux there were some issues with re-opening the app, due to a possible race condition where the old app was not fully closed yet.
+                // This resolves the issue by removing the handlers and closing the app immediately.
+                app.removeAllListeners('before-quit');
+                app.removeAllListeners('second-instance');
+            }
             mainWindowProxy.getInstance()?.removeAllListeners('close');
             mainWindowProxy.getInstance()?.close();
 
