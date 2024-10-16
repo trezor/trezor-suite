@@ -15,7 +15,7 @@ import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { Connection, Message, PublicKey } from '@solana/web3.js';
+import { Connection, Message, PublicKey, SendTransactionError } from '@solana/web3.js';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 import { createLazy } from '@trezor/utils';
 
@@ -105,17 +105,35 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
     const { lastValidBlockHeight } = await api.getLatestBlockhash('finalized');
 
     const txBuffer = Buffer.from(rawTx, 'hex');
-    const signature = await api.sendRawTransaction(txBuffer, {
-        skipPreflight: true,
-        maxRetries: 0,
-    });
 
-    await confirmTransactionWithResubmit(api, txBuffer, signature, lastValidBlockHeight);
+    try {
+        await api.sendRawTransaction(txBuffer, {
+            skipPreflight: true,
+            maxRetries: 0,
+        });
 
-    return {
-        type: RESPONSES.PUSH_TRANSACTION,
-        payload: signature,
-    } as const;
+        const signature = await api.sendRawTransaction(txBuffer, {
+            skipPreflight: true,
+            maxRetries: 0,
+        });
+
+        await confirmTransactionWithResubmit(api, txBuffer, signature, lastValidBlockHeight);
+
+        return {
+            type: RESPONSES.PUSH_TRANSACTION,
+            payload: signature,
+        } as const;
+    } catch (error) {
+        if (
+            error instanceof SendTransactionError &&
+            error.transactionError.message === 'Internal error'
+        ) {
+            throw new Error(
+                'Please make sure that you submit the transaction within 1 minute after signing.',
+            );
+        }
+        throw error;
+    }
 };
 
 const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
