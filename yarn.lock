@@ -11405,6 +11405,9 @@ __metadata:
   dependencies:
     "@trezor/connect": "workspace:^"
     "@trezor/utils": "workspace:^"
+    tsx: "npm:^4.16.3"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
