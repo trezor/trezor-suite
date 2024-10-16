@@ -68,11 +68,11 @@ export const AddHiddenWalletButton = () => {
             onPress={handleAddHiddenWallet}
             flex={1}
         >
-            <HStack>
+            <HStack marginLeft="sp4">
                 <Text variant="hint" style={applyStyle(textStyle)}>
                     <Translation id="deviceManager.deviceButtons.addHiddenWallet" />
                 </Text>
-                <Icon name="chevronRight" color="iconDefault" size="mediumLarge" />
+                <Icon name="chevronRight" size="mediumLarge" />
             </HStack>
         </DeviceAction>
     );
