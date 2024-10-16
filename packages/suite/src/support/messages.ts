@@ -363,6 +363,10 @@ export default defineMessages({
         defaultMessage: 'Token not found',
         id: 'TR_TOKEN_NOT_FOUND',
     },
+    TR_TOKEN_ON_NETWORK: {
+        defaultMessage: '{tokenName} on {networkName}',
+        id: 'TR_TOKEN_ON_NETWORK',
+    },
     TR_TOKEN_NOT_FOUND_ON_NETWORK: {
         defaultMessage: 'Token not found on the {networkName} network.',
         id: 'TR_TOKEN_NOT_FOUND_ON_NETWORK',
