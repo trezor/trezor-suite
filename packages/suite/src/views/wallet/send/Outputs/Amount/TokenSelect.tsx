@@ -261,12 +261,18 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                                 </Text>
                                             </Row>
                                             <Row justifyContent="flex-start">
-                                                {option.contractAddress && (
+                                                {option.contractAddress && option.cryptoName && (
                                                     <ContractAddressWithTooltip
                                                         contractAddress={option.contractAddress}
                                                         tooltipTextTypographyStyle="label"
                                                         variant="tertiary"
                                                         gap={spacings.xxxs}
+                                                        cryptoName={option.cryptoName}
+                                                        networkName={
+                                                            networks[
+                                                                option.networkSymbol as NetworkSymbol
+                                                            ].name
+                                                        }
                                                     />
                                                 )}
                                             </Row>
