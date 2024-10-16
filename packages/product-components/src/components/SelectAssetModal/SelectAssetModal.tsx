@@ -13,16 +13,20 @@ import { AssetItem } from './AssetItem';
 import { NetworkTabs } from './NetworkTabs';
 import { useIntl } from 'react-intl';
 import { AssetItemNotFound } from './AssetItemNotFound';
-import { getNetworkByCoingeckoId, Network } from '@suite-common/wallet-config';
+import { getNetworkByCoingeckoId, Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { getContractAddressForNetwork } from '@suite-common/wallet-utils';
 
 export interface SelectAssetOptionCurrencyProps {
     type: 'currency';
-    value: string; // CryptoId (networkId + contractAddress)
-    label: string; // token shortcut
-    cryptoName: string | undefined; // full name
-    coingeckoId: string; // CryptoId (networkId)
-    contractAddress?: string; // CryptoId (contractAddress)
+    symbol: string;
+    balance?: string;
+    networkSymbol: NetworkSymbol | ({} & string);
+    cryptoName?: string | undefined;
+    coingeckoId: string;
+    contractAddress: string | null;
     networkName?: string;
+    hidden?: boolean;
+    unverified?: boolean;
 }
 export interface SelectAssetOptionGroupProps {
     type: 'group';
@@ -46,17 +50,17 @@ export type SelectAssetSearchCategoryType = {
 
 export interface SelectAssetModalProps {
     options: SelectAssetOptionProps[];
-    networkCategories: SelectAssetNetworkProps[];
-    onSelectAssetModal: (selectedAsset: string) => void;
+    networkCategories?: SelectAssetNetworkProps[]; //optional if used for choosing token for swapping in account
+    onSelectAssetModal: (selectedAsset: SelectAssetOptionCurrencyProps) => void;
     onFavoriteClick?: (isFavorite: boolean) => void;
     onClose: () => void;
 }
 
 interface AssetProps
     extends Pick<SelectAssetOptionCurrencyProps, 'coingeckoId' | 'contractAddress'> {
-    cryptoId: string;
     symbol: string;
-    name: string;
+    networkSymbol: NetworkSymbol | ({} & string);
+    name: string | undefined;
     height: number;
     isFavorite: boolean;
     badge?: string;
@@ -71,9 +75,9 @@ const getData = (options: SelectAssetOptionProps[]): AssetProps[] =>
     options
         .filter(item => item.type === 'currency')
         .map(item => ({
-            cryptoId: item.value,
-            symbol: item.label,
-            name: item.cryptoName ?? item.label,
+            symbol: item.symbol,
+            networkSymbol: item.networkSymbol,
+            name: item.cryptoName ?? item.symbol,
             badge: item.networkName,
             coingeckoId: item.coingeckoId,
             contractAddress: item.contractAddress,
@@ -125,14 +129,15 @@ export const SelectAssetModal = ({
             ? item.coingeckoId === searchCategory.coingeckoId ||
               item.coingeckoId === searchCategory.coingeckoNativeId
             : true;
+        const networkContractAddress = `${item.networkSymbol}${item.contractAddress ? `--${item.contractAddress}` : ''}`;
         const searchFor = (property: string | undefined) =>
             property?.toLocaleLowerCase().includes(search.toLocaleLowerCase());
 
         return (
             (searchFor(item.name) ||
-                searchFor(item.cryptoId) ||
                 searchFor(item.badge) ||
-                searchFor(item.symbol)) &&
+                searchFor(item.symbol) ||
+                searchFor(networkContractAddress)) &&
             categoryFilter
         );
     });
@@ -167,19 +172,21 @@ export const SelectAssetModal = ({
                     innerAddon={<Icon name="search" variant="tertiary" size="medium" />}
                     innerAddonAlign="left"
                 />
-                <NetworkTabs
-                    networkCategories={networkCategories}
-                    networkCount={networkCount}
-                    searchCategory={searchCategory}
-                    setSearchCategory={setSearchCategory}
-                />
+                {networkCategories && (
+                    <NetworkTabs
+                        networkCategories={networkCategories}
+                        networkCount={networkCount}
+                        searchCategory={searchCategory}
+                        setSearchCategory={setSearchCategory}
+                    />
+                )}
 
                 {filteredData.length === 0 ? (
                     <AssetItemNotFound
                         listHeight={LIST_HEIGHT}
                         listMinHeight={LIST_MIN_HEIGHT}
                         searchCategory={searchCategory}
-                        networkCategories={networkCategories}
+                        networkCategories={networkCategories || []}
                     />
                 ) : (
                     <ShadowContainer>
@@ -189,27 +196,36 @@ export const SelectAssetModal = ({
                             ref={scrollElementRef}
                             onScroll={onScroll}
                             renderItem={({
-                                cryptoId,
                                 name,
                                 symbol,
+                                coingeckoId,
+                                networkSymbol,
                                 isFavorite,
                                 badge,
-                                coingeckoId,
                                 contractAddress,
                             }: AssetProps) => (
                                 <AssetItem
                                     key={`${symbol}-${name}`}
-                                    cryptoId={cryptoId}
                                     name={name}
-                                    symbol={symbol}
+                                    symbol={symbol as NetworkSymbol}
+                                    coingeckoId={coingeckoId}
+                                    contractAddress={contractAddress || null}
+                                    networkSymbol={networkSymbol as NetworkSymbol}
                                     isFavorite={isFavorite}
                                     badge={badge}
                                     logo={
                                         <AssetLogo
                                             size={24}
                                             coingeckoId={coingeckoId}
-                                            contractAddress={contractAddress}
-                                            placeholder={symbol.toLowerCase()}
+                                            contractAddress={
+                                                contractAddress !== null
+                                                    ? getContractAddressForNetwork(
+                                                          symbol as NetworkSymbol,
+                                                          contractAddress,
+                                                      )
+                                                    : undefined
+                                            }
+                                            placeholder={symbol}
                                         />
                                     }
                                     handleClick={onSelectAssetModal}
