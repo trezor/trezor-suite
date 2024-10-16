@@ -149,11 +149,20 @@ const init = async () => {
             app.dock?.show();
             waitForFullStart.resolve();
         };
+        const openURL = (event: Electron.Event, url: string) => {
+            // Handle deeplink in daemon mode
+            event.preventDefault();
+            logger.warn('main', 'Custom protocol URL detected, initializing UI');
+            global.customProtocolUrl = url;
+            handleFullStart();
+        };
         app.on('second-instance', handleFullStart);
         app.on('activate', handleFullStart);
+        app.on('open-url', openURL);
         await waitForFullStart.promise;
         app.off('second-instance', handleFullStart);
         app.off('activate', handleFullStart);
+        app.off('open-url', openURL);
     }
 
     await initUi({ store, daemon, quitBridgeModule });
