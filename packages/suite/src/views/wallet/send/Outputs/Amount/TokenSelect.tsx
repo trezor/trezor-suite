@@ -26,8 +26,8 @@ import { getContractAddressForNetwork } from '@suite-common/wallet-utils';
 import { Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { Text } from '@trezor/components';
-import { CoinBalance, FormattedCryptoAmount, Translation } from 'src/components/suite';
-import { ContractAddressWithTooltip } from '@trezor/components';
+import { CoinBalance } from 'src/components/suite';
+import { ContractAddressWithTooltip } from 'src/components/wallet/ContractAddressWithTooltip';
 
 export const buildTokenOptions = (
     accountTokens: Account['tokens'],
@@ -63,35 +63,37 @@ export const buildTokenOptions = (
             });
         });
 
-        if (tokens.hiddenWithBalance.length) {
-            tokens.hiddenWithBalance.forEach(token => {
-                result.push({
-                    type: 'currency',
-                    symbol: token.symbol ?? symbol,
-                    networkSymbol: symbol,
-                    hidden: true,
-                    coingeckoId: getCoingeckoId(symbol) ?? '',
-                    contractAddress: token.contract,
-                    cryptoName: token.name,
-                    balance: token.balance,
-                });
-            });
-        }
+        // Right now we dont want to show hidden or unverified tokens, left for the future use
 
-        if (tokens.unverifiedWithBalance.length) {
-            tokens.unverifiedWithBalance.forEach(token => {
-                result.push({
-                    type: 'currency',
-                    unverified: true,
-                    symbol: token.symbol ?? symbol,
-                    networkSymbol: symbol,
-                    coingeckoId: getCoingeckoId(symbol) ?? '',
-                    contractAddress: token.contract,
-                    cryptoName: token.name,
-                    balance: token.balance,
-                });
-            });
-        }
+        // if (tokens.hiddenWithBalance.length) {
+        //     tokens.hiddenWithBalance.forEach(token => {
+        //         result.push({
+        //             type: 'currency',
+        //             symbol: token.symbol ?? symbol,
+        //             networkSymbol: symbol,
+        //             hidden: true,
+        //             coingeckoId: getCoingeckoId(symbol) ?? '',
+        //             contractAddress: token.contract,
+        //             cryptoName: token.name,
+        //             balance: token.balance,
+        //         });
+        //     });
+        // }
+
+        // if (tokens.unverifiedWithBalance.length) {
+        //     tokens.unverifiedWithBalance.forEach(token => {
+        //         result.push({
+        //             type: 'currency',
+        //             unverified: true,
+        //             symbol: token.symbol ?? symbol,
+        //             networkSymbol: symbol,
+        //             coingeckoId: getCoingeckoId(symbol) ?? '',
+        //             contractAddress: token.contract,
+        //             cryptoName: token.name,
+        //             balance: token.balance,
+        //         });
+        //     });
+        // }
     }
 
     return result;
@@ -272,12 +274,18 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                                 </Text>
                                             </Row>
                                             <Row justifyContent="flex-start">
-                                                {option.contractAddress && (
+                                                {option.contractAddress && option.cryptoName && (
                                                     <ContractAddressWithTooltip
                                                         contractAddress={option.contractAddress}
                                                         tooltipTextTypographyStyle="label"
                                                         variant="tertiary"
                                                         gap={spacings.xxxs}
+                                                        cryptoName={option.cryptoName}
+                                                        networkName={
+                                                            networks[
+                                                                option.networkSymbol as NetworkSymbol
+                                                            ].name
+                                                        }
                                                     />
                                                 )}
                                             </Row>
