@@ -32,6 +32,8 @@ const createTransportApi = (override = {}) =>
                 // payload: Buffer.from('3f23230002000000060a046d656f77', 'hex'), // proto.Success
             });
         },
+        listen: () => {},
+        dispose: () => {},
         ...override,
     }) as unknown as UsbApi;
 
