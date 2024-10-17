@@ -150,11 +150,11 @@ module.exports = {
                 to: 'bin/coinjoin',
             },
         ],
-        icon: 'build/static/images/desktop/512x512.png',
+        target: ['AppImage', 'deb'],
+        icon: 'build/static/images/desktop/512x512.icns',
         artifactName: 'Trezor-Suite-${version}-linux-${arch}.${ext}',
         executableName: 'trezor-suite',
         category: 'Utility',
-        target: ['AppImage'],
     },
     afterSign: '../suite-desktop-core/scripts/notarize.ts',
 };
