@@ -40,21 +40,14 @@ export const PageHeader = ({ backRoute, children }: PageHeaderProps) => {
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const routeName = useSelector(selectRouteName);
 
-    if (routeName === 'suite-index') {
-        return (
-            <Container>
-                <PageName backRoute={backRoute} />
-                <TradeActions analyticsEventType={EventType.MenuActions} />
-            </Container>
-        );
-    }
-
     return children ? (
         <Container>{children}</Container>
     ) : (
         <Container>
             <PageName backRoute={backRoute} />
-
+            {routeName === 'suite-index' && (
+                <TradeActions analyticsEventType={EventType.MenuActions} />
+            )}
             {!!selectedAccount && isAccountTabPage && <HeaderActions />}
         </Container>
     );
