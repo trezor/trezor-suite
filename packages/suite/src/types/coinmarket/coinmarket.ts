@@ -278,10 +278,15 @@ export interface CoinmarketCryptoAmountProps {
     className?: string;
 }
 
+export type CoinmarketContainerBackRouteType =
+    | Extract<Route['name'], `wallet-coinmarket-${string}`>
+    | 'wallet-index'
+    | 'suite-index';
+
 export interface CoinmarketContainerCommonProps {
     title?: Extract<
         ExtendedMessageDescriptor['id'],
         'TR_COINMARKET_BUY_AND_SELL' | 'TR_COINMARKET_SWAP' | 'TR_COINMARKET_LAST_TRANSACTIONS'
     >;
-    backRoute?: Extract<Route['name'], `wallet-coinmarket-${string}`> | 'wallet-index';
+    backRoute?: CoinmarketContainerBackRouteType;
 }
