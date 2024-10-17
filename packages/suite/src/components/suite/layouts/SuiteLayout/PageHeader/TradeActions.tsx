@@ -5,7 +5,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
 import { selectDevice } from '@suite-common/wallet-core';
 import { spacings } from '@trezor/theme';
@@ -14,14 +14,13 @@ import { SelectedAccountStatus } from '@suite-common/wallet-types';
 // instant without computing the layout
 const ShowOnLargeDesktopWrapper = styled.div<{ $isActive?: boolean }>`
     ${({ $isActive }) =>
-        $isActive
-            ? `
-        ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
-            display: none;
-        }`
-            : ''}
+        $isActive &&
+        css`
+            ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
+                display: none;
+            }
+        `}
 `;
-
 interface TradeActionsProps {
     analyticsEventType: EventType.AccountsActions | EventType.MenuActions;
     selectedAccount?: SelectedAccountStatus;
