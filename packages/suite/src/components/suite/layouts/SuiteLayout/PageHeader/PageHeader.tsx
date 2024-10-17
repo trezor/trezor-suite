@@ -5,7 +5,7 @@ import { Route } from '@suite-common/suite-types';
 import { spacingsPx, zIndices } from '@trezor/theme';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { selectIsAccountTabPage } from 'src/reducers/suite/routerReducer';
+import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 import { HeaderActions } from './HeaderActions';
 import { PageName } from './PageNames/PageName';
 
@@ -36,6 +36,12 @@ export const PageHeader = ({ backRoute, children }: PageHeaderProps) => {
     const selectedAccount = useSelector(selectSelectedAccount);
     // TODO subpages + tabs could be in some router config? this approach feels a bit fragile
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
+    const routeName = useSelector(selectRouteName);
+
+    // handle moment when children are not rendered yet in the Trade section
+    if (routeName?.includes('wallet-coinmarket')) {
+        return <Container>{children ?? null}</Container>;
+    }
 
     return children ? (
         <Container>{children}</Container>
