@@ -121,4 +121,4 @@ export function AssertWeak<T extends TSchema>(
 
 export const Type = new CustomTypeBuilder();
 export { Optional, CloneType };
-export type { Static, TObject, TSchema };
+export type * from '@sinclair/typebox';
