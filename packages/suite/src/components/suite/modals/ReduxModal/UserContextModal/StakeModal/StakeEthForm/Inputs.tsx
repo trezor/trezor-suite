@@ -69,22 +69,6 @@ export const Inputs = () => {
 
     const shouldShowAmountForWithdrawalWarning =
         isLessAmountForWithdrawalWarningShown || isAmountForWithdrawalWarningShown;
-    const amountForWithdrawalTranslation = isLessAmountForWithdrawalWarningShown ? (
-        <Translation
-            id="TR_STAKE_LEFT_SMALL_AMOUNT_FOR_WITHDRAWAL"
-            values={{
-                symbol: account.symbol.toUpperCase(),
-            }}
-        />
-    ) : (
-        <Translation
-            id="TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL"
-            values={{
-                amount: MIN_ETH_FOR_WITHDRAWALS.toString(),
-                symbol: account.symbol.toUpperCase(),
-            }}
-        />
-    );
 
     return (
         <Column>
@@ -123,7 +107,19 @@ export const Inputs = () => {
             )}
 
             {shouldShowAmountForWithdrawalWarning && (
-                <Banner variant="info">{amountForWithdrawalTranslation}</Banner>
+                <Banner variant="info">
+                    <Translation
+                        id={
+                            isLessAmountForWithdrawalWarningShown
+                                ? 'TR_STAKE_LEFT_SMALL_AMOUNT_FOR_WITHDRAWAL'
+                                : 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL'
+                        }
+                        values={{
+                            amount: MIN_ETH_FOR_WITHDRAWALS.toString(),
+                            symbol: account.symbol.toUpperCase(),
+                        }}
+                    />
+                </Banner>
             )}
 
             {isAdviceForWithdrawalWarningShown && (

@@ -53,16 +53,17 @@ export const FormFractionButtons = ({
         <Flex>
             <Tooltip
                 content={
-                    <Translation
-                        id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
-                        values={{
-                            amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
-                            symbol: symbol.toUpperCase(),
-                        }}
-                    />
+                    is10PercentDisabled && (
+                        <Translation
+                            id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
+                            values={{
+                                amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
+                                symbol: symbol.toUpperCase(),
+                            }}
+                        />
+                    )
                 }
                 cursor="pointer"
-                disabled={!is10PercentDisabled}
             >
                 <TinyButton isDisabled={is10PercentDisabled} onClick={() => setRatioAmount(10)}>
                     10%
@@ -70,16 +71,17 @@ export const FormFractionButtons = ({
             </Tooltip>
             <Tooltip
                 content={
-                    <Translation
-                        id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
-                        values={{
-                            amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
-                            symbol: symbol.toUpperCase(),
-                        }}
-                    />
+                    is25PercentDisabled && (
+                        <Translation
+                            id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
+                            values={{
+                                amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
+                                symbol: symbol.toUpperCase(),
+                            }}
+                        />
+                    )
                 }
                 cursor="pointer"
-                disabled={!is25PercentDisabled}
             >
                 <TinyButton isDisabled={is25PercentDisabled} onClick={() => setRatioAmount(4)}>
                     25%
@@ -87,16 +89,17 @@ export const FormFractionButtons = ({
             </Tooltip>
             <Tooltip
                 content={
-                    <Translation
-                        id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
-                        values={{
-                            amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
-                            symbol: symbol.toUpperCase(),
-                        }}
-                    />
+                    is50PercentDisabled && (
+                        <Translation
+                            id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
+                            values={{
+                                amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
+                                symbol: symbol.toUpperCase(),
+                            }}
+                        />
+                    )
                 }
                 cursor="pointer"
-                disabled={!is50PercentDisabled}
             >
                 <TinyButton isDisabled={is50PercentDisabled} onClick={() => setRatioAmount(2)}>
                     50%
@@ -104,16 +107,17 @@ export const FormFractionButtons = ({
             </Tooltip>
             <Tooltip
                 content={
-                    <Translation
-                        id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
-                        values={{
-                            amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
-                            symbol: symbol.toUpperCase(),
-                        }}
-                    />
+                    isMaxDisabled && (
+                        <Translation
+                            id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
+                            values={{
+                                amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
+                                symbol: symbol.toUpperCase(),
+                            }}
+                        />
+                    )
                 }
                 cursor="pointer"
-                disabled={!is50PercentDisabled}
             >
                 <TinyButton isDisabled={isDisabled || isMaxDisabled} onClick={setMax}>
                     <Translation id="TR_STAKE_MAX" />
