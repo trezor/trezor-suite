@@ -11,7 +11,7 @@ get_abs_path() {
 SCRIPTS_PATH=$(get_abs_path "${BASH_SOURCE[0]}")
 
 REPO_BRANCH="main"
-REPO_PATH=$(get_abs_path "../../../trezor-firmware-probuf-update/.")
+REPO_PATH=$(get_abs_path "$SCRIPTS_PATH/../../../../.")/trezor-firmware-probuf-update
 
 if [[ $# -ne 0 && $# -ne 1 ]]
     then
