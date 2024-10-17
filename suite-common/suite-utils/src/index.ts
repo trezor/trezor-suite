@@ -8,4 +8,5 @@ export * from './txsPerPage';
 export * from './stake';
 export * from './parseFirmwareChangelog';
 export * from './uppercaseType';
+export * from './protocol';
 export { hexToRgba } from './hexToRgba';

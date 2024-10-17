@@ -26,7 +26,8 @@ import { scanOrRequestSendFormThunk } from 'src/actions/wallet/send/sendFormThun
 import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getProtocolInfo } from 'src/utils/suite/protocol';
-import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
+import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+
 import { InputError } from 'src/components/wallet';
 import { InputErrorProps } from 'src/components/wallet/InputError';
 import { Row } from '@trezor/components';
@@ -34,6 +35,7 @@ import { Row } from '@trezor/components';
 import { HELP_CENTER_EVM_ADDRESS_CHECKSUM } from '@trezor/urls';
 import { spacings } from '@trezor/theme';
 import { CoinLogo } from '@trezor/product-components';
+import { captureSentryMessage } from 'src/utils/suite/sentry';
 
 const Container = styled.div`
     position: relative;
@@ -112,9 +114,22 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
         const protocol = getProtocolInfo(uri);
 
-        if (protocol) {
-            const isSymbolValidProtocol = PROTOCOL_TO_NETWORK[protocol.scheme] === symbol;
+        if (protocol && 'error' in protocol) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'qr-unknown-scheme-protocol',
+                    scheme: protocol.scheme,
+                    error: protocol.error,
+                }),
+            );
 
+            captureSentryMessage(`QR code with unknown scheme: ${protocol.scheme}`);
+
+            return;
+        }
+
+        if (protocol && 'scheme' in protocol) {
+            const isSymbolValidProtocol = getNetworkSymbolForProtocol(protocol.scheme) === symbol; //is protocol valid for this account network
             if (!isSymbolValidProtocol) {
                 dispatch(
                     notificationsActions.addToast({
