@@ -19,6 +19,7 @@ export const CoinmarketLayoutHeader = ({
     const { translationString } = useTranslation();
     const dispatch = useDispatch();
     const fallbackTitle = useMemo(() => title || 'TR_NAV_TRADE', [title]);
+    const transactionPageTitle = 'TR_COINMARKET_LAST_TRANSACTIONS';
 
     const translatedTitle = translationString(fallbackTitle);
     const pageTitle = `Trezor Suite | ${translatedTitle}`;
@@ -44,7 +45,7 @@ export const CoinmarketLayoutHeader = ({
     const CoinmarketPageHeader = useCallback(
         () => (
             <PageHeader backRoute={backRoute}>
-                <Row width="100%" justifyContent="space-between" gap={spacings.md}>
+                <Row width="100%" gap={spacings.md}>
                     <IconButton
                         icon="caretLeft"
                         variant="tertiary"
@@ -53,16 +54,18 @@ export const CoinmarketLayoutHeader = ({
                         data-testid="@account-subpage/back"
                     />
                     <BasicName nameId={fallbackTitle} />
-                    <Row flex="auto" margin={{ left: 'auto' }}>
-                        <CoinmarketLayoutNavigationItem
-                            route="wallet-coinmarket-transactions"
-                            title="TR_COINMARKET_LAST_TRANSACTIONS"
-                        />
-                    </Row>
+                    {title !== transactionPageTitle && (
+                        <Row flex="auto" margin={{ left: 'auto' }}>
+                            <CoinmarketLayoutNavigationItem
+                                route="wallet-coinmarket-transactions"
+                                title={transactionPageTitle}
+                            />
+                        </Row>
+                    )}
                 </Row>
             </PageHeader>
         ),
-        [backRoute, fallbackTitle, handleBackClick],
+        [title, backRoute, fallbackTitle, handleBackClick],
     );
 
     useLayout(pageTitle, CoinmarketPageHeader);
