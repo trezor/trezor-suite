@@ -12,18 +12,27 @@ import { spacings } from '@trezor/theme';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
 
 // instant without computing the layout
-const ShowOnLargeDesktopWrapper = styled.div`
-    ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
-        display: none;
-    }
+const ShowOnLargeDesktopWrapper = styled.div<{ $isActive?: boolean }>`
+    ${({ $isActive }) =>
+        $isActive
+            ? `
+        ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
+            display: none;
+        }`
+            : ''}
 `;
 
 interface TradeActionsProps {
     analyticsEventType: EventType.AccountsActions | EventType.MenuActions;
     selectedAccount?: SelectedAccountStatus;
+    hideBuyAndSellBelowDesktop?: boolean;
 }
 
-export const TradeActions = ({ analyticsEventType, selectedAccount }: TradeActionsProps) => {
+export const TradeActions = ({
+    analyticsEventType,
+    selectedAccount,
+    hideBuyAndSellBelowDesktop,
+}: TradeActionsProps) => {
     const dispatch = useDispatch();
     const account = selectedAccount?.account;
     const device = useSelector(selectDevice);
@@ -51,7 +60,7 @@ export const TradeActions = ({ analyticsEventType, selectedAccount }: TradeActio
     return (
         <Row gap={spacings.xxs}>
             <AppNavigationTooltip>
-                <ShowOnLargeDesktopWrapper>
+                <ShowOnLargeDesktopWrapper $isActive={hideBuyAndSellBelowDesktop}>
                     <HeaderActionButton
                         icon="currencyCircleDollar"
                         onClick={() => {
