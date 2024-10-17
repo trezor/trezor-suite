@@ -117,13 +117,15 @@ describe('Usb', () => {
 
             transport.handleDescriptorsChange([{ path: PathPublic('1'), session: null, type: 1 }]);
 
-            expect(spy).toHaveBeenCalledWith([
-                { type: 'connected', descriptor: { path: '1', session: null, type: 1 } },
-            ]);
+            expect(spy).toHaveBeenCalledWith({
+                type: 'connected',
+                descriptor: { path: '1', session: null, type: 1 },
+            });
             transport.handleDescriptorsChange([]);
-            expect(spy).toHaveBeenCalledWith([
-                { type: 'disconnected', descriptor: { path: '1', session: null, type: 1 } },
-            ]);
+            expect(spy).toHaveBeenCalledWith({
+                type: 'disconnected',
+                descriptor: { path: '1', session: null, type: 1 },
+            });
         });
 
         it('enumerate', async () => {
@@ -169,61 +171,6 @@ describe('Usb', () => {
             });
 
             expect(spy).toHaveBeenCalledTimes(0);
-        });
-
-        it('acquire. transport listening. missing descriptor', async () => {
-            const { transport } = await initTest();
-
-            const enumerateResult = await transport.enumerate();
-
-            expect(enumerateResult.success).toEqual(true);
-            // @ts-expect-error
-            transport.handleDescriptorsChange(enumerateResult.payload);
-
-            transport.listen();
-
-            // set some initial descriptors
-            const acquireCall = transport.acquire({
-                input: { path: PathPublic('1'), previous: null },
-            });
-
-            setTimeout(() => {
-                // @ts-expect-error (private field accessed in tests)
-                transport.sessionsClient.emit('descriptors', [
-                    { path: PathPublic('321'), session: Session('1'), type: 1 },
-                ]);
-            }, 1);
-
-            const res = await acquireCall;
-
-            expect(res).toMatchObject({
-                success: false,
-                error: 'device disconnected during action',
-            });
-        });
-
-        it('acquire. transport listening. unexpected session', async () => {
-            const { transport } = await initTest();
-            const enumerateResult = await transport.enumerate();
-            expect(enumerateResult.success).toEqual(true);
-            // @ts-expect-error
-            transport.handleDescriptorsChange(enumerateResult.payload);
-
-            transport.listen();
-
-            // set some initial descriptors
-            const acquireCall = transport.acquire({
-                input: { path: PathPublic('1'), previous: null },
-            });
-            setTimeout(() => {
-                // @ts-expect-error (private field accessed in tests)
-                transport.sessionsClient.emit('descriptors', [
-                    { path: PathPublic('1'), session: Session('2'), type: 1, product: 21441 },
-                ]);
-            }, 1);
-
-            const res = await acquireCall;
-            expect(res).toMatchObject({ success: false, error: 'wrong previous session' });
         });
 
         it('call error - called without acquire.', async () => {
@@ -375,7 +322,7 @@ describe('Usb', () => {
             });
             expect(res).toEqual({
                 success: true,
-                payload: undefined,
+                payload: null,
             });
         });
 

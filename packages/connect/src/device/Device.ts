@@ -1,9 +1,15 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
-import { versionUtils, createDeferred, Deferred, TypedEmitter } from '@trezor/utils';
+import {
+    versionUtils,
+    createDeferred,
+    Deferred,
+    TypedEmitter,
+    createTimeoutPromise,
+} from '@trezor/utils';
 import { Session } from '@trezor/transport';
 import { TransportProtocol, v1 as v1Protocol } from '@trezor/protocol';
 import { DeviceCommands } from './DeviceCommands';
-import { PROTO, ERRORS, NETWORK, FIRMWARE } from '../constants';
+import { PROTO, ERRORS, FIRMWARE } from '../constants';
 import {
     DEVICE,
     DeviceButtonRequestPayload,
@@ -38,6 +44,7 @@ import {
     FirmwareHashCheckResult,
     FirmwareHashCheckError,
     DeviceModelInternal,
+    DeviceUniquePath,
 } from '../types';
 import { models } from '../data/models';
 import { getLanguage } from '../data/getLanguage';
@@ -96,8 +103,22 @@ export interface DeviceEvents {
     ) => void;
     [DEVICE.PASSPHRASE_ON_DEVICE]: () => void;
     [DEVICE.BUTTON]: (device: Device, payload: DeviceButtonRequestPayload) => void;
-    [DEVICE.ACQUIRED]: () => void;
 }
+
+type DeviceLifecycle =
+    | typeof DEVICE.CONNECT
+    | typeof DEVICE.CONNECT_UNACQUIRED
+    | typeof DEVICE.DISCONNECT
+    | typeof DEVICE.CHANGED;
+
+type DeviceLifecycleListener = (lifecycle: DeviceLifecycle) => void;
+
+type DeviceParams = {
+    id: DeviceUniquePath;
+    transport: Transport;
+    descriptor: Descriptor;
+    listener: DeviceLifecycleListener;
+};
 
 /**
  * @export
@@ -105,174 +126,323 @@ export interface DeviceEvents {
  * @extends {EventEmitter}
  */
 export class Device extends TypedEmitter<DeviceEvents> {
-    transport: Transport;
-    protocol: TransportProtocol;
-
-    originalDescriptor: Descriptor;
+    public readonly transport: Transport;
+    public readonly protocol: TransportProtocol;
+    private readonly transportPath;
+    private session;
+    private isLocalSession;
 
     /**
      * descriptor was detected on transport layer but sending any messages (such as GetFeatures) to it failed either
      * with some expected error, for example HID device, LIBUSB_ERROR, or it simply timeout out. such device can't be worked
      * with and user needs to take some action. for example reconnect the device, update firmware or change transport type
      */
-    unreadableError?: string;
+    private unreadableError?: string;
 
     // @ts-expect-error: strictPropertyInitialization
-    firmwareStatus: DeviceFirmwareStatus;
+    private _firmwareStatus: DeviceFirmwareStatus;
+    public get firmwareStatus() {
+        return this._firmwareStatus;
+    }
 
-    firmwareRelease?: ReleaseInfo | null;
+    private _firmwareRelease?: ReleaseInfo | null;
+    public get firmwareRelease() {
+        return this._firmwareRelease;
+    }
 
     // @ts-expect-error: strictPropertyInitialization
-    features: Features;
+    private _features: Features;
+    public get features() {
+        return this._features;
+    }
 
-    featuresNeedsReload = false;
+    private _featuresNeedsReload = false;
 
     // variables used in one workflow: acquire -> transportSession -> commands -> run -> keepTransportSession -> release
     private acquirePromise?: ReturnType<Transport['acquire']>;
     private releasePromise?: ReturnType<Transport['release']>;
     private runPromise?: Deferred<void>;
-    transportSession?: Session | null;
-    keepTransportSession = false;
+
+    private keepTransportSession = false;
     public commands?: DeviceCommands;
     private cancelableAction?: (err?: Error) => Promise<unknown>;
 
-    loaded = false;
+    private loaded = false;
 
-    inconsistent = false;
+    private inconsistent = false;
 
-    firstRunPromise: Deferred<boolean>;
-    instance = 0;
+    private firstRunPromise: Deferred<boolean>;
+    private instance = 0;
 
     // DeviceState list [this.instance]: DeviceState | undefined
     private state: DeviceState[] = [];
     private stateStorage?: IStateStorage = undefined;
 
-    unavailableCapabilities: UnavailableCapabilities = {};
+    private _unavailableCapabilities: UnavailableCapabilities = {};
+    public get unavailableCapabilities(): Readonly<UnavailableCapabilities> {
+        return this._unavailableCapabilities;
+    }
 
-    networkTypeState: NETWORK.NetworkType[] = [];
+    private _firmwareType?: FirmwareType;
+    public get firmwareType() {
+        return this._firmwareType;
+    }
 
-    firmwareType?: FirmwareType;
+    private name = 'Trezor';
 
-    name = 'Trezor';
+    private color?: string;
 
-    color?: string;
+    private availableTranslations: string[] = [];
 
-    availableTranslations: string[] = [];
-
-    authenticityChecks: NonNullable<KnownDevice['authenticityChecks']> = {
+    private authenticityChecks: NonNullable<KnownDevice['authenticityChecks']> = {
         firmwareRevision: null,
         firmwareHash: null,
     };
 
     private useCardanoDerivation = false;
 
-    constructor(transport: Transport, descriptor: Descriptor) {
+    private readonly uniquePath;
+
+    private readonly emitLifecycle;
+
+    private sessionDfd?: Deferred<Session | null>;
+
+    constructor({ id, transport, descriptor, listener }: DeviceParams) {
         super();
 
+        let connectEmitted = false;
+        this.emitLifecycle = (lifecycle: DeviceLifecycle) => {
+            connectEmitted ||=
+                lifecycle === DEVICE.CONNECT || lifecycle === DEVICE.CONNECT_UNACQUIRED;
+            if (connectEmitted) {
+                listener(lifecycle);
+            }
+        };
         this.protocol = v1Protocol;
 
         // === immutable properties
+        this.uniquePath = id;
         this.transport = transport;
-        this.originalDescriptor = descriptor;
+        this.transportPath = descriptor.path;
+
+        this.session = descriptor.session;
+        this.isLocalSession = false;
 
         // this will be released after first run
         this.firstRunPromise = createDeferred();
     }
 
-    static fromDescriptor(transport: Transport, originalDescriptor: Descriptor) {
-        const descriptor = { ...originalDescriptor, session: null };
-        try {
-            const device: Device = new Device(transport, descriptor);
-
-            return device;
-        } catch (error) {
-            _log.error('Device.fromDescriptor', error);
-            throw error;
+    private getSessionChangePromise() {
+        if (!this.sessionDfd) {
+            this.sessionDfd = createDeferred<Session | null>();
+            this.sessionDfd.promise.finally(() => {
+                this.sessionDfd = undefined;
+            });
         }
+
+        return this.sessionDfd.promise;
     }
 
-    static createUnacquired(
-        transport: Transport,
-        descriptor: Descriptor,
-        unreadableError?: string,
-    ) {
-        const device = new Device(transport, descriptor);
-        device.unreadableError = unreadableError;
-
-        return device;
-    }
-
-    async acquire() {
-        this.acquirePromise = this.transport.acquire({
-            input: {
-                path: this.originalDescriptor.path,
-                previous: this.originalDescriptor.session,
-            },
-        });
-        const acquireResult = await this.acquirePromise;
-        this.acquirePromise = undefined;
-        if (!acquireResult.success) {
-            if (this.runPromise) {
-                this.runPromise.reject(new Error(acquireResult.error));
-                delete this.runPromise;
+    private async waitAndCompareSession<
+        T extends { success: true; payload: Session | null } | { success: false },
+    >(response: T, sessionPromise: Promise<Session | null>) {
+        if (response.success) {
+            try {
+                if ((await sessionPromise) !== response.payload) {
+                    return {
+                        success: false,
+                        error: TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS,
+                    } as const;
+                }
+            } catch {
+                return {
+                    success: false,
+                    error: TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION,
+                } as const;
             }
-            throw acquireResult.error;
         }
 
-        const transportSession = acquireResult.payload;
+        return response;
+    }
 
-        _log.debug('Expected workflow id:', transportSession);
-        this.transportSession = transportSession;
-        // note: this.originalDescriptor is updated here and also in TRANSPORT.UPDATE listener.
-        // I would like to update it only in one place (listener) but it some cases (unchained test),
-        // listen response is not triggered by device acquire. not sure why.
-        this.originalDescriptor.session = transportSession;
+    acquire() {
+        const sessionPromise = this.getSessionChangePromise();
 
-        if (this.commands) {
-            this.commands.dispose();
-        }
-        this.commands = new DeviceCommands(this, this.transport, transportSession);
+        this.acquirePromise = this.transport
+            .acquire({ input: { path: this.transportPath, previous: this.session } })
+            .then(result => this.waitAndCompareSession(result, sessionPromise))
+            .then(result => {
+                if (result.success) {
+                    this.session = result.payload;
+                    this.isLocalSession = true;
+
+                    this.commands?.dispose();
+                    this.commands = new DeviceCommands(this, this.transport, this.session);
+
+                    return result;
+                } else {
+                    if (this.runPromise) {
+                        this.runPromise.reject(new Error(result.error));
+                        delete this.runPromise;
+                    }
+                    throw result.error;
+                }
+            })
+            .finally(() => {
+                this.acquirePromise = undefined;
+            });
+
+        return this.acquirePromise;
     }
 
     async release() {
-        if (
-            this.isUsedHere() &&
-            this.transportSession &&
-            !this.keepTransportSession &&
-            !this.releasePromise
-        ) {
-            if (this.commands) {
-                this.commands.dispose();
-                if (this.commands.callPromise) {
-                    await this.commands.callPromise;
-                }
-            }
+        const localSession = this.getLocalSession();
+        if (!localSession || this.keepTransportSession || this.releasePromise) {
+            return;
+        }
 
-            this.releasePromise = this.transport.release({
-                session: this.transportSession,
-                path: this.originalDescriptor.path,
-            });
-
-            const releaseResponse = await this.releasePromise;
-            this.releasePromise = undefined;
-            if (releaseResponse.success) {
-                this.transportSession = null;
-                this.originalDescriptor.session = null;
+        if (this.commands) {
+            this.commands.dispose();
+            if (this.commands.callPromise) {
+                await this.commands.callPromise;
             }
         }
+
+        const sessionPromise = this.getSessionChangePromise();
+
+        this.releasePromise = this.transport
+            .release({ session: localSession, path: this.transportPath })
+            .then(result => this.waitAndCompareSession(result, sessionPromise))
+            .then(result => {
+                if (result.success) {
+                    this.session = null;
+                    this.isLocalSession = false;
+                }
+
+                return result;
+            })
+            .finally(() => {
+                this.releasePromise = undefined;
+            });
+
+        return this.releasePromise;
+    }
+
+    releaseTransportSession() {
+        this.keepTransportSession = false;
     }
 
     async cleanup() {
-        // remove all listeners **except** DEVICE.ACQUIRED - waiting for acquired Device in DeviceList
-        const acquiredListeners = this.listeners(DEVICE.ACQUIRED);
-        this.removeAllListeners();
+        // remove all listeners
+        this.eventNames().forEach(e => this.removeAllListeners(e as keyof DeviceEvents));
+
         // make sure that Device_CallInProgress will not be thrown
         delete this.runPromise;
         await this.release();
-        // restore DEVICE.ACQUIRED listeners
-        acquiredListeners.forEach(l => this.once(DEVICE.ACQUIRED, l));
     }
 
+    // call only once, right after device creation
+    async handshake(delay?: number) {
+        if (delay) {
+            await createTimeoutPromise(501 + delay);
+        }
+
+        while (true) {
+            if (this.isUsedElsewhere()) {
+                this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
+            } else {
+                try {
+                    await this.run();
+                } catch (error) {
+                    if (
+                        error.code === 'Device_NotFound' ||
+                        error.message === TRANSPORT_ERROR.DEVICE_NOT_FOUND ||
+                        error.message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
+                        error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR ||
+                        error.message === TRANSPORT_ERROR.DESCRIPTOR_NOT_FOUND ||
+                        error.message === TRANSPORT_ERROR.HTTP_ERROR // bridge died during device initialization
+                    ) {
+                        // disconnected, do nothing
+                        // console.log('disconnected');
+                    } else if (
+                        error.message === TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS ||
+                        error.code === 'Device_UsedElsewhere' // most common error - someone else took the device at the same time
+                    ) {
+                        // TODO needed only for TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS
+                        // this.enumerate(transport);
+                        this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
+                    } else if (
+                        // device was claimed by another application on transport api layer (claimInterface in usb nomenclature) but never released (releaseInterface in usb nomenclature)
+                        // the only remedy for this is to reconnect device manually
+                        // or possibly there are 2 applications without common sessions background
+                        error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE ||
+                        // catch one of trezord LIBUSB_ERRORs
+                        error.message?.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0 ||
+                        // we tried to initialize device (either automatically after enumeration or after user click)
+                        // but it did not work out. this device is effectively unreadable and user should do something about it
+                        error.code === 'Device_InitializeFailed'
+                    ) {
+                        this.unreadableError = error;
+                        this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
+                    } else {
+                        await createTimeoutPromise(501);
+                        continue;
+                    }
+                }
+            }
+
+            return;
+        }
+        // console.log('handshake end');
+    }
+
+    async updateDescriptor(descriptor: Descriptor) {
+        this.sessionDfd?.resolve(descriptor.session);
+
+        const [_acquireResult, releaseResult] = await Promise.all([
+            this.acquirePromise,
+            this.releasePromise,
+        ]);
+
+        // TODO improve these conditions, a lot!
+
+        // Session changed to different than the current one
+        // -> acquired by someone else
+        if (descriptor.session && descriptor.session !== this.session) {
+            // console.log('elsvér');
+            this.usedElsewhere();
+        }
+
+        // Session changed to null
+        // -> released
+        if (!descriptor.session) {
+            const methodStillRunning = !this.commands?.isDisposed();
+            if (methodStillRunning) {
+                this.releaseTransportSession();
+            }
+
+            // No release is currently running
+            // -> released by someone else
+            if (!releaseResult) {
+                // console.log('released elsewhere');
+                createTimeoutPromise(1000).then(async () => {
+                    // after device was released in another window wait for a while (the other window might
+                    // have the intention of acquiring it again)
+                    // and if the device is still released and has never been acquired before, acquire it here.
+                    if (!this.isUsed() && this.isUnacquired() && !this.isInconsistent()) {
+                        // TODO this handshake should be different, e.g. no CONNECT_UNACQUIRED should be emitted again
+                        // console.log('handshake rerun');
+                        await this.handshake();
+                    }
+                });
+            }
+        }
+
+        this.session = descriptor.session;
+        this.emitLifecycle(DEVICE.CHANGED);
+    }
+
+    // TODO empty fn variant can be split/removed
     run(fn?: () => Promise<void>, options?: RunOptions) {
         if (this.runPromise) {
             _log.warn('Previous call is still running');
@@ -281,12 +451,19 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         options = parseRunOptions(options);
 
+        const wasUnacquired = this.isUnacquired();
         const runPromise = createDeferred();
         this.runPromise = runPromise;
 
-        this._runInner(fn, options).catch(err => {
-            runPromise.reject(err);
-        });
+        this._runInner(fn, options)
+            .then(() => {
+                if (wasUnacquired && !this.isUnacquired()) {
+                    this.emitLifecycle(DEVICE.CONNECT);
+                }
+            })
+            .catch(err => {
+                runPromise.reject(err);
+            });
 
         return runPromise.promise;
     }
@@ -339,7 +516,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
      * which means that session management does not make sense anymore. releasing device, on the other hand
      * makes sense, because this instance of connect might be the only one who has the right to do it.
      */
-    interruptionFromOutside() {
+    public usedElsewhere() {
+        this._featuresNeedsReload = true;
+
         _log.debug('interruptionFromOutside');
 
         if (this.commands) {
@@ -353,8 +532,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
         // session was acquired by another instance. but another might not have power to release interface
         // so it only notified about its session acquiral and the interrupted instance should cooperate
         // and release device too.
-        if (this.originalDescriptor.session) {
-            this.transport.releaseDevice(this.originalDescriptor.session);
+        if (this.session) {
+            this.transport.releaseDevice(this.session);
         }
     }
 
@@ -440,12 +619,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             this.keepTransportSession = true;
         }
 
-        // if we were waiting for device to be acquired, it should be guaranteed here that it had already happened
-        // (features are reloaded too)
-        if (this.listeners(DEVICE.ACQUIRED).length > 0) {
-            this.emit(DEVICE.ACQUIRED);
-        }
-
         // call inner function
         if (fn) {
             await fn();
@@ -490,7 +663,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             // and device wasn't released in previous call (example: interrupted discovery which set "keepSession" to true but never released)
             // clear "keepTransportSession" and reset "transportSession" to ensure that "initialize" will be called
             if (this.keepTransportSession) {
-                this.transportSession = null;
+                this.isLocalSession = false;
                 this.keepTransportSession = false;
             }
         }
@@ -792,24 +965,24 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         // check if FW version or capabilities did change
         if (!version || !versionUtils.isEqual(version, newVersion)) {
-            this.unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
-            this.firmwareStatus = getFirmwareStatus(feat);
-            this.firmwareRelease = getRelease(feat);
+            this._unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
+            this._firmwareStatus = getFirmwareStatus(feat);
+            this._firmwareRelease = getRelease(feat);
 
             this.availableTranslations = this.firmwareRelease?.translations ?? [];
         }
 
-        this.features = feat;
-        this.featuresNeedsReload = false;
+        this._features = feat;
+        this._featuresNeedsReload = false;
 
         // Vendor headers have been changed in 2.6.3.
         if (feat.fw_vendor === 'Trezor Bitcoin-only') {
-            this.firmwareType = FirmwareType.BitcoinOnly;
+            this._firmwareType = FirmwareType.BitcoinOnly;
         } else if (feat.fw_vendor === 'Trezor') {
-            this.firmwareType = FirmwareType.Regular;
+            this._firmwareType = FirmwareType.Regular;
         } else if (this.getMode() !== 'bootloader') {
             // Relevant for T1B1, T2T1 and custom firmware with a different vendor header. Capabilities do not work in bootloader mode.
-            this.firmwareType =
+            this._firmwareType =
                 feat.capabilities &&
                 feat.capabilities.length > 0 &&
                 !feat.capabilities.includes('Capability_Bitcoin_like')
@@ -838,11 +1011,19 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.features === undefined;
     }
 
+    isUnreadable() {
+        return !!this.unreadableError;
+    }
+
     disconnect() {
         // TODO: cleanup everything
         _log.debug('Disconnect cleanup');
 
-        this.transportSession = null; // set to null to prevent transport.release and cancelableAction
+        this.sessionDfd?.reject(new Error());
+
+        this.isLocalSession = false; // set to null to prevent transport.release and cancelableAction
+
+        this.emitLifecycle(DEVICE.DISCONNECT);
 
         return this.interruptionFromUser(ERRORS.TypedError('Device_Disconnected'));
     }
@@ -883,11 +1064,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     isUsed() {
-        return typeof this.originalDescriptor.session === 'string';
+        return typeof this.session === 'string';
     }
 
     isUsedHere() {
-        return this.isUsed() && this.originalDescriptor.session === this.transportSession;
+        return this.isUsed() && this.isLocalSession;
     }
 
     isUsedElsewhere() {
@@ -906,8 +1087,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.firstRunPromise.promise;
     }
 
-    getDevicePath() {
-        return this.originalDescriptor.path;
+    getLocalSession() {
+        return this.isLocalSession ? this.session : null;
+    }
+
+    getUniquePath() {
+        return this.uniquePath;
     }
 
     isT1() {
@@ -937,25 +1122,16 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return null;
     }
 
-    updateDescriptor(descriptor: Descriptor) {
-        this.originalDescriptor = {
-            session: descriptor.session,
-            path: descriptor.path,
-            product: descriptor.product,
-            type: descriptor.type,
-        };
-    }
-
     async dispose() {
         this.removeAllListeners();
-        if (this.isUsedHere() && this.transportSession) {
+        if (this.session && this.isLocalSession) {
             try {
                 await this.cancelableAction?.();
                 await this.commands?.cancel();
 
                 return this.transport.release({
-                    session: this.transportSession,
-                    path: this.originalDescriptor.path,
+                    session: this.session,
+                    path: this.transportPath,
                     onClose: true,
                 });
             } catch (err) {
@@ -974,12 +1150,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     // simplified object to pass via postMessage
     toMessageObject(): DeviceTyped {
-        const { path } = this.originalDescriptor;
-        const { name } = this;
-        const base = {
-            path,
-            name,
-        };
+        const { name, uniquePath: path } = this;
+        const base = { path, name };
+
         if (this.unreadableError) {
             return {
                 ...base,
@@ -999,7 +1172,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const label =
             this.features.label === '' || !this.features.label ? defaultLabel : this.features.label;
         let status: DeviceStatus = this.isUsedElsewhere() ? 'occupied' : 'available';
-        if (this.featuresNeedsReload) status = 'used';
+        if (this._featuresNeedsReload) status = 'used';
 
         return {
             ...base,
