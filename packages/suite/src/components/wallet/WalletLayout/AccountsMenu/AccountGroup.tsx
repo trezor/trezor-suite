@@ -131,7 +131,7 @@ export const AccountGroup = ({
                 <Column
                     alignItems="stretch"
                     gap={spacings.xxs}
-                    margin={{ left: spacings.xs, right: spacings.xs }}
+                    margin={{ top: spacings.xxxs, left: spacings.xs, right: spacings.xs }}
                     data-testid={`@account-menu/${type}/group`}
                 >
                     {children}
