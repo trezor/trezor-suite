@@ -81,6 +81,7 @@ export type ExtraDependencies = {
         selectSuiteSettings: SuiteCompatibleSelector<{
             defaultWalletLoading: WalletType;
         }>;
+        selectIsDeviceLocked: SuiteCompatibleSelector<boolean>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,

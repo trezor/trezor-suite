@@ -447,7 +447,6 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
             'onCall: message.id or message.payload is missing',
         );
     }
-
     const {
         uiPromises,
         callMethods,
@@ -518,7 +517,13 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         return Promise.resolve();
     }
 
-    return await onCallDevice(context, message, method);
+    sendCoreMessage(createUiMessage(UI.CALL_IN_PROGRESS, { value: true }));
+
+    try {
+        return await onCallDevice(context, message, method);
+    } finally {
+        sendCoreMessage(createUiMessage(UI.CALL_IN_PROGRESS, { value: false }));
+    }
 };
 
 const onCallDevice = async (
@@ -570,7 +575,6 @@ const onCallDevice = async (
     const device = tempDevice;
 
     method.setDevice(device);
-
     // find pending calls to this device
     const previousCall = callMethods.filter(
         call => call && call !== method && call.devicePath === method.devicePath,
