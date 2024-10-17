@@ -109,6 +109,7 @@ type WrapperProps = TransientProps<
     $isWithPlaceholder: boolean;
     $hasBottomPadding: boolean;
     $elevation: Elevation;
+    $focusEnabled: boolean;
 };
 
 const Wrapper = styled.div<WrapperProps>`
@@ -152,9 +153,16 @@ const Wrapper = styled.div<WrapperProps>`
         }
 
         &:focus-within {
-            .${reactSelectClassNamePrefix}__dropdown-indicator {
-                transform: rotate(180deg);
-            }
+            ${({ $focusEnabled }) =>
+                $focusEnabled
+                    ? css`
+                          .${reactSelectClassNamePrefix}__dropdown-indicator {
+                              transform: rotate(180deg);
+                          }
+                      `
+                    : css`
+                          border-color: transparent;
+                      `}
         }
     }
 
@@ -258,6 +266,7 @@ interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange' | 'menuI
      * @description pass `null` if bottom text can be `undefined`
      */
     bottomText?: ReactNode;
+    focusEnabled?: boolean;
     hasBottomPadding?: boolean;
     minValueWidth?: string; // TODO: should be probably removed
     inputState?: InputState;
@@ -284,6 +293,7 @@ export const Select = ({
     useKeyPressScroll,
     isSearchable = false,
     minValueWidth = 'initial',
+    focusEnabled = true,
     isMenuOpen,
     inputState,
     components,
@@ -345,6 +355,7 @@ export const Select = ({
             $minValueWidth={minValueWidth}
             $isDisabled={isDisabled}
             $isMenuOpen={isMenuOpen}
+            $focusEnabled={focusEnabled}
             $isWithLabel={!!label}
             $isWithPlaceholder={!!placeholder}
             $hasBottomPadding={hasBottomPadding === true && bottomText === null}

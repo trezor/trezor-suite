@@ -218,14 +218,18 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                 defaultValue={selectedOption?.contractAddress || null}
                 data-testid={tokenInputName}
                 render={({ field: { value } }) => (
-                    <Card margin={{ bottom: spacings.sm }} paddingType="normal">
+                    <Card
+                        margin={{ bottom: spacings.sm }}
+                        paddingType="normal"
+                        onClick={() => setIsModalActive(true)}
+                    >
                         <Select
+                            focusEnabled={false}
                             value={options.find(option => option.contractAddress === value)}
                             options={options.map(option => ({
                                 value: option.contractAddress,
                                 label: option.symbol,
                             }))}
-                            onMenuOpen={() => setIsModalActive(true)}
                             formatOptionLabel={(option: SelectAssetOptionCurrencyProps) => {
                                 return (
                                     <Row justifyContent="flex-start" gap={spacings.sm}>
