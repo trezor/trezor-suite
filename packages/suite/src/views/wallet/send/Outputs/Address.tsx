@@ -26,7 +26,8 @@ import { scanOrRequestSendFormThunk } from 'src/actions/wallet/send/sendFormThun
 import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getProtocolInfo } from 'src/utils/suite/protocol';
-import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
+import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+
 import { InputError } from 'src/components/wallet';
 import { InputErrorProps } from 'src/components/wallet/InputError';
 import { Row } from '@trezor/components';
@@ -113,7 +114,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         const protocol = getProtocolInfo(uri);
 
         if (protocol) {
-            const isSymbolValidProtocol = PROTOCOL_TO_NETWORK[protocol.scheme] === symbol;
+            const isSymbolValidProtocol = getNetworkSymbolForProtocol(protocol.scheme) === symbol;
 
             if (!isSymbolValidProtocol) {
                 dispatch(
