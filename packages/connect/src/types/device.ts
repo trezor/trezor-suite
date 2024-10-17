@@ -36,6 +36,7 @@ export type DeviceState = {
     sessionId?: string; // dynamic value: Features.session_id
     // ${first testnet address}@${device.features.device_id}:${device.instance}
     staticSessionId?: StaticSessionId;
+    deriveCardano?: boolean;
 };
 
 // NOTE: unavailableCapabilities is an object with information what is NOT supported by this device.
