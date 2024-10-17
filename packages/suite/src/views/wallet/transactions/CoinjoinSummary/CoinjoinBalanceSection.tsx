@@ -48,7 +48,7 @@ export const CoinjoinBalanceSection = ({ accountKey }: CoinjoinBalanceSectionPro
     return (
         <Container>
             <Card width="100%" height="100%">
-                <Column justifyContent="center">
+                <Column justifyContent="center" flex="1">
                     {errorMessageConfig ? (
                         <CoinjoinBalanceError {...errorMessageConfig} />
                     ) : (
