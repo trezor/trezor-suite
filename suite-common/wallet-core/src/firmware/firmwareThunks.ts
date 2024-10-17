@@ -112,14 +112,26 @@ export const firmwareUpdate = createThunk(
             language => language.startsWith(suiteLanguage),
         );
 
-        const firmwareUpdateResponse = await TrezorConnect.firmwareUpdate({
-            device,
-            baseUrl,
-            btcOnly: toBitcoinOnlyFirmware,
-            binary,
-            // Firmware language should only be set during the initial firmware installation.
-            language: device.firmware === 'none' ? targetTranslationLanguage : undefined,
-        });
+        if (1 < 0) {
+            const firmwareUpdateResponse = await TrezorConnect.firmwareUpdate({
+                device,
+                baseUrl,
+                btcOnly: toBitcoinOnlyFirmware,
+                binary,
+                // Firmware language should only be set during the initial firmware installation.
+                language: device.firmware === 'none' ? targetTranslationLanguage : undefined,
+            });
+            console.log(JSON.stringify(firmwareUpdateResponse, null, 2));
+        }
+        // TODO remove me
+        const firmwareUpdateResponse = {
+            success: true,
+            payload: {
+                check: (window as any).fakeFwHashCheckResult ?? 'valid',
+                error: 'irrelavant, just for TS',
+                checkError: 'Here would be the actual raw error message from connect!!!',
+            },
+        };
 
         // condition to satisfy TS
         if (device.features) {
