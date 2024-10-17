@@ -29,9 +29,18 @@ import { NativeSupportedFeeLevel } from '../types';
 import { FeeOptionErrorMessage } from './FeeOptionErrorMessage';
 import { updateDraftFeeLevelThunk } from '../sendFormThunks';
 
+type FeeOptionProps = {
+    feeKey: SendFeesFormValues['feeLevel'];
+    feeLevel: GeneralPrecomposedTransactionFinal;
+    networkSymbol: NetworkSymbol;
+    transactionBytes: number;
+    accountKey: AccountKey;
+    isInteractive?: boolean;
+};
+
 const feeLabelsMap = {
     economy: 'moduleSend.fees.levels.low',
-    normal: 'moduleSend.fees.levels.medium',
+    normal: 'moduleSend.fees.levels.normal',
     high: 'moduleSend.fees.levels.high',
 } as const satisfies Record<NativeSupportedFeeLevel, TxKeyPath>;
 
@@ -47,20 +56,13 @@ const valuesWrapperStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
 }));
 
-type FeeOptionProps = {
-    feeKey: SendFeesFormValues['feeLevel'];
-    feeLevel: GeneralPrecomposedTransactionFinal;
-    networkSymbol: NetworkSymbol;
-    transactionBytes: number;
-    accountKey: AccountKey;
-};
-
 export const FeeOption = ({
     feeKey,
     feeLevel,
     networkSymbol,
     transactionBytes,
     accountKey,
+    isInteractive = true,
 }: FeeOptionProps) => {
     const { utils } = useNativeStyles();
     const { applyStyle } = useNativeStyles();
@@ -102,12 +104,12 @@ export const FeeOption = ({
     const animatedCardStyle = useAnimatedStyle(
         () => ({
             borderColor: interpolateColor(
-                borderAnimationValue.value,
+                isInteractive ? borderAnimationValue.value : 0,
                 [0, 1],
                 [utils.colors.backgroundSurfaceElevation0, utils.colors[highlightColor]],
             ),
         }),
-        [borderAnimationValue, highlightColor],
+        [borderAnimationValue, highlightColor, isInteractive],
     );
 
     const label = feeLabelsMap[feeKey];
@@ -120,13 +122,8 @@ export const FeeOption = ({
     const fee = isErrorFee ? mockedFee.toString() : feeLevel.fee;
 
     return (
-        <Pressable onPress={handleSelectFeeLevel}>
-            <Animated.View
-                style={[
-                    applyStyle(wrapperStyle, { borderColor: highlightColor }),
-                    animatedCardStyle,
-                ]}
-            >
+        <Pressable onPress={handleSelectFeeLevel} disabled={!isInteractive}>
+            <Animated.View style={[applyStyle(wrapperStyle), animatedCardStyle]}>
                 <Box style={applyStyle(valuesWrapperStyle)}>
                     <HStack
                         spacing="sp24"
@@ -163,13 +160,17 @@ export const FeeOption = ({
                                 isBalance={false}
                             />
                         </VStack>
-                        <Radio
-                            isChecked={isChecked}
-                            value={feeKey}
-                            activeColor={isErrorFee ? 'iconAlertRed' : 'backgroundPrimaryDefault'}
-                            onPress={handleSelectFeeLevel}
-                            testID={`@send/fees-level-${feeKey}`}
-                        />
+                        {isInteractive && (
+                            <Radio
+                                isChecked={isChecked}
+                                value={feeKey}
+                                activeColor={
+                                    isErrorFee ? 'iconAlertRed' : 'backgroundPrimaryDefault'
+                                }
+                                onPress={handleSelectFeeLevel}
+                                testID={`@send/fees-level-${feeKey}`}
+                            />
+                        )}
                     </HStack>
                 </Box>
 
