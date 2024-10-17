@@ -15,6 +15,7 @@ const BalanceContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    align-self: normal;
     gap: 12px;
     padding: 0 10px;
 `;

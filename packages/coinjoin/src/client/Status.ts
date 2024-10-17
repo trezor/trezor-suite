@@ -240,15 +240,15 @@ export class Status extends TypedEmitter<StatusEvents> {
                 identity: this.identities[0],
                 attempts: 3, // schedule 3 attempts on start
             },
-        ).then(patchResponse);
+        )
+            .then(patchResponse)
+            .catch(() => undefined);
 
-        return version
-            ? ({
-                  majorVersion: version.BackenMajordVersion,
-                  commitHash: version.CommitHash,
-                  legalDocumentsVersion: version.Ww2LegalDocumentsVersion,
-              } as CoinjoinClientVersion)
-            : undefined;
+        return {
+            majorVersion: version?.BackenMajordVersion ?? '0',
+            commitHash: version?.CommitHash ?? 'deadbeef',
+            legalDocumentsVersion: version?.Ww2LegalDocumentsVersion ?? '1.0',
+        } as CoinjoinClientVersion;
     }
 
     async start() {

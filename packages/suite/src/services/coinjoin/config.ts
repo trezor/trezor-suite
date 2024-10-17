@@ -21,7 +21,7 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             network: 'btc',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
             coordinatorUrl: 'https://wasabiwallet.io/wabisabi/',
-            wabisabiBackendUrl: 'https://wasabiwallet.io/',
+            wabisabiBackendUrl: 'https://api.wasabiwallet.io/',
             blockbookUrls: [
                 'https://btc1.trezor.io',
                 'https://btc2.trezor.io',
