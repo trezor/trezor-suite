@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { TorSettings } from '@trezor/suite-desktop-api/src/messages';
-import { TOR_SNOWFLAKE_PROJECT_URL } from '@trezor/urls';
+import { TOR_SNOWFLAKE_KB_URL } from '@trezor/urls';
 import { breakpointMediaQueries } from '@trezor/styles';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Button, Input } from '@trezor/components';
@@ -96,7 +96,7 @@ export const TorSnowflake = () => {
             <TextColumn
                 title={<Translation id="TR_TOR_CONFIG_SNOWFLAKE_TITLE" />}
                 description={<Translation id="TR_TOR_CONFIG_SNOWFLAKE_DESCRIPTION" />}
-                buttonLink={TOR_SNOWFLAKE_PROJECT_URL}
+                buttonLink={TOR_SNOWFLAKE_KB_URL}
             />
             <ActionColumn>
                 <Container>
