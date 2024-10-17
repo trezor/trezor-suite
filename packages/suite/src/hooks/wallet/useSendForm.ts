@@ -27,7 +27,8 @@ import { useSendFormFields } from './useSendFormFields';
 import { useSendFormCompose } from './useSendFormCompose';
 import { useSendFormImport } from './useSendFormImport';
 import { useFees } from './form/useFees';
-import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
+import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { useUtxoSelection } from './form/useUtxoSelection';
 import { useExcludedUtxos } from './form/useExcludedUtxos';
@@ -279,7 +280,8 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         if (
             protocol.sendForm.shouldFill &&
             protocol.sendForm.scheme &&
-            props.selectedAccount.network.symbol === PROTOCOL_TO_NETWORK[protocol.sendForm.scheme]
+            props.selectedAccount.network.symbol ===
+                getNetworkSymbolForProtocol(protocol.sendForm.scheme)
         ) {
             // for now we always fill only first output
             const outputIndex = 0;

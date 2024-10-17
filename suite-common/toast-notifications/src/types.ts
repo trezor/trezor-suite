@@ -1,5 +1,5 @@
 import { TranslationKey } from '@suite-common/intl-types';
-import { DesktopAppUpdateState, PROTOCOL_SCHEME } from '@suite-common/suite-constants';
+import { DesktopAppUpdateState, Protocol } from '@suite-common/suite-constants';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { DEVICE } from '@trezor/connect';
@@ -117,7 +117,7 @@ export type ToastPayload = (
       }
     | {
           type: 'coin-scheme-protocol';
-          scheme: PROTOCOL_SCHEME;
+          scheme: Protocol;
           address: string;
           amount?: number;
       }
