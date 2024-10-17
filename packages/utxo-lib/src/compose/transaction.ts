@@ -6,6 +6,7 @@ import {
     ComposeFinalOutput,
     ComposedTransaction,
     CoinSelectOutputFinal,
+    TransactionInputOutputSortingStrategy,
 } from '../types';
 
 function convertOutput(
@@ -47,6 +48,14 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
     request: ComposeRequest<Input, ComposeFinalOutput, Change>,
     result: CoinSelectSuccess,
 ): ComposedTransaction<Input, ComposeFinalOutput, Change> {
+    const sortingStrategy: TransactionInputOutputSortingStrategy =
+        // eslint-disable-next-line no-nested-ternary
+        request.sortingStrategy === undefined
+            ? request.skipPermutation === true
+                ? 'none'
+                : 'bip69'
+            : request.sortingStrategy;
+
     const convertedInputs = result.inputs.map(input => request.utxos[input.i]);
 
     const defaultPermutation: number[] = [];
@@ -59,7 +68,7 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
         return convertOutput(output, { type: 'change', ...request.changeAddress });
     });
 
-    if (request.skipPermutation) {
+    if (sortingStrategy === 'none') {
         return {
             inputs: convertedInputs,
             outputs: convertedOutputs,
