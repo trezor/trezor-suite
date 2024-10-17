@@ -44,7 +44,7 @@ export const PageHeader = ({ backRoute, children }: PageHeaderProps) => {
         return (
             <Container>
                 <PageName backRoute={backRoute} />
-                <TradeActions analyticsEventType={EventType.DashboardActions} />
+                <TradeActions analyticsEventType={EventType.MenuActions} />
             </Container>
         );
     }
