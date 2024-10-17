@@ -18,7 +18,7 @@ export const CoinmarketLayoutHeader = ({
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { translationString } = useTranslation();
     const dispatch = useDispatch();
-    const fallbackTitle = useMemo(() => title || 'TR_NAV_BUY', [title]);
+    const fallbackTitle = useMemo(() => title || 'TR_NAV_TRADE', [title]);
 
     const translatedTitle = translationString(fallbackTitle);
     const pageTitle = `Trezor Suite | ${translatedTitle}`;
