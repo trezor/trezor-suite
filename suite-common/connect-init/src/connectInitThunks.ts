@@ -61,52 +61,50 @@ export const connectInitThunk = createThunk(
 
         const synchronize = getSynchronize();
 
-        const wrappedMethods: Array<keyof typeof TrezorConnect> = [
-            'applySettings',
-            'authenticateDevice',
-            'authorizeCoinjoin',
-            'backupDevice',
-            'cancelCoinjoinAuthorization',
-            'cardanoGetAddress',
-            'cardanoGetPublicKey',
-            'cardanoSignTransaction',
-            'changePin',
-            'checkFirmwareAuthenticity',
-            'cipherKeyValue',
-            'ethereumGetAddress',
-            'ethereumSignTransaction',
-            'getAddress',
-            'getDeviceState',
-            'getFeatures',
-            'getOwnershipProof',
-            'getPublicKey',
-            'pushTransaction',
-            'rebootToBootloader',
-            'recoveryDevice',
-            'resetDevice',
-            'rippleGetAddress',
-            'rippleSignTransaction',
-            'setBusy',
-            'showDeviceTutorial',
-            'signTransaction',
-            'solanaGetAddress',
-            'solanaSignTransaction',
-            'unlockPath',
-            'wipeDevice',
-        ] as const;
+        Object.keys(TrezorConnect)
+            .filter(
+                key =>
+                    ![
+                        'on',
+                        'off',
+                        'init',
+                        'manifest',
+                        'cancel',
+                        'uiResponse',
+                        'dispose',
+                        'requestWebUSBDevice',
+                        'disableWebUSB',
+                        'renderWebUSBButton',
+                        'removeAllListeners',
+                    ].includes(key) &&
+                    // blockchain methods don't need lockDevice anyway
+                    !key.startsWith('blockchain'),
+            )
+            .forEach(key => {
+                // typescript complains about params and return type, need to be "any"
+                const original: any = TrezorConnect[key as keyof typeof TrezorConnect];
+                if (!original) return;
 
-        wrappedMethods.forEach(key => {
-            // typescript complains about params and return type, need to be "any"
-            const original: any = TrezorConnect[key];
-            if (!original) return;
-            (TrezorConnect[key] as any) = async (params: any) => {
-                dispatch(lockDevice(true));
-                const result = await synchronize(() => original(params));
-                dispatch(lockDevice(false));
+                // @ts-expect-error
+                TrezorConnect[key] = async (params: any) => {
+                    const infoResult = await original({ ...params, __info: true });
+                    const useWrapped = infoResult.success && infoResult.payload.useDevice;
+                    const method = !useWrapped
+                        ? original
+                        : async (p: any) => {
+                              dispatch(lockDevice(true));
+                              const result = await synchronize(() => original(p));
+                              dispatch(lockDevice(false));
 
-                return result;
-            };
-        });
+                              return result;
+                          };
+
+                    // @ts-expect-error
+                    TrezorConnect[key] = method;
+
+                    return method(params);
+                };
+            });
 
         cardanoConnectPatch(getEnabledNetworks);
 
