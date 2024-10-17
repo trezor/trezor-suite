@@ -56,10 +56,23 @@ export const Banner: StoryObj<BannerProps> = {
             },
         },
         rightContent: {
-            options: ['nothing', 'button', 'combinedButtons', 'iconButton', 'iconButtons'],
+            options: [
+                'nothing',
+                'button',
+                'buttons',
+                'combinedButtons',
+                'iconButton',
+                'iconButtons',
+            ],
             mapping: {
                 nothing: undefined,
                 button: <BannerComponent.Button>Button</BannerComponent.Button>,
+                buttons: (
+                    <Row gap={8}>
+                        <BannerComponent.Button>Button 1</BannerComponent.Button>
+                        <BannerComponent.Button isSubtle>Button 2</BannerComponent.Button>
+                    </Row>
+                ),
                 combinedButtons: (
                     <Row gap={8}>
                         <BannerComponent.Button>Button 1</BannerComponent.Button>
@@ -79,6 +92,7 @@ export const Banner: StoryObj<BannerProps> = {
                 labels: {
                     nothing: 'undefined',
                     button: '1 button',
+                    buttons: '2 buttons',
                     combinedButtons: 'buttons and icon button',
                     iconButton: '1 icon button',
                     iconButtons: '2 icon buttons',

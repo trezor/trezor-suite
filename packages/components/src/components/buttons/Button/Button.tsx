@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes } from 'react';
-import styled, { useTheme } from 'styled-components';
-import { borders, CSSColor, Elevation, spacingsPx, typography } from '@trezor/theme';
+import styled, { css, useTheme } from 'styled-components';
+import { borders, Color, CSSColor, Elevation, spacingsPx, typography } from '@trezor/theme';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import {
     ButtonSize,
@@ -31,25 +31,46 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedButtonFrameProps)[numbe
 
 export type IconOrComponent = IconName | JSX.Element;
 
-type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
-    $elevation: Elevation;
-    $variant: ButtonVariant;
+const SubtleContainer = styled.div<{
     $size: ButtonSize;
     $iconAlignment?: IconAlignment;
     $hasIcon?: boolean;
-    $isFullWidth?: boolean;
+    $elevation: Elevation;
+    $variant: ButtonVariant;
     $isSubtle: boolean;
-    as?: 'a' | 'button';
-    $borderRadius?: typeof borders.radii.sm | typeof borders.radii.full; // Do not allow all, we want consistency
-};
-
-export const ButtonContainer = styled.button<ButtonContainerProps>`
+}>`
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: ${({ $iconAlignment }) => $iconAlignment === 'right' && 'row-reverse'};
     gap: ${({ $hasIcon }) => $hasIcon && spacingsPx.xs};
     padding: ${({ $size }) => getPadding($size, true)};
+    flex: 1;
+    ${({ $variant, $isSubtle, $elevation }) => useVariantStyle($variant, $isSubtle, $elevation)}
+
+    border: 1px solid transparent;
+`;
+
+type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
+    $isFullWidth?: boolean;
+    as?: 'a' | 'button';
+    $borderRadius?: typeof borders.radii.sm | typeof borders.radii.full; // Do not allow all, we want consistency
+    $isSubtle: boolean;
+    $variant: ButtonVariant;
+};
+
+export const mapVariantToSurfaceColor = ({ $variant, theme }: any): CSSColor => {
+    const colorMap: Record<Partial<ButtonVariant>, Color> = {
+        info: 'backgroundAlertBlueSubtleOnElevation0',
+        warning: 'backgroundAlertYellowSubtleOnElevation0',
+        destructive: 'backgroundAlertRedSubtleOnElevation0',
+    };
+
+    return theme[colorMap[$variant]];
+};
+
+export const ButtonContainer = styled.button<ButtonContainerProps>`
+    display: flex;
     width: ${({ $isFullWidth }) => ($isFullWidth ? '100%' : 'fit-content')};
     border-radius: ${({ $borderRadius }) => $borderRadius ?? borders.radii.full};
     transition:
@@ -57,11 +78,17 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
         background 0.1s ease-out;
     outline: none;
     cursor: pointer;
-    border: 1px solid transparent;
+    overflow: hidden;
+    border: none;
 
-    ${getFocusShadowStyle()}
-    ${({ $variant, $isSubtle, $elevation }) => useVariantStyle($variant, $isSubtle, $elevation)}
-    &:disabled {
+    ${({ $isSubtle, theme, $variant }) =>
+        $isSubtle &&
+        css`
+            background: ${mapVariantToSurfaceColor({ $variant, theme })};
+        `}
+
+    ${getFocusShadowStyle('> div:focus-visible')}
+    &:disabled > ${SubtleContainer} {
         background: ${({ theme }) => theme.backgroundNeutralDisabled};
         color: ${({ theme }) => theme.textDisabled};
         cursor: not-allowed;
@@ -182,13 +209,7 @@ export const Button = ({
 
     return (
         <ButtonContainer
-            $elevation={elevation}
-            $hasIcon={!!icon || isLoading}
-            $iconAlignment={iconAlignment}
             $isFullWidth={isFullWidth}
-            $isSubtle={isSubtle}
-            $size={size}
-            $variant={variant}
             as={isLink ? 'a' : 'button'}
             className={className}
             data-testid={dataTestId}
@@ -201,16 +222,27 @@ export const Button = ({
             target={isLink ? target || '_blank' : undefined}
             title={title}
             type={type}
+            $isSubtle={isSubtle}
+            $variant={variant}
             {...frameProps}
         >
-            {!isLoading && icon && IconComponent}
-            {isLoading && Loader}
+            <SubtleContainer
+                $size={size}
+                $elevation={elevation}
+                $isSubtle={isSubtle}
+                $variant={variant}
+                $iconAlignment={iconAlignment}
+                $hasIcon={!!icon || isLoading}
+            >
+                {!isLoading && icon && IconComponent}
+                {isLoading && Loader}
 
-            {children && (
-                <Content $size={size} $disabled={isDisabled || isLoading} $textWrap={textWrap}>
-                    {children}
-                </Content>
-            )}
+                {children && (
+                    <Content $size={size} $disabled={isDisabled || isLoading} $textWrap={textWrap}>
+                        {children}
+                    </Content>
+                )}
+            </SubtleContainer>
         </ButtonContainer>
     );
 };
