@@ -1,10 +1,10 @@
 import produce from 'immer';
 import { PROTOCOL } from 'src/actions/suite/constants';
 import type { Action } from 'src/types/suite';
-import type { PROTOCOL_SCHEME } from 'src/constants/suite/protocol';
+import type { Protocol } from '@suite-common/suite-constants';
 
 export interface SendFormState {
-    scheme: PROTOCOL_SCHEME;
+    scheme: Protocol;
     address: string;
     amount?: number;
 }

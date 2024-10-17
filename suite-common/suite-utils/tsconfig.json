@@ -3,7 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../suite-config" },
+        { "path": "../suite-constants" },
         { "path": "../suite-types" },
+        { "path": "../wallet-config" },
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/urls" }

@@ -7,7 +7,8 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
+import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+
 import type { NotificationRendererProps } from 'src/components/suite';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ConditionalActionRenderer } from './ConditionalActionRenderer';
@@ -30,7 +31,10 @@ export const CoinProtocolRenderer = ({
     notification,
 }: NotificationRendererProps<'coin-scheme-protocol'>) => {
     const dispatch = useDispatch();
-    const allowed = useActionAllowed('/accounts/send', PROTOCOL_TO_NETWORK[notification.scheme]);
+    const allowed = useActionAllowed(
+        '/accounts/send',
+        getNetworkSymbolForProtocol(notification.scheme),
+    );
 
     const onAction = () => dispatch(fillSendForm(true));
     const onCancel = () => dispatch(resetProtocol);
@@ -53,7 +57,7 @@ export const CoinProtocolRenderer = ({
             actionAllowed={allowed}
             onAction={onAction}
             onCancel={onCancel}
-            icon={getIcon(PROTOCOL_TO_NETWORK[notification.scheme])}
+            icon={getIcon(getNetworkSymbolForProtocol(notification.scheme))}
         />
     );
 };
