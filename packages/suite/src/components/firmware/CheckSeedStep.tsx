@@ -39,12 +39,12 @@ const StyledSwitchWarning = styled(FirmwareSwitchWarning)`
 `;
 
 type CheckSeedStepProps = {
+    deviceWillBeWiped: boolean;
     onClose?: () => void;
     onSuccess: () => void;
-    willBeWiped?: boolean;
 };
 
-export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStepProps) => {
+export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSeedStepProps) => {
     const deviceLabel = useSelector(selectDeviceLabelOrName);
     const dispatch = useDispatch();
     const { device } = useDevice();
@@ -60,7 +60,7 @@ export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStep
             <Translation id="TR_DEVICE_LABEL_IS_NOT_BACKED_UP" values={{ deviceLabel }} />
         );
 
-        if (willBeWiped) {
+        if (deviceWillBeWiped) {
             const goToDeviceSettingsAnchor = (anchor: SettingsAnchor) =>
                 dispatch(goto('settings-device', { anchor }));
             const goToCreateBackup = () =>
@@ -126,20 +126,22 @@ export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStep
             heading={heading}
             description={description}
             innerActions={
-                <FirmwareButtonsRow withCancelButton={willBeWiped} onClose={onClose}>
+                <FirmwareButtonsRow withCancelButton={deviceWillBeWiped} onClose={onClose}>
                     <Button
                         onClick={onSuccess}
                         data-testid="@firmware/confirm-seed-button"
                         isDisabled={!device?.connected || !isChecked}
                     >
-                        <Translation id={willBeWiped ? 'TR_WIPE_AND_REINSTALL' : 'TR_CONTINUE'} />
+                        <Translation
+                            id={deviceWillBeWiped ? 'TR_WIPE_AND_REINSTALL' : 'TR_CONTINUE'}
+                        />
                     </Button>
                 </FirmwareButtonsRow>
             }
             disableConfirmWrapper
             nested
         >
-            {willBeWiped && (
+            {deviceWillBeWiped && (
                 <StyledSwitchWarning>
                     <Translation id="TR_FIRMWARE_SWITCH_WARNING_3" />
                 </StyledSwitchWarning>

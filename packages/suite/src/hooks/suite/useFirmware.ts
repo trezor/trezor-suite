@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux';
 
 import { FirmwareStatus } from '@suite-common/suite-types';
 import { firmwareUpdate, selectFirmware, firmwareActions } from '@suite-common/wallet-core';
-import { DEVICE, FirmwareType, UI } from '@trezor/connect';
+import { DEVICE, DeviceModelInternal, FirmwareType, UI } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 import { useSelector, useDevice, useTranslation } from 'src/hooks/suite';
@@ -16,7 +16,15 @@ There are three firmware update flows, depending on current firmware version:
 - reboot_and_upgrade: a device with firmware version >= 2.6.3 can reboot and upgrade in one step (not supported for reinstallation and downgrading)
 */
 
-export const useFirmware = () => {
+type UseFirmwareParams =
+    | {
+          shouldSwitchFirmwareType?: boolean;
+      }
+    | undefined;
+
+export const useFirmware = (
+    { shouldSwitchFirmwareType }: UseFirmwareParams = { shouldSwitchFirmwareType: false },
+) => {
     const { translationString } = useTranslation();
     const dispatch = useDispatch();
     const firmware = useSelector(selectFirmware);
@@ -48,13 +56,33 @@ export const useFirmware = () => {
         modal.context === MODAL.CONTEXT_DEVICE &&
         modal.windowType === 'ButtonRequest_FirmwareCheck';
 
-    const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(originalDevice);
+    const deviceModelInternal = originalDevice?.features?.internal_model;
+    // Device may be wiped during firmware type switch because Universal and Bitcoin-only firmware have different vendor headers,
+    // except T1B1 and T2T1. There may be some false negatives here during custom installation.
+    // TODO: Determine this in Connect.
+    const deviceWillBeWiped =
+        !!shouldSwitchFirmwareType &&
+        deviceModelInternal !== undefined &&
+        ![DeviceModelInternal.T1B1, DeviceModelInternal.T2T1].includes(deviceModelInternal);
 
     const confirmOnDevice =
-        (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
-            firmware.uiEvent.payload.method !== 'wait') ||
+        // Show the confirmation pill before starting the installation using the "wait" or "manual" method,
+        // after ReconnectDevicePrompt is closed and user selects the option to install firmware while in bootloader.
+        // Also in case the device is PIN-locked at the start of the process.
         (firmware.uiEvent?.type === DEVICE.BUTTON &&
-            firmware.uiEvent.payload.code === 'ButtonRequest_FirmwareUpdate');
+            firmware.uiEvent.payload.code !== undefined &&
+            ['ButtonRequest_FirmwareUpdate', 'ButtonRequest_PinEntry'].includes(
+                firmware.uiEvent.payload.code,
+            )) ||
+        // Show the confirmation pill right after ReconnectDevicePrompt is closed while using the "wait" or "manual" method,
+        // before user selects the option to install firmware while in bootloader
+        // When a PIN-protected device reconnects to normal mode after installation, PIN is requested and the pill is shown.
+        // There is a false positive in case such device is wiped (including PIN) during custom installation.
+        (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
+            (firmware.uiEvent.payload.target === 'bootloader' ||
+                (firmware.uiEvent.payload.target === 'normal' &&
+                    originalDevice?.features?.pin_protection &&
+                    !deviceWillBeWiped)));
 
     const showConfirmationPill =
         !showReconnectPrompt &&
@@ -98,7 +126,8 @@ export const useFirmware = () => {
         return { operation: null, progress: 0 };
     };
 
-    const getTargetFirmwareType = (shouldSwitchFirmwareType: boolean) => {
+    const getTargetFirmwareType = () => {
+        const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(originalDevice);
         const isBitcoinOnlyAvailable = !!originalDevice?.firmwareRelease?.release.url_bitcoinonly;
 
         return (isCurrentlyBitcoinOnly && !shouldSwitchFirmwareType) ||
@@ -109,6 +138,8 @@ export const useFirmware = () => {
             ? FirmwareType.BitcoinOnly
             : FirmwareType.Regular;
     };
+
+    const targetFirmwareType = getTargetFirmwareType();
 
     return {
         ...firmware,
@@ -121,9 +152,11 @@ export const useFirmware = () => {
         resetReducer: () => dispatch(firmwareActions.resetReducer()),
         isWebUSB: isWebUsb(transport),
         showFingerprintCheck,
-        getTargetFirmwareType,
+        targetFirmwareType,
         showManualReconnectPrompt,
         confirmOnDevice,
+        shouldSwitchFirmwareType,
+        deviceWillBeWiped,
         showReconnectPrompt,
         showConfirmationPill,
     };

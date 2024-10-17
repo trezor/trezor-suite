@@ -33,28 +33,29 @@ const StyledModal = styled(Modal)`
 
 type FirmwareModalProps = {
     children: ReactElement;
-    deviceWillBeWiped?: boolean;
     heading: TranslationKey;
     install: () => void;
     isCustom?: boolean;
+    shouldSwitchFirmwareType?: boolean;
 };
 
 export const FirmwareModal = ({
     children,
-    deviceWillBeWiped,
     heading,
     install,
     isCustom,
+    shouldSwitchFirmwareType,
 }: FirmwareModalProps) => {
     const {
         resetReducer,
         status,
+        deviceWillBeWiped,
         error,
         firmwareHashInvalid,
         uiEvent,
         confirmOnDevice,
         showConfirmationPill,
-    } = useFirmware();
+    } = useFirmware({ shouldSwitchFirmwareType });
     const device = useSelector(selectDevice);
     const dispatch = useDispatch();
 
@@ -106,9 +107,9 @@ export const FirmwareModal = ({
             case 'check-seed':
                 return (
                     <CheckSeedStep
+                        deviceWillBeWiped={deviceWillBeWiped}
                         onSuccess={install}
                         onClose={onClose}
-                        willBeWiped={deviceWillBeWiped}
                     />
                 );
             case 'started':
