@@ -19,7 +19,7 @@ const ShowOnLargeDesktopWrapper = styled.div`
 `;
 
 interface TradeActionsProps {
-    analyticsEventType: EventType.AccountsActions | EventType.DashboardActions;
+    analyticsEventType: EventType.AccountsActions | EventType.MenuActions;
     selectedAccount?: SelectedAccountStatus;
 }
 
@@ -29,7 +29,7 @@ export const TradeActions = ({ analyticsEventType, selectedAccount }: TradeActio
     const device = useSelector(selectDevice);
 
     const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
-        if (analyticsEventType === EventType.DashboardActions) {
+        if (analyticsEventType === EventType.MenuActions) {
             analytics.report({
                 type: analyticsEventType,
                 payload: { type: routeName },
