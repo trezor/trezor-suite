@@ -137,7 +137,7 @@ export const connectInitThunk = createThunk(
                 pendingTransportEvent: selectIsPendingTransportEvent(getState()),
                 transports: selectDebugSettings(getState()).transports,
                 _sessionsBackgroundUrl: sessionsBackground,
-                // debug: true, // Enable debug logs in TrezorConnect
+                debug: true, // Enable debug logs in TrezorConnect
             });
         } catch (error) {
             let formattedError: string;
