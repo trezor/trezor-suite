@@ -2,7 +2,8 @@ import { testMocks } from '@suite-common/test-utils';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import protocolReducer, { State as ProtocolState } from 'src/reducers/suite/protocolReducer';
-import { PROTOCOL_SCHEME } from 'src/constants/suite/protocol';
+
+import { NETWORK_TO_PROTOCOLS } from '@suite-common/suite-constants';
 
 import * as protocolActions from '../protocolActions';
 import * as protocolConstants from '../constants/protocolConstants';
@@ -40,7 +41,7 @@ describe('Protocol actions', () => {
         const store = initStore(
             getInitialState({
                 sendForm: {
-                    scheme: PROTOCOL_SCHEME.BITCOIN,
+                    scheme: NETWORK_TO_PROTOCOLS.btc[0],
                     address: '12345abcde',
                     amount: 1.02,
                     shouldFill: false,
@@ -62,7 +63,7 @@ describe('Protocol actions', () => {
         const store = initStore(
             getInitialState({
                 sendForm: {
-                    scheme: PROTOCOL_SCHEME.BITCOIN,
+                    scheme: NETWORK_TO_PROTOCOLS.btc[0],
                     address: '12345abcde',
                     amount: undefined,
                     shouldFill: false,
@@ -89,7 +90,7 @@ describe('Protocol actions', () => {
 
         expect(store.getActions().length).toBe(2);
         expect(store.getActions()[0].type).toBe(protocolConstants.SAVE_COIN_PROTOCOL);
-        expect(store.getActions()[0].payload.scheme).toBe(PROTOCOL_SCHEME.BITCOIN);
+        expect(store.getActions()[0].payload.scheme).toBe(NETWORK_TO_PROTOCOLS.btc[0]);
         expect(store.getActions()[0].payload.address).toBe('12345abcde');
         expect(store.getActions()[0].payload.amount).toBe(1.02);
     });
@@ -101,7 +102,7 @@ describe('Protocol actions', () => {
 
         expect(store.getActions().length).toBe(2);
         expect(store.getActions()[0].type).toBe(protocolConstants.SAVE_COIN_PROTOCOL);
-        expect(store.getActions()[0].payload.scheme).toBe(PROTOCOL_SCHEME.BITCOIN);
+        expect(store.getActions()[0].payload.scheme).toBe(NETWORK_TO_PROTOCOLS.btc[0]);
         expect(store.getActions()[0].payload.address).toBe('12345abcde');
         expect(store.getActions()[0].payload.amount).toBe(undefined);
     });

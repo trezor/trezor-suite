@@ -1,4 +1,23 @@
-export const getProtocolInfo = [
+import { Protocol } from '@suite-common/suite-constants';
+
+type getProtocolInfoResult =
+    | {
+          scheme: Protocol;
+          address: string;
+          amount?: number;
+      }
+    | {
+          error: string;
+          scheme: string;
+      };
+
+type getProtocolInfoFixture = {
+    description: string;
+    uri: string | null;
+    result: getProtocolInfoResult | null;
+};
+
+export const getProtocolInfo: getProtocolInfoFixture[] = [
     {
         description: 'should parse Bitcoin URI when address and amount are both available',
         uri: 'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=0.1',
@@ -86,29 +105,11 @@ export const getProtocolInfo = [
     {
         description: 'should log an error with non-existing scheme',
         uri: 'axie:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=0.1',
-        result: null,
+        result: { error: 'Unknown protocol', scheme: 'axie' },
     },
     {
         description: 'should log an error when address is missing',
         uri: 'bitcoin:?amount=0.1',
         result: null,
-    },
-];
-
-export const isPaymentRequestProtocolScheme = [
-    {
-        description: 'should validate bitcoin protocol as valid',
-        scheme: 'bitcoin',
-        result: true,
-    },
-    {
-        description: 'should validate litecoin protocol as valid',
-        scheme: 'litecoin',
-        result: true,
-    },
-    {
-        description: 'should validate axie protocol as invalid',
-        scheme: 'axie',
-        result: false,
     },
 ];
