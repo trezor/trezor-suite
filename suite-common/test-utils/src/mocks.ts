@@ -147,6 +147,12 @@ const getConnectDevice = (
     feat?: Partial<Features>,
 ): Device => {
     const path = (dev && dev.path ? dev.path : '1') as `${number}` & { __type: 'PathPublic' };
+    const descriptor: Device['descriptor'] = {
+        path,
+        session: null,
+        type: 1,
+        sessionOwner: 'foo-bar',
+    };
     if (dev && typeof dev.type === 'string' && dev.type === 'unreadable') {
         return {
             type: 'unreadable',
@@ -154,6 +160,7 @@ const getConnectDevice = (
             label: 'Unreadable device',
             name: 'name of unreadable device',
             error: 'unreadable device',
+            descriptor,
         };
     }
 
@@ -163,6 +170,7 @@ const getConnectDevice = (
             path,
             label: 'Unacquired device',
             name: 'name of unacquired device',
+            descriptor,
         };
     }
 
@@ -193,6 +201,7 @@ const getConnectDevice = (
             firmwareRevision: { success: true },
             firmwareHash: { success: true },
         },
+        descriptor,
     };
 };
 

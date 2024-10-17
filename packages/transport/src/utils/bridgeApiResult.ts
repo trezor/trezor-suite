@@ -58,6 +58,7 @@ export function devices(res: UnknownPayload) {
             (o: any): Descriptor => ({
                 path: o.path,
                 session: o.session,
+                sessionOwner: o.sessionOwner,
                 product: o.product,
                 type: o.type,
                 vendor: o.vendor,
