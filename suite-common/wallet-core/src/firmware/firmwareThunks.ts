@@ -138,11 +138,12 @@ export const firmwareUpdate = createThunk(
         } else {
             const { check } = firmwareUpdateResponse.payload;
             if (check === 'mismatch') {
-                handleFwHashMismatch(device);
+                // hash check was performed, and it does not match
+                dispatch(handleFwHashMismatch(device));
             } else if (check === 'other-error') {
                 // TrezorConnect error. Only 'softly' inform user that we were not able to
                 // validate firmware hash
-                handleFwHashError(firmwareUpdateResponse.payload.checkError);
+                dispatch(handleFwHashError(firmwareUpdateResponse.payload.checkError));
             } else {
                 dispatch(firmwareActions.setStatus('done'));
             }
