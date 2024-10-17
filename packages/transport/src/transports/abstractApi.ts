@@ -338,5 +338,6 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             this.logger?.debug('device connected after transport stopped');
         });
         this.sessionsBackground.dispose();
+        this.api.dispose();
     }
 }
