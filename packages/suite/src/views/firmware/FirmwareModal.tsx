@@ -82,13 +82,13 @@ export const FirmwareModal = ({
             return <PrerequisitesGuide />;
         }
 
-        // Special and hopefully very rare case. This appears when somebody tried to fool user into using a hacked firmware. This check is skipped when installing custom FW.
-        if (device?.id && firmwareHashInvalid.includes(device.id)) {
-            return <FirmwareUpdateHashCheckError error={error} />;
-        }
-
         switch (status) {
             case 'error':
+                // Special and hopefully very rare case. This appears when somebody tried to fool user into using a hacked firmware. This check is skipped when installing custom FW.
+                if (device?.id && firmwareHashInvalid.includes(device.id)) {
+                    return <FirmwareUpdateHashCheckError error={error} />;
+                }
+
                 return (
                     <OnboardingStepBox
                         image="FIRMWARE"
