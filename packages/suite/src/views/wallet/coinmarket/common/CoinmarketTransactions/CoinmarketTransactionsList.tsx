@@ -4,9 +4,9 @@ import { H2, variables } from '@trezor/components';
 import styled from 'styled-components';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 import { spacingsPx } from '@trezor/theme';
-import { BuyTransaction } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketAccountTransactions/BuyTransaction';
-import { SellTransaction } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketAccountTransactions/SellTransaction';
-import { ExchangeTransaction } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketAccountTransactions/ExchangeTransaction';
+import { CoinmarketTransactionSell } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransactionsSell';
+import { CoinmarketTransactionBuy } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransactionsBuy';
+import { CoinmarketTransactionExchange } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransactionExchange';
 
 const Wrapper = styled.div`
     margin-bottom: 48px;
@@ -33,7 +33,8 @@ const TransactionCount = styled.div`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
-export const CoinmarketAccountTransactions = () => {
+// TODO: refactor and sub components
+export const CoinmarketTransactionsList = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const allTransactions = useSelector(state => state.wallet.coinmarket.trades);
     const buyProviders = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.providerInfos);
@@ -96,7 +97,7 @@ export const CoinmarketAccountTransactions = () => {
                         {sortedAccountTransactions.map(trade => {
                             if (trade.tradeType === 'buy') {
                                 return (
-                                    <BuyTransaction
+                                    <CoinmarketTransactionBuy
                                         account={account}
                                         key={`${trade.tradeType}-${trade.key}`}
                                         trade={trade}
@@ -106,7 +107,7 @@ export const CoinmarketAccountTransactions = () => {
                             }
                             if (trade.tradeType === 'sell') {
                                 return (
-                                    <SellTransaction
+                                    <CoinmarketTransactionSell
                                         account={account}
                                         key={`${trade.tradeType}-${trade.key}`}
                                         trade={trade}
@@ -116,7 +117,7 @@ export const CoinmarketAccountTransactions = () => {
                             }
                             if (trade.tradeType === 'exchange') {
                                 return (
-                                    <ExchangeTransaction
+                                    <CoinmarketTransactionExchange
                                         account={account}
                                         key={`${trade.tradeType}-${trade.key}`}
                                         trade={trade}

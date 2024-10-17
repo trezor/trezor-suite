@@ -11,7 +11,7 @@ import { Translation, FormattedDate, FormattedCryptoAmount } from 'src/component
 import { useDispatch, useTranslation } from 'src/hooks/suite';
 import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { CoinmarketTransactionStatus } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketAccountTransactions/CoinmarketTransactionStatus';
+import { CoinmarketTransactionStatus } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransactionStatus';
 
 const Wrapper = styled.div`
     display: flex;
@@ -33,10 +33,6 @@ const Wrapper = styled.div`
     }
 `;
 
-const StyledStatus = styled(CoinmarketTransactionStatus)`
-    margin-left: 5px;
-`;
-
 const Column = styled.div`
     display: flex;
     flex: 1;
@@ -47,16 +43,13 @@ const Column = styled.div`
 
 const BuyColumn = styled(Column)`
     display: flex;
-    align-items: center;
     justify-content: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    max-width: 130px;
+    flex: 0 1 auto;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         border-left: 0;
     }
-
-    border-left: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 const ProviderColumn = styled(Column)`
@@ -99,7 +92,7 @@ const Arrow = styled.div`
     padding: 0 11px;
 `;
 
-interface ExchangeTransactionProps {
+interface CoinmarketTransactionExchangeProps {
     trade: TradeExchange;
     account: Account;
     providers?: {
@@ -107,7 +100,11 @@ interface ExchangeTransactionProps {
     };
 }
 
-export const ExchangeTransaction = ({ trade, providers, account }: ExchangeTransactionProps) => {
+export const CoinmarketTransactionExchange = ({
+    trade,
+    providers,
+    account,
+}: CoinmarketTransactionExchangeProps) => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const theme = useTheme();
@@ -119,15 +116,7 @@ export const ExchangeTransaction = ({ trade, providers, account }: ExchangeTrans
 
     const viewDetail = () => {
         dispatch(saveTransactionId(trade.key || ''));
-        dispatch(
-            goto('wallet-coinmarket-exchange-detail', {
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
+        dispatch(goto('wallet-coinmarket-exchange-detail'));
     };
 
     if (!send || !receive) return null;
@@ -155,7 +144,7 @@ export const ExchangeTransaction = ({ trade, providers, account }: ExchangeTrans
                 <SmallRowStatus>
                     {translationString('TR_COINMARKET_SWAP').toUpperCase()} •{' '}
                     <FormattedDate value={date} date time /> •{' '}
-                    <StyledStatus trade={data} tradeType={trade.tradeType} />
+                    <CoinmarketTransactionStatus trade={data} tradeType={trade.tradeType} />
                 </SmallRowStatus>
                 <SmallRow>
                     <Translation id="TR_EXCHANGE_TRANS_ID" />
@@ -168,7 +157,7 @@ export const ExchangeTransaction = ({ trade, providers, account }: ExchangeTrans
                 </Row>
             </ProviderColumn>
             <BuyColumn>
-                <Button variant="tertiary" onClick={viewDetail}>
+                <Button size="small" variant="tertiary" onClick={viewDetail}>
                     <Translation id="TR_EXCHANGE_VIEW_DETAILS" />
                 </Button>
             </BuyColumn>

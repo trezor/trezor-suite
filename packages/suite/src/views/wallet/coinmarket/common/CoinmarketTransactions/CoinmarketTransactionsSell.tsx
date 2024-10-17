@@ -20,7 +20,7 @@ import { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { CoinmarketTransactionStatus } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketAccountTransactions/CoinmarketTransactionStatus';
+import { CoinmarketTransactionStatus } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransactionStatus';
 
 const Wrapper = styled.div`
     display: flex;
@@ -40,10 +40,6 @@ const Wrapper = styled.div`
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;
     }
-`;
-
-const StyledStatus = styled(CoinmarketTransactionStatus)`
-    margin-left: 5px;
 `;
 
 const Column = styled.div`
@@ -114,7 +110,7 @@ const Arrow = styled.div`
     padding: 0 11px;
 `;
 
-interface SellTransactionProps {
+interface CoinmarketTransactionSellProps {
     trade: TradeSell;
     account: Account;
     providers?: {
@@ -122,7 +118,11 @@ interface SellTransactionProps {
     };
 }
 
-export const SellTransaction = ({ trade, providers, account }: SellTransactionProps) => {
+export const CoinmarketTransactionSell = ({
+    trade,
+    providers,
+    account,
+}: CoinmarketTransactionSellProps) => {
     const theme = useTheme();
     const { composed, selectedFee } = useSelector(
         state => state.wallet.coinmarket.composedTransactionInfo,
@@ -207,7 +207,7 @@ export const SellTransaction = ({ trade, providers, account }: SellTransactionPr
                 </Row>
                 <SmallRowStatus>
                     {trade.tradeType.toUpperCase()} • <FormattedDate value={date} date time /> •{' '}
-                    <StyledStatus trade={data} tradeType={trade.tradeType} />
+                    <CoinmarketTransactionStatus trade={data} tradeType={trade.tradeType} />
                 </SmallRowStatus>
                 <SmallRow>
                     <Translation id="TR_SELL_TRANS_ID" />

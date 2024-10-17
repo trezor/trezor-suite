@@ -1,22 +1,12 @@
-import styled, { DefaultTheme, useTheme } from 'styled-components';
+import { DefaultTheme, useTheme } from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { getStatusMessage as getBuyStatusMessage } from 'src/utils/wallet/coinmarket/buyUtils';
 import { getStatusMessage as getExchangeStatusMessage } from 'src/utils/wallet/coinmarket/exchangeUtils';
 import { getStatusMessage as getSellStatusMessage } from 'src/utils/wallet/coinmarket/sellUtils';
-import { variables, Icon } from '@trezor/components';
+import { Icon, Row, Text } from '@trezor/components';
 import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
-
-const Wrapper = styled.div<{ $color: string }>`
-    display: flex;
-    color: ${props => props.$color};
-    align-items: center;
-    font-size: ${variables.FONT_SIZE.TINY};
-`;
-
-const Text = styled.div`
-    padding-top: 1px;
-`;
+import { spacings } from '@trezor/theme';
 
 const getBuyTradeData = (status: BuyTradeStatus, theme: DefaultTheme) => {
     const message = getBuyStatusMessage(status);
@@ -115,10 +105,9 @@ type StatusData =
 interface StatusProps {
     trade: Trade['data'];
     tradeType: Trade['tradeType'];
-    className?: string;
 }
 
-export const CoinmarketTransactionStatus = ({ trade, className, tradeType }: StatusProps) => {
+export const CoinmarketTransactionStatus = ({ trade, tradeType }: StatusProps) => {
     const theme = useTheme();
     let data: StatusData;
     switch (tradeType) {
@@ -135,11 +124,11 @@ export const CoinmarketTransactionStatus = ({ trade, className, tradeType }: Sta
     }
 
     return (
-        <Wrapper $color={data.color} className={className}>
+        <Row margin={{ left: spacings.xxs }}>
             <Icon color={data.color} size={10} name={data.icon} margin={{ right: 4 }} />
-            <Text data-testid="@coinmarket/transaction/status">
+            <Text color={data.color} data-testid="@coinmarket/transaction/status">
                 <Translation id={data.statusMessageId} />
             </Text>
-        </Wrapper>
+        </Row>
     );
 };

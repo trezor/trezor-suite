@@ -31,7 +31,7 @@ import {
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketTestWrapper } from 'src/views/wallet/coinmarket';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { CoinmarketTransactionStatus } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketAccountTransactions/CoinmarketTransactionStatus';
+import { CoinmarketTransactionStatus } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransactionStatus';
 
 const Wrapper = styled.div`
     display: flex;
@@ -51,10 +51,6 @@ const Wrapper = styled.div`
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;
     }
-`;
-
-const StyledStatus = styled(CoinmarketTransactionStatus)`
-    margin-left: 5px;
 `;
 
 const Column = styled.div`
@@ -124,7 +120,7 @@ const Arrow = styled.div`
     padding: 0 11px;
 `;
 
-interface BuyTransactionProps {
+interface CoinmarketTransactionBuyProps {
     trade: TradeBuy;
     account: Account;
     providers?: {
@@ -132,7 +128,11 @@ interface BuyTransactionProps {
     };
 }
 
-export const BuyTransaction = ({ trade, providers, account }: BuyTransactionProps) => {
+export const CoinmarketTransactionBuy = ({
+    trade,
+    providers,
+    account,
+}: CoinmarketTransactionBuyProps) => {
     const [isGettingOffers, setIsGettingOffers] = useState(false);
     const dispatch = useDispatch();
     const theme = useTheme();
@@ -210,7 +210,7 @@ export const BuyTransaction = ({ trade, providers, account }: BuyTransactionProp
                 </Row>
                 <SmallRowStatus>
                     {trade.tradeType.toUpperCase()} • <FormattedDate value={date} date time /> •{' '}
-                    <StyledStatus trade={data} tradeType={trade.tradeType} />
+                    <CoinmarketTransactionStatus trade={data} tradeType={trade.tradeType} />
                 </SmallRowStatus>
                 <SmallRow>
                     <Translation id="TR_BUY_TRANS_ID" />
