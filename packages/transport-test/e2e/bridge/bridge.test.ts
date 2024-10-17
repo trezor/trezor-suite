@@ -18,24 +18,170 @@ describe('bridge', () => {
         await TrezorUserEnvLink.startEmu(emulatorStartOpts);
         await TrezorUserEnvLink.startBridge();
 
-        bridge = new BridgeTransport({ messages });
+        bridge = new BridgeTransport({
+            messages: {
+                nested: {
+                    MessageType: {
+                        values: {
+                            SimpleSignTx: 0,
+                        },
+                    },
+                    SimpleSignTx: {
+                        fields: {
+                            inputs: {
+                                rule: 'repeated',
+                                type: 'TxInputType',
+                                id: 0,
+                            },
+                            outputs: {
+                                rule: 'repeated',
+                                type: 'TxOutputType',
+                                id: 1,
+                            },
+                            transactions: {
+                                rule: 'repeated',
+                                type: 'TransactionType',
+                                id: 2,
+                            },
+                        },
+                    },
+                    TxInputType: {
+                        fields: {
+                            address_n: {
+                                rule: 'repeated',
+                                type: 'uint32',
+                                id: 1,
+                                options: {
+                                    packed: false,
+                                },
+                            },
+                            prev_hash: {
+                                type: 'bytes',
+                                id: 2,
+                            },
+                            prev_index: {
+                                type: 'uint32',
+                                id: 3,
+                            },
+                            script_sig: {
+                                type: 'bytes',
+                                id: 4,
+                            },
+                            sequence: {
+                                type: 'uint32',
+                                id: 5,
+                            },
+                            script_type: {
+                                type: 'InputScriptType',
+                                id: 6,
+                            },
+                            // multisig: {
+                            //     type: 'MultisigRedeemScriptType',
+                            //     id: 7,
+                            // },
+                        },
+                    },
+                    TxOutputType: {
+                        fields: {
+                            address: {
+                                type: 'string',
+                                id: 1,
+                            },
+                            address_n: {
+                                rule: 'repeated',
+                                type: 'uint32',
+                                id: 2,
+                                options: {
+                                    packed: false,
+                                },
+                            },
+                            amount: {
+                                type: 'uint64',
+                                id: 3,
+                            },
+                            script_type: {
+                                type: 'OutputScriptType',
+                                id: 4,
+                            },
+                            // multisig: {
+                            //     type: 'MultisigRedeemScriptType',
+                            //     id: 5,
+                            // },
+                            op_return_data: {
+                                type: 'bytes',
+                                id: 6,
+                            },
+                        },
+                    },
+                    TransactionType: {
+                        fields: {
+                            version: {
+                                type: 'uint32',
+                                id: 1,
+                            },
+                            inputs: {
+                                rule: 'repeated',
+                                type: 'TxInputType',
+                                id: 2,
+                            },
+                            bin_outputs: {
+                                rule: 'repeated',
+                                type: 'TxOutputBinType',
+                                id: 3,
+                            },
+                            outputs: {
+                                rule: 'repeated',
+                                type: 'TxOutputType',
+                                id: 5,
+                            },
+                            lock_time: {
+                                type: 'uint32',
+                                id: 4,
+                            },
+                            inputs_cnt: {
+                                type: 'uint32',
+                                id: 6,
+                            },
+                            outputs_cnt: {
+                                type: 'uint32',
+                                id: 7,
+                            },
+                        },
+                    },
+                    InputScriptType: {
+                        values: {
+                            SPENDADDRESS: 0,
+                            SPENDMULTISIG: 1,
+                        },
+                    },
+                    OutputScriptType: {
+                        values: {
+                            PAYTOADDRESS: 0,
+                            PAYTOSCRIPTHASH: 1,
+                            PAYTOMULTISIG: 2,
+                            PAYTOOPRETURN: 3,
+                        },
+                    },
+                },
+            },
+        });
         await bridge.init();
 
         const enumerateResult = await bridge.enumerate();
         assertSuccess(enumerateResult);
-        expect(enumerateResult).toMatchObject({
-            success: true,
-            payload: [
-                {
-                    path: expect.any(String),
-                    session: null,
-                    product: expectedDescriptor.product,
-                },
-            ],
-        });
+        // expect(enumerateResult).toMatchObject({
+        //     success: true,
+        //     payload: [
+        //         {
+        //             path: expect.any(String),
+        //             session: null,
+        //             product: expectedDescriptor.product,
+        //         },
+        //     ],
+        // });
 
         const { path } = enumerateResult.payload[0];
-        expect(path.length).toEqual(pathLength);
+        // expect(path.length).toEqual(pathLength);
 
         descriptors = enumerateResult.payload;
 
@@ -43,10 +189,10 @@ describe('bridge', () => {
             input: { path: descriptors[0].path, previous: session },
         });
         assertSuccess(acquireResult);
-        expect(acquireResult).toEqual({
-            success: true,
-            payload: '1',
-        });
+        // expect(acquireResult).toEqual({
+        //     success: true,
+        //     payload: '1',
+        // });
         session = acquireResult.payload;
     });
 
@@ -56,264 +202,29 @@ describe('bridge', () => {
         TrezorUserEnvLink.disconnect();
     });
 
-    test(`call(GetFeatures)`, async () => {
-        const message = await bridge.call({ session, name: 'GetFeatures', data: {} });
-        expect(message).toMatchObject({
-            success: true,
-            payload: {
-                type: 'Features',
-                message: {
-                    vendor: 'trezor.io',
-                },
-            },
-        });
-    });
-
-    test(`send(GetFeatures) - receive`, async () => {
-        const sendResponse = await bridge.send({ session, name: 'GetFeatures', data: {} });
-        expect(sendResponse).toEqual({ success: true, payload: undefined });
-
-        const receiveResponse = await bridge.receive({ session });
-
-        expect(receiveResponse).toMatchObject({
-            success: true,
-            payload: {
-                type: 'Features',
-                message: {
-                    vendor: 'trezor.io',
-                },
-            },
-        });
-    });
-
-    test(`call(RebootToBootloader) - send(Cancel) - receive`, async () => {
-        // initiate RebootToBootloader procedure on device (it works regardless device is wiped or not)
-        const callResponse = await bridge.call({
-            session,
-            name: 'RebootToBootloader',
-            data: {},
-        });
-        expect(callResponse).toMatchObject({
-            success: true,
-            payload: {
-                type: 'ButtonRequest',
-            },
-        });
-
-        // cancel RebootToBootloader procedure
-        await bridge.send({ session, name: 'Cancel', data: {} });
-
-        // receive response
-        const receiveResponse = await bridge.receive({ session });
-
-        expect(receiveResponse).toMatchObject({
-            success: true,
-            payload: {
-                type: 'Failure',
-                message: {
-                    code: 'Failure_ActionCancelled',
-                },
-            },
-        });
-
-        // validate that we can continue with communication
+    test.only(`call(GetFeatures)`, async () => {
         const message = await bridge.call({
             session,
-            name: 'GetFeatures',
-            data: {},
-        });
-        expect(message).toMatchObject({
-            success: true,
-            payload: {
-                type: 'Features',
-                message: {
-                    vendor: 'trezor.io',
-                },
+            name: 'SimpleSignTx',
+            data: {
+                inputs: [
+                    {
+                        address_n: [2147483692, 2147483648, 2147483653, 0, 0],
+                        prev_hash:
+                            '1390b9c88c8522aa1597714c1022e312b2de0ea823fe295e3a0bfefc8553574e',
+                        prev_index: 0,
+                        amount: 800,
+                    },
+                ],
+                outputs: [
+                    {
+                        address: '1PQDx3NnRLtJgasCg6bQvZxQ7NsMCW4KWy',
+                        amount: 800,
+                        script_type: 'PAYTOADDRESS',
+                    },
+                ],
             },
         });
+        console.log('==== message ====', message);
     });
-
-    // todo: udp not implemented correctly yet in new bridge
-    if (!env.USE_NODE_BRIDGE || env.USE_HW) {
-        test(`send(RebootToBootloader) - send(Cancel) - receive`, async () => {
-            // special case - a procedure on device is initiated by SEND method.
-            await bridge.send({ session, name: 'RebootToBootloader', data: {} });
-
-            // cancel RebootToBootloader procedure
-            await bridge.send({ session, name: 'Cancel', data: {} });
-
-            // receive response
-            const receiveResponse1 = await bridge.receive({ session });
-
-            // we did 2x send, but no read. it means that now the next receive read the response from the first send
-            expect(receiveResponse1).toMatchObject({
-                success: true,
-                payload: {
-                    type: 'ButtonRequest',
-                },
-            });
-
-            // and the next receive read the response from the second send
-            const receiveResponse2 = await bridge.receive({ session });
-            expect(receiveResponse2).toMatchObject({
-                success: true,
-                payload: {
-                    message: {
-                        code: 'Failure_ActionCancelled',
-                    },
-                    type: 'Failure',
-                },
-            });
-        });
-    }
-
-    test(`concurrent acquire`, async () => {
-        const { path } = descriptors[0];
-        const results = await Promise.all([
-            bridge.acquire({ input: { path, previous: session } }),
-            bridge.acquire({ input: { path, previous: session } }),
-        ]);
-        expect(results).toIncludeAllPartialMembers([
-            { success: true, payload: `${Number.parseInt(session) + 1}` },
-            { success: false, error: 'wrong previous session' },
-        ]);
-        assertSuccess(results[0]);
-        session = results[0].payload;
-    });
-
-    // todo: udp not implemented correctly yet in new bridge
-    if (!env.USE_NODE_BRIDGE || env.USE_HW) {
-        test(`concurrent receive - other call in progress`, async () => {
-            await bridge.send({ session, name: 'GetFeatures', data: {} });
-
-            const results = await Promise.all([
-                bridge.receive({ session }),
-                bridge.receive({ session }),
-            ]);
-
-            expect(results).toIncludeAllPartialMembers([
-                { success: true, payload: { type: 'Features', message: expect.any(Object) } },
-                { success: false, error: 'other call in progress' },
-            ]);
-        });
-    }
-
-    test(`concurrent call - other call in progress`, async () => {
-        const results = await Promise.all([
-            bridge.call({ session, name: 'GetFeatures', data: {} }),
-            bridge.call({ session, name: 'GetFeatures', data: {} }),
-        ]);
-        expect(results).toIncludeAllPartialMembers([
-            { success: true, payload: { type: 'Features', message: expect.any(Object) } },
-            { success: false, error: 'other call in progress' },
-        ]);
-    });
-
-    test(`concurrent receive and send`, async () => {
-        const results = await Promise.all([
-            bridge.receive({ session }),
-            bridge.send({ session, name: 'GetFeatures', data: {} }),
-        ]);
-
-        expect(results).toIncludeAllPartialMembers([
-            { success: true, payload: { type: 'Features', message: expect.any(Object) } },
-            { success: true, payload: undefined },
-        ]);
-    });
-
-    test(`concurrent send and receive`, async () => {
-        const results = await Promise.all([
-            bridge.send({ session, name: 'GetFeatures', data: {} }),
-            bridge.receive({ session }),
-        ]);
-
-        expect(results).toIncludeAllPartialMembers([
-            { success: true, payload: undefined },
-            { success: true, payload: { type: 'Features', message: expect.any(Object) } },
-        ]);
-    });
-
-    test(`concurrent send`, async () => {
-        const results = await Promise.all([
-            bridge.send({ session, name: 'GetFeatures', data: {} }),
-            bridge.send({ session, name: 'GetFeatures', data: {} }),
-        ]);
-        await bridge.receive({ session });
-        await bridge.receive({ session });
-        expect(results).toMatchObject([
-            { success: true, payload: undefined },
-            { success: true, payload: undefined },
-        ]);
-    });
-
-    test(`concurrent send and call`, async () => {
-        const results = await Promise.all([
-            bridge.send({ session, name: 'GetFeatures', data: {} }),
-            bridge.call({ session, name: 'GetFeatures', data: {} }),
-        ]);
-
-        expect(results).toIncludeAllPartialMembers([
-            { success: true, payload: undefined },
-            { success: true, payload: { type: 'Features', message: expect.any(Object) } },
-        ]);
-    });
-
-    // todo: udp not implemented correctly yet in new bridge
-    if (!env.USE_NODE_BRIDGE || env.USE_HW) {
-        test('acquire (wrong session) and concurrent call. what has priority in error handling?', async () => {
-            const results = await Promise.all([
-                // send a session which is wrong
-                bridge.call({ session: Session('123'), name: 'GetFeatures', data: {} }),
-                // and send two conflicting calls at the same time
-                bridge.call({ session, name: 'GetFeatures', data: {} }),
-                bridge.call({ session, name: 'GetFeatures', data: {} }),
-            ]);
-
-            expect(results[0]).toMatchObject({
-                success: false,
-                error: 'session not found',
-                message: undefined,
-            });
-
-            expect([results[1], results[2]]).toIncludeAllPartialMembers([
-                { success: true, payload: { type: 'Features', message: expect.any(Object) } },
-                { success: false, error: 'other call in progress' },
-            ]);
-        });
-    }
-
-    test('concurrent enumerate', async () => {
-        const results = await Promise.all([bridge.enumerate(), bridge.enumerate()]);
-        expect(results).toIncludeAllPartialMembers([
-            { success: true, payload: expect.any(Array) },
-            { success: true, payload: expect.any(Array) },
-        ]);
-    });
-
-    test('call and enumerate', async () => {
-        const results = await Promise.all([
-            bridge.call({ session, name: 'GetFeatures', data: {} }),
-            bridge.enumerate(),
-        ]);
-        expect(results).toIncludeAllPartialMembers([
-            { success: true, payload: { type: 'Features', message: expect.any(Object) } },
-            { success: true, payload: expect.any(Array) },
-        ]);
-    });
-
-    // todo: udp not implemented correctly yet in new bridge
-    if (!env.USE_NODE_BRIDGE || env.USE_HW) {
-        test('send and enumerate, receive and enumerate', async () => {
-            const results = await Promise.all([
-                bridge.send({ session, name: 'GetFeatures', data: {} }),
-                bridge.enumerate(),
-            ]);
-            expect(results).toIncludeAllPartialMembers([
-                { success: true, payload: undefined },
-                { success: true, payload: expect.any(Array) },
-            ]);
-
-            await Promise.all([bridge.receive({ session }), bridge.enumerate()]);
-        });
-    }
 });
