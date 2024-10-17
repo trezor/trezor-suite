@@ -8,14 +8,17 @@ export const en = {
         header: '<green>Trezor Suite</green> <grey>Lite</grey>',
         buttons: {
             back: 'Back',
+            cancel: 'Cancel',
             close: 'Close',
             confirm: 'Confirm',
             continue: 'Continue',
-            next: 'Next',
+            disable: 'Disable',
             dismiss: 'Dismiss',
             eject: 'Eject',
-            cancel: 'Cancel',
+            enable: 'Enable',
             gotIt: 'Got it',
+            next: 'Next',
+            tryAgain: 'Try again',
         },
         unknownError: 'Something went wrong',
         default: 'Default',
@@ -731,9 +734,14 @@ export const en = {
             title: 'Note, your {networkName} balance doesn’t include tokens.',
         },
     },
+    device: {
+        title: {
+            continueOnTrezor: 'Continue\non your Trezor',
+        },
+    },
     deviceManager: {
         deviceButtons: {
-            deviceInfo: 'Device info',
+            deviceSettings: 'Device settings',
             addHiddenWallet: 'Open passphrase',
             devices: 'Change',
         },
@@ -779,7 +787,7 @@ export const en = {
         },
     },
     deviceSettings: {
-        title: 'Device info', // TODO: Change to "Device settings" once something may be changed
+        title: 'Device settings',
         firmware: {
             title: 'Firmware',
             version: 'Version',
@@ -788,6 +796,28 @@ export const en = {
             typeBitcoinOnly: 'Bitcoin-only',
             upToDate: 'You’re all up to date',
             newVersionAvailable: 'New version available ({version})',
+        },
+        pinProtection: {
+            title: 'PIN protection',
+            content: 'PIN protects your device against physical attack.',
+            changeButton: 'Change',
+            actions: {
+                enable: {
+                    success: 'Device PIN has been enabled.',
+                    canceled: 'Enable PIN has been canceled on your Trezor.',
+                },
+                change: {
+                    success: 'Device PIN has been changed.',
+                    canceled: 'Change PIN has been canceled on your Trezor.',
+                },
+                disable: {
+                    success: 'Device PIN has been disabled.',
+                    canceled: 'Disable PIN has been canceled on your Trezor.',
+                },
+            },
+            errors: {
+                pinInvalid: 'The PIN you’ve entered as current is incorrect.',
+            },
         },
     },
     qrCode: {
@@ -887,7 +917,7 @@ export const en = {
         enablePassphrase: {
             title: 'Enable passphrase on your Trezor.',
             subtitle: 'Go to your device and confirm you’d like to enable passphrase.',
-            cancelledError: 'Passphrase enabling cancelled.',
+            cancelledError: 'Passphrase enabling canceled.',
         },
         passphraseFeatureUnlock: {
             title: 'Enter passphrase to continue',

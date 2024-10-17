@@ -9891,6 +9891,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
+    "@react-navigation/native-stack": "npm:6.11.0"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@sentry/react-native": "npm:5.33.0"
     "@suite-common/icons-deprecated": "workspace:*"
@@ -9909,6 +9910,7 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/styles": "workspace:*"

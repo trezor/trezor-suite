@@ -30,6 +30,7 @@ export const ConnectDeviceScreenView = ({
             }
             customHorizontalPadding={0}
             customVerticalPadding={0}
+            hasBottomInset={false}
         >
             <Box style={[applyStyle(contentStyle), style]}>{children}</Box>
         </Screen>
