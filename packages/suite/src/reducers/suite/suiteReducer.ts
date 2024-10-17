@@ -28,7 +28,7 @@ import { Action, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
 import { RouterRootState, selectRouter } from './routerReducer';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { SuiteThemeVariant, desktopApi } from '@trezor/suite-desktop-api';
 import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 
@@ -201,6 +201,24 @@ const setFlag = (draft: SuiteState, key: keyof Flags, value: boolean) => {
     draft.flags[key] = value;
 };
 
+const setExperimentalFeature = async (
+    draft: SuiteState,
+    enabledFeatures: ExperimentalFeature[] | undefined,
+) => {
+    draft.settings.experimental = enabledFeatures;
+
+    // When we are disabling snowflake then we clear `snowflakeBinaryPath`.
+    if (!enabledFeatures?.includes('tor-snowflake')) {
+        const result = await desktopApi.getTorSettings();
+        if (result.success) {
+            await desktopApi.changeTorSettings({
+                ...result.payload,
+                snowflakeBinaryPath: '',
+            });
+        }
+    }
+};
+
 const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteState =>
     produce(state, draft => {
         switch (action.type) {
@@ -241,7 +259,7 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
 
             case SUITE.SET_EXPERIMENTAL_FEATURES:
-                draft.settings.experimental = action.payload.enabledFeatures;
+                setExperimentalFeature(draft, action.payload.enabledFeatures);
                 break;
 
             case SUITE.SET_FLAG:
