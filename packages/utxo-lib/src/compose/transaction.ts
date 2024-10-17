@@ -5,44 +5,11 @@ import {
     ComposeChangeAddress,
     ComposeFinalOutput,
     ComposedTransaction,
-    CoinSelectOutputFinal,
     TransactionInputOutputSortingStrategy,
 } from '../types';
-
-function convertOutput(
-    selectedOutput: CoinSelectOutputFinal,
-    composeOutput: ComposeFinalOutput | ({ type: 'change' } & ComposeChangeAddress),
-) {
-    if (composeOutput.type === 'change') {
-        return {
-            ...composeOutput,
-            amount: selectedOutput.value.toString(),
-        };
-    }
-
-    if (composeOutput.type === 'opreturn') {
-        return composeOutput;
-    }
-
-    return {
-        ...composeOutput,
-        type: 'payment' as const,
-        amount: selectedOutput.value.toString(),
-    };
-}
-
-function inputComparator(a: ComposeInput, b: ComposeInput) {
-    return Buffer.from(a.txid, 'hex').compare(Buffer.from(b.txid, 'hex')) || a.vout - b.vout;
-}
-
-function outputComparator(a: CoinSelectOutputFinal, b: CoinSelectOutputFinal) {
-    return (
-        a.value.cmp(b.value) ||
-        (Buffer.isBuffer(a.script) && Buffer.isBuffer(b.script)
-            ? a.script.compare(b.script)
-            : a.script.length - b.script.length)
-    );
-}
+import { noneSortingStrategy } from './sorting/noneSortingStrategy';
+import { SortingStrategy } from './sorting/sortingStrategy';
+import { bip69SortingStrategy } from './sorting/bip69SortingStrategy';
 
 export function createTransaction<Input extends ComposeInput, Change extends ComposeChangeAddress>(
     request: ComposeRequest<Input, ComposeFinalOutput, Change>,
@@ -58,32 +25,10 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
 
     const convertedInputs = result.inputs.map(input => request.utxos[input.i]);
 
-    const defaultPermutation: number[] = [];
-    const convertedOutputs = result.outputs.map((output, index) => {
-        defaultPermutation.push(index);
-        if (request.outputs[index]) {
-            return convertOutput(output, request.outputs[index]);
-        }
-
-        return convertOutput(output, { type: 'change', ...request.changeAddress });
-    });
-
-    if (sortingStrategy === 'none') {
-        return {
-            inputs: convertedInputs,
-            outputs: convertedOutputs,
-            outputsPermutation: defaultPermutation,
-        };
-    }
-
-    const permutation = defaultPermutation.sort((a, b) =>
-        outputComparator(result.outputs[a], result.outputs[b]),
-    );
-    const sortedOutputs = permutation.map(index => convertedOutputs[index]);
-
-    return {
-        inputs: convertedInputs.sort(inputComparator),
-        outputs: sortedOutputs,
-        outputsPermutation: permutation,
+    const strategyMap: Record<TransactionInputOutputSortingStrategy, SortingStrategy> = {
+        bip69: bip69SortingStrategy,
+        none: noneSortingStrategy,
     };
+
+    return strategyMap[sortingStrategy]({ result, request, convertedInputs });
 }
