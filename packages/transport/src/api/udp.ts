@@ -14,10 +14,12 @@ export class UdpApi extends AbstractApi {
     chunkSize = 64;
 
     protected devices: DescriptorApiLevel[] = [];
-    protected interface = UDP.createSocket('udp4');
+    private listenAbortController = new AbortController();
+    protected interface = UDP.createSocket({
+        type: 'udp4',
+        signal: this.listenAbortController.signal,
+    });
     protected communicating = false;
-
-    private enumerateAbortController = new AbortController();
     private debugLink?: boolean;
 
     constructor({ logger, debugLink }: AbstractApiConstructorParams & { debugLink?: boolean }) {
@@ -35,7 +37,7 @@ export class UdpApi extends AbstractApi {
         while (this.listening) {
             await createTimeoutPromise(500);
             if (!this.listening) break;
-            await this.enumerate(this.enumerateAbortController.signal);
+            await this.enumerate(this.listenAbortController.signal);
         }
     }
 
@@ -186,7 +188,10 @@ export class UdpApi extends AbstractApi {
     }
 
     private handleDevicesChange(devices: DescriptorApiLevel[]) {
-        const [known, unknown] = arrayPartition(devices, device => this.devices.includes(device));
+        const [known, unknown] = arrayPartition(
+            devices,
+            device => !!this.devices.find(d => d.path === device.path),
+        );
 
         if (known.length !== this.devices.length || unknown.length > 0) {
             this.devices = devices;
@@ -209,6 +214,6 @@ export class UdpApi extends AbstractApi {
         this.interface.removeAllListeners();
         this.interface.close();
         this.listening = false;
-        this.enumerateAbortController.abort();
+        this.listenAbortController.abort();
     }
 }
