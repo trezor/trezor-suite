@@ -305,6 +305,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case FORM_DRAFT.REMOVE_DRAFT:
                     storageActions.removeFormDraft(action.key);
                     break;
+                case firmwareActions.clearInvalidHash.type:
                 case firmwareActions.setHashInvalid.type:
                     api.dispatch(storageActions.saveFirmware());
                     break;
