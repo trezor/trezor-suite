@@ -249,7 +249,7 @@ export const TYPE_PATCH = {
     'Features.recovery_type': 'RecoveryType',
 };
 
-const readPatch = (file: string) => {
+export const readPatch = (file: string) => {
     return fs
         .readFileSync(path.join(__dirname, file), 'utf8')
         .replace(/^\/\/ @ts-nocheck.*\n?/gm, '');
