@@ -5,7 +5,12 @@ import { acquireDevice, selectDevice } from '@suite-common/wallet-core';
 import { variables } from '@trezor/components';
 
 import { closeModalApp } from 'src/actions/suite/routerActions';
-import { CheckSeedStep, FirmwareCloseButton, FirmwareInstallation } from 'src/components/firmware';
+import {
+    CheckSeedStep,
+    FirmwareCloseButton,
+    FirmwareInstallation,
+    FirmwareUpdateHashCheckError,
+} from 'src/components/firmware';
 import { Translation, Modal, PrerequisitesGuide } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { useDispatch, useFirmware, useSelector } from 'src/hooks/suite';
@@ -79,13 +84,7 @@ export const FirmwareModal = ({
 
         // Special and hopefully very rare case. This appears when somebody tried to fool user into using a hacked firmware. This check is skipped when installing custom FW.
         if (device?.id && firmwareHashInvalid.includes(device.id)) {
-            return (
-                <OnboardingStepBox
-                    image="UNI_ERROR"
-                    heading={<Translation id="TR_FIRMWARE_HASH_MISMATCH" />}
-                    nested
-                />
-            );
+            return <FirmwareUpdateHashCheckError error={error} />;
         }
 
         switch (status) {
