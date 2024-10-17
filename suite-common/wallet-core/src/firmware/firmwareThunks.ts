@@ -44,6 +44,15 @@ const handleFwHashMismatch = createThunk(
     },
 );
 
+const handleFwHashValid = createThunk(
+    `${FIRMWARE_MODULE_PREFIX}/handleFwHashValid`,
+    (device: Device, { dispatch }) => {
+        if (device.id) dispatch(firmwareActions.clearInvalidHash(device.id)); // see `handleFwHashError`
+        dispatch(firmwareActions.setStatus('done'));
+        dispatch(firmwareActions.setFirmwareUpdateError(undefined));
+    },
+);
+
 export const firmwareUpdate = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/firmwareUpdate`,
     async (
@@ -152,7 +161,7 @@ export const firmwareUpdate = createThunk(
                     }),
                 );
             } else {
-                dispatch(firmwareActions.setStatus('done'));
+                dispatch(handleFwHashValid(device));
             }
         }
     },
