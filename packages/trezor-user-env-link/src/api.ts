@@ -59,6 +59,8 @@ export const MNEMONICS = {
     mnemonic_12: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
     mnemonic_abandon:
         'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
+    // Contains only one BTC account with a single transaction to make the discovery as fast as possible.
+    mnemonic_immune: 'immune enlist rule measure fan swarm mandate track point menu security fan',
 };
 
 export const DEFAULT_BRIDGE_VERSION = '2.0.33';

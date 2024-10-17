@@ -71,7 +71,7 @@ jobs:
         run: yarn prebuild --platform android --clean
 
       - name: Build Detox test .apk
-        run: ../../node_modules/.bin/detox build -PreactNativeArchitectures=x86_64 --configuration android.emu.release
+        run: ../../node_modules/.bin/detox build -PreactNativeArchitectures=x86_64 --configuration android.emu.debug
         working-directory: ./suite-native/app
 
       - name: Save build to cache
@@ -115,6 +115,14 @@ jobs:
           path: node_modules
           key: node_modules/${{ github.ref }}/${{github.run_id}}
 
+      - name: Install adb (Android SDK Platform Tools)
+        run: |
+          wget https://dl.google.com/android/repository/platform-tools_r31.0.3-linux.zip
+          unzip platform-tools_r31.0.3-linux.zip
+          sudo mv platform-tools /usr/local/bin/
+          echo "export PATH=$PATH:/usr/local/bin/platform-tools" >> $GITHUB_ENV
+          export PATH=$PATH:/usr/local/bin/platform-tools
+
       - name: Install Yarn dependencies
         run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
@@ -145,6 +153,10 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      # - name: Reverse callback deeplink port
+      #   run: |
+      #     /usr/local/bin/platform-tools/adb reverse tcp:8080 tcp:8080;
+
       - name: Run Detox E2E Android tests
         uses: reactivecircus/android-emulator-runner@v2
         env:
@@ -158,7 +170,7 @@ jobs:
           force-avd-creation: true
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -grpc 8554
-          script: yarn test:e2e android.emu.release --headless --take-screenshots failing --record-videos failing
+          script: yarn test:e2e android.emu.debug --headless --take-screenshots failing --record-videos failing
 
       - name: "Store failed test screenshot artifacts"
         if: ${{failure()}}
