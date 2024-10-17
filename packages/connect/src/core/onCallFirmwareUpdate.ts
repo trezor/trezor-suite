@@ -514,8 +514,7 @@ export const onCallFirmwareUpdate = async ({
                 return { check: 'mismatch' as const };
             }
         } catch (err) {
-            // TrezorConnect error. Only 'softly' inform user that we were not able to
-            // validate firmware hash
+            // device failed to respond to the hash check, consider the firmware counterfeit
             return { check: 'other-error' as const, checkError: err.message };
         }
     } else {
