@@ -8,6 +8,7 @@ import {
     FirmwareRetryButton,
     FirmwareInstallation,
     FirmwareInitial,
+    FirmwareUpdateHashCheckError,
     Fingerprint,
 } from 'src/components/firmware';
 import { useSelector, useFirmware, useOnboarding } from 'src/hooks/suite';
@@ -34,12 +35,7 @@ export const FirmwareStep = () => {
 
     // special and hopefully very rare case. this appears when somebody tried to fool user into using a hacked firmware
     if (device?.id && firmwareHashInvalid.includes(device.id)) {
-        return (
-            <OnboardingStepBox
-                image="UNI_ERROR"
-                heading={<Translation id="TR_FIRMWARE_HASH_MISMATCH" />}
-            />
-        );
+        return <FirmwareUpdateHashCheckError error={error} />;
     }
 
     if (showFingerprintCheck && device) {

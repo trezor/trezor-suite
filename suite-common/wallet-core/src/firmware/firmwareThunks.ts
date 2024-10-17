@@ -14,9 +14,13 @@ import { getBinFilesBaseUrlThunk } from './getBinFilesBaseUrlThunk';
 
 const handleFwHashError = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/handleFwHashError`,
-    (errorMessage: string, { dispatch }) => {
+    ({ device, errorMessage }: { device: Device; errorMessage: string }, { dispatch }) => {
+        // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
+        if (device.id) {
+            dispatch(firmwareActions.setHashInvalid(device.id));
+        }
         dispatch(
-            firmwareActions.setError(
+            firmwareActions.setFirmwareUpdateError(
                 `${errorMessage}. Unable to validate firmware hash. If you want to check authenticity of newly installed firmware please proceed to device settings and reinstall firmware.`,
             ),
         );
@@ -29,12 +33,16 @@ const handleFwHashError = createThunk(
     },
 );
 
+export const INVALID_HASH_ERROR = 'Invalid hash';
+
 const handleFwHashMismatch = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/handleFwHashMismatch`,
     (device: Device, { dispatch }) => {
-        // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
-        dispatch(firmwareActions.setHashInvalid(device.id!));
-        dispatch(firmwareActions.setError('Invalid hash'));
+        // see `handleFwHashError`
+        if (device.id) {
+            dispatch(firmwareActions.setHashInvalid(device.id));
+        }
+        dispatch(firmwareActions.setFirmwareUpdateError(INVALID_HASH_ERROR));
         analytics.report({
             type: EventType.FirmwareValidateHashMismatch,
         });
@@ -64,12 +72,12 @@ export const firmwareUpdate = createThunk(
         const { useDevkit, cachedDevice, error } = selectFirmware(getState());
 
         if (error) {
-            dispatch(firmwareActions.setError(undefined));
+            dispatch(firmwareActions.setFirmwareUpdateError(undefined));
         }
 
         if (!device) {
             dispatch(firmwareActions.setStatus('error'));
-            dispatch(firmwareActions.setError('Device not connected'));
+            dispatch(firmwareActions.setFirmwareUpdateError('Device not connected'));
 
             return;
         }
@@ -134,16 +142,20 @@ export const firmwareUpdate = createThunk(
 
         if (!firmwareUpdateResponse.success) {
             dispatch(firmwareActions.setStatus('error'));
-            dispatch(firmwareActions.setError(firmwareUpdateResponse.payload.error));
+            dispatch(firmwareActions.setFirmwareUpdateError(firmwareUpdateResponse.payload.error));
         } else {
             const { check } = firmwareUpdateResponse.payload;
             if (check === 'mismatch') {
-                // hash check was performed, and it does not match
+                // hash check was performed, and it does not match, so consider firmware counterfeit
                 dispatch(handleFwHashMismatch(device));
             } else if (check === 'other-error') {
-                // TrezorConnect error. Only 'softly' inform user that we were not able to
-                // validate firmware hash
-                dispatch(handleFwHashError(firmwareUpdateResponse.payload.checkError));
+                // device failed to respond to the hash check, consider the firmware counterfeit
+                dispatch(
+                    handleFwHashError({
+                        device,
+                        errorMessage: firmwareUpdateResponse.payload.checkError,
+                    }),
+                );
             } else {
                 dispatch(firmwareActions.setStatus('done'));
             }
