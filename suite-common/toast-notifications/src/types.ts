@@ -116,6 +116,11 @@ export type ToastPayload = (
           coin: string;
       }
     | {
+          type: 'qr-unknown-scheme-protocol';
+          scheme: string;
+          error: string;
+      }
+    | {
           type: 'coin-scheme-protocol';
           scheme: Protocol;
           address: string;
