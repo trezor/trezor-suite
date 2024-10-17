@@ -439,6 +439,57 @@ export default [
         },
     },
     {
+        description: 'sorts the inputs according to BIP69 when sortingStrategy=bip69',
+        request: {
+            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            dustThreshold: 546,
+            sortingStrategy: 'bip69',
+            feeRate: '10',
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '150000',
+                    type: 'payment',
+                },
+            ],
+            utxos: [
+                {
+                    ...UTXO,
+                    vout: 2,
+                },
+                {
+                    ...UTXO,
+                    vout: 1,
+                },
+            ],
+        },
+        result: {
+            bytes: 374,
+            fee: '3740',
+            feePerByte: '10',
+            max: undefined,
+            totalSpent: '153740',
+            inputs: [
+                { ...UTXO, vout: 1 },
+                { ...UTXO, vout: 2 },
+            ],
+            outputs: [
+                {
+                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                    amount: '50262',
+                    type: 'change',
+                },
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '150000',
+                    type: 'payment',
+                },
+            ],
+            outputsPermutation: [1, 0],
+            type: 'final',
+        },
+    },
+    {
         description: 'builds a p2sh tx with two same value outputs (mixed p2sh + p2pkh) and change',
         request: {
             txType: 'p2sh',
@@ -1009,12 +1060,86 @@ export default [
         },
     },
     {
-        description: 'skip inputs/outputs permutation',
+        description:
+            'skip inputs/outputs permutation when skipPermutation=true (compatibility API)',
         request: {
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
             dustThreshold: 546,
             feeRate: '10',
             skipPermutation: true,
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '70000',
+                    type: 'payment',
+                },
+            ],
+            utxos: [
+                {
+                    txid: 'a4dc0ffeee',
+                    vout: 0,
+                    amount: '65291',
+                    coinbase: false,
+                    confirmations: 60,
+                    own: false,
+                },
+                {
+                    txid: 'b4dc0ffeee',
+                    vout: 1,
+                    amount: '55291',
+                    coinbase: false,
+                    confirmations: 50,
+                    own: false,
+                },
+            ],
+        },
+        result: {
+            bytes: 374,
+            fee: '3740',
+            feePerByte: '10',
+            max: undefined,
+            totalSpent: '73740',
+            inputs: [
+                {
+                    txid: 'a4dc0ffeee',
+                    vout: 0,
+                    amount: '65291',
+                    coinbase: false,
+                    confirmations: 60,
+                    own: false,
+                },
+                {
+                    txid: 'b4dc0ffeee',
+                    vout: 1,
+                    amount: '55291',
+                    coinbase: false,
+                    confirmations: 50,
+                    own: false,
+                },
+            ],
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '70000',
+                    type: 'payment',
+                },
+                {
+                    amount: '46842',
+                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                    type: 'change',
+                },
+            ],
+            outputsPermutation: [0, 1],
+            type: 'final',
+        },
+    },
+    {
+        description: 'skip inputs/outputs permutation when sortingStrategy=none',
+        request: {
+            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            dustThreshold: 546,
+            feeRate: '10',
+            sortingStrategy: 'none',
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
