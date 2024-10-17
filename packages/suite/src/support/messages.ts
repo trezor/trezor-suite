@@ -3677,6 +3677,11 @@ export default defineMessages({
         id: 'TOAST_QR_INCORRECT_COIN_SCHEME_PROTOCOL',
         defaultMessage: 'QR code is defined for {coin} account',
     },
+    TOAST_QR_UNKNOWN_SCHEME_PROTOCOL: {
+        id: 'TOAST_QR_UNKNOWN_SCHEME_PROTOCOL',
+        defaultMessage:
+            'Unknown protocol scheme: "{scheme}". Please try again or enter the address manually.',
+    },
     TOAST_COIN_SCHEME_PROTOCOL: {
         id: 'TOAST_COIN_SCHEME_PROTOCOL',
         describe: 'Required for current notifications. Do not change.',

@@ -11,7 +11,9 @@ export type CoinProtocolInfo = {
 
 const removeLeadingTrailingSlashes = (text: string) => text.replace(/^\/{0,2}|\/$/g, '');
 
-export const getProtocolInfo = (uri: string): CoinProtocolInfo | null => {
+export const getProtocolInfo = (
+    uri: string,
+): CoinProtocolInfo | null | { error: string; scheme: string } => {
     const url = parseUri(uri);
 
     if (url) {
@@ -27,23 +29,24 @@ export const getProtocolInfo = (uri: string): CoinProtocolInfo | null => {
             },
         });
 
-        if (getNetworkSymbolForProtocol(scheme)) {
-            if (!pathname && !host) return null; // address may be in pathname (regular bitcoin:addr) or host (bitcoin://addr)
-
-            const floatAmount = Number.parseFloat(params.amount ?? '');
-            const amount = !Number.isNaN(floatAmount) && floatAmount > 0 ? floatAmount : undefined;
-
-            const address =
-                removeLeadingTrailingSlashes(pathname) || removeLeadingTrailingSlashes(host);
-
-            return {
-                scheme,
-                address,
-                amount,
-            };
+        if (!getNetworkSymbolForProtocol(scheme)) {
+            return { error: 'Unknown protocol', scheme };
         }
+
+        if (!pathname && !host) return null; // address may be in pathname (regular bitcoin:addr) or host (bitcoin://addr)
+
+        const floatAmount = Number.parseFloat(params.amount ?? '');
+        const amount = !Number.isNaN(floatAmount) && floatAmount > 0 ? floatAmount : undefined;
+
+        const address =
+            removeLeadingTrailingSlashes(pathname) || removeLeadingTrailingSlashes(host);
+
+        return {
+            scheme,
+            address,
+            amount,
+        };
     }
 
     return null;
 };
-export { getNetworkSymbolForProtocol };

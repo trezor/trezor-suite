@@ -161,6 +161,11 @@ export const NotificationRenderer = ({
             return error(render, notification, 'TOAST_QR_INCORRECT_COIN_SCHEME_PROTOCOL', {
                 coin: notification.coin,
             });
+        case 'qr-unknown-scheme-protocol':
+            return error(render, notification, 'TOAST_QR_UNKNOWN_SCHEME_PROTOCOL', {
+                scheme: notification.scheme,
+                error: notification.error,
+            });
         case 'tor-toggle-error':
             return error(render, notification, notification.error);
         case 'tor-is-slow':
