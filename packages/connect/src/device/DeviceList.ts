@@ -1,6 +1,6 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
 
-import { TypedEmitter, createDeferred } from '@trezor/utils';
+import { TypedEmitter, createDeferred, getSynchronize } from '@trezor/utils';
 import {
     BridgeTransport,
     WebUsbTransport,
@@ -93,7 +93,9 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     private transports: Transport[];
 
     private devices: Record<PathPublic, Device> = {};
+    private deviceCounter = 0;
 
+    private readonly handshakeLock;
     private readonly authPenaltyManager;
 
     private initPromise?: Promise<void>;
@@ -115,6 +117,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         const transportLogger = initLog('@trezor/transport', debug);
 
+        this.handshakeLock = getSynchronize();
         this.authPenaltyManager = createAuthPenaltyManager(priority);
         this.transportCommonArgs = {
             messages,
@@ -183,13 +186,22 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         switch (type) {
             case 'connected': {
-                const device = new Device(transport, descriptor, lifecycle =>
-                    this.emit(lifecycle, device.toMessageObject()),
-                );
+                const id = `${++this.deviceCounter}/${transport.name}/${descriptor.path}`;
+                const device = new Device({
+                    id: DeviceUniquePath(id),
+                    transport,
+                    descriptor,
+                    listener: lifecycle => this.emit(lifecycle, device.toMessageObject()),
+                });
                 this.devices[path] = device;
 
                 const penalty = this.authPenaltyManager.get();
-                device.handshake(penalty);
+                this.handshakeLock(async () => {
+                    if (this.devices[path]) {
+                        // device wasn't removed while waiting for lock
+                        await device.handshake(penalty);
+                    }
+                });
 
                 break;
             }
@@ -265,6 +277,10 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
          * where transport.acquire, transport.release is called
          */
         transport.on(TRANSPORT.UPDATE, diff => this.onTransportUpdate(diff, transport));
+
+        transport.on(TRANSPORT.REQUEST_RELEASE, descriptor => {
+            this.devices[descriptor.path]?.usedElsewhere();
+        });
 
         // just like transport emits updates, it may also start producing errors, for example bridge process crashes.
         transport.on(TRANSPORT.ERROR, error => {

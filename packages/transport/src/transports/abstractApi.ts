@@ -13,6 +13,7 @@ import { SessionsClient } from '../sessions/client';
 import * as ERRORS from '../errors';
 import { Session } from '../types';
 import { SessionsBackgroundInterface } from '../sessions/types';
+import { TRANSPORT } from '../constants';
 
 interface ConstructorParams extends AbstractTransportParams {
     api: AbstractApi;
@@ -68,6 +69,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             this?.logger?.debug('new descriptors from background', descriptors);
             // 4. we propagate new descriptors to higher levels
             this.handleDescriptorsChange(descriptors);
+        });
+
+        this.sessionsClient.on('releaseRequest', descriptor => {
+            this.emit(TRANSPORT.REQUEST_RELEASE, descriptor);
         });
 
         return this.success(undefined);

@@ -21,7 +21,7 @@ const waitForNthEventOfType = (
     });
 };
 
-const DEVICE_CONNECTION_SEQUENCE = ['device-acquired', 'device-released', 'device-connect'];
+// const DEVICE_CONNECTION_SEQUENCE = ['device-changed', 'device-changed', 'device-connect'];
 
 describe('DeviceList', () => {
     beforeAll(async () => {
@@ -52,8 +52,7 @@ describe('DeviceList', () => {
                 'transport-error',
                 'device-connect',
                 'device-connect_unacquired',
-                'device-acquired',
-                'device-released',
+                'device-changed',
                 'device-disconnect',
             ] as const
         ).forEach(event => {
@@ -179,7 +178,10 @@ describe('DeviceList', () => {
         await list.pendingConnection();
 
         const events = eventsSpy.mock.calls.map(call => call[0]);
-        expect(events).toEqual(['device-acquired', 'device-connect_unacquired', 'transport-start']);
+        expect(events).toEqual([
+            /*'device-changed',*/ 'device-connect_unacquired',
+            'transport-start',
+        ]);
     });
 
     it('.init() with pendingTransportEvent (multiple acquired devices)', async () => {
@@ -193,17 +195,17 @@ describe('DeviceList', () => {
         list.init({ pendingTransportEvent: true });
         await list.pendingConnection();
 
-        const events = eventsSpy.mock.calls.map(([event, { path }]) => [
-            event,
-            (list.getDeviceByPath(path) as any)?.originalDescriptor.path,
-        ]);
+        const events = eventsSpy.mock.calls.map(([event, { path }]) => [event, path]);
 
         // note: acquire - release - connect should be ok.
         // acquire - deviceList._takeAndCreateDevice start (run -> rurInner -> getFeatures -> release) -> deviceList._takeAndCreateDevice end => emit DEVICE.CONNECT
         expect(events).toEqual([
-            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '1']), // path 1
-            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '2']), // path 2
-            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '3']), // path 3
+            ['device-connect', '1/TestTransport/1'],
+            ['device-connect', '2/TestTransport/2'],
+            ['device-connect', '3/TestTransport/3'],
+            // ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '1/TestTransport/1']), // path 1
+            // ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '2/TestTransport/2']), // path 2
+            // ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '3/TestTransport/3']), // path 3
             ['transport-start', undefined],
         ]);
     });
@@ -231,12 +233,11 @@ describe('DeviceList', () => {
         await transportFirstEvent;
         jest.useRealTimers();
 
-        expect(eventsSpy).toHaveBeenCalledTimes(5);
-        const events = eventsSpy.mock.calls.map(call => call[0]);
+        // expect(eventsSpy).toHaveBeenCalledTimes(5);
+        const events = eventsSpy.mock.calls.map(([event]) => event);
         expect(events).toEqual([
-            'device-acquired',
-            'device-acquired',
-            'device-released',
+            // 'device-changed',
+            // 'device-changed',
             'device-connect',
             'transport-start',
         ]);
@@ -255,7 +256,10 @@ describe('DeviceList', () => {
         await new Promise(resolve => list.on('device-connect', resolve));
 
         const events = eventsSpy.mock.calls.map(call => call[0]);
-        expect(events).toEqual(['transport-start', ...DEVICE_CONNECTION_SEQUENCE]);
+        expect(events).toEqual([
+            'transport-start',
+            'device-connect' /*...DEVICE_CONNECTION_SEQUENCE*/,
+        ]);
     });
 
     it('multiple devices connected after .init()', async () => {
@@ -283,16 +287,17 @@ describe('DeviceList', () => {
         // wait for all device-connect events
         await waitForNthEventOfType(list, 'device-connect', 3);
 
-        const events = eventsSpy.mock.calls.map(([event, { path }]) => [
-            event,
-            (list.getDeviceByPath(path) as any)?.originalDescriptor.path,
-        ]);
+        const events = eventsSpy.mock.calls.map(([event, { path }]) => [event, path]);
 
         expect(events).toEqual([
             ['transport-start', undefined],
-            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '1']), // path 1
-            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '3']), // path 3
-            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '4']), // path 4
+            ['device-connect', '1/TestTransport/1'],
+            ['device-connect', '3/TestTransport/3'],
+            ['device-connect', '4/TestTransport/4'],
+            // ['device-disconnect', '2/TestTransport/2'],
+            // ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '1/TestTransport/1']), // path 1
+            // ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '3/TestTransport/3']), // path 3
+            // ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '4/TestTransport/4']), // path 4
         ]);
     });
 });

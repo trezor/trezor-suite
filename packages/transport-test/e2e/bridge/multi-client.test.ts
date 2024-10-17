@@ -94,13 +94,11 @@ describe('bridge', () => {
         });
 
         expect(bride1spy).toHaveBeenLastCalledWith('transport-update', {
-            type: 'acquired',
-            subtype: 'here',
+            type: 'changed',
             descriptor: expectedDescriptor1,
         });
         expect(bride2spy).toHaveBeenLastCalledWith('transport-update', {
-            type: 'acquired',
-            subtype: 'elsewhere',
+            type: 'changed',
             descriptor: expectedDescriptor1,
         });
 
@@ -119,14 +117,12 @@ describe('bridge', () => {
         });
 
         expect(bride1spy).toHaveBeenLastCalledWith('transport-update', {
-            type: 'released',
-            subtype: 'here',
+            type: 'changed',
             descriptor: expectedDescriptor2,
         });
 
         expect(bride2spy).toHaveBeenLastCalledWith('transport-update', {
-            type: 'released',
-            subtype: 'elsewhere',
+            type: 'changed',
             descriptor: expectedDescriptor2,
         });
 
@@ -168,14 +164,12 @@ describe('bridge', () => {
         await wait(); // wait for event to be propagated
 
         expect(bride1spy).toHaveBeenLastCalledWith('transport-update', {
-            type: 'acquired',
-            subtype: 'elsewhere',
+            type: 'changed',
             descriptor: expectedDescriptor,
         });
 
         expect(bride2spy).toHaveBeenLastCalledWith('transport-update', {
-            type: 'acquired',
-            subtype: 'here',
+            type: 'changed',
             descriptor: expectedDescriptor,
         });
     });

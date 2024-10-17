@@ -79,6 +79,7 @@ type ReadWriteError =
     | typeof ERRORS.INTERFACE_DATA_TRANSFER;
 
 class TransportEmitter extends TypedEmitter<{
+    [TRANSPORT.REQUEST_RELEASE]: Descriptor;
     [TRANSPORT.UPDATE]: DeviceDescriptorDiff;
     [TRANSPORT.ERROR]:
         | typeof ERRORS.HTTP_ERROR // most common error - bridge was killed

@@ -42,13 +42,6 @@ describe('sessions', () => {
             payload: {
                 session: '1',
                 path: 'abc', // <= pathInternal
-                descriptors: [
-                    {
-                        path: '1', // <= pathPublic
-                        session: '1',
-                        type: 1,
-                    },
-                ],
             },
         });
         const acquireDone = await client1.acquireDone({ path: PathPublic('1') });
@@ -67,7 +60,7 @@ describe('sessions', () => {
         });
     });
 
-    test('acquire', async () => {
+    test('acquire - acquire', async () => {
         expect.assertions(3);
 
         const client1 = new SessionsClient(background);
@@ -82,13 +75,8 @@ describe('sessions', () => {
         expect(acquire1).toMatchObject({
             success: true,
             payload: {
+                path: '1',
                 session: '1',
-                descriptors: [
-                    {
-                        path: '1',
-                        session: '1',
-                    },
-                ],
             },
         });
 
@@ -101,13 +89,12 @@ describe('sessions', () => {
         expect(acquire2).toMatchObject({
             success: true,
             payload: {
+                path: '1',
                 session: '2',
-                descriptors: [
-                    {
-                        path: '1',
-                        session: '2',
-                    },
-                ],
+                releaseRequest: {
+                    path: '1',
+                    session: '1',
+                },
             },
         });
 
@@ -140,12 +127,6 @@ describe('sessions', () => {
             success: true,
             payload: {
                 session: '1',
-                descriptors: [
-                    {
-                        path: '1',
-                        session: '1',
-                    },
-                ],
             },
         });
 

@@ -112,6 +112,14 @@ type DeviceLifecycle =
     | typeof DEVICE.CHANGED;
 
 type DeviceLifecycleListener = (lifecycle: DeviceLifecycle) => void;
+
+type DeviceParams = {
+    id: DeviceUniquePath;
+    transport: Transport;
+    descriptor: Descriptor;
+    listener: DeviceLifecycleListener;
+};
+
 /**
  * @export
  * @class Device
@@ -195,27 +203,33 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     private readonly uniquePath;
 
-    private emitLifecycle;
+    private readonly emitLifecycle;
 
     private sessionDfd?: Deferred<Session | null>;
 
-    constructor(transport: Transport, descriptor: Descriptor, listener: DeviceLifecycleListener) {
+    constructor({ id, transport, descriptor, listener }: DeviceParams) {
         super();
 
-        this.emitLifecycle = listener;
+        let connectEmitted = false;
+        this.emitLifecycle = (lifecycle: DeviceLifecycle) => {
+            connectEmitted ||=
+                lifecycle === DEVICE.CONNECT || lifecycle === DEVICE.CONNECT_UNACQUIRED;
+            if (connectEmitted) {
+                listener(lifecycle);
+            }
+        };
         this.protocol = v1Protocol;
 
         // === immutable properties
+        this.uniquePath = id;
         this.transport = transport;
         this.transportPath = descriptor.path;
+
         this.session = descriptor.session;
         this.isLocalSession = false;
 
         // this will be released after first run
         this.firstRunPromise = createDeferred();
-
-        const id = Math.floor(100 * (Date.now() + Math.random())).toString(36);
-        this.uniquePath = DeviceUniquePath(id);
     }
 
     private getSessionChangePromise() {
@@ -349,6 +363,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         error.message === TRANSPORT_ERROR.HTTP_ERROR // bridge died during device initialization
                     ) {
                         // disconnected, do nothing
+                        // console.log('disconnected');
                     } else if (
                         error.message === TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS ||
                         error.code === 'Device_UsedElsewhere' // most common error - someone else took the device at the same time
@@ -378,6 +393,53 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
             return;
         }
+        // console.log('handshake end');
+    }
+
+    async updateDescriptor(descriptor: Descriptor) {
+        this.sessionDfd?.resolve(descriptor.session);
+
+        const [_acquireResult, releaseResult] = await Promise.all([
+            this.acquirePromise,
+            this.releasePromise,
+        ]);
+
+        // TODO improve these conditions, a lot!
+
+        // Session changed to different than the current one
+        // -> acquired by someone else
+        if (descriptor.session && descriptor.session !== this.session) {
+            // console.log('elsvér');
+            this.usedElsewhere();
+        }
+
+        // Session changed to null
+        // -> released
+        if (!descriptor.session) {
+            const methodStillRunning = !this.commands?.isDisposed();
+            if (methodStillRunning) {
+                this.releaseTransportSession();
+            }
+
+            // No release is currently running
+            // -> released by someone else
+            if (!releaseResult) {
+                // console.log('released elsewhere');
+                createTimeoutPromise(1000).then(async () => {
+                    // after device was released in another window wait for a while (the other window might
+                    // have the intention of acquiring it again)
+                    // and if the device is still released and has never been acquired before, acquire it here.
+                    if (!this.isUsed() && this.isUnacquired() && !this.isInconsistent()) {
+                        // TODO this handshake should be different, e.g. no CONNECT_UNACQUIRED should be emitted again
+                        // console.log('handshake rerun');
+                        await this.handshake();
+                    }
+                });
+            }
+        }
+
+        this.session = descriptor.session;
+        this.emitLifecycle(DEVICE.CHANGED);
     }
 
     // TODO empty fn variant can be split/removed
@@ -454,7 +516,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
      * which means that session management does not make sense anymore. releasing device, on the other hand
      * makes sense, because this instance of connect might be the only one who has the right to do it.
      */
-    private usedElsewhere() {
+    public usedElsewhere() {
         this._featuresNeedsReload = true;
 
         _log.debug('interruptionFromOutside');
@@ -1058,50 +1120,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
 
         return null;
-    }
-
-    public async updateDescriptor(descriptor: Descriptor) {
-        this.sessionDfd?.resolve(descriptor.session);
-
-        const [_acquireResult, releaseResult] = await Promise.all([
-            this.acquirePromise,
-            this.releasePromise,
-        ]);
-
-        // TODO improve these conditions, a lot!
-
-        // Session changed to different than the current one
-        // -> acquired by someone else
-        if (descriptor.session && descriptor.session !== this.session) {
-            this.usedElsewhere();
-        }
-
-        // Session changed to null
-        // -> released
-        if (!descriptor.session) {
-            const methodStillRunning = !this.commands?.isDisposed();
-            if (methodStillRunning) {
-                this.releaseTransportSession();
-            }
-
-            // No release is currently running
-            // -> released by someone else
-            if (!releaseResult) {
-                createTimeoutPromise(1000).then(async () => {
-                    // after device was released in another window wait for a while (the other window might
-                    // have the intention of acquiring it again)
-                    // and if the device is still released and has never been acquired before, acquire it here.
-                    if (!this.isUsed() && this.isUnacquired() && !this.isInconsistent()) {
-                        // TODO this handshake should be different, e.g. no CONNECT_UNACQUIRED should be emitted again
-                        await this.handshake();
-                    }
-                });
-            }
-        }
-
-        this.session = descriptor.session;
-
-        this.emitLifecycle(DEVICE.CHANGED);
     }
 
     async dispose() {
