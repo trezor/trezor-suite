@@ -68,11 +68,35 @@ export interface ComposeChangeAddress {
     address: string;
 }
 
-export interface ComposeRequest<
+export type TransactionInputOutputSortingStrategy =
+    // BIP69 sorting
+    | 'bip69'
+
+    // Inputs are randomized, outputs are kept as they were provided in the request,
+    // and change is randomly placed somewhere between outputs
+    // | 'random' // Todo: will be implemented later in https://github.com/trezor/trezor-suite/issues/10765
+
+    // It keeps the inputs and outputs as they were provided in the request.
+    // This is useful for RBF transactions where the order of inputs and outputs must be preserved.
+    | 'none';
+
+type SortingStrategyPropsWithCompatibility =
+    | {
+          /** @deprecated use `sortingStrategy=none` instead if you want to keep order of inputs and outputs */
+          skipPermutation?: boolean; // Do not sort inputs/outputs and preserve the given order. Handy for RBF.
+          sortingStrategy?: undefined;
+      }
+    | {
+          /** @deprecated use `sortingStrategy=none` instead if you want to keep order of inputs and outputs */
+          skipPermutation?: undefined;
+          sortingStrategy?: TransactionInputOutputSortingStrategy;
+      };
+
+export type ComposeRequest<
     Input extends ComposeInput,
     Output extends ComposeOutput,
     Change extends ComposeChangeAddress,
-> {
+> = {
     txType?: CoinSelectPaymentType;
     utxos: Input[]; // all inputs
     outputs: Output[]; // all outputs
@@ -84,8 +108,7 @@ export interface ComposeRequest<
     baseFee?: number; // DOGE or RBF base fee
     floorBaseFee?: boolean; // DOGE floor base fee to the nearest integer
     skipUtxoSelection?: boolean; // use custom utxo selection, without algorithm
-    skipPermutation?: boolean; // Do not sort inputs/outputs and preserve the given order. Handy for RBF.
-}
+} & SortingStrategyPropsWithCompatibility;
 
 type ComposedTransactionOutputs<T> = T extends ComposeOutputSendMax
     ? Omit<T, 'type'> & ComposeOutputPayment // NOTE: replace ComposeOutputSendMax (no amount) with ComposeOutputPayment (with amount)
