@@ -107,6 +107,7 @@ export const HeaderActions = () => {
                 <TradeActions
                     analyticsEventType={EventType.AccountsActions}
                     selectedAccount={selectedAccount}
+                    hideBuyAndSellBelowDesktop
                 />
             )}
 
