@@ -19,21 +19,27 @@ const impl = new TrezorConnectDynamic<'core-in-popup' | 'iframe'>({
         },
     ],
     getInitTarget: (settings: Partial<ConnectSettingsPublic>) => {
-        const env = getEnv();
-        if (settings.coreMode === 'iframe' || settings.popup === false || env === 'webextension') {
+        if (settings.coreMode === 'iframe') {
             return 'iframe';
         } else if (settings.coreMode === 'popup') {
             return 'core-in-popup';
         } else {
+            if (settings.coreMode && settings.coreMode !== 'auto') {
+                console.warn(`Invalid coreMode: ${settings.coreMode}`);
+            }
+
             return 'iframe';
         }
     },
     handleErrorFallback: async (errorCode: string) => {
+        const env = getEnv();
+
+        const isCoreModeDisabled = impl.lastSettings?.popup === false || env === 'webextension';
         const isCoreModeAuto =
             impl.lastSettings?.coreMode === 'auto' || impl.lastSettings?.coreMode === undefined;
 
         // Handle iframe errors by switching to core-in-popup
-        if (isCoreModeAuto && IFRAME_ERRORS.includes(errorCode)) {
+        if (!isCoreModeDisabled && isCoreModeAuto && IFRAME_ERRORS.includes(errorCode)) {
             // Check if WebUSB is available and enabled
             const webUsbUnavailableInBrowser = !(navigator as any)?.usb;
             const webUsbDisabledInSettings =

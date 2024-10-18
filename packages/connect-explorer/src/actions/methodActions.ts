@@ -84,7 +84,8 @@ export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => 
     const { method, connect } = getState();
     if (!method?.name) throw new Error('method name not specified');
     dispatch({ type: SET_METHOD_PROCESSING, payload: true });
-    const trezorConnectImpl = connect.deeplink ? TrezorConnectMobile : TrezorConnect;
+    const trezorConnectImpl =
+        connect.options?.coreMode === 'deeplink' ? TrezorConnectMobile : TrezorConnect;
     const connectMethod = trezorConnectImpl[method.name];
     if (typeof connectMethod !== 'function') {
         dispatch(

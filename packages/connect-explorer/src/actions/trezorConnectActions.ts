@@ -17,7 +17,7 @@ export type TrezorConnectAction =
     | { type: typeof DEVICE.CONNECT; device: TrezorConnectDevice }
     | { type: typeof DEVICE.CONNECT_UNACQUIRED; device: TrezorConnectDevice }
     | { type: typeof DEVICE.DISCONNECT; device: TrezorConnectDevice }
-    | { type: typeof ACTIONS.ON_CHANGE_CONNECT_OPTIONS; payload: ConnectOptions; deeplink: boolean }
+    | { type: typeof ACTIONS.ON_CHANGE_CONNECT_OPTIONS; payload: ConnectOptions }
     | { type: typeof ACTIONS.ON_HANDSHAKE_CONFIRMED }
     | { type: typeof ACTIONS.ON_INIT_ERROR; payload: string }
     | {
@@ -32,7 +32,7 @@ export function onSelectDevice(path: string) {
     };
 }
 
-export const onConnectOptionChange = (option: string, value: any) => ({
+export const onConnectOptionChange = (option: Field<any>, value: any) => ({
     type: ACTIONS.ON_CHANGE_CONNECT_OPTION,
     payload: {
         option,
@@ -145,7 +145,6 @@ export const init =
         // Get default coreMode from URL params (?core-mode=auto)
         const urlParams = new URLSearchParams(window.location.search);
         const coreMode = (urlParams.get('core-mode') as ConnectOptions['coreMode']) || 'auto';
-        const deeplink = urlParams.get('deeplink') === 'true';
 
         const connectOptions = {
             coreMode,
@@ -163,7 +162,7 @@ export const init =
         };
 
         try {
-            if (deeplink) {
+            if (coreMode === 'deeplink') {
                 await TrezorConnectMobile.init({
                     ...connectOptions,
                     deeplinkOpen(url) {
@@ -188,7 +187,7 @@ export const init =
             return;
         }
 
-        dispatch({ type: ACTIONS.ON_CHANGE_CONNECT_OPTIONS, payload: connectOptions, deeplink });
+        dispatch({ type: ACTIONS.ON_CHANGE_CONNECT_OPTIONS, payload: connectOptions });
     };
 
 export const onSubmitInit = () => async (dispatch: Dispatch, getState: GetState) => {
