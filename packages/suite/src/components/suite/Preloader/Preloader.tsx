@@ -69,6 +69,8 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     // Register keyboard handlers for opening/closing Guide using keyboard
     useGuideKeyboard();
 
+    console.log('lifecycle.status', lifecycle.status);
+
     if (lifecycle.status === 'error') {
         throw new Error(lifecycle.error);
     }

@@ -131,6 +131,7 @@ export const connectInitThunk = createThunk(
             : resolveStaticPath('connect/data');
 
         try {
+            console.log('RUNNING TREZORCONNECT.INIT IN SUITE-COMMON/CONNECT-INIT  !!!!');
             await TrezorConnect.init({
                 ...connectInitSettings,
                 binFilesBaseUrl,
