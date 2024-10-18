@@ -36,7 +36,7 @@ import {
     TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
 } from '@suite-common/token-definitions';
-import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
+import { selectSuiteSettings, selectIsDeviceLocked } from '../reducers/suite/suiteReducer';
 import { addWalletThunk, openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
 
 const connectSrc = resolveStaticPath('connect/');
@@ -90,6 +90,7 @@ export const extraDependencies: ExtraDependencies = {
         selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
         selectSuiteSettings,
+        selectIsDeviceLocked,
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,

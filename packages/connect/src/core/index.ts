@@ -447,7 +447,6 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
             'onCall: message.id or message.payload is missing',
         );
     }
-
     const {
         uiPromises,
         callMethods,
@@ -488,6 +487,13 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         return Promise.resolve();
     }
 
+    if (method.payload.__info) {
+        const response = method.getMethodInfo();
+        sendCoreMessage(createResponseMessage(method.responseID, true, response));
+
+        return Promise.resolve();
+    }
+
     // this method is not using the device, there is no need to acquire
     if (!method.useDevice) {
         try {
@@ -498,6 +504,7 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
                 // cancel popup request
                 sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
             }
+
             const response = await method.run();
             sendCoreMessage(createResponseMessage(method.responseID, true, response));
         } catch (error) {
@@ -518,7 +525,17 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         return Promise.resolve();
     }
 
-    return await onCallDevice(context, message, method);
+    if (method.useDevice) {
+        sendCoreMessage(createUiMessage(UI.CALL_IN_PROGRESS, { value: true }));
+    }
+
+    try {
+        return await onCallDevice(context, message, method);
+    } finally {
+        if (method.useDevice) {
+            sendCoreMessage(createUiMessage(UI.CALL_IN_PROGRESS, { value: true }));
+        }
+    }
 };
 
 const onCallDevice = async (
@@ -570,7 +587,6 @@ const onCallDevice = async (
     const device = tempDevice;
 
     method.setDevice(device);
-
     // find pending calls to this device
     const previousCall = callMethods.filter(
         call => call && call !== method && call.devicePath === method.devicePath,
