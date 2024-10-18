@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Account } from '@suite-common/wallet-types';
-import { spacingsPx } from '@trezor/theme';
+import { spacingsPx, zIndices } from '@trezor/theme';
 import { H2 } from '@trezor/components';
 import { typography } from '@trezor/theme';
 import {
@@ -74,6 +74,12 @@ const CryptoBalance = styled.div`
     gap: ${spacingsPx.xxs};
 `;
 
+// so that "to sats" button does not hide symbol and fiat
+const ForegroundWrapper = styled.div`
+    z-index: ${zIndices.base + 1};
+    display: flex;
+`;
+
 interface AccountDetailsProps {
     selectedAccount: Account;
     isBalanceShown: boolean;
@@ -128,14 +134,17 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
             {isBalanceShown && (
                 <AccountBalance>
                     <CryptoBalance>
-                        <CoinLogo size={16} symbol={symbol} />
+                        <ForegroundWrapper>
+                            <CoinLogo size={16} symbol={symbol} />
+                        </ForegroundWrapper>
                         <AmountUnitSwitchWrapper symbol={symbol}>
                             <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />
                         </AmountUnitSwitchWrapper>
                     </CryptoBalance>
-                    <span>
-                        ≈ <FiatValue amount={formattedBalance} symbol={symbol} />
-                    </span>
+                    <ForegroundWrapper>
+                        ≈&nbsp;
+                        <FiatValue amount={formattedBalance} symbol={symbol} />
+                    </ForegroundWrapper>
                 </AccountBalance>
             )}
         </DetailsContainer>
