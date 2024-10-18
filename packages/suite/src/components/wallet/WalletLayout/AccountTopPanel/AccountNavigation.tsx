@@ -8,13 +8,7 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { NavigationItem, SubpageNavigation } from 'src/components/suite/layouts/SuiteLayout';
 
-export const ACCOUNT_TABS = [
-    'wallet-index',
-    'wallet-details',
-    'wallet-tokens-coins',
-    'wallet-tokens-hidden',
-    'wallet-staking',
-];
+export const ACCOUNT_TABS = ['wallet-index', 'wallet-details', 'wallet-tokens', 'wallet-staking'];
 
 export const AccountNavigation = () => {
     const account = useSelector(selectSelectedAccount);
@@ -44,14 +38,13 @@ export const AccountNavigation = () => {
             isHidden: false,
         },
         {
-            id: 'wallet-tokens-coins',
+            id: 'wallet-tokens',
             callback: () => {
-                goToWithAnalytics('wallet-tokens-coins', { preserveParams: true });
+                goToWithAnalytics('wallet-tokens', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_TOKENS" />,
             isHidden: !['cardano', 'ethereum', 'solana'].includes(networkType),
-            activeRoutes: ['wallet-tokens-coins', 'wallet-tokens-hidden'],
-            'data-testid': '@wallet/menu/wallet-tokens-coins',
+            'data-testid': '@wallet/menu/wallet-tokens',
         },
         {
             id: 'wallet-staking',
