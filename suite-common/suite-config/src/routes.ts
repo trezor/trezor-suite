@@ -264,6 +264,12 @@ export const routes = [
         params: walletParams,
     },
     {
+        name: 'wallet-tokens',
+        pattern: '/accounts/tokens',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
         name: 'wallet-tokens-coins',
         pattern: '/accounts/tokens/coins',
         app: 'wallet',
