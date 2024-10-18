@@ -15,6 +15,7 @@ import { useAccountLabel } from 'src/components/suite/AccountLabel';
 import { useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { CoinLogo } from '@trezor/product-components';
+import { isTestnet } from '@suite-common/wallet-utils';
 
 const rotateIn = keyframes`
     from {
@@ -141,10 +142,12 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                             <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />
                         </AmountUnitSwitchWrapper>
                     </CryptoBalance>
-                    <ForegroundWrapper>
-                        ≈&nbsp;
-                        <FiatValue amount={formattedBalance} symbol={symbol} />
-                    </ForegroundWrapper>
+                    {!isTestnet(symbol) && (
+                        <ForegroundWrapper>
+                            ≈&nbsp;
+                            <FiatValue amount={formattedBalance} symbol={symbol} />
+                        </ForegroundWrapper>
+                    )}
                 </AccountBalance>
             )}
         </DetailsContainer>
