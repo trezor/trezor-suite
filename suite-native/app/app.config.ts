@@ -169,6 +169,14 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
+        runtimeVersion: '4',
+        ...(['develop', 'preview'].includes(buildType)
+            ? {
+                  updates: {
+                      url: `https://u.expo.dev/${projectId}`,
+                  },
+              }
+            : {}),
         orientation: 'portrait',
         splash: {
             image: './assets/splash_icon.png',
