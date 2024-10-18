@@ -39,8 +39,11 @@ export const PageHeader = ({ backRoute, children }: PageHeaderProps) => {
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const routeName = useSelector(selectRouteName);
 
-    return children ? (
-        <Container>{children}</Container>
+    // handle moment when children are not rendered yet in the Trade section
+    const isTradeSection = routeName?.includes('wallet-coinmarket');
+
+    return isTradeSection || children ? (
+        <Container>{children ?? null}</Container>
     ) : (
         <Container>
             <PageName backRoute={backRoute} />
