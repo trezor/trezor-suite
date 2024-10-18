@@ -33,8 +33,10 @@ export interface ConnectSettingsPublic {
     _sessionsBackgroundUrl?: string;
     deeplinkOpen?: (url: string) => void;
     deeplinkCallbackUrl?: string;
-    // URL for binary files such as firmware, may be local or remote. If not provided, firmware hash check won't be done.
+    // URL for binary files such as firmware, may be local or remote
     binFilesBaseUrl?: string;
+    // enable firmware hash check automatically when device connects. Requires binFilesBaseUrl to be set.
+    enableFirmwareHashCheck?: boolean;
 }
 
 // internal part, not to be accepted from .init()

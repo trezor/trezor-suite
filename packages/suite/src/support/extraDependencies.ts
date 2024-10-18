@@ -53,6 +53,7 @@ const connectInitSettings = {
         appUrl: '@trezor/suite',
     },
     sharedLogger: false,
+    enableFirmwareHashCheck: true,
 };
 
 export const extraDependencies: ExtraDependencies = {
