@@ -6,14 +6,18 @@ import { CloseActionType } from '../navigators';
 
 type GoBackIconProps = {
     closeActionType?: CloseActionType;
+    closeAction?: () => void;
 };
 
-export const GoBackIcon = ({ closeActionType = 'back' }: GoBackIconProps) => {
+export const GoBackIcon = ({ closeActionType = 'back', closeAction }: GoBackIconProps) => {
     const navigation = useNavigation();
 
     const handleGoBack = () => {
         if (navigation.canGoBack()) {
             navigation.goBack();
+        }
+        if (closeAction) {
+            closeAction();
         }
     };
 
