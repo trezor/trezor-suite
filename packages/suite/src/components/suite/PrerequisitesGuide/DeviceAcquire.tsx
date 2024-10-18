@@ -6,6 +6,7 @@ import { isDesktop } from '@trezor/env-utils';
 
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
+import { TROUBLESHOOTING_TIP_RECONNECT } from 'src/components/suite/troubleshooting/tips';
 
 export const DeviceAcquire = () => {
     const { isLocked } = useDevice();
@@ -38,19 +39,7 @@ export const DeviceAcquire = () => {
                 />
             ),
         },
-        {
-            key: 'device-reconnect',
-            heading: <Translation id="TR_RECONNECT_YOUR_DEVICE" />,
-            description: (
-                <Translation
-                    id={
-                        isDesktop()
-                            ? 'TR_RECONNECT_DEVICE_DESCRIPTION_DESKTOP'
-                            : 'TR_RECONNECT_DEVICE_DESCRIPTION'
-                    }
-                />
-            ),
-        },
+        TROUBLESHOOTING_TIP_RECONNECT,
     ];
 
     return (

@@ -61,9 +61,7 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
                 case 'device-unacquired':
                     return <DeviceAcquire />;
                 case 'device-unreadable':
-                    return (
-                        <DeviceUnreadable device={device} isWebUsbTransport={isWebUsbTransport} />
-                    );
+                    return <DeviceUnreadable device={device} />;
                 case 'device-unknown':
                     return <DeviceUnknown />;
                 case 'device-seedless':
