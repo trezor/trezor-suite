@@ -1,11 +1,11 @@
-import { ReactNode } from 'react';
+import { PropsWithChildren } from 'react';
 import styled from 'styled-components';
 
-import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
-import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { CoinmarketLayoutNavigation } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketLayoutNavigation/CoinmarketLayoutNavigation';
+import { useSelector } from 'src/hooks/suite';
+import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 const CoinmarketWrapper = styled.div`
     padding: 0 ${spacingsPx.lg};
@@ -19,17 +19,15 @@ const CoinmarketFormWrapper = styled.div`
     margin-top: ${spacingsPx.xl};
 `;
 
-interface CoinmarketLayoutProps {
-    children: ReactNode;
-    selectedAccount: SelectedAccountLoaded;
-}
+interface CoinmarketLayoutProps extends PropsWithChildren {}
 
-export const CoinmarketLayout = ({ children, selectedAccount }: CoinmarketLayoutProps) => (
-    <WalletLayout title="TR_NAV_TRADE" isSubpage account={selectedAccount}>
+export const CoinmarketLayout = ({ children }: CoinmarketLayoutProps) => {
+    const routeName = useSelector(selectRouteName);
+
+    return (
         <CoinmarketWrapper>
-            <WalletSubpageHeading title="TR_NAV_TRADE" />
-            <CoinmarketLayoutNavigation />
+            {!routeName?.includes(`wallet-coinmarket-exchange`) && <CoinmarketLayoutNavigation />}
             <CoinmarketFormWrapper>{children}</CoinmarketFormWrapper>
         </CoinmarketWrapper>
-    </WalletLayout>
-);
+    );
+};

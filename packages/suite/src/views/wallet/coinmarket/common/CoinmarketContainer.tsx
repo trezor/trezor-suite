@@ -7,17 +7,9 @@ import { useLayout, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectRouter } from 'src/reducers/suite/routerReducer';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common/CoinmarketFooter/CoinmarketFooter';
+import { CoinmarketLayoutHeader } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketLayoutHeader';
 
-interface CoinmarketContainerProps {
-    title?: Extract<
-        ExtendedMessageDescriptor['id'],
-        | 'TR_NAV_BUY'
-        | 'TR_NAV_SELL'
-        | 'TR_NAV_DCA'
-        | 'TR_COINMARKET_SWAP'
-        | 'TR_COINMARKET_LAST_TRANSACTIONS'
-    >;
-    backRoute?: Extract<Route['name'], `wallet-coinmarket-${string}`>;
+export interface CoinmarketContainerProps extends CoinmarketContainerCommonProps {
     SectionComponent: ComponentType<UseCoinmarketProps>;
 }
 
@@ -50,13 +42,13 @@ export const CoinmarketContainer = ({
     useLayout(pageTitle, () => <PageHeader backRoute={backRoute ?? fallbackBackRoute} />);
 
     if (selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="TR_NAV_TRADE" isSubpage account={selectedAccount} />;
+        return <CoinmarketLayoutHeader title={title} backRoute={backRoute} />;
     }
 
     return (
-        <>
+        <CoinmarketLayoutHeader title={title} backRoute={backRoute}>
             <SectionComponent selectedAccount={selectedAccount} />
             <CoinmarketFooter />
-        </>
+        </CoinmarketLayoutHeader>
     );
 };

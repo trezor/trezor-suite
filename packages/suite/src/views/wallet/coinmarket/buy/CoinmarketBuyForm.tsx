@@ -9,7 +9,7 @@ const CoinmarketBuyComponent = ({ selectedAccount }: UseCoinmarketProps) => {
     const coinmarketBuyContextValues = useCoinmarketBuyForm({ selectedAccount });
 
     return (
-        <CoinmarketLayout selectedAccount={selectedAccount}>
+        <CoinmarketLayout>
             <CoinmarketFormContext.Provider value={coinmarketBuyContextValues}>
                 <CoinmarketFormLayout />
             </CoinmarketFormContext.Provider>
@@ -18,5 +18,8 @@ const CoinmarketBuyComponent = ({ selectedAccount }: UseCoinmarketProps) => {
 };
 
 export const CoinmarketBuyForm = () => (
-    <CoinmarketContainer title="TR_NAV_BUY" SectionComponent={CoinmarketBuyComponent} />
+    <CoinmarketContainer
+        title="TR_COINMARKET_BUY_AND_SELL"
+        SectionComponent={CoinmarketBuyComponent}
+    />
 );
