@@ -1,6 +1,9 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-export const COINS: Record<NetworkSymbol, string> = {
+// These coins are not supported in Suite, but exist in Trezor Connect
+export type LegacyNetworkSymbol = 'eos' | 'nem' | 'xlm' | 'xtz';
+
+export const COINS: Record<NetworkSymbol | LegacyNetworkSymbol, string> = {
     ada: require('../../images/coins/ada.svg'),
     bch: require('../../images/coins/bch.svg'),
     bnb: require('../../images/coins/bnb.svg'),
@@ -10,11 +13,13 @@ export const COINS: Record<NetworkSymbol, string> = {
     dgb: require('../../images/coins/dgb.svg'),
     doge: require('../../images/coins/doge.svg'),
     dsol: require('../../images/coins/dsol.svg'),
+    eos: require('../../images/coins/eos.svg'),
     etc: require('../../images/coins/etc.svg'),
     eth: require('../../images/coins/eth.svg'),
     ltc: require('../../images/coins/ltc.svg'),
     op: require('../../images/coins/op.svg'),
     pol: require('../../images/coins/pol.svg'),
+    nem: require('../../images/coins/nem.svg'),
     nmc: require('../../images/coins/nmc.svg'),
     regtest: require('../../images/coins/btc_test.svg'),
     sol: require('../../images/coins/sol.svg'),
@@ -24,6 +29,8 @@ export const COINS: Record<NetworkSymbol, string> = {
     tsep: require('../../images/coins/tsep.svg'),
     txrp: require('../../images/coins/txrp.svg'),
     vtc: require('../../images/coins/vtc.svg'),
+    xlm: require('../../images/coins/xlm.svg'),
     xrp: require('../../images/coins/xrp.svg'),
+    xtz: require('../../images/coins/xtz.svg'),
     zec: require('../../images/coins/zec.svg'),
 };
