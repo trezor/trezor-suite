@@ -53,6 +53,30 @@ function validateStaticSessionId(input: unknown): StaticSessionId {
         'DeviceState: invalid staticSessionId: ' + input,
     );
 }
+// validate expected state from method parameter.
+// it could be undefined
+function validateDeviceState(input: unknown): DeviceState | undefined {
+    if (typeof input === 'string') {
+        return { staticSessionId: validateStaticSessionId(input) };
+    }
+    if (input && typeof input === 'object') {
+        const state: DeviceState = {};
+        if ('staticSessionId' in input) {
+            state.staticSessionId = validateStaticSessionId(input.staticSessionId);
+        }
+        if ('sessionId' in input && typeof input.sessionId === 'string') {
+            state.sessionId = input.sessionId;
+        }
+        if ('deriveCardano' in input && typeof input.deriveCardano === 'boolean') {
+            state.deriveCardano = input.deriveCardano;
+        }
+
+        return state;
+    }
+
+    return undefined;
+}
+
 export abstract class AbstractMethod<Name extends CallMethodPayload['method'], Params = undefined> {
     responseID: number;
 
@@ -131,20 +155,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.payload = payload;
         this.responseID = message.id || 0;
         this.devicePath = payload.device?.path;
-
-        // expected state from method parameter.
-        // it could be undefined
-        this.deviceState =
-            // eslint-disable-next-line no-nested-ternary
-            typeof payload.device?.state === 'string'
-                ? { staticSessionId: validateStaticSessionId(payload.device.state) }
-                : payload.device?.state?.staticSessionId
-                  ? {
-                        staticSessionId: validateStaticSessionId(
-                            payload.device.state.staticSessionId,
-                        ),
-                    }
-                  : undefined;
+        this.deviceState = validateDeviceState(payload.device?.state);
         this.hasExpectedDeviceState = payload.device
             ? Object.prototype.hasOwnProperty.call(payload.device, 'state')
             : false;
