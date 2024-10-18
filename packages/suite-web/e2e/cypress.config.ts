@@ -158,7 +158,7 @@ export default defineConfig({
                     return null;
                 },
                 stealBridgeSession: async () => {
-                    const bridge = new BridgeTransport({ messages });
+                    const bridge = new BridgeTransport({ messages, id: 'foo-bar' });
                     await bridge.init();
                     const enumerateRes = await bridge.enumerate();
                     if (!enumerateRes.success) return null;

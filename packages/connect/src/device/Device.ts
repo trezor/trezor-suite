@@ -180,7 +180,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     static fromDescriptor(transport: Transport, originalDescriptor: Descriptor) {
-        const descriptor = { ...originalDescriptor, session: null };
+        const descriptor = { ...originalDescriptor, session: null, sessionOwner: undefined };
         try {
             const device: Device = new Device(transport, descriptor);
 
@@ -258,6 +258,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             if (releaseResponse.success) {
                 this.transportSession = null;
                 this.originalDescriptor.session = null;
+                this.originalDescriptor.sessionOwner = undefined;
             }
         }
     }
@@ -940,6 +941,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     updateDescriptor(descriptor: Descriptor) {
         this.originalDescriptor = {
             session: descriptor.session,
+            sessionOwner: descriptor.sessionOwner,
             path: descriptor.path,
             product: descriptor.product,
             type: descriptor.type,
@@ -979,6 +981,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const base = {
             path,
             name,
+            descriptor: this.originalDescriptor,
         };
         if (this.unreadableError) {
             return {
@@ -993,6 +996,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 ...base,
                 type: 'unacquired',
                 label: 'Unacquired device',
+                name: this.name,
+                // @ts-expect-error
+                sessionOwner: this.originalDescriptor.sessionOwner,
             };
         }
         const defaultLabel = 'My Trezor';
