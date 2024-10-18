@@ -4,6 +4,7 @@ import { Translation, TrezorLink } from 'src/components/suite';
 import { variables, Button, CollapsibleBox, useElevation } from '@trezor/components';
 import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 import TrezorConnect from '@trezor/connect';
+import type TrezorConnectWeb from '@trezor/connect-web';
 import { isAndroid } from '@trezor/env-utils';
 import { Elevation, mapElevationToBorder } from '@trezor/theme';
 
@@ -134,7 +135,7 @@ export const TroubleshootingTips = ({
                 <StyledButton
                     variant="tertiary"
                     data-testid="@onboarding/try-bridge-button"
-                    onClick={() => TrezorConnect.disableWebUSB()}
+                    onClick={() => (TrezorConnect as typeof TrezorConnectWeb).disableWebUSB()}
                 >
                     <Translation id="TR_DISABLE_WEBUSB_TRY_BRIDGE" />
                 </StyledButton>
