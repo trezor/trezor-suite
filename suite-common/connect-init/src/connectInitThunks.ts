@@ -11,8 +11,6 @@ import { deviceConnectThunks } from '@suite-common/wallet-core';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { isDesktop, isNative } from '@trezor/env-utils';
 
-import { cardanoConnectPatch } from './cardanoConnectPatch';
-
 const CONNECT_INIT_MODULE = '@common/connect-init';
 
 // If you are looking where connectInitSettings is defined, it is defined in packages/suite/src/support/extraDependencies.ts
@@ -61,54 +59,53 @@ export const connectInitThunk = createThunk(
 
         const synchronize = getSynchronize();
 
-        const wrappedMethods: Array<keyof typeof TrezorConnect> = [
-            'applySettings',
-            'authenticateDevice',
-            'authorizeCoinjoin',
-            'backupDevice',
-            'cancelCoinjoinAuthorization',
-            'cardanoGetAddress',
-            'cardanoGetPublicKey',
-            'cardanoSignTransaction',
-            'changePin',
-            'checkFirmwareAuthenticity',
-            'cipherKeyValue',
-            'ethereumGetAddress',
-            'ethereumSignTransaction',
-            'getAddress',
-            'getDeviceState',
-            'getFeatures',
-            'getOwnershipProof',
-            'getPublicKey',
-            'pushTransaction',
-            'rebootToBootloader',
-            'recoveryDevice',
-            'resetDevice',
-            'rippleGetAddress',
-            'rippleSignTransaction',
-            'setBusy',
-            'showDeviceTutorial',
-            'signTransaction',
-            'solanaGetAddress',
-            'solanaSignTransaction',
-            'unlockPath',
-            'wipeDevice',
-        ] as const;
+        Object.keys(TrezorConnect)
+            .filter(
+                key =>
+                    ![
+                        'on',
+                        'off',
+                        'init',
+                        'manifest',
+                        'cancel',
+                        'uiResponse',
+                        'dispose',
+                        'requestWebUSBDevice',
+                        'disableWebUSB',
+                        'renderWebUSBButton',
+                        'removeAllListeners',
+                    ].includes(key) &&
+                    // blockchain methods don't need lockDevice anyway
+                    !key.startsWith('blockchain'),
+            )
+            .forEach(key => {
+                // typescript complains about params and return type, need to be "any"
+                const original: any = TrezorConnect[key as keyof typeof TrezorConnect];
+                if (!original) return;
 
-        wrappedMethods.forEach(key => {
-            // typescript complains about params and return type, need to be "any"
-            const original: any = TrezorConnect[key];
-            if (!original) return;
-            (TrezorConnect[key] as any) = async (params: any) => {
-                dispatch(lockDevice(true));
-                const result = await synchronize(() => original(params));
-                dispatch(lockDevice(false));
+                // @ts-expect-error
+                TrezorConnect[key] = async (params: any) => {
+                    const infoResult = await original({ ...params, __info: true });
+                    const useWrapped = infoResult.success && infoResult.payload.useDevice;
 
-                return result;
-            };
-        });
+                    if (!useWrapped) {
+                        return original(params);
+                    }
 
-        cardanoConnectPatch(getEnabledNetworks);
+                    const enabledNetworks = getEnabledNetworks();
+                    const cardanoEnabled =
+                        infoResult.payload.useDeviceState &&
+                        !!enabledNetworks.find(a => a === 'ada' || a === 'tada');
+
+                    dispatch(lockDevice(true));
+                    const result = await synchronize(() =>
+                        original({ ...params, useCardanoDerivation: cardanoEnabled }),
+                    );
+                    dispatch(lockDevice(false));
+
+                    return result;
+                };
+            });
 
         // note:
         // this way, for local development you will get http://localhost:8000/static/connect/workers/sessions-background-sharedworker.js which is still the not-shared shared-worker

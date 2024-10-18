@@ -47,7 +47,9 @@ describe('buttonRequest middleware', () => {
         await store.dispatch(connectInitThunk());
         const call = store.dispatch(deviceSettingsActions.changePin({ remove: false }));
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
+
         // fake few ui events, just like when user is changing PIN
+        await Promise.resolve();
         emitTestEvent(UI_EVENT, {
             type: UI.REQUEST_BUTTON,
             payload: { code: 'ButtonRequest_ProtectCall' },
