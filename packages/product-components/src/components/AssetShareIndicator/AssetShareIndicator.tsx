@@ -4,6 +4,7 @@ import styled, { useTheme } from 'styled-components';
 import { coinsColors } from '@trezor/theme';
 import { CoinLogo, CoinLogoProps } from '../CoinLogo/CoinLogo';
 import { motionEasing } from '@trezor/components';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 const Container = styled.div`
     position: relative;
@@ -16,6 +17,7 @@ const Container = styled.div`
 `;
 
 export interface AssetShareIndicatorProps extends CoinLogoProps {
+    symbol: NetworkSymbol;
     percentageShare?: number;
 }
 
