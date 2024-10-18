@@ -42,27 +42,57 @@ const deviceReducer = prepareDeviceReducer(extraDependencies);
 const TrezorConnect = testMocks.getTrezorConnectMock();
 
 const setTrezorConnectFixtures = (fixture: any) => {
-    jest.spyOn(TrezorConnect, 'getFeatures').mockImplementation(
-        () =>
+    jest.spyOn(TrezorConnect, 'getFeatures').mockImplementation((params: any) => {
+        if (params.__info) {
+            return {
+                success: true,
+                payload: {
+                    useDevice: true,
+                },
+            };
+        }
+
+        return (
             fixture || {
                 success: true,
-            },
-    );
-    jest.spyOn(TrezorConnect, 'getDeviceState').mockImplementation(
-        ({ device }: any) =>
+            }
+        );
+    });
+    jest.spyOn(TrezorConnect, 'getDeviceState').mockImplementation((params: any) => {
+        if (params.__info) {
+            return {
+                success: true,
+                payload: {
+                    useDevice: true,
+                },
+            };
+        }
+
+        return (
             fixture || {
                 success: true,
                 payload: {
-                    state: `state@device-id:${device ? device.instance : undefined}`,
+                    state: `state@device-id:${params.device ? params.device.instance : undefined}`,
                 },
-            },
-    );
-    jest.spyOn(TrezorConnect, 'applySettings').mockImplementation(
-        () =>
+            }
+        );
+    });
+    jest.spyOn(TrezorConnect, 'applySettings').mockImplementation(params => {
+        if (params.__info) {
+            return {
+                success: true,
+                payload: {
+                    useDevice: true,
+                },
+            };
+        }
+
+        return (
             fixture || {
                 success: true,
-            },
-    );
+            }
+        );
+    });
 };
 
 type SuiteState = ReturnType<typeof suiteReducer>;

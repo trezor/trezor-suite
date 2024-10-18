@@ -18,8 +18,18 @@ const getNextFixture = (_methodName: string) => {
 };
 
 const result = (methodName: string, data: any) =>
-    jest.fn(params =>
-        Promise.resolve({
+    jest.fn(params => {
+        if (params.__info) {
+            // todo: calling actual produces neverending loop
+            return Promise.resolve({
+                success: true,
+                payload: {
+                    useDevice: true,
+                },
+            });
+        }
+
+        return Promise.resolve({
             success: true,
             payload: { _comment: 'Default mock payload' },
             ...data,
@@ -27,8 +37,8 @@ const result = (methodName: string, data: any) =>
             _method: methodName,
             _fixtures: fixtures,
             _params: params,
-        }),
-    );
+        });
+    });
 
 const ERROR_RESULT = { success: false, payload: { error: 'Default mock error' } };
 
