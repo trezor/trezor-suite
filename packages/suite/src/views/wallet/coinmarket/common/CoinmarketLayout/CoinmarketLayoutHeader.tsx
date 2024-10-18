@@ -5,6 +5,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
 import { useDispatch, useLayout, useSelector, useTranslation } from 'src/hooks/suite';
+import { selectRouter } from 'src/reducers/suite/routerReducer';
 import type { CoinmarketContainerCommonProps } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketLayoutNavigationItem } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketLayoutNavigation/CoinmarketLayoutNavigationItem';
 
@@ -12,10 +13,13 @@ interface CoinmarketLayoutHeaderProps extends PropsWithChildren, CoinmarketConta
 
 export const CoinmarketLayoutHeader = ({
     title,
-    backRoute = 'wallet-index',
+    backRoute,
     children,
 }: CoinmarketLayoutHeaderProps) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const {
+        settingsBackRoute: { name: currentBackRouteName },
+    } = useSelector(selectRouter);
     const { translationString } = useTranslation();
     const dispatch = useDispatch();
     const fallbackTitle = useMemo(() => title || 'TR_NAV_TRADE', [title]);
@@ -23,11 +27,12 @@ export const CoinmarketLayoutHeader = ({
 
     const translatedTitle = translationString(fallbackTitle);
     const pageTitle = `Trezor Suite | ${translatedTitle}`;
+    const backRouteFallback = backRoute || currentBackRouteName;
 
     const handleBackClick = useCallback(() => {
         if (selectedAccount.status === 'loaded') {
             dispatch(
-                goto(backRoute, {
+                goto(backRouteFallback, {
                     params: {
                         symbol: selectedAccount.account.symbol,
                         accountIndex: selectedAccount.account.index,
@@ -39,12 +44,12 @@ export const CoinmarketLayoutHeader = ({
             return;
         }
 
-        dispatch(goto(backRoute));
-    }, [backRoute, selectedAccount, dispatch]);
+        dispatch(goto(backRouteFallback));
+    }, [backRouteFallback, selectedAccount, dispatch]);
 
     const CoinmarketPageHeader = useCallback(
         () => (
-            <PageHeader backRoute={backRoute}>
+            <PageHeader backRoute={backRouteFallback}>
                 <Row width="100%" gap={spacings.md}>
                     <IconButton
                         icon="caretLeft"
@@ -65,7 +70,7 @@ export const CoinmarketLayoutHeader = ({
                 </Row>
             </PageHeader>
         ),
-        [title, backRoute, fallbackTitle, handleBackClick],
+        [title, backRouteFallback, fallbackTitle, handleBackClick],
     );
 
     useLayout(pageTitle, CoinmarketPageHeader);
