@@ -1,6 +1,6 @@
 import { TSchema, Kind, OptionalKind } from '@sinclair/typebox';
 
-import type TrezorConnect from '@trezor/connect-web';
+import type { TrezorConnect } from '@trezor/connect-web';
 
 import {
     MethodState,
@@ -165,7 +165,7 @@ export const getMethodState = (methodConfig?: Partial<MethodState>) => {
 };
 
 // Get method state from TypeBox schema
-export const getMethodStateFromSchema = (method: keyof typeof TrezorConnect, schema: TSchema) => {
+export const getMethodStateFromSchema = (method: keyof TrezorConnect, schema: TSchema) => {
     return {
         ...getMethodState({
             name: method,

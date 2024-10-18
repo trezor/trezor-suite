@@ -1,7 +1,7 @@
 import { TSchema } from '@sinclair/typebox';
 import JSON5 from 'json5';
 
-import TrezorConnect from '@trezor/connect-web';
+import TrezorConnect, { TrezorConnect as TrezorConnectType } from '@trezor/connect-web';
 import TrezorConnectMobile from '@trezor/connect-mobile';
 import { getDeepValue } from '@trezor/schema-utils/src/utils';
 
@@ -20,7 +20,7 @@ export const SET_METHOD_PROCESSING = 'method_set_processing';
 
 export type MethodAction =
     | { type: typeof SET_METHOD; methodConfig: any }
-    | { type: typeof SET_SCHEMA; method: keyof typeof TrezorConnect; schema: TSchema }
+    | { type: typeof SET_SCHEMA; method: keyof TrezorConnectType; schema: TSchema }
     | { type: typeof FIELD_CHANGE; field: Field<any>; value: any }
     | { type: typeof FIELD_DATA_CHANGE; field: Field<any>; data: any }
     | { type: typeof ADD_BATCH; field: Field<any>; item: any }

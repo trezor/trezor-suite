@@ -5,6 +5,17 @@
 
 import type { ConnectSettingsPublic, Manifest } from '../settings';
 
-export declare function init(
-    settings: { manifest: Manifest } & Partial<ConnectSettingsPublic>,
+// explicitly don't overlap types
+export type InitFullSettings<ExtraSettingsType extends Record<string, any>> = {
+    manifest: Manifest;
+} & Partial<
+    Omit<ConnectSettingsPublic, 'manifest'> & Omit<ExtraSettingsType, keyof ConnectSettingsPublic>
+>;
+
+export type InitType<ExtraSettingsType extends Record<string, any>> = (
+    settings: InitFullSettings<ExtraSettingsType>,
+) => Promise<void>;
+
+export declare function init<ExtraSettingsType extends Record<string, any>>(
+    settings: InitFullSettings<ExtraSettingsType>,
 ): Promise<void>;
