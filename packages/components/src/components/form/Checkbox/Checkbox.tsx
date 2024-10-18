@@ -206,12 +206,14 @@ export const Checkbox = ({
 
     return (
         <Container
+            // @ts-expect-error
+            disabled={isDisabled}
+            data-testid={dataTest}
             $isDisabled={isDisabled}
             $labelAlignment={labelAlignment}
             $verticalAlignment={verticalAlignment}
             onClick={isDisabled ? undefined : onClick}
             onKeyUp={handleKeyUp}
-            data-testid={dataTest}
             className={className}
             {...frameProps}
         >
