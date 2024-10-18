@@ -31,11 +31,11 @@ describe('bridge', () => {
         const brideSpy = jest.spyOn(bridge, 'emit');
         bridge.listen();
         await new Promise(resolve => setTimeout(resolve, 100));
-        expect(brideSpy).toHaveBeenCalledWith('transport-update', {
-            descriptor: { ...expectedDescriptor, session: null },
-            type: 'connected',
+        expect(brideSpy).toHaveBeenCalledWith('transport-device_connected', {
+            ...expectedDescriptor,
+            session: null,
         });
-        bridge.removeAllListeners('transport-update');
+        bridge.removeAllListeners('transport-device_connected');
         jest.clearAllMocks();
     });
 });

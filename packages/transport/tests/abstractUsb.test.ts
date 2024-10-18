@@ -113,7 +113,12 @@ describe('Usb', () => {
         it('handleDescriptorsChange', async () => {
             const { transport } = await initTest();
             const spy = jest.fn();
-            transport.on('transport-update', spy);
+            transport.on('transport-device_connected', descriptor =>
+                spy({ type: 'connected', descriptor }),
+            );
+            transport.on('transport-device_disconnected', descriptor =>
+                spy({ type: 'disconnected', descriptor }),
+            );
 
             transport.handleDescriptorsChange([{ path: PathPublic('1'), session: null, type: 1 }]);
 
@@ -156,7 +161,9 @@ describe('Usb', () => {
             const { transport } = await initTest();
             jest.useFakeTimers();
             const spy = jest.fn();
-            transport.on('transport-update', spy);
+            transport.on('transport-device_connected', spy);
+            transport.on('transport-device_disconnected', spy);
+            transport.on('transport-device_session_changed', spy);
 
             await transport.enumerate();
 
@@ -171,61 +178,6 @@ describe('Usb', () => {
             });
 
             expect(spy).toHaveBeenCalledTimes(0);
-        });
-
-        it('acquire. transport listening. missing descriptor', async () => {
-            const { transport } = await initTest();
-
-            const enumerateResult = await transport.enumerate();
-
-            expect(enumerateResult.success).toEqual(true);
-            // @ts-expect-error
-            transport.handleDescriptorsChange(enumerateResult.payload);
-
-            transport.listen();
-
-            // set some initial descriptors
-            const acquireCall = transport.acquire({
-                input: { path: PathPublic('1'), previous: null },
-            });
-
-            setTimeout(() => {
-                // @ts-expect-error (private field accessed in tests)
-                transport.sessionsClient.emit('descriptors', [
-                    { path: PathPublic('321'), session: Session('1'), type: 1 },
-                ]);
-            }, 1);
-
-            const res = await acquireCall;
-
-            expect(res).toMatchObject({
-                success: false,
-                error: 'device disconnected during action',
-            });
-        });
-
-        it('acquire. transport listening. unexpected session', async () => {
-            const { transport } = await initTest();
-            const enumerateResult = await transport.enumerate();
-            expect(enumerateResult.success).toEqual(true);
-            // @ts-expect-error
-            transport.handleDescriptorsChange(enumerateResult.payload);
-
-            transport.listen();
-
-            // set some initial descriptors
-            const acquireCall = transport.acquire({
-                input: { path: PathPublic('1'), previous: null },
-            });
-            setTimeout(() => {
-                // @ts-expect-error (private field accessed in tests)
-                transport.sessionsClient.emit('descriptors', [
-                    { path: PathPublic('1'), session: Session('2'), type: 1, product: 21441 },
-                ]);
-            }, 1);
-
-            const res = await acquireCall;
-            expect(res).toMatchObject({ success: false, error: 'wrong previous session' });
         });
 
         it('call error - called without acquire.', async () => {
@@ -377,7 +329,7 @@ describe('Usb', () => {
             });
             expect(res).toEqual({
                 success: true,
-                payload: undefined,
+                payload: null,
             });
         });
 

@@ -93,16 +93,14 @@ describe('bridge', () => {
             session: Session('1'),
         });
 
-        expect(bride1spy).toHaveBeenLastCalledWith('transport-update', {
-            type: 'acquired',
-            subtype: 'here',
-            descriptor: expectedDescriptor1,
-        });
-        expect(bride2spy).toHaveBeenLastCalledWith('transport-update', {
-            type: 'acquired',
-            subtype: 'elsewhere',
-            descriptor: expectedDescriptor1,
-        });
+        expect(bride1spy).toHaveBeenLastCalledWith(
+            'transport-device_session_changed',
+            expectedDescriptor1,
+        );
+        expect(bride2spy).toHaveBeenLastCalledWith(
+            'transport-device_session_changed',
+            expectedDescriptor1,
+        );
 
         expect(session1.success).toBe(true);
         if (!session1.success) {
@@ -118,17 +116,15 @@ describe('bridge', () => {
             session: null,
         });
 
-        expect(bride1spy).toHaveBeenLastCalledWith('transport-update', {
-            type: 'released',
-            subtype: 'here',
-            descriptor: expectedDescriptor2,
-        });
+        expect(bride1spy).toHaveBeenLastCalledWith(
+            'transport-device_session_changed',
+            expectedDescriptor2,
+        );
 
-        expect(bride2spy).toHaveBeenLastCalledWith('transport-update', {
-            type: 'released',
-            subtype: 'elsewhere',
-            descriptor: expectedDescriptor2,
-        });
+        expect(bride2spy).toHaveBeenLastCalledWith(
+            'transport-device_session_changed',
+            expectedDescriptor2,
+        );
 
         const session2 = await bridge2.acquire({
             input: { previous: null, path: descriptors[0].path },
@@ -167,17 +163,15 @@ describe('bridge', () => {
 
         await wait(); // wait for event to be propagated
 
-        expect(bride1spy).toHaveBeenLastCalledWith('transport-update', {
-            type: 'acquired',
-            subtype: 'elsewhere',
-            descriptor: expectedDescriptor,
-        });
+        expect(bride1spy).toHaveBeenLastCalledWith(
+            'transport-device_session_changed',
+            expectedDescriptor,
+        );
 
-        expect(bride2spy).toHaveBeenLastCalledWith('transport-update', {
-            type: 'acquired',
-            subtype: 'here',
-            descriptor: expectedDescriptor,
-        });
+        expect(bride2spy).toHaveBeenLastCalledWith(
+            'transport-device_session_changed',
+            expectedDescriptor,
+        );
     });
 
     // todo: udp not implemented correctly yet in new bridge
@@ -261,24 +255,32 @@ describe('bridge', () => {
         ]);
     });
 
-    test(`connect/disconnect device - get transport-update events`, async () => {
+    test(`connect/disconnect device - get transport update events`, async () => {
         const eventSpy = jest.fn();
-        bridge1.on('transport-update', eventSpy);
+        bridge1.on('transport-device_connected', eventSpy);
+        bridge1.on('transport-device_disconnected', eventSpy);
+        bridge1.on('transport-device_session_changed', eventSpy);
         await TrezorUserEnvLink.stopEmu();
 
         expect(eventSpy).toHaveBeenCalledTimes(0);
 
         bridge1.listen();
 
-        const waitForUpdateEvent = () =>
+        const waitForEvent = (event: Parameters<(typeof bridge1)['once']>[0]) =>
             new Promise(resolve => {
-                bridge1.once('transport-update', resolve);
+                bridge1.once(event, resolve);
             });
 
-        await Promise.all([TrezorUserEnvLink.startEmu(emulatorStartOpts), waitForUpdateEvent()]);
+        await Promise.all([
+            TrezorUserEnvLink.startEmu(emulatorStartOpts),
+            waitForEvent('transport-device_connected'),
+        ]);
         expect(eventSpy).toHaveBeenCalledTimes(1);
 
-        await Promise.all([TrezorUserEnvLink.stopEmu(), waitForUpdateEvent()]);
+        await Promise.all([
+            TrezorUserEnvLink.stopEmu(),
+            waitForEvent('transport-device_disconnected'),
+        ]);
 
         expect(eventSpy).toHaveBeenCalledTimes(2);
     });
