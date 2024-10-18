@@ -17,9 +17,19 @@ const setHashInvalid = createAction(
     }),
 );
 
-const setError = createAction(`${FIRMWARE_MODULE_PREFIX}/set-error`, (payload?: string) => ({
-    payload,
-}));
+const clearInvalidHash = createAction(
+    `${FIRMWARE_MODULE_PREFIX}/clear-invalid-hash`,
+    (payload: string) => ({
+        payload,
+    }),
+);
+
+const setFirmwareUpdateError = createAction(
+    `${FIRMWARE_MODULE_PREFIX}/set-firmware-update-error`,
+    (payload?: string) => ({
+        payload,
+    }),
+);
 
 const setTargetType = createAction(
     `${FIRMWARE_MODULE_PREFIX}/set-target-type`,
@@ -53,8 +63,9 @@ const cacheDevice = createAction(
 
 export const firmwareActions = {
     setHashInvalid,
+    clearInvalidHash,
     setStatus,
-    setError,
+    setFirmwareUpdateError,
     setTargetType,
     setIsCustomFirmware,
     resetReducer,
