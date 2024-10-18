@@ -9625,6 +9625,7 @@ __metadata:
     "@suite-native/module-authorize-device": "workspace:*"
     "@suite-native/module-connect-popup": "workspace:*"
     "@suite-native/module-dev-utils": "workspace:*"
+    "@suite-native/module-device-settings": "workspace:*"
     "@suite-native/module-home": "workspace:*"
     "@suite-native/module-onboarding": "workspace:*"
     "@suite-native/module-receive": "workspace:*"
@@ -9900,9 +9901,7 @@ __metadata:
     "@react-navigation/native": "npm:6.1.18"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@sentry/react-native": "npm:5.33.0"
-    "@suite-common/icons-deprecated": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/alerts": "workspace:*"
@@ -9917,7 +9916,6 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/device-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     lottie-react-native: "npm:6.7.2"
     proxy-memoize: "npm:2.0.2"
@@ -10299,6 +10297,27 @@ __metadata:
     "@trezor/theme": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
+    react-redux: "npm:8.0.7"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/module-device-settings@workspace:*, @suite-native/module-device-settings@workspace:suite-native/module-device-settings":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-device-settings@workspace:suite-native/module-device-settings"
+  dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
+    "@react-navigation/native": "npm:6.1.18"
+    "@suite-common/icons-deprecated": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/device": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/link": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    react: "npm:18.2.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft

@@ -24,7 +24,7 @@ export const DeviceSettingsCard = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Card noPadding>
+        <Card borderColor="borderElevation1" noPadding>
             <HStack margin="sp16" spacing="sp12">
                 <Box marginVertical="sp2">
                     <Icon name={icon} size="mediumLarge" />

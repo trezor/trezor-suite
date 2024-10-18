@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { BottomSheet, VStack, Box, Button, Text } from '@suite-native/atoms';
+import { BottomSheet, Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 
@@ -27,17 +27,17 @@ export const HowToUpdateBottomSheet = ({
             <VStack spacing="sp24">
                 <VStack paddingHorizontal="sp24">
                     <Text variant="callout">
-                        <Translation id="deviceInfo.updateHowTo.subtitle" />
+                        <Translation id="moduleDeviceSettings.updateHowTo.subtitle" />
                     </Text>
                     <Box>
                         <Text color="textSubdued">
-                            <Translation id="deviceInfo.updateHowTo.lines.1" />
+                            <Translation id="moduleDeviceSettings.updateHowTo.lines.1" />
                         </Text>
                         <Text color="textSubdued">
-                            <Translation id="deviceInfo.updateHowTo.lines.2" />
+                            <Translation id="moduleDeviceSettings.updateHowTo.lines.2" />
                         </Text>
                         <Text color="textSubdued">
-                            <Translation id="deviceInfo.updateHowTo.lines.3" />
+                            <Translation id="moduleDeviceSettings.updateHowTo.lines.3" />
                         </Text>
                     </Box>
                 </VStack>
@@ -46,7 +46,7 @@ export const HowToUpdateBottomSheet = ({
                     onPress={handleHelpClick}
                     viewRight="arrowUpRight"
                 >
-                    <Translation id="deviceInfo.updateHowTo.button" />
+                    <Translation id="moduleDeviceSettings.updateHowTo.button" />
                 </Button>
             </VStack>
         </BottomSheet>
