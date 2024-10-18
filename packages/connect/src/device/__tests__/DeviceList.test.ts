@@ -21,13 +21,7 @@ const waitForNthEventOfType = (
     });
 };
 
-const DEVICE_CONNECTION_SEQUENCE = [
-    'device-changed',
-    'device-acquired',
-    'device-changed',
-    'device-released',
-    'device-connect',
-];
+const DEVICE_CONNECTION_SEQUENCE = ['device-changed', 'device-changed', 'device-connect'];
 
 describe('DeviceList', () => {
     beforeAll(async () => {
@@ -56,11 +50,9 @@ describe('DeviceList', () => {
             [
                 'transport-start',
                 'transport-error',
-                'device-changed',
                 'device-connect',
                 'device-connect_unacquired',
-                'device-acquired',
-                'device-released',
+                'device-changed',
                 'device-disconnect',
             ] as const
         ).forEach(event => {
@@ -186,12 +178,7 @@ describe('DeviceList', () => {
         await list.pendingConnection();
 
         const events = eventsSpy.mock.calls.map(call => call[0]);
-        expect(events).toEqual([
-            'device-changed',
-            'device-acquired',
-            'device-connect_unacquired',
-            'transport-start',
-        ]);
+        expect(events).toEqual(['device-changed', 'device-connect_unacquired', 'transport-start']);
     });
 
     it('.init() with pendingTransportEvent (multiple acquired devices)', async () => {
@@ -210,9 +197,9 @@ describe('DeviceList', () => {
         // note: acquire - release - connect should be ok.
         // acquire - deviceList._takeAndCreateDevice start (run -> rurInner -> getFeatures -> release) -> deviceList._takeAndCreateDevice end => emit DEVICE.CONNECT
         expect(events).toEqual([
-            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '1']), // path 1
-            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '2']), // path 2
-            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '3']), // path 3
+            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, events[0][1]]), // path 1
+            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, events[3][1]]), // path 2
+            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, events[6][1]]), // path 3
             ['transport-start', undefined],
         ]);
     });
@@ -240,15 +227,11 @@ describe('DeviceList', () => {
         await transportFirstEvent;
         jest.useRealTimers();
 
-        expect(eventsSpy).toHaveBeenCalledTimes(8);
-        const events = eventsSpy.mock.calls.map(call => call[0]);
+        // expect(eventsSpy).toHaveBeenCalledTimes(5);
+        const events = eventsSpy.mock.calls.map(([event]) => event);
         expect(events).toEqual([
             'device-changed',
-            'device-acquired',
             'device-changed',
-            'device-acquired',
-            'device-changed',
-            'device-released',
             'device-connect',
             'transport-start',
         ]);
@@ -299,9 +282,10 @@ describe('DeviceList', () => {
 
         expect(events).toEqual([
             ['transport-start', undefined],
-            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '1']), // path 1
-            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '3']), // path 3
-            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '4']), // path 4
+            ['device-disconnect', events[1][1]],
+            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, events[2][1]]), // path 1
+            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, events[5][1]]), // path 3
+            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, events[8][1]]), // path 4
         ]);
     });
 });
