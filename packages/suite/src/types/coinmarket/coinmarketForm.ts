@@ -341,6 +341,7 @@ export interface CoinmarketUseFormActionsProps<T extends CoinmarketSellExchangeF
     changeFeeLevel: (level: FeeLevel['label']) => void;
     composeRequest: SendContextValues<CoinmarketSellExchangeFormProps>['composeTransaction'];
     setAccountOnChange: (account: Account) => void;
+    setComposedLevels: (levels: PrecomposedLevels | PrecomposedLevelsCardano | undefined) => void;
 }
 
 export interface CoinmarketUseFormActionsReturnProps {
@@ -372,6 +373,7 @@ export interface CoinmarketUseComposeTransactionReturnProps
     feeInfo: FeeInfo;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     composeRequest: SendContextValues<CoinmarketSellExchangeFormProps>['composeTransaction'];
+    setComposedLevels: (levels: PrecomposedLevels | PrecomposedLevelsCardano | undefined) => void;
 }
 
 export interface CoinmarketOfferCommonProps {
