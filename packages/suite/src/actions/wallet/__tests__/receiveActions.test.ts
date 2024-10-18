@@ -148,7 +148,6 @@ describe('ReceiveActions', () => {
             const store = initStore(state);
             await store.dispatch(connectInitThunk());
             await store.dispatch(f.action());
-
             if (f.result && f.result.actions) {
                 expect(store.getActions()).toMatchObject(f.result.actions);
             }

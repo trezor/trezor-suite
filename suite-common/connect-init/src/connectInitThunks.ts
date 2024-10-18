@@ -43,10 +43,11 @@ export const connectInitThunk = createThunk(
         });
 
         TrezorConnect.on(UI_EVENT, ({ event: _, ...action }) => {
-            // dispatch event as action
+            if (action.type === 'ui-call_in_progress') {
+                dispatch(lockDevice(action.payload.value));
+            }
             dispatch(action);
         });
-
         TrezorConnect.on(TRANSPORT_EVENT, ({ event: _, ...action }) => {
             // dispatch event as action
             dispatch(action);
@@ -97,11 +98,9 @@ export const connectInitThunk = createThunk(
                         infoResult.payload.useDeviceState &&
                         !!enabledNetworks.find(a => a === 'ada' || a === 'tada');
 
-                    dispatch(lockDevice(true));
                     const result = await synchronize(() =>
                         original({ ...params, useCardanoDerivation: cardanoEnabled }),
                     );
-                    dispatch(lockDevice(false));
 
                     return result;
                 };

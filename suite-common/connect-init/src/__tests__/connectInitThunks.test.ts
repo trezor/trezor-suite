@@ -124,13 +124,13 @@ describe('TrezorConnect Actions', () => {
     it('Wrapped method', async () => {
         testMocks.setTrezorConnectFixtures();
         await store.dispatch(connectInitThunk());
-        await testMocks.getTrezorConnectMock().getFeatures();
+        const { getFeatures, emitTestEvent } = testMocks.getTrezorConnectMock();
+        await getFeatures();
+        emitTestEvent(UI_EVENT, { type: 'ui-call_in_progress', payload: { value: true } });
+
         const actions = store.getActions();
         // check actions in reversed order
-        expect(actions.pop()).toEqual({
-            type: extraDependenciesMock.actions.lockDevice.type,
-            payload: false,
-        });
+        expect(actions.pop()).toEqual({ type: 'ui-call_in_progress', payload: { value: true } });
         expect(actions.pop()).toEqual({
             type: extraDependenciesMock.actions.lockDevice.type,
             payload: true,
