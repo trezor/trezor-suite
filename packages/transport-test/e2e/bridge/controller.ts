@@ -26,6 +26,8 @@ class Controller extends TrezorUserEnvLinkClass {
     private logger: Console;
     private nodeBridge: TrezordNode | undefined = undefined;
 
+    private expectedNumOfDevices = 0;
+
     private originalApi: {
         connect: typeof TrezorUserEnvLinkClass.prototype.connect;
         startBridge: typeof TrezorUserEnvLinkClass.prototype.startBridge;
@@ -89,14 +91,23 @@ class Controller extends TrezorUserEnvLinkClass {
 
         this.startEmu = !env.USE_HW
             ? this.originalApi.startEmu
-            : () => this.waitForNumberOfDevices(1);
+            : () => {
+                  this.expectedNumOfDevices++;
+
+                  return this.waitForDevices();
+              };
 
         this.stopEmu = !env.USE_HW
             ? this.originalApi.stopEmu
-            : () => this.waitForNumberOfDevices(0);
+            : () => {
+                  this.expectedNumOfDevices--;
+
+                  return this.waitForDevices();
+              };
     }
 
-    private waitForNumberOfDevices = (expected: number) => {
+    private waitForDevices = () => {
+        const expected = this.expectedNumOfDevices;
         this.logger.log(
             `${env.USE_HW ? '[MANUAL ACTION REQUIRED] ' : ''} waiting for ${expected} device to be connected`,
         );
@@ -104,7 +115,7 @@ class Controller extends TrezorUserEnvLinkClass {
         return scheduleAction(
             async () => {
                 const devices = (await webusb.getDevices()).filter(d => d.productName === 'TREZOR');
-                if (devices.length === expected) {
+                if (devices.length >= expected) {
                     return null;
                 }
                 throw new Error('Condition not met');
