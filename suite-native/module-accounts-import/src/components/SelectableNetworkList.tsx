@@ -1,8 +1,14 @@
+import { useSelector } from 'react-redux';
+import { ReactNode } from 'react';
+
 import { SelectableNetworkItem } from '@suite-native/accounts';
 import { HeaderedCard, VStack } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { portfolioTrackerMainnets, portfolioTrackerTestnets } from '@suite-native/config';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
+import {
+    selectPortfolioTrackerMainnetNetworkSymbols,
+    selectPortfolioTrackerTestnetNetworkSymbols,
+} from '@suite-native/discovery';
+import { Translation } from '@suite-native/intl';
 
 type SelectableAssetListProps = {
     onSelectItem: (networkSymbol: NetworkSymbol) => void;
@@ -13,42 +19,37 @@ const NetworkItemSection = ({
     networks,
     onSelectItem,
 }: {
-    title: string;
+    title: ReactNode;
     networks: NetworkSymbol[];
     onSelectItem: SelectableAssetListProps['onSelectItem'];
-}) => (
-    <HeaderedCard title={title}>
-        <VStack spacing="sp24">
-            {networks.map(symbol => (
-                <SelectableNetworkItem key={symbol} symbol={symbol} onPress={onSelectItem} />
-            ))}
-        </VStack>
-    </HeaderedCard>
-);
-
-const TestnetNetworkItemSection = ({ onSelectItem }: SelectableAssetListProps) => {
-    const [isRegtestEnabled] = useFeatureFlag(FeatureFlag.IsRegtestEnabled);
-    const regtestAdjustedTestnets = isRegtestEnabled
-        ? [...portfolioTrackerTestnets, 'regtest' as NetworkSymbol]
-        : portfolioTrackerTestnets;
-
+}) => {
     return (
-        <NetworkItemSection
-            title="Testnet coins (have no value – for testing purposes only)"
-            networks={regtestAdjustedTestnets}
-            onSelectItem={onSelectItem}
-        />
+        <HeaderedCard title={title}>
+            <VStack spacing="sp24">
+                {networks.map(symbol => (
+                    <SelectableNetworkItem key={symbol} symbol={symbol} onPress={onSelectItem} />
+                ))}
+            </VStack>
+        </HeaderedCard>
     );
 };
 
-export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps) => (
-    <VStack spacing="sp24">
-        <NetworkItemSection
-            title="Select a coin to sync"
-            networks={portfolioTrackerMainnets}
-            onSelectItem={onSelectItem}
-        />
+export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps) => {
+    const portfolioMainnets = useSelector(selectPortfolioTrackerMainnetNetworkSymbols);
+    const portfolioTestnets = useSelector(selectPortfolioTrackerTestnetNetworkSymbols);
 
-        <TestnetNetworkItemSection onSelectItem={onSelectItem} />
-    </VStack>
-);
+    return (
+        <VStack spacing="sp24">
+            <NetworkItemSection
+                title={<Translation id="moduleAccountImport.coinList.mainnets" />}
+                networks={portfolioMainnets}
+                onSelectItem={onSelectItem}
+            />
+            <NetworkItemSection
+                title={<Translation id="moduleAccountImport.coinList.testnets" />}
+                networks={portfolioTestnets}
+                onSelectItem={onSelectItem}
+            />
+        </VStack>
+    );
+};

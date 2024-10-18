@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { pipe } from '@mobily/ts-belt';
-import { memoizeWithArgs } from 'proxy-memoize';
+import { memoize, memoizeWithArgs } from 'proxy-memoize';
 
 import {
     DeviceRootState,
@@ -11,6 +11,8 @@ import {
     filterBlacklistedNetworks,
     filterTestnetNetworks,
     isDetoxTestBuild,
+    portfolioTrackerMainnets,
+    portfolioTrackerTestnets,
     sortNetworks,
 } from '@suite-native/config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -86,23 +88,29 @@ export const selectAreTestnetsEnabled = (state: DiscoveryConfigSliceRootState) =
 export const selectDiscoveryInfo = (state: DiscoveryConfigSliceRootState) =>
     state.discoveryConfig.discoveryInfo;
 
+export const selectFeatureFlagEnabledNetworkSymbols = memoize((state: FeatureFlagsRootState) => {
+    const isPolygonEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsPolygonEnabled);
+    const isBscEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsBscEnabled);
+
+    const allowlist: NetworkSymbol[] = [];
+
+    if (isPolygonEnabled) {
+        allowlist.push('pol');
+    }
+    if (isBscEnabled) {
+        allowlist.push('bnb');
+    }
+
+    return allowlist;
+});
+
 export const selectDiscoverySupportedNetworks = memoizeWithArgs(
     (
         state: DeviceRootState & DiscoveryConfigSliceRootState & FeatureFlagsRootState,
         forcedAreTestnetsEnabled?: boolean,
     ) => {
         const areTestnetsEnabled = forcedAreTestnetsEnabled ?? selectAreTestnetsEnabled(state);
-        const isPolygonEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsPolygonEnabled);
-        const isBscEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsBscEnabled);
-
-        const allowlist: NetworkSymbol[] = [];
-
-        if (isPolygonEnabled) {
-            allowlist.push('pol');
-        }
-        if (isBscEnabled) {
-            allowlist.push('bnb');
-        }
+        const allowlist = selectFeatureFlagEnabledNetworkSymbols(state);
 
         return pipe(
             selectDeviceSupportedNetworks(state),
@@ -127,6 +135,31 @@ export const selectDiscoveryNetworkSymbols = memoizeWithArgs(
     },
     { size: 2 },
 );
+
+export const selectPortfolioTrackerMainnetNetworkSymbols = memoize(
+    (state: FeatureFlagsRootState) => {
+        const allowlist = selectFeatureFlagEnabledNetworkSymbols(state);
+
+        return [...portfolioTrackerMainnets, ...allowlist];
+    },
+);
+
+export const selectPortfolioTrackerTestnetNetworkSymbols = memoize(
+    (state: FeatureFlagsRootState) => {
+        const isRegtestEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsRegtestEnabled);
+
+        return isRegtestEnabled
+            ? [...portfolioTrackerTestnets, 'regtest' as NetworkSymbol]
+            : portfolioTrackerTestnets;
+    },
+);
+
+export const selectPortfolioTrackerNetworkSymbols = memoize((state: FeatureFlagsRootState) => {
+    const mainnets = selectPortfolioTrackerMainnetNetworkSymbols(state);
+    const testnets = selectPortfolioTrackerTestnetNetworkSymbols(state);
+
+    return [...mainnets, ...testnets];
+});
 
 export const selectIsCoinEnablingInitFinished = (
     state: DiscoveryConfigSliceRootState & FeatureFlagsRootState,
