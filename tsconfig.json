@@ -89,6 +89,9 @@
         {
             "path": "suite-native/module-dev-utils"
         },
+        {
+            "path": "suite-native/module-device-settings"
+        },
         { "path": "suite-native/module-home" },
         {
             "path": "suite-native/module-onboarding"

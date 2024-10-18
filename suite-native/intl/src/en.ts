@@ -357,6 +357,28 @@ export const en = {
         },
         confirmOnDeviceSheetTitle: 'Confirm on Trezor',
     },
+    moduleDeviceSettings: {
+        title: 'Device info', // TODO: Change to "Device settings" once something may be changed
+        firmware: {
+            title: 'Firmware',
+            version: 'Version',
+            type: 'Type',
+            typeUniversal: 'Universal',
+            typeBitcoinOnly: 'Bitcoin-only',
+            upToDate: 'You’re all up to date',
+            newVersionAvailable: 'New version available ({version})',
+        },
+        updateHowTo: {
+            title: 'How to update firmware',
+            subtitle: 'Follow these steps:',
+            lines: {
+                1: '1. Connect Trezor to Desktop Suite',
+                2: '2. Navigate to Settings menu',
+                3: '3. Install new firmware',
+            },
+            button: 'Learn more @ Trezor.io',
+        },
+    },
     moduleReceive: {
         screenTitle: '{coinSymbol} Receive address',
         accountNotFound: 'Account {accountKey} not found.',
@@ -767,28 +789,6 @@ export const en = {
         upToDateFw: 'The firmware is up to date.',
         outdatedFw: 'The firmware is outdated.',
         goToAccessories: 'Get swag for your device @ Trezor Shop',
-        updateHowTo: {
-            title: 'How to update firmware',
-            subtitle: 'Follow these steps:',
-            lines: {
-                1: '1. Connect Trezor to Desktop Suite',
-                2: '2. Navigate to Settings menu',
-                3: '3. Install new firmware',
-            },
-            button: 'Learn more @ Trezor.io',
-        },
-    },
-    deviceSettings: {
-        title: 'Device info', // TODO: Change to "Device settings" once something may be changed
-        firmware: {
-            title: 'Firmware',
-            version: 'Version',
-            type: 'Type',
-            typeUniversal: 'Universal',
-            typeBitcoinOnly: 'Bitcoin-only',
-            upToDate: 'You’re all up to date',
-            newVersionAvailable: 'New version available ({version})',
-        },
     },
     qrCode: {
         addressCopied: 'Address copied',

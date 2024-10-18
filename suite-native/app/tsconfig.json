@@ -53,6 +53,7 @@
         { "path": "../module-authorize-device" },
         { "path": "../module-connect-popup" },
         { "path": "../module-dev-utils" },
+        { "path": "../module-device-settings" },
         { "path": "../module-home" },
         { "path": "../module-onboarding" },
         { "path": "../module-receive" },
