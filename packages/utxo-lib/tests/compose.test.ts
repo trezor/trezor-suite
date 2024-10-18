@@ -2,19 +2,20 @@ import { composeTx } from '../src';
 import * as NETWORKS from '../src/networks';
 
 import { verifyTxBytes } from './compose.utils';
-import fixtures from './__fixtures__/compose';
-import fixturesCrossCheck from './__fixtures__/compose.crosscheck';
+import { composeTxFixture } from './__fixtures__/compose';
+import { fixturesCrossCheck } from './__fixtures__/compose.crosscheck';
 
 // keyof typeof NETWORKS;
 const getNetwork = (name?: string) =>
     // @ts-expect-error expression of type string can't be used to index type
     typeof name === 'string' && NETWORKS[name] ? NETWORKS[name] : NETWORKS.bitcoin;
 
-describe('composeTx', () => {
-    fixtures.forEach(f => {
+describe(composeTx.name, () => {
+    composeTxFixture.forEach(f => {
         const network = getNetwork(f.request.network);
         const request = { ...f.request, network };
         const result: any = { ...f.result };
+
         it(f.description, () => {
             const tx = composeTx(request as any);
             expect(tx).toEqual(result);
