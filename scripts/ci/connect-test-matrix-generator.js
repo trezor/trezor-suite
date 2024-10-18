@@ -4,7 +4,7 @@ const groups = {
     api: {
         name: 'api',
         pattern:
-            'init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity keepSession cancel.test',
+            'init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity keepSession cancel.test info.test',
         methods: '',
     },
     management: {
