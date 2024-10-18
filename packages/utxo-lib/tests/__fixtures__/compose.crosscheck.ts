@@ -1,6 +1,6 @@
 import { UTXO } from './compose';
 
-export default [
+export const fixturesCrossCheck = [
     {
         description: '1 input, 1 output, no change',
         request: {

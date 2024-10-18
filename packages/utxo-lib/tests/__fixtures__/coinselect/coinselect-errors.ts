@@ -1,4 +1,4 @@
-export default [
+export const coinselectFixturesErrors = [
     {
         description: 'missing input info',
         feeRate: 10,
