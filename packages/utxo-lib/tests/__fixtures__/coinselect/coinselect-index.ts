@@ -1,4 +1,4 @@
-export default [
+export const coinselectIndexFixture = [
     {
         description: '1 output, no change, 1 input is unspendable coinbase',
         feeRate: 10,

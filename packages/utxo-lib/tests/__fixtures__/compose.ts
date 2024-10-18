@@ -8,7 +8,7 @@ export const UTXO = {
     amount: '102001',
 };
 
-export default [
+export const composeTxFixture = [
     {
         description: 'builds a simple tx without change',
         request: {
