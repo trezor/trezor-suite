@@ -52,6 +52,7 @@ export const useCoinmarketComposeTransaction = <T extends CoinmarketSellExchange
         composeRequest,
         composedLevels,
         onFeeLevelChange,
+        setComposedLevels,
     } = useCompose({
         ...methods,
         state,
@@ -155,5 +156,6 @@ export const useCoinmarketComposeTransaction = <T extends CoinmarketSellExchange
         feeInfo,
         changeFeeLevel,
         composeRequest,
+        setComposedLevels,
     };
 };

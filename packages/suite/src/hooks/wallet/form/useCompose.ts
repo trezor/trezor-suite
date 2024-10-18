@@ -259,6 +259,7 @@ export const useCompose = <TFieldValues extends FormState>({
         composeRequest,
         composedLevels,
         onFeeLevelChange,
+        setComposedLevels,
         signTransaction: sign,
     };
 };
