@@ -488,6 +488,13 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         return Promise.resolve();
     }
 
+    if (method.payload.__info) {
+        const response = method.getMethodInfo();
+        sendCoreMessage(createResponseMessage(method.responseID, true, response));
+
+        return Promise.resolve();
+    }
+
     // this method is not using the device, there is no need to acquire
     if (!method.useDevice) {
         try {
@@ -498,6 +505,7 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
                 // cancel popup request
                 sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
             }
+
             const response = await method.run();
             sendCoreMessage(createResponseMessage(method.responseID, true, response));
         } catch (error) {
