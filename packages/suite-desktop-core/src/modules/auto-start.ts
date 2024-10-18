@@ -14,6 +14,17 @@ import type { Module } from './index';
 export const SERVICE_NAME = 'auto-start';
 
 // Linux autostart desktop file
+const getLiunxExecutable = () => {
+    if (process.env.container) {
+        return 'flatpak run io.trezor.suite';
+    }
+    if (process.env.APPIMAGE) {
+        return `"${process.env.APPIMAGE}"`;
+    }
+
+    return `"${process.execPath}"`;
+};
+
 const LINUX_AUTOSTART_DIR = '.config/autostart/';
 const LINUX_AUTOSTART_FILE = 'Trezor-Suite.desktop';
 const LINUX_DESKTOP = `[Desktop Entry]
@@ -21,10 +32,18 @@ Type=Application
 Version=1.0
 Name=Trezor Suite
 Comment=Trezor Suite startup script
-Exec="${process.env.APPIMAGE || process.execPath}" --bridge-daemon
+Exec=${getLiunxExecutable()} --bridge-daemon
 StartupNotify=false
 Terminal=false
 `;
+
+const isAutoStartEnabled = () => {
+    if (process.platform === 'linux') {
+        return fs.existsSync(path.join(os.homedir(), LINUX_AUTOSTART_DIR, LINUX_AUTOSTART_FILE));
+    } else {
+        return app.getLoginItemSettings().openAtLogin;
+    }
+};
 
 const linuxAutoStart = (enabled: boolean) => {
     if (enabled) {
@@ -35,15 +54,9 @@ const linuxAutoStart = (enabled: boolean) => {
         );
         fs.chmodSync(path.join(os.homedir(), LINUX_AUTOSTART_DIR, LINUX_AUTOSTART_FILE), 0o755);
     } else {
-        fs.unlinkSync(path.join(os.homedir(), LINUX_AUTOSTART_DIR, LINUX_AUTOSTART_FILE));
-    }
-};
-
-const isAutoStartEnabled = () => {
-    if (process.platform === 'linux') {
-        return fs.existsSync(path.join(os.homedir(), LINUX_AUTOSTART_DIR, LINUX_AUTOSTART_FILE));
-    } else {
-        return app.getLoginItemSettings().openAtLogin;
+        if (isAutoStartEnabled()) {
+            fs.unlinkSync(path.join(os.homedir(), LINUX_AUTOSTART_DIR, LINUX_AUTOSTART_FILE));
+        }
     }
 };
 
