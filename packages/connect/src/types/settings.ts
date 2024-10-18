@@ -23,7 +23,7 @@ export interface ConnectSettingsPublic {
     lazyLoad?: boolean;
     interactionTimeout?: number;
     trustedHost: boolean;
-    coreMode?: 'auto' | 'popup' | 'iframe';
+    coreMode?: 'auto' | 'popup' | 'iframe' | 'deeplink';
     /* _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */
     _extendWebextensionLifetime?: boolean;
     /**
@@ -31,6 +31,7 @@ export interface ConnectSettingsPublic {
      * in some exotic setups (suite-web where iframe is embedded locally), you might need to tell connect where it should search for sessions background shared-worker
      */
     _sessionsBackgroundUrl?: string;
+    // Options for Connect-mobile deep linking
     deeplinkOpen?: (url: string) => void;
     deeplinkCallbackUrl?: string;
     // URL for binary files such as firmware, may be local or remote

@@ -20,7 +20,7 @@ export type TrezorConnectDevice = KnownDevice | UnknownDevice | UnreadableDevice
 export interface FieldData {
     value: string;
     label: string;
-    affectedValue: string;
+    affectedValue?: string;
 }
 
 // Field path
