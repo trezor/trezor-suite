@@ -11,7 +11,15 @@ const TrezorConnect = testMocks.getTrezorConnectMock();
 const setTrezorConnectFixtures = (fixture: any) => {
     let buttonRequest: ((e?: any) => any) | undefined;
 
-    const getPublicKey = (_params: any) => {
+    const getPublicKey = (params: any) => {
+        if (params.__info) {
+            return {
+                success: true,
+                payload: {
+                    useDevice: true,
+                },
+            };
+        }
         if (fixture && fixture.getPublicKey) {
             if (fixture.getPublicKey.success && buttonRequest) {
                 buttonRequest({ code: 'ButtonRequest_PublicKey' });
