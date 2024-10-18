@@ -7,9 +7,13 @@ export const httpRequest = async (
     type: 'text' | 'binary' | 'json' = 'text',
     options?: RequestInit,
 ) => {
+    console.log('httpRequest in connect/src/utils/assets-browser');
     const init: RequestInit = { ...options, credentials: 'same-origin' };
 
+    console.log('url', url);
+    console.log('init', init);
     const response = await fetch(url, init);
+    console.log('response', response);
     if (response.ok) {
         if (type === 'json') {
             const txt = await response.text();

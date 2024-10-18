@@ -17,18 +17,21 @@ export class DataManager {
     private static messages: Record<string, any>;
 
     static async load(settings: ConnectSettings, withAssets = true) {
+        console.log('load in DataManager');
+        console.log('settings', settings);
         const ts = settings.env === 'web' ? `?r=${settings.timestamp}` : '';
         this.settings = settings;
 
         if (!withAssets) return;
 
         const assetPromises = config.assets.map(async asset => {
-            const json = await httpRequest(`${asset.url}${ts}`, 'json');
+            console.log('asset', asset);
+            const json = await httpRequest(`${settings.connectSrc}${asset.url}${ts}`, 'json');
             this.assets[asset.name] = json;
         });
         await Promise.all(assetPromises);
 
-        this.messages = await httpRequest(`${config.messages}${ts}`, 'json');
+        this.messages = await httpRequest(`${settings.connectSrc}${config.messages}${ts}`, 'json');
 
         // parse bridge JSON
         parseBridgeJSON(this.assets.bridge);
