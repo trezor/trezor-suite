@@ -229,7 +229,7 @@ test('when user cancels permissions in popup it closes automatically', async ({
 
     await popup.waitForLoadState('load');
 
-    if (isCoreInPopup) {
+    if (isWebExtension || isCoreInPopup) {
         await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
         await popup.click('.select-device-list button.list');
     }
