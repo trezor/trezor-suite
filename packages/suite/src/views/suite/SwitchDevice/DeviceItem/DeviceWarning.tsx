@@ -27,7 +27,7 @@ export const DeviceWarning = ({
                     button={{
                         children: <Translation id="TR_SOLVE_ISSUE" />,
                         onClick: onSolveIssueClick,
-                        'data-testid': `@switch-device/${device.path}/solve-issue-button`,
+                        'data-testid': `@switch-device/solve-issue-button`,
                         isDisabled: isLocked,
                     }}
                 >
