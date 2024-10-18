@@ -81,6 +81,17 @@ type NavBackendsProps = {
     children: ReactNode;
 };
 
+/**
+ * The must be div so Dropdown works. Its mess, Dropdown shall be reworked.
+ *
+ * The issue here is that `Dropdown` component expects child with `isDisabled` prop,
+ * as it passes this props via `cloneElement()`.
+ */
+// @ts-expect-error `isDisabled` is needed here despite not being used
+const WrapperDiv = ({ children, isDisabled }: { isDisabled?: boolean; children: ReactNode }) => (
+    <div>{children}</div>
+);
+
 export const NavBackends = ({ customBackends, children }: NavBackendsProps) => {
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
@@ -133,8 +144,8 @@ export const NavBackends = ({ customBackends, children }: NavBackendsProps) => {
             }}
             items={items}
         >
-            {/* The must be div so Dropdown works. Its mess, Dropdown shall be reworked.*/}
-            <div>{children}</div>
+            {/* The must be div so Dropdown works. Its mess, Dropdown shall be reworked. */}
+            <WrapperDiv>{children}</WrapperDiv>
         </StyledDropdown>
     );
 };
