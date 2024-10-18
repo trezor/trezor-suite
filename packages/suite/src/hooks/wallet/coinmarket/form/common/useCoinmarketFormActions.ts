@@ -57,6 +57,7 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
     changeFeeLevel,
     composeRequest,
     setAccountOnChange,
+    setComposedLevels,
 }: CoinmarketUseFormActionsProps<T>): CoinmarketUseFormActionsReturnProps => {
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
@@ -211,6 +212,7 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
         setValue(FORM_OUTPUT_AMOUNT, '');
         setValue(FORM_OUTPUT_FIAT, '');
         setAmountLimits(undefined);
+        setComposedLevels(undefined);
 
         await coinmarketFiatValues?.fiatRatesUpdater(
             getValues(FORM_OUTPUT_CURRENCY)?.value as FiatCurrencyCode,

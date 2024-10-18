@@ -153,13 +153,19 @@ export const useCoinmarketSellForm = ({
         values?.paymentMethod?.value ?? '',
     );
 
-    const { isComposing, composedLevels, feeInfo, changeFeeLevel, composeRequest } =
-        useCoinmarketComposeTransaction<CoinmarketSellFormProps>({
-            account,
-            network,
-            values: values as CoinmarketSellFormProps,
-            methods,
-        });
+    const {
+        isComposing,
+        composedLevels,
+        feeInfo,
+        changeFeeLevel,
+        setComposedLevels,
+        composeRequest,
+    } = useCoinmarketComposeTransaction<CoinmarketSellFormProps>({
+        account,
+        network,
+        values: values as CoinmarketSellFormProps,
+        methods,
+    });
 
     const { toggleAmountInCrypto } = useCoinmarketCurrencySwitcher<CoinmarketSellFormProps>({
         account,
@@ -305,6 +311,7 @@ export const useCoinmarketSellForm = ({
         setAmountLimits,
         changeFeeLevel,
         composeRequest,
+        setComposedLevels,
         setAccountOnChange: newAccount => {
             dispatch(coinmarketSellActions.setCoinmarketSellAccount(newAccount));
             setAccount(newAccount);

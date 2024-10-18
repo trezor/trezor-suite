@@ -172,13 +172,19 @@ export const useCoinmarketExchangeForm = ({
     );
     const dexQuotes = useMemo(() => innerQuotes?.filter(q => q.isDex), [innerQuotes]);
 
-    const { isComposing, composedLevels, feeInfo, changeFeeLevel, composeRequest } =
-        useCoinmarketComposeTransaction<CoinmarketExchangeFormProps>({
-            account,
-            network,
-            values: values as CoinmarketExchangeFormProps,
-            methods,
-        });
+    const {
+        isComposing,
+        composedLevels,
+        feeInfo,
+        changeFeeLevel,
+        setComposedLevels,
+        composeRequest,
+    } = useCoinmarketComposeTransaction<CoinmarketExchangeFormProps>({
+        account,
+        network,
+        values: values as CoinmarketExchangeFormProps,
+        methods,
+    });
 
     const { toggleAmountInCrypto } = useCoinmarketCurrencySwitcher({
         account,
@@ -302,6 +308,7 @@ export const useCoinmarketExchangeForm = ({
         setAmountLimits,
         changeFeeLevel,
         composeRequest,
+        setComposedLevels,
         setAccountOnChange: newAccount => {
             dispatch(coinmarketExchangeActions.setCoinmarketExchangeAccount(newAccount));
             setAccount(newAccount);
