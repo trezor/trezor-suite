@@ -11,7 +11,6 @@ import {
     Row,
     Text,
 } from '@trezor/components';
-import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import styled from 'styled-components';
 import { borders, palette, spacings, spacingsPx } from '@trezor/theme';
 import { Translation, TrezorLink } from 'src/components/suite';
@@ -101,12 +100,12 @@ const FeatureItem = ({ icon, featureNumber }: FeatureItemProps) => (
     </Row>
 );
 
-const DCALanding = ({ selectedAccount }: UseCoinmarketProps) => {
+const DCALanding = () => {
     const currentTheme = useSelector(state => state.suite.settings.theme.variant);
     const isLightTheme = currentTheme !== 'dark';
 
     return (
-        <CoinmarketLayout selectedAccount={selectedAccount}>
+        <CoinmarketLayout>
             <Card paddingType="small">
                 <ColumnsWrapper>
                     <Column1>
@@ -157,5 +156,5 @@ const DCALanding = ({ selectedAccount }: UseCoinmarketProps) => {
 };
 
 export const CoinmarketDCALanding = () => (
-    <CoinmarketContainer title="TR_NAV_DCA" SectionComponent={DCALanding} />
+    <CoinmarketContainer title="TR_COINMARKET_BUY_AND_SELL" SectionComponent={DCALanding} />
 );
