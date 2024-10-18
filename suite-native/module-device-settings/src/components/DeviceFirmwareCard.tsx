@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
-import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import { deviceModelToIconName } from '@suite-common/icons-deprecated';
+import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import {
     selectDevice,
     selectDeviceModel,
@@ -50,8 +50,8 @@ export const DeviceFirmwareCard = () => {
 
     const firmwareVersion = getFirmwareVersion(device);
     const firmwareTypeTranslationId = hasBitcoinOnlyFirmware(device)
-        ? 'deviceSettings.firmware.typeBitcoinOnly'
-        : 'deviceSettings.firmware.typeUniversal';
+        ? 'moduleDeviceSettings.firmware.typeBitcoinOnly'
+        : 'moduleDeviceSettings.firmware.typeUniversal';
 
     const firmwareUpdateProps = (() => {
         if (G.isNotNullable(deviceReleaseInfo)) {
@@ -61,7 +61,7 @@ export const DeviceFirmwareCard = () => {
                 return {
                     title: (
                         <Translation
-                            id="deviceSettings.firmware.newVersionAvailable"
+                            id="moduleDeviceSettings.firmware.newVersionAvailable"
                             values={{ version: getFwUpdateVersion(device) }}
                         />
                     ),
@@ -70,7 +70,7 @@ export const DeviceFirmwareCard = () => {
             }
 
             return {
-                title: <Translation id="deviceSettings.firmware.upToDate" />,
+                title: <Translation id="moduleDeviceSettings.firmware.upToDate" />,
                 variant: 'success',
             } as const;
         }
@@ -81,16 +81,16 @@ export const DeviceFirmwareCard = () => {
     return (
         <DeviceSettingsCard
             icon={deviceModelToIconName(deviceModel)}
-            title={<Translation id="deviceSettings.firmware.title" />}
+            title={<Translation id="moduleDeviceSettings.firmware.title" />}
             alertBoxProps={firmwareUpdateProps}
         >
             <HStack marginTop="sp12" spacing="sp2">
                 <FirmwareInfo
-                    label={<Translation id="deviceSettings.firmware.version" />}
+                    label={<Translation id="moduleDeviceSettings.firmware.version" />}
                     value={firmwareVersion}
                 />
                 <FirmwareInfo
-                    label={<Translation id="deviceSettings.firmware.type" />}
+                    label={<Translation id="moduleDeviceSettings.firmware.type" />}
                     value={<Translation id={firmwareTypeTranslationId} />}
                 />
             </HStack>

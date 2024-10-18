@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { useHandleDeviceConnection } from '@suite-native/device';
 import {
     AccountDetailScreen,
     AccountSettingsScreen,
@@ -19,7 +20,7 @@ import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { ReceiveModalScreen } from '@suite-native/receive';
 import { AuthorizeDeviceStackNavigator } from '@suite-native/module-authorize-device';
 import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
-import { DeviceInfoModalScreen, useHandleDeviceConnection } from '@suite-native/device';
+import { DeviceInfoModalScreen } from '@suite-native/module-device-settings';
 import { SendStackNavigator } from '@suite-native/module-send';
 import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
 import { ConnectPopupScreen, useConnectPopupNavigation } from '@suite-native/module-connect-popup';
