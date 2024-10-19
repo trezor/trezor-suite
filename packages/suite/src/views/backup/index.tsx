@@ -1,6 +1,5 @@
-import styled from 'styled-components';
-
-import { Paragraph, Button, Image, Row } from '@trezor/components';
+import { Paragraph, Image, Column, NewModal } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectDevice } from '@suite-common/wallet-core';
@@ -8,58 +7,13 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { backupDevice } from 'src/actions/backup/backupActions';
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
-import { Loading, Translation, TrezorLink, Modal } from 'src/components/suite';
+import { Loading, Translation, TrezorLink } from 'src/components/suite';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from 'src/components/backup';
 import { canStart, canContinue } from 'src/utils/backup';
 import { selectLocks } from 'src/reducers/suite/suiteReducer';
 import type { ForegroundAppProps } from 'src/types/suite';
 import type { BackupStatus } from 'src/actions/backup/backupActions';
 import { selectBackup } from 'src/reducers/backup/backupReducer';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    width: 224px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledP = styled(Paragraph)`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledImage = styled(Image)`
-    margin-bottom: 24px;
-    align-self: center;
-`;
-
-const VerticalCenter = styled.div`
-    margin-top: auto;
-    margin-bottom: auto;
-`;
-
-const FinishedModal = styled(Modal)`
-    min-height: 620px;
-`;
-
-const StyledModal = styled(Modal)`
-    min-height: 650px;
-`;
-
-type CloseButtonProps = {
-    onClick: () => void;
-    variant: 'TR_CLOSE' | 'TR_CANCEL' | 'TR_SKIP_PIN';
-};
-
-const CloseButton = ({ onClick, variant }: CloseButtonProps) => (
-    <StyledButton
-        onClick={onClick}
-        data-testid="@backup/close-button"
-        variant="tertiary"
-        icon="close"
-    >
-        <Translation id={variant} />
-    </StyledButton>
-);
 
 const getModalHeading = (backupStatus: BackupStatus) => {
     switch (backupStatus) {
@@ -83,11 +37,50 @@ const getEdgeCaseModalHeading = (unfinishedBackup: boolean) => {
     return <Translation id="BACKUP_BACKUP_ALREADY_FINISHED_HEADING" />;
 };
 
-export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
+const getModalContent = (backupStatus: BackupStatus, error?: string) => {
+    switch (backupStatus) {
+        case 'initial':
+            return (
+                <>
+                    <Paragraph
+                        variant="tertiary"
+                        typographyStyle="hint"
+                        margin={{ bottom: spacings.xl }}
+                    >
+                        <Translation id="TR_BACKUP_SUBHEADING_1" />
+                    </Paragraph>
+                    <PreBackupCheckboxes />
+                </>
+            );
+        case 'in-progress':
+            return <Loading />;
+        case 'finished':
+            return (
+                <>
+                    <Paragraph
+                        variant="tertiary"
+                        typographyStyle="hint"
+                        data-testid="@backup/success-message"
+                        margin={{ bottom: spacings.xl }}
+                    >
+                        <Translation id="TR_BACKUP_FINISHED_TEXT" />
+                    </Paragraph>
+                    <AfterBackupCheckboxes />
+                </>
+            );
+        case 'error':
+            return (
+                <Paragraph data-testid="@backup/error-message" typographyStyle="highlight">
+                    {error}
+                </Paragraph>
+            );
+    }
+};
+
+export const Backup = ({ onCancel }: ForegroundAppProps) => {
     const device = useSelector(selectDevice);
     const backup = useSelector(selectBackup);
     const locks = useSelector(selectLocks);
-
     const dispatch = useDispatch();
 
     const nonErrorBackupStatuses = ['initial', 'in-progress', 'finished'] as const;
@@ -98,14 +91,15 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
 
     if (isDeviceUnavailable) {
         return (
-            <Modal
+            <NewModal
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
-                isCancelable
                 onCancel={onCancel}
                 data-testid="@backup/no-device"
             >
-                <StyledImage image="CONNECT_DEVICE" width="360" />
-            </Modal>
+                <Column>
+                    <Image image="CONNECT_DEVICE" width="360" />
+                </Column>
+            </NewModal>
         );
     }
 
@@ -120,31 +114,30 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
         device.features.unfinished_backup !== null
     ) {
         return (
-            <FinishedModal
-                isCancelable
+            <NewModal
                 onCancel={onCancel}
                 heading={getEdgeCaseModalHeading(device.features.unfinished_backup)}
-                bottomBarComponents={<CloseButton onClick={onCancel} variant="TR_CLOSE" />}
+                iconName={device.features.unfinished_backup ? 'warning' : 'check'}
+                variant={device.features.unfinished_backup ? 'warning' : 'primary'}
+                bottomContent={
+                    <NewModal.Button onClick={() => onCancel()} data-testid="@backup/close-button">
+                        <Translation id="TR_CLOSE" />
+                    </NewModal.Button>
+                }
             >
                 {device.features.unfinished_backup ? (
-                    <VerticalCenter>
-                        <StyledImage image="UNI_ERROR" />
-                        <StyledP data-testid="@backup/already-failed-message">
-                            <Translation id="BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION" />
-                            <TrezorLink icon="arrowUpRight" href={HELP_CENTER_RECOVERY_ISSUES_URL}>
-                                <Translation id="TR_LEARN_MORE" />
-                            </TrezorLink>
-                        </StyledP>
-                    </VerticalCenter>
+                    <Paragraph variant="tertiary" data-testid="@backup/already-failed-message">
+                        <Translation id="BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION" />
+                        <TrezorLink icon="arrowUpRight" href={HELP_CENTER_RECOVERY_ISSUES_URL}>
+                            <Translation id="TR_LEARN_MORE" />
+                        </TrezorLink>
+                    </Paragraph>
                 ) : (
-                    <VerticalCenter>
-                        <StyledImage image="UNI_SUCCESS" />
-                        <StyledP data-testid="@backup/already-finished-message">
-                            <Translation id="BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION" />
-                        </StyledP>
-                    </VerticalCenter>
+                    <Paragraph variant="tertiary" data-testid="@backup/already-finished-message">
+                        <Translation id="BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION" />
+                    </Paragraph>
                 )}
-            </FinishedModal>
+            </NewModal>
         );
     }
 
@@ -158,89 +151,90 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
             : {};
 
     return (
-        <StyledModal
-            isCancelable={cancelable}
+        <NewModal
             onCancel={onCancel}
+            variant={backup.status === 'error' ? 'warning' : 'primary'}
+            iconName={backup.status === 'error' ? 'warning' : undefined}
             data-testid="@backup"
             heading={getModalHeading(backup.status)}
-            totalProgressBarSteps={nonErrorBackupStatuses.length}
-            currentProgressBarStep={currentProgressBarStep}
-            bottomBarComponents={
-                <>
-                    {backup.status === 'initial' && (
-                        <>
-                            <StyledButton
-                                data-testid="@backup/start-button"
-                                onClick={() => dispatch(backupDevice(backupParams))}
-                                isDisabled={!canStart(backup.userConfirmed, locks)}
-                            >
-                                <Translation id="TR_CREATE_BACKUP" />
-                            </StyledButton>
-                            <CloseButton onClick={onCancel} variant="TR_CANCEL" />
-                        </>
-                    )}
-
-                    {backup.status === 'finished' && (
-                        <>
-                            {device?.features?.pin_protection ? (
-                                <StyledButton
-                                    isDisabled={!canContinue(backup.userConfirmed)}
-                                    onClick={() => onCancel()}
-                                >
-                                    <Translation id="TR_CLOSE" />
-                                </StyledButton>
-                            ) : (
-                                <>
-                                    <CloseButton onClick={onCancel} variant="TR_SKIP_PIN" />
-                                    <StyledButton
-                                        data-testid="@backup/continue-to-pin-button"
-                                        isDisabled={!canContinue(backup.userConfirmed)}
-                                        onClick={() => {
-                                            onCancel();
-                                            dispatch(changePin({}));
-                                        }}
-                                    >
-                                        <Translation id="TR_CONTINUE_TO_PIN" />
-                                    </StyledButton>
-                                </>
-                            )}
-                        </>
-                    )}
-
-                    {backup.status === 'error' && (
-                        <CloseButton onClick={onCancel} variant="TR_CLOSE" />
-                    )}
-                </>
+            description={
+                currentProgressBarStep && (
+                    <Translation
+                        id="TR_STEP_OF_TOTAL"
+                        values={{
+                            index: currentProgressBarStep,
+                            total: nonErrorBackupStatuses.length,
+                        }}
+                    />
+                )
             }
+            bottomContent={(function () {
+                switch (backup.status) {
+                    case 'initial':
+                        return (
+                            <>
+                                <NewModal.Button
+                                    data-testid="@backup/start-button"
+                                    onClick={() => dispatch(backupDevice(backupParams))}
+                                    isDisabled={!canStart(backup.userConfirmed, locks)}
+                                >
+                                    <Translation id="TR_CREATE_BACKUP" />
+                                </NewModal.Button>
+                                <NewModal.Button
+                                    onClick={() => onCancel()}
+                                    data-testid="@backup/close-button"
+                                    variant="tertiary"
+                                >
+                                    <Translation id="TR_CANCEL" />
+                                </NewModal.Button>
+                            </>
+                        );
+                    case 'finished':
+                        return (
+                            <>
+                                {device?.features?.pin_protection ? (
+                                    <NewModal.Button
+                                        isDisabled={!canContinue(backup.userConfirmed)}
+                                        onClick={() => onCancel()}
+                                    >
+                                        <Translation id="TR_CLOSE" />
+                                    </NewModal.Button>
+                                ) : (
+                                    <>
+                                        <NewModal.Button
+                                            data-testid="@backup/continue-to-pin-button"
+                                            isDisabled={!canContinue(backup.userConfirmed)}
+                                            onClick={() => {
+                                                onCancel();
+                                                dispatch(changePin({}));
+                                            }}
+                                        >
+                                            <Translation id="TR_CONTINUE_TO_PIN" />
+                                        </NewModal.Button>
+                                        <NewModal.Button
+                                            onClick={() => onCancel()}
+                                            data-testid="@backup/close-button"
+                                            variant="tertiary"
+                                        >
+                                            <Translation id="TR_SKIP_PIN" />
+                                        </NewModal.Button>
+                                    </>
+                                )}
+                            </>
+                        );
+                    case 'error':
+                        return (
+                            <NewModal.Button
+                                onClick={() => onCancel()}
+                                data-testid="@backup/close-button"
+                            >
+                                <Translation id="TR_CLOSE" />
+                            </NewModal.Button>
+                        );
+                }
+            })()}
         >
-            {backup.status === 'initial' && (
-                <>
-                    <StyledP typographyStyle="hint">
-                        <Translation id="TR_BACKUP_SUBHEADING_1" />
-                    </StyledP>
-                    <PreBackupCheckboxes />
-                </>
-            )}
-
-            {backup.status === 'in-progress' && <Loading />}
-
-            {backup.status === 'finished' && (
-                <>
-                    <StyledP typographyStyle="hint" data-testid="@backup/success-message">
-                        <Translation id="TR_BACKUP_FINISHED_TEXT" />
-                    </StyledP>
-                    <AfterBackupCheckboxes />
-                </>
-            )}
-
-            {backup.status === 'error' && (
-                <Row justifyContent="center">
-                    <VerticalCenter>
-                        <StyledImage image="UNI_ERROR" />
-                        <StyledP data-testid="@backup/error-message">{backup.error}</StyledP>
-                    </VerticalCenter>
-                </Row>
-            )}
-        </StyledModal>
+            {getModalContent(backup.status, backup.error)}
+        </NewModal>
     );
 };
