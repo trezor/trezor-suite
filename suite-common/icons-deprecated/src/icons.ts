@@ -238,12 +238,12 @@ export const cryptoIcons = {
     dsol: require('../assets/cryptoIcons/dsol.svg'),
     etc: require('../assets/cryptoIcons/etc.svg'),
     eth: require('../assets/cryptoIcons/eth.svg'),
-    op: require('../assets/cryptoIcons/op.svg'),
     gnt: require('../assets/cryptoIcons/gnt.svg'),
     ltc: require('../assets/cryptoIcons/ltc.svg'),
-    pol: require('../assets/cryptoIcons/pol.svg'),
     name: require('../assets/cryptoIcons/name.svg'),
     nmc: require('../assets/cryptoIcons/nmc.svg'),
+    op: require('../assets/cryptoIcons/op.svg'),
+    pol: require('../assets/cryptoIcons/pol.svg'),
     regtest: require('../assets/cryptoIcons/regtest.svg'),
     sol: require('../assets/cryptoIcons/sol.svg'),
     tada: require('../assets/cryptoIcons/tada.svg'),
@@ -256,8 +256,3 @@ export const cryptoIcons = {
     zec: require('../assets/cryptoIcons/zec.svg'),
 } as const;
 export type CryptoIconName = keyof typeof cryptoIcons;
-
-export const flagIcons = {
-    cz: require('../assets/flags/cz.svg'),
-} as const;
-export type FlagIconName = keyof typeof flagIcons;
