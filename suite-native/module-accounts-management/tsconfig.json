@@ -7,9 +7,6 @@
         },
         { "path": "../../suite-common/graph" },
         {
-            "path": "../../suite-common/icons-deprecated"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -30,6 +27,7 @@
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../graph" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../qr-code" },

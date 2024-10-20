@@ -11,8 +11,8 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/icons-deprecated": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "jotai": "1.9.1",

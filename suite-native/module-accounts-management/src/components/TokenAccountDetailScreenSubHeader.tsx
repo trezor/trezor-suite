@@ -14,7 +14,7 @@ import {
     selectAccountLabel,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { CryptoIcon } from '@suite-common/icons-deprecated';
+import { CryptoIcon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 
 type TokenAccountDetailScreenHeaderProps = {

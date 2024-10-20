@@ -42,7 +42,7 @@ export const AccountDetailScreenHeader = ({
                 <IconButton
                     colorScheme="tertiaryElevation0"
                     size="medium"
-                    iconName="settings"
+                    iconName="gear"
                     onPress={handleSettingsNavigation}
                     testID="@account-detail/settings-button"
                 />

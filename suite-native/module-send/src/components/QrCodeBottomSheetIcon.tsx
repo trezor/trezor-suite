@@ -1,7 +1,7 @@
 import { TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { ScanQRBottomSheet } from '@suite-native/qr-code';
 import { Translation } from '@suite-native/intl';
 import { useNativeStyles } from '@trezor/styles';

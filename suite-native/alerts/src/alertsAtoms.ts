@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { atom } from 'jotai';
 
-import { IconName } from '@suite-common/icons-deprecated';
+import { IconName } from '@suite-native/icons';
 import { ButtonAccessory, ButtonColorScheme, PictogramVariant } from '@suite-native/atoms';
 import { NativeSpacing } from '@trezor/theme';
 

@@ -13,7 +13,6 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "1.9.5",
-        "@suite-common/icons-deprecated": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -21,6 +20,7 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/connection-status": "workspace:*",
         "@suite-native/discovery": "workspace:*",
+        "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@trezor/styles": "workspace:*",

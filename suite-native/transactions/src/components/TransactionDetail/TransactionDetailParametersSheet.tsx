@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import {
     BlockchainRootState,
     selectTransactionConfirmations,
@@ -86,7 +86,7 @@ export const TransactionDetailParametersSheet = ({
             isVisible={isVisible}
             onVisibilityChange={onSheetVisibilityChange}
             title={translate('transactions.detail.sheet.parameters')}
-            iconName="infoMedium"
+            iconName="info"
             transactionId={transaction.txid}
         >
             <VStack>
@@ -116,7 +116,7 @@ export const TransactionDetailParametersSheet = ({
                             <ConfirmationsCount txid={transaction.txid} accountKey={accountKey} />
                         </Text>
                         <Box marginLeft="sp8">
-                            <Icon name="confirmation" />
+                            <Icon name="checks" />
                         </Box>
                     </TransactionDetailRow>
                 </Card>

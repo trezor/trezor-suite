@@ -23,7 +23,7 @@ export const PassphraseFeatureUnlockFormScreen = () => {
             screenHeader={
                 <ScreenHeader>
                     <IconButton
-                        iconName="close"
+                        iconName="x"
                         onPress={handleClose}
                         colorScheme="tertiaryElevation0"
                         size="medium"

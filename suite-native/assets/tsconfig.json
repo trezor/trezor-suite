@@ -7,9 +7,6 @@
             "path": "../../suite-common/formatters"
         },
         {
-            "path": "../../suite-common/icons-deprecated"
-        },
-        {
             "path": "../../suite-common/redux-utils"
         },
         {
@@ -28,6 +25,7 @@
         { "path": "../atoms" },
         { "path": "../config" },
         { "path": "../formatters" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../settings" },

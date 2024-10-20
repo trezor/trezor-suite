@@ -17,7 +17,6 @@ import { PortfolioContent } from './components/PortfolioContent';
 import { useHomeRefreshControl } from './useHomeRefreshControl';
 import { EnableViewOnlyBottomSheet } from './components/EnableViewOnlyBottomSheet';
 import { PortfolioGraphRef } from './components/PortfolioGraph';
-
 export const HomeScreen = () => {
     const isDiscoveredDeviceAccountless = useSelector(selectIsDiscoveredDeviceAccountless);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);

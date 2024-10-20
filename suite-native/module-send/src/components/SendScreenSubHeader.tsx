@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { CryptoIcon } from '@suite-common/icons-deprecated';
+import { CryptoIcon } from '@suite-native/icons';
 import {
     AccountsRootState,
     selectAccountLabel,

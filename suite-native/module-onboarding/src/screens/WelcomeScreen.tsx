@@ -9,7 +9,7 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
@@ -57,7 +57,7 @@ export const WelcomeScreen = () => {
             <Box alignItems="center" justifyContent="center">
                 <Box alignItems="center">
                     <Box marginBottom="sp24">
-                        <Icon size="extraLarge" name="trezor" color="iconDefault" />
+                        <Icon size="extraLarge" name="trezorLogo" color="iconDefault" />
                     </Box>
                     <Box style={applyStyle(titleStyle)}>
                         <Text variant="titleMedium" textAlign="center">

@@ -83,7 +83,7 @@ export const SelectableItem = ({
                                 key="defaultType"
                                 variant="greenSubtle"
                                 label={<Translation id="generic.default" />}
-                                icon="checkCircleSolid"
+                                icon="checkCircle"
                             />
                         </View>
                     )}

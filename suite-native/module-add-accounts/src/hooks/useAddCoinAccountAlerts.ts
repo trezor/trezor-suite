@@ -11,7 +11,7 @@ export const useAddCoinAccountAlerts = () => {
         showAlert({
             title: translate('moduleAddAccounts.alerts.tooManyAccounts.title'),
             description: translate('moduleAddAccounts.alerts.tooManyAccounts.description'),
-            icon: 'warningCircleLight',
+            icon: 'warning',
             pictogramVariant: 'red',
             primaryButtonTitle: translate('moduleAddAccounts.alerts.tooManyAccounts.actionPrimary'),
             onPressPrimaryButton: hideAlert,
@@ -21,7 +21,7 @@ export const useAddCoinAccountAlerts = () => {
         showAlert({
             title: translate('moduleAddAccounts.alerts.anotherEmptyAccount.title'),
             description: translate('moduleAddAccounts.alerts.anotherEmptyAccount.description'),
-            icon: 'warningCircleLight',
+            icon: 'warning',
             pictogramVariant: 'red',
             primaryButtonTitle: translate(
                 'moduleAddAccounts.alerts.anotherEmptyAccount.actionPrimary',
@@ -42,7 +42,7 @@ export const useAddCoinAccountAlerts = () => {
         showAlert({
             title: translate('moduleAddAccounts.alerts.generalError.title'),
             description: translate('moduleAddAccounts.alerts.generalError.description'),
-            icon: 'warningCircleLight',
+            icon: 'warning',
             pictogramVariant: 'red',
             primaryButtonTitle: translate('moduleAddAccounts.alerts.generalError.actionPrimary'),
             onPressPrimaryButton: hideAlert,

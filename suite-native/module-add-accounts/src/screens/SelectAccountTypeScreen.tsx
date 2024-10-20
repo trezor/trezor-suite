@@ -116,7 +116,7 @@ export const SelectAccountTypeScreen = ({
                         })}
                         leftIcon={
                             <IconButton
-                                iconName="close"
+                                iconName="x"
                                 onPress={handleClose}
                                 colorScheme="tertiaryElevation0"
                                 size="medium"

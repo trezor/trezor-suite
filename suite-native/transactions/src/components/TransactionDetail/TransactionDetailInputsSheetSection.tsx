@@ -2,7 +2,7 @@ import { ReactNode, Fragment } from 'react';
 
 import { A, G } from '@mobily/ts-belt';
 
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { TokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
@@ -96,7 +96,7 @@ export const TransactionDetailInputsSheetSection = ({
                                     />
                                 ))}
                             </Box>
-                            <Icon name="circleRight" color="iconDisabled" size="medium" />
+                            <Icon name="caretCircleRight" color="iconDisabled" size="medium" />
                             <Box style={applyStyle(addressAmountColumnStyle)}>
                                 {outputs.map(({ address, amount }) => (
                                     <TransactionAddressAmount

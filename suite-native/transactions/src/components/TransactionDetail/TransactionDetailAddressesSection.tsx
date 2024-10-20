@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Box, CardDivider, Text, VStack } from '@suite-native/atoms';
 import { AccountAddressFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { CoinSymbol, CryptoIcon } from '@suite-common/icons-deprecated';
+import { CoinSymbolName, CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { SummaryRow } from './TransactionSummaryRow';
@@ -16,7 +16,7 @@ type TransactionDetailAddressesSectionProps = {
     addresses: VinVoutAddress[];
     addressesType: 'inputs' | 'outputs';
     onShowMore: () => void;
-    icon?: CoinSymbol;
+    icon?: CoinSymbolName;
 };
 
 const showMoreButtonContainerStyle = prepareNativeStyle(utils => ({

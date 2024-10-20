@@ -2,7 +2,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon, iconSizes } from '@suite-common/icons-deprecated';
+import { Icon, iconSizes } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { BiometricsIcon } from './BiometricsIcon';
@@ -37,7 +37,7 @@ export const BiometricOverlay = ({
     return (
         <>
             <Box style={applyStyle(overlayWrapperStyle)}>
-                <Icon name="trezor" size="extraLarge" color="iconDefault" />
+                <Icon name="trezorLogo" size="extraLarge" color="iconDefault" />
             </Box>
             {isBiometricsAuthButtonVisible && (
                 <TouchableOpacity

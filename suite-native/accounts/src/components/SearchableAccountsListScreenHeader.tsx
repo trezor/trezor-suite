@@ -87,7 +87,7 @@ export const SearchableAccountsListScreenHeader = ({
                         }
                         leftIcon={
                             <IconButton
-                                iconName="search"
+                                iconName="magnifyingGlass"
                                 onPress={() => setIsSearchActive(true)}
                                 colorScheme="tertiaryElevation1"
                                 size="medium"

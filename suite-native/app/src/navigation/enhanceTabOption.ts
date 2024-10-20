@@ -1,4 +1,4 @@
-import { IconName } from '@suite-common/icons-deprecated';
+import { IconName } from '@suite-native/icons';
 import { AppTabsParamList } from '@suite-native/navigation';
 
 type TabOption<ParamList extends AppTabsParamList, RouteName extends keyof ParamList> = {

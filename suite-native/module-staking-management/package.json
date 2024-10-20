@@ -12,10 +12,10 @@
     },
     "dependencies": {
         "@react-navigation/native": "6.1.18",
-        "@suite-common/icons-deprecated": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/formatters": "workspace:*",
+        "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",

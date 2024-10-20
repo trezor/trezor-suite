@@ -1,5 +1,5 @@
 import { Box, RoundedIcon } from '@suite-native/atoms';
-import { IconName } from '@suite-common/icons-deprecated';
+import { IconName } from '@suite-native/icons';
 
 type SettingsSectionItemIconProps = {
     iconName: IconName;
