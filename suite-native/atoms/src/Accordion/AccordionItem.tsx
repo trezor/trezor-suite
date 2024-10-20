@@ -64,7 +64,7 @@ export const AccordionItem = ({ title, content }: AccordionItemProps) => {
                         <Text style={applyStyle(titleStyle)}>{title}</Text>
                         <Animated.View style={[animatedChevronStyle]}>
                             <IconButton
-                                iconName="chevronRight"
+                                iconName="caretRight"
                                 colorScheme="tertiaryElevation0"
                                 size="small"
                                 onPress={toggleIsOpen}

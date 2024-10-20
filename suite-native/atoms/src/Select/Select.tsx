@@ -1,13 +1,6 @@
 import { useMemo, useState, ReactNode } from 'react';
 
-import {
-    CryptoIcon,
-    CryptoIconName,
-    FlagIcon,
-    FlagIconName,
-    isCryptoIconType,
-    isFlagIconType,
-} from '@suite-common/icons-deprecated';
+import { CryptoIcon, CoinSymbolName } from '@suite-native/icons';
 
 import { BottomSheet } from '../Sheet/BottomSheet';
 import { SelectItemValue, SelectItem } from './SelectItem';
@@ -20,7 +13,7 @@ export type SelectItemType<TItemValue extends SelectItemValue> = {
 
 export type SelectItemExtendedType<TItemValue extends SelectItemValue> =
     SelectItemType<TItemValue> & {
-        iconName?: FlagIconName | CryptoIconName;
+        iconName?: CoinSymbolName;
     };
 
 type SelectProps<TItemValue extends SelectItemValue> = {
@@ -47,14 +40,10 @@ export const Select = <TItemValue extends SelectItemValue>({
         setIsOpen(false);
     };
 
-    const getIcon = (iconName?: CryptoIconName | FlagIconName, isSelectItem = false): ReactNode => {
+    const getIcon = (iconName?: CoinSymbolName, isSelectItem = false): ReactNode => {
         if (!iconName) return null;
-        if (isCryptoIconType(iconName)) {
-            return <CryptoIcon size={isSelectItem ? 'small' : 'extraSmall'} symbol={iconName} />;
-        }
-        if (isFlagIconType(iconName)) {
-            return <FlagIcon size={isSelectItem ? 'small' : 'extraSmall'} name={iconName} />;
-        }
+
+        return <CryptoIcon size={isSelectItem ? 'small' : 'extraSmall'} symbol={iconName} />;
     };
 
     return (

@@ -6,9 +6,6 @@
             "path": "../../suite-common/analytics"
         },
         {
-            "path": "../../suite-common/icons-deprecated"
-        },
-        {
             "path": "../../suite-common/suite-config"
         },
         {
@@ -33,6 +30,7 @@
         { "path": "../device-manager" },
         { "path": "../discovery" },
         { "path": "../feature-flags" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },

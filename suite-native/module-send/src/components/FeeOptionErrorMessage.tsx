@@ -1,7 +1,7 @@
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 import { Text, HStack } from '@suite-native/atoms';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 

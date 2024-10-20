@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/icons-deprecated"
-        },
-        {
             "path": "../../suite-common/redux-utils"
         },
         {
@@ -19,6 +16,7 @@
         { "path": "../device" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },

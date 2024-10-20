@@ -11,11 +11,11 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/icons-deprecated": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/helpers": "workspace:*",
+        "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/styles": "workspace:*",

@@ -70,7 +70,7 @@ export const EmptyWalletInfoSheet = ({ onClose, isVisible }: EmptyWalletInfoShee
             />
             <VStack alignItems="center" spacing="sp24" padding="sp8">
                 <BottomSheetListItem
-                    iconName="pencilUnderscored"
+                    iconName="pencilSimpleLine"
                     translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.backup"
                     iconSize="medium"
                     iconBackgroundColor="backgroundTertiaryDefaultOnElevation0"
@@ -84,7 +84,7 @@ export const EmptyWalletInfoSheet = ({ onClose, isVisible }: EmptyWalletInfoShee
                     iconBorderColor="borderElevation0"
                 />
                 <BottomSheetListItem
-                    iconName="eyeSlashLight"
+                    iconName="eyeSlash"
                     translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.neverShare"
                     iconSize="medium"
                     iconBackgroundColor="backgroundTertiaryDefaultOnElevation0"

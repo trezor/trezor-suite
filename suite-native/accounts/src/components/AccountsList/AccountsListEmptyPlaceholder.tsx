@@ -4,7 +4,7 @@ import { Box, PictogramTitleHeader } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TxKeyPath, Translation } from '@suite-native/intl';
 import { ReceiveStackRoutes, RootStackRoutes } from '@suite-native/navigation';
-import { IconName } from '@suite-common/icons-deprecated';
+import { IconName } from '@suite-native/icons';
 
 const PLACEHOLDER_HEIGHT = 380;
 
@@ -30,11 +30,11 @@ export const AccountsListEmptyPlaceholder = ({
 
     const getIcon = (): IconName => {
         if (!isFilterEmpty) {
-            return 'searchLight';
+            return 'magnifyingGlass';
         }
 
         if (isReceiveRoute) {
-            return 'receive';
+            return 'arrowLineDown';
         }
 
         return 'discover';

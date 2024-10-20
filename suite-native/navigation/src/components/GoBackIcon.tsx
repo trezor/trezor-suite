@@ -23,7 +23,7 @@ export const GoBackIcon = ({ closeActionType = 'back', closeAction }: GoBackIcon
 
     return (
         <IconButton
-            iconName={closeActionType === 'back' ? 'chevronLeft' : 'close'}
+            iconName={closeActionType === 'back' ? 'caretLeft' : 'x'}
             size="medium"
             colorScheme="tertiaryElevation0"
             onPress={handleGoBack}

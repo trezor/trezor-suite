@@ -2,7 +2,7 @@ import { Pressable } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { HStack } from '@suite-native/atoms';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { TrezorDevice } from '@suite-common/suite-types';
 
 import { DeviceItemContent } from './DeviceItemContent';
@@ -26,7 +26,7 @@ export const DeviceItem = ({ deviceState, onPress }: DeviceItemProps) => {
         <Pressable onPress={onPress}>
             <HStack style={applyStyle(deviceItemWrapperStyle)}>
                 <DeviceItemContent deviceState={deviceState} />
-                <Icon name="chevronRight" color="iconDefault" size="mediumLarge" />
+                <Icon name="caretRight" color="iconDefault" size="mediumLarge" />
             </HStack>
         </Pressable>
     );

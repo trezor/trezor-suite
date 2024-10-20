@@ -23,7 +23,6 @@ import {
     vec,
 } from '@shopify/react-native-skia';
 
-import { icons } from '@suite-common/icons-deprecated';
 import { useNativeStyles } from '@trezor/styles';
 import { ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
 
@@ -96,7 +95,7 @@ export const QrWithLaser = () => {
     const {
         utils: { colors },
     } = useNativeStyles();
-    const qrCodeSvg = useSVG(icons.qrCodeImport);
+    const qrCodeSvg = useSVG(require('../assets/qrCodeImport.svg'));
 
     const progress = useSharedValue(0);
 

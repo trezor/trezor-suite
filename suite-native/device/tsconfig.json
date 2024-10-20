@@ -18,6 +18,7 @@
         { "path": "../device-authorization" },
         { "path": "../device-mutex" },
         { "path": "../feature-flags" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },

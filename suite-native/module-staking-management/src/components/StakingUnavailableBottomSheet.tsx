@@ -48,7 +48,7 @@ export const StakingUnavailableBottomSheet = ({
             <Button
                 colorScheme="tertiaryElevation0"
                 onPress={handleDesktopClick}
-                viewLeft="externalLink"
+                viewLeft="arrowSquareOut"
                 style={applyStyle(bottomSheetElementStyle)}
             >
                 <Translation id="staking.trezorDesktop" />

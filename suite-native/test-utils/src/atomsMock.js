@@ -1,11 +1,10 @@
-jest.mock('@suite-common/icons-deprecated', () => {
-    const originalModule = jest.requireActual('@suite-common/icons-deprecated');
+jest.mock('@suite-native/icons', () => {
+    const originalModule = jest.requireActual('@suite-native/icons');
 
     return {
         __esModule: true,
         ...originalModule,
         Icon: props => JSON.stringify(props),
         CryptoIcon: props => JSON.stringify(props),
-        FlagIcon: props => JSON.stringify(props),
     };
 });

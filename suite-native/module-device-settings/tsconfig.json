@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/icons-deprecated"
-        },
-        {
             "path": "../../suite-common/suite-utils"
         },
         {
@@ -15,6 +12,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../device" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
