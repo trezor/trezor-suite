@@ -9672,6 +9672,7 @@ __metadata:
     expo-build-properties: "npm:0.12.5"
     expo-camera: "npm:15.0.15"
     expo-clipboard: "npm:6.0.3"
+    expo-crypto: "npm:13.0.2"
     expo-dev-client: "npm:4.0.25"
     expo-haptics: "npm:13.0.1"
     expo-image: "npm:1.12.15"
