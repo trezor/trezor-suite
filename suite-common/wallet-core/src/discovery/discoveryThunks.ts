@@ -1,4 +1,4 @@
-import { createThunk } from '@suite-common/redux-utils';
+import { createThunk, ExtraDependencies } from '@suite-common/redux-utils';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { AccountInfo, BundleProgress, StaticSessionId, UI } from '@trezor/connect';
@@ -37,7 +37,6 @@ import {
 } from './discoveryReducer';
 import { selectAccounts } from '../accounts/accountsReducer';
 import { accountsActions } from '../accounts/accountsActions';
-import { selectDevice, selectDevices } from '../device/deviceReducer';
 
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
 
@@ -83,7 +82,8 @@ export const filterUnavailableAccountTypes = (
 
 const calculateProgress =
     (discovery: Discovery) =>
-    (_dispatch: any, getState: any): PartialDiscovery => {
+    (_dispatch: any, getState: any, extra: ExtraDependencies): PartialDiscovery => {
+        const { selectDevice } = extra.selectors;
         const device = selectDevice(getState());
         // reconstruct networks from discovery symbols, because we need to iterate through accounts
         const networksToCount = filterUnavailableNetworks(discovery.networks, device);
@@ -413,7 +413,7 @@ export const startDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/start`,
     async (_, { dispatch, getState, extra }): Promise<void> => {
         const {
-            selectors: { selectMetadata },
+            selectors: { selectMetadata, selectDevice },
             thunks: { initMetadata, fetchAndSaveMetadata },
             actions: { requestAuthConfirm },
         } = extra;
@@ -731,11 +731,10 @@ export const updateNetworkSettingsThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/updateNetworkSettings`,
     (_, { dispatch, getState, extra }) => {
         const {
-            selectors: { selectEnabledNetworks },
+            selectors: { selectEnabledNetworks, selectDevices },
         } = extra;
         const enabledNetworks = selectEnabledNetworks(getState());
         const discovery = selectDiscovery(getState());
-
         discovery.forEach(d => {
             const devices = selectDevices(getState());
             const device = devices.find(dev => dev.state === d.deviceState);
