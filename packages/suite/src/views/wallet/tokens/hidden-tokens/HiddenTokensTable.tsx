@@ -3,8 +3,8 @@ import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/toke
 
 import { getTokens } from 'src/utils/wallet/tokenUtils';
 import { useSelector } from 'src/hooks/suite';
-import { NoTokens } from '../../common/NoTokens';
-import { TokensTable } from '../../common/TokensTable/TokensTable';
+import { NoTokens } from '../common/NoTokens';
+import { TokensTable } from '../common/TokensTable/TokensTable';
 import { Translation } from 'src/components/suite';
 import { spacings } from '@trezor/theme';
 import { Banner, H3, Column } from '@trezor/components';

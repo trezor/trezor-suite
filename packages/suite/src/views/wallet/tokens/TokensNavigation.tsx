@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { Route } from '@suite-common/suite-types';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Elevation, borders, spacingsPx, mapElevationToBorder, typography } from '@trezor/theme';
@@ -10,11 +9,12 @@ import { IconButton, IconName, useElevation, variables } from '@trezor/component
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { NavigationItem } from '../../../../../components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
+import { NavigationItem } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { SearchAction } from 'src/components/wallet/SearchAction';
 import { openModal } from 'src/actions/suite/modalActions';
+import { Route } from '@suite-common/suite-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -64,7 +64,7 @@ const Divider = () => {
     return <StyledDivider $elevation={elevation} />;
 };
 
-interface TokensLayoutNavigationProps {
+interface TokensNavigationProps {
     selectedAccount: SelectedAccountLoaded;
     searchQuery: string;
     setSearchQuery: Dispatch<SetStateAction<string>>;
@@ -94,11 +94,11 @@ const Item = ({
     />
 );
 
-export const TokensLayoutNavigation = ({
+export const TokensNavigation = ({
     selectedAccount,
     searchQuery,
     setSearchQuery,
-}: TokensLayoutNavigationProps) => {
+}: TokensNavigationProps) => {
     const { account } = selectedAccount;
 
     const [isExpanded, setExpanded] = useState(false);
@@ -136,7 +136,7 @@ export const TokensLayoutNavigation = ({
         <Wrapper>
             <List>
                 <Item
-                    route="wallet-tokens-coins"
+                    route="wallet-tokens"
                     title="TR_COINS"
                     icon="tokens"
                     count={tokens.shownWithBalance.length}

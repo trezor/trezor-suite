@@ -10,8 +10,8 @@ import {
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
 import { useSelector } from 'src/hooks/suite';
-import { NoTokens } from '../../common/NoTokens';
-import { TokensTable } from '../../common/TokensTable/TokensTable';
+import { NoTokens } from '../common/NoTokens';
+import { TokensTable } from '../common/TokensTable/TokensTable';
 import { Translation } from 'src/components/suite';
 
 interface CoinsTableProps {
