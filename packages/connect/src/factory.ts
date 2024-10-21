@@ -221,9 +221,6 @@ export const factory = ({
 
         wipeDevice: params => call({ ...params, method: 'wipeDevice' }),
 
-        checkFirmwareAuthenticity: params =>
-            call({ ...params, method: 'checkFirmwareAuthenticity' }),
-
         applyFlags: params => call({ ...params, method: 'applyFlags' }),
 
         applySettings: params => call({ ...params, method: 'applySettings' }),

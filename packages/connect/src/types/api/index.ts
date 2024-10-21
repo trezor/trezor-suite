@@ -27,7 +27,6 @@ import { cardanoSignTransaction } from './cardanoSignTransaction';
 import { changeLanguage } from './changeLanguage';
 import { changePin } from './changePin';
 import { changeWipeCode } from './changeWipeCode';
-import { checkFirmwareAuthenticity } from './checkFirmwareAuthenticity';
 import { cipherKeyValue } from './cipherKeyValue';
 import { composeTransaction } from './composeTransaction';
 import { disableWebUSB } from './disableWebUSB';
@@ -348,7 +347,4 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/device/wipeDevice/
     wipeDevice: typeof wipeDevice;
-
-    // todo: link docs
-    checkFirmwareAuthenticity: typeof checkFirmwareAuthenticity;
 }
