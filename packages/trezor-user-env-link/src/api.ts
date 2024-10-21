@@ -270,8 +270,12 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         return null;
     }
-    async getDebugState() {
-        const { response } = await this.client.send({ type: 'emulator-get-debug-state' });
+
+    async getDebugState(thp_channel_id?: string) {
+        const { response } = await this.client.send({
+            type: 'emulator-get-debug-state',
+            thp_channel_id,
+        });
 
         return response;
     }
