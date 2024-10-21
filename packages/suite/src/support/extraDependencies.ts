@@ -38,6 +38,7 @@ import {
 } from '@suite-common/token-definitions';
 import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
 import { addWalletThunk, openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
+import { isDesktop } from '@trezor/env-utils';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
@@ -50,7 +51,7 @@ const connectInitSettings = {
     popup: false,
     manifest: {
         email: 'info@trezor.io',
-        appUrl: '@trezor/suite',
+        appUrl: isDesktop() ? '@trezor/suite' : window.origin,
     },
     sharedLogger: false,
     enableFirmwareHashCheck: true,
