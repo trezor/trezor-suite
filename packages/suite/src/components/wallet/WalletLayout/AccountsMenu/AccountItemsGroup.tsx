@@ -55,7 +55,7 @@ export const AccountItemsGroup = ({
 
     const tokensFiatBalance = getTokensFiatBalance(account, localCurrency, rates, tokens);
 
-    const tokensRoutes = ['wallet-tokens-coins', 'wallet-tokens-hidden'];
+    const tokensRoutes = ['wallet-tokens', 'wallet-tokens-hidden'];
 
     return (
         <Section $selected={selected}>

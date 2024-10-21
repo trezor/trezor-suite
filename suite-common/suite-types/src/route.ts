@@ -6,8 +6,9 @@ type RouteKeys =
     | 'params'
     | 'exact'
     | 'isForegroundApp'
+    | 'isNestedRoute'
     | 'isFullscreenApp';
 
 export type Route = ArrayElement<ConstWithOptionalFields<typeof routes, RouteKeys>>;
 
-export type PageName = Exclude<Route, { isForegroundApp: true }>['name'];
+export type PageName = Exclude<Route, { isForegroundApp: true } | { isNestedRoute: true }>['name'];

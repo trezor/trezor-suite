@@ -141,6 +141,7 @@ describe('redirectMiddleware', () => {
                             params: ['symbol', 'accountIndex', 'accountType'],
                             isForegroundApp: undefined,
                             isFullscreenApp: undefined,
+                            isNestedRoute: undefined,
                             exact: true,
                         },
                     },
