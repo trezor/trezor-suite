@@ -1,27 +1,24 @@
-import { composeTx } from '../src';
+import { composeTx } from '../src/compose';
 import * as NETWORKS from '../src/networks';
 
 import { verifyTxBytes } from './compose.utils';
 import { composeTxFixture } from './__fixtures__/compose';
 import { fixturesCrossCheck } from './__fixtures__/compose.crosscheck';
 
-// keyof typeof NETWORKS;
-const getNetwork = (name?: string) =>
-    // @ts-expect-error expression of type string can't be used to index type
-    typeof name === 'string' && NETWORKS[name] ? NETWORKS[name] : NETWORKS.bitcoin;
-
 describe(composeTx.name, () => {
     composeTxFixture.forEach(f => {
-        const network = getNetwork(f.request.network);
+        const network = f.request.network ?? NETWORKS.bitcoin;
         const request = { ...f.request, network };
-        const result: any = { ...f.result };
+        const result = { ...f.result };
 
         it(f.description, () => {
-            const tx = composeTx(request as any);
+            const tx = composeTx(request);
             expect(tx).toEqual(result);
 
-            if (tx.type === 'final') {
-                verifyTxBytes(tx, f.request.txType as any, network);
+            expect(f.request.txType).not.toEqual('p2wsh');
+
+            if (tx.type === 'final' && f.request.txType !== 'p2wsh') {
+                verifyTxBytes(tx, f.request.txType, network);
             }
         });
     });
@@ -36,6 +33,7 @@ describe('composeTx addresses cross-check', () => {
         p2wpkh: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d',
         p2wsh: 'bc1q6rgl33d3s9dugudw7n68yrryajkr3ha9q8q24j20zs62se4q9tsqdy0t2q',
     };
+
     const amounts = {
         p2pkh: '102300',
         p2sh: '101500',
@@ -43,17 +41,19 @@ describe('composeTx addresses cross-check', () => {
         p2wpkh: '101500',
         p2wsh: '101500',
     };
+
     const addrKeys = Object.keys(addrTypes) as Array<keyof typeof addrTypes>;
+
     fixturesCrossCheck.forEach(f => {
         txTypes.forEach(txType => {
             // skip test for each addressType if there is nothing to replace (example: 7 inputs test)
-            const offset = f.request.outputs.find(o => o.address === 'replace-me')
+            const offset = f.request.outputs.find(o => 'address' in o && o.address === 'replace-me')
                 ? addrKeys.length
                 : 1;
 
             addrKeys.slice(0, offset).forEach(addressType => {
                 const key = `${txType}-${addressType}` as keyof typeof f.result;
-                it(`${key} ${f.description}`, () => {
+                it(`${String(key)} ${f.description}`, () => {
                     const tx = composeTx({
                         ...f.request,
                         network: NETWORKS.bitcoin,
@@ -77,9 +77,13 @@ describe('composeTx addresses cross-check', () => {
 
                             return o;
                         }),
-                    } as any);
+                    });
 
                     if (tx.type !== 'final') throw new Error('Not final transaction!');
+
+                    if (f.result[key] === undefined) {
+                        throw new Error(`Assert key ${key} not found in fixtures`);
+                    }
 
                     expect(tx).toMatchObject(f.result[key]);
 
