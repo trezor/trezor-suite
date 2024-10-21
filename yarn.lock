@@ -11550,7 +11550,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/chrome": "npm:^0.0.270"
+    "@types/chrome": "npm:^0.0.278"
     "@types/w3c-web-usb": "npm:^1.0.10"
     babel-loader: "npm:^9.1.3"
     html-webpack-plugin: "npm:^5.6.0"
@@ -11580,7 +11580,7 @@ __metadata:
     "@trezor/node-utils": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/chrome": "npm:^0.0.270"
+    "@types/chrome": "npm:^0.0.278"
     babel-loader: "npm:^9.1.3"
     copy-webpack-plugin: "npm:^12.0.2"
     events: "npm:^3.3.0"
@@ -12588,13 +12588,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chrome@npm:^0.0.270":
-  version: 0.0.270
-  resolution: "@types/chrome@npm:0.0.270"
+"@types/chrome@npm:^0.0.278":
+  version: 0.0.278
+  resolution: "@types/chrome@npm:0.0.278"
   dependencies:
     "@types/filesystem": "npm:*"
     "@types/har-format": "npm:*"
-  checksum: 10/7d5e350dbfb58b4bbab67df83324f353e97c78171ec3df3d37ea2fd57fc2011311fa8cc91ba98d54d0f989716076777a39b125a0782109646faca94853984522
+  checksum: 10/8fa2e68bd28b28f14599aee36ecd40f32f42fd68e4012145205930f4bf2d62f57b1b0b5af033e15d0fbdeadb211fd51c14f8ef3caf34176f8c5d127ac3fe8641
   languageName: node
   linkType: hard
 
