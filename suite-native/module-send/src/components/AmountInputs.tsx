@@ -1,9 +1,9 @@
-import { useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { LinearTransition, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useRef, useState } from 'react';
 import { TextInput, View, findNodeHandle } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { VStack, HStack, Box, Text } from '@suite-native/atoms';
+import { VStack, HStack, Text } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
@@ -19,6 +19,7 @@ import { CryptoAmountInput } from './CryptoAmountInput';
 import { FiatAmountInput } from './FiatAmountInput';
 import { AmountErrorMessage } from './AmountErrorMessage';
 import { SwitchAmountsButton } from './SwitchAmountsButton';
+import { SendMaxButton } from './SendMaxButton';
 
 type AmountInputProps = {
     index: number;
@@ -115,15 +116,17 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
         <View ref={amountInputsWrapperRef}>
             <VStack spacing="sp12">
                 <HStack flex={1} justifyContent="space-between" alignItems="center">
-                    <Text variant="hint">
-                        <Translation id="moduleSend.outputs.recipients.amountLabel" />
-                    </Text>
-                    {/* TODO: SEND MAX button */}
-                    {/* <Button size="small" colorScheme="tertiaryElevation0">
-                    Send max
-                    </Button> */}
+                    <Animated.View layout={LinearTransition}>
+                        <Text variant="hint">
+                            <Translation id="moduleSend.outputs.recipients.amountLabel" />
+                        </Text>
+                    </Animated.View>
+                    <SendMaxButton outputIndex={index} accountKey={accountKey} />
                 </HStack>
-                <Box style={applyStyle(inputsWrapperStyle, { isFiatDisplayed })}>
+                <Animated.View
+                    layout={LinearTransition}
+                    style={applyStyle(inputsWrapperStyle, { isFiatDisplayed })}
+                >
                     <CryptoAmountInput
                         recipientIndex={index}
                         scaleValue={cryptoScale}
@@ -149,7 +152,7 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
                             />
                         </>
                     )}
-                </Box>
+                </Animated.View>
                 <AmountErrorMessage outputIndex={index} isFiatDisplayed={isFiatDisplayed} />
             </VStack>
         </View>

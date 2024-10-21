@@ -139,9 +139,11 @@ export type PrecomposedTransactionCardano =
     | PrecomposedTransactionCardanoNonFinal
     | PrecomposedTransactionCardanoFinal;
 
-export type GeneralPrecomposedTransactionFinal =
-    | PrecomposedTransactionFinal
-    | PrecomposedTransactionCardanoFinal;
+export type GeneralPrecomposedTransaction = PrecomposedTransaction | PrecomposedTransactionCardano;
+export type GeneralPrecomposedTransactionFinal = Extract<
+    GeneralPrecomposedTransaction,
+    { type: 'final' }
+>;
 
 export type PrecomposedLevels = { [key: string]: PrecomposedTransaction };
 export type PrecomposedLevelsCardano = { [key: string]: PrecomposedTransactionCardano };
@@ -277,3 +279,9 @@ export type ReviewOutputState = 'active' | 'success' | undefined;
 export type ExcludedUtxos = Record<string, 'low-anonymity' | 'dust' | undefined>;
 
 export type FeeLevelLabel = FeeLevel['label'];
+
+export const isFinalPrecomposedTransaction = (
+    tx: GeneralPrecomposedTransaction,
+): tx is PrecomposedTransactionFinal => {
+    return tx.type === 'final';
+};
