@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/TransactionComposer.js
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { composeTx, ComposeOutput } from '@trezor/utxo-lib';
+import { composeTx, ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
 import { FeeLevels } from './Fees';
 import { Blockchain } from '../../backend/BlockchainLink';
 import type { BitcoinNetworkInfo, DiscoveryAccount, SelectFeeLevel } from '../../types';
@@ -17,7 +17,7 @@ type Options = {
     outputs: ComposeOutput[];
     coinInfo: BitcoinNetworkInfo;
     baseFee?: number;
-    skipPermutation?: boolean;
+    sortingStrategy: TransactionInputOutputSortingStrategy;
 };
 
 export class TransactionComposer {
@@ -33,7 +33,7 @@ export class TransactionComposer {
 
     baseFee: number;
 
-    skipPermutation: boolean;
+    sortingStrategy: TransactionInputOutputSortingStrategy;
 
     feeLevels: FeeLevels;
 
@@ -45,7 +45,7 @@ export class TransactionComposer {
         this.coinInfo = options.coinInfo;
         this.blockHeight = 0;
         this.baseFee = options.baseFee || 0;
-        this.skipPermutation = options.skipPermutation || false;
+        this.sortingStrategy = options.sortingStrategy;
         this.feeLevels = new FeeLevels(options.coinInfo);
 
         // map to @trezor/utxo-lib/compose format
@@ -164,7 +164,7 @@ export class TransactionComposer {
             outputs: this.outputs,
             feeRate,
             longTermFeeRate: this.feeLevels.longTermFeeRate,
-            skipPermutation: this.skipPermutation,
+            sortingStrategy: this.sortingStrategy,
             network: coinInfo.network,
             changeAddress,
             dustThreshold: coinInfo.dustLimit,

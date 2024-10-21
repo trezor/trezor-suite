@@ -12,6 +12,7 @@ import type {
 } from '@trezor/utxo-lib';
 import type { PROTO } from '../../constants';
 import type { Params, Response } from '../params';
+import type { TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
 
 // for convenience ComposeOutput `type: "payment"` field is not required by @trezor/connect api
 export type ComposeOutputPayment = Omit<Extract<ComposeOutputBase, { type: 'payment' }>, 'type'> & {
@@ -20,7 +21,7 @@ export type ComposeOutputPayment = Omit<Extract<ComposeOutputBase, { type: 'paym
 
 export type ComposeOutput = Exclude<ComposeOutputBase, { type: 'payment' }> | ComposeOutputPayment;
 
-export interface ComposeParams {
+export type ComposeParams = {
     outputs: ComposeOutput[];
     coin: string;
     identity?: string;
@@ -30,8 +31,18 @@ export interface ComposeParams {
     sequence?: number;
     baseFee?: number;
     floorBaseFee?: boolean;
-    skipPermutation?: boolean;
-}
+} & (
+    | {
+          /** @deprecated  use sortingStrategy=none instead */
+          skipPermutation?: boolean;
+          sortingStrategy?: undefined;
+      }
+    | {
+          /** @deprecated  use sortingStrategy=none instead */
+          skipPermutation?: undefined;
+          sortingStrategy?: TransactionInputOutputSortingStrategy;
+      }
+);
 
 export type SignedTransaction = {
     signatures: string[];
@@ -42,7 +53,7 @@ export type SignedTransaction = {
 // @trezor/utxo-lib `composeTx` ComposeInput required fields intersects AccountUtxo
 export type ComposeUtxo = AccountUtxo & Partial<ComposeInputBase>;
 
-export interface PrecomposeParams {
+export type PrecomposeParams = {
     outputs: ComposeOutput[];
     coin: string;
     identity?: string;
@@ -56,8 +67,18 @@ export interface PrecomposeParams {
     baseFee?: number;
     floorBaseFee?: boolean;
     sequence?: number;
-    skipPermutation?: boolean;
-}
+} & (
+    | {
+          /** @deprecated: use sortingStrategy=none instead */
+          skipPermutation?: boolean;
+          sortingStrategy?: undefined;
+      }
+    | {
+          /** @deprecated: use sortingStrategy=none instead */
+          skipPermutation?: undefined;
+          sortingStrategy?: TransactionInputOutputSortingStrategy;
+      }
+);
 
 // @trezor/utxo-lib `composeTx` transaction.input (ComposeInput) response intersects AccountUtxo
 export type ComposedInputs = AccountUtxo & ComposeInputBase;
