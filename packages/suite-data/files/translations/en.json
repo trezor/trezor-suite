@@ -1795,7 +1795,7 @@
   "TR_START_COINJOIN": "Start coinjoin",
   "TR_START_RECOVERY": "Start recovery",
   "TR_STEP": "Step {number}",
-  "TR_STEP_OF_TOTAL": "Select a token",
+  "TR_STEP_OF_TOTAL": "Step {index} of {total}",
   "TR_STILL_DONT_SEE_YOUR_TREZOR": "Still don’t see your Trezor?",
   "TR_STOP": "Stop",
   "TR_STOPPING": "Stopping",

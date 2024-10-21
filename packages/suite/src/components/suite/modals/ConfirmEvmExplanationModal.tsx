@@ -1,91 +1,30 @@
 import styled, { css } from 'styled-components';
 
-import { Translation, Modal } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Button, H3, Image, variables } from '@trezor/components';
+import { Image, NewModal, Paragraph } from '@trezor/components';
 import { onCancel } from 'src/actions/suite/modalActions';
 import { Account } from '@suite-common/wallet-types';
 import { networks } from '@suite-common/wallet-config';
 import { TranslationKey } from 'src/components/suite/Translation';
 import { SUITE } from 'src/actions/suite/constants';
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import { CoinLogo } from '@trezor/product-components';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledImage = styled(Image)`
-    width: 100%;
-    height: 100%;
-    align-self: center;
-`;
-
-const StyledModal = styled(Modal)`
-    width: 390px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    flex-grow: 1;
-    margin-top: ${spacingsPx.xxl};
-`;
-
-const Content = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Title = styled(H3)`
-    margin-bottom: ${spacingsPx.xs};
-    text-align: left;
-`;
-
-const Description = styled.span`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: 500;
-    line-height: 20px;
-    text-align: left;
-`;
 
 const ImageWrapper = styled.div`
     position: relative;
-    margin-bottom: ${spacingsPx.xxl};
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const ImageCoinLogoCommon = styled(CoinLogo)`
+const CoinLogoLeft = styled.div`
     position: absolute;
-    width: auto;
-
-    div {
-        width: 100%;
-        height: 100%;
-    }
-
-    svg {
-        width: 100%;
-        height: 100%;
-    }
+    top: 15%;
+    left: 4%;
 `;
 
-const ImageCoinLogoLeft = styled(ImageCoinLogoCommon)`
-    top: 17%;
-    left: 3.5%;
-    height: 52%;
-
-    ${({ symbol }) =>
-        symbol === 'eth' &&
-        css`
-            top: 15.6%;
-            left: 4.8%;
-            height: 51%;
-        `}
-`;
-
-const ImageCoinLogoRight = styled(ImageCoinLogoCommon)`
-    top: 31%;
-    right: 3.5%;
-    height: 52%;
+const CoinLogoRight = styled.div`
+    position: absolute;
+    top: 30%;
+    right: 4%;
 `;
 
 export interface ConfirmNetworkExplanationModalProps {
@@ -141,39 +80,48 @@ export const ConfirmEvmExplanationModal = ({
     };
 
     return (
-        <StyledModal headerComponent={null}>
-            <Content>
-                <ImageWrapper>
-                    <StyledImage
-                        image={
-                            account.symbol === 'eth'
-                                ? 'CONFIRM_EVM_EXPLANATION_ETH'
-                                : 'CONFIRM_EVM_EXPLANATION_OTHER'
-                        }
-                    />
-                    <ImageCoinLogoLeft symbol={account.symbol} />
-                    {account.symbol !== 'eth' && <ImageCoinLogoRight symbol="eth" />}
-                </ImageWrapper>
-                <Title>
-                    <Translation
-                        id={titleTranslationsIds[route]}
-                        values={{
-                            network: network.name,
-                        }}
-                    />
-                </Title>
-                <Description>
-                    <Translation
-                        id={descriptionTranslationsIds[route]}
-                        values={{
-                            network: network.name,
-                        }}
-                    />
-                </Description>
-                <StyledButton variant="primary" onClick={close}>
+        <NewModal
+            bottomContent={
+                <NewModal.Button onClick={close}>
                     <Translation id="TR_CONFIRM" />
-                </StyledButton>
-            </Content>
-        </StyledModal>
+                </NewModal.Button>
+            }
+            size="tiny"
+            heading={
+                <Translation
+                    id={titleTranslationsIds[route]}
+                    values={{
+                        network: network.name,
+                    }}
+                />
+            }
+        >
+            <ImageWrapper>
+                <Image
+                    image={
+                        account.symbol === 'eth'
+                            ? 'CONFIRM_EVM_EXPLANATION_ETH'
+                            : 'CONFIRM_EVM_EXPLANATION_OTHER'
+                    }
+                    width="100%"
+                />
+                <CoinLogoLeft>
+                    <CoinLogo size={68} symbol={account.symbol} />
+                </CoinLogoLeft>
+                {account.symbol !== 'eth' && (
+                    <CoinLogoRight>
+                        <CoinLogo size={68} symbol="eth" />
+                    </CoinLogoRight>
+                )}
+            </ImageWrapper>
+            <Paragraph variant="tertiary" typographyStyle="hint" margin={{ top: spacings.md }}>
+                <Translation
+                    id={descriptionTranslationsIds[route]}
+                    values={{
+                        network: network.name,
+                    }}
+                />
+            </Paragraph>
+        </NewModal>
     );
 };

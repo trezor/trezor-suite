@@ -8263,7 +8263,7 @@ export default defineMessages({
     },
     TR_STEP_OF_TOTAL: {
         id: 'TR_STEP_OF_TOTAL',
-        defaultMessage: 'Select a token',
+        defaultMessage: 'Step {index} of {total}',
     },
     TR_COINJOIN_STEP_1_TITLE: {
         id: 'TR_COINJOIN_STEP_1_TITLE',
