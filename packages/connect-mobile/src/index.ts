@@ -4,17 +4,13 @@ import * as ERRORS from '@trezor/connect/src/constants/errors';
 import { parseConnectSettings } from '@trezor/connect/src/data/connectSettings';
 import type { CallMethodPayload } from '@trezor/connect/src/events/call';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
-import type { TrezorConnect as TrezorConnectType } from '@trezor/connect/src/types';
-import type {
-    ConnectSettings,
-    ConnectSettingsPublic,
-    Manifest,
-    Response,
-} from '@trezor/connect/src/types';
+import type { ConnectSettingsMobile } from '@trezor/connect/src/types';
+import type { ConnectSettings, Manifest, Response } from '@trezor/connect/src/types';
 import { Login } from '@trezor/connect/src/types/api/requestLogin';
 import { Deferred, createDeferred } from '@trezor/utils';
+import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 
-export class TrezorConnectDeeplink implements ConnectFactoryDependencies {
+export class TrezorConnectDeeplink implements ConnectFactoryDependencies<ConnectSettingsMobile> {
     public eventEmitter = new EventEmitter();
     private _settings: ConnectSettings;
     private messagePromises: Record<number, Deferred<any>> = {};
@@ -39,7 +35,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies {
         };
     }
 
-    public init(settings: Partial<ConnectSettingsPublic>) {
+    public init(settings: InitFullSettings<ConnectSettingsMobile>) {
         if (!settings.deeplinkOpen) {
             throw new Error('TrezorConnect native requires "deeplinkOpen" setting.');
         }
@@ -79,16 +75,6 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies {
     }
 
     public uiResponse() {
-        throw ERRORS.TypedError('Method_InvalidPackage');
-    }
-
-    public renderWebUSBButton() {}
-
-    public disableWebUSB() {
-        throw ERRORS.TypedError('Method_InvalidPackage');
-    }
-
-    public requestWebUSBDevice() {
         throw ERRORS.TypedError('Method_InvalidPackage');
     }
 
@@ -190,24 +176,26 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies {
 }
 
 const impl = new TrezorConnectDeeplink();
-const TrezorConnect: TrezorConnectType & {
-    handleDeeplink: (url: string) => void;
-} = {
-    ...factory({
+const TrezorConnect = factory<
+    ConnectSettingsMobile,
+    {
+        handleDeeplink: (url: string) => void;
+    }
+>(
+    {
         eventEmitter: impl.eventEmitter,
         init: impl.init.bind(impl),
         call: impl.call.bind(impl),
         manifest: impl.manifest.bind(impl),
         requestLogin: impl.requestLogin.bind(impl),
         uiResponse: impl.uiResponse.bind(impl),
-        renderWebUSBButton: impl.renderWebUSBButton.bind(impl),
-        disableWebUSB: impl.disableWebUSB.bind(impl),
-        requestWebUSBDevice: impl.requestWebUSBDevice.bind(impl),
         cancel: impl.cancel.bind(impl),
         dispose: impl.dispose.bind(impl),
-    }),
-    handleDeeplink: impl.handleDeeplink.bind(impl),
-};
+    },
+    {
+        handleDeeplink: impl.handleDeeplink.bind(impl),
+    },
+);
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;

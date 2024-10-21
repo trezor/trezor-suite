@@ -3,13 +3,14 @@ import {
     POPUP,
     ConnectSettings,
     Manifest,
-    ConnectSettingsPublic,
+    ConnectSettingsWebextension,
 } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
 import { initLog } from '@trezor/connect/src/utils/debug';
 // Import as src not lib due to webpack issues with inlining content script later
 import { ServiceWorkerWindowChannel } from '@trezor/connect-web/src/channels/serviceworker-window';
 import { CoreInPopup } from '@trezor/connect-web/src/impl/core-in-popup';
+import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 
 import { parseConnectSettings } from './connectSettings';
 
@@ -41,7 +42,7 @@ class CoreInPopupWebextension extends CoreInPopup {
         this.popupManagerLogger = initLog('@trezor/connect-webextension/popupManager');
     }
 
-    public init(settings: Partial<ConnectSettingsPublic> = {}): Promise<void> {
+    public init(settings: InitFullSettings<ConnectSettingsWebextension>): Promise<void> {
         if (settings._extendWebextensionLifetime) {
             extendLifetime();
         }
@@ -59,9 +60,6 @@ const TrezorConnect = factory({
     manifest: methods.manifest.bind(methods),
     requestLogin: methods.requestLogin.bind(methods),
     uiResponse: methods.uiResponse.bind(methods),
-    renderWebUSBButton: methods.renderWebUSBButton.bind(methods),
-    disableWebUSB: methods.disableWebUSB.bind(methods),
-    requestWebUSBDevice: methods.requestWebUSBDevice.bind(methods),
     cancel: methods.cancel.bind(methods),
     dispose: methods.dispose.bind(methods),
 });
