@@ -88,21 +88,31 @@ export const selectAreTestnetsEnabled = (state: DiscoveryConfigSliceRootState) =
 export const selectDiscoveryInfo = (state: DiscoveryConfigSliceRootState) =>
     state.discoveryConfig.discoveryInfo;
 
-export const selectFeatureFlagEnabledNetworkSymbols = memoize((state: FeatureFlagsRootState) => {
-    const isPolygonEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsPolygonEnabled);
-    const isBscEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsBscEnabled);
+export const selectFeatureFlagEnabledNetworkSymbols = memoize(
+    (state: FeatureFlagsRootState & DiscoveryConfigSliceRootState) => {
+        const isPolygonEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsPolygonEnabled);
+        const isBscEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsBscEnabled);
+        const isSolanaEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsSolanaEnabled);
+        const areTestnetsEnabled = selectAreTestnetsEnabled(state);
 
-    const allowlist: NetworkSymbol[] = [];
+        const allowlist: NetworkSymbol[] = [];
 
-    if (isPolygonEnabled) {
-        allowlist.push('pol');
-    }
-    if (isBscEnabled) {
-        allowlist.push('bnb');
-    }
+        if (isPolygonEnabled) {
+            allowlist.push('pol');
+        }
+        if (isBscEnabled) {
+            allowlist.push('bnb');
+        }
+        if (isSolanaEnabled) {
+            allowlist.push('sol');
+            if (areTestnetsEnabled) {
+                allowlist.push('dsol');
+            }
+        }
 
-    return allowlist;
-});
+        return allowlist;
+    },
+);
 
 export const selectDiscoverySupportedNetworks = memoizeWithArgs(
     (
@@ -137,7 +147,7 @@ export const selectDiscoveryNetworkSymbols = memoizeWithArgs(
 );
 
 export const selectPortfolioTrackerMainnetNetworkSymbols = memoize(
-    (state: FeatureFlagsRootState) => {
+    (state: FeatureFlagsRootState & DiscoveryConfigSliceRootState) => {
         const allowlist = selectFeatureFlagEnabledNetworkSymbols(state);
 
         return [...portfolioTrackerMainnets, ...allowlist];
@@ -154,12 +164,14 @@ export const selectPortfolioTrackerTestnetNetworkSymbols = memoize(
     },
 );
 
-export const selectPortfolioTrackerNetworkSymbols = memoize((state: FeatureFlagsRootState) => {
-    const mainnets = selectPortfolioTrackerMainnetNetworkSymbols(state);
-    const testnets = selectPortfolioTrackerTestnetNetworkSymbols(state);
+export const selectPortfolioTrackerNetworkSymbols = memoize(
+    (state: FeatureFlagsRootState & DiscoveryConfigSliceRootState) => {
+        const mainnets = selectPortfolioTrackerMainnetNetworkSymbols(state);
+        const testnets = selectPortfolioTrackerTestnetNetworkSymbols(state);
 
-    return [...mainnets, ...testnets];
-});
+        return [...mainnets, ...testnets];
+    },
+);
 
 export const selectIsCoinEnablingInitFinished = (
     state: DiscoveryConfigSliceRootState & FeatureFlagsRootState,

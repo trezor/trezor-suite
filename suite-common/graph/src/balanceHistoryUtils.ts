@@ -326,6 +326,11 @@ export const getAccountHistoryMovementFromTransactions = ({
         case 'pol':
         case 'bnb':
             return getAccountHistoryMovementItemETH({ transactions, from, to });
+        case 'sol':
+            return {
+                main: [] as AccountHistoryMovementItem[],
+                tokens: {},
+            } as AccountHistoryMovement;
         default:
             coin satisfies never;
             throw new Error(`getAccountHistoryMovementItem: Unsupported network ${coin}`);
