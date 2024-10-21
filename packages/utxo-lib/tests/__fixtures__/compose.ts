@@ -1,4 +1,14 @@
-export const UTXO = {
+import {
+    ComposeChangeAddress,
+    ComposeInput,
+    ComposeOutput,
+    ComposeRequest,
+    ComposeResult,
+    ComposeResultFinal,
+} from '../../src/types/compose';
+import { bitcoincash, doge } from '../../src/networks';
+
+export const UTXO: ComposeInput & { path: number[] } = {
     path: [44, 1, 0, 0, 0], // NOTE: this field is not required by the ComposeInput interface, yet it is accepted in and received out
     coinbase: false,
     own: true,
@@ -8,7 +18,21 @@ export const UTXO = {
     amount: '102001',
 };
 
-export const composeTxFixture = [
+type AnyComposeRequest = ComposeRequest<ComposeInput, ComposeOutput, ComposeChangeAddress>;
+type AnyComposeResult = ComposeResult<ComposeInput, ComposeOutput, ComposeChangeAddress>;
+type AnyComposeFinalResult = ComposeResultFinal<ComposeInput, ComposeOutput, ComposeChangeAddress>;
+
+type Fixture = {
+    description: string;
+    request: Omit<AnyComposeRequest, 'network' | 'outputs' | 'changeAddress'> & {
+        network?: AnyComposeRequest['network'];
+        outputs: Array<AnyComposeRequest['outputs'][number] & { customField?: string }>;
+        changeAddress: AnyComposeRequest['changeAddress'] & { path?: number[] | string };
+    };
+    result: AnyComposeResult;
+};
+
+export const composeTxFixture: Fixture[] = [
     {
         description: 'builds a simple tx without change',
         request: {
@@ -39,7 +63,7 @@ export const composeTxFixture = [
                     amount: '100000',
                     type: 'payment',
                     customField: 'prove that payment output is generic',
-                },
+                } as AnyComposeFinalResult['outputs'][number], // hack for `customField`
             ],
             outputsPermutation: [0],
             type: 'final',
@@ -85,6 +109,7 @@ export const composeTxFixture = [
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
             dustThreshold: 546,
             feeRate: '10',
+            sortingStrategy: 'bip69',
             outputs: [
                 {
                     amount: '100000',
@@ -195,7 +220,7 @@ export const composeTxFixture = [
                     amount: '100081',
                     type: 'payment',
                     customField: 'prove that send-max output is generic',
-                },
+                } as AnyComposeFinalResult['outputs'][number], // hack for `customField`
             ],
             outputsPermutation: [0],
             type: 'final',
@@ -248,7 +273,7 @@ export const composeTxFixture = [
                     path: [44, 1, 1, 0],
                     amount: '49401',
                     type: 'change',
-                },
+                } as AnyComposeFinalResult['outputs'][number], // hack for `path`,
             ],
             outputsPermutation: [1, 0, 2],
             type: 'final',
@@ -301,7 +326,7 @@ export const composeTxFixture = [
                     address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
                     amount: '49216',
                     type: 'change',
-                },
+                } as AnyComposeFinalResult['outputs'][number], // hack for `path`,,
             ],
             outputsPermutation: [1, 0, 2],
             type: 'final',
@@ -617,7 +642,7 @@ export const composeTxFixture = [
                     dataHex: 'deadbeef',
                     type: 'opreturn',
                     customField: 'prove that opreturn output is generic',
-                },
+                } as AnyComposeFinalResult['outputs'][number], // hack for `customField`
                 {
                     address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
                     amount: '99931',
@@ -958,7 +983,7 @@ export const composeTxFixture = [
         description: 'builds a simple tx without change (cashaddr)',
         request: {
             changeAddress: { address: 'bitcoincash:qzppkat2v7xu9fr3yeuqdnggjqqltrs7pcg8swvhl0' },
-            network: 'bitcoincash',
+            network: bitcoincash,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -1163,7 +1188,7 @@ export const composeTxFixture = [
             dustThreshold: 999999,
             feeRate: '1000',
             sortingStrategy: 'bip69',
-            network: 'doge',
+            network: doge,
             outputs: [
                 {
                     address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
