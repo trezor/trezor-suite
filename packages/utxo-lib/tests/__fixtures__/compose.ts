@@ -30,6 +30,7 @@ type Fixture = {
         changeAddress: AnyComposeRequest['changeAddress'] & { path?: number[] | string };
     };
     result: AnyComposeResult;
+    randomIntSequence?: number[];
 };
 
 export const composeTxFixture: Fixture[] = [
@@ -521,6 +522,79 @@ export const composeTxFixture: Fixture[] = [
                 },
             ],
             outputsPermutation: [1, 0],
+            type: 'final',
+        },
+    },
+    {
+        description:
+            'sorts the inputs randomly and puts change at random place between user-defined outputs' +
+            'when sortingStrategy=random',
+        randomIntSequence: [
+            1, // For outputs (so change output is inserted at index 1 after the first output)
+            1, // Shuffling inputs (Fisher-Yates swap last, the 3rd with second)
+            0, // Shuffling inputs (Fisher-Yates swap second with the first)
+        ],
+        request: {
+            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            dustThreshold: 546,
+            feeRate: '10',
+            sortingStrategy: 'random',
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '100000',
+                    type: 'payment',
+                },
+                {
+                    address: '1LetUsDestroyBitcoinTogether398Nrg',
+                    amount: '150000',
+                    type: 'payment',
+                },
+            ],
+            utxos: [
+                {
+                    ...UTXO,
+                    vout: 3,
+                },
+                {
+                    ...UTXO,
+                    vout: 2,
+                },
+                {
+                    ...UTXO,
+                    vout: 1,
+                },
+            ],
+        },
+        result: {
+            bytes: 556,
+            fee: '5560',
+            feePerByte: '10',
+            max: undefined,
+            totalSpent: '255560',
+            inputs: [
+                { ...UTXO, vout: 1 },
+                { ...UTXO, vout: 3 },
+                { ...UTXO, vout: 2 },
+            ],
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '100000',
+                    type: 'payment',
+                },
+                {
+                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                    amount: '50443',
+                    type: 'change',
+                },
+                {
+                    address: '1LetUsDestroyBitcoinTogether398Nrg',
+                    amount: '150000',
+                    type: 'payment',
+                },
+            ],
+            outputsPermutation: [0, 2, 1],
             type: 'final',
         },
     },
