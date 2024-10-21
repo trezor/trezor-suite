@@ -5,7 +5,7 @@ import { FormatterProps } from '../types';
 import { useFiatFromCryptoValue } from '../hooks/useFiatFromCryptoValue';
 import { FiatAmountFormatter } from './FiatAmountFormatter';
 
-type CryptoToFiatAmountFormatterProps = FormatterProps<string | null> &
+type CryptoToFiatAmountFormatterProps = FormatterProps<string | number | null> &
     TextProps & {
         network: NetworkSymbol;
         historicRate?: number;
@@ -27,7 +27,7 @@ export const CryptoToFiatAmountFormatter = ({
         historicRate,
         useHistoricRate,
         isBalance,
-        cryptoValue: value,
+        cryptoValue: value ? value.toString() : null,
     });
 
     return <FiatAmountFormatter network={network} value={fiatValue} {...otherProps} />;

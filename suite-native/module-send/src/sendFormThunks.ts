@@ -1,4 +1,5 @@
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
+import { D, pipe } from '@mobily/ts-belt';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -27,6 +28,8 @@ import {
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
+
+import { FeeLevelsMaxAmount } from './types';
 
 const SEND_MODULE_PREFIX = '@suite-native/send';
 
@@ -151,11 +154,11 @@ export const removeSendFormDraftsSupportingAmountUnitThunk = createThunk(
     },
 );
 
-export const calculateMaxAmountWithNormalFeeThunk = createThunk<
-    string | undefined,
+export const calculateFeeLevelsMaxAmountThunk = createThunk<
+    FeeLevelsMaxAmount,
     { formState: FormState; accountKey: AccountKey }
 >(
-    `${SEND_MODULE_PREFIX}/calculateMaxAmountWithNormalFeeThunk`,
+    `${SEND_MODULE_PREFIX}/calculateMaxAmountThunk`,
     async ({ formState, accountKey }, { dispatch, getState }) => {
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) throw new Error('Account not found.');
@@ -180,10 +183,14 @@ export const calculateMaxAmountWithNormalFeeThunk = createThunk<
         );
 
         if (isFulfilled(response)) {
-            if (response.payload.normal.type !== 'error') {
-                return response.payload.normal.max;
-            }
+            return pipe(
+                response.payload,
+                D.filter(x => x.type === 'final'),
+                D.map(y => (y as GeneralPrecomposedTransactionFinal).max),
+            ) as FeeLevelsMaxAmount;
         }
+
+        throw new Error('Unable to get the max amounts.');
     },
 );
 

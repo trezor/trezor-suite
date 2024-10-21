@@ -74,6 +74,7 @@ export const CryptoAmountInput = ({
         const transformedValue = cryptoAmountTransformer(newValue);
         onChange(transformedValue);
         setValue(fiatFieldName, converters?.convertCryptoToFiat?.(transformedValue));
+        setValue('setMaxOutputId', undefined);
         debounce(() => {
             trigger(cryptoFieldName);
             onFocus?.();

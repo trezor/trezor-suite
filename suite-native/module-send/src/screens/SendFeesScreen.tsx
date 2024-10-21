@@ -6,7 +6,6 @@ import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core
 
 import { SendFeesForm } from '../components/SendFeesForm';
 import { SendScreen } from '../components/SendScreen';
-import { RecipientsSummary } from '../components/RecipientsSummary';
 import { AccountBalanceScreenHeader } from '../components/SendScreenSubHeader';
 
 export const SendFeesScreen = ({
@@ -23,7 +22,6 @@ export const SendFeesScreen = ({
     return (
         <SendScreen screenHeader={<AccountBalanceScreenHeader accountKey={accountKey} />}>
             <VStack spacing="sp32" flex={1}>
-                <RecipientsSummary accountKey={accountKey} />
                 <SendFeesForm accountKey={accountKey} feeLevels={feeLevels} />
             </VStack>
         </SendScreen>

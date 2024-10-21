@@ -64,8 +64,7 @@ export const FeeOption = ({
     accountKey,
     isInteractive = true,
 }: FeeOptionProps) => {
-    const { utils } = useNativeStyles();
-    const { applyStyle } = useNativeStyles();
+    const { utils, applyStyle } = useNativeStyles();
     const { watch, setValue } = useContext(FormContext);
     const dispatch = useDispatch();
 
@@ -73,11 +72,11 @@ export const FeeOption = ({
         selectNetworkFeeLevelTimeEstimate(state, feeKey, networkSymbol),
     );
 
-    const feePerUnit = useSelector((state: FeesRootState) =>
+    const backendFeePerUnit = useSelector((state: FeesRootState) =>
         selectNetworkFeeLevelFeePerUnit(state, feeKey, networkSymbol),
     );
 
-    const isErrorFee = feeLevel.type !== 'final';
+    const areFeeValuesComplete = feeLevel.type === 'final';
 
     const handleSelectFeeLevel = () => {
         setValue('feeLevel', feeKey, {
@@ -92,9 +91,9 @@ export const FeeOption = ({
     const selectedLevel = watch('feeLevel');
     const isChecked = selectedLevel === feeKey;
 
-    const highlightColor: Color = isErrorFee
-        ? 'backgroundAlertRedBold'
-        : 'backgroundSecondaryDefault';
+    const highlightColor: Color = areFeeValuesComplete
+        ? 'backgroundSecondaryDefault'
+        : 'backgroundAlertRedBold';
 
     const borderAnimationValue = useDerivedValue(
         () => (isChecked ? withTiming(1) : withTiming(0)),
@@ -115,11 +114,20 @@ export const FeeOption = ({
     const label = feeLabelsMap[feeKey];
     const networkType = getNetworkType(networkSymbol);
     const feeUnits = getFeeUnits(networkType);
-    const formattedFeePerUnit = `${feePerUnit} ${feeUnits}`;
 
-    // If trezor-connect was not able to compose the fee level, we have to mock its value.
-    const mockedFee = transactionBytes * Number(feePerUnit);
-    const fee = isErrorFee ? mockedFee.toString() : feeLevel.fee;
+    // If trezor-connect was not able to compose the fee level (e.g. insufficient account balance), we have to mock its value.
+    const fee = areFeeValuesComplete
+        ? feeLevel.fee
+        : String(transactionBytes * Number(backendFeePerUnit));
+
+    // The transaction fee-per-unit values might be different from the ones obtained from the backend
+    // (e.g., an account leftover dust might be added to the fee etc.)
+    // In case we have values for it, the fee-per-unit is calculated from the transaction values.
+    const feePerUnit = areFeeValuesComplete
+        ? Math.round(Number(feeLevel.fee) / transactionBytes)
+        : Number(backendFeePerUnit);
+
+    const formattedFeePerUnit = `${feePerUnit} ${feeUnits}`;
 
     return (
         <Pressable onPress={handleSelectFeeLevel} disabled={!isInteractive}>
@@ -165,7 +173,9 @@ export const FeeOption = ({
                                 isChecked={isChecked}
                                 value={feeKey}
                                 activeColor={
-                                    isErrorFee ? 'iconAlertRed' : 'backgroundPrimaryDefault'
+                                    areFeeValuesComplete
+                                        ? 'backgroundPrimaryDefault'
+                                        : 'iconAlertRed'
                                 }
                                 onPress={handleSelectFeeLevel}
                                 testID={`@send/fees-level-${feeKey}`}
@@ -174,7 +184,7 @@ export const FeeOption = ({
                     </HStack>
                 </Box>
 
-                {isErrorFee && <FeeOptionErrorMessage isVisible={isChecked} />}
+                {!areFeeValuesComplete && <FeeOptionErrorMessage isVisible={isChecked} />}
             </Animated.View>
         </Pressable>
     );
