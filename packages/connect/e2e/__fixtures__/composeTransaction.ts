@@ -212,8 +212,8 @@ export default {
                     totalSpent: '1142',
                     inputs: [{ amount: '9426', script_type: 'SPENDWITNESS' }],
                     outputs: [
-                        { amount: '1000', script_type: 'PAYTOADDRESS' },
                         { amount: '8284', script_type: 'PAYTOWITNESS' },
+                        { amount: '1000', script_type: 'PAYTOADDRESS' },
                     ],
                 },
             ],
@@ -271,13 +271,13 @@ export default {
                     fee: '278',
                     totalSpent: '16678',
                     inputs: [
-                        { amount: '7086' },
-                        { amount: '9426' },
                         { amount: '309896' }, // NOTE: this utxo is used because required utxo is not enough to cover fee
+                        { amount: '9426' },
+                        { amount: '7086' },
                     ],
                     outputs: [
-                        { amount: '16400', script_type: 'PAYTOADDRESS' },
                         { amount: '309730', script_type: 'PAYTOWITNESS' },
+                        { amount: '16400', script_type: 'PAYTOADDRESS' },
                     ],
                 },
             ],
@@ -356,12 +356,12 @@ export default {
                     totalSpent: '100226000',
                     inputs: [{ script_type: 'SPENDADDRESS' }],
                     outputs: [
+                        { amount: '399774000', script_type: 'PAYTOADDRESS' },
                         {
                             address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
                             amount: '100000000',
                             script_type: 'PAYTOADDRESS',
                         },
-                        { amount: '399774000', script_type: 'PAYTOADDRESS' },
                     ],
                 },
             ],
@@ -388,12 +388,12 @@ export default {
                     totalSpent: '1326000',
                     inputs: [{ script_type: 'SPENDADDRESS' }],
                     outputs: [
+                        { amount: '498674000', script_type: 'PAYTOADDRESS' },
                         {
                             address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
                             amount: '100000',
                             script_type: 'PAYTOADDRESS',
                         },
-                        { amount: '498674000', script_type: 'PAYTOADDRESS' },
                     ],
                 },
             ],
@@ -427,12 +427,12 @@ export default {
                     outputs: [
                         {
                             address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
-                            amount: '200000000',
+                            amount: '299000000',
                             script_type: 'PAYTOADDRESS',
                         },
                         {
                             address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
-                            amount: '299000000',
+                            amount: '200000000',
                             script_type: 'PAYTOADDRESS',
                         },
                     ],

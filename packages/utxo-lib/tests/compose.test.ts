@@ -5,6 +5,24 @@ import { verifyTxBytes } from './compose.utils';
 import { composeTxFixture } from './__fixtures__/compose';
 import { fixturesCrossCheck } from './__fixtures__/compose.crosscheck';
 
+import { getRandomInt } from '@trezor/utils';
+
+jest.mock('@trezor/utils', () => ({
+    ...jest.requireActual('@trezor/utils'),
+    getRandomInt: jest.fn(),
+}));
+
+const mockRandomInt = (randomIntSequence: number[] | undefined) => {
+    let fakeRandomIndex = 0;
+    (getRandomInt as jest.Mock).mockImplementation(() => {
+        if (randomIntSequence === undefined || fakeRandomIndex >= randomIntSequence.length) {
+            throw new Error(`Not enough random numbers provided (i: ${fakeRandomIndex})`);
+        }
+
+        return randomIntSequence?.[fakeRandomIndex++];
+    });
+};
+
 describe(composeTx.name, () => {
     composeTxFixture.forEach(f => {
         const network = f.request.network ?? NETWORKS.bitcoin;
@@ -12,6 +30,8 @@ describe(composeTx.name, () => {
         const result = { ...f.result };
 
         it(f.description, () => {
+            mockRandomInt(f.randomIntSequence);
+
             const tx = composeTx(request);
             expect(tx).toEqual(result);
 
@@ -53,7 +73,7 @@ describe('composeTx addresses cross-check', () => {
 
             addrKeys.slice(0, offset).forEach(addressType => {
                 const key = `${txType}-${addressType}` as keyof typeof f.result;
-                it(`${String(key)} ${f.description}`, () => {
+                it(`${key} ${f.description}`, () => {
                     const tx = composeTx({
                         ...f.request,
                         network: NETWORKS.bitcoin,
