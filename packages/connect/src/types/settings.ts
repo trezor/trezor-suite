@@ -13,27 +13,20 @@ export interface ConnectSettingsPublic {
     manifest?: Manifest;
     connectSrc?: string;
     debug?: boolean;
-    hostLabel?: string;
-    hostIcon?: string;
     popup?: boolean;
     transportReconnect?: boolean;
-    webusb?: boolean; // deprecated
+    /** @deprecated */
+    webusb?: boolean;
     transports?: (Transport['name'] | Transport | (new (...args: any[]) => Transport))[];
     pendingTransportEvent?: boolean;
     lazyLoad?: boolean;
     interactionTimeout?: number;
     trustedHost: boolean;
-    coreMode?: 'auto' | 'popup' | 'iframe' | 'deeplink';
-    /* _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */
-    _extendWebextensionLifetime?: boolean;
     /**
      * for internal use only!
      * in some exotic setups (suite-web where iframe is embedded locally), you might need to tell connect where it should search for sessions background shared-worker
      */
     _sessionsBackgroundUrl?: string;
-    // Options for Connect-mobile deep linking
-    deeplinkOpen?: (url: string) => void;
-    deeplinkCallbackUrl?: string;
     // URL for binary files such as firmware, may be local or remote
     binFilesBaseUrl?: string;
     // enable firmware hash check automatically when device connects. Requires binFilesBaseUrl to be set.
@@ -55,7 +48,25 @@ export interface ConnectSettingsInternal {
     proxy?: Proxy;
     sharedLogger?: boolean;
     useCoreInPopup?: boolean;
-    deeplinkUrl: string;
 }
 
-export type ConnectSettings = ConnectSettingsPublic & ConnectSettingsInternal;
+export interface ConnectSettingsWeb {
+    hostLabel?: string;
+    hostIcon?: string;
+    coreMode?: 'auto' | 'popup' | 'iframe' | 'deeplink';
+}
+export interface ConnectSettingsWebextension {
+    /** _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */
+    _extendWebextensionLifetime?: boolean;
+}
+export interface ConnectSettingsMobile {
+    deeplinkUrl: string;
+    deeplinkOpen?: (url: string) => void;
+    deeplinkCallbackUrl?: string;
+}
+
+export type ConnectSettings = ConnectSettingsPublic &
+    ConnectSettingsInternal &
+    ConnectSettingsWeb &
+    ConnectSettingsWebextension &
+    ConnectSettingsMobile;
