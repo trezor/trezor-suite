@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Icon, Button, LoadingContent, Card } from '@trezor/components';
-import { selectCurrentFiatRates, selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
+import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { Account } from 'src/types/wallet';
@@ -12,15 +12,16 @@ import { useAccounts } from 'src/hooks/wallet';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 
 import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
-import { AssetFiatBalance } from '@suite-common/assets';
-import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { AssetTable, AssetTableRowType } from './AssetTable/AssetTable';
+import { AssetTable } from './AssetTable/AssetTable';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-
+import { AssetTableRowProps } from './AssetTable/AssetRow';
+import { getTotalFiatBalance } from '@suite-common/wallet-utils';
+import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 const InfoMessage = styled.div`
     padding: ${spacingsPx.md} ${spacingsPx.xl};
     display: flex;
@@ -40,32 +41,29 @@ const GridWrapper = styled.div`
     grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
 `;
 
-const useAssetsFiatBalances = (
-    assetsData: AssetTableRowType[],
-    accounts: { [key: string]: Account[] },
-) => {
-    const localCurrency = useSelector(selectLocalCurrency);
-    const currentRiatRates = useSelector(selectCurrentFiatRates);
+// const getAssetFiatBalance = (
+//     symbol: NetworkSymbol,
+//     accounts: { [key: string]: Account[] },
+//     localCurrency: FiatCurrencyCode,
+//     currentFiatRates: RatesByKey | undefined,
+// ): string => {
+//     const fiatRateKey = getFiatRateKey(symbol, localCurrency);
+//     const fiatRate = currentFiatRates?.[fiatRateKey];
+//     const amount =
+//         accounts[symbol]
+//             .reduce((balance, account) => balance + Number(account.formattedBalance), 0)
+//             .toString() ?? '0';
 
-    return assetsData.reduce<AssetFiatBalance[]>((acc, asset) => {
-        if (!asset) return acc;
+//     const fiatBalance = toFiatCurrency(amount, fiatRate?.rate, 2) ?? '0';
 
-        const fiatRateKey = getFiatRateKey(asset.symbol as NetworkSymbol, localCurrency);
-        const fiatRate = currentRiatRates?.[fiatRateKey];
-        const amount =
-            accounts[asset.symbol]
-                .reduce((balance, account) => balance + Number(account.formattedBalance), 0)
-                .toString() ?? '0';
-
-        const fiatBalance = toFiatCurrency(amount, fiatRate?.rate, 2) ?? '0';
-
-        return [...acc, { fiatBalance, symbol: asset.symbol }];
-    }, []);
-};
+//     return fiatBalance;
+// };
 
 export const AssetsView = () => {
     const { dashboardAssetsGridMode } = useSelector(s => s.suite.flags);
     const deviceSupportedNetworks = useSelector(selectDeviceSupportedNetworks);
+    // const localCurrency = useSelector(selectLocalCurrency);
+    // const currentFiatRates = useSelector(selectCurrentFiatRates);
 
     const theme = useTheme();
     const dispatch = useDispatch();
@@ -73,6 +71,13 @@ export const AssetsView = () => {
     const { accounts } = useAccounts(discovery);
     const { mainnets, enabledNetworks } = useEnabledNetworks();
     const { isMobileLayout } = useLayoutSize();
+    const localCurrency = useSelector(selectLocalCurrency);
+    const currentFiatRates = useSelector(selectCurrentFiatRates);
+    const totalFiatBalance = getTotalFiatBalance({
+        deviceAccounts: accounts,
+        localCurrency,
+        rates: currentFiatRates,
+    }).toString();
 
     const mainnetSymbols = mainnets.map(mainnet => mainnet.symbol);
     const supportedMainnetNetworks = deviceSupportedNetworks.filter(network =>
@@ -92,7 +97,7 @@ export const AssetsView = () => {
 
     const assetNetworkSymbols = Object.keys(assets) as NetworkSymbol[];
 
-    const assetsData: AssetTableRowType[] = assetNetworkSymbols
+    const assetsData: AssetTableRowProps[] = assetNetworkSymbols
         .map(symbol => {
             const network = getNetwork(symbol);
             if (!network) {
@@ -106,13 +111,48 @@ export const AssetsView = () => {
                 new BigNumber(0),
             );
 
+            const assetTokens = assets[symbol].find(a => a.tokens)?.tokens;
+
+            const assetTokensFiatBalance =
+                assetTokens?.reduce((total, token) => {
+                    const tokenFiatBalance =
+                        toFiatCurrency(
+                            token.balance?.toString() ?? '0',
+                            currentFiatRates?.[getFiatRateKey(symbol, localCurrency)]?.rate,
+                            2,
+                        ) ?? '0';
+
+                    return total + parseFloat(tokenFiatBalance);
+                }, 0) ?? 0;
+
+            const assetNativeFiatBalance =
+                toFiatCurrency(
+                    assetBalance.toString(),
+                    currentFiatRates?.[getFiatRateKey(symbol, localCurrency)]?.rate,
+                    2,
+                ) ?? '0';
+
+            const assetFullFiatBalance = assetNativeFiatBalance + assetTokensFiatBalance;
+
+            console.log('assetFullFiatBalance', assetFullFiatBalance);
+
+            const assetPercentage =
+                (parseFloat(assetFullFiatBalance) / parseFloat(totalFiatBalance)) * 100;
+
+            console.log('assetPercentage', assetPercentage);
+
             const assetFailed = accounts.find(f => f.symbol === network.symbol && f.failed);
 
-            return { symbol, network, assetFailed: !!assetFailed, assetBalance };
+            return {
+                symbol,
+                network,
+                failed: !!assetFailed,
+                assetCryptoBalance: assetBalance ? assetBalance.toFixed() : '0',
+                assetTokens: assetTokens?.length ? assetTokens : undefined,
+            };
         })
-        .filter(data => data !== null) as AssetTableRowType[];
+        .filter(data => data !== null) as AssetTableRowProps[];
 
-    const assetsFiatBalances = useAssetsFiatBalances(assetsData, assets);
     const discoveryStatus = getDiscoveryStatus();
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
     const isError =
@@ -180,9 +220,8 @@ export const AssetsView = () => {
                                 index={index}
                                 key={asset.symbol}
                                 network={asset.network}
-                                failed={asset.assetFailed}
-                                cryptoValue={asset.assetBalance.toFixed()}
-                                assetsFiatBalances={assetsFiatBalances}
+                                failed={asset.failed}
+                                assetCryptoBalance={asset.assetCryptoBalance}
                             />
                         ))}
                         {discoveryInProgress && <AssetCardSkeleton />}
@@ -205,7 +244,7 @@ export const AssetsView = () => {
                 <Card paddingType="none">
                     <AssetTable
                         assetsData={assetsData}
-                        assetsFiatBalances={assetsFiatBalances}
+                        // assetsFiatBalances={assetsFiatBalances}
                         discoveryInProgress={discoveryInProgress}
                     />
                     {isError && (

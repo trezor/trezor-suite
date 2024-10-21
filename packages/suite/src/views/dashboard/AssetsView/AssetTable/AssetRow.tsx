@@ -19,17 +19,33 @@ import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
 import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
 import { Text } from '@trezor/components';
+import { BigNumber } from '@trezor/utils';
+import { TokenInfo } from '@trezor/blockchain-link-types';
+import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 
-interface AssetTableProps {
+export interface AssetTableRowProps {
     network: Network;
     failed: boolean;
-    cryptoValue: string;
+    // assetsFiatBalances: AssetFiatBalance[];
+    assetCryptoBalance: string;
+    staking?: {
+        assetStakingCryptoBalance: BigNumber;
+        assetStakingFiatBalance: BigNumber;
+    };
+    assetTokens?: TokenInfo[];
+    assetPercentage?: number;
     isLastRow?: boolean;
-    assetsFiatBalances: AssetFiatBalance[];
 }
 
 export const AssetRow = memo(
-    ({ network, failed, cryptoValue, assetsFiatBalances }: AssetTableProps) => {
+    ({
+        network,
+        failed,
+        assetCryptoBalance,
+        // assetsFiatBalances,
+        assetTokens,
+        assetPercentage,
+    }: AssetTableRowProps) => {
         const { symbol } = network;
         const dispatch = useDispatch();
         const theme = useTheme();
@@ -54,10 +70,7 @@ export const AssetRow = memo(
             <Table.Row onClick={handleRowClick}>
                 <Table.Cell colSpan={3}>
                     <Row>
-                        <AssetCoinLogo
-                            symbol={network.symbol}
-                            assetsFiatBalances={assetsFiatBalances}
-                        />
+                        <AssetCoinLogo symbol={network.symbol} />
                         <AssetCoinName network={network} />
                     </Row>
                 </Table.Cell>
@@ -71,11 +84,11 @@ export const AssetRow = memo(
                             gap={spacings.xxxs}
                             data-testid={`@asset-card/${symbol}/balance`}
                         >
-                            <FiatValue amount={cryptoValue} symbol={symbol} />
+                            <FiatValue amount={assetCryptoBalance} symbol={symbol} />
 
                             <Text typographyStyle="hint" color={theme.textSubdued}>
                                 <AmountUnitSwitchWrapper symbol={symbol}>
-                                    <CoinBalance value={cryptoValue} symbol={symbol} />
+                                    <CoinBalance value={assetCryptoBalance} symbol={symbol} />
                                 </AmountUnitSwitchWrapper>
                             </Text>
                         </Column>
