@@ -10,6 +10,7 @@
                 "EXPO_PUBLIC_ENVIRONMENT": "develop",
                 "EXPO_PUBLIC_CODESIGN_BUILD": "false"
             },
+            "channel": "develop",
             "autoIncrement": true,
             "ios": {
                 "distribution": "store"
@@ -19,10 +20,19 @@
                 "resourceClass": "large"
             }
         },
+        "preview": {
+            "env": {
+                "EXPO_PUBLIC_ENVIRONMENT": "preview",
+                "EXPO_PUBLIC_CODESIGN_BUILD": "false"
+            },
+            "autoIncrement": true,
+            "developmentClient": true,
+            "credentialsSource": "remote",
+            "distribution": "internal"
+        },
         "adhoc": {
             "env": {
                 "EXPO_PUBLIC_ENVIRONMENT": "preview",
-                "EXPO_PUBLIC_BLUETOOTH_ENABLED": "true",
                 "EXPO_PUBLIC_CODESIGN_BUILD": "false"
             },
             "autoIncrement": true,
