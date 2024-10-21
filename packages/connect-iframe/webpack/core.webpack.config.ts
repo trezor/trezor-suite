@@ -15,7 +15,7 @@ export const config: webpack.Configuration = {
     output: {
         filename: 'js/[name].js',
         path: DIST,
-        publicPath: './',
+        publicPath: './static/connect',
         library: {
             type: 'module',
         },

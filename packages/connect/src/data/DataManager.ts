@@ -23,12 +23,12 @@ export class DataManager {
         if (!withAssets) return;
 
         const assetPromises = config.assets.map(async asset => {
-            const json = await httpRequest(`${asset.url}${ts}`, 'json');
+            const json = await httpRequest(`${settings.connectSrc}${asset.url}${ts}`, 'json');
             this.assets[asset.name] = json;
         });
         await Promise.all(assetPromises);
 
-        this.messages = await httpRequest(`${config.messages}${ts}`, 'json');
+        this.messages = await httpRequest(`${settings.connectSrc}${config.messages}${ts}`, 'json');
 
         // parse bridge JSON
         parseBridgeJSON(this.assets.bridge);

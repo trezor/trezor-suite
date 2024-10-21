@@ -32,7 +32,7 @@ export const config: webpack.Configuration = {
                             // TODO: we are not using contenthash here because we want to use that worker from
                             // different environments (iframe, popup, connect-web, etc.) and we would not know the
                             // name of the file.
-                            filename: './workers/shared-logger-worker.js',
+                            filename: '/workers/shared-logger-worker.js',
                         },
                     },
                     {
@@ -47,21 +47,21 @@ export const config: webpack.Configuration = {
                 test: /\workers\/blockbook\/index/i,
                 loader: 'worker-loader',
                 options: {
-                    filename: './workers/blockbook-worker.[contenthash].js',
+                    filename: '/workers/blockbook-worker.[contenthash].js',
                 },
             },
             {
                 test: /\workers\/ripple\/index/i,
                 loader: 'worker-loader',
                 options: {
-                    filename: './workers/ripple-worker.[contenthash].js',
+                    filename: '/workers/ripple-worker.[contenthash].js',
                 },
             },
             {
                 test: /\workers\/blockfrost\/index/i,
                 loader: 'worker-loader',
                 options: {
-                    filename: './workers/blockfrost-worker.[contenthash].js',
+                    filename: '/workers/blockfrost-worker.[contenthash].js',
                 },
             },
             {
