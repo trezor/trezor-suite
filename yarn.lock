@@ -11204,7 +11204,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    "@types/web": "npm:^0.0.162"
+    "@types/web": "npm:^0.0.174"
     events: "npm:^3.3.0"
     fs-extra: "npm:^11.2.0"
     html-webpack-plugin: "npm:^5.6.0"
@@ -13849,10 +13849,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/web@npm:^0.0.162":
-  version: 0.0.162
-  resolution: "@types/web@npm:0.0.162"
-  checksum: 10/19cba7befa02cbf96fc14cb95503f24844a70626b45679b721a66a7a1941002e165f5d45a741d03e4908497ba4e9a47dcc001f0a281bc3d3de472e36017c8240
+"@types/web@npm:^0.0.174":
+  version: 0.0.174
+  resolution: "@types/web@npm:0.0.174"
+  checksum: 10/e249ac2b2ce8a11d0933fd9a307dc2fd8d627c93b3c15b2d6fe959133aa6ee2608cdef58c39ce237b7cd081fa6c12e7cd720dbf2a53f7161475c3f551f89a86d
   languageName: node
   linkType: hard
 
