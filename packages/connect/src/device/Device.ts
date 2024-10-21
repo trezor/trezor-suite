@@ -128,6 +128,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transport: Transport;
     public readonly protocol: TransportProtocol;
     private readonly transportPath;
+    private readonly transportSessionOwner;
     private session;
     private isLocalSession;
 
@@ -214,6 +215,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.uniquePath = id;
         this.transport = transport;
         this.transportPath = descriptor.path;
+        this.transportSessionOwner = descriptor.sessionOwner;
 
         this.session = descriptor.session;
         this.isLocalSession = false;
@@ -229,7 +231,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 this.sessionDfd = undefined;
             });
         }
-
         return this.sessionDfd.promise;
     }
 
@@ -1151,6 +1152,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 ...base,
                 type: 'unacquired',
                 label: 'Unacquired device',
+                name: this.name,
+                sessionOwner: this.transportSessionOwner,
             };
         }
         const defaultLabel = 'My Trezor';
@@ -1176,6 +1179,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             unavailableCapabilities: this.unavailableCapabilities,
             availableTranslations: this.availableTranslations,
             authenticityChecks: this.authenticityChecks,
+            sessionOwner: this.transportSessionOwner,
         };
     }
 }

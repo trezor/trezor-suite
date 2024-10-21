@@ -40,6 +40,7 @@ const createTransportApi = (override = {}) =>
 export const createTestTransport = (apiMethods = {}) =>
     new TestTransport({
         api: createTransportApi(apiMethods),
+        id: 'foo-bar-id',
     });
 
 export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
