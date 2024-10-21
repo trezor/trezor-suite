@@ -110,7 +110,11 @@ export function transactionBytes(inputs: Vin[], outputs: VinVout[]) {
 // - calculated from inputSize multiplied by dustRelayFeeRate
 export function getDustAmount(
     feeRate: number,
-    { txType, longTermFeeRate, dustThreshold }: CoinSelectOptions,
+    {
+        txType,
+        longTermFeeRate,
+        dustThreshold,
+    }: Pick<CoinSelectOptions, 'txType' | 'longTermFeeRate' | 'dustThreshold'>,
 ) {
     const inputSize = inputBytes({
         type: txType,
