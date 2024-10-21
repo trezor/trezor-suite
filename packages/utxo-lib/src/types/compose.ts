@@ -74,7 +74,7 @@ export type TransactionInputOutputSortingStrategy =
 
     // Inputs are randomized, outputs are kept as they were provided in the request,
     // and change is randomly placed somewhere between outputs
-    // | 'random' // Todo: will be implemented later in https://github.com/trezor/trezor-suite/issues/10765
+    | 'random'
 
     // It keeps the inputs and outputs as they were provided in the request.
     // This is useful for RBF transactions where the order of inputs and outputs must be preserved.
