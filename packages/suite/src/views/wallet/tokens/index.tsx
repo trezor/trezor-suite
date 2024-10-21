@@ -1,16 +1,22 @@
 import { useState } from 'react';
 
 import { WalletLayout } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { CoinsTable } from './coins/CoinsTable';
 import { Route, Switch } from 'react-router-dom';
 import { TokensNavigation } from './TokensNavigation';
 import { HiddenTokensTable } from './hidden-tokens/HiddenTokensTable';
+import { goto } from 'src/actions/suite/routerActions';
 
 export const Tokens = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
     const { selectedAccount } = useSelector(state => state.wallet);
+    const dispatch = useDispatch();
+
+    if (!selectedAccount.network?.features.includes('tokens')) {
+        dispatch(goto('wallet-index', { preserveParams: true }));
+    }
 
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_TOKENS" account={selectedAccount} />;
