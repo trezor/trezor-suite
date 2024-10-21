@@ -21,6 +21,7 @@ import {
 export const iconVariants = [
     'primary',
     'tertiary',
+    'default',
     'info',
     'warning',
     'destructive',
@@ -64,6 +65,7 @@ const variantColorMap: Record<IconVariant, Color> = {
     warning: 'iconAlertYellow',
     destructive: 'iconAlertRed',
     purple: 'iconAlertPurple',
+    default: 'iconDefault',
 };
 
 export const getColorForIconVariant = ({
