@@ -63,7 +63,6 @@ export const AssetLogo = ({
     const [isPlaceholder, setIsPlaceholder] = useState(!shouldTryToFetch);
     const fileName = contractAddress ? `${coingeckoId}--${contractAddress}` : coingeckoId;
     const logoUrl = getAssetLogoUrl(fileName);
-
     const frameProps = pickAndPrepareFrameProps(rest, allowedAssetLogoFrameProps);
 
     const handleLoad = () => {
@@ -73,8 +72,10 @@ export const AssetLogo = ({
         setIsPlaceholder(true);
     };
     useEffect(() => {
-        setIsPlaceholder(!shouldTryToFetch);
-    }, [shouldTryToFetch]);
+        if (shouldTryToFetch) {
+            setIsPlaceholder(false);
+        }
+    }, [shouldTryToFetch, fileName]);
 
     return (
         <Container $size={size} {...frameProps}>
