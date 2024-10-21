@@ -17,6 +17,8 @@ export enum EventType {
 
     AppUriHandler = 'app/uri-handler',
 
+    DashboardActions = 'dashboard/actions',
+
     DeviceConnect = 'device-connect',
     DeviceDisconnect = 'device-disconnect',
     DeviceUpdateFirmware = 'device-update-firmware',
@@ -48,7 +50,6 @@ export enum EventType {
     MenuGuide = 'menu/guide',
     MenuNotificationsToggle = 'menu/notifications/toggle',
     MenuToggleDiscreet = 'menu/toggle-discreet',
-    MenuActions = 'menu/actions',
 
     GuideHeaderNavigation = 'guide/header/navigation',
     GuideNodeNavigation = 'guide/node/navigation',

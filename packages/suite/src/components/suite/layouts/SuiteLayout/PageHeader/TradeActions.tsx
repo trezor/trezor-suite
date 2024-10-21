@@ -10,7 +10,7 @@ import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/Pag
 import { selectDevice } from '@suite-common/wallet-core';
 import { spacings } from '@trezor/theme';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
-import { selectIsAccountTabPage } from 'src/reducers/suite/routerReducer';
+import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 
 // instant without computing the layout
 const ShowOnLargeDesktopWrapper = styled.div<{ $isActive?: boolean }>`
@@ -35,11 +35,12 @@ export const TradeActions = ({
     const account = selectedAccount?.account;
     const device = useSelector(selectDevice);
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
+    const currentRouteName = useSelector(selectRouteName);
 
     const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
-        if (routeName === 'suite-index') {
+        if (currentRouteName === 'suite-index') {
             analytics.report({
-                type: EventType.MenuActions,
+                type: EventType.DashboardActions,
                 payload: { type: routeName },
             });
         }
