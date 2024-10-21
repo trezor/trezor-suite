@@ -274,6 +274,7 @@ export const routes = [
         pattern: '/accounts/tokens/hidden',
         app: 'wallet',
         params: walletParams,
+        isNestedRoute: true,
     },
     {
         name: 'wallet-anonymize',
