@@ -735,23 +735,6 @@ const observeSelectedDevice = [
 
 const acquireDevice = [
     {
-        description: `success`,
-        state: {
-            device: {
-                selectedDevice: SUITE_DEVICE,
-            },
-        },
-        result: SUITE.LOCK_DEVICE,
-    },
-    {
-        description: `success with requestedDevice param`,
-        state: {
-            device: {},
-        },
-        requestedDevice: SUITE_DEVICE,
-        result: SUITE.LOCK_DEVICE,
-    },
-    {
         description: `with TrezorConnect error`,
         state: {
             device: {

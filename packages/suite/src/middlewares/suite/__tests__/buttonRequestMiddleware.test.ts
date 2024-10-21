@@ -51,12 +51,20 @@ describe('buttonRequest middleware', () => {
         // fake few ui events, just like when user is changing PIN
         await Promise.resolve();
         emitTestEvent(UI_EVENT, {
+            type: UI.CALL_IN_PROGRESS,
+            payload: { value: true },
+        });
+        emitTestEvent(UI_EVENT, {
             type: UI.REQUEST_BUTTON,
             payload: { code: 'ButtonRequest_ProtectCall' },
         });
         emitTestEvent(UI_EVENT, {
             type: UI.REQUEST_PIN,
             payload: { type: 'PinMatrixRequestType_NewFirst', device },
+        });
+        emitTestEvent(UI_EVENT, {
+            type: UI.CALL_IN_PROGRESS,
+            payload: { value: false },
         });
 
         await call;
@@ -67,6 +75,7 @@ describe('buttonRequest middleware', () => {
             { type: connectInitThunk.pending.type, payload: undefined },
             { type: connectInitThunk.fulfilled.type, payload: undefined },
             { type: SUITE.LOCK_DEVICE, payload: true },
+            { type: UI.CALL_IN_PROGRESS, payload: { value: true } },
             { type: UI.REQUEST_BUTTON, payload: { code: 'ButtonRequest_ProtectCall' } },
             {
                 type: deviceActions.addButtonRequest.type,
@@ -79,6 +88,7 @@ describe('buttonRequest middleware', () => {
             },
             { type: SUITE.LOCK_DEVICE, payload: false },
             { type: deviceActions.removeButtonRequests.type, payload: { device } },
+            { type: UI.CALL_IN_PROGRESS, payload: { value: false } },
         ]);
     });
 });
