@@ -86,6 +86,7 @@ export const init: Module = ({ mainWindowProxy }) => {
 
     // App is launched via custom protocol (macOS)
     if (global.customProtocolUrl) {
+        logger.debug(SERVICE_NAME, 'App is initially launched via custom protocol (macOS)');
         if (isValidProtocol(global.customProtocolUrl, protocols)) {
             return { onLoad: firstRunOnly(global.customProtocolUrl) };
         }

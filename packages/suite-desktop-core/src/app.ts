@@ -149,11 +149,20 @@ const init = async () => {
             app.dock?.show();
             waitForFullStart.resolve();
         };
+        const openURL = (event: Electron.Event, url: string) => {
+            // Handle deeplink in daemon mode
+            event.preventDefault();
+            logger.warn('main', 'Custom protocol URL detected, initializing UI');
+            global.customProtocolUrl = url;
+            handleFullStart();
+        };
         app.on('second-instance', handleFullStart);
         app.on('activate', handleFullStart);
+        app.on('open-url', openURL);
         await waitForFullStart.promise;
         app.off('second-instance', handleFullStart);
         app.off('activate', handleFullStart);
+        app.off('open-url', openURL);
     }
 
     await initUi({ store, daemon, quitBridgeModule });
@@ -195,7 +204,7 @@ const initUi = async ({
         mainThreadEmitter,
     });
 
-    app.on('second-instance', () => {
+    const reactivateWindow = () => {
         // Someone tried to run a second instance, we should focus our window.
         logger.info('main', 'Second instance detected, focusing main window');
         let mainWindow = mainWindowProxy.getInstance();
@@ -210,7 +219,12 @@ const initUi = async ({
         if (!mainWindow.isVisible()) mainWindow.show();
         if (mainWindow.isMinimized()) mainWindow.restore();
         mainWindow.focus();
-    });
+    };
+    app.on('second-instance', reactivateWindow);
+    // restore window after click on the macOS Dock icon
+    if (process.platform === 'darwin') {
+        app.on('activate', reactivateWindow);
+    }
 
     // create handler for handshake/load-modules
     const loadModulesResponse = (clientData: HandshakeClient) =>
