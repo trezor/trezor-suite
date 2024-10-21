@@ -1,4 +1,5 @@
 import TrezorConnect from '@trezor/connect';
+import type TrezorConnectWeb from '@trezor/connect-web';
 import { useWindowFocus } from '@trezor/react-utils';
 import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
 import { isWebUsb } from 'src/utils/suite/transport';
@@ -9,7 +10,7 @@ export const useOpenSuiteDesktop = () => {
     const windowFocused = useWindowFocus();
     const handleOpenSuite = () => {
         if (isWebUsb(transport)) {
-            TrezorConnect.disableWebUSB();
+            (TrezorConnect as typeof TrezorConnectWeb).disableWebUSB();
         }
 
         location.href = SUITE_BRIDGE_DEEPLINK;

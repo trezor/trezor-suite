@@ -28,8 +28,6 @@ const blacklist: ConnectKey[] = [
     'getCoinInfo',
     'dispose',
     'cancel',
-    'renderWebUSBButton',
-    'disableWebUSB',
 ];
 
 export const cardanoConnectPatch = (getEnabledNetworks: () => string[]) => {

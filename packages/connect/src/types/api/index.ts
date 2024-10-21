@@ -29,7 +29,6 @@ import { changePin } from './changePin';
 import { changeWipeCode } from './changeWipeCode';
 import { cipherKeyValue } from './cipherKeyValue';
 import { composeTransaction } from './composeTransaction';
-import { disableWebUSB } from './disableWebUSB';
 import { dispose } from './dispose';
 import { eosGetPublicKey } from './eosGetPublicKey';
 import { eosSignTransaction } from './eosSignTransaction';
@@ -61,9 +60,7 @@ import { pushTransaction } from './pushTransaction';
 import { rebootToBootloader } from './rebootToBootloader';
 import { recoveryDevice } from './recoveryDevice';
 import { removeAllListeners } from './removeAllListeners';
-import { renderWebUSBButton } from './renderWebUSBButton';
 import { requestLogin } from './requestLogin';
-import { requestWebUSBDevice } from './requestWebUSBDevice';
 import { resetDevice } from './resetDevice';
 import { rippleGetAddress } from './rippleGetAddress';
 import { rippleSignTransaction } from './rippleSignTransaction';
@@ -184,12 +181,6 @@ export interface TrezorConnect {
     composeTransaction: typeof composeTransaction;
 
     // todo: link docs
-    disableWebUSB: typeof disableWebUSB;
-
-    // todo: link docs
-    requestWebUSBDevice: typeof requestWebUSBDevice;
-
-    // todo: link docs
     dispose: typeof dispose;
 
     // https://connect.trezor.io/9/methods/eos/eosGetPublicKey/
@@ -281,9 +272,6 @@ export interface TrezorConnect {
 
     // todo link docs
     removeAllListeners: typeof removeAllListeners;
-
-    // todo link docs
-    renderWebUSBButton: typeof renderWebUSBButton;
 
     // https://connect.trezor.io/9/methods/other/requestLogin/
     requestLogin: typeof requestLogin;
