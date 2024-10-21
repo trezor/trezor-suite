@@ -30,7 +30,6 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
         () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/details'),
     ),
     'wallet-tokens': lazy(() => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/tokens')),
-
     'wallet-send': lazy(() => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/send')),
     'wallet-staking': lazy(() =>
         import(/* webpackChunkName: "wallet" */ 'src/views/wallet/staking/WalletStaking').then(
