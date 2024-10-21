@@ -1,25 +1,14 @@
-import { useState } from 'react';
-
-import { Button, Switch } from '@trezor/components';
+import { Switch } from '@trezor/components';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { manualFirmwareHashCheckThunk } from '@suite-common/wallet-core';
 import { SUITE } from 'src/actions/suite/constants';
 
 export const CheckFirmwareAuthenticity = () => {
-    const [inProgress, setInProgress] = useState(false);
-
     const dispatch = useDispatch();
     const { isFirmwareHashCheckDisabled, isFirmwareRevisionCheckDisabled } = useSelector(
         state => state.suite.settings,
     );
-
-    const onCheckFirmwareAuthenticity = async () => {
-        setInProgress(true);
-        await dispatch(manualFirmwareHashCheckThunk());
-        setInProgress(false);
-    };
 
     const onToggleFirmwareRevisionCheck = (newEnabledState?: boolean) =>
         dispatch({
@@ -34,21 +23,6 @@ export const CheckFirmwareAuthenticity = () => {
 
     return (
         <>
-            <SectionItem data-testid="@settings/debug/check-firmware-authenticity">
-                <TextColumn
-                    title="Check firmware authenticity"
-                    description="Download firmware binary from data.trezor.io and compare its hash with firmware hash provided by Trezor device."
-                />
-                <ActionColumn>
-                    <Button
-                        onClick={onCheckFirmwareAuthenticity}
-                        isLoading={inProgress}
-                        isDisabled={inProgress}
-                    >
-                        Check
-                    </Button>
-                </ActionColumn>
-            </SectionItem>
             <SectionItem>
                 <TextColumn
                     title="Check firmware Hash regularly"
