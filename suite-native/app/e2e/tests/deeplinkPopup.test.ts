@@ -98,7 +98,7 @@ describe('Deeplink connect popup.', () => {
                 openUriScheme(url, 'android');
             },
             deeplinkCallbackUrl: `${SERVER_URL}/connect/`,
-            connectSrc: 'https://dev.suite.sldev.cz/connect/9.1.2/',
+            connectSrc: 'https://dev.suite.sldev.cz/connect/develop/',
         });
     });
 
