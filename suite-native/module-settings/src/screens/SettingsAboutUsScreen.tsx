@@ -31,12 +31,12 @@ export const SettingsAboutUsScreen = () => {
                 <SettingsSection title="Legal">
                     <SettingsSectionItem
                         title="Terms & conditions"
-                        iconName="pdf"
+                        iconName="filePdf"
                         onPress={handleOpenTermsAndConditions}
                     />
                     <SettingsSectionItem
                         title="Privacy policy"
-                        iconName="pdf"
+                        iconName="filePdf"
                         onPress={handleOpenPrivacyPolicy}
                     />
                 </SettingsSection>

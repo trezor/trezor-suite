@@ -2,7 +2,7 @@ import { Card, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 import { useOpenLink } from '@suite-native/link';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 
 const cardStyle = prepareNativeStyle<{ backgroundColor: Color }>((utils, { backgroundColor }) => ({
     paddingHorizontal: utils.spacings.sp24,
@@ -28,7 +28,7 @@ export const AboutUsBanners = () => {
         <VStack>
             <Card style={applyStyle(cardStyle, { backgroundColor: 'backgroundNeutralBold' })}>
                 <VStack spacing="sp24" style={applyStyle(stackStyle)}>
-                    <Icon color="iconOnPrimary" name="trezor" />
+                    <Icon color="iconOnPrimary" name="trezorLogo" />
                     <Text
                         textAlign="center"
                         color="textOnPrimary"
@@ -50,7 +50,7 @@ export const AboutUsBanners = () => {
                         <IconButton
                             size="large"
                             colorScheme="tertiaryElevation1"
-                            iconName="facebook"
+                            iconName="facebookLogo"
                             accessibilityRole="link"
                             accessibilityLabel="facebook"
                             onPress={() => openLink('https://www.facebook.com/trezor.io')}
@@ -58,7 +58,7 @@ export const AboutUsBanners = () => {
                         <IconButton
                             size="large"
                             colorScheme="tertiaryElevation1"
-                            iconName="twitter"
+                            iconName="twitterLogo"
                             accessibilityRole="link"
                             accessibilityLabel="twitter"
                             onPress={() => openLink('https://twitter.com/Trezor')}
@@ -66,7 +66,7 @@ export const AboutUsBanners = () => {
                         <IconButton
                             size="large"
                             colorScheme="tertiaryElevation1"
-                            iconName="github"
+                            iconName="githubLogo"
                             accessibilityRole="link"
                             accessibilityLabel="github"
                             onPress={() => openLink('https://github.com/trezor')}

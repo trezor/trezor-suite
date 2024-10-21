@@ -13,11 +13,11 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "6.1.18",
-        "@suite-common/icons-deprecated": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/device": "workspace:*",
+        "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",

@@ -24,13 +24,13 @@ import {
     TextButton,
     NumPadButton,
     TextButtonVariant,
-    Card,
-    ListItemSkeleton,
+    // Card,
+    // ListItemSkeleton,
     AlertBox,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenSubHeader } from '@suite-native/navigation';
-import { CryptoIcon, Icon } from '@suite-common/icons-deprecated';
+import { CryptoIcon, Icon } from '@suite-native/icons';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { TypographyStyle } from '@trezor/theme';
 
@@ -192,20 +192,6 @@ export const DemoScreen = () => {
                             </Box>
                         </View>
                     ))}
-                    <View>
-                        <Text>with title</Text>
-                        <Box flexDirection="row" justifyContent="space-around" alignItems="center">
-                            {buttonSizes.map(buttonSize => (
-                                <IconButton
-                                    key={buttonSize}
-                                    colorScheme="primary"
-                                    iconName="calendar"
-                                    size={buttonSize}
-                                    title={buttonSize}
-                                />
-                            ))}
-                        </Box>
-                    </View>
                 </VStack>
                 <VStack>
                     <Text variant="titleSmall">TextButton:</Text>
@@ -220,7 +206,7 @@ export const DemoScreen = () => {
                                 <TextButton
                                     variant={variant}
                                     key={variant + buttonSize}
-                                    viewLeft="trezorT3B1"
+                                    viewLeft="trezorSafe5"
                                     size={buttonSize}
                                 >
                                     {buttonSize}
@@ -359,12 +345,13 @@ export const DemoScreen = () => {
                             />
                         </VStack>
                     </Box>
-                    <VStack marginTop="sp16">
+                    {/* For some reason skeleton lags scrolling on iOS, we should investigate */}
+                    {/* <VStack marginTop="sp16">
                         <Text variant="titleMedium">Skeleton</Text>
                         <Card>
                             <ListItemSkeleton />
                         </Card>
-                    </VStack>
+                    </VStack> */}
                 </Box>
             </VStack>
         </Screen>

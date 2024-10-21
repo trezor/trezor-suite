@@ -12,8 +12,8 @@
     },
     "dependencies": {
         "@react-native-community/netinfo": "11.3.2",
-        "@suite-common/icons-deprecated": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@trezor/styles": "workspace:*",

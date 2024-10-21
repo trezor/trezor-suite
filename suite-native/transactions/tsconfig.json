@@ -6,9 +6,6 @@
             "path": "../../suite-common/formatters"
         },
         {
-            "path": "../../suite-common/icons-deprecated"
-        },
-        {
             "path": "../../suite-common/suite-types"
         },
         {
@@ -30,6 +27,7 @@
         { "path": "../atoms" },
         { "path": "../formatters" },
         { "path": "../helpers" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },

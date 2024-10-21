@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/icons-deprecated"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -13,6 +10,7 @@
         },
         { "path": "../atoms" },
         { "path": "../helpers" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../toasts" },
         { "path": "../../packages/styles" },

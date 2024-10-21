@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { HStack, Radio, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { selectDevice, selectDeviceByState } from '@suite-common/wallet-core';
@@ -85,7 +85,7 @@ export const WalletItem = ({ deviceState, onPress, isSelectable = true }: Wallet
             >
                 <HStack alignItems="center" flex={1}>
                     <Icon
-                        name={device.useEmptyPassphrase ? 'standardWallet' : 'password'}
+                        name={device.useEmptyPassphrase ? 'wallet' : 'password'}
                         size="mediumLarge"
                     />
                     <Text variant="callout" numberOfLines={1} style={applyStyle(labelStyle)}>

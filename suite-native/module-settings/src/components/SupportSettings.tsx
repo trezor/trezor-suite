@@ -25,7 +25,7 @@ export const SupportSettings = () => {
     return (
         <SettingsSection title="Support">
             <SettingsSectionItem
-                iconName="questionLight"
+                iconName="question"
                 title={<Translation id="moduleSettings.items.support.help.title" />}
                 subtitle={<Translation id="moduleSettings.items.support.help.subtitle" />}
                 onPress={() => navigation.navigate(SettingsStackRoutes.SettingsFAQ)}
@@ -38,7 +38,7 @@ export const SupportSettings = () => {
                         <TrezorSuiteLiteHeader textVariant="body" />
                     </>
                 }
-                iconName="trezorT3T1"
+                iconName="trezorSafe5"
                 onPress={() => navigation.navigate(SettingsStackRoutes.SettingsAbout)}
                 testID="@settings/about"
             />

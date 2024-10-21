@@ -61,7 +61,7 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
                                 data-testID="@home/portolio/recieve-button"
                                 size="large"
                                 onPress={handleReceive}
-                                viewLeft="receive"
+                                viewLeft="arrowLineDown"
                             >
                                 <Translation id="moduleHome.buttons.receive" />
                             </Button>

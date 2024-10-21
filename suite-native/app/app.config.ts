@@ -86,6 +86,7 @@ const getPlugins = (): ExpoPlugins => {
                 fonts: [
                     '../../packages/theme/fonts/TTSatoshi-Medium.otf',
                     '../../packages/theme/fonts/TTSatoshi-DemiBold.otf',
+                    `../../suite-common/icons/iconFontsMobile/TrezorSuiteIcons.ttf`,
                 ],
             },
         ],

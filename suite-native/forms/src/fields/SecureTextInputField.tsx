@@ -3,7 +3,7 @@ import { Pressable } from 'react-native';
 
 import { TextInput } from 'react-native/types';
 
-import { Icon, IconName } from '@suite-common/icons-deprecated';
+import { Icon, IconName } from '@suite-native/icons';
 
 import { FieldProps, TextInputField } from './TextInputField';
 

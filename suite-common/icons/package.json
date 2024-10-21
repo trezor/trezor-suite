@@ -9,9 +9,12 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "generate-icons": "yarn g:tsx generateIcons.js"
+        "generate-icons": "yarn g:tsx generateIcons.js && yarn g:tsx generateIconFont.ts",
+        "generate-icon-font": "yarn g:tsx generateIconFont.ts"
     },
     "devDependencies": {
+        "chalk": "4.1.2",
+        "fantasticon": "3.0.0",
         "prettier": "^3.3.2",
         "svgo": "3.2.0"
     }

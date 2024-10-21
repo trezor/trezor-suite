@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { Icon, IconName } from '@suite-common/icons-deprecated';
+import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
 

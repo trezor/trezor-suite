@@ -6,7 +6,7 @@ import Animated, {
     useAnimatedStyle,
 } from 'react-native-reanimated';
 
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { ReviewOutputState } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
@@ -50,9 +50,7 @@ export const ReviewOutputStatusBadge = ({ status }: { status: ReviewOutputState 
     }));
 
     if (status === 'success') {
-        return (
-            <Icon name="checkCircleSolidLight" color="backgroundSecondaryDefault" size="medium" />
-        );
+        return <Icon name="checkCircleFilled" color="backgroundSecondaryDefault" size="medium" />;
     }
 
     const isActive = status === 'active';

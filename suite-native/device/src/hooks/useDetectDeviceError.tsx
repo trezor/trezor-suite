@@ -84,7 +84,7 @@ export const useDetectDeviceError = () => {
             showAlert({
                 title: <Translation id="moduleDevice.unacquiredDeviceModal.title" />,
                 description: <Translation id="moduleDevice.unacquiredDeviceModal.description" />,
-                icon: 'warningCircleLight',
+                icon: 'warningCircle',
                 pictogramVariant: 'red',
                 primaryButtonTitle: <Translation id="moduleDevice.unacquiredDeviceModal.button" />,
                 appendix: <UnacquiredDeviceModalAppendix />,
@@ -101,7 +101,7 @@ export const useDetectDeviceError = () => {
             showAlert({
                 title: <Translation id="moduleDevice.unsupportedFirmwareModal.title" />,
                 description: <Translation id="moduleDevice.unsupportedFirmwareModal.description" />,
-                icon: 'warningCircleLight',
+                icon: 'warningCircle',
                 pictogramVariant: 'red',
                 primaryButtonTitle: <Translation id="generic.buttons.eject" />,
                 primaryButtonVariant: 'tertiaryElevation1',
@@ -190,7 +190,7 @@ export const useDetectDeviceError = () => {
             showAlert({
                 title: <Translation id="moduleDevice.bootloaderModal.title" />,
                 description: <Translation id="moduleDevice.bootloaderModal.description" />,
-                icon: 'warningCircleLight',
+                icon: 'warningCircle',
                 pictogramVariant: 'red',
                 primaryButtonVariant: 'tertiaryElevation1',
                 primaryButtonTitle: <Translation id="generic.buttons.eject" />,
@@ -220,7 +220,7 @@ export const useDetectDeviceError = () => {
             showAlert({
                 title: <Translation id="moduleDevice.genericErrorModal.title" />,
                 description: <Translation id="moduleDevice.genericErrorModal.description" />,
-                icon: 'warningCircleLight',
+                icon: 'warningCircle',
                 pictogramVariant: 'red',
                 primaryButtonVariant: 'redBold',
                 primaryButtonTitle: (

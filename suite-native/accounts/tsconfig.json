@@ -6,9 +6,6 @@
             "path": "../../suite-common/formatters"
         },
         {
-            "path": "../../suite-common/icons-deprecated"
-        },
-        {
             "path": "../../suite-common/token-definitions"
         },
         {
@@ -32,6 +29,7 @@
         { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../forms" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../settings" },

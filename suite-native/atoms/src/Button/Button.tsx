@@ -4,9 +4,9 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { MergeExclusive } from 'type-fest';
 
+import { AnimatedIconColor, Icon, IconName, IconSize, icons } from '@suite-native/icons';
 import { Color, TypographyStyle, nativeSpacings } from '@trezor/theme';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon, IconColor, IconName, IconSize, icons } from '@suite-common/icons-deprecated';
 
 import { Text } from '../Text';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
@@ -46,13 +46,13 @@ export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressO
 
 type ButtonIconProps = {
     iconName: IconName;
-    color?: IconColor;
+    color?: AnimatedIconColor;
     size?: ButtonSize;
 };
 
 type ButtonAccessoryViewProps = {
     element: ButtonAccessory;
-    iconColor?: IconColor;
+    iconColor?: AnimatedIconColor;
     iconSize?: ButtonSize;
 };
 
@@ -207,7 +207,7 @@ export const buttonToTextSizeMap = {
     large: 'body',
 } as const satisfies Record<ButtonSize, TypographyStyle>;
 
-const buttonToIconSizeMap = {
+export const buttonToIconSizeMap = {
     extraSmall: 'medium',
     small: 'medium',
     medium: 'mediumLarge',
@@ -241,20 +241,28 @@ export const ButtonIcon = ({
     iconName,
     color = 'iconDefault',
     size = 'medium',
-}: ButtonIconProps) => <Icon name={iconName} color={color} size={buttonToIconSizeMap[size]} />;
+}: ButtonIconProps) => (
+    <Icon.Animated name={iconName} color={color} size={buttonToIconSizeMap[size]} />
+);
 
 const isIconName = (value: ButtonAccessory): value is IconName =>
-    typeof value === 'string' && icons[value as IconName] !== undefined;
+    typeof value === 'string' && value in icons;
 
 // ButtonAccessoryView renders either a ButtonIcon or a provided custom element
 // iconColor and iconSize are only used when element is an IconName
-export const ButtonAccessoryView = ({ element, iconColor, iconSize }: ButtonAccessoryViewProps) => {
+export const ButtonAccessoryView = ({
+    element,
+    iconColor = 'iconDefault',
+    iconSize = 'medium',
+}: ButtonAccessoryViewProps) => {
     if (isIconName(element)) {
         return <ButtonIcon iconName={element} color={iconColor} size={iconSize} />;
     }
 
     return element;
 };
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const Button = ({
     viewLeft,
@@ -285,53 +293,46 @@ export const Button = ({
     const handlePressOut = () => setIsPressed(false);
 
     return (
-        <Pressable
+        <AnimatedPressable
             disabled={isDisabled}
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
             {...pressableProps}
+            style={[
+                animatedPressStyle,
+                applyStyle(buttonStyle, {
+                    size,
+                    backgroundColor,
+                    isDisabled,
+                }),
+                style,
+            ]}
         >
-            <Animated.View
-                style={[
-                    animatedPressStyle,
-                    applyStyle(buttonStyle, {
-                        size,
-                        backgroundColor,
-                        isDisabled,
-                    }),
-                    style,
-                ]}
-            >
-                {isLoading ? (
-                    <Animated.View entering={FadeIn.duration(LOADER_FADE_IN_DURATION)}>
-                        <Loader color={textColor} />
-                    </Animated.View>
-                ) : (
-                    <HStack alignItems="center">
-                        {viewLeft && (
-                            <ButtonAccessoryView
-                                element={viewLeft}
-                                iconColor={iconColor}
-                                iconSize={size}
-                            />
-                        )}
-                        <Text
-                            textAlign="center"
-                            variant={buttonToTextSizeMap[size]}
-                            color={textColor}
-                        >
-                            {children}
-                        </Text>
-                        {viewRight && (
-                            <ButtonAccessoryView
-                                element={viewRight}
-                                iconColor={iconColor}
-                                iconSize={size}
-                            />
-                        )}
-                    </HStack>
-                )}
-            </Animated.View>
-        </Pressable>
+            {isLoading ? (
+                <Animated.View entering={FadeIn.duration(LOADER_FADE_IN_DURATION)}>
+                    <Loader color={textColor} />
+                </Animated.View>
+            ) : (
+                <HStack alignItems="center">
+                    {viewLeft && (
+                        <ButtonAccessoryView
+                            element={viewLeft}
+                            iconColor={iconColor}
+                            iconSize={size}
+                        />
+                    )}
+                    <Text textAlign="center" variant={buttonToTextSizeMap[size]} color={textColor}>
+                        {children}
+                    </Text>
+                    {viewRight && (
+                        <ButtonAccessoryView
+                            element={viewRight}
+                            iconColor={iconColor}
+                            iconSize={size}
+                        />
+                    )}
+                </HStack>
+            )}
+        </AnimatedPressable>
     );
 };

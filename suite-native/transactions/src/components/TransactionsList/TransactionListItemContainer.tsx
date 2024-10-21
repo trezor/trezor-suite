@@ -191,7 +191,7 @@ export const TransactionListItemContainer = ({
                                 <Badge
                                     label={<Translation id="transactions.phishing.badge" />}
                                     size="small"
-                                    icon="warningTriangle"
+                                    icon="warning"
                                     variant="red"
                                 />
                             )}

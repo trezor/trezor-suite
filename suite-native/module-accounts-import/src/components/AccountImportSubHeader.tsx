@@ -40,7 +40,7 @@ export const AccountImportSubHeader = () => {
             leftIcon={
                 !isDeviceAccountless ? (
                     <IconButton
-                        iconName="close"
+                        iconName="x"
                         colorScheme="tertiaryElevation0"
                         onPress={handleCloseOnboarding}
                         accessibilityRole="button"

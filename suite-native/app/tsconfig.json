@@ -12,9 +12,6 @@
             "path": "../../suite-common/formatters"
         },
         {
-            "path": "../../suite-common/icons-deprecated"
-        },
-        {
             "path": "../../suite-common/message-system"
         },
         {
@@ -43,6 +40,7 @@
         { "path": "../device" },
         { "path": "../device-authorization" },
         { "path": "../discovery" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../message-system" },
         { "path": "../module-accounts-import" },

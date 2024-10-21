@@ -1,0 +1,18 @@
+<svg fill="none" viewBox="0 0 24 24">
+  <g clip-path="url(#prefix__clip0_1319_18)">
+    <circle cx="12" cy="12" r="12" fill="#000"/>
+    <g clip-path="url(#prefix__clip1_1319_18)">
+      <path fill="url(#prefix__a)" d="m18.928 15.701-2.311 2.54a.54.54 0 0 1-.393.176H5.268a.26.26 0 0 1-.147-.045.28.28 0 0 1-.049-.418l2.313-2.54a.54.54 0 0 1 .391-.175h10.956a.26.26 0 0 1 .147.045.27.27 0 0 1 .117.276.3.3 0 0 1-.068.141m-2.311-5.115a.54.54 0 0 0-.393-.175H5.268a.26.26 0 0 0-.246.165.28.28 0 0 0 .05.298l2.313 2.54a.54.54 0 0 0 .391.175h10.956a.26.26 0 0 0 .147-.045.27.27 0 0 0 .117-.277.3.3 0 0 0-.068-.14zM5.268 8.76h10.956a.53.53 0 0 0 .393-.175l2.31-2.54a.278.278 0 0 0-.048-.418.26.26 0 0 0-.147-.045H7.776a.53.53 0 0 0-.391.175l-2.312 2.54a.28.28 0 0 0-.05.297.26.26 0 0 0 .246.166Z"/>
+    </g>
+  </g>
+  <defs>
+    <linearGradient id="prefix__a" x1="6.182" x2="17.988" y1="18.723" y2="5.737" gradientUnits="userSpaceOnUse">
+      <stop offset=".08" stop-color="#9945FF"/>
+      <stop offset=".3" stop-color="#8752F3"/>
+      <stop offset=".5" stop-color="#5497D5"/>
+      <stop offset=".6" stop-color="#43B4CA"/>
+      <stop offset=".72" stop-color="#28E0B9"/>
+      <stop offset=".97" stop-color="#19FB9B"/>
+    </linearGradient>
+  </defs>
+</svg>

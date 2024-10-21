@@ -1,14 +1,14 @@
 import { Box, RoundedIcon } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TransactionType } from '@suite-common/wallet-types';
-import { CoinSymbol, CryptoIcon, IconName, IconSize } from '@suite-common/icons-deprecated';
+import { CoinSymbolName, CryptoIcon, IconName, IconSize } from '@suite-native/icons';
 import { Color } from '@trezor/theme';
 
 import { TransactionIconSpinner } from './TransactionIconSpinner';
 
 type TransactionIconProps = {
     transactionType: TransactionType;
-    symbol?: CoinSymbol;
+    symbol?: CoinSymbolName;
     isAnimated?: boolean;
     iconColor?: Color;
     spinnerColor?: Color;
@@ -21,13 +21,13 @@ type TransactionIconProps = {
 const DEFAULT_CONTAINER_SIZE = 48;
 
 const transactionIconMap: Record<TransactionType, IconName> = {
-    recv: 'receiveLight',
-    sent: 'sendLight',
-    contract: 'placeholderLight',
-    joint: 'shuffleLight',
-    self: 'arrowURightDownLight',
-    failed: 'placeholderLight',
-    unknown: 'placeholderLight',
+    recv: 'arrowDown',
+    sent: 'arrowUp',
+    contract: 'circleDashed',
+    joint: 'shuffle',
+    self: 'arrowURightDown',
+    failed: 'xCircle',
+    unknown: 'circleDashed',
 };
 
 const cryptoIconStyle = prepareNativeStyle(utils => ({

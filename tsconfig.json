@@ -68,6 +68,7 @@
         { "path": "suite-native/forms" },
         { "path": "suite-native/graph" },
         { "path": "suite-native/helpers" },
+        { "path": "suite-native/icons" },
         { "path": "suite-native/intl" },
         { "path": "suite-native/link" },
         { "path": "suite-native/message-system" },

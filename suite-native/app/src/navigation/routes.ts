@@ -4,7 +4,7 @@ import { enhanceTabOption } from './enhanceTabOption';
 
 const homeStack = enhanceTabOption({
     routeName: AppTabsRoutes.HomeStack,
-    iconName: 'home',
+    iconName: 'house',
     label: 'Home',
 });
 
@@ -20,12 +20,12 @@ const accountsStack = enhanceTabOption({
 const receiveStack = enhanceTabOption({
     routeName: AppTabsRoutes.ReceiveStack,
     label: 'Receive',
-    iconName: 'arrowDownLight',
+    iconName: 'arrowLineDown',
 });
 
 const settingsStack = enhanceTabOption({
     routeName: AppTabsRoutes.SettingsStack,
-    iconName: 'settings',
+    iconName: 'gear',
     label: 'Settings',
 });
 

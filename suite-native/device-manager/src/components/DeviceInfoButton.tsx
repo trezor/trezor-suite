@@ -11,7 +11,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useDeviceManager } from '../hooks/useDeviceManager';
@@ -58,7 +58,7 @@ export const DeviceInfoButton = ({ showAsFullWidth }: DeviceInfoButtonProps) => 
             showAsFullWidth={showAsFullWidth}
         >
             <HStack spacing="sp8" style={applyStyle(contentStyle, { showAsFullWidth })}>
-                <Icon name="infoLight" size="mediumLarge" />
+                <Icon name="info" size="mediumLarge" />
                 <Text variant="hint">
                     <Translation id="deviceManager.deviceButtons.deviceInfo" />
                 </Text>

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { TransactionsRootState } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
@@ -32,7 +32,7 @@ const InputsOutputsHeader = ({ inputsCount, outputsCount }: InputsOutputsHeaderP
                 Inputs · {inputsCount}
             </Text>
             <Box marginLeft="sp8">
-                <Icon name="receiveAlt" color="iconSubdued" size="medium" />
+                <Icon name="arrowLineDown" color="iconSubdued" size="medium" />
             </Box>
         </Box>
 
@@ -41,7 +41,7 @@ const InputsOutputsHeader = ({ inputsCount, outputsCount }: InputsOutputsHeaderP
                 Outputs · {outputsCount}
             </Text>
             <Box marginLeft="sp8">
-                <Icon name="sendAlt" color="iconSubdued" size="medium" />
+                <Icon name="arrowLineUp" color="iconSubdued" size="medium" />
             </Box>
         </Box>
     </Box>

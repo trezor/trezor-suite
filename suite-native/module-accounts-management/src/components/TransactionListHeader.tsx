@@ -151,7 +151,7 @@ export const TransactionListHeader = memo(
                         <HStack marginVertical="sp16" paddingHorizontal="sp16" flex={1}>
                             <Box flex={1}>
                                 <Button
-                                    viewLeft="receive"
+                                    viewLeft="arrowLineDown"
                                     size="large"
                                     onPress={handleReceive}
                                     testID="@account-detail/receive-button"
@@ -162,7 +162,7 @@ export const TransactionListHeader = memo(
                             {isSendButtonDisplayed && (
                                 <Box flex={1}>
                                     <Button
-                                        viewLeft="send"
+                                        viewLeft="arrowLineUp"
                                         size="large"
                                         onPress={handleSend}
                                         testID="@account-detail/send-button"

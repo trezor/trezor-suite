@@ -3,7 +3,7 @@ import { ActivityIndicator } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color, NativeRadius } from '@trezor/theme';
-import { Icon, IconName } from '@suite-common/icons-deprecated';
+import { Icon, IconName } from '@suite-native/icons';
 
 import { Box } from './Box';
 import { Text } from './Text';
@@ -73,8 +73,8 @@ const variantToColorMap = {
 const variantToIconName = {
     info: 'info',
     success: 'checkCircle',
-    warning: 'warningTriangle',
-    loading: 'warningTriangle',
+    warning: 'warning',
+    loading: 'warning',
     error: 'warningCircle',
 } as const satisfies Record<AlertBoxVariant, IconName>;
 

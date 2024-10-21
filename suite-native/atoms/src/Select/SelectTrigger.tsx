@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
@@ -52,7 +52,7 @@ export const SelectTrigger = ({ value, label, icon, handlePress }: SelectTrigger
                     </Text>
                 </Box>
             </Box>
-            <Icon size="large" color="iconSubdued" name="chevronDown" />
+            <Icon size="large" color="iconSubdued" name="caretDown" />
         </TouchableOpacity>
     );
 };
