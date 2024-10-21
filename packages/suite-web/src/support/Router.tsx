@@ -29,12 +29,8 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
     'wallet-details': lazy(
         () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/details'),
     ),
-    'wallet-tokens-coins': lazy(
-        () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/tokens/coins'),
-    ),
-    'wallet-tokens-hidden': lazy(
-        () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/tokens/hidden-tokens'),
-    ),
+    'wallet-tokens': lazy(() => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/tokens')),
+
     'wallet-send': lazy(() => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/send')),
     'wallet-staking': lazy(() =>
         import(/* webpackChunkName: "wallet" */ 'src/views/wallet/staking/WalletStaking').then(
