@@ -30,6 +30,7 @@ import { Translation } from '@suite-native/intl';
 import { SendFeesFormValues, sendFeesFormValidationSchema } from '../sendFeesFormSchema';
 import { FeesFooter } from './FeesFooter';
 import { FeeOptionsList } from './FeeOptionsList';
+import { RecipientsSummary } from './RecipientsSummary';
 
 type SendFormProps = {
     accountKey: AccountKey;
@@ -99,6 +100,10 @@ export const SendFeesForm = ({ accountKey, feeLevels }: SendFormProps) => {
 
     return (
         <Form form={form}>
+            <RecipientsSummary
+                accountKey={accountKey}
+                selectedFeeLevel={selectedFeeLevelTransaction}
+            />
             <Box flex={1} justifyContent="space-between">
                 <VStack spacing="sp16">
                     <VStack spacing="sp4">

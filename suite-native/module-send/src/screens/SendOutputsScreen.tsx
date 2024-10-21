@@ -29,7 +29,6 @@ import { Box, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { FormState } from '@suite-common/wallet-types';
 import { useForm, Form } from '@suite-native/forms';
 import { selectIsAmountInSats, SettingsSliceRootState } from '@suite-native/settings';
 
@@ -37,39 +36,24 @@ import { SendScreen } from '../components/SendScreen';
 import { SendOutputFields } from '../components/SendOutputFields';
 import { SendOutputsFormValues, sendOutputsFormValidationSchema } from '../sendOutputsFormSchema';
 import { AccountBalanceScreenHeader } from '../components/SendScreenSubHeader';
-import { calculateMaxAmountWithNormalFeeThunk } from '../sendFormThunks';
+import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
+import { constructFormDraft } from '../utils';
+import { FeeLevelsMaxAmount } from '../types';
 
 const buttonWrapperStyle = prepareNativeStyle(utils => ({
     width: '100%',
     padding: utils.spacings.sp16,
 }));
 
-const DEFAULT_VALUES = [
-    {
-        amount: '',
-        address: '',
-        fiat: '',
-    },
-] as const satisfies SendOutputsFormValues['outputs'];
-
-// TODO: this data structure will be revisited in a follow up PR
-const constructFormDraft = ({ outputs }: SendOutputsFormValues): FormState => ({
-    outputs: outputs.map(({ address, amount, fiat = '' }) => ({
-        address,
-        amount,
-        type: 'payment',
-        token: null,
-        fiat,
-        currency: { label: '', value: '' },
-    })),
-    isCoinControlEnabled: false,
-    hasCoinControlBeenOpened: false,
-    selectedUtxos: [],
-    feeLimit: '',
-    feePerUnit: '',
-    options: [],
-    selectedFee: 'normal',
-});
+const DEFAULT_VALUES = {
+    outputs: [
+        {
+            amount: '',
+            address: '',
+            fiat: '',
+        },
+    ],
+} as const satisfies SendOutputsFormValues;
 
 export const SendOutputsScreen = ({
     route: { params },
@@ -81,7 +65,7 @@ export const SendOutputsScreen = ({
     const navigation =
         useNavigation<StackNavigationProps<SendStackParamList, SendStackRoutes.SendOutputs>>();
 
-    const [normalFeeMaxAmount, setNormalFeeMaxAmount] = useState<string>();
+    const [feeLevelsMaxAmount, setFeeLevelsMaxAmount] = useState<FeeLevelsMaxAmount>();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -105,12 +89,10 @@ export const SendOutputsScreen = ({
             networkSymbol: account?.symbol,
             availableAccountBalance: account?.availableBalance,
             isValueInSats: isAmountInSats,
-            normalFeeMaxAmount,
+            feeLevelsMaxAmount,
             decimals: network?.decimals,
         },
-        defaultValues: {
-            outputs: DEFAULT_VALUES,
-        },
+        defaultValues: DEFAULT_VALUES,
     });
 
     const {
@@ -135,14 +117,14 @@ export const SendOutputsScreen = ({
 
     const calculateNormalFeeMaxAmount = useCallback(async () => {
         const response = await dispatch(
-            calculateMaxAmountWithNormalFeeThunk({
+            calculateFeeLevelsMaxAmountThunk({
                 formState: constructFormDraft(getValues()),
                 accountKey,
             }),
         );
 
         if (isFulfilled(response)) {
-            setNormalFeeMaxAmount(response.payload);
+            setFeeLevelsMaxAmount(response.payload);
         }
     }, [getValues, accountKey, dispatch]);
 
@@ -226,7 +208,7 @@ export const SendOutputsScreen = ({
                 )
             }
         >
-            <Box marginTop="sp32" marginBottom="sp32">
+            <Box marginVertical="sp32">
                 <Form form={form}>
                     <Box flex={1} justifyContent="space-between">
                         <SendOutputFields accountKey={accountKey} />

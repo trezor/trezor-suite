@@ -57,6 +57,7 @@ export const FiatAmountInput = ({
         setValue(cryptoFieldName, converters?.convertFiatToCrypto?.(transformedValue), {
             shouldValidate: true,
         });
+        setValue('setMaxOutputId', undefined);
         onFocus?.();
     };
 
