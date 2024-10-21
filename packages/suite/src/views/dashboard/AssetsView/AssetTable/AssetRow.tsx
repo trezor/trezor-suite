@@ -21,19 +21,19 @@ import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
 import { Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 import { TokenInfo } from '@trezor/blockchain-link-types';
+import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 
 export interface AssetTableRowProps {
-    symbol: string;
     network: Network;
     failed: boolean;
-    assetsFiatBalances: AssetFiatBalance[];
-    assetFailed: boolean;
+    // assetsFiatBalances: AssetFiatBalance[];
     assetCryptoBalance: string;
     staking?: {
         assetStakingCryptoBalance: BigNumber;
         assetStakingFiatBalance: BigNumber;
     };
     assetTokens?: TokenInfo[];
+    assetPercentage?: number;
     isLastRow?: boolean;
 }
 
@@ -42,8 +42,9 @@ export const AssetRow = memo(
         network,
         failed,
         assetCryptoBalance,
-        assetsFiatBalances,
+        // assetsFiatBalances,
         assetTokens,
+        assetPercentage,
     }: AssetTableRowProps) => {
         const { symbol } = network;
         const dispatch = useDispatch();
@@ -69,10 +70,7 @@ export const AssetRow = memo(
             <Table.Row onClick={handleRowClick}>
                 <Table.Cell colSpan={3}>
                     <Row>
-                        <AssetCoinLogo
-                            symbol={network.symbol}
-                            assetsFiatBalances={assetsFiatBalances}
-                        />
+                        <AssetCoinLogo symbol={network.symbol} />
                         <AssetCoinName network={network} />
                     </Row>
                 </Table.Cell>

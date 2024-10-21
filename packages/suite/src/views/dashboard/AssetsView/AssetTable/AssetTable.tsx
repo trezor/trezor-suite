@@ -8,14 +8,11 @@ import { Translation } from 'src/components/suite';
 interface AssetTableProps {
     discoveryInProgress?: boolean;
     assetsData: AssetTableRowProps[];
-    // assetsFiatBalances: AssetFiatBalance[];
 }
 
-export const AssetTable = ({
-    discoveryInProgress,
-    assetsData,
-    // assetsFiatBalances,
-}: AssetTableProps) => {
+export const AssetTable = ({ discoveryInProgress, assetsData }: AssetTableProps) => {
+    console.log('assetsData', assetsData);
+
     return (
         <Table isRowHighlightedOnHover margin={{ top: spacings.md, bottom: spacings.md }}>
             <Table.Header>
@@ -37,12 +34,11 @@ export const AssetTable = ({
             <Table.Body>
                 {assetsData.map((asset, i) => (
                     <AssetRow
-                        key={asset.symbol}
+                        key={asset.network.symbol}
                         network={asset.network}
                         failed={asset.failed}
                         assetCryptoBalance={asset.assetCryptoBalance}
                         isLastRow={i === assetsData.length - 1 && !discoveryInProgress}
-                        // assetsFiatBalances={assetsFiatBalances}
                         assetTokens={asset.assetTokens}
                     />
                 ))}

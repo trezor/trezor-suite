@@ -12,12 +12,16 @@ import { useAccounts } from 'src/hooks/wallet';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 
 import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { AssetTable } from './AssetTable/AssetTable';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { AssetTableRowProps } from './AssetTable/AssetRow';
+import { getTotalFiatBalance } from '@suite-common/wallet-utils';
+import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 const InfoMessage = styled.div`
     padding: ${spacingsPx.md} ${spacingsPx.xl};
     display: flex;
@@ -67,6 +71,13 @@ export const AssetsView = () => {
     const { accounts } = useAccounts(discovery);
     const { mainnets, enabledNetworks } = useEnabledNetworks();
     const { isMobileLayout } = useLayoutSize();
+    const localCurrency = useSelector(selectLocalCurrency);
+    const currentFiatRates = useSelector(selectCurrentFiatRates);
+    const totalFiatBalance = getTotalFiatBalance({
+        deviceAccounts: accounts,
+        localCurrency,
+        rates: currentFiatRates,
+    }).toString();
 
     const mainnetSymbols = mainnets.map(mainnet => mainnet.symbol);
     const supportedMainnetNetworks = deviceSupportedNetworks.filter(network =>
@@ -101,12 +112,34 @@ export const AssetsView = () => {
             );
 
             const assetTokens = assets[symbol].find(a => a.tokens)?.tokens;
-            // const assetFiatBalance = getAssetFiatBalance(
-            //     symbol,
-            //     assets,
-            //     localCurrency,
-            //     currentFiatRates,
-            // );
+
+            const assetTokensFiatBalance =
+                assetTokens?.reduce((total, token) => {
+                    const tokenFiatBalance =
+                        toFiatCurrency(
+                            token.balance?.toString() ?? '0',
+                            currentFiatRates?.[getFiatRateKey(symbol, localCurrency)]?.rate,
+                            2,
+                        ) ?? '0';
+
+                    return total + parseFloat(tokenFiatBalance);
+                }, 0) ?? 0;
+
+            const assetNativeFiatBalance =
+                toFiatCurrency(
+                    assetBalance.toString(),
+                    currentFiatRates?.[getFiatRateKey(symbol, localCurrency)]?.rate,
+                    2,
+                ) ?? '0';
+
+            const assetFullFiatBalance = assetNativeFiatBalance + assetTokensFiatBalance;
+
+            console.log('assetFullFiatBalance', assetFullFiatBalance);
+
+            const assetPercentage =
+                (parseFloat(assetFullFiatBalance) / parseFloat(totalFiatBalance)) * 100;
+
+            console.log('assetPercentage', assetPercentage);
 
             const assetFailed = accounts.find(f => f.symbol === network.symbol && f.failed);
 
