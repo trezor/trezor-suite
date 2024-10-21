@@ -447,6 +447,46 @@ describe('http', () => {
             });
         });
 
+        it('POST /acquire with body', async () => {
+            const trezordNode = new TrezordNode({
+                port,
+                api: createTransportApi(),
+                // @ts-expect-error
+                logger: muteLogger,
+            });
+            await trezordNode.start();
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            const url = trezordNode.server!.getRouteAddress('/')!;
+
+            await bridgeApiCall({
+                url: url + 'enumerate',
+                method: 'POST',
+            });
+
+            const response = await bridgeApiCall({
+                url: url + 'acquire/1/null',
+                method: 'POST',
+                body: {
+                    sessionOwner: 'app A',
+                },
+            });
+            expect(response.success).toBe(true);
+
+            const enumerateRes = await bridgeApiCall({
+                url: url + 'enumerate',
+                method: 'POST',
+            });
+
+            expect(enumerateRes).toMatchObject({
+                success: true,
+                payload: [{ path: '1', session: '1', sessionOwner: 'app A' }],
+            });
+
+            await trezordNode.stop();
+        });
+
         it('POST /', async () => {
             const trezordNode = createTrezordNode({ port });
             await trezordNode.start();
@@ -468,7 +508,7 @@ describe('http', () => {
             await trezordNode.stop();
         });
 
-        it('enumerate', async () => {
+        it('GET /enumerate', async () => {
             const trezordNode = createTrezordNode({ port });
             await trezordNode.start();
 
@@ -514,6 +554,7 @@ describe('http', () => {
                 url,
                 method: 'POST',
                 signal: abortController.signal,
+                body: {},
             });
 
             // give fetch api some time to make request
@@ -562,13 +603,12 @@ describe('http', () => {
             await bridgeApiCall({
                 url: url + 'enumerate',
                 method: 'POST',
-                body: {},
                 signal: abortController.signal,
+                body: {},
             });
             await bridgeApiCall({
                 url: url + 'acquire/1/null',
                 method: 'POST',
-                body: {},
                 signal: abortController.signal,
             });
 

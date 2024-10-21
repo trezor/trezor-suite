@@ -12,11 +12,21 @@ const wait = (ms = 1000) =>
         }, ms);
     });
 
-const getDescriptor = (descriptor: Partial<Descriptor>): Descriptor => ({
-    ...fixtureDescriptor,
-    session: Session('1'),
-    ...descriptor,
-});
+const getDescriptor = (descriptor: Partial<Descriptor>): Descriptor => {
+    const d = {
+        ...fixtureDescriptor,
+        session: Session('1'),
+        ...descriptor,
+    };
+
+    if (env.USE_NODE_BRIDGE && d.session && !d.sessionOwner) {
+        d.sessionOwner = 'app A';
+    } else if (!env.USE_NODE_BRIDGE) {
+        d.sessionOwner = undefined;
+    }
+
+    return d;
+};
 
 const emulatorStartOpts = { model: 'T2T1', version: '2-main', wipe: true } as const;
 
@@ -64,8 +74,8 @@ describe('bridge', () => {
         await TrezorUserEnvLink.startEmu(emulatorStartOpts);
         await TrezorUserEnvLink.startBridge();
 
-        bridge1 = new BridgeTransport({ messages });
-        bridge2 = new BridgeTransport({ messages });
+        bridge1 = new BridgeTransport({ messages, id: 'app A' });
+        bridge2 = new BridgeTransport({ messages, id: 'app B' });
 
         await bridge1.init();
         await bridge2.init();
@@ -159,6 +169,7 @@ describe('bridge', () => {
         const expectedDescriptor = getDescriptor({
             path: descriptors[0].path,
             session: Session('2'),
+            sessionOwner: 'app B',
         });
 
         await wait(); // wait for event to be propagated

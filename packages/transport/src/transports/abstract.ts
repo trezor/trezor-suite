@@ -35,6 +35,7 @@ export interface AbstractTransportParams {
     messages?: Record<string, any>;
     logger?: Logger;
     debugLink?: boolean;
+    id: string;
 }
 
 export const isTransportInstance = (transport?: AbstractTransport) => {
@@ -122,13 +123,19 @@ export abstract class AbstractTransport extends TransportEmitter {
      * and instance of logger from @trezor/connect/src/utils/debug could be passed to activate logs from transport
      */
     protected logger?: Logger;
+    /**
+     * identifier this transport
+     * todo: or app implementing this transport?
+     */
+    protected id: string;
 
-    constructor({ messages, logger }: AbstractTransportParams) {
+    constructor({ messages, logger, id }: AbstractTransportParams) {
         super();
         this.descriptors = [];
         this.messages = protobuf.Root.fromJSON(messages || {});
         this.abortController = new AbortController();
         this.logger = logger;
+        this.id = id;
     }
 
     /**

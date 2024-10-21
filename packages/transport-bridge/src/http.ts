@@ -272,6 +272,7 @@ export class TrezordNode {
             ]);
 
             app.post('/acquire/:path/:previous', [
+                parseBodyJSON,
                 validateAcquireParams,
                 (req, res) => {
                     res.setHeader('Content-Type', 'text/plain');
@@ -280,6 +281,8 @@ export class TrezordNode {
                         .acquire({
                             path: req.params.path,
                             previous: req.params.previous,
+                            // @ts-expect-error
+                            sessionOwner: req?.body?.sessionOwner,
                             signal,
                         })
                         .then(result => {
