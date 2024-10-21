@@ -7,6 +7,7 @@ export const fixturesCrossCheck = [
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
             dustThreshold: 546,
             feeRate: '10',
+            sortingStrategy: 'bip69',
             utxos: [{ ...UTXO, amount: 'replace-me' }],
             outputs: [
                 {
@@ -45,6 +46,7 @@ export const fixturesCrossCheck = [
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
             dustThreshold: 546,
             feeRate: '10',
+            sortingStrategy: 'bip69',
             utxos: [{ ...UTXO, amount: '202300' }],
             outputs: [
                 {
@@ -83,6 +85,7 @@ export const fixturesCrossCheck = [
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
             dustThreshold: 546,
             feeRate: '10',
+            sortingStrategy: 'bip69',
             utxos: [
                 {
                     ...UTXO,
@@ -133,6 +136,7 @@ export const fixturesCrossCheck = [
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
             dustThreshold: 546,
             feeRate: '10',
+            sortingStrategy: 'bip69',
             utxos: [
                 {
                     ...UTXO,
