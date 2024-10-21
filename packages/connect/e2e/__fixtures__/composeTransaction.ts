@@ -102,7 +102,7 @@ export default {
         },
         {
             description:
-                'Bitcoin (Bech32/P2WPKH): precompose without outputs permutation, with baseFee and custom sequence',
+                'Bitcoin (Bech32/P2WPKH): precompose without outputs permutation (skipPermutation: true), with baseFee and custom sequence',
             params: {
                 account: BECH32_ACCOUNT,
                 feeLevels: FEE_LEVELS,
@@ -114,6 +114,40 @@ export default {
                 ],
                 baseFee: 167,
                 skipPermutation: true,
+                sequence: 1,
+                coin: 'btc',
+            },
+            result: [
+                {
+                    type: 'final',
+                    bytes: 142,
+                    fee: '309',
+                    feePerByte: '2.176056338028169',
+                    max: undefined,
+                    totalSpent: '6806',
+                    inputs: [{ script_type: 'SPENDWITNESS', sequence: 1 }],
+                    outputs: [
+                        { amount: '6497', script_type: 'PAYTOADDRESS' },
+                        { amount: '2620', script_type: 'PAYTOWITNESS' }, // skipped permutation
+                    ],
+                    outputsPermutation: [0, 1],
+                },
+            ],
+        },
+        {
+            description:
+                "Bitcoin (Bech32/P2WPKH): precompose without outputs permutation (sortingStrategy: 'none'), with baseFee and custom sequence",
+            params: {
+                account: BECH32_ACCOUNT,
+                feeLevels: FEE_LEVELS,
+                outputs: [
+                    {
+                        address: '36JkLACrdxARqXXffZk91V9W6SJvghKaVK',
+                        amount: '6497',
+                    },
+                ],
+                baseFee: 167,
+                sortingStrategy: 'none',
                 sequence: 1,
                 coin: 'btc',
             },

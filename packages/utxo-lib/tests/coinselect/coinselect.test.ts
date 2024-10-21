@@ -17,6 +17,7 @@ describe('coinselect errors', () => {
                     inputs,
                     outputs,
                     sendMaxOutputIndex: -1,
+                    sortingStrategy: 'bip69',
                 }),
             ).toThrowError(f.expected);
         });
@@ -37,6 +38,7 @@ describe('coinselect index', () => {
                 inputs,
                 outputs,
                 sendMaxOutputIndex: -1,
+                sortingStrategy: 'bip69',
             });
 
             expect(utils.serialize(actual)).toEqual(expected);
@@ -48,6 +50,7 @@ describe('coinselect index', () => {
                     inputs: actual.inputs,
                     outputs: actual.outputs,
                     sendMaxOutputIndex: -1,
+                    sortingStrategy: 'bip69',
                 });
                 expect(utils.serialize(feedback)).toEqual(expected);
             }

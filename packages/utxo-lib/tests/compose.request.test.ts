@@ -20,6 +20,7 @@ const REQUEST: ComposeRequest<any, any, any> = {
     network: NETWORKS.bitcoin,
     changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
     dustThreshold: 526,
+    sortingStrategy: 'bip69',
 };
 
 describe('validateAndParseRequest', () => {
