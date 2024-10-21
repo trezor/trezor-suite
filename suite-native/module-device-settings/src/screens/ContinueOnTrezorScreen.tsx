@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { Dimensions } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectDeviceModel } from '@suite-common/wallet-core';
@@ -7,10 +6,11 @@ import { Box, Text } from '@suite-native/atoms';
 import { ConnectorImage, DeviceImage } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenSubHeader } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import TrezorConnect from '@trezor/connect';
+import { getScreenHeight } from '@trezor/env-utils/lib';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-const SCREEN_HEIGHT = Dimensions.get('screen').height;
+const SCREEN_HEIGHT = getScreenHeight();
 
 const titleStyle = prepareNativeStyle(utils => ({
     marginTop: utils.spacings.sp12,
