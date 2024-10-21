@@ -163,6 +163,16 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     } as const;
 };
 
+const rpcCall = async (request: Request<MessageTypes.RpcCall>) => {
+    const api = await request.connect();
+    const resp = await api.rpcCall(request.payload);
+
+    return {
+        type: RESPONSES.RPC_CALL,
+        payload: resp,
+    } as const;
+};
+
 const onNewBlock = ({ post }: Context, event: BlockNotification) => {
     post({
         id: -1,
@@ -417,6 +427,8 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
             return getFiatRatesTickersList(request);
         case MESSAGES.ESTIMATE_FEE:
             return estimateFee(request);
+        case MESSAGES.RPC_CALL:
+            return rpcCall(request);
         case MESSAGES.PUSH_TRANSACTION:
             return pushTransaction(request);
         case MESSAGES.SUBSCRIBE:

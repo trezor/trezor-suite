@@ -101,6 +101,13 @@ export interface EstimateFee {
     }[];
 }
 
+export interface RpcCall {
+    type: typeof RESPONSES.RPC_CALL;
+    payload: {
+        data: string;
+    };
+}
+
 export interface Subscribe {
     type: typeof RESPONSES.SUBSCRIBE;
     payload: { subscribed: boolean };
@@ -173,6 +180,7 @@ export type Response =
     | ChannelMessage<GetFiatRatesForTimestamps>
     | ChannelMessage<GetFiatRatesTickersList>
     | ChannelMessage<EstimateFee>
+    | ChannelMessage<RpcCall>
     | ChannelMessage<Subscribe>
     | ChannelMessage<Unsubscribe>
     | ChannelMessage<Notification>

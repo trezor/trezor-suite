@@ -229,6 +229,13 @@ class BlockchainLink extends TypedEmitter<Events> {
         });
     }
 
+    rpcCall(payload: MessageTypes.RpcCall['payload']): Promise<ResponseTypes.RpcCall['payload']> {
+        return this.sendMessage({
+            type: MESSAGES.RPC_CALL,
+            payload,
+        });
+    }
+
     /**
      * Subscribe for live changes in
      * - blockchain i.e new blocks mined.

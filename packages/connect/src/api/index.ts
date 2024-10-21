@@ -9,6 +9,7 @@ export { default as blockchainDisconnect } from './blockchainDisconnect';
 export { default as blockchainEstimateFee } from './blockchainEstimateFee';
 export { default as blockchainGetAccountBalanceHistory } from './blockchainGetAccountBalanceHistory';
 export { default as blockchainGetCurrentFiatRates } from './blockchainGetCurrentFiatRates';
+export { default as blockchainEvmRpcCall } from './blockchainEvmRpcCall';
 export { default as blockchainGetFiatRatesForTimestamps } from './blockchainGetFiatRatesForTimestamps';
 export { default as blockchainGetTransactions } from './blockchainGetTransactions';
 export { default as blockchainSetCustomBackend } from './blockchainSetCustomBackend';
