@@ -70,6 +70,7 @@ export type FirmwareHashCheckResult =
 type BaseDevice = {
     path: Descriptor['path'];
     name: string;
+    descriptor: Descriptor;
 };
 
 export type KnownDevice = BaseDevice & {
