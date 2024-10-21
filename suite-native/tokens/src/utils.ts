@@ -8,7 +8,12 @@ export const getTokenName = (tokenName?: string) => {
     return tokenName;
 };
 
-export const NETWORK_SYMBOLS_WITH_TOKENS = ['eth', 'pol', 'bnb'] satisfies Array<NetworkSymbol>;
+export const NETWORK_SYMBOLS_WITH_TOKENS = [
+    'eth',
+    'pol',
+    'bnb',
+    'sol',
+] satisfies Array<NetworkSymbol>;
 export type NetworkSymbolWithTokens = (typeof NETWORK_SYMBOLS_WITH_TOKENS)[number];
 
 export const isCoinWithTokens = (symbol: NetworkSymbol): symbol is NetworkSymbolWithTokens => {

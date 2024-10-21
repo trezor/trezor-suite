@@ -50,6 +50,7 @@ expo-status-bar
 expo-system-ui
 jotai
 lottie-react-native
+react-native-get-random-values
 react-native-gesture-handler
 react-native-keyboard-aware-scroll-view
 react-native-mmkv
