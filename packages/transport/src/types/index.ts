@@ -28,6 +28,8 @@ export type DescriptorApiLevel = {
 export type Descriptor = Omit<DescriptorApiLevel, 'path'> & {
     path: PathPublic;
     session: null | Session;
+    /** extension of 'session'. If session is defined then also sessionOwner must be defined. Describes which other application is using the session. */
+    sessionOwner?: string;
     /** only reported by old bridge */
     debugSession?: null | Session;
     /** only reported by old bridge */

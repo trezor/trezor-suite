@@ -12,11 +12,19 @@ const wait = (ms = 1000) =>
         }, ms);
     });
 
-const getDescriptor = (descriptor: Partial<Descriptor>): Descriptor => ({
-    ...fixtureDescriptor,
-    session: Session('1'),
-    ...descriptor,
-});
+const getDescriptor = (descriptor: Partial<Descriptor>): Descriptor => {
+    const d = {
+        ...fixtureDescriptor,
+        session: Session('1'),
+        ...descriptor,
+    };
+
+    if (env.USE_NODE_BRIDGE && d.session) {
+        d.sessionOwner = '';
+    }
+
+    return d;
+};
 
 const emulatorStartOpts = { model: 'T2T1', version: '2-main', wipe: true } as const;
 
@@ -64,8 +72,8 @@ describe('bridge', () => {
         await TrezorUserEnvLink.startEmu(emulatorStartOpts);
         await TrezorUserEnvLink.startBridge();
 
-        bridge1 = new BridgeTransport({ messages });
-        bridge2 = new BridgeTransport({ messages });
+        bridge1 = new BridgeTransport({ messages, id: '' });
+        bridge2 = new BridgeTransport({ messages, id: '' });
 
         await bridge1.init();
         await bridge2.init();
