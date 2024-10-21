@@ -20,6 +20,18 @@ jest.mock('cross-fetch', () => ({
     default: () => Promise.resolve({ ok: false }),
 }));
 
+// mock desktopApi
+jest.mock('@trezor/suite-desktop-api', () => ({
+    __esModule: true,
+    desktopApi: {
+        getBridgeStatus: () =>
+            Promise.resolve({ success: true, payload: { service: true, process: true } }),
+        getBridgeSettings: () => Promise.resolve({ success: true, payload: { enabled: true } }),
+        on: (_event: string, _cb: any) => {},
+        removeAllListeners: (_event: string) => {},
+    },
+}));
+
 // jest.mock('@firmware-components/ReconnectDevicePrompt', () => ({
 //     __esModule: true, // export as module
 //     default: ({ children }: any) => <div data-testid="box">{children}</div>,
@@ -224,7 +236,7 @@ describe('Preloader component', () => {
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
-        expect(findByTestId('@connect-device-prompt/unreadable-hid')).not.toBeNull();
+        expect(findByTestId('@connect-device-prompt/unreadable-unknown')).not.toBeNull();
 
         unmount();
     });
