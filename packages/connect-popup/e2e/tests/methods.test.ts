@@ -105,8 +105,9 @@ filteredFixtures.forEach(f => {
         const [method, submethod] = f.url.split('-');
         const fullUrl = formatUrl(
             explorerUrl,
-            `methods/${f.dir}/${method}/index.html${submethod ? '?submethod=' + submethod : ''}`,
+            `methods/${f.dir}/${method}${submethod ? '?submethod=' + submethod : ''}`,
         );
+        log('fullUrl: ', fullUrl);
         await explorerPage.goto(fullUrl);
 
         // expand method tester
