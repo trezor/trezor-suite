@@ -157,6 +157,12 @@ export class GoogleMock {
             });
         });
 
+        app.get('/drive/api/v3/reference/files/list', express.json(), (_req, res) => {
+            res.json({
+                files: Object.keys(this.files),
+            });
+        });
+
         app.get('/drive/v3/about', express.json(), (_req, res) => {
             console.log('[mockGoogleDrive]: about');
             res.send({

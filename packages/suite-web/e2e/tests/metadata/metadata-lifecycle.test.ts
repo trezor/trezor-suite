@@ -1,5 +1,5 @@
 // @group_metadata
-// @retry=2
+// @retry=0
 
 import { onNavBar } from '../../support/pageObjects/topBarObject';
 
@@ -35,9 +35,12 @@ describe('Metadata - cancel metadata on device', () => {
         cy.hoverTestElement("@metadata/accountLabel/m/84'/0'/0'/hover-container");
 
         // try to init metadata...
-        cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({
-            force: true,
-        });
+        cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button")
+            // todo: there is some bug on how this component is rendered, cypress sometimes detects 2 instances of this component!!!
+            .first()
+            .click({
+                force: true,
+            });
         Cypress.config('scrollBehavior', 'top');
         // ...but user cancels dialogue on device
         cy.getConfirmActionOnDeviceModal();
@@ -46,9 +49,8 @@ describe('Metadata - cancel metadata on device', () => {
 
         // cancelling labeling on device actually enables labeling globally so when user reloads app,
         // metadata dialogue will be prompted. now user cancels dialogue on device again and remembers device
-
         cy.safeReload();
-        // todo: this may timeout
+        cy.discoveryShouldFinish();
 
         cy.getConfirmActionOnDeviceModal();
         cy.task('pressNo');
@@ -58,7 +60,7 @@ describe('Metadata - cancel metadata on device', () => {
         cy.getTestElement('@viewOnlyStatus/disabled').click();
         cy.getTestElement('@viewOnly/radios/enabled').click();
         cy.safeReload();
-        cy.discoveryShouldFinish(); // no dialogue, metadata keys survive together with remembered wallet!
+        // no dialogue, metadata keys survive together with remembered wallet!
 
         // but when user tries to add another wallet, there is enable labeling dialogue again
         cy.getTestElement('@menu/switch-device').click();
@@ -88,10 +90,6 @@ describe('Metadata - cancel metadata on device', () => {
         // note: since recently, the first dialogue that appeared was "enable labeling on device" are we ok with this change of order?
         cy.getTestElement('@modal/close-button').click();
 
-        // cy.getConfirmActionOnDeviceModal();
-        // cy.task('pressNo');
-        // cy.wait(501);
-
         cy.getTestElement('@accounts/empty-account/receive');
 
         // forget device and reload -> enable labeling dialogue appears
@@ -105,6 +103,7 @@ describe('Metadata - cancel metadata on device', () => {
         cy.getTestElement('@switch-device/eject').click();
 
         cy.safeReload();
+        cy.discoveryShouldFinish();
 
         cy.getConfirmActionOnDeviceModal(); // enable labeling dialogue;
         cy.task('pressNo');
