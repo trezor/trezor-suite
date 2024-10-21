@@ -269,14 +269,14 @@ describe('getChangedInternalTx', () => {
     });
 });
 
-type EthereumCallResult = Unsuccessful | SuccessWithDevice<{ data: string }>;
+type BlockchainEvmRpcCallResult = Unsuccessful | SuccessWithDevice<{ data: string }>;
 type SimulateUnstakeArgs = StakeTxBaseArgs & { amount: string };
 
 describe('simulateUnstake', () => {
     simulateUnstakeFixture.forEach(test => {
         it(test.description, async () => {
-            jest.spyOn(TrezorConnect, 'ethereumCall').mockImplementation(() =>
-                Promise.resolve(test.ethereumCallResult as EthereumCallResult),
+            jest.spyOn(TrezorConnect, 'blockchainEvmRpcCall').mockImplementation(() =>
+                Promise.resolve(test.blockchainEvmRpcCallResult as BlockchainEvmRpcCallResult),
             );
             const result = await simulateUnstake(test.args as SimulateUnstakeArgs);
             expect(result).toEqual(test.result);

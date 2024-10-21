@@ -872,7 +872,7 @@ export const simulateUnstakeFixture = [
             from: undefined,
             symbol: undefined,
         },
-        ethereumCallResult: {},
+        blockchainEvmRpcCallResult: {},
         result: null,
     },
     {
@@ -883,7 +883,7 @@ export const simulateUnstakeFixture = [
             to: '0xAFA848357154a6a624686b348303EF9a13F63264',
             symbol: 'eth',
         },
-        ethereumCallResult: {
+        blockchainEvmRpcCallResult: {
             success: true,
             payload: { data: '0x000000000000000000000000000000000000000000000000016345785d8a0000' },
         },

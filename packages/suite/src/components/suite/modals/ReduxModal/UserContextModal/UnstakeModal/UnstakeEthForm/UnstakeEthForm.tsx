@@ -11,7 +11,7 @@ import { getUnstakingPeriodInDays } from 'src/utils/suite/stake';
 import UnstakeFees from './Fees';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
-import { ApproximateEthAmount } from 'src/views/wallet/staking/components/EthStakingDashboard/components/ApproximateEthAmount';
+import { ApproximateInstantEthAmount } from 'src/views/wallet/staking/components/EthStakingDashboard/components/ApproximateInstantEthAmount';
 import { BigNumber } from '@trezor/utils';
 
 const DividerWrapper = styled.div`
@@ -124,7 +124,7 @@ export const UnstakeEthForm = () => {
                                 </Tooltip>
                             </Row>
 
-                            <ApproximateEthAmount
+                            <ApproximateInstantEthAmount
                                 value={approximatedInstantEthAmount}
                                 symbol={symbol.toUpperCase()}
                             />

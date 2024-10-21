@@ -2,14 +2,17 @@ import { FormattedCryptoAmount } from 'src/components/suite';
 import { Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-interface ApproximateEthAmountProps {
+interface ApproximateInstantEthAmountProps {
     value: string | number;
     symbol: string;
 }
 
 const DEFAULT_MAX_DECIMAL_PLACES = 2;
 
-export const ApproximateEthAmount = ({ value, symbol }: ApproximateEthAmountProps) => {
+export const ApproximateInstantEthAmount = ({
+    value,
+    symbol,
+}: ApproximateInstantEthAmountProps) => {
     const hasDecimals = value.toString().includes('.');
 
     if (!hasDecimals) {

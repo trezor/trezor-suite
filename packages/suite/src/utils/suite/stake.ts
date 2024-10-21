@@ -653,15 +653,14 @@ export const simulateUnstake = async ({
 
     const amountWei = toWei(amount, 'ether');
     const interchanges = 0;
-    const coin = symbol?.toString();
 
     const data = contractPool.methods
         .unstake(amountWei, interchanges, WALLET_SDK_SOURCE)
         .encodeABI();
     if (!data) return null;
 
-    const ethereumData = await TrezorConnect.ethereumCall({
-        coin,
+    const ethereumData = await TrezorConnect.blockchainEvmRpcCall({
+        coin: symbol,
         from,
         to: poolAddress,
         data,
