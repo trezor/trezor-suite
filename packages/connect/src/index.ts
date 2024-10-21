@@ -208,31 +208,19 @@ const cancel = (error?: string) => {
     });
 };
 
-const renderWebUSBButton = (_className?: string) => {
-    throw ERRORS.TypedError('Method_InvalidPackage');
-};
-
-const disableWebUSB = () => {
-    throw ERRORS.TypedError('Method_InvalidPackage');
-};
-
-const requestWebUSBDevice = () => {
-    throw ERRORS.TypedError('Method_InvalidPackage');
-};
-
-const TrezorConnect = factory({
-    eventEmitter,
-    manifest,
-    init,
-    call,
-    requestLogin,
-    uiResponse,
-    renderWebUSBButton,
-    disableWebUSB,
-    requestWebUSBDevice,
-    cancel,
-    dispose,
-});
+const TrezorConnect = factory(
+    {
+        eventEmitter,
+        manifest,
+        init,
+        call,
+        requestLogin,
+        uiResponse,
+        cancel,
+        dispose,
+    },
+    {},
+);
 
 export default TrezorConnect;
 export * from './exports';
