@@ -24,9 +24,9 @@ export const FeeOptionsList = ({ feeLevels, networkSymbol, accountKey }: FeeOpti
         D.filterWithKey(key => key !== 'custom'),
     );
 
-    // User is not able enter the fees screen if the normal (in final state) fee is not present.
-    const normalLevel = predefinedFeeLevels.normal as PrecomposedTransactionFinal;
-    const transactionBytes = normalLevel.bytes;
+    // User is not able to enter the fees screen if at least the economy fee (in final state) is not present.
+    const lowLevel = predefinedFeeLevels.economy as PrecomposedTransactionFinal;
+    const transactionBytes = lowLevel.bytes;
 
     const isMultipleOptionsDisplayed = Object.keys(predefinedFeeLevels).length > 1;
 

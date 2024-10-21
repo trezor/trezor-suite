@@ -907,6 +907,7 @@ export const en = {
                 addressLabel: 'Recipient address',
                 addressQrLabel: 'Scan recipient address',
                 amountLabel: 'Amount to be sent',
+                maxButton: 'Send max',
             },
         },
         fees: {

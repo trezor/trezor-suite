@@ -20,3 +20,5 @@ export type SendAmountInputProps = {
     onPress?: TextInputProps['onPress'];
     onFocus?: () => void;
 };
+
+export type FeeLevelsMaxAmount = Record<FeeLevelLabel, string | undefined>;

@@ -2,11 +2,16 @@ import { useSelector } from 'react-redux';
 
 import {
     AccountsRootState,
-    SendRootState,
     selectAccountNetworkSymbol,
     selectSendFormDraftOutputsByAccountKey,
+    SendRootState,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import {
+    AccountKey,
+    GeneralPrecomposedTransaction,
+    isFinalPrecomposedTransaction,
+    Output,
+} from '@suite-common/wallet-types';
 import { Text, VStack, Card, HStack } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -15,6 +20,7 @@ import { selectIsAmountInSats, SettingsSliceRootState } from '@suite-native/sett
 
 type FeesRecipientsProps = {
     accountKey: AccountKey;
+    selectedFeeLevel: GeneralPrecomposedTransaction;
 };
 
 const cardStyle = prepareNativeStyle(utils => ({
@@ -29,13 +35,12 @@ const addressStyle = prepareNativeStyle(() => ({
     letterSpacing: 0, // negative letter spacing has to be overwritten for ellipsizeMode='middle' to work
 }));
 
-export const RecipientsSummary = ({ accountKey }: FeesRecipientsProps) => {
+export const RecipientsSummary = ({ accountKey, selectedFeeLevel }: FeesRecipientsProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const outputs = useSelector((state: SendRootState) =>
+    const draftOutputs = useSelector((state: SendRootState) =>
         selectSendFormDraftOutputsByAccountKey(state, accountKey),
     );
-
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -43,12 +48,21 @@ export const RecipientsSummary = ({ accountKey }: FeesRecipientsProps) => {
         selectIsAmountInSats(state, networkSymbol),
     );
 
-    if (!outputs || !networkSymbol) return null;
+    // If the fee level was not successfully created (there is not enough balance for it), use the draft outputs instead.
+    const outputs = isFinalPrecomposedTransaction(selectedFeeLevel)
+        ? selectedFeeLevel.outputs
+        : draftOutputs;
+    const addressTargetingOutputs = outputs?.filter(output => 'address' in output) as Output[];
+
+    if (!addressTargetingOutputs || !networkSymbol) return null;
+
+    // Successfully composed outputs values are always in "balance" format.
+    const isBalance = !isAmountInSats && !isFinalPrecomposedTransaction(selectedFeeLevel);
 
     return (
         <VStack>
             {/* TODO handle UI of multiple recipients in better way when is the design ready. */}
-            {outputs.map(output => (
+            {addressTargetingOutputs.map(output => (
                 <Card key={output.address} style={applyStyle(cardStyle)}>
                     <HStack>
                         <VStack flex={0.6} justifyContent="center" spacing="sp4">
@@ -70,14 +84,14 @@ export const RecipientsSummary = ({ accountKey }: FeesRecipientsProps) => {
                                 color="textDefault"
                                 value={output.amount}
                                 network={networkSymbol}
-                                isBalance={!isAmountInSats}
+                                isBalance={isBalance}
                             />
                             <CryptoAmountFormatter
                                 variant="hint"
                                 color="textSubdued"
                                 value={output.amount}
                                 network={networkSymbol}
-                                isBalance={!isAmountInSats}
+                                isBalance={isBalance}
                             />
                         </VStack>
                     </HStack>

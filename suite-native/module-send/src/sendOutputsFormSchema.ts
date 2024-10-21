@@ -6,12 +6,14 @@ import { formatNetworkAmount, isAddressValid, isDecimalsValid } from '@suite-com
 import { FeeInfo } from '@suite-common/wallet-types';
 import { yup } from '@suite-common/validators';
 
+import { FeeLevelsMaxAmount } from './types';
+
 export type SendFormFormContext = {
     networkSymbol?: NetworkSymbol;
     availableAccountBalance?: string;
     networkFeeInfo?: FeeInfo;
     isValueInSats?: boolean;
-    normalFeeMaxAmount?: string;
+    feeLevelsMaxAmount?: FeeLevelsMaxAmount;
     decimals?: number;
 };
 
@@ -39,17 +41,16 @@ const isAmountDust = (amount: string, context?: SendFormFormContext) => {
     return amountBigNumber.lt(dustThreshold);
 };
 
-const isAmountHigherThanBalance = (amount: string, context?: SendFormFormContext) => {
+const isAmountHigherThanBalance = (
+    amount: string,
+    isSendMaxEnabled: boolean,
+    context?: SendFormFormContext,
+) => {
     if (!amount || !context) {
         return false;
     }
 
-    const {
-        networkSymbol,
-        networkFeeInfo,
-        availableAccountBalance,
-        normalFeeMaxAmount = '0',
-    } = context;
+    const { networkSymbol, networkFeeInfo, availableAccountBalance, feeLevelsMaxAmount } = context;
 
     if (!networkSymbol || !networkFeeInfo || !availableAccountBalance) {
         return false;
@@ -57,7 +58,17 @@ const isAmountHigherThanBalance = (amount: string, context?: SendFormFormContext
 
     const amountBigNumber = new BigNumber(amount);
 
-    return amountBigNumber.gt(normalFeeMaxAmount);
+    const economyMaxAmount = feeLevelsMaxAmount?.economy;
+    const normalMaxAmount = feeLevelsMaxAmount?.normal;
+
+    // if send max is enabled, user is allowed submit form even if there is enough balance only for economy fee.
+    if (isSendMaxEnabled) {
+        if (!economyMaxAmount) return true;
+
+        return amountBigNumber.gt(economyMaxAmount);
+    }
+
+    return !normalMaxAmount || amountBigNumber.gt(normalMaxAmount);
 };
 
 // TODO: change error messages copy when is design ready
@@ -95,8 +106,15 @@ export const sendOutputsFormValidationSchema = yup.object({
                     .test(
                         'is-higher-than-balance',
                         'You don’t have enough balance to send this amount.',
-                        (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                            return !isAmountHigherThanBalance(value, context);
+                        function (
+                            value,
+                            { options: { context } }: yup.TestContext<SendFormFormContext>,
+                        ) {
+                            const isSendMaxEnabled = G.isNotNullable(
+                                this.from?.[1]?.value.setMaxOutputId,
+                            );
+
+                            return !isAmountHigherThanBalance(value, isSendMaxEnabled, context);
                         },
                     )
                     .test(
@@ -115,6 +133,7 @@ export const sendOutputsFormValidationSchema = yup.object({
             }),
         )
         .required(),
+    setMaxOutputId: yup.number(),
 });
 
 export type SendOutputsFormValues = yup.InferType<typeof sendOutputsFormValidationSchema>;
