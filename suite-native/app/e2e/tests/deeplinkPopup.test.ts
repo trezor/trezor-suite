@@ -56,19 +56,22 @@ const reverseServerPort = (port: number) => {
 
 describe('Deeplink connect popup.', () => {
     beforeAll(async () => {
-        server = http.createServer((req, res) => {
-            if (req.url) {
-                const url = new URL(req.url, SERVER_URL);
-                TrezorConnect.handleDeeplink(url.href);
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'text/plain');
-                res.end('Callback URL received successfully!\n');
-            }
-        });
+        await new Promise(resolve => {
+            server = http.createServer((req, res) => {
+                if (req.url) {
+                    const url = new URL(req.url, SERVER_URL);
+                    TrezorConnect.handleDeeplink(url.href);
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'text/plain');
+                    res.end('Callback URL received successfully!\n');
+                }
+            });
 
-        server.listen(SERVER_PORT, 'localhost', () => {
-            // eslint-disable-next-line no-console
-            console.info(`Server running at ${SERVER_URL}`);
+            server.listen(SERVER_PORT, 'localhost', () => {
+                // eslint-disable-next-line no-console
+                console.info(`Server running at ${SERVER_URL}`);
+                resolve(null);
+            });
         });
 
         await prepareTrezorEmulator();
