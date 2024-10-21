@@ -23,7 +23,7 @@ describe('bridge', () => {
     // special case of listen. for happy-path listen fixtures referer to multi-client.test.ts
     test('listen - bridge already has some descriptors, client subscribes with non-matching descriptors', async () => {
         await TrezorUserEnvLink.startBridge();
-        const bridge = new BridgeTransport({ messages });
+        const bridge = new BridgeTransport({ messages, id: '' });
         await bridge.init();
         const enumerateResult = await bridge.enumerate();
         assertSuccess(enumerateResult);
