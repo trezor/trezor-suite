@@ -49,7 +49,10 @@ export const DeviceSettingsButton = ({ showAsFullWidth }: DeviceInfoButtonProps)
     const handleDeviceRedirect = () => {
         setIsDeviceManagerVisible(false);
         navigation.navigate(RootStackRoutes.DeviceSettingsStack);
-        analytics.report({ type: EventType.DeviceManagerClick, payload: { action: 'deviceInfo' } }); // TODO: Rename to deviceSettings?
+        analytics.report({
+            type: EventType.DeviceManagerClick,
+            payload: { action: 'deviceSettings' },
+        });
     };
 
     if (!selectedDevice) return null;

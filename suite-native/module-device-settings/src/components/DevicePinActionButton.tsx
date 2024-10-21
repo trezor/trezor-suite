@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { analytics, EventType } from '@suite-native/analytics';
 import { selectDevice, selectHasDeviceDiscovery } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Button, ButtonColorScheme } from '@suite-native/atoms';
@@ -95,6 +96,10 @@ export const DevicePinActionButton = ({
 
     const changePin = useCallback(async () => {
         navigation.navigate(DeviceStackRoutes.DevicePinProtection);
+        analytics.report({
+            type: EventType.DeviceSettingsPinProtectionChange,
+            payload: { action: type },
+        });
 
         const { param, successMessageKey, canceledMessageKey } = actionConfigMap[type];
         const result = await TrezorConnect.changePin({

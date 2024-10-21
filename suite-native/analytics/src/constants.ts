@@ -48,4 +48,5 @@ export enum EventType {
     SendFeeLevelChanged = 'send/fee_level_changed',
     SendTransactionDispatched = 'send/transaction_dispatched',
     SendFlowExited = 'send/flow_exited',
+    DeviceSettingsPinProtectionChange = 'device_settings/pin_protection_change',
 }

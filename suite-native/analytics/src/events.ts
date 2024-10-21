@@ -159,7 +159,7 @@ export type SuiteNativeAnalyticsEvent =
                   | 'syncCoinsButton'
                   | 'educationLink'
                   | 'eshopLink'
-                  | 'deviceInfo';
+                  | 'deviceSettings';
           };
       }
     | {
@@ -303,5 +303,11 @@ export type SuiteNativeAnalyticsEvent =
           type: EventType.SendFlowExited;
           payload: {
               step: AnalyticsSendFlowStep;
+          };
+      }
+    | {
+          type: EventType.DeviceSettingsPinProtectionChange;
+          payload: {
+              action: 'enable' | 'change' | 'disable';
           };
       };
