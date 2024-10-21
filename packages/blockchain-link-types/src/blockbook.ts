@@ -6,7 +6,7 @@ import type {
     GetFiatRatesForTimestampsParams,
     GetFiatRatesTickersListParams,
     EstimateFeeParams,
-    EthereumCallParams,
+    RpcCallParams,
     AccountInfoParams,
 } from './params';
 import type { AccountBalanceHistory, FiatRatesBySymbol, TokenStandard } from './common';
@@ -211,7 +211,7 @@ declare function FSend(
     params: GetFiatRatesForTimestampsParams,
 ): Promise<FiatRatesForTimestamp>;
 declare function FSend(method: 'estimateFee', params: EstimateFeeParams): Promise<Fee>;
-declare function FSend(method: 'rpcCall', params: EthereumCallParams): Promise<{ data: string }>;
+declare function FSend(method: 'rpcCall', params: RpcCallParams): Promise<{ data: string }>;
 declare function FSend(
     method: 'subscribeAddresses',
     params: { addresses: string[] },

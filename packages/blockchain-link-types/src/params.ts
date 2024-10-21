@@ -35,7 +35,7 @@ export interface EstimateFeeParams {
     };
 }
 
-export interface EthereumCallParams {
+export interface RpcCallParams {
     from: string;
     to: string;
     data: string;

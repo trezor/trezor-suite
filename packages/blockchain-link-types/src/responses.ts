@@ -101,8 +101,8 @@ export interface EstimateFee {
     }[];
 }
 
-export interface EthereumCall {
-    type: typeof RESPONSES.ETHEREUM_CALL;
+export interface RpcCall {
+    type: typeof RESPONSES.RPC_CALL;
     payload: {
         data: string;
     };
@@ -180,7 +180,7 @@ export type Response =
     | ChannelMessage<GetFiatRatesForTimestamps>
     | ChannelMessage<GetFiatRatesTickersList>
     | ChannelMessage<EstimateFee>
-    | ChannelMessage<EthereumCall>
+    | ChannelMessage<RpcCall>
     | ChannelMessage<Subscribe>
     | ChannelMessage<Unsubscribe>
     | ChannelMessage<Notification>

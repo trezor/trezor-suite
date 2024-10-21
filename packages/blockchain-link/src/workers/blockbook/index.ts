@@ -163,12 +163,12 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     } as const;
 };
 
-const ethereumCall = async (request: Request<MessageTypes.EthereumCall>) => {
+const rpcCall = async (request: Request<MessageTypes.RpcCall>) => {
     const api = await request.connect();
-    const resp = await api.ethereumCall(request.payload);
+    const resp = await api.rpcCall(request.payload);
 
     return {
-        type: RESPONSES.ETHEREUM_CALL,
+        type: RESPONSES.RPC_CALL,
         payload: resp,
     } as const;
 };
@@ -427,8 +427,8 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
             return getFiatRatesTickersList(request);
         case MESSAGES.ESTIMATE_FEE:
             return estimateFee(request);
-        case MESSAGES.ETHEREUM_CALL:
-            return ethereumCall(request);
+        case MESSAGES.RPC_CALL:
+            return rpcCall(request);
         case MESSAGES.PUSH_TRANSACTION:
             return pushTransaction(request);
         case MESSAGES.SUBSCRIBE:

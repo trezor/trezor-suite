@@ -229,11 +229,9 @@ class BlockchainLink extends TypedEmitter<Events> {
         });
     }
 
-    ethereumCall(
-        payload: MessageTypes.EthereumCall['payload'],
-    ): Promise<ResponseTypes.EthereumCall['payload']> {
+    rpcCall(payload: MessageTypes.RpcCall['payload']): Promise<ResponseTypes.RpcCall['payload']> {
         return this.sendMessage({
-            type: MESSAGES.ETHEREUM_CALL,
+            type: MESSAGES.RPC_CALL,
             payload,
         });
     }
