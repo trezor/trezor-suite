@@ -1,5 +1,6 @@
 import type { BlockchainSettings } from '@trezor/blockchain-link';
 import type { Transport } from '@trezor/transport';
+import type { KnownDevice } from './device';
 
 export type { SystemInfo } from '@trezor/connect-common';
 export interface Manifest {
@@ -19,6 +20,7 @@ export interface ConnectSettingsPublic {
     transportReconnect?: boolean;
     webusb?: boolean; // deprecated
     transports?: (Transport['name'] | Transport | (new (...args: any[]) => Transport))[];
+    knownDevices?: Pick<KnownDevice, '_state'>[];
     pendingTransportEvent?: boolean;
     lazyLoad?: boolean;
     interactionTimeout?: number;

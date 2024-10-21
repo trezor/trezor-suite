@@ -82,7 +82,10 @@ export const assertDeviceListConnected: (
     if (!deviceList.isConnected()) throw ERRORS.TypedError('Transport_Missing');
 };
 
-type ConstructorParams = Pick<ConnectSettings, 'priority' | 'debug' | '_sessionsBackgroundUrl'> & {
+type ConstructorParams = Pick<
+    ConnectSettings,
+    'priority' | 'debug' | '_sessionsBackgroundUrl' | 'knownDevices'
+> & {
     messages: Record<string, any>;
 };
 type InitParams = Pick<ConnectSettings, 'pendingTransportEvent' | 'transportReconnect'>;
