@@ -11319,7 +11319,7 @@ __metadata:
     "@trezor/product-components": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@types/flexsearch": "npm:^0.7.3"
-    "@types/git-url-parse": "npm:^9.0.1"
+    "@types/git-url-parse": "npm:^9.0.3"
     "@types/react": "npm:^18.2.79"
     "@types/react-dom": "npm:^18.2.7"
     "@vitejs/plugin-react": "npm:^3.0.1"
@@ -11328,7 +11328,7 @@ __metadata:
     escape-string-regexp: "npm:^5.0.0"
     flexsearch: "npm:^0.7.31"
     focus-visible: "npm:^5.2.1"
-    git-url-parse: "npm:^13.1.0"
+    git-url-parse: "npm:^15.0.0"
     intersection-observer: "npm:^0.12.2"
     jsdom: "npm:^23.0.0"
     match-sorter: "npm:^6.3.1"
@@ -12955,7 +12955,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/git-url-parse@npm:^9.0.1":
+"@types/git-url-parse@npm:^9.0.3":
   version: 9.0.3
   resolution: "@types/git-url-parse@npm:9.0.3"
   checksum: 10/ae5389bf4339e0e863d84e92cd8af137ea485ea7141a25998300ae38ba471617af004791f4c6f86431eb5fb0c70ad4dda3558ca9b0a020a3897058e95a91515e
@@ -24237,6 +24237,15 @@ __metadata:
   dependencies:
     git-up: "npm:^7.0.0"
   checksum: 10/407f6579f3aa5e4040e215b45c1cfa7f08bd52a298a50310fc3debdd99e9d049d9f05e582b5475218116f312526691e1c3cc368e0d23f97c49735f210e381475
+  languageName: node
+  linkType: hard
+
+"git-url-parse@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "git-url-parse@npm:15.0.0"
+  dependencies:
+    git-up: "npm:^7.0.0"
+  checksum: 10/b6e54fc58bb4f4c9bfb1060ec93c3d1462880c6bec76926978e32b2bbfac3535001c87efd1ef0dca9cd9ee0ffdaacba2f50dc4f7032ba09ad92d93e9acc9936b
   languageName: node
   linkType: hard
 
