@@ -10,6 +10,7 @@ import { blockchainDisconnect } from './blockchainDisconnect';
 import { blockchainEstimateFee } from './blockchainEstimateFee';
 import { blockchainGetAccountBalanceHistory } from './blockchainGetAccountBalanceHistory';
 import { blockchainGetCurrentFiatRates } from './blockchainGetCurrentFiatRates';
+import { blockchainEvmRpcCall } from './blockchainEvmRpcCall';
 import { blockchainGetFiatRatesForTimestamps } from './blockchainGetFiatRatesForTimestamps';
 import { blockchainGetTransactions } from './blockchainGetTransactions';
 import { blockchainSetCustomBackend } from './blockchainSetCustomBackend';
@@ -40,7 +41,6 @@ import { ethereumSignMessage } from './ethereumSignMessage';
 import { ethereumSignTransaction } from './ethereumSignTransaction';
 import { ethereumSignTypedData } from './ethereumSignTypedData';
 import { ethereumVerifyMessage } from './ethereumVerifyMessage';
-import { ethereumCall } from './ethereumCall';
 import { firmwareUpdate } from './firmwareUpdate';
 import { getAccountDescriptor } from './getAccountDescriptor';
 import { getAccountInfo } from './getAccountInfo';
@@ -131,6 +131,8 @@ export interface TrezorConnect {
     // todo: link docs
     blockchainGetCurrentFiatRates: typeof blockchainGetCurrentFiatRates;
 
+    blockchainEvmRpcCall: typeof blockchainEvmRpcCall;
+
     // todo: link docs
     blockchainGetFiatRatesForTimestamps: typeof blockchainGetFiatRatesForTimestamps;
 
@@ -217,8 +219,6 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/ethereum/ethereumVerifyMessage/
     ethereumVerifyMessage: typeof ethereumVerifyMessage;
-
-    ethereumCall: typeof ethereumCall;
 
     // https://connect.trezor.io/9/methods/device/firmwareUpdate/
     firmwareUpdate: typeof firmwareUpdate;

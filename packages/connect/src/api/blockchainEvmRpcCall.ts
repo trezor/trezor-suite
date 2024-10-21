@@ -1,17 +1,17 @@
-import { AbstractMethod } from '../../../core/AbstractMethod';
-import { validateParams } from '../../common/paramsValidator';
-import { ERRORS } from '../../../constants';
-import { CoinInfo, EthereumCall as EthereumCallSchema } from '../../../types';
-import { initBlockchain, isBackendSupported } from '../../../backend/BlockchainLink';
-import { getCoinInfo } from '../../../data/coinInfo';
+import { AbstractMethod, Payload } from '../core/AbstractMethod';
+import { validateParams } from './common/paramsValidator';
+import { ERRORS } from '../constants';
+import { CoinInfo } from '../types';
+import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { getCoinInfo } from '../data/coinInfo';
 
 type Params = {
     coinInfo: CoinInfo;
     identity?: string;
-    request: EthereumCallSchema;
+    request: Omit<Payload<'blockchainEvmRpcCall'>, 'method' | 'coin'>;
 };
 
-export default class EthereumCall extends AbstractMethod<'ethereumCall', Params> {
+export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmRpcCall', Params> {
     init() {
         this.useDevice = false;
         this.useUi = false;
@@ -47,7 +47,7 @@ export default class EthereumCall extends AbstractMethod<'ethereumCall', Params>
     }
 
     get info() {
-        return 'Ethereum call';
+        return 'Blockchain Evm Rpc Call';
     }
 
     async run() {
@@ -56,7 +56,7 @@ export default class EthereumCall extends AbstractMethod<'ethereumCall', Params>
             postMessage,
             this.params.identity,
         );
-        const response = await backend.ethereumCall(this.params.request);
+        const response = await backend.rpcCall(this.params.request);
 
         return response;
     }

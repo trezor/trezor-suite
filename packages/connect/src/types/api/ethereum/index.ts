@@ -159,12 +159,3 @@ export const EthereumVerifyMessage = Type.Object({
     hex: Type.Optional(Type.Boolean()),
     signature: Type.String(),
 });
-
-// ethereumCall
-
-export type EthereumCall = Static<typeof EthereumCall>;
-export const EthereumCall = Type.Object({
-    from: Type.String(),
-    to: Type.String(),
-    data: Type.String(),
-});

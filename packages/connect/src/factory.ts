@@ -61,6 +61,8 @@ export const factory = ({
         blockchainGetCurrentFiatRates: params =>
             call({ ...params, method: 'blockchainGetCurrentFiatRates' }),
 
+        blockchainEvmRpcCall: params => call({ ...params, method: 'blockchainEvmRpcCall' }),
+
         blockchainGetFiatRatesForTimestamps: params =>
             call({ ...params, method: 'blockchainGetFiatRatesForTimestamps' }),
 
@@ -124,8 +126,6 @@ export const factory = ({
         ethereumSignTypedData: params => call({ ...params, method: 'ethereumSignTypedData' }),
 
         ethereumVerifyMessage: params => call({ ...params, method: 'ethereumVerifyMessage' }),
-
-        ethereumCall: params => call({ ...params, method: 'ethereumCall' }),
 
         getAccountDescriptor: params => call({ ...params, method: 'getAccountDescriptor' }),
 

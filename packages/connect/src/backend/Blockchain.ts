@@ -217,8 +217,8 @@ export class Blockchain {
         return this.link.getAccountUtxo(descriptor);
     }
 
-    ethereumCall(params: BlockchainLinkParams<'ethereumCall'>) {
-        return this.link.ethereumCall(params);
+    rpcCall(params: BlockchainLinkParams<'rpcCall'>) {
+        return this.link.rpcCall(params);
     }
 
     async estimateFee(request: Parameters<typeof this.link.estimateFee>[0]) {
