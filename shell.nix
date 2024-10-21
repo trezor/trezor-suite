@@ -1,19 +1,14 @@
-# ATTENTION
-# NixOS is not fully supported, some configuration may be necessary, see comments below
-
-# pinned to nixos-24.05 on commit https://github.com/NixOS/nixpkgs/commit/759537f06e6999e141588ff1c9be7f3a5c060106
+# pinned to nixos-24.05 on commit https://github.com/NixOS/nixpkgs/commit/c6ce5bd4ab657df958ebd6f38723f81c5546a661
 with import
   (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/759537f06e6999e141588ff1c9be7f3a5c060106.tar.gz";
-    sha256 = "1an5d5a68ip1bk0l7375jwlrnmg1q9iaxjwymi11z76k4kqch0r9";
+    url = "https://github.com/NixOS/nixpkgs/archive/c6ce5bd4ab657df958ebd6f38723f81c5546a661.tar.gz";
+    sha256 = "0i5z7b087kr2hnkgs17d36c54arjbgwlwyxw1ibh03d1k1xfcyf2";
   })
 { };
 
 let
   # unstable packages
-  # ATTENTION: this does not match the actual required version defined in packages/suite-desktop/package.json
-  # (the required version is not yet in NixOS repository)
-  electron = electron_31;
+  electron = electron_32;
   nodejs = nodejs_20;
   # use older gcc. 10.2.0 with glibc 2.32 for node_modules bindings.
   # electron-builder is packing the app with glibc 2.32, bindings should not be compiled with newer version.
