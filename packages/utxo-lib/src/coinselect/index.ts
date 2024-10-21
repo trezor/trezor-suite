@@ -10,7 +10,9 @@ export function coinselect({ inputs, outputs, feeRate, ...options }: CoinSelectR
         return split(inputs, outputs, feeRate, options);
     }
 
-    const sortedInputs = options.skipPermutation ? inputs : inputs.sort(sortByScore(feeRate));
+    const sortedInputs =
+        options.sortingStrategy === 'none' ? inputs : inputs.sort(sortByScore(feeRate));
+
     const algorithm = tryConfirmed(anyOf([bnb, accumulative]), options);
 
     return algorithm(sortedInputs, outputs, feeRate, options);

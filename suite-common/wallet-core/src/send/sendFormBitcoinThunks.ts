@@ -4,6 +4,7 @@ import TrezorConnect, {
     Params,
     SignTransaction,
     SignedTransaction,
+    DEFAULT_SORTING_STRATEGY,
 } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -123,7 +124,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             baseFee: formState.baseFee,
             sequence,
             outputs: composeOutputs,
-            skipPermutation: !!formState.rbfParams,
+            sortingStrategy: formState.rbfParams !== undefined ? 'none' : DEFAULT_SORTING_STRATEGY,
             coin: account.symbol,
         };
 
@@ -285,7 +286,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
             }
 
             // override inputs and outputs of precomposed transaction
-            // NOTE: RBF inputs/outputs required are to be in the same exact order as in original tx (covered by TrezorConnect.composeTransaction.skipPermutation param)
+            // NOTE: RBF inputs/outputs required are to be in the same exact order as in original tx (covered by TrezorConnect.composeTransaction.sortStrategy='none param)
             // possible variations:
             // it's possible to add new utxo not related to the original tx at the end of the list
             // it's possible to add change-output if it not exists in original tx AND new utxo was added/used

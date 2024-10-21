@@ -80,18 +80,6 @@ export type TransactionInputOutputSortingStrategy =
     // This is useful for RBF transactions where the order of inputs and outputs must be preserved.
     | 'none';
 
-type SortingStrategyPropsWithCompatibility =
-    | {
-          /** @deprecated use `sortingStrategy=none` instead if you want to keep order of inputs and outputs */
-          skipPermutation?: boolean; // Do not sort inputs/outputs and preserve the given order. Handy for RBF.
-          sortingStrategy?: undefined;
-      }
-    | {
-          /** @deprecated use `sortingStrategy=none` instead if you want to keep order of inputs and outputs */
-          skipPermutation?: undefined;
-          sortingStrategy?: TransactionInputOutputSortingStrategy;
-      };
-
 export type ComposeRequest<
     Input extends ComposeInput,
     Output extends ComposeOutput,
@@ -108,7 +96,8 @@ export type ComposeRequest<
     baseFee?: number; // DOGE or RBF base fee
     floorBaseFee?: boolean; // DOGE floor base fee to the nearest integer
     skipUtxoSelection?: boolean; // use custom utxo selection, without algorithm
-} & SortingStrategyPropsWithCompatibility;
+    sortingStrategy: TransactionInputOutputSortingStrategy;
+};
 
 type ComposedTransactionOutputs<T> = T extends ComposeOutputSendMax
     ? Omit<T, 'type'> & ComposeOutputPayment // NOTE: replace ComposeOutputSendMax (no amount) with ComposeOutputPayment (with amount)
