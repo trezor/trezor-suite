@@ -1,16 +1,11 @@
 import { useCallback, useRef, Dispatch, SetStateAction, KeyboardEvent } from 'react';
-import styled, { css, useTheme } from 'styled-components';
-import { Input, Icon, KEYBOARD_CODE, motionEasing } from '@trezor/components';
+import styled, { css } from 'styled-components';
+import { Input, Icon, KEYBOARD_CODE, motionEasing, Row } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { TooltipSymbol, Translation } from 'src/components/suite';
 import { TranslationKey } from '@suite-common/intl-types';
-
-const Container = styled.div`
-    display: flex;
-    align-items: center;
-`;
 
 const TRANSITION_DURATION = 0.26;
 const easingValues = motionEasing.transition.join(', '); // TODO: add to motionEasing
@@ -42,6 +37,18 @@ const StyledInput = styled(Input)<{ $isExpanded: boolean }>`
     }
 `;
 
+const SearchIconContainer = styled.div`
+    cursor: pointer;
+    height: ${INPUT_WIDTH};
+    width: ${INPUT_WIDTH};
+    background-color: transparent;
+    border-radius: ${borders.radii.full};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -${spacingsPx.sm};
+`;
+
 export interface SearchProps {
     tooltipText: TranslationKey;
     placeholder: TranslationKey;
@@ -63,7 +70,6 @@ export const SearchAction = ({
     onSearch,
     'data-testid': dataTest,
 }: SearchProps) => {
-    const theme = useTheme();
     const inputRef = useRef<HTMLInputElement | null>(null);
     const { translationString } = useTranslation();
 
@@ -90,7 +96,7 @@ export const SearchAction = ({
     );
 
     return (
-        <Container>
+        <Row alignItems="center">
             <StyledTooltipSymbol
                 content={<Translation id={tooltipText} />}
                 $isExpanded={isExpanded || searchQuery !== ''}
@@ -102,13 +108,9 @@ export const SearchAction = ({
                 size="small"
                 innerRef={inputRef}
                 innerAddon={
-                    <Icon
-                        name="search"
-                        cursorPointer
-                        size={16}
-                        color={theme.iconDefault}
-                        onClick={!isExpanded ? openAndSelect : undefined}
-                    />
+                    <SearchIconContainer onClick={!isExpanded ? openAndSelect : undefined}>
+                        <Icon name="search" cursorPointer size="medium" variant="default" />
+                    </SearchIconContainer>
                 }
                 placeholder={isExpanded ? translationString(placeholder) : undefined}
                 onChange={e => onSearch(e.target.value)}
@@ -120,6 +122,6 @@ export const SearchAction = ({
                 showClearButton="always"
                 onClear={() => setSearch('')}
             />
-        </Container>
+        </Row>
     );
 };

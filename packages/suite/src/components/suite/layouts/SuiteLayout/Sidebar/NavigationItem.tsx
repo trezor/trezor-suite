@@ -1,7 +1,13 @@
 import styled, { css, useTheme } from 'styled-components';
 
 import { ExtendedMessageDescriptor, TranslationKey } from '@suite-common/intl-types';
-import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
+import {
+    Elevation,
+    borders,
+    mapElevationToBackground,
+    spacingsPx,
+    TypographyStyle,
+} from '@trezor/theme';
 import { getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { Translation } from 'src/components/suite/Translation';
 import { Route } from '@suite-common/suite-types';
@@ -9,14 +15,14 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { MouseEvent } from 'react';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { Icon, IconName, IconSize, useElevation } from '@trezor/components';
+import { Icon, IconName, IconSize, useElevation, Paragraph } from '@trezor/components';
 
 export const NavigationItemBase = styled.div.attrs(() => ({
     tabIndex: 0,
 }))`
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: ${spacingsPx.md};
     padding: ${spacingsPx.xs};
     border-radius: ${borders.radii.sm};
     color: ${({ theme }) => theme.textSubdued};
@@ -31,7 +37,10 @@ export const NavigationItemBase = styled.div.attrs(() => ({
 const Container = styled(NavigationItemBase)<{
     $elevation: Elevation;
     $isActive?: boolean;
+    $isRounded?: boolean;
+    $typographyStyle?: TypographyStyle;
 }>`
+    gap: ${({ $typographyStyle }) => ($typographyStyle === 'hint' ? spacingsPx.xs : spacingsPx.md)};
     ${({ theme, $isActive }) =>
         $isActive
             ? css<{ $elevation: Elevation }>`
@@ -52,10 +61,12 @@ const Container = styled(NavigationItemBase)<{
                       }
                   }
               `}
-`;
-
-const Count = styled.div`
-    color: ${({ theme }) => theme.textSubdued};
+    ${({ $isRounded }) =>
+        $isRounded &&
+        css`
+            border-radius: ${borders.radii.full};
+            padding: ${spacingsPx.xs} ${spacingsPx.md};
+        `}
 `;
 
 export interface NavigationItemProps {
@@ -70,6 +81,8 @@ export interface NavigationItemProps {
     values?: ExtendedMessageDescriptor['values'];
     iconSize?: IconSize;
     itemsCount?: number;
+    isRounded?: boolean;
+    typographyStyle?: TypographyStyle;
 }
 
 export const NavigationItem = ({
@@ -84,6 +97,8 @@ export const NavigationItem = ({
     preserveParams,
     iconSize = 'large',
     itemsCount,
+    isRounded = false,
+    typographyStyle = 'body',
 }: NavigationItemProps) => {
     const activeRoute = useSelector(selectRouteName);
     const { elevation } = useElevation();
@@ -109,10 +124,18 @@ export const NavigationItem = ({
             className={className}
             tabIndex={0}
             $elevation={elevation}
+            $isRounded={isRounded}
+            $typographyStyle={typographyStyle}
         >
             <Icon name={icon} size={iconSize} color={theme.iconSubdued} pointerEvents="none" />
-            <Translation id={nameId} values={values} />
-            {itemsCount && <Count>{itemsCount}</Count>}
+            <Paragraph typographyStyle={typographyStyle}>
+                <Translation id={nameId} values={values} />
+            </Paragraph>
+            {itemsCount && (
+                <Paragraph variant="tertiary" typographyStyle={typographyStyle}>
+                    {itemsCount}
+                </Paragraph>
+            )}
         </Container>
     );
 };
