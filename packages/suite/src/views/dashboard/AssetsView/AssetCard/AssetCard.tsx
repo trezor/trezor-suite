@@ -90,18 +90,11 @@ const FailedContainer = styled.div`
 type AssetCardProps = {
     network: Network;
     failed: boolean;
-    cryptoValue: string;
-    assetsFiatBalances: AssetFiatBalance[];
+    assetCryptoBalance: string;
     index?: number;
 };
 
-export const AssetCard = ({
-    network,
-    failed,
-    cryptoValue,
-    assetsFiatBalances,
-    index,
-}: AssetCardProps) => {
+export const AssetCard = ({ network, failed, assetCryptoBalance, index }: AssetCardProps) => {
     const { symbol } = network;
     const dispatch = useDispatch();
     const theme = useTheme();
@@ -122,7 +115,7 @@ export const AssetCard = ({
         setSearchString(undefined);
     };
 
-    const { fiatAmount } = useFiatFromCryptoValue({ amount: cryptoValue, symbol });
+    const { fiatAmount } = useFiatFromCryptoValue({ amount: assetCryptoBalance, symbol });
 
     return (
         <StyledCard onClick={handleCardClick}>
@@ -130,7 +123,7 @@ export const AssetCard = ({
                 <AssetContainer>
                     <AssetCardInfo
                         network={network}
-                        assetsFiatBalances={assetsFiatBalances}
+                        // assetsFiatBalances={assetsFiatBalances}
                         index={index}
                     />
                     <ArrowIcon size={16} name="arrowRightLong" color={theme.iconDisabled} />
@@ -146,7 +139,7 @@ export const AssetCard = ({
                         </FiatAmount>
                         <CoinAmount>
                             <AmountUnitSwitchWrapper symbol={symbol}>
-                                <CoinBalance value={cryptoValue} symbol={symbol} />
+                                <CoinBalance value={assetCryptoBalance} symbol={symbol} />
                             </AmountUnitSwitchWrapper>
                         </CoinAmount>
                     </>

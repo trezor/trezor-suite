@@ -19,17 +19,32 @@ import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
 import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
 import { Text } from '@trezor/components';
+import { BigNumber } from '@trezor/utils';
+import { TokenInfo } from '@trezor/blockchain-link-types';
 
-interface AssetTableProps {
+export interface AssetTableRowProps {
+    symbol: string;
     network: Network;
     failed: boolean;
-    cryptoValue: string;
-    isLastRow?: boolean;
     assetsFiatBalances: AssetFiatBalance[];
+    assetFailed: boolean;
+    assetCryptoBalance: string;
+    staking?: {
+        assetStakingCryptoBalance: BigNumber;
+        assetStakingFiatBalance: BigNumber;
+    };
+    assetTokens?: TokenInfo[];
+    isLastRow?: boolean;
 }
 
 export const AssetRow = memo(
-    ({ network, failed, cryptoValue, assetsFiatBalances }: AssetTableProps) => {
+    ({
+        network,
+        failed,
+        assetCryptoBalance,
+        assetsFiatBalances,
+        assetTokens,
+    }: AssetTableRowProps) => {
         const { symbol } = network;
         const dispatch = useDispatch();
         const theme = useTheme();
@@ -71,11 +86,11 @@ export const AssetRow = memo(
                             gap={spacings.xxxs}
                             data-testid={`@asset-card/${symbol}/balance`}
                         >
-                            <FiatValue amount={cryptoValue} symbol={symbol} />
+                            <FiatValue amount={assetCryptoBalance} symbol={symbol} />
 
                             <Text typographyStyle="hint" color={theme.textSubdued}>
                                 <AmountUnitSwitchWrapper symbol={symbol}>
-                                    <CoinBalance value={cryptoValue} symbol={symbol} />
+                                    <CoinBalance value={assetCryptoBalance} symbol={symbol} />
                                 </AmountUnitSwitchWrapper>
                             </Text>
                         </Column>
