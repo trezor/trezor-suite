@@ -13,7 +13,7 @@ import {
 import * as ERRORS from '@trezor/connect/src/constants/errors';
 import type {
     ConnectSettings,
-    ConnectSettingsPublic,
+    ConnectSettingsWeb,
     Manifest,
     Response,
 } from '@trezor/connect/src/types';
@@ -24,12 +24,13 @@ import * as popup from '../popup';
 import { parseConnectSettings } from '../connectSettings';
 import { Login } from '@trezor/connect/src/types/api/requestLogin';
 import { createDeferred } from '@trezor/utils';
+import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 
 /**
  * Base class for CoreInPopup methods for TrezorConnect factory.
  * This implementation is directly used here in connect-web, but it is also extended in connect-webextension.
  */
-export class CoreInPopup implements ConnectFactoryDependencies {
+export class CoreInPopup implements ConnectFactoryDependencies<ConnectSettingsWeb> {
     public eventEmitter = new EventEmitter();
     protected _settings: ConnectSettings;
 
@@ -81,7 +82,7 @@ export class CoreInPopup implements ConnectFactoryDependencies {
         }
     }
 
-    public init(settings: Partial<ConnectSettingsPublic> = {}): Promise<void> {
+    public init(settings: InitFullSettings<{}>): Promise<void> {
         const oldSettings = parseConnectSettings({
             ...this._settings,
         });
@@ -240,9 +241,6 @@ export const TrezorConnect = factory({
     manifest: impl.manifest.bind(impl),
     requestLogin: impl.requestLogin.bind(impl),
     uiResponse: impl.uiResponse.bind(impl),
-    renderWebUSBButton: impl.renderWebUSBButton.bind(impl),
-    disableWebUSB: impl.disableWebUSB.bind(impl),
-    requestWebUSBDevice: impl.requestWebUSBDevice.bind(impl),
     cancel: impl.cancel.bind(impl),
     dispose: impl.dispose.bind(impl),
 });

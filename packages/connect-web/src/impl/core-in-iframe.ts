@@ -19,7 +19,12 @@ import {
     CoreEventMessage,
     CallMethodPayload,
 } from '@trezor/connect/src/events';
-import type { ConnectSettings, DeviceIdentity, Manifest } from '@trezor/connect/src/types';
+import type {
+    ConnectSettings,
+    ConnectSettingsWeb,
+    DeviceIdentity,
+    Manifest,
+} from '@trezor/connect/src/types';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import { Log, initLog } from '@trezor/connect/src/utils/debug';
 import { config } from '@trezor/connect/src/data/config';
@@ -29,8 +34,9 @@ import * as iframe from '../iframe';
 import * as popup from '../popup';
 import webUSBButton from '../webusb/button';
 import { parseConnectSettings } from '../connectSettings';
+import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 
-export class CoreInIframe implements ConnectFactoryDependencies {
+export class CoreInIframe implements ConnectFactoryDependencies<ConnectSettingsWeb> {
     public eventEmitter = new EventEmitter();
     protected _settings: ConnectSettings;
 
@@ -149,7 +155,7 @@ export class CoreInIframe implements ConnectFactoryDependencies {
         }
     }
 
-    public async init(settings: Partial<ConnectSettings> = {}) {
+    public async init(settings: InitFullSettings<ConnectSettingsWeb>) {
         if (iframe.instance) {
             throw ERRORS.TypedError('Init_AlreadyInitialized');
         }
@@ -221,6 +227,7 @@ export class CoreInIframe implements ConnectFactoryDependencies {
 
             // auto init with default settings
             try {
+                // @ts-expect-error manifest could have been changed in the meantime, hard to check this
                 await this.init(this._settings);
             } catch (error) {
                 if (this._popupManager) {
@@ -351,17 +358,21 @@ export class CoreInIframe implements ConnectFactoryDependencies {
 const impl = new CoreInIframe();
 
 // Exported to enable using directly
-export const TrezorConnect = factory({
-    // Bind all methods due to shadowing `this`
-    eventEmitter: impl.eventEmitter,
-    init: impl.init.bind(impl),
-    call: impl.call.bind(impl),
-    manifest: impl.manifest.bind(impl),
-    requestLogin: impl.requestLogin.bind(impl),
-    uiResponse: impl.uiResponse.bind(impl),
-    renderWebUSBButton: impl.renderWebUSBButton.bind(impl),
-    disableWebUSB: impl.disableWebUSB.bind(impl),
-    requestWebUSBDevice: impl.requestWebUSBDevice.bind(impl),
-    cancel: impl.cancel.bind(impl),
-    dispose: impl.dispose.bind(impl),
-});
+export const TrezorConnect = factory(
+    {
+        // Bind all methods due to shadowing `this`
+        eventEmitter: impl.eventEmitter,
+        init: impl.init.bind(impl),
+        call: impl.call.bind(impl),
+        manifest: impl.manifest.bind(impl),
+        requestLogin: impl.requestLogin.bind(impl),
+        uiResponse: impl.uiResponse.bind(impl),
+        cancel: impl.cancel.bind(impl),
+        dispose: impl.dispose.bind(impl),
+    },
+    {
+        renderWebUSBButton: impl.renderWebUSBButton.bind(impl),
+        disableWebUSB: impl.disableWebUSB.bind(impl),
+        requestWebUSBDevice: impl.requestWebUSBDevice.bind(impl),
+    },
+);

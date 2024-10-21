@@ -103,23 +103,8 @@ const uiResponse = () => {
     throw ERRORS.TypedError('Method_InvalidPackage');
 };
 
-const renderWebUSBButton = () => {
-    // Not needed here - webUSB pairing happens in popup.
-    throw ERRORS.TypedError('Method_InvalidPackage');
-};
-
 const requestLogin = () => {
     // Not needed here - Not used here.
-    throw ERRORS.TypedError('Method_InvalidPackage');
-};
-
-const disableWebUSB = () => {
-    // Not needed here - webUSB pairing happens in popup.
-    throw ERRORS.TypedError('Method_InvalidPackage');
-};
-
-const requestWebUSBDevice = () => {
-    // Not needed here - webUSB pairing happens in popup.
     throw ERRORS.TypedError('Method_InvalidPackage');
 };
 
@@ -130,9 +115,6 @@ const TrezorConnect = factory({
     call,
     requestLogin,
     uiResponse,
-    renderWebUSBButton,
-    disableWebUSB,
-    requestWebUSBDevice,
     cancel,
     dispose,
 });

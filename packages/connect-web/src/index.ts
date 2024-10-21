@@ -1,13 +1,23 @@
-import { factory } from '@trezor/connect/src/factory';
+import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 import { CoreInIframe } from './impl/core-in-iframe';
 import { CoreInPopup } from './impl/core-in-popup';
-import type { ConnectSettingsPublic } from '@trezor/connect';
+import type { ConnectSettingsPublic, ConnectSettingsWeb } from '@trezor/connect';
 import { getEnv } from './connectSettings';
 
 const IFRAME_ERRORS = ['Init_IframeBlocked', 'Init_IframeTimeout', 'Transport_Missing'];
 
-const impl = new TrezorConnectDynamic<'core-in-popup' | 'iframe'>({
+type ConnectWebExtraMethods = {
+    renderWebUSBButton: (className?: string) => void;
+    disableWebUSB: () => void;
+    requestWebUSBDevice: () => void;
+};
+
+const impl = new TrezorConnectDynamic<
+    'iframe' | 'core-in-popup',
+    ConnectSettingsWeb,
+    ConnectFactoryDependencies<ConnectSettingsWeb> & ConnectWebExtraMethods
+>({
     implementations: [
         {
             type: 'iframe',
@@ -18,7 +28,7 @@ const impl = new TrezorConnectDynamic<'core-in-popup' | 'iframe'>({
             impl: new CoreInPopup(),
         },
     ],
-    getInitTarget: (settings: Partial<ConnectSettingsPublic>) => {
+    getInitTarget: (settings: Partial<ConnectSettingsPublic & ConnectSettingsWeb>) => {
         if (settings.coreMode === 'iframe') {
             return 'iframe';
         } else if (settings.coreMode === 'popup') {
@@ -62,19 +72,23 @@ const impl = new TrezorConnectDynamic<'core-in-popup' | 'iframe'>({
     },
 });
 
-const TrezorConnect = factory({
-    eventEmitter: impl.eventEmitter,
-    init: impl.init.bind(impl),
-    call: impl.call.bind(impl),
-    manifest: impl.manifest.bind(impl),
-    requestLogin: impl.requestLogin.bind(impl),
-    uiResponse: impl.uiResponse.bind(impl),
-    renderWebUSBButton: impl.renderWebUSBButton.bind(impl),
-    disableWebUSB: impl.disableWebUSB.bind(impl),
-    requestWebUSBDevice: impl.requestWebUSBDevice.bind(impl),
-    cancel: impl.cancel.bind(impl),
-    dispose: impl.dispose.bind(impl),
-});
+const TrezorConnect = factory<ConnectSettingsWeb, ConnectWebExtraMethods>(
+    {
+        eventEmitter: impl.eventEmitter,
+        init: impl.init.bind(impl),
+        call: impl.call.bind(impl),
+        manifest: impl.manifest.bind(impl),
+        requestLogin: impl.requestLogin.bind(impl),
+        uiResponse: impl.uiResponse.bind(impl),
+        cancel: impl.cancel.bind(impl),
+        dispose: impl.dispose.bind(impl),
+    },
+    {
+        renderWebUSBButton: impl.getTarget().renderWebUSBButton.bind(impl),
+        disableWebUSB: impl.getTarget().disableWebUSB.bind(impl),
+        requestWebUSBDevice: impl.getTarget().requestWebUSBDevice.bind(impl),
+    },
+);
 
 export default TrezorConnect;
 export * from '@trezor/connect/src/exports';

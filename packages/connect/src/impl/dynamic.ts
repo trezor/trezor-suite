@@ -1,18 +1,23 @@
 import EventEmitter from 'events';
 
 import { ConnectFactoryDependencies } from '../factory';
-import type { ConnectSettingsPublic, Manifest } from '../types';
+import type { Manifest } from '../types/settings';
 import { CallMethodPayload } from '../events';
 import { ERRORS } from '../constants';
 
 import { ProxyEventEmitter } from '../utils/proxy-event-emitter';
+import { InitFullSettings } from '../types/api/init';
 
-type TrezorConnectDynamicParams<TrezorConnectImplType> = {
+type TrezorConnectDynamicParams<
+    ImplType,
+    SettingsType extends Record<string, any>,
+    ImplInterface extends ConnectFactoryDependencies<SettingsType>,
+> = {
     implementations: {
-        type: TrezorConnectImplType;
-        impl: ConnectFactoryDependencies;
+        type: ImplType;
+        impl: ImplInterface;
     }[];
-    getInitTarget: (settings: Partial<ConnectSettingsPublic>) => TrezorConnectImplType;
+    getInitTarget: (settings: InitFullSettings<SettingsType>) => ImplType;
     handleErrorFallback: (errorCode: string) => Promise<boolean>;
 };
 
@@ -20,21 +25,38 @@ type TrezorConnectDynamicParams<TrezorConnectImplType> = {
  * Implementation of TrezorConnect that can dynamically switch between different implementations.
  *
  */
-export class TrezorConnectDynamic<TrezorConnectImplType> implements ConnectFactoryDependencies {
+export class TrezorConnectDynamic<
+    ImplType,
+    SettingsType extends Record<string, any>,
+    ImplInterface extends ConnectFactoryDependencies<SettingsType>,
+> implements ConnectFactoryDependencies<SettingsType>
+{
     public eventEmitter: EventEmitter;
 
-    private currentTarget: TrezorConnectImplType;
-    private implementations: TrezorConnectDynamicParams<TrezorConnectImplType>['implementations'];
-    private getInitTarget: TrezorConnectDynamicParams<TrezorConnectImplType>['getInitTarget'];
-    private handleErrorFallback: TrezorConnectDynamicParams<TrezorConnectImplType>['handleErrorFallback'];
+    private currentTarget: ImplType;
+    private implementations: TrezorConnectDynamicParams<
+        ImplType,
+        SettingsType,
+        ImplInterface
+    >['implementations'];
+    private getInitTarget: TrezorConnectDynamicParams<
+        ImplType,
+        SettingsType,
+        ImplInterface
+    >['getInitTarget'];
+    private handleErrorFallback: TrezorConnectDynamicParams<
+        ImplType,
+        SettingsType,
+        ImplInterface
+    >['handleErrorFallback'];
 
-    public lastSettings?: { manifest: Manifest } & Partial<ConnectSettingsPublic>;
+    public lastSettings?: InitFullSettings<SettingsType>;
 
     public constructor({
         implementations,
         getInitTarget,
         handleErrorFallback,
-    }: TrezorConnectDynamicParams<TrezorConnectImplType>) {
+    }: TrezorConnectDynamicParams<ImplType, SettingsType, ImplInterface>) {
         this.implementations = implementations;
         this.currentTarget = this.implementations[0].type;
         this.getInitTarget = getInitTarget;
@@ -44,11 +66,11 @@ export class TrezorConnectDynamic<TrezorConnectImplType> implements ConnectFacto
         );
     }
 
-    private getTarget() {
+    public getTarget() {
         return this.implementations.find(impl => impl.type === this.currentTarget)!.impl;
     }
 
-    public async switchTarget(target: TrezorConnectImplType) {
+    public async switchTarget(target: ImplType) {
         if (this.currentTarget === target) {
             return;
         }
@@ -62,6 +84,7 @@ export class TrezorConnectDynamic<TrezorConnectImplType> implements ConnectFacto
     }
 
     public manifest(manifest: Manifest) {
+        // @ts-expect-error hell knows why this is not working
         this.lastSettings = {
             ...this.lastSettings,
             manifest,
@@ -70,7 +93,7 @@ export class TrezorConnectDynamic<TrezorConnectImplType> implements ConnectFacto
         this.getTarget().manifest(manifest);
     }
 
-    public async init(settings: { manifest: Manifest } & Partial<ConnectSettingsPublic>) {
+    public async init(settings: InitFullSettings<SettingsType>) {
         if (!settings?.manifest) {
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
@@ -109,18 +132,6 @@ export class TrezorConnectDynamic<TrezorConnectImplType> implements ConnectFacto
 
     public uiResponse(params: any) {
         return this.getTarget().uiResponse(params);
-    }
-
-    public renderWebUSBButton() {
-        return this.getTarget().renderWebUSBButton();
-    }
-
-    public disableWebUSB() {
-        return this.getTarget().disableWebUSB();
-    }
-
-    public requestWebUSBDevice() {
-        return this.getTarget().requestWebUSBDevice();
     }
 
     public cancel(error?: string) {

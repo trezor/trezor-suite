@@ -32,6 +32,4 @@ export const init = async (api: TrezorConnect) => {
     api.dispose();
     api.cancel();
     api.cancel('Interruption error');
-    api.renderWebUSBButton();
-    api.disableWebUSB();
 };

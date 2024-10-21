@@ -1,4 +1,5 @@
 import TrezorConnect from '@trezor/connect';
+import type TrezorConnectWeb from '@trezor/connect-web';
 import { ButtonProps, Button, IconButton, Tooltip } from '@trezor/components';
 import { Translation, TranslationKey } from './Translation';
 
@@ -9,7 +10,7 @@ interface WebUsbButtonProps extends Omit<ButtonProps, 'children' | 'icon'> {
 
 const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
-    TrezorConnect.requestWebUSBDevice();
+    (TrezorConnect as typeof TrezorConnectWeb).requestWebUSBDevice();
 };
 
 export const WebUsbButton = ({
