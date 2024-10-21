@@ -20,7 +20,7 @@ import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { ReceiveModalScreen } from '@suite-native/receive';
 import { AuthorizeDeviceStackNavigator } from '@suite-native/module-authorize-device';
 import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
-import { DeviceInfoModalScreen } from '@suite-native/module-device-settings';
+import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
 import { SendStackNavigator } from '@suite-native/module-send';
 import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
 import { ConnectPopupScreen, useConnectPopupNavigation } from '@suite-native/module-connect-popup';
@@ -95,7 +95,6 @@ export const RootStackNavigator = () => {
                 />
             </RootStack.Group>
             <RootStack.Screen name={RootStackRoutes.ReceiveModal} component={ReceiveModalScreen} />
-            <RootStack.Screen name={RootStackRoutes.DeviceInfo} component={DeviceInfoModalScreen} />
             <RootStack.Screen
                 name={RootStackRoutes.AuthorizeDeviceStack}
                 component={AuthorizeDeviceStackNavigator}
@@ -104,8 +103,13 @@ export const RootStackNavigator = () => {
                     animation: 'slide_from_bottom',
                 }}
             />
+            <RootStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
+                <RootStack.Screen
+                    name={RootStackRoutes.DeviceSettingsStack}
+                    component={DeviceSettingsStackNavigator}
+                />
+            </RootStack.Group>
             <RootStack.Screen name={RootStackRoutes.SendStack} component={SendStackNavigator} />
-
             <RootStack.Screen
                 name={RootStackRoutes.ConnectPopup}
                 component={ConnectPopupScreen}
