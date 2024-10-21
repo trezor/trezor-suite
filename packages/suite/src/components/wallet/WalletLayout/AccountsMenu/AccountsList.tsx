@@ -53,13 +53,16 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
     const legacyAccounts = filterAccountsByType('legacy');
     const ledgerAccounts = filterAccountsByType('ledger');
 
+    const hasMultipleAccounts = filteredAccounts.some(
+        a => a.accountType !== 'normal' && (!a.empty || a.visible),
+    );
     const { params } = selectedAccount;
 
     const keepOpen = (type: Account['accountType']) =>
         params?.accountType === type || // selected account is from this group
         (type === 'coinjoin' && coinjoinIsPreloading) || // coinjoin account is requested but not yet created
         (!!searchString && searchString.length > 0) || // filter by search string is active
-        type === 'normal'; // always keep normal accounts open
+        (type === 'normal' && !hasMultipleAccounts); // always keep normal accounts open
 
     const isSelected = (account: Account) =>
         params &&
