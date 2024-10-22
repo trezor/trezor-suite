@@ -77,19 +77,19 @@ jobs:
 
       - name: Set daily matrix
         id: set-matrix-daily
-        run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js daily)" >> $GITHUB_OUTPUT
+        run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js T3B1 2-latest node all)" >> $GITHUB_OUTPUT
 
-      - name: Set legacy devices matrix
-        id: set-matrix-legacy-firmware
-        run: echo "legacyFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js legacyFirmware)" >> $GITHUB_OUTPUT
+      # - name: Set legacy devices matrix
+      #   id: set-matrix-legacy-firmware
+      #   run: echo "legacyFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js legacyFirmware)" >> $GITHUB_OUTPUT
 
-      - name: Set canary devices matrix
-        id: set-matrix-canary-firmware
-        run: echo "canaryFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js canaryFirmware)" >> $GITHUB_OUTPUT
+      # - name: Set canary devices matrix
+      #   id: set-matrix-canary-firmware
+      #   run: echo "canaryFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js canaryFirmware)" >> $GITHUB_OUTPUT
 
-      - name: Set other devices matrix
-        id: set-matrix-other-devices
-        run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js otherDevices)" >> $GITHUB_OUTPUT
+      # - name: Set other devices matrix
+      #   id: set-matrix-other-devices
+      #   run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js otherDevices)" >> $GITHUB_OUTPUT
 
   connect-PR:
     needs: [build, set-matrix]
@@ -104,64 +104,64 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
 
-  connect-randomized-order:
-    needs: [build, set-matrix]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    name: randomized-${{ matrix.name }}
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      testPattern: ${{ matrix.pattern }}
-      methods: ${{ matrix.methods }}
-      testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.name }}-${{ matrix.firmware }}
-      testRandomizedOrder: true
-      webEnvironment: false
-      nodeEnvironment: true
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
+  # connect-randomized-order:
+  #   needs: [build, set-matrix]
+  #   if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
+  #   name: randomized-${{ matrix.name }}
+  #   uses: ./.github/workflows/template-connect-test-params.yml
+  #   with:
+  #     testPattern: ${{ matrix.pattern }}
+  #     methods: ${{ matrix.methods }}
+  #     testsFirmware: ${{ matrix.firmware }}
+  #     testDescription: ${{ matrix.name }}-${{ matrix.firmware }}
+  #     testRandomizedOrder: true
+  #     webEnvironment: false
+  #     nodeEnvironment: true
+  #   strategy:
+  #     fail-fast: false
+  #     matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
 
-  connect-legacy-firmware:
-    needs: [build, set-matrix]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    name: legacy-${{ matrix.name }}
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      testPattern: ${{ matrix.pattern }}
-      methods: ${{ matrix.methods }}
-      testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.name }}-${{ matrix.firmware }}
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.set-matrix.outputs.legacyFirmwareMatrix) }}
+  # connect-legacy-firmware:
+  #   needs: [build, set-matrix]
+  #   if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
+  #   name: legacy-${{ matrix.name }}
+  #   uses: ./.github/workflows/template-connect-test-params.yml
+  #   with:
+  #     testPattern: ${{ matrix.pattern }}
+  #     methods: ${{ matrix.methods }}
+  #     testsFirmware: ${{ matrix.firmware }}
+  #     testDescription: ${{ matrix.name }}-${{ matrix.firmware }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix: ${{ fromJson(needs.set-matrix.outputs.legacyFirmwareMatrix) }}
 
-  connect-canary-firmware:
-    needs: [build, set-matrix]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    name: canary-${{ matrix.name }}
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      testPattern: ${{ matrix.pattern }}
-      methods: ${{ matrix.methods }}
-      testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.name }}-${{ matrix.firmware }}
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.set-matrix.outputs.canaryFirmwareMatrix) }}
+  # connect-canary-firmware:
+  #   needs: [build, set-matrix]
+  #   if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
+  #   name: canary-${{ matrix.name }}
+  #   uses: ./.github/workflows/template-connect-test-params.yml
+  #   with:
+  #     testPattern: ${{ matrix.pattern }}
+  #     methods: ${{ matrix.methods }}
+  #     testsFirmware: ${{ matrix.firmware }}
+  #     testDescription: ${{ matrix.name }}-${{ matrix.firmware }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix: ${{ fromJson(needs.set-matrix.outputs.canaryFirmwareMatrix) }}
 
-  connect-other-devices:
-    needs: [build, set-matrix]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    name: other-devices-${{ matrix.name }}-${{ matrix.model }}
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      testPattern: ${{ matrix.pattern }}
-      methods: ${{ matrix.methods }}
-      testsFirmware: ${{ matrix.firmware }}
-      testFirmwareModel: ${{ matrix.model }}
-      nodeEnvironment: true
-      webEnvironment: false
-      testDescription: ${{ matrix.name }}-${{ matrix.firmware }}-${{ matrix.model }}
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.set-matrix.outputs.otherDevicesMatrix) }}
+  # connect-other-devices:
+  #   needs: [build, set-matrix]
+  #   if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
+  #   name: other-devices-${{ matrix.name }}-${{ matrix.model }}
+  #   uses: ./.github/workflows/template-connect-test-params.yml
+  #   with:
+  #     testPattern: ${{ matrix.pattern }}
+  #     methods: ${{ matrix.methods }}
+  #     testsFirmware: ${{ matrix.firmware }}
+  #     testFirmwareModel: ${{ matrix.model }}
+  #     nodeEnvironment: true
+  #     webEnvironment: false
+  #     testDescription: ${{ matrix.name }}-${{ matrix.firmware }}-${{ matrix.model }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix: ${{ fromJson(needs.set-matrix.outputs.otherDevicesMatrix) }}

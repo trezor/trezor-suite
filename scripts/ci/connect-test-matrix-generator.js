@@ -67,74 +67,104 @@ const groups = {
     },
 };
 
-const daily = {
-    firmwares: ['2-latest'],
-    tests: [...Object.values(groups)],
-};
+const firmwares1 = ['1.9.0', '1-latest', '1-main'];
+const firmwares2 = ['2.3.0', '2-latest', '2-main'];
 
-const legacyFirmware = {
-    firmwares: ['2.3.0'],
-    tests: daily.tests
-        // Cardano supports >=2.6.0
-        .filter(test => test.name !== 'cardano'),
-};
-
-const canaryFirmware = {
-    firmwares: ['2-main'],
-    tests: daily.tests,
-};
-
-const otherDevices = {
-    firmwares: ['2-latest'],
-    models: ['T2B1', 'T3T1'],
-    tests: [
-        ...Object.values(groups).filter(
-            // management, btc-others are specified below
-            // nem, eos are not supported anymore
-            g => ['management', 'btc-others', 'nem', 'eos'].includes(g.name) === false,
-        ),
-        {
-            ...groups.management,
-            methods: groups.management.methods
-                .split(',')
-                // getFeatures test is not abstract enough to serve all models
-                .filter(m => m !== 'getFeatures')
-                .join(','),
+const matrix = [
+    {
+        key: 'model',
+        value: ['T1B1', 'T2T1', 'T2B1', 'T3B1', 'T3T1'],
+    },
+    {
+        key: 'firmware',
+        value: ({ model }) => {
+            return model === 'T1B1' ? firmwares1 : firmwares2;
         },
-        {
-            ...groups.btcOthers,
-            methods: groups.btcOthers.methods
-                .split(',')
-                // getAddress (decred) does not work for model R
-                .filter(m => m !== 'getAddress')
-                .join(','),
-        },
-    ],
+    },
+    // {
+    //     key: 'transport',
+    //     value: ['Bridge', 'NodeBridge'],
+    // },
+    {
+        key: 'groups',
+        value: Object.values(groups),
+    },
+    {
+        key: 'env',
+        value: ['node', 'web'],
+    },
+];
+
+/**
+ * 
+ a method that takes matrix and creates all combinations of results like this:
+ {model: T1B1, firmware: 1.9.0, transport: 'Bridge' }
+ {model: T1B1, firmware: 1.9.0, transport: 'NodeBridge' }
+ {model: T1B1, firmware: 1-latest, transport: 'Bridge' }
+ {model: T1B1, firmware: 1-latest, transport: 'NodeBridge' }
+ {model: T1B1, firmware: 1-main, transport: 'Bridge' }
+ {model: T1B1, firmware: 1-main, transport: 'NodeBridge' }
+ {model: T2T1, firmware: 2.3.0, transport: 'Bridge' }
+ {model: T2T1, firmware: 2.3.0, transport: 'NodeBridge' }
+ */
+const createCartesian = matrix => {
+    const keys = matrix.map(m => m.key);
+    const values = matrix.map(m => m.value);
+
+    const results = [];
+    const create = (index, current) => {
+        if (index === keys.length) {
+            results.push(current);
+            return;
+        }
+
+        const key = keys[index];
+        const value = typeof values[index] === 'function' ? values[index](current) : values[index];
+
+        for (let i = 0; i < value.length; i++) {
+            create(index + 1, {
+                ...current,
+                [key]: value[i],
+            });
+        }
+    };
+
+    create(0, {});
+    return results;
 };
 
-const prepareTest = ({ firmwares, tests, models }) => {
-    const withFirmwares = tests.flatMap(test => firmwares.map(firmware => ({ firmware, ...test })));
-
-    if (models && models.length > 0) {
-        return withFirmwares.flatMap(test => models.map(model => ({ model, ...test })));
-    } else {
-        return withFirmwares;
-    }
-};
-
-const testData = {
-    daily,
-    legacyFirmware,
-    canaryFirmware,
-    otherDevices,
-};
+const res = createCartesian(matrix);
+// console.log('res', res);
 
 const args = process.argv.slice(2);
-const [tests] = args;
-const json = prepareTest(testData[tests]);
+let [model, firmware, env, groupName] = args;
+if (!model) model = 'all';
+if (!firmware) firmware = 'all';
+if (!env) env = 'all';
+if (!groupName) groupName = 'all';
+
+// console.log('model', model, 'firmware', firmware, 'env', env);
+
+const filtered = res.filter(r => {
+    if (model !== 'all') {
+        if (r.model !== model) return false;
+    }
+    if (firmware !== 'all') {
+        if (r.firmware !== firmware) return false;
+    }
+    if (env !== 'all') {
+        if (r.env !== env) return false;
+    }
+    if (groupName !== 'all') {
+        if (r.groups.name !== groupName) return false;
+    }
+    return true;
+});
+
+// console.log('filtered', filtered);
 
 process.stdout.write(
     JSON.stringify({
-        include: json,
+        include: res,
     }),
 );
