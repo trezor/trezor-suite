@@ -142,8 +142,6 @@ export const Switch = ({
     return (
         <Wrapper $labelPosition={labelPosition} className={className}>
             <Container
-                // @ts-expect-error - needed for cypress retry-ability
-                disabled={isDisabled}
                 $isChecked={isChecked}
                 $isDisabled={isDisabled}
                 $isAlert={isAlert}
