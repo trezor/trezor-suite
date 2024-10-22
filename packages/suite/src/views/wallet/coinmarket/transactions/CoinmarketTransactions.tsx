@@ -10,11 +10,5 @@ export const CoinmarketTransactions = () => {
         ? 'TR_COINMARKET_SWAP'
         : 'TR_COINMARKET_BUY_AND_SELL';
 
-    return (
-        <CoinmarketContainer
-            title={title}
-            backRoute={coinmarketBackRouteName}
-            SectionComponent={CoinmarketTransactionsList}
-        />
-    );
+    return <CoinmarketContainer title={title} SectionComponent={CoinmarketTransactionsList} />;
 };

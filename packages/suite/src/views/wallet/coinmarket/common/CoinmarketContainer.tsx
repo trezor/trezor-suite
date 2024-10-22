@@ -8,6 +8,10 @@ export interface CoinmarketContainerProps extends CoinmarketContainerCommonProps
     SectionComponent: ElementType;
 }
 
+/**
+ * @backRoute when is not provided, it will be used route from global coinmarket state
+ * check `useCoinmarketRouteHelper` for more details
+ */
 export const CoinmarketContainer = ({
     backRoute,
     title,
