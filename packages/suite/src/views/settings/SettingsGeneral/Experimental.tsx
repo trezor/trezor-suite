@@ -34,10 +34,10 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
     const descId = config.description;
     const url = config.knowledgeBaseUrl;
 
-    const onChangeFeature = () => {
+    const onChangeFeature = async () => {
         const newValue = !checked;
 
-        config?.onToggle?.({ dispatch, newValue });
+        await config?.onToggle?.({ dispatch, newValue });
 
         dispatch({
             type: SUITE.SET_EXPERIMENTAL_FEATURES,

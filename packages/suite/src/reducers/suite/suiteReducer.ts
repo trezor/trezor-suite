@@ -201,24 +201,6 @@ const setFlag = (draft: SuiteState, key: keyof Flags, value: boolean) => {
     draft.flags[key] = value;
 };
 
-const setExperimentalFeature = async (
-    draft: SuiteState,
-    enabledFeatures: ExperimentalFeature[] | undefined,
-) => {
-    draft.settings.experimental = enabledFeatures;
-
-    // When we are disabling snowflake then we clear `snowflakeBinaryPath`.
-    if (!enabledFeatures?.includes('tor-snowflake')) {
-        const result = await desktopApi.getTorSettings();
-        if (result.success) {
-            await desktopApi.changeTorSettings({
-                ...result.payload,
-                snowflakeBinaryPath: '',
-            });
-        }
-    }
-};
-
 const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteState =>
     produce(state, draft => {
         switch (action.type) {
@@ -259,7 +241,7 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
 
             case SUITE.SET_EXPERIMENTAL_FEATURES:
-                setExperimentalFeature(draft, action.payload.enabledFeatures);
+                draft.settings.experimental = action.payload.enabledFeatures;
                 break;
 
             case SUITE.SET_FLAG:
