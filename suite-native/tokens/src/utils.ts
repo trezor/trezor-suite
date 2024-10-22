@@ -1,6 +1,7 @@
 import { G, S } from '@mobily/ts-belt';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { isArrayMember } from '@trezor/utils';
 
 export const getTokenName = (tokenName?: string) => {
     if (G.isNullable(tokenName) || S.isEmpty(tokenName)) return 'Unknown token';
@@ -11,7 +12,5 @@ export const getTokenName = (tokenName?: string) => {
 export const NETWORK_SYMBOLS_WITH_TOKENS = ['eth', 'pol', 'bnb'] satisfies Array<NetworkSymbol>;
 export type NetworkSymbolWithTokens = (typeof NETWORK_SYMBOLS_WITH_TOKENS)[number];
 
-export const isCoinWithTokens = (symbol: NetworkSymbol): symbol is NetworkSymbolWithTokens => {
-    // We typecast because TS does complain that other coins like btc are not included in NETWORKS_WITH_TOKENS which is whole point of this function to check it
-    return NETWORK_SYMBOLS_WITH_TOKENS.includes(symbol as NetworkSymbolWithTokens);
-};
+export const isCoinWithTokens = (symbol: NetworkSymbol): symbol is NetworkSymbolWithTokens =>
+    isArrayMember(symbol, NETWORK_SYMBOLS_WITH_TOKENS);

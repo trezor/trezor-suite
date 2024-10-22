@@ -13,6 +13,7 @@
         },
         {
             "path": "../../suite-common/wallet-utils"
-        }
+        },
+        { "path": "../../packages/utils" }
     ]
 }

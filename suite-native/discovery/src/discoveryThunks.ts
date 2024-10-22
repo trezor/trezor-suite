@@ -37,6 +37,7 @@ import {
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
+import { isArrayMember } from '@trezor/utils';
 
 import {
     selectDiscoveryInfo,
@@ -561,7 +562,8 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
                 ({ accountType }) =>
                     // Some cardano derivation may not be supported by the device. We need to exclude them from total count.
                     network.networkType !== 'cardano' ||
-                    (availableCardanoDerivations as string[]).includes(accountType),
+                    (availableCardanoDerivations !== undefined &&
+                        isArrayMember(accountType, availableCardanoDerivations)),
             );
 
             return count + availableAccountTypes.length;
@@ -664,7 +666,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
             network =>
                 network.networkType !== 'cardano' ||
                 normalizeNetworkAccounts(network).some(({ accountType }) =>
-                    (availableCardanoDerivations as string[]).includes(accountType),
+                    isArrayMember(accountType, availableCardanoDerivations),
                 ),
         );
 
@@ -689,7 +691,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
                 .filter(
                     ({ accountType }: NetworkAccount) =>
                         network.networkType !== 'cardano' ||
-                        (availableCardanoDerivations as string[]).includes(accountType),
+                        isArrayMember(accountType, availableCardanoDerivations),
                 )
                 .forEach(({ accountType }: NetworkAccount) => {
                     dispatch(discoverNetworkBatchThunk({ deviceState, network, accountType }));
