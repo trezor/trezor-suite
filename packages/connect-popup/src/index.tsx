@@ -615,6 +615,7 @@ addWindowEventListener('message', handleLogMessage, false);
 
 // global method used in html-inline elements
 window.closeWindow = () => {
+    if (urlParams.get('method')) return;
     setTimeout(() => {
         window.postMessage(
             {
@@ -629,3 +630,61 @@ window.closeWindow = () => {
         window.close();
     }, 300);
 };
+
+// POC get method from search param
+// http://localhost:8088/popup.html?method=getAddress&params=%7B%22path%22:%22m/49%27/0%27/0%27/0/0%22%7D&callback=https://httpbin.org/get
+const urlParams = new URLSearchParams(window.location.search);
+const method = urlParams.get('method');
+if (method) {
+    const settings = parseConnectSettings(
+        {
+            connectSrc: location.href.split('popup.html')[0], // testing
+            debug: true,
+            transports: ['WebUsbTransport', 'BridgeTransport'],
+        },
+        window.origin, // TODO set origin properly, while allowing WebUSB cross-origin
+    );
+    console.log('settings', settings);
+    addWindowEventListener(
+        'message',
+        (event: MessageEvent<any>) => {
+            console.log('event', event.data);
+            if (event.data.type === POPUP.CORE_LOADED) {
+                handleMessageInCoreMode({
+                    data: {
+                        type: POPUP.HANDSHAKE,
+                        payload: {
+                            settings,
+                        },
+                    },
+                } as any);
+                handleMessageInCoreMode({
+                    data: {
+                        id: 1,
+                        type: IFRAME.CALL,
+                        payload: {
+                            method,
+                            ...(urlParams.get('params')
+                                ? JSON.parse(urlParams.get('params')!)
+                                : undefined),
+                        },
+                    },
+                } as any);
+            }
+            if (event.data.type === RESPONSE_EVENT) {
+                console.log('response', event.data);
+                const callback = urlParams.get('callback');
+                if (callback) {
+                    location.href = `${callback}?response=${encodeURIComponent(JSON.stringify(event.data.payload))}`;
+                }
+            }
+        },
+        false,
+    );
+    await init({
+        settings,
+        systemInfo: getSystemInfo(config.supportedBrowsers),
+        useBroadcastChannel: false,
+        useCore: true,
+    });
+}
