@@ -126,7 +126,7 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
     } catch (error) {
         if (
             error instanceof SendTransactionError &&
-            error.transactionError.message === 'Internal error'
+            error?.transactionError?.message === 'Internal error'
         ) {
             throw new Error(
                 'Please make sure that you submit the transaction within 1 minute after signing.',
