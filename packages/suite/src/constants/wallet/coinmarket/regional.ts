@@ -1,4 +1,4 @@
-import { isArrayMember } from '@trezor/type-utils';
+import { isArrayMember } from '@trezor/utils';
 
 class Regional {
     unknownCountry = 'unknown';

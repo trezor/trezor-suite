@@ -1,5 +1,5 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { isArrayMember } from '@trezor/type-utils';
+import { isArrayMember } from '@trezor/utils';
 
 // Going over 180 will broke graph in mobile app
 export const NUMBER_OF_POINTS = 40;

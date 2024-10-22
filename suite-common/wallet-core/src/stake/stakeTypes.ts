@@ -10,7 +10,7 @@ import {
 } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { FeeLevel } from '@trezor/connect';
-import { isArrayMember } from '@trezor/type-utils';
+import { isArrayMember } from '@trezor/utils';
 
 // Used when Everstake pool stats are not available from the API.
 export const BACKUP_ETH_APY = 4.13;
