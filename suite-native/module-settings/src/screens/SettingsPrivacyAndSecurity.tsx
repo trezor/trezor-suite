@@ -98,7 +98,7 @@ const BiometricsSwitchRow = () => {
             isChecked={isBiometricsOptionEnabled}
             onChange={toggleBiometricsOption}
             text="Biometrics"
-            iconName={Platform.OS === 'ios' ? 'touchId' : 'fingerprint'}
+            iconName={Platform.OS === 'ios' ? 'fingerprintSimple' : 'fingerprint'}
             description={
                 <RowDescription>
                     Use facial or fingerprint verification to unlock the app

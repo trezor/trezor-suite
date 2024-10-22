@@ -1,4 +1,4 @@
-import { IconName, Icon } from '@suite-common/icons-deprecated';
+import { IconName, Icon } from '@suite-native/icons';
 import { Color } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

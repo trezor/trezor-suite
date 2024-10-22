@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
-import { deviceModelToIconName } from '@suite-common/icons-deprecated';
 import { getFwUpdateVersion } from '@suite-common/suite-utils';
+import { deviceModelToIconName } from '@suite-native/icons';
 import {
     selectDevice,
     selectDeviceModel,

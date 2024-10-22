@@ -2,10 +2,8 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/icons-deprecated"
-        },
         { "path": "../config" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../storage" },
         { "path": "../../packages/env-utils" },

@@ -2,13 +2,11 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/icons-deprecated"
-        },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../device" },
         { "path": "../feature-flags" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },

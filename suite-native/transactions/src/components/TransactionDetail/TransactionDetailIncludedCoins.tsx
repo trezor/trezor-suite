@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native';
 import { BottomSheet, Box, Card, RoundedIcon, Text } from '@suite-native/atoms';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { AccountKey } from '@suite-common/wallet-types';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailListItem } from './TransactionDetailListItem';
@@ -40,7 +40,7 @@ const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress:
                         </Box>
                         <Text>{title}</Text>
                     </Box>
-                    <Icon name="circleRight" color="iconPrimaryDefault" />
+                    <Icon name="caretCircleRight" color="iconPrimaryDefault" />
                 </Box>
             </TouchableOpacity>
         </Card>

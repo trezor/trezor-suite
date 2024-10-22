@@ -1,7 +1,7 @@
 import { Pressable } from 'react-native';
 
 import { NativeStyle, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon, IconName } from '@suite-common/icons-deprecated';
+import { Icon, IconName } from '@suite-native/icons';
 import { CSSColor, nativeBorders } from '@trezor/theme';
 import { DeviceModelInternal } from '@trezor/connect';
 
@@ -72,8 +72,8 @@ export const DevicePaginationButton = ({
     onPress,
 }: DeviceScreenPaginationProps) => {
     const { applyStyle } = useNativeStyles();
-    const chevronIcon: Extract<IconName, 'chevronDown' | 'chevronUp'> =
-        activePage === 1 ? 'chevronDown' : 'chevronUp';
+    const chevronIcon: Extract<IconName, 'caretDown' | 'caretUp'> =
+        activePage === 1 ? 'caretDown' : 'caretUp';
 
     return (
         <Pressable

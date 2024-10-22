@@ -42,7 +42,7 @@ export const EmptyConnectedDeviceState = () => {
                 <PictogramTitleHeader
                     variant="green"
                     size="large"
-                    icon="infoLight"
+                    icon="info"
                     title={<Translation id="moduleHome.emptyState.device.title" />}
                     subtitle={<Translation id="moduleHome.emptyState.device.subtitle" />}
                 />

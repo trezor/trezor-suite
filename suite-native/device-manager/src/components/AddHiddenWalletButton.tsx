@@ -10,7 +10,7 @@ import {
     selectIsDeviceProtectedByPassphrase,
 } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -72,7 +72,7 @@ export const AddHiddenWalletButton = () => {
                 <Text variant="hint" style={applyStyle(textStyle)}>
                     <Translation id="deviceManager.deviceButtons.addHiddenWallet" />
                 </Text>
-                <Icon name="chevronRight" size="mediumLarge" />
+                <Icon name="caretRight" size="mediumLarge" />
             </HStack>
         </DeviceAction>
     );

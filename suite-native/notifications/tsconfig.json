@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/icons-deprecated"
-        },
-        {
             "path": "../../suite-common/toast-notifications"
         },
         {
@@ -20,6 +17,7 @@
         { "path": "../atoms" },
         { "path": "../connection-status" },
         { "path": "../formatters" },
+        { "path": "../icons" },
         { "path": "../navigation" },
         { "path": "../theme" },
         { "path": "../transactions" },

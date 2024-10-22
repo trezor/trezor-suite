@@ -1,17 +1,33 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
+import chalk from 'chalk';
+
 const fs = require('fs');
 const path = require('path');
 const prettier = require('prettier');
 const { optimize } = require('svgo');
 
 const iconsFilePath = './src/icons.ts';
+const cryptoIconsPath = './src/cryptoIcons.ts';
 
 const assetTypesConfig = [
     {
         name: 'icons',
         dirname: 'assets',
         typeName: 'IconName',
+    },
+];
+
+const cryptoAssetsTypesConfig = [
+    {
+        name: 'cryptoIcons',
+        dirname: 'cryptoAssets/cryptoIcons',
+        typeName: 'CryptoIconName',
+    },
+    {
+        name: 'tokenIcons',
+        dirname: 'cryptoAssets/tokenIcons',
+        typeName: 'TokenIconName',
     },
 ];
 
@@ -44,19 +60,19 @@ const optimizeSvgAssets = assetsDirname => {
     const assetFileNames = fs.readdirSync(assetsDir);
 
     return assetFileNames
+        .filter(fileName => fileName.endsWith('.svg'))
         .map(fileName => ({
             fileName,
             content: fs.readFileSync(path.resolve(assetsDir, fileName)).toString(),
         }))
-
         .map(({ fileName, content }) => ({
             fileName,
             content: optimize(content, svgoConfig).data,
         }));
 };
 
-const getOptimizedAssetTypes = () =>
-    assetTypesConfig.map(config => ({
+const getOptimizedAssetTypes = assetTypesArray =>
+    assetTypesArray.map(config => ({
         ...config,
         assets: optimizeSvgAssets(config.dirname),
     }));
@@ -92,8 +108,8 @@ const writeOptimizedAssets = assetTypesArray => {
     });
 };
 
-(async () => {
-    const assetTypes = getOptimizedAssetTypes(assetTypesConfig);
+const generateFileForAssetTypes = async (assetTypesArray, outputFilePath) => {
+    const assetTypes = getOptimizedAssetTypes(assetTypesArray);
 
     const iconsFileContent = generateIconsFileContent(assetTypes);
 
@@ -105,7 +121,16 @@ const writeOptimizedAssets = assetTypesArray => {
 
     const formattedIconTypesFileContent = await prettier.format(iconsFileContent, prettierConfig);
 
-    fs.writeFileSync(path.resolve(iconsFilePath), formattedIconTypesFileContent);
+    fs.writeFileSync(path.resolve(outputFilePath), formattedIconTypesFileContent);
 
     writeOptimizedAssets(assetTypes);
+};
+
+(async () => {
+    console.log('Generating icons TS file...');
+    await generateFileForAssetTypes(assetTypesConfig, iconsFilePath);
+    console.log(chalk.green('Icons TS file generated successfully'));
+    console.log('Generating crypto icons TS file...');
+    await generateFileForAssetTypes(cryptoAssetsTypesConfig, cryptoIconsPath);
+    console.log(chalk.green('Crypto icons TS file generated successfully'));
 })();

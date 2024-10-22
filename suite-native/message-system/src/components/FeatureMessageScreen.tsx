@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { A, G } from '@mobily/ts-belt';
 
-import { IconName } from '@suite-common/icons-deprecated';
+import { IconName } from '@suite-native/icons';
 import { Box, Button, PictogramTitleHeader, PictogramVariant, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Variant } from '@suite-common/suite-types';
@@ -42,8 +42,8 @@ const variantMap = {
 
 const iconVariantMap = {
     info: 'info',
-    warning: 'warningTriangleLight',
-    critical: 'warningTriangleLight',
+    warning: 'warning',
+    critical: 'warning',
 } as const satisfies Record<Variant, IconName>;
 
 export const FeatureMessageScreen = () => {

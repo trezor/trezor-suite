@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { useFormatters } from '@suite-common/formatters';
-import { CryptoIconWithPercentage, Icon } from '@suite-common/icons-deprecated';
+import { CryptoIconWithPercentage, Icon } from '@suite-native/icons';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -117,7 +117,7 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetIte
             badges={
                 <>
                     <Box>
-                        <Icon size="medium" color="iconSubdued" name="standardWallet" />
+                        <Icon size="medium" color="iconSubdued" name="wallet" />
                     </Box>
                     <Text variant="hint" color="textSubdued">
                         {accountsPerAsset}

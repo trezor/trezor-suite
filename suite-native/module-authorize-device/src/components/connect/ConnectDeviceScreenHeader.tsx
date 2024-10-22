@@ -55,7 +55,7 @@ export const ConnectDeviceScreenHeader = ({
                 description: (
                     <Translation id="moduleConnectDevice.pinCanceledDuringDiscovery.subtitle" />
                 ),
-                icon: 'warningCircleLight',
+                icon: 'warningCircle',
                 pictogramVariant: 'red',
                 primaryButtonTitle: (
                     <Translation id="moduleConnectDevice.pinCanceledDuringDiscovery.button" />
@@ -115,7 +115,7 @@ export const ConnectDeviceScreenHeader = ({
         <ScreenHeaderWrapper>
             {shouldDisplayCancelButton && (
                 <IconButton
-                    iconName="close"
+                    iconName="x"
                     size="medium"
                     colorScheme="tertiaryElevation0"
                     accessibilityRole="button"

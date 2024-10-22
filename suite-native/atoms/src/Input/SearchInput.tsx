@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { Pressable, TextInput, TouchableOpacity } from 'react-native';
 
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
@@ -86,7 +86,7 @@ export const SearchInput = ({
     return (
         <Pressable onPress={handleInputFocus}>
             <Box style={applyStyle(inputWrapperStyle, { isFocused, elevation })}>
-                <Icon name="search" color="iconSubdued" size="large" />
+                <Icon name="magnifyingGlass" color="iconSubdued" size="large" />
                 <TextInput
                     ref={searchInputRef}
                     onChangeText={handleOnChangeText}
@@ -100,7 +100,7 @@ export const SearchInput = ({
                 />
                 {isClearButtonVisible && (
                     <TouchableOpacity onPress={handleClear}>
-                        <Icon name="closeCircle" size="large" color="iconSubdued" />
+                        <Icon name="xCircle" size="large" color="iconSubdued" />
                     </TouchableOpacity>
                 )}
             </Box>
