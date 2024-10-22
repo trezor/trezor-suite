@@ -2,12 +2,13 @@ import { mergeDeepObject } from '@trezor/utils';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { CommonParams, DeviceModelInternal } from '@trezor/connect';
+import { CommonParams, DeviceModelInternal, UI, UI_EVENT } from '@trezor/connect';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import { SUITE } from 'src/actions/suite/constants';
 import { BACKUP } from 'src/actions/backup/constants';
 import * as backupActions from 'src/actions/backup/backupActions';
+import { value } from '@trezor/utxo-lib/src/payments/lazy';
 
 export const getInitialState = (override: any) => {
     const defaults = {
@@ -51,17 +52,26 @@ describe('Backup Actions', () => {
     });
 
     it('backup success', async () => {
+        const { emitTestEvent } = testMocks.getTrezorConnectMock();
         testMocks.setTrezorConnectFixtures({ success: true });
-
         const state = getInitialState({});
         const store = mockStore(state);
         await store.dispatch(connectInitThunk());
 
-        await store.dispatch(
+        const p = store.dispatch(
             backupActions.backupDevice({
                 device: store.getState().device.selectedDevice as CommonParams['device'],
             }),
         );
+        emitTestEvent(UI_EVENT, {
+            type: UI.CALL_IN_PROGRESS,
+            payload: { value: true },
+        });
+        emitTestEvent(UI_EVENT, {
+            type: UI.CALL_IN_PROGRESS,
+            payload: { value: false },
+        });
+        await p;
 
         expect(store.getActions().shift()).toMatchObject({
             type: connectInitThunk.pending.type,
@@ -76,7 +86,15 @@ describe('Backup Actions', () => {
             payload: 'in-progress',
         });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
+        expect(store.getActions().shift()).toEqual({
+            type: UI.CALL_IN_PROGRESS,
+            payload: { value: true },
+        });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
+        expect(store.getActions().shift()).toEqual({
+            type: UI.CALL_IN_PROGRESS,
+            payload: { value: false },
+        });
         expect(store.getActions().shift()).toMatchObject({
             type: notificationsActions.addToast.type,
             payload: { type: 'backup-success' },
@@ -84,6 +102,7 @@ describe('Backup Actions', () => {
     });
 
     it('backup error', async () => {
+        const { emitTestEvent } = testMocks.getTrezorConnectMock();
         testMocks.setTrezorConnectFixtures({
             success: false,
             payload: { error: 'avadakedavra' },
@@ -93,11 +112,20 @@ describe('Backup Actions', () => {
         const store = mockStore(state);
         await store.dispatch(connectInitThunk());
 
-        await store.dispatch(
+        const p = store.dispatch(
             backupActions.backupDevice({
                 device: store.getState().device.selectedDevice as CommonParams['device'],
             }),
         );
+        emitTestEvent(UI_EVENT, {
+            type: UI.CALL_IN_PROGRESS,
+            payload: { value: true },
+        });
+        emitTestEvent(UI_EVENT, {
+            type: UI.CALL_IN_PROGRESS,
+            payload: { value: false },
+        });
+        await p;
 
         expect(store.getActions().shift()).toMatchObject({
             type: connectInitThunk.pending.type,
@@ -112,7 +140,15 @@ describe('Backup Actions', () => {
             payload: 'in-progress',
         });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
+        expect(store.getActions().shift()).toEqual({
+            type: UI.CALL_IN_PROGRESS,
+            payload: { value: true },
+        });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
+        expect(store.getActions().shift()).toEqual({
+            type: UI.CALL_IN_PROGRESS,
+            payload: { value: false },
+        });
         expect(store.getActions().shift()).toMatchObject({
             type: notificationsActions.addToast.type,
             payload: { type: 'backup-failed' },

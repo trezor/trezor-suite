@@ -1,4 +1,4 @@
-import { DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT } from '@trezor/connect';
+import { DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT, UI } from '@trezor/connect';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { testMocks } from '@suite-common/test-utils';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
@@ -113,12 +113,26 @@ describe('TrezorConnect Actions', () => {
         const state = getInitialState();
         const store = initStore(state);
         await store.dispatch(connectInitThunk());
-        await testMocks.getTrezorConnectMock().getFeatures();
+        const p = testMocks.getTrezorConnectMock().getFeatures();
+
+        const { emitTestEvent } = testMocks.getTrezorConnectMock();
+        emitTestEvent(UI_EVENT, { type: UI.CALL_IN_PROGRESS, payload: { value: true } });
+        emitTestEvent(UI_EVENT, { type: UI.CALL_IN_PROGRESS, payload: { value: false } });
+
+        await p;
         const actions = store.getActions();
         // check actions in reversed order
         expect(actions.pop()).toEqual({
+            type: UI.CALL_IN_PROGRESS,
+            payload: { value: false },
+        });
+        expect(actions.pop()).toEqual({
             type: SUITE.LOCK_DEVICE,
             payload: false,
+        });
+        expect(actions.pop()).toEqual({
+            type: UI.CALL_IN_PROGRESS,
+            payload: { value: true },
         });
         expect(actions.pop()).toEqual({
             type: SUITE.LOCK_DEVICE,
