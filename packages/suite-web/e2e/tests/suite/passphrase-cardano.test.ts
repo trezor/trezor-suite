@@ -6,7 +6,10 @@ import { onNavBar } from '../../support/pageObjects/topBarObject';
 const correctPassphraseAddr =
     'addr1qx3ufjpwcx30ee73a7r29surauze6yt0jvr7c3rnahw0hnppg7qp5xvslcfucsqqayrtjhm4u66x';
 
-describe('Passphrase with cardano', () => {
+describe(`Passphrase with cardano
+     in order to use cardano a special argument must be provided to trezor-connect  calls (useCardanoDerivation true).
+     this is opt-in because cardano seed derivation takes more time than all other coins and we don't want to slow down non-cardano users
+    `, () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {

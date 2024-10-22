@@ -27,7 +27,15 @@ describe('Passphrase', () => {
         requests = [];
     });
 
-    it('add 1st hidden wallet (abc) -> fail to confirm passphrase -> try again from notification, succeed -> check 1st address -> switch to 2nd hidden wallet (def) -> check 1st address -> go back to 1st hidden wallet -> check confirm passphrase appears. ', () => {
+    it(`
+        - add 1st hidden wallet (abc) 
+        - fail to confirm passphrase
+        - try again from notification, succeed
+        - check 1st address 
+        - switch to 2nd hidden wallet (def) 
+        - check 1st address 
+        - go back to 1st hidden wallet 
+        - check confirm passphrase appears.`, () => {
         cy.log('passphrase abc for the first time');
         // add 1st hidden wallet
         cy.getTestElement('@menu/switch-device').click();
