@@ -91,7 +91,7 @@ export const PassphraseScreenHeader = () => {
     return (
         <ScreenHeaderWrapper>
             <IconButton
-                iconName="close"
+                iconName="x"
                 size="medium"
                 colorScheme="tertiaryElevation1"
                 accessibilityRole="button"

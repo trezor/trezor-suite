@@ -35,7 +35,7 @@ export const PassphraseEnableOnDeviceScreen = () => {
             handleClose();
             showToast({
                 variant: 'error',
-                icon: 'warningTriangleLight',
+                icon: 'warning',
                 message: translate('modulePassphrase.enablePassphrase.cancelledError'),
             });
         }
@@ -50,7 +50,7 @@ export const PassphraseEnableOnDeviceScreen = () => {
                         colorScheme="tertiaryElevation1"
                         accessibilityRole="button"
                         accessibilityLabel="close"
-                        iconName="close"
+                        iconName="x"
                         onPress={handleClose}
                     />
                 </ScreenHeaderWrapper>

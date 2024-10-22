@@ -18,11 +18,6 @@ const assetTypesConfig = [
         dirname: 'assets/cryptoIcons',
         typeName: 'CryptoIconName',
     },
-    {
-        name: 'flagIcons',
-        dirname: 'assets/flags',
-        typeName: 'FlagIconName',
-    },
 ];
 
 // https://github.com/svg/svgo#built-in-plugins

@@ -12,7 +12,7 @@ import {
 import { analytics, EventType } from '@suite-native/analytics';
 import { useAlert } from '@suite-native/alerts';
 import { useToast } from '@suite-native/toasts';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { setViewOnlyCancelationTimestamp } from '@suite-native/settings';
@@ -113,10 +113,7 @@ export const WalletRow = ({ device }: WalletRowProps) => {
     return (
         <HStack key={device.instance} style={applyStyle(walletRowStyle)}>
             <HStack spacing="sp12" alignItems="center">
-                <Icon
-                    name={device.useEmptyPassphrase ? 'standardWallet' : 'password'}
-                    size="mediumLarge"
-                />
+                <Icon name={device.useEmptyPassphrase ? 'wallet' : 'password'} size="mediumLarge" />
                 <Text variant="callout">{walletNameLabel}</Text>
             </HStack>
             {showToggleButton ? (

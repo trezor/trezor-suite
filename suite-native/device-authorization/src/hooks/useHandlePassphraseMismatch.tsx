@@ -64,7 +64,7 @@ export const useHandlePassphraseMismatch = () => {
                     });
                 },
                 secondaryButtonVariant: 'redElevation0',
-                icon: 'warningTriangleLight',
+                icon: 'warning',
                 pictogramVariant: 'red',
             });
         }

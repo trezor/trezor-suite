@@ -1,6 +1,6 @@
 import { TouchableOpacity } from 'react-native';
 
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';

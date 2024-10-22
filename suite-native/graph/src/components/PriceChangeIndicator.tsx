@@ -1,7 +1,7 @@
 import { Atom, useAtom } from 'jotai';
 
 import { HStack, Text } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-common/icons-deprecated';
+import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type PriceChangeIndicatorProps = {
@@ -20,7 +20,7 @@ type PercentageChangeProps = {
     hasPriceIncreasedAtom: HasPriceIncreasedAtom;
 };
 
-const PRICE_CHANGE_ICON_SIZE = 6;
+const PRICE_CHANGE_ICON_SIZE = 12;
 
 const PercentageChange = ({
     percentageChangeAtom,
@@ -43,7 +43,7 @@ const PercentageChangeArrow = ({
 }) => {
     const [hasPriceIncreased] = useAtom(hasPriceIncreasedAtom);
 
-    const iconName: IconName = hasPriceIncreased ? 'arrowUp' : 'arrowDown';
+    const iconName: IconName = hasPriceIncreased ? 'caretUpFilled' : 'caretDownFilled';
 
     return (
         <Icon
@@ -75,10 +75,7 @@ export const PriceChangeIndicator = ({
     const [hasPriceIncreased] = useAtom(hasPriceIncreasedAtom);
 
     return (
-        <HStack
-            spacing={PRICE_CHANGE_ICON_SIZE}
-            style={applyStyle(priceIncreaseWrapperStyle, { hasPriceIncreased })}
-        >
+        <HStack spacing="sp4" style={applyStyle(priceIncreaseWrapperStyle, { hasPriceIncreased })}>
             <PercentageChangeArrow hasPriceIncreasedAtom={hasPriceIncreasedAtom} />
             <PercentageChange
                 hasPriceIncreasedAtom={hasPriceIncreasedAtom}

@@ -17,7 +17,7 @@ import {
 } from '@suite-native/navigation';
 import { Box, Button, Stack, Switch, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Link } from '@suite-native/link';
@@ -138,7 +138,7 @@ export const AnalyticsConsentScreen = () => {
                 justifyContent="space-between"
                 style={applyStyle(cardStyle)}
             >
-                <Icon size="extraLarge" name="trezor" color="iconDefault" />
+                <Icon size="extraLarge" name="trezorLogo" color="iconDefault" />
                 <Text variant="titleMedium" style={applyStyle(titleStyle)}>
                     <Translation id="moduleOnboarding.analyticsConsentScreen.title" />
                 </Text>

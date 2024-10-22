@@ -14,7 +14,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { Image } from 'expo-image';
+import { CryptoIcon } from '@suite-native/icons';
 
 const HEIGHT = Dimensions.get('window').height;
 const topOffset = HEIGHT * 0.1;
@@ -106,10 +106,7 @@ export const Snowflake: React.FC<{
     if (props.glyph === 'btc') {
         return (
             <Animated.View style={[styles.text, animatedStyle, props.style]}>
-                <Image
-                    source={require('@suite-common/icons-deprecated/assets/cryptoIcons/btc.svg')}
-                    style={{ width: 13, height: 13 }}
-                />
+                <CryptoIcon symbol="btc" size={13} />
             </Animated.View>
         );
     }

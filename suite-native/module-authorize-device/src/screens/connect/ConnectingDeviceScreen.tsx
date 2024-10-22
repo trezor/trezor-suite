@@ -1,7 +1,7 @@
 import { ActivityIndicator } from 'react-native';
 
 import { Text, VStack, Box } from '@suite-native/atoms';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 
@@ -27,7 +27,7 @@ export const ConnectingDeviceScreen = () => {
                         <Translation id="moduleConnectDevice.connectingDeviceScreen.title" />
                     </Text>
                     <Box paddingBottom="sp8" paddingLeft="sp8">
-                        <Icon name="trezor" size="extraLarge" />
+                        <Icon name="trezorLogo" size="extraLarge" />
                     </Box>
                 </Box>
                 <Text variant="highlight" color="textSubdued">

@@ -7,7 +7,7 @@ import { messageSystemActions } from '@suite-common/message-system';
 import { Color } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { HStack, Box, Text, RoundedIcon, VStack } from '@suite-native/atoms';
-import { IconName, Icon } from '@suite-common/icons-deprecated';
+import { IconName, Icon } from '@suite-native/icons';
 import { Link } from '@suite-native/link';
 
 type MessageBannerProps = {
@@ -32,13 +32,13 @@ const MessageBannerVariantToStyleMap = {
     },
     warning: {
         backgroundColor: 'backgroundAlertYellowSubtleOnElevation0',
-        icon: 'warningTriangle',
+        icon: 'warning',
         iconColor: 'iconAlertYellow',
         iconBackgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
     },
     critical: {
         backgroundColor: 'backgroundAlertRedSubtleOnElevation0',
-        icon: 'warningOctagon',
+        icon: 'warning',
         iconColor: 'iconAlertRed',
         iconBackgroundColor: 'backgroundAlertRedSubtleOnElevation1',
     },
@@ -95,7 +95,7 @@ const MessageCloseButton = ({
 }) => (
     <TouchableOpacity onPress={onClose}>
         <RoundedIcon
-            name="close"
+            name="x"
             iconSize="medium"
             containerSize={44}
             backgroundColor={backgroundColor}

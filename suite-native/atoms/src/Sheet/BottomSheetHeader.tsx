@@ -90,7 +90,7 @@ export const BottomSheetHeader = ({
                     </View>
                     {isCloseDisplayed && (
                         <IconButton
-                            iconName="close"
+                            iconName="x"
                             onPress={onCloseSheet}
                             colorScheme="tertiaryElevation0"
                             size="medium"

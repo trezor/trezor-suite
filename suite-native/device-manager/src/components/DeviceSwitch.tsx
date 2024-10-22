@@ -2,7 +2,7 @@ import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { Box, HStack } from '@suite-native/atoms';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { selectDeviceState, selectNumberOfDeviceInstances } from '@suite-common/wallet-core';
 
@@ -61,7 +61,7 @@ export const DeviceSwitch = () => {
                             isSubHeaderForceHidden={true}
                         />
                     )}
-                    <Icon name="chevronUpAndDown" color="iconDefault" />
+                    <Icon name="caretUpDown" color="iconDefault" />
                 </Box>
             </HStack>
         </Pressable>

@@ -54,7 +54,7 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
                 </Button>
                 <Button
                     size="small"
-                    viewLeft="shareAlt"
+                    viewLeft="shareNetwork"
                     colorScheme="tertiaryElevation1"
                     onPress={handleShareData}
                 >

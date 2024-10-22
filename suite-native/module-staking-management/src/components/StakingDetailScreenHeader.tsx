@@ -12,7 +12,7 @@ import {
 } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
 
 const headerStyle = prepareNativeStyle(utils => ({

@@ -2,7 +2,7 @@ import Animated, { FadeInDown, FadeInUp, FadeOutUp } from 'react-native-reanimat
 import { Pressable } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -31,7 +31,7 @@ const ErrorIcon = () => {
 
     return (
         <Animated.View style={applyStyle(errorIconStyle)} entering={FadeInUp} exiting={FadeInDown}>
-            <Icon name="warningTriangle" color="iconAlertYellow" />
+            <Icon name="warning" color="iconAlertYellow" />
         </Animated.View>
     );
 };

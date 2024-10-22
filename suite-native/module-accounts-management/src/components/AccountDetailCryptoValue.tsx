@@ -2,7 +2,7 @@ import { memo } from 'react';
 
 import { HStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, TokenAmountFormatter } from '@suite-native/formatters';
-import { CryptoIcon } from '@suite-common/icons-deprecated';
+import { CryptoIcon } from '@suite-native/icons';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 

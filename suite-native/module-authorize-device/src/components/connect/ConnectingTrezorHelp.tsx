@@ -39,7 +39,7 @@ export const ConnectingTrezorHelp = () => {
             <IconButton
                 size="medium"
                 colorScheme="tertiaryElevation1"
-                iconName="questionMark"
+                iconName="question"
                 onPress={toggleBottomSheet}
             />
             <BottomSheet

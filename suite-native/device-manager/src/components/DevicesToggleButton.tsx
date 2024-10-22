@@ -27,7 +27,7 @@ export const DevicesToggleButton = ({ isOpened, onDeviceButtonTap }: DevicesTogg
             colorScheme="tertiaryElevation0"
             viewRight={
                 <Animated.View style={animatedChevronStyle}>
-                    <ButtonIcon iconName="chevronDown" />
+                    <ButtonIcon iconName="caretDown" />
                 </Animated.View>
             }
             onPress={onDeviceButtonTap}

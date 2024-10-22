@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/icons-deprecated"
-        },
-        {
             "path": "../../suite-common/message-system"
         },
         {
@@ -17,6 +14,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../connection-status" },
+        { "path": "../icons" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }

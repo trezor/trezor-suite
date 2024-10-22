@@ -1,7 +1,7 @@
 import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { Box, Card, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';

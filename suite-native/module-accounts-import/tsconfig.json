@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/icons-deprecated"
-        },
-        {
             "path": "../../suite-common/redux-utils"
         },
         {
@@ -38,6 +35,7 @@
         { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../forms" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../qr-code" },

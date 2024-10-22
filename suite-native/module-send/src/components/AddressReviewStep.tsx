@@ -29,7 +29,7 @@ const getIconProps = (stepNumber: AddressReviewStepProps['stepNumber']): Ordered
         : {
               iconBackgroundColor: 'backgroundPrimaryDefault',
               iconNumber: undefined,
-              iconName: 'flagFinish',
+              iconName: 'flagCheckered',
               iconColor: 'iconDefaultInverted',
               iconSize: 'medium',
           };

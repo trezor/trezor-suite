@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 
 import { Box } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-common/icons-deprecated';
+import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { SettingsSectionItemIcon } from './SettingsSectionItemIcon';
@@ -44,7 +44,7 @@ export const SettingsSectionItem = ({
                     {isLoading ? (
                         <ActivityIndicator size="small" color={utils.colors.iconSubdued} />
                     ) : (
-                        <Icon name="circleRightLight" color="iconPrimaryDefault" />
+                        <Icon name="caretCircleRight" color="iconPrimaryDefault" />
                     )}
                 </View>
             </Box>

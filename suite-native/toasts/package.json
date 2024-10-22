@@ -12,9 +12,9 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@suite-common/icons-deprecated": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/connection-status": "workspace:*",
+        "@suite-native/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "jotai": "1.9.1",

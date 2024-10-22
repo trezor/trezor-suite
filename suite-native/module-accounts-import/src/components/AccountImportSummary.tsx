@@ -62,7 +62,7 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
                     title={<Text variant="titleSmall">{title}</Text>}
                     subtitle={subtitle}
                     variant="green"
-                    icon="syncedCoin"
+                    icon="coinVerticalCheck"
                 />
             </Box>
             <Box flex={1}>

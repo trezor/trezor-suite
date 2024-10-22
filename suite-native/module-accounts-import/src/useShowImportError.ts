@@ -9,7 +9,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { IconName } from '@suite-common/icons-deprecated';
+import { IconName } from '@suite-native/icons';
 import { PictogramVariant } from '@suite-native/atoms';
 
 type AlertError = 'invalidXpub' | 'invalidReceiveAddress' | 'networkError' | 'unknownError';
@@ -23,22 +23,22 @@ const alertErrorMap: Record<AlertError, AlertErrorOptions> = {
     invalidXpub: {
         title: 'Invalid Public address (XPUB)',
         description: 'Check and correct the public address (XPUB).',
-        icon: 'warningTriangleLight',
+        icon: 'warning',
     },
     invalidReceiveAddress: {
         title: 'Receive address invalid',
         description: 'Check and correct the receive address.',
-        icon: 'warningTriangleLight',
+        icon: 'warning',
     },
     networkError: {
         title: 'Network error',
-        icon: 'noConnection',
+        icon: 'wifiX',
         description:
             'We were unable to retrieve the data from the blockchain due to a network error.',
     },
     unknownError: {
         title: 'Something went wrong',
-        icon: 'warningTriangleLight',
+        icon: 'warning',
         description: 'We are unable to gather the data right now. Please try again.',
     },
 };

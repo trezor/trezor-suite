@@ -3,7 +3,7 @@ import { TouchableOpacity } from 'react-native';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { useFormatters } from '@suite-common/formatters';
-import { Icon, IconName } from '@suite-common/icons-deprecated';
+import { Icon, IconName } from '@suite-native/icons';
 import { Badge, Box, HStack, RoundedIcon, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { isCoinWithTokens } from '@suite-native/tokens';

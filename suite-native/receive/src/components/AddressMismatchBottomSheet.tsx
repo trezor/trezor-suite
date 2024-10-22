@@ -47,7 +47,7 @@ export const AddressMismatchBottomSheet = ({
                 <Box flex={1}>
                     <VStack spacing="sp16">
                         <Button
-                            viewLeft="warningTriangle"
+                            viewLeft="warning"
                             colorScheme="tertiaryElevation0"
                             onPress={handleOpenSupportLink}
                         >

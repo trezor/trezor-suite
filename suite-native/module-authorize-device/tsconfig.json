@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/icons-deprecated"
-        },
-        {
             "path": "../../suite-common/validators"
         },
         {
@@ -19,6 +16,7 @@
         { "path": "../device-mutex" },
         { "path": "../discovery" },
         { "path": "../forms" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../module-connect-popup" },

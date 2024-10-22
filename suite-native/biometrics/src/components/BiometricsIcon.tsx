@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-import { Icon, IconName } from '@suite-common/icons-deprecated';
+import { Icon, IconName } from '@suite-native/icons';
 import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -27,7 +27,7 @@ type BiometricsIconProps = {
 
 export const BiometricsIcon = ({ iconSize = 64, showShadow = false }: BiometricsIconProps) => {
     const { applyStyle } = useNativeStyles();
-    const icon: IconName = Platform.OS === 'ios' ? 'touchId' : 'fingerprint';
+    const icon: IconName = Platform.OS === 'ios' ? 'fingerprintSimple' : 'fingerprint';
 
     return (
         <Box

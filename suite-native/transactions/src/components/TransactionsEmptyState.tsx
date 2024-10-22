@@ -47,7 +47,7 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) =
                     />
                 </Box>
                 <Box style={applyStyle(receiveButtonStyle)}>
-                    <Button viewLeft="receive" onPress={handleReceive} size="large">
+                    <Button viewLeft="arrowLineDown" onPress={handleReceive} size="large">
                         <Translation id="transactions.emptyState.button" />
                     </Button>
                 </Box>

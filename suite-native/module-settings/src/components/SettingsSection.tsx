@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Box, Text, VStack, Card } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-common/icons-deprecated';
+import { Icon, IconName } from '@suite-native/icons';
 
 type SettingsSectionProps = {
     title: ReactNode;

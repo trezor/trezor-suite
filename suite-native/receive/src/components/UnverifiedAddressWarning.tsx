@@ -40,7 +40,7 @@ export const UnverifiedAddressWarning = () => {
         <Box marginVertical="sp16" paddingHorizontal="sp16" paddingVertical="sp32">
             <PictogramTitleHeader
                 variant="yellow"
-                icon="warningTriangleLight"
+                icon="warning"
                 title={pictogramContent[pictogramContentKey].title}
                 subtitle={pictogramContent[pictogramContentKey].subtitle}
             />

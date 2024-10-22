@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ListItemSkeleton, HStack, Text } from '@suite-native/atoms';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 export const DiscoveryAssetsLoader = ({ isListEmpty }: { isListEmpty: boolean }) => {
@@ -19,7 +19,7 @@ export const DiscoveryAssetsLoader = ({ isListEmpty }: { isListEmpty: boolean })
         <>
             <ListItemSkeleton />
             <HStack justifyContent="center" marginBottom="sp16">
-                <Icon size="mediumLarge" name="trezor" />
+                <Icon size="mediumLarge" name="trezorLogo" />
                 <Text variant="callout">{discoveryProgressText}</Text>
             </HStack>
         </>

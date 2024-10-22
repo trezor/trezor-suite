@@ -17,7 +17,7 @@ import {
     StackNavigationProps,
     RootStackParamList,
 } from '@suite-native/navigation';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import {
     notificationsActions,
     TransactionNotificationType,
@@ -128,7 +128,7 @@ export const TransactionNotification = ({
                     iconColor={isIconAnimated ? 'iconAlertYellow' : 'iconSubdued'}
                 />
             }
-            iconRight={<Icon name="circleRight" />}
+            iconRight={<Icon name="caretCircleRight" />}
         />
     );
 };

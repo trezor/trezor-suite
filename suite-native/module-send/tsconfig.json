@@ -6,9 +6,6 @@
             "path": "../../suite-common/formatters"
         },
         {
-            "path": "../../suite-common/icons-deprecated"
-        },
-        {
             "path": "../../suite-common/redux-utils"
         },
         {
@@ -39,6 +36,7 @@
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../helpers" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../qr-code" },

@@ -5,7 +5,7 @@ import { useOpenLink } from '@suite-native/link';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@suite-common/icons-deprecated';
+import { Icon } from '@suite-native/icons';
 import { EventType, analytics } from '@suite-native/analytics';
 
 import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
@@ -95,7 +95,7 @@ export const PassphraseFormScreen = () => {
                                     <HStack>
                                         <View style={applyStyle(warningIconWrapperStyle)}>
                                             <Icon
-                                                name="warningCircle"
+                                                name="warning"
                                                 color="textAlertBlue"
                                                 size="medium"
                                             />
@@ -111,7 +111,7 @@ export const PassphraseFormScreen = () => {
                                     <HStack>
                                         <View style={applyStyle(warningIconWrapperStyle)}>
                                             <Icon
-                                                name="eyeSlashLight"
+                                                name="eyeSlash"
                                                 color="textDefault"
                                                 size="medium"
                                             />
@@ -127,7 +127,7 @@ export const PassphraseFormScreen = () => {
                                     <HStack>
                                         <View style={applyStyle(warningIconWrapperStyle)}>
                                             <Icon
-                                                name="warningTriangle"
+                                                name="warning"
                                                 color="textDefault"
                                                 size="medium"
                                             />

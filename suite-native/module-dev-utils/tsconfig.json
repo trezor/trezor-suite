@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/icons-deprecated"
-        },
-        {
             "path": "../../suite-common/message-system"
         },
         {
@@ -16,6 +13,7 @@
         { "path": "../discovery" },
         { "path": "../feature-flags" },
         { "path": "../helpers" },
+        { "path": "../icons" },
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../storage" },

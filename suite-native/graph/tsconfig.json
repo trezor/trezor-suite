@@ -7,9 +7,6 @@
         },
         { "path": "../../suite-common/graph" },
         {
-            "path": "../../suite-common/icons-deprecated"
-        },
-        {
             "path": "../../suite-common/redux-utils"
         },
         {
@@ -33,6 +30,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../formatters" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../react-native-graph" },
         { "path": "../storage" },
