@@ -1,14 +1,18 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
+import { isArrayMember } from '@trezor/type-utils';
+
 import { CoinjoinBackend } from '../../src/backend/CoinjoinBackend';
 import type { CoinjoinBackendSettings } from '../../src/types';
 
 const { getCoinjoinConfig } = require('../../../suite/src/services/coinjoin/config');
 
 const supportedNetworks = ['btc', 'test', 'regtest'] as const;
-const isSupportedNetwork = (network: string): network is (typeof supportedNetworks)[number] =>
-    supportedNetworks.includes(network as any);
+type SupportedNetwork = (typeof supportedNetworks)[number];
+
+const isSupportedNetwork = (network: string): network is SupportedNetwork =>
+    isArrayMember(network, supportedNetworks);
 
 export const getAccountInfoParams = (network: string, descriptor: string) => {
     if (!network) throw new Error('network arg missing');

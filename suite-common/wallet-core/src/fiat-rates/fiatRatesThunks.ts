@@ -53,7 +53,7 @@ export const updateTxsFiatRatesThunk = createThunk(
         const groupedTokensTxs = groupTokensTransactionsByContractAddress(txs);
 
         for (const token in groupedTokensTxs) {
-            const hasCoinDefinitions = getNetworkFeatures(account.symbol as NetworkSymbol).includes(
+            const hasCoinDefinitions = getNetworkFeatures(account.symbol).includes(
                 'coin-definitions',
             );
 

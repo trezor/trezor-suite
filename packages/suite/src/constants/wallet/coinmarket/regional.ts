@@ -1,3 +1,5 @@
+import { isArrayMember } from '@trezor/type-utils';
+
 class Regional {
     unknownCountry = 'unknown';
 
@@ -302,8 +304,8 @@ class Regional {
         'SK',
     ] as const;
 
-    isInEEA(country: string) {
-        return this.EEACountryCodes.includes(country as EEACountryCodes);
+    isInEEA(country: string): country is EEACountryCodes {
+        return isArrayMember(country, this.EEACountryCodes);
     }
 }
 
