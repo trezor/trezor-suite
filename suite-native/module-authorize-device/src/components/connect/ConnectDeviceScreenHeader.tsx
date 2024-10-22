@@ -115,7 +115,7 @@ export const ConnectDeviceScreenHeader = ({
         <ScreenHeaderWrapper>
             {shouldDisplayCancelButton && (
                 <IconButton
-                    iconName="close"
+                    iconName="x"
                     size="medium"
                     colorScheme="tertiaryElevation0"
                     accessibilityRole="button"

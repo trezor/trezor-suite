@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Platform, Text as RNText } from 'react-native';
+import { Platform, Text as RNText, TextProps } from 'react-native';
 import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 
 // @ts-expect-error This is not public RN API but it will make Text noticeable faster https://twitter.com/FernandoTheRojo/status/1707769877493121420
@@ -47,9 +47,9 @@ export type IconProps = {
     name: IconName;
     size?: IconSize | number;
     color?: IconColor;
-};
+} & Omit<TextProps, 'children'>;
 
-export const Icon = ({ name, size = 'large', color = 'iconDefault' }: IconProps) => {
+export const Icon = ({ name, size = 'large', color = 'iconDefault', ...props }: IconProps) => {
     const char = String.fromCodePoint(codepoints[name]);
     const sizeNumber = getIconSize(size);
     const {
@@ -67,7 +67,11 @@ export const Icon = ({ name, size = 'large', color = 'iconDefault' }: IconProps)
         };
     }, [sizeNumber, color, colors]);
 
-    return <DefaultTextComponent style={style}>{char}</DefaultTextComponent>;
+    return (
+        <DefaultTextComponent style={style} {...props}>
+            {char}
+        </DefaultTextComponent>
+    );
 };
 
 function isCSSColor(value: any): value is CSSColor {
@@ -100,7 +104,12 @@ type AnimatedIconProps = Omit<IconProps, 'color'> & {
 };
 
 // We have two versions of the Icon component, one that is animated and one that should be super fast without animations.
-const AnimatedIcon = ({ name, size = 'large', color = 'iconDefault' }: AnimatedIconProps) => {
+const AnimatedIcon = ({
+    name,
+    size = 'large',
+    color = 'iconDefault',
+    ...props
+}: AnimatedIconProps) => {
     const char = String.fromCodePoint(codepoints[name]);
     const {
         utils: { colors },
@@ -121,7 +130,11 @@ const AnimatedIcon = ({ name, size = 'large', color = 'iconDefault' }: AnimatedI
         color: getColorCode(color, colors),
     }));
 
-    return <Animated.Text style={[baseStyle, style]}>{char}</Animated.Text>;
+    return (
+        <Animated.Text style={[baseStyle, style]} {...props}>
+            {char}
+        </Animated.Text>
+    );
 };
 
 Icon.Animated = AnimatedIcon;
