@@ -1,4 +1,4 @@
-import { versionUtils } from '@trezor/utils';
+import { isArrayMember, versionUtils } from '@trezor/utils';
 import { PROTO } from '../constants';
 import { config } from '../data/config';
 import { Features, CoinInfo, UnavailableCapabilities, DeviceModelInternal } from '../types';
@@ -106,7 +106,7 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
             return !capabilities.includes('Capability_Solana');
         }
 
-        return !capabilities.includes(`Capability_${info.name}` as PROTO.Capability);
+        return !isArrayMember(`Capability_${info.name}`, capabilities);
     });
 
     // add unavailable coins to list
