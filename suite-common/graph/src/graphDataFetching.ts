@@ -226,9 +226,7 @@ const getAccountBalanceHistory = async ({
                     accountMovementHistory.tokens?.[t.contract as TokenAddress] ?? [],
                 ] as const,
         ),
-        A.filter(
-            ([contractId]) => !tokensFilter || tokensFilter.includes(contractId as TokenAddress),
-        ),
+        A.filter(([contractId]) => !tokensFilter || tokensFilter.includes(contractId)),
         F.toMutable,
     );
     const tokensMovementHistoryWithBalance = D.mapWithKey(

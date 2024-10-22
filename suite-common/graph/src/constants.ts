@@ -1,4 +1,5 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { isArrayMember } from '@trezor/type-utils';
 
 // Going over 180 will broke graph in mobile app
 export const NUMBER_OF_POINTS = 40;
@@ -13,6 +14,4 @@ export type LocalBalanceHistoryCoin = (typeof LOCAL_BALANCE_HISTORY_COINS)[numbe
 
 export const isLocalBalanceHistoryCoin = (
     symbol: NetworkSymbol,
-): symbol is LocalBalanceHistoryCoin => {
-    return LOCAL_BALANCE_HISTORY_COINS.includes(symbol as LocalBalanceHistoryCoin);
-};
+): symbol is LocalBalanceHistoryCoin => isArrayMember(symbol, LOCAL_BALANCE_HISTORY_COINS);
