@@ -232,3 +232,11 @@ export const CoinmarketFooterLogoWrapper = styled.div`
     flex: 1;
     padding-top: 1px;
 `;
+
+export const CoinmarketTransactionText = styled.div`
+    margin-top: ${spacingsPx.xs};
+    ${typography.label}
+    color: ${({ theme }) => theme.textSubdued};
+    max-width: 100%;
+    overflow: hidden;
+`;

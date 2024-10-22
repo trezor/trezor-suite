@@ -262,8 +262,10 @@ export interface CoinmarketGetCryptoQuoteAmountProps {
     receiveCurrency: CryptoId | undefined;
 }
 
+export type CoinmarketPaymentMethodType = BuyCryptoPaymentMethod | SellCryptoPaymentMethod;
+
 export interface CoinmarketGetPaymentMethodProps {
-    paymentMethod?: BuyCryptoPaymentMethod | SellCryptoPaymentMethod;
+    paymentMethod?: CoinmarketPaymentMethodType;
     paymentMethodName?: string;
 }
 
