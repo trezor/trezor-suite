@@ -72,7 +72,7 @@ export const CoinmarketLayoutHeader = ({
                         data-testid="@account-subpage/back"
                     />
                     <BasicName nameId={fallbackTitle} />
-                    {title !== transactionPageTitle && (
+                    {currentRouteName !== 'wallet-coinmarket-transactions' && (
                         <Row flex="auto" margin={{ left: 'auto' }}>
                             <CoinmarketLayoutNavigationItem
                                 route="wallet-coinmarket-transactions"
@@ -83,7 +83,7 @@ export const CoinmarketLayoutHeader = ({
                 </Row>
             </PageHeader>
         ),
-        [newBackRoute, fallbackTitle, title, handleBackClick],
+        [newBackRoute, fallbackTitle, currentRouteName, handleBackClick],
     );
 
     useLayout(pageTitle, CoinmarketPageHeader);

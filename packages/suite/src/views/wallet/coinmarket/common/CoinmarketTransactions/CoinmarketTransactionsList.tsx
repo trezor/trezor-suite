@@ -1,6 +1,6 @@
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { H2, Paragraph, variables } from '@trezor/components';
+import { H3, Paragraph, variables } from '@trezor/components';
 import styled, { useTheme } from 'styled-components';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -9,7 +9,7 @@ import { CoinmarketTransactionBuy } from 'src/views/wallet/coinmarket/common/Coi
 import { CoinmarketTransactionExchange } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransactionExchange';
 
 const Wrapper = styled.div`
-    padding: ${spacingsPx.xl} ${spacingsPx.lg};
+    padding: ${spacingsPx.zero} ${spacingsPx.lg};
 
     ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
         padding: 0;
@@ -21,7 +21,7 @@ const Header = styled.div`
 `;
 
 const TransactionCount = styled.div`
-    margin-top: ${spacingsPx.xxs};
+    margin-top: ${spacingsPx.xxxs};
     ${typography.hint}
     color: ${({ theme }) => theme.textSubdued};
 `;
@@ -70,9 +70,9 @@ export const CoinmarketTransactionsList = () => {
             {sortedAccountTransactions.length > 0 && (
                 <>
                     <Header>
-                        <H2>
-                            <Translation id="TR_BUY_ACCOUNT_TRANSACTIONS" />
-                        </H2>
+                        <H3>
+                            <Translation id="TR_COINMARKET_LAST_TRANSACTIONS" />
+                        </H3>
                         <TransactionCount>
                             <Translation
                                 id="TR_COINMARKET_TRANSACTION_COUNTER"
