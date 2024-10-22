@@ -23,5 +23,13 @@ export const selectIsNetworkSendFlowEnabled = (
     const networkType = getNetworkType(networkSymbol);
     if (isBitcoinLikeSendEnabled && networkType === 'bitcoin') return true;
 
+    const isEthereumSendEnabled = selectIsFeatureFlagEnabled(
+        state,
+        FeatureFlag.IsEthereumSendEnabled,
+    );
+
+    if (isEthereumSendEnabled && ['eth', 'etc', 'tsep', 'thol'].includes(networkSymbol))
+        return true;
+
     return false;
 };

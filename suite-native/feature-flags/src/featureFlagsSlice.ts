@@ -6,6 +6,7 @@ import { isDebugEnv, isDetoxTestBuild, isDevelopOrDebugEnv } from '@suite-native
 export const FeatureFlag = {
     IsDeviceConnectEnabled: 'isDeviceConnectEnabled',
     IsBitcoinLikeSendEnabled: 'isBitcoinLikeSendEnabled',
+    IsEthereumSendEnabled: 'isEthereumSendEnabled',
     IsRegtestEnabled: 'isRegtestEnabled',
     IsPolygonEnabled: 'IsPolygonEnabled',
     IsBscEnabled: 'IsBscEnabled',
@@ -22,6 +23,7 @@ export type FeatureFlagsRootState = {
 export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsDeviceConnectEnabled]: isAndroid() || isDebugEnv(),
     [FeatureFlag.IsBitcoinLikeSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
+    [FeatureFlag.IsEthereumSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
     [FeatureFlag.IsRegtestEnabled]: isDebugEnv() || isDetoxTestBuild(),
     [FeatureFlag.IsPolygonEnabled]: false,
     [FeatureFlag.IsBscEnabled]: false,
@@ -31,6 +33,7 @@ export const featureFlagsInitialState: FeatureFlagsState = {
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsDeviceConnectEnabled,
     FeatureFlag.IsBitcoinLikeSendEnabled,
+    FeatureFlag.IsEthereumSendEnabled,
     FeatureFlag.IsRegtestEnabled,
     FeatureFlag.IsPolygonEnabled,
     FeatureFlag.IsBscEnabled,
