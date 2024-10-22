@@ -324,15 +324,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     abstract init(): void;
 
-    getMethodInfo() {
-        return {
-            useDevice: this.useDevice,
-            useDeviceState: this.useDeviceState,
-            name: this.name,
-            // this could be used for more. it could tell clients what are min firmware versions (firmwareRange) and much more
-        };
-    }
-
     abstract run(): Promise<MethodReturnType<Name>>;
 
     dispose() {}
