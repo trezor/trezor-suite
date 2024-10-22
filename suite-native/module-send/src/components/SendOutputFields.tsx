@@ -7,6 +7,7 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { RecipientInputs } from './RecipientInputs';
+import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 
 type SendOutputFieldsProps = {
     accountKey: AccountKey;
@@ -19,7 +20,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 
 export const SendOutputFields = ({ accountKey }: SendOutputFieldsProps) => {
     const { applyStyle } = useNativeStyles();
-    const { control } = useFormContext();
+    const { control } = useFormContext<SendOutputsFormValues>();
     const outputsFieldArray = useFieldArray({ control, name: 'outputs' });
 
     return (

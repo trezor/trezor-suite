@@ -13,6 +13,7 @@ import { SendAmountCurrencyLabelWrapper, sendAmountInputWrapperStyle } from './C
 import { SendAmountInputProps } from '../types';
 import { useSendAmountTransformers } from '../hooks/useSendAmountTransformers';
 import { getOutputFieldName } from '../utils';
+import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 
 export const FiatAmountInput = ({
     recipientIndex,
@@ -25,7 +26,7 @@ export const FiatAmountInput = ({
     isDisabled = false,
 }: SendAmountInputProps) => {
     const { applyStyle } = useNativeStyles();
-    const { setValue } = useFormContext();
+    const { setValue } = useFormContext<SendOutputsFormValues>();
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
     const { fiatAmountTransformer } = useSendAmountTransformers(networkSymbol);
     const converters = useCryptoFiatConverters({ networkSymbol });
@@ -54,9 +55,10 @@ export const FiatAmountInput = ({
     const handleChangeValue = (newValue: string) => {
         const transformedValue = fiatAmountTransformer(newValue);
         onChange(transformedValue);
-        setValue(cryptoFieldName, converters?.convertFiatToCrypto?.(transformedValue), {
-            shouldValidate: true,
-        });
+
+        const cryptoValue = converters?.convertFiatToCrypto?.(transformedValue);
+        if (cryptoValue) setValue(cryptoFieldName, cryptoValue, { shouldValidate: true });
+
         setValue('setMaxOutputId', undefined);
         onFocus?.();
     };

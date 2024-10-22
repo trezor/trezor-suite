@@ -14,6 +14,7 @@ import { isDebugEnv } from '@suite-native/config';
 
 import { QrCodeBottomSheetIcon } from './QrCodeBottomSheetIcon';
 import { getOutputFieldName } from '../utils';
+import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 
 type AddressInputProps = {
     index: number;
@@ -21,7 +22,7 @@ type AddressInputProps = {
 };
 export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     const addressFieldName = getOutputFieldName(index, 'address');
-    const { setValue } = useFormContext();
+    const { setValue } = useFormContext<SendOutputsFormValues>();
 
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -45,7 +46,8 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
 
     // Debug helper to fill opened account address.
     const fillSelfAddress = () => {
-        setValue(addressFieldName, unusedAccountAddress, { shouldValidate: true });
+        if (unusedAccountAddress)
+            setValue(addressFieldName, unusedAccountAddress, { shouldValidate: true });
     };
 
     return (
