@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { selectBannerMessage } from '@suite-common/message-system';
 import { selectDevice } from '@suite-common/wallet-core';
-import { isArrayMember } from '@trezor/type-utils';
+import { isArrayMember } from '@trezor/utils';
 import { isDesktop } from '@trezor/env-utils';
 import { spacingsPx } from '@trezor/theme';
 
