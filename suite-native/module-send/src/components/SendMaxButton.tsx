@@ -16,6 +16,7 @@ import { Translation } from '@suite-native/intl';
 
 import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
 import { getOutputFieldName, constructFormDraft } from '../utils';
+import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 
 type SendMaxButtonProps = {
     outputIndex: number;
@@ -32,7 +33,7 @@ export const SendMaxButton = ({ outputIndex, accountKey }: SendMaxButtonProps) =
     const [maxAmountValue, setMaxAmountValue] = useState<string>();
 
     const converters = useCryptoFiatConverters({ networkSymbol: networkSymbol! });
-    const { setValue, watch, trigger } = useFormContext();
+    const { setValue, watch, trigger } = useFormContext<SendOutputsFormValues>();
 
     const formValues = watch() as FormState;
     const addressValue = formValues.outputs[outputIndex]?.address;

@@ -14,6 +14,7 @@ import { useDebounce } from '@trezor/react-utils';
 import { SendAmountInputProps } from '../types';
 import { useSendAmountTransformers } from '../hooks/useSendAmountTransformers';
 import { getOutputFieldName } from '../utils';
+import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 
 export const sendAmountInputWrapperStyle = prepareNativeStyle<{ isDisabled: boolean }>(
     (_, { isDisabled }) => ({
@@ -47,7 +48,7 @@ export const CryptoAmountInput = ({
     isDisabled = false,
 }: SendAmountInputProps) => {
     const { applyStyle } = useNativeStyles();
-    const { setValue, trigger } = useFormContext();
+    const { setValue, trigger } = useFormContext<SendOutputsFormValues>();
     const { cryptoAmountTransformer } = useSendAmountTransformers(networkSymbol);
     const { NetworkSymbolFormatter: formatter } = useFormatters();
     const debounce = useDebounce();
@@ -73,7 +74,9 @@ export const CryptoAmountInput = ({
     const handleChangeValue = (newValue: string) => {
         const transformedValue = cryptoAmountTransformer(newValue);
         onChange(transformedValue);
-        setValue(fiatFieldName, converters?.convertCryptoToFiat?.(transformedValue));
+
+        const fiatValue = converters?.convertCryptoToFiat?.(transformedValue);
+        if (fiatValue) setValue(fiatFieldName, fiatValue);
         setValue('setMaxOutputId', undefined);
         debounce(() => {
             trigger(cryptoFieldName);
