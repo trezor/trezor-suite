@@ -10,7 +10,10 @@ import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchang
 import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
 import { UI } from '@trezor/connect';
 import { ROUTER, MODAL } from 'src/actions/suite/constants';
-import { CoinmarketSuiteBackRouteNameType } from 'src/reducers/wallet/coinmarketReducer';
+import {
+    CoinmarketBackRouteNameType,
+    CoinmarketSuiteBackRouteNameType,
+} from 'src/reducers/wallet/coinmarketReducer';
 
 export const coinmarketMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -123,7 +126,7 @@ export const coinmarketMiddleware =
             const isSell = newState.router.route?.name === 'wallet-coinmarket-sell';
             const isExchange = newState.router.route?.name === 'wallet-coinmarket-exchange';
             const currentBackRouteName = action.payload.settingsBackRoute?.name;
-            const { suiteBackRouteName } = newState.wallet.coinmarket;
+            const { suiteBackRouteName, coinmarketBackRouteName } = newState.wallet.coinmarket;
 
             // clean coinmarketAccount in sell
             if (isSell && sellCoinmarketAccount) {
@@ -143,6 +146,23 @@ export const coinmarketMiddleware =
                 api.dispatch(
                     coinmarketCommonActions.setSuiteBackRouteName(
                         currentBackRouteName as CoinmarketSuiteBackRouteNameType,
+                    ),
+                );
+            }
+
+            if (
+                currentBackRouteName &&
+                [
+                    'wallet-coinmarket-buy',
+                    'wallet-coinmarket-sell',
+                    'wallet-coinmarket-exchange',
+                    'wallet-coinmarket-dca',
+                ].includes(currentBackRouteName) &&
+                coinmarketBackRouteName !== currentBackRouteName
+            ) {
+                api.dispatch(
+                    coinmarketCommonActions.setCoinmarketBackRouteName(
+                        currentBackRouteName as CoinmarketBackRouteNameType,
                     ),
                 );
             }

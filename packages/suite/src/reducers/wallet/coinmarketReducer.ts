@@ -46,6 +46,14 @@ export type CoinmarketSuiteBackRouteNameType = Extract<
     'wallet-index' | 'suite-index'
 >;
 
+export type CoinmarketBackRouteNameType = Extract<
+    Route['name'],
+    | 'wallet-coinmarket-buy'
+    | 'wallet-coinmarket-sell'
+    | 'wallet-coinmarket-exchange'
+    | 'wallet-coinmarket-dca'
+>;
+
 interface Info {
     platforms?: Platforms;
     coins?: Coins;
@@ -98,6 +106,7 @@ export interface State {
     isLoading: boolean;
     lastLoadedTimestamp: number;
     suiteBackRouteName: CoinmarketSuiteBackRouteNameType;
+    coinmarketBackRouteName: CoinmarketBackRouteNameType;
 }
 
 export const initialState: State = {
@@ -146,6 +155,7 @@ export const initialState: State = {
     modalCryptoId: undefined,
     lastLoadedTimestamp: 0,
     suiteBackRouteName: 'wallet-index',
+    coinmarketBackRouteName: 'wallet-coinmarket-buy',
 };
 
 export const coinmarketReducer = (
@@ -264,6 +274,9 @@ export const coinmarketReducer = (
                 break;
             case COINMARKET_COMMON.SET_SUITE_BACK_ROUTE_NAME:
                 draft.suiteBackRouteName = action.suiteBackRouteName;
+                break;
+            case COINMARKET_COMMON.SET_COINMARKET_BACK_ROUTE_NAME:
+                draft.coinmarketBackRouteName = action.coinmarketBackRouteName;
                 break;
             // no default
         }

@@ -36,7 +36,6 @@ export const CoinmarketLayoutHeader = ({
     const { translationString } = useTranslation();
     const dispatch = useDispatch();
     const fallbackTitle = useMemo(() => title || 'TR_NAV_TRADE', [title]);
-    const transactionPageTitle = 'TR_COINMARKET_LAST_TRANSACTIONS';
 
     const translatedTitle = translationString(fallbackTitle);
     const pageTitle = `Trezor Suite | ${translatedTitle}`;
@@ -76,7 +75,7 @@ export const CoinmarketLayoutHeader = ({
                         <Row flex="auto" margin={{ left: 'auto' }}>
                             <CoinmarketLayoutNavigationItem
                                 route="wallet-coinmarket-transactions"
-                                title={transactionPageTitle}
+                                title="TR_COINMARKET_LAST_TRANSACTIONS"
                             />
                         </Row>
                     )}
