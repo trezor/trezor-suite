@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import { isArrayMember } from '@trezor/type-utils';
+import { isArrayMember } from '@trezor/utils';
 
 import { CoinjoinBackend } from '../../src/backend/CoinjoinBackend';
 import type { CoinjoinBackendSettings } from '../../src/types';

@@ -22,7 +22,6 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^2.30.0",
         "react": "18.2.0",
