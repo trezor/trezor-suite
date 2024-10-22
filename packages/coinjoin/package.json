@@ -28,6 +28,7 @@
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "cross-fetch": "^4.0.0",

@@ -70,5 +70,5 @@ export type DefinedUnionMember<T> = T extends string ? T : never;
  */
 export const isArrayMember = <Value extends string, Subset extends Value>(
     value: Value,
-    arr: Subset[],
+    arr: readonly Subset[],
 ): value is Subset => arr.some(v => v === value);

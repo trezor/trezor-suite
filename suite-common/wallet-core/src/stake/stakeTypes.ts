@@ -10,6 +10,7 @@ import {
 } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { FeeLevel } from '@trezor/connect';
+import { isArrayMember } from '@trezor/type-utils';
 
 // Used when Everstake pool stats are not available from the API.
 export const BACKUP_ETH_APY = 4.13;
@@ -25,9 +26,9 @@ export const supportedNetworkSymbols = ['eth', 'thol'] as const;
 export type SupportedNetworkSymbol = (typeof supportedNetworkSymbols)[number];
 
 export function isSupportedEthStakingNetworkSymbol(
-    networkSymbols: NetworkSymbol,
-): networkSymbols is SupportedNetworkSymbol {
-    return (supportedNetworkSymbols as readonly string[]).includes(networkSymbols);
+    networkSymbol: NetworkSymbol,
+): networkSymbol is SupportedNetworkSymbol {
+    return isArrayMember(networkSymbol, supportedNetworkSymbols);
 }
 
 export const getStakingSymbols = (networkSymbols: NetworkSymbol[]) =>
