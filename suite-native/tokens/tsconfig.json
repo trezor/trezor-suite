@@ -16,6 +16,7 @@
         },
         {
             "path": "../../packages/blockchain-link"
-        }
+        },
+        { "path": "../../packages/utils" }
     ]
 }
