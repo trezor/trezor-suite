@@ -320,6 +320,22 @@ const handleMessageInCoreMode = (
                 info: method.info,
             });
             reactEventBus.dispatch({ type: 'state-update', payload: getState() });
+
+            const { settings } = getState();
+            const transport = core.getTransportInfo();
+            analytics.report({
+                type: EventType.AppReady,
+                payload: {
+                    version: settings?.version,
+                    origin: settings?.origin,
+                    referrerApp: settings?.manifest?.appUrl,
+                    referrerEmail: settings?.manifest?.email,
+                    method: method?.name,
+                    payload: method?.payload ? Object.keys(method.payload) : undefined,
+                    transportType: transport?.type,
+                    transportVersion: transport?.version,
+                },
+            });
         });
     }
 
