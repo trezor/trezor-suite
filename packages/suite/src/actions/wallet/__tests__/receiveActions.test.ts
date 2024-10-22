@@ -22,15 +22,7 @@ const TrezorConnect = testMocks.getTrezorConnectMock();
 const setTrezorConnectFixtures = (fixture?: any) => {
     let buttonRequest: ((e?: any) => any) | undefined;
 
-    const getAddress = (params: any) => {
-        if (params.__info) {
-            return {
-                success: true,
-                payload: {
-                    useDevice: true,
-                },
-            };
-        }
+    const getAddress = (_params: any) => {
         if (fixture && fixture.getAddress) {
             if (fixture.getAddress.success && buttonRequest) {
                 buttonRequest({ code: 'ButtonRequest_Address' });
