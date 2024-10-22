@@ -96,7 +96,10 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
                 action.type === UI.FIRMWARE_PROGRESS ||
                 action.type === DEVICE.BUTTON,
             (state, action) => {
-                state.uiEvent = action;
+                // DEVICE.BUTTON can be dispatched outside of the firmware update flow and that should not change the uiEvent,
+                // otherwise it could result in confirmation pill being displayed unintentionally.
+                if (!(action.type === DEVICE.BUTTON && state.status === 'initial'))
+                    state.uiEvent = action;
             },
         );
 });
