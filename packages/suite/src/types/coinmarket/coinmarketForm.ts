@@ -5,6 +5,7 @@ import {
     CoinmarketGetProvidersInfoProps,
     CoinmarketPaymentMethodListProps,
     CoinmarketPaymentMethodProps,
+    CoinmarketPaymentMethodType,
     CoinmarketTradeBuyType,
     CoinmarketTradeDetailMapProps,
     CoinmarketTradeDetailType,
@@ -19,13 +20,11 @@ import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import type { FieldValues, UseFormReturn, FieldPath } from 'react-hook-form';
 import type {
     BankAccount,
-    BuyCryptoPaymentMethod,
     BuyTrade,
     CryptoId,
     ExchangeTrade,
     ExchangeTradeQuoteRequest,
     FiatCurrencyCode,
-    SellCryptoPaymentMethod,
     SellFiatTrade,
 } from 'invity-api';
 import { Timer } from '@trezor/react-utils';
@@ -382,7 +381,7 @@ export interface CoinmarketOfferCommonProps {
     providers: CoinmarketGetProvidersInfoProps;
     type: CoinmarketTradeType;
     quoteAmounts: CoinmarketGetCryptoQuoteAmountProps | null;
-    paymentMethod?: BuyCryptoPaymentMethod | SellCryptoPaymentMethod;
+    paymentMethod?: CoinmarketPaymentMethodType;
     paymentMethodName?: string;
 }
 

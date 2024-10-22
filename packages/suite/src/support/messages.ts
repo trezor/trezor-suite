@@ -395,14 +395,6 @@ export default defineMessages({
         defaultMessage: 'Converting',
         id: 'TR_EXCHANGE_STATUS_CONVERTING',
     },
-    TR_EXCHANGE_TRANS_ID: {
-        defaultMessage: 'Trans. ID:',
-        id: 'TR_EXCHANGE_TRANS_ID',
-    },
-    TR_EXCHANGE_VIEW_DETAILS: {
-        defaultMessage: 'View details',
-        id: 'TR_EXCHANGE_VIEW_DETAILS',
-    },
     TR_EXCHANGE_DETAIL_SUCCESS_TITLE: {
         defaultMessage: 'Approved',
         id: 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
@@ -916,14 +908,6 @@ export default defineMessages({
         defaultMessage: "Open partner's support site",
         id: 'TR_SELL_DETAIL_PENDING_SUPPORT',
     },
-    TR_SELL_VIEW_DETAILS: {
-        defaultMessage: 'View details',
-        id: 'TR_SELL_VIEW_DETAILS',
-    },
-    TR_SELL_TRANS_ID: {
-        defaultMessage: 'Trans. ID:',
-        id: 'TR_SELL_TRANS_ID',
-    },
     TR_BUY_STATUS_PENDING: {
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
@@ -1031,10 +1015,6 @@ export default defineMessages({
         defaultMessage: 'Action required',
         id: 'TR_BUY_STATUS_ACTION_REQUIRED',
     },
-    TR_BUY_VIEW_DETAILS: {
-        defaultMessage: 'View details',
-        id: 'TR_BUY_VIEW_DETAILS',
-    },
     TR_BUY_STATUS_ERROR: {
         defaultMessage: 'Rejected',
         id: 'TR_BUY_STATUS_ERROR',
@@ -1066,10 +1046,6 @@ export default defineMessages({
     TR_BUY_PROVIDER: {
         defaultMessage: 'Provider',
         id: 'TR_BUY_PROVIDER',
-    },
-    TR_BUY_TRANS_ID: {
-        defaultMessage: 'Trans. ID:',
-        id: 'TR_BUY_TRANS_ID',
     },
     TR_BUY_RECEIVING_ADDRESS: {
         defaultMessage: 'Receive address',
@@ -1434,6 +1410,14 @@ export default defineMessages({
     TR_COINMARKET_SWAP: {
         defaultMessage: 'Swap',
         id: 'TR_COINMARKET_SWAP',
+    },
+    TR_COINMARKET_TRANS_ID: {
+        defaultMessage: 'Trans. ID:',
+        id: 'TR_COINMARKET_TRANS_ID',
+    },
+    TR_COINMARKET_VIEW_DETAILS: {
+        defaultMessage: 'View details',
+        id: 'TR_COINMARKET_VIEW_DETAILS',
     },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',
