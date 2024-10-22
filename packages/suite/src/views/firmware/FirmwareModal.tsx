@@ -1,8 +1,12 @@
 import { ReactElement } from 'react';
+import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
+import { TranslationKey } from '@suite-common/intl-types';
 import { acquireDevice, selectDevice } from '@suite-common/wallet-core';
 import { variables } from '@trezor/components';
+import TrezorConnect from '@trezor/connect';
+import { ConfirmOnDevice } from '@trezor/product-components';
 
 import { closeModalApp } from 'src/actions/suite/routerActions';
 import {
@@ -14,8 +18,7 @@ import {
 import { Translation, Modal, PrerequisitesGuide } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { useDispatch, useFirmware, useSelector } from 'src/hooks/suite';
-import { TranslationKey } from '@suite-common/intl-types';
-import { ConfirmOnDevice } from '@trezor/product-components';
+import messages from 'src/support/messages';
 
 const Wrapper = styled.div<{ $isWithTopPadding: boolean }>`
     display: flex;
@@ -63,17 +66,21 @@ export const FirmwareModal = ({
     } = useFirmware({ shouldSwitchFirmwareType });
     const device = useSelector(selectDevice);
     const dispatch = useDispatch();
+    const intl = useIntl();
 
     const deviceModelInternal = uiEvent?.payload.device.features?.internal_model;
     const isCancelable = ['initial', 'check-seed', 'done', 'error'].includes(status);
+    const isAwaitingPinEntry =
+        uiEvent?.type === 'button' && uiEvent.payload.code === 'ButtonRequest_PinEntry';
 
-    const onClose = () => {
+    const handleClose = () => {
         if (device?.status !== 'available') {
             dispatch(acquireDevice(device));
         }
         dispatch(closeModalApp());
         resetReducer();
     };
+    const handlePinCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
     const getComponent = (): ReactElement => {
         if (
@@ -97,7 +104,7 @@ export const FirmwareModal = ({
                         description={
                             <Translation id="TOAST_GENERIC_ERROR" values={{ error: error || '' }} />
                         }
-                        innerActions={<FirmwareCloseButton onClick={onClose} />}
+                        innerActions={<FirmwareCloseButton onClick={handleClose} />}
                         nested
                     />
                 );
@@ -108,7 +115,7 @@ export const FirmwareModal = ({
                     <CheckSeedStep
                         deviceWillBeWiped={deviceWillBeWiped}
                         onSuccess={install}
-                        onClose={onClose}
+                        onClose={handleClose}
                     />
                 );
             case 'started':
@@ -117,8 +124,8 @@ export const FirmwareModal = ({
                     <FirmwareInstallation
                         standaloneFwUpdate
                         install={install}
-                        onSuccess={onClose}
-                        onPromptClose={onClose}
+                        onSuccess={handleClose}
+                        onPromptClose={handleClose}
                         customFirmware={isCustom}
                     />
                 );
@@ -135,10 +142,11 @@ export const FirmwareModal = ({
                         deviceModelInternal={deviceModelInternal}
                         deviceUnitColor={uiEvent?.payload.device.features?.unit_color}
                         isConfirmed={!confirmOnDevice}
+                        onCancel={isAwaitingPinEntry ? handlePinCancel : undefined}
                     />
                 )
             }
-            onCancel={onClose}
+            onCancel={handleClose}
             data-testid="@firmware-modal"
             heading={<Translation id={heading} />}
         >
