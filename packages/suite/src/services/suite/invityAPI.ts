@@ -21,13 +21,12 @@ import {
     SellFiatTradeQuoteResponse,
     SellFiatTradeRequest,
     SellFiatTradeResponse,
-    SellCryptoPaymentMethod,
-    BuyCryptoPaymentMethod,
     InfoResponse,
 } from 'invity-api';
 import { getSuiteVersion, isDesktop } from '@trezor/env-utils';
 import type { InvityServerEnvironment, InvityServers } from '@suite-common/invity';
 import {
+    CoinmarketPaymentMethodType,
     CoinmarketTradeDetailType,
     CoinmarketTradeType,
     CoinmarketWatchTradeResponseMapProps,
@@ -380,7 +379,7 @@ class InvityAPI {
         return `${this.getApiServerUrl()}/images/exchange/${logo}`;
     }
 
-    getPaymentMethodUrl(paymentMethod: BuyCryptoPaymentMethod | SellCryptoPaymentMethod): string {
+    getPaymentMethodUrl(paymentMethod: CoinmarketPaymentMethodType): string {
         return `${this.getApiServerUrl()}/images/paymentMethods/suite/${paymentMethod}.svg`;
     }
 
