@@ -19,4 +19,5 @@ export const { parseConfigure, decodeMessage, encodeMessage } = (() => {
 
 export * from './types';
 export * as Messages from './messages';
+export { loadDefinitions } from './load-definitions';
 export * as MessagesSchema from './messages-schema';
