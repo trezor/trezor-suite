@@ -20,7 +20,7 @@ import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboarding
 import { backupDevice } from 'src/actions/backup/backupActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { selectIsActionAbortable, selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
@@ -32,7 +32,7 @@ export const BackupStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
     const backup = useSelector(state => state.backup);
     const device = useSelector(selectDevice);
-    const locks = useSelector(state => state.suite.locks);
+    const isDeviceLocked = useSelector(selectIsDeviceLocked);
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const dispatch = useDispatch();
 
@@ -77,7 +77,7 @@ export const BackupStep = () => {
                         <OnboardingButtonCta
                             data-testid="@backup/start-button"
                             onClick={handleBackup}
-                            isDisabled={!canContinue(backup.userConfirmed, locks)}
+                            isDisabled={!canContinue(backup.userConfirmed, isDeviceLocked)}
                         >
                             <Translation id="TR_START_BACKUP" />
                         </OnboardingButtonCta>

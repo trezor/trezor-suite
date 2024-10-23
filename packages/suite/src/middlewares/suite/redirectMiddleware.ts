@@ -2,9 +2,9 @@ import { MiddlewareAPI } from 'redux';
 
 import { selectDevice, selectDevices, deviceActions } from '@suite-common/wallet-core';
 
-import { SUITE } from 'src/actions/suite/constants';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { AppState, Action, Dispatch, TrezorDevice } from 'src/types/suite';
+import { selectIsRouterLocked } from 'src/reducers/suite/suiteReducer';
 
 const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: TrezorDevice) => {
     // no device, no redirect
@@ -49,9 +49,9 @@ const redirect =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
-        const { locks } = api.getState().suite;
+        const isRouterLocked = selectIsRouterLocked(api.getState());
 
-        if (locks.includes(SUITE.LOCK_TYPE.ROUTER)) {
+        if (isRouterLocked) {
             next(action);
             // router is locked, no redirect except for switch-device modal app
             if (

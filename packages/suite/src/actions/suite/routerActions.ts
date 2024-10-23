@@ -4,7 +4,7 @@
 import { Route } from '@suite-common/suite-types';
 
 import * as suiteActions from 'src/actions/suite/suiteActions';
-import { SUITE, ROUTER } from 'src/actions/suite/constants';
+import { ROUTER } from 'src/actions/suite/constants';
 import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
 import {
     getAppWithParams,
@@ -18,6 +18,7 @@ import {
 import { Dispatch, GetState } from 'src/types/suite';
 import history from 'src/support/history';
 import type { AnchorType } from 'src/constants/suite/anchors';
+import { selectIsRouterLocked, selectIsRouterOrUiLocked } from 'src/reducers/suite/suiteReducer';
 
 export type RouterAction =
     | {
@@ -40,8 +41,7 @@ export type RouterAction =
  * Called from ./support/RouterHandler
  */
 export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) => {
-    const { locks } = getState().suite;
-    const isLocked = locks.includes(SUITE.LOCK_TYPE.ROUTER) || locks.includes(SUITE.LOCK_TYPE.UI);
+    const isLocked = selectIsRouterOrUiLocked(getState());
     const hasActionModal = getState().modal.context !== '@modal/context-none';
 
     return !isLocked && !hasActionModal;
@@ -108,8 +108,8 @@ export const goto =
     (dispatch: Dispatch, getState: GetState) => {
         const { params, preserveParams, anchor } = options;
 
-        const { suite, router } = getState();
-        const hasRouterLock = suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
+        const state = getState();
+        const hasRouterLock = selectIsRouterLocked(state);
 
         if (hasRouterLock) {
             dispatch(suiteActions.lockRouter(false));
@@ -120,7 +120,7 @@ export const goto =
 
         const urlBase = getPrefixedURL(getRoute(routeName, params));
 
-        if (urlBase === router.url) {
+        if (urlBase === state.router.url) {
             // if location is same, but anchor is set (e.g. click on tor icon when in app settings), let's propagate it to redux state
             if (anchor) {
                 // postpone propagation to allow clearing anchor in redux state by click listener

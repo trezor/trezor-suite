@@ -3,10 +3,10 @@ import { Button, Column, HotkeyBadge, Row, Tooltip } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { SUITE } from 'src/actions/suite/constants';
 import { spacings } from '@trezor/theme';
 import { WalletType } from '@suite-common/wallet-types';
 import { addWalletThunk } from 'src/actions/wallet/addWalletThunk';
+import { selectIsDeviceOrUiLocked } from 'src/reducers/suite/suiteReducer';
 
 interface AddWalletButtonProps {
     device: TrezorDevice;
@@ -18,17 +18,13 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
     const dispatch = useDispatch();
     // Find a "standard wallet" among user's wallet instances. If no such wallet is found, the variable is undefined.
     const emptyPassphraseWalletExists = instances.find(d => d.useEmptyPassphrase && d.state);
-    const locks = useSelector(state => state.suite.locks);
+    const isDeviceOrUiLocked = useSelector(selectIsDeviceOrUiLocked);
     const isPassphraseProtectionEnabled = Boolean(device?.features?.passphrase_protection);
 
     // opportunity to bring useDeviceLocks back (extract it from useDevice hook)?
     // useDevice hook is not really suited for this since we need to pass the device as a prop
     // and there is no point in useDevice returning the same device object we would have passed
-    const isLocked =
-        !device ||
-        !device.connected ||
-        locks.includes(SUITE.LOCK_TYPE.DEVICE) ||
-        locks.includes(SUITE.LOCK_TYPE.UI);
+    const isLocked = !device || !device.connected || isDeviceOrUiLocked;
 
     const onAddWallet = ({ walletType }: { walletType: WalletType }) => {
         dispatch(addWalletThunk({ walletType, device }));
