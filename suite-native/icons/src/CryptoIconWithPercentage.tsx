@@ -14,7 +14,7 @@ import {
 } from '@shopify/react-native-skia';
 
 import { useNativeStyles } from '@trezor/styles';
-import { CryptoIconName, cryptoIcons } from '@suite-common/icons/src/cryptoIcons';
+import { CryptoIconName, cryptoIcons } from '@suite-common/icons';
 
 import { PizzaIcon, usePizzaAnimation } from './PizzaIcon';
 

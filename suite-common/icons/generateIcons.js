@@ -24,11 +24,6 @@ const cryptoAssetsTypesConfig = [
         dirname: 'cryptoAssets/cryptoIcons',
         typeName: 'CryptoIconName',
     },
-    {
-        name: 'tokenIcons',
-        dirname: 'cryptoAssets/tokenIcons',
-        typeName: 'TokenIconName',
-    },
 ];
 
 // https://github.com/svg/svgo#built-in-plugins

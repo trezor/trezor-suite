@@ -59,7 +59,7 @@ export const FeaturesSettings = () => {
             {isUsbDeviceConnectFeatureEnabled && (
                 <>
                     <SettingsSectionItem
-                        iconName="bookmark"
+                        iconName="bookmarkSimple"
                         title={<Translation id="moduleSettings.items.features.viewOnly.title" />}
                         subtitle={
                             <Translation id="moduleSettings.items.features.viewOnly.subtitle" />

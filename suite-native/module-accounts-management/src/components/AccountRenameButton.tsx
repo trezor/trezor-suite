@@ -18,7 +18,7 @@ export const AccountRenameButton = ({ accountKey }: AccountRenameModalProps) => 
         <Box>
             <IconButton
                 colorScheme="tertiaryElevation0"
-                iconName="pencil"
+                iconName="pencilSimple"
                 onPress={handleOpen}
                 testID="@account-detail/settings/edit-button"
             />
