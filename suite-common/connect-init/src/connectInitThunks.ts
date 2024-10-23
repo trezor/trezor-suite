@@ -95,6 +95,8 @@ export const connectInitThunk = createThunk(
                     const useWrapped =
                         params.device && infoResult.success && infoResult.payload.useDevice;
 
+                    // console.log('infoResult', infoResult);
+
                     if (!useWrapped) {
                         return original(params);
                     }
@@ -109,6 +111,7 @@ export const connectInitThunk = createThunk(
                         original({ ...params, useCardanoDerivation: cardanoEnabled }),
                     );
                     dispatch(lockDevice(false));
+                    // console.log('result', result);
 
                     return result;
                 };
