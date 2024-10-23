@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useFormContext } from '@suite-native/forms';
@@ -25,7 +27,11 @@ const enteredDigitsStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
 }));
 
-export const PinFormProgress = () => {
+type PinFormProgressProps = {
+    title: ReactNode;
+};
+
+export const PinFormProgress = ({ title }: PinFormProgressProps) => {
     const { applyStyle } = useNativeStyles();
     const {
         watch,
@@ -35,11 +41,7 @@ export const PinFormProgress = () => {
     const pinLength = watch('pin').length;
 
     if (!pinLength) {
-        return (
-            <Text variant="titleSmall">
-                <Translation id="moduleConnectDevice.pinScreen.form.title" />
-            </Text>
-        );
+        return <Text variant="titleSmall">{title}</Text>;
     }
 
     if (pinLength > MAX_DIGITS_DISPLAYED_AS_DOTS) {

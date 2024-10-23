@@ -148,6 +148,9 @@ export type DeviceSettingsStackParamList = {
 
 export type DevicePinProtectionStackParamList = {
     [DevicePinProtectionStackRoutes.ContinueOnTrezor]: undefined;
+    [DevicePinProtectionStackRoutes.EnterCurrentPin]: undefined;
+    [DevicePinProtectionStackRoutes.EnterNewPin]: undefined;
+    [DevicePinProtectionStackRoutes.ConfirmNewPin]: undefined;
 };
 
 export type AuthorizeDeviceStackParamList = {

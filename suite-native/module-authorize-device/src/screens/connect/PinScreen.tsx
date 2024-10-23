@@ -1,25 +1,44 @@
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Image, VStack } from '@suite-native/atoms';
-import { DeviceModelInternal } from '@trezor/connect';
+import { useNavigation } from '@react-navigation/native';
+
 import { selectDeviceModel } from '@suite-common/wallet-core';
+import {
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
+    RootStackParamList,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+import { DeviceModelInternal } from '@trezor/connect';
 
 import { ConnectDeviceScreenView } from '../../components/connect/ConnectDeviceScreenView';
-import { PinForm } from '../../components/connect/PinForm';
-import { PinOnDevice, deviceImageMap } from '../../components/connect/PinOnDevice';
+import { PinOnDevice } from '../../components/connect/PinOnDevice';
+import { PinOnKeypad } from '../../components/connect/PinOnKeypad';
+
+type NavigationProp = StackToStackCompositeNavigationProps<
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes.PinMatrix,
+    RootStackParamList
+>;
 
 export const PinScreen = () => {
+    const navigation = useNavigation<NavigationProp>();
+
     const deviceModel = useSelector(selectDeviceModel);
+
+    const onSuccess = useCallback(() => {
+        if (navigation.canGoBack()) {
+            navigation.goBack();
+        }
+    }, [navigation]);
 
     if (!deviceModel) return null;
 
     return (
         <ConnectDeviceScreenView>
             {deviceModel === DeviceModelInternal.T1B1 ? (
-                <VStack spacing="sp16" alignItems="center" flex={1} marginTop="sp24">
-                    <Image source={deviceImageMap[deviceModel]} width={161} height={194} />
-                    <PinForm />
-                </VStack>
+                <PinOnKeypad variant="current" onSuccess={onSuccess} />
             ) : (
                 <PinOnDevice deviceModel={deviceModel} />
             )}

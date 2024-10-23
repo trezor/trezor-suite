@@ -45,7 +45,9 @@ export enum DeviceStackRoutes {
 
 export enum DevicePinProtectionStackRoutes {
     ContinueOnTrezor = 'ContinueOnTrezor',
-    // TODO: Add T1 routes
+    EnterCurrentPin = 'EnterCurrentPin',
+    EnterNewPin = 'EnterNewPin',
+    ConfirmNewPin = 'ConfirmNewPin',
 }
 
 export enum AuthorizeDeviceStackRoutes {
