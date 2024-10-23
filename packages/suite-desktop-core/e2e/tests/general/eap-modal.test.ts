@@ -8,6 +8,7 @@ import {
 import { launchSuite } from '../../support/common';
 import { onTopBar } from '../../support/pageActions/topBarActions';
 import { onSettingsPage } from '../../support/pageActions/settingsActions';
+import { onDashboardPage } from '../../support/pageActions/dashboardActions';
 
 let electronApp: ElectronApplication;
 let window: Page;
@@ -32,6 +33,7 @@ testPlaywright.afterAll(() => {
 testPlaywright('Join early access button', async () => {
     const buttonText = 'Leave';
 
+    onDashboardPage.optionallyDismissFwHashCheckError(window);
     await onTopBar.openSettings(window);
     await onSettingsPage.goToDesiredSettingsPlace(window, 'general');
     await onSettingsPage.joinEarlyAccessProgram(window);
