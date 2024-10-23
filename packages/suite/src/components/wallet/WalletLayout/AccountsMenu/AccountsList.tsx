@@ -9,7 +9,7 @@ import { AccountGroup } from './AccountGroup';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { spacings } from '@trezor/theme';
 import { Column } from '@trezor/components';
-import { AccountSection } from './AcccountSection';
+import { AccountSection } from './AccountSection';
 
 interface AccountListProps {
     onItemClick?: () => void;

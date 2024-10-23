@@ -628,7 +628,7 @@ export const enhanceHistory = ({
     addrTxCount,
 });
 
-export const getTokensFiatBalance = (
+export const getAccountTokensFiatBalance = (
     account: Account,
     localCurrency: string,
     rates?: RatesByKey,
@@ -651,6 +651,26 @@ export const getTokensFiatBalance = (
                 totalBalance = totalBalance.plus(tokenBalance);
             }
         }
+    });
+
+    return totalBalance.toFixed();
+};
+
+export const getAssetTokensFiatBalance = (
+    accounts: Account[],
+    localCurrency: FiatCurrencyCode,
+    rates?: RatesByKey,
+) => {
+    let totalBalance = new BigNumber(0);
+
+    accounts.forEach(account => {
+        const tokensBalance = getAccountTokensFiatBalance(
+            account,
+            localCurrency,
+            rates,
+            account.tokens,
+        );
+        totalBalance = totalBalance.plus(tokensBalance ?? 0);
     });
 
     return totalBalance.toFixed();
@@ -688,7 +708,12 @@ export const getAccountFiatBalance = ({
 
     // sum fiat value of all tokens
     if (shouldIncludeTokens) {
-        const tokensBalance = getTokensFiatBalance(account, localCurrency, rates, account.tokens);
+        const tokensBalance = getAccountTokensFiatBalance(
+            account,
+            localCurrency,
+            rates,
+            account.tokens,
+        );
         totalBalance = totalBalance.plus(tokensBalance ?? 0);
     }
 
