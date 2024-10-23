@@ -6,8 +6,6 @@ describe('Onboarding - create wallet', () => {
         cy.task('startBridge');
         cy.viewport(1920, 1080).resetDb();
         cy.prefixedVisit('/');
-
-        // TODO: add workaround that switches off the firmware revision check in settings/device
     });
 
     it('Success (Shamir backup)', () => {
@@ -16,8 +14,8 @@ describe('Onboarding - create wallet', () => {
         // in production, and we locally bumped emulator version, we would get into a screen saying "update your firmware" and the test would fail.
         cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2-main' });
 
-        // TODO: compromised device workaround, refactor into more stable solution
-        cy.contains('Back').click();
+        // firmware revision check will fail with 2-main version, but we just need to get through onboarding, so it's fine to just dismiss it
+        cy.getTestElement('@device-compromised/back-button').click();
 
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@analytics/continue-button').click();

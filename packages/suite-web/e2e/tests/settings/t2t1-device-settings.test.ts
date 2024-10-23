@@ -82,13 +82,10 @@ describe('T2T1 - Device settings', () => {
     });
 
     it('able to change homescreen in firmware >= 2.5.4', () => {
-        cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2-main' });
+        cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2-latest' });
         cy.task('setupEmu');
 
         cy.prefixedVisit('/');
-
-        // TODO: compromised device workaround, refactor into more stable solution
-        cy.contains('Back').click();
 
         cy.passThroughInitialRun();
         onNavBar.openSettings();
