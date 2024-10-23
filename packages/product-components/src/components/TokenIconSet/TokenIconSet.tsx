@@ -34,6 +34,9 @@ const TokenIconPlaceholder = styled.div<{ $elevation: Elevation }>`
     background: ${mapElevationToBackground};
 `;
 
+/**
+ * @param tokens - provide already sorted tokens (for example by fiat value).
+ */
 export const TokenIconSet = ({ network, tokens }: TokenIconSetProps) => {
     const { elevation } = useElevation();
     const { length } = tokens;
@@ -49,9 +52,9 @@ export const TokenIconSet = ({ network, tokens }: TokenIconSetProps) => {
     return (
         <IconContainer $length={length}>
             {length > 3 && <TokenIconPlaceholder $elevation={elevation} />}
-            {visibleTokens.map(token => (
+            {visibleTokens.map((token, i) => (
                 <AssetLogo
-                    key={token.contract}
+                    key={token.contract + i}
                     size={20}
                     coingeckoId={coingeckoId ?? ''}
                     contractAddress={getContractAddressForNetwork(network, token.contract)}

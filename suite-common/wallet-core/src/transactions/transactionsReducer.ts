@@ -409,6 +409,9 @@ export const selectAccountHasStaked = (state: TransactionsRootState, account: Ac
     return stakeTxs.length > 0 || !!getEverstakePool(account);
 };
 
+export const selectAssetAccountsThatStaked = (state: TransactionsRootState, accounts: Account[]) =>
+    accounts.filter(account => selectAccountHasStaked(state, account));
+
 export const selectAccountTransactionsFetchStatus = (
     state: TransactionsRootState,
     accountKey: AccountKey,
