@@ -9551,7 +9551,7 @@ __metadata:
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -9567,7 +9567,7 @@ __metadata:
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
   languageName: unknown
   linkType: soft
 
@@ -9693,7 +9693,7 @@ __metadata:
     react-native-gesture-handler: "npm:2.18.1"
     react-native-keyboard-aware-scroll-view: "npm:0.9.5"
     react-native-mmkv: "npm:2.12.2"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-native-restart: "npm:0.0.27"
     react-native-safe-area-context: "npm:4.10.9"
     react-native-screens: "npm:3.34.0"
@@ -9731,7 +9731,7 @@ __metadata:
     proxy-memoize: "npm:2.0.2"
     react: "npm:^18.2.0"
     react-native: "npm:0.75.2"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -9757,7 +9757,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
     react-native-gesture-handler: "npm:2.18.1"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-native-safe-area-context: "npm:4.10.9"
   languageName: unknown
   linkType: soft
@@ -9817,7 +9817,7 @@ __metadata:
     expo-linear-gradient: "npm:13.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-native-svg: "npm:15.6.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -9892,7 +9892,7 @@ __metadata:
     jotai: "npm:1.9.1"
     react: "npm:^18.2.0"
     react-native: "npm:0.75.2"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-native-safe-area-context: "npm:4.10.9"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -9934,7 +9934,7 @@ __metadata:
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-redux: "npm:8.0.7"
     semver: "npm:^7.6.3"
   languageName: unknown
@@ -10050,7 +10050,7 @@ __metadata:
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-redux: "npm:8.0.7"
     redux-persist: "npm:6.0.0"
   languageName: unknown
@@ -10081,7 +10081,7 @@ __metadata:
     expo-image: "npm:1.12.15"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
   languageName: unknown
   linkType: soft
 
@@ -10129,7 +10129,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -10173,7 +10173,7 @@ __metadata:
     "@trezor/utxo-lib": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -10214,7 +10214,7 @@ __metadata:
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.53.0"
     react-native: "npm:0.75.2"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -10275,7 +10275,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-native-svg: "npm:15.6.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -10476,7 +10476,7 @@ __metadata:
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.53.0"
     react-native: "npm:0.75.2"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-native-svg: "npm:15.6.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -10598,7 +10598,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
     react-native-gesture-handler: "npm:2.18.1"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -10634,7 +10634,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
     react-native-gesture-handler: "npm:2.18.1"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
   languageName: unknown
   linkType: soft
 
@@ -10671,7 +10671,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
     react-native-gesture-handler: "npm:2.18.1"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -10766,7 +10766,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     react: "npm:18.2.0"
     react-native-gesture-handler: "npm:2.18.1"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-native-safe-area-context: "npm:4.10.9"
   languageName: unknown
   linkType: soft
@@ -10797,7 +10797,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
   languageName: unknown
   linkType: soft
 
@@ -10851,7 +10851,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
     react-native-gesture-handler: "npm:2.18.1"
-    react-native-reanimated: "npm:3.15.0"
+    react-native-reanimated: "npm:3.16.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -36105,9 +36105,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-reanimated@npm:3.15.0":
-  version: 3.15.0
-  resolution: "react-native-reanimated@npm:3.15.0"
+"react-native-reanimated@npm:3.16.1":
+  version: 3.16.1
+  resolution: "react-native-reanimated@npm:3.16.1"
   dependencies:
     "@babel/plugin-transform-arrow-functions": "npm:^7.0.0-0"
     "@babel/plugin-transform-class-properties": "npm:^7.0.0-0"
@@ -36124,7 +36124,7 @@ __metadata:
     "@babel/core": ^7.0.0-0
     react: "*"
     react-native: "*"
-  checksum: 10/f40a19983d859109e3dc5809999cc2f06a5e5f985a7bb08a672d6f218fccc240f86835d28a6e521fe09d8e40bac36799e9e1efff8a8ba272e2874fefe62340f0
+  checksum: 10/3e46c32655a5e3d89dd79606179ebd6da96cedf31f15c64a32d4cea2c35ec5724411099aeaa59e5f8220c93fc268ee1b391b3210e7e87e43544e279edd2a2ccc
   languageName: node
   linkType: hard
 
