@@ -5,5 +5,5 @@ interface NoTokensProps {
 }
 
 export const NoTokens = ({ title }: NoTokensProps) => (
-    <AccountExceptionLayout title={title} image="CLOUDY" />
+    <AccountExceptionLayout title={title} iconName="coins" iconVariant="tertiary" />
 );

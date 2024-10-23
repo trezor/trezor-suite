@@ -1,4 +1,3 @@
-import { Button } from '@trezor/components';
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
@@ -16,14 +15,19 @@ export const NoTransactions = ({ account }: NoTransactionsProps) => {
     return (
         <AccountExceptionLayout
             title={<Translation id="TR_TRANSACTIONS_NOT_AVAILABLE" />}
-            image="CLOUDY"
-            actionComponent={
-                <Button variant="primary" icon="arrowUpRight" iconAlignment="right">
-                    <TrezorLink variant="nostyle" href={explorerUrl}>
-                        <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />
-                    </TrezorLink>
-                </Button>
-            }
+            iconName="cloud"
+            iconVariant="info"
+            actions={[
+                {
+                    key: '1',
+                    icon: 'arrowUpRight',
+                    children: (
+                        <TrezorLink variant="nostyle" href={explorerUrl}>
+                            <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />
+                        </TrezorLink>
+                    ),
+                },
+            ]}
         />
     );
 };

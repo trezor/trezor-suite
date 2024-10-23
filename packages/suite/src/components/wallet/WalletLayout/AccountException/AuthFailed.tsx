@@ -14,7 +14,8 @@ export const AuthFailed = () => {
         <AccountExceptionLayout
             title={<Translation id="TR_ACCOUNT_EXCEPTION_AUTH_ERROR" />}
             description={<Translation id="TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC" />}
-            image="UNI_ERROR"
+            iconName="warning"
+            iconVariant="warning"
             actions={[
                 {
                     key: '1',

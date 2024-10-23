@@ -24,6 +24,9 @@ export const CollapsibleBox: StoryObj = {
             </p>
         ),
         hasDivider: true,
+        fillType: 'default',
+        paddingType: 'normal',
+        headingSize: 'large',
         ...getFramePropsStory(allowedCollapsibleBoxFrameProps).args,
     },
     argTypes: {

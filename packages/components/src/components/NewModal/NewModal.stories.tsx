@@ -6,8 +6,9 @@ import {
     NewModalProps,
     variables,
 } from '../../index';
+import { newModalVariants, newModalSizes } from './types';
 import { ThemeProvider } from 'styled-components';
-import { intermediaryTheme } from '../../index';
+import { intermediaryTheme, IconCircle } from '../../index';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const Buttons = () => (
@@ -62,32 +63,28 @@ export const NewModal: StoryObj<NewModalProps> = {
     argTypes: {
         variant: {
             control: {
-                type: 'radio',
+                type: 'select',
             },
-            options: [
-                'primary',
-                'warning',
-                'destructive',
-                undefined,
-            ] satisfies NewModalProps['variant'][],
+            options: [...newModalVariants, undefined],
         },
         iconComponent: {
             options: ['nothing', 'purple'],
             mapping: {
                 nothing: undefined,
                 purple: (
-                    <ModalComponent.Icon
-                        iconName="eap"
+                    <IconCircle
+                        name="eap"
                         iconColor={{ foreground: '#550070', background: '#c458d9' }}
+                        size={40}
                     />
                 ),
             },
         },
         size: {
             control: {
-                type: 'radio',
+                type: 'select',
             },
-            options: ['tiny', 'small', 'medium', 'large'] satisfies NewModalProps['size'][],
+            options: newModalSizes,
         },
         heading: {
             control: 'text',

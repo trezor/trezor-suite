@@ -8,6 +8,7 @@ import { AccountExceptionLayout } from 'src/components/wallet';
 export const AccountNotExists = () => (
     <AccountExceptionLayout
         title={<Translation id="TR_ACCOUNT_EXCEPTION_NOT_EXIST" />}
-        image="CLOUDY"
+        iconName="cloud"
+        iconVariant="tertiary"
     />
 );

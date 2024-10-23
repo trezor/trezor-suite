@@ -34,22 +34,21 @@ export const mapVariantToIconBackground = ({
         return $iconColor?.background ?? 'transparent';
     }
 
-    const colorMap: Record<number, Record<IconCircleVariant, Color>> = {
-        0: {
-            primary: 'backgroundPrimarySubtleOnElevation1',
-            warning: 'backgroundAlertYellowSubtleOnElevation1',
-            destructive: 'backgroundAlertRedSubtleOnElevation1',
-            info: 'backgroundAlertBlueSubtleOnElevation1',
-            tertiary: 'backgroundTertiaryDefaultOnElevation1',
-        },
-        1: {
-            primary: 'backgroundPrimarySubtleOnElevation2',
-            warning: 'backgroundAlertYellowSubtleOnElevation2',
-            destructive: 'backgroundAlertRedSubtleOnElevation2',
-            info: 'backgroundAlertBlueSubtleOnElevation2',
-            tertiary: 'backgroundTertiaryDefaultOnElevation1',
-        },
+    const noBorderColorMap: Record<IconCircleVariant, Color> = {
+        primary: 'backgroundPrimarySubtleOnElevation1',
+        warning: 'backgroundAlertYellowSubtleOnElevation1',
+        destructive: 'backgroundAlertRedSubtleOnElevation1',
+        info: 'backgroundAlertBlueSubtleOnElevation1',
+        tertiary: 'backgroundTertiaryDefaultOnElevation1',
     };
 
-    return theme[colorMap[Number($hasBorder)][$variant]];
+    const borderColorMap: Record<IconCircleVariant, Color> = {
+        primary: 'backgroundPrimarySubtleOnElevation2',
+        warning: 'backgroundAlertYellowSubtleOnElevation2',
+        destructive: 'backgroundAlertRedSubtleOnElevation2',
+        info: 'backgroundAlertBlueSubtleOnElevation2',
+        tertiary: 'backgroundTertiaryDefaultOnElevation1',
+    };
+
+    return theme[($hasBorder ? borderColorMap : noBorderColorMap)[$variant]];
 };

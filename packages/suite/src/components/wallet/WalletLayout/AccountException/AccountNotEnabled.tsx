@@ -26,7 +26,8 @@ export const AccountNotEnabled = ({ network }: AccountNotEnabledProps) => {
                     values={{ networkName: network.name }}
                 />
             }
-            image="CLOUDY"
+            iconName="warning"
+            iconVariant="warning"
             actions={[
                 {
                     icon: 'plus',

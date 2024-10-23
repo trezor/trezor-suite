@@ -1,4 +1,4 @@
-import { H3, Image, Row, Paragraph, Button, Column } from '@trezor/components';
+import { H3, Row, Paragraph, Button, Column, IconCircle } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -23,7 +23,7 @@ export const EmptyWallet = () => {
 
     return (
         <Column gap={spacings.xxs} data-testid="@dashboard/wallet-ready">
-            <Image image="UNI_SUCCESS" />
+            <IconCircle name="check" size="extraLarge" variant="primary" />
             <H3 margin={{ top: spacings.md }}>
                 <Translation id="TR_YOUR_WALLET_IS_READY_WHAT" />
             </H3>

@@ -5,9 +5,15 @@ import { useTheme } from 'styled-components';
 import { SUITE_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { Button, Column, NewModal, Paragraph } from '@trezor/components';
+import {
+    Button,
+    Column,
+    NewModal,
+    Paragraph,
+    IconCircleColors,
+    IconCircle,
+} from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { NewModalIconColors } from '@trezor/components';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 
@@ -31,12 +37,14 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
         setEnabled(false);
     }, []);
 
-    const purpleModalColorBranding: NewModalIconColors = {
+    const purpleModalColorBranding: IconCircleColors = {
         foreground: theme.iconAlertPurple,
         background: theme.backgroundAlertPurpleSubtleOnElevationNegative,
     };
 
-    const eapIconComponent = <NewModal.Icon iconName="eap" iconColor={purpleModalColorBranding} />;
+    const eapIconComponent = (
+        <IconCircle name="eap" iconColor={purpleModalColorBranding} size={40} />
+    );
 
     return enabled ? (
         <NewModal

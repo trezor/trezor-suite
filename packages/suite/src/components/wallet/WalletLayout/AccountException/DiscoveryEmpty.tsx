@@ -19,7 +19,8 @@ export const DiscoveryEmpty = () => {
     return (
         <AccountExceptionLayout
             title={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY" />}
-            image="CLOUDY"
+            iconName="cloud"
+            iconVariant="info"
             description={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC" />}
             actions={[
                 {
