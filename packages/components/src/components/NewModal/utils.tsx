@@ -1,41 +1,5 @@
-import { Color, CSSColor } from '@trezor/theme';
-import { NewModalVariant, NewModalSize, NewModalAlignment } from './types';
-import { DefaultTheme } from 'styled-components';
+import { NewModalSize, NewModalAlignment } from './types';
 import { UIVerticalAlignment, UIHorizontalAlignment } from '../../config/types';
-import { TransientProps } from '../../utils/transientProps';
-import { NewModalIconExclusiveColorOrVariant } from './NewModalIcon';
-
-type MapArgs = {
-    theme: DefaultTheme;
-} & TransientProps<NewModalIconExclusiveColorOrVariant>;
-
-export const mapVariantToIconBackground = ({ $variant, theme, $iconColor }: MapArgs): CSSColor => {
-    if ($variant === undefined) {
-        return $iconColor?.background ?? 'transparent';
-    }
-
-    const colorMap: Record<NewModalVariant, Color> = {
-        primary: 'backgroundPrimarySubtleOnElevation2',
-        warning: 'backgroundAlertYellowSubtleOnElevation2',
-        destructive: 'backgroundAlertRedSubtleOnElevation2',
-    };
-
-    return theme[colorMap[$variant]];
-};
-
-export const mapVariantToIconBorderColor = ({ $variant, theme, $iconColor }: MapArgs): CSSColor => {
-    if ($variant === undefined) {
-        return $iconColor?.foreground ?? 'transparent';
-    }
-
-    const colorMap: Record<NewModalVariant, Color> = {
-        primary: 'backgroundPrimarySubtleOnElevation0',
-        warning: 'backgroundAlertYellowSubtleOnElevation0',
-        destructive: 'backgroundAlertRedSubtleOnElevation0',
-    };
-
-    return theme[colorMap[$variant]];
-};
 
 export const mapModalSizeToWidth = (size: NewModalSize) => {
     const widthMap: Record<NewModalSize, number> = {
