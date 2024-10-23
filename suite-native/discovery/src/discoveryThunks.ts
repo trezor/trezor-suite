@@ -33,6 +33,7 @@ import {
     getNetworkType,
     NetworkAccount,
     normalizeNetworkAccounts,
+    Bip43Path,
 } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
@@ -366,7 +367,7 @@ export const addAndDiscoverNetworkAccountThunk = createThunk<
             return rejectWithValue(discoveryErrors.accountLimitReached);
         }
 
-        const accountPath = network.bip43Path.replace('i', index.toString());
+        const accountPath = network.bip43Path.replace('i', index.toString()) as Bip43Path;
 
         // Take exclusive access to the device and hold it until fetching of the descriptors is done.
         const deviceAccessResponse = await requestDeviceAccess({
@@ -458,7 +459,8 @@ const discoverNetworkBatchThunk = createThunk(
             const index =
                 lastDiscoveredAccountIndex + batchIndex + (isEvmLedgerDerivationPath ? 1 : 0);
 
-            const accountPath = normalizedNetworkAccount.bip43Path.replace('i', index.toString());
+            const { bip43Path } = normalizedNetworkAccount;
+            const accountPath = bip43Path.replace('i', index.toString()) as Bip43Path;
 
             const isAccountAlreadyDiscovered = selectIsAccountAlreadyDiscovered(getState(), {
                 deviceState,
