@@ -1,30 +1,24 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { Dimensions } from 'react-native';
 import { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Image, Box, Text } from '@suite-native/atoms';
-import { DeviceModelInternal } from '@trezor/connect';
+import { Box, Image, Text } from '@suite-native/atoms';
 import {
-    selectDeviceRequestedPin,
-    selectDeviceRequestedPassphrase,
     cancelPassphraseAndSelectStandardDeviceThunk,
+    selectDeviceRequestedPassphrase,
+    selectDeviceRequestedPin,
     selectIsCreatingNewPassphraseWallet,
     selectPassphraseError,
 } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
+import { DeviceModelInternal } from '@trezor/connect';
+import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-const SCREEN_HEIGHT = Dimensions.get('screen').height;
+import { deviceImageMap } from '../../constants/deviceImageConstants';
 
-export const deviceImageMap: Record<DeviceModelInternal, string> = {
-    [DeviceModelInternal.T1B1]: require('../../assets/connect/pin-t1b1.png'),
-    [DeviceModelInternal.T2T1]: require('../../assets/connect/pin-t2t1.png'),
-    [DeviceModelInternal.T2B1]: require('../../assets/connect/pin-t3b1.png'),
-    [DeviceModelInternal.T3B1]: require('../../assets/connect/pin-t3b1.png'),
-    [DeviceModelInternal.T3T1]: require('../../assets/connect/pin-t3t1.png'),
-};
+const SCREEN_HEIGHT = getScreenHeight();
 
 const wrapperStyle = prepareNativeStyle(utils => ({
     flex: 1,

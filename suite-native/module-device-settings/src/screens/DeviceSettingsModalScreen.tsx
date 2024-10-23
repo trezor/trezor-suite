@@ -21,7 +21,6 @@ import {
     ScreenSubHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { DeviceModelInternal } from '@trezor/connect';
 
 import { DeviceFirmwareCard } from '../components/DeviceFirmwareCard';
 import { DevicePinProtectionCard } from '../components/DevicePinProtectionCard';
@@ -76,7 +75,7 @@ export const DeviceSettingsModalScreen = () => {
             </VStack>
             <VStack spacing="sp24">
                 <DeviceFirmwareCard />
-                {deviceModel !== DeviceModelInternal.T1B1 && <DevicePinProtectionCard />}
+                <DevicePinProtectionCard />
                 {isUpgradable && (
                     <Button colorScheme="primary" onPress={handleUpdateClick}>
                         <Translation id="moduleDeviceSettings.updateHowTo.title" />

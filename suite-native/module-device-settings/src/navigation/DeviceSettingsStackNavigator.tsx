@@ -9,7 +9,7 @@ import {
 import { DeviceSettingsModalScreen } from '../screens/DeviceSettingsModalScreen';
 import { DevicePinProtectionStackNavigator } from './DevicePinProtectionStackNavigator';
 
-export const DeviceSettingsStack = createNativeStackNavigator<DeviceSettingsStackParamList>();
+const DeviceSettingsStack = createNativeStackNavigator<DeviceSettingsStackParamList>();
 
 export const DeviceSettingsStackNavigator = () => (
     <DeviceSettingsStack.Navigator

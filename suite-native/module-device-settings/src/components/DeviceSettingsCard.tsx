@@ -9,7 +9,7 @@ const contentStyle = prepareNativeStyle(() => ({
     flexShrink: 1,
 }));
 
-export type DeviceSettingsCardProps = {
+type DeviceSettingsCardProps = {
     icon: IconName;
     title: ReactNode;
     children: ReactNode;
