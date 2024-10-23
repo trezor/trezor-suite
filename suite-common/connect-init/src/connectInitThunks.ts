@@ -59,6 +59,7 @@ export const connectInitThunk = createThunk(
 
         const synchronize = getSynchronize();
 
+        let connectlock = '';
         Object.keys(TrezorConnect)
             .filter(
                 key =>
@@ -85,25 +86,37 @@ export const connectInitThunk = createThunk(
 
                 // @ts-expect-error
                 TrezorConnect[key] = async (params: any) => {
-                    const infoResult = await original({ ...params, __info: true });
-                    const useWrapped = infoResult.success && infoResult.payload.useDevice;
+                    try {
+                        if (connectlock) {
+                            console.warn(
+                                `Device.LOCK is already set! this suggest antipattern: ${key} locked by ${connectlock}`,
+                            );
+                        }
+                        connectlock = key;
+                        console.log('key', key);
+                        const infoResult = await original({ ...params, __info: true });
+                        console.log('infoResult', infoResult);
+                        const useWrapped = infoResult.success && infoResult.payload.useDevice;
 
-                    if (!useWrapped) {
-                        return original(params);
+                        if (!useWrapped) {
+                            return original(params);
+                        }
+
+                        const enabledNetworks = getEnabledNetworks();
+                        const cardanoEnabled =
+                            infoResult.payload.useDeviceState &&
+                            !!enabledNetworks.find(a => a === 'ada' || a === 'tada');
+
+                        dispatch(lockDevice(true));
+                        const result = await synchronize(() =>
+                            original({ ...params, useCardanoDerivation: cardanoEnabled }),
+                        );
+                        dispatch(lockDevice(false));
+                        console.log('result', result);
+                        return result;
+                    } finally {
+                        connectlock = '';
                     }
-
-                    const enabledNetworks = getEnabledNetworks();
-                    const cardanoEnabled =
-                        infoResult.payload.useDeviceState &&
-                        !!enabledNetworks.find(a => a === 'ada' || a === 'tada');
-
-                    dispatch(lockDevice(true));
-                    const result = await synchronize(() =>
-                        original({ ...params, useCardanoDerivation: cardanoEnabled }),
-                    );
-                    dispatch(lockDevice(false));
-
-                    return result;
                 };
             });
 

@@ -336,6 +336,7 @@ export const authorizeDeviceThunk = createThunk<
             useEmptyPassphrase: device.useEmptyPassphrase,
         };
 
+        console.log('getDeviceState 1');
         const response = await TrezorConnect.getDeviceState(deviceParams);
 
         if (response.success) {
@@ -414,6 +415,8 @@ export const authConfirm = createThunk(
     async (_, { dispatch, getState, extra }) => {
         const device = selectDeviceSelector(getState());
         if (!device) return false;
+
+        console.log('getDeviceState 2');
 
         const response = await TrezorConnect.getDeviceState({
             device: {
