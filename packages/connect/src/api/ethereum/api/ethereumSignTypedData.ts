@@ -17,6 +17,7 @@ import { getEthereumDefinitions } from '../ethereumDefinitions';
 import { EthereumNetworkInfo, DeviceModelInternal } from '../../../types';
 import { MessagesSchema } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
+import { Enum_Capability } from '@trezor/protobuf/src/messages';
 
 // This type is not inferred, because it internally uses types that are generic
 type Params = (
@@ -42,6 +43,7 @@ const Params = Type.Intersect([
 export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignTypedData', Params> {
     init() {
         this.requiredPermissions = ['read', 'write'];
+        this.requiredDeviceCapabilities = [Enum_Capability.Capability_Ethereum];
 
         const { payload } = this;
 

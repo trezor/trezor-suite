@@ -17,6 +17,7 @@ import {
 import { Assert } from '@trezor/schema-utils';
 import { Bundle } from '../../../types';
 import { GetAddress as GetAddressSchema } from '../../../types/api/getAddress';
+import { Enum_Capability } from '@trezor/protobuf/src/messages';
 
 type Params = PROTO.EthereumGetAddress & {
     address?: string;
@@ -31,6 +32,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
     init() {
         this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
+        this.requiredDeviceCapabilities = [Enum_Capability.Capability_Ethereum];
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;

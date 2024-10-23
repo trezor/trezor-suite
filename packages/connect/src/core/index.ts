@@ -423,6 +423,8 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
         sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
     }
 
+    method.checkDeviceCapability();
+
     // run method
     try {
         const response = await method.run();

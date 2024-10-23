@@ -10,6 +10,7 @@ import type { PROTO } from '../../../constants';
 import type { EthereumNetworkInfo } from '../../../types';
 import { Assert } from '@trezor/schema-utils';
 import { Bundle, GetPublicKey as GetPublicKeySchema } from '../../../types';
+import { Enum_Capability } from '@trezor/protobuf/src/messages';
 
 type Params = PROTO.EthereumGetPublicKey & {
     network?: EthereumNetworkInfo;
@@ -20,6 +21,7 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
 
     init() {
         this.requiredPermissions = ['read'];
+        this.requiredDeviceCapabilities = [Enum_Capability.Capability_Ethereum];
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;

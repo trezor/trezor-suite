@@ -6,6 +6,7 @@ import { stripHexPrefix, messageToHex } from '../../../utils/formatUtils';
 import type { PROTO } from '../../../constants';
 import { Assert } from '@trezor/schema-utils';
 import { EthereumVerifyMessage as EthereumVerifyMessageSchema } from '../../../types';
+import { Enum_Capability } from '@trezor/protobuf/src/messages';
 
 export default class EthereumVerifyMessage extends AbstractMethod<
     'ethereumVerifyMessage',
@@ -14,6 +15,7 @@ export default class EthereumVerifyMessage extends AbstractMethod<
     init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+        this.requiredDeviceCapabilities = [Enum_Capability.Capability_Ethereum];
 
         const { payload } = this;
 
