@@ -9673,7 +9673,7 @@ __metadata:
     react-native-gesture-handler: "npm:2.18.1"
     react-native-keyboard-aware-scroll-view: "npm:0.9.5"
     react-native-mmkv: "npm:2.12.2"
-    react-native-permissions: "npm:^4.1.5"
+    react-native-permissions: "npm:^5.0.1"
     react-native-reanimated: "npm:3.15.0"
     react-native-restart: "npm:0.0.27"
     react-native-safe-area-context: "npm:4.10.9"
@@ -9786,7 +9786,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
     react-native-ble-plx: "npm:^3.2.1"
-    react-native-permissions: "npm:^4.1.5"
+    react-native-permissions: "npm:^5.0.1"
     react-native-restart: "npm:0.0.27"
   languageName: unknown
   linkType: soft
@@ -35897,9 +35897,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-permissions@npm:^4.1.5":
-  version: 4.1.5
-  resolution: "react-native-permissions@npm:4.1.5"
+"react-native-permissions@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "react-native-permissions@npm:5.0.1"
   peerDependencies:
     react: ">=18.1.0"
     react-native: ">=0.70.0"
@@ -35907,7 +35907,7 @@ __metadata:
   peerDependenciesMeta:
     react-native-windows:
       optional: true
-  checksum: 10/2b1eaa879e4b0c3455488c3dfa1d8b203bdbf2cd550b8ee5691d26e03c086d33f9bc495a70f8e1e85d0c16131374e11d12f7927168179e339f158eea9fb04830
+  checksum: 10/85352df23e1d91a09dfe4aa507e99d472d53c42590d71bb3d0efa5a187c6e17a4c3621e5392f7ebbeac084d91e29ac5319f8fe353c0b8c4f7d2404a5a58b581b
   languageName: node
   linkType: hard
 

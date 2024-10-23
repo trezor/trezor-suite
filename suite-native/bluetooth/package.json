@@ -20,7 +20,7 @@
         "react": "18.2.0",
         "react-native": "0.75.2",
         "react-native-ble-plx": "^3.2.1",
-        "react-native-permissions": "^4.1.5",
+        "react-native-permissions": "^5.0.1",
         "react-native-restart": "0.0.27"
     }
 }

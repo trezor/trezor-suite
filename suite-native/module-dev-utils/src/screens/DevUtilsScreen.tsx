@@ -19,8 +19,8 @@ import { logs, nativeBleManager } from '@trezor/transport-native-ble';
 
 import { BluetoothToggle } from '../components/BluetoothToggle';
 import { DevicePassphraseSwitch } from '../components/DevicePassphraseSwitch';
-import { MessageSystemInfo } from '../components/MessageSystemInfo';
 import { FeatureFlags } from '../components/FeatureFlags';
+import { MessageSystemInfo } from '../components/MessageSystemInfo';
 import { RenderingUtils } from '../components/RenderingUtils';
 import { TestnetsToggle } from '../components/TestnetsToggle';
 
@@ -51,12 +51,9 @@ export const DevUtilsScreen = ({
                                 <Text>
                                     EXPO_PUBLIC_BLUETOOTH_ENABLED:{' '}
                                     {process.env.EXPO_PUBLIC_BLUETOOTH_ENABLED} {'\n'}
-                                    EXPO_PUBLIC_ENVIRONMENT: {
-                                        process.env.EXPO_PUBLIC_ENVIRONMENT
-                                    }{' '}
                                     {'\n'}
-                                    isBluetoothBuild: {isBluetoothBuild} {'\n'}
-                                    isBluetoothEnabled: {isBluetoothEnabled}
+                                    isBluetoothBuild: {String(isBluetoothBuild)} {'\n'}
+                                    isBluetoothEnabled: {String(isBluetoothEnabled)}
                                 </Text>
                                 {isBluetoothBuild && <BluetoothToggle />}
                             </>

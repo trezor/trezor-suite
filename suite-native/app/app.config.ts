@@ -79,7 +79,7 @@ if (isCI) {
 }
 
 const getPlugins = (): ExpoPlugins => {
-    const plugins = [
+    const plugins: ExpoPlugins = [
         [
             'expo-font',
             {
@@ -134,6 +134,12 @@ const getPlugins = (): ExpoPlugins => {
 
     if (process.env.EXPO_PUBLIC_BLUETOOTH_ENABLED) {
         plugins.push(['react-native-ble-plx', {}]);
+        plugins.push([
+            'react-native-permissions',
+            {
+                iosPermissions: ['Bluetooth'],
+            },
+        ]);
     }
 
     return [
@@ -222,6 +228,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             icon: appIconIos,
             supportsTablet: true,
             infoPlist: {
+                NSBluetoothAlwaysUsageDescription:
+                    '$(PRODUCT_NAME) needs access to Bluetooth to connect to your Trezor device.',
+                NSBluetoothPeripheralUsageDescription:
+                    '$(PRODUCT_NAME) needs access to Bluetooth to connect to your Trezor device.',
                 NSCameraUsageDescription:
                     '$(PRODUCT_NAME) needs access to your Camera to scan your XPUB.',
                 NSFaceIDUsageDescription:
