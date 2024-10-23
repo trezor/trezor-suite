@@ -3,7 +3,7 @@ import TrezorConnect from '@trezor/connect';
 import { promiseAllSequence } from '@trezor/utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { NetworkAccount, Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkAccount, Network, NetworkSymbol, Bip43Path } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
     accountsActions,
@@ -578,7 +578,7 @@ export const createCoinjoinAccount =
             return;
         }
 
-        const path = account.bip43Path.replace('i', '0');
+        const path = account.bip43Path.replace('i', '0') as Bip43Path;
 
         // get coinjoin account xpub
         const publicKey = await TrezorConnect.getPublicKey({

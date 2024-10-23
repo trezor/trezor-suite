@@ -1,6 +1,6 @@
 import { ObjectValues } from '@trezor/type-utils';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountType, Bip43Path, NetworkSymbol } from '@suite-common/wallet-config';
 import { Deferred } from '@trezor/utils';
 import { StaticSessionId } from '@trezor/connect';
 
@@ -35,7 +35,7 @@ export type PartialDiscovery = { deviceState: string } & Partial<Discovery>;
 
 export type DiscoveryItem = {
     // @trezor/connect
-    path: string;
+    path: Bip43Path;
     unlockPath?: Account['unlockPath'];
     coin: Account['symbol'];
     identity?: string;

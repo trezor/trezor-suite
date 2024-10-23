@@ -840,12 +840,13 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
 export const getFailedAccounts = (discovery: Discovery): Account[] =>
     discovery.failed.map(f => {
         const descriptor = `failed:${f.index}:${f.symbol}:${f.accountType}`;
+        const network = networks[f.symbol];
 
         return {
             failed: true,
             deviceState: discovery.deviceState,
             index: f.index,
-            path: descriptor,
+            path: network.bip43Path, // placeholder - not relevant for failed, but required by TS to be an actual Bip43Path
             descriptor,
             key: descriptor,
             accountType: f.accountType,
@@ -865,7 +866,7 @@ export const getFailedAccounts = (discovery: Discovery): Account[] =>
             metadata: {
                 key: descriptor,
             },
-            ...getAccountSpecific({}, networks[f.symbol].networkType),
+            ...getAccountSpecific({}, network.networkType),
         };
     });
 

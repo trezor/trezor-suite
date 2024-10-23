@@ -6,7 +6,7 @@ import {
     updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
-import { networks, NetworkSymbol, AccountType } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol, AccountType, Bip43Path } from '@suite-common/wallet-config';
 import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
 import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-utils';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
@@ -59,7 +59,7 @@ export const importAccountThunk = createThunk(
                     deviceState,
                     discoveryItem: {
                         index: deviceNetworkAccounts.length, // indexed from 0
-                        path: accountInfo?.path ?? '',
+                        path: (accountInfo?.path ?? '') as Bip43Path,
                         accountType,
                         networkType: networks[coin].networkType,
                         coin,

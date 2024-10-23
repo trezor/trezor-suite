@@ -30,6 +30,8 @@ const getAccount = (a?: Partial<Account>) => ({
     ...a,
 });
 
+const testBip43Path = "m/84'/0'/0'";
+
 describe('Account Reducer', () => {
     // accountActions.createAccount function is already tested by "discoveryActions"
     // it's pointless to write a complex tests for it
@@ -40,14 +42,14 @@ describe('Account Reducer', () => {
                 deviceState: '1stTestnetAddress@device_id:0',
                 discoveryItem: {
                     index: 0,
-                    path: "m/84'/0'/0'",
+                    path: testBip43Path,
                     accountType: 'normal',
                     networkType: 'bitcoin',
                     coin: 'btc',
                 },
                 accountInfo: {
                     descriptor: 'XPUB',
-                    path: "m/84'/0'/0'",
+                    path: testBip43Path,
                     empty: false,
                     balance: '0',
                     availableBalance: '0',
@@ -68,7 +70,13 @@ describe('Account Reducer', () => {
         const store = initStore({
             preloadedState: {
                 wallet: {
-                    accounts: [getAccount({ symbol: 'ltc', path: '1', visible: false }) as Account],
+                    accounts: [
+                        getAccount({
+                            symbol: 'ltc',
+                            path: testBip43Path,
+                            visible: false,
+                        }) as Account,
+                    ],
                 },
             },
         });
@@ -77,13 +85,13 @@ describe('Account Reducer', () => {
             accountsActions.changeAccountVisibility(
                 getAccount({
                     symbol: 'ltc',
-                    path: '1',
+                    path: testBip43Path,
                     visible: false,
                 }) as Account,
             ),
         );
         expect(store.getState().wallet.accounts[0]).toEqual(
-            getAccount({ symbol: 'ltc', path: '1', visible: true }),
+            getAccount({ symbol: 'ltc', path: testBip43Path, visible: true }),
         );
     });
 
@@ -94,7 +102,7 @@ describe('Account Reducer', () => {
             accountsActions.changeAccountVisibility(
                 getAccount({
                     symbol: 'ltc',
-                    path: '1',
+                    path: testBip43Path,
                     visible: false,
                 }) as Account,
             ),
