@@ -39,8 +39,8 @@ export function parseConfigure(data: protobuf.INamespace) {
 
 export const createMessageFromName = (messages: protobuf.Root, name: string) => {
     const Message = messages.lookupType(name);
-    const MessageType = messages.lookupEnum('MessageType');
-    let messageTypeId = MessageType.values[`MessageType_${name}`];
+    const messageTypes = messages.lookupEnum('MessageType');
+    let messageTypeId = messageTypes.values[name];
 
     if (typeof messageTypeId !== 'number' && Message.options) {
         messageTypeId = Message.options['(wire_type)'];
@@ -64,10 +64,7 @@ export const createMessageFromType = (messages: protobuf.Root, messageType: numb
 
     const messageTypes = messages.lookupEnum('MessageType');
 
-    const messageName = messageTypes.valuesById[messageType].replace(
-        'MessageType_',
-        '',
-    ) as MessageFromTrezor['type'];
+    const messageName = messageTypes.valuesById[messageType] as MessageFromTrezor['type'];
 
     const Message = messages.lookupType(messageName);
 

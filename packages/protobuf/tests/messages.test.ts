@@ -47,7 +47,7 @@ const json = {
                                 },
                                 MessageType: {
                                     values: {
-                                        MessageType_Initialize: 0,
+                                        Initialize: 0,
                                     },
                                 },
                             },
