@@ -27,14 +27,13 @@ import { CoinjoinService, getCoinjoinConfig } from 'src/services/coinjoin';
 import { Dispatch, GetState } from 'src/types/suite';
 import { CoinjoinAccount, EndRoundState, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 import { onCancel as closeModal, openModal } from 'src/actions/suite/modalActions';
-import { SUITE } from 'src/actions/suite/constants';
 import {
     selectRoundsNeededByAccountKey,
     selectRoundsLeftByAccountKey,
     selectRoundsDurationInHours,
     selectCoinjoinAccounts,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { selectAddressDisplayType, selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
 
 import * as COINJOIN from './constants/coinjoinConstants';
 
@@ -449,11 +448,12 @@ const coinjoinResponseError = (utxos: CoinjoinRequestEvent['inputs'], error: str
 const getOwnershipProof =
     (request: Extract<CoinjoinRequestEvent, { type: 'ownership' }>) =>
     async (_dispatch: Dispatch, getState: GetState) => {
+        const state = getState();
         const {
-            suite: { locks },
             wallet: { coinjoin, accounts },
-        } = getState();
-        const devices = selectDevices(getState());
+        } = state;
+        const devices = selectDevices(state);
+        const isDeviceLocked = selectIsDeviceLocked(state);
 
         // prepare empty response object
         const response: CoinjoinResponseEvent = {
@@ -494,7 +494,7 @@ const getOwnershipProof =
                 return [];
             }
 
-            if (locks.includes(SUITE.LOCK_TYPE.DEVICE)) {
+            if (isDeviceLocked) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Device locked'));
 
                 return [];

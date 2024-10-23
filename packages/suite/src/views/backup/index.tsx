@@ -10,10 +10,10 @@ import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import { Loading, Translation, TrezorLink } from 'src/components/suite';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from 'src/components/backup';
 import { canStart, canContinue } from 'src/utils/backup';
-import { selectLocks } from 'src/reducers/suite/suiteReducer';
 import type { ForegroundAppProps } from 'src/types/suite';
 import type { BackupStatus } from 'src/actions/backup/backupActions';
 import { selectBackup } from 'src/reducers/backup/backupReducer';
+import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
 
 const getModalHeading = (backupStatus: BackupStatus) => {
     switch (backupStatus) {
@@ -80,7 +80,8 @@ const getModalContent = (backupStatus: BackupStatus, error?: string) => {
 export const Backup = ({ onCancel }: ForegroundAppProps) => {
     const device = useSelector(selectDevice);
     const backup = useSelector(selectBackup);
-    const locks = useSelector(selectLocks);
+    const isDeviceLocked = useSelector(selectIsDeviceLocked);
+
     const dispatch = useDispatch();
 
     const nonErrorBackupStatuses = ['initial', 'in-progress', 'finished'] as const;
@@ -176,7 +177,7 @@ export const Backup = ({ onCancel }: ForegroundAppProps) => {
                                 <NewModal.Button
                                     data-testid="@backup/start-button"
                                     onClick={() => dispatch(backupDevice(backupParams))}
-                                    isDisabled={!canStart(backup.userConfirmed, locks)}
+                                    isDisabled={!canStart(backup.userConfirmed, isDeviceLocked)}
                                 >
                                     <Translation id="TR_CREATE_BACKUP" />
                                 </NewModal.Button>
