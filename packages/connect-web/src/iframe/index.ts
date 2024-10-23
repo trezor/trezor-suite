@@ -85,9 +85,6 @@ export const init = async (settings: ConnectSettings) => {
     }
 
     instance.setAttribute('src', src);
-    if (settings.webusb) {
-        console.warn('webusb option is deprecated. use `transports: ["WebUsbTransport"] instead`');
-    }
     if (navigator.usb) {
         instance.setAttribute('allow', 'usb');
     }
