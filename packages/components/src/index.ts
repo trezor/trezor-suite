@@ -41,6 +41,12 @@ export * from './components/HotkeyBadge/HotkeyBadge';
 export * from './components/Image/Image';
 export * from './components/Image/images';
 export * from './components/Icon/Icon';
+export {
+    IconCircle,
+    type IconCircleProps,
+    type IconCircleVariant,
+    type IconCircleColors,
+} from './components/IconCircle/IconCircle';
 export * from './components/loaders/LoadingContent/LoadingContent';
 export * from './components/loaders/ProgressBar/ProgressBar';
 export * from './components/loaders/ProgressPie/ProgressPie';
