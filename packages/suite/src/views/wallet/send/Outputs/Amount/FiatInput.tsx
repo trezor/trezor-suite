@@ -11,7 +11,7 @@ import {
     getInputState,
     findToken,
     isLowAnonymityWarning,
-    amountToSatoshi,
+    formatAmountWithDecimals,
     formatAmount,
     buildCurrencyOptions,
     getFiatRateKey,
@@ -136,7 +136,7 @@ export const FiatInput = ({ output, outputId, labelHoverRight, labelRight }: Fia
             const amount = fiatRate?.rate ? fromFiatCurrency(value, decimals, fiatRate.rate) : null;
 
             const formattedAmount = shouldSendInSats
-                ? amountToSatoshi(amount || '0', decimals)
+                ? formatAmountWithDecimals(amount || '0', decimals)
                 : amount;
 
             if (formattedAmount) {

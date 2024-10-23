@@ -19,7 +19,7 @@ import { FormState } from '@suite-common/wallet-types';
 import {
     getFeeLevels,
     getDefaultValues,
-    amountToSatoshi,
+    formatAmountWithDecimals,
     formatAmount,
 } from '@suite-common/wallet-utils';
 import { useSendFormOutputs } from './useSendFormOutputs';
@@ -290,7 +290,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                 const protocolAmount = protocol.sendForm.amount.toString();
 
                 const formattedAmount = shouldSendInSats
-                    ? amountToSatoshi(protocolAmount, state.network.decimals)
+                    ? formatAmountWithDecimals(protocolAmount, state.network.decimals)
                     : protocolAmount;
 
                 sendFormUtils.setAmount(outputIndex, formattedAmount);
@@ -356,7 +356,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     useDidUpdate(() => {
         const { outputs } = getValues();
 
-        const conversionToUse = shouldSendInSats ? amountToSatoshi : formatAmount;
+        const conversionToUse = shouldSendInSats ? formatAmountWithDecimals : formatAmount;
 
         outputs.forEach((output, index) => {
             if (!output.amount) {

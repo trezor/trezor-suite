@@ -6,7 +6,7 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
 import {
-    amountToSatoshi,
+    formatAmountWithDecimals,
     formatAmount,
     fromFiatCurrency,
     getFiatRateKey,
@@ -97,7 +97,7 @@ export const useSendFormImport = ({
                     const cryptoAmount = item.amount || '';
                     if (shouldSendInSats) {
                         // try to convert to satoshis
-                        output.amount = amountToSatoshi(cryptoAmount, network.decimals);
+                        output.amount = formatAmountWithDecimals(cryptoAmount, network.decimals);
                     } else {
                         output.amount = cryptoAmount;
                     }
@@ -126,7 +126,7 @@ export const useSendFormImport = ({
                     const cryptoValue = fromFiatCurrency(output.fiat, network.decimals, itemRate);
                     const cryptoAmount =
                         cryptoValue && shouldSendInSats
-                            ? amountToSatoshi(cryptoValue, network.decimals)
+                            ? formatAmountWithDecimals(cryptoValue, network.decimals)
                             : cryptoValue ?? '';
 
                     output.amount = cryptoAmount;

@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeQuoteRequest } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
-import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
+import { formatAmountWithDecimals, formatAmount } from '@suite-common/wallet-utils';
 import { isChanged } from '@suite-common/suite-utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
@@ -469,7 +469,7 @@ export const useCoinmarketSellForm = ({
             selectedQuote.cryptoStringAmount
         ) {
             const cryptoStringAmount = shouldSendInSats
-                ? amountToSatoshi(selectedQuote.cryptoStringAmount, network.decimals)
+                ? formatAmountWithDecimals(selectedQuote.cryptoStringAmount, network.decimals)
                 : selectedQuote.cryptoStringAmount;
             const destinationPaymentExtraId =
                 selectedQuote.destinationPaymentExtraId || trade?.data?.destinationPaymentExtraId;

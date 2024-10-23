@@ -1,4 +1,4 @@
-import { amountToSatoshi } from '@suite-common/wallet-utils';
+import { formatAmountWithDecimals } from '@suite-common/wallet-utils';
 import { useElevation } from '@trezor/components';
 import { HiddenPlaceholder } from 'src/components/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -40,7 +40,7 @@ export const CoinmarketFormInputAccountOption = ({
 
     const balanceLabel = coinmarketGetAccountLabel(option.label, shouldSendInSats);
     const balance = shouldSendInSats
-        ? amountToSatoshi(option.balance, network.decimals)
+        ? formatAmountWithDecimals(option.balance, network.decimals)
         : option.balance;
     const accountType = optionGroups.find(group =>
         group.options.find(

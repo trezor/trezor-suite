@@ -10,7 +10,7 @@ import {
     getEthereumEstimateFeeParams,
     prepareEthereumTransaction,
     getExternalComposeOutput,
-    amountToSatoshi,
+    formatAmountWithDecimals,
     formatAmount,
     isPending,
     getAccountIdentity,
@@ -50,7 +50,7 @@ const calculate = (
     let amount: string;
     let max: string | undefined;
     const availableTokenBalance = token
-        ? amountToSatoshi(token.balance!, token.decimals)
+        ? formatAmountWithDecimals(token.balance!, token.decimals)
         : undefined;
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
         max = availableTokenBalance || calculateMax(availableBalance, feeInSatoshi);
@@ -122,6 +122,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
         const { account, network, feeInfo } = composeContext;
         const composedOutput = getExternalComposeOutput(formState, account, network);
+
         if (!composedOutput)
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',

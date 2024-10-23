@@ -2,7 +2,7 @@ import { isDesktop } from '@trezor/env-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { PROTO } from '@trezor/connect';
 import {
-    amountToSatoshi,
+    formatAmountWithDecimals,
     formatAmount,
     getAccountDecimals,
     hasNetworkFeatures,
@@ -209,7 +209,7 @@ export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
 
         if (draft) {
             const areSatsSelected = settings.bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
-            const conversion = areSatsSelected ? amountToSatoshi : formatAmount;
+            const conversion = areSatsSelected ? formatAmountWithDecimals : formatAmount;
             const decimals = getAccountDecimals(relatedAccount.symbol)!;
 
             if (draft.cryptoInput) {

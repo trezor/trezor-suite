@@ -1,7 +1,7 @@
 import { isChanged } from '@suite-common/suite-utils';
 import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
 import {
-    amountToSatoshi,
+    formatAmountWithDecimals,
     formatAmount,
     fromFiatCurrency,
     isEthereumAccountSymbol,
@@ -132,7 +132,7 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
 
             const formattedCryptoAmount =
                 cryptoAmount && shouldSendInSats
-                    ? amountToSatoshi(cryptoAmount, networkDecimals)
+                    ? formatAmountWithDecimals(cryptoAmount, networkDecimals)
                     : cryptoAmount ?? '';
             setValue(FORM_OUTPUT_AMOUNT, formattedCryptoAmount, { shouldValidate: true });
         },
@@ -235,7 +235,7 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
                   .decimalPlaces(networkDecimals)
                   .toString();
         const cryptoInputValue = shouldSendInSats
-            ? amountToSatoshi(amount, networkDecimals)
+            ? formatAmountWithDecimals(amount, networkDecimals)
             : amount;
         clearErrors([FORM_OUTPUT_FIAT, FORM_OUTPUT_AMOUNT]);
         setValue(FORM_OUTPUT_AMOUNT, cryptoInputValue, { shouldDirty: true });

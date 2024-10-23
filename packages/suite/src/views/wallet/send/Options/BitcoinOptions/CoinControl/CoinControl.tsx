@@ -5,7 +5,7 @@ import { typography } from '@trezor/theme';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { getTxsPerPage } from '@suite-common/suite-utils';
-import { amountToSatoshi, formatNetworkAmount } from '@suite-common/wallet-utils';
+import { formatAmountWithDecimals, formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Pagination } from 'src/components/wallet';
@@ -115,7 +115,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     );
     const totalOutputsInSats = shouldSendInSats
         ? totalOutputs
-        : Number(amountToSatoshi(totalOutputs.toString(), network.decimals));
+        : Number(formatAmountWithDecimals(totalOutputs.toString(), network.decimals));
     const missingToInput = totalOutputsInSats - totalInputs;
     const isMissingToAmount = missingToInput > 0; // relevant when the amount field is not validated, e.g. there is an error in the address
     const missingAmountTooBig = missingToInput > Number.MAX_SAFE_INTEGER;
