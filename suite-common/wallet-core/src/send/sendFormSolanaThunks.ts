@@ -10,7 +10,7 @@ import {
 } from '@suite-common/wallet-types';
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    amountToSatoshi,
+    amountToSmallestUnit,
     calculateMax,
     calculateTotal,
     formatAmount,
@@ -45,7 +45,7 @@ const calculate = (
     let amount: string;
     let max: string | undefined;
     const availableTokenBalance = token
-        ? amountToSatoshi(token.balance!, token.decimals)
+        ? amountToSmallestUnit(token.balance!, token.decimals)
         : undefined;
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
         max = availableTokenBalance || calculateMax(availableBalance, feeInLamports);

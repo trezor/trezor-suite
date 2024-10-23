@@ -1,6 +1,6 @@
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    amountToSatoshi,
+    amountToSmallestUnit,
     formatNetworkAmount,
     fromFiatCurrency,
     toFiatCurrency,
@@ -46,5 +46,5 @@ export const convertFiatToCryptoAmount = ({
         return cryptoAmount;
     }
 
-    return amountToSatoshi(new BigNumber(cryptoAmount), decimals);
+    return amountToSmallestUnit(new BigNumber(cryptoAmount), decimals);
 };

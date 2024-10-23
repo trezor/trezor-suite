@@ -17,7 +17,7 @@ import {
     getNetworkAccountFeatures,
     hasNetworkFeatures,
     isTestnet,
-    networkAmountToSatoshi,
+    networkAmountToSmallestUnit,
     parseBIP44Path,
     sortByCoin,
     getUtxoOutpoint,
@@ -114,10 +114,10 @@ describe('account utils', () => {
     });
 
     it('format amount to satoshi', () => {
-        expect(networkAmountToSatoshi('0.00000001', 'btc')).toEqual('1');
-        expect(networkAmountToSatoshi('0.000001', 'xrp')).toEqual('1');
-        expect(networkAmountToSatoshi('0.000000000000000001', 'eth')).toEqual('1');
-        expect(networkAmountToSatoshi('aaa', 'eth')).toEqual('-1');
+        expect(networkAmountToSmallestUnit('0.00000001', 'btc')).toEqual('1');
+        expect(networkAmountToSmallestUnit('0.000001', 'xrp')).toEqual('1');
+        expect(networkAmountToSmallestUnit('0.000000000000000001', 'eth')).toEqual('1');
+        expect(networkAmountToSmallestUnit('aaa', 'eth')).toEqual('-1');
     });
 
     it('findAccountDevice', () => {

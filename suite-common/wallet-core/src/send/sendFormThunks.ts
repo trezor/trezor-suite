@@ -19,7 +19,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     hasNetworkFeatures,
-    amountToSatoshi,
+    amountToSmallestUnit,
     formatAmount,
     getAccountDecimals,
     getAreSatoshisUsed,
@@ -108,7 +108,7 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
             const areSatsSupported = hasNetworkFeatures(relatedAccount, 'amount-unit');
 
             const amountFormatter =
-                areSatsAmountUnit && areSatsSupported ? amountToSatoshi : formatAmount;
+                areSatsAmountUnit && areSatsSupported ? amountToSmallestUnit : formatAmount;
 
             const updatedDraft = cloneObject(draft);
             const amountDecimals = getAccountDecimals(relatedAccount.symbol)!;

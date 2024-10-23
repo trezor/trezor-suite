@@ -7,7 +7,7 @@ import {
     networks,
 } from '@suite-common/wallet-config';
 import {
-    amountToSatoshi,
+    amountToSmallestUnit,
     formatAmount,
     redactNumericalSubstring,
 } from '@suite-common/wallet-utils';
@@ -54,7 +54,7 @@ const convertToUnit = (
         : undefined;
 
     if (isBalance && areAmountUnitsSupported && bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI) {
-        return amountToSatoshi(value, decimals);
+        return amountToSmallestUnit(value, decimals);
     }
 
     // if it's not balance and sats units are disabled, values other than balances are in sats so we need to convert it to BTC

@@ -362,7 +362,7 @@ export const formatAmount = (amount: BigNumberValue, decimals: number) => {
     }
 };
 
-export const amountToSatoshi = (amount: BigNumberValue, decimals: number) => {
+export const amountToSmallestUnit = (amount: BigNumberValue, decimals: number) => {
     try {
         const bAmount = new BigNumber(amount);
         if (bAmount.isNaN()) {
@@ -390,14 +390,14 @@ export const satoshiAmountToBtc = (amount: BigNumberValue) => {
     }
 };
 
-export const networkAmountToSatoshi = (amount: string | null, symbol: NetworkSymbol) => {
+export const networkAmountToSmallestUnit = (amount: string | null, symbol: NetworkSymbol) => {
     if (!amount) return '0';
 
     const decimals = getAccountDecimals(symbol);
 
     if (!decimals) return amount;
 
-    return amountToSatoshi(amount, decimals);
+    return amountToSmallestUnit(amount, decimals);
 };
 
 export const formatNetworkAmount = (

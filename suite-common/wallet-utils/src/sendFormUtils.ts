@@ -35,7 +35,7 @@ import type {
     SendFormDraftKey,
 } from '@suite-common/wallet-types';
 
-import { amountToSatoshi, getUtxoOutpoint, networkAmountToSatoshi } from './accountUtils';
+import { amountToSmallestUnit, getUtxoOutpoint, networkAmountToSmallestUnit } from './accountUtils';
 import { sanitizeHex } from './ethUtils';
 
 export const calculateTotal = (amount: string, fee: string): string => {
@@ -99,7 +99,7 @@ const getSerializedErc20Transfer = (token: TokenInfo, to: string, amount: string
     // 32 bytes address parameter, remove '0x' prefix
     const erc20recipient = padLeft(to, 64).substring(2);
     // convert amount to satoshi
-    const tokenAmount = amountToSatoshi(amount, token.decimals);
+    const tokenAmount = amountToSmallestUnit(amount, token.decimals);
     // 32 bytes amount paramter, remove '0x' prefix
     const erc20amount = padLeft(numberToHex(tokenAmount), 64).substring(2);
 
@@ -286,7 +286,7 @@ export const getBitcoinComposeOutputs = (
         } else if (output.amount) {
             const amount = isSatoshis
                 ? output.amount
-                : networkAmountToSatoshi(output.amount, symbol);
+                : networkAmountToSmallestUnit(output.amount, symbol);
 
             if (address) {
                 result.push({
@@ -338,7 +338,7 @@ export const getExternalComposeOutput = (
 
     const tokenInfo = findToken(account.tokens, token);
     const decimals = tokenInfo ? tokenInfo.decimals : network.decimals;
-    const amountInSatoshi = amountToSatoshi(amount, decimals);
+    const formattedAmount = amountToSmallestUnit(amount, decimals);
 
     let output: ExternalOutput;
     if (isMaxActive) {
@@ -361,7 +361,7 @@ export const getExternalComposeOutput = (
     } else {
         output = {
             type: 'payment-noaddress',
-            amount: amountInSatoshi,
+            amount: formattedAmount,
         };
     }
 

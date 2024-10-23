@@ -1,7 +1,7 @@
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectFiatRatesByFiatRateKey, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { FiatRatesResult, Rate, Timestamp, TokenAddress } from '@suite-common/wallet-types';
-import { amountToSatoshi, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import { amountToSmallestUnit, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { CryptoId, FiatCurrencyCode } from 'invity-api';
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -90,7 +90,7 @@ export const useCoinmarketFiatValues = ({
 
     const decimals = getNetworkDecimals(network?.decimals);
     const formattedBalance = shouldSendInSats
-        ? amountToSatoshi(accountBalance, decimals)
+        ? amountToSmallestUnit(accountBalance, decimals)
         : accountBalance;
     const fiatValue = toFiatCurrency(accountBalance, fiatRate?.rate, 2);
 
