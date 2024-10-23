@@ -6,7 +6,7 @@ import {
     restartDiscoveryThunk as restartDiscovery,
 } from '@suite-common/wallet-core';
 import { getNetwork, NetworkType } from '@suite-common/wallet-config';
-import { Button, H3, Image, IconName, Column, Row, Paragraph } from '@trezor/components';
+import { Button, H3, IconName, Column, Row, Paragraph, IconCircle } from '@trezor/components';
 import { Discovery } from '@suite-common/wallet-types';
 import { spacings } from '@trezor/theme';
 
@@ -38,7 +38,7 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
 
     return (
         <Column gap={spacings.xxs} data-testid={`@exception/${dataTestBase}`}>
-            <Image image="UNI_ERROR" />
+            <IconCircle name="warning" size="extraLarge" variant="warning" />
             <H3 margin={{ top: spacings.md }}>
                 <Translation id={title} />
             </H3>

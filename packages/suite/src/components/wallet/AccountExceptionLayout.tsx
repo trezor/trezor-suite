@@ -1,86 +1,51 @@
-import { ReactText } from 'react';
-import styled from 'styled-components';
+import { ReactNode } from 'react';
 import {
-    variables,
     H2,
     Button,
     Card,
     ButtonProps,
-    Image,
-    ImageProps,
     Column,
+    Row,
+    Paragraph,
+    Divider,
+    IconName,
+    IconCircle,
+    IconCircleVariant,
 } from '@trezor/components';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Title = styled(H2)`
-    text-align: center;
-    font-weight: 600;
-    margin-bottom: 16px;
-`;
-
-const Description = styled.span`
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: 500;
-    text-align: center;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledImage = styled(Image)`
-    width: auto;
-    height: 80px;
-    margin-top: 60px;
-    margin-bottom: 28px;
-`;
-
-const Actions = styled.div`
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-bottom: 20px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const ActionButton = styled(Button)`
-    min-width: 160px;
-
-    & + & {
-        margin-left: 20px;
-    }
-`;
-
-const Divider = styled.div`
-    width: 100%;
-    height: 1px;
-    background: ${({ theme }) => theme.legacy.STROKE_GREY};
-    margin: 30px 0 36px;
-`;
+import { spacings } from '@trezor/theme';
+import React from 'react';
 
 interface AccountExceptionLayoutProps {
-    title: JSX.Element | string;
-    description?: JSX.Element | string;
-    image?: Extract<ImageProps, { image: any }>['image'];
-    imageComponent?: JSX.Element;
-    actions?: ({ key: ReactText } & ButtonProps)[];
-    actionComponent?: JSX.Element;
+    title: ReactNode;
+    description?: ReactNode;
+    iconName?: IconName;
+    iconVariant?: IconCircleVariant;
+    actions?: ({ key: string } & ButtonProps)[];
 }
 
 export const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
-    <Card width="100%">
-        <Column alignItems="center">
-            {props.image && <StyledImage image={props.image} />}
-            {props.imageComponent && props.imageComponent}
-            <Title>{props.title}</Title>
-            <Description>{props.description}</Description>
-            {(props.actionComponent || (props.actions && props.actions.length > 0)) && (
+    <Card>
+        <Column>
+            {props.iconName && props.iconVariant && (
+                <IconCircle
+                    name={props.iconName}
+                    variant={props.iconVariant}
+                    size="extraLarge"
+                    margin={{ top: spacings.xxl, bottom: spacings.xl }}
+                />
+            )}
+            <H2>{props.title}</H2>
+            <Paragraph variant="tertiary" typographyStyle="hint" margin={{ top: spacings.xs }}>
+                {props.description}
+            </Paragraph>
+            {props.actions && (
                 <>
-                    <Divider />
-                    <Actions>
+                    <Divider margin={{ top: spacings.xxl, bottom: spacings.xxl }} />
+                    <Row justifyContent="center" gap={spacings.md} margin={{ bottom: spacings.md }}>
                         {props.actions?.map(action => (
-                            <ActionButton {...action} key={action.key} />
+                            <Button minWidth={160} {...action} key={action.key} />
                         ))}
-                        {props.actionComponent && props.actionComponent}
-                    </Actions>
+                    </Row>
                 </>
             )}
         </Column>

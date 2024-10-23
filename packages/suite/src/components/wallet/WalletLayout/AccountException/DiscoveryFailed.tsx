@@ -18,7 +18,8 @@ export const DiscoveryFailed = () => {
         <AccountExceptionLayout
             title={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR" />}
             description={discovery && discovery.error ? discovery.error : undefined}
-            image="UNI_ERROR"
+            iconName="warning"
+            iconVariant="warning"
             actions={[
                 {
                     key: '1',

@@ -32,7 +32,8 @@ export const WalletStaking = () => {
         <WalletLayout title="TR_NAV_STAKING" account={selectedAccount} showEmptyHeaderPlaceholder>
             <AccountExceptionLayout
                 title={<Translation id="TR_STAKING_IS_NOT_SUPPORTED" />}
-                image="CLOUDY"
+                iconName="warning"
+                iconVariant="warning"
             />
         </WalletLayout>
     );

@@ -20,7 +20,8 @@ export const AccountNotLoaded = () => {
         <AccountExceptionLayout
             title={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR" />}
             description={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_DESCRIPTION" />}
-            image="CLOUDY"
+            iconName="warning"
+            iconVariant="warning"
             actions={[
                 {
                     key: '1',

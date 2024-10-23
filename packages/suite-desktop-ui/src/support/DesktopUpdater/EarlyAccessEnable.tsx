@@ -11,7 +11,8 @@ import {
     NewModal,
     Card,
     Column,
-    NewModalIconColors,
+    IconCircleColors,
+    IconCircle,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -40,12 +41,14 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
 
     const checkForUpdates = useCallback(() => desktopApi.checkForUpdates(true), []);
 
-    const purpleModalColorBranding: NewModalIconColors = {
+    const purpleModalColorBranding: IconCircleColors = {
         foreground: theme.iconAlertPurple,
         background: theme.backgroundAlertPurpleSubtleOnElevationNegative,
     };
 
-    const eapIconComponent = <NewModal.Icon iconName="eap" iconColor={purpleModalColorBranding} />;
+    const eapIconComponent = (
+        <IconCircle name="eap" iconColor={purpleModalColorBranding} size={40} />
+    );
 
     return enabled ? (
         <NewModal

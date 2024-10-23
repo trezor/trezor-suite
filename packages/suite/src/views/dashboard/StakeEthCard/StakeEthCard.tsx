@@ -3,13 +3,13 @@ import {
     variables,
     Divider,
     H3,
-    Icon,
     Card,
     Column,
     Tooltip,
     Grid,
     useMediaQuery,
     Paragraph,
+    IconName,
 } from '@trezor/components';
 import { DashboardSection } from 'src/components/dashboard';
 import { Translation, StakingFeature } from 'src/components/suite';
@@ -63,7 +63,7 @@ export const StakeEthCard = () => {
         () => [
             {
                 id: 0,
-                icon: <Icon name="piggyBank" size="extraLarge" variant="primary" />,
+                icon: 'piggyBank' as IconName,
                 title: <Translation id="TR_STAKE_ETH_SEE_MONEY_DANCE" />,
                 description: (
                     <Translation
@@ -85,13 +85,13 @@ export const StakeEthCard = () => {
             },
             {
                 id: 1,
-                icon: <Icon name="lockLaminatedOpen" size="extraLarge" variant="primary" />,
+                icon: 'lockLaminatedOpen' as IconName,
                 title: <Translation id="TR_STAKE_ETH_LOCK_FUNDS" />,
                 description: <Translation id="TR_STAKE_ETH_LOCK_FUNDS_DESC" />,
             },
             {
                 id: 2,
-                icon: <Icon name="trendUp" size="extraLarge" variant="primary" />,
+                icon: 'trendUp' as IconName,
                 title: <Translation id="TR_STAKE_ETH_MAXIMIZE_REWARDS" />,
                 description: <Translation id="TR_STAKE_ETH_MAXIMIZE_REWARDS_DESC" />,
             },

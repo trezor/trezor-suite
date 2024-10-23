@@ -3,7 +3,6 @@ import {
     Button,
     Card,
     Column,
-    Icon,
     Paragraph,
     Text,
     Tooltip,
@@ -11,6 +10,7 @@ import {
     Divider,
     Grid,
     useMediaQuery,
+    IconName,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { Translation, StakingFeature } from 'src/components/suite';
@@ -39,7 +39,7 @@ export const EmptyStakingCard = () => {
         () => [
             {
                 id: 0,
-                icon: <Icon name="piggyBank" size="extraLarge" variant="primary" />,
+                icon: 'piggyBank' as IconName,
                 title: <Translation id="TR_STAKE_ETH_SEE_MONEY_DANCE" />,
                 description: (
                     <Translation
@@ -61,13 +61,13 @@ export const EmptyStakingCard = () => {
             },
             {
                 id: 1,
-                icon: <Icon name="lockLaminatedOpen" size="extraLarge" variant="primary" />,
+                icon: 'lockLaminatedOpen' as IconName,
                 title: <Translation id="TR_STAKE_ETH_LOCK_FUNDS" />,
                 description: <Translation id="TR_STAKE_ETH_LOCK_FUNDS_DESC" />,
             },
             {
                 id: 2,
-                icon: <Icon name="everstakeLogo" size="extraLarge" variant="primary" />,
+                icon: 'everstakeLogo' as IconName,
                 title: <Translation id="TR_STAKE_ETH_EVERSTAKE" />,
                 description: <Translation id="TR_STAKE_ETH_EVERSTAKE_DESC" />,
             },

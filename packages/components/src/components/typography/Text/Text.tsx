@@ -62,8 +62,7 @@ const getColorForTextVariant = ({ $variant, theme, $color }: ColorProps): CSSCol
 };
 
 type StyledTextProps = ExclusiveColorOrVariant &
-    TransientProps<AllowedFrameProps> &
-    TransientProps<AllowedTextTextProps>;
+    TransientProps<AllowedFrameProps & AllowedTextTextProps>;
 
 const StyledText = styled.span<StyledTextProps>`
     color: ${getColorForTextVariant};
