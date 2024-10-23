@@ -63,7 +63,12 @@ export const SecurityCheckFail = ({
             <SecurityChecklist items={checklistItems} />
             <Row flexWrap="wrap" gap={spacings.xl} width="100%">
                 {goBack && (
-                    <Button variant="tertiary" onClick={goBack} size="large">
+                    <Button
+                        variant="tertiary"
+                        onClick={goBack}
+                        size="large"
+                        data-testid="@device-compromised/back-button"
+                    >
                         <Translation id="TR_BACK" />
                     </Button>
                 )}
