@@ -30,6 +30,9 @@ export const CoinmarketTransactionsList = () => {
     const theme = useTheme();
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const allTransactions = useSelector(state => state.wallet.coinmarket.trades);
+    const coinmarketBackRouteName = useSelector(
+        state => state.wallet.coinmarket.coinmarketBackRouteName,
+    );
     const buyProviders = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.providerInfos);
     const exchangeProviders = useSelector(
         state => state.wallet.coinmarket.exchange.exchangeInfo?.providerInfos,
@@ -37,6 +40,7 @@ export const CoinmarketTransactionsList = () => {
     const sellProviders = useSelector(
         state => state.wallet.coinmarket.sell.sellInfo?.providerInfos,
     );
+    const isBuyAndSell = coinmarketBackRouteName !== 'wallet-coinmarket-exchange';
 
     useCoinmarketLoadData();
 
@@ -45,14 +49,12 @@ export const CoinmarketTransactionsList = () => {
     }
 
     const { account } = selectedAccount;
-    const sortedAccountTransactions = [...allTransactions]
-        .filter(t => t.account.descriptor === account.descriptor)
-        .sort((a, b) => {
-            if (a.date > b.date) return -1;
-            if (a.date < b.date) return 1;
+    const sortedAccountTransactions = [...allTransactions].sort((a, b) => {
+        if (a.date > b.date) return -1;
+        if (a.date < b.date) return 1;
 
-            return 0;
-        });
+        return 0;
+    });
 
     const buyTransactions = sortedAccountTransactions.filter(tx => tx.tradeType === 'buy');
     const exchangeTransactions = sortedAccountTransactions.filter(
@@ -74,18 +76,26 @@ export const CoinmarketTransactionsList = () => {
                             <Translation id="TR_COINMARKET_LAST_TRANSACTIONS" />
                         </H3>
                         <TransactionCount>
-                            <Translation
-                                id="TR_COINMARKET_TRANSACTION_COUNTER"
-                                values={{
-                                    totalBuys: buyTransactions.length,
-                                    totalSells: sellTransactions.length,
-                                    totalSwaps: exchangeTransactions.length,
-                                }}
-                            />
+                            {isBuyAndSell ? (
+                                <Translation
+                                    id="TR_COINMARKET_BUY_AND_SELL_COUNTER"
+                                    values={{
+                                        totalBuys: buyTransactions.length,
+                                        totalSells: sellTransactions.length,
+                                    }}
+                                />
+                            ) : (
+                                <Translation
+                                    id="TR_COINMARKET_SWAP_COUNTER"
+                                    values={{
+                                        totalSwaps: exchangeTransactions.length,
+                                    }}
+                                />
+                            )}
                         </TransactionCount>
                     </Header>
                     {sortedAccountTransactions.map(trade => {
-                        if (trade.tradeType === 'buy') {
+                        if (isBuyAndSell && trade.tradeType === 'buy') {
                             return (
                                 <CoinmarketTransactionBuy
                                     account={account}
@@ -95,7 +105,7 @@ export const CoinmarketTransactionsList = () => {
                                 />
                             );
                         }
-                        if (trade.tradeType === 'sell') {
+                        if (isBuyAndSell && trade.tradeType === 'sell') {
                             return (
                                 <CoinmarketTransactionSell
                                     account={account}
@@ -106,14 +116,16 @@ export const CoinmarketTransactionsList = () => {
                             );
                         }
 
-                        return (
-                            <CoinmarketTransactionExchange
-                                account={account}
-                                key={`${trade.tradeType}-${trade.key}`}
-                                trade={trade}
-                                providers={exchangeProviders}
-                            />
-                        );
+                        if (!isBuyAndSell && trade.tradeType === 'exchange') {
+                            return (
+                                <CoinmarketTransactionExchange
+                                    account={account}
+                                    key={`${trade.tradeType}-${trade.key}`}
+                                    trade={trade}
+                                    providers={exchangeProviders}
+                                />
+                            );
+                        }
                     })}
                 </>
             )}

@@ -1150,9 +1150,25 @@ export default defineMessages({
         defaultMessage: 'Last transactions',
         id: 'TR_COINMARKET_LAST_TRANSACTIONS',
     },
-    TR_COINMARKET_TRANSACTION_COUNTER: {
-        defaultMessage: '{totalBuys} buys • {totalSells} sells • {totalSwaps} swaps',
-        id: 'TR_COINMARKET_TRANSACTION_COUNTER',
+    TR_COINMARKET_BUY_AND_SELL_COUNTER: {
+        defaultMessage: `{totalBuys, plural,
+            =0 {{totalBuys} buy}
+            one {{totalBuys} buy}
+            other {{totalBuys} buys}
+        } • {totalSells, plural,
+            =0 {{totalSells} sell}
+            one {{totalSells} sell}
+            other {{totalSells} sells}
+        }`,
+        id: 'TR_COINMARKET_BUY_AND_SELL_COUNTER',
+    },
+    TR_COINMARKET_SWAP_COUNTER: {
+        defaultMessage: `{totalSwaps, plural,
+            =0 {{totalSwaps} swap}
+            one {{totalSwaps} swap}
+            other {{totalSwaps} swaps}
+        }`,
+        id: 'TR_COINMARKET_SWAP_COUNTER',
     },
     TR_COINMARKET_PAYMENT_METHOD: {
         defaultMessage: 'Payment method',
