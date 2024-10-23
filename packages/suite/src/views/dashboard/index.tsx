@@ -23,6 +23,7 @@ const Wrapper = styled.div`
 
 export const Dashboard = () => {
     useLayout('Home', PageHeader);
+    // pipeline test
 
     return (
         <Wrapper data-testid="@dashboard/index">
