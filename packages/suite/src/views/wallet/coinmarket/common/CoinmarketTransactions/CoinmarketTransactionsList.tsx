@@ -61,15 +61,19 @@ export const CoinmarketTransactionsList = () => {
         tx => tx.tradeType === 'exchange',
     );
     const sellTransactions = sortedAccountTransactions.filter(tx => tx.tradeType === 'sell');
+    const buyAndSellTransactionLength = buyTransactions.length + sellTransactions.length;
+    const isEmpty =
+        (isBuyAndSell && buyAndSellTransactionLength === 0) ||
+        (!isBuyAndSell && exchangeTransactions.length === 0);
 
     return (
         <Wrapper>
-            {sortedAccountTransactions.length === 0 && (
+            {isEmpty && (
                 <Paragraph align="center" color={theme.textSubdued}>
                     <Translation id="TR_BUY_NOT_TRANSACTIONS" />
                 </Paragraph>
             )}
-            {sortedAccountTransactions.length > 0 && (
+            {!isEmpty && (
                 <>
                     <Header>
                         <H3>
