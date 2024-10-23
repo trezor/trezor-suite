@@ -57,7 +57,12 @@ export const TotalSent = () => {
                             </Paragraph>
                         )}
                         {hasTransactionInfo && (
-                            <Paragraph align="right" variant="tertiary" typographyStyle="hint">
+                            <Paragraph
+                                align="right"
+                                margin={{ left: 'auto' }}
+                                variant="tertiary"
+                                typographyStyle="hint"
+                            >
                                 {tokenInfo ? (
                                     <>
                                         <Translation id="FEE" />
