@@ -24,6 +24,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             },
         });
 
+        cy.disableFirmwareHashCheck();
         cy.getTestElement('@analytics/continue-button');
         cy.task('startBridge');
 

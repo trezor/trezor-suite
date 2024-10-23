@@ -20,6 +20,7 @@ describe('Analytics Events', () => {
 
     it('reports transport-type, suite-ready and device-connect/device-disconnect events when analytics is initialized and enabled', () => {
         cy.prefixedVisit('/');
+        cy.disableFirmwareHashCheck();
 
         // go to settings and enable analytics (makes analytics enabled and initialized)
         onNavBar.openSettings();
@@ -96,6 +97,10 @@ describe('Analytics Events', () => {
         cy.interceptDataTrezorIo(requests);
 
         cy.prefixedVisit('/', forceLightMode);
+        cy.disableFirmwareHashCheck();
+        // The next step is to press Settings Icon, and that can be done from DeviceCompromised modal as well as from a normal scren.
+        // But it can happen that Cypress tries to click it immediately, but fails, because the app is rerendering right now (modal is disappearing)
+        cy.wait(500);
 
         // change few settings to see if it is different from default values in suite-ready
         onNavBar.openSettings();

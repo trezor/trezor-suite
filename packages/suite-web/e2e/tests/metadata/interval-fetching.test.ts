@@ -50,6 +50,7 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
                     cy.stub(win, 'fetch').callsFake(rerouteMetadataToMockProvider);
                 },
             });
+            cy.disableFirmwareHashCheck();
             cy.tick(1000);
             cy.getTestElement('@analytics/continue-button', { timeout: 30_000 })
                 .click()

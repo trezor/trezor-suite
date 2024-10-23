@@ -11,6 +11,7 @@ describe('Suite initial run', () => {
 
     it('Until user passed through initial run, it will be there after reload', () => {
         cy.prefixedVisit('/');
+        cy.disableFirmwareHashCheck();
         cy.getTestElement('@analytics/toggle-switch').should('be.visible');
         cy.safeReload();
         // analytics screen is there until user confirms his choice
@@ -23,6 +24,7 @@ describe('Suite initial run', () => {
 
     it('Once user passed trough, skips initial run and shows connect-device modal', () => {
         cy.prefixedVisit('/');
+        cy.disableFirmwareHashCheck();
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@onboarding/exit-app-button').click();
         cy.getTestElement('@onboarding/viewOnly/enable').click();
