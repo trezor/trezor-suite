@@ -7,6 +7,7 @@ import {
 
 import { launchSuite } from '../../support/common';
 import { onSuiteGuidePage } from '../../support/pageActions/suiteGuideActions';
+import { onDashboardPage } from '../../support/pageActions/dashboardActions';
 
 let electronApp: ElectronApplication;
 let window: Page;
@@ -35,6 +36,7 @@ testPlaywright('Send a bug report', async () => {
         desiredLocation: 'Account',
         reportText: 'Henlo this is testy test writing hangry test user report',
     };
+    onDashboardPage.optionallyDismissFwHashCheckError(window);
 
     await onSuiteGuidePage.openSidePanel(window);
     await onSuiteGuidePage.openFeedback(window);

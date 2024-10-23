@@ -5,8 +5,16 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { waitForDataTestSelector } from '../common';
 
 class DashboardActions {
+    optionallyDismissFwHashCheckError(window: Page) {
+        // dismiss the error modal only if it appears (handle it async in parallel, not necessary to block the rest of the flow)
+        window
+            .$('[data-testid="@device-compromised/back-button"]')
+            .then(dismissFwHashCheckButton => dismissFwHashCheckButton?.click());
+    }
+
     async passThroughInitialRun(window: Page) {
         await waitForDataTestSelector(window, '@welcome/title');
+        this.optionallyDismissFwHashCheckError(window);
         await window.getByTestId('@analytics/continue-button').click();
         await window.getByTestId('@onboarding/exit-app-button').click();
 
