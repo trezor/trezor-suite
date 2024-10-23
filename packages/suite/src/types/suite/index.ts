@@ -8,7 +8,6 @@ import {
     transactionsActions,
 } from '@suite-common/wallet-core';
 import { analyticsActions } from '@suite-common/analytics';
-import type { ObjectValues } from '@trezor/type-utils';
 import type { UiEvent, TransportEvent, BlockchainEvent } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { messageSystemActions } from '@suite-common/message-system';
@@ -29,7 +28,6 @@ import type { WalletSettingsAction } from 'src/actions/settings/walletSettingsAc
 import type { WalletAction } from 'src/types/wallet';
 import type { BackupAction } from 'src/actions/backup/backupActions';
 import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
-import type { SUITE } from 'src/actions/suite/constants';
 import type { GuideAction } from 'src/actions/suite/guideActions';
 
 // reexport
@@ -103,8 +101,6 @@ export interface Dispatch extends ThunkDispatch<AppState, any, Action> {
 export type GetState = () => AppState;
 
 export type Store = ReduxStore<AppState, Action>;
-
-export type Lock = ObjectValues<typeof SUITE.LOCK_TYPE>;
 
 export type ForegroundAppRoute = Extract<
     Route,

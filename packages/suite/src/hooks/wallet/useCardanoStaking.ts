@@ -17,14 +17,14 @@ import trezorConnect, { PROTO } from '@trezor/connect';
 import { addFakePendingCardanoTxThunk, selectDevice } from '@suite-common/wallet-core';
 
 import { ActionAvailability, CardanoStaking } from 'src/types/wallet/cardanoStaking';
-import { SUITE } from 'src/actions/suite/constants';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { setPendingStakeTx } from 'src/actions/wallet/cardanoStakingActions';
 import { AppState } from 'src/types/suite';
+import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
 
 const getDeviceAvailability = (
     device: AppState['device']['selectedDevice'],
-    locks: AppState['suite']['locks'],
+    isDeviceLocked: boolean,
 ) => {
     // Handle all external cases where it is not possible to make delegate or withdrawal action
     if (!device?.connected) {
@@ -33,7 +33,7 @@ const getDeviceAvailability = (
             reason: 'DEVICE_DISCONNECTED',
         } as const;
     }
-    if (locks.includes(SUITE.LOCK_TYPE.DEVICE)) {
+    if (isDeviceLocked) {
         return {
             status: false,
             reason: 'DEVICE_LOCK',
@@ -63,7 +63,7 @@ export const useCardanoStaking = (): CardanoStaking => {
     }
 
     const device = useSelector(selectDevice);
-    const locks = useSelector(state => state.suite.locks);
+    const isDeviceLocked = useSelector(selectIsDeviceLocked);
     const cardanoStaking = useSelector(state => state.wallet.cardanoStaking);
     const dispatch = useDispatch();
 
@@ -295,7 +295,7 @@ export const useCardanoStaking = (): CardanoStaking => {
         fee,
         loading,
         pendingStakeTx,
-        deviceAvailable: getDeviceAvailability(device, locks),
+        deviceAvailable: getDeviceAvailability(device, isDeviceLocked),
         delegatingAvailable,
         withdrawingAvailable,
         registeredPoolId,
