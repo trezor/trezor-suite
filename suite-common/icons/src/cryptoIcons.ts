@@ -31,18 +31,3 @@ export const cryptoIcons = {
     zec: require('../cryptoAssets/cryptoIcons/zec.svg'),
 } as const;
 export type CryptoIconName = keyof typeof cryptoIcons;
-
-export const tokenIcons = {
-    cro: require('../cryptoAssets/tokenIcons/cro.svg'),
-    dai: require('../cryptoAssets/tokenIcons/dai.svg'),
-    erc20: require('../cryptoAssets/tokenIcons/erc20.svg'),
-    leo: require('../cryptoAssets/tokenIcons/leo.svg'),
-    link: require('../cryptoAssets/tokenIcons/link.svg'),
-    okb: require('../cryptoAssets/tokenIcons/okb.svg'),
-    shib: require('../cryptoAssets/tokenIcons/shib.svg'),
-    uni: require('../cryptoAssets/tokenIcons/uni.svg'),
-    usdc: require('../cryptoAssets/tokenIcons/usdc.svg'),
-    usdt: require('../cryptoAssets/tokenIcons/usdt.svg'),
-    wbtc: require('../cryptoAssets/tokenIcons/wbtc.svg'),
-} as const;
-export type TokenIconName = keyof typeof tokenIcons;

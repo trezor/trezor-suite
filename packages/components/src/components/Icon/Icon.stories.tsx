@@ -6,7 +6,7 @@ import {
     iconVariants,
     iconSizes,
 } from './Icon';
-import { IconName, icons } from '@suite-common/icons';
+import { IconName, icons } from '@suite-common/icons/src/icons';
 import {
     icons as iconsDeprecated,
     IconName as IconNameDeprecated,
