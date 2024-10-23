@@ -18,13 +18,13 @@ describe('Analytics Toggle - Enablement and Disablement', () => {
         cy.viewport(1440, 2560).resetDb();
 
         requests = [];
-    });
-
-    it('should respect disabled analytics in onboarding with following enabling in settings', () => {
         cy.interceptDataTrezorIo(requests).as('data-fetch');
 
         cy.prefixedVisit('/');
+        cy.disableFirmwareHashCheck();
+    });
 
+    it('should respect disabled analytics in onboarding with following enabling in settings', () => {
         // pass through onboarding with disabled analytics
         cy.getTestElement('@analytics/toggle-switch').find('input').should('be.checked');
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
@@ -115,10 +115,6 @@ describe('Analytics Toggle - Enablement and Disablement', () => {
     });
 
     it('should respect enabled analytics in onboarding with following disabling in settings', () => {
-        cy.interceptDataTrezorIo(requests).as('data-fetch');
-
-        cy.prefixedVisit('/');
-
         // pass through onboarding with enabled analytics
         cy.getTestElement('@analytics/toggle-switch').find('input').should('be.checked');
         cy.getTestElement('@analytics/continue-button').click();

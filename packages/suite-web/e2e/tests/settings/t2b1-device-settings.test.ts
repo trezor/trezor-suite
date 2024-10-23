@@ -43,6 +43,7 @@ describe('T2B1 - Device settings', () => {
 
         // pass through initial run and device auth check
         cy.prefixedVisit('/');
+        cy.disableFirmwareHashCheck();
         cy.getTestElement('@analytics/continue-button', { timeout: 40000 })
             .click()
             .getTestElement('@onboarding/exit-app-button')
@@ -99,6 +100,7 @@ describe('T2B1 - Device settings', () => {
 
         // pass through initial run and device auth check
         cy.prefixedVisit('/');
+        cy.disableFirmwareHashCheck();
         cy.getTestElement('@analytics/continue-button', { timeout: 40000 })
             .click()
             .getTestElement('@onboarding/exit-app-button')
@@ -125,6 +127,7 @@ describe('T2B1 - Device settings', () => {
 
         // pass through initial run and device auth check
         cy.prefixedVisit('/');
+        cy.disableFirmwareHashCheck();
         cy.getTestElement('@analytics/continue-button', { timeout: 40000 })
             .click()
             .getTestElement('@onboarding/exit-app-button')

@@ -19,6 +19,7 @@ describe('Onboarding - analytics consent', () => {
             needs_backup: false,
         });
         cy.prefixedVisit('/accounts');
+        cy.disableFirmwareHashCheck();
 
         acceptAnalyticsConsentOnInitializedDevice();
 

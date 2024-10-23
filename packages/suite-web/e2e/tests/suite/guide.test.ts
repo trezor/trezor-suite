@@ -56,6 +56,7 @@ describe('Test Guide', () => {
 
     it('In onboarding with device', () => {
         cy.task('startEmu', { wipe: true });
+        cy.disableFirmwareHashCheck();
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@guide/button-open').click();
