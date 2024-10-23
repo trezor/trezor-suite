@@ -14,8 +14,6 @@ describe('T1B1 - Device settings', () => {
         cy.task('startBridge');
         cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
-        // TODO: Remove this compromised device workaround
-        cy.contains('Back').click();
         cy.passThroughInitialRun();
     });
     afterEach(() => {
