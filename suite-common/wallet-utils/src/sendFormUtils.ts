@@ -328,6 +328,7 @@ export const getExternalComposeOutput = (
     values: Partial<FormState>,
     account: Account,
     network: Network,
+    formattedFallbackAmount?: string, // for cases when value is zero but amount is available in eth data
 ) => {
     if (!values || !Array.isArray(values.outputs) || !values.outputs[0]) return;
     const out = values.outputs[0];
@@ -357,7 +358,7 @@ export const getExternalComposeOutput = (
         output = {
             type: 'payment',
             address,
-            amount: amountInSatoshi,
+            amount: formattedFallbackAmount || formattedAmount,
         };
     } else {
         output = {

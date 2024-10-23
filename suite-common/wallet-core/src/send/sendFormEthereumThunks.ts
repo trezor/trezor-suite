@@ -24,7 +24,10 @@ import {
 } from '@suite-common/wallet-types';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getNetwork } from '@suite-common/wallet-config';
-import { getTxStakeNameByDataHex } from '@suite-common/suite-utils';
+import {
+    getTxStakeNameByDataHex,
+    getUnstakeAmountByEthereumDataHex,
+} from '@suite-common/suite-utils';
 
 import { selectTransactions } from '../transactions/transactionsReducer';
 import {
@@ -121,7 +124,15 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
         const { account, network, feeInfo } = composeContext;
-        const composedOutput = getExternalComposeOutput(formState, account, network);
+        const { ethereumDataHex } = formState;
+        const unstakeAmount = getUnstakeAmountByEthereumDataHex(ethereumDataHex);
+
+        const composedOutput = getExternalComposeOutput(
+            formState,
+            account,
+            network,
+            unstakeAmount || undefined,
+        );
 
         if (!composedOutput)
             return rejectWithValue({
