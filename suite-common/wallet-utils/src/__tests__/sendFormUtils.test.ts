@@ -330,6 +330,19 @@ describe('sendForm utils', () => {
             output: { type: 'payment-noaddress', amount: '1000000' },
             tokenInfo: undefined,
         });
+
+        expect(
+            getExternalComposeOutput(
+                { outputs: [{ ...OUTPUT, address: 'A', amount: '0', token: 'A' }] },
+                EthAccount,
+                EthNetwork,
+                '1', // already formatted
+            ),
+        ).toEqual({
+            decimals: 2,
+            output: { type: 'payment', address: 'A', amount: '1' },
+            tokenInfo: EthAccount.tokens![0],
+        });
     });
 
     it('calculateEthFee', () => {

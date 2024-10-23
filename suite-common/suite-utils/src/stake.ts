@@ -1,3 +1,5 @@
+import { hexToNumberString } from 'web3-utils';
+
 import { StakeType } from '@suite-common/wallet-types';
 
 // Define signature constants
@@ -30,4 +32,18 @@ export const getTxStakeNameByDataHex = (dataHex: string | undefined): StakeType 
     const signature = getSignatureByEthereumDataHex(dataHex);
 
     return isStakeTypeTx(signature) ? signatureToStakeNameMap[signature] : null;
+};
+
+export const getUnstakeAmountByEthereumDataHex = (dataHex?: string) => {
+    if (!dataHex) return null;
+
+    // Check if the first two characters are '0x' and remove them if they are
+    const data = dataHex.startsWith('0x') ? dataHex.slice(2) : dataHex;
+
+    const signature = getSignatureByEthereumDataHex(data);
+    if (!isUnstakeTx(signature)) return null;
+
+    const dataBuffer = Buffer.from(data, 'hex');
+
+    return hexToNumberString(`0x${dataBuffer.subarray(4, 36).toString('hex')}`);
 };
