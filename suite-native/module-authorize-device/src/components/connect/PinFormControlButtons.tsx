@@ -9,31 +9,17 @@ import Animated, {
     FadeOut,
 } from 'react-native-reanimated';
 
-import { useNavigation } from '@react-navigation/native';
-
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import TrezorConnect, { UI, DEVICE } from '@trezor/connect';
-import {
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
-} from '@suite-native/navigation';
 import { selectDeviceAuthFailed, authorizeDeviceThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useOpenLink } from '@suite-native/link';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 
 import { PIN_HELP_URL } from '../../constants/pinFormConstants';
-
-type NavigationProp = StackToStackCompositeNavigationProps<
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes.PinMatrix,
-    RootStackParamList
->;
 
 const buttonsWrapperStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
@@ -43,7 +29,11 @@ const buttonsWrapperStyle = prepareNativeStyle(utils => ({
 
 const ANIMATION_DURATION = 100;
 
-export const PinFormControlButtons = () => {
+type PinFormControlButtonsProps = {
+    onSuccess?: () => void;
+};
+
+export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps) => {
     const [containerHeight, setContainerHeight] = useState(0);
     const animatedHeight = useSharedValue(0);
 
@@ -51,17 +41,14 @@ export const PinFormControlButtons = () => {
     const { applyStyle } = useNativeStyles();
 
     const openLink = useOpenLink();
-    const navigation = useNavigation<NavigationProp>();
     const { showAlert } = useAlert();
     const { handleSubmit, getValues, watch, setValue, reset } = useFormContext();
     const hasDeviceAuthFailed = useSelector(selectDeviceAuthFailed);
 
     const handleSuccess = useCallback(() => {
-        if (navigation.canGoBack()) {
-            navigation.goBack();
-        }
+        onSuccess?.();
         reset();
-    }, [navigation, reset]);
+    }, [onSuccess, reset]);
 
     const handleDeviceChange = useCallback(() => {
         if (hasDeviceAuthFailed) {
@@ -162,7 +149,7 @@ export const PinFormControlButtons = () => {
                         />
                         <Box flex={1}>
                             <Button onPress={onSubmit}>
-                                <Translation id="moduleConnectDevice.pinScreen.form.enterPin" />
+                                <Translation id="moduleConnectDevice.pinScreen.form.submitButton" />
                             </Button>
                         </Box>
                     </HStack>

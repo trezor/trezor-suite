@@ -229,12 +229,17 @@ export const en = {
         pinScreen: {
             title: 'Enter PIN\non your Trezor',
             form: {
-                title: 'Enter PIN',
+                title: {
+                    current: 'Enter current PIN',
+                    new: 'Enter new PIN',
+                    confirm: 'Confirm new PIN',
+                },
                 entered: 'Entered',
                 digits: 'digits',
                 keypadInfo: 'Follow the keypad layout on your Trezor',
-                enterPin: 'Unlock',
-                submitting: 'Verifying your PIN',
+                submitButton: 'Confirm',
+                submitting: 'Verifying PIN',
+                processing: 'Processing',
             },
             wrongPinAlert: {
                 title: 'Incorrect PIN',
@@ -365,7 +370,7 @@ export const en = {
         confirmOnDeviceSheetTitle: 'Confirm on Trezor',
     },
     moduleDeviceSettings: {
-        title: 'Device info', // TODO: Change to "Device settings" once something may be changed
+        title: 'Device settings',
         firmware: {
             title: 'Firmware',
             version: 'Version',
@@ -395,6 +400,7 @@ export const en = {
             },
             errors: {
                 pinInvalid: 'The PIN you’ve entered as current is incorrect.',
+                pinMismatch: 'The PINs you’ve entered do not match.',
             },
         },
         updateHowTo: {
