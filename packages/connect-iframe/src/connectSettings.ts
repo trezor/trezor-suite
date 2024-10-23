@@ -76,7 +76,6 @@ export const parseConnectSettings = (
     }
 
     if (disableWebUsb) {
-        settings.webusb = false;
         // allow all but WebUsbTransport
         settings.transports = settings.transports?.filter(
             transport => transport !== 'WebUsbTransport',

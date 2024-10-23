@@ -53,8 +53,7 @@ const impl = new TrezorConnectDynamic<
             // Check if WebUSB is available and enabled
             const webUsbUnavailableInBrowser = !(navigator as any)?.usb;
             const webUsbDisabledInSettings =
-                impl.lastSettings?.transports?.includes('WebUsbTransport') === false ||
-                impl.lastSettings?.webusb === false;
+                impl.lastSettings?.transports?.includes('WebUsbTransport') === false;
             if (
                 errorCode === 'Transport_Missing' &&
                 (webUsbUnavailableInBrowser || webUsbDisabledInSettings)

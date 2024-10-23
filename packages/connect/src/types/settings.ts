@@ -15,8 +15,6 @@ export interface ConnectSettingsPublic {
     debug?: boolean;
     popup?: boolean;
     transportReconnect?: boolean;
-    /** @deprecated */
-    webusb?: boolean;
     transports?: (Transport['name'] | Transport | (new (...args: any[]) => Transport))[];
     pendingTransportEvent?: boolean;
     lazyLoad?: boolean;

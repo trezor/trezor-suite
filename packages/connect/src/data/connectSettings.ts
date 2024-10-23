@@ -90,11 +90,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.transportReconnect = input.transportReconnect;
     }
 
-    // deprecated, settings.transport should be used instead
-    if (typeof input.webusb === 'boolean') {
-        settings.webusb = input.webusb;
-    }
-
     if (Array.isArray(input.transports)) {
         settings.transports = input.transports;
     }
