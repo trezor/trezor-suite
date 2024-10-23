@@ -36,10 +36,8 @@ const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 const rootReducer = combineReducers({
     suite: createReducer(
         {
-            locks: [],
-            settings: {
-                debug: {},
-            },
+            locks: {},
+            settings: { debug: {} },
         },
         () => ({}),
     ),

@@ -70,7 +70,7 @@ describe('Suite Actions', () => {
     });
     fixtures.onBeforePopState.forEach(f => {
         it(`onBeforePopState: ${f.description}`, () => {
-            const state = getInitialState(f.state as InitialState);
+            const state = getInitialState(f.state as unknown as InitialState);
             const store = initStore(state);
             const result = store.dispatch(routerActions.onBeforePopState());
             expect(result).toEqual(f.result);
@@ -106,10 +106,8 @@ describe('Suite Actions', () => {
 
     it(`onLocationChange with lock`, () => {
         const state = getInitialState({
-            suite: {
-                locks: [1],
-            },
-        });
+            suite: { locks: { router: 1 } },
+        } as InitialState);
         const store = initStore(state);
         store.dispatch(routerActions.onLocationChange('/'));
         expect(store.getActions().length).toEqual(0);
