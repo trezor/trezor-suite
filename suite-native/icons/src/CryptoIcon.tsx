@@ -5,7 +5,8 @@ import {
     cryptoIcons,
     TokenIconName,
     tokenIcons,
-} from '@suite-common/icons/src/cryptoIcons';
+    genericTokenIcon,
+} from '@suite-common/icons';
 import { networks } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 
@@ -24,14 +25,12 @@ export const cryptoIconSizes = {
 
 export type CryptoIconSize = keyof typeof cryptoIconSizes;
 
-const genericTokenIconName: TokenIconName = 'erc20';
-
 const getIconFile = (symbol: CoinSymbolName) => {
     if (symbol in networks) return cryptoIcons[symbol as CryptoIconName];
 
     // the symbol in case of a token is a contract address. Since it is hexadecimal value, we can convert it
     // to lowerCase to mach definition `suite-common/icons/icons.ts` without changing the meaning of the date.
-    return tokenIcons[symbol.toLowerCase() as TokenIconName] ?? tokenIcons[genericTokenIconName];
+    return tokenIcons[symbol.toLowerCase() as TokenIconName] ?? genericTokenIcon;
 };
 
 export const CryptoIcon = ({ symbol, size = 'small' }: CryptoIconProps) => {

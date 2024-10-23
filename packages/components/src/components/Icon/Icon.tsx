@@ -6,7 +6,7 @@ import {
     icons as iconsDeprecated,
     IconName as IconNameDeprecated,
 } from '@suite-common/icons-deprecated';
-import { icons, IconName as IconNameNew } from '@suite-common/icons';
+import { icons, IconName as IconNameNew } from '@suite-common/icons/src/icons';
 import { CSSColor, Color } from '@trezor/theme';
 
 import { UIVariant } from '../../config/types';
