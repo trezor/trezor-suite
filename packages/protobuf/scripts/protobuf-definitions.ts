@@ -82,6 +82,34 @@ type BuildOptions = {
     skipPackages?: string[];
     onlyPackages?: string[];
     includeImports?: boolean;
+    messageType?: string; // enum name, default MessageType
+};
+
+const modifyMessageType = (proto: protobuf.Root, name: string) => {
+    const messageTypeEnum = proto.lookupEnum(name);
+    if (messageTypeEnum) {
+        Object.keys(messageTypeEnum.values).forEach(key => {
+            // replace key `MessageType_Initialize` > `Initialize`
+            const newKey = key.replace(name + '_', '');
+            const value = messageTypeEnum.values[key];
+            // remove old key
+            messageTypeEnum.remove(key);
+            // check if MessageType is needed, package could be excluded
+            if (proto.lookup(newKey)) {
+                // add new key
+                messageTypeEnum.add(newKey, value);
+            }
+        });
+    }
+
+    if (name !== 'MessageType') {
+        // rename custom enum to be MessageType
+        const { parent } = messageTypeEnum;
+        parent?.remove(messageTypeEnum);
+
+        messageTypeEnum.name = 'MessageType';
+        parent?.add(messageTypeEnum);
+    }
 };
 
 export const buildDefinitions = (protoDir: string, args: BuildOptions) => {
@@ -122,6 +150,8 @@ export const buildDefinitions = (protoDir: string, args: BuildOptions) => {
     if (!messages) {
         throw new Error('hw.trezor.messages not found');
     }
+
+    modifyMessageType(proto, args.messageType || 'MessageType');
 
     const result = {};
     // remove deep nesting (hw.trezor.messages.*)
