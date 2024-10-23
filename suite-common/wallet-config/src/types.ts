@@ -56,7 +56,11 @@ export type NetworkFeature =
     | 'coin-definitions'
     | 'nft-definitions';
 
-export type Bip43Path = string; // TODO define a more specific type
+type Level = `/${number}'`;
+type LevelOrIndex = `/${number | 'i'}'`;
+type MaybeApostrophe = `'` | '';
+type MaybeLevelOrIndex = `/${number | 'i'}${MaybeApostrophe}` | '';
+export type Bip43Path = `m${Level}${Level}${LevelOrIndex}${MaybeLevelOrIndex}${MaybeLevelOrIndex}`;
 
 export type Explorer = {
     tx: string;

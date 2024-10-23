@@ -17,6 +17,7 @@ import {
     networksCollection,
     normalizeNetworkAccounts,
     NormalizedNetworkAccount,
+    Bip43Path,
 } from '@suite-common/wallet-config';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
@@ -300,7 +301,7 @@ export const getBundleThunk = createThunk(
                 const pathIndex = (index + (isEvmLedgerDerivationPath ? 1 : 0)).toString();
 
                 bundle.push({
-                    path: bip43Path.replace('i', pathIndex),
+                    path: bip43Path.replace('i', pathIndex) as Bip43Path,
                     coin: networkSymbol,
                     identity: tryGetAccountIdentity({
                         networkType,
