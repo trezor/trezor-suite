@@ -39,12 +39,25 @@ on:
         type: "boolean"
         required: false
         default: false
+      cache_tx:
+        description: "Cache transactions"
+        type: "string"
+        required: false
+        default: false
+      transport:
+        description: "Transport to use (example: bridge, node-bridge)"
+        type: "string"
+        required: false
+        default: "Bridge"
+      testEnv:
+        description: "Environment to test (example: bridge, web)"
+        type: "string"
+        required: true
 
 jobs:
-  node:
-    name: "node-${{ inputs.testDescription }}"
+  test:
+    name: "${{ inputs.testDescription }}"
     runs-on: ubuntu-latest
-    if: ${{ inputs.nodeEnvironment }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -54,11 +67,39 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: yarn
+
+      - if: ${{ inputs.testEnv == 'web' }}
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+      # Install dependencies only for @trezor/connect package
+      - if: ${{ inputs.testEnv == 'web' }}
+        run: yarn workspaces focus @trezor/connect
+      - if: ${{ inputs.testEnv == 'web' }}
+        name: Retrieve build connect-web
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact-connect-web
+          path: packages/connect-web/build
+      - if: ${{ inputs.testEnv == 'web' }}
+        name: Retrieve build connect-iframe
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact-connect-iframe
+          path: packages/connect-web/build
+      - if: ${{ inputs.testEnv == 'web' }}
+        run: cd packages/connect-web && tree .
+      - if: ${{ inputs.testEnv == 'web' }}
+        name: "Echo download path"
+        run: echo ${{steps.download.outputs.download-path}}
+
       # todo: ideally do not install everything. possibly only devDependencies could be enough for testing (if there was not for building libs)?
-      - run: sed -i "/\"node\"/d" package.json
-      - run: yarn install
+      - if: ${{ inputs.testEnv == 'node' }}
+        run: sed -i "/\"node\"/d" package.json
+      - if: ${{ inputs.testEnv == 'node' }}
+        run: yarn install
+
       # nightly test - run without cached txs
-      - if: ${{ github.event_name == 'schedule' }}
+      - if: ${{ inputs.cache_tx == 'true' }}
         run: echo "ADDITIONAL_ARGS=-c" >> "$GITHUB_ENV"
       - if: ${{ inputs.testFirmwareModel }}
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -m ${{ inputs.testFirmwareModel }}" >> "$GITHUB_ENV"
@@ -66,42 +107,42 @@ jobs:
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -i ${{ inputs.methods }}" >> "$GITHUB_ENV"
       - if: ${{ inputs.testRandomizedOrder }}
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -r" >> "$GITHUB_ENV"
-      - run: './docker/docker-connect-test.sh node -p "${{ inputs.testPattern }}" -f "${{ inputs.testsFirmware }}" $ADDITIONAL_ARGS'
+      - run: './docker/docker-connect-test.sh ${{ inputs.testEnv }} -p "${{ inputs.testPattern }}" -f "${{ inputs.testsFirmware }}" $ADDITIONAL_ARGS'
 
-  web:
-    name: "web-${{ inputs.testDescription }}"
-    runs-on: ubuntu-latest
-    if: ${{ inputs.webEnvironment }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: yarn
-      - run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
-      # Install dependencies only for @trezor/connect package
-      - run: yarn workspaces focus @trezor/connect
-      - name: Retrieve build connect-web
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact-connect-web
-          path: packages/connect-web/build
-      - name: Retrieve build connect-iframe
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact-connect-iframe
-          path: packages/connect-iframe/build
-      - run: cd packages/connect-iframe && tree .
-      - name: "Echo download path"
-        run: echo ${{steps.download.outputs.download-path}}
-      - if: ${{ github.event_name == 'schedule' }}
-        run: echo "ADDITIONAL_ARGS=-c" >> "$GITHUB_ENV"
-      - if: ${{ inputs.testFirmwareModel }}
-        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -m ${{ inputs.testFirmwareModel }}" >> "$GITHUB_ENV"
-      - if: ${{ inputs.methods }}
-        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -i ${{ inputs.methods }}" >> "$GITHUB_ENV"
-      - run: './docker/docker-connect-test.sh web -p "${{ inputs.testPattern }}" -f "${{ inputs.testsFirmware }}" $ADDITIONAL_ARGS'
+  # web:
+  #   name: "web-${{ inputs.testDescription }}"
+  #   runs-on: ubuntu-latest
+  #   if: ${{ inputs.webEnvironment }}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         submodules: true
+  #     - name: Setup node
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version-file: ".nvmrc"
+  #         cache: yarn
+  #     - run: |
+  #         echo -e "\nenableScripts: false" >> .yarnrc.yml
+  #     # Install dependencies only for @trezor/connect package
+  #     - run: yarn workspaces focus @trezor/connect
+  #     - name: Retrieve build connect-web
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: build-artifact-connect-web
+  #         path: packages/connect-web/build
+  #     - name: Retrieve build connect-iframe
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: build-artifact-connect-iframe
+  #         path: packages/connect-iframe/build
+  #     - run: cd packages/connect-iframe && tree .
+  #     - name: "Echo download path"
+  #       run: echo ${{steps.download.outputs.download-path}}
+  #     - if: ${{ github.event_name == 'schedule' }}
+  #       run: echo "ADDITIONAL_ARGS=-c" >> "$GITHUB_ENV"
+  #     - if: ${{ inputs.testFirmwareModel }}
+  #       run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -m ${{ inputs.testFirmwareModel }}" >> "$GITHUB_ENV"
+  #     - if: ${{ inputs.methods }}
+  #       run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -i ${{ inputs.methods }}" >> "$GITHUB_ENV"
+  #     - run: './docker/docker-connect-test.sh web -p "${{ inputs.testPattern }}" -f "${{ inputs.testsFirmware }}" $ADDITIONAL_ARGS'

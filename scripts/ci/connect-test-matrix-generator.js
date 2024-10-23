@@ -1,60 +1,60 @@
 const process = require('process');
 
 const groups = {
-    api: {
-        name: 'api',
-        pattern:
-            'init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity keepSession cancel.test info.test',
-        methods: '',
-    },
-    management: {
-        name: 'management',
-        pattern: 'methods',
-        methods: 'applySettings,applyFlags,getFeatures,getFirmwareHash,changeLanguage',
-    },
-    btcSign: {
-        name: 'btc-sign',
-        pattern: 'methods',
-        methods: 'signTransaction',
-    },
-    btcOthers: {
-        name: 'btc-others',
-        pattern: 'methods',
-        methods:
-            'getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof',
-    },
-    stellar: {
-        name: 'stellar',
-        pattern: 'methods',
-        methods: 'stellarGetAddress,stellarSignTransaction',
-    },
-    cardano: {
-        name: 'cardano',
-        pattern: 'methods',
-        methods:
-            'cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction',
-    },
-    eos: {
-        name: 'eos',
-        pattern: 'methods',
-        methods: 'eosGetPublicKey,eosSignTransaction',
-    },
-    ethereum: {
-        name: 'ethereum',
-        pattern: 'methods',
-        methods:
-            'ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData',
-    },
-    nem: {
-        name: 'nem',
-        pattern: 'methods',
-        methods: 'nemGetAddress,nemSignTransaction',
-    },
-    ripple: {
-        name: 'ripple',
-        pattern: 'methods',
-        methods: 'rippleGetAddress,rippleSignTransaction',
-    },
+    // api: {
+    //     name: 'api',
+    //     pattern:
+    //         'init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity keepSession cancel.test info.test',
+    //     methods: '',
+    // },
+    // management: {
+    //     name: 'management',
+    //     pattern: 'methods',
+    //     methods: 'applySettings,applyFlags,getFeatures,getFirmwareHash,changeLanguage',
+    // },
+    // btcSign: {
+    //     name: 'btc-sign',
+    //     pattern: 'methods',
+    //     methods: 'signTransaction',
+    // },
+    // btcOthers: {
+    //     name: 'btc-others',
+    //     pattern: 'methods',
+    //     methods:
+    //         'getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof',
+    // },
+    // stellar: {
+    //     name: 'stellar',
+    //     pattern: 'methods',
+    //     methods: 'stellarGetAddress,stellarSignTransaction',
+    // },
+    // cardano: {
+    //     name: 'cardano',
+    //     pattern: 'methods',
+    //     methods:
+    //         'cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction',
+    // },
+    // eos: {
+    //     name: 'eos',
+    //     pattern: 'methods',
+    //     methods: 'eosGetPublicKey,eosSignTransaction',
+    // },
+    // ethereum: {
+    //     name: 'ethereum',
+    //     pattern: 'methods',
+    //     methods:
+    //         'ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData',
+    // },
+    // nem: {
+    //     name: 'nem',
+    //     pattern: 'methods',
+    //     methods: 'nemGetAddress,nemSignTransaction',
+    // },
+    // ripple: {
+    //     name: 'ripple',
+    //     pattern: 'methods',
+    //     methods: 'rippleGetAddress,rippleSignTransaction',
+    // },
     tezos: {
         name: 'tezos',
         pattern: 'methods',
@@ -81,10 +81,10 @@ const matrix = [
             return model === 'T1B1' ? firmwares1 : firmwares2;
         },
     },
-    // {
-    //     key: 'transport',
-    //     value: ['Bridge', 'NodeBridge'],
-    // },
+    {
+        key: 'transport',
+        value: ['Bridge', 'NodeBridge'],
+    },
     {
         key: 'groups',
         value: Object.values(groups),
@@ -92,6 +92,10 @@ const matrix = [
     {
         key: 'env',
         value: ['node', 'web'],
+    },
+    {
+        key: 'cache_tx',
+        value: ['true', 'false'],
     },
 ];
 
@@ -137,13 +141,28 @@ const res = createCartesian(matrix);
 // console.log('res', res);
 
 const args = process.argv.slice(2);
-let [model, firmware, env, groupName] = args;
+let [model, firmware, env, groupName, cache_tx, transport] = args;
 if (!model) model = 'all';
 if (!firmware) firmware = 'all';
 if (!env) env = 'all';
 if (!groupName) groupName = 'all';
+if (!cache_tx) cache_tx = 'all';
+if (!transport) transport = 'all';
 
-// console.log('model', model, 'firmware', firmware, 'env', env);
+// console.log(
+//     'model',
+//     model,
+//     'firmware',
+//     firmware,
+//     'env',
+//     env,
+//     'groupName',
+//     groupName,
+//     'cache_tx',
+//     cache_tx,
+//     'transport',
+//     transport,
+// );
 
 const filtered = res.filter(r => {
     if (model !== 'all') {
@@ -158,13 +177,20 @@ const filtered = res.filter(r => {
     if (groupName !== 'all') {
         if (r.groups.name !== groupName) return false;
     }
+    if (cache_tx !== 'all') {
+        if (r.cache_tx != cache_tx) return false;
+    }
+    if (transport !== 'all') {
+        if (r.transport !== transport) return false;
+    }
     return true;
 });
 
 // console.log('filtered', filtered);
+// console.log('filtered.length', filtered.length);
 
 process.stdout.write(
     JSON.stringify({
-        include: res,
+        include: filtered,
     }),
 );

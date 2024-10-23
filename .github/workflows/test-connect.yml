@@ -68,20 +68,21 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       dailyMatrix: ${{ steps.set-matrix-daily.outputs.dailyMatrix }}
-      otherDevicesMatrix: ${{ steps.set-matrix-other-devices.outputs.otherDevicesMatrix }}
-      legacyFirmwareMatrix: ${{ steps.set-matrix-legacy-firmware.outputs.legacyFirmwareMatrix }}
-      canaryFirmwareMatrix: ${{ steps.set-matrix-canary-firmware.outputs.canaryFirmwareMatrix }}
+      # otherDevicesMatrix: ${{ steps.set-matrix-other-devices.outputs.otherDevicesMatrix }}
+      # legacyFirmwareMatrix: ${{ steps.set-matrix-legacy-firmware.outputs.legacyFirmwareMatrix }}
+      # canaryFirmwareMatrix: ${{ steps.set-matrix-canary-firmware.outputs.canaryFirmwareMatrix }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set daily matrix
         id: set-matrix-daily
-        run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js T3B1 2-latest node all)" >> $GITHUB_OUTPUT
+        # model - firmware - env - groups - tx_cache - transport
+        run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js T3B1 2-latest all all true Bridge)" >> $GITHUB_OUTPUT
 
       # - name: Set legacy devices matrix
       #   id: set-matrix-legacy-firmware
-      #   run: echo "legacyFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js legacyFirmware)" >> $GITHUB_OUTPUT
+      #   run: echo "legacyFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js T3B1 2.3.0 node all true Bridge)" >> $GITHUB_OUTPUT
 
       # - name: Set canary devices matrix
       #   id: set-matrix-canary-firmware
@@ -91,15 +92,19 @@ jobs:
       #   id: set-matrix-other-devices
       #   run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js otherDevices)" >> $GITHUB_OUTPUT
 
-  connect-PR:
+  T3B1_2-latest_node_cache-tx_bridge:
     needs: [build, set-matrix]
-    name: PR-${{ matrix.name }}
+    name: ${{ matrix.model }}-${{ matrix.firmware }}
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
-      testPattern: ${{ matrix.pattern }}
-      methods: ${{ matrix.methods }}
+      testPattern: ${{ matrix.groups.pattern }}
+      methods: ${{ matrix.groups.methods }}
       testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.name }}
+      testDescription: ${{ matrix.env }} ${{ matrix.groups.name }}
+      cache_tx: ${{ matrix.cache_tx }}
+      transport: ${{ matrix.transport }}
+      testEnv: ${{ matrix.env }}
+      testFirmwareModel: ${{ matrix.model }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
