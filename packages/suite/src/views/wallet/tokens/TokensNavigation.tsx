@@ -63,7 +63,7 @@ export const TokensNavigation = ({
         <Row alignItems="center" justifyContent="space-between" margin={{ bottom: spacings.md }}>
             <Row alignItems="center" gap={spacings.xxs}>
                 <NavigationItem
-                    nameId="TR_COINS"
+                    nameId="TR_NAV_TOKENS"
                     isActive={routeName === 'wallet-tokens'}
                     icon="tokens"
                     goToRoute="wallet-tokens"
