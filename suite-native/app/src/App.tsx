@@ -13,6 +13,7 @@ import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { KillswitchMessageScreen, MessageSystemBannerRenderer } from '@suite-native/message-system';
 import { configureNetInfo, OfflineBanner } from '@suite-native/connection-status';
 import { IntlProvider } from '@suite-native/intl';
+import TrezorConnect from '@trezor/connect';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
@@ -24,6 +25,7 @@ import { ModalsRenderer } from './ModalsRenderer';
 
 if (__DEV__) {
     require('./LogBox');
+    global.TrezorConnect = TrezorConnect;
 }
 
 // Base time to measure app loading time.

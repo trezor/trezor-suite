@@ -13,8 +13,7 @@ const mockedConsoleAlreadyPrinted: string[] = [];
 const mockedConsoleLog = (...args: any) => {
     // we don't want to see console.log in tests because it's too noisy
     if (process.env.NODE_ENV !== 'test' && !mockedConsoleAlreadyPrinted.includes(args[0])) {
-        // eslint-disable-next-line no-console
-        console.log(...args);
+        //console.log(...args);
 
         // print every log only once
         mockedConsoleAlreadyPrinted.push(args[0]);

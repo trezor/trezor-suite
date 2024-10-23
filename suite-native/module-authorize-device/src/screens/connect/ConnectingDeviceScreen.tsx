@@ -17,7 +17,8 @@ const screenStyle = prepareNativeStyle(() => ({
 
 export const ConnectingDeviceScreen = () => {
     useOnDeviceReadyNavigation();
-    useHandleHardwareBackNavigation();
+    // comment this out so we can dismiss the screen by hardware back button because on BT devkit it will freeze there otherwise
+    // useHandleHardwareBackNavigation();
 
     const { applyStyle } = useNativeStyles();
 

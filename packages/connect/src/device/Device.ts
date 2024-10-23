@@ -529,6 +529,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             // update features
             try {
                 if (fn) {
+                    console.log('initialize', !!options.useCardanoDerivation);
                     await this.initialize(!!options.useCardanoDerivation);
                 } else {
                     const getFeaturesTimeout =
@@ -726,7 +727,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
             }
         }
 
+        console.log('initialiaze getFeatures');
         const { message } = await this.getCommands().typedCall('Initialize', 'Features', payload);
+        console.log('initialiaze getFeatures done', message);
         this._updateFeatures(message);
         this.setState({ deriveCardano: payload?.derive_cardano });
     }
@@ -859,7 +862,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             return;
         }
 
-        const releases = getReleases(this.features.internal_model);
+        const releases = getReleases(this.features.internal_model) ?? [];
 
         const release = releases.find(
             r =>

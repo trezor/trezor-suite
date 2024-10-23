@@ -34,7 +34,7 @@ type DeviceModelLayoutProps = {
 };
 
 const safe3Styles = {
-    fontSource: require('../../../../packages/theme/fonts/PixelOperatorMono8-Regular.ttf'),
+    fontSource: require('@trezor/theme/fonts/PixelOperatorMono8-Regular.ttf'),
     fontSize: 14,
     lineWidth: 265,
     lineHeight: 25,
@@ -51,7 +51,7 @@ const smallTouchscreenStyles = {
 const deviceToContentStyles: Record<DeviceModelInternal, DeviceModelLayoutProps> = {
     [DeviceModelInternal.UNKNOWN]: safe3Styles,
     [DeviceModelInternal.T1B1]: {
-        fontSource: require('../../../../packages/theme/fonts/PixelOperatorMono8-Regular.ttf'),
+        fontSource: require('@trezor/theme/fonts/PixelOperatorMono8-Regular.ttf'),
         fontSize: 14,
         lineWidth: 295,
         lineHeight: 17,
@@ -65,7 +65,7 @@ const deviceToContentStyles: Record<DeviceModelInternal, DeviceModelLayoutProps>
         lineWidth: 230,
         lineHeight: 25,
         pagerOffset: 60,
-    }, // TODO T3W1
+    },
     [DeviceModelInternal.T2B1]: safe3Styles,
     [DeviceModelInternal.T3B1]: safe3Styles,
 };
