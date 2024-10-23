@@ -37,6 +37,7 @@ import {
     StaticSessionId,
     FirmwareHashCheckResult,
     FirmwareHashCheckError,
+    DeviceModelInternal,
 } from '../types';
 import { models } from '../data/models';
 import { getLanguage } from '../data/getLanguage';
@@ -616,6 +617,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (firmwareVersion === undefined || !this.features || this.features.bootloader_mode) {
             return null;
         }
+
+        // Initially rolled out only for Model One; in the future we may remove that condition and do it for all models
+        const isModelOne = this.features.internal_model === DeviceModelInternal.T1B1;
+        if (!isModelOne) return createFailResult('check-skipped');
 
         const checkSupported = this.atLeast(FIRMWARE.FW_HASH_SUPPORTED_VERSIONS);
         if (!checkSupported) return createFailResult('check-unsupported');
