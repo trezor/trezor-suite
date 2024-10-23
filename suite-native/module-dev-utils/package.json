@@ -18,6 +18,7 @@
         "@suite-common/message-system": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/bluetooth": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/discovery": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
@@ -30,6 +31,7 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "@trezor/transport-native-ble": "workspace:*",
         "react": "18.2.0",
         "react-native": "0.75.2",
         "react-redux": "8.0.7"

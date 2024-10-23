@@ -3813,7 +3813,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/config-plugins@npm:8.0.8, @expo/config-plugins@npm:~8.0.0-beta.0, @expo/config-plugins@npm:~8.0.8":
+"@expo/config-plugins@npm:8.0.8, @expo/config-plugins@npm:^7.2.5 || ^8.0.0, @expo/config-plugins@npm:~8.0.0-beta.0, @expo/config-plugins@npm:~8.0.8":
   version: 8.0.8
   resolution: "@expo/config-plugins@npm:8.0.8"
   dependencies:
@@ -9669,9 +9669,11 @@ __metadata:
     react: "npm:18.2.0"
     react-intl: "npm:^6.6.8"
     react-native: "npm:0.75.2"
+    react-native-ble-plx: "npm:^3.2.1"
     react-native-gesture-handler: "npm:2.18.1"
     react-native-keyboard-aware-scroll-view: "npm:0.9.5"
     react-native-mmkv: "npm:2.12.2"
+    react-native-permissions: "npm:^4.1.5"
     react-native-reanimated: "npm:3.15.0"
     react-native-restart: "npm:0.0.27"
     react-native-safe-area-context: "npm:4.10.9"
@@ -9768,6 +9770,24 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/bluetooth@workspace:*, @suite-native/bluetooth@workspace:suite-native/bluetooth":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/bluetooth@workspace:suite-native/bluetooth"
+  dependencies:
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/storage": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/transport-native-ble": "workspace:*"
+    expo-constants: "npm:16.0.2"
+    react: "npm:18.2.0"
+    react-native: "npm:0.75.2"
+    react-native-ble-plx: "npm:^3.2.1"
+    react-native-permissions: "npm:^4.1.5"
+    react-native-restart: "npm:0.0.27"
   languageName: unknown
   linkType: soft
 
@@ -10223,6 +10243,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/bluetooth": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
@@ -10278,6 +10299,7 @@ __metadata:
     "@suite-common/message-system": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/bluetooth": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/discovery": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
@@ -10290,6 +10312,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
+    "@trezor/transport-native-ble": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
     react-redux: "npm:8.0.7"
@@ -10647,6 +10670,8 @@ __metadata:
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/blockchain": "workspace:*"
+    "@suite-native/bluetooth": "workspace:*"
+    "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/discovery": "workspace:*"
@@ -10658,6 +10683,7 @@ __metadata:
     "@suite-native/storage": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@trezor/transport-native": "workspace:*"
+    "@trezor/transport-native-ble": "workspace:*"
     "@trezor/utils": "workspace:*"
     expo-device: "npm:6.0.2"
     react: "npm:18.2.0"
@@ -12213,6 +12239,15 @@ __metadata:
     styled-components: "npm:^6.1.8"
     usb: "npm:^2.14.0"
     webpack: "npm:^5.94.0"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/transport-native-ble@workspace:*, @trezor/transport-native-ble@workspace:packages/transport-native-ble":
+  version: 0.0.0-use.local
+  resolution: "@trezor/transport-native-ble@workspace:packages/transport-native-ble"
+  dependencies:
+    "@trezor/transport": "workspace:*"
+    react-native-ble-plx: "npm:^3.2.1"
   languageName: unknown
   linkType: soft
 
@@ -22400,7 +22435,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-constants@npm:~16.0.0":
+"expo-constants@npm:16.0.2, expo-constants@npm:~16.0.0":
   version: 16.0.2
   resolution: "expo-constants@npm:16.0.2"
   dependencies:
@@ -22494,7 +22529,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-font@npm:~12.0.9":
+"expo-font@npm:~12.0.10, expo-font@npm:~12.0.9":
   version: 12.0.10
   resolution: "expo-font@npm:12.0.10"
   dependencies:
@@ -22638,6 +22673,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-modules-core@npm:1.12.24":
+  version: 1.12.24
+  resolution: "expo-modules-core@npm:1.12.24"
+  dependencies:
+    invariant: "npm:^2.2.4"
+  checksum: 10/81c09bfcf7233bfb5218a65c6648d29155cee595f313857eaf5518fc4645375bacc43f8a4836d93a400301d3a0aba976be980d98fa0dff02ce60095984640215
+  languageName: node
+  linkType: hard
+
 "expo-navigation-bar@npm:3.0.7":
   version: 3.0.7
   resolution: "expo-navigation-bar@npm:3.0.7"
@@ -22720,6 +22764,31 @@ __metadata:
   bin:
     expo: bin/cli
   checksum: 10/941addf1323e3cc4950f8998922af0b798987b0559c7303d634514a985a2331457c72225806542b3f607ca70b373b349130c0e5309c3cac0411e5fd219a97663
+  languageName: node
+  linkType: hard
+
+"expo@npm:^51.0.14":
+  version: 51.0.32
+  resolution: "expo@npm:51.0.32"
+  dependencies:
+    "@babel/runtime": "npm:^7.20.0"
+    "@expo/cli": "npm:0.18.29"
+    "@expo/config": "npm:9.0.3"
+    "@expo/config-plugins": "npm:8.0.8"
+    "@expo/metro-config": "npm:0.18.11"
+    "@expo/vector-icons": "npm:^14.0.0"
+    babel-preset-expo: "npm:~11.0.14"
+    expo-asset: "npm:~10.0.10"
+    expo-file-system: "npm:~17.0.1"
+    expo-font: "npm:~12.0.10"
+    expo-keep-awake: "npm:~13.0.2"
+    expo-modules-autolinking: "npm:1.11.2"
+    expo-modules-core: "npm:1.12.24"
+    fbemitter: "npm:^3.0.0"
+    whatwg-url-without-unicode: "npm:8.0.0-3"
+  bin:
+    expo: bin/cli
+  checksum: 10/9586f626571b1e28bfb82da79e3b77aac0da046766d52f85b8c463b2be82c0cf27df7d2536c65f25395e31898939d36d762b3c8fec6edb03a8f8dbb9cec199e5
   languageName: node
   linkType: hard
 
@@ -35769,6 +35838,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-ble-plx@npm:^3.2.1":
+  version: 3.2.1
+  resolution: "react-native-ble-plx@npm:3.2.1"
+  dependencies:
+    "@expo/config-plugins": "npm:^7.2.5 || ^8.0.0"
+    expo: "npm:^51.0.14"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/acd9253e16cd12918114cedb3529f3f71c74e8271e6034734dcd45adf7ced206de26c4febaec0eee60588fe6228aed88dfca52543abbf9519bcfb9ee991c5c72
+  languageName: node
+  linkType: hard
+
 "react-native-gesture-handler@npm:2.18.1":
   version: 2.18.1
   resolution: "react-native-gesture-handler@npm:2.18.1"
@@ -35812,6 +35894,20 @@ __metadata:
     react: "*"
     react-native: ">=0.71.0"
   checksum: 10/c1ebb8e81905ee8ce17858ff6096525cbdd0e51892dca80a3cd6e26feb5e979a9c7d609c5a55886150efb0136c5899de174c71115f81607019ed7af68678797b
+  languageName: node
+  linkType: hard
+
+"react-native-permissions@npm:^4.1.5":
+  version: 4.1.5
+  resolution: "react-native-permissions@npm:4.1.5"
+  peerDependencies:
+    react: ">=18.1.0"
+    react-native: ">=0.70.0"
+    react-native-windows: ">=0.70.0"
+  peerDependenciesMeta:
+    react-native-windows:
+      optional: true
+  checksum: 10/2b1eaa879e4b0c3455488c3dfa1d8b203bdbf2cd550b8ee5691d26e03c086d33f9bc495a70f8e1e85d0c16131374e11d12f7927168179e339f158eea9fb04830
   languageName: node
   linkType: hard
 
