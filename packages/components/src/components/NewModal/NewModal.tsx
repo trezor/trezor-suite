@@ -6,6 +6,8 @@ import {
     Elevation,
     mapElevationToBackground,
     prevElevation,
+    spacings,
+    negativeSpacings,
     spacingsPx,
 } from '@trezor/theme';
 
@@ -14,13 +16,15 @@ import { Text } from '../typography/Text/Text';
 import { H3 } from '../typography/Heading/Heading';
 import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 import { useScrollShadow } from '../../utils/useScrollShadow';
+import { IconCircle } from '../IconCircle/IconCircle';
+import { IconName } from '../Icon/Icon';
+import { Row } from '../Flex/Flex';
 import { NewModalButton } from './NewModalButton';
 import { NewModalContext } from './NewModalContext';
 import { NewModalBackdrop } from './NewModalBackdrop';
 import { NewModalProvider } from './NewModalProvider';
 import { NewModalSize, NewModalAlignment, NewModalVariant } from './types';
 import { mapModalSizeToWidth } from './utils';
-import { IconName } from '../Icon/Icon';
 import {
     FrameProps,
     FramePropsKeys,
@@ -28,7 +32,6 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
-import { NewModalIcon, type NewModalIconColors } from './NewModalIcon';
 
 export const allowedNewModalFrameProps = ['height'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedNewModalFrameProps)[number]>;
@@ -134,6 +137,7 @@ const _NewModalBase = ({
     const { elevation } = useElevation();
 
     const hasHeader = onBackClick || onCancel || heading || description;
+    const isIconPushedTop = onCancel !== undefined && !heading && !description && !onBackClick;
 
     useEvent('keydown', (e: KeyboardEvent) => {
         if (isBackdropCancelable && onCancel && e.key === 'Escape') {
@@ -187,19 +191,19 @@ const _NewModalBase = ({
                 <ShadowTop />
                 <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
                     <Body id={NEW_MODAL_CONTENT_ID}>
-                        {iconComponent ??
-                            (iconName && (
-                                <NewModalIcon
-                                    isPushedTop={
-                                        onCancel !== undefined &&
-                                        !heading &&
-                                        !description &&
-                                        !onBackClick
-                                    }
-                                    iconName={iconName}
-                                    variant={variant}
-                                />
-                            ))}
+                        {(iconComponent || iconName) && (
+                            <Row
+                                margin={{
+                                    bottom: spacings.md,
+                                    top: isIconPushedTop ? negativeSpacings.md : 0,
+                                }}
+                            >
+                                {iconComponent ??
+                                    (iconName && (
+                                        <IconCircle name={iconName} size={40} variant={variant} />
+                                    ))}
+                            </Row>
+                        )}
                         <ElevationUp>{children}</ElevationUp>
                     </Body>
                 </ScrollContainer>
@@ -238,7 +242,6 @@ NewModal.Button = NewModalButton;
 NewModal.Backdrop = NewModalBackdrop;
 NewModal.Provider = NewModalProvider;
 NewModal.ModalBase = NewModalBase;
-NewModal.Icon = NewModalIcon;
 
 export { NewModal, NEW_MODAL_CONTENT_ID };
-export type { NewModalProps, NewModalSize, NewModalIconColors };
+export type { NewModalProps, NewModalSize };

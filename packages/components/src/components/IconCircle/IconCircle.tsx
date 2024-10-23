@@ -14,11 +14,12 @@ import {
 export const allowedIconCircleFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedIconCircleFrameProps)[number]>;
 
-type IconCircleWrapperProps = TransientProps<IconCircleExclusiveColorOrVariant> &
-    TransientProps<AllowedFrameProps> & {
-        $size: number;
-        $hasBorder: boolean;
-    };
+type IconCircleWrapperProps = TransientProps<
+    IconCircleExclusiveColorOrVariant & AllowedFrameProps
+> & {
+    $size: number;
+    $hasBorder: boolean;
+};
 
 const IconCircleWrapper = styled.div<IconCircleWrapperProps>`
     width: ${({ $size }) => $size}px;

@@ -34,10 +34,9 @@ type AllowedTextProps = Pick<TextProps, (typeof allowedListTextProps)[number]>;
 export const bulletVerticalAlignments = uiVerticalAlignments;
 export type BulletVerticalAlignment = (typeof uiVerticalAlignments)[number];
 
-type ContainerProps = TransientProps<AllowedFrameProps> &
-    TransientProps<AllowedTextProps> & {
-        $gap: SpacingValues;
-    };
+type ContainerProps = TransientProps<AllowedFrameProps & AllowedTextProps> & {
+    $gap: SpacingValues;
+};
 
 const Container = styled.ul<ContainerProps>`
     display: flex;
