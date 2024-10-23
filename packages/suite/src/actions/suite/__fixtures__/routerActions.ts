@@ -41,18 +41,14 @@ export const onBeforePopState = [
     {
         description: `router locked`,
         state: {
-            suite: {
-                locks: [1],
-            },
+            suite: { locks: { router: 1 } },
         },
         result: false,
     },
     {
         description: `device locked`,
         state: {
-            suite: {
-                locks: [3],
-            },
+            suite: { locks: { ui: 1 } },
         },
         result: false,
     },
@@ -88,9 +84,7 @@ export const goto = [
     {
         description: `ui locked`,
         state: {
-            suite: {
-                locks: [3],
-            },
+            suite: { locks: { ui: 1 } },
         },
         url: 'wallet-index',
     },
@@ -118,9 +112,7 @@ export const initialRedirection = [
     {
         description: `router locked`,
         state: {
-            suite: {
-                locks: [1],
-            },
+            suite: { locks: { router: 1 } },
         },
         app: 'start',
     },
