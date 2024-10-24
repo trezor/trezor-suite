@@ -1,4 +1,4 @@
-import { MessageFromTrezor, parseConfigure } from '@trezor/protobuf';
+import { MessageFromTrezor, loadDefinitions, parseConfigure } from '@trezor/protobuf';
 import { PROTOCOL_MALFORMED, TransportProtocol } from '@trezor/protocol';
 import { ScheduleActionParams, ScheduledAction, TypedEmitter, scheduleAction } from '@trezor/utils';
 
@@ -342,6 +342,10 @@ export abstract class AbstractTransport extends TransportEmitter {
 
     public updateMessages(messages: Record<string, any>) {
         this.messages = parseConfigure(messages);
+    }
+
+    public loadMessages(packageName: string, packageLoader: Parameters<typeof loadDefinitions>[2]) {
+        return loadDefinitions(this.messages, packageName, packageLoader);
     }
 
     protected success<T>(payload: T): Success<T> {
