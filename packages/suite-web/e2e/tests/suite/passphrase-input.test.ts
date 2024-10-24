@@ -15,7 +15,6 @@ describe('Passphrase', () => {
         cy.discoveryShouldFinish();
     });
 
-    // TODO: there is a problem with clearing our password input element -> cypress deletes only last char with {selectAll}{backspace} and totally ignores .clear() command
     it('just test passphrase input', () => {
         // enable passphrase on device
         cy.getTestElement('@suite/menu/settings').click();
