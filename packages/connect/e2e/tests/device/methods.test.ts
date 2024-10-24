@@ -1,5 +1,5 @@
 import TrezorConnect from '../../../src';
-import fixtures from '../../__fixtures__';
+import * as fixtures from '../../__fixtures__';
 
 import {
     getController,
@@ -11,6 +11,30 @@ import {
 
 let controller: ReturnType<typeof getController> | undefined;
 
+const getFixtures = () => {
+    const includedMethods = process.env.TESTS_INCLUDED_METHODS;
+    const excludedMethods = process.env.TESTS_EXCLUDED_METHODS;
+    let subset = Object.values(fixtures);
+    if (includedMethods) {
+        const methodsArr = includedMethods.split(',');
+        subset = subset.filter(f => methodsArr.some(includedM => includedM === f.method));
+    } else if (excludedMethods) {
+        const methodsArr = excludedMethods.split(',');
+        subset = subset.filter(f => !methodsArr.includes(f.method));
+    }
+
+    // sort by mnemonic to avoid emu re-loading
+    const result = subset?.sort((a, b) => {
+        if (!a.setup.mnemonic || !b.setup.mnemonic) return 0;
+        if (a.setup.mnemonic > b.setup.mnemonic) return 1;
+        if (b.setup.mnemonic > a.setup.mnemonic) return -1;
+
+        return 0;
+    });
+
+    return result || [];
+};
+
 describe(`TrezorConnect methods`, () => {
     afterAll(() => {
         // reset controller at the end
@@ -20,7 +44,7 @@ describe(`TrezorConnect methods`, () => {
         }
     });
 
-    fixtures.forEach((testCase: TestCase) => {
+    getFixtures().forEach((testCase: TestCase) => {
         describe(`TrezorConnect.${testCase.method}`, () => {
             beforeAll(async () => {
                 await TrezorConnect.dispose();
