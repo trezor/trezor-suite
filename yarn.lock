@@ -9660,6 +9660,7 @@ __metadata:
     expo-build-properties: "npm:0.12.5"
     expo-camera: "npm:15.0.15"
     expo-clipboard: "npm:6.0.3"
+    expo-crypto: "npm:13.0.2"
     expo-dev-client: "npm:4.0.25"
     expo-haptics: "npm:13.0.1"
     expo-image: "npm:1.12.15"
@@ -9680,7 +9681,6 @@ __metadata:
     react-intl: "npm:^6.6.8"
     react-native: "npm:0.75.2"
     react-native-gesture-handler: "npm:2.18.1"
-    react-native-get-random-values: "npm:1.11.0"
     react-native-keyboard-aware-scroll-view: "npm:0.9.5"
     react-native-mmkv: "npm:2.12.2"
     react-native-reanimated: "npm:3.15.0"
@@ -22956,13 +22956,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-base64-decode@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "fast-base64-decode@npm:1.0.0"
-  checksum: 10/4c59eb1775a7f132333f296c5082476fdcc8f58d023c42ed6d378d2e2da4c328c7a71562f271181a725dd17cdaa8f2805346cc330cdbad3b8e4b9751508bd0a3
-  languageName: node
-  linkType: hard
-
 "fast-copy@npm:^3.0.2":
   version: 3.0.2
   resolution: "fast-copy@npm:3.0.2"
@@ -35902,17 +35895,6 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10/d97cb20ed32c58a66c21a53727ce22cb7ece104bea296b72f4a95a3b3b61d03561e46b437f818603bcc58518dc5cd5bd42aaddb9755fb9eca467ce45358d4765
-  languageName: node
-  linkType: hard
-
-"react-native-get-random-values@npm:1.11.0":
-  version: 1.11.0
-  resolution: "react-native-get-random-values@npm:1.11.0"
-  dependencies:
-    fast-base64-decode: "npm:^1.0.0"
-  peerDependencies:
-    react-native: ">=0.56"
-  checksum: 10/eb04833ce2b66309d737f1447ab01ad32aca00a8d1cc4de7b4e751c23f4d9f8059a2643bb16e0b6f3e6b074a9e57e769bb2bf2afc50a912c5661d80a6ce4de34
   languageName: node
   linkType: hard
 
