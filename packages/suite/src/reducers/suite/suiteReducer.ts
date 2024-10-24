@@ -1,11 +1,7 @@
 import produce from 'immer';
 
 import type { InvityServerEnvironment } from '@suite-common/invity';
-import {
-    Feature,
-    MessageSystemRootState,
-    selectIsFeatureDisabled,
-} from '@suite-common/message-system';
+import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { discoveryActions, DeviceRootState, selectDevice } from '@suite-common/wallet-core';
 import { versionUtils } from '@trezor/utils';
@@ -24,13 +20,14 @@ import { ensureLocale } from 'src/utils/suite/l10n';
 import type { Locale } from 'src/config/suite/languages';
 import { SUITE, STORAGE } from 'src/actions/suite/constants';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
-import { Action, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
+import { Action, AppState, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
 import { RouterRootState, selectRouter } from './routerReducer';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
+import { UpdateState } from './desktopUpdateReducer';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -443,12 +440,10 @@ export const selectHasExperimentalFeature =
     (feature: ExperimentalFeature) => (state: SuiteRootState) =>
         state.suite.settings.experimental?.includes(feature) ?? false;
 
-type StateForFirmwareChecks = SuiteRootState & DeviceRootState & MessageSystemRootState;
-
 /**
  * Get firmware revision check error, or null if check was successful / skipped.
  */
-export const selectFirmwareRevisionCheckError = (state: StateForFirmwareChecks) => {
+export const selectFirmwareRevisionCheckError = (state: AppState) => {
     const device = selectDevice(state);
     if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
 
@@ -464,7 +459,7 @@ export const selectFirmwareRevisionCheckError = (state: StateForFirmwareChecks) 
  * Determine hard failure of firmware revision check - specific error types which are severe.
  * If Suite is offline and cannot perform check or there is some unexpected error, a banner is shown but device is accessible.
  */
-const selectIsFirmwareRevisionCheckEnabledAndFailed = (state: StateForFirmwareChecks): boolean => {
+const selectIsFirmwareRevisionCheckEnabledAndFailed = (state: AppState): boolean => {
     const error = selectFirmwareRevisionCheckError(state);
     const softErrors: FirmwareRevisionCheckError[] = [
         'cannot-perform-check-offline',
@@ -477,7 +472,7 @@ const selectIsFirmwareRevisionCheckEnabledAndFailed = (state: StateForFirmwareCh
 /**
  * Get firmware hash check error, or null if check was successful / skipped.
  */
-export const selectFirmwareHashCheckError = (state: StateForFirmwareChecks) => {
+export const selectFirmwareHashCheckError = (state: AppState) => {
     const device = selectDevice(state);
     if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
 
@@ -490,11 +485,25 @@ export const selectFirmwareHashCheckError = (state: StateForFirmwareChecks) => {
 };
 
 /**
+ * Determine if there is a FW hash check error that could be caused by outdated Suite version (a subset of firmware hash error)
+ */
+export const selectIsUnrecognizedFirmwareWithOutdatedSuite = (state: AppState): boolean => {
+    const device = selectDevice(state);
+    if (!isDeviceAcquired(device) || !device.authenticityChecks?.firmwareHash) return false;
+    const isUpdateAvailable = state.desktopUpdate.state === UpdateState.Available;
+    const checkResult = device.authenticityChecks.firmwareHash;
+
+    return !checkResult.success && checkResult.error === 'unknown-release' && isUpdateAvailable;
+};
+
+/**
  * Determine hard failure of firmware hash check - specific error types which are severe.
  * If check was skipped, don't consider it failed.
  * If check is unsupported by device, a banner is shown but device is accessible.
  */
-const selectIsFirmwareHashCheckEnabledAndFailed = (state: StateForFirmwareChecks): boolean => {
+const selectIsFirmwareHashCheckEnabledAndFailed = (state: AppState): boolean => {
+    if (selectIsUnrecognizedFirmwareWithOutdatedSuite(state)) return false; // treat this as a soft failure
+
     const error = selectFirmwareHashCheckError(state);
     const softErrors: FirmwareHashCheckError[] = ['check-skipped', 'check-unsupported'];
 
@@ -504,7 +513,7 @@ const selectIsFirmwareHashCheckEnabledAndFailed = (state: StateForFirmwareChecks
 /**
  * Determine hard failure of either of firmware authenticity checks to block access to device.
  */
-export const selectIsFirmwareAuthenticityCheckEnabledAndFailed = (state: StateForFirmwareChecks) =>
+export const selectIsFirmwareAuthenticityCheckEnabledAndFailed = (state: AppState) =>
     selectIsFirmwareRevisionCheckEnabledAndFailed(state) ||
     selectIsFirmwareHashCheckEnabledAndFailed(state);
 
