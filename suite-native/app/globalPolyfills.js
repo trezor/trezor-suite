@@ -4,7 +4,7 @@ if (typeof global.crypto !== 'object') {
     global.crypto = {};
 }
 // crypto.getRandomValues polyfill is needed for Solana
-global.crypto.getRandomValues = Crypto.getRandomValues; 
+global.crypto.getRandomValues = Crypto.getRandomValues;
 
 global.Buffer = require('buffer').Buffer;
 
