@@ -1648,6 +1648,18 @@ export type AuthenticityProof = {
 
 export type WipeDevice = {};
 
+export type LoadDevice = {
+    mnemonics: string[];
+    pin?: string;
+    passphrase_protection?: boolean;
+    language?: string;
+    label?: string;
+    skip_checksum?: boolean;
+    u2f_counter?: number;
+    needs_backup?: boolean;
+    no_backup?: boolean;
+};
+
 export type ResetDevice = {
     strength?: number;
     passphrase_protection?: boolean;
@@ -2434,6 +2446,7 @@ export type MessageType = {
     AuthenticateDevice: AuthenticateDevice;
     AuthenticityProof: AuthenticityProof;
     WipeDevice: WipeDevice;
+    LoadDevice: LoadDevice;
     ResetDevice: ResetDevice;
     Slip39Group: Slip39Group;
     BackupDevice: BackupDevice;
