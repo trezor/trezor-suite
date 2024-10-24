@@ -9,6 +9,7 @@ import { useSelector } from 'src/hooks/suite';
 import {
     selectFirmwareHashCheckError,
     selectFirmwareRevisionCheckError,
+    selectIsUnrecognizedFirmwareWithOutdatedSuite,
 } from 'src/reducers/suite/suiteReducer';
 
 const revisionCheckMessages: Record<FirmwareRevisionCheckError, TranslationKey> = {
@@ -36,9 +37,15 @@ const hashCheckMessages: Record<
 const useAuthenticityCheckMessage = (): TranslationKey | null => {
     const firmwareRevisionError = useSelector(selectFirmwareRevisionCheckError);
     const firmwareHashError = useSelector(selectFirmwareHashCheckError);
+    const isUnrecognizedFwWithOutadedSuite = useSelector(
+        selectIsUnrecognizedFirmwareWithOutdatedSuite,
+    );
 
     if (firmwareRevisionError) {
         return revisionCheckMessages[firmwareRevisionError];
+    }
+    if (isUnrecognizedFwWithOutadedSuite) {
+        return 'TR_DEVICE_FIRMWARE_UNRECOGNIZED_OUTDATED_SUITE';
     }
     if (firmwareHashError && !isArrayMember(firmwareHashError, skippedHashCheckErrors)) {
         return hashCheckMessages[firmwareHashError];

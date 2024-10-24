@@ -7047,6 +7047,11 @@ export default defineMessages({
         defaultMessage:
             "Firmware hash check couldn't be performed. Your Trezor may be counterfeit.",
     },
+    TR_DEVICE_FIRMWARE_UNRECOGNIZED_OUTDATED_SUITE: {
+        id: 'TR_DEVICE_FIRMWARE_UNRECOGNIZED_OUTDATED_SUITE',
+        defaultMessage:
+            'Firmware unrecognized. Please update your Trezor Suite to verify your Trezor.',
+    },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
         defaultMessage: 'Activate coins',
