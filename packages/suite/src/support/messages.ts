@@ -4160,30 +4160,19 @@ export default defineMessages({
             "Enter the words from your wallet backup here in the order displayed on your device. You may be asked to type some words that aren't part of your wallet backup as an additional security measure.",
         dynamic: true,
     },
-    TR_CHECK_RECOVERY_SEED_DESC_T2T1: {
-        id: 'TR_CHECK_RECOVERY_SEED_DESC_T2T1',
-        defaultMessage:
-            'Your wallet backup is entered using the touchscreen. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
-        dynamic: true,
-    },
-    TR_CHECK_RECOVERY_SEED_DESC_T3T1: {
-        id: 'TR_CHECK_RECOVERY_SEED_DESC_T3T1',
-        defaultMessage:
-            'Your wallet backup is entered using the touchscreen. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
-        dynamic: true,
-    },
-    TR_CHECK_RECOVERY_SEED_DESC_T3W1: {
-        id: 'TR_CHECK_RECOVERY_SEED_DESC_T3W1',
-        defaultMessage:
-            'Your wallet backup is entered using the touchscreen. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
-        dynamic: true,
-    },
-    TR_CHECK_RECOVERY_SEED_DESC_T2B1: {
+    TR_CHECK_RECOVERY_SEED_DESC_T3B1: {
         id: 'TR_CHECK_RECOVERY_SEED_DESC_T2B1',
         defaultMessage:
             "Use the two-button pad to enter your wallet backup. By doing this, you're keeping all your sensitive info safe and sound, away from any shady or insecure computer or web browser.",
         dynamic: true,
     },
+    TR_CHECK_RECOVERY_SEED_DESC_TOUCHSCREEN: {
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_TOUCHSCREEN',
+        defaultMessage:
+            'Your wallet backup is entered using the touchscreen. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
+        dynamic: true,
+    },
+
     TR_SELECT_NUMBER_OF_WORDS: {
         id: 'TR_SELECT_NUMBER_OF_WORDS',
         defaultMessage: 'Select the number of words in your wallet backup',

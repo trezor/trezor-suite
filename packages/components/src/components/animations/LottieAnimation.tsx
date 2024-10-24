@@ -2,10 +2,11 @@ import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
 import Lottie, { LottieOptions } from 'lottie-react';
 
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
+import { getNarrowedDeviceModelInternal } from '@suite-common/suite-utils';
 import { DeviceModelInternal } from '@trezor/connect';
 import { AnimationWrapper, Shape } from './AnimationPrimitives';
 import { resolveStaticPath } from '../../utils/resolveStaticPath';
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 
 const StyledLottie = styled(Lottie)`
     width: 100%;
@@ -52,7 +53,7 @@ export const LottieAnimation = ({
 
         if (type === 'CONNECT') {
             loadAnimation(
-                `trezor_${(deviceModelInternal === DeviceModelInternal.T2B1 ? DeviceModelInternal.T3B1 : deviceModelInternal).toLowerCase()}_connect`,
+                `trezor_${getNarrowedDeviceModelInternal(deviceModelInternal).toLowerCase()}_connect`,
             );
         } else if (type === 'BLOCK') {
             loadAnimation('cubes_line');
