@@ -1,9 +1,17 @@
 import { createReducer } from '@reduxjs/toolkit';
+import { memoizeWithArgs } from 'proxy-memoize';
+import { D } from '@mobily/ts-belt';
 
-import { NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
+import {
+    NetworkSymbol,
+    getNetworkType,
+    networks,
+    networksCollection,
+} from '@suite-common/wallet-config';
 import { FeeInfo, FeeLevelLabel } from '@suite-common/wallet-types';
 import { formatDuration } from '@suite-common/suite-utils';
 import { FeeLevel } from '@trezor/connect';
+import { getFeeLevels } from '@suite-common/wallet-utils';
 
 import { blockchainActions } from '../blockchain/blockchainActions';
 
@@ -39,8 +47,19 @@ export const feesReducer = createReducer(initialState, builder => {
     });
 });
 
-export const selectNetworkFeeInfo = (state: FeesRootState, networkSymbol?: NetworkSymbol) =>
-    networkSymbol ? state.wallet.fees[networkSymbol] : null;
+export const selectNetworkFeeInfo = memoizeWithArgs(
+    (state: FeesRootState, networkSymbol?: NetworkSymbol): FeeInfo | null => {
+        if (!networkSymbol) return null;
+
+        const networkType = getNetworkType(networkSymbol);
+
+        const networkFeeInfo = state.wallet.fees[networkSymbol];
+        const levels = getFeeLevels(networkType, networkFeeInfo);
+
+        return { ...networkFeeInfo, levels };
+    },
+    { size: D.keys(networks).length },
+);
 
 export const selectNetworkFeeLevel = (
     state: FeesRootState,

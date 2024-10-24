@@ -65,7 +65,7 @@ export const RecipientsSummary = ({ accountKey, selectedFeeLevel }: FeesRecipien
             {addressTargetingOutputs.map(output => (
                 <Card key={output.address} style={applyStyle(cardStyle)}>
                     <HStack>
-                        <VStack flex={0.6} justifyContent="center" spacing="sp4">
+                        <VStack flex={0.4} justifyContent="center" spacing="sp4">
                             <Text variant="callout">
                                 <Translation id="moduleSend.fees.recipient.singular" />
                             </Text>
@@ -78,7 +78,7 @@ export const RecipientsSummary = ({ accountKey, selectedFeeLevel }: FeesRecipien
                                 {output.address}
                             </Text>
                         </VStack>
-                        <VStack flex={0.4} alignItems="flex-end" spacing="sp4">
+                        <VStack flex={0.6} alignItems="flex-end" spacing="sp4">
                             <CryptoToFiatAmountFormatter
                                 variant="hint"
                                 color="textDefault"
@@ -92,6 +92,8 @@ export const RecipientsSummary = ({ accountKey, selectedFeeLevel }: FeesRecipien
                                 value={output.amount}
                                 network={networkSymbol}
                                 isBalance={isBalance}
+                                adjustsFontSizeToFit
+                                numberOfLines={1}
                             />
                         </VStack>
                     </HStack>

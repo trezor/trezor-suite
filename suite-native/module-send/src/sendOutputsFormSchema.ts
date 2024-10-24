@@ -58,14 +58,14 @@ const isAmountHigherThanBalance = (
 
     const amountBigNumber = new BigNumber(amount);
 
-    const economyMaxAmount = feeLevelsMaxAmount?.economy;
     const normalMaxAmount = feeLevelsMaxAmount?.normal;
 
     // if send max is enabled, user is allowed submit form even if there is enough balance only for economy fee.
     if (isSendMaxEnabled) {
-        if (!economyMaxAmount) return true;
+        const lowestLevelMaxAmount = feeLevelsMaxAmount?.economy ?? normalMaxAmount;
+        if (!lowestLevelMaxAmount) return true;
 
-        return amountBigNumber.gt(economyMaxAmount);
+        return amountBigNumber.gt(lowestLevelMaxAmount);
     }
 
     return !normalMaxAmount || amountBigNumber.gt(normalMaxAmount);

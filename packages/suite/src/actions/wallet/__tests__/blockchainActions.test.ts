@@ -207,7 +207,7 @@ describe('Blockchain Actions', () => {
                 },
                 fees: {
                     // @ts-expect-error partial params
-                    btc: { blockHeight: 100 },
+                    btc: { blockHeight: 100, levels: [] },
                 },
             }),
         );
