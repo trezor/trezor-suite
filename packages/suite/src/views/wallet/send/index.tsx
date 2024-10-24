@@ -76,6 +76,8 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
 
     const { symbol } = selectedAccount.account;
 
+    const areTokensSupported = selectedAccount.network?.features?.includes('tokens') ?? false;
+
     if (props.sendRaw) {
         return (
             <WalletLayout title="TR_NAV_SEND" isSubpage account={selectedAccount}>
@@ -90,7 +92,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
                 <SendHeader />
 
                 <FormGrid data-testid="@wallet/send/outputs-and-options">
-                    <Outputs disableAnim={!!children} />
+                    <Outputs disableAnim={!!children} areTokensSupported={areTokensSupported} />
                     <Options />
                     <SendFees />
 

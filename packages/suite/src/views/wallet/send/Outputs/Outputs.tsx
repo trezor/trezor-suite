@@ -5,15 +5,13 @@ import { motion } from 'framer-motion';
 import { Card, motionEasing } from '@trezor/components';
 import { motionEasingStrings } from '@trezor/components/src/config/motion';
 import { spacingsPx } from '@trezor/theme';
-import { networks } from '@suite-common/wallet-config';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useLayoutSize } from 'src/hooks/suite';
-import { Translation } from 'src/components/suite';
 import { Address } from './Address';
 import { Amount } from './Amount/Amount';
 import { OpReturn } from './OpReturn';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenSelect } from './TokenSelect/TokenSelect';
 
 const Container = styled.div<{ $height: number }>`
     height: ${({ $height }) => ($height ? `${$height}px` : 'auto')};
@@ -26,18 +24,12 @@ const Container = styled.div<{ $height: number }>`
     }
 `;
 
-const StyledEvmExplanation = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: ${spacingsPx.sm};
-`;
-
 interface OutputsProps {
     disableAnim?: boolean; // used in tests, with animations enabled react-testing-library can't find output fields
+    areTokensSupported: boolean;
 }
 
-export const Outputs = ({ disableAnim }: OutputsProps) => {
+export const Outputs = ({ disableAnim, areTokensSupported }: OutputsProps) => {
     const [height, setHeight] = useState(0);
     const [hasRenderedOutputs, setHasRenderedOutputs] = useState(false);
     const size = useLayoutSize();
@@ -45,7 +37,6 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
     const {
         outputs,
         formState: { errors },
-        account,
     } = useSendFormContext();
     const ref = useRef<HTMLDivElement>(null);
 
@@ -79,21 +70,8 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                             ease: motionEasing.transition,
                         }}
                     >
-                        <Card
-                            label={
-                                account.networkType === 'ethereum' && (
-                                    <StyledEvmExplanation>
-                                        <CoinLogo symbol={account.symbol} size={16} />
-                                        <Translation
-                                            id="TR_EVM_EXPLANATION_SEND_DESCRIPTION"
-                                            values={{
-                                                network: networks[account.symbol].name,
-                                            }}
-                                        />
-                                    </StyledEvmExplanation>
-                                )
-                            }
-                        >
+                        {areTokensSupported && <TokenSelect outputId={index} />}
+                        <Card>
                             {output.type === 'opreturn' ? (
                                 <OpReturn outputId={index} />
                             ) : (

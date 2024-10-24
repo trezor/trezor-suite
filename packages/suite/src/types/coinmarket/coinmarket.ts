@@ -39,7 +39,6 @@ import { AssetLogoProps } from '@trezor/components';
 import {
     SelectAssetOptionCurrencyProps,
     SelectAssetOptionGroupProps,
-    SelectAssetOptionProps,
 } from '@trezor/product-components/src/components/SelectAssetModal/SelectAssetModal';
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
 
@@ -177,11 +176,19 @@ export interface CoinmarketCoinLogoProps {
 }
 
 export interface CoinmarketCryptoSelectItemProps
-    extends Omit<SelectAssetOptionCurrencyProps, 'value'> {
+    extends Omit<
+        SelectAssetOptionCurrencyProps,
+        'symbol' | 'networkSymbol' | 'contractAddress' | 'cryptoName'
+    > {
     value: CryptoId;
+    label: string;
+    contractAddress?: string;
+    cryptoName: string | undefined;
 }
 export interface CoinmarketCryptoSelectGroupProps extends SelectAssetOptionGroupProps {}
-export type CoinmarketCryptoSelectOptionProps = SelectAssetOptionProps;
+export type CoinmarketCryptoSelectOptionProps =
+    | CoinmarketCryptoSelectItemProps
+    | SelectAssetOptionGroupProps;
 
 export interface CoinmarketGetSortedAccountsProps {
     accounts: AccountsState;

@@ -1,6 +1,8 @@
 import { spacings, spacingsPx } from '@trezor/theme';
 import { Badge, Column, Icon, Row, Text } from '@trezor/components';
 import styled, { useTheme } from 'styled-components';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { SelectAssetOptionCurrencyProps } from './SelectAssetModal';
 
 const ClickableContainer = styled.div`
     cursor: pointer;
@@ -26,23 +28,27 @@ const BadgeWrapper = styled.div`
 `;
 
 type AssetItemProps = {
-    cryptoId: string;
-    name: string;
-    symbol: string;
+    name?: string;
+    symbol: NetworkSymbol;
     badge: string | undefined;
+    networkSymbol: NetworkSymbol;
+    coingeckoId: string;
     logo: JSX.Element;
     isFavorite?: boolean;
-    handleClick: (selectedAsset: string) => void;
+    contractAddress: string | null;
+    handleClick: (selectedAsset: SelectAssetOptionCurrencyProps) => void;
     onFavoriteClick?: (isFavorite: boolean) => void;
 };
 
 export const AssetItem = ({
-    cryptoId,
     name,
     symbol,
     badge,
+    networkSymbol,
+    coingeckoId,
     logo,
     isFavorite = false,
+    contractAddress,
     handleClick,
     onFavoriteClick,
 }: AssetItemProps) => {
@@ -51,7 +57,17 @@ export const AssetItem = ({
     const handleFavoriteClick = onFavoriteClick ? () => onFavoriteClick(isFavorite) : undefined;
 
     return (
-        <ClickableContainer onClick={() => handleClick(cryptoId)}>
+        <ClickableContainer
+            onClick={() =>
+                handleClick({
+                    symbol,
+                    contractAddress: contractAddress ?? null,
+                    type: 'currency',
+                    networkSymbol,
+                    coingeckoId,
+                })
+            }
+        >
             <Row gap={spacings.sm}>
                 {logo}
                 <Column flex="1" alignItems="stretch">
@@ -68,7 +84,7 @@ export const AssetItem = ({
                         )}
                     </Row>
                     <Text typographyStyle="hint" variant="tertiary">
-                        {symbol}
+                        {symbol.toUpperCase()}
                     </Text>
                 </Column>
 
