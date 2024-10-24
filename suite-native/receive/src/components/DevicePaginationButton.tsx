@@ -15,9 +15,9 @@ type DeviceScreenPaginationProps = {
     onPress: () => void;
 };
 
-const T2B1_BUTTON_COLOR = '#2B2D2B';
 const BUTTON_HEIGHT = 56;
 const BUTTON_WIDTH = 296;
+const T2B1_BUTTON_COLOR = '#2B2D2B';
 
 const ICON_COLOR: CSSColor = DEVICE_TEXT_COLOR;
 
@@ -33,17 +33,17 @@ const safe3Styles = {
     borderWidth: nativeBorders.widths.large,
 } as const;
 
+const touchscreenDeviceStyles = {
+    backgroundColor: T2B1_BUTTON_COLOR,
+    borderRadius: nativeBorders.radii.r8,
+} as const;
+
 const modelToStyles = {
-    [DeviceModelInternal.T2T1]: {
-        backgroundColor: T2B1_BUTTON_COLOR,
-        borderRadius: nativeBorders.radii.r8,
-    },
-    [DeviceModelInternal.T3T1]: {
-        backgroundColor: T2B1_BUTTON_COLOR,
-        borderRadius: nativeBorders.radii.r8,
-    },
+    [DeviceModelInternal.T2T1]: touchscreenDeviceStyles,
     [DeviceModelInternal.T2B1]: safe3Styles,
     [DeviceModelInternal.T3B1]: safe3Styles,
+    [DeviceModelInternal.T3T1]: touchscreenDeviceStyles,
+    [DeviceModelInternal.T3W1]: touchscreenDeviceStyles, // TODO T3W1
 } as const satisfies Record<PaginationCompatibleDeviceModel, Readonly<NativeStyle>>;
 
 const deviceButtonStyle = prepareNativeStyle<DeviceButtonStyleProps>(
