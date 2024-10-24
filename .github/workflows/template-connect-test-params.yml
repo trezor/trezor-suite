@@ -87,7 +87,7 @@ jobs:
           name: build-artifact-connect-iframe
           path: packages/connect-web/build
       - if: ${{ inputs.testEnv == 'web' }}
-        run: cd packages/connect-web && tree .
+        run: cd packages/connect-iframe && tree .
       - if: ${{ inputs.testEnv == 'web' }}
         name: "Echo download path"
         run: echo ${{steps.download.outputs.download-path}}
