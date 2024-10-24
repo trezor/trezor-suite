@@ -11,10 +11,10 @@ import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import { Loading, Translation, TrezorLink, Modal } from 'src/components/suite';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from 'src/components/backup';
 import { canStart, canContinue } from 'src/utils/backup';
-import { selectLocks } from 'src/reducers/suite/suiteReducer';
 import type { ForegroundAppProps } from 'src/types/suite';
 import type { BackupStatus } from 'src/actions/backup/backupActions';
 import { selectBackup } from 'src/reducers/backup/backupReducer';
+import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
@@ -86,7 +86,7 @@ const getEdgeCaseModalHeading = (unfinishedBackup: boolean) => {
 export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
     const device = useSelector(selectDevice);
     const backup = useSelector(selectBackup);
-    const locks = useSelector(selectLocks);
+    const isDeviceLocked = useSelector(selectIsDeviceLocked);
 
     const dispatch = useDispatch();
 
@@ -172,7 +172,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                             <StyledButton
                                 data-testid="@backup/start-button"
                                 onClick={() => dispatch(backupDevice(backupParams))}
-                                isDisabled={!canStart(backup.userConfirmed, locks)}
+                                isDisabled={!canStart(backup.userConfirmed, isDeviceLocked)}
                             >
                                 <Translation id="TR_CREATE_BACKUP" />
                             </StyledButton>

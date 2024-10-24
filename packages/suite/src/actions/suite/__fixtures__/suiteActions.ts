@@ -73,38 +73,17 @@ const reducerActions = [
     {
         description: `lockUI (true/false)`,
         actions: [suiteActions.lockUI(true), suiteActions.lockUI(false)],
-        result: [
-            {
-                locks: [SUITE.LOCK_TYPE.UI],
-            },
-            {
-                locks: [],
-            },
-        ],
+        result: [{ locks: { ui: 1 } }, { locks: { ui: 0 } }],
     },
     {
         description: `lockDevice (true/false)`,
         actions: [suiteActions.lockDevice(true), suiteActions.lockDevice(false)],
-        result: [
-            {
-                locks: [SUITE.LOCK_TYPE.DEVICE],
-            },
-            {
-                locks: [],
-            },
-        ],
+        result: [{ locks: { device: 1 } }, { locks: { device: 0 } }],
     },
     {
         description: `lockRouter (true/false)`,
         actions: [suiteActions.lockRouter(true), suiteActions.lockRouter(false)],
-        result: [
-            {
-                locks: [SUITE.LOCK_TYPE.ROUTER],
-            },
-            {
-                locks: [],
-            },
-        ],
+        result: [{ locks: { router: 1 } }, { locks: { router: 0 } }],
     },
     {
         description: `updateOnlineStatus (true/false)`,
@@ -206,18 +185,10 @@ const reducerActions = [
             },
         ],
         result: [
-            {
-                locks: [SUITE.LOCK_TYPE.DEVICE],
-            },
-            {
-                locks: [],
-            },
-            {
-                locks: [SUITE.LOCK_TYPE.DEVICE],
-            },
-            {
-                locks: [],
-            },
+            { locks: { device: 1 } },
+            { locks: { device: 0 } },
+            { locks: { device: 1 } },
+            { locks: { device: 0 } },
         ],
     },
 ];

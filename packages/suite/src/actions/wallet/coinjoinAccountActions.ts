@@ -35,13 +35,12 @@ import {
     selectSessionByAccountKey,
     selectWeightedAnonymityByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { SUITE } from 'src/actions/suite/constants';
 import { openModal } from 'src/actions/suite/modalActions';
 
 import * as coinjoinClientActions from './coinjoinClientActions';
 import { goto } from '../suite/routerActions';
 import * as COINJOIN from './constants/coinjoinConstants';
-import { selectLocks } from '../../reducers/suite/suiteReducer';
+import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
 
 export const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymity: number) =>
     ({
@@ -760,7 +759,7 @@ export const startCoinjoinSession =
 export const restoreCoinjoinSession =
     (accountKey: string) => async (dispatch: Dispatch, getState: GetState) => {
         // TODO: check if device is connected, passphrase is authorized...
-        const locks = selectLocks(getState());
+        const isDeviceLocked = selectIsDeviceLocked(getState());
         const device = selectDevice(getState());
         const account = selectAccountByKey(getState(), accountKey);
 
@@ -781,7 +780,7 @@ export const restoreCoinjoinSession =
             return errorToast('Device disconnected');
         }
 
-        if (locks.includes(SUITE.LOCK_TYPE.DEVICE)) {
+        if (isDeviceLocked) {
             return errorToast('Device locked');
         }
 

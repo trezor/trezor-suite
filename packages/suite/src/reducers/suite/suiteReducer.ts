@@ -24,7 +24,7 @@ import { ensureLocale } from 'src/utils/suite/l10n';
 import type { Locale } from 'src/config/suite/languages';
 import { SUITE, STORAGE } from 'src/actions/suite/constants';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
-import { Action, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
+import { Action, TorBootstrap, TorStatus } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
 import { RouterRootState, selectRouter } from './routerReducer';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -118,7 +118,7 @@ export interface SuiteState {
     torBootstrap: TorBootstrap | null;
     lifecycle: SuiteLifecycle;
     transport?: Partial<TransportInfo>;
-    locks: Lock[];
+    locks: Record<(typeof SUITE.LOCK_TYPE)[keyof typeof SUITE.LOCK_TYPE], number>;
     flags: Flags;
     evmSettings: EvmSettings;
     prefillFields: PrefillFields;
@@ -130,7 +130,7 @@ const initialState: SuiteState = {
     torStatus: TorStatus.Disabled,
     torBootstrap: null,
     lifecycle: { status: 'initial' },
-    locks: [],
+    locks: { device: 0, router: 0, ui: 0 },
     flags: {
         initialRun: true,
         // recoveryCompleted: false;
@@ -188,13 +188,12 @@ const initialState: SuiteState = {
     },
 };
 
-const changeLock = (draft: SuiteState, lock: Lock, enabled: boolean) => {
-    if (enabled) {
-        draft.locks.push(lock);
-    } else {
-        const index = draft.locks.lastIndexOf(lock);
-        draft.locks.splice(index, 1);
-    }
+const changeLock = (
+    draft: SuiteState,
+    lock: (typeof SUITE.LOCK_TYPE)[keyof typeof SUITE.LOCK_TYPE],
+    enabled: boolean,
+) => {
+    draft.locks[lock] = Math.max(draft.locks[lock] + (enabled ? 1 : -1), 0);
 };
 
 const setFlag = (draft: SuiteState, key: keyof Flags, value: boolean) => {
@@ -390,11 +389,17 @@ export const selectLanguage = (state: SuiteRootState) => state.suite.settings.la
 export const selectAddressDisplayType = (state: SuiteRootState) =>
     state.suite.settings.addressDisplayType;
 
-export const selectLocks = (state: SuiteRootState) => state.suite.locks;
-
 export const selectIsDeviceLocked = (state: SuiteRootState) =>
-    state.suite.locks.includes(SUITE.LOCK_TYPE.DEVICE) ||
-    state.suite.locks.includes(SUITE.LOCK_TYPE.UI);
+    !!state.suite.locks[SUITE.LOCK_TYPE.DEVICE];
+
+export const selectIsDeviceOrUiLocked = (state: SuiteRootState) =>
+    !!state.suite.locks[SUITE.LOCK_TYPE.DEVICE] || !!state.suite.locks[SUITE.LOCK_TYPE.UI];
+
+export const selectIsRouterLocked = (state: SuiteRootState) =>
+    !!state.suite.locks[SUITE.LOCK_TYPE.ROUTER];
+
+export const selectIsRouterOrUiLocked = (state: SuiteRootState) =>
+    !!state.suite.locks[SUITE.LOCK_TYPE.ROUTER] || !!state.suite.locks[SUITE.LOCK_TYPE.UI];
 
 export const selectIsActionAbortable = (state: SuiteRootState) =>
     state.suite.transport?.type === 'BridgeTransport'

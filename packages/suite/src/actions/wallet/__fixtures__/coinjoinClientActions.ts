@@ -453,7 +453,7 @@ export const getOwnershipProof = [
         connect: [],
         state: {
             suite: {
-                locks: [2],
+                locks: { device: 1 },
             },
             devices: [
                 DEVICE,

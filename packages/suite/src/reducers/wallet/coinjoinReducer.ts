@@ -29,7 +29,7 @@ import {
 import { COINJOIN } from 'src/actions/wallet/constants';
 import { Action } from 'src/types/suite';
 import {
-    selectIsDeviceLocked,
+    selectIsDeviceOrUiLocked,
     selectTorState,
     SuiteRootState,
 } from 'src/reducers/suite/suiteReducer';
@@ -940,7 +940,7 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
     if (account?.backendType === 'coinjoin' && account?.status === 'out-of-sync') {
         return 'ACCOUNT_OUT_OF_SYNC';
     }
-    if (selectIsDeviceLocked(state)) {
+    if (selectIsDeviceOrUiLocked(state)) {
         return 'DEVICE_LOCKED';
     }
     if (selectHasAnonymitySetError(state)) {

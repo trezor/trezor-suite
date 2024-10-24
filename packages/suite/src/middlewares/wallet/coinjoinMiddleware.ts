@@ -38,7 +38,7 @@ import {
     selectIsAccountWithSessionInCriticalPhaseByAccountKey,
     selectCoinjoinSessionBlockerByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { selectTorState } from 'src/reducers/suite/suiteReducer';
+import { selectIsDeviceOrUiLocked, selectTorState } from 'src/reducers/suite/suiteReducer';
 
 export const coinjoinMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -205,8 +205,8 @@ export const coinjoinMiddleware =
         // Device may be locked by another connect call, so check on LOCK_DEVICE action as well.
         if (action.type === ROUTER.LOCATION_CHANGE || action.type === SUITE.LOCK_DEVICE) {
             const state = api.getState();
-            const { locks } = state.suite;
-            if (!locks.includes(SUITE.LOCK_TYPE.DEVICE) && !locks.includes(SUITE.LOCK_TYPE.UI)) {
+            const isDeviceOrUiLocked = selectIsDeviceOrUiLocked(state);
+            if (!isDeviceOrUiLocked) {
                 const previousRoute = state.router.settingsBackRoute.name;
                 if (previousRoute === 'wallet-send') {
                     api.dispatch(coinjoinAccountActions.restorePausedCoinjoinSessions());
