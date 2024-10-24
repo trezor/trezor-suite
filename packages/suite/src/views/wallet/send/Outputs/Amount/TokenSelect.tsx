@@ -28,6 +28,7 @@ import { spacings } from '@trezor/theme';
 import { Text } from '@trezor/components';
 import { CoinBalance } from 'src/components/suite';
 import { ContractAddressWithTooltip } from 'src/components/wallet/ContractAddressWithTooltip';
+import styled from 'styled-components';
 
 export const buildTokenOptions = (
     accountTokens: Account['tokens'],
@@ -102,6 +103,10 @@ export const buildTokenOptions = (
 interface TokenSelectProps {
     outputId: number;
 }
+
+const TokenSelectContainer = styled(Card)<{ $isDisabled: boolean }>`
+    cursor: ${({ $isDisabled }) => ($isDisabled ? 'not-allowed' : 'pointer')};
+`;
 
 export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     const {
@@ -227,10 +232,11 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                 defaultValue={selectedOption?.contractAddress || null}
                 data-testid={tokenInputName}
                 render={({ field: { value } }) => (
-                    <Card
+                    <TokenSelectContainer
                         margin={{ bottom: spacings.sm }}
                         paddingType="normal"
-                        onClick={() => setIsModalActive(true)}
+                        onClick={options.length > 1 ? () => setIsModalActive(true) : undefined}
+                        $isDisabled={options.length === 1}
                     >
                         <Select
                             focusEnabled={false}
@@ -239,6 +245,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                 value: option.contractAddress,
                                 label: option.symbol,
                             }))}
+                            isDisabled={options.length === 1}
                             formatOptionLabel={(option: SelectAssetOptionCurrencyProps) => {
                                 return (
                                     <Row justifyContent="flex-start" gap={spacings.sm}>
@@ -305,7 +312,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                             isClearable={false}
                             isMenuOpen={false}
                         />
-                    </Card>
+                    </TokenSelectContainer>
                 )}
             />
         </>
