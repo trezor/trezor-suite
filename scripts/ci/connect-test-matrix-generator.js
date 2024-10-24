@@ -1,60 +1,60 @@
 const process = require('process');
 
 const groups = {
-    // api: {
-    //     name: 'api',
-    //     pattern:
-    //         'init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity keepSession cancel.test info.test',
-    //     methods: '',
-    // },
-    // management: {
-    //     name: 'management',
-    //     pattern: 'methods',
-    //     methods: 'applySettings,applyFlags,getFeatures,getFirmwareHash,changeLanguage',
-    // },
-    // btcSign: {
-    //     name: 'btc-sign',
-    //     pattern: 'methods',
-    //     methods: 'signTransaction',
-    // },
-    // btcOthers: {
-    //     name: 'btc-others',
-    //     pattern: 'methods',
-    //     methods:
-    //         'getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof',
-    // },
-    // stellar: {
-    //     name: 'stellar',
-    //     pattern: 'methods',
-    //     methods: 'stellarGetAddress,stellarSignTransaction',
-    // },
-    // cardano: {
-    //     name: 'cardano',
-    //     pattern: 'methods',
-    //     methods:
-    //         'cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction',
-    // },
-    // eos: {
-    //     name: 'eos',
-    //     pattern: 'methods',
-    //     methods: 'eosGetPublicKey,eosSignTransaction',
-    // },
-    // ethereum: {
-    //     name: 'ethereum',
-    //     pattern: 'methods',
-    //     methods:
-    //         'ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData',
-    // },
-    // nem: {
-    //     name: 'nem',
-    //     pattern: 'methods',
-    //     methods: 'nemGetAddress,nemSignTransaction',
-    // },
-    // ripple: {
-    //     name: 'ripple',
-    //     pattern: 'methods',
-    //     methods: 'rippleGetAddress,rippleSignTransaction',
-    // },
+    api: {
+        name: 'api',
+        pattern:
+            'init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity keepSession cancel.test info.test',
+        methods: '',
+    },
+    management: {
+        name: 'management',
+        pattern: 'methods',
+        methods: 'applySettings,applyFlags,getFeatures,getFirmwareHash,changeLanguage',
+    },
+    btcSign: {
+        name: 'btc-sign',
+        pattern: 'methods',
+        methods: 'signTransaction',
+    },
+    btcOthers: {
+        name: 'btc-others',
+        pattern: 'methods',
+        methods:
+            'getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof',
+    },
+    stellar: {
+        name: 'stellar',
+        pattern: 'methods',
+        methods: 'stellarGetAddress,stellarSignTransaction',
+    },
+    cardano: {
+        name: 'cardano',
+        pattern: 'methods',
+        methods:
+            'cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction',
+    },
+    eos: {
+        name: 'eos',
+        pattern: 'methods',
+        methods: 'eosGetPublicKey,eosSignTransaction',
+    },
+    ethereum: {
+        name: 'ethereum',
+        pattern: 'methods',
+        methods:
+            'ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData',
+    },
+    nem: {
+        name: 'nem',
+        pattern: 'methods',
+        methods: 'nemGetAddress,nemSignTransaction',
+    },
+    ripple: {
+        name: 'ripple',
+        pattern: 'methods',
+        methods: 'rippleGetAddress,rippleSignTransaction',
+    },
     tezos: {
         name: 'tezos',
         pattern: 'methods',

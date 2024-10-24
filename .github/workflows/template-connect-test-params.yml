@@ -19,16 +19,6 @@ on:
         description: "Firmware model for the tests (example: T3T1)"
         type: "string"
         required: false
-      nodeEnvironment:
-        description: "Should the test run on nodejs environment, it runs by default."
-        type: "boolean"
-        required: false
-        default: true
-      webEnvironment:
-        description: "Should the test run on web environment, it runs by default."
-        type: "boolean"
-        required: false
-        default: true
       testDescription:
         description: "A description to make test title more descriptive (example: T3T1-latest)"
         type: "string"
@@ -108,41 +98,3 @@ jobs:
       - if: ${{ inputs.testRandomizedOrder }}
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -r" >> "$GITHUB_ENV"
       - run: './docker/docker-connect-test.sh ${{ inputs.testEnv }} -p "${{ inputs.testPattern }}" -f "${{ inputs.testsFirmware }}" $ADDITIONAL_ARGS'
-
-  # web:
-  #   name: "web-${{ inputs.testDescription }}"
-  #   runs-on: ubuntu-latest
-  #   if: ${{ inputs.webEnvironment }}
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         submodules: true
-  #     - name: Setup node
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version-file: ".nvmrc"
-  #         cache: yarn
-  #     - run: |
-  #         echo -e "\nenableScripts: false" >> .yarnrc.yml
-  #     # Install dependencies only for @trezor/connect package
-  #     - run: yarn workspaces focus @trezor/connect
-  #     - name: Retrieve build connect-web
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: build-artifact-connect-web
-  #         path: packages/connect-web/build
-  #     - name: Retrieve build connect-iframe
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: build-artifact-connect-iframe
-  #         path: packages/connect-iframe/build
-  #     - run: cd packages/connect-iframe && tree .
-  #     - name: "Echo download path"
-  #       run: echo ${{steps.download.outputs.download-path}}
-  #     - if: ${{ github.event_name == 'schedule' }}
-  #       run: echo "ADDITIONAL_ARGS=-c" >> "$GITHUB_ENV"
-  #     - if: ${{ inputs.testFirmwareModel }}
-  #       run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -m ${{ inputs.testFirmwareModel }}" >> "$GITHUB_ENV"
-  #     - if: ${{ inputs.methods }}
-  #       run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -i ${{ inputs.methods }}" >> "$GITHUB_ENV"
-  #     - run: './docker/docker-connect-test.sh web -p "${{ inputs.testPattern }}" -f "${{ inputs.testsFirmware }}" $ADDITIONAL_ARGS'
