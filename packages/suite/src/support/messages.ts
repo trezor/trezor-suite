@@ -395,14 +395,6 @@ export default defineMessages({
         defaultMessage: 'Converting',
         id: 'TR_EXCHANGE_STATUS_CONVERTING',
     },
-    TR_EXCHANGE_TRANS_ID: {
-        defaultMessage: 'Trans. ID:',
-        id: 'TR_EXCHANGE_TRANS_ID',
-    },
-    TR_EXCHANGE_VIEW_DETAILS: {
-        defaultMessage: 'View details',
-        id: 'TR_EXCHANGE_VIEW_DETAILS',
-    },
     TR_EXCHANGE_DETAIL_SUCCESS_TITLE: {
         defaultMessage: 'Approved',
         id: 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
@@ -916,14 +908,6 @@ export default defineMessages({
         defaultMessage: "Open partner's support site",
         id: 'TR_SELL_DETAIL_PENDING_SUPPORT',
     },
-    TR_SELL_VIEW_DETAILS: {
-        defaultMessage: 'View details',
-        id: 'TR_SELL_VIEW_DETAILS',
-    },
-    TR_SELL_TRANS_ID: {
-        defaultMessage: 'Trans. ID:',
-        id: 'TR_SELL_TRANS_ID',
-    },
     TR_BUY_STATUS_PENDING: {
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
@@ -1019,10 +1003,6 @@ export default defineMessages({
         defaultMessage: 'Buy again',
         id: 'TR_BUY_BUY_AGAIN',
     },
-    TR_BUY_ACCOUNT_TRANSACTIONS: {
-        defaultMessage: 'Trade transactions',
-        id: 'TR_BUY_ACCOUNT_TRANSACTIONS',
-    },
     TR_BUY_STATUS_PENDING_GO_TO_GATEWAY: {
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING_GO_TO_GATEWAY',
@@ -1030,10 +1010,6 @@ export default defineMessages({
     TR_BUY_STATUS_ACTION_REQUIRED: {
         defaultMessage: 'Action required',
         id: 'TR_BUY_STATUS_ACTION_REQUIRED',
-    },
-    TR_BUY_VIEW_DETAILS: {
-        defaultMessage: 'View details',
-        id: 'TR_BUY_VIEW_DETAILS',
     },
     TR_BUY_STATUS_ERROR: {
         defaultMessage: 'Rejected',
@@ -1066,10 +1042,6 @@ export default defineMessages({
     TR_BUY_PROVIDER: {
         defaultMessage: 'Provider',
         id: 'TR_BUY_PROVIDER',
-    },
-    TR_BUY_TRANS_ID: {
-        defaultMessage: 'Trans. ID:',
-        id: 'TR_BUY_TRANS_ID',
     },
     TR_BUY_RECEIVING_ADDRESS: {
         defaultMessage: 'Receive address',
@@ -1178,9 +1150,25 @@ export default defineMessages({
         defaultMessage: 'Last transactions',
         id: 'TR_COINMARKET_LAST_TRANSACTIONS',
     },
-    TR_COINMARKET_TRANSACTION_COUNTER: {
-        defaultMessage: '{totalBuys} buys • {totalSells} sells • {totalSwaps} swaps',
-        id: 'TR_COINMARKET_TRANSACTION_COUNTER',
+    TR_COINMARKET_BUY_AND_SELL_COUNTER: {
+        defaultMessage: `{totalBuys, plural,
+            =0 {{totalBuys} buy}
+            one {{totalBuys} buy}
+            other {{totalBuys} buys}
+        } • {totalSells, plural,
+            =0 {{totalSells} sell}
+            one {{totalSells} sell}
+            other {{totalSells} sells}
+        }`,
+        id: 'TR_COINMARKET_BUY_AND_SELL_COUNTER',
+    },
+    TR_COINMARKET_SWAP_COUNTER: {
+        defaultMessage: `{totalSwaps, plural,
+            =0 {{totalSwaps} swap}
+            one {{totalSwaps} swap}
+            other {{totalSwaps} swaps}
+        }`,
+        id: 'TR_COINMARKET_SWAP_COUNTER',
     },
     TR_COINMARKET_PAYMENT_METHOD: {
         defaultMessage: 'Payment method',
@@ -1434,6 +1422,14 @@ export default defineMessages({
     TR_COINMARKET_SWAP: {
         defaultMessage: 'Swap',
         id: 'TR_COINMARKET_SWAP',
+    },
+    TR_COINMARKET_TRANS_ID: {
+        defaultMessage: 'Trans. ID:',
+        id: 'TR_COINMARKET_TRANS_ID',
+    },
+    TR_COINMARKET_VIEW_DETAILS: {
+        defaultMessage: 'View details',
+        id: 'TR_COINMARKET_VIEW_DETAILS',
     },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',

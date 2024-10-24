@@ -33,7 +33,7 @@ const Text = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-interface CoinmarketProviderInfoProps {
+export interface CoinmarketProviderInfoProps {
     exchange?: string;
     providers?: {
         [name: string]: {

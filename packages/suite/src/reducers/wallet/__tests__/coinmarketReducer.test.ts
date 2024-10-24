@@ -89,6 +89,30 @@ describe('settings reducer', () => {
         });
     });
 
+    it('COINMARKET_COMMON.SET_SUITE_BACK_ROUTE_NAME', () => {
+        expect(
+            coinmarketReducer(undefined, {
+                type: COINMARKET_COMMON.SET_SUITE_BACK_ROUTE_NAME,
+                suiteBackRouteName: 'suite-index',
+            }),
+        ).toEqual({
+            ...initialState,
+            suiteBackRouteName: 'suite-index',
+        });
+    });
+
+    it('COINMARKET_COMMON.SET_COINMARKET_BACK_ROUTE_NAME', () => {
+        expect(
+            coinmarketReducer(undefined, {
+                type: COINMARKET_COMMON.SET_COINMARKET_BACK_ROUTE_NAME,
+                coinmarketBackRouteName: 'wallet-coinmarket-dca',
+            }),
+        ).toEqual({
+            ...initialState,
+            coinmarketBackRouteName: 'wallet-coinmarket-dca',
+        });
+    });
+
     it('COINMARKET_INFO.SAVE_SYMBOLS_INFO', () => {
         const info: InfoResponse = {
             platforms: {

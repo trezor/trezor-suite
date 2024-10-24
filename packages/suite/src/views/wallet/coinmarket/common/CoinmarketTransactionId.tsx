@@ -37,7 +37,7 @@ export const CoinmarketTransactionId = ({ transactionId }: CoinmarketTransaction
     return (
         <Row alignItems="center" justifyContent="space-between" margin={{ top: spacings.sm }}>
             <LabelWrapper>
-                <Translation id="TR_BUY_TRANS_ID" /> {transactionId}
+                <Translation id="TR_COINMARKET_TRANS_ID" /> {transactionId}
             </LabelWrapper>
             <ButtonWrapper>
                 <Button size="tiny" variant="tertiary" onClick={copy}>

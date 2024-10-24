@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { BuyCryptoPaymentMethod, SellCryptoPaymentMethod } from 'invity-api';
 import invityAPI from 'src/services/suite/invityAPI';
 import { CoinmarketPaymentPlainType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentPlainType';
+import { CoinmarketPaymentMethodType } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,7 +26,7 @@ const Icon = styled.img``;
 
 interface CoinmarketPaymentTypeProps {
     children?: ReactNode;
-    method?: BuyCryptoPaymentMethod | SellCryptoPaymentMethod;
+    method?: CoinmarketPaymentMethodType;
     methodName?: string;
 }
 

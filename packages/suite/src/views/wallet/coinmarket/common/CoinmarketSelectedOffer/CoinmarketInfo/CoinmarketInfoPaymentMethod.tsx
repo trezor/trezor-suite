@@ -1,11 +1,11 @@
 import { Row } from '@trezor/components';
-import { BuyCryptoPaymentMethod, SellCryptoPaymentMethod } from 'invity-api';
 import { Translation } from 'src/components/suite';
+import { CoinmarketPaymentMethodType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketInfoLeftColumn, CoinmarketInfoRightColumn } from 'src/views/wallet/coinmarket';
 import { CoinmarketPaymentType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentType';
 
 interface CoinmarketInfoPaymentMethodProps {
-    paymentMethod: BuyCryptoPaymentMethod | SellCryptoPaymentMethod;
+    paymentMethod: CoinmarketPaymentMethodType;
     paymentMethodName?: string;
 }
 

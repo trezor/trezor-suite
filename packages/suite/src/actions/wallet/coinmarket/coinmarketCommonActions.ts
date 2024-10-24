@@ -19,6 +19,7 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Account } from 'src/types/wallet';
 import {
+    CoinmarketBackRouteNameType,
     CoinmarketSuiteBackRouteNameType,
     ComposedTransactionInfo,
 } from 'src/reducers/wallet/coinmarketReducer';
@@ -57,6 +58,10 @@ export type CoinmarketCommonAction =
     | {
           type: typeof COINMARKET_COMMON.SET_SUITE_BACK_ROUTE_NAME;
           suiteBackRouteName: CoinmarketSuiteBackRouteNameType;
+      }
+    | {
+          type: typeof COINMARKET_COMMON.SET_COINMARKET_BACK_ROUTE_NAME;
+          coinmarketBackRouteName: CoinmarketBackRouteNameType;
       };
 
 type FormState = {
@@ -81,6 +86,13 @@ export const setSuiteBackRouteName = (
 ): CoinmarketCommonAction => ({
     type: COINMARKET_COMMON.SET_SUITE_BACK_ROUTE_NAME,
     suiteBackRouteName,
+});
+
+export const setCoinmarketBackRouteName = (
+    coinmarketBackRouteName: CoinmarketBackRouteNameType,
+): CoinmarketCommonAction => ({
+    type: COINMARKET_COMMON.SET_COINMARKET_BACK_ROUTE_NAME,
+    coinmarketBackRouteName,
 });
 
 export const verifyAddress =
