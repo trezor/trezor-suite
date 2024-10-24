@@ -283,5 +283,4 @@ export const SKIP = [
     'DebugLinkFlashErase',
     'DebugLinkEraseSdCard',
     'DebugLinkWatchLayout',
-    'LoadDevice',
 ];
