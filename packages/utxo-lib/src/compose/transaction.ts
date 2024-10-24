@@ -10,10 +10,12 @@ import {
 import { noneSortingStrategy } from './sorting/noneSortingStrategy';
 import { SortingStrategy } from './sorting/sortingStrategy';
 import { bip69SortingStrategy } from './sorting/bip69SortingStrategy';
+import { randomSortingStrategy } from './sorting/randomSortingStrategy';
 
 const strategyMap: Record<TransactionInputOutputSortingStrategy, SortingStrategy> = {
     bip69: bip69SortingStrategy,
     none: noneSortingStrategy,
+    random: randomSortingStrategy,
 };
 
 export function createTransaction<Input extends ComposeInput, Change extends ComposeChangeAddress>(
