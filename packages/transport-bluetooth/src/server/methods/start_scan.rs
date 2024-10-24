@@ -19,16 +19,17 @@ async fn scan(adapter: Adapter) {
     if let Err(err) = adapter.stop_scan().await {
         info!("Clear previous scan error {}", err);
     }
-    // if let Err(err) = adapter.start_scan(ScanFilter::default()).await {
-    //     info!("Start scan error {}", err);
-    // }
-    // - ScanFilter doesn't work on linux?
-    // - ScanFilter incorrectly work on windows https://github.com/deviceplug/btleplug/issues/249 (for me it returned different device)
-    if let Err(err) = adapter.start_scan(ScanFilter {
-        services: vec![Uuid::from_u128(0x6e400001_b5a3_f393_e0a9_e50e24dcca9e)]
-    }).await {
+    // TODO: windows scan filter defualt, others use below
+    if let Err(err) = adapter.start_scan(ScanFilter::default()).await {
         info!("Start scan error {}", err);
     }
+    // - ScanFilter doesn't work on linux?
+    // - ScanFilter incorrectly work on windows https://github.com/deviceplug/btleplug/issues/249 (for me it returned different device)
+    // if let Err(err) = adapter.start_scan(ScanFilter {
+    //     services: vec![Uuid::from_u128(0x6e400001_b5a3_f393_e0a9_e50e24dcca9e)]
+    // }).await {
+    //     info!("Start scan error {}", err);
+    // }
 }
 
 pub async fn start_scan(adapter: Option<Adapter>, sender: Sender<ChannelMessage>) -> MethodResult {

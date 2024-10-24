@@ -23,7 +23,8 @@
         "lint:rs": "cargo fmt --all -- --check",
         "ui:dev": "webpack serve --config ./webpack/webpack.dev.js",
         "ui:build": "webpack --config ./webpack/webpack.build.js",
-        "dev:server": "RUST_BACKTRACE=1 && RUST_LOG=debug && cargo run"
+        "server:dev": "RUST_BACKTRACE=1 && RUST_LOG=debug && cargo run",
+        "server:build": "RUST_BACKTRACE=1 && RUST_LOG=debug && cargo run"
     },
     "dependencies": {
         "@trezor/protocol": "workspace:*",
