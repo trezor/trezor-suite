@@ -264,10 +264,7 @@ export const config = {
             min: {
                 T1B1: '0',
                 T2T1: '0',
-                T2B1: '2.6.1',
-                T3B1: '2.8.1',
                 T3T1: '2.8.0',
-                T3W1: '2.99.99',
             },
         },
         {
@@ -284,9 +281,6 @@ export const config = {
                 T1B1: '0',
                 T2T1: '2.6.4',
                 T2B1: '2.6.4',
-                T3B1: '2.8.1',
-                T3T1: '2.7.2',
-                T3W1: '2.99.99',
             },
         },
         {
@@ -294,10 +288,6 @@ export const config = {
             min: {
                 T1B1: '0',
                 T2T1: '2.6.3',
-                T2B1: '2.6.3',
-                T3B1: '2.8.1',
-                T3T1: '2.7.2',
-                T3W1: '2.99.99',
             },
             comment: [
                 "Since firmware 2.6.3 there is a new protobuf field 'chunkify' in almost all getAddress and signTx methods",
@@ -309,9 +299,6 @@ export const config = {
                 T1B1: '0',
                 T2T1: '2.7.0',
                 T2B1: '2.7.0',
-                T3B1: '2.8.1', // adding T3B1 to the list so that it gets inferred as type
-                T3T1: '2.7.2',
-                T3W1: '2.99.99',
             },
         },
     ],
