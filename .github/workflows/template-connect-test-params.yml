@@ -85,7 +85,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifact-connect-iframe
-          path: packages/connect-web/build
+          path: packages/connect-iframe/build
       - if: ${{ inputs.testEnv == 'web' }}
         run: cd packages/connect-iframe && tree .
       - if: ${{ inputs.testEnv == 'web' }}
