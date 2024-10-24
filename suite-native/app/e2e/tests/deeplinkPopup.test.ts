@@ -3,6 +3,7 @@ import { exec } from 'child_process';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import TrezorConnect from '@trezor/connect-mobile';
+import { conditionalDescribe } from '@suite-common/test-utils';
 
 import {
     appIsFullyLoaded,
@@ -35,7 +36,7 @@ const openUriScheme = (url: string, platformToOpen: 'android') => {
     });
 };
 
-describe('Deeplink connect popup.', () => {
+conditionalDescribe(device.getPlatform() !== 'android', 'Deeplink connect popup.', () => {
     beforeAll(async () => {
         await new Promise(resolve => {
             server = http.createServer((req, res) => {

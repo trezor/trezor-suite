@@ -9338,7 +9338,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/test-utils@workspace:*, @suite-common/test-utils@workspace:suite-common/test-utils":
+"@suite-common/test-utils@workspace:*, @suite-common/test-utils@workspace:^, @suite-common/test-utils@workspace:suite-common/test-utils":
   version: 0.0.0-use.local
   resolution: "@suite-common/test-utils@workspace:suite-common/test-utils"
   dependencies:
@@ -9596,6 +9596,7 @@ __metadata:
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
+    "@suite-common/test-utils": "workspace:^"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
