@@ -15,6 +15,7 @@ import { Amount } from './Amount/Amount';
 import { OpReturn } from './OpReturn';
 import { CoinLogo } from '@trezor/product-components';
 import { TokenSelect } from './Amount/TokenSelect';
+
 const Container = styled.div<{ $height: number }>`
     height: ${({ $height }) => ($height ? `${$height}px` : 'auto')};
     transition: height 0.2s ${motionEasingStrings.transition};
@@ -35,9 +36,10 @@ const StyledEvmExplanation = styled.div`
 
 interface OutputsProps {
     disableAnim?: boolean; // used in tests, with animations enabled react-testing-library can't find output fields
+    areTokensSupported: boolean;
 }
 
-export const Outputs = ({ disableAnim }: OutputsProps) => {
+export const Outputs = ({ disableAnim, areTokensSupported }: OutputsProps) => {
     const [height, setHeight] = useState(0);
     const [hasRenderedOutputs, setHasRenderedOutputs] = useState(false);
     const size = useLayoutSize();
@@ -79,7 +81,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                             ease: motionEasing.transition,
                         }}
                     >
-                        <TokenSelect outputId={index} />
+                        {areTokensSupported && <TokenSelect outputId={index} />}
                         <Card
                             label={
                                 account.networkType === 'ethereum' && (
