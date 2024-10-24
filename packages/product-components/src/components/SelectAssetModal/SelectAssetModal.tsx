@@ -27,6 +27,7 @@ export interface SelectAssetOptionCurrencyProps {
     networkName?: string;
     hidden?: boolean;
     unverified?: boolean;
+    tokenExplorerUrl?: string;
 }
 export interface SelectAssetOptionGroupProps {
     type: 'group';

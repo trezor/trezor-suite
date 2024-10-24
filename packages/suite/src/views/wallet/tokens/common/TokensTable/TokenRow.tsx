@@ -54,6 +54,7 @@ import {
     selectIsUnhideTokenModalShown,
 } from 'src/reducers/suite/suiteReducer';
 import { SUITE } from 'src/actions/suite/constants';
+import { getTokenExplorerUrl } from '@suite-common/token-definitions';
 
 const ContractAddress = styled.div`
     display: inline-block;
@@ -66,15 +67,6 @@ const IconWrapper = styled.div`
     display: inline-block;
     margin-left: ${spacingsPx.xxs};
 `;
-
-const getTokenExplorerUrl = (network: Network, token: EnhancedTokenInfo) => {
-    const explorerUrl =
-        network.networkType === 'cardano' ? network.explorer.token : network.explorer.account;
-    const contractAddress = network.networkType === 'cardano' ? token.fingerprint : token.contract;
-    const queryString = network.explorer.queryString ?? '';
-
-    return `${explorerUrl}${contractAddress}${queryString}`;
-};
 
 interface TokenRowProps {
     account: Account;
@@ -103,6 +95,7 @@ export const TokenRow = ({
     const { isLocked } = useDevice();
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
     const shouldShowUnhideTokenModal = useSelector(selectIsUnhideTokenModalShown);
+
     const isTokenKnown = useSelector(state =>
         selectIsSpecificCoinDefinitionKnown(state, account.symbol, token.contract as TokenAddress),
     );

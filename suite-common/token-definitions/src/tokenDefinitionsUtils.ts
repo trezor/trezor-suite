@@ -1,8 +1,9 @@
-import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { Network, NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { getContractAddressForNetwork } from '@suite-common/wallet-utils';
 
 import {
     DefinitionType,
+    EnhancedTokenInfo,
     SimpleTokenStructure,
     TokenDefinitionsState,
     TokenManagementAction,
@@ -62,4 +63,13 @@ export const buildTokenDefinitionsFromStorage = (
     }
 
     return tokenDefinitions;
+};
+
+export const getTokenExplorerUrl = (network: Network, token: EnhancedTokenInfo) => {
+    const explorerUrl =
+        network.networkType === 'cardano' ? network.explorer.token : network.explorer.account;
+    const contractAddress = network.networkType === 'cardano' ? token.fingerprint : token.contract;
+    const queryString = network.explorer.queryString ?? '';
+
+    return `${explorerUrl}${contractAddress}${queryString}`;
 };

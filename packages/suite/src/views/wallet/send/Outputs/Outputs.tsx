@@ -11,7 +11,7 @@ import { useLayoutSize } from 'src/hooks/suite';
 import { Address } from './Address';
 import { Amount } from './Amount/Amount';
 import { OpReturn } from './OpReturn';
-import { TokenSelect } from './Amount/TokenSelect';
+import { TokenSelect } from './TokenSelect/TokenSelect';
 
 const Container = styled.div<{ $height: number }>`
     height: ${({ $height }) => ($height ? `${$height}px` : 'auto')};

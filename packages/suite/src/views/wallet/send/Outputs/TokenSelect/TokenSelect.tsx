@@ -5,7 +5,7 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { Account } from 'src/types/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { updateFiatRatesThunk, selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { AddressType, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     enhanceTokensWithRates,
@@ -26,9 +26,14 @@ import { getContractAddressForNetwork } from '@suite-common/wallet-utils';
 import { Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { Text } from '@trezor/components';
-import { CoinBalance } from 'src/components/suite';
-import { ContractAddressWithTooltip } from 'src/components/wallet/ContractAddressWithTooltip';
+import { CoinBalance, Translation } from 'src/components/suite';
 import styled from 'styled-components';
+import { TokenAddress as TokenAddressComponent } from './TokenAddress';
+import { getTokenExplorerUrl } from '@suite-common/token-definitions';
+import { openModal } from 'src/actions/suite/modalActions';
+import { copyToClipboard } from '@trezor/dom-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectIsCopyAddressModalShown } from 'src/reducers/suite/suiteReducer';
 
 export const buildTokenOptions = (
     accountTokens: Account['tokens'],
@@ -61,6 +66,7 @@ export const buildTokenOptions = (
                 contractAddress: token.contract,
                 cryptoName: token.name,
                 balance: token.balance,
+                tokenExplorerUrl: getTokenExplorerUrl(networks[symbol], token),
             });
         });
 
@@ -122,7 +128,8 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
         setValue,
         setDraftSaveRequest,
     } = useSendFormContext();
-    const [isModalActive, setIsModalActive] = useState(false);
+    const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
+    const [isTokensModalActive, setIsTokensModalActive] = useState(false);
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
     const sendFormPrefill = useSelector(state => state.suite.prefillFields.sendForm);
     const localCurrency = useSelector(selectLocalCurrency);
@@ -213,17 +220,34 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
         // compose (could be prevented because of Amount error from re-validation above)
         composeTransaction(amountInputName);
 
-        setIsModalActive(false);
+        setIsTokensModalActive(false);
+    };
+
+    const onCopyAddress = (address: string, addressType: AddressType) => {
+        if (shouldShowCopyAddressModal) {
+            dispatch(
+                openModal({
+                    type: 'copy-address',
+                    addressType,
+                    address,
+                }),
+            );
+        } else {
+            const result = copyToClipboard(address);
+            if (typeof result !== 'string') {
+                dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
+            }
+        }
     };
 
     return (
         <>
-            {isModalActive && (
+            {isTokensModalActive && (
                 <SelectAssetModal
                     options={options}
                     // networkCategories={getNetworks()}
                     onSelectAssetModal={handleSelectChange}
-                    onClose={() => setIsModalActive(false)}
+                    onClose={() => setIsTokensModalActive(false)}
                 />
             )}
             <Controller
@@ -235,7 +259,13 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                     <TokenSelectContainer
                         margin={{ bottom: spacings.sm }}
                         paddingType="normal"
-                        onClick={options.length > 1 ? () => setIsModalActive(true) : undefined}
+                        onClick={
+                            options.length > 1
+                                ? () => {
+                                      setIsTokensModalActive(true);
+                                  }
+                                : () => {}
+                        }
                         $isDisabled={options.length === 1}
                     >
                         <Select
@@ -282,18 +312,32 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                             </Row>
                                             <Row justifyContent="flex-start">
                                                 {option.contractAddress && option.cryptoName && (
-                                                    <ContractAddressWithTooltip
-                                                        contractAddress={option.contractAddress}
-                                                        tooltipTextTypographyStyle="label"
+                                                    <Text
                                                         variant="tertiary"
-                                                        gap={spacings.xxxs}
-                                                        cryptoName={option.cryptoName}
-                                                        networkName={
-                                                            networks[
-                                                                option.networkSymbol as NetworkSymbol
-                                                            ].name
-                                                        }
-                                                    />
+                                                        typographyStyle="label"
+                                                    >
+                                                        <Row gap={spacings.xxxs}>
+                                                            <Translation id="TR_CONTRACT_ADDRESS" />{' '}
+                                                            <TokenAddressComponent
+                                                                tokenContractAddress={
+                                                                    option.contractAddress
+                                                                }
+                                                                shouldAllowCopy={true}
+                                                                typographyStyle="label"
+                                                                variant="tertiary"
+                                                                tokenExplorerUrl={
+                                                                    option.tokenExplorerUrl
+                                                                }
+                                                                onCopy={() =>
+                                                                    onCopyAddress(
+                                                                        option.contractAddress ||
+                                                                            '',
+                                                                        'contract',
+                                                                    )
+                                                                }
+                                                            />
+                                                        </Row>
+                                                    </Text>
                                                 )}
                                             </Row>
                                         </Column>
@@ -304,6 +348,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                 valueContainer: base => ({
                                     ...base,
                                     justifyContent: 'flex-start !important',
+                                    zIndex: 1000,
                                 }),
                             }}
                             data-testid="@amount-select"
