@@ -12,10 +12,10 @@ import type { Module } from './index';
 
 export const SERVICE_NAME = '@trezor/transport-bluetooth';
 
-export const init: Module = ({ mainWindow }) => {
+export const init: Module = ({ mainWindowProxy }) => {
     ipcMain.on('bluetooth/request-device', async () => {
         const emitSelect = ({ devices }: { devices: BluetoothDevice[] }) => {
-            mainWindow.webContents.send(
+            mainWindowProxy.getInstance()?.webContents.send(
                 'bluetooth/select-device-event',
                 devices.map(d => ({ uuid: d.address, name: d.name })),
             );
@@ -32,7 +32,7 @@ export const init: Module = ({ mainWindow }) => {
 
         // emit adapter event
         if (!info.powered) {
-            mainWindow.webContents.send('bluetooth/adapter-event', false);
+            mainWindowProxy.getInstance()?.webContents.send('bluetooth/adapter-event', false);
         }
 
         api.on('DeviceDiscovered', emitSelect);
@@ -40,7 +40,7 @@ export const init: Module = ({ mainWindow }) => {
         api.on('DeviceDisconnected', emitSelect);
         api.on('AdapterStateChanged', ({ powered }) => {
             console.warn('--->AdapterStateChanged in bluetooth module', powered);
-            mainWindow.webContents.send('bluetooth/adapter-event', powered);
+            mainWindowProxy.getInstance()?.webContents.send('bluetooth/adapter-event', powered);
             if (!powered) {
                 // api.sendMessage('stop_scan');
             } else {
@@ -50,7 +50,9 @@ export const init: Module = ({ mainWindow }) => {
         api.on('DeviceConnecting', event => {
             console.warn('====> DeviceConnectingEvent', event);
 
-            mainWindow.webContents.send('bluetooth/connect-device-event', event);
+            mainWindowProxy
+                .getInstance()
+                ?.webContents.send('bluetooth/connect-device-event', event);
         });
 
         await api.sendMessage('start_scan');
@@ -75,7 +77,9 @@ export const init: Module = ({ mainWindow }) => {
 
             const connected = await api.sendMessage('connect_device', deviceId);
             if (connected !== true) {
-                mainWindow.webContents.send('bluetooth/connect-device-event', { phase: 'error' });
+                mainWindowProxy
+                    .getInstance()
+                    ?.webContents.send('bluetooth/connect-device-event', { phase: 'error' });
             } else {
                 clear();
             }
