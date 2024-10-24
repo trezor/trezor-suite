@@ -246,7 +246,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         },
         plugins: getPlugins(),
         extra: {
-            commitHash: process.env.EAS_BUILD_GIT_COMMIT_HASH || '',
+            commitHash: process.env.EAS_BUILD_GIT_COMMIT_HASH || process.env.COMMIT_HASH || '',
             eas: {
                 projectId,
             },
