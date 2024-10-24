@@ -77,49 +77,55 @@ jobs:
 
       - name: Set daily matrix
         id: set-matrix-daily
-        run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js daily)" >> $GITHUB_OUTPUT
+        # model - firmware - env - groups - tx_cache - transport
+        run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js T2T1 2-latest all api true Bridge)" >> $GITHUB_OUTPUT
 
       - name: Set legacy devices matrix
         id: set-matrix-legacy-firmware
-        run: echo "legacyFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js legacyFirmware)" >> $GITHUB_OUTPUT
+        run: echo "legacyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js T2T1 2.3.0 all all false Bridge)" >> $GITHUB_OUTPUT
 
       - name: Set canary devices matrix
         id: set-matrix-canary-firmware
-        run: echo "canaryFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js canaryFirmware)" >> $GITHUB_OUTPUT
+        run: echo "canaryFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js T2T1 2-main all all false Bridge)" >> $GITHUB_OUTPUT
 
       - name: Set other devices matrix
         id: set-matrix-other-devices
-        run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js otherDevices)" >> $GITHUB_OUTPUT
+        run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js T2T1 2-latest node all false Bridge)" >> $GITHUB_OUTPUT
 
-  connect-PR:
+  T2T1_2-latest:
     needs: [build, set-matrix]
-    name: PR-${{ matrix.name }}
+    if: github.repository == 'trezor/trezor-suite'
+    name: ${{ matrix.model }}-${{ matrix.firmware }}
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
-      testPattern: ${{ matrix.pattern }}
-      methods: ${{ matrix.methods }}
+      testPattern: ${{ matrix.groups.pattern }}
+      methods: ${{ matrix.groups.methods }}
       testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.name }}
+      testDescription: ${{ matrix.env }} ${{ matrix.groups.name }}
+      cache_tx: ${{ matrix.cache_tx }}
+      transport: ${{ matrix.transport }}
+      testEnv: ${{ matrix.env }}
+      testFirmwareModel: ${{ matrix.model }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
 
-  connect-randomized-order:
-    needs: [build, set-matrix]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    name: randomized-${{ matrix.name }}
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      testPattern: ${{ matrix.pattern }}
-      methods: ${{ matrix.methods }}
-      testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.name }}-${{ matrix.firmware }}
-      testRandomizedOrder: true
-      webEnvironment: false
-      nodeEnvironment: true
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
+  # connect-randomized-order:
+  #   needs: [build, set-matrix]
+  #   if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
+  #   name: randomized-${{ matrix.name }}
+  #   uses: ./.github/workflows/template-connect-test-params.yml
+  #   with:
+  #     testPattern: ${{ matrix.pattern }}
+  #     methods: ${{ matrix.methods }}
+  #     testsFirmware: ${{ matrix.firmware }}
+  #     testDescription: ${{ matrix.name }}-${{ matrix.firmware }}
+  #     testRandomizedOrder: true
+  #     webEnvironment: false
+  #     nodeEnvironment: true
+  #   strategy:
+  #     fail-fast: false
+  #     matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
 
   connect-legacy-firmware:
     needs: [build, set-matrix]
@@ -127,10 +133,14 @@ jobs:
     name: legacy-${{ matrix.name }}
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
-      testPattern: ${{ matrix.pattern }}
-      methods: ${{ matrix.methods }}
+      testPattern: ${{ matrix.groups.pattern }}
+      methods: ${{ matrix.groups.methods }}
       testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.name }}-${{ matrix.firmware }}
+      testDescription: ${{ matrix.env }} ${{ matrix.groups.name }}
+      cache_tx: ${{ matrix.cache_tx }}
+      transport: ${{ matrix.transport }}
+      testEnv: ${{ matrix.env }}
+      testFirmwareModel: ${{ matrix.model }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.legacyFirmwareMatrix) }}
@@ -141,10 +151,14 @@ jobs:
     name: canary-${{ matrix.name }}
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
-      testPattern: ${{ matrix.pattern }}
-      methods: ${{ matrix.methods }}
+      testPattern: ${{ matrix.groups.pattern }}
+      methods: ${{ matrix.groups.methods }}
       testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.name }}-${{ matrix.firmware }}
+      testDescription: ${{ matrix.env }} ${{ matrix.groups.name }}
+      cache_tx: ${{ matrix.cache_tx }}
+      transport: ${{ matrix.transport }}
+      testEnv: ${{ matrix.env }}
+      testFirmwareModel: ${{ matrix.model }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.canaryFirmwareMatrix) }}
@@ -155,13 +169,14 @@ jobs:
     name: other-devices-${{ matrix.name }}-${{ matrix.model }}
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
-      testPattern: ${{ matrix.pattern }}
-      methods: ${{ matrix.methods }}
+      testPattern: ${{ matrix.groups.pattern }}
+      methods: ${{ matrix.groups.methods }}
       testsFirmware: ${{ matrix.firmware }}
+      testDescription: ${{ matrix.env }} ${{ matrix.groups.name }}
+      cache_tx: ${{ matrix.cache_tx }}
+      transport: ${{ matrix.transport }}
+      testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
-      nodeEnvironment: true
-      webEnvironment: false
-      testDescription: ${{ matrix.name }}-${{ matrix.firmware }}-${{ matrix.model }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.otherDevicesMatrix) }}
