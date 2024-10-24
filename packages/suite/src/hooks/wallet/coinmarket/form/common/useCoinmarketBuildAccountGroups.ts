@@ -1,7 +1,6 @@
 import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
 import { useMemo } from 'react';
-import { useAccountLabel } from 'src/components/suite/AccountLabel';
-import { useSelector } from 'src/hooks/suite';
+import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 import {
     CoinmarketAccountsOptionsGroupProps,
@@ -15,7 +14,7 @@ export const useCoinmarketBuildAccountGroups = (
     const accounts = useSelector(selectAccounts);
     const accountLabels = useSelector(selectAccountLabels);
     const device = useSelector(selectDevice);
-    const { defaultAccountLabelString } = useAccountLabel();
+    const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const { tokenDefinitions } = useSelector(state => state);
     const supportedSymbols = useSelector(state =>
         type === 'sell'
@@ -37,7 +36,7 @@ export const useCoinmarketBuildAccountGroups = (
                 accountLabels: accountLabelsMemo,
                 tokenDefinitions: tokenDefinitionsMemo,
                 supportedCryptoIds: supportedSymbolsMemo,
-                defaultAccountLabelString,
+                getDefaultAccountLabel,
             }),
 
         [
@@ -46,7 +45,7 @@ export const useCoinmarketBuildAccountGroups = (
             accountLabelsMemo,
             deviceStateMemo,
             tokenDefinitionsMemo,
-            defaultAccountLabelString,
+            getDefaultAccountLabel,
         ],
     );
 
