@@ -23,6 +23,7 @@ jobs:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       EXPO_PUBLIC_ENVIRONMENT: preview
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+      COMMIT_HASH: ${{ github.sha }}
     permissions:
       contents: read
       pull-requests: write
@@ -47,10 +48,8 @@ jobs:
           command: eas build --profile preview --platform all
           working-directory: suite-native/app
 
-      - name: Install deps and build libs
-        run: |
-          yarn install --immutable
-          yarn message-system-sign-config
+      - name: Build message system config
+        run: yarn message-system-sign-config
 
       - name: Create preview update
         uses: expo/expo-github-action/preview@v8
