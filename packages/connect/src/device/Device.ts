@@ -832,7 +832,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             return;
         }
 
-        const releases = getReleases(this.features.internal_model);
+        const releases = getReleases(this.features.internal_model) ?? [];
 
         const release = releases.find(
             r =>
