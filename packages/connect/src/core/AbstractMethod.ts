@@ -30,7 +30,7 @@ export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
     T2B1: { min: '2.6.1', max: '0' },
     T3B1: { min: '2.8.1', max: '0' },
     T3T1: { min: '2.7.1', max: '0' },
-    T3W1: { min: '2.7.1', max: '0' },
+    T3W1: { min: '2.7.1', max: '0' }, // TODO T3W1
 };
 
 function validateStaticSessionId(input: unknown): StaticSessionId {
