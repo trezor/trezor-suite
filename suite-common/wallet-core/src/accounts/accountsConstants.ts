@@ -15,4 +15,8 @@ export const formattedAccountTypeMap: Partial<
         legacy: 'Legacy',
         ledger: 'Ledger',
     },
+    ethereum: {
+        legacy: 'Legacy',
+        ledger: 'Ledger',
+    },
 };
