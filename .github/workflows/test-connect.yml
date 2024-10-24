@@ -78,19 +78,19 @@ jobs:
       - name: Set daily matrix
         id: set-matrix-daily
         # model - firmware - env - groups - tx_cache - transport
-        run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js T2T1 2-latest all all true Bridge)" >> $GITHUB_OUTPUT
+        run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js T2T1 2-latest all api true Bridge)" >> $GITHUB_OUTPUT
 
       - name: Set legacy devices matrix
         id: set-matrix-legacy-firmware
-        run: echo "legacyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js T2T1 2.3.0 all all true Bridge)" >> $GITHUB_OUTPUT
+        run: echo "legacyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js T2T1 2.3.0 all all false Bridge)" >> $GITHUB_OUTPUT
 
       - name: Set canary devices matrix
         id: set-matrix-canary-firmware
-        run: echo "canaryFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js T2T1 2-main all all true Bridge)" >> $GITHUB_OUTPUT
+        run: echo "canaryFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js T2T1 2-main all all false Bridge)" >> $GITHUB_OUTPUT
 
       - name: Set other devices matrix
         id: set-matrix-other-devices
-        run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js T2T1 2-latest node all true Bridge)" >> $GITHUB_OUTPUT
+        run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js T2T1 2-latest node all false Bridge)" >> $GITHUB_OUTPUT
 
   T2T1_2-latest:
     needs: [build, set-matrix]
