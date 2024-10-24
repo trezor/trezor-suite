@@ -249,7 +249,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                             formatOptionLabel={(option: SelectAssetOptionCurrencyProps) => {
                                 return (
                                     <Row justifyContent="flex-start" gap={spacings.sm}>
-                                        {findOption ? (
+                                        {findOption && findOption.contractAddress !== null ? (
                                             <>
                                                 <AssetLogo
                                                     coingeckoId={findOption.coingeckoId || ''}
@@ -307,7 +307,6 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                 }),
                             }}
                             data-testid="@amount-select"
-                            isDisabled={options.length === 1}
                             isClean
                             isClearable={false}
                             isMenuOpen={false}
