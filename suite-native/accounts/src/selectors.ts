@@ -13,10 +13,17 @@ import {
     selectAccountByKey,
     selectAccounts,
     selectCurrentFiatRates,
+    selectIsAccountUtxoBased,
+    selectPendingAccountAddresses,
     selectVisibleDeviceAccounts,
+    TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenInfoBranded } from '@suite-common/wallet-types';
-import { getAccountFiatBalance, getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
+import {
+    getAccountFiatBalance,
+    getAccountTotalStakingBalance,
+    getFirstFreshAddress,
+} from '@suite-common/wallet-utils';
 import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
 import { isCoinWithTokens } from '@suite-native/tokens';
 
@@ -144,12 +151,17 @@ export const selectAccountListSections = memoizeWithArgs(
     { size: 40 },
 );
 
-export const selectFirstUnusedAccountAddress = (
-    state: NativeAccountsRootState,
+export const selectFreshAccountAddress = (
+    state: NativeAccountsRootState & TransactionsRootState,
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
+
     if (!account) return null;
 
-    return account.addresses?.unused[0]?.address ?? null;
+    const pendingAddresses = selectPendingAccountAddresses(state, accountKey);
+
+    const isAccountUtxoBased = selectIsAccountUtxoBased(state, accountKey);
+
+    return getFirstFreshAddress(account, [], pendingAddresses, isAccountUtxoBased);
 };

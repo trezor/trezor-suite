@@ -11,9 +11,6 @@
         {
             "path": "../../suite-common/wallet-types"
         },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
         { "path": "../accounts" },
         { "path": "../alerts" },
         { "path": "../analytics" },

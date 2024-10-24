@@ -8,8 +8,12 @@ import { Translation } from '@suite-native/intl';
 import { analytics, EventType } from '@suite-native/analytics';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { AccountKey } from '@suite-common/wallet-types';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { NativeAccountsRootState, selectFirstUnusedAccountAddress } from '@suite-native/accounts';
+import {
+    AccountsRootState,
+    selectAccountNetworkSymbol,
+    TransactionsRootState,
+} from '@suite-common/wallet-core';
+import { NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 import { isDebugEnv } from '@suite-native/config';
 
 import { QrCodeBottomSheetIcon } from './QrCodeBottomSheetIcon';
@@ -27,8 +31,9 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const unusedAccountAddress = useSelector((state: NativeAccountsRootState) =>
-        selectFirstUnusedAccountAddress(state, accountKey),
+    const freshAccountAddress = useSelector(
+        (state: NativeAccountsRootState & TransactionsRootState) =>
+            selectFreshAccountAddress(state, accountKey),
     );
 
     const handleScanAddressQRCode = (qrCodeData: string) => {
@@ -46,8 +51,8 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
 
     // Debug helper to fill opened account address.
     const fillSelfAddress = () => {
-        if (unusedAccountAddress)
-            setValue(addressFieldName, unusedAccountAddress, { shouldValidate: true });
+        if (freshAccountAddress)
+            setValue(addressFieldName, freshAccountAddress.address, { shouldValidate: true });
     };
 
     return (
