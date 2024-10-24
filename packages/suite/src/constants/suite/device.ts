@@ -10,6 +10,7 @@ export const DEFAULT_STRENGTH: Record<DeviceModelInternal, number> = {
     [DeviceModelInternal.T2B1]: 128,
     [DeviceModelInternal.T3B1]: 128,
     [DeviceModelInternal.T3T1]: 128,
+    [DeviceModelInternal.T3W1]: 128,
 };
 
 export const MAX_ROWS_PER_PAGE: Record<DeviceModelInternal, number> = {
@@ -18,6 +19,7 @@ export const MAX_ROWS_PER_PAGE: Record<DeviceModelInternal, number> = {
     [DeviceModelInternal.T2B1]: 4,
     [DeviceModelInternal.T3B1]: 4,
     [DeviceModelInternal.T3T1]: 7,
+    [DeviceModelInternal.T3W1]: 7, // TODO T3W1
 };
 
 export const MAX_CHARACTERS_ON_ROW: Record<DeviceModelInternal, number> = {
@@ -26,6 +28,7 @@ export const MAX_CHARACTERS_ON_ROW: Record<DeviceModelInternal, number> = {
     [DeviceModelInternal.T2B1]: 18,
     [DeviceModelInternal.T3B1]: 18,
     [DeviceModelInternal.T3T1]: 18,
+    [DeviceModelInternal.T3W1]: 18, // TODO T3W1
 };
 
 export const CHARACTER_OFFSET_FOR_CONTINUES_ARROW: Record<DeviceModelInternal, number> = {
@@ -34,6 +37,7 @@ export const CHARACTER_OFFSET_FOR_CONTINUES_ARROW: Record<DeviceModelInternal, n
     [DeviceModelInternal.T2B1]: 2,
     [DeviceModelInternal.T3B1]: 2,
     [DeviceModelInternal.T3T1]: 4,
+    [DeviceModelInternal.T3W1]: 4, // TODO T3W1
 };
 
 export const CHARACTER_OFFSET_FOR_NEXT_ARROW: Record<DeviceModelInternal, number> = {
@@ -42,6 +46,7 @@ export const CHARACTER_OFFSET_FOR_NEXT_ARROW: Record<DeviceModelInternal, number
     [DeviceModelInternal.T2B1]: 2,
     [DeviceModelInternal.T3B1]: 2,
     [DeviceModelInternal.T3T1]: 4,
+    [DeviceModelInternal.T3W1]: 4, // TODO T3W1
 };
 
 export const SUPPORTS_DEVICE_AUTHENTICITY_CHECK: Record<DeviceModelInternal, boolean> = {
@@ -50,6 +55,7 @@ export const SUPPORTS_DEVICE_AUTHENTICITY_CHECK: Record<DeviceModelInternal, boo
     [DeviceModelInternal.T2B1]: true,
     [DeviceModelInternal.T3B1]: true,
     [DeviceModelInternal.T3T1]: true,
+    [DeviceModelInternal.T3W1]: true,
 };
 
 export const HAS_MONOCHROME_SCREEN: Record<DeviceModelInternal, boolean> = {
@@ -58,4 +64,5 @@ export const HAS_MONOCHROME_SCREEN: Record<DeviceModelInternal, boolean> = {
     [DeviceModelInternal.T2B1]: true,
     [DeviceModelInternal.T3B1]: true,
     [DeviceModelInternal.T3T1]: false,
+    [DeviceModelInternal.T3W1]: false,
 };

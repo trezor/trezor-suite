@@ -43,6 +43,7 @@ export const defaultBackupTypeMap: Record<DeviceModelInternal, BackupType> = {
     [DeviceModelInternal.T2B1]: 'shamir-single',
     [DeviceModelInternal.T3B1]: 'shamir-single',
     [DeviceModelInternal.T3T1]: 'shamir-single',
+    [DeviceModelInternal.T3W1]: 'shamir-single',
 };
 
 type GetDefaultBackupTypeParams = { model: DeviceModelInternal; packaging: number };

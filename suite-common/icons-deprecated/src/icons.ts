@@ -210,6 +210,7 @@ export const icons = {
     trezorT2T1: require('../assets/icons/trezorT2T1.svg'),
     trezorT3B1: require('../assets/icons/trezorT3B1.svg'),
     trezorT3T1: require('../assets/icons/trezorT3T1.svg'),
+    trezorT3W1: require('../assets/icons/trezorT3T1.svg'),
     twitter: require('../assets/icons/twitter.svg'),
     twoUsers: require('../assets/icons/twoUsers.svg'),
     unlink: require('../assets/icons/unlink.svg'),

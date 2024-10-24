@@ -40,6 +40,13 @@ const safe3Styles = {
     lineHeight: 25,
     pagerOffset: 40,
 };
+const smallTouchscreenStyles = {
+    fontSource: require('../../../../packages/theme/fonts/RobotoMono-Regular.ttf'),
+    fontSize: 20,
+    lineWidth: 230,
+    lineHeight: 25,
+    pagerOffset: 60,
+};
 
 const deviceToContentStyles: Record<DeviceModelInternal, DeviceModelLayoutProps> = {
     [DeviceModelInternal.T1B1]: {
@@ -49,20 +56,15 @@ const deviceToContentStyles: Record<DeviceModelInternal, DeviceModelLayoutProps>
         lineHeight: 17,
         pagerOffset: 0,
     },
-    [DeviceModelInternal.T2T1]: {
+    [DeviceModelInternal.T2T1]: smallTouchscreenStyles,
+    [DeviceModelInternal.T3T1]: smallTouchscreenStyles,
+    [DeviceModelInternal.T3W1]: {
         fontSource: require('../../../../packages/theme/fonts/RobotoMono-Regular.ttf'),
         fontSize: 20,
         lineWidth: 230,
         lineHeight: 25,
         pagerOffset: 60,
-    },
-    [DeviceModelInternal.T3T1]: {
-        fontSource: require('../../../../packages/theme/fonts/RobotoMono-Regular.ttf'),
-        fontSize: 20,
-        lineWidth: 230,
-        lineHeight: 25,
-        pagerOffset: 60,
-    },
+    }, // TODO T3W1
     [DeviceModelInternal.T2B1]: safe3Styles,
     [DeviceModelInternal.T3B1]: safe3Styles,
 };

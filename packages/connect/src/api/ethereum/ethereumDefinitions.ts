@@ -152,9 +152,10 @@ export const ethereumNetworkInfoFromDefinition = (
         connect: true,
         T1B1: '1.6.2',
         T2T1: '2.0.7',
-        T2B1: '2.6.1',
-        T3B1: '2.8.1',
-        T3T1: '2.7.1',
+        T2B1: '2.0.0',
+        T3B1: '2.0.0',
+        T3T1: '2.0.0',
+        T3W1: '2.0.0',
     },
     blockchainLink: undefined,
 });

@@ -71,6 +71,21 @@ const deviceModelToSvg: Record<PaginationCompatibleDeviceModel, PaginationModelM
         paginationSvgWidth: 40,
         paginationSvgHeight: 17.5,
     },
+    [DeviceModelInternal.T3W1]: {
+        paginationPrefixSvg: require('../../assets/addressPaginationPrefixT2T1.svg'),
+        paginationSuffixSvg: require('../../assets/addressPaginationPrefixT2T1.svg'),
+        paginatorPrefixX: 0,
+        paginatorPrefixY: 4,
+        paginatorSuffixX: 182.5,
+        paginatorSuffixY: 82,
+
+        pagerSvg1: require('../../assets/pager1T2T1.svg'),
+        pagerSvg2: require('../../assets/pager1T2T1.svg'),
+        pagerX: 260,
+        pagerY: 30,
+        paginationSvgWidth: 40,
+        paginationSvgHeight: 17.5,
+    }, // TODO T3W1
     [DeviceModelInternal.T2B1]: safe3Svg,
     [DeviceModelInternal.T3B1]: safe3Svg,
 };

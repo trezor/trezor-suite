@@ -246,6 +246,16 @@ export const getChangelogUrl = (device: Device, revision?: string | null) => {
     return `https://github.com/trezor/trezor-firmware/blob/${commit}/${folder}/${changelogFile}`;
 };
 
+/**
+ Returns DeviceModelInternal, but returns T3B1 if T2B1 is provided.
+ This is desirable because they both represent the same model (differing internally in the chip) and should behave the same in most situations,
+ so we don't need to provide separate assets, translations keys, URLs etc. for both.
+ */
+export const getNarrowedDeviceModelInternal = <T extends DeviceModelInternal>(
+    model: T,
+): T extends DeviceModelInternal.T2B1 ? DeviceModelInternal.T3B1 : T =>
+    (model === DeviceModelInternal.T2B1 ? DeviceModelInternal.T3B1 : model) as any;
+
 export const getCheckBackupUrl = (device?: TrezorDevice) => {
     const deviceModelInternal = device?.features?.internal_model;
 
@@ -253,7 +263,7 @@ export const getCheckBackupUrl = (device?: TrezorDevice) => {
         return undefined;
     }
 
-    return URLS[`HELP_CENTER_DRY_RUN_${deviceModelInternal}_URL`];
+    return URLS[`HELP_CENTER_DRY_RUN_${getNarrowedDeviceModelInternal(deviceModelInternal)}_URL`];
 };
 
 export const getPackagingUrl = (device?: TrezorDevice) => {
@@ -263,7 +273,7 @@ export const getPackagingUrl = (device?: TrezorDevice) => {
         return '';
     }
 
-    return URLS[`HELP_CENTER_PACKAGING_${deviceModelInternal}_URL`];
+    return URLS[`HELP_CENTER_PACKAGING_${getNarrowedDeviceModelInternal(deviceModelInternal)}_URL`];
 };
 
 export const getFirmwareDowngradeUrl = (device?: TrezorDevice) => {
@@ -273,7 +283,9 @@ export const getFirmwareDowngradeUrl = (device?: TrezorDevice) => {
         return undefined;
     }
 
-    return URLS[`HELP_CENTER_FW_DOWNGRADE_${deviceModelInternal}_URL`];
+    return URLS[
+        `HELP_CENTER_FW_DOWNGRADE_${getNarrowedDeviceModelInternal(deviceModelInternal)}_URL`
+    ];
 };
 
 /**
@@ -422,4 +434,7 @@ export const getSortedDevicesWithoutInstances = (
             return 0;
         });
 
-export const isDeviceWithButtons = (deviceModel: DeviceModelInternal) => deviceModel.at(2) === 'B';
+export const isDeviceWithButtons = (
+    deviceModel: DeviceModelInternal,
+): deviceModel is DeviceModelInternal.T1B1 | DeviceModelInternal.T2B1 | DeviceModelInternal.T3B1 =>
+    deviceModel.at(2) === 'B';

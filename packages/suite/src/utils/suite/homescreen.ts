@@ -23,6 +23,7 @@ export const deviceModelInformation: Record<
     [DeviceModelInternal.T2B1]: safe3Information,
     [DeviceModelInternal.T3B1]: safe3Information,
     [DeviceModelInternal.T3T1]: { width: 240, height: 240, supports: ['jpeg'] },
+    [DeviceModelInternal.T3W1]: { width: 280, height: 520, supports: ['jpeg'] }, // TODO T3W1 - double check values
 };
 
 export const enum ImageValidationError {
@@ -324,7 +325,7 @@ export const imagePathToHex = async (
         return Buffer.from(arrayBuffer).toString('hex');
     }
 
-    /* 
+    /*
     - However, this method accepts the Canvas format which changes the quality of image
     */
     const blob = await response.blob();

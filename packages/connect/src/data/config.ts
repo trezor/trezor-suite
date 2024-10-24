@@ -99,6 +99,10 @@ export const config = {
             name: 'firmware-t3t1',
             url: './data/firmware/t3t1/releases.json',
         },
+        {
+            name: 'firmware-t3tw1',
+            url: './data/firmware/t3w1/releases.json',
+        },
     ],
     messages: './data/messages/messages.json',
     supportedBrowsers: {
@@ -257,7 +261,11 @@ export const config = {
         },
         {
             methods: ['showDeviceTutorial', 'authenticateDevice'],
-            min: { T1B1: '0', T2T1: '0', T2B1: '2.6.1', T3B1: '2.8.1', T3T1: '2.8.0' },
+            min: {
+                T1B1: '0',
+                T2T1: '0',
+                T3T1: '2.8.0',
+            },
         },
         {
             methods: ['rebootToBootloader'],
@@ -269,11 +277,18 @@ export const config = {
         },
         {
             methods: ['solanaGetPublicKey', 'solanaGetAddress', 'solanaSignTransaction'],
-            min: { T1B1: '0', T2T1: '2.6.4', T2B1: '2.6.4', T3B1: '2.8.1', T3T1: '2.7.2' },
+            min: {
+                T1B1: '0',
+                T2T1: '2.6.4',
+                T2B1: '2.6.4',
+            },
         },
         {
             capabilities: ['chunkify'],
-            min: { T1B1: '0', T2T1: '2.6.3', T2B1: '2.6.3', T3B1: '2.8.1', T3T1: '2.7.2' },
+            min: {
+                T1B1: '0',
+                T2T1: '2.6.3',
+            },
             comment: [
                 "Since firmware 2.6.3 there is a new protobuf field 'chunkify' in almost all getAddress and signTx methods",
             ],
@@ -284,8 +299,6 @@ export const config = {
                 T1B1: '0',
                 T2T1: '2.7.0',
                 T2B1: '2.7.0',
-                T3B1: '2.8.1', // adding T3B1 to the list so that it gets inferred as type
-                T3T1: '2.7.2',
             },
         },
     ],

@@ -171,13 +171,20 @@ export const validateParams = [
 const DEFAULT_RANGE = {
     T1B1: { min: '1.0.0', max: '0' },
     T2T1: { min: '2.0.0', max: '0' },
-    T2B1: { min: '2.6.1', max: '0' },
-    T3B1: { min: '2.8.1', max: '0' },
-    T3T1: { min: '2.7.1', max: '0' },
+    T2B1: { min: '2.0.0', max: '0' },
+    T3B1: { min: '2.0.0', max: '0' },
+    T3W1: { min: '2.0.0', max: '0' },
 };
 
 const DEFAULT_COIN_INFO = {
-    support: { T1B1: '1.6.2', T2T1: '2.1.0', T2B1: '2.6.1', T3B1: '2.8.1', T3T1: '2.7.1' },
+    support: {
+        T1B1: '1.6.2',
+        T2T1: '2.1.0',
+        T2B1: '2.0.0',
+        T3B1: '2.0.0',
+        T3T1: '2.0.0',
+        T3W1: '2.0.0',
+    },
     shortcut: 'btc',
     type: 'bitcoin',
 };
@@ -200,9 +207,6 @@ export const getFirmwareRange = [
         result: {
             T1B1: { min: '1.6.2', max: '0' },
             T2T1: { min: '2.1.0', max: '0' },
-            T2B1: { min: '2.6.1', max: '0' },
-            T3B1: { min: '2.8.1', max: '0' },
-            T3T1: { min: '2.7.1', max: '0' },
         },
     },
     {
@@ -215,6 +219,7 @@ export const getFirmwareRange = [
             T2B1: { min: '0', max: '0' },
             T3B1: { min: '0', max: '0' },
             T3T1: { min: '0', max: '0' },
+            T3W1: { min: '0', max: '0' },
         },
     },
     {
@@ -223,7 +228,10 @@ export const getFirmwareRange = [
         params: [
             'signTransaction',
             {
-                support: { T1B1: false, T2T1: '2.1.0', T2B1: '2.6.1', T3T1: '2.7.1' },
+                support: {
+                    T1B1: false,
+                    T2T1: '2.1.0',
+                },
                 shortcut: 'btc',
                 type: 'bitcoin',
             },
@@ -232,9 +240,6 @@ export const getFirmwareRange = [
         result: {
             T1B1: { min: '0', max: '0' },
             T2T1: { min: '2.1.0', max: '0' },
-            T2B1: { min: '2.6.1', max: '0' },
-            T3B1: { min: '2.8.1', max: '0' },
-            T3T1: { min: '2.7.1', max: '0' },
         },
     },
     {
@@ -243,7 +248,14 @@ export const getFirmwareRange = [
         params: [
             'signTransaction',
             {
-                support: { T1B1: '1.6.2', T2T1: false, T2B1: false, T3B1: false, T3T1: false },
+                support: {
+                    T1B1: '1.6.2',
+                    T2T1: false,
+                    T2B1: false,
+                    T3B1: false,
+                    T3T1: false,
+                    T3W1: false,
+                },
                 shortcut: 'btc',
                 type: 'bitcoin',
             },
@@ -251,10 +263,6 @@ export const getFirmwareRange = [
         ],
         result: {
             T1B1: { min: '1.6.2', max: '0' },
-            T2T1: { min: '0', max: '0' },
-            T2B1: { min: '0', max: '0' },
-            T3B1: { min: '0', max: '0' },
-            T3T1: { min: '0', max: '0' },
         },
     },
     {
@@ -289,9 +297,6 @@ export const getFirmwareRange = [
         result: {
             T1B1: { min: '1.11.0', max: '0' },
             T2T1: { min: '2.5.0', max: '0' },
-            T2B1: { min: '2.6.1', max: '0' },
-            T3B1: { min: '2.8.1', max: '0' },
-            T3T1: { min: '2.7.1', max: '0' },
         },
     },
     {
@@ -307,9 +312,6 @@ export const getFirmwareRange = [
         result: {
             T1B1: { min: '1.10.0', max: '0' },
             T2T1: { min: '2.4.0', max: '0' },
-            T2B1: { min: '2.6.1', max: '0' },
-            T3B1: { min: '2.8.1', max: '0' },
-            T3T1: { min: '2.7.1', max: '0' },
         },
     },
     {
@@ -325,9 +327,6 @@ export const getFirmwareRange = [
         result: {
             T1B1: { min: '1.10.0', max: '0' },
             T2T1: { min: '2.4.0', max: '0' },
-            T2B1: { min: '2.6.1', max: '0' },
-            T3B1: { min: '2.8.1', max: '0' },
-            T3T1: { min: '2.7.1', max: '0' },
         },
     },
     {
@@ -357,9 +356,6 @@ export const getFirmwareRange = [
         result: {
             T1B1: { min: '1.10.0', max: '0' },
             T2T1: { min: '2.4.0', max: '0' },
-            T2B1: { min: '2.6.1', max: '0' },
-            T3B1: { min: '2.8.1', max: '0' },
-            T3T1: { min: '2.7.1', max: '0' },
         },
     },
     {
@@ -389,9 +385,6 @@ export const getFirmwareRange = [
         result: {
             T1B1: { min: '1.10.0', max: '0' },
             T2T1: { min: '2.4.0', max: '0' },
-            T2B1: { min: '2.6.1', max: '0' },
-            T3B1: { min: '2.8.1', max: '0' },
-            T3T1: { min: '2.7.1', max: '0' },
         },
     },
     {
@@ -413,9 +406,6 @@ export const getFirmwareRange = [
         result: {
             T1B1: { min: '1.10.0', max: '0' },
             T2T1: { min: '2.4.0', max: '0' },
-            T2B1: { min: '2.6.1', max: '0' },
-            T3B1: { min: '2.8.1', max: '0' },
-            T3T1: { min: '2.7.1', max: '0' },
         },
     },
     {
@@ -429,9 +419,6 @@ export const getFirmwareRange = [
         result: {
             T1B1: { min: '1.6.2', max: '1.10.0' },
             T2T1: { min: '2.1.0', max: '2.4.0' },
-            T2B1: { min: '2.6.1', max: '0' },
-            T3B1: { min: '2.8.1', max: '0' },
-            T3T1: { min: '2.7.1', max: '0' },
         },
     },
     {
@@ -466,9 +453,6 @@ export const getFirmwareRange = [
         result: {
             T1B1: { min: '0', max: '0' },
             T2T1: { min: '2.1.0', max: '0' },
-            T2B1: { min: '2.6.1', max: '0' },
-            T3B1: { min: '2.8.1', max: '0' },
-            T3T1: { min: '2.7.1', max: '0' },
         },
     },
     {
@@ -490,9 +474,6 @@ export const getFirmwareRange = [
         result: {
             T1B1: { min: '1.10.4', max: '0' },
             T2T1: { min: '2.4.2', max: '0' },
-            T2B1: { min: '2.6.1', max: '0' },
-            T3B1: { min: '2.8.1', max: '0' },
-            T3T1: { min: '2.7.1', max: '0' },
         },
     },
     {
@@ -501,9 +482,6 @@ export const getFirmwareRange = [
         result: {
             T1B1: { min: '0', max: '0' },
             T2T1: { min: '0', max: '0' },
-            T2B1: { min: '2.6.1', max: '0' },
-            T3B1: { min: '2.8.1', max: '0' },
-            T3T1: { min: '2.8.0', max: '0' },
         },
     },
 ];
