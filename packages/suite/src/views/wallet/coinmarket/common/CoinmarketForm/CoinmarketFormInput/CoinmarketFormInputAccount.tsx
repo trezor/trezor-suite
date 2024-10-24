@@ -14,7 +14,6 @@ import {
     CoinmarketSellFormProps,
 } from 'src/types/coinmarket/coinmarketForm';
 import { createFilter } from 'react-select';
-import { useCoinmarketBuildAccountGroups } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellFormDefaultValues';
 import { CoinmarketFormInputAccountOption } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputAccountOption';
 import { useCoinmarketFiatValues } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketFiatValues';
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
@@ -22,6 +21,7 @@ import styled from 'styled-components';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { FiatCurrencyCode } from 'invity-api';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
+import { useCoinmarketBuildAccountGroups } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketBuildAccountGroups';
 
 const CoinmarketBalanceWrapper = styled.div`
     padding: ${spacingsPx.xs} ${spacingsPx.sm} 0;

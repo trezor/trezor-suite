@@ -15,7 +15,6 @@ import {
     RateTypeFilter,
 } from 'src/types/coinmarket/coinmarketForm';
 import { FormState, Output } from '@suite-common/wallet-types';
-import { useCoinmarketBuildAccountGroups } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellFormDefaultValues';
 import {
     EXCHANGE_COMPARATOR_KYC_FILTER,
     EXCHANGE_COMPARATOR_KYC_FILTER_ALL,
@@ -28,6 +27,7 @@ import {
 } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { coinmarketGetExchangeReceiveCryptoId } from 'src/utils/wallet/coinmarket/exchangeUtils';
+import { useCoinmarketBuildAccountGroups } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketBuildAccountGroups';
 
 export const useCoinmarketExchangeFormDefaultValues = (
     account: Account,
@@ -36,7 +36,10 @@ export const useCoinmarketExchangeFormDefaultValues = (
     const localCurrency = useSelector(selectLocalCurrency);
     const defaultCurrency = useMemo(() => buildFiatOption(localCurrency), [localCurrency]);
     const cryptoGroups = useCoinmarketBuildAccountGroups('exchange');
-    const cryptoOptions = cryptoGroups.flatMap(group => group.options);
+    const cryptoOptions = useMemo(
+        () => cryptoGroups.flatMap(group => group.options),
+        [cryptoGroups],
+    );
     const defaultSendCryptoSelect = useMemo(
         () =>
             cryptoOptions.find(
