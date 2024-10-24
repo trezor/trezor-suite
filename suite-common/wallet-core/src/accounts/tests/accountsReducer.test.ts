@@ -3,6 +3,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { ExtraDependenciesPartial } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { Account } from '@suite-common/wallet-types';
+import { Bip43Path } from '@suite-common/wallet-config';
 
 import { accountsActions } from '../accountsActions';
 import { AccountsRootState, prepareAccountsReducer } from '../accountsReducer';
@@ -30,7 +31,7 @@ const getAccount = (a?: Partial<Account>) => ({
     ...a,
 });
 
-const testBip43Path = "m/84'/0'/0'";
+const testBip43Path: Bip43Path = "m/84'/0'/0'";
 
 describe('Account Reducer', () => {
     // accountActions.createAccount function is already tested by "discoveryActions"
