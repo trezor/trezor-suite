@@ -17,6 +17,7 @@ import { getHost } from '../utils/urlUtils';
 import type { Device } from '../device/Device';
 import type { FirmwareRange, DeviceState, StaticSessionId, DeviceUniquePath } from '../types';
 import { ERRORS } from '../constants';
+import { Enum_Capability } from '@trezor/protobuf/src/messages';
 
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };
 export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethodResponse<M>;
@@ -132,6 +133,8 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI.INITIALIZED)
 
     requireDeviceMode: DeviceMode[];
+
+    requiredDeviceCapabilities: Enum_Capability[] = [];
 
     network: NETWORK.NetworkType;
 
@@ -331,6 +334,21 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             name: this.name,
             // this could be used for more. it could tell clients what are min firmware versions (firmwareRange) and much more
         };
+    }
+
+    checkDeviceCapability() {
+        const deviceHasAllRequiredCapabilities = (this.requiredDeviceCapabilities || []).every(
+            capability =>
+                // @ts-expect-error
+                this.device.features.capabilities.includes(capability),
+        );
+        if (/*true || */ !deviceHasAllRequiredCapabilities) {
+            // todo different error
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'Device: device does not have capability to call this method. You might need to install another firmware',
+            );
+        }
     }
 
     abstract run(): Promise<MethodReturnType<Name>>;

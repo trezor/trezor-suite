@@ -14,6 +14,7 @@ import {
 } from '../../../types';
 import { MessagesSchema } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
+import { Enum_Capability } from '@trezor/protobuf/src/messages';
 
 type Params = PROTO.EthereumSignMessage & {
     network?: EthereumNetworkInfo;
@@ -23,6 +24,7 @@ type Params = PROTO.EthereumSignMessage & {
 export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMessage', Params> {
     init() {
         this.requiredPermissions = ['read', 'write'];
+        this.requiredDeviceCapabilities = [Enum_Capability.Capability_Ethereum];
 
         const { payload } = this;
 
