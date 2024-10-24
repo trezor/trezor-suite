@@ -35,13 +35,20 @@ export interface DesktopUpdateState {
 }
 
 const initialState: DesktopUpdateState = {
-    enabled: false,
-    state: UpdateState.NotAvailable,
+    enabled: true,
+    state: UpdateState.Available,
     modalVisibility: 'hidden',
     allowPrerelease: false,
     isAutomaticUpdateEnabled: false,
     firstRunAfterUpdate: false,
     justUpdatedInteractedWith: false,
+    latest: {
+        version: '24.10.1',
+        releaseDate: '2024-10-08T09:20:49.150Z',
+        isManualCheck: false,
+        prerelease: false,
+        changelog: 'its rly so much better!!',
+    },
 };
 
 const desktopUpdateReducer = (
