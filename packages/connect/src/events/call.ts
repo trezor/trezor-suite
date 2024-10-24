@@ -5,28 +5,24 @@ import type { CommonParams, DeviceIdentity } from '../types/params';
 import { Device } from '../device/Device';
 
 // conditionally unwrap TrezorConnect api method Success<T> response
-type UnwrappedResponse<Response> =
-    Response extends Promise<infer R>
-        ? R extends { success: true; payload: infer P }
-            ? P
-            : never
-        : void;
+type UnwrappedResponse<T> =
+    T extends Promise<infer R> ? (R extends { success: true; payload: infer P } ? P : never) : void;
 
 // https://github.com/microsoft/TypeScript/issues/32164
 // there is no native way how to get Parameters<Fn> for overloaded function
 // current TrezorConnect api methods have exactly 2 overloads (if any)
-type OverloadedMethod<Method, Params extends Record<string, string>> = Method extends {
+type OverloadedMethod<T, E extends Record<string, string>> = T extends {
     (params: infer P1): infer R1;
     (params: infer P2): infer R2;
 }
-    ? ((params: P1 & Params) => R1) | ((params: P2 & Params) => R2) // - method IS overloaded, result depends on params (example: getAddress)
-    : Method extends (...args: infer P) => infer R
-      ? (params: Params & P[0]) => R // - method in NOT overloaded, one set of params and one set of result (example: signTransaction)
+    ? ((params: P1 & E) => R1) | ((params: P2 & E) => R2) // - method IS overloaded, result depends on params (example: getAddress)
+    : T extends (...args: infer P) => infer R
+      ? (params: E & P[0]) => R // - method in NOT overloaded, one set of params and one set of result (example: signTransaction)
       : never;
 
-type UnwrappedMethod<Method, Params extends Record<string, string>> = Method extends () => infer R
-    ? (params: Params & CommonParams) => R // - method doesn't have params (example: dispose, disableWebUSB)
-    : OverloadedMethod<Method, Params>;
+type UnwrappedMethod<T, M extends Record<string, string>> = T extends () => infer R
+    ? (params: M & CommonParams) => R // - method doesn't have params (example: dispose, disableWebUSB)
+    : OverloadedMethod<T, M>;
 
 type IsMethodCallable<T> = T extends (...args: any[]) => infer R
     ? R extends Promise<{ success: boolean }>
