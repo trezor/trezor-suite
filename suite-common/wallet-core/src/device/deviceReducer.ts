@@ -204,6 +204,27 @@ const changeDevice = (
     device: Device | TrezorDevice,
     extended?: Partial<AcquiredDevice>,
 ) => {
+    // device was initially connected as unacquired. attempt to 'use device here' resulted in unreadable device
+    if (device.type === 'unreadable' && draft.selectedDevice) {
+        const additionalFields = {
+            connected: true,
+            available: false,
+            useEmptyPassphrase: true,
+            buttonRequests: [],
+            metadata: {},
+            passwords: {},
+            ts: new Date().getTime(),
+        };
+        draft.selectedDevice = {
+            ...device,
+            ...additionalFields,
+        };
+        const index = draft.devices.findIndex(d => d.path === device.path);
+        if (index > -1) {
+            draft.devices[index] = draft.selectedDevice;
+        }
+    }
+
     // change only acquired devices
     if (!device.features) return;
 
