@@ -30,6 +30,7 @@ export interface MainChannels {
     'tor/get-status': void;
     'update/allow-prerelease': boolean;
     'update/set-automatic-update-enabled': boolean;
+    'update/set-auto-install-on-app-quit': void;
     'update/cancel': void;
     'update/check': boolean | undefined;
     'update/download': void;
@@ -53,6 +54,7 @@ export interface RendererChannels {
     'update/downloaded': UpdateInfo;
     'update/allow-prerelease': boolean;
     'update/set-automatic-update-enabled': boolean;
+    'update/set-auto-install-on-app-quit': void;
 
     // tor
     'tor/status': TorStatusEvent;
@@ -118,6 +120,7 @@ export interface DesktopApi {
     cancelUpdate: DesktopApiSend<'update/cancel'>;
     allowPrerelease: DesktopApiSend<'update/allow-prerelease'>;
     setAutomaticUpdateEnabled: DesktopApiSend<'update/set-automatic-update-enabled'>;
+    setAutoInstallOnAppQuit: DesktopApiSend<'update/set-auto-install-on-app-quit'>;
     // Theme
     themeChange: DesktopApiSend<'theme/change'>;
     // Handshake
