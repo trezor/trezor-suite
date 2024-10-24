@@ -67,16 +67,6 @@ const projectIds = {
 } as const satisfies Record<BuildType, string>;
 
 const buildType = (process.env.EXPO_PUBLIC_ENVIRONMENT as BuildType) ?? 'debug';
-const isCI = process.env.CI == 'true' || process.env.CI == '1';
-
-if (isCI) {
-    if (!process.env.EXPO_PUBLIC_ENVIRONMENT) {
-        throw new Error('Missing EXPO_PUBLIC_ENVIRONMENT env variable');
-    }
-    if (!process.env.SENTRY_AUTH_TOKEN && buildType !== 'debug') {
-        throw new Error('Missing SENTRY_AUTH_TOKEN env variable');
-    }
-}
 
 const getPlugins = (): ExpoPlugins => {
     const plugins = [
