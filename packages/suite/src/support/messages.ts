@@ -100,12 +100,12 @@ export default defineMessages({
     },
     TR_RECONNECT_DEVICE_DESCRIPTION: {
         defaultMessage:
-            'If closing tabs and refreshing this page didn’t help, try reconnecting your Trezor.',
+            'If closing other apps that might be communicating with your Trezor and refreshing this page didn’t help, try reconnecting your Trezor.',
         id: 'TR_RECONNECT_DEVICE_DESCRIPTION',
     },
     TR_RECONNECT_DEVICE_DESCRIPTION_DESKTOP: {
         defaultMessage:
-            "If closing tabs and reopening Trezor Suite doesn't help, try reconnecting your Trezor.",
+            "If closing other apps that might be communicating with your Trezor and reopening Trezor Suite doesn't help, try reconnecting your Trezor.",
         id: 'TR_RECONNECT_DEVICE_DESCRIPTION_DESKTOP',
     },
     TR_ACQUIRE_DEVICE_TITLE: {
@@ -7128,6 +7128,15 @@ export default defineMessages({
             'Only Chromium-based browsers currently allow direct communication with USB devices.',
         id: 'TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_DESCRIPTION',
     },
+    TR_TROUBLESHOOTING_TIP_UNREADABLE_HID_TITLE: {
+        defaultMessage: 'You may be using a very old Trezor model',
+        id: 'TR_TROUBLESHOOTING_TIP_UNREADABLE_HID_TITLE',
+    },
+    TR_TROUBLESHOOTING_TIP_UNREADABLE_HID_DESCRIPTION: {
+        defaultMessage:
+            'If the last time you updated your device firmware was in 2019 and earlier please follow instructions in <a>the knowledge base</a>',
+        id: 'TR_TROUBLESHOOTING_TIP_UNREADABLE_HID_DESCRIPTION',
+    },
     TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TITLE',
         defaultMessage: 'Use the Trezor Suite desktop app',
@@ -7135,6 +7144,15 @@ export default defineMessages({
     TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_DESCRIPTION',
         defaultMessage: 'Run the  <a>Trezor Suite</a> desktop app',
+    },
+    TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE_TITLE: {
+        id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE_TITLE',
+        defaultMessage: 'Use another version of Trezor Bridge',
+    },
+    TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE_DESCRIPTION: {
+        id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE_DESCRIPTION',
+        defaultMessage:
+            '<a>Click to toggle</a> an alternative bridge implementation. Current version: ({currentVersion})',
     },
     TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION',
@@ -7154,6 +7172,7 @@ export default defineMessages({
             'After closing other browser tabs and windows, try quitting and reopening Trezor Suite.',
         id: 'TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION_DESKTOP',
     },
+
     TR_TROUBLESHOOTING_TIP_CABLE_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_CABLE_TITLE',
         defaultMessage: 'Try a different cable',
@@ -7173,11 +7192,12 @@ export default defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_COMPUTER_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_COMPUTER_TITLE',
-        defaultMessage: 'Try using a different computer, if you can',
+        defaultMessage: 'Try using another computer',
     },
     TR_TROUBLESHOOTING_TIP_COMPUTER_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_COMPUTER_DESCRIPTION',
-        defaultMessage: 'With Trezor Bridge installed.',
+        defaultMessage:
+            'There might be some unexpected issue preventing your computer from talking to your device.',
     },
     TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE',
@@ -7187,11 +7207,6 @@ export default defineMessages({
         id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_DESCRIPTION',
         defaultMessage:
             'Restarting your computer may fix the communication issue between your browser and device.',
-    },
-    TR_TROUBLESHOOTING_UNREADABLE_WEBUSB: {
-        id: 'TR_TROUBLESHOOTING_UNREADABLE_WEBUSB',
-        defaultMessage:
-            "Your device is connected properly, but your browser can't communicate with it at the moment. You need to install Trezor Bridge.",
     },
     TR_TROUBLESHOOTING_UNREADABLE_UDEV: {
         id: 'TR_TROUBLESHOOTING_UNREADABLE_UDEV',
