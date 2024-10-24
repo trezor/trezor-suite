@@ -107,6 +107,7 @@ const getBalanceFromAccountInfo = ({
             // On Ripple, if we use availableBalance, we will get higher balance, IDK why.
             return accountInfo.balance;
         case 'ethereum':
+        case 'solana':
             if (contractId) {
                 const token = accountInfo.tokens?.find(t => t.contract === contractId);
 
