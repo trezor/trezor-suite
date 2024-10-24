@@ -10,7 +10,6 @@ import {
     AccountsRootState,
     selectAccountByKey,
     selectSendFormDraftByAccountKey,
-    selectSendSignedTx,
     SendRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
@@ -23,6 +22,7 @@ import { analytics, EventType } from '@suite-native/analytics';
 import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
 import { sendTransactionAndCleanupSendFormThunk } from '../sendFormThunks';
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
+import { selectIsTransactionAlreadySigned } from '../selectors';
 
 const navigateToAccountDetail = ({
     accountKey,
@@ -71,7 +71,7 @@ export const OutputsReviewFooter = ({ accountKey }: { accountKey: AccountKey }) 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const signedTransaction = useSelector(selectSendSignedTx);
+    const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
     const formValues = useSelector((state: SendRootState) =>
         selectSendFormDraftByAccountKey(state, accountKey),
@@ -80,7 +80,7 @@ export const OutputsReviewFooter = ({ accountKey }: { accountKey: AccountKey }) 
     {
         /* TODO: improve the illustration: https://github.com/trezor/trezor-suite/issues/13965 */
     }
-    if (!signedTransaction || !account) return <SendConfirmOnDeviceImage />;
+    if (!isTransactionAlreadySigned || !account) return <SendConfirmOnDeviceImage />;
 
     const handleSendTransaction = async () => {
         setIsSendInProgress(true);

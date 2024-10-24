@@ -9,12 +9,12 @@ import {
     DeviceRootState,
     SendRootState,
     selectAccountByKey,
-    selectSendSignedTx,
 } from '@suite-common/wallet-core';
 import { nativeSpacings } from '@trezor/theme';
 
 import { ReviewOutputItem } from './ReviewOutputItem';
 import {
+    selectIsTransactionAlreadySigned,
     selectTransactionReviewActiveStepIndex,
     selectTransactionReviewOutputs,
 } from '../selectors';
@@ -35,8 +35,7 @@ export const ReviewOutputItemList = ({ accountKey }: ReviewOutputItemListProps) 
         (state: AccountsRootState & DeviceRootState & SendRootState) =>
             selectTransactionReviewOutputs(state, accountKey),
     );
-    const signedTransaction = useSelector(selectSendSignedTx);
-
+    const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
     const activeStep = useSelector((state: AccountsRootState & DeviceRootState & SendRootState) =>
         selectTransactionReviewActiveStepIndex(state, accountKey),
     );
@@ -76,7 +75,7 @@ export const ReviewOutputItemList = ({ accountKey }: ReviewOutputItemListProps) 
                     />
                 </VStack>
             )}
-            {!signedTransaction && (
+            {!isTransactionAlreadySigned && (
                 <SlidingFooterOverlay
                     isLayoutReady={isLayoutReady}
                     currentStepIndex={activeStep}

@@ -8,8 +8,13 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { getNetworkType, NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { getNetworkType, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import {
+    AccountKey,
+    GeneralPrecomposedTransaction,
+    GeneralPrecomposedTransactionFinal,
+    isFinalPrecomposedTransaction,
+} from '@suite-common/wallet-types';
 import { Text, HStack, VStack, Radio, Box } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { FormContext } from '@suite-native/forms';
@@ -56,6 +61,28 @@ const valuesWrapperStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
 }));
 
+const getFeePerUnit = ({
+    networkType,
+    feeLevel,
+    transactionBytes,
+    backendFeePerUnit = '0',
+}: {
+    networkType: NetworkType;
+    feeLevel: GeneralPrecomposedTransaction;
+    transactionBytes: number;
+    backendFeePerUnit: string;
+}): string => {
+    if (!isFinalPrecomposedTransaction(feeLevel)) {
+        return backendFeePerUnit;
+    }
+
+    if (networkType === 'ethereum') {
+        return feeLevel.feePerByte;
+    }
+
+    return String(Math.round(Number(feeLevel.fee) / transactionBytes));
+};
+
 export const FeeOption = ({
     feeKey,
     feeLevel,
@@ -76,7 +103,7 @@ export const FeeOption = ({
         selectNetworkFeeLevelFeePerUnit(state, feeKey, networkSymbol),
     );
 
-    const areFeeValuesComplete = feeLevel.type === 'final';
+    const areFeeValuesComplete = isFinalPrecomposedTransaction(feeLevel);
 
     const handleSelectFeeLevel = () => {
         setValue('feeLevel', feeKey, {
@@ -120,12 +147,12 @@ export const FeeOption = ({
         ? feeLevel.fee
         : String(transactionBytes * Number(backendFeePerUnit));
 
-    // The transaction fee-per-unit values might be different from the ones obtained from the backend
-    // (e.g., an account leftover dust might be added to the fee etc.)
-    // In case we have values for it, the fee-per-unit is calculated from the transaction values.
-    const feePerUnit = areFeeValuesComplete
-        ? Math.round(Number(feeLevel.fee) / transactionBytes)
-        : Number(backendFeePerUnit);
+    const feePerUnit = getFeePerUnit({
+        networkType,
+        feeLevel,
+        transactionBytes,
+        backendFeePerUnit: backendFeePerUnit ?? '0',
+    });
 
     const formattedFeePerUnit = `${feePerUnit} ${feeUnits}`;
 
@@ -166,6 +193,8 @@ export const FeeOption = ({
                                 value={fee}
                                 network={networkSymbol}
                                 isBalance={false}
+                                adjustsFontSizeToFit
+                                numberOfLines={1}
                             />
                         </VStack>
                         {isInteractive && (

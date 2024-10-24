@@ -1006,10 +1006,12 @@ export const en = {
                 title: 'Review with Trezor',
                 addressLabel: 'Recipient address',
                 amountLabel: 'Amount',
-                total: {
+                summary: {
                     label: 'Total including fee',
-                    amount: 'Total amount',
+                    totalAmount: 'Total amount',
+                    amount: 'Amount',
                     fee: 'incl. Transaction fee',
+                    maxFee: 'Maximum fee',
                 },
                 successMessage: 'Everything is ready, you can send the transaction now.',
                 submitButton: 'Send transaction',

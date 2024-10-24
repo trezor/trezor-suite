@@ -9,7 +9,7 @@ import {
     selectSendPrecomposedTx,
     selectSendFormDraftByAccountKey,
     selectSendFormReviewButtonRequestsCount,
-    selectSendSignedTx,
+    selectSendSerializedTx,
 } from '@suite-common/wallet-core';
 import {
     constructTransactionReviewOutputs,
@@ -82,13 +82,19 @@ export const selectIsFirstTransactionAddressConfirmed = (
     return outputs?.[0].state === 'success';
 };
 
+export const selectIsTransactionAlreadySigned = (state: SendRootState) => {
+    const serializedTx = selectSendSerializedTx(state);
+
+    return G.isNotNullable(serializedTx);
+};
+
 export const selectReviewSummaryOutputState = (
     state: SendRootState & AccountsRootState & DeviceRootState,
     accountKey: string,
 ): ReviewOutputState => {
-    const signedTx = selectSendSignedTx(state);
+    const isTransactionAlreadySigned = selectIsTransactionAlreadySigned(state);
 
-    if (signedTx) {
+    if (isTransactionAlreadySigned) {
         return 'success';
     }
 
