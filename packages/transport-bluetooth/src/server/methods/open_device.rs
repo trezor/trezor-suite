@@ -26,12 +26,16 @@ pub async fn open_device(
     let device = utils::get_peripheral_by_address(&adapter, uuid).await?;
 
     // On macos we need to connect again, maybe it should be done for each method?
-    if let Err(err) = device.connect().await {
-        eprintln!(
-            "Error open_device connecting to peripheral, skipping: {}",
-            err
-        );
-        // return Err(Box::new(err));
+    // On windows it throws error code HRESULT(0x800000013) "The object has been closed." - TODO: investigate
+    #[cfg(target_os = "macos")]
+    {
+        if let Err(err) = device.connect().await {
+            eprintln!(
+                "Error open_device connecting to peripheral, skipping: {}",
+                err
+            );
+            // return Err(Box::new(err));
+        }
     }
 
     device.discover_services().await?;
