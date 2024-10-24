@@ -9,8 +9,6 @@ import Notification from 'src/views/suite/notifications';
 import { Transactions } from 'src/views/wallet/transactions/Transactions';
 import { Receive } from 'src/views/wallet/receive/Receive';
 import WalletDetails from 'src/views/wallet/details';
-import { Coins } from 'src/views/wallet/tokens/coins';
-import { HiddenTokens } from 'src/views/wallet/tokens/hidden-tokens';
 import WalletSend from 'src/views/wallet/send';
 import { WalletStaking } from 'src/views/wallet/staking/WalletStaking';
 import WalletSignVerify from 'src/views/wallet/sign-verify';
@@ -34,6 +32,7 @@ import { SettingsGeneral } from 'src/views/settings/SettingsGeneral/SettingsGene
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
 import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
 import { SettingsDevice } from 'src/views/settings/SettingsDevice/SettingsDevice';
+import { Tokens } from 'src/views/wallet/tokens';
 import PasswordManager from 'src/views/password-manager';
 
 const components: { [key: string]: ComponentType<any> } = {
@@ -43,13 +42,11 @@ const components: { [key: string]: ComponentType<any> } = {
     'wallet-index': Transactions,
     'wallet-receive': Receive,
     'wallet-details': WalletDetails,
-    'wallet-tokens-coins': Coins,
-    'wallet-tokens-hidden': HiddenTokens,
     'wallet-send': WalletSend,
     'wallet-staking': WalletStaking,
     'wallet-sign-verify': WalletSignVerify,
     'wallet-anonymize': WalletAnonymize,
-
+    'wallet-tokens': Tokens,
     'wallet-coinmarket-buy': CoinmarketBuyForm,
     'wallet-coinmarket-buy-detail': CoinmarketBuyDetail,
     'wallet-coinmarket-buy-offers': CoinmarketBuyOffers,

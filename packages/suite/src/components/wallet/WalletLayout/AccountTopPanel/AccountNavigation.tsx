@@ -11,7 +11,7 @@ import { NavigationItem, SubpageNavigation } from 'src/components/suite/layouts/
 export const ACCOUNT_TABS = [
     'wallet-index',
     'wallet-details',
-    'wallet-tokens-coins',
+    'wallet-tokens',
     'wallet-tokens-hidden',
     'wallet-staking',
 ];
@@ -44,14 +44,14 @@ export const AccountNavigation = () => {
             isHidden: false,
         },
         {
-            id: 'wallet-tokens-coins',
+            id: 'wallet-tokens',
             callback: () => {
-                goToWithAnalytics('wallet-tokens-coins', { preserveParams: true });
+                goToWithAnalytics('wallet-tokens', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_TOKENS" />,
             isHidden: !['cardano', 'ethereum', 'solana'].includes(networkType),
-            activeRoutes: ['wallet-tokens-coins', 'wallet-tokens-hidden'],
-            'data-testid': '@wallet/menu/wallet-tokens-coins',
+            activeRoutes: ['wallet-tokens', 'wallet-tokens-hidden'],
+            'data-testid': '@wallet/menu/wallet-tokens',
         },
         {
             id: 'wallet-staking',

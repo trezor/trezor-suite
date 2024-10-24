@@ -338,6 +338,10 @@ export default defineMessages({
         defaultMessage: 'Coins checked',
         id: 'TR_COINS_CHECKED',
     },
+    TR_MY_TOKENS: {
+        defaultMessage: 'My tokens',
+        id: 'TR_MY_TOKENS',
+    },
     TR_CHECKED_BALANCES_ON: {
         defaultMessage: 'Checked balances on',
         id: 'TR_CHECKED_BALANCES_ON',

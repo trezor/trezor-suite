@@ -264,8 +264,8 @@ export const routes = [
         params: walletParams,
     },
     {
-        name: 'wallet-tokens-coins',
-        pattern: '/accounts/tokens/coins',
+        name: 'wallet-tokens',
+        pattern: '/accounts/tokens',
         app: 'wallet',
         params: walletParams,
     },
@@ -274,6 +274,7 @@ export const routes = [
         pattern: '/accounts/tokens/hidden',
         app: 'wallet',
         params: walletParams,
+        isNestedRoute: true,
     },
     {
         name: 'wallet-anonymize',

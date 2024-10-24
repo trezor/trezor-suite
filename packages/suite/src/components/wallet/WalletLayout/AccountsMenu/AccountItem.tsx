@@ -113,7 +113,7 @@ export const AccountItem = forwardRef(
                 case 'staking':
                     return 'wallet-staking';
                 case 'tokens':
-                    return 'wallet-tokens-coins';
+                    return 'wallet-tokens';
             }
         };
 
