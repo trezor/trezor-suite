@@ -1,5 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
-import { Bip43Path } from '@suite-common/wallet-config';
+import { Bip43Path, Bip43PathTemplate } from '@suite-common/wallet-config';
 
 import { ACCOUNTS } from './accounts';
 
@@ -230,7 +230,7 @@ export const getBip43Type = [
 
 type SubstituteBip43PathFixture = {
     description: string;
-    pathTemplate: Bip43Path;
+    pathTemplate: Bip43PathTemplate;
     index?: number | string;
     result: Bip43Path;
 };
