@@ -6,6 +6,7 @@ import type {
     GetFiatRatesForTimestampsParams,
     GetFiatRatesTickersListParams,
     EstimateFeeParams,
+    RpcCallParams,
     AccountInfoParams,
 } from './params';
 
@@ -77,6 +78,11 @@ export interface EstimateFee {
     payload: EstimateFeeParams;
 }
 
+export interface RpcCall {
+    type: typeof MESSAGES.RPC_CALL;
+    payload: RpcCallParams;
+}
+
 export interface Subscribe {
     type: typeof MESSAGES.SUBSCRIBE;
     payload:
@@ -144,6 +150,7 @@ export type Message =
     | ChannelMessage<GetAccountBalanceHistory>
     | ChannelMessage<GetFiatRatesTickersList>
     | ChannelMessage<EstimateFee>
+    | ChannelMessage<RpcCall>
     | ChannelMessage<Subscribe>
     | ChannelMessage<Unsubscribe>
     | ChannelMessage<PushTransaction>;

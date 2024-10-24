@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import {
@@ -22,7 +22,11 @@ import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { getEthNetworkForWalletSdk, getStakeFormsDefaultValues } from 'src/utils/suite/stake';
+import {
+    getEthNetworkForWalletSdk,
+    getStakeFormsDefaultValues,
+    simulateUnstake,
+} from 'src/utils/suite/stake';
 import { useFormDraft } from './useFormDraft';
 import useDebounce from 'react-use/lib/useDebounce';
 import { isChanged } from '@suite-common/suite-utils';
@@ -35,8 +39,13 @@ import {
 import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
 import { useFees } from './form/useFees';
 
+type UnstakeOptions = 'all' | 'rewards' | 'other';
+
 type UnstakeContextValues = UnstakeContextValuesBase & {
     amountLimits: AmountLimitsString;
+    approximatedInstantEthAmount?: string | null;
+    unstakeOption: UnstakeOptions;
+    setUnstakeOption: (option: UnstakeOptions) => void;
 };
 
 export const UnstakeEthFormContext = createContext<UnstakeContextValues | null>(null);
@@ -46,6 +55,10 @@ export const useUnstakeEthForm = ({
     selectedAccount,
 }: UseStakeFormsProps): UnstakeContextValues => {
     const dispatch = useDispatch();
+    const [approximatedInstantEthAmount, setApproximatedInstantEthAmount] = useState<string | null>(
+        null,
+    );
+    const [unstakeOption, setUnstakeOption] = useState<UnstakeOptions>('all');
 
     const { account, network } = selectedAccount;
     const { symbol } = account;
@@ -101,6 +114,27 @@ export const useUnstakeEthForm = ({
     const { register, control, formState, setValue, reset, getValues, clearErrors } = methods;
 
     const values = useWatch<UnstakeFormState>({ control });
+
+    useEffect(() => {
+        const { cryptoInput } = values;
+
+        if (!cryptoInput || Object.keys(formState.errors).length) {
+            setApproximatedInstantEthAmount(null);
+
+            return;
+        }
+
+        const simulateUnstakeAmount = async () => {
+            const approximatedEthAmount = await simulateUnstake({
+                amount: cryptoInput,
+                from: account.descriptor,
+                symbol: account.symbol,
+            });
+            setApproximatedInstantEthAmount(approximatedEthAmount);
+        };
+
+        simulateUnstakeAmount();
+    }, [account.symbol, account.descriptor, formState.errors, values]);
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
@@ -247,6 +281,9 @@ export const useUnstakeEthForm = ({
         currentRate,
         feeInfo,
         changeFeeLevel,
+        approximatedInstantEthAmount,
+        unstakeOption,
+        setUnstakeOption,
     };
 };
 

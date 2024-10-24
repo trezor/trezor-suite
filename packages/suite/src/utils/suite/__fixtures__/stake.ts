@@ -863,3 +863,30 @@ export const getChangedInternalTxFixture = [
         },
     },
 ];
+
+export const simulateUnstakeFixture = [
+    {
+        description: 'should return null for no coin, from, or data',
+        args: {
+            amount: undefined,
+            from: undefined,
+            symbol: undefined,
+        },
+        blockchainEvmRpcCallResult: {},
+        result: null,
+    },
+    {
+        description: 'should return approximated amount for valid inputs',
+        args: {
+            amount: '0.1',
+            from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
+            to: '0xAFA848357154a6a624686b348303EF9a13F63264',
+            symbol: 'eth',
+        },
+        blockchainEvmRpcCallResult: {
+            success: true,
+            payload: { data: '0x000000000000000000000000000000000000000000000000016345785d8a0000' },
+        },
+        result: '0.1', // 0.1 eth
+    },
+];

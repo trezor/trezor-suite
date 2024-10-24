@@ -10,6 +10,7 @@ import { blockchainDisconnect } from './blockchainDisconnect';
 import { blockchainEstimateFee } from './blockchainEstimateFee';
 import { blockchainGetAccountBalanceHistory } from './blockchainGetAccountBalanceHistory';
 import { blockchainGetCurrentFiatRates } from './blockchainGetCurrentFiatRates';
+import { blockchainEvmRpcCall } from './blockchainEvmRpcCall';
 import { blockchainGetFiatRatesForTimestamps } from './blockchainGetFiatRatesForTimestamps';
 import { blockchainGetTransactions } from './blockchainGetTransactions';
 import { blockchainSetCustomBackend } from './blockchainSetCustomBackend';
@@ -128,6 +129,8 @@ export interface TrezorConnect {
 
     // todo: link docs
     blockchainGetCurrentFiatRates: typeof blockchainGetCurrentFiatRates;
+
+    blockchainEvmRpcCall: typeof blockchainEvmRpcCall;
 
     // todo: link docs
     blockchainGetFiatRatesForTimestamps: typeof blockchainGetFiatRatesForTimestamps;

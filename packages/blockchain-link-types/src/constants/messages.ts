@@ -14,6 +14,7 @@ export const GET_ACCOUNT_UTXO = 'm_get_account_utxo';
 export const GET_TRANSACTION = 'm_get_transaction';
 export const GET_TRANSACTION_HEX = 'm_get_transaction_hex';
 export const ESTIMATE_FEE = 'm_estimate_fee';
+export const RPC_CALL = 'm_rpc_call';
 export const SUBSCRIBE = 'm_subscribe';
 export const UNSUBSCRIBE = 'm_unsubscribe';
 export const PUSH_TRANSACTION = 'm_push_tx';

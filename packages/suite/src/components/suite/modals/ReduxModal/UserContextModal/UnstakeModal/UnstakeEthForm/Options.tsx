@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import styled from 'styled-components';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { Paragraph, Radio } from '@trezor/components';
@@ -61,16 +60,14 @@ const InputsWrapper = styled.div<{ $isShown: boolean }>`
     display: ${({ $isShown }) => ($isShown ? 'block' : 'none')};
 `;
 
-type UnstakeOptions = 'all' | 'rewards' | 'other';
-
 interface OptionsProps {
     symbol: NetworkSymbol;
 }
 
 export const Options = ({ symbol }: OptionsProps) => {
     const selectedAccount = useSelector(selectSelectedAccount);
+    const { unstakeOption, setUnstakeOption } = useUnstakeEthFormContext();
 
-    const [unstakeOption, setUnstakeOption] = useState<UnstakeOptions>('all');
     const isRewardsSelected = unstakeOption === 'rewards';
     const isAllSelected = unstakeOption === 'all';
     const isOtherAmountSelected = unstakeOption === 'other';
