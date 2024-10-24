@@ -8,6 +8,7 @@ import {
     getAccountIdentifier,
     getAccountKey,
     getBip43Type,
+    substituteBip43Path,
     getFiatValue,
     getFirstFreshAddress,
     getTitleForNetwork,
@@ -84,6 +85,14 @@ describe('account utils', () => {
                 // @ts-expect-error intentional invalid params
                 const bip43 = getBip43Type(f.path);
                 expect(bip43).toBe(f.result);
+            });
+        });
+    });
+
+    describe(substituteBip43Path.name, () => {
+        fixtures.substituteBip43Path.forEach(f => {
+            it(f.description, () => {
+                expect(substituteBip43Path(f.pathTemplate, f.index)).toBe(f.result);
             });
         });
     });
