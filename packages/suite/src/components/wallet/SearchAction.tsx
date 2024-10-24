@@ -36,9 +36,12 @@ const StyledInput = styled(Input)<{ $isExpanded: boolean }>`
     overflow: hidden;
     border-radius: ${borders.radii.full};
 
+    cursor: ${({ $isExpanded }) => (!$isExpanded ? 'pointer' : undefined)};
+
     input {
         height: ${INPUT_WIDTH};
         border: none;
+        cursor: ${({ $isExpanded }) => (!$isExpanded ? 'pointer' : undefined)};
     }
 `;
 
@@ -104,7 +107,6 @@ export const SearchAction = ({
                 innerAddon={
                     <Icon
                         name="search"
-                        cursorPointer
                         size={16}
                         color={theme.iconDefault}
                         onClick={!isExpanded ? openAndSelect : undefined}
@@ -112,6 +114,7 @@ export const SearchAction = ({
                 }
                 placeholder={isExpanded ? translationString(placeholder) : undefined}
                 onChange={e => onSearch(e.target.value)}
+                onClick={!isExpanded ? openAndSelect : undefined}
                 onBlur={onBlur}
                 onKeyDown={onKeyDown}
                 value={searchQuery}
