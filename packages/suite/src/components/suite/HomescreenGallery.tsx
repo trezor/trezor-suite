@@ -1,13 +1,13 @@
 import styled from 'styled-components';
-import { resolveStaticPath } from '@suite-common/suite-utils';
+
+import { getNarrowedDeviceModelInternal, resolveStaticPath } from '@suite-common/suite-utils';
+import { DeviceModelInternal } from '@trezor/connect';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import { getHomescreens } from 'src/constants/suite/homescreens';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { imagePathToHex } from 'src/utils/suite/homescreen';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { DeviceModelInternal } from '@trezor/connect';
-
-import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 type HomescreensType = ReturnType<typeof getHomescreens>;
 type AnyImageName = HomescreensType[keyof HomescreensType][number];
@@ -53,7 +53,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
         // original image is the default image already available in device, set it by empty string
         const isOriginalImage =
             image ===
-            `original_${(deviceModelInternal === DeviceModelInternal.T2B1 ? DeviceModelInternal.T3B1 : deviceModelInternal).toLowerCase()}`;
+            `original_${getNarrowedDeviceModelInternal(deviceModelInternal).toLowerCase()}`;
 
         const hex = isOriginalImage ? '' : await imagePathToHex(imagePath, deviceModelInternal);
 

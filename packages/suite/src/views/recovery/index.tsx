@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { useIntl } from 'react-intl';
 
-import { getCheckBackupUrl, isDeviceAcquired } from '@suite-common/suite-utils';
+import {
+    getCheckBackupUrl,
+    getNarrowedDeviceModelInternal,
+    isDeviceAcquired,
+    isDeviceWithButtons,
+} from '@suite-common/suite-utils';
 import { H2, H3, Paragraph, Image, NewModal, Card, List } from '@trezor/components';
 import { pickByDeviceModel } from '@trezor/device-utils';
 import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
@@ -76,13 +81,17 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
 
         switch (recovery.status) {
             case 'initial':
+                const descriptionSuffix = isDeviceWithButtons(deviceModelInternal)
+                    ? getNarrowedDeviceModelInternal(deviceModelInternal)
+                    : 'TOUCHSCREEN';
+
                 return (
                     <>
                         <List isOrdered gap={spacings.xxl}>
                             <List.Item>
                                 <Paragraph typographyStyle="hint">
                                     <Translation
-                                        id={`TR_CHECK_RECOVERY_SEED_DESC_${deviceModelInternal === DeviceModelInternal.T3B1 ? 'T2B1' : deviceModelInternal}`}
+                                        id={`TR_CHECK_RECOVERY_SEED_DESC_${descriptionSuffix}`}
                                     />
                                 </Paragraph>
                                 <Paragraph
