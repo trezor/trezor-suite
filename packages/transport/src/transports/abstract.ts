@@ -13,7 +13,7 @@ import {
     TransportProtocolState,
     thp as protocolThp,
 } from '@trezor/protocol';
-import type { MessageFromTrezor as ProtobufMessageType } from '@trezor/protobuf';
+import { MessageFromTrezor as ProtobufMessageType, loadDefinitions } from '@trezor/protobuf';
 
 import {
     Session,
@@ -445,6 +445,10 @@ export abstract class AbstractTransport extends TransportEmitter {
 
     public updateMessages(messages: Record<string, any>) {
         this.messages = protobuf.Root.fromJSON(messages);
+    }
+
+    public loadMessages(packageName: string, packageLoader: Parameters<typeof loadDefinitions>[2]) {
+        return loadDefinitions(this.messages, packageName, packageLoader);
     }
 
     protected success<T>(payload: T): Success<T> {
