@@ -28,7 +28,7 @@ import { Action, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
 import { RouterRootState, selectRouter } from './routerReducer';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { SuiteThemeVariant, desktopApi } from '@trezor/suite-desktop-api';
 import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 
