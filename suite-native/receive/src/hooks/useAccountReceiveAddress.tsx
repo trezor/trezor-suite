@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -7,21 +7,18 @@ import { useAlert } from '@suite-native/alerts';
 import TrezorConnect from '@trezor/connect';
 import {
     AccountsRootState,
-    selectAccountByKey,
     TransactionsRootState,
-    selectPendingAccountAddresses,
-    selectIsAccountUtxoBased,
     selectAccountNetworkSymbol,
     selectIsPortfolioTrackerDevice,
     confirmAddressOnDeviceThunk,
     selectIsDeviceInViewOnlyMode,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import { analytics, EventType } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useToast } from '@suite-native/toasts';
 import { Translation } from '@suite-native/intl';
+import { NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 
 export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const dispatch = useDispatch();
@@ -35,24 +32,12 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
 
     const { showAlert } = useAlert();
 
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const pendingAddresses = useSelector((state: TransactionsRootState) =>
-        selectPendingAccountAddresses(state, accountKey),
+    const freshAddress = useSelector((state: NativeAccountsRootState & TransactionsRootState) =>
+        selectFreshAccountAddress(state, accountKey),
     );
-    const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
-        selectIsAccountUtxoBased(state, accountKey),
-    );
-
-    const freshAddress = useMemo(() => {
-        if (account) {
-            return getFirstFreshAddress(account, [], pendingAddresses, isAccountUtxoBased);
-        }
-    }, [account, pendingAddresses, isAccountUtxoBased]);
 
     const handleCancel = useCallback(() => {
         TrezorConnect.cancel();
