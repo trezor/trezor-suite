@@ -6,7 +6,7 @@ import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/su
 import { Account } from 'src/types/wallet';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenInfo } from '@trezor/connect';
-import { amountToSatoshi } from '@suite-common/wallet-utils';
+import { formatAmountWithDecimals } from '@suite-common/wallet-utils';
 import { TransactionReviewStepIndicatorProps } from './TransactionReviewStepIndicator';
 import { zIndices } from '@trezor/theme';
 import { DeviceDisplay } from '../../../../DeviceDisplay/DeviceDisplay';
@@ -245,7 +245,7 @@ export const TransactionReviewOutputElement = forwardRef<
                                         <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />
                                     </OutputHeadline>
                                     <OutputValue>
-                                        {amountToSatoshi(line.value, token.decimals)}
+                                        {formatAmountWithDecimals(line.value, token.decimals)}
                                     </OutputValue>
                                 </CardanoTrezorAmountWrapper>
                             )}

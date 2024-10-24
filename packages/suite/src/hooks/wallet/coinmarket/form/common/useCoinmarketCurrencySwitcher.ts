@@ -1,6 +1,6 @@
 import { Network } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
-import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
+import { formatAmountWithDecimals, formatAmount } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
 import { UseFormReturn, useWatch } from 'react-hook-form';
 import {
@@ -56,7 +56,7 @@ export const useCoinmarketCurrencySwitcher = <T extends CoinmarketAllFormProps>(
 
         if (!amountInCrypto) {
             const amount = shouldSendInSats
-                ? amountToSatoshi(quoteCryptoAmount ?? '', networkDecimals)
+                ? formatAmountWithDecimals(quoteCryptoAmount ?? '', networkDecimals)
                 : quoteCryptoAmount;
 
             setValue(inputNames.cryptoInput, amount === '-1' ? '' : amount);
@@ -73,7 +73,7 @@ export const useCoinmarketCurrencySwitcher = <T extends CoinmarketAllFormProps>(
     };
 
     useDidUpdate(() => {
-        const conversion = shouldSendInSats ? amountToSatoshi : formatAmount;
+        const conversion = shouldSendInSats ? formatAmountWithDecimals : formatAmount;
 
         if (!cryptoInputValue) {
             return;

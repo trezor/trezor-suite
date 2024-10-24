@@ -11,10 +11,10 @@ import { CARDANO, CardanoCertificate, CardanoOutput, PROTO } from '@trezor/conne
 import { AccountType } from '@suite-common/wallet-config';
 
 import {
-    amountToSatoshi,
+    formatAmountWithDecimals,
     formatAmount,
     formatNetworkAmount,
-    networkAmountToSatoshi,
+    networkAmountWithDecimals,
 } from './accountUtils';
 
 export const getDerivationType = (accountType: AccountType) => {
@@ -67,7 +67,7 @@ export const transformUserOutputs = (
     outputs.map((output, i) => {
         const setMax = i === maxOutputIndex;
         const amount =
-            output.amount === '' ? undefined : networkAmountToSatoshi(output.amount, symbol);
+            output.amount === '' ? undefined : networkAmountWithDecimals(output.amount, symbol);
         const tokenDecimals = accountTokens?.find(t => t.contract === output.token)?.decimals ?? 0;
 
         return {
@@ -78,7 +78,7 @@ export const transformUserOutputs = (
                       {
                           unit: output.token,
                           quantity: output.amount
-                              ? amountToSatoshi(output.amount, tokenDecimals)
+                              ? formatAmountWithDecimals(output.amount, tokenDecimals)
                               : '0',
                       },
                   ]

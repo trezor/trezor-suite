@@ -7,7 +7,7 @@ import {
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
-import { fromWei, hexToNumberString, numberToHex, toWei } from 'web3-utils';
+import { fromWei, numberToHex, toWei } from 'web3-utils';
 import { getEthereumEstimateFeeParams, isPending, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, { EthereumTransaction, Success, InternalTransfer } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -561,16 +561,6 @@ export const getDaysToAddToPoolInitial = (validatorsQueue?: ValidatorsQueue) => 
     const daysToWait = secondsToDays(secondsToWait);
 
     return daysToWait <= 0 ? 1 : daysToWait;
-};
-
-export const getUnstakingAmount = (ethereumData: string | undefined): string | null => {
-    if (!ethereumData) return null;
-
-    // Check if the first two characters are '0x' and remove them if they are
-    const data = ethereumData.startsWith('0x') ? ethereumData.slice(2) : ethereumData;
-    const dataBuffer = Buffer.from(data, 'hex');
-
-    return hexToNumberString(`0x${dataBuffer.subarray(4, 36).toString('hex')}`);
 };
 
 export const getInstantStakeType = (

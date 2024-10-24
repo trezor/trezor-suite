@@ -8,7 +8,7 @@ import { SignValue } from '@suite-common/suite-types';
 import {
     formatCoinBalance,
     localizeNumber,
-    networkAmountToSatoshi,
+    networkAmountWithDecimals,
 } from '@suite-common/wallet-utils';
 import { isSignValuePositive } from '@suite-common/formatters';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
@@ -68,7 +68,7 @@ export const FormattedCryptoAmount = ({
 
     // convert to satoshis if needed
     if (isSatoshis) {
-        formattedValue = networkAmountToSatoshi(String(value), lowerCaseSymbol as NetworkSymbol);
+        formattedValue = networkAmountWithDecimals(String(value), lowerCaseSymbol as NetworkSymbol);
 
         formattedSymbol = isTestnet ? `sat ${symbol?.toUpperCase()}` : 'sat';
     }

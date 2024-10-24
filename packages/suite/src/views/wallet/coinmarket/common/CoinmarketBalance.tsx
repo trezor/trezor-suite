@@ -1,6 +1,6 @@
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { amountToSatoshi } from '@suite-common/wallet-utils';
+import { formatAmountWithDecimals } from '@suite-common/wallet-utils';
 import { typography } from '@trezor/theme';
 import { FiatValue, HiddenPlaceholder, Translation } from 'src/components/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
@@ -39,7 +39,7 @@ export const CoinmarketBalance = ({
     const stringBalance = !isNaN(Number(balance)) ? balance : '0';
     const formattedBalance =
         stringBalance && shouldSendInSats
-            ? amountToSatoshi(stringBalance, networkDecimals)
+            ? formatAmountWithDecimals(stringBalance, networkDecimals)
             : stringBalance;
 
     const { fiatAmount } = useFiatFromCryptoValue({

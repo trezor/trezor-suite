@@ -10,8 +10,8 @@ import type { OnUpgradeFunc } from '@trezor/suite-storage';
 import type { DBWalletAccountTransaction, SuiteDBSchema } from '../definitions';
 import {
     formatNetworkAmount,
-    networkAmountToSatoshi,
-    amountToSatoshi,
+    networkAmountWithDecimals,
+    formatAmountWithDecimals,
 } from '@suite-common/wallet-utils';
 import { updateAll } from './utils';
 import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
@@ -428,7 +428,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             transaction,
             'txs',
             ({ order, tx: origTx }) => {
-                const unformat = (amount: string) => networkAmountToSatoshi(amount, origTx.symbol);
+                const unformat = (amount: string) =>
+                    networkAmountWithDecimals(amount, origTx.symbol);
                 const unformatIfDefined = (amount: string | undefined) =>
                     amount ? unformat(amount) : amount;
 
@@ -439,7 +440,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                     totalSpent: unformat(origTx.totalSpent),
                     tokens: origTx.tokens.map(tok => ({
                         ...tok,
-                        amount: amountToSatoshi(tok.amount, tok.decimals),
+                        amount: formatAmountWithDecimals(tok.amount, tok.decimals),
                     })),
                     targets: origTx.targets.map(target => ({
                         ...target,

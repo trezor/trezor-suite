@@ -9353,6 +9353,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/urls": "workspace:*"
     date-fns: "npm:^2.30.0"
+    web3-utils: "npm:^4.3.1"
   languageName: unknown
   linkType: soft
 

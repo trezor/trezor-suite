@@ -7,7 +7,7 @@ import type {
     FiatCurrencyCode,
 } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
-import { amountToSatoshi, formatAmount, toFiatCurrency } from '@suite-common/wallet-utils';
+import { formatAmountWithDecimals, formatAmount, toFiatCurrency } from '@suite-common/wallet-utils';
 import { isChanged } from '@suite-common/suite-utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
@@ -484,7 +484,7 @@ export const useCoinmarketExchangeForm = ({
             selectedQuote.sendStringAmount
         ) {
             const sendStringAmount = shouldSendInSats
-                ? amountToSatoshi(selectedQuote.sendStringAmount, network.decimals)
+                ? formatAmountWithDecimals(selectedQuote.sendStringAmount, network.decimals)
                 : selectedQuote.sendStringAmount;
             const result = await recomposeAndSign(
                 account,

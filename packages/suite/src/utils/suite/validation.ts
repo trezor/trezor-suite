@@ -7,7 +7,7 @@ import {
     formatNetworkAmount,
     isDecimalsValid,
     isInteger,
-    networkAmountToSatoshi,
+    networkAmountWithDecimals,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { TranslationFunction } from 'src/hooks/suite/useTranslation';
@@ -59,7 +59,7 @@ export const validateLimits =
             let minCrypto = 0;
             if (amountLimits.minCrypto) {
                 minCrypto = areSatsUsed
-                    ? Number(networkAmountToSatoshi(amountLimits.minCrypto.toString(), symbol))
+                    ? Number(networkAmountWithDecimals(amountLimits.minCrypto.toString(), symbol))
                     : amountLimits.minCrypto;
             }
             if (amountLimits.minCrypto && Number(value) < minCrypto) {
@@ -74,7 +74,7 @@ export const validateLimits =
             let maxCrypto = 0;
             if (amountLimits.maxCrypto) {
                 maxCrypto = areSatsUsed
-                    ? Number(networkAmountToSatoshi(amountLimits.maxCrypto.toString(), symbol))
+                    ? Number(networkAmountWithDecimals(amountLimits.maxCrypto.toString(), symbol))
                     : amountLimits.maxCrypto;
             }
             if (amountLimits.maxCrypto && Number(value) > maxCrypto) {
@@ -106,7 +106,7 @@ export const validateLimitsBigNum =
             if (amountLimits.minCrypto) {
                 minCrypto = areSatsUsed
                     ? new BigNumber(
-                          networkAmountToSatoshi(amountLimits.minCrypto.toString(), symbol),
+                          networkAmountWithDecimals(amountLimits.minCrypto.toString(), symbol),
                       )
                     : new BigNumber(amountLimits.minCrypto);
             }
@@ -123,7 +123,7 @@ export const validateLimitsBigNum =
             if (amountLimits.maxCrypto) {
                 maxCrypto = areSatsUsed
                     ? new BigNumber(
-                          networkAmountToSatoshi(amountLimits.maxCrypto.toString(), symbol),
+                          networkAmountWithDecimals(amountLimits.maxCrypto.toString(), symbol),
                       )
                     : new BigNumber(amountLimits.maxCrypto);
             }

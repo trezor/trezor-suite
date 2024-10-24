@@ -2,7 +2,7 @@ import { A } from '@mobily/ts-belt';
 
 import { getNetworkOptional, isNetworkSymbol, NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    amountToSatoshi,
+    formatAmountWithDecimals,
     formatAmount,
     redactNumericalSubstring,
 } from '@suite-common/wallet-utils';
@@ -50,7 +50,7 @@ const convertToUnit = (
     const areAmountUnitsSupported = A.includes(COINS_WITH_SATS, symbol);
 
     if (isBalance && areAmountUnitsSupported && bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI) {
-        return amountToSatoshi(value, decimals);
+        return formatAmountWithDecimals(value, decimals);
     }
 
     // if it's not balance and sats units are disabled, values other than balances are in sats so we need to convert it to BTC

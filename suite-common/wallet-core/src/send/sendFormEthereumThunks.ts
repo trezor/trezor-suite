@@ -10,7 +10,7 @@ import {
     getEthereumEstimateFeeParams,
     prepareEthereumTransaction,
     getExternalComposeOutput,
-    amountToSatoshi,
+    formatAmountWithDecimals,
     formatAmount,
     isPending,
     getAccountIdentity,
@@ -24,7 +24,10 @@ import {
 } from '@suite-common/wallet-types';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getNetwork } from '@suite-common/wallet-config';
-import { getTxStakeNameByDataHex } from '@suite-common/suite-utils';
+import {
+    getTxStakeNameByDataHex,
+    getUnstakeAmountByEthereumDataHex,
+} from '@suite-common/suite-utils';
 
 import { selectTransactions } from '../transactions/transactionsReducer';
 import {
@@ -50,7 +53,7 @@ const calculate = (
     let amount: string;
     let max: string | undefined;
     const availableTokenBalance = token
-        ? amountToSatoshi(token.balance!, token.decimals)
+        ? formatAmountWithDecimals(token.balance!, token.decimals)
         : undefined;
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
         max = availableTokenBalance || calculateMax(availableBalance, feeInSatoshi);
@@ -121,7 +124,16 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
         const { account, network, feeInfo } = composeContext;
-        const composedOutput = getExternalComposeOutput(formState, account, network);
+        const { ethereumDataHex } = formState;
+        const unstakeAmount = getUnstakeAmountByEthereumDataHex(ethereumDataHex);
+
+        const composedOutput = getExternalComposeOutput(
+            formState,
+            account,
+            network,
+            unstakeAmount || undefined,
+        );
+
         if (!composedOutput)
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',

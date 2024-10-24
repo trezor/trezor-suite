@@ -10,7 +10,7 @@ import { formInputsMaxLength } from '@suite-common/validators';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { Output, TokenAddress } from '@suite-common/wallet-types';
 import {
-    amountToSatoshi,
+    formatAmountWithDecimals,
     formatNetworkAmount,
     hasNetworkFeatures,
     isLowAnonymityWarning,
@@ -199,7 +199,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
 
                 if (dust && amountBig.lt(dust)) {
                     if (shouldSendInSats) {
-                        dust = amountToSatoshi(dust, decimals);
+                        dust = formatAmountWithDecimals(dust, decimals);
                     }
 
                     return translationString('AMOUNT_IS_BELOW_DUST', {
