@@ -30,7 +30,7 @@ export const Tokens = () => {
                 setSearchQuery={setSearchQuery}
             />
             <Switch>
-                <Route path="/accounts/tokens/hidden">
+                <Route path={`${process.env.ASSET_PREFIX}/accounts/tokens/hidden`}>
                     <HiddenTokensTable
                         selectedAccount={selectedAccount}
                         searchQuery={searchQuery}
