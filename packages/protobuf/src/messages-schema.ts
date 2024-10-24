@@ -2520,6 +2520,22 @@ export const AuthenticityProof = Type.Object(
 export type WipeDevice = Static<typeof WipeDevice>;
 export const WipeDevice = Type.Object({}, { $id: 'WipeDevice' });
 
+export type LoadDevice = Static<typeof LoadDevice>;
+export const LoadDevice = Type.Object(
+    {
+        mnemonics: Type.Array(Type.String()),
+        pin: Type.Optional(Type.String()),
+        passphrase_protection: Type.Optional(Type.Boolean()),
+        language: Type.Optional(Type.String()),
+        label: Type.Optional(Type.String()),
+        skip_checksum: Type.Optional(Type.Boolean()),
+        u2f_counter: Type.Optional(Type.Number()),
+        needs_backup: Type.Optional(Type.Boolean()),
+        no_backup: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'LoadDevice' },
+);
+
 export type ResetDevice = Static<typeof ResetDevice>;
 export const ResetDevice = Type.Object(
     {
@@ -3661,6 +3677,7 @@ export const MessageType = Type.Object(
         AuthenticateDevice,
         AuthenticityProof,
         WipeDevice,
+        LoadDevice,
         ResetDevice,
         Slip39Group,
         BackupDevice,
