@@ -6788,6 +6788,15 @@ export default defineMessages({
         id: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_TOUCH',
         defaultMessage: 'Reconnect the device without touching the screen.',
     },
+    TR_DEVICE_CONNECTED_UNACQUIRED: {
+        id: 'TR_DEVICE_CONNECTED_UNACQUIRED',
+        defaultMessage: 'Device used elsewhere',
+    },
+    TR_DEVICE_CONNECTED_UNACQUIRED_DESCRIPTION: {
+        id: 'TR_DEVICE_CONNECTED_UNACQUIRED_DESCRIPTION',
+        defaultMessage:
+            'App {sessionOwner} might be using the device right now. You may take the device for yourself.',
+    },
     TR_WIPE_OR_UPDATE: {
         id: 'TR_WIPE_OR_UPDATE',
         defaultMessage: 'Reset device or update firmware',

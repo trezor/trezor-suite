@@ -8,7 +8,7 @@ import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 export const DeviceAcquire = () => {
-    const { isLocked } = useDevice();
+    const { isLocked, device } = useDevice();
     const dispatch = useDispatch();
 
     const isDeviceLocked = isLocked();
@@ -25,6 +25,18 @@ export const DeviceAcquire = () => {
     );
 
     const tips = [
+        {
+            key: 'device-meow',
+            heading: <Translation id="TR_DEVICE_CONNECTED_UNACQUIRED" />,
+            description: (
+                <Translation
+                    id="TR_DEVICE_CONNECTED_UNACQUIRED_DESCRIPTION"
+                    values={{
+                        sessionOwner: device.sessionOwner,
+                    }}
+                />
+            ),
+        },
         {
             key: 'device-acquire',
             heading: <Translation id="TR_TROUBLESHOOTING_CLOSE_TABS" />,
