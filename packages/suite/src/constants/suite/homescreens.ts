@@ -76,5 +76,5 @@ export const getHomescreens = (isBitcoinOnlyFirmware: boolean) => ({
     [DeviceModelInternal.T3W1]: [
         isBitcoinOnlyFirmware ? 'orange_t3w1' : 'green_t3w1',
         isBitcoinOnlyFirmware ? 'green_t3w1' : 'orange_t3w1',
-    ],
+    ], // TODO T3W1
 });

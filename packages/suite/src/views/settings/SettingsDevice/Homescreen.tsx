@@ -110,7 +110,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                 {[
                     DeviceModelInternal.T2T1,
                     DeviceModelInternal.T3T1,
-                    DeviceModelInternal.T3W1,
+                    DeviceModelInternal.T3W1, // TODO T3W1
                 ].includes(deviceModelInternal) && (
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}

@@ -19,7 +19,7 @@ export const MAX_ROWS_PER_PAGE: Record<DeviceModelInternal, number> = {
     [DeviceModelInternal.T2B1]: 4,
     [DeviceModelInternal.T3B1]: 4,
     [DeviceModelInternal.T3T1]: 7,
-    [DeviceModelInternal.T3W1]: 7,
+    [DeviceModelInternal.T3W1]: 7, // TODO T3W1
 };
 
 export const MAX_CHARACTERS_ON_ROW: Record<DeviceModelInternal, number> = {
@@ -28,7 +28,7 @@ export const MAX_CHARACTERS_ON_ROW: Record<DeviceModelInternal, number> = {
     [DeviceModelInternal.T2B1]: 18,
     [DeviceModelInternal.T3B1]: 18,
     [DeviceModelInternal.T3T1]: 18,
-    [DeviceModelInternal.T3W1]: 18,
+    [DeviceModelInternal.T3W1]: 18, // TODO T3W1
 };
 
 export const CHARACTER_OFFSET_FOR_CONTINUES_ARROW: Record<DeviceModelInternal, number> = {
@@ -37,7 +37,7 @@ export const CHARACTER_OFFSET_FOR_CONTINUES_ARROW: Record<DeviceModelInternal, n
     [DeviceModelInternal.T2B1]: 2,
     [DeviceModelInternal.T3B1]: 2,
     [DeviceModelInternal.T3T1]: 4,
-    [DeviceModelInternal.T3W1]: 4,
+    [DeviceModelInternal.T3W1]: 4, // TODO T3W1
 };
 
 export const CHARACTER_OFFSET_FOR_NEXT_ARROW: Record<DeviceModelInternal, number> = {
@@ -46,7 +46,7 @@ export const CHARACTER_OFFSET_FOR_NEXT_ARROW: Record<DeviceModelInternal, number
     [DeviceModelInternal.T2B1]: 2,
     [DeviceModelInternal.T3B1]: 2,
     [DeviceModelInternal.T3T1]: 4,
-    [DeviceModelInternal.T3W1]: 4,
+    [DeviceModelInternal.T3W1]: 4, // TODO T3W1
 };
 
 export const SUPPORTS_DEVICE_AUTHENTICITY_CHECK: Record<DeviceModelInternal, boolean> = {
