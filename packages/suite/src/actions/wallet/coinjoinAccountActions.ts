@@ -12,7 +12,11 @@ import {
     selectDevice,
     selectDevices,
 } from '@suite-common/wallet-core';
-import { getAccountTransactions, sortByBIP44AddressIndex } from '@suite-common/wallet-utils';
+import {
+    getAccountTransactions,
+    sortByBIP44AddressIndex,
+    substituteBip43Path,
+} from '@suite-common/wallet-utils';
 
 import { CoinjoinService, COORDINATOR_FEE_RATE_MULTIPLIER } from 'src/services/coinjoin';
 import { getAccountProgressHandle, getRegisterAccountParams } from 'src/utils/wallet/coinjoinUtils';
@@ -578,7 +582,7 @@ export const createCoinjoinAccount =
             return;
         }
 
-        const path = account.bip43Path.replace('i', '0');
+        const path = substituteBip43Path(account.bip43Path);
 
         // get coinjoin account xpub
         const publicKey = await TrezorConnect.getPublicKey({

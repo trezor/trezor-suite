@@ -1,4 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
+import { Bip43Path, Bip43PathTemplate } from '@suite-common/wallet-config';
 
 import { ACCOUNTS } from './accounts';
 
@@ -224,6 +225,32 @@ export const getBip43Type = [
         description: 'invalid path type',
         path: undefined,
         result: 'unknown',
+    },
+];
+
+type SubstituteBip43PathFixture = {
+    description: string;
+    pathTemplate: Bip43PathTemplate;
+    index?: number | string;
+    result: Bip43Path;
+};
+export const substituteBip43Path: SubstituteBip43PathFixture[] = [
+    {
+        description: 'numerical index',
+        pathTemplate: "m/84'/0'/i'",
+        index: 7,
+        result: "m/84'/0'/7'",
+    },
+    {
+        description: 'stringified index',
+        pathTemplate: "m/44'/0'/i'/0",
+        index: '14',
+        result: "m/44'/0'/14'/0",
+    },
+    {
+        description: 'default index',
+        pathTemplate: "m/10025'/1'/i'/1'",
+        result: "m/10025'/1'/0'/1'",
     },
 ];
 

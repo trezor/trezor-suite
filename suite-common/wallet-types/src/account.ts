@@ -1,4 +1,4 @@
-import { AccountType, BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountType, BackendType, Bip43Path, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountEntityKeys } from '@suite-common/metadata-types';
 import { AccountInfo, PROTO, StaticSessionId, TokenInfo } from '@trezor/connect';
 import {
@@ -83,7 +83,7 @@ export type Account = {
     deviceState: StaticSessionId;
     key: AccountKey;
     index: number;
-    path: string;
+    path: Bip43Path;
     unlockPath?: PROTO.UnlockPath; // parameter used to unlock SLIP-25/coinjoin keychain
     descriptor: string;
     descriptorChecksum?: string;

@@ -13,7 +13,7 @@ import regional from 'src/constants/wallet/coinmarket/regional';
 import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
 import { BuyTrade, SellFiatTrade, CryptoId } from 'invity-api';
 import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
-import { getContractAddressForNetwork } from '@suite-common/wallet-utils';
+import { getContractAddressForNetwork, substituteBip43Path } from '@suite-common/wallet-utils';
 import {
     CoinmarketAccountOptionsGroupOptionProps,
     CoinmarketAccountsOptionsGroupProps,
@@ -160,7 +160,7 @@ export const getComposeAddressPlaceholder = async (
 
             if (device) {
                 // try to get the already discovered legacy account
-                const legacyPath = `${bip43Path.replace('i', '0')}`;
+                const legacyPath = substituteBip43Path(bip43Path);
                 const legacyAccount = accounts?.find(a => a.path === legacyPath);
                 if (legacyAccount?.addresses?.unused[0]) {
                     return legacyAccount?.addresses?.unused[0].address;
@@ -169,7 +169,7 @@ export const getComposeAddressPlaceholder = async (
                 const result = await TrezorConnect.getAddress({
                     device,
                     coin: account.symbol,
-                    path: `${bip43Path.replace('i', '0')}/0/0`,
+                    path: `${substituteBip43Path(bip43Path)}/0/0`,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                     showOnTrezor: false,
                     chunkify,

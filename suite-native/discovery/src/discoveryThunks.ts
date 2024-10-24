@@ -24,7 +24,11 @@ import {
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 import { Account, DiscoveryItem } from '@suite-common/wallet-types';
-import { getDerivationType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import {
+    getDerivationType,
+    substituteBip43Path,
+    tryGetAccountIdentity,
+} from '@suite-common/wallet-utils';
 import {
     AccountType,
     Network,
@@ -366,7 +370,7 @@ export const addAndDiscoverNetworkAccountThunk = createThunk<
             return rejectWithValue(discoveryErrors.accountLimitReached);
         }
 
-        const accountPath = network.bip43Path.replace('i', index.toString());
+        const accountPath = substituteBip43Path(network.bip43Path, index);
 
         // Take exclusive access to the device and hold it until fetching of the descriptors is done.
         const deviceAccessResponse = await requestDeviceAccess({
@@ -458,7 +462,8 @@ const discoverNetworkBatchThunk = createThunk(
             const index =
                 lastDiscoveredAccountIndex + batchIndex + (isEvmLedgerDerivationPath ? 1 : 0);
 
-            const accountPath = normalizedNetworkAccount.bip43Path.replace('i', index.toString());
+            const { bip43Path } = normalizedNetworkAccount;
+            const accountPath = substituteBip43Path(bip43Path, index);
 
             const isAccountAlreadyDiscovered = selectIsAccountAlreadyDiscovered(getState(), {
                 deviceState,
