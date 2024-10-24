@@ -31,7 +31,14 @@ export const formatUrl = (baseUrl: string, path: string) => {
     const [baseUrlWithoutParams, params] = baseUrl.split('?');
     const [pathWithoutParams, pathParams] = path.split('?');
 
-    return `${baseUrlWithoutParams}${pathWithoutParams}?${params ? `${params}&` : ''}${pathParams ?? ''}`;
+    const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
+
+    const url =
+        `${baseUrlWithoutParams}${pathWithoutParams}${isWebExtension ? '/index.html' : ''}`.replace(
+            '//',
+            '/',
+        );
+    return `${url}?${params ? `${params}&` : ''}${pathParams ?? ''}`;
 };
 
 const getExtensionPage = async () => {
@@ -149,7 +156,7 @@ export const setConnectSettings = async (
     { trustedHost = false, connectSrc }: { trustedHost?: boolean; connectSrc?: string },
     _isWebExtension?: boolean,
 ) => {
-    await explorerPage.goto(formatUrl(explorerUrl, `settings/index.html`));
+    await explorerPage.goto(formatUrl(explorerUrl, `settings`));
     /*if (isWebExtension) {
         // When webextension and using service-worker we need to wait for handshake is confirmed with proxy.
         await explorerPage.waitForSelector("div[data-testid='@settings/handshake-confirmed']");
