@@ -1,9 +1,4 @@
-import {
-    Transport as AbstractTransport,
-    AbstractApiTransport,
-    SessionsClient,
-    SessionsBackground,
-} from '@trezor/transport';
+import { Transport as AbstractTransport, AbstractApiTransport } from '@trezor/transport';
 
 import { BleApi } from './api/bleApi';
 
@@ -12,16 +7,6 @@ export class NativeTransportBLE extends AbstractApiTransport {
 
     constructor(params?: ConstructorParameters<typeof AbstractTransport>[0]) {
         const { messages, logger } = params || {};
-        const sessionsBackground = new SessionsBackground();
-
-        const sessionsClient = new SessionsClient({
-            requestFn: args => sessionsBackground.handleMessage(args),
-            registerBackgroundCallbacks: () => {},
-        });
-
-        sessionsBackground.on('descriptors', descriptors => {
-            sessionsClient.emit('descriptors', descriptors);
-        });
 
         super({
             messages,
@@ -29,7 +14,6 @@ export class NativeTransportBLE extends AbstractApiTransport {
                 logger,
             }),
             logger,
-            sessionsClient,
         });
     }
 }

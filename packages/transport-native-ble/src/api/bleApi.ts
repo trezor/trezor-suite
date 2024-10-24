@@ -7,7 +7,7 @@ import {
     DEVICE_TYPE,
 } from '@trezor/transport/src/api/abstract';
 import * as ERRORS from '@trezor/transport/src/errors';
-import { AsyncResultWithTypedError } from '@trezor/transport/src/types';
+import { AsyncResultWithTypedError, DescriptorApiLevel } from '@trezor/transport/src/types';
 
 import { log } from '../logs';
 import { nativeBleManager } from './nativeBleManager';
@@ -72,9 +72,15 @@ export class BleApi extends AbstractApi {
 
     private async devicesToDescriptors() {
         const devices = await nativeBleManager.getAllConnectedDevices();
+        const descriptors: DescriptorApiLevel[] = devices.map(
+            d =>
+                ({
+                    path: d.id,
+                    type: DEVICE_TYPE.TypeT2,
+                }) as DescriptorApiLevel,
+        );
 
-        // TODO: implement proper device type
-        return devices.map(d => ({ path: d.id, type: DEVICE_TYPE.TypeT2 }));
+        return descriptors;
     }
     public async read(
         path: string,
