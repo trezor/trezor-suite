@@ -13,29 +13,36 @@ export interface Timer {
 }
 
 export const useTimer = (): Timer => {
+    const [timestamp, setTimestamp] = useState(Date.now());
     const [timeSpend, setTimeSpend] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [isStopped, setIsStopped] = useState(false);
     const [resetCount, setResetCount] = useState(0);
 
     useEffect(() => {
-        const timeout = setTimeout(() => {
-            setTimeSpend(timeSpend + 1000);
-        }, 1000);
-
         if (isStopped || isLoading) {
-            clearTimeout(timeout);
+            return;
         }
 
+        const interval = setInterval(() => {
+            const dateNow = Date.now();
+
+            if (timestamp + 1000 <= dateNow) {
+                setTimestamp(timestamp + 1000);
+                setTimeSpend(prevTime => prevTime + 1000);
+            }
+        }, 10);
+
         return () => {
-            clearTimeout(timeout);
+            clearInterval(interval);
         };
-    });
+    }, [isLoading, isStopped, timestamp]);
 
     const reset = () => {
         setIsLoading(false);
         setResetCount(resetCount + 1);
         setTimeSpend(0);
+        setTimestamp(Date.now());
         setIsStopped(false);
     };
 
@@ -45,6 +52,7 @@ export const useTimer = (): Timer => {
 
     const loading = () => {
         setTimeSpend(0);
+        setTimestamp(Date.now());
         setIsLoading(true);
         setIsStopped(false);
     };
