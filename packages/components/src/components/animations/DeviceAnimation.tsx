@@ -1,9 +1,12 @@
-import styled, { useTheme } from 'styled-components';
 import { CSSProperties, MouseEventHandler, forwardRef } from 'react';
+import styled, { useTheme } from 'styled-components';
+
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
+import { getNarrowedDeviceModelInternal } from '@suite-common/suite-utils';
 import { DeviceModelInternal } from '@trezor/connect';
+
 import { AnimationWrapper, Shape } from './AnimationPrimitives';
 import { resolveStaticPath } from '../../utils/resolveStaticPath';
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 
 const StyledVideo = styled.video`
     width: 100%;
@@ -59,19 +62,11 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
             ? ''
             : `_${theme.legacy.THEME}`;
 
-        const getDeviceModelInFilename = () => {
-            let deviceModel: string = deviceModelInternal;
-
-            // T2B1 looks the same as T3B1, thus uses the same animations.
-            if (deviceModelInternal === DeviceModelInternal.T2B1) {
-                deviceModel = DeviceModelInternal.T3B1;
-                // T2B1s with old packaging have two variants of security seal.
-            } else if (type === 'HOLOGRAM' && isOldT2B1Packaging) {
-                deviceModel = DeviceModelInternal.T2B1;
-            }
-
-            return deviceModel.toLowerCase();
-        };
+        const deviceModelInFilename = (
+            type === 'HOLOGRAM' && isOldT2B1Packaging
+                ? DeviceModelInternal.T2B1
+                : getNarrowedDeviceModelInternal(deviceModelInternal)
+        ).toLowerCase();
 
         return (
             <AnimationWrapper height={height} width={width} shape={shape} {...props}>
@@ -87,7 +82,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                     >
                         <source
                             src={resolveStaticPath(
-                                `videos/device/trezor_${getDeviceModelInFilename()}_${type.toLowerCase()}${themeSuffix}.webm`,
+                                `videos/device/trezor_${deviceModelInFilename}_${type.toLowerCase()}${themeSuffix}.webm`,
                             )}
                             type="video/webm"
                         />
@@ -122,7 +117,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                     >
                         <source
                             src={resolveStaticPath(
-                                `videos/device/trezor_${getDeviceModelInFilename()}_hologram.webm`,
+                                `videos/device/trezor_${deviceModelInFilename}_hologram.webm`,
                             )}
                             type="video/webm"
                         />
@@ -140,7 +135,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                     >
                         <source
                             src={resolveStaticPath(
-                                `videos/device/trezor_${getDeviceModelInFilename()}_rotate_color_${
+                                `videos/device/trezor_${deviceModelInFilename}_rotate_color_${
                                     // if device unit color is not set, use first color available
                                     deviceUnitColor ?? 1
                                 }.webm`,
