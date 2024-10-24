@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export interface Timer {
     timeSpend: {
@@ -17,24 +17,32 @@ export const useTimer = (): Timer => {
     const [isLoading, setIsLoading] = useState(false);
     const [isStopped, setIsStopped] = useState(false);
     const [resetCount, setResetCount] = useState(0);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
-        const timeout = setTimeout(() => {
-            setTimeSpend(timeSpend + 1000);
-        }, 1000);
-
         if (isStopped || isLoading) {
-            clearTimeout(timeout);
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
+
+            return;
         }
 
+        intervalRef.current = setInterval(() => {
+            setTimeSpend(prevTime => prevTime + 1000);
+        }, 1000);
+
         return () => {
-            clearTimeout(timeout);
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
         };
-    });
+    }, [isLoading, isStopped]);
 
     const reset = () => {
         setIsLoading(false);
-        setResetCount(resetCount + 1);
+        setResetCount(prev => prev + 1);
         setTimeSpend(0);
         setIsStopped(false);
     };
