@@ -41,7 +41,7 @@ export const useCoinmarketBuildAccountGroups = (
         () =>
             coinmarketBuildAccountOptions({
                 accounts,
-                deviceState: device?.state,
+                deviceState: device?.state?.staticSessionId,
                 accountLabels,
                 tokenDefinitions,
                 supportedCryptoIds: supportedSymbols,

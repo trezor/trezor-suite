@@ -56,7 +56,7 @@ export const WalletItem = ({ deviceState, onPress, isSelectable = true }: Wallet
     const device = useSelector((state: any) => selectDeviceByState(state, deviceState));
     const selectedDevice = useSelector(selectDevice);
     const fiatBalance = useSelector((state: any) =>
-        selectDeviceTotalFiatBalanceNative(state, deviceState),
+        selectDeviceTotalFiatBalanceNative(state, deviceState.staticSessionId!),
     );
 
     if (!device) {

@@ -20,6 +20,7 @@ import {
 } from '@suite-common/wallet-core';
 import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
 import { getTotalFiatBalance } from '@suite-common/wallet-utils';
+import { StaticSessionId } from '@trezor/connect';
 
 import { isFirmwareVersionSupported } from './utils';
 
@@ -61,7 +62,7 @@ export const selectDeviceError = (
 export const selectDeviceTotalFiatBalanceNative = memoizeWithArgs(
     (
         state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState,
-        deviceState: string,
+        deviceState: StaticSessionId,
     ) => {
         const deviceAccounts = deviceState ? selectAccountsByDeviceState(state, deviceState) : [];
         const rates = selectCurrentFiatRates(state);

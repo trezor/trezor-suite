@@ -1,10 +1,10 @@
 import produce from 'immer';
-import { DEVICE, Device } from '@trezor/connect';
+import { DEVICE } from '@trezor/connect';
 import { OnboardingAnalytics } from '@trezor/suite-analytics';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import * as STEP from 'src/constants/onboarding/steps';
-import { Action } from 'src/types/suite';
+import { Action, TrezorDevice } from 'src/types/suite';
 
 import type { AnyStepId, AnyPath } from 'src/types/onboarding';
 
@@ -26,7 +26,7 @@ export type BackupType = (typeof selectBackupTypes)[number];
 export interface OnboardingState {
     backupType: BackupType;
     isActive: boolean;
-    prevDevice: Device | null;
+    prevDevice: TrezorDevice | null;
     activeStepId: AnyStepId;
     path: AnyPath[];
     onboardingAnalytics: Partial<OnboardingAnalytics>;

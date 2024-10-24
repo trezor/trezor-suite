@@ -204,7 +204,11 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
  * @returns {TrezorDevice}
  */
 const getSuiteDevice = (
-    dev?: Partial<StringPath<TrezorDevice>>,
+    dev?: Partial<
+        Omit<StringPath<TrezorDevice>, 'state'> & {
+            state?: `${string}@${string}:${number}`;
+        }
+    >,
     feat?: Partial<Features>,
 ): TrezorDevice => {
     const device = getConnectDevice(dev, feat);
@@ -221,6 +225,11 @@ const getSuiteDevice = (
             metadata: {},
             ...dev,
             ...device,
+            state: dev?.state
+                ? {
+                      staticSessionId: dev.state,
+                  }
+                : undefined,
         } as TrezorDevice;
     }
 

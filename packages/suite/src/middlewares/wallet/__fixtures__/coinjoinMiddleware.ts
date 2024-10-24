@@ -4,7 +4,6 @@ import { AnonymitySet } from '@trezor/blockchain-link';
 import { DEVICE, StaticSessionId } from '@trezor/connect';
 
 import { SuiteState } from 'src/reducers/suite/suiteReducer';
-import { AcquiredDevice } from 'src/types/suite';
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
 import { CoinjoinState } from 'src/reducers/wallet/coinjoinReducer';
@@ -20,7 +19,7 @@ const DEVICE_A = {
     remember: true,
     state: '1stTestnet@device_A_id:0' as StaticSessionId,
     type: 'acquired',
-} as AcquiredDevice;
+};
 const DEVICE_B = { ...DEVICE_A, id: 'device-B-id', state: '1stTestnet@device_B_id:0' };
 
 const ACCOUNT_A = {

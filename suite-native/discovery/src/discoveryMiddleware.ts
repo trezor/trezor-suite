@@ -18,8 +18,11 @@ import {
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState }) => {
-        if (deviceActions.forgetDevice.match(action) && action.payload.device.state) {
-            dispatch(discoveryActions.removeDiscovery(action.payload.device.state));
+        if (
+            deviceActions.forgetDevice.match(action) &&
+            action.payload.device.state?.staticSessionId
+        ) {
+            dispatch(discoveryActions.removeDiscovery(action.payload.device.state.staticSessionId));
         }
 
         const deviceModel = selectDeviceModel(getState());
@@ -58,7 +61,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         ) {
             dispatch(
                 startDescriptorPreloadedDiscoveryThunk({
-                    forcedDeviceState: action.payload.state,
+                    forcedDeviceState: action.payload.state?.staticSessionId,
                 }),
             );
         }

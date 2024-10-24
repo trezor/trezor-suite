@@ -8,6 +8,8 @@ import {
     PrecomposedTransactionFinalCardano,
     TokenTransfer,
     TokenInfo,
+    DeviceState,
+    StaticSessionId,
 } from '@trezor/connect';
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import {
@@ -481,10 +483,18 @@ export const findAccountsByAddress = (
 export const findAccountDevice = (account: Account, devices: TrezorDevice[]) =>
     devices.find(d => d.state === account.deviceState);
 
-export const getAllAccounts = (deviceState: string | typeof undefined, accounts: Account[]) => {
+export const getAllAccounts = (
+    deviceState: DeviceState | StaticSessionId | typeof undefined,
+    accounts: Account[],
+) => {
     if (!deviceState) return [];
 
-    return accounts.filter(a => a.deviceState === deviceState && a.visible);
+    return accounts.filter(
+        a =>
+            (typeof deviceState === 'string'
+                ? a.deviceState === deviceState
+                : a.deviceState === deviceState.staticSessionId) && a.visible,
+    );
 };
 
 /**

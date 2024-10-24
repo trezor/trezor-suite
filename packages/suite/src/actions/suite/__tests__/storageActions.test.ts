@@ -65,14 +65,14 @@ const devNotRemembered = getSuiteDevice({
 });
 
 const acc1 = getWalletAccount({
-    deviceState: dev1.state,
+    deviceState: dev1.state?.staticSessionId,
     symbol: 'btc',
     descriptor: 'desc1',
     key: `desc1-btc-${dev1.state}`,
     networkType: 'bitcoin',
 });
 const acc2 = getWalletAccount({
-    deviceState: dev2.state,
+    deviceState: dev2.state?.staticSessionId,
     symbol: 'btc',
     descriptor: 'desc2',
     key: `desc2-btc-${dev2.state}`,
@@ -80,13 +80,13 @@ const acc2 = getWalletAccount({
 });
 
 const tx1 = getWalletTransaction({
-    deviceState: dev1.state,
+    deviceState: dev1.state?.staticSessionId,
     txid: 'txid1',
     descriptor: 'desc1',
     symbol: 'btc',
 });
 const tx2 = getWalletTransaction({
-    deviceState: dev2.state,
+    deviceState: dev2.state?.staticSessionId,
     txid: 'txid2',
     descriptor: 'desc2',
     symbol: 'btc',
@@ -254,11 +254,15 @@ describe('Storage actions', () => {
         updateStore(store);
 
         // create discovery objects
-        store.dispatch(createDiscoveryThunk({ deviceState: dev1.state!, device: dev1 }));
-        store.dispatch(createDiscoveryThunk({ deviceState: dev2.state!, device: dev2 }));
+        store.dispatch(
+            createDiscoveryThunk({ deviceState: dev1.state!.staticSessionId!, device: dev1 }),
+        );
+        store.dispatch(
+            createDiscoveryThunk({ deviceState: dev2.state!.staticSessionId!, device: dev2 }),
+        );
         store.dispatch(
             createDiscoveryThunk({
-                deviceState: dev2Instance1.state!,
+                deviceState: dev2Instance1.state!.staticSessionId!,
                 device: dev2Instance1,
             }),
         );
@@ -275,7 +279,7 @@ describe('Storage actions', () => {
         // update discovery object
         store.dispatch(
             discoveryActions.updateDiscovery({
-                deviceState: dev2.state!,
+                deviceState: dev2.state!.staticSessionId!,
                 networks: ['btc', 'ltc'],
             }),
         );
@@ -435,7 +439,7 @@ describe('Storage actions', () => {
 
     it('should store graph data with the device and remove it on ACCOUNT.REMOVE (triggered by disabling the coin)', async () => {
         const accLtc = getWalletAccount({
-            deviceState: dev1.state,
+            deviceState: dev1.state!.staticSessionId!,
             symbol: 'ltc',
             descriptor: 'desc2',
             key: `desc2-ltc-${dev1.state}`,

@@ -163,14 +163,14 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     device = selectDevice(getState());
     const selectedProvider = selectSelectedProviderForPasswords(getState());
-    if (!selectedProvider || !device?.state) {
+    if (!selectedProvider || !device?.state?.staticSessionId) {
         // ts, should not happen
         return;
     }
     const fetchIntervalTrackingId: FetchIntervalTrackingId = metadataUtils.getFetchTrackingId(
         'passwords',
         selectedProvider.clientId,
-        device.state,
+        device.state.staticSessionId,
     );
 
     if (device?.state && !metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {

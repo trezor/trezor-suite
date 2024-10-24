@@ -3,7 +3,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getDeviceInstances, getStatus } from '@suite-common/suite-utils';
-import { Device, Features, StaticSessionId, UI } from '@trezor/connect';
+import { Device, DeviceState, Features, StaticSessionId, UI } from '@trezor/connect';
 import {
     getFirmwareVersion,
     getFirmwareVersionArray,
@@ -58,7 +58,11 @@ export const isUnlocked = (features: Features): boolean =>
  * @param {Partial<AcquiredDevice>} upcoming
  * @returns {TrezorDevice}
  */
-const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): TrezorDevice => ({
+const merge = (
+    device: AcquiredDevice,
+    // this method can take the old string state type, since it's not used here
+    upcoming: Partial<AcquiredDevice & { state?: DeviceState | StaticSessionId }>,
+): TrezorDevice => ({
     ...device,
     ...upcoming,
     id: upcoming.id ?? device.id,
@@ -78,7 +82,7 @@ const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): Trezo
 });
 
 const getShouldUseEmptyPassphrase = (
-    device: Device,
+    device: Device | TrezorDevice,
     deviceInstance: number | undefined,
     settings: ConnectDeviceSettings,
 ): boolean => {
@@ -151,6 +155,7 @@ const connectDevice = (draft: State, device: Device, settings: ConnectDeviceSett
 
     const newDevice: TrezorDevice = {
         ...device,
+        state: device._state,
         useEmptyPassphrase,
         remember: false,
         connected: true,
@@ -265,7 +270,7 @@ const changeDevice = (
  * @param {State} draft
  * @param {Device} device
  */
-const disconnectDevice = (draft: State, device: Device) => {
+const disconnectDevice = (draft: State, device: TrezorDevice) => {
     // find all devices with "path"
     const affectedDevices = draft.devices.filter(d => d.path === device.path);
     affectedDevices.forEach(d => {
@@ -334,10 +339,9 @@ const changePassphraseMode = (
  * Action handler: SUITE.AUTH_DEVICE
  * @param {State} draft
  * @param {TrezorDevice} device
- * @param {string} state
  * @returns
  */
-const authDevice = (draft: State, device: TrezorDevice, state: StaticSessionId) => {
+const authDevice = (draft: State, device: TrezorDevice, state: DeviceState) => {
     // only acquired devices
     if (!device || !device.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
@@ -712,8 +716,15 @@ export const selectIsDeviceConnectedAndAuthorized = (state: DeviceRootState) => 
 export const selectDeviceInternalModel = (state: DeviceRootState) =>
     state.device.selectedDevice?.features?.internal_model;
 
-export const selectDeviceByState = (state: DeviceRootState, deviceState: string) =>
-    selectDevices(state).find(d => d.state === deviceState);
+export const selectDeviceByState = (
+    state: DeviceRootState,
+    deviceState: StaticSessionId | DeviceState,
+) =>
+    selectDevices(state).find(d =>
+        typeof deviceState === 'string'
+            ? d.state?.staticSessionId === deviceState
+            : d.state?.staticSessionId && d.state.staticSessionId === deviceState.staticSessionId,
+    );
 
 export const selectDeviceUnavailableCapabilities = (state: DeviceRootState) =>
     state.device.selectedDevice?.unavailableCapabilities;
@@ -942,6 +953,12 @@ export const selectDeviceState = (state: DeviceRootState) => {
     const device = selectDevice(state);
 
     return device?.state ?? null;
+};
+
+export const selectDeviceStaticSessionId = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+
+    return device?.state?.staticSessionId ?? null;
 };
 
 export const selectDeviceInstances = memoize((state: DeviceRootState) => {

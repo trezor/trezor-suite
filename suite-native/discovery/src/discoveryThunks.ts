@@ -15,11 +15,11 @@ import {
     selectDevice,
     LIMIT,
     selectDeviceAccountsForNetworkSymbolAndAccountType,
-    selectDeviceState,
     disableAccountsThunk,
     selectFirstNormalAccountForNetworkSymbol,
     selectHasDeviceDiscovery,
     filterUnavailableAccountTypes,
+    selectDeviceStaticSessionId,
 } from '@suite-common/wallet-core';
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
@@ -602,7 +602,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         }: { forcedAreTestnetsEnabled?: boolean; forcedDeviceState?: StaticSessionId },
         { dispatch, getState },
     ) => {
-        const deviceState = forcedDeviceState ?? selectDeviceState(getState());
+        const deviceState = forcedDeviceState ?? selectDeviceStaticSessionId(getState());
 
         if (!deviceState) {
             console.warn(

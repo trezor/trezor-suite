@@ -25,7 +25,9 @@ const deviceChanged = createAction(DEVICE.CHANGED, (payload: Device | TrezorDevi
     payload,
 }));
 
-const deviceDisconnect = createAction(DEVICE.DISCONNECT, (payload: Device) => ({ payload }));
+const deviceDisconnect = createAction(DEVICE.DISCONNECT, (payload: TrezorDevice) => ({
+    payload,
+}));
 
 const updatePassphraseMode = createAction(
     `${DEVICE_MODULE_PREFIX}/updatePassphraseMode`,

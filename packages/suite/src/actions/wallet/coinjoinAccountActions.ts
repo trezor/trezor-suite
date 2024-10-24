@@ -600,7 +600,7 @@ export const createCoinjoinAccount =
         // create empty account
         const coinjoinAccount = dispatch(
             accountsActions.createAccount({
-                deviceState: device!.state!,
+                deviceState: device!.state!.staticSessionId!,
                 discoveryItem: {
                     index: 0,
                     path,

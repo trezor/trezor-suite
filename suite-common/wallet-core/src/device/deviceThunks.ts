@@ -8,7 +8,7 @@ import TrezorConnect, {
     Response as ConnectResponse,
     UI,
     DEVICE,
-    StaticSessionId,
+    DeviceState,
 } from '@trezor/connect';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { analytics, EventType } from '@trezor/suite-analytics';
@@ -172,7 +172,7 @@ export const handleDeviceConnect = createThunk(
  */
 export const handleDeviceDisconnect = createThunk(
     `${DEVICE_MODULE_PREFIX}/handleDeviceDisconnect`,
-    (device: Device, { dispatch, getState, extra }) => {
+    (device: Device | TrezorDevice, { dispatch, getState, extra }) => {
         const {
             selectors: { selectRouterApp },
         } = extra;
@@ -218,7 +218,7 @@ export const handleDeviceDisconnect = createThunk(
  */
 export const forgetDisconnectedDevices = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetDisconnectedDevices`,
-    (device: Device, { dispatch, getState, extra }) => {
+    (device: Device | TrezorDevice, { dispatch, getState, extra }) => {
         const devices = selectDevices(getState());
         const deviceInstances = devices.filter(d => d.id === device.id);
 
@@ -293,7 +293,7 @@ export type AuthorizeDeviceError = {
     device?: TrezorDevice;
     duplicate?: TrezorDevice;
 };
-type AuthorizeDeviceSuccess = { device: TrezorDevice; state: StaticSessionId };
+type AuthorizeDeviceSuccess = { device: TrezorDevice; state: DeviceState };
 
 export const authorizeDeviceThunk = createThunk<
     AuthorizeDeviceSuccess,
@@ -339,11 +339,14 @@ export const authorizeDeviceThunk = createThunk<
         const response = await TrezorConnect.getDeviceState(deviceParams);
 
         if (response.success) {
-            const { state } = response.payload;
+            const { state, _state } = response.payload;
             const s = state.split(':')[0];
             const devices = selectDevices(getState());
             const duplicate = devices?.find(
-                d => d.state && d.state.split(':')[0] === s && d.instance !== device.instance,
+                d =>
+                    d.state?.staticSessionId &&
+                    d.state.staticSessionId.split(':')[0] === s &&
+                    d.instance !== device.instance,
             );
             // get fresh data from reducer, `useEmptyPassphrase` might be changed after TrezorConnect call
             const freshDeviceData = getSelectedDevice(device, devices);
@@ -370,7 +373,7 @@ export const authorizeDeviceThunk = createThunk<
                 });
             }
 
-            return { device: freshDeviceData as TrezorDevice, state };
+            return { device: freshDeviceData as TrezorDevice, state: _state };
         }
 
         if (

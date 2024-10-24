@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 48
+
+-   device state to new object format (`device._state` -> `device.state`)
+
 ## 47
 
 -   migrate matic to pol

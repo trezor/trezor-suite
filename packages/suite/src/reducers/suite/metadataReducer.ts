@@ -5,7 +5,6 @@ import {
     selectAccountByKey,
     DeviceRootState,
     selectDevice,
-    selectDevices,
     State,
     selectDeviceByState,
     deviceActions,
@@ -32,6 +31,7 @@ import {
 
 import { SuiteRootState } from './suiteReducer';
 import { AccountKey } from '@suite-common/wallet-types';
+import { DeviceState, StaticSessionId } from '@trezor/connect';
 
 export const initialState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?
@@ -110,8 +110,8 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                 }
                 break;
             case deviceActions.forgetDevice.type:
-                if (action.payload.device.state) {
-                    delete draft.error?.[action.payload.device.state];
+                if (action.payload.device.state?.staticSessionId) {
+                    delete draft.error?.[action.payload.device.state.staticSessionId];
                 }
 
             // no default
@@ -200,11 +200,13 @@ export const selectAccountLabels = (state: {
  */
 export const selectLabelingDataForWallet = (
     state: { metadata: MetadataState; device: State },
-    deviceState?: string,
+    deviceState?: DeviceState | StaticSessionId,
 ) => {
+    if (!deviceState) {
+        return DEFAULT_WALLET_METADATA;
+    }
     const provider = selectSelectedProviderForLabels(state);
-    const devices = selectDevices(state);
-    const device = devices.find(d => d.state === deviceState);
+    const device = selectDeviceByState(state, deviceState);
     if (!device?.metadata[METADATA_LABELING.ENCRYPTION_VERSION]) {
         return DEFAULT_WALLET_METADATA;
     }
@@ -217,7 +219,7 @@ export const selectLabelingDataForWallet = (
     return DEFAULT_WALLET_METADATA;
 };
 
-export const selectLabelableEntities = (state: MetadataRootState, deviceState: string) => {
+export const selectLabelableEntities = (state: MetadataRootState, deviceState: StaticSessionId) => {
     const { wallet, device } = state;
     const { devices } = device;
     const { accounts } = wallet;
@@ -242,7 +244,7 @@ export const selectLabelableEntities = (state: MetadataRootState, deviceState: s
 
 const selectLabelableEntityByKey = (
     state: MetadataRootState,
-    deviceState: string,
+    deviceState: StaticSessionId,
     entityKey: string,
 ) =>
     selectLabelableEntities(state, deviceState).find(e => {
@@ -268,8 +270,8 @@ export const selectIsLabelingAvailable = (state: MetadataRootState) => {
         enabled &&
         device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION] &&
         !!provider &&
-        device.state &&
-        !error?.[device.state]
+        device.state?.staticSessionId &&
+        !error?.[device.state.staticSessionId]
     );
 };
 
@@ -291,11 +293,11 @@ export const selectIsLabelingInitPossible = (state: MetadataRootState) => {
 export const selectIsLabelingAvailableForEntity = (
     state: MetadataRootState,
     entityKey: string,
-    deviceState?: string,
+    deviceState?: StaticSessionId,
 ) => {
     const device = deviceState ? selectDeviceByState(state, deviceState) : selectDevice(state);
-    if (!device?.state) return false;
-    const entity = selectLabelableEntityByKey(state, device.state, entityKey);
+    if (!device?.state?.staticSessionId) return false;
+    const entity = selectLabelableEntityByKey(state, device.state.staticSessionId, entityKey);
 
     return (
         selectIsLabelingAvailable(state) &&
