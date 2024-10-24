@@ -87,14 +87,14 @@ export const ready = (info: UpdateInfo) => (dispatch: Dispatch, getState: GetSta
 };
 
 export const installUpdate =
-    ({ shouldInstallOnQuit }: { shouldInstallOnQuit: boolean }) =>
+    ({ installNow }: { installNow: boolean }) =>
     (_: Dispatch, getState: GetState) => {
         const { desktopUpdate } = getState();
 
         const payload = getAppUpdatePayload(
-            shouldInstallOnQuit
-                ? AppUpdateEventStatus.InstallOnQuit
-                : AppUpdateEventStatus.InstallAndRestart,
+            installNow
+                ? AppUpdateEventStatus.InstallAndRestart
+                : AppUpdateEventStatus.InstallOnQuit,
             desktopUpdate.allowPrerelease,
             desktopUpdate.latest,
         );
@@ -104,8 +104,12 @@ export const installUpdate =
         });
 
         // auto-updater is by default configured to update on quit 'autoUpdater.autoInstallOnAppQuit = true'
-        if (!shouldInstallOnQuit) {
+        if (installNow) {
             desktopApi.installUpdate();
+        } else {
+            // To make sure, the update is installed on quit as it may have been disabled
+            // by switching off the auto-update (silent-update)
+            desktopApi.setAutoInstallOnAppQuit();
         }
     };
 
