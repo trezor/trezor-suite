@@ -5,8 +5,9 @@ import {
     isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import TrezorConnect, { Device, FirmwareType } from '@trezor/connect';
+import TrezorConnect, { FirmwareType } from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
+import { TrezorDevice } from '@suite-common/suite-types';
 
 import { selectFirmware } from './firmwareReducer';
 import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
@@ -14,7 +15,7 @@ import { getBinFilesBaseUrlThunk } from './getBinFilesBaseUrlThunk';
 
 const handleFwHashError = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/handleFwHashError`,
-    ({ device, errorMessage }: { device: Device; errorMessage: string }, { dispatch }) => {
+    ({ device, errorMessage }: { device: TrezorDevice; errorMessage: string }, { dispatch }) => {
         // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
         if (device.id) {
             dispatch(firmwareActions.setHashInvalid(device.id));
@@ -37,7 +38,7 @@ export const INVALID_HASH_ERROR = 'Invalid hash';
 
 const handleFwHashMismatch = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/handleFwHashMismatch`,
-    (device: Device, { dispatch }) => {
+    (device: TrezorDevice, { dispatch }) => {
         // see `handleFwHashError`
         if (device.id) {
             dispatch(firmwareActions.setHashInvalid(device.id));
@@ -51,7 +52,7 @@ const handleFwHashMismatch = createThunk(
 
 const handleFwHashValid = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/handleFwHashValid`,
-    (device: Device, { dispatch }) => {
+    (device: TrezorDevice, { dispatch }) => {
         // see `handleFwHashError`
         if (device.id) {
             dispatch(firmwareActions.clearInvalidHash(device.id));

@@ -1,8 +1,9 @@
+import { TrezorDevice } from '@suite-common/suite-types';
 import { Image, ImageProps } from '@trezor/components';
 import { Device } from '@trezor/connect';
 
 interface DeviceConfirmImageProps extends Omit<ImageProps, 'image'> {
-    device: Device;
+    device: Device | TrezorDevice;
 }
 
 export const DeviceConfirmImage = ({ device, ...rest }: DeviceConfirmImageProps) => {

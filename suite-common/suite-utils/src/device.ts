@@ -234,7 +234,7 @@ export const getSelectedDevice = (
     });
 };
 
-export const getChangelogUrl = (device: Device, revision?: string | null) => {
+export const getChangelogUrl = (device: TrezorDevice, revision?: string | null) => {
     const deviceModelInternal = device.features?.internal_model;
     const commit = revision || 'main';
     const isDeviceWithLegacyFirmware = deviceModelInternal === DeviceModelInternal.T1B1;
@@ -402,10 +402,10 @@ export const getFirstDeviceInstance = (devices: TrezorDevice[]) =>
         }, [] as TrezorDevice[])
         .sort(sortByPriority);
 
-export const getPhysicalDeviceUniqueIds = (devices: Device[]) =>
+export const getPhysicalDeviceUniqueIds = (devices: TrezorDevice[]) =>
     [...new Set(devices.map(d => d.id))].filter(id => id) as string[];
 
-export const getPhysicalDeviceCount = (devices: Device[]) =>
+export const getPhysicalDeviceCount = (devices: TrezorDevice[]) =>
     getPhysicalDeviceUniqueIds(devices).length;
 
 export const getSortedDevicesWithoutInstances = (

@@ -1,5 +1,6 @@
 import { AccountType, getNetwork, Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
+import { StaticSessionId } from '@trezor/connect';
 
 export const isDebugOnlyAccountType = (
     accountType: AccountType,
@@ -16,7 +17,7 @@ export const isDebugOnlyAccountType = (
 
 type FilterReceiveAccountsProps = {
     accounts: Account[];
-    deviceState: string | undefined;
+    deviceState: StaticSessionId | undefined;
     receiveNetwork?: string;
     isDebug: boolean;
     receiveNetworks: Network[];

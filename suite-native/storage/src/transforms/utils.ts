@@ -8,7 +8,9 @@ import { DeviceRootState } from '@suite-common/wallet-core';
  */
 export const selectDeviceStatesNotRemembered = (state: DeviceRootState) => {
     return A.filterMap(state.device.devices, device =>
-        device.remember || !device.state ? O.None : O.Some(device.state),
+        device.remember || !device.state?.staticSessionId
+            ? O.None
+            : O.Some(device.state.staticSessionId),
     );
 };
 

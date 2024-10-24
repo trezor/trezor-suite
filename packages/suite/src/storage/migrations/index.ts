@@ -307,7 +307,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
     if (oldVersion < 28) {
         await updateAll(transaction, 'devices', device => {
-            if (device.state?.includes('undefined')) {
+            if ((device.state as string)?.includes('undefined')) {
                 // @ts-expect-error
                 device.state = device.state.replace('undefined', '0');
 
@@ -1101,6 +1101,18 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             }
 
             return draft;
+        });
+    }
+
+    if (oldVersion < 48) {
+        // Migrate device state to new object format
+        await updateAll(transaction, 'devices', device => {
+            if (
+                typeof device.state === 'string' &&
+                typeof (device as any)?._state?.staticSessionId === 'string'
+            ) {
+                device.state = (device as any)._state;
+            }
         });
     }
 };

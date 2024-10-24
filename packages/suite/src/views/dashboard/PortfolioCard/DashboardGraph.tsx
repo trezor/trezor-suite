@@ -92,7 +92,9 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
         if (!isLoading) {
             const worker = new GraphWorker();
             setIsProcessing(true);
-            const rawData = dispatch(getGraphDataForInterval({ deviceState: selectedDeviceState }));
+            const rawData = dispatch(
+                getGraphDataForInterval({ deviceState: selectedDeviceState?.staticSessionId }),
+            );
 
             worker.postMessage({
                 history: rawData,

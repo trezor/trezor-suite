@@ -14,7 +14,7 @@ import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
 import { Action } from 'src/types/suite';
 import { extraDependencies } from 'src/support/extraDependencies';
 
-const { getSuiteDevice } = testMocks;
+const { getSuiteDevice, getConnectDevice } = testMocks;
 
 jest.mock('src/actions/suite/storageActions', () => ({ __esModule: true }));
 
@@ -88,7 +88,7 @@ describe('redirectMiddleware', () => {
             const action: ReturnType<typeof deviceActions.connectDevice> = {
                 type: DEVICE.CONNECT,
                 payload: {
-                    device: getSuiteDevice({ mode: 'initialize' }),
+                    device: getConnectDevice({ mode: 'initialize' }),
                     settings: { defaultWalletLoading: 'standard' },
                 },
             };
@@ -103,7 +103,7 @@ describe('redirectMiddleware', () => {
             const action: ReturnType<typeof deviceActions.connectDevice> = {
                 type: DEVICE.CONNECT,
                 payload: {
-                    device: getSuiteDevice({ mode: 'normal', firmware: 'required' }),
+                    device: getConnectDevice({ mode: 'normal', firmware: 'required' }),
                     settings: { defaultWalletLoading: 'standard' },
                 },
             };

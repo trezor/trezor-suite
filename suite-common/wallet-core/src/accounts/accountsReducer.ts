@@ -6,6 +6,7 @@ import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { enhanceHistory, isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { AccountType, networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { DeviceState, StaticSessionId } from '@trezor/connect';
 
 import { accountsActions } from './accountsActions';
 import { formattedAccountTypeMap } from './accountsConstants';
@@ -150,16 +151,20 @@ export const selectAccounts = (state: AccountsRootState) => state.wallet.account
 
 export const selectAccountsByDeviceState = (
     state: AccountsRootState,
-    deviceState: string,
+    deviceState: StaticSessionId | DeviceState,
 ): Account[] =>
     pipe(
         selectAccounts(state),
-        A.filter(account => account.deviceState === deviceState),
+        A.filter(account =>
+            typeof deviceState === 'string'
+                ? account.deviceState === deviceState
+                : account.deviceState === deviceState.staticSessionId,
+        ),
     ) as Account[];
 
 export const selectAccountsByDeviceStateAndNetworkSymbol = (
     state: AccountsRootState,
-    deviceState: string,
+    deviceState: StaticSessionId | DeviceState,
     networkSymbol: NetworkSymbol,
 ): Account[] =>
     pipe(

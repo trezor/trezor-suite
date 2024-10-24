@@ -63,10 +63,10 @@ export const graphSlice = createSlice({
         builder
             .addCase(deviceActions.forgetDevice, (state, action) => {
                 const deviceState = action.payload.device.state;
-                if (deviceState) {
+                if (deviceState?.staticSessionId) {
                     state.accountToGraphTimeframeMap = filterKeysByPartialMatch(
                         state.accountToGraphTimeframeMap,
-                        [deviceState],
+                        [deviceState.staticSessionId],
                     );
                 }
             })

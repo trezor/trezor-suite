@@ -13,7 +13,9 @@ export const portfolioTrackerDevice: TrezorDevice = {
     id: PORTFOLIO_TRACKER_DEVICE_ID,
     status: 'available',
     mode: 'normal',
-    state: PORTFOLIO_TRACKER_DEVICE_STATE,
+    state: {
+        staticSessionId: PORTFOLIO_TRACKER_DEVICE_STATE,
+    },
     label: 'My assets',
     // @ts-expect-error - local override
     path: 'imported-1',

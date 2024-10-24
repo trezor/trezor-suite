@@ -1,4 +1,4 @@
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 
 import { selectDevices, selectDevice, selectDeviceByState } from '@suite-common/wallet-core';
@@ -26,7 +26,7 @@ import * as metadataActions from './metadataActions';
 import * as metadataProviderActions from './metadataProviderActions';
 
 export const getLabelableEntities =
-    (deviceState: string) => (_dispatch: Dispatch, getState: GetState) =>
+    (deviceState: StaticSessionId) => (_dispatch: Dispatch, getState: GetState) =>
         selectLabelableEntities(getState(), deviceState);
 
 type LabelableEntity = ReturnType<ReturnType<typeof getLabelableEntities>>[number];
@@ -154,7 +154,7 @@ const syncMetadataKeys =
     };
 
 export const fetchAndSaveMetadata =
-    (deviceStateArg?: string) => async (dispatch: Dispatch, getState: GetState) => {
+    (deviceStateArg?: StaticSessionId) => async (dispatch: Dispatch, getState: GetState) => {
         const provider = selectSelectedProviderForLabels(getState());
         if (!provider) return;
 
@@ -162,12 +162,16 @@ export const fetchAndSaveMetadata =
             ? selectDeviceByState(getState(), deviceStateArg)
             : selectDevice(getState());
 
-        if (!device?.state || !device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]) return;
+        if (
+            !device?.state?.staticSessionId ||
+            !device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]
+        )
+            return;
 
         const fetchIntervalTrackingId = metadataUtils.getFetchTrackingId(
             'labels',
             provider.clientId,
-            device.state,
+            device.state.staticSessionId,
         );
 
         const providerInstance = dispatch(
@@ -188,7 +192,11 @@ export const fetchAndSaveMetadata =
             device = deviceStateArg
                 ? selectDeviceByState(getState(), deviceStateArg)
                 : selectDevice(getState());
-            if (!device?.state || !device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]) return;
+            if (
+                !device?.state?.staticSessionId ||
+                !device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]
+            )
+                return;
 
             dispatch(syncMetadataKeys(device));
 
@@ -214,7 +222,7 @@ export const fetchAndSaveMetadata =
                 return;
             }
 
-            const labelableEntities = dispatch(getLabelableEntities(device.state));
+            const labelableEntities = dispatch(getLabelableEntities(device.state.staticSessionId));
             const promises = labelableEntities.map(entity =>
                 dispatch(fetchMetadata({ provider, entity })).then(result => {
                     if (result) {
@@ -257,8 +265,12 @@ export const fetchAndSaveMetadataForAllDevices = () => (dispatch: Dispatch, getS
     }
     const devices = selectDevices(getState());
     devices.forEach(device => {
-        if (!device.state || !device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]) return;
-        dispatch(fetchAndSaveMetadata(device.state));
+        if (
+            !device.state?.staticSessionId ||
+            !device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]
+        )
+            return;
+        dispatch(fetchAndSaveMetadata(device.state.staticSessionId));
     });
 };
 
@@ -443,7 +455,7 @@ export const addAccountMetadata =
 export const setDeviceMetadataKey =
     (device: TrezorDevice, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        if (!device.state || !device.connected) return;
+        if (!device.state?.staticSessionId || !device.connected) return;
 
         const result = await TrezorConnect.cipherKeyValue({
             device: {
@@ -462,7 +474,7 @@ export const setDeviceMetadataKey =
                 });
             }
 
-            const [stateAddress] = device.state.split('@'); // address@device_id:instance
+            const [stateAddress] = device.state.staticSessionId.split('@'); // address@device_id:instance
             const metaKey = metadataUtils.deriveMetadataKey(result.payload.value, stateAddress);
             const fileName = metadataUtils.deriveFilenameForLabeling(metaKey, encryptionVersion);
             const aesKey = metadataUtils.deriveAesKey(metaKey);
@@ -539,21 +551,22 @@ export const addMetadata =
  * tries to add new label.
  */
 export const init =
-    (force: boolean, deviceState?: string) => async (dispatch: Dispatch, getState: GetState) => {
+    (force: boolean, deviceState?: StaticSessionId) =>
+    async (dispatch: Dispatch, getState: GetState) => {
         let device = deviceState
             ? selectDeviceByState(getState(), deviceState)
             : selectDevice(getState());
 
-        if (!device?.state) {
+        if (!device?.state?.staticSessionId) {
             return false;
         }
 
-        if (!force && getState().metadata.error?.[device.state]) {
+        if (!force && getState().metadata.error?.[device.state.staticSessionId]) {
             return false;
         }
 
         dispatch({ type: METADATA.SET_INITIATING, payload: true });
-        if (getState().metadata.error?.[device.state]) {
+        if (getState().metadata.error?.[device.state.staticSessionId]) {
             // remove error note about failed migration potentially set in a previous run
             dispatch({
                 type: METADATA.SET_ERROR_FOR_DEVICE,
@@ -611,7 +624,7 @@ export const init =
         // todo: 5. migration
 
         // 6. fetch metadata
-        await dispatch(fetchAndSaveMetadata(device.state));
+        await dispatch(fetchAndSaveMetadata(device.state?.staticSessionId));
 
         // now we may allow user to edit labels. everything is ready, local data is synced with provider
         if (getState().metadata.initiating) {
@@ -623,14 +636,14 @@ export const init =
             ? selectDeviceByState(getState(), deviceState)
             : selectDevice(getState());
 
-        if (!device?.state || !selectedProvider) {
+        if (!device?.state?.staticSessionId || !selectedProvider) {
             return true;
         }
 
         const fetchIntervalTrackingId = metadataUtils.getFetchTrackingId(
             'labels',
             selectedProvider.clientId,
-            device.state,
+            device.state.staticSessionId,
         );
 
         // 7. if interval for watching provider is not set, create it
@@ -639,10 +652,10 @@ export const init =
             // user is editing label and at that very moment update arrives. updates to specific entities should be probably discarded in such case?
             metadataProviderActions.fetchIntervals[fetchIntervalTrackingId] = setInterval(() => {
                 const device = selectDevice(getState());
-                if (!getState().suite.online || !device?.state) {
+                if (!getState().suite.online || !device?.state?.staticSessionId) {
                     return;
                 }
-                dispatch(fetchAndSaveMetadata(device.state));
+                dispatch(fetchAndSaveMetadata(device.state.staticSessionId));
             }, 60_000);
         }
 

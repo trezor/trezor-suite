@@ -166,7 +166,7 @@ export const WalletInstance = ({
                                     <Icon name="asterisk" size={12} />
                                 </Tooltip>
                             )}
-                            {instance.state ? (
+                            {instance.state?.staticSessionId ? (
                                 <MetadataLabeling
                                     defaultVisibleValue={
                                         walletLabel === undefined || walletLabel.trim() === ''
@@ -175,8 +175,8 @@ export const WalletInstance = ({
                                     }
                                     payload={{
                                         type: 'walletLabel',
-                                        entityKey: instance.state,
-                                        defaultValue: instance.state,
+                                        entityKey: instance.state.staticSessionId,
+                                        defaultValue: instance.state.staticSessionId,
                                         value: instance?.metadata[
                                             METADATA_LABELING.ENCRYPTION_VERSION
                                         ]

@@ -65,7 +65,7 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
     const device = useSelector(selectDevice);
     const accountsSorted = coinmarketGetSortedAccounts({
         accounts,
-        deviceState: device?.state,
+        deviceState: device?.state?.staticSessionId,
     });
     const [isUsedFractionButton, setIsUsedFractionButton] = useState(false);
     const { buildDefaultCryptoOption } = useCoinmarketInfo();

@@ -4,7 +4,7 @@ import { Account } from 'src/types/wallet';
 
 import { tryGetAccountIdentity, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 
 import {
     ACCOUNT_GRAPH_SUCCESS,
@@ -177,7 +177,7 @@ export const updateGraphData =
     };
 
 export const getGraphDataForInterval =
-    (options: { account?: Account; deviceState?: string }) =>
+    (options: { account?: Account; deviceState?: StaticSessionId }) =>
     (_dispatch: Dispatch, getState: GetState) => {
         const { graph } = getState().wallet;
         const { selectedRange } = graph;

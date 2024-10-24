@@ -1,6 +1,7 @@
 import {
     DeviceButtonRequest,
     DeviceEvent,
+    DeviceState,
     KnownDevice,
     PROTO,
     UnknownDevice as UnknownDeviceBase,
@@ -43,9 +44,13 @@ export interface ExtendedDevice {
     walletNumber?: number; // number of passphrase wallet intended to be used in UI
     passwords: DeviceMetadata;
     reconnectRequested?: boolean; // currently only after wipeDevice
+
+    // note: store the state using the new object format, not the state string
+    // this can be removed once the state string is removed from Connect
+    state?: DeviceState;
 }
 
-export type AcquiredDevice = KnownDevice & ExtendedDevice;
+export type AcquiredDevice = Omit<KnownDevice, 'state' | '_state'> & ExtendedDevice;
 
 export type UnknownDevice = UnknownDeviceBase & ExtendedDevice;
 
