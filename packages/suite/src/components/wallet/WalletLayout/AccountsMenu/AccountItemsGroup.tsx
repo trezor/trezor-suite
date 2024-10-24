@@ -4,7 +4,10 @@ import { Account } from 'src/types/wallet';
 import { borders, spacingsPx, spacings } from '@trezor/theme';
 import { useSelector } from 'src/hooks/suite';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { getAccountTotalStakingBalance, getTokensFiatBalance } from '@suite-common/wallet-utils';
+import {
+    getAccountTotalStakingBalance,
+    getAccountTokensFiatBalance,
+} from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { Column } from '@trezor/components';
@@ -53,7 +56,7 @@ export const AccountItemsGroup = ({
     const localCurrency = useSelector(selectLocalCurrency);
     const rates = useSelector(selectCurrentFiatRates);
 
-    const tokensFiatBalance = getTokensFiatBalance(account, localCurrency, rates, tokens);
+    const tokensFiatBalance = getAccountTokensFiatBalance(account, localCurrency, rates, tokens);
 
     const tokensRoutes = ['wallet-tokens-coins', 'wallet-tokens-hidden'];
 

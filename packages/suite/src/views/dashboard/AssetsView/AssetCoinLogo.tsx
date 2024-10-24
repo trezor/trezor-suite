@@ -3,21 +3,13 @@ import {
     AssetFiatBalanceWithPercentage,
     calculateAssetsPercentage,
 } from '@suite-common/assets';
-import { SkeletonCircle, Tooltip } from '@trezor/components';
+import { Row, SkeletonCircle, Tooltip } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import styled from 'styled-components';
 import { localizePercentage } from '@suite-common/wallet-utils';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from 'src/hooks/suite';
 import { AssetShareIndicator } from '@trezor/product-components';
-import { spacingsPx } from '@trezor/theme';
-
-const LogoWrapper = styled.div`
-    display: flex;
-    padding-right: ${spacingsPx.md};
-    align-items: center;
-    justify-content: center;
-`;
+import { spacings } from '@trezor/theme';
 
 type AssetCoinLogoProps = {
     symbol: NetworkSymbol;
@@ -35,7 +27,7 @@ export const AssetCoinLogo = ({ symbol, assetsFiatBalances, index }: AssetCoinLo
         : undefined;
 
     return (
-        <LogoWrapper>
+        <Row alignItems="center" justifyContent="center" margin={{ right: spacings.md }}>
             <Tooltip
                 content={localizePercentage({
                     valueInFraction: (assetPercentage ?? 0) / 100,
@@ -51,7 +43,7 @@ export const AssetCoinLogo = ({ symbol, assetsFiatBalances, index }: AssetCoinLo
                     index={index}
                 />
             </Tooltip>
-        </LogoWrapper>
+        </Row>
     );
 };
 
@@ -60,7 +52,7 @@ type AssetCoinLogoSkeletonProps = {
 };
 
 export const AssetCoinLogoSkeleton = ({ animate }: AssetCoinLogoSkeletonProps) => (
-    <LogoWrapper>
+    <Row alignItems="center" justifyContent="center" margin={{ right: spacings.md }}>
         <SkeletonCircle animate={animate} size={44} />
-    </LogoWrapper>
+    </Row>
 );

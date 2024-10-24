@@ -10,9 +10,9 @@ import {
     TrendTicker,
 } from 'src/components/suite';
 import { isTestnet } from '@suite-common/wallet-utils';
-import { spacingsPx, typography } from '@trezor/theme';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { Card, H2, Icon, Row, SkeletonRectangle, variables } from '@trezor/components';
+import { Card, Column, H2, Icon, Row, SkeletonRectangle, variables } from '@trezor/components';
 import { useDispatch } from 'react-redux';
 import { useAccountSearch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
@@ -23,9 +23,23 @@ import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
+import { TokenInfo } from '@trezor/connect';
+import { Account } from '@suite-common/wallet-types';
+import { Text } from '@trezor/components';
+import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
+import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
+import { selectAssetAccountsThatStaked, selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { BigNumber } from '@trezor/utils';
+import { selectCoinDefinitions } from '@suite-common/token-definitions';
+import { getTokens } from 'src/utils/wallet/tokenUtils';
+import { enhanceTokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { sortTokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCard = styled(Card)`
+    display: flex;
+    flex-direction: column;
+
     transition: box-shadow 0.2s;
 
     ${styledHoverOnParentOfArrowIcon};
@@ -34,7 +48,12 @@ const StyledCard = styled(Card)`
 `;
 
 const Content = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: ${spacingsPx.xxxl};
+    align-items: flex-start;
     padding: ${spacingsPx.xs};
+
     flex: 1;
 `;
 
@@ -64,17 +83,6 @@ const CoinAmount = styled.div`
     ${typography.hint};
 `;
 
-const AssetContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: ${spacingsPx.xxxl};
-`;
-
-const BuyContainerLabel = styled.div`
-    ${typography.hint};
-`;
-
 const FailedContainer = styled.div`
     color: ${({ theme }) => theme.textAlertRed};
     display: flex;
@@ -92,6 +100,8 @@ type AssetCardProps = {
     failed: boolean;
     cryptoValue: string;
     assetsFiatBalances: AssetFiatBalance[];
+    stakingAccounts: Account[];
+    assetTokens: TokenInfo[];
     index?: number;
 };
 
@@ -100,13 +110,14 @@ export const AssetCard = ({
     failed,
     cryptoValue,
     assetsFiatBalances,
+    stakingAccounts,
+    assetTokens,
     index,
 }: AssetCardProps) => {
     const { symbol } = network;
     const dispatch = useDispatch();
     const theme = useTheme();
     const { setCoinFilter, setSearchString } = useAccountSearch();
-    const localCurrency = useSelector(selectLocalCurrency);
     const handleCardClick = () => {
         dispatch(
             goto('wallet-index', {
@@ -122,21 +133,53 @@ export const AssetCard = ({
         setSearchString(undefined);
     };
 
+    const coinDefinitions = useSelector(state => selectCoinDefinitions(state, network.symbol));
+    const fiatRates = useSelector(selectCurrentFiatRates);
+    const localCurrency = useSelector(selectLocalCurrency);
+
     const { fiatAmount } = useFiatFromCryptoValue({ amount: cryptoValue, symbol });
+
+    const stakingAccountsForAsset = stakingAccounts.filter(account => account.symbol === symbol);
+    const accountsThatStaked = useSelector(state =>
+        selectAssetAccountsThatStaked(state, stakingAccountsForAsset),
+    );
+
+    const assetStakingBalance = accountsThatStaked.reduce((total, account) => {
+        return total.plus(getAccountTotalStakingBalance(account));
+    }, new BigNumber(0));
+
+    const tokens = getTokens(assetTokens ?? [], network.symbol, coinDefinitions);
+
+    const tokensWithRates = enhanceTokensWithRates(
+        tokens.shownWithBalance ?? [],
+        localCurrency,
+        network.symbol,
+        fiatRates,
+    );
+
+    const sortedTokens = tokensWithRates.sort(sortTokensWithRates);
+
+    const tokensFiatBalance = sortedTokens.reduce((total, token) => {
+        return total.plus(token?.fiatValue ?? 0);
+    }, new BigNumber(0));
+
+    const shouldRenderStakingRow = accountsThatStaked.length > 0 && assetStakingBalance.gt(0);
+
+    const shouldRenderTokenRow = tokens.shownWithBalance?.length > 0 && tokensFiatBalance.gt(0);
 
     return (
         <StyledCard onClick={handleCardClick}>
             <Content>
-                <AssetContainer>
+                <Row justifyContent="space-between">
                     <AssetCardInfo
                         network={network}
                         assetsFiatBalances={assetsFiatBalances}
                         index={index}
                     />
                     <ArrowIcon size={16} name="arrowRightLong" color={theme.iconDisabled} />
-                </AssetContainer>
+                </Row>
                 {!failed ? (
-                    <>
+                    <Column alignItems="flex-start">
                         <FiatAmount>
                             <FiatHeader
                                 size="medium"
@@ -149,7 +192,7 @@ export const AssetCard = ({
                                 <CoinBalance value={cryptoValue} symbol={symbol} />
                             </AmountUnitSwitchWrapper>
                         </CoinAmount>
-                    </>
+                    </Column>
                 ) : (
                     <FailedContainer>
                         <WarningIcon
@@ -161,19 +204,29 @@ export const AssetCard = ({
                     </FailedContainer>
                 )}
             </Content>
+            {(shouldRenderStakingRow || shouldRenderTokenRow) && (
+                <AssetCardTokensAndStakingInfo
+                    symbol={symbol}
+                    tokens={sortedTokens}
+                    tokensFiatBalance={tokensFiatBalance.toString()}
+                    assetStakingBalance={assetStakingBalance.toString()}
+                    shouldRenderStaking={shouldRenderStakingRow}
+                    shouldRenderTokens={shouldRenderTokenRow}
+                />
+            )}
             {!isTestnet(symbol) && (
                 <Card>
                     <Row alignItems="center" justifyContent="space-between">
                         <div>
-                            <BuyContainerLabel>
+                            <Text typographyStyle="hint">
                                 <Translation id="TR_EXCHANGE_RATE" />
-                            </BuyContainerLabel>
+                            </Text>
                             <PriceTicker symbol={symbol} />
                         </div>
                         <div>
-                            <BuyContainerLabel>
+                            <Text typographyStyle="hint">
                                 <Translation id="TR_7D_CHANGE" />
-                            </BuyContainerLabel>
+                            </Text>
                             <TrendTicker symbol={symbol} />
                         </div>
                         <CoinmarketBuyButton
@@ -194,9 +247,9 @@ export const AssetCardSkeleton = (props: { animate?: boolean }) => {
     return (
         <StyledCard>
             <Content>
-                <AssetContainer>
+                <Row justifyContent="space-between" margin={{ bottom: spacings.xxxl }}>
                     <AssetCardInfoSkeleton animate={animate} />
-                </AssetContainer>
+                </Row>
                 <FiatAmount>
                     <IntegerValue>
                         <SkeletonRectangle animate={animate} width={95} height={32} />

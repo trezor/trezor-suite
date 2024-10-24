@@ -35,6 +35,9 @@ const TokenIconPlaceholder = styled.div<{ $elevation: Elevation }>`
     background: ${mapElevationToBackground};
 `;
 
+/**
+ * @param tokens - provide already sorted tokens (for example by fiat value).
+ */
 export const TokenIconSet = ({ network, tokens }: TokenIconSetProps) => {
     const { elevation } = useElevation();
     const { length } = tokens;
