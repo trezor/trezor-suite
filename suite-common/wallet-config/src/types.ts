@@ -57,10 +57,14 @@ export type NetworkFeature =
     | 'nft-definitions';
 
 type Level = `/${number}'`;
-type LevelOrIndex = `/${number | 'i'}'`;
 type MaybeApostrophe = `'` | '';
+type MaybeLevel = `/${number}${MaybeApostrophe}` | '';
+type LevelOrIndex = `/${number | 'i'}'`;
 type MaybeLevelOrIndex = `/${number | 'i'}${MaybeApostrophe}` | '';
-export type Bip43Path = `m${Level}${Level}${LevelOrIndex}${MaybeLevelOrIndex}${MaybeLevelOrIndex}`;
+// template with i in place of account index, which shall be substituted with a number
+export type Bip43PathTemplate =
+    `m${Level}${Level}${LevelOrIndex}${MaybeLevelOrIndex}${MaybeLevelOrIndex}`;
+export type Bip43Path = `m${Level}${Level}${Level}${MaybeLevel}${MaybeLevel}`;
 
 export type Explorer = {
     tx: string;
@@ -73,7 +77,7 @@ export type Explorer = {
 
 type NetworkAccountWithSpecificKey<TKey extends AccountType> = {
     accountType: TKey;
-    bip43Path: Bip43Path;
+    bip43Path: Bip43PathTemplate;
     backendType?: BackendType;
     features?: NetworkFeature[];
     isDebugOnlyAccountType?: boolean;
@@ -91,7 +95,7 @@ type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
     symbol: TKey;
     name: string;
     networkType: NetworkType;
-    bip43Path: Bip43Path;
+    bip43Path: Bip43PathTemplate;
     decimals: number;
     testnet: boolean;
     explorer: Explorer;

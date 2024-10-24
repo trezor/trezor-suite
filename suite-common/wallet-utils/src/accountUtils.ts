@@ -17,6 +17,7 @@ import {
     networks,
     AccountType,
     Bip43Path,
+    Bip43PathTemplate,
     getNetwork,
 } from '@suite-common/wallet-config';
 import {
@@ -223,11 +224,13 @@ export const getBip43Type = (path: string) => {
     }
 };
 
-export const substituteBip43Path = (bip43Path: Bip43Path, accountIndex: string | number = '0') =>
-    bip43Path.replace('i', String(accountIndex)) as Bip43Path;
+export const substituteBip43Path = (
+    bip43PathTemplate: Bip43PathTemplate,
+    accountIndex: string | number = '0',
+) => bip43PathTemplate.replace('i', String(accountIndex)) as Bip43Path;
 
 type getAccountTypeNameProps = {
-    path?: Bip43Path;
+    path?: Bip43PathTemplate;
     networkType?: NetworkType;
     accountType?: AccountType;
 };
@@ -268,7 +271,7 @@ export const getAccountTypeName = ({ path, accountType, networkType }: getAccoun
     return 'TR_ACCOUNT_TYPE_BIP44_NAME';
 };
 
-export const getAccountTypeTech = (path: Bip43Path) => {
+export const getAccountTypeTech = (path: Bip43PathTemplate) => {
     const accountTypePrefix = getAccountTypePrefix(path);
     if (accountTypePrefix) return `${accountTypePrefix}_TECH` as const;
     const bip43 = getBip43Type(path);
@@ -282,7 +285,7 @@ export const getAccountTypeTech = (path: Bip43Path) => {
 };
 
 type getAccountTypeDescProps = {
-    path: Bip43Path;
+    path: Bip43PathTemplate;
     accountType?: AccountType;
     networkType?: NetworkType;
 };
@@ -565,7 +568,7 @@ export const enhanceAddresses = (
         case 'cardano': {
             const replaceAccountIndex = (address: AccountAddress) => ({
                 ...address,
-                path: substituteBip43Path(address.path as Bip43Path, accountIndex),
+                path: substituteBip43Path(address.path as Bip43PathTemplate, accountIndex),
             });
 
             return {
@@ -610,7 +613,7 @@ export const enhanceUtxo = (
 
     const enhancedUtxos = utxos.map(utxo => ({
         ...utxo,
-        path: substituteBip43Path(utxo.path as Bip43Path, accountIndex),
+        path: substituteBip43Path(utxo.path as Bip43PathTemplate, accountIndex),
     }));
 
     return enhancedUtxos;
@@ -846,7 +849,7 @@ export const getFailedAccounts = (discovery: Discovery): Account[] =>
             failed: true,
             deviceState: discovery.deviceState,
             index: f.index,
-            path: network.bip43Path, // placeholder - not relevant for failed, but required by TS to be an actual Bip43Path
+            path: substituteBip43Path(network.bip43Path), // placeholder - not relevant for failed, but required by TS to be an actual Bip43Path
             descriptor,
             key: descriptor,
             accountType: f.accountType,
