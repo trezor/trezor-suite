@@ -3,15 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    removeButtonRequests,
-    selectDevice,
-    selectHasDeviceDiscovery,
-} from '@suite-common/wallet-core';
+import { removeButtonRequests, selectDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { analytics, EventType } from '@suite-native/analytics';
 import { Button, ButtonColorScheme } from '@suite-native/atoms';
-import { requestDeviceAccess } from '@suite-native/device-mutex';
+import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
@@ -69,7 +65,6 @@ export const DevicePinActionButton = ({
     const { showAlert, hideAlert } = useAlert();
 
     const device = useSelector(selectDevice);
-    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
 
     const showSuccess = useCallback(
         (messageKey: TxKeyPath) => {
@@ -109,7 +104,7 @@ export const DevicePinActionButton = ({
 
         const { param, successMessageKey, canceledMessageKey } = actionConfigMap[type];
 
-        const result = await requestDeviceAccess({
+        const result = await requestPrioritizedDeviceAccess({
             deviceCallback: () =>
                 TrezorConnect.changePin({
                     device: {
@@ -141,13 +136,7 @@ export const DevicePinActionButton = ({
     }, [navigation, dispatch, device, type, showSuccess, showError]);
 
     return (
-        <Button
-            onPress={changePin}
-            colorScheme={colorScheme}
-            size="small"
-            isDisabled={hasDiscovery}
-            isLoading={hasDiscovery}
-        >
+        <Button onPress={changePin} colorScheme={colorScheme} size="small">
             {children}
         </Button>
     );
