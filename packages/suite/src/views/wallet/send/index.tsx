@@ -76,7 +76,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
 
     const { symbol } = selectedAccount.account;
 
-    const areTokensSupported = selectedAccount.network.features.includes('tokens');
+    const areTokensSupported = selectedAccount.network?.features?.includes('tokens') ?? false;
 
     if (props.sendRaw) {
         return (
