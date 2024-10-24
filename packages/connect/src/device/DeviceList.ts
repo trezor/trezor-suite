@@ -24,7 +24,6 @@ import {
 } from '../types';
 import { getBridgeInfo } from '../data/transportInfo';
 import { initLog } from '../utils/debug';
-import { typedObjectKeys } from '../types/utils';
 
 // custom log
 const _log = initLog('DeviceList');
@@ -55,6 +54,39 @@ const createAuthPenaltyManager = (priority: number) => {
     const clear = () => Object.keys(penalizedDevices).forEach(key => delete penalizedDevices[key]);
 
     return { get, add, remove, clear };
+};
+
+type DeviceTransport = Pick<Device, 'transport' | 'transportPath'>;
+
+const createDeviceCollection = () => {
+    const devices: Device[] = [];
+
+    const isEqual = (a: DeviceTransport) => (b: DeviceTransport) =>
+        a.transport === b.transport && a.transportPath === b.transportPath;
+
+    const get = (transportPath: PathPublic, transport: Transport) =>
+        devices.find(isEqual({ transport, transportPath }));
+
+    const all = () => devices.slice();
+
+    const add = (device: Device) => {
+        const index = devices.findIndex(isEqual(device));
+        if (index >= 0) devices[index] = device;
+        else devices.push(device);
+    };
+
+    const remove = (transportPath: PathPublic, transport: Transport) => {
+        const index = devices.findIndex(isEqual({ transport, transportPath }));
+        const [removed] = index >= 0 ? devices.splice(index, 1) : [undefined];
+
+        return removed;
+    };
+
+    const clear = () => {
+        return devices.splice(0, devices.length);
+    };
+
+    return { get, all, add, remove, clear };
 };
 
 interface DeviceListEvents {
@@ -99,7 +131,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     // array of transport that might be used in this environment
     private transports: Transport[];
 
-    private devices: Record<PathPublic, Device> = {};
+    private readonly devices = createDeviceCollection();
     private deviceCounter = Date.now();
 
     private readonly handshakeLock;
@@ -195,7 +227,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     private onDeviceConnected(descriptor: Descriptor, transport: Transport) {
-        const { path } = descriptor;
         const id = (this.deviceCounter++).toString(16).slice(-8);
         const device = new Device({
             id: DeviceUniquePath(id),
@@ -203,35 +234,30 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
             descriptor,
             listener: lifecycle => this.emit(lifecycle, device.toMessageObject()),
         });
-        this.devices[path] = device;
+        this.devices.add(device);
 
         const penalty = this.authPenaltyManager.get();
         this.handshakeLock(async () => {
-            if (this.devices[path]) {
+            if (this.devices.get(descriptor.path, transport)) {
                 // device wasn't removed while waiting for lock
                 await device.handshake(penalty);
             }
         });
     }
 
-    private onDeviceDisconnected(descriptor: Descriptor) {
-        const { path } = descriptor;
-        const device = this.devices[path];
-        if (device) {
-            device.disconnect();
-            delete this.devices[path];
-        }
+    private onDeviceDisconnected(descriptor: Descriptor, transport: Transport) {
+        const device = this.devices.remove(descriptor.path, transport);
+        device?.disconnect();
     }
 
-    private onDeviceSessionChanged(descriptor: Descriptor) {
-        const device = this.devices[descriptor.path];
-        if (device) {
-            device.updateDescriptor(descriptor);
-        }
+    private onDeviceSessionChanged(descriptor: Descriptor, transport: Transport) {
+        const device = this.devices.get(descriptor.path, transport);
+        device?.updateDescriptor(descriptor);
     }
 
-    private onDeviceRequestRelease(descriptor: Descriptor) {
-        this.devices[descriptor.path]?.usedElsewhere();
+    private onDeviceRequestRelease(descriptor: Descriptor, transport: Transport) {
+        const device = this.devices.get(descriptor.path, transport);
+        device?.usedElsewhere();
     }
 
     /**
@@ -293,9 +319,13 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
          * where transport.acquire, transport.release is called
          */
         transport.on(TRANSPORT.DEVICE_CONNECTED, d => this.onDeviceConnected(d, transport));
-        transport.on(TRANSPORT.DEVICE_DISCONNECTED, this.onDeviceDisconnected.bind(this));
-        transport.on(TRANSPORT.DEVICE_SESSION_CHANGED, this.onDeviceSessionChanged.bind(this));
-        transport.on(TRANSPORT.DEVICE_REQUEST_RELEASE, this.onDeviceRequestRelease.bind(this));
+        transport.on(TRANSPORT.DEVICE_DISCONNECTED, d => this.onDeviceDisconnected(d, transport));
+        transport.on(TRANSPORT.DEVICE_SESSION_CHANGED, d =>
+            this.onDeviceSessionChanged(d, transport),
+        );
+        transport.on(TRANSPORT.DEVICE_REQUEST_RELEASE, d =>
+            this.onDeviceRequestRelease(d, transport),
+        );
 
         // just like transport emits updates, it may also start producing errors, for example bridge process crashes.
         transport.on(TRANSPORT.ERROR, error => {
@@ -363,15 +393,15 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     getDeviceCount() {
-        return Object.keys(this.devices).length;
+        return this.devices.all().length;
     }
 
-    getAllDevices(): Device[] {
-        return typedObjectKeys(this.devices).map(key => this.devices[key]);
+    getAllDevices() {
+        return this.devices.all();
     }
 
     getOnlyDevice(): Device | undefined {
-        return this.getDeviceCount() === 1 ? Object.values(this.devices)[0] : undefined;
+        return this.getDeviceCount() === 1 ? this.devices.all()[0] : undefined;
     }
 
     getDeviceByPath(path: DeviceUniquePath): Device | undefined {
@@ -404,12 +434,11 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     async cleanup() {
         const { transport } = this;
-        const devices = this.getAllDevices();
+        const devices = this.devices.clear();
 
         // @ts-expect-error will be fixed later
         this.transport = undefined;
         this.authPenaltyManager.clear();
-        typedObjectKeys(this.devices).forEach(key => delete this.devices[key]);
 
         this.rejectPending?.(new Error('Disposed'));
 
@@ -436,7 +465,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         }
 
         res.payload.forEach(d => {
-            this.devices[d.path]?.updateDescriptor(d);
+            this.devices.get(d.path, transport)?.updateDescriptor(d);
         });
     }
 

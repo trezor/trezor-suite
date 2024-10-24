@@ -131,7 +131,7 @@ type DeviceParams = {
 export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transport: Transport;
     public readonly protocol: TransportProtocol;
-    private readonly transportPath;
+    public readonly transportPath;
     private readonly transportSessionOwner;
     private readonly transportDescriptorType;
     private session;
