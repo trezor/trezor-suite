@@ -1,5 +1,5 @@
 import { Paragraph } from '@trezor/components';
-import { Bip43Path } from '@suite-common/wallet-config';
+import { Bip43PathTemplate } from '@suite-common/wallet-config';
 import { Translation } from 'src/components/suite';
 import {
     getAccountTypeDesc,
@@ -15,7 +15,7 @@ import { spacings } from '@trezor/theme';
 import { Account } from '@suite-common/wallet-types';
 
 interface AccountTypeDescriptionProps {
-    bip43Path: Bip43Path;
+    bip43Path: Bip43PathTemplate;
     accountType?: AccountType;
     symbol?: Account['symbol'];
     networkType?: NetworkType;
