@@ -66,6 +66,9 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
                 ipcRenderer.send('update/set-automatic-update-enabled', value);
             }
         },
+        setAutoInstallOnAppQuit: () => {
+            ipcRenderer.send('update/set-auto-install-on-app-quit');
+        },
 
         // Theme
         themeChange: theme => {

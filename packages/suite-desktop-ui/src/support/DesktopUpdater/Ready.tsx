@@ -12,9 +12,9 @@ interface ReadyProps {
 export const Ready = ({ hideWindow }: ReadyProps) => {
     const dispatch = useDispatch();
 
-    const install = () => dispatch(installUpdate({ shouldInstallOnQuit: false }));
+    const install = () => dispatch(installUpdate({ installNow: true }));
     const installOnQuit = () => {
-        dispatch(installUpdate({ shouldInstallOnQuit: true }));
+        dispatch(installUpdate({ installNow: false }));
         hideWindow();
     };
 

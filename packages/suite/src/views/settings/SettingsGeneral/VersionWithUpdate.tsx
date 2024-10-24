@@ -86,7 +86,7 @@ export const VersionWithUpdate = () => {
 
     const checkForUpdates = () => desktopApi.checkForUpdates(true);
     const maximizeUpdateModal = () => dispatch(setUpdateModalVisibility('maximized'));
-    const installAndRestart = () => dispatch(installUpdate({ shouldInstallOnQuit: false }));
+    const installAndRestart = () => dispatch(installUpdate({ installNow: true }));
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.VersionWithUpdate}>

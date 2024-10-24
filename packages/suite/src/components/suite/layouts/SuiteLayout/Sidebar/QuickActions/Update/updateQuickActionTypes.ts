@@ -50,7 +50,7 @@ export const mapDeviceUpdateToClick: Record<UpdateStatusDevice, OnClickCallbackC
 export const mapSuiteUpdateToClick: Record<UpdateStatusSuite, OnClickCallbackCallback> = {
     'up-to-date': null,
     'update-downloaded-auto-restart-to-update': ({ dispatch }) =>
-        dispatch(installUpdate({ shouldInstallOnQuit: false })),
+        dispatch(installUpdate({ installNow: true })),
     'update-downloaded-manual': ({ dispatch }) => dispatch(setUpdateModalVisibility('maximized')),
     'just-updated': ({ dispatch }) => dispatch(openJustUpdatedChangelog()),
     'update-available': ({ dispatch }) => dispatch(setUpdateModalVisibility('maximized')),

@@ -208,6 +208,13 @@ export const init: Module = ({ mainWindowProxy, store }) => {
 
     ipcMain.on('update/download', startDownload);
 
+    ipcMain.on('update/set-auto-install-on-app-quit', () => {
+        // If the update is triggered manually by the button in the app, we want to force update,
+        // because it may have been disabled by the user switch the automatic update off. But because the user deliberately
+        // clicked the "Update on quit" button, we want to install it.
+        autoUpdater.autoInstallOnAppQuit = true;
+    });
+
     ipcMain.on('update/install', () => {
         logger.info(SERVICE_NAME, 'Restart and update request');
 
@@ -223,7 +230,7 @@ export const init: Module = ({ mainWindowProxy, store }) => {
             mainWindowProxy.getInstance()?.removeAllListeners('close');
             mainWindowProxy.getInstance()?.close();
 
-            // Silent install on Windows to match on "Update on quit" and MacOS behavior
+            // Silent installation on Windows to match on "Update on quit" and macOS behavior
             autoUpdater.quitAndInstall(true, true);
         });
     });
@@ -268,7 +275,7 @@ export const init: Module = ({ mainWindowProxy, store }) => {
             // In case
             //      1) the auto-update was enabled
             //      2) update is probably already downloaded
-            //      3) user wants do disable auto-update and PREVENT the downloaded update from installing
+            //      3) user wants to disable auto-update and PREVENT the downloaded update from installing
             //
             // We have to disable auto update so it won't get installed.
             autoUpdater.autoInstallOnAppQuit = false;
