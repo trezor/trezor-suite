@@ -6,6 +6,7 @@ import messages from 'src/support/messages';
 import { MODAL } from 'src/actions/suite/constants';
 import { useSelector } from 'src/hooks/suite';
 import {
+    ThpPairingModal,
     PinModal,
     PinInvalidModal,
     PassphraseModal,
@@ -44,6 +45,9 @@ export const DeviceContextModal = ({
         // Passphrase on host
         case UI.REQUEST_PASSPHRASE:
             return <PassphraseModal device={device} />;
+
+        case UI.REQUEST_THP_PAIRING:
+            return <ThpPairingModal device={device} />;
 
         case 'WordRequestType_Plain':
             return <WordModal renderer={renderer} />;

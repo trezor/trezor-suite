@@ -194,7 +194,7 @@ export default {
                 },
                 {
                     // https://github.com/trezor/trezor-firmware/pull/2703/
-                    rules: ['<2.8.2'],
+                    rules: ['<2.9.9'],
                     success: false,
                 },
             ],

@@ -29,6 +29,12 @@ const initialSettings: ConnectSettings = {
     interactionTimeout: 600, // 5 minutes
     sharedLogger: true,
     deeplinkUrl: `${DEFAULT_DOMAIN}deeplink/${DEEPLINK_VERSION}/`,
+    thp: {
+        hostName: 'TrezorConnect',
+        staticKeys: '0007070707070707070707070707070707070707070707070707070707070747',
+        knownCredentials: [],
+        pairingMethods: ['CodeEntry', 'QrCode', 'NFC_Unidirectional'] as any[],
+    },
 };
 
 const parseManifest = (manifest?: Manifest) => {
@@ -151,6 +157,11 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
 
     if (typeof input.enableFirmwareHashCheck === 'boolean') {
         settings.enableFirmwareHashCheck = Boolean(input.enableFirmwareHashCheck);
+    }
+
+    if (input.thp) {
+        // TODO: validate
+        settings.thp = input.thp;
     }
 
     return settings;

@@ -2540,6 +2540,8 @@
                         "Failure_PinMismatch": 12,
                         "Failure_WipeCodeMismatch": 13,
                         "Failure_InvalidSession": 14,
+                        "Failure_ThpUnallocatedSession": 15,
+                        "Failure_InvalidProtocol": 16,
                         "Failure_FirmwareError": 99
                     }
                 }
@@ -2945,6 +2947,10 @@
                 "wait_layout": {
                     "type": "bool",
                     "id": 3
+                },
+                "thp_channel_id": {
+                    "type": "bytes",
+                    "id": 4
                 }
             }
         },
@@ -3002,6 +3008,18 @@
                     "rule": "repeated",
                     "type": "string",
                     "id": 13
+                },
+                "thp_pairing_code_entry_code": {
+                    "type": "uint32",
+                    "id": 14
+                },
+                "thp_pairing_code_qr_code": {
+                    "type": "bytes",
+                    "id": 15
+                },
+                "thp_pairing_code_nfc_unidirectional": {
+                    "type": "bytes",
+                    "id": 16
                 }
             }
         },

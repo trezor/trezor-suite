@@ -7,8 +7,13 @@ import {
     Deferred,
 } from '@trezor/utils';
 import { TypedEmitter } from '@trezor/utils';
-import { PROTOCOL_MALFORMED, TransportProtocol } from '@trezor/protocol';
-import { MessageFromTrezor } from '@trezor/protobuf';
+import {
+    PROTOCOL_MALFORMED,
+    TransportProtocol,
+    TransportProtocolState,
+    thp as protocolThp,
+} from '@trezor/protocol';
+import { MessageFromTrezor as ProtobufMessageType, loadDefinitions } from '@trezor/protobuf';
 
 import {
     Session,
@@ -46,6 +51,11 @@ type DescriptorDiffItem = { descriptor: Descriptor } & (
 );
 
 export type DeviceDescriptorDiff = DescriptorDiffItem[];
+
+type ExtendedMessageFromTrezor = {
+    type: ProtobufMessageType['type'] | keyof protocolThp.ThpMessageType;
+    message: ProtobufMessageType['message'];
+};
 
 export interface AbstractTransportParams {
     messages?: Record<string, any>;
@@ -278,6 +288,7 @@ export abstract class AbstractTransport extends TransportEmitter {
             name: string;
             data: Record<string, unknown>;
             protocol?: TransportProtocol;
+            protocolState?: TransportProtocolState;
         } & AbortableParam,
     ): AsyncResultWithTypedError<undefined, ReadWriteError>;
 
@@ -289,8 +300,9 @@ export abstract class AbstractTransport extends TransportEmitter {
             path?: string;
             session: Session;
             protocol?: TransportProtocol;
+            protocolState?: TransportProtocolState;
         } & AbortableParam,
-    ): AsyncResultWithTypedError<MessageFromTrezor, ReadWriteError>;
+    ): AsyncResultWithTypedError<ExtendedMessageFromTrezor, ReadWriteError>;
 
     /**
      * Send and read after that
@@ -301,8 +313,9 @@ export abstract class AbstractTransport extends TransportEmitter {
             name: string;
             data: Record<string, unknown>;
             protocol?: TransportProtocol;
+            protocolState?: TransportProtocolState;
         } & AbortableParam,
-    ): AsyncResultWithTypedError<MessageFromTrezor, ReadWriteError>;
+    ): AsyncResultWithTypedError<ExtendedMessageFromTrezor, ReadWriteError>;
 
     /**
      * Stop transport = remove all listeners + try to release session + cancel all requests
@@ -432,6 +445,10 @@ export abstract class AbstractTransport extends TransportEmitter {
 
     public updateMessages(messages: Record<string, any>) {
         this.messages = protobuf.Root.fromJSON(messages);
+    }
+
+    public loadMessages(packageName: string, packageLoader: Parameters<typeof loadDefinitions>[2]) {
+        return loadDefinitions(this.messages, packageName, packageLoader);
     }
 
     protected success<T>(payload: T): Success<T> {

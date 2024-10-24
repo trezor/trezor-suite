@@ -78,7 +78,8 @@ export const setup = async (
     TrezorUserEnvLink.state = options;
 
     // after all is done, start bridge again
-    await TrezorUserEnvLink.startBridge();
+    await TrezorUserEnvLink.startBridge('node-bridge');
+    // await TrezorUserEnvLink.startBridge();
 };
 
 export const initTrezorConnect = async (
@@ -114,16 +115,30 @@ export const initTrezorConnect = async (
         setTimeout(() => TrezorUserEnvLink.send({ type: 'emulator-press-yes' }), 1);
     });
 
+    // TrezorConnect.on('ui-request_passphrase', () => {
+    //     TrezorConnect.uiResponse({
+    //         type: 'ui-receive_passphrase',
+    //         payload: { value: '' },
+    //     });
+    // });
+
     await TrezorConnect.init({
         manifest: {
             appUrl: 'tests.connect.trezor.io',
             email: 'tests@connect.trezor.io',
         },
         transports: ['BridgeTransport'],
+        // transports: ['UdpTransport'],
         debug: false,
         popup: false,
         pendingTransportEvent: true,
         connectSrc: process.env.TREZOR_CONNECT_SRC, // custom source for karma tests
+        thp: {
+            hostName: 'TrezorConnect',
+            staticKeys: '0007070707070707070707070707070707070707070707070707070707070747',
+            knownCredentials: [],
+            pairingMethods: ['NoMethod'] as any,
+        },
         ...options,
     });
 };

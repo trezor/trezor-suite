@@ -1,6 +1,6 @@
 # @trezor/protobuf
 
-Library for handling protobuf interfaces with Treozr
+Library for handling protobuf interfaces with Trezor
 
 ## From Protobuf to TypeScript
 

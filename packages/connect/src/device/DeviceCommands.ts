@@ -313,13 +313,13 @@ export class DeviceCommands {
             name: type,
             data: msg,
             protocol: this.device.protocol,
+            protocolState: this.device.protocolState,
         });
 
         const res = await this.callPromise;
 
         this.callPromise = undefined;
         if (!res.success) {
-            logger.warn('Received error', res.error);
             throw new Error(res.error);
         }
 
@@ -364,6 +364,7 @@ export class DeviceCommands {
             await this.transport.receive({
                 session: this.transportSession,
                 protocol: this.device.protocol,
+                protocolState: this.device.protocolState,
             });
             // throw error anyway, next call should be resolved properly
             throw error;

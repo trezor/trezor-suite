@@ -4,6 +4,7 @@ import {
     bridge as protocolBridge,
     v1 as protocolV1,
     TransportProtocol,
+    TransportProtocolState,
 } from '@trezor/protocol';
 import { bridgeApiCall } from '../utils/bridgeApiCall';
 import * as bridgeApiResult from '../utils/bridgeApiResult';
@@ -253,8 +254,16 @@ export class BridgeTransport extends AbstractTransport {
         return customProtocol || protocolV1;
     }
 
-    private getRequestBody(body: Buffer, protocol: TransportProtocol) {
-        return createProtocolMessage(body, this.useProtocolMessages ? protocol : undefined);
+    private getRequestBody(
+        body: Buffer,
+        protocol: TransportProtocol,
+        protocolState?: TransportProtocolState,
+    ) {
+        return createProtocolMessage(
+            body,
+            this.useProtocolMessages ? protocol : undefined,
+            protocolState?.serialize(),
+        );
     }
 
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L534
@@ -263,6 +272,7 @@ export class BridgeTransport extends AbstractTransport {
         name,
         data,
         protocol: customProtocol,
+        protocolState,
         signal,
     }: AbstractTransportMethodParams<'call'>) {
         return this.scheduleAction(
@@ -272,22 +282,48 @@ export class BridgeTransport extends AbstractTransport {
                     messages: this.messages,
                     name,
                     data,
-                    encode: protocol.encode,
+                    protocol,
+                    protocolState,
                 });
+                console.log('Bridge call bytes', protocolState, bytes);
+
                 const response = await this.post(`/call`, {
                     params: session,
-                    body: this.getRequestBody(bytes, protocol),
+                    body: this.getRequestBody(bytes, protocol, protocolState),
                     signal,
                 });
+
+                console.log('Bridge call response', response);
                 if (!response.success) {
                     return response;
                 }
 
-                return receiveAndParse(
+                const message = await receiveAndParse(
                     this.messages,
                     () => Promise.resolve(this.success(Buffer.from(response.payload.data, 'hex'))),
                     protocol,
+                    protocolState,
                 );
+                if (!message.success) {
+                    return message;
+                }
+
+                if (protocol.name === 'v2') {
+                    console.log('Bridge protocolState after the response', protocolState);
+                    protocolState?.updateState(message.payload.type);
+                }
+
+                // const isAckExpected = protocolThp.isAckExpected(protocolState?.expectedResponses || []);
+                // if (isAckExpected) {
+                //     protocolState?.updateSyncBit('recv');
+                // }
+
+                // if (protocolState?.shouldUpdateNonce(message.type)) {
+                //     protocolState?.updateNonce('send');
+                //     protocolState?.updateNonce('recv');
+                // }
+
+                return message;
             },
             { signal, timeout: undefined },
         );
@@ -298,6 +334,7 @@ export class BridgeTransport extends AbstractTransport {
         name,
         data,
         protocol: customProtocol,
+        protocolState,
         signal,
     }: AbstractTransportMethodParams<'send'>) {
         return this.scheduleAction(
@@ -307,11 +344,12 @@ export class BridgeTransport extends AbstractTransport {
                     messages: this.messages,
                     name,
                     data,
-                    encode: protocol.encode,
+                    protocol,
+                    protocolState,
                 });
                 const response = await this.post('/post', {
                     params: session,
-                    body: this.getRequestBody(bytes, protocol),
+                    body: this.getRequestBody(bytes, protocol, protocolState),
                     signal,
                 });
                 if (!response.success) {
@@ -328,13 +366,14 @@ export class BridgeTransport extends AbstractTransport {
         session,
         protocol: customProtocol,
         signal,
+        protocolState,
     }: AbstractTransportMethodParams<'receive'>) {
         return this.scheduleAction(
             async signal => {
                 const protocol = this.getProtocol(customProtocol);
                 const response = await this.post('/read', {
                     params: session,
-                    body: this.getRequestBody(Buffer.alloc(0), protocol),
+                    body: this.getRequestBody(Buffer.alloc(0), protocol, protocolState),
                     signal,
                 });
 
@@ -346,6 +385,7 @@ export class BridgeTransport extends AbstractTransport {
                     this.messages,
                     () => Promise.resolve(this.success(Buffer.from(response.payload.data, 'hex'))),
                     protocol,
+                    protocolState,
                 );
             },
             { signal, timeout: undefined },

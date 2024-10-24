@@ -1,8 +1,14 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
 import { versionUtils, createDeferred, Deferred, TypedEmitter } from '@trezor/utils';
 import { Session } from '@trezor/transport';
-import { TransportProtocol, v1 as v1Protocol } from '@trezor/protocol';
+import {
+    TransportProtocol,
+    v1 as protocolV1,
+    v2 as protocolV2,
+    thp as protocolThp,
+} from '@trezor/protocol';
 import { DeviceCommands } from './DeviceCommands';
+import { createThpChannel, initThpChannel, getThpSession } from './thpCommands';
 import { PROTO, ERRORS, NETWORK, FIRMWARE } from '../constants';
 import {
     DEVICE,
@@ -11,6 +17,7 @@ import {
     UiResponsePin,
     UiResponsePassphrase,
     UiResponseWord,
+    UiResponseThpPairingTag,
 } from '../events';
 import { getAllNetworks } from '../data/coinInfo';
 import { DataManager } from '../data/DataManager';
@@ -93,9 +100,14 @@ export interface DeviceEvents {
         device: Device,
         callback: PromptCallback<UiResponsePassphrase['payload']>,
     ) => void;
+    [DEVICE.THP_PAIRING]: (
+        device: Device,
+        callback: PromptCallback<UiResponseThpPairingTag['payload']>,
+    ) => void;
     [DEVICE.PASSPHRASE_ON_DEVICE]: () => void;
     [DEVICE.BUTTON]: (device: Device, payload: DeviceButtonRequestPayload) => void;
     [DEVICE.ACQUIRED]: () => void;
+    [DEVICE.TRANSPORT_STATE_CHANGED]: () => void;
 }
 
 /**
@@ -106,6 +118,7 @@ export interface DeviceEvents {
 export class Device extends TypedEmitter<DeviceEvents> {
     transport: Transport;
     protocol: TransportProtocol;
+    protocolState: protocolThp.ThpProtocolState;
 
     originalDescriptor: Descriptor;
 
@@ -123,6 +136,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     // @ts-expect-error: strictPropertyInitialization
     features: Features;
+    properties?: protocolThp.ThpDeviceProperties;
 
     featuresNeedsReload = false;
 
@@ -166,7 +180,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
     constructor(transport: Transport, descriptor: Descriptor) {
         super();
 
-        this.protocol = v1Protocol;
+        this.protocol = protocolV1;
+        this.protocolState = new protocolThp.ThpProtocolState();
 
         // === immutable properties
         this.transport = transport;
@@ -245,6 +260,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 }
             }
 
+            console.log('Device.this.releasePromise');
             this.releasePromise = this.transport.release({
                 session: this.transportSession,
                 path: this.originalDescriptor.path,
@@ -265,6 +281,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.removeAllListeners();
         // make sure that Device_CallInProgress will not be thrown
         delete this.runPromise;
+        console.log('Device.cleanup.release');
         await this.release();
         // restore DEVICE.ACQUIRED listeners
         acquiredListeners.forEach(l => this.once(DEVICE.ACQUIRED, l));
@@ -371,12 +388,26 @@ export class Device extends TypedEmitter<DeviceEvents> {
             (!deriveCardano && options.useCardanoDerivation)
         ) {
             // acquire session
-            await this.acquire();
+            if (!this.isUsedHere()) {
+                await this.acquire();
+            }
 
             // update features
             try {
+                console.log('..._runInner', typeof fn);
+
                 if (fn) {
                     await this.initialize(!!options.useCardanoDerivation);
+                } else if (this.protocol.name === 'v2') {
+                    console.log('..._runInner with protocol v2');
+                    await createThpChannel(this, DataManager.getSettings('thp'));
+                    if (
+                        this.protocolState.handshakeCredentials?.pairingMethods.includes(
+                            protocolThp.ThpPairingMethod.NoMethod,
+                        )
+                    ) {
+                        await this.getFeatures();
+                    }
                 } else {
                     const getFeaturesTimeout =
                         DataManager.getSettings('env') === 'react-native'
@@ -413,6 +444,33 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
                     return this._runInner(() => Promise.resolve({}), options);
                 }
+                if (error.code === 'Failure_InvalidProtocol') {
+                    _log.info('Changing device protocol to v2');
+                    // switch to THP and try again
+                    this.protocol = protocolV2;
+                    try {
+                        if (
+                            this.transport.name === 'BridgeTransport' &&
+                            !versionUtils.isNewerOrEqual(this.transport.version, '3.0.0')
+                        ) {
+                            throw new Error('Incompatible setup');
+                        }
+                        await this.transport.loadMessages(
+                            'thp',
+                            protocolThp.getProtobufDefinitions,
+                        );
+                    } catch (e) {
+                        // create unreadable device
+                        return Promise.reject(
+                            ERRORS.TypedError(
+                                'Device_InitializeFailed',
+                                `Initialize failed: ${e.message}`,
+                            ),
+                        );
+                    }
+
+                    return this._runInner(fn, options);
+                }
 
                 if (TRANSPORT_ERROR.ABORTED_BY_TIMEOUT === error.message) {
                     this.unreadableError = 'Connection timeout';
@@ -420,6 +478,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
                 this.inconsistent = true;
                 delete this.runPromise;
+                // TODO: unreadable device never released
+                // if (!fn) {
+                //     await this.release();
+                // }
 
                 return Promise.reject(
                     ERRORS.TypedError(
@@ -459,6 +521,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             options.keepSession === false
         ) {
             this.keepTransportSession = false;
+            console.log('_runinner.release');
             await this.release();
         }
 
@@ -518,8 +581,20 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
     }
 
-    async validateState(preauthorized = false) {
+    validateThpState() {
+        // const currentState = this.getState();
+        // const expectedSessionId = currentState?.sessionId;
+        // if (expectedSessionId) {
+        //     this.protocolState.setSessionId(expectedSessionId as any);
+        // }
+    }
+
+    async validateState(preauthorized = false, useCardanoDerivation = false) {
         if (!this.features) return;
+
+        if (this.protocol.name === 'v2') {
+            this.validateThpState();
+        }
 
         if (!this.features.unlocked && preauthorized) {
             // NOTE: auto locked device accepts preauthorized methods (authorizeConjoin, getOwnershipProof, signTransaction) without pin request.
@@ -530,9 +605,53 @@ export class Device extends TypedEmitter<DeviceEvents> {
             // ...and if it's not then unlock device and proceed to regular GetAddress flow
         }
 
-        const expectedState = this.getState()?.staticSessionId;
-        const state = await this.getCommands().getDeviceState();
-        const uniqueState: StaticSessionId = `${state}@${this.features.device_id}:${this.instance}`;
+        const currentState = this.getState();
+        const expectedState = currentState?.staticSessionId;
+        const expectedSessionId = currentState?.sessionId;
+        let deviceState: string | undefined;
+        if (this.protocol.name === 'v2') {
+            if (expectedSessionId) {
+                this.protocolState.setSessionId(expectedSessionId as any);
+                deviceState = await this.getCommands()
+                    .getDeviceState()
+                    .catch(e => {
+                        if (e) {
+                            console.log('Verify ThpSession error', e);
+                            // TODO: catch specific thp errors
+                            // requested sessionId is not valid, reset
+                            // currently throws: Failure_UnknownMessage : Failure_UnknownCode
+                            this.setState({
+                                sessionId: undefined,
+                                deriveCardano: undefined,
+                            });
+                            this.protocolState.setSessionId(0);
+
+                            return undefined;
+                        }
+                    });
+            }
+
+            if (!deviceState || (!currentState?.deriveCardano && useCardanoDerivation)) {
+                this.protocolState.setSessionId(0);
+                console.log(
+                    'I need new ThpSession',
+                    deviceState,
+                    !currentState?.deriveCardano && useCardanoDerivation,
+                );
+                const sessionId = await getThpSession(this, useCardanoDerivation);
+                this.setState({
+                    sessionId: sessionId.toString(),
+                    deriveCardano: useCardanoDerivation,
+                }); // TODO session string/number?
+                this.protocolState.setSessionId(sessionId);
+            }
+        }
+
+        if (!deviceState) {
+            deviceState = await this.getCommands().getDeviceState();
+        }
+
+        const uniqueState: StaticSessionId = `${deviceState}@${this.features.device_id || 'device_id'}:${this.instance}`;
         if (this.features.session_id) {
             this.setState({ sessionId: this.features.session_id });
         }
@@ -544,7 +663,27 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
     }
 
+    // bridge older than 3.0.0 adds MESSAGE_MAGIC_HEADER_BYTE to each chunk
+    // therefore it's not possible to implement Trezor Host Protocol
+    useLegacyProtocol() {
+        return (
+            this.transport.name === 'BridgeTransport' &&
+            !versionUtils.isNewerOrEqual(this.transport.version, '3.0.0')
+        );
+    }
+
     async initialize(useCardanoDerivation: boolean) {
+        console.log('.......Initialize()', useCardanoDerivation, this.protocol.name);
+        if (this.protocol.name === 'v2') {
+            await initThpChannel(this, DataManager.getSettings('thp'));
+
+            // const { message } = await this.getCommands().typedCall('Initialize', 'Features', payload);
+            const { message } = await this.getCommands().typedCall('GetFeatures', 'Features', {});
+            this._updateFeatures(message);
+
+            return;
+        }
+
         let payload: PROTO.Initialize | undefined;
         if (this.features) {
             const { sessionId, deriveCardano } = this.getState() || {};
@@ -560,7 +699,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         const { message } = await this.getCommands().typedCall('Initialize', 'Features', payload);
         this._updateFeatures(message);
-        this.setState({ deriveCardano: payload?.derive_cardano });
     }
 
     initStorage(storage: IStateStorage) {
@@ -569,6 +707,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     async getFeatures() {
+        console.log('.......getFeatures()');
+        if (this.protocol.name === 'v2') {
+            await initThpChannel(this, DataManager.getSettings('thp'));
+        }
+
         const { message } = await this.getCommands().typedCall('GetFeatures', 'Features', {});
         this._updateFeatures(message);
 
@@ -950,6 +1093,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 await this.cancelableAction?.();
                 await this.commands?.cancel();
 
+                console.log('Device.this.transport.release');
+
                 return this.transport.release({
                     session: this.transportSession,
                     path: this.originalDescriptor.path,
@@ -990,6 +1135,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 ...base,
                 type: 'unacquired',
                 label: 'Unacquired device',
+                properties: this.properties,
+                protocolState: this.protocolState.serialize(),
             };
         }
         const defaultLabel = 'My Trezor';
@@ -1005,6 +1152,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             label,
             _state: this.getState(),
             state: this.getState()?.staticSessionId,
+            protocolState: this.protocolState.serialize(),
             status,
             mode: this.getMode(),
             color: this.color,
@@ -1012,6 +1160,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             firmwareRelease: this.firmwareRelease,
             firmwareType: this.firmwareType,
             features: this.features,
+            properties: this.properties,
             unavailableCapabilities: this.unavailableCapabilities,
             availableTranslations: this.availableTranslations,
             authenticityChecks: this.authenticityChecks,

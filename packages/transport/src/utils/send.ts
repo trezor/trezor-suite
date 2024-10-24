@@ -3,7 +3,7 @@
 // Logic of "call" is broken to two parts - sending and receiving
 import { Root } from 'protobufjs/light';
 import { encode as encodeProtobuf, createMessageFromName } from '@trezor/protobuf';
-import { TransportProtocolEncode } from '@trezor/protocol';
+import { TransportProtocol, TransportProtocolState, thp as protocolThp } from '@trezor/protocol';
 
 import { AsyncResultWithTypedError } from '../types';
 
@@ -34,16 +34,38 @@ interface BuildMessageProps {
     messages: Root;
     name: string;
     data: Record<string, unknown>;
-    encode: TransportProtocolEncode;
+    protocol: TransportProtocol;
+    protocolState?: TransportProtocolState;
 }
 
-export const buildMessage = ({ messages, name, data, encode }: BuildMessageProps) => {
-    const { Message, messageType } = createMessageFromName(messages, name);
-    const buffer = encodeProtobuf(Message, data);
+export const buildMessage = ({
+    messages,
+    name,
+    data,
+    protocol,
+    protocolState,
+}: BuildMessageProps) => {
+    const protobufEncoder = (messageName: string, messageData: Record<string, unknown>) => {
+        const { Message, messageType } = createMessageFromName(messages, messageName);
 
-    return encode(buffer, {
-        messageType,
-    });
+        return {
+            messageType,
+            payload: encodeProtobuf(Message, messageData),
+        };
+    };
+
+    if (protocol.name === 'v2') {
+        return protocolThp.encode({
+            data,
+            messageType: name,
+            protocolState,
+            protobufEncoder,
+        });
+    }
+
+    const { messageType, payload } = protobufEncoder(name, data);
+
+    return protocol.encode(payload, { messageType });
 };
 
 export const sendChunks = async <T, E>(

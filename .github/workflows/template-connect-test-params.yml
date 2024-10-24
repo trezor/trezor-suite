@@ -57,6 +57,7 @@ jobs:
       # todo: ideally do not install everything. possibly only devDependencies could be enough for testing (if there was not for building libs)?
       - run: sed -i "/\"node\"/d" package.json
       - run: yarn install
+      - run: yarn workspace @trezor/transport-bridge build:js
       # nightly test - run without cached txs
       - if: ${{ github.event_name == 'schedule' }}
         run: echo "ADDITIONAL_ARGS=-c" >> "$GITHUB_ENV"

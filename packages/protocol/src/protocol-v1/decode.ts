@@ -40,6 +40,7 @@ export const decode: TransportProtocolDecode = bytes => {
     }
 
     return {
+        header: bytes.subarray(0, 3),
         length,
         messageType,
         payload: bytes.subarray(HEADER_SIZE),
