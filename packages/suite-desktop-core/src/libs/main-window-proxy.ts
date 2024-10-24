@@ -24,6 +24,10 @@ export class MainWindowProxy extends TypedEmitter<MainWindowProxyEvents> {
     }
 
     getInstance() {
+        if (this.instance?.isDestroyed()) {
+            this.destroyInstance();
+        }
+
         return this.instance;
     }
 }
