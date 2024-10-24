@@ -120,6 +120,10 @@ Available flags:
 
 `appimage-run ./Trezor-Suite.AppImage --log-level=debug`
 
+#### Windows
+
+`"C:\Users\[user-name]\AppData\Local\Programs\Trezor Suite.exe" --log-level=debug`
+
 ## Extract application
 
 #### MacOS
