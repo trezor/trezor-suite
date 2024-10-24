@@ -118,7 +118,7 @@ describe('utils/deviceFeaturesUtils', () => {
         const featT2B1 = {
             major_version: 2,
             minor_version: 6,
-            patch_version: 1,
+            patch_version: 2,
             capabilities: undefined,
             internal_model: DeviceModelInternal.T2B1,
         } as unknown as Features;
