@@ -106,7 +106,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             async signal => {
                 const { path } = input;
 
-                const acquireIntentResponse = await this.sessionsClient.acquireIntent(input);
+                const acquireIntentResponse = await this.sessionsClient.acquireIntent({
+                    ...input,
+                    sessionOwner: this.id,
+                });
 
                 if (!acquireIntentResponse.success) {
                     return this.error({ error: acquireIntentResponse.error });
@@ -123,7 +126,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     return openDeviceResult;
                 }
 
-                this.sessionsClient.acquireDone({ path });
+                this.sessionsClient.acquireDone({ path, sessionOwner: this.id });
 
                 return this.success(acquireIntentResponse.payload.session);
             },

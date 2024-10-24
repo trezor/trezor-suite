@@ -56,6 +56,7 @@ const initTest = async () => {
     transport = new TestUsbTransport({
         api: testUsbApi,
         messages,
+        id: 'test',
     });
     const initResponse = await transport.init();
     expect(initResponse.success).toEqual(true);
@@ -88,6 +89,7 @@ describe('Usb', () => {
 
             const transport = new TestUsbTransport({
                 api: testUsbApi,
+                id: 'test',
             });
 
             await transport.init();

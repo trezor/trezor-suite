@@ -24,7 +24,7 @@ export type EnumerateDoneResponse = BackgroundResponse<{
     descriptors: Descriptor[];
 }>;
 
-export type AcquireIntentRequest = AcquireInput;
+export type AcquireIntentRequest = AcquireInput & { sessionOwner: string };
 
 export type AcquireIntentResponse = BackgroundResponseWithError<
     { session: Session; path: PathInternal; releaseRequest?: Descriptor },
@@ -33,6 +33,7 @@ export type AcquireIntentResponse = BackgroundResponseWithError<
 
 export type AcquireDoneRequest = {
     path: PathPublic;
+    sessionOwner?: string;
 };
 
 export type AcquireDoneResponse = BackgroundResponseWithError<

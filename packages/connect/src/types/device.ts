@@ -96,6 +96,7 @@ export type KnownDevice = BaseDevice & {
         firmwareHash: FirmwareHashCheckResult | null;
         // Maybe add AuthenticityCheck result here?
     };
+    sessionOwner?: string;
 };
 
 export type UnknownDevice = BaseDevice & {
@@ -115,6 +116,7 @@ export type UnknownDevice = BaseDevice & {
     state?: typeof undefined;
     unavailableCapabilities?: typeof undefined;
     availableTranslations?: typeof undefined;
+    transportSessionOwner?: string;
 };
 
 export type UnreadableDevice = BaseDevice & {

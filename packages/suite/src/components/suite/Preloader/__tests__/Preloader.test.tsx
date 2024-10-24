@@ -189,7 +189,10 @@ describe('Preloader component', () => {
 
     it('Unacquired device', () => {
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: { type: 'unacquired' },
+            selectedDevice: {
+                descriptor: { path: '1', session: null, sessionOwner: 'foo', type: 1 },
+                type: 'unacquired',
+            },
         };
 
         const store = initStore(
@@ -210,7 +213,11 @@ describe('Preloader component', () => {
 
     it('Unreadable device: webusb HID', () => {
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
+            selectedDevice: {
+                descriptor: { path: '1', session: null, sessionOwner: 'foo', type: 1 },
+                type: 'unreadable',
+                error: 'LIBUSB_ERROR_ACCESS',
+            },
         };
 
         const store = initStore(
@@ -233,7 +240,11 @@ describe('Preloader component', () => {
         jest.spyOn(envUtils, 'isLinux').mockImplementation(() => true);
 
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
+            selectedDevice: {
+                descriptor: { path: '1', session: null, sessionOwner: 'foo', type: 1 },
+                type: 'unreadable',
+                error: 'LIBUSB_ERROR_ACCESS',
+            },
         };
 
         const store = initStore(
@@ -256,7 +267,11 @@ describe('Preloader component', () => {
         jest.spyOn(envUtils, 'isLinux').mockImplementation(() => false);
 
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
+            selectedDevice: {
+                descriptor: { path: '1', session: null, sessionOwner: 'foo', type: 1 },
+                type: 'unreadable',
+                error: 'LIBUSB_ERROR_ACCESS',
+            },
         };
 
         const store = initStore(
@@ -277,7 +292,11 @@ describe('Preloader component', () => {
 
     it('Unreadable device: unknown error', () => {
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: { type: 'unreadable', error: 'Unexpected error' },
+            selectedDevice: {
+                descriptor: { path: '1', session: null, sessionOwner: 'foo', type: 1 },
+                type: 'unreadable',
+                error: 'Unexpected error',
+            },
         };
 
         const store = initStore(
@@ -298,7 +317,10 @@ describe('Preloader component', () => {
 
     it('Unknown device (should never happen)', () => {
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: { features: undefined },
+            selectedDevice: {
+                descriptor: { path: '1', session: null, sessionOwner: 'foo', type: 1 },
+                features: undefined,
+            },
         };
 
         const store = initStore(
@@ -319,7 +341,11 @@ describe('Preloader component', () => {
 
     it('Seedless device', () => {
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: { mode: 'seedless', features: {} },
+            selectedDevice: {
+                descriptor: { path: '1', session: null, sessionOwner: 'foo', type: 1 },
+                mode: 'seedless',
+                features: {},
+            },
         };
 
         const store = initStore(
@@ -365,7 +391,11 @@ describe('Preloader component', () => {
 
     it('Not initialized device', () => {
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: { mode: 'initialize', features: {} },
+            selectedDevice: {
+                descriptor: { path: '1', session: null, sessionOwner: 'foo', type: 1 },
+                mode: 'initialize',
+                features: {},
+            },
         };
 
         const store = initStore(
@@ -387,7 +417,11 @@ describe('Preloader component', () => {
 
     it('Bootloader device with installed firmware', () => {
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: { mode: 'bootloader', features: { firmware_present: true } },
+            selectedDevice: {
+                descriptor: { path: '1', session: null, sessionOwner: 'foo', type: 1 },
+                mode: 'bootloader',
+                features: { firmware_present: true },
+            },
         };
 
         const store = initStore(
@@ -409,7 +443,11 @@ describe('Preloader component', () => {
 
     it('Bootloader device without firmware', () => {
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: { mode: 'bootloader', features: { firmware_present: false } },
+            selectedDevice: {
+                descriptor: { path: '1', session: null, sessionOwner: 'foo', type: 1 },
+                mode: 'bootloader',
+                features: { firmware_present: false },
+            },
         };
 
         const store = initStore(
@@ -431,7 +469,11 @@ describe('Preloader component', () => {
 
     it('Required FW update device', () => {
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: { firmware: 'required', features: {} },
+            selectedDevice: {
+                descriptor: { path: '1', session: null, sessionOwner: 'foo', type: 1 },
+                firmware: 'required',
+                features: {},
+            },
         };
 
         const store = initStore(

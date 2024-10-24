@@ -16,6 +16,7 @@ describe('sessions', () => {
         const acquireIntent = await client1.acquireIntent({
             path: PathPublic('1'),
             previous: null,
+            sessionOwner: 'foo-bar',
         });
 
         expect(acquireIntent).toEqual({
@@ -34,6 +35,7 @@ describe('sessions', () => {
         const acquireIntent = await client1.acquireIntent({
             path: PathPublic('1'),
             previous: null,
+            sessionOwner: 'foo-bar',
         });
 
         expect(acquireIntent).toEqual({
@@ -71,6 +73,7 @@ describe('sessions', () => {
         const acquire1 = await client1.acquireIntent({
             path: PathPublic('1'),
             previous: null,
+            sessionOwner: 'foo-bar',
         });
         expect(acquire1).toMatchObject({
             success: true,
@@ -85,6 +88,7 @@ describe('sessions', () => {
         const acquire2 = await client1.acquireIntent({
             path: PathPublic('1'),
             previous: null,
+            sessionOwner: 'foo-bar',
         });
         expect(acquire2).toMatchObject({
             success: true,
@@ -103,6 +107,7 @@ describe('sessions', () => {
         const acquire3 = await client1.acquireIntent({
             path: PathPublic('1'),
             previous: Session('1'),
+            sessionOwner: 'foo-bar',
         });
 
         expect(acquire3).toMatchObject({
@@ -122,6 +127,7 @@ describe('sessions', () => {
         const acquire1Intent = await client1.acquireIntent({
             path: PathPublic('1'),
             previous: null,
+            sessionOwner: 'foo-bar',
         });
         expect(acquire1Intent).toMatchObject({
             success: true,
