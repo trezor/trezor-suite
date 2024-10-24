@@ -14,7 +14,7 @@ import {
 import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { FormattedDate, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { download } from 'src/actions/suite/desktopUpdateActions';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
@@ -107,7 +107,11 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
                 </Changelog>
 
                 <Row justifyContent="end" width="100%">
-                    {latest?.releaseDate && <Text variant="tertiary">{latest?.releaseDate}</Text>}
+                    {latest?.releaseDate && (
+                        <Text variant="tertiary">
+                            <FormattedDate value={latest.releaseDate} date month="long" />
+                        </Text>
+                    )}
                 </Row>
 
                 <Card>
