@@ -8,6 +8,7 @@ import {
     getAccountIdentifier,
     getAccountKey,
     getBip43Type,
+    substituteBip43Path,
     getFiatValue,
     getFirstFreshAddress,
     getTitleForNetwork,
@@ -85,6 +86,14 @@ describe('account utils', () => {
                 const bip43 = getBip43Type(f.path);
                 expect(bip43).toBe(f.result);
             });
+        });
+    });
+
+    describe(substituteBip43Path.name, () => {
+        it("substitutes 'i' placeholder in path with index", () => {
+            expect(substituteBip43Path("m/84'/0'/i'", 7)).toEqual("m/84'/0'/7'");
+            expect(substituteBip43Path("m/44'/0'/i'/0", '4')).toEqual("m/44'/0'/4'/0");
+            expect(substituteBip43Path("m/10025'/1'/i'/1'")).toEqual("m/10025'/1'/0'/1'");
         });
     });
 

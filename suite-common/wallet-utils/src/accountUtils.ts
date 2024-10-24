@@ -223,6 +223,9 @@ export const getBip43Type = (path: string) => {
     }
 };
 
+export const substituteBip43Path = (bip43Path: Bip43Path, accountIndex: string | number = '0') =>
+    bip43Path.replace('i', String(accountIndex)) as Bip43Path;
+
 type getAccountTypeNameProps = {
     path?: Bip43Path;
     networkType?: NetworkType;
@@ -560,11 +563,9 @@ export const enhanceAddresses = (
 
     switch (networkType) {
         case 'cardano': {
-            const accountIndexStr = accountIndex.toString();
-
             const replaceAccountIndex = (address: AccountAddress) => ({
                 ...address,
-                path: address.path.replace('i', accountIndexStr),
+                path: substituteBip43Path(address.path as Bip43Path, accountIndex),
             });
 
             return {
@@ -607,10 +608,9 @@ export const enhanceUtxo = (
     if (!utxos) return undefined;
     if (networkType !== 'cardano') return utxos;
 
-    const accountIndexStr = accountIndex.toString();
     const enhancedUtxos = utxos.map(utxo => ({
         ...utxo,
-        path: utxo.path.replace('i', accountIndexStr),
+        path: substituteBip43Path(utxo.path as Bip43Path, accountIndex),
     }));
 
     return enhancedUtxos;

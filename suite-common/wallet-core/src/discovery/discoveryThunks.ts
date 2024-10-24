@@ -7,6 +7,7 @@ import {
     tryGetAccountIdentity,
     getDerivationType,
     isTrezorConnectBackendType,
+    substituteBip43Path,
 } from '@suite-common/wallet-utils';
 import { Discovery, DiscoveryItem, PartialDiscovery } from '@suite-common/wallet-types';
 import { getTxsPerPage } from '@suite-common/suite-utils';
@@ -17,7 +18,6 @@ import {
     networksCollection,
     normalizeNetworkAccounts,
     NormalizedNetworkAccount,
-    Bip43Path,
 } from '@suite-common/wallet-config';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
@@ -301,7 +301,7 @@ export const getBundleThunk = createThunk(
                 const pathIndex = (index + (isEvmLedgerDerivationPath ? 1 : 0)).toString();
 
                 bundle.push({
-                    path: bip43Path.replace('i', pathIndex) as Bip43Path,
+                    path: substituteBip43Path(bip43Path, pathIndex),
                     coin: networkSymbol,
                     identity: tryGetAccountIdentity({
                         networkType,
