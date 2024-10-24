@@ -123,6 +123,7 @@
         "@babel/plugin-transform-export-namespace-from": "^7.23.4",
         "@config-plugins/detox": "^8.0.0",
         "@react-native/babel-preset": "^0.75.2",
+        "@suite-common/test-utils": "workspace:^",
         "@trezor/connect-mobile": "workspace:^",
         "@types/jest": "^29.5.12",
         "@types/node": "^20.11.24",
