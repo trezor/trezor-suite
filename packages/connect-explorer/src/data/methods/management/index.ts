@@ -1,5 +1,6 @@
 import getFeatures from './getFeatures';
 import resetDevice from './resetDevice';
+import loadDevice from './loadDevice';
 import wipeDevice from './wipeDevice';
 import applyFlags from './applyFlags';
 import applySettings from './applySettings';
@@ -13,6 +14,7 @@ import rebootToBootloader from './rebootToBootloader';
 
 export default [
     ...getFeatures,
+    ...loadDevice,
     ...resetDevice,
     ...wipeDevice,
     ...applyFlags,
