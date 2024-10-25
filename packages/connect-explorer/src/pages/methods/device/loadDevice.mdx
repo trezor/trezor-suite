@@ -1,0 +1,82 @@
+import { Callout } from 'nextra/components';
+
+import { PROTO } from '@trezor/connect/src/constants';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import loadDevice from '../../../data/methods/management/loadDevice.ts';
+
+<ApiPlayground options={[{ title: 'Load device', legacyConfig: loadDevice[0] }]} />
+
+export const paramDescriptions = {
+    mnemonics: '',
+    label: '',
+    u2fCounter: 'Default value is set to current time stamp in seconds.',
+    pin: '',
+    passphraseProtection: '',
+    skipBackup: '',
+    noBackup: 'create a seedless device',
+};
+
+## Load device
+
+<Callout type="error">
+    **Management command** - this method is restricted to Trezor.io and can't be used in 3rd party
+    applications and it has to use a special debug build.
+</Callout>
+
+Load seed and related internal settings. The devices has to be wiped before initiating this command.
+
+```javascript
+const result = await TrezorConnect.loadDevice(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### LoadDevice
+
+<ParamsTable schema={PROTO.LoadDevice} descriptions={paramDescriptions} />
+
+### Example
+
+```javascript
+TrezorConnect.loadDevice({
+    mnemonics: ['all all all all all all all all all all all all'],
+});
+```
+
+### Result
+
+Success type
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: 'Device loaded'
+    },
+    device: {
+        path: '1',
+        state: {
+            deriveCardano: false
+        },
+        instance: 0
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+        code: string // error code
+    }
+    device: undefined
+}
+```
