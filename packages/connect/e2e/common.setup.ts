@@ -33,6 +33,7 @@ type Options = {
     pin?: string;
     label?: string;
     settings?: ApplySettings;
+    wiped?: boolean;
 };
 export const setup = async (
     TrezorUserEnvLink: TrezorUserEnvLinkClass,
@@ -50,20 +51,22 @@ export const setup = async (
     // the test using the same transport
     await TrezorUserEnvLink.stopBridge();
 
-    if (!options?.mnemonic) return true; // skip setup if test is not using the device (composeTransaction)
+    if (!options?.mnemonic && !options.wiped) return true; // skip setup if test is not using the device (composeTransaction)
 
     await TrezorUserEnvLink.startEmu(emulatorStartOpts);
 
-    const mnemonic = options.mnemonic || MNEMONICS.mnemonic_all;
+    if (!options.wiped) {
+        const mnemonic = options.mnemonic || MNEMONICS.mnemonic_all;
 
-    await TrezorUserEnvLink.setupEmu({
-        ...options,
-        mnemonic,
-        pin: options.pin || '',
-        passphrase_protection: !!options.passphrase_protection,
-        label: options.label || 'TrezorT',
-        needs_backup: false,
-    });
+        await TrezorUserEnvLink.setupEmu({
+            ...options,
+            mnemonic,
+            pin: options.pin || '',
+            passphrase_protection: !!options.passphrase_protection,
+            label: options.label || 'TrezorT',
+            needs_backup: false,
+        });
+    }
 
     if (options.settings) {
         // allow apply-settings to fail, older FW may not know some flags yet
