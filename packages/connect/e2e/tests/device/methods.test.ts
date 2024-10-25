@@ -34,9 +34,6 @@ const _jest = typeof jest !== 'undefined' ? jest : { mock: () => undefined };
 // Jest.mock() MUST be called in global scope, if we put it into condition it won't work.
 _jest.mock('@trezor/utils', () => ({
     ...jest.requireActual('@trezor/utils'),
-
-    // After the removal bip69, we sort inputs and outputs randomly
-    // So we need to mock the source of randomness for all tests, so the fixtures are deterministic
     getRandomInt: (min: number, max: number) => min + (4 % max), // 4 is truly random number, I rolled the dice
 }));
 
@@ -134,8 +131,6 @@ describe(`TrezorConnect methods`, () => {
                                 }
                             });
                         }
-
-                        console.log('window', typeof window);
 
                         expect(result).toMatchObject(expected);
                     },

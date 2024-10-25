@@ -91,6 +91,7 @@ export default {
                     feePerByte: '1',
                     max: undefined,
                     totalSpent: '6639',
+                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
                     inputs: [{ script_type: 'SPENDWITNESS', sequence: 0xffffffff }],
                     outputs: [
                         { amount: '2787', script_type: 'PAYTOWITNESS' },
@@ -125,6 +126,7 @@ export default {
                     feePerByte: '2.176056338028169',
                     max: undefined,
                     totalSpent: '6806',
+                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
                     inputs: [{ script_type: 'SPENDWITNESS', sequence: 1 }],
                     outputs: [
                         { amount: '6497', script_type: 'PAYTOADDRESS' },
@@ -159,6 +161,7 @@ export default {
                     feePerByte: '2.176056338028169',
                     max: undefined,
                     totalSpent: '6806',
+                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
                     inputs: [{ script_type: 'SPENDWITNESS', sequence: 1 }],
                     outputs: [
                         { amount: '6497', script_type: 'PAYTOADDRESS' },
@@ -210,6 +213,7 @@ export default {
                     bytes: 142,
                     fee: '142',
                     totalSpent: '1142',
+                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
                     inputs: [{ amount: '9426', script_type: 'SPENDWITNESS' }],
                     outputs: [
                         { amount: '8284', script_type: 'PAYTOWITNESS' },
@@ -270,6 +274,7 @@ export default {
                     bytes: 278,
                     fee: '278',
                     totalSpent: '16678',
+                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
                     inputs: [
                         { amount: '309896' }, // NOTE: this utxo is used because required utxo is not enough to cover fee
                         { amount: '9426' },
@@ -329,6 +334,7 @@ export default {
                     feePerByte: '1',
                     max: '9315',
                     totalSpent: '9426',
+                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
                     inputs: [{ script_type: 'SPENDWITNESS' }],
                     outputs: [{ amount: '9315', script_type: 'PAYTOADDRESS' }],
                 },
@@ -354,6 +360,7 @@ export default {
                     fee: '226000',
                     max: undefined,
                     totalSpent: '100226000',
+                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
                     inputs: [{ script_type: 'SPENDADDRESS' }],
                     outputs: [
                         { amount: '399774000', script_type: 'PAYTOADDRESS' },
@@ -386,6 +393,7 @@ export default {
                     fee: '1226000', // NOTE: +0.01 DOGE per dust limit output
                     max: undefined,
                     totalSpent: '1326000',
+                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
                     inputs: [{ script_type: 'SPENDADDRESS' }],
                     outputs: [
                         { amount: '498674000', script_type: 'PAYTOADDRESS' },
@@ -423,6 +431,7 @@ export default {
                     fee: '1000000', // NOTE: +0.01 DOGE per dust limit output + ~0.08 DOGE dust limit change
                     max: undefined,
                     totalSpent: '500000000',
+                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
                     inputs: [{ script_type: 'SPENDADDRESS' }],
                     outputs: [
                         {
@@ -459,6 +468,7 @@ export default {
                     fee: '192000',
                     max: '499808000',
                     totalSpent: '500000000',
+                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
                     inputs: [{ script_type: 'SPENDADDRESS' }],
                     outputs: [{ amount: '499808000', script_type: 'PAYTOADDRESS' }],
                 },
