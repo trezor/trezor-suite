@@ -24,6 +24,7 @@ export const randomSortingStrategy: SortingStrategy = ({ result, request, conver
      */
     const permutation = [...nonChangeOutputPermutation];
     const newPositionOfChange = getRandomInt(0, permutation.length + 1);
+
     permutation.splice(newPositionOfChange, 0, ...changeOutputPermutation);
     const sortedOutputs = permutation.map(index => convertedOutputs[index]);
 

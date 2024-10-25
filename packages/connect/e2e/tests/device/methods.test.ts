@@ -11,7 +11,28 @@ import {
 
 let controller: ReturnType<typeof getController> | undefined;
 
-jest.mock('@trezor/utils', () => ({
+// After the removal bip69, we sort inputs and outputs randomly
+// So we need to mock the source of randomness for all tests, so the fixtures are deterministic.
+
+// However, we run those test both in Node.js and in browser environment,
+// so we need to mock the source of randomness in both environments
+
+// This is mock of randomnes for Karma (web environment)
+if (typeof window !== 'undefined') {
+    window.crypto.getRandomValues = array => {
+        if (array instanceof Uint32Array) {
+            array[0] = 4;
+        }
+
+        return array;
+    };
+}
+
+// In Karma web environment, there is no `jest`, so we fake one
+const _jest = typeof jest !== 'undefined' ? jest : { mock: () => undefined };
+
+// Jest.mock() MUST be called in global scope, if we put it into condition it won't work.
+_jest.mock('@trezor/utils', () => ({
     ...jest.requireActual('@trezor/utils'),
 
     // After the removal bip69, we sort inputs and outputs randomly
@@ -113,6 +134,8 @@ describe(`TrezorConnect methods`, () => {
                                 }
                             });
                         }
+
+                        console.log('window', typeof window);
 
                         expect(result).toMatchObject(expected);
                     },
