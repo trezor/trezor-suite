@@ -29,10 +29,12 @@ if (typeof window !== 'undefined') {
 }
 
 // In Karma web environment, there is no `jest`, so we fake one
-const _jest = typeof jest !== 'undefined' ? jest : { mock: () => undefined };
+if (typeof jest === 'undefined') {
+    globalThis.jest = { mock: () => undefined } as any;
+}
 
 // Jest.mock() MUST be called in global scope, if we put it into condition it won't work.
-_jest.mock('@trezor/utils', () => ({
+jest.mock('@trezor/utils', () => ({
     ...jest.requireActual('@trezor/utils'),
     getRandomInt: (min: number, max: number) => min + (4 % max), // 4 is truly random number, I rolled the dice
 }));
