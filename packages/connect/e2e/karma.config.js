@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = config => {
-    const singleRun = process.env.KARMA_SINGLE_RUN === 'false' ? false : true;
+    const singleRun = process.env.KARMA_SINGLE_RUN !== 'false';
 
     config.set({
         basePath: path.resolve(__dirname, '../..'), // NOTE: "[monorepo-root]/packages", to have access to other packages
