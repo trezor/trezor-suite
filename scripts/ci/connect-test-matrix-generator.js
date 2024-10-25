@@ -10,7 +10,7 @@ const groups = {
     management: {
         name: 'management',
         pattern: 'methods',
-        methods: 'applySettings,applyFlags,getFeatures,getFirmwareHash,changeLanguage',
+        methods: 'applySettings,applyFlags,getFeatures,getFirmwareHash,changeLanguage,loadDevice',
     },
     btcSign: {
         name: 'btc-sign',
