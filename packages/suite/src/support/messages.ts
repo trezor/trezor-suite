@@ -999,10 +999,6 @@ export default defineMessages({
         defaultMessage: 'Maximum is {maximum} {currency}',
         id: 'TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT',
     },
-    TR_BUY_BUY_AGAIN: {
-        defaultMessage: 'Buy again',
-        id: 'TR_BUY_BUY_AGAIN',
-    },
     TR_BUY_STATUS_PENDING_GO_TO_GATEWAY: {
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING_GO_TO_GATEWAY',
