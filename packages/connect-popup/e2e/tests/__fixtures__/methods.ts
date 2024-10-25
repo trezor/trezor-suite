@@ -309,6 +309,26 @@ const wipeDevice = [
     },
 ];
 
+const loadDevice = [
+    {
+        dir: 'device',
+        url: 'loadDevice',
+        device: {
+            wiped: true,
+        },
+        views: [
+            {
+                selector: '.device-management >> visible=true',
+                screenshot: {
+                    name: 'load-device',
+                },
+                next: 'button.confirm >> visible=true',
+            },
+            followDevice,
+        ],
+    },
+];
+
 /*const resetDevice = [
     {
         url: 'resetDevice',
@@ -693,6 +713,7 @@ export const fixtures = [
     // management methods
     // note that it is not so important to test these as they are not available to 3rd party
     ...wipeDevice,
+    ...loadDevice,
     // todo: resetDevice also breaks next test in queue and is flaky itself
     // ...resetDevice,
     // todo: missing
