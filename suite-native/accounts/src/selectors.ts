@@ -26,6 +26,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
 import { isCoinWithTokens } from '@suite-native/tokens';
+import type { StaticSessionId } from '@trezor/connect';
 
 import { AccountSelectBottomSheetSection, GroupedByTypeAccounts } from './types';
 import {
@@ -63,7 +64,7 @@ export const selectIsAccountAlreadyDiscovered = (
         networkSymbol,
         path,
         deviceState,
-    }: { networkSymbol: NetworkSymbol; path: string; deviceState: string },
+    }: { networkSymbol: NetworkSymbol; path: string; deviceState: StaticSessionId },
 ) =>
     pipe(
         state,

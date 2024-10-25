@@ -9546,6 +9546,7 @@ __metadata:
     "@suite-native/staking": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@suite-native/tokens": "workspace:*"
+    "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
     jotai: "npm:1.9.1"
     proxy-memoize: "npm:2.0.2"

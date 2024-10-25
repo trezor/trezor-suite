@@ -36,7 +36,9 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
 
     const failed = getFailedAccounts(discovery);
 
-    const list = sortByCoin(accounts.filter(a => a.deviceState === device.state).concat(failed));
+    const list = sortByCoin(
+        accounts.filter(a => a.deviceState === device.state?.staticSessionId).concat(failed),
+    );
     const filteredAccounts =
         searchString || coinFilter
             ? list.filter(account => {

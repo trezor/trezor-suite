@@ -55,7 +55,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [xTicks, setXticks] = useState<number[]>([]);
 
-    const selectedDeviceState = selectedDevice?.state;
+    const selectedDeviceState = selectedDevice?.state?.staticSessionId;
     const failedAccounts = error?.filter(a => a.deviceState === selectedDeviceState);
     const allFailed =
         failedAccounts &&

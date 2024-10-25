@@ -53,7 +53,7 @@ export const getInitialState = (state?: InitialState) => {
     const device = state
         ? state.device
         : {
-              state: '1stTestnetAddress@device_id:0',
+              state: { staticSessionId: '1stTestnetAddress@device_id:0' },
               connected: true,
               metadata: { status: 'disabled' },
           };
@@ -172,10 +172,8 @@ describe('Metadata Actions', () => {
 
     fixtures.setAccountMetadataKey.forEach(f => {
         it(`setAccountMetadataKey - ${f.description}`, async () => {
-            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
             const account = await store.dispatch(
-                // @ts-expect-error Account is not complete
                 metadataLabelingActions.setAccountMetadataKey(...f.params),
             );
             expect(account).toMatchObject(f.result);
@@ -184,10 +182,8 @@ describe('Metadata Actions', () => {
 
     fixtures.addDeviceMetadata.forEach(f => {
         it(`addDeviceMetadata - ${f.description}`, async () => {
-            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
-            // @ts-expect-error, params
-            await store.dispatch(metadataLabelingActions.addDeviceMetadata(f.params));
+            await store.dispatch(metadataLabelingActions.addDeviceMetadata(...f.params));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             }
@@ -196,10 +192,8 @@ describe('Metadata Actions', () => {
 
     fixtures.addAccountMetadata.forEach(f => {
         it(`addAccountMetadata - ${f.description}`, async () => {
-            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
-            // @ts-expect-error, params
-            await store.dispatch(metadataLabelingActions.addAccountMetadata(f.params));
+            await store.dispatch(metadataLabelingActions.addAccountMetadata(...f.params));
 
             const result = store.getActions();
             if (!f.result) {
@@ -212,10 +206,8 @@ describe('Metadata Actions', () => {
 
     fixtures.connectProvider.forEach(f => {
         it(`connectProvider - ${f.description}`, async () => {
-            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
-            // @ts-expect-error, params
-            const result = await store.dispatch(metadataProviderActions.connectProvider(f.params));
+            await store.dispatch(metadataProviderActions.connectProvider(...f.params));
 
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
@@ -227,11 +219,9 @@ describe('Metadata Actions', () => {
 
     fixtures.addMetadata.forEach(f => {
         it(`add metadata - ${f.description}`, async () => {
-            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
 
-            // @ts-expect-error, params
-            const result = await store.dispatch(metadataLabelingActions.addMetadata(f.params));
+            await store.dispatch(metadataLabelingActions.addMetadata(...f.params));
 
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
@@ -243,10 +233,8 @@ describe('Metadata Actions', () => {
 
     fixtures.enableMetadata.forEach(f => {
         it(`enableMetadata - ${f.description}`, async () => {
-            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
-            // @ts-expect-error, params
-            const result = await store.dispatch(metadataActions.enableMetadata());
+            await store.dispatch(metadataActions.enableMetadata());
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -257,10 +245,8 @@ describe('Metadata Actions', () => {
 
     fixtures.disableMetadata.forEach(f => {
         it(`disableMetadata - ${f.description}`, async () => {
-            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
-            // @ts-expect-error, params
-            const result = await store.dispatch(metadataActions.disableMetadata());
+            await store.dispatch(metadataActions.disableMetadata());
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -271,9 +257,8 @@ describe('Metadata Actions', () => {
 
     fixtures.init.forEach(f => {
         it(`initMetadata - ${f.description}`, async () => {
-            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
-            await store.dispatch(metadataLabelingActions.init(false));
+            await store.dispatch(metadataLabelingActions.init(...f.params));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -284,7 +269,6 @@ describe('Metadata Actions', () => {
 
     fixtures.disposeMetadata.forEach(f => {
         it(`disposeMetadata - ${f.description}`, async () => {
-            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
             await store.dispatch(metadataActions.disposeMetadata(...f.params));
             if (f.result) {
@@ -295,7 +279,6 @@ describe('Metadata Actions', () => {
 
     fixtures.disposeMetadataKeys.forEach(f => {
         it(`disposeMetadataKeys - ${f.description}`, async () => {
-            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
             await store.dispatch(metadataActions.disposeMetadataKeys(...f.params));
             if (f.result) {

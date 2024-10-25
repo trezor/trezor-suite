@@ -21,7 +21,7 @@ export type MetadataAddPayload = { skipSave?: boolean } & (
           entityKey: string;
           txid: string;
           outputIndex: number;
-          defaultValue: string;
+          defaultValue?: string;
           value?: string;
       }
     | {
@@ -41,7 +41,7 @@ export type MetadataAddPayload = { skipSave?: boolean } & (
     | {
           type: 'walletLabel';
           entityKey: string;
-          defaultValue: string;
+          defaultValue?: string;
           value?: string;
       }
 );

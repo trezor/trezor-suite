@@ -230,7 +230,7 @@ export const setBusyScreen =
         // collect unique physical devices (by device.id)
         const uniquePhysicalDevices = uniqueDeviceStates.reduce(
             (result, state) => {
-                const device = devices.find(d => d.connected && d.state === state);
+                const device = devices.find(d => d.connected && d.state?.staticSessionId === state);
                 if (device && !result.find(d => d.id === device.id)) {
                     return result.concat(device);
                 }
@@ -306,7 +306,9 @@ export const stopCoinjoinSession =
         client?.unregisterAccount(account.key);
 
         // cancelCoinjoinAuthorization should be called only if there is no other registered coinjoin account
-        const device = selectDevices(state).find(d => d.state === account.deviceState);
+        const device = selectDevices(state).find(
+            d => d.state?.staticSessionId === account.deviceState,
+        );
         let shouldCancelAuthorization = device?.connected;
         if (device) {
             // find all instances of this physical device
@@ -318,7 +320,7 @@ export const stopCoinjoinSession =
                     a =>
                         a.accountType === 'coinjoin' &&
                         a.key !== accountKey &&
-                        a.deviceState === d.state,
+                        a.deviceState === d.state?.staticSessionId,
                 ),
             );
             // find coinjoin account with session
@@ -487,7 +489,7 @@ const getOwnershipProof =
                 return [];
             }
 
-            const device = devices.find(d => d.state === realAccount.deviceState);
+            const device = devices.find(d => d.state?.staticSessionId === realAccount.deviceState);
             if (!device?.connected) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Device disconnected'));
 
@@ -604,7 +606,7 @@ const signCoinjoinTx =
                 return [];
             }
 
-            const device = devices.find(d => d.state === realAccount.deviceState);
+            const device = devices.find(d => d.state?.staticSessionId === realAccount.deviceState);
             if (!device?.connected) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Device disconnected'));
 

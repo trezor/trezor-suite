@@ -12,9 +12,9 @@ import {
     transactionsActions,
     selectAccountByKey,
     deviceActions,
-    selectDeviceByState,
     selectHistoricFiatRates,
     updateTxsFiatRatesThunk,
+    selectDeviceByStaticSessionId,
 } from '@suite-common/wallet-core';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { messageSystemActions } from '@suite-common/message-system';
@@ -136,7 +136,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             ) {
                 const { deviceState } = action.payload;
                 const devices = selectDevices(api.getState());
-                const device = devices.find(d => d.state === deviceState);
+                const device = devices.find(d => d.state?.staticSessionId === deviceState);
                 // update discovery for remembered device
                 if (isDeviceRemembered(device)) {
                     const discovery = selectDiscoveryByDeviceState(api.getState(), deviceState);
@@ -257,7 +257,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case GRAPH.ACCOUNT_GRAPH_FAIL: {
                     const devices = selectDevices(api.getState());
                     const device = devices.find(
-                        d => d.state === action.payload.account.deviceState,
+                        d => d.state?.staticSessionId === action.payload.account.deviceState,
                     );
                     if (isDeviceRemembered(device)) {
                         storageActions.saveGraph([action.payload]);
@@ -276,7 +276,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     api.dispatch(storageActions.saveMetadataSettings());
                     break;
                 case METADATA.SET_ERROR_FOR_DEVICE: {
-                    const device = selectDeviceByState(api.getState(), action.payload.deviceState);
+                    const device = selectDeviceByStaticSessionId(
+                        api.getState(),
+                        action.payload.deviceState,
+                    );
                     if (isDeviceRemembered(device) && device) {
                         api.dispatch(storageActions.saveDeviceMetadataError(device));
                     }
@@ -285,7 +288,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 // au, this hurts, I need to call saveDevice manually. saved device should be updated automatically
                 // anytime any of its properties change
                 case METADATA.SET_DEVICE_METADATA: {
-                    const device = selectDeviceByState(api.getState(), action.payload.deviceState);
+                    const device = selectDeviceByStaticSessionId(
+                        api.getState(),
+                        action.payload.deviceState,
+                    );
                     if (isDeviceRemembered(device) && device) {
                         storageActions.saveDevice({
                             ...device,

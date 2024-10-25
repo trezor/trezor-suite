@@ -95,8 +95,10 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
 
     const { symbol, index, accountType, deviceState } = relatedAccount;
 
-    const relatedDevice = devices.find(device => device.state === relatedAccount?.deviceState);
-    const isOnSelectedDevice = selectedDevice?.state === deviceState;
+    const relatedDevice = devices.find(
+        device => device.state?.staticSessionId === relatedAccount?.deviceState,
+    );
+    const isOnSelectedDevice = selectedDevice?.state?.staticSessionId === deviceState;
 
     if (!relatedDevice) {
         return null;

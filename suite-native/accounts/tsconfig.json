@@ -36,6 +36,7 @@
         { "path": "../staking" },
         { "path": "../toasts" },
         { "path": "../tokens" },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/styles" }
     ]
 }

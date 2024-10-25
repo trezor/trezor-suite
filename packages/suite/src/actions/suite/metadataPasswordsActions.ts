@@ -86,7 +86,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch({
         type: METADATA.SET_DEVICE_METADATA_PASSWORDS,
         payload: {
-            deviceState: device.state,
+            deviceState: device.state.staticSessionId,
             metadata: {
                 ...device.passwords,
                 [1]: {
@@ -127,7 +127,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         dispatch({
             type: METADATA.SET_DEVICE_METADATA_PASSWORDS,
             payload: {
-                deviceState: device.state,
+                deviceState: device.state.staticSessionId,
                 metadata: {
                     ...device.passwords,
                     [1]: {
@@ -163,14 +163,14 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     device = selectDevice(getState());
     const selectedProvider = selectSelectedProviderForPasswords(getState());
-    if (!selectedProvider || !device?.state) {
+    if (!selectedProvider || !device?.state?.staticSessionId) {
         // ts, should not happen
         return;
     }
     const fetchIntervalTrackingId: FetchIntervalTrackingId = metadataUtils.getFetchTrackingId(
         'passwords',
         selectedProvider.clientId,
-        device.state,
+        device.state.staticSessionId,
     );
 
     if (device?.state && !metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {

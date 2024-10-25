@@ -100,7 +100,10 @@ export const onCoinjoinRoundChanged = [
         connect: undefined,
         state: {
             device: {
-                devices: [DEVICE, { ...DEVICE, state: 'device-state-2', id: '2' }],
+                devices: [
+                    DEVICE,
+                    { ...DEVICE, state: { staticSessionId: 'device-state-2' }, id: '2' },
+                ],
             },
             accounts: [
                 { key: 'a', deviceState: '1stTestnetAddress@device_id:0' },
@@ -343,12 +346,16 @@ export const getOwnershipProof = [
             device: {
                 devices: [
                     DEVICE,
-                    { ...DEVICE, state: 'device-state-2' },
-                    { ...DEVICE, state: 'device-2-state', id: '2' },
+                    { ...DEVICE, state: { staticSessionId: 'device-state-2' } },
+                    { ...DEVICE, state: { staticSessionId: 'device-2-state' }, id: '2' },
                 ],
             },
             accounts: [
-                { key: 'account-A', deviceState: '1stTestnetAddress@device_id:0', utxo: [] },
+                {
+                    key: 'account-A',
+                    deviceState: '1stTestnetAddress@device_id:0',
+                    utxo: [],
+                },
                 { key: 'account-B', deviceState: 'device-state-2', utxo: [] },
                 { key: 'account-C', deviceState: 'device-2-state', utxo: [] },
             ],
@@ -410,10 +417,14 @@ export const getOwnershipProof = [
         ],
         state: {
             device: {
-                devices: [DEVICE, { ...DEVICE, state: 'device-state-2' }],
+                devices: [DEVICE, { ...DEVICE, state: { staticSessionId: 'device-state-2' } }],
             },
             accounts: [
-                { key: 'account-A', deviceState: '1stTestnetAddress@device_id:0', utxo: [] },
+                {
+                    key: 'account-A',
+                    deviceState: '1stTestnetAddress@device_id:0',
+                    utxo: [],
+                },
                 { key: 'account-B', deviceState: 'device-state-2', utxo: [] },
             ],
             coinjoin: {
@@ -457,12 +468,21 @@ export const getOwnershipProof = [
             },
             devices: [
                 DEVICE,
-                { ...DEVICE, state: 'device-state-2' },
-                { ...DEVICE, state: 'device-2-state', id: '2', connected: false },
-                { ...DEVICE, state: 'device-3-state', id: '3' },
+                { ...DEVICE, state: { staticSessionId: 'device-state-2' } },
+                {
+                    ...DEVICE,
+                    state: { staticSessionId: 'device-2-state' },
+                    id: '2',
+                    connected: false,
+                },
+                { ...DEVICE, state: { staticSessionId: 'device-3-state' }, id: '3' },
             ],
             accounts: [
-                { key: 'account-A', deviceState: '1stTestnetAddress@device_id:0', utxo: [] },
+                {
+                    key: 'account-A',
+                    deviceState: '1stTestnetAddress@device_id:0',
+                    utxo: [],
+                },
                 { key: 'account-B', deviceState: 'device-state-2', utxo: [] },
                 { key: 'account-C', deviceState: 'device-2-state', utxo: [] },
             ],
@@ -535,8 +555,8 @@ export const signCoinjoinTx = [
             device: {
                 devices: [
                     DEVICE,
-                    { ...DEVICE, state: 'device-state-2' },
-                    { ...DEVICE, state: 'device-2-state', id: '2' },
+                    { ...DEVICE, state: { staticSessionId: 'device-state-2' } },
+                    { ...DEVICE, state: { staticSessionId: 'device-2-state' }, id: '2' },
                 ],
             },
             accounts: [
@@ -843,8 +863,13 @@ export const signCoinjoinTx = [
             device: {
                 devices: [
                     DEVICE,
-                    { ...DEVICE, state: 'device-state-2' },
-                    { ...DEVICE, state: 'device-2-state', id: '2', connected: false },
+                    { ...DEVICE, state: { staticSessionId: 'device-state-2' } },
+                    {
+                        ...DEVICE,
+                        state: { staticSessionId: 'device-2-state' },
+                        id: '2',
+                        connected: false,
+                    },
                 ],
             },
             accounts: [
@@ -952,7 +977,7 @@ export const signCoinjoinTx = [
             trezorConnectCalledWith: [
                 {
                     device: {
-                        state: 'device-state-2',
+                        state: { staticSessionId: 'device-state-2' },
                     },
                     inputs: [
                         { script_type: 'EXTERNAL' }, // account-A

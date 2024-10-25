@@ -15,6 +15,7 @@ import {
 } from 'src/reducers/suite/metadataReducer';
 import type { Timeout } from '@trezor/type-utils';
 import { AccountTypeBadge } from '../../AccountTypeBadge';
+import { StaticSessionId } from '@trezor/connect';
 
 const LabelValue = styled.div`
     overflow: hidden;
@@ -301,7 +302,8 @@ export const MetadataLabeling = ({
     }, [payload.defaultValue, timeout]);
 
     const isLabelingInitPossible = useSelector(selectIsLabelingInitPossible);
-    const deviceState = payload.type === 'walletLabel' ? payload.entityKey : undefined;
+    const deviceState =
+        payload.type === 'walletLabel' ? (payload.entityKey as StaticSessionId) : undefined;
     const isLabelingAvailable = useSelector(state =>
         selectIsLabelingAvailableForEntity(state, payload.entityKey, deviceState),
     );

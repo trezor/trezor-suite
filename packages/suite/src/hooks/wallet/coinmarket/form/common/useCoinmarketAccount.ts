@@ -37,7 +37,7 @@ export const useCoinmarketAccount = ({
             const defaultSymbol = mapTestnetSymbol(selectedAccount.account.symbol);
             const accountsSorted = coinmarketGetSortedAccounts({
                 accounts,
-                deviceState: device?.state,
+                deviceState: device?.state?.staticSessionId,
             });
 
             const accountNotInTestnet = accountsSorted.find(a => a.symbol === defaultSymbol);

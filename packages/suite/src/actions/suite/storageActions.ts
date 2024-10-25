@@ -135,9 +135,14 @@ const removeAccountFormDraft = async (prefix: FormDraftKeyPrefix, accountKey: st
 
 export const saveDevice = async (device: TrezorDevice, forceRemember?: true) => {
     if (!(await db.isAccessible())) return;
-    if (!isDeviceAcquired(device) || !device.state) return;
+    if (!isDeviceAcquired(device) || !device.state?.staticSessionId) return;
 
-    return db.addItem('devices', serializeDevice(device, forceRemember), device.state, true);
+    return db.addItem(
+        'devices',
+        serializeDevice(device, forceRemember),
+        device.state.staticSessionId,
+        true,
+    );
 };
 
 const removeAccount = async (account: Account) => {
@@ -184,16 +189,17 @@ export const removeAccountWithDependencies = (getState: GetState) => (account: A
 
 export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
-    if (!device.state) return;
+    if (!device.state?.staticSessionId) return;
+    const { staticSessionId } = device.state;
 
-    const accounts = getState().wallet.accounts.filter(a => a.deviceState === device.state);
+    const accounts = getState().wallet.accounts.filter(a => a.deviceState === staticSessionId);
 
     return Promise.all([
-        db.removeItemByPK('devices', device.state),
-        db.removeItemByPK('discovery', device.state),
-        db.removeItemByIndex('accounts', 'deviceState', device.state),
-        db.removeItemByIndex('txs', 'deviceState', device.state),
-        db.removeItemByIndex('graph', 'deviceState', device.state),
+        db.removeItemByPK('devices', staticSessionId),
+        db.removeItemByPK('discovery', staticSessionId),
+        db.removeItemByIndex('accounts', 'deviceState', staticSessionId),
+        db.removeItemByIndex('txs', 'deviceState', staticSessionId),
+        db.removeItemByIndex('graph', 'deviceState', staticSessionId),
         ...accounts.map(removeAccountWithDependencies(getState)),
     ]);
 };
@@ -250,7 +256,7 @@ export const rememberDevice =
     (device: TrezorDevice, remember: boolean, forcedRemember?: true) =>
     async (dispatch: Dispatch, getState: GetState) => {
         if (!(await db.isAccessible())) return;
-        if (!isDeviceAcquired(device) || !device.state) return;
+        if (!isDeviceAcquired(device) || !device.state?.staticSessionId) return;
         if (!remember) {
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
             dispatch(forgetDeviceMetadataError(device));
@@ -259,10 +265,14 @@ export const rememberDevice =
         }
 
         const { wallet } = getState();
-        const accounts = wallet.accounts.filter(a => a.deviceState === device.state);
-        const graphData = wallet.graph.data.filter(d => deviceGraphDataFilterFn(d, device.state));
+        const accounts = wallet.accounts.filter(
+            a => a.deviceState === device.state?.staticSessionId,
+        );
+        const graphData = wallet.graph.data.filter(d =>
+            deviceGraphDataFilterFn(d, device.state?.staticSessionId),
+        );
         const discovery = wallet.discovery
-            .filter(d => d.deviceState === device.state)
+            .filter(d => d.deviceState === device.state?.staticSessionId)
             .map(serializeDiscovery);
         const historicRates = wallet.fiat.historic;
 
@@ -412,7 +422,7 @@ export const saveDeviceMetadataError =
         if (!(await db.isAccessible())) return;
 
         const { metadata } = getState();
-        if (device.state && metadata?.error?.[device.state]) {
+        if (device.state?.staticSessionId && metadata?.error?.[device.state.staticSessionId]) {
             const { error } = metadata;
             await saveMetadata({ error });
         }
@@ -423,9 +433,9 @@ export const forgetDeviceMetadataError =
         if (!(await db.isAccessible())) return;
 
         const { metadata } = getState();
-        if (device.state && metadata?.error) {
+        if (device.state?.staticSessionId && metadata?.error) {
             const next = cloneObject(metadata.error);
-            delete next[device.state];
+            delete next[device.state.staticSessionId];
             saveMetadata({ error: next });
         }
     };

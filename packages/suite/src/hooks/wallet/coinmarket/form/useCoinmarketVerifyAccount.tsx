@@ -82,7 +82,7 @@ const getSuiteReceiveAccounts = ({
 
         return filterReceiveAccounts({
             accounts,
-            deviceState: device?.state,
+            deviceState: device?.state?.staticSessionId,
             receiveNetwork,
             isDebug,
             receiveNetworks,

@@ -42,6 +42,7 @@ import {
     SelectAssetOptionProps,
 } from '@trezor/product-components/src/components/SelectAssetModal/SelectAssetModal';
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
+import { StaticSessionId } from '@trezor/connect';
 
 export type UseCoinmarketProps = { selectedAccount: SelectedAccountLoaded };
 export type UseCoinmarketCommonProps = UseCoinmarketProps & {
@@ -185,7 +186,7 @@ export type CoinmarketCryptoSelectOptionProps = SelectAssetOptionProps;
 
 export interface CoinmarketGetSortedAccountsProps {
     accounts: AccountsState;
-    deviceState: string | undefined;
+    deviceState: StaticSessionId | undefined;
 }
 
 export interface CoinmarketBuildAccountOptionsProps extends CoinmarketGetSortedAccountsProps {

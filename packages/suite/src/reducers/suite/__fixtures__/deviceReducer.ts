@@ -344,7 +344,7 @@ const disconnect = [
         actions: [
             {
                 type: DEVICE.DISCONNECT,
-                payload: getConnectDevice({
+                payload: getSuiteDevice({
                     path: '1',
                 }),
             } satisfies ReturnType<typeof deviceActions.deviceDisconnect>,
@@ -359,7 +359,7 @@ const disconnect = [
         actions: [
             {
                 type: DEVICE.DISCONNECT,
-                payload: CONNECT_DEVICE,
+                payload: SUITE_DEVICE,
             } satisfies ReturnType<typeof deviceActions.deviceDisconnect>,
         ],
         result: [],
@@ -378,7 +378,7 @@ const disconnect = [
         actions: [
             {
                 type: DEVICE.DISCONNECT,
-                payload: getConnectDevice({
+                payload: getSuiteDevice({
                     path: '1',
                 }),
             } satisfies ReturnType<typeof deviceActions.deviceDisconnect>,
@@ -388,7 +388,9 @@ const disconnect = [
                 path: '',
                 connected: false,
                 available: false,
-                state: '1stTestnet@device_id:0',
+                state: {
+                    staticSessionId: '1stTestnet@device_id:0',
+                },
             },
         ],
     },
@@ -412,7 +414,7 @@ const disconnect = [
         actions: [
             {
                 type: DEVICE.DISCONNECT,
-                payload: getConnectDevice({
+                payload: getSuiteDevice({
                     path: '1',
                 }),
             } satisfies ReturnType<typeof deviceActions.deviceDisconnect>,
@@ -423,14 +425,14 @@ const disconnect = [
                 instance: undefined,
                 connected: false,
                 available: false,
-                state: '1stTestnet@device_id:0',
+                state: { staticSessionId: '1stTestnet@device_id:0' },
             },
             {
                 path: '',
                 instance: 1,
                 connected: false,
                 available: false,
-                state: '1stTestnet@device_id_2:0',
+                state: { staticSessionId: '1stTestnet@device_id_2:0' },
             },
         ],
     },
@@ -455,7 +457,7 @@ const disconnect = [
         actions: [
             {
                 type: DEVICE.DISCONNECT,
-                payload: getConnectDevice({
+                payload: getSuiteDevice({
                     path: '1',
                 }),
             } satisfies ReturnType<typeof deviceActions.deviceDisconnect>,
@@ -497,7 +499,7 @@ const disconnect = [
         actions: [
             {
                 type: DEVICE.DISCONNECT,
-                payload: CONNECT_DEVICE,
+                payload: SUITE_DEVICE,
             } satisfies ReturnType<typeof deviceActions.deviceDisconnect>,
         ],
         result: [],
@@ -886,7 +888,7 @@ const changePassphraseMode: Fixture<ReturnType<typeof deviceActions.updatePassph
                 type: deviceActions.updatePassphraseMode.type,
                 payload: {
                     device: {
-                        ...getConnectDevice({
+                        ...getSuiteDevice({
                             type: 'unacquired',
                         }),
                         useEmptyPassphrase: false,
