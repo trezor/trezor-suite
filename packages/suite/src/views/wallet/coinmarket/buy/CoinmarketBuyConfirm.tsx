@@ -18,9 +18,5 @@ const CoinmarketBuyConfirmComponent = ({ selectedAccount }: UseCoinmarketProps) 
 };
 
 export const CoinmarketBuyConfirm = () => (
-    <CoinmarketContainer
-        title="TR_COINMARKET_BUY_AND_SELL"
-        backRoute="wallet-coinmarket-buy"
-        SectionComponent={CoinmarketBuyConfirmComponent}
-    />
+    <CoinmarketContainer SectionComponent={CoinmarketBuyConfirmComponent} />
 );

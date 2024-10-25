@@ -155,6 +155,4 @@ const DCALanding = () => {
     );
 };
 
-export const CoinmarketDCALanding = () => (
-    <CoinmarketContainer title="TR_COINMARKET_BUY_AND_SELL" SectionComponent={DCALanding} />
-);
+export const CoinmarketDCALanding = () => <CoinmarketContainer SectionComponent={DCALanding} />;

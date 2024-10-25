@@ -1,30 +1,21 @@
 import { ElementType } from 'react';
 import { useSelector } from 'src/hooks/suite';
-import { CoinmarketContainerCommonProps } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common/CoinmarketFooter/CoinmarketFooter';
 import { CoinmarketLayoutHeader } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketLayoutHeader';
 
-export interface CoinmarketContainerProps extends CoinmarketContainerCommonProps {
+export interface CoinmarketContainerProps {
     SectionComponent: ElementType;
 }
 
-/**
- * @backRoute when is not provided, it will be used route from global coinmarket state
- * check `useCoinmarketRouteHelper` for more details
- */
-export const CoinmarketContainer = ({
-    backRoute,
-    title,
-    SectionComponent,
-}: CoinmarketContainerProps) => {
+export const CoinmarketContainer = ({ SectionComponent }: CoinmarketContainerProps) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     if (selectedAccount.status !== 'loaded') {
-        return <CoinmarketLayoutHeader title={title} backRoute={backRoute} />;
+        return <CoinmarketLayoutHeader />;
     }
 
     return (
-        <CoinmarketLayoutHeader title={title} backRoute={backRoute}>
+        <CoinmarketLayoutHeader>
             <SectionComponent selectedAccount={selectedAccount} />
             <CoinmarketFooter />
         </CoinmarketLayoutHeader>

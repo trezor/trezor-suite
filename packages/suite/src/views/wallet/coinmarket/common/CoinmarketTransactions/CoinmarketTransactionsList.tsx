@@ -30,9 +30,7 @@ export const CoinmarketTransactionsList = () => {
     const theme = useTheme();
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const allTransactions = useSelector(state => state.wallet.coinmarket.trades);
-    const coinmarketBackRouteName = useSelector(
-        state => state.wallet.coinmarket.coinmarketBackRouteName,
-    );
+    const activeSection = useSelector(state => state.wallet.coinmarket.activeSection);
     const buyProviders = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.providerInfos);
     const exchangeProviders = useSelector(
         state => state.wallet.coinmarket.exchange.exchangeInfo?.providerInfos,
@@ -40,7 +38,7 @@ export const CoinmarketTransactionsList = () => {
     const sellProviders = useSelector(
         state => state.wallet.coinmarket.sell.sellInfo?.providerInfos,
     );
-    const isBuyAndSell = coinmarketBackRouteName !== 'wallet-coinmarket-exchange';
+    const isBuyAndSell = activeSection !== 'exchange';
 
     useCoinmarketLoadData();
 
