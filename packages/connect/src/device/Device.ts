@@ -494,14 +494,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
     }
 
-    /**
-     * TODO: this does not work properly (even before transport-refactor)
-     * one of the problem here is, that this.runPromise.reject is caught in src/core finally block that triggers
-     * device release. This is not right because we know that somebody else has already taken control of device
-     * which means that session management does not make sense anymore. releasing device, on the other hand
-     * makes sense, because this instance of connect might be the only one who has the right to do it.
-     */
     public usedElsewhere() {
+        // only makes sense to continue when device held by this instance
+        if (!this.isLocalSession) {
+            return;
+        }
         this._featuresNeedsReload = true;
 
         _log.debug('interruptionFromOutside');
