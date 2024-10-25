@@ -18,8 +18,5 @@ const CoinmarketExchangeFormComponent = ({ selectedAccount }: UseCoinmarketProps
 };
 
 export const CoinmarketExchangeForm = () => (
-    <CoinmarketContainer
-        title="TR_COINMARKET_SWAP"
-        SectionComponent={CoinmarketExchangeFormComponent}
-    />
+    <CoinmarketContainer SectionComponent={CoinmarketExchangeFormComponent} />
 );

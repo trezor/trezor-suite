@@ -20,9 +20,5 @@ const CoinmarketSellDetailComponent = ({ selectedAccount }: UseCoinmarketProps) 
 };
 
 export const CoinmarketSellDetail = () => (
-    <CoinmarketContainer
-        title="TR_COINMARKET_BUY_AND_SELL"
-        backRoute="wallet-coinmarket-transactions"
-        SectionComponent={CoinmarketSellDetailComponent}
-    />
+    <CoinmarketContainer SectionComponent={CoinmarketSellDetailComponent} />
 );

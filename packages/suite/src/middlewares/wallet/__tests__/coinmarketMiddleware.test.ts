@@ -42,22 +42,6 @@ const COINMARKET_EXCHANGE_ROUTE = {
     url: '/accounts/coinmarket/exchange#/btc/0/normal',
 };
 
-const COINMARKET_TRANSACTIONS_ROUTE = {
-    anchor: undefined,
-    app: 'wallet',
-    hash: undefined,
-    loaded: true,
-    params: undefined,
-    pathname: '/accounts/coinmarket/transactions',
-    route: {
-        name: 'wallet-coinmarket-transactions',
-        pattern: '/accounts/coinmarket/transactions',
-        app: 'wallet',
-    },
-    settingsBackRoute: { name: 'wallet-coinmarket-exchange', params: undefined },
-    url: '/accounts/coinmarket/transactions',
-};
-
 type CoinmarketState = ReturnType<typeof coinmarketReducer>;
 type SelectedAccountState = ReturnType<typeof selectedAccountReducer>;
 type SuiteState = ReturnType<typeof suiteReducer>;
@@ -339,7 +323,7 @@ describe('coinmarketMiddleware', () => {
         expect(store.getState().wallet.coinmarket.exchange.coinmarketAccount).toEqual(undefined);
     });
 
-    it('Test of setting suiteBackRouteName after changing route', () => {
+    it('Test of setting activeSection after changing route', () => {
         const store = initStore(
             getInitialState({
                 coinmarket: {
@@ -353,32 +337,9 @@ describe('coinmarketMiddleware', () => {
             type: ROUTER.LOCATION_CHANGE,
             payload: {
                 ...COINMARKET_EXCHANGE_ROUTE,
-                settingsBackRoute: {
-                    name: 'suite-index',
-                },
             },
         });
 
-        expect(store.getState().wallet.coinmarket.suiteBackRouteName).toBe('suite-index');
-    });
-
-    it('Test of setting coinmarketBackRouteName after changing route', () => {
-        const store = initStore(
-            getInitialState({
-                coinmarket: {
-                    ...initialState,
-                },
-            }),
-        );
-
-        // go to coinmarket transactions
-        store.dispatch({
-            type: ROUTER.LOCATION_CHANGE,
-            payload: COINMARKET_TRANSACTIONS_ROUTE,
-        });
-
-        expect(store.getState().wallet.coinmarket.coinmarketBackRouteName).toBe(
-            'wallet-coinmarket-exchange',
-        );
+        expect(store.getState().wallet.coinmarket.activeSection).toBe('exchange');
     });
 });
