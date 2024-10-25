@@ -62,6 +62,7 @@ import { recoveryDevice } from './recoveryDevice';
 import { removeAllListeners } from './removeAllListeners';
 import { requestLogin } from './requestLogin';
 import { resetDevice } from './resetDevice';
+import { loadDevice } from './loadDevice';
 import { rippleGetAddress } from './rippleGetAddress';
 import { rippleSignTransaction } from './rippleSignTransaction';
 import { setBrightness } from './setBrightness';
@@ -278,6 +279,9 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/device/resetDevice/
     resetDevice: typeof resetDevice;
+
+    // https://connect.trezor.io/9/methods/device/loadDevice/
+    loadDevice: typeof loadDevice;
 
     // https://connect.trezor.io/9/methods/ripple/rippleGetAddress/
     rippleGetAddress: typeof rippleGetAddress;

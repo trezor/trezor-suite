@@ -214,6 +214,8 @@ export const factory = <
 
     resetDevice: params => call({ ...params, method: 'resetDevice' }),
 
+    loadDevice: params => call({ ...params, method: 'loadDevice' }),
+
     wipeDevice: params => call({ ...params, method: 'wipeDevice' }),
 
     applyFlags: params => call({ ...params, method: 'applyFlags' }),
