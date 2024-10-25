@@ -162,7 +162,7 @@ export const init =
         };
 
         try {
-            if (coreMode === 'deeplink') {
+            if (connectOptions.coreMode === 'deeplink') {
                 await TrezorConnectMobile.init({
                     ...connectOptions,
                     deeplinkOpen(url) {
