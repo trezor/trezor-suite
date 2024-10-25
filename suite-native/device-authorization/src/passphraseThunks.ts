@@ -66,7 +66,10 @@ export const verifyPassphraseOnEmptyWalletThunk = createThunk<
             keepSession: false,
         });
 
-        if (response.success && response.payload.state !== device.state) {
+        if (
+            response.success &&
+            response.payload._state.staticSessionId !== device.state?.staticSessionId
+        ) {
             return rejectWithValue({ error: 'passphrase-mismatch' });
         }
 

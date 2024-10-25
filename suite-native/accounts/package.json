@@ -34,6 +34,7 @@
         "@suite-native/staking": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@suite-native/tokens": "workspace:*",
+        "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
         "jotai": "1.9.1",
         "proxy-memoize": "2.0.2",

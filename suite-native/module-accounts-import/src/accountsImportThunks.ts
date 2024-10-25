@@ -89,7 +89,9 @@ export const getAccountInfoThunk = createThunk<
                 TrezorConnect.getAccountInfo({
                     coin: networkSymbol,
                     identity: shouldUseIdentities(networkSymbol)
-                        ? getAccountIdentity({ deviceState: PORTFOLIO_TRACKER_DEVICE_STATE })
+                        ? getAccountIdentity({
+                              deviceState: PORTFOLIO_TRACKER_DEVICE_STATE,
+                          })
                         : undefined,
                     descriptor: xpubAddress,
                     details: 'txs',

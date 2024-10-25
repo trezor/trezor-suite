@@ -738,7 +738,7 @@ export const updateNetworkSettingsThunk = createThunk(
         const discovery = selectDiscovery(getState());
         discovery.forEach(d => {
             const devices = selectDevices(getState());
-            const device = devices.find(dev => dev.state === d.deviceState);
+            const device = devices.find(dev => dev.state?.staticSessionId === d.deviceState);
             const networksSymbols = filterUnavailableNetworks(enabledNetworks, device).map(
                 n => n.symbol,
             );

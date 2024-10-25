@@ -53,7 +53,9 @@ export const AccountsMenu = () => {
     }
 
     const failed = getFailedAccounts(discovery);
-    const list = sortByCoin(accounts.filter(a => a.deviceState === device.state).concat(failed));
+    const list = sortByCoin(
+        accounts.filter(a => a.deviceState === device.state?.staticSessionId).concat(failed),
+    );
     const isEmpty = list.length === 0;
 
     return (

@@ -8,11 +8,11 @@ import { differenceInMonths } from 'date-fns';
 
 import { CommonAggregatedHistory, GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
 
-import type { BlockchainAccountBalanceHistory } from '@trezor/connect';
+import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { ObjectType, TypeName, sumFiatValueMapInPlace } from './utilsShared';
 
-export const deviceGraphDataFilterFn = (d: GraphData, deviceState: string | undefined) => {
+export const deviceGraphDataFilterFn = (d: GraphData, deviceState: StaticSessionId | undefined) => {
     if (!deviceState) return false;
 
     return d.account.deviceState === deviceState;

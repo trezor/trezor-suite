@@ -101,7 +101,7 @@ export const disposeMetadataKeys = () => (dispatch: Dispatch, getState: GetState
             dispatch({
                 type: METADATA.SET_DEVICE_METADATA,
                 payload: {
-                    deviceState: device.state,
+                    deviceState: device.state.staticSessionId,
                     metadata: {},
                 },
             });

@@ -2,6 +2,7 @@ import { createDeferred } from '@trezor/utils';
 import { Discovery, PartialDiscovery } from '@suite-common/wallet-types';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import { DeviceState, StaticSessionId } from '@trezor/connect';
 
 import { discoveryActions } from './discoveryActions';
 import { DeviceRootState, selectDevice } from '../device/deviceReducer';
@@ -82,18 +83,25 @@ export const selectDiscovery = (state: DiscoveryRootState) => state.wallet.disco
 // Get discovery process for deviceState.
 export const selectDiscoveryByDeviceState = (
     state: DiscoveryRootState,
-    deviceState: string | undefined,
-) => (deviceState ? state.wallet.discovery.find(d => d.deviceState === deviceState) : undefined);
+    deviceState: DeviceState | StaticSessionId | undefined,
+) =>
+    deviceState
+        ? state.wallet.discovery.find(d =>
+              typeof deviceState === 'string'
+                  ? d.deviceState === deviceState
+                  : d.deviceState === deviceState.staticSessionId,
+          )
+        : undefined;
 
 export const selectDeviceDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
     const selectedDevice = selectDevice(state);
 
-    return selectDiscoveryByDeviceState(state, selectedDevice?.state);
+    return selectDiscoveryByDeviceState(state, selectedDevice?.state?.staticSessionId);
 };
 
 export const selectIsDiscoveryActiveByDeviceState = (
     state: DiscoveryRootState & DeviceRootState,
-    deviceState: string | undefined,
+    deviceState: DeviceState | StaticSessionId | undefined,
 ) => {
     const discovery = selectDiscoveryByDeviceState(state, deviceState);
 

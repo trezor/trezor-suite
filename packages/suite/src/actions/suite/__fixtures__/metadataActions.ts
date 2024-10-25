@@ -4,8 +4,10 @@ import { deviceActions } from '@suite-common/wallet-core';
 import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants/';
 
 import * as metadataLabelingActions from '../metadataLabelingActions';
+import * as metadataProviderActions from '../metadataProviderActions';
+import * as metadataActions from '../metadataActions';
 
-const { getSuiteDevice } = testMocks;
+const { getSuiteDevice, getWalletAccount } = testMocks;
 
 type Fixture<T extends (...a: any) => any> = {
     description: string;
@@ -60,7 +62,11 @@ const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceM
             metadata: {
                 enabled: true,
             },
-            device: { state: '1stTestnetAddress@device_id:0', connected: true, metadata: {} },
+            device: {
+                state: { staticSessionId: '1stTestnetAddress@device_id:0' },
+                connected: true,
+                metadata: {},
+            },
         },
         result: [
             {
@@ -88,54 +94,55 @@ const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceM
                             key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                         },
                     },
-                    state: '1stTestnetAddress@device_id:0',
+                    state: { staticSessionId: '1stTestnetAddress@device_id:0' },
                 },
             },
         ],
     },
 ];
 
-const setAccountMetadataKey = [
-    {
-        description: `Account m/49'/0'/0'`,
-        initialState: {
-            device: {
-                state: 'a',
+const setAccountMetadataKey: Fixture<(typeof metadataLabelingActions)['setAccountMetadataKey']>[] =
+    [
+        {
+            description: `Account m/49'/0'/0'`,
+            initialState: {
+                device: {
+                    state: { staticSessionId: '1stTestnetAddress@device_id:0' },
+                    metadata: {
+                        1: {
+                            key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
+                        },
+                    },
+                },
+            },
+            params: [
+                getWalletAccount({
+                    metadata: {
+                        key: 'xpub6CVKsQYXc9awxgV1tWbG4foDvdcnieK2JkbpPEBKB5WwAPKBZ1mstLbKVB4ov7QzxzjaxNK6EfmNY5Jsk2cG26EVcEkycGW4tchT2dyUhrx',
+                    },
+                    deviceState: '1stTestnetAddress@device_id:0',
+                }),
+            ],
+            result: {
                 metadata: {
                     1: {
-                        key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
+                        fileName:
+                            '828652b66f2e6f919fbb7fe4c9609d4891ed531c6fac4c28441e53ebe577ac85.mtdt',
+                        aesKey: '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480',
                     },
                 },
             },
         },
-        params: [
-            {
-                metadata: {
-                    key: 'xpub6CVKsQYXc9awxgV1tWbG4foDvdcnieK2JkbpPEBKB5WwAPKBZ1mstLbKVB4ov7QzxzjaxNK6EfmNY5Jsk2cG26EVcEkycGW4tchT2dyUhrx',
-                },
-                deviceState: 'a',
-            },
-        ],
-        result: {
-            metadata: {
-                1: {
-                    fileName:
-                        '828652b66f2e6f919fbb7fe4c9609d4891ed531c6fac4c28441e53ebe577ac85.mtdt',
-                    aesKey: '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480',
-                },
-            },
-        },
-    },
-];
+    ];
 
-const addDeviceMetadata = [
+const addDeviceMetadata: Fixture<(typeof metadataLabelingActions)['addDeviceMetadata']>[] = [
     {
         description: `Without device`,
         initialState: {
             metadata: { selectedProvider: { type: 'dropbox', key: 'A' }, providers: [] },
             device: { state: undefined },
         },
-        params: { type: 'walletLabel', deviceState: '1stTestnetAddress@device_id:0' },
+        params: [{ type: 'walletLabel', entityKey: '1stTestnetAddress@device_id:0' }],
         result: undefined,
     },
     {
@@ -154,16 +161,18 @@ const addDeviceMetadata = [
                 },
             },
         },
-        params: {
-            type: 'walletLabel',
-            deviceState: '1stTestnetAddress@device_id:0',
-            value: 'Custom label',
-        },
+        params: [
+            {
+                type: 'walletLabel',
+                entityKey: '1stTestnetAddress@device_id:0',
+                value: 'Custom label',
+            },
+        ],
         result: {},
     },
 ];
 
-const addAccountMetadata = [
+const addAccountMetadata: Fixture<(typeof metadataLabelingActions)['addAccountMetadata']>[] = [
     {
         description: `Without provider`,
         initialState: {
@@ -171,7 +180,15 @@ const addAccountMetadata = [
                 providers: [],
             },
         },
-        params: {},
+        params: [
+            {
+                type: 'outputLabel',
+                entityKey: 'account',
+                txid: 'TXID',
+                outputIndex: 0,
+                value: 'Foo',
+            },
+        ],
         result: undefined,
     },
     {
@@ -182,7 +199,15 @@ const addAccountMetadata = [
                 providers: [{ type: 'dropbox', data: {}, clientId: 'clientId' }],
             },
         },
-        params: {},
+        params: [
+            {
+                type: 'outputLabel',
+                entityKey: 'account',
+                txid: 'TXID',
+                outputIndex: 0,
+                value: 'Foo',
+            },
+        ],
         result: undefined,
     },
     {
@@ -209,6 +234,7 @@ const addAccountMetadata = [
             },
             accounts: [
                 {
+                    key: 'account',
                     metadata: {
                         [METADATA_LABELING.ENCRYPTION_VERSION]: {
                             aesKey: '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480',
@@ -218,12 +244,15 @@ const addAccountMetadata = [
                 },
             ],
         },
-        params: {
-            type: 'outputLabel',
-            txid: 'TXID',
-            outputIndex: 0,
-            value: 'Foo',
-        },
+        params: [
+            {
+                type: 'outputLabel',
+                entityKey: 'account',
+                txid: 'TXID',
+                outputIndex: 0,
+                value: 'Foo',
+            },
+        ],
         result: [
             {
                 type: '@metadata/set-data',
@@ -272,6 +301,7 @@ const addAccountMetadata = [
             },
             accounts: [
                 {
+                    key: 'account',
                     metadata: {
                         1: {
                             aesKey: '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480',
@@ -281,12 +311,15 @@ const addAccountMetadata = [
                 },
             ],
         },
-        params: {
-            type: 'outputLabel',
-            txid: 'TXID',
-            outputIndex: 0,
-            value: '', // empty string removes value
-        },
+        params: [
+            {
+                type: 'outputLabel',
+                entityKey: 'account',
+                txid: 'TXID',
+                outputIndex: 0,
+                value: '', // empty string removes value
+            },
+        ],
         result: [
             {
                 payload: {
@@ -303,13 +336,13 @@ const addAccountMetadata = [
     },
 ];
 
-const connectProvider = [
+const connectProvider: Fixture<(typeof metadataProviderActions)['connectProvider']>[] = [
     {
         description: 'Dropbox',
         initialState: {
             metadata: undefined,
         },
-        params: { type: 'dropbox' },
+        params: [{ type: 'dropbox' }],
         result: [
             {
                 type: '@metadata/add-provider',
@@ -335,7 +368,7 @@ const connectProvider = [
     // todo: singleton (instance) behavior
 ];
 
-const addMetadata = [
+const addMetadata: Fixture<(typeof metadataLabelingActions)['addMetadata']>[] = [
     {
         description: 'does not need update',
         initialState: {
@@ -358,12 +391,14 @@ const addMetadata = [
                 metadata: {},
             },
         },
-        params: {
-            accountKey: 'account-key',
-            defaultValue: "m/84'/0'/0'",
-            type: 'accountLabel',
-            value: undefined,
-        },
+        params: [
+            {
+                entityKey: 'account-key',
+                defaultValue: "m/84'/0'/0'",
+                type: 'accountLabel',
+                value: undefined,
+            },
+        ],
         result: [],
     },
     {
@@ -388,22 +423,25 @@ const addMetadata = [
                 metadata: {},
             },
         },
-        params: {
-            accountKey: 'account-key',
-            defaultValue: "m/84'/0'/0'",
-            type: 'accountLabel',
-            value: 'my label', // see store setup in tests
-        },
+        params: [
+            {
+                entityKey: 'account-key',
+                defaultValue: "m/84'/0'/0'",
+                type: 'accountLabel',
+                value: 'my label', // see store setup in tests
+            },
+        ],
         result: [],
     },
 ];
 
-export const enableMetadata = [
+export const enableMetadata: Fixture<(typeof metadataActions)['enableMetadata']>[] = [
     {
         description: 'enable metadata',
         initialState: {
             metadata: { enabled: true, providers: [] },
         },
+        params: [],
         result: [
             {
                 type: METADATA.ENABLE,
@@ -412,7 +450,7 @@ export const enableMetadata = [
     },
 ];
 
-export const disableMetadata = [
+export const disableMetadata: Fixture<(typeof metadataActions)['disableMetadata']>[] = [
     {
         description: 'disable metadata',
         initialState: {
@@ -421,6 +459,7 @@ export const disableMetadata = [
                 state: undefined,
             },
         },
+        params: [],
         result: [
             {
                 type: METADATA.DISABLE,
@@ -429,19 +468,20 @@ export const disableMetadata = [
     },
 ];
 
-const init = [
+const init: Fixture<(typeof metadataLabelingActions)['init']>[] = [
     {
         description: 'device without state',
         initialState: {
             device: { state: undefined },
         },
+        params: [false],
         result: [],
     },
     {
         description: 'metadata already enabled',
         initialState: {
             device: {
-                state: '1stTestnetAddress@device_id:0',
+                state: { staticSessionId: '1stTestnetAddress@device_id:0' },
                 connected: true,
                 metadata: {
                     1: {
@@ -458,6 +498,7 @@ const init = [
                 providers: [],
             },
         },
+        params: [false],
         result: [
             { type: '@metadata/set-initiating', payload: true },
             {
@@ -486,7 +527,11 @@ const init = [
     {
         description: 'metadata not enabled',
         initialState: {
-            device: { state: '1stTestnetAddress@device_id:0', connected: true, metadata: {} },
+            device: {
+                state: { staticSessionId: '1stTestnetAddress@device_id:0' },
+                connected: true,
+                metadata: {},
+            },
             metadata: {
                 enabled: false,
                 providers: [],
@@ -494,6 +539,7 @@ const init = [
             },
             suite: { online: true },
         },
+        params: [false],
         result: [
             { type: '@metadata/set-initiating', payload: true },
             { type: '@metadata/enable' },
@@ -514,7 +560,7 @@ const init = [
             {
                 type: deviceActions.updateSelectedDevice.type,
                 payload: {
-                    state: '1stTestnetAddress@device_id:0',
+                    state: { staticSessionId: '1stTestnetAddress@device_id:0' },
                     connected: true,
                     metadata: {
                         1: {
@@ -551,7 +597,7 @@ const init = [
     },
 ];
 
-const disposeMetadata = [
+const disposeMetadata: Fixture<(typeof metadataActions)['disposeMetadata']>[] = [
     {
         description: '',
         initialState: {
@@ -593,7 +639,7 @@ const disposeMetadata = [
     },
 ];
 
-const disposeMetadataKeys = [
+const disposeMetadataKeys: Fixture<(typeof metadataActions)['disposeMetadataKeys']>[] = [
     {
         description: 'keys',
         initialState: {

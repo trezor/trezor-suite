@@ -26,6 +26,7 @@ import {
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { isFirmwareVersionSupported } from '@suite-native/device';
 import { FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { StaticSessionId } from '@trezor/connect';
 
 import {
     DiscoveryConfigSliceRootState,
@@ -37,7 +38,7 @@ import { getNetworksWithUnfinishedDiscovery } from './utils';
 
 export const selectValidTokensByDeviceStateAndNetworkSymbol = (
     state: TokenDefinitionsRootState & DeviceRootState & AccountsRootState,
-    deviceState: string,
+    deviceState: StaticSessionId,
     networkSymbol: NetworkSymbol,
 ) => {
     const accountsByDeviceStateAndNetworkSymbol = selectAccountsByNetworkAndDeviceState(
@@ -73,7 +74,7 @@ export const selectValidTokensByDeviceStateAndNetworkSymbol = (
 
 export const selectDiscoveryAccountsAnalytics = (
     state: AccountsRootState & DeviceRootState & TokenDefinitionsRootState,
-    deviceState: string,
+    deviceState: StaticSessionId,
 ) =>
     pipe(
         selectDeviceAccounts(state),

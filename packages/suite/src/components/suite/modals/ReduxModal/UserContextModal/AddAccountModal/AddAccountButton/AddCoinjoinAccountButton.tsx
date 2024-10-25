@@ -64,7 +64,7 @@ export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjo
 
     const coinjoinAccounts = accounts.filter(
         a =>
-            a.deviceState === device?.state &&
+            a.deviceState === device?.state?.staticSessionId &&
             a.symbol === network.symbol &&
             a.accountType === selectedAccount.accountType,
     );

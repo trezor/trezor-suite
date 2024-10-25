@@ -29,8 +29,11 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             prevDiscovery.status > DiscoveryStatus.IDLE &&
             prevDiscovery.status < DiscoveryStatus.STOPPING;
 
-        if (deviceActions.forgetDevice.match(action) && action.payload.device.state) {
-            dispatch(discoveryActions.removeDiscovery(action.payload.device.state));
+        if (
+            deviceActions.forgetDevice.match(action) &&
+            action.payload.device.state?.staticSessionId
+        ) {
+            dispatch(discoveryActions.removeDiscovery(action.payload.device.state.staticSessionId));
         }
 
         // do not close user context modals during discovery
@@ -76,7 +79,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         // 1. selected device is acquired but doesn't have a state
         if (
             isDeviceAcquired(device) &&
-            !device.state &&
+            !device.state?.staticSessionId &&
             !locks.includes(SUITE.LOCK_TYPE.DEVICE) &&
             (deviceActions.selectDevice.match(action) || action.type === SUITE.APP_CHANGED)
         ) {
@@ -115,19 +118,22 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             // to avoid typescript conditioning use device from action as a fallback (never used)
             dispatch(
                 createDiscoveryThunk({
-                    deviceState: action.payload.state,
+                    deviceState: action.payload.state.staticSessionId!,
                     device: device || action.payload.device,
                 }),
             );
         }
 
         // 5. device state confirmation received
-        if (deviceActions.receiveAuthConfirm.match(action) && action.payload.device.state) {
+        if (
+            deviceActions.receiveAuthConfirm.match(action) &&
+            action.payload.device.state?.staticSessionId
+        ) {
             // from discovery point of view it's irrelevant if authConfirm fails
             // it's a device matter now
             dispatch(
                 discoveryActions.updateDiscovery({
-                    deviceState: action.payload.device.state,
+                    deviceState: action.payload.device.state.staticSessionId,
                     authConfirm: false,
                 }),
             );

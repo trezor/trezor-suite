@@ -93,7 +93,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
     }
 
     // get selected account
-    const account = getSelectedAccount(device.state, state.wallet.accounts, params);
+    const account = getSelectedAccount(device.state.staticSessionId, state.wallet.accounts, params);
 
     // account does exist
     if (account && account.visible) {

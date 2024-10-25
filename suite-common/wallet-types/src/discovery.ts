@@ -31,7 +31,7 @@ export interface Discovery {
     availableCardanoDerivations?: ('normal' | 'legacy' | 'ledger')[];
 }
 
-export type PartialDiscovery = { deviceState: string } & Partial<Discovery>;
+export type PartialDiscovery = { deviceState: StaticSessionId } & Partial<Discovery>;
 
 export type DiscoveryItem = {
     // @trezor/connect

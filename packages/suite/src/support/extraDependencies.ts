@@ -176,7 +176,9 @@ export const extraDependencies: ExtraDependencies = {
             }: PayloadAction<{ deviceState: StaticSessionId; metadata: TrezorDevice['metadata'] }>,
         ) => {
             const { deviceState, metadata } = payload;
-            const index = state.devices.findIndex((d: TrezorDevice) => d.state === deviceState);
+            const index = state.devices.findIndex(
+                (d: TrezorDevice) => d.state?.staticSessionId === deviceState,
+            );
             const device = state.devices[index];
             if (!device) return;
             device.metadata = metadata;
@@ -185,10 +187,15 @@ export const extraDependencies: ExtraDependencies = {
             state,
             {
                 payload,
-            }: PayloadAction<{ deviceState: StaticSessionId; metadata: TrezorDevice['passwords'] }>,
+            }: PayloadAction<{
+                deviceState: StaticSessionId;
+                metadata: TrezorDevice['passwords'];
+            }>,
         ) => {
             const { deviceState, metadata } = payload;
-            const index = state.devices.findIndex((d: TrezorDevice) => d.state === deviceState);
+            const index = state.devices.findIndex(
+                (d: TrezorDevice) => d.state?.staticSessionId === deviceState,
+            );
             const device = state.devices[index];
             if (!device) return;
             device.passwords = metadata;

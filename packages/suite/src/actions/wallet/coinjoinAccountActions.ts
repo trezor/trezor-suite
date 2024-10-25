@@ -604,7 +604,7 @@ export const createCoinjoinAccount =
         // create empty account
         const coinjoinAccount = dispatch(
             accountsActions.createAccount({
-                deviceState: device!.state!,
+                deviceState: device!.state!.staticSessionId!,
                 discoveryItem: {
                     index: 0,
                     path,
@@ -891,7 +891,7 @@ export const stopCoinjoinSessionByDeviceId =
         const disconnectedDevices = devices.filter(d => d.id === deviceID && d.remember);
         const affectedAccounts = disconnectedDevices.flatMap(d =>
             state.wallet.accounts.filter(
-                a => a.accountType === 'coinjoin' && a.deviceState === d.state,
+                a => a.accountType === 'coinjoin' && a.deviceState === d.state?.staticSessionId,
             ),
         );
 

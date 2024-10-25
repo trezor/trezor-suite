@@ -103,7 +103,7 @@ export const AddAccountModal = ({
     const emptyAccounts = selectedNetwork
         ? accounts.filter(
               a =>
-                  a.deviceState === device.state &&
+                  a.deviceState === device.state?.staticSessionId &&
                   a.symbol === selectedNetwork.symbol &&
                   a.accountType === currentType &&
                   a.empty,

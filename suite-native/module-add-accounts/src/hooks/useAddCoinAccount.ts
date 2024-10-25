@@ -260,7 +260,7 @@ export const useAddCoinAccount = () => {
             addAndDiscoverNetworkAccountThunk({
                 network,
                 accountType,
-                deviceState: device.state,
+                deviceState: device.state.staticSessionId!,
             }),
         );
 
