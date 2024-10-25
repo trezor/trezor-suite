@@ -67,6 +67,7 @@ export { default as tezosSignTransaction } from './tezosSignTransaction';
 export { default as verifyMessage } from './verifyMessage';
 export { default as verifyMessageSegwit } from './verifyMessageSegwit';
 export { default as verifyMessageSegwitNative } from './verifyMessageSegwitNative';
+export { default as loadDevice } from './loadDevice';
 
 // TODO: add fixtures for missing dependencies https://github.com/trezor/trezor-suite/issues/5353
 // backupDevice
