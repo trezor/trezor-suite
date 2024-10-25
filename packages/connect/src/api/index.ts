@@ -46,6 +46,7 @@ export { default as recoveryDevice } from './recoveryDevice';
 // export { default as renderWebUSBButton } from './composeTransaction';
 export { default as requestLogin } from './requestLogin';
 export { default as resetDevice } from './resetDevice';
+export { default as loadDevice } from './loadDevice';
 export { default as setBrightness } from './setBrightness';
 export { default as setBusy } from './setBusy';
 export { default as setProxy } from './setProxy';
