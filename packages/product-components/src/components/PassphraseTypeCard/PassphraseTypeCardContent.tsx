@@ -1,7 +1,7 @@
 import { isAndroid } from '@trezor/env-utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Card, Column, Row, Input, Button, motionAnimation, Icon } from '@trezor/components';
+import { Card, Column, Row, Input, Button, motionAnimation, Icon, Banner } from '@trezor/components';
 import { PasswordStrengthIndicator } from '../PasswordStrengthIndicator/PasswordStrengthIndicator';
 import styled, { useTheme } from 'styled-components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
@@ -43,12 +43,15 @@ const Description = styled.div`
 
 type PassphraseTypeCardContentProps = {
     submitLabel: ReactNode;
+    submitVariant?: 'primary' | 'warning';
     type: WalletType;
     singleColModal?: boolean;
     displayValue: string;
     isPassphraseTooLong: boolean;
     value: string;
     setValue: (value: string) => void;
+    showAsciiBanner?: boolean;
+    asciiBannerVariant?: 'info' | 'warning';
     showPassword: boolean;
     setShowPassword: (showPassword: boolean) => void;
     hiddenWalletTouched: boolean;
@@ -59,6 +62,7 @@ type PassphraseTypeCardContentProps = {
 };
 
 export const PassphraseTypeCardContent = ({
+    asciiBannerVariant = 'info',
     type,
     displayValue,
     isPassphraseTooLong,
@@ -66,6 +70,8 @@ export const PassphraseTypeCardContent = ({
     value,
     setValue,
     submitLabel,
+    submitVariant = 'primary',
+    showAsciiBanner,
     showPassword,
     setShowPassword,
     hiddenWalletTouched,
@@ -175,6 +181,11 @@ export const PassphraseTypeCardContent = ({
                         {value && !isPassphraseTooLong && (
                             <PasswordStrengthIndicator password={value} />
                         )}
+                        {showAsciiBanner && (
+                            <Banner variant={asciiBannerVariant}>
+                                TBD
+                            </Banner>
+                        )}
                     </>
                 )}
 
@@ -190,7 +201,7 @@ export const PassphraseTypeCardContent = ({
                                             type === 'hidden' ? 'hidden' : 'standard'
                                         }/submit-button`}
                                         isDisabled={isPassphraseEmpty || isPassphraseTooLong}
-                                        variant="primary"
+                                        variant={submitVariant}
                                         onClick={() => submit(value)}
                                         isFullWidth
                                     >

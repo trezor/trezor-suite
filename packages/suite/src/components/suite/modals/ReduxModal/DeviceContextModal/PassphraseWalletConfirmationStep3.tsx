@@ -2,7 +2,7 @@ import { Banner, Column, H3 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite/Translation';
 import { OpenGuideFromTooltip } from 'src/components/guide';
-import { selectDeviceModel } from '@suite-common/wallet-core';
+import { selectDeviceModel, selectDeviceFeatures } from '@suite-common/wallet-core';
 import { useSelector } from 'src/hooks/suite';
 import { PassphraseTypeCard } from '../../../../../../../product-components/src/components/PassphraseTypeCard/PassphraseTypeCard';
 
@@ -16,6 +16,7 @@ export const PassphraseWalletConfirmationStep3 = ({
     onSubmit,
 }: PassphraseWalletConfirmationStep3Props) => {
     const deviceModel = useSelector(selectDeviceModel);
+    const deviceFeatures = useSelector(selectDeviceFeatures);
 
     return (
         <Column gap={spacings.sm} margin={{ top: spacings.xxs }} alignItems="stretch">
@@ -32,6 +33,7 @@ export const PassphraseWalletConfirmationStep3 = ({
                 onSubmit={onSubmit}
                 singleColModal
                 deviceModel={deviceModel ?? undefined}
+                deviceBackup={deviceFeatures?.backup_type}
                 learnMoreTooltipOnClick={
                     <OpenGuideFromTooltip
                         data-testid="@tooltip/guideAnchor"

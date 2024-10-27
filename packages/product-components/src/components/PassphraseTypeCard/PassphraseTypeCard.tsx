@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, ReactNode } from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useKeyPress } from '@trezor/react-utils';
 import { setCaretPosition } from '@trezor/dom-utils';
@@ -7,12 +7,14 @@ import { countBytesInString } from '@trezor/utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { TooltipProps } from '@trezor/components';
 import { EnterOnTrezorButton } from './EnterOnTrezorButton';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal, Features } from '@trezor/connect';
 import { PassphraseTypeCardHeading } from './PassphraseTypeCardHeading';
 import { WalletType } from './types';
 import { PassphraseTypeCardContent } from './PassphraseTypeCardContent';
 import { DOT } from './consts';
 import { borders, spacingsPx } from '@trezor/theme';
+import { useNonAsciiChars } from './useNonAsciiChars';
+import { getSubmitLabel } from './getSubmitLabel';
 
 type WrapperProps = {
     $type: WalletType;
@@ -59,6 +61,7 @@ export type PassphraseTypeCardProps = {
     offerPassphraseOnDevice?: boolean;
     singleColModal?: boolean;
     deviceModel?: DeviceModelInternal;
+    deviceBackup?: Features['backup_type'] | null;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     learnMoreTooltipOnClick?: TooltipProps['addon'];
     learnMoreTooltipAppendTo?: TooltipProps['appendTo'];
@@ -69,6 +72,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
     const [showPassword, setShowPassword] = useState(false);
     const [hiddenWalletTouched, setHiddenWalletTouched] = useState(false);
     const enterPressed = useKeyPress('Enter');
+    const { nonAsciiChars, showAsciiBanner } = useNonAsciiChars(value);
 
     const ref = useRef<HTMLInputElement>(null);
     const caretRef = useRef<number>(0);
@@ -83,9 +87,10 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
         title,
         description,
         singleColModal,
-        submitLabel,
+        submitLabel: submitLabelProp,
         offerPassphraseOnDevice,
         deviceModel,
+        deviceBackup,
     } = props;
     const submit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
@@ -93,6 +98,10 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
         },
         [onSubmit],
     );
+
+    const isBip39 = deviceBackup === 'Bip39';
+
+    const submitLabel = getSubmitLabel({ nonAsciiChars, label: submitLabelProp, showPassword });
 
     const canSubmit = (singleColModal || type === 'hidden') && !isPassphraseTooLong;
 
@@ -144,9 +153,12 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
             <Item>
                 <PassphraseTypeCardContent
                     submitLabel={submitLabel}
+                    submitVariant={nonAsciiChars && !isBip39 ? 'warning' : 'primary'}
                     value={value}
                     setValue={setValue}
                     showPassword={showPassword}
+                    showAsciiBanner={showAsciiBanner}
+                    asciiBannerVariant={isBip39 ? 'info' : 'warning'}
                     setShowPassword={setShowPassword}
                     hiddenWalletTouched={hiddenWalletTouched}
                     setHiddenWalletTouched={setHiddenWalletTouched}
