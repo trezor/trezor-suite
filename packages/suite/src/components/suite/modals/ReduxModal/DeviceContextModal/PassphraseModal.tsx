@@ -99,6 +99,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
                             offerPassphraseOnDevice={onDeviceOffer}
                             onSubmit={onSubmit}
                             deviceModel={deviceModel ?? undefined}
+                            deviceBackup={device.features?.backup_type}
                             learnMoreTooltipOnClick={
                                 <OpenGuideFromTooltip
                                     data-testid="@tooltip/guideAnchor"
@@ -151,6 +152,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
                             offerPassphraseOnDevice={onDeviceOffer}
                             onSubmit={onSubmit}
                             deviceModel={deviceModel ?? undefined}
+                            deviceBackup={device.features?.backup_type}
                             learnMoreTooltipOnClick={
                                 <OpenGuideFromTooltip
                                     data-testid="@tooltip/guideAnchor"
