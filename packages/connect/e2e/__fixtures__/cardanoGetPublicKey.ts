@@ -1,3 +1,11 @@
+const legacyResults = {
+    minConnectVersion: {
+        // older FW does support Cardano but Connect does not
+        rules: ['<2.4.3', '1'],
+        payload: false,
+    },
+};
+
 export default {
     method: 'cardanoGetPublicKey',
     setup: {
@@ -61,5 +69,5 @@ export default {
                     '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1f123474e140a2c360b01f0fa66f2f22e2e965a5b07a80358cf75f77abbd66088',
             },
         },
-    ],
+    ].map(t => ({ ...t, legacyResults: [legacyResults.minConnectVersion] })),
 };

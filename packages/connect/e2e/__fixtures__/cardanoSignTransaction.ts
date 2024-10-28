@@ -438,7 +438,11 @@ const SCRIPT_DATA_HASH = 'd593fd793c377ac50a3169bb8378ffc257c944da31aa8f355dfa5a
 const TOTAL_COLLATERAL = '1000';
 
 const legacyResults = {
-    // FW <2.6.0 is not supported by Connect at all
+    minConnectVersion: {
+        // older FW does support Cardano but Connect does not
+        rules: ['<2.4.3', '1'],
+        payload: false,
+    },
     beforeConway: {
         // older FW doesn't support Conway certificates
         rules: ['<2.7.1', '1'],
@@ -2898,5 +2902,11 @@ export default {
                 auxiliaryDataSupplement: undefined,
             },
         },
-    ],
+    ].map(test => {
+        if (test.legacyResults) {
+            return test;
+        }
+
+        return { ...test, legacyResults: [legacyResults.minConnectVersion] };
+    }),
 };

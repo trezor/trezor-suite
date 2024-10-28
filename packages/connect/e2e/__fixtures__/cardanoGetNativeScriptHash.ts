@@ -2,6 +2,14 @@ import { MessagesSchema } from '@trezor/protobuf';
 
 const { CardanoNativeScriptHashDisplayFormat, CardanoNativeScriptType } = MessagesSchema;
 
+const legacyResults = {
+    minConnectVersion: {
+        // older FW does support Cardano but Connect does not
+        rules: ['<2.4.3', '1'],
+        payload: false,
+    },
+};
+
 export default {
     method: 'cardanoGetNativeScriptHash',
     setup: {
@@ -306,5 +314,5 @@ export default {
                 scriptHash: '4a6b4288459bf34668c0b281f922691460caf0c7c09caee3a726c27a',
             },
         },
-    ],
+    ].map(test => ({ ...test, legacyResults: [legacyResults.minConnectVersion] })),
 };
