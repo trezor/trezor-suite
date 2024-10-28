@@ -6,6 +6,14 @@ import { MessagesSchema } from '@trezor/protobuf';
 
 const { CardanoAddressType, CardanoDerivationType } = MessagesSchema;
 
+const legacyResults = {
+    minConnectVersion: {
+        // older FW does support Cardano but Connect does not
+        rules: ['<2.4.3', '1'],
+        payload: false,
+    },
+};
+
 export default {
     method: 'cardanoGetAddress',
     setup: {
@@ -28,5 +36,6 @@ export default {
         result: {
             address: result.expected_address,
         },
+        legacyResults: [legacyResults.minConnectVersion],
     })),
 };
