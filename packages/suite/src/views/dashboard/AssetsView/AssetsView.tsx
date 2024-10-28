@@ -202,7 +202,7 @@ export const AssetsView = () => {
                     )}
                 </>
             ) : (
-                <Card paddingType="none">
+                <Card paddingType="none" overflow="hidden">
                     <AssetTable
                         assetsData={assetsData}
                         assetsFiatBalances={assetsFiatBalances}
