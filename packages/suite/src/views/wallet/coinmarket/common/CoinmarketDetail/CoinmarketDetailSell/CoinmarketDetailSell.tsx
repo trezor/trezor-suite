@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { Card } from '@trezor/components';
+
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
@@ -11,10 +13,7 @@ import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/
 import { CoinmarketDetailSellPaymentSuccessful } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailSell/CoinmarketDetailSellPaymentSuccessful';
 import { CoinmarketDetailSellPaymentFailed } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailSell/CoinmarketDetailSellPaymentFailed';
 import { CoinmarketDetailSellPaymentPending } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailSell/CoinmarketDetailSellPaymentPending';
-import {
-    CoinmarketSideWrapper,
-    CoinmarketWrapper,
-} from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
+import { CoinmarketWrapper } from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
 
 const Wrapper = styled.div`
     ${CoinmarketWrapper}
@@ -60,7 +59,7 @@ export const CoinmarketDetailSell = () => {
 
     return (
         <Wrapper>
-            <CoinmarketSideWrapper side="left">
+            <Card>
                 {tradeStatus === 'SUCCESS' && (
                     <CoinmarketDetailSellPaymentSuccessful account={account} />
                 )}
@@ -72,8 +71,8 @@ export const CoinmarketDetailSell = () => {
                     />
                 )}
                 {showPending && <CoinmarketDetailSellPaymentPending supportUrl={supportUrl} />}
-            </CoinmarketSideWrapper>
-            <CoinmarketSideWrapper side="right">
+            </Card>
+            <Card>
                 <CoinmarketSelectedOfferInfo
                     account={account}
                     providers={info?.providerInfos}
@@ -82,7 +81,7 @@ export const CoinmarketDetailSell = () => {
                     type="sell"
                     quoteAmounts={quoteAmounts}
                 />
-            </CoinmarketSideWrapper>
+            </Card>
         </Wrapper>
     );
 };

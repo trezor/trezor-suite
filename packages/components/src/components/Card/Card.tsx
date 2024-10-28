@@ -48,6 +48,8 @@ const CardContainer = styled.div<
     } & TransientProps<AllowedFrameProps>
 >`
     width: 100%;
+    display: flex;
+    flex-direction: column;
     padding: ${mapPaddingTypeToPadding};
     border-radius: ${borders.radii.md};
     transition:

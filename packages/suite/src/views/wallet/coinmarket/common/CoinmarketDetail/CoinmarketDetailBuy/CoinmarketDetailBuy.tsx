@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+
+import { Card } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
@@ -11,10 +13,7 @@ import { CoinmarketDetailBuyPaymentPaymentSuccessful } from 'src/views/wallet/co
 import { CoinmarketDetailBuyPaymentFailed } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailBuy/CoinmarketDetailBuyPaymentFailed';
 import { CoinmarketDetailBuyPaymentProcessing } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailBuy/CoinmarketDetailBuyPaymentProcessing';
 import { CoinmarketDetailBuyPaymentWaitingForUser } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailBuy/CoinmarketDetailBuyPaymentWaitingForUser';
-import {
-    CoinmarketSideWrapper,
-    CoinmarketWrapper,
-} from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
+import { CoinmarketWrapper } from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
 
 const Wrapper = styled.div`
     ${CoinmarketWrapper}
@@ -61,7 +60,7 @@ export const CoinmarketDetailBuy = () => {
 
     return (
         <Wrapper>
-            <CoinmarketSideWrapper side="left">
+            <Card>
                 {showError && (
                     <CoinmarketDetailBuyPaymentFailed account={account} supportUrl={supportUrl} />
                 )}
@@ -74,8 +73,8 @@ export const CoinmarketDetailBuy = () => {
                     />
                 )}
                 {showSuccess && <CoinmarketDetailBuyPaymentPaymentSuccessful account={account} />}
-            </CoinmarketSideWrapper>
-            <CoinmarketSideWrapper side="right">
+            </Card>
+            <Card>
                 <CoinmarketSelectedOfferInfo
                     account={account}
                     selectedQuote={trade.data}
@@ -84,7 +83,7 @@ export const CoinmarketDetailBuy = () => {
                     quoteAmounts={quoteAmounts}
                     type="buy"
                 />
-            </CoinmarketSideWrapper>
+            </Card>
         </Wrapper>
     );
 };

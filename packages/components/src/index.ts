@@ -47,6 +47,7 @@ export {
     type IconCircleVariant,
     type IconCircleColors,
 } from './components/IconCircle/IconCircle';
+export { InfoRow, type InfoRowProps } from './components/InfoRow/InfoRow';
 export * from './components/loaders/LoadingContent/LoadingContent';
 export * from './components/loaders/ProgressBar/ProgressBar';
 export * from './components/loaders/ProgressPie/ProgressPie';

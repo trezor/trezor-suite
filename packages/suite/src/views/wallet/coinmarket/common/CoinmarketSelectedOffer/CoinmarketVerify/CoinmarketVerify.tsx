@@ -1,7 +1,7 @@
-import styled from 'styled-components';
 import addressValidator from '@trezor/address-validator';
-import { QuestionTooltip, Translation } from 'src/components/suite';
-import { Input, variables, Button } from '@trezor/components';
+import { Translation } from 'src/components/suite';
+import { Input, Button, Paragraph, Divider, Column, Tooltip, H4 } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
@@ -17,52 +17,6 @@ import { useDispatch } from 'src/hooks/suite';
 import { COINMARKET_BUY } from 'src/actions/wallet/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-top: 10px;
-`;
-
-const Heading = styled.div`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    padding: 16px 24px 0;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.SMALL};
-`;
-
-const CardContent = styled.div`
-    display: flex;
-    flex-direction: column;
-    padding: 0 24px;
-`;
-
-const Label = styled.div`
-    display: flex;
-    align-items: center;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const StyledQuestionTooltip = styled(QuestionTooltip)`
-    padding-left: 3px;
-`;
-
-const CustomLabel = styled(Label)`
-    padding: 12px 0;
-`;
-
-const ButtonWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: 20px;
-    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-    margin: 20px 0;
-`;
-
-const Row = styled.div`
-    margin: 12px 0;
-`;
 
 interface CoinmarketVerifyProps {
     coinmarketVerifyAccount: CoinmarketVerifyAccountReturnProps;
@@ -141,101 +95,89 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
     }, [device?.connected, dispatch]);
 
     return (
-        <Wrapper>
-            <Heading>
+        <Column gap={spacings.xl} alignItems="stretch">
+            <Paragraph typographyStyle="hint" variant="tertiary">
                 <Translation
                     id="TR_EXCHANGE_RECEIVING_ADDRESS_INFO"
                     values={{ symbol: cryptoIdToCoinSymbol(currency) }}
                 />
-            </Heading>
-            <CardContent>
-                <Row>
-                    <CustomLabel>
-                        <StyledQuestionTooltip
-                            label="TR_BUY_RECEIVING_ACCOUNT"
-                            tooltip={accountTooltipTranslationId}
-                        />
-                    </CustomLabel>
-                    <CoinmarketVerifyOptions
-                        receiveNetwork={currency}
-                        selectedAccountOption={selectedAccountOption}
-                        selectAccountOptions={selectAccountOptions}
-                        isMenuOpen={isMenuOpen}
-                        onChangeAccount={onChangeAccount}
-                    />
-                </Row>
-                <Row>
-                    {selectedAccountOption?.type === 'SUITE' &&
-                        selectedAccountOption?.account?.networkType === 'bitcoin' && (
-                            <>
-                                <CustomLabel>
-                                    <StyledQuestionTooltip
-                                        label="TR_BUY_RECEIVING_ADDRESS"
-                                        tooltip={addressTooltipTranslationId}
-                                    />
-                                </CustomLabel>
-                                <CoinmarketAddressOptions
-                                    account={selectedAccountOption?.account}
-                                    address={address}
-                                    control={form.control}
-                                    receiveSymbol={currency}
-                                    setValue={form.setValue}
-                                />
-                            </>
-                        )}
-                    {selectedAccountOption?.account?.networkType !== 'bitcoin' && (
+            </Paragraph>
+            <Column gap={spacings.xxs} alignItems="flex-start">
+                <Tooltip hasIcon content={<Translation id={accountTooltipTranslationId} />}>
+                    <H4>
+                        <Translation id="TR_BUY_RECEIVING_ACCOUNT" />
+                    </H4>
+                </Tooltip>
+                <CoinmarketVerifyOptions
+                    receiveNetwork={currency}
+                    selectedAccountOption={selectedAccountOption}
+                    selectAccountOptions={selectAccountOptions}
+                    isMenuOpen={isMenuOpen}
+                    onChangeAccount={onChangeAccount}
+                />
+            </Column>
+            <Column gap={spacings.xxs} alignItems="stretch">
+                {selectedAccountOption?.type === 'SUITE' &&
+                    selectedAccountOption?.account?.networkType === 'bitcoin' && (
                         <>
-                            <CustomLabel>
-                                <StyledQuestionTooltip
-                                    label="TR_EXCHANGE_RECEIVING_ADDRESS"
-                                    tooltip={addressTooltipTranslationId}
-                                />
-                            </CustomLabel>
-                            <Input
-                                readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
-                                inputState={form.formState.errors.address ? 'error' : undefined}
-                                bottomText={form.formState.errors.address?.message || null}
-                                innerRef={networkRef}
-                                {...networkField}
+                            <Tooltip
+                                hasIcon
+                                content={<Translation id={addressTooltipTranslationId} />}
+                            >
+                                <H4>
+                                    <Translation id="TR_BUY_RECEIVING_ADDRESS" />
+                                </H4>
+                            </Tooltip>
+                            <CoinmarketAddressOptions
+                                account={selectedAccountOption?.account}
+                                address={address}
+                                control={form.control}
+                                receiveSymbol={currency}
+                                setValue={form.setValue}
                             />
                         </>
                     )}
+                {selectedAccountOption?.account?.networkType !== 'bitcoin' && (
+                    <>
+                        <Tooltip hasIcon content={<Translation id={addressTooltipTranslationId} />}>
+                            <H4>
+                                <Translation id="TR_EXCHANGE_RECEIVING_ADDRESS" />
+                            </H4>
+                        </Tooltip>
+                        <Input
+                            readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
+                            inputState={form.formState.errors.address ? 'error' : undefined}
+                            bottomText={form.formState.errors.address?.message || null}
+                            innerRef={networkRef}
+                            {...networkField}
+                        />
+                    </>
+                )}
 
-                    {device?.connected &&
-                        device.available &&
-                        addressVerified &&
-                        addressVerified === address && <ConfirmedOnTrezor device={device} />}
-                    {exchangeQuote?.extraFieldDescription && (
-                        <Row>
-                            <Input
-                                size="small"
-                                label={
-                                    <Label>
-                                        <Translation
-                                            id="TR_EXCHANGE_EXTRA_FIELD"
-                                            values={extraFieldDescription}
-                                        />
-                                        <StyledQuestionTooltip
-                                            tooltip={
-                                                <Translation
-                                                    id="TR_EXCHANGE_EXTRA_FIELD_QUESTION_TOOLTIP"
-                                                    values={extraFieldDescription}
-                                                />
-                                            }
-                                        />
-                                    </Label>
-                                }
-                                inputState={form.formState.errors.extraField ? 'error' : undefined}
-                                bottomText={form.formState.errors.extraField?.message || null}
-                                innerRef={descriptionRef}
-                                {...descriptionField}
+                {device?.connected &&
+                    device.available &&
+                    addressVerified &&
+                    addressVerified === address && <ConfirmedOnTrezor device={device} />}
+
+                {exchangeQuote?.extraFieldDescription && (
+                    <Input
+                        size="small"
+                        label={
+                            <Translation
+                                id="TR_EXCHANGE_EXTRA_FIELD"
+                                values={extraFieldDescription}
                             />
-                        </Row>
-                    )}
-                </Row>
-            </CardContent>
+                        }
+                        inputState={form.formState.errors.extraField ? 'error' : undefined}
+                        bottomText={form.formState.errors.extraField?.message || null}
+                        innerRef={descriptionRef}
+                        {...descriptionField}
+                    />
+                )}
+            </Column>
             {selectedAccountOption && (
-                <ButtonWrapper>
+                <Column>
+                    <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
                     {(!addressVerified || addressVerified !== address) &&
                         selectedAccountOption.account && (
                             <Button
@@ -278,8 +220,8 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
                             <Translation id="TR_BUY_GO_TO_PAYMENT" />
                         </Button>
                     )}
-                </ButtonWrapper>
+                </Column>
             )}
-        </Wrapper>
+        </Column>
     );
 };

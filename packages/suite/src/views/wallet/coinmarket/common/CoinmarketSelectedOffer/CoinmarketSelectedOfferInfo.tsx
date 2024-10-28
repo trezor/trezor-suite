@@ -67,12 +67,10 @@ export const CoinmarketSelectedOfferInfo = ({
                     />
                 )}
                 {type === 'exchange' && (
-                    <>
-                        <CoinmarketUtilsKyc
-                            exchange={exchange}
-                            providers={providers as CoinmarketExchangeProvidersInfoProps}
-                        />
-                    </>
+                    <CoinmarketUtilsKyc
+                        exchange={exchange}
+                        providers={providers as CoinmarketExchangeProvidersInfoProps}
+                    />
                 )}
                 {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
             </Column>

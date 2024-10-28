@@ -63,5 +63,5 @@ export const CoinmarketUtilsKyc = ({
         );
     }
 
-    return <Banner icon="info">{kycPolicyTranslation}</Banner>;
+    return <Banner icon>{kycPolicyTranslation}</Banner>;
 };

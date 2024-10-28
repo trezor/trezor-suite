@@ -150,7 +150,7 @@ export type FlexProps = AllowedFrameProps & {
     as?: string;
 };
 
-const Flex = ({
+export const Flex = ({
     gap = 0,
     justifyContent = 'flex-start',
     alignItems = 'center',
