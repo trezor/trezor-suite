@@ -1,4 +1,7 @@
 import { Fragment } from 'react';
+import { Divider, Card } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketOfferCommonProps } from 'src/types/coinmarket/coinmarketForm';
@@ -9,7 +12,6 @@ import {
     CoinmarketSelectedOfferStepper,
     CoinmarketSelectedOfferStepperItemProps,
 } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferStepper';
-import { CoinmarketSelectedOfferWrapper } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferWrapper';
 
 export const CoinmarketOfferSell = (props: CoinmarketOfferCommonProps) => {
     const { sellStep } = useCoinmarketFormContext<CoinmarketTradeSellType>();
@@ -32,16 +34,17 @@ export const CoinmarketOfferSell = (props: CoinmarketOfferCommonProps) => {
     ];
 
     return (
-        <CoinmarketSelectedOfferWrapper
-            leftChildren={
-                <>
-                    <CoinmarketSelectedOfferStepper steps={steps} />
-                    {steps.map((step, index) => (
-                        <Fragment key={index}>{step.isActive && step.component}</Fragment>
-                    ))}
-                </>
-            }
-            rightChildren={<CoinmarketSelectedOfferInfo {...props} />}
-        />
+        <>
+            <Card>
+                <CoinmarketSelectedOfferStepper steps={steps} />
+                <Divider margin={{ top: spacings.lg, bottom: spacings.xl }} />
+                {steps.map((step, index) => (
+                    <Fragment key={index}>{step.isActive && step.component}</Fragment>
+                ))}
+            </Card>
+            <Card>
+                <CoinmarketSelectedOfferInfo {...props} />
+            </Card>
+        </>
     );
 };

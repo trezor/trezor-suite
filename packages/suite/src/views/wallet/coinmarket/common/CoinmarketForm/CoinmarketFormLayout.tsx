@@ -1,11 +1,10 @@
 import styled from 'styled-components';
+
+import { Card } from '@trezor/components';
 import { CoinmarketFormInputs } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInputs';
 import { CoinmarketFormOffer } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOffer';
 import { CoinmarketFeaturedOffers } from 'src/views/wallet/coinmarket/common/CoinmarketFeaturedOffers/CoinmarketFeaturedOffers';
-import {
-    CoinmarketSideWrapper,
-    CoinmarketWrapper,
-} from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
+import { CoinmarketWrapper } from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
 
 const CoinmarketFormLayoutWrapper = styled.form`
     ${CoinmarketWrapper}
@@ -14,12 +13,12 @@ const CoinmarketFormLayoutWrapper = styled.form`
 export const CoinmarketFormLayout = () => (
     <>
         <CoinmarketFormLayoutWrapper>
-            <CoinmarketSideWrapper side="left">
+            <Card>
                 <CoinmarketFormInputs />
-            </CoinmarketSideWrapper>
-            <CoinmarketSideWrapper side="right">
+            </Card>
+            <Card>
                 <CoinmarketFormOffer />
-            </CoinmarketSideWrapper>
+            </Card>
         </CoinmarketFormLayoutWrapper>
         <CoinmarketFeaturedOffers />
     </>

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Card, Row, Column, Paragraph } from '@trezor/components';
+import { Card, Column, InfoRow, Text } from '@trezor/components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
@@ -28,64 +28,49 @@ export const TotalSent = () => {
         <Container>
             <Card height="min-content" fillType="none">
                 <Column gap={spacings.xxs} alignItems="stretch" margin={{ bottom: spacings.xl }}>
-                    <Row justifyContent="space-between" gap={spacings.md}>
-                        <Translation id="TOTAL_SENT" />
+                    <InfoRow
+                        label={
+                            <Text variant="default" typographyStyle="body">
+                                <Translation id="TOTAL_SENT" />
+                            </Text>
+                        }
+                        direction="row"
+                    >
                         {hasTransactionInfo && (
-                            <Paragraph align="right">
+                            <FormattedCryptoAmount
+                                disableHiddenPlaceholder
+                                value={
+                                    tokenInfo
+                                        ? formatAmount(
+                                              transactionInfo.totalSpent,
+                                              tokenInfo.decimals,
+                                          )
+                                        : formatNetworkAmount(transactionInfo.totalSpent, symbol)
+                                }
+                                symbol={tokenInfo ? tokenInfo.symbol : symbol}
+                            />
+                        )}
+                    </InfoRow>
+                    <InfoRow
+                        label={<Translation id={isTokenTransfer ? 'FEE' : 'INCLUDING_FEE'} />}
+                        direction="row"
+                        typographyStyle="hint"
+                    >
+                        {hasTransactionInfo &&
+                            (tokenInfo ? (
                                 <FormattedCryptoAmount
                                     disableHiddenPlaceholder
-                                    value={
-                                        tokenInfo
-                                            ? formatAmount(
-                                                  transactionInfo.totalSpent,
-                                                  tokenInfo.decimals,
-                                              )
-                                            : formatNetworkAmount(
-                                                  transactionInfo.totalSpent,
-                                                  symbol,
-                                              )
-                                    }
-                                    symbol={tokenInfo ? tokenInfo.symbol : symbol}
+                                    value={formatNetworkAmount(transactionInfo.fee, symbol)}
+                                    symbol={symbol}
                                 />
-                            </Paragraph>
-                        )}
-                    </Row>
-                    <Row justifyContent="space-between" gap={spacings.md}>
-                        {!isTokenTransfer && (
-                            <Paragraph variant="tertiary" typographyStyle="hint">
-                                <Translation id="INCLUDING_FEE" />
-                            </Paragraph>
-                        )}
-                        {hasTransactionInfo && (
-                            <Paragraph
-                                align="right"
-                                margin={{ left: 'auto' }}
-                                variant="tertiary"
-                                typographyStyle="hint"
-                            >
-                                {tokenInfo ? (
-                                    <>
-                                        <Translation id="FEE" />
-                                        &nbsp;
-                                        <FormattedCryptoAmount
-                                            disableHiddenPlaceholder
-                                            value={formatNetworkAmount(transactionInfo.fee, symbol)}
-                                            symbol={symbol}
-                                        />
-                                    </>
-                                ) : (
-                                    <FiatValue
-                                        disableHiddenPlaceholder
-                                        amount={formatNetworkAmount(
-                                            transactionInfo.totalSpent,
-                                            symbol,
-                                        )}
-                                        symbol={symbol}
-                                    />
-                                )}
-                            </Paragraph>
-                        )}
-                    </Row>
+                            ) : (
+                                <FiatValue
+                                    disableHiddenPlaceholder
+                                    amount={formatNetworkAmount(transactionInfo.totalSpent, symbol)}
+                                    symbol={symbol}
+                                />
+                            ))}
+                    </InfoRow>
                 </Column>
                 <ReviewButton />
             </Card>

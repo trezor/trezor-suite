@@ -1,41 +1,8 @@
-import { Icon } from '@trezor/components';
-import { spacingsPx, typography } from '@trezor/theme';
+import { Icon, Row, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { Fragment } from 'react';
 import { Translation } from 'src/components/suite';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
-import styled, { useTheme } from 'styled-components';
-
-const Header = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: ${spacingsPx.lg} ${spacingsPx.xl};
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
-`;
-
-const Step = styled.div<{
-    $active: boolean;
-}>`
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    ${typography.body}
-    color: ${({ $active, theme }) => ($active ? theme.textPrimaryDefault : theme.textSubdued)};
-`;
-
-const StepWrap = styled.div`
-    display: flex;
-    flex: 1;
-`;
-
-const Arrow = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    margin: 0 ${spacingsPx.xl};
-`;
 
 export interface CoinmarketSelectedOfferStepperItemProps {
     step: string;
@@ -49,24 +16,20 @@ interface CoinmarketSelectedOfferStepperProps {
 }
 
 export const CoinmarketSelectedOfferStepper = ({ steps }: CoinmarketSelectedOfferStepperProps) => {
-    const theme = useTheme();
-
     return (
-        <Header>
+        <Row justifyContent="center" gap={spacings.xl}>
             {steps.map((step, index) => (
                 <Fragment key={index}>
-                    <StepWrap>
-                        <Step $active={step.isActive}>
+                    <Row flex="1" justifyContent="center">
+                        <Text variant={step.isActive ? 'primary' : 'tertiary'}>
                             <Translation id={step.translationId} />
-                        </Step>
-                    </StepWrap>
+                        </Text>
+                    </Row>
                     {index < steps.length - 1 && (
-                        <Arrow>
-                            <Icon name="caretRight" color={theme.iconSubdued} />
-                        </Arrow>
+                        <Icon name="caretRight" variant="tertiary" size={20} />
                     )}
                 </Fragment>
             ))}
-        </Header>
+        </Row>
     );
 };
