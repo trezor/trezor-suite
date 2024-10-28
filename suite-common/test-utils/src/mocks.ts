@@ -147,7 +147,6 @@ type StringPath<T extends { path: DeviceUniquePath }> = Omit<T, 'path'> & { path
  */
 const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Features>): Device => {
     const path = DeviceUniquePath(dev?.path ?? '1');
-
     if (dev && typeof dev.type === 'string' && dev.type === 'unreadable') {
         return {
             type: 'unreadable',
@@ -164,6 +163,7 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
             path,
             label: 'Unacquired device',
             name: 'name of unacquired device',
+            transportSessionOwner: 'another app name',
         };
     }
 
