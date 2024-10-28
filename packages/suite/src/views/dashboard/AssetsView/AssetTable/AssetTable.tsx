@@ -26,7 +26,7 @@ export const AssetTable = ({
     assetsData,
     assetsFiatBalances,
 }: AssetTableProps) => (
-    <Table isRowHighlightedOnHover margin={{ top: spacings.md, bottom: spacings.md }}>
+    <Table isRowHighlightedOnHover margin={{ top: spacings.xs }}>
         <Table.Header>
             <Table.Row>
                 <Table.Cell colSpan={3}>

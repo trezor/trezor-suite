@@ -164,9 +164,9 @@ export const UsedAddresses = ({
     const actionHideVisible = limit > DEFAULT_LIMIT;
 
     return (
-        <Card margin={{ bottom: spacings.xxxl }} overflow="hidden" paddingType="normal">
+        <Card overflow="hidden" paddingType="none">
             <Column alignItems="stretch" gap={spacings.md}>
-                <Table>
+                <Table margin={{ top: spacings.xs, bottom: spacings.xs }}>
                     <Table.Header>
                         <Table.Row>
                             <Table.Cell>
