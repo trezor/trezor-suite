@@ -7,6 +7,10 @@ class AccountsPage {
         cy.getTestElement('@account-menu/arrow').click({ multiple: true });
     }
 
+    openBtcAccount(index: number) {
+        cy.getTestElement(`@account-menu/btc/normal/${index}`).click();
+    }
+
     applyCoinFilter(coin: NetworkSymbol) {
         cy.getTestElement(`@account-menu/filter/${coin}`)
             .click()

@@ -98,9 +98,15 @@ afterEach(() => {
     cy.task('stopMockedBridge');
 });
 
+const step = (description: string, block: () => void) => {
+    cy.log(description);
+    block();
+};
+
 declare global {
     namespace Cypress {
         interface Chainable<Subject> {
+            step: typeof step;
             getTestElement: typeof getTestElement;
             hoverTestElement: typeof hoverTestElement;
             prefixedVisit: typeof prefixedVisit;
@@ -161,6 +167,7 @@ if (Cypress.env('SNAPSHOT')) {
     });
 }
 
+Cypress.Commands.add('step', step);
 Cypress.Commands.add('prefixedVisit', prefixedVisit);
 Cypress.Commands.add('safeReload', safeReload);
 Cypress.Commands.add('resetDb', { prevSubject: false }, resetDb);
