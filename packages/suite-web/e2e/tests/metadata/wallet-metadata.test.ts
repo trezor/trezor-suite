@@ -2,151 +2,152 @@
 // @retry=2
 
 import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
+import { MetadataProvider } from '../../support/enums/metadataProvider';
+import { onAccountsPage } from '../../support/pageObjects/accountsObject';
+import { onMenu } from '../../support/pageObjects/menuObject';
+import { onSwitchDeviceModal } from '../../support/pageObjects/switchDeviceObject';
 
 const firmwares = ['2.3.0', '2-main'] as const;
-const provider = 'dropbox';
 
-// state corresponding to all seed
-const standardWalletState = 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@355C817510C0EABF2F147145:1';
-// state corresponding to "wallet for drugs"
-const firstHiddenWalletState = 'myBrmyzvN5Wa4oeYrL7t8EYU1Ch5Q6vp47@355C817510C0EABF2F147145:2';
-// state corresponding to "C"
-const secondHiddenWalletState = 'mkx2Uqi3fmLHh8AHpQvAErTM3MZpzrmFr2@355C817510C0EABF2F147145:3';
-describe.skip('Metadata - wallet labeling', () => {
+const standardWalletIndex = 0;
+const hiddenWalletIndex = 1;
+
+function openApp(): void {
+    cy.prefixedVisit('/', {
+        onBeforeLoad: (win: Window) => {
+            cy.stub(win, 'open').callsFake(stubOpen(win));
+            cy.stub(win, 'fetch').callsFake(rerouteMetadataToMockProvider);
+        },
+    });
+}
+
+function handleLabelingOnDevice(action: 'pressYes' | 'pressNo'): void {
+    cy.getConfirmActionOnDeviceModal();
+    cy.wait(501);
+    cy.task(action);
+}
+
+function checkStateNotificationsForErrors(): void {
+    cy.window()
+        .its('store')
+        .invoke('getState')
+        .then(state => {
+            console.log(state);
+            const errors = state.notifications.filter((n: { type: string }) => n.type === 'error');
+
+            return expect(errors).to.be.empty;
+        });
+}
+
+describe('Metadata - wallet labeling', () => {
     beforeEach(() => {
         cy.viewport(1440, 2560).resetDb();
+        cy.task('startEmu', { wipe: true });
+        cy.task('setupEmu', {
+            mnemonic: 'mnemonic_all',
+            passphrase_protection: true,
+        });
+        cy.task('startBridge');
+        cy.task('metadataStartProvider', MetadataProvider.Dropbox);
+
+        openApp();
+
+        cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
     });
 
     firmwares.forEach(firmware => {
-        it(firmware, () => {
-            // prepare test
-            cy.task('startEmu', { wipe: true });
-            cy.task('setupEmu', {
-                mnemonic: 'mnemonic_all',
-                passphrase_protection: true,
-            });
-            cy.task('startBridge');
-            cy.task('metadataStartProvider', provider);
+        describe(firmware, () => {
+            it('persists wallet labels', () => {
+                cy.step('Setup standard wallet with label and edit it', () => {
+                    onAccountsPage.openBtcAccount(1);
+                    onMenu.openSwitchDevice();
 
-            cy.prefixedVisit('/', {
-                onBeforeLoad: (win: Window) => {
-                    cy.stub(win, 'open').callsFake(stubOpen(win));
-                    cy.stub(win, 'fetch').callsFake(rerouteMetadataToMockProvider);
-                },
-            });
+                    onSwitchDeviceModal.clickAddLabel(standardWalletIndex);
+                    cy.passThroughInitMetadata(MetadataProvider.Dropbox);
+                    onSwitchDeviceModal.typeLabel('label for standard wallet');
 
-            cy.passThroughInitialRun();
-            cy.discoveryShouldFinish();
-
-            cy.getTestElement('@account-menu/btc/normal/0').click();
-
-            cy.getTestElement('@menu/switch-device').click();
-            cy.getTestElement(
-                `@metadata/walletLabel/${standardWalletState}/add-label-button`,
-            ).click({
-                force: true,
-            });
-            cy.passThroughInitMetadata(provider);
-            cy.getTestElement('@metadata/input').type('label for standard wallet{enter}');
-
-            cy.wait(2001);
-            cy.getTestElement(
-                `@metadata/walletLabel/${standardWalletState}/edit-label-button`,
-            ).click({
-                force: true,
-            });
-            cy.getTestElement('@metadata/input').clear().type('wallet for drugs{enter}');
-
-            cy.addHiddenWallet('abc');
-
-            cy.log(
-                'discovering new passphrase -> new deviceState -> we need new metadata master key',
-            );
-            // cy.getConfirmActionOnDeviceModal();
-            // cy.task('pressYes');
-            // cy.getConfirmActionOnDeviceModal();
-            // cy.wait(501);
-            // cy.task('pressYes');
-            cy.getTestElement('@menu/switch-device').click();
-            // cy.getConfirmActionOnDeviceModal();
-
-            cy.wait(501);
-            cy.task('pressYes');
-            cy.getTestElement(`@metadata/walletLabel/${standardWalletState}`).should(
-                'contain',
-                'wallet for drugs',
-            );
-
-            // focus lock? :(
-            cy.getTestElement(
-                `@metadata/walletLabel/${firstHiddenWalletState}/add-label-button`,
-            ).click({
-                force: true,
-            });
-            cy.getTestElement('@metadata/input').type('wallet not for drugs{enter}');
-            cy.getTestElement(`@metadata/walletLabel/${firstHiddenWalletState}`).should(
-                'contain',
-                'wallet not for drugs',
-            );
-
-            // remember wallet, reload app, and observe that labels were loaded
-            // https://github.com/trezor/trezor-suite/pull/9560
-            // cy.getTestElement('@switch-device/wallet-on-index/1/toggle-remember-switch').click({
-            //     force: true,
-            // });
-            cy.changeViewOnlyState(1, 'enabled');
-
-            cy.wait(1000); // wait for changes to db
-            cy.prefixedVisit('/', {
-                onBeforeLoad: (win: Window) => {
-                    cy.stub(win, 'open').callsFake(stubOpen(win));
-                    cy.stub(win, 'fetch').callsFake(rerouteMetadataToMockProvider);
-                },
-            });
-            cy.getTestElement('@menu/switch-device').click();
-            cy.getTestElement(`@metadata/walletLabel/${standardWalletState}`).should(
-                'contain',
-                'wallet for drugs',
-            );
-            cy.getTestElement(`@metadata/walletLabel/${firstHiddenWalletState}`).should(
-                'contain',
-                'wallet not for drugs',
-            );
-
-            // add another passphrase wallet C, have selected passphrase wallet A, try to enable
-            // labeling for wallet C
-            cy.addHiddenWallet('C');
-            cy.getConfirmActionOnDeviceModal();
-            cy.task('pressYes');
-            cy.getConfirmActionOnDeviceModal();
-            cy.task('pressYes');
-            cy.getTestElement('@menu/switch-device').click();
-            cy.getConfirmActionOnDeviceModal();
-            cy.task('pressNo'); // labeling was not enabled at this moment
-            // select previous wallet
-            cy.getTestElement('@switch-device/wallet-on-index/1').click();
-            cy.getTestElement('@menu/switch-device').click();
-            cy.hoverTestElement(`@metadata/walletLabel/${secondHiddenWalletState}/hover-container`);
-            cy.getTestElement(
-                `@metadata/walletLabel/${secondHiddenWalletState}/add-label-button`,
-            ).click();
-            cy.getConfirmActionOnDeviceModal();
-            cy.task('pressYes'); // only now labeling was enabled
-            cy.getTestElement('@metadata/input').type(
-                'still works, metadata enabled for currently not selected device{enter}',
-            );
-
-            cy.window()
-                .its('store')
-                .invoke('getState')
-                .then(state => {
-                    console.log(state);
-                    const errors = state.notifications.filter(
-                        (n: { type: string }) => n.type === 'error',
-                    );
-
-                    return expect(errors).to.be.empty;
+                    onSwitchDeviceModal.clickEditLabel(standardWalletIndex);
+                    onSwitchDeviceModal.typeLabel('wallet for drugs');
                 });
+
+                cy.step('Add hidden wallet and enable labeling', () => {
+                    cy.addHiddenWallet('abc');
+                    onMenu.openSwitchDevice();
+                    handleLabelingOnDevice('pressYes');
+                    onSwitchDeviceModal.clickAddLabel(hiddenWalletIndex);
+                    onSwitchDeviceModal.typeLabel('wallet not for drugs');
+                });
+
+                cy.step('Verify wallet labels', () => {
+                    onSwitchDeviceModal
+                        .getLabel(standardWalletIndex)
+                        .should('contain', 'wallet for drugs');
+
+                    onSwitchDeviceModal
+                        .getLabel(hiddenWalletIndex)
+                        .should('contain', 'wallet not for drugs');
+                });
+
+                cy.step('Remember wallet and reload app,', () => {
+                    cy.changeViewOnlyState(1, 'enabled');
+
+                    cy.wait(1000); // wait for changes to db
+                    openApp();
+                });
+
+                cy.step('Verify wallet labels after reload', () => {
+                    onMenu.openSwitchDevice();
+                    onSwitchDeviceModal
+                        .getLabel(standardWalletIndex)
+                        .should('contain', 'wallet for drugs');
+
+                    onSwitchDeviceModal
+                        .getLabel(hiddenWalletIndex)
+                        .should('contain', 'wallet not for drugs');
+                });
+
+                checkStateNotificationsForErrors();
+            });
+
+            it('labels can be enabled and edited when different wallet is open', () => {
+                cy.step('Setup standard wallet with label and edit it', () => {
+                    onAccountsPage.openBtcAccount(1);
+                    onMenu.openSwitchDevice();
+
+                    onSwitchDeviceModal.clickAddLabel(standardWalletIndex);
+                    cy.passThroughInitMetadata(MetadataProvider.Dropbox);
+                    onSwitchDeviceModal.typeLabel('label for standard wallet');
+                });
+
+                cy.step('Add passphrase wallet C and switch back to first wallet', () => {
+                    cy.addHiddenWallet('C');
+                    onMenu.openSwitchDevice();
+                    handleLabelingOnDevice('pressNo');
+                    onSwitchDeviceModal.openDevice(standardWalletIndex);
+                });
+
+                cy.step('Enable labeling for wallet C', () => {
+                    onMenu.openSwitchDevice();
+                    onSwitchDeviceModal.clickAddLabel(hiddenWalletIndex);
+
+                    handleLabelingOnDevice('pressYes');
+                    onSwitchDeviceModal.typeLabel(
+                        'still works, metadata enabled for currently not selected device',
+                    );
+                });
+
+                cy.step('Verify wallet label', () => {
+                    onSwitchDeviceModal
+                        .getLabel(hiddenWalletIndex)
+                        .should(
+                            'contain',
+                            'still works, metadata enabled for currently not selected device',
+                        );
+                });
+
+                checkStateNotificationsForErrors();
+            });
         });
     });
 });

@@ -103,6 +103,25 @@ Steps:
 
 ## Notes
 
+### Best practices and established patterns
+
+#### Page objects
+
+There should be no direct getting of elements in the test code. We want that and most other logic operating the app to be abstracted to the page objects located in `packages/suite-web/e2e/support/pageObjects`.
+
+#### Steps
+
+Give the test a structure by using cy.step() blocks.
+Example:
+
+```
+cy.step('Setup standard wallet with label', () => {...});
+```
+
+#### Easily understandable and readable code
+
+If there is a magic constant or hard to understand block of code, put it under a named constant/function.
+
 ### Image snapshots
 
 It is possible to run tests with image snapshots to test for visual regressions. To enable snapshots, use env variable:
