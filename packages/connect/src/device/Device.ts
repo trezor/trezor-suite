@@ -129,6 +129,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     public readonly protocol: TransportProtocol;
     private readonly transportPath;
     private readonly transportSessionOwner;
+    private readonly transportDescriptorType;
     private session;
     private isLocalSession;
 
@@ -216,6 +217,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.transport = transport;
         this.transportPath = descriptor.path;
         this.transportSessionOwner = descriptor.sessionOwner;
+        this.transportDescriptorType = descriptor.type;
 
         this.session = descriptor.session;
         this.isLocalSession = false;
@@ -1143,6 +1145,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 type: 'unreadable',
                 error: this.unreadableError, // provide error details
                 label: 'Unreadable device',
+                transportDescriptorType: this.transportDescriptorType,
             };
         }
         if (this.isUnacquired()) {

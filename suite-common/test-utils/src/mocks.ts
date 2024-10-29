@@ -154,6 +154,7 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
             label: 'Unreadable device',
             name: 'name of unreadable device',
             error: 'unreadable device',
+            transportDescriptorType: 0,
         };
     }
 
