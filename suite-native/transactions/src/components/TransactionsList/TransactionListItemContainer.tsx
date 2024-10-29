@@ -54,7 +54,7 @@ const transactionTitleMap = {
     self: 'Self',
     joint: 'Joined',
     contract: 'Contract',
-    failed: 'Failed',
+    failed: 'Transaction failed',
     unknown: 'Unknown',
 } as const satisfies Record<TransactionType, string>;
 

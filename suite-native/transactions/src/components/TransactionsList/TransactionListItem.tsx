@@ -16,6 +16,7 @@ import {
 import { EmptyAmountText } from '@suite-native/formatters/src/components/EmptyAmountText';
 import { WalletAccountTransaction } from '@suite-native/tokens';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
 import { TokenTransferListItem } from './TokenTransferListItem';
@@ -29,6 +30,15 @@ type TransactionListItemProps = {
     isFirst?: boolean;
     isLast?: boolean;
 };
+
+const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
+    extend: {
+        condition: isFailedTx,
+        style: {
+            textDecorationLine: 'line-through',
+        },
+    },
+}));
 
 export const TransactionListItemValues = ({
     accountKey,
@@ -46,7 +56,10 @@ export const TransactionListItemValues = ({
             selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 
+    const { applyStyle } = useNativeStyles();
+
     const historicRate = useTransactionFiatRate({ accountKey, transaction });
+    const isFailedTx = transaction.type === 'failed';
 
     return (
         <>
@@ -54,13 +67,16 @@ export const TransactionListItemValues = ({
                 <EmptyAmountText />
             ) : (
                 <Box flexDirection="row">
-                    <SignValueFormatter value={getTransactionValueSign(transaction.type)} />
+                    {!isFailedTx && (
+                        <SignValueFormatter value={getTransactionValueSign(transaction.type)} />
+                    )}
                     <CryptoToFiatAmountFormatter
                         value={transaction.amount}
                         network={transaction.symbol}
                         historicRate={historicRate}
                         useHistoricRate
                         isForcedDiscreetMode={isPhishingTransaction}
+                        style={applyStyle(failedTxStyle, { isFailedTx })}
                     />
                 </Box>
             )}

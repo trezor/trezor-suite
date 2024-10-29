@@ -5,6 +5,7 @@ import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { selectIsPhishingTransaction, TransactionsRootState } from '@suite-common/wallet-core';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
@@ -19,6 +20,15 @@ type TokenTransferListItemProps = {
     isFirst?: boolean;
     isLast?: boolean;
 };
+
+const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
+    extend: {
+        condition: isFailedTx,
+        style: {
+            textDecorationLine: 'line-through',
+        },
+    },
+}));
 
 export const TokenTransferListItemValues = ({
     tokenTransfer,
@@ -40,6 +50,10 @@ export const TokenTransferListItemValues = ({
             selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 
+    const { applyStyle } = useNativeStyles();
+
+    const isFailedTx = transaction.type === 'failed';
+
     return (
         <>
             <TokenToFiatAmountFormatter
@@ -47,12 +61,13 @@ export const TokenTransferListItemValues = ({
                 value={tokenTransfer.amount}
                 contract={tokenTransfer.contract}
                 decimals={tokenTransfer.decimals}
-                signValue={getTransactionValueSign(tokenTransfer.type)}
+                signValue={isFailedTx ? undefined : getTransactionValueSign(tokenTransfer.type)}
                 numberOfLines={1}
                 ellipsizeMode="tail"
                 historicRate={historicRate}
                 useHistoricRate
                 isForcedDiscreetMode={isPhishingTransaction}
+                style={applyStyle(failedTxStyle, { isFailedTx })}
             />
             <TokenAmountFormatter
                 value={tokenTransfer.amount}
@@ -74,20 +89,24 @@ export const TokenTransferListItem = ({
     includedCoinsCount = 0,
     isFirst,
     isLast,
-}: TokenTransferListItemProps) => (
-    <TransactionListItemContainer
-        tokenTransfer={tokenTransfer}
-        transactionType={tokenTransfer.type}
-        txid={txid}
-        includedCoinsCount={includedCoinsCount}
-        accountKey={accountKey}
-        isFirst={isFirst}
-        isLast={isLast}
-    >
-        <TokenTransferListItemValues
+}: TokenTransferListItemProps) => {
+    const isFailedTxn = transaction.type === 'failed';
+
+    return (
+        <TransactionListItemContainer
             tokenTransfer={tokenTransfer}
-            transaction={transaction}
+            transactionType={isFailedTxn ? 'failed' : tokenTransfer.type}
+            txid={txid}
+            includedCoinsCount={includedCoinsCount}
             accountKey={accountKey}
-        />
-    </TransactionListItemContainer>
-);
+            isFirst={isFirst}
+            isLast={isLast}
+        >
+            <TokenTransferListItemValues
+                tokenTransfer={tokenTransfer}
+                transaction={transaction}
+                accountKey={accountKey}
+            />
+        </TransactionListItemContainer>
+    );
+};

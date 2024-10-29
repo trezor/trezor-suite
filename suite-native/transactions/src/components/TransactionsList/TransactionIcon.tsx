@@ -26,7 +26,7 @@ const transactionIconMap: Record<TransactionType, IconName> = {
     contract: 'circleDashed',
     joint: 'shuffle',
     self: 'arrowURightDown',
-    failed: 'xCircle',
+    failed: 'prohibit',
     unknown: 'circleDashed',
 };
 
