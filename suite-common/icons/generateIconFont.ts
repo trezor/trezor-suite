@@ -76,6 +76,7 @@ const usedIcons = [
     'piggyBankFilled',
     'plus',
     'plusCircle',
+    'prohibit',
     'qrCode',
     'question',
     'shareNetwork',

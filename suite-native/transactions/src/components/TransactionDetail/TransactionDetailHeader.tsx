@@ -25,6 +25,15 @@ type TransactionDetailHeaderProps = {
 const ICON_SIZE = 56;
 const ICON_SPINNER_WIDTH = 3;
 
+const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
+    extend: {
+        condition: isFailedTx,
+        style: {
+            textDecorationLine: 'line-through',
+        },
+    },
+}));
+
 const fiatValueStyle = prepareNativeStyle(utils => ({
     marginTop: -utils.spacings.sp4,
 }));
@@ -44,6 +53,7 @@ export const TransactionDetailHeader = ({
     const { type } = transaction;
 
     const isPendingTx = isPending(transaction);
+    const isFailedTx = transaction.type === 'failed';
     const signValue = getTransactionValueSign(tokenTransfer?.type ?? transaction.type);
 
     return (
@@ -68,19 +78,24 @@ export const TransactionDetailHeader = ({
                             elevation="1"
                         />
                     ) : (
-                        <Badge
-                            variant="green"
-                            label={<Translation id="transactions.status.confirmed" />}
-                        />
+                        !isFailedTx && (
+                            <Badge
+                                variant="green"
+                                label={<Translation id="transactions.status.confirmed" />}
+                            />
+                        )
                     )}
 
-                    <Box flexDirection="row">
-                        <SignValueFormatter
-                            color="textDefault"
-                            value={signValue}
-                            variant="titleMedium"
-                        />
+                    <Box>
+                        {!isFailedTx && (
+                            <SignValueFormatter
+                                color="textDefault"
+                                value={signValue}
+                                variant="titleMedium"
+                            />
+                        )}
                         <Text> </Text>
+
                         {tokenTransfer ? (
                             <TokenAmountFormatter
                                 value={tokenTransfer.amount}
@@ -90,6 +105,7 @@ export const TransactionDetailHeader = ({
                                 color="textDefault"
                                 numberOfLines={1}
                                 adjustsFontSizeToFit
+                                style={applyStyle(failedTxStyle, { isFailedTx })}
                             />
                         ) : (
                             <CryptoAmountFormatter
@@ -100,6 +116,7 @@ export const TransactionDetailHeader = ({
                                 color="textDefault"
                                 numberOfLines={1}
                                 adjustsFontSizeToFit
+                                style={applyStyle(failedTxStyle, { isFailedTx })}
                             />
                         )}
                     </Box>
@@ -117,6 +134,7 @@ export const TransactionDetailHeader = ({
                                 historicRate={historicRate}
                                 color="textSubdued"
                                 useHistoricRate
+                                style={applyStyle(failedTxStyle, { isFailedTx })}
                             />
                         ) : (
                             <CryptoToFiatAmountFormatter
@@ -125,6 +143,7 @@ export const TransactionDetailHeader = ({
                                 historicRate={historicRate}
                                 color="textSubdued"
                                 useHistoricRate
+                                style={applyStyle(failedTxStyle, { isFailedTx })}
                             />
                         )}
                     </Box>
