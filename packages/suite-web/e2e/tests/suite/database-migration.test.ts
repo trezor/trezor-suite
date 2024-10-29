@@ -148,6 +148,7 @@ describe('Database migration', () => {
         cy.getTestElement('@modal/close-button').click().should('not.exist');
 
         cy.task('startEmu');
+        cy.disableFirmwareHashCheck(); // only applicable for the `to` version, not the older `from` version
         cy.getTestElement('@deviceStatus-connected').should('be.visible');
         cy.getTestElement('@account-subpage/back').last().click();
 
