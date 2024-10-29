@@ -43,6 +43,8 @@ export const Banner: StoryObj<BannerProps> = {
         variant: 'warning',
         icon: undefined,
         rightContent: <BannerComponent.Button>Click</BannerComponent.Button>,
+        color: 'inherit',
+        spacingX: 'lg',
         ...getFramePropsStory(allowedBannerFrameProps).args,
     },
     argTypes: {
@@ -51,6 +53,18 @@ export const Banner: StoryObj<BannerProps> = {
         },
         icon: {
             options: [undefined, true, ...variables.ICONS],
+            control: {
+                type: 'select',
+            },
+        },
+        color: {
+            options: ['inherit', 'default'],
+            control: {
+                type: 'select',
+            },
+        },
+        spacingX: {
+            options: ['xs', 'lg'],
             control: {
                 type: 'select',
             },
