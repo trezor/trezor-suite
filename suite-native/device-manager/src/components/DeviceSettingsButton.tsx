@@ -59,7 +59,7 @@ export const DeviceSettingsButton = ({ showAsFullWidth }: DeviceInfoButtonProps)
 
     return (
         <DeviceAction
-            testID="@device-manager/device/info"
+            testID="@device-manager/device-settings-button"
             onPress={handleDeviceRedirect}
             showAsFullWidth={showAsFullWidth}
         >

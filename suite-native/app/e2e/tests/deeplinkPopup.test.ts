@@ -5,6 +5,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import TrezorConnect from '@trezor/connect-mobile';
 import { conditionalDescribe } from '@suite-common/test-utils';
 
+import { onConnectingDevice } from '../pageObjects/connectingDevice';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
@@ -15,6 +16,7 @@ import {
 import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
 import { onHome } from '../pageObjects/homeActions';
+import { onBottomSheet } from '../pageObjects/bottomSheetActions';
 
 const SERVER_PORT = 8080;
 const SERVER_URL = `http://localhost:${SERVER_PORT}`;
@@ -64,11 +66,7 @@ conditionalDescribe(device.getPlatform() !== 'android', 'Deeplink connect popup.
         await onCoinEnablingInit.enableNetwork('regtest');
         await onCoinEnablingInit.clickOnConfirmButton();
 
-        await waitFor(element(by.id('skip-view-only-mode')))
-            .toBeVisible()
-            .withTimeout(10000); // communication between connected Trezor and app takes some time.
-
-        await element(by.id('skip-view-only-mode')).tap();
+        await onBottomSheet.skipViewOnlyMode();
 
         // This `TrezorConnect` instance here is pretending to be the integrator or @trezor/connect-mobile
         await TrezorConnect.init({
@@ -91,10 +89,7 @@ conditionalDescribe(device.getPlatform() !== 'android', 'Deeplink connect popup.
 
         await appIsFullyLoaded();
 
-        await waitFor(element(by.id('@screen/ConnectingDevice')))
-            .toBeVisible()
-            .withTimeout(10000);
-
+        await onConnectingDevice.waitForScreen();
         await onHome.waitForScreen();
     });
 

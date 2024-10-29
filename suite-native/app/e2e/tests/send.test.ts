@@ -1,5 +1,19 @@
+import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import { onAccountDetail } from '../pageObjects/accountDetailActions';
+import { onAlertSheet } from '../pageObjects/alertSheetActions';
+import { onBottomSheet } from '../pageObjects/bottomSheetActions';
+import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
+import { onConnectingDevice } from '../pageObjects/connectingDevice';
+import { onHome } from '../pageObjects/homeActions';
+import { onMyAssets } from '../pageObjects/myAssetsActions';
+import { onOnboarding } from '../pageObjects/onboardingActions';
+import { onSendAddressReview } from '../pageObjects/send/sendAddressReviewActions';
+import { onSendFees } from '../pageObjects/send/sendFeesActions';
+import { onSendOutputsForm } from '../pageObjects/send/sendOutputsFormActions';
+import { onSendOutputsReview } from '../pageObjects/send/sendOutputsReviewActions';
+import { onTabBar } from '../pageObjects/tabBarActions';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
@@ -8,17 +22,6 @@ import {
     restartApp,
     wait,
 } from '../utils';
-import { onMyAssets } from '../pageObjects/myAssetsActions';
-import { onOnboarding } from '../pageObjects/onboardingActions';
-import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
-import { onTabBar } from '../pageObjects/tabBarActions';
-import { onAccountDetail } from '../pageObjects/accountDetailActions';
-import { onSendOutputsForm } from '../pageObjects/send/sendOutputsFormActions';
-import { onSendFees } from '../pageObjects/send/sendFeesActions';
-import { onSendAddressReview } from '../pageObjects/send/sendAddressReviewActions';
-import { onSendOutputsReview } from '../pageObjects/send/sendOutputsReviewActions';
-import { onHome } from '../pageObjects/homeActions';
-import { onAlertSheet } from '../pageObjects/alertSheetActions';
 
 export const SEND_FORM_ERROR_MESSAGES = {
     invalidAddress: 'The address format is incorrect.',
@@ -32,8 +35,6 @@ export const SEND_FORM_ERROR_MESSAGES = {
 
 const INITIAL_ACCOUNT_BALANCE = 3.14;
 
-const platform = device.getPlatform();
-
 const prepareTransactionForOnDeviceReview = async (isFormEmpty: boolean = true) => {
     if (isFormEmpty) {
         await onSendOutputsForm.fillForm([
@@ -46,7 +47,7 @@ const prepareTransactionForOnDeviceReview = async (isFormEmpty: boolean = true) 
     await onSendFees.submitFee();
 };
 
-describe('Send transaction flow.', () => {
+conditionalDescribe(device.getPlatform() !== 'android', 'Send transaction flow.', () => {
     beforeAll(async () => {
         await prepareTrezorEmulator();
         await openApp({ newInstance: true });
@@ -61,11 +62,7 @@ describe('Send transaction flow.', () => {
         await onCoinEnablingInit.enableNetwork('regtest');
         await onCoinEnablingInit.clickOnConfirmButton();
 
-        await waitFor(element(by.id('skip-view-only-mode')))
-            .toBeVisible()
-            .withTimeout(10000); // communication between connected Trezor and app takes some time.
-
-        await element(by.id('skip-view-only-mode')).tap();
+        await onBottomSheet.skipViewOnlyMode();
     });
 
     beforeEach(async () => {
@@ -73,13 +70,8 @@ describe('Send transaction flow.', () => {
         await restartApp();
 
         await appIsFullyLoaded();
-        if (platform !== 'android')
-            return test.skip(`Sending transactions is not supported on ${platform}.`);
 
-        await waitFor(element(by.id('@screen/ConnectingDevice')))
-            .toBeVisible()
-            .withTimeout(10000);
-
+        await onConnectingDevice.waitForScreen();
         await onHome.waitForScreen();
         await onTabBar.navigateToMyAssets();
 

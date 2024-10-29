@@ -136,7 +136,12 @@ export const DevicePinActionButton = ({
     }, [navigation, dispatch, device, type, showSuccess, showError]);
 
     return (
-        <Button onPress={changePin} colorScheme={colorScheme} size="small">
+        <Button
+            onPress={changePin}
+            colorScheme={colorScheme}
+            size="small"
+            testID={`@device-pin-protection/${type}-button`}
+        >
             {children}
         </Button>
     );

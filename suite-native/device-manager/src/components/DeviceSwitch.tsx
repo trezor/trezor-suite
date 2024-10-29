@@ -50,7 +50,11 @@ export const DeviceSwitch = () => {
     };
 
     return (
-        <Pressable onPress={toggleDeviceManager} style={applyStyle(switchWrapperStyle)}>
+        <Pressable
+            onPress={toggleDeviceManager}
+            style={applyStyle(switchWrapperStyle)}
+            testID="@device-manager/device-switch"
+        >
             <HStack justifyContent="space-between" alignItems="center" spacing="sp16">
                 <Box style={applyStyle(switchStyle, { isDeviceManagerVisible })}>
                     {deviceState && (
