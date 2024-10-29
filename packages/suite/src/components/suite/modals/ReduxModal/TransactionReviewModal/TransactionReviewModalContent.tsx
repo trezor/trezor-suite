@@ -12,7 +12,11 @@ import {
     SendState,
 } from '@suite-common/wallet-core';
 import { FormState, StakeFormState } from '@suite-common/wallet-types';
-import { constructTransactionReviewOutputs, isRbfTransaction } from '@suite-common/wallet-utils';
+import {
+    constructTransactionReviewOutputs,
+    isRbfTransaction,
+    getTxStakeNameByDataHex,
+} from '@suite-common/wallet-utils';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { getTransactionReviewModalActionText } from 'src/utils/suite/transactionReview';
@@ -20,7 +24,6 @@ import { Modal, Translation } from 'src/components/suite';
 import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
 import { TransactionReviewEvmExplanation } from './TransactionReviewEvmExplanation';
-import { getTxStakeNameByDataHex } from '@suite-common/suite-utils';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { networks } from '@suite-common/wallet-config';
 import { selectAccountIncludingChosenInCoinmarket } from 'src/reducers/wallet/selectedAccountReducer';

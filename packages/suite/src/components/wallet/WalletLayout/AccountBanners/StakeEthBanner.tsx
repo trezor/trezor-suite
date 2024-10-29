@@ -6,11 +6,9 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
 import { Account } from '@suite-common/wallet-types';
-import {
-    selectPoolStatsApyData,
-    isSupportedEthStakingNetworkSymbol,
-} from '@suite-common/wallet-core';
-import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
+import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { MIN_ETH_AMOUNT_FOR_STAKING } from '@suite-common/wallet-constants';
+import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { useTheme } from 'styled-components';
 
 interface StakeEthBannerProps {

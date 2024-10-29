@@ -14,6 +14,7 @@ import {
     isNftTokenTransfer,
     isTxFeePaid,
     roundTimestampToNearestPastHour,
+    isStakeTypeTx,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
@@ -24,7 +25,6 @@ import {
     selectHistoricFiatRatesByTimestamp,
 } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
-import { isStakeTypeTx } from '@suite-common/suite-utils';
 
 const MainContainer = styled.div`
     display: flex;

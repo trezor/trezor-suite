@@ -4,12 +4,14 @@ import {
     getAccountAutocompoundBalance,
     getAccountTotalStakingBalance,
     getAccountEverstakeStakingPool,
-} from '../stakingUtils';
+    getUnstakeAmountByEthereumDataHex,
+} from '../ethereumStakingUtils';
 import {
     getAccountAutocompoundBalanceFixtures,
     getAccountEverstakeStakingPoolFixtures,
     getAccountTotalStakingBalanceFixtures,
-} from '../__fixtures__/stakingUtils';
+    getUnstakeAmountByEthereumDataHexFixtures,
+} from '../__fixtures__/ethereumStakingUtils';
 
 describe('getAccountEverstakeStakingPool', () => {
     getAccountEverstakeStakingPoolFixtures.forEach(({ description, account, expected }) => {
@@ -34,6 +36,15 @@ describe('getAccountTotalStakingBalance', () => {
         it(description, () => {
             const result = getAccountTotalStakingBalance(account as unknown as Account);
             expect(result).toEqual(expectedBalance);
+        });
+    });
+});
+
+describe('getUnstakeAmountByEthereumDataHex', () => {
+    getUnstakeAmountByEthereumDataHexFixtures.forEach(f => {
+        it(f.description, () => {
+            const result = getUnstakeAmountByEthereumDataHex(f.ethereumData);
+            expect(result).toBe(f.expectedAmountWei);
         });
     });
 });

@@ -1,6 +1,6 @@
 import { Translation, FormattedCryptoAmount } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import { StakeType } from '@suite-common/wallet-types/src/stake';
+import { StakeType } from '@suite-common/wallet-types';
 
 import { Badge, Icon } from '@trezor/components';
 import styled from 'styled-components';

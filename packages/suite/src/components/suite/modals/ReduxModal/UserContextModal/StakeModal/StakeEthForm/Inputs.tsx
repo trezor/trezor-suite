@@ -13,7 +13,7 @@ import {
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
 import { FIAT_INPUT, CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
-import { MIN_ETH_FOR_WITHDRAWALS } from 'src/constants/suite/ethStaking';
+import { MIN_ETH_FOR_WITHDRAWALS } from '@suite-common/wallet-constants';
 import { spacingsPx } from '@trezor/theme';
 import { validateStakingMax } from 'src/utils/suite/stake';
 

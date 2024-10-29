@@ -24,11 +24,6 @@ import { useFormDraft } from './useFormDraft';
 
 import { fromWei } from 'web3-utils';
 import { useStakeCompose } from './form/useStakeCompose';
-import {
-    MIN_ETH_AMOUNT_FOR_STAKING,
-    MIN_ETH_BALANCE_FOR_STAKING,
-    MIN_ETH_FOR_WITHDRAWALS,
-} from 'src/constants/suite/ethStaking';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
@@ -39,6 +34,11 @@ import {
     StakeContextValues,
     selectFiatRatesByFiatRateKey,
 } from '@suite-common/wallet-core';
+import {
+    MIN_ETH_AMOUNT_FOR_STAKING,
+    MIN_ETH_BALANCE_FOR_STAKING,
+    MIN_ETH_FOR_WITHDRAWALS,
+} from '@suite-common/wallet-constants';
 import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
 import { useFees } from './form/useFees';
 

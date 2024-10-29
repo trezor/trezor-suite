@@ -1,4 +1,4 @@
-import { StakeType } from './stake';
+import { StakeType } from './ethereumStaking';
 import { FormState } from './sendForm';
 
 export interface StakeFormState extends FormState {

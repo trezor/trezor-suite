@@ -1,9 +1,8 @@
 import { Translation } from 'src/components/suite';
-import { getTxHeaderSymbol } from '@suite-common/wallet-utils';
+import { getTxHeaderSymbol, isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { AccountTransaction } from '@trezor/connect';
 import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
-import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-core';
 
 interface TransactionHeaderProps {
     transaction: WalletAccountTransaction;

@@ -16,7 +16,7 @@ export * from './settingsUtils';
 export * from './solanaUtils';
 export * from './transactionUtils';
 export * from './validationUtils';
-export * from './stakingUtils';
+export * from './ethereumStakingUtils';
 export * from './reviewTransactionUtils';
 export * from './filterReceiveAccounts';
 export * from './tokenUtils';

@@ -14,9 +14,15 @@ import {
     formatAmount,
     isPending,
     getAccountIdentity,
+    getTxStakeNameByDataHex,
+    getUnstakeAmountByEthereumDataHex,
 } from '@suite-common/wallet-utils';
 import { createThunk } from '@suite-common/redux-utils';
-import { ERC20_BACKUP_GAS_LIMIT, ETH_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
+import {
+    ERC20_BACKUP_GAS_LIMIT,
+    ETH_BACKUP_GAS_LIMIT,
+    STAKE_GAS_LIMIT_RESERVE,
+} from '@suite-common/wallet-constants';
 import {
     PrecomposedLevels,
     PrecomposedTransaction,
@@ -24,10 +30,6 @@ import {
     AddressDisplayOptions,
 } from '@suite-common/wallet-types';
 import { getNetwork } from '@suite-common/wallet-config';
-import {
-    getTxStakeNameByDataHex,
-    getUnstakeAmountByEthereumDataHex,
-} from '@suite-common/suite-utils';
 
 import { selectTransactions } from '../transactions/transactionsReducer';
 import {
@@ -37,7 +39,6 @@ import {
     SignTransactionError,
 } from './sendFormTypes';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
-import { STAKE_GAS_LIMIT_RESERVE } from '../stake/stakeTypes';
 
 const calculate = (
     availableBalance: string,

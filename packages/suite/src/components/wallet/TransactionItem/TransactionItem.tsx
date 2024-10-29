@@ -6,7 +6,12 @@ import { variables, Button, Card, Link, Tooltip } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { formatNetworkAmount, isTestnet, isTxFeePaid } from '@suite-common/wallet-utils';
+import {
+    formatNetworkAmount,
+    isTestnet,
+    isTxFeePaid,
+    isStakeTypeTx,
+} from '@suite-common/wallet-utils';
 import { AccountLabels } from 'src/types/suite/metadata';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { AccountType, Network } from '@suite-common/wallet-config';
@@ -34,7 +39,6 @@ import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { BlurWrapper } from './TransactionItemBlurWrapper';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { getInstantStakeType } from 'src/utils/suite/stake';
-import { isStakeTypeTx } from '@suite-common/suite-utils';
 import { HELP_CENTER_REPLACE_BY_FEE } from '@trezor/urls';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

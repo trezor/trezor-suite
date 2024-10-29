@@ -1,7 +1,10 @@
 import React from 'react';
-import { getUnstakeAmountByEthereumDataHex, isUnstakeTx } from '@suite-common/suite-utils';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import {
+    formatNetworkAmount,
+    isUnstakeTx,
+    getUnstakeAmountByEthereumDataHex,
+} from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
 
 interface UnstakingTxAmountProps {

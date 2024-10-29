@@ -13,6 +13,7 @@ import {
     getAccountTransactions,
     findTransaction,
     getConfirmations,
+    isStakeTypeTx,
 } from '@suite-common/wallet-utils';
 
 import {
@@ -24,7 +25,6 @@ import {
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTxAnchor } from 'src/utils/suite/anchor';
-import { isStakeTypeTx } from '@suite-common/suite-utils';
 
 type TransactionRendererProps = NotificationViewProps &
     NotificationRendererProps<
