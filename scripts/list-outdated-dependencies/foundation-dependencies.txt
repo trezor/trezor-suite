@@ -24,6 +24,7 @@ uuid
 @electron/notarize
 electron
 electron-builder
+@electron/fuses
 electron-localshortcut
 electron-store
 electron-updater

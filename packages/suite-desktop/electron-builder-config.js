@@ -162,5 +162,6 @@ module.exports = {
         category: 'Utility',
         target: ['AppImage'],
     },
+    afterPack: '../suite-desktop-core/scripts/setElectronFuses.js',
     afterSign: '../suite-desktop-core/scripts/notarize.ts',
 };
