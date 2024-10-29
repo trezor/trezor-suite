@@ -17,10 +17,10 @@ export const Row = styled.tr<{
     $isCollapsed: boolean;
     $isHighlighted: boolean;
     $isHeader: boolean;
-    $isBorderTop: boolean;
+    $hasBorderTop: boolean;
 }>`
-    ${({ $isBorderTop, theme, $elevation }) =>
-        $isBorderTop &&
+    ${({ $hasBorderTop, theme, $elevation }) =>
+        $hasBorderTop &&
         css`
             border-top: 1px solid ${mapElevationToBorder({ theme, $elevation })};
         `}
@@ -76,7 +76,7 @@ export interface TableRowProps {
     isHighlightedOnHover?: boolean;
     onClick?: () => void;
     onHover?: (isHovering: boolean) => void;
-    isBorderTop?: boolean;
+    hasBorderTop?: boolean;
 }
 
 export const TableRow = ({
@@ -85,7 +85,7 @@ export const TableRow = ({
     onClick,
     onHover,
     isHighlightedOnHover,
-    isBorderTop = true,
+    hasBorderTop = true,
 }: TableRowProps) => {
     const { elevation } = useElevation();
     const isHeader = useTableHeader();
@@ -97,7 +97,7 @@ export const TableRow = ({
             $isCollapsed={isCollapsed}
             $isHighlighted={isHighlightedOnHover ?? isRowHighlightedOnHover}
             $isHeader={isHeader}
-            $isBorderTop={isBorderTop}
+            $hasBorderTop={hasBorderTop}
             onClick={onClick}
             onMouseEnter={() => onHover?.(true)}
             onMouseLeave={() => onHover?.(false)}
