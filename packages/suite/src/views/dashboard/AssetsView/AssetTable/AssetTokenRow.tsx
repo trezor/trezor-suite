@@ -31,7 +31,7 @@ export const AssetTokenRow = ({
     if (!assetTokensShownWithBalance?.length) return null;
 
     return (
-        <Table.Row isBorderTop={false}>
+        <Table.Row hasBorderTop={false}>
             <Table.Cell align="center">
                 <Section>
                     <TokenIconSet

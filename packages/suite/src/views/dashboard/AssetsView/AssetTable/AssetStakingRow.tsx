@@ -32,7 +32,7 @@ export const AssetStakingRow = ({
     if (!stakingTotalBalance) return null;
 
     return (
-        <Table.Row isBorderTop={false}>
+        <Table.Row hasBorderTop={false}>
             <Table.Cell align="center">
                 <Section $renderBothRows={renderBothRows}>
                     <Icon name="piggyBankFilled" variant="tertiary" />
