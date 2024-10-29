@@ -1,12 +1,12 @@
 import { ReactNode } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import {
     typography,
-    spacingsPx,
+    spacings,
     Elevation,
     mapElevationToBackground,
-    SpacingPxValues,
+    SpacingValues,
 } from '@trezor/theme';
 
 import { useTableHeader } from './TableHeader';
@@ -14,10 +14,10 @@ import { UIHorizontalAlignment } from '../../config/types';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
 type Padding = {
-    top?: SpacingPxValues | 'auto';
-    bottom?: SpacingPxValues | 'auto';
-    left?: SpacingPxValues | 'auto';
-    right?: SpacingPxValues | 'auto';
+    top?: SpacingValues;
+    bottom?: SpacingValues;
+    left?: SpacingValues;
+    right?: SpacingValues;
 };
 
 export type TableCellProps = {
@@ -41,13 +41,15 @@ const Cell = styled.td<{ $isHeader: boolean; $elevation: Elevation; $padding?: P
     ${({ $isHeader }) => ($isHeader ? typography.hint : typography.body)}
     color: ${({ theme, $isHeader }) => ($isHeader ? theme.textSubdued : theme.textDefault)};
     text-align: left;
-    padding: ${spacingsPx.sm} ${spacingsPx.lg};
-    ${({ $padding }) => $padding?.bottom && `padding-bottom: ${$padding.bottom}`};
-    ${({ $padding }) => $padding?.left && `padding-left: ${$padding.left}`};
-    ${({ $padding }) => $padding?.right && `padding-right: ${$padding.right}`};
-    ${({ $padding }) => $padding?.top && `padding-top: ${$padding.top}`};
     max-width: 300px;
     overflow: hidden;
+
+    ${({ $padding }) =>
+        $padding &&
+        css`
+            padding: ${$padding.top ?? 0}px ${$padding.right ?? 0}px ${$padding.bottom ?? 0}px
+                ${$padding.left ?? 0}px;
+        `}
 
     &:first-child {
         position: sticky;
@@ -62,7 +64,12 @@ const Content = styled.div<{ $align: UIHorizontalAlignment }>`
     justify-content: ${({ $align }) => mapAlignmentToJustifyContent($align)};
 `;
 
-export const TableCell = ({ children, colSpan = 1, align = 'left', padding }: TableCellProps) => {
+export const TableCell = ({
+    children,
+    colSpan = 1,
+    align = 'left',
+    padding = { top: spacings.sm, right: spacings.lg, bottom: spacings.sm, left: spacings.lg },
+}: TableCellProps) => {
     const isHeader = useTableHeader();
     const { parentElevation } = useElevation();
 

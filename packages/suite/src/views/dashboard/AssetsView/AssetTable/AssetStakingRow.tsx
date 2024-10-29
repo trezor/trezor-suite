@@ -6,18 +6,15 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 
 const Section = styled.div<{ $renderBothRows: boolean }>`
-    display: flex;
-    flex-direction: row;
-    margin-left: ${spacingsPx.sm};
-
     ${({ $renderBothRows }) => css`
         &::before {
             content: '';
             position: absolute;
-            top: 2px;
-            bottom: ${$renderBothRows ? '0px' : '30px'};
-            left: 43.5px;
-            border-left: 2px dotted ${({ theme }) => theme.borderDashed};
+            top: ${borders.widths.large};
+            bottom: ${$renderBothRows ? '0px' : '50%'};
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: ${borders.widths.large} dotted ${({ theme }) => theme.borderDashed};
             z-index: -1;
         }
     `}
@@ -36,12 +33,12 @@ export const AssetStakingRow = ({
 
     return (
         <Table.Row isBorderTop={false}>
-            <Table.Cell colSpan={1} padding={{ right: spacingsPx.xxs }}>
+            <Table.Cell align="center">
                 <Section $renderBothRows={renderBothRows}>
                     <Icon name="piggyBankFilled" variant="tertiary" />
                 </Section>
             </Table.Cell>
-            <Table.Cell colSpan={2} padding={{ left: spacingsPx.zero }}>
+            <Table.Cell padding={{ left: spacings.zero }}>
                 <Translation id="TR_NAV_STAKING" />
             </Table.Cell>
             <Table.Cell colSpan={4}>

@@ -40,6 +40,7 @@ export type TableProps = AllowedFrameProps & {
     colWidths?: {
         minWidth?: string;
         maxWidth?: string;
+        width?: string;
     }[];
     isRowHighlightedOnHover?: boolean;
 };

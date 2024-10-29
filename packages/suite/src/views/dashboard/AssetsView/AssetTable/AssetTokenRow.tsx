@@ -1,21 +1,20 @@
 import { AssetTableRowProps } from './AssetRow';
 import { Table } from '@trezor/components';
 import { TokenIconSet } from '@trezor/product-components';
-import { spacingsPx } from '@trezor/theme';
+import { spacings, borders } from '@trezor/theme';
 import { FiatValue, Translation } from 'src/components/suite';
 import styled from 'styled-components';
 import { EnhancedTokenInfo } from '@suite-common/token-definitions';
 
 const Section = styled.div`
-    margin-left: ${spacingsPx.sm};
-
     &::before {
         content: '';
         position: absolute;
-        top: 2px;
-        bottom: 16px;
-        left: 43.5px;
-        border-left: 2px dotted ${({ theme }) => theme.borderDashed};
+        top: ${borders.widths.large};
+        bottom: 50%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-left: ${borders.widths.large} dotted ${({ theme }) => theme.borderDashed};
         z-index: -1;
     }
 `;
@@ -33,7 +32,7 @@ export const AssetTokenRow = ({
 
     return (
         <Table.Row isBorderTop={false}>
-            <Table.Cell colSpan={1} padding={{ right: spacingsPx.xxs }}>
+            <Table.Cell align="center">
                 <Section>
                     <TokenIconSet
                         network={network.symbol}
@@ -41,7 +40,7 @@ export const AssetTokenRow = ({
                     />
                 </Section>
             </Table.Cell>
-            <Table.Cell colSpan={2} padding={{ left: spacingsPx.zero }}>
+            <Table.Cell padding={{ left: spacings.zero }}>
                 <Translation id="TR_NAV_TOKENS" />
             </Table.Cell>
             <Table.Cell colSpan={4}>
