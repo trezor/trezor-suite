@@ -11,12 +11,7 @@ import {
     ZERO,
     OUTPUT_SCRIPT_LENGTH,
 } from '../coinselectUtils';
-import {
-    CoinSelectInput,
-    CoinSelectOutput,
-    CoinSelectOptions,
-    CoinSelectResult,
-} from '../../types';
+import { CoinSelectInput, CoinSelectResult, CoinSelectAlgorithm } from '../../types';
 
 const MAX_TRIES = 1000000;
 
@@ -132,12 +127,7 @@ function search(
  * https://github.com/bitcoin/bitcoin/blob/b2ec0326fd76e64a6d0d7e4745506b29f60d0be5/src/wallet/coinselection.cpp
  */
 
-export function bnb(
-    utxos: CoinSelectInput[],
-    outputs: CoinSelectOutput[],
-    feeRate: number,
-    options: CoinSelectOptions,
-): CoinSelectResult {
+export const bnb: CoinSelectAlgorithm = (utxos, outputs, feeRate, options): CoinSelectResult => {
     if (options.baseFee) return { fee: 0 }; // TEMP: disable bnb algorithm for DOGE
     if (utxos.find(u => u.required)) return { fee: 0 }; // TODO: enable bnb algorithm if required utxos are defined
 
@@ -200,4 +190,4 @@ export function bnb(
     }
 
     return { fee: 0 };
-}
+};
