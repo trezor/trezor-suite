@@ -28,6 +28,7 @@
         { "path": "../env-utils" },
         { "path": "../react-utils" },
         { "path": "../theme" },
+        { "path": "../urls" },
         { "path": "../utils" }
     ]
 }

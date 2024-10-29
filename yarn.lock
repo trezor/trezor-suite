@@ -11548,6 +11548,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/theme": "workspace:*"
+    "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:18.2.79"
     framer-motion: "npm:^11.0.3"

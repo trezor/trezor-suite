@@ -26,6 +26,7 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "framer-motion": "^11.0.3",
         "react": "18.2.0",

@@ -1895,6 +1895,15 @@ export default defineMessages({
             'Confirm empty Passphrase wallet passphrase source on "{deviceLabel}" device.',
         id: 'TR_CONFIRM_PASSPHRASE_SOURCE',
     },
+    TR_PASSPHRASE_NON_ASCII_CHARS: {
+        defaultMessage:
+            'We recommend using <code>ABC</code>, <code>abc</code>, <code>123</code>, <code>spaces</code> or <code>these special characters</code>',
+        id: 'TR_PASSPHRASE_NON_ASCII_CHARS',
+    },
+    TR_PASSPHRASE_NON_ASCII_CHARS_WARNING: {
+        defaultMessage: 'Using non-listed special characters risk future compatibility',
+        id: 'TR_PASSPHRASE_NON_ASCII_CHARS_WARNING',
+    },
     TR_CONFIRMED_TX: {
         defaultMessage: 'Confirmed',
         id: 'TR_CONFIRMED_TX',
