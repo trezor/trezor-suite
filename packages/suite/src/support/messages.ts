@@ -7052,6 +7052,11 @@ export default defineMessages({
         defaultMessage:
             'Firmware unrecognized. Please update your Trezor Suite to verify your Trezor.',
     },
+    TR_DEVICE_FIRMWARE_UNRECOGNIZED_SUITE_OFFLINE: {
+        id: 'TR_DEVICE_FIRMWARE_UNRECOGNIZED_SUITE_OFFLINE',
+        defaultMessage:
+            'Firmware unrecognized. Please go online to update your Trezor Suite and verify your Trezor.',
+    },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
         defaultMessage: 'Activate coins',

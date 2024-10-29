@@ -484,13 +484,21 @@ export const selectFirmwareHashCheckError = (state: AppState) => {
     return isCheckEnabled && checkResult?.success === false ? checkResult.error : null;
 };
 
-export const selectIsUnrecognizedFirmwareWithOutdatedSuite = (state: AppState): boolean => {
+type UnrecognizedFwEdgeCase = 'update-available' | 'offline' | null;
+export const selectUnrecognizedFirmwareEdgeCase = (state: AppState): UnrecognizedFwEdgeCase => {
     const device = selectDevice(state);
-    if (!isDeviceAcquired(device) || !device.authenticityChecks?.firmwareHash) return false;
+    if (!isDeviceAcquired(device) || !device.authenticityChecks?.firmwareHash) return null;
     const isUpdateAvailable = state.desktopUpdate.state === UpdateState.Available;
+    const isOffline = state.suite.online;
     const checkResult = device.authenticityChecks.firmwareHash;
+    const isUnknownRelease = !checkResult.success && checkResult.error === 'unknown-release';
 
-    return !checkResult.success && checkResult.error === 'unknown-release' && isUpdateAvailable;
+    // fw version might be included in the available latest Suite version
+    if (isUnknownRelease && isUpdateAvailable) return 'update-available';
+    // fw version might be included in a newer Suite version, but we can't check if there is one available
+    if (isUnknownRelease && isOffline) return 'offline';
+
+    return null;
 };
 
 /**
@@ -499,7 +507,7 @@ export const selectIsUnrecognizedFirmwareWithOutdatedSuite = (state: AppState): 
  * If check is unsupported by device, a banner is shown but device is accessible.
  */
 const selectIsFirmwareHashCheckEnabledAndFailed = (state: AppState): boolean => {
-    if (selectIsUnrecognizedFirmwareWithOutdatedSuite(state)) return false; // treat this as a soft failure
+    if (selectUnrecognizedFirmwareEdgeCase(state) !== null) return false; // treat this as a soft failure
 
     const error = selectFirmwareHashCheckError(state);
     const softErrors: FirmwareHashCheckError[] = ['check-skipped', 'check-unsupported'];

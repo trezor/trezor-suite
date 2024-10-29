@@ -9,7 +9,7 @@ import { useSelector } from 'src/hooks/suite';
 import {
     selectFirmwareHashCheckError,
     selectFirmwareRevisionCheckError,
-    selectIsUnrecognizedFirmwareWithOutdatedSuite,
+    selectUnrecognizedFirmwareEdgeCase,
 } from 'src/reducers/suite/suiteReducer';
 
 const revisionCheckMessages: Record<FirmwareRevisionCheckError, TranslationKey> = {
@@ -37,15 +37,16 @@ const hashCheckMessages: Record<
 const useAuthenticityCheckMessage = (): TranslationKey | null => {
     const firmwareRevisionError = useSelector(selectFirmwareRevisionCheckError);
     const firmwareHashError = useSelector(selectFirmwareHashCheckError);
-    const isUnrecognizedFwWithOutadedSuite = useSelector(
-        selectIsUnrecognizedFirmwareWithOutdatedSuite,
-    );
+    const UnrecognizedFwEdgeCase = useSelector(selectUnrecognizedFirmwareEdgeCase);
 
     if (firmwareRevisionError) {
         return revisionCheckMessages[firmwareRevisionError];
     }
-    if (isUnrecognizedFwWithOutadedSuite) {
+    if (UnrecognizedFwEdgeCase === 'update-available') {
         return 'TR_DEVICE_FIRMWARE_UNRECOGNIZED_OUTDATED_SUITE';
+    }
+    if (UnrecognizedFwEdgeCase === 'offline') {
+        return 'TR_DEVICE_FIRMWARE_UNRECOGNIZED_SUITE_OFFLINE';
     }
     if (firmwareHashError && !isArrayMember(firmwareHashError, skippedHashCheckErrors)) {
         return hashCheckMessages[firmwareHashError];
