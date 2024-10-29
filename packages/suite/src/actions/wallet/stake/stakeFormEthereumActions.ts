@@ -20,6 +20,11 @@ import {
     ExternalOutput,
     AddressDisplayOptions,
 } from '@suite-common/wallet-types';
+import {
+    MIN_ETH_AMOUNT_FOR_STAKING,
+    MIN_ETH_BALANCE_FOR_STAKING,
+    MIN_ETH_FOR_WITHDRAWALS,
+} from '@suite-common/wallet-constants';
 import { selectDevice, ComposeActionContext } from '@suite-common/wallet-core';
 
 import { Dispatch, GetState } from 'src/types/suite';
@@ -31,11 +36,6 @@ import {
     prepareStakeEthTx,
     prepareUnstakeEthTx,
 } from 'src/utils/suite/stake';
-import {
-    MIN_ETH_AMOUNT_FOR_STAKING,
-    MIN_ETH_BALANCE_FOR_STAKING,
-    MIN_ETH_FOR_WITHDRAWALS,
-} from 'src/constants/suite/ethStaking';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 const calculate = (

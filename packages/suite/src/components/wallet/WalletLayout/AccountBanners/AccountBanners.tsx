@@ -15,7 +15,7 @@ import { EvmExplanationBanner } from './EvmExplanationBanner';
 import { TaprootBanner } from './TaprootBanner';
 import { Context } from '@suite-common/message-system';
 import { useSelector } from 'src/hooks/suite';
-import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-core';
+import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 
 const BannersWrapper = styled.div`
     display: flex;

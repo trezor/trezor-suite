@@ -4,19 +4,20 @@ import {
     StakeType,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
-import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
+import {
+    DEFAULT_PAYMENT,
+    STAKE_GAS_LIMIT_RESERVE,
+    MIN_ETH_AMOUNT_FOR_STAKING,
+    MAX_ETH_AMOUNT_FOR_STAKING,
+} from '@suite-common/wallet-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
 import { fromWei, numberToHex, toWei } from 'web3-utils';
 import { getEthereumEstimateFeeParams, isPending, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, { EthereumTransaction, Success, InternalTransfer } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { STAKE_GAS_LIMIT_RESERVE, ValidatorsQueue } from '@suite-common/wallet-core';
+import { ValidatorsQueue } from '@suite-common/wallet-core';
 import { BlockchainEstimatedFee } from '@trezor/connect/src/types/api/blockchainEstimateFee';
-import {
-    MIN_ETH_AMOUNT_FOR_STAKING,
-    MAX_ETH_AMOUNT_FOR_STAKING,
-} from 'src/constants/suite/ethStaking';
 import { TranslationFunction } from 'src/hooks/suite/useTranslation';
 
 // source is a required parameter for some functions in the Everstake Wallet SDK.

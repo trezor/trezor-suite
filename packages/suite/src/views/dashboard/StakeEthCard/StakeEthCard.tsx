@@ -16,12 +16,12 @@ import { Translation, StakingFeature } from 'src/components/suite';
 import { StakeEthCardFooter } from './StakeEthCardFooter/StakeEthCardFooter';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
-import { MIN_ETH_BALANCE_FOR_STAKING } from 'src/constants/suite/ethStaking';
 import { spacings } from '@trezor/theme';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { MIN_ETH_BALANCE_FOR_STAKING } from '@suite-common/wallet-constants';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 const bannerSymbol = 'eth';

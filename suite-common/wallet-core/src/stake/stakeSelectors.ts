@@ -1,6 +1,6 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { BACKUP_ETH_APY } from '@suite-common/wallet-constants';
 
-import { BACKUP_ETH_APY } from './stakeTypes';
 import { StakeRootState } from './stakeReducer';
 
 export const selectEverstakeData = (

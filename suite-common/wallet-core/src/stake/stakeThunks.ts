@@ -1,16 +1,12 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { createThunk } from '@suite-common/redux-utils';
 import { Timeout } from '@trezor/type-utils';
+import { getStakingSymbols } from '@suite-common/wallet-utils';
+import { SupportedNetworkSymbol } from '@suite-common/wallet-types';
 
 import { selectEverstakeData } from './stakeSelectors';
-import {
-    EVERSTAKE_ENDPOINT_PREFIX,
-    EVERSTAKE_ENDPOINT_TYPES,
-    EverstakeEndpointType,
-    SupportedNetworkSymbol,
-    ValidatorsQueue,
-    getStakingSymbols,
-} from './stakeTypes';
+import { EVERSTAKE_ENDPOINT_TYPES, EverstakeEndpointType, ValidatorsQueue } from './stakeTypes';
+import { EVERSTAKE_ENDPOINT_PREFIX } from './stakeConstants';
 
 const STAKE_MODULE = '@common/wallet-core/stake';
 

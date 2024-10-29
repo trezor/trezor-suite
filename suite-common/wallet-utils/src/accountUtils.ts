@@ -42,7 +42,7 @@ import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
 
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
-import { getAccountTotalStakingBalance } from './stakingUtils';
+import { getAccountTotalStakingBalance } from './ethereumStakingUtils';
 import { isRbfTransaction } from './transactionUtils';
 
 export const isEthereumAccountSymbol = (symbol: NetworkSymbol) => symbol === 'eth';

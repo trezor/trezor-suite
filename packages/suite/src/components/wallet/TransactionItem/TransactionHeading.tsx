@@ -13,6 +13,7 @@ import {
     getTargetAmount,
     getTxHeaderSymbol,
     getTxOperation,
+    isSupportedEthStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { TransactionHeader } from './TransactionHeader';
 import { WalletAccountTransaction } from 'src/types/wallet';
@@ -20,7 +21,6 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { BlurWrapper } from './TransactionItemBlurWrapper';
 import { spacingsPx } from '@trezor/theme';
 import { InstantStakeBadge } from './InstantStakeBadge';
-import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-core';
 
 const Wrapper = styled.span`
     display: flex;

@@ -8,6 +8,6 @@ export * from './sendForm';
 export * from './settings';
 export * from './selectedAccount';
 export * from './transaction';
-export * from './stake';
+export * from './ethereumStaking';
 export * from './stakeForm';
 export * from './send';

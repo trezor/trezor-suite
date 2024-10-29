@@ -9118,7 +9118,6 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/urls": "workspace:*"
     date-fns: "npm:^2.30.0"
-    web3-utils: "npm:^4.3.1"
   languageName: unknown
   linkType: soft
 
@@ -9204,6 +9203,8 @@ __metadata:
 "@suite-common/wallet-constants@workspace:*, @suite-common/wallet-constants@workspace:suite-common/wallet-constants":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-constants@workspace:suite-common/wallet-constants"
+  dependencies:
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

@@ -1,6 +1,6 @@
 import { UseFormReturn, FormState as ReactHookFormState } from 'react-hook-form';
 
-import { Network, NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { Network } from '@suite-common/wallet-config';
 import {
     Account,
     Rate,
@@ -10,43 +10,6 @@ import {
 } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { FeeLevel } from '@trezor/connect';
-import { isArrayMember } from '@trezor/utils';
-
-// Used when Everstake pool stats are not available from the API.
-export const BACKUP_ETH_APY = 4.13;
-
-// Slack discussion https://satoshilabs.slack.com/archives/C0543DJBK0C/p1719409880504649?thread_ts=1719403259.875369&cid=C0543DJBK0C
-// increasing gas limit as tx can consume more than it was estimated due to edge cases
-// stake/unstake method usually consumes 97k-425k but can take up to 1M
-// claim method 97k-300k
-export const STAKE_GAS_LIMIT_RESERVE = 220_000;
-
-export const supportedNetworkSymbols = ['eth', 'thol'] as const;
-
-export type SupportedNetworkSymbol = (typeof supportedNetworkSymbols)[number];
-
-export function isSupportedEthStakingNetworkSymbol(
-    networkSymbol: NetworkSymbol,
-): networkSymbol is SupportedNetworkSymbol {
-    return isArrayMember(networkSymbol, supportedNetworkSymbols);
-}
-
-export const getStakingSymbols = (networkSymbols: NetworkSymbol[]) =>
-    networkSymbols.reduce((acc, networkSymbol) => {
-        if (
-            isSupportedEthStakingNetworkSymbol(networkSymbol) &&
-            getNetworkFeatures(networkSymbol).includes('staking')
-        ) {
-            acc.push(networkSymbol);
-        }
-
-        return acc;
-    }, [] as SupportedNetworkSymbol[]);
-
-export const EVERSTAKE_ENDPOINT_PREFIX: Record<SupportedNetworkSymbol, string> = {
-    eth: 'https://eth-api-b2c.everstake.one/api/v1',
-    thol: 'https://eth-api-b2c-stage.everstake.one/api/v1',
-};
 
 export enum EverstakeEndpointType {
     PoolStats = 'poolStats',

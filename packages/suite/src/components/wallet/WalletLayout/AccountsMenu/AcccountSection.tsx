@@ -3,10 +3,8 @@ import { AccountItemsGroup } from './AccountItemsGroup';
 import { AccountItem } from './AccountItem';
 import { useSelector } from 'src/hooks/suite';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import {
-    isSupportedEthStakingNetworkSymbol,
-    selectAccountHasStaked,
-} from '@suite-common/wallet-core';
+import { selectAccountHasStaked } from '@suite-common/wallet-core';
+import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
 
 interface AccountSectionProps {

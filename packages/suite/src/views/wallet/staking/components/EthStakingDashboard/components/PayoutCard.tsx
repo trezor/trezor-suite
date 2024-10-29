@@ -6,7 +6,7 @@ import { Translation } from 'src/components/suite';
 import { AccentP, CardBottomContent, GreyP } from './styled';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useSelector } from 'src/hooks/suite';
-import { BACKUP_REWARD_PAYOUT_DAYS } from 'src/constants/suite/ethStaking';
+import { BACKUP_REWARD_PAYOUT_DAYS } from '@suite-common/wallet-constants';
 import { getAccountAutocompoundBalance } from '@suite-common/wallet-utils';
 
 interface PayoutCardProps {
