@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import styled, { css, useTheme } from 'styled-components';
+import styled, { css, DefaultTheme, useTheme } from 'styled-components';
 
 import { variables } from '../../config';
 import { Elevation, borders, spacingsPx, typography, spacings } from '@trezor/theme';
@@ -26,6 +26,8 @@ import { SCREEN_SIZE } from '../../config/variables';
 
 export const allowedBannerFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBannerFrameProps)[number]>;
+type SpacingX = 'xs' | 'lg';
+type Color = 'inherit' | 'default';
 
 export type BannerProps = AllowedFrameProps & {
     children: ReactNode;
@@ -35,6 +37,8 @@ export type BannerProps = AllowedFrameProps & {
     icon?: IconName | true;
     filled?: boolean;
     'data-testid'?: string;
+    spacingX?: SpacingX;
+    color?: Color;
 };
 
 type WrapperParams = TransientProps<AllowedFrameProps> & {
@@ -42,7 +46,14 @@ type WrapperParams = TransientProps<AllowedFrameProps> & {
     $withIcon?: boolean;
     $elevation: Elevation;
     $filled: boolean;
+    $spacingX: SpacingX;
+    $color: Color;
 };
+
+const colorMap = (theme: DefaultTheme) => ({
+    inherit: mapVariantToTextColor,
+    default: theme.textDefault,
+});
 
 const Wrapper = styled.div<WrapperParams>`
     align-items: center;
@@ -54,11 +65,11 @@ const Wrapper = styled.div<WrapperParams>`
               `
             : ''}
 
-    color: ${mapVariantToTextColor};
+    color: ${({ $color, theme }) => colorMap(theme)[$color]};
     display: flex;
     ${typography.hint}
     gap: ${spacingsPx.sm};
-    padding: ${spacingsPx.sm} ${spacingsPx.lg};
+    padding: ${spacingsPx.sm} ${({ $spacingX }) => spacingsPx[$spacingX]};
 
     ${withFrameProps}
 
@@ -72,10 +83,12 @@ const Wrapper = styled.div<WrapperParams>`
 export const Banner = ({
     children,
     className,
+    color = 'inherit',
     variant = DEFAULT_VARIANT,
     icon,
     filled = true,
     rightContent,
+    spacingX = 'lg',
     'data-testid': dataTest,
     ...rest
 }: BannerProps) => {
@@ -110,6 +123,8 @@ export const Banner = ({
             className={className}
             $elevation={elevation}
             $filled={filled}
+            $spacingX={spacingX}
+            $color={color}
             data-testid={dataTest}
             {...frameProps}
         >
