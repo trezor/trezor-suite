@@ -1,7 +1,9 @@
 import { isAndroid } from '@trezor/env-utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Card, Column, Row, Input, Button, motionAnimation, Icon, Banner } from '@trezor/components';
+import { Button, Card, Column, Icon, Input, motionAnimation, Row } from '@trezor/components';
+import { ButtonVariant } from '@trezor/components/src/components/buttons/buttonStyleUtils';
+import { BannerVariant } from '@trezor/components/src/components/Banner/types';
 import { PasswordStrengthIndicator } from '../PasswordStrengthIndicator/PasswordStrengthIndicator';
 import styled, { useTheme } from 'styled-components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
@@ -9,6 +11,7 @@ import { useKeyPress } from '@trezor/react-utils';
 import { ChangeEvent, MutableRefObject, ReactNode, RefObject } from 'react';
 import { WalletType } from './types';
 import { DOT } from './consts';
+import { NonAsciiBanner } from './NonAsciiBanner';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const PassphraseInput = styled(Input)`
@@ -43,7 +46,7 @@ const Description = styled.div`
 
 type PassphraseTypeCardContentProps = {
     submitLabel: ReactNode;
-    submitVariant?: 'primary' | 'warning';
+    submitVariant?: ButtonVariant;
     type: WalletType;
     singleColModal?: boolean;
     displayValue: string;
@@ -51,7 +54,7 @@ type PassphraseTypeCardContentProps = {
     value: string;
     setValue: (value: string) => void;
     showAsciiBanner?: boolean;
-    asciiBannerVariant?: 'info' | 'warning';
+    asciiBannerVariant?: BannerVariant;
     showPassword: boolean;
     setShowPassword: (showPassword: boolean) => void;
     hiddenWalletTouched: boolean;
@@ -181,11 +184,7 @@ export const PassphraseTypeCardContent = ({
                         {value && !isPassphraseTooLong && (
                             <PasswordStrengthIndicator password={value} />
                         )}
-                        {showAsciiBanner && (
-                            <Banner variant={asciiBannerVariant}>
-                                TBD
-                            </Banner>
-                        )}
+                        {showAsciiBanner && <NonAsciiBanner variant={asciiBannerVariant} />}
                     </>
                 )}
 
