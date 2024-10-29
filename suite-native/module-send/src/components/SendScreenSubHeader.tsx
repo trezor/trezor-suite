@@ -7,21 +7,30 @@ import {
     selectAccountNetworkSymbol,
     selectAccountAvailableBalance,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { VStack, HStack, Text } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { CoinAmountFormatter, CoinToFiatAmountFormatter } from '@suite-native/formatters';
 import { ScreenSubHeader, GoBackIcon, ScreenSubHeaderProps } from '@suite-native/navigation';
 import { nativeSpacings } from '@trezor/theme';
+import {
+    selectAccountTokenBalance,
+    selectAccountTokenSymbol,
+    TokensRootState,
+} from '@suite-native/tokens';
 
 type AccountBalanceScreenHeaderProps = {
-    accountKey?: AccountKey;
+    accountKey: AccountKey;
+    tokenContract?: TokenAddress;
 };
 
 export const SendScreenSubHeader = (props: ScreenSubHeaderProps) => (
     <ScreenSubHeader {...props} customHorizontalPadding={nativeSpacings.sp16} />
 );
 
-export const AccountBalanceScreenHeader = ({ accountKey }: AccountBalanceScreenHeaderProps) => {
+export const AccountBalanceScreenHeader = ({
+    accountKey,
+    tokenContract,
+}: AccountBalanceScreenHeaderProps) => {
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
     );
@@ -33,34 +42,50 @@ export const AccountBalanceScreenHeader = ({ accountKey }: AccountBalanceScreenH
         selectAccountAvailableBalance(state, accountKey),
     );
 
+    const tokenSymbol = useSelector((state: TokensRootState) =>
+        selectAccountTokenSymbol(state, accountKey, tokenContract),
+    );
+
+    const tokenBalance = useSelector((state: AccountsRootState) =>
+        selectAccountTokenBalance(state, accountKey, tokenContract),
+    );
+
     if (!networkSymbol) {
         return;
     }
+
+    const accountTitle = tokenSymbol ? `${accountLabel} – ${tokenSymbol}` : accountLabel;
 
     return (
         <SendScreenSubHeader
             content={
                 <VStack spacing="sp4" alignItems="center">
                     <HStack spacing="sp8" alignItems="center">
-                        {networkSymbol && <CryptoIcon symbol={networkSymbol} size="extraSmall" />}
-                        {accountLabel && <Text variant="highlight">{accountLabel}</Text>}
+                        {networkSymbol && (
+                            <CryptoIcon symbol={tokenContract ?? networkSymbol} size="extraSmall" />
+                        )}
+                        {accountTitle && <Text variant="highlight">{accountTitle}</Text>}
                     </HStack>
                     <HStack spacing="sp4" alignItems="center">
-                        <CryptoAmountFormatter
+                        <CoinAmountFormatter
                             variant="hint"
-                            value={availableBalance}
-                            network={networkSymbol}
-                            isBalance={false}
                             color="textDefault"
+                            value={tokenBalance ?? availableBalance}
+                            decimals={0}
+                            accountKey={accountKey}
+                            tokenContract={tokenContract}
+                            isBalance={false}
                         />
                         <Text variant="hint" color="textSubdued">
                             ≈
                         </Text>
-                        <CryptoToFiatAmountFormatter
-                            value={availableBalance}
-                            network={networkSymbol}
+                        <CoinToFiatAmountFormatter
                             variant="hint"
                             color="textSubdued"
+                            value={tokenBalance ?? availableBalance}
+                            accountKey={accountKey}
+                            decimals={0}
+                            tokenContract={tokenContract}
                         />
                     </HStack>
                 </VStack>

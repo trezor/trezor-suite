@@ -10,7 +10,7 @@ import {
     XpubAddress,
 } from '@suite-common/wallet-types';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountInfo, TokenTransfer } from '@trezor/connect';
+import { AccountInfo } from '@trezor/connect';
 
 import {
     AppTabsRoutes,
@@ -75,17 +75,21 @@ export type SendStackParamList = {
     [SendStackRoutes.SendAccounts]: undefined;
     [SendStackRoutes.SendOutputs]: {
         accountKey: AccountKey;
+        tokenContract?: TokenAddress;
     };
     [SendStackRoutes.SendFees]: {
         feeLevels: GeneralPrecomposedLevels;
         accountKey: AccountKey;
+        tokenContract?: TokenAddress;
     };
     [SendStackRoutes.SendAddressReview]: {
         transaction: GeneralPrecomposedTransactionFinal;
         accountKey: AccountKey;
+        tokenContract?: TokenAddress;
     };
     [SendStackRoutes.SendOutputsReview]: {
         accountKey: AccountKey;
+        tokenContract?: TokenAddress;
     };
 };
 
@@ -181,7 +185,7 @@ export type RootStackParamList = {
         txid: string;
         accountKey: AccountKey;
         closeActionType?: CloseActionType;
-        tokenTransfer?: TokenTransfer;
+        tokenContract?: TokenAddress;
     };
     [RootStackRoutes.DevUtilsStack]: undefined;
     [RootStackRoutes.AccountDetail]: AccountDetailParams;

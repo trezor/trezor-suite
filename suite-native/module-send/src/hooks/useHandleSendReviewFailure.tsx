@@ -13,7 +13,7 @@ import {
     SendStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { GeneralPrecomposedTransactionFinal, TokenAddress } from '@suite-common/wallet-types';
 import { TRANSPORT_ERROR } from '@trezor/transport';
 
 import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
@@ -27,10 +27,12 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 type UseHandleSendReviewFailureArguments = {
     accountKey: string;
     transaction: GeneralPrecomposedTransactionFinal;
+    tokenContract?: TokenAddress;
 };
 
 export const useHandleSendReviewFailure = ({
     accountKey,
+    tokenContract,
     transaction,
 }: UseHandleSendReviewFailureArguments) => {
     const navigation = useNavigation<NavigationProps>();
@@ -49,6 +51,7 @@ export const useHandleSendReviewFailure = ({
         ) {
             navigation.navigate(SendStackRoutes.SendAddressReview, {
                 accountKey,
+                tokenContract,
                 transaction,
             });
 
@@ -77,6 +80,7 @@ export const useHandleSendReviewFailure = ({
             if (isViewOnlyDevice) {
                 navigation.navigate(SendStackRoutes.SendAddressReview, {
                     accountKey,
+                    tokenContract,
                     transaction,
                 });
             }
@@ -87,6 +91,7 @@ export const useHandleSendReviewFailure = ({
 
         navigation.navigate(RootStackRoutes.AccountDetail, {
             accountKey,
+            tokenContract,
             closeActionType: 'back',
         });
     };

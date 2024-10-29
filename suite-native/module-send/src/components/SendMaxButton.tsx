@@ -8,11 +8,12 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { Button } from '@suite-native/atoms';
-import { AccountKey, FormState } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { useFormContext } from '@suite-native/forms';
 import { useDebounce } from '@trezor/react-utils';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { Translation } from '@suite-native/intl';
+import { selectAccountTokenBalance } from '@suite-native/tokens';
 
 import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
 import { getOutputFieldName, constructFormDraft } from '../utils';
@@ -21,32 +22,40 @@ import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 type SendMaxButtonProps = {
     outputIndex: number;
     accountKey: AccountKey;
+    tokenContract?: TokenAddress;
 };
 
-export const SendMaxButton = ({ outputIndex, accountKey }: SendMaxButtonProps) => {
+export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMaxButtonProps) => {
     const dispatch = useDispatch();
     const debounce = useDebounce();
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const [maxAmountValue, setMaxAmountValue] = useState<string>();
+    const tokenBalance = useSelector((state: AccountsRootState) =>
+        selectAccountTokenBalance(state, accountKey, tokenContract),
+    );
 
-    const converters = useCryptoFiatConverters({ networkSymbol: networkSymbol! });
-    const { setValue, watch, trigger } = useFormContext<SendOutputsFormValues>();
+    const [maxAmountValue, setMaxAmountValue] = useState<string | null>();
 
-    const formValues = watch() as FormState;
+    const converters = useCryptoFiatConverters({ networkSymbol: networkSymbol!, tokenContract });
+    const { setValue, watch } = useFormContext<SendOutputsFormValues>();
+
+    const formValues = watch();
     const addressValue = formValues.outputs[outputIndex]?.address;
 
     const hasOutputValidAddress =
         addressValue && networkSymbol && isAddressValid(addressValue, networkSymbol);
-    const isSendMaxAvailable = formValues.outputs.length === 1 && hasOutputValidAddress;
+
+    const isMainnetSendMaxAvailable =
+        !tokenContract && formValues.outputs.length === 1 && hasOutputValidAddress;
+    const isSendMaxAvailable = tokenContract || isMainnetSendMaxAvailable;
 
     const calculateFeeLevelsMaxAmount = useCallback(async () => {
         const response = await debounce(() =>
             dispatch(
                 calculateFeeLevelsMaxAmountThunk({
-                    formState: constructFormDraft(formValues as FormState),
+                    formState: constructFormDraft({ formValues }),
                     accountKey,
                 }),
             ),
@@ -60,9 +69,10 @@ export const SendMaxButton = ({ outputIndex, accountKey }: SendMaxButtonProps) =
     }, [dispatch, accountKey, debounce, formValues]);
 
     useEffect(() => {
-        if (isSendMaxAvailable) calculateFeeLevelsMaxAmount();
+        if (tokenBalance) setMaxAmountValue(tokenBalance);
+        else if (isMainnetSendMaxAvailable) calculateFeeLevelsMaxAmount();
         else setMaxAmountValue(undefined);
-    }, [isSendMaxAvailable, calculateFeeLevelsMaxAmount]);
+    }, [isMainnetSendMaxAvailable, calculateFeeLevelsMaxAmount, tokenBalance]);
 
     const setOutputSendMax = () => {
         if (!maxAmountValue) return;
@@ -70,11 +80,13 @@ export const SendMaxButton = ({ outputIndex, accountKey }: SendMaxButtonProps) =
         Keyboard.dismiss();
 
         setValue('setMaxOutputId', outputIndex);
-        setValue(getOutputFieldName(outputIndex, 'amount'), maxAmountValue);
+        setValue(getOutputFieldName(outputIndex, 'amount'), maxAmountValue, {
+            shouldValidate: true,
+            shouldTouch: true,
+        });
 
         const fiatValue = converters?.convertCryptoToFiat(maxAmountValue);
         if (fiatValue) setValue(getOutputFieldName(outputIndex, 'fiat'), fiatValue);
-        trigger();
     };
 
     return (

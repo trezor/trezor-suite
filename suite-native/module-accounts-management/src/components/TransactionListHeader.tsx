@@ -129,6 +129,7 @@ export const TransactionListHeader = memo(
                 screen: SendStackRoutes.SendOutputs,
                 params: {
                     accountKey,
+                    tokenContract,
                 },
             });
         };

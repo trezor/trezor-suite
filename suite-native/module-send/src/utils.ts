@@ -1,4 +1,4 @@
-import { FormState } from '@suite-common/wallet-types';
+import { FormState, TokenAddress } from '@suite-common/wallet-types';
 
 import { SendOutputFieldName, SendOutputsFormValues } from './sendOutputsFormSchema';
 
@@ -8,14 +8,17 @@ export const getOutputFieldName = <TField extends SendOutputFieldName>(
 ): `outputs.${number}.${TField}` => `outputs.${index}.${field}`;
 
 export const constructFormDraft = ({
-    outputs,
-    setMaxOutputId,
-}: SendOutputsFormValues): FormState => ({
+    formValues: { outputs, setMaxOutputId },
+    tokenContract,
+}: {
+    formValues: SendOutputsFormValues;
+    tokenContract?: TokenAddress;
+}): FormState => ({
     outputs: outputs.map(({ address, amount, fiat = '' }) => ({
         address,
         amount,
         type: 'payment',
-        token: null,
+        token: tokenContract ?? null,
         fiat,
         currency: { label: '', value: '' },
     })),

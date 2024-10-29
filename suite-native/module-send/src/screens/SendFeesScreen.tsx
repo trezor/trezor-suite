@@ -11,7 +11,7 @@ import { AccountBalanceScreenHeader } from '../components/SendScreenSubHeader';
 export const SendFeesScreen = ({
     route: { params },
 }: StackProps<SendStackParamList, SendStackRoutes.SendFees>) => {
-    const { accountKey, feeLevels } = params;
+    const { accountKey, tokenContract, feeLevels } = params;
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -20,9 +20,17 @@ export const SendFeesScreen = ({
     if (!account) return;
 
     return (
-        <SendScreen screenHeader={<AccountBalanceScreenHeader accountKey={accountKey} />}>
+        <SendScreen
+            screenHeader={
+                <AccountBalanceScreenHeader accountKey={accountKey} tokenContract={tokenContract} />
+            }
+        >
             <VStack spacing="sp32" flex={1}>
-                <SendFeesForm accountKey={accountKey} feeLevels={feeLevels} />
+                <SendFeesForm
+                    accountKey={accountKey}
+                    tokenContract={tokenContract}
+                    feeLevels={feeLevels}
+                />
             </VStack>
         </SendScreen>
     );

@@ -12,7 +12,7 @@ import {
     selectSendFormDraftByAccountKey,
     SendRootState,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Button } from '@suite-native/atoms';
 import { RootStackRoutes, AppTabsRoutes, RootStackParamList } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
@@ -26,8 +26,8 @@ import { selectIsTransactionAlreadySigned } from '../selectors';
 
 const navigateToAccountDetail = ({
     accountKey,
+    tokenContract,
     txid,
-    closeActionType,
 }: RootStackParamList[RootStackRoutes.TransactionDetail]) =>
     // Reset navigation stack to the account detail screen with HomeStack as a previous step, so the user can navigate back there.
     CommonActions.reset({
@@ -43,14 +43,16 @@ const navigateToAccountDetail = ({
                 name: RootStackRoutes.AccountDetail,
                 params: {
                     accountKey,
+                    tokenContract,
                 },
             },
             {
                 name: RootStackRoutes.TransactionDetail,
                 params: {
                     accountKey,
+                    tokenContract,
                     txid,
-                    closeActionType,
+                    closeActionType: 'close',
                 },
             },
         ],
@@ -61,7 +63,13 @@ const footerStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
 }));
 
-export const OutputsReviewFooter = ({ accountKey }: { accountKey: AccountKey }) => {
+export const OutputsReviewFooter = ({
+    accountKey,
+    tokenContract,
+}: {
+    accountKey: AccountKey;
+    tokenContract?: TokenAddress;
+}) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const { applyStyle } = useNativeStyles();
@@ -103,7 +111,11 @@ export const OutputsReviewFooter = ({ accountKey }: { accountKey: AccountKey }) 
             }
 
             navigation.dispatch(
-                navigateToAccountDetail({ accountKey, txid, closeActionType: 'close' }),
+                navigateToAccountDetail({
+                    accountKey,
+                    tokenContract,
+                    txid,
+                }),
             );
         }
     };

@@ -11,9 +11,10 @@ import {
     GeneralPrecomposedTransaction,
     isFinalPrecomposedTransaction,
     Output,
+    TokenAddress,
 } from '@suite-common/wallet-types';
 import { Text, VStack, Card, HStack } from '@suite-native/atoms';
-import { CryptoToFiatAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
+import { CoinToFiatAmountFormatter, CoinAmountFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 import { selectIsAmountInSats, SettingsSliceRootState } from '@suite-native/settings';
@@ -21,6 +22,7 @@ import { selectIsAmountInSats, SettingsSliceRootState } from '@suite-native/sett
 type FeesRecipientsProps = {
     accountKey: AccountKey;
     selectedFeeLevel: GeneralPrecomposedTransaction;
+    tokenContract?: TokenAddress;
 };
 
 const cardStyle = prepareNativeStyle(utils => ({
@@ -35,7 +37,11 @@ const addressStyle = prepareNativeStyle(() => ({
     letterSpacing: 0, // negative letter spacing has to be overwritten for ellipsizeMode='middle' to work
 }));
 
-export const RecipientsSummary = ({ accountKey, selectedFeeLevel }: FeesRecipientsProps) => {
+export const RecipientsSummary = ({
+    accountKey,
+    tokenContract,
+    selectedFeeLevel,
+}: FeesRecipientsProps) => {
     const { applyStyle } = useNativeStyles();
 
     const draftOutputs = useSelector((state: SendRootState) =>
@@ -79,19 +85,21 @@ export const RecipientsSummary = ({ accountKey, selectedFeeLevel }: FeesRecipien
                             </Text>
                         </VStack>
                         <VStack flex={0.6} alignItems="flex-end" spacing="sp4">
-                            <CryptoToFiatAmountFormatter
+                            <CoinToFiatAmountFormatter
                                 variant="hint"
                                 color="textDefault"
                                 value={output.amount}
-                                network={networkSymbol}
                                 isBalance={isBalance}
+                                accountKey={accountKey}
+                                tokenContract={tokenContract}
                             />
-                            <CryptoAmountFormatter
+                            <CoinAmountFormatter
                                 variant="hint"
                                 color="textSubdued"
                                 value={output.amount}
-                                network={networkSymbol}
                                 isBalance={isBalance}
+                                accountKey={accountKey}
+                                tokenContract={tokenContract}
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
                             />

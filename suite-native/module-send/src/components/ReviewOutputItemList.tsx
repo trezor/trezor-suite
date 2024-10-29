@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { LayoutChangeEvent } from 'react-native';
 
 import { ErrorMessage, VStack } from '@suite-native/atoms';
-import { AccountKey } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -21,12 +21,15 @@ import {
 import { ReviewOutputSummaryItem } from './ReviewOutputSummaryItem';
 import { SlidingFooterOverlay } from './SlidingFooterOverlay';
 
-type ReviewOutputItemListProps = { accountKey: AccountKey };
+type ReviewOutputItemListProps = {
+    accountKey: AccountKey;
+    tokenContract?: TokenAddress;
+};
 
 const INITIAL_OFFSET = 85;
 const LIST_VERTICAL_SPACING = nativeSpacings.sp16;
 
-export const ReviewOutputItemList = ({ accountKey }: ReviewOutputItemListProps) => {
+export const ReviewOutputItemList = ({ accountKey, tokenContract }: ReviewOutputItemListProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -71,6 +74,7 @@ export const ReviewOutputItemList = ({ accountKey }: ReviewOutputItemListProps) 
                     <ReviewOutputSummaryItem
                         accountKey={accountKey}
                         networkSymbol={account.symbol}
+                        tokenContract={tokenContract}
                         onLayout={event => handleReadListItemHeight(event, reviewOutputs.length)}
                     />
                 </VStack>

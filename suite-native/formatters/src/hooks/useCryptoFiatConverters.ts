@@ -13,7 +13,7 @@ import { TokenAddress } from '@suite-common/wallet-types';
 
 type useConvertFiatToCryptoParams = {
     networkSymbol: NetworkSymbol;
-    tokenAddress?: TokenAddress;
+    tokenContract?: TokenAddress;
     tokenDecimals?: number;
     historicRate?: number;
     useHistoricRate?: boolean;
@@ -22,7 +22,7 @@ type useConvertFiatToCryptoParams = {
 
 export const useCryptoFiatConverters = ({
     networkSymbol,
-    tokenAddress,
+    tokenContract,
     historicRate,
     useHistoricRate,
 }: useConvertFiatToCryptoParams) => {
@@ -30,7 +30,7 @@ export const useCryptoFiatConverters = ({
         selectIsAmountInSats(state, networkSymbol),
     );
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
-    const fiatRateKey = getFiatRateKey(networkSymbol, fiatCurrencyCode, tokenAddress);
+    const fiatRateKey = getFiatRateKey(networkSymbol, fiatCurrencyCode, tokenContract);
     const currentRate = useSelector((state: FiatRatesRootState) =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey),
     );

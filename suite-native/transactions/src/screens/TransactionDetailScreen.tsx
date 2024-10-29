@@ -39,7 +39,7 @@ export const TransactionDetailScreen = ({
     route,
 }: StackProps<RootStackParamList, RootStackRoutes.TransactionDetail>) => {
     const { utils } = useNativeStyles();
-    const { txid, accountKey, tokenTransfer, closeActionType = 'back' } = route.params;
+    const { txid, accountKey, tokenContract, closeActionType = 'back' } = route.params;
     const openLink = useOpenLink();
     const transaction = useSelector((state: TransactionsRootState) =>
         selectTransactionByTxidAndAccountKey(state, txid, accountKey),
@@ -47,6 +47,8 @@ export const TransactionDetailScreen = ({
     const blockchainExplorer = useSelector((state: BlockchainRootState) =>
         selectBlockchainExplorerBySymbol(state, transaction?.symbol),
     );
+
+    const tokenTransfer = transaction?.tokens.find(token => token.contract === tokenContract);
 
     useEffect(() => {
         if (transaction) {

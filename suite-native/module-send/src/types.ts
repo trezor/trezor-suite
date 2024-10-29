@@ -2,7 +2,13 @@ import { RefObject } from 'react';
 import { TextInput, TextInputProps } from 'react-native';
 import { SharedValue } from 'react-native-reanimated';
 
-import { FeeLevelLabel, ReviewOutput, ReviewOutputState } from '@suite-common/wallet-types';
+import {
+    AccountKey,
+    FeeLevelLabel,
+    ReviewOutput,
+    ReviewOutputState,
+    TokenAddress,
+} from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export type StatefulReviewOutput = ReviewOutput & { state: ReviewOutputState };
@@ -16,6 +22,8 @@ export type SendAmountInputProps = {
     inputRef: RefObject<TextInput>;
     scaleValue: SharedValue<number>;
     translateValue: SharedValue<number>;
+    accountKey?: AccountKey;
+    tokenContract?: TokenAddress;
     isDisabled?: boolean;
     onPress?: TextInputProps['onPress'];
     onFocus?: () => void;

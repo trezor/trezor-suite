@@ -144,7 +144,7 @@ export const TransactionListItemContainer = ({
         navigation.navigate(RootStackRoutes.TransactionDetail, {
             txid,
             accountKey,
-            tokenTransfer,
+            tokenContract: tokenTransfer?.contract,
         });
     };
 

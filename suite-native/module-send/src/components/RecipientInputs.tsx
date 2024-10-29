@@ -15,7 +15,7 @@ export const RecipientInputs = ({ index, accountKey }: RecipientInputsProps) => 
         <VStack spacing="sp16">
             <AddressInput index={index} accountKey={accountKey} />
             <CardDivider />
-            <AmountInputs index={index} accountKey={accountKey} />
+            <AmountInputs index={index} />
         </VStack>
     );
 };

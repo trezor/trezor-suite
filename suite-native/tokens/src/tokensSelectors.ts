@@ -67,6 +67,34 @@ export const selectAccountTokenSymbol = (
     return tokenInfo.symbol.toUpperCase() as TokenSymbol;
 };
 
+export const selectAccountTokenBalance = (
+    state: AccountsRootState,
+    accountKey?: AccountKey,
+    tokenAddress?: TokenAddress,
+): string | null => {
+    const tokenInfo = selectAccountTokenInfo(state, accountKey, tokenAddress);
+
+    if (!tokenInfo) {
+        return null;
+    }
+
+    return tokenInfo.balance ?? null;
+};
+
+export const selectAccountTokenDecimals = (
+    state: AccountsRootState,
+    accountKey?: AccountKey,
+    tokenAddress?: TokenAddress,
+): number | null => {
+    const tokenInfo = selectAccountTokenInfo(state, accountKey, tokenAddress);
+
+    if (!tokenInfo) {
+        return null;
+    }
+
+    return tokenInfo.decimals ?? null;
+};
+
 export const selectAccountTokenTransactions = memoizeWithArgs(
     (
         state: TransactionsRootState,
