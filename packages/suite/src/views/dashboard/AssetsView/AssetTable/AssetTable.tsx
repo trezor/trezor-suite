@@ -2,7 +2,7 @@ import { AssetRow } from './AssetRow';
 import { AssetRowSkeleton } from './AssetRowSkeleton';
 import { AssetTableRowPropsWithoutFiatBalances } from '../AssetsView';
 import { Table } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { RatesByKey } from '@suite-common/wallet-types';
@@ -24,11 +24,15 @@ export const AssetTable = ({
     currentFiatRates,
 }: AssetTableProps) => {
     return (
-        <Table isRowHighlightedOnHover margin={{ top: spacings.xs }}>
+        <Table
+            isRowHighlightedOnHover
+            margin={{ top: spacings.xs }}
+            colWidths={[{ width: '48px' }, { minWidth: '130px', maxWidth: '200px' }]}
+        >
             <Table.Header>
                 <Table.Row>
-                    <Table.Cell colSpan={1} padding={{ right: spacingsPx.xxs }}></Table.Cell>
-                    <Table.Cell colSpan={2} padding={{ left: spacingsPx.zero }}>
+                    <Table.Cell></Table.Cell>
+                    <Table.Cell padding={{ left: spacings.zero }}>
                         <Translation id="TR_ASSETS" />
                     </Table.Cell>
                     <Table.Cell>

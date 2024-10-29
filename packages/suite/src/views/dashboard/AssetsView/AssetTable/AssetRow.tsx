@@ -13,7 +13,7 @@ import {
 import { getAccountTotalStakingBalance, isTestnet } from '@suite-common/wallet-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { spacings, borders } from '@trezor/theme';
 import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
 import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
@@ -43,20 +43,17 @@ export interface AssetTableRowProps {
 }
 
 const Section = styled.div<{ $renderTokenOrStakingRow: boolean }>`
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-
     ${({ $renderTokenOrStakingRow }) =>
         $renderTokenOrStakingRow &&
         css`
             &::before {
                 content: '';
                 position: absolute;
-                top: 50px;
+                top: 50%;
                 bottom: 0;
-                left: 43.5px;
-                border-left: 2px dotted ${({ theme }) => theme.borderDashed};
+                left: 50%;
+                transform: translateX(-50%);
+                border-left: ${borders.widths.large} dotted ${({ theme }) => theme.borderDashed};
             }
         `}
 `;
@@ -121,7 +118,7 @@ export const AssetRow = memo(
         return (
             <>
                 <Table.Row onClick={handleRowClick}>
-                    <Table.Cell colSpan={1} padding={{ right: spacingsPx.xxs }}>
+                    <Table.Cell align="center">
                         <Section
                             $renderTokenOrStakingRow={
                                 shouldRenderTokenRow || shouldRenderStakingRow
@@ -133,13 +130,12 @@ export const AssetRow = memo(
                             />
                         </Section>
                     </Table.Cell>
-                    <Table.Cell colSpan={2} padding={{ left: spacingsPx.zero }}>
+                    <Table.Cell padding={{ left: spacings.zero }}>
                         <AssetCoinName network={network} />
                     </Table.Cell>
                     <Table.Cell>
                         {!failed ? (
                             <Column
-                                flex="1"
                                 alignItems="flex-start"
                                 justifyContent="center"
                                 gap={spacings.xxxs}
