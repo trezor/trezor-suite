@@ -16,6 +16,7 @@ type ReviewOutputSummaryItemProps = {
     accountKey: AccountKey;
     networkSymbol: NetworkSymbol;
     onLayout: (event: LayoutChangeEvent) => void;
+    tokenContract?: TokenAddress;
 };
 
 type EthereumValuesProps = {
@@ -48,7 +49,8 @@ const EthereumValues = ({ totalSpent, fee, tokenContract, networkSymbol }: Ether
     return (
         <>
             <ReviewOutputItemValues
-                value={String(Number(totalSpent) - Number(fee))}
+                value={amount}
+                tokenContract={tokenContract}
                 networkSymbol={networkSymbol}
                 translationKey="moduleSend.review.outputs.summary.amount"
             />
@@ -64,6 +66,7 @@ const EthereumValues = ({ totalSpent, fee, tokenContract, networkSymbol }: Ether
 export const ReviewOutputSummaryItem = ({
     accountKey,
     networkSymbol,
+    tokenContract,
     onLayout,
 }: ReviewOutputSummaryItemProps) => {
     const { translate } = useTranslate();
@@ -90,6 +93,7 @@ export const ReviewOutputSummaryItem = ({
                             totalSpent={totalSpent}
                             fee={fee}
                             networkSymbol={networkSymbol}
+                            tokenContract={tokenContract}
                         />
                     ) : (
                         <BitcoinValues

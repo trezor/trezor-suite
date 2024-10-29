@@ -21,6 +21,7 @@ export const FiatAmountInput = ({
     translateValue,
     inputRef,
     networkSymbol,
+    tokenContract,
     onPress,
     onFocus,
     isDisabled = false,
@@ -29,7 +30,7 @@ export const FiatAmountInput = ({
     const { setValue } = useFormContext<SendOutputsFormValues>();
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
     const { fiatAmountTransformer } = useSendAmountTransformers(networkSymbol);
-    const converters = useCryptoFiatConverters({ networkSymbol });
+    const converters = useCryptoFiatConverters({ networkSymbol, tokenContract });
 
     const cryptoFieldName = getOutputFieldName(recipientIndex, 'amount');
     const fiatFieldName = getOutputFieldName(recipientIndex, 'fiat');

@@ -53,7 +53,7 @@ export const TransactionDetailListItem = ({
         navigation.push(RootStackRoutes.TransactionDetail, {
             txid: transaction.txid,
             accountKey,
-            tokenTransfer,
+            tokenContract: tokenTransfer?.contract,
         });
     };
 

@@ -1,3 +1,5 @@
+export { CoinAmountFormatter } from './components/CoinAmountFormatter';
+export { CoinToFiatAmountFormatter } from './components/CoinToFiatAmountFormatter';
 export { CryptoToFiatAmountFormatter } from './components/CryptoToFiatAmountFormatter';
 export { AccountAddressFormatter } from './components/AccountAddressFormatter';
 export { FiatBalanceFormatter } from './components/FiatBalanceFormatter';

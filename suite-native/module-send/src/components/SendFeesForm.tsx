@@ -10,6 +10,7 @@ import {
     AccountKey,
     GeneralPrecomposedLevels,
     PrecomposedTransactionFinal,
+    TokenAddress,
 } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
@@ -34,6 +35,7 @@ import { RecipientsSummary } from './RecipientsSummary';
 
 type SendFormProps = {
     accountKey: AccountKey;
+    tokenContract?: TokenAddress;
     feeLevels: GeneralPrecomposedLevels;
 };
 
@@ -45,7 +47,7 @@ type SendFeesNavigationProps = StackToStackCompositeNavigationProps<
 
 const DEFAULT_FEE = 'normal';
 
-export const SendFeesForm = ({ accountKey, feeLevels }: SendFormProps) => {
+export const SendFeesForm = ({ accountKey, tokenContract, feeLevels }: SendFormProps) => {
     const navigation = useNavigation<SendFeesNavigationProps>();
 
     const account = useSelector((state: AccountsRootState) =>
@@ -71,6 +73,7 @@ export const SendFeesForm = ({ accountKey, feeLevels }: SendFormProps) => {
     const handleNavigateToReviewScreen = handleSubmit(() => {
         navigation.navigate(SendStackRoutes.SendAddressReview, {
             accountKey,
+            tokenContract,
             transaction: selectedFeeLevelTransaction,
         });
 
@@ -83,7 +86,7 @@ export const SendFeesForm = ({ accountKey, feeLevels }: SendFormProps) => {
                     name: RootStackRoutes.SendStack,
                     params: {
                         screen: SendStackRoutes.SendFees,
-                        params: { accountKey, feeLevels },
+                        params: { accountKey, tokenContract, feeLevels },
                     },
                 },
             },
@@ -102,6 +105,7 @@ export const SendFeesForm = ({ accountKey, feeLevels }: SendFormProps) => {
         <Form form={form}>
             <RecipientsSummary
                 accountKey={accountKey}
+                tokenContract={tokenContract}
                 selectedFeeLevel={selectedFeeLevelTransaction}
             />
             <Box flex={1} justifyContent="space-between">
@@ -121,10 +125,13 @@ export const SendFeesForm = ({ accountKey, feeLevels }: SendFormProps) => {
                     />
                 </VStack>
                 <FeesFooter
+                    accountKey={accountKey}
                     isSubmittable={isSubmittable}
                     onSubmit={handleNavigateToReviewScreen}
                     totalAmount={selectedFeeLevelTransaction.totalSpent ?? mockedTotalAmount}
+                    fee={selectedFeeLevelTransaction.fee}
                     networkSymbol={account.symbol}
+                    tokenContract={tokenContract}
                 />
             </Box>
         </Form>

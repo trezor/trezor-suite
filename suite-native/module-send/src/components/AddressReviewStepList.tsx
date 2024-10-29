@@ -43,7 +43,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const AddressReviewStepList = () => {
     const route = useRoute<RouteProps>();
-    const { accountKey, transaction } = route.params;
+    const { accountKey, transaction, tokenContract } = route.params;
     const navigation = useNavigation<NavigationProps>();
     const dispatch = useDispatch();
 
@@ -78,9 +78,9 @@ export const AddressReviewStepList = () => {
 
     useEffect(() => {
         if (isAddressConfirmed) {
-            navigation.navigate(SendStackRoutes.SendOutputsReview, { accountKey });
+            navigation.navigate(SendStackRoutes.SendOutputsReview, { accountKey, tokenContract });
         }
-    }, [isAddressConfirmed, accountKey, navigation]);
+    }, [isAddressConfirmed, accountKey, navigation, tokenContract]);
 
     const handleReadItemListHeight = (event: LayoutChangeEvent, index: number) => {
         const { height } = event.nativeEvent.layout;

@@ -31,7 +31,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const SendOutputsReviewScreen = ({
     route,
 }: StackProps<SendStackParamList, SendStackRoutes.SendOutputsReview>) => {
-    const { accountKey } = route.params;
+    const { accountKey, tokenContract } = route.params;
     const { translate } = useTranslate();
     const navigation = useNavigation<NavigationProps>();
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
@@ -50,6 +50,7 @@ export const SendOutputsReviewScreen = ({
                 dispatch(cleanupSendFormThunk({ accountKey, shouldDeleteDraft: false }));
                 navigation.navigate(RootStackRoutes.AccountDetail, {
                     accountKey,
+                    tokenContract,
                     closeActionType: 'back',
                 });
             }
@@ -66,10 +67,10 @@ export const SendOutputsReviewScreen = ({
                     closeActionType="close"
                 />
             }
-            footer={<OutputsReviewFooter accountKey={accountKey} />}
+            footer={<OutputsReviewFooter accountKey={accountKey} tokenContract={tokenContract} />}
         >
             <VStack flex={1} spacing="sp32" justifyContent="space-between">
-                <ReviewOutputItemList accountKey={accountKey} />
+                <ReviewOutputItemList accountKey={accountKey} tokenContract={tokenContract} />
                 <SignSuccessMessage />
             </VStack>
         </SendScreen>

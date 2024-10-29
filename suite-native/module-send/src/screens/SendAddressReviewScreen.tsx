@@ -21,7 +21,7 @@ export const SendAddressReviewScreen = ({
     route,
     navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>) => {
-    const { accountKey } = route.params;
+    const { accountKey, tokenContract } = route.params;
     const { translate } = useTranslate();
 
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
@@ -38,9 +38,9 @@ export const SendAddressReviewScreen = ({
 
     useEffect(() => {
         if (isAddressConfirmed) {
-            navigation.navigate(SendStackRoutes.SendOutputsReview, { accountKey });
+            navigation.navigate(SendStackRoutes.SendOutputsReview, { accountKey, tokenContract });
         }
-    }, [isAddressConfirmed, accountKey, navigation]);
+    }, [isAddressConfirmed, accountKey, navigation, tokenContract]);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('beforeRemove', e => {

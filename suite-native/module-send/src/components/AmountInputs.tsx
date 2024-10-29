@@ -3,8 +3,9 @@ import { useRef, useState } from 'react';
 import { TextInput, View, findNodeHandle } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { useRoute } from '@react-navigation/native';
+
 import { VStack, HStack, Text } from '@suite-native/atoms';
-import { AccountKey } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
     selectAccountNetworkSymbol,
@@ -13,7 +14,12 @@ import {
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
-import { useScrollView } from '@suite-native/navigation';
+import {
+    SendStackParamList,
+    SendStackRoutes,
+    StackProps,
+    useScrollView,
+} from '@suite-native/navigation';
 
 import { CryptoAmountInput } from './CryptoAmountInput';
 import { FiatAmountInput } from './FiatAmountInput';
@@ -23,8 +29,9 @@ import { SendMaxButton } from './SendMaxButton';
 
 type AmountInputProps = {
     index: number;
-    accountKey: AccountKey;
 };
+
+type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>['route'];
 
 const ANIMATION_DURATION = 300;
 const SCALE_FOCUSED = 1;
@@ -45,7 +52,9 @@ const inputsWrapperStyle = prepareNativeStyle<{ isFiatDisplayed: boolean }>(
 const withPredefinedTiming = (toValue: number) =>
     withTiming(toValue, { duration: ANIMATION_DURATION });
 
-export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
+export const AmountInputs = ({ index }: AmountInputProps) => {
+    const route = useRoute<RouteProps>();
+    const { accountKey, tokenContract } = route.params;
     const { applyStyle } = useNativeStyles();
     const isTestnet = useSelector((state: AccountsRootState) =>
         selectIsTestnetAccount(state, accountKey),
@@ -121,7 +130,11 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
                             <Translation id="moduleSend.outputs.recipients.amountLabel" />
                         </Text>
                     </Animated.View>
-                    <SendMaxButton outputIndex={index} accountKey={accountKey} />
+                    <SendMaxButton
+                        outputIndex={index}
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                    />
                 </HStack>
                 <Animated.View
                     layout={LinearTransition}
@@ -132,10 +145,12 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
                         scaleValue={cryptoScale}
                         translateValue={cryptoTranslateY}
                         inputRef={cryptoRef}
+                        accountKey={accountKey}
                         isDisabled={!isCryptoSelected}
                         networkSymbol={networkSymbol}
                         onPress={!isCryptoSelected ? handleSwitchInputs : undefined}
                         onFocus={handleInputFocus}
+                        tokenContract={tokenContract}
                     />
                     {isFiatDisplayed && (
                         <>
@@ -147,6 +162,7 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
                                 inputRef={fiatRef}
                                 isDisabled={isCryptoSelected}
                                 networkSymbol={networkSymbol}
+                                tokenContract={tokenContract}
                                 onPress={isCryptoSelected ? handleSwitchInputs : undefined}
                                 onFocus={handleInputFocus}
                             />
