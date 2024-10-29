@@ -6,6 +6,7 @@ class OnCoinEnablingInit {
             .toBeVisible()
             .withTimeout(10000);
     }
+
     async enableNetwork(networkSymbol: string) {
         const networkIdMatcher = by.id(`@coin-enabling/toggle-${networkSymbol}`);
         await scrollUntilVisible(networkIdMatcher);
