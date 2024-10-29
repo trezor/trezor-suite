@@ -72,6 +72,7 @@ export * from './components/typography/Heading/Heading';
 export * from './components/typography/Link/Link';
 export * from './components/typography/Paragraph/Paragraph';
 export * from './components/typography/Text/Text';
+export * from './components/typography/Code/Code';
 export * from './components/typography/TruncateWithTooltip/TruncateWithTooltip';
 export * from './components/Banner/Banner';
 export { Table, type TableProps } from './components/Table/Table';
