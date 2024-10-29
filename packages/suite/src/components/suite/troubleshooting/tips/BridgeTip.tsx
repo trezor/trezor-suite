@@ -12,7 +12,7 @@ const Wrapper = styled.div`
     }
 `;
 
-export const BridgeInstall = () => {
+export const SuiteDesktopTip = () => {
     const handleClick = useOpenSuiteDesktop();
 
     return (
