@@ -1107,11 +1107,16 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 48) {
         // Migrate device state to new object format
         await updateAll(transaction, 'devices', device => {
-            if (
-                typeof device.state === 'string' &&
-                typeof (device as any)?._state?.staticSessionId === 'string'
-            ) {
-                device.state = (device as any)._state;
+            if (typeof device.state === 'string') {
+                if (typeof (device as any)?._state?.staticSessionId === 'string') {
+                    // Has _state property, migrate to that
+                    device.state = (device as any)._state;
+                } else {
+                    // No _state property, create new object
+                    device.state = {
+                        staticSessionId: device.state,
+                    };
+                }
             }
 
             return device;
