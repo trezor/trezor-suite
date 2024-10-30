@@ -1,23 +1,10 @@
 import { AssetTableRowProps } from './AssetRow';
 import { Table } from '@trezor/components';
 import { TokenIconSet } from '@trezor/product-components';
-import { spacings, borders } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import { FiatValue, Translation } from 'src/components/suite';
-import styled from 'styled-components';
 import { EnhancedTokenInfo } from '@suite-common/token-definitions';
-
-const Section = styled.div`
-    &::before {
-        content: '';
-        position: absolute;
-        top: ${borders.widths.large};
-        bottom: 50%;
-        left: 50%;
-        transform: translateX(-50%);
-        border-left: ${borders.widths.large} dotted ${({ theme }) => theme.borderDashed};
-        z-index: -1;
-    }
-`;
+import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 
 export const AssetTokenRow = ({
     assetTokensShownWithBalance,
@@ -33,7 +20,7 @@ export const AssetTokenRow = ({
     return (
         <Table.Row hasBorderTop={false}>
             <Table.Cell align="center">
-                <Section>
+                <Section $dashedLinePosition="topToMiddle">
                     <TokenIconSet
                         network={network.symbol}
                         tokens={assetTokensShownWithBalance ?? []}

@@ -1,40 +1,26 @@
-import { isTestnet } from '@suite-common/wallet-utils';
 import { Column, Icon, Table, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { CoinBalance, HiddenPlaceholder, Translation, FiatValue } from 'src/components/suite';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 
-const Section = styled.div<{ $renderBothRows: boolean }>`
-    ${({ $renderBothRows }) => css`
-        &::before {
-            content: '';
-            position: absolute;
-            top: ${borders.widths.large};
-            bottom: ${$renderBothRows ? '0px' : '50%'};
-            left: 50%;
-            transform: translateX(-50%);
-            border-left: ${borders.widths.large} dotted ${({ theme }) => theme.borderDashed};
-            z-index: -1;
-        }
-    `}
-`;
+interface AssetStakingRowProps {
+    stakingTotalBalance: string;
+    symbol: NetworkSymbol;
+    renderBothRows: boolean;
+}
 
 export const AssetStakingRow = ({
     stakingTotalBalance,
     symbol,
-    renderBothRows = false,
-}: {
-    stakingTotalBalance: string;
-    symbol: NetworkSymbol;
-    renderBothRows: boolean;
-}) => {
+    renderBothRows,
+}: AssetStakingRowProps) => {
     if (!stakingTotalBalance) return null;
 
     return (
         <Table.Row hasBorderTop={false}>
             <Table.Cell align="center">
-                <Section $renderBothRows={renderBothRows}>
+                <Section $dashedLinePosition={renderBothRows ? 'topToBottom' : 'topToMiddle'}>
                     <Icon name="piggyBankFilled" variant="tertiary" />
                 </Section>
             </Table.Cell>
@@ -42,7 +28,7 @@ export const AssetStakingRow = ({
                 <Translation id="TR_NAV_STAKING" />
             </Table.Cell>
             <Table.Cell colSpan={4}>
-                {stakingTotalBalance && !isTestnet(symbol) ? (
+                {stakingTotalBalance && (
                     <Column alignItems="flex-start" justifyContent="center" gap={spacings.xxxs}>
                         <HiddenPlaceholder>
                             <FiatValue amount={stakingTotalBalance} symbol={symbol} />
@@ -53,8 +39,6 @@ export const AssetStakingRow = ({
                             </Text>
                         </HiddenPlaceholder>
                     </Column>
-                ) : (
-                    <CoinBalance value={stakingTotalBalance} symbol={symbol} />
                 )}
             </Table.Cell>
         </Table.Row>

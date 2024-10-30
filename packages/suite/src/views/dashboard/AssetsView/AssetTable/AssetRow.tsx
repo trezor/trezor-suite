@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import styled, { css, useTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
 import { Network } from '@suite-common/wallet-config';
 import { Icon, Table, Row, IconButton, Column, Text } from '@trezor/components';
 import {
@@ -13,7 +13,7 @@ import {
 import { getAccountTotalStakingBalance, isTestnet } from '@suite-common/wallet-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
-import { spacings, borders } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
 import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
@@ -31,6 +31,7 @@ import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { AssetStakingRow } from './AssetStakingRow';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 
 export interface AssetTableRowProps {
     network: Network;
@@ -41,22 +42,6 @@ export interface AssetTableRowProps {
     isStakeNetwork?: boolean;
     assetsFiatBalances: AssetFiatBalance[];
 }
-
-const Section = styled.div<{ $renderTokenOrStakingRow: boolean }>`
-    ${({ $renderTokenOrStakingRow }) =>
-        $renderTokenOrStakingRow &&
-        css`
-            &::before {
-                content: '';
-                position: absolute;
-                top: 50%;
-                bottom: 0;
-                left: 50%;
-                transform: translateX(-50%);
-                border-left: ${borders.widths.large} dotted ${({ theme }) => theme.borderDashed};
-            }
-        `}
-`;
 
 export const AssetRow = memo(
     ({
@@ -120,8 +105,10 @@ export const AssetRow = memo(
                 <Table.Row onClick={handleRowClick}>
                     <Table.Cell align="center">
                         <Section
-                            $renderTokenOrStakingRow={
-                                shouldRenderTokenRow || shouldRenderStakingRow
+                            $dashedLinePosition={
+                                shouldRenderStakingRow || shouldRenderTokenRow
+                                    ? 'middleToBottom'
+                                    : undefined
                             }
                         >
                             <AssetCoinLogo
