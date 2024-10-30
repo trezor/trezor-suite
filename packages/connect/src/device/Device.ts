@@ -373,7 +373,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         // but it did not work out. this device is effectively unreadable and user should do something about it
                         error.code === 'Device_InitializeFailed'
                     ) {
-                        this.unreadableError = error;
+                        this.unreadableError = error?.message;
                         this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
                     } else {
                         await createTimeoutPromise(501);
