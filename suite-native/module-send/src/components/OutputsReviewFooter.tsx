@@ -9,7 +9,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import {
     AccountsRootState,
     selectAccountByKey,
-    selectSendFormDraftByAccountKey,
+    selectSendFormDraftByKey,
     SendRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
@@ -82,7 +82,7 @@ export const OutputsReviewFooter = ({
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
     const formValues = useSelector((state: SendRootState) =>
-        selectSendFormDraftByAccountKey(state, accountKey),
+        selectSendFormDraftByKey(state, accountKey, tokenContract),
     );
 
     {

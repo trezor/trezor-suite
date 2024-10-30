@@ -73,7 +73,7 @@ export const AddressReviewStepList = () => {
 
     const isAddressConfirmed = useSelector(
         (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectIsFirstTransactionAddressConfirmed(state, accountKey),
+            selectIsFirstTransactionAddressConfirmed(state, accountKey, tokenContract),
     );
 
     useEffect(() => {
@@ -104,6 +104,7 @@ export const AddressReviewStepList = () => {
             const response = await dispatch(
                 signTransactionThunk({
                     accountKey,
+                    tokenContract,
                     feeLevel: transaction,
                 }),
             );

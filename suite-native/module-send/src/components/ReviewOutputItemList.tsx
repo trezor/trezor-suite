@@ -36,11 +36,11 @@ export const ReviewOutputItemList = ({ accountKey, tokenContract }: ReviewOutput
 
     const reviewOutputs = useSelector(
         (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectTransactionReviewOutputs(state, accountKey),
+            selectTransactionReviewOutputs(state, accountKey, tokenContract),
     );
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
     const activeStep = useSelector((state: AccountsRootState & DeviceRootState & SendRootState) =>
-        selectTransactionReviewActiveStepIndex(state, accountKey),
+        selectTransactionReviewActiveStepIndex(state, accountKey, tokenContract),
     );
 
     const [childHeights, setChildHeights] = useState<number[]>([]);

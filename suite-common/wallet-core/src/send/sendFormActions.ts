@@ -4,6 +4,7 @@ import {
     FormState,
     AccountKey,
     GeneralPrecomposedTransactionFinal,
+    TokenAddress,
 } from '@suite-common/wallet-types';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 
@@ -12,7 +13,7 @@ import { SerializedTx } from './sendFormTypes';
 
 const storeDraft = createAction(
     `${SEND_MODULE_PREFIX}/store-draft`,
-    (payload: { accountKey: AccountKey; formState: FormState }) => ({
+    (payload: { accountKey: AccountKey; formState: FormState; tokenContract?: TokenAddress }) => ({
         payload,
     }),
 );
