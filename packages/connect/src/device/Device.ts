@@ -310,7 +310,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             .then(result => {
                 if (result.success) {
                     this.session = null;
-                    this.isLocalSession = false;
                 }
 
                 return result;
@@ -503,6 +502,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (!this.isLocalSession) {
             return;
         }
+        this.isLocalSession = false;
         this._featuresNeedsReload = true;
 
         _log.debug('interruptionFromOutside');
