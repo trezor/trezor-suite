@@ -1,7 +1,10 @@
 // @group_device-management
 // @retry=2
 
-import { onNavBar } from '../../support/pageObjects/topBarObject';
+import { onAnalyticsPage } from '../../../support/pageObjects/analyticsObject';
+import { onConnectDevicePrompt } from '../../../support/pageObjects/connectDeviceObject';
+import { onOnboardingPage } from '../../../support/pageObjects/onboardingObject';
+import { onNavBar } from '../../../support/pageObjects/topBarObject';
 
 describe('Onboarding - recover wallet T2T1', () => {
     beforeEach(() => {
@@ -22,27 +25,33 @@ describe('Onboarding - recover wallet T2T1', () => {
         cy.getTestElement('@device-firmware-revision/opt-out-button').click();
         cy.getTestElement('@settings/menu/close').click();
 
-        // Continue with test
-        cy.getTestElement('@analytics/continue-button').click();
-        cy.getTestElement('@analytics/continue-button').click();
-
-        cy.getTestElement('@firmware/continue-button').click();
-
-        cy.getTestElement('@onboarding/path-recovery-button').click();
+        cy.step('Go through analytics and confirm firmware', () => {
+            onAnalyticsPage.continue();
+            onAnalyticsPage.continue();
+        });
     });
 
-    it('Device disconnected during action', () => {
-        cy.getTestElement('@onboarding/confirm-on-device');
-        cy.task('pressYes');
-        cy.wait(501);
-        cy.task('stopEmu');
-        cy.getTestElement('@connect-device-prompt', { timeout: 20000 });
-        cy.task('startEmu', { wipe: false });
-        cy.log(
-            'If device disconnected during call, error page with retry button should appear. Also note, that unlike with T1B1, retry button initiates recoveryDevice call immediately',
-        );
-        cy.getTestElement('@onboarding/recovery/start-button', { timeout: 10000 }).click();
-        cy.getTestElement('@onboarding/confirm-on-device');
+    it('Device disconnected during recovery offers retry', () => {
+        cy.step('Start wallet recovery process and confirm on device', () => {
+            onOnboardingPage.continueFirmware();
+            onOnboardingPage.recoverWallet();
+            onOnboardingPage.startRecovery();
+
+            onOnboardingPage.waitForConfirmationOnDevice();
+        });
+
+        cy.step('Disconnect device', () => {
+            cy.wait(1000);
+            cy.task('stopEmu');
+            cy.wait(500);
+            onConnectDevicePrompt.waitForConnectDevicePrompt();
+            cy.task('startEmu', { model: 'T2T1', version: '2-main', wipe: false });
+        });
+
+        cy.step('Check that you can retry', () => {
+            onOnboardingPage.retryRecovery();
+            onOnboardingPage.waitForConfirmationOnDevice();
+        });
     });
 });
 
