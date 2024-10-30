@@ -50,7 +50,7 @@ export const getNetworkType = (symbol: NetworkSymbol) => networks[symbol]?.netwo
 export const getNetworkFeatures = (symbol: NetworkSymbol): NetworkFeature[] =>
     networks[symbol]?.features;
 
-export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol]?.coingeckoId;
+export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol].coingeckoId;
 
 export const isNetworkSymbol = (symbol: NetworkSymbol | string): symbol is NetworkSymbol =>
     networks.hasOwnProperty(symbol);
