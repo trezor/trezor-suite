@@ -428,15 +428,16 @@ export const useCoinmarketExchangeForm = ({
             // after discussion with 1inch, adjust the gas limit by the factor of 1.25
             // swap can use different swap paths when mining tx than when estimating tx
             // the geth gas estimate may be too low
-            const result = await recomposeAndSign(
+            const result = await recomposeAndSign({
                 account,
-                selectedQuote.dexTx.to,
-                selectedQuote.dexTx.value,
-                selectedQuote.partnerPaymentExtraId,
-                selectedQuote.dexTx.data,
-                true,
-                selectedQuote.status === 'CONFIRM' ? '1.25' : undefined,
-            );
+                address: selectedQuote.dexTx.to,
+                amount: selectedQuote.dexTx.value,
+                destinationTag: selectedQuote.partnerPaymentExtraId,
+                ethereumDataHex: selectedQuote.dexTx.data,
+                recalcCustomLimit: true,
+                ethereumAdjustGasLimit: selectedQuote.status === 'CONFIRM' ? '1.25' : undefined,
+                setMaxOutputId: values.setMaxOutputId,
+            });
 
             // in case of not success, recomposeAndSign shows notification
             if (result?.success) {
@@ -486,16 +487,13 @@ export const useCoinmarketExchangeForm = ({
             const sendStringAmount = shouldSendInSats
                 ? amountToSmallestUnit(selectedQuote.sendStringAmount, network.decimals)
                 : selectedQuote.sendStringAmount;
-            const result = await recomposeAndSign(
+            const result = await recomposeAndSign({
                 account,
-                selectedQuote.sendAddress,
-                sendStringAmount,
-                selectedQuote.partnerPaymentExtraId,
-                undefined,
-                undefined,
-                undefined,
-                ['broadcast'],
-            );
+                address: selectedQuote.sendAddress,
+                amount: sendStringAmount,
+                destinationTag: selectedQuote.partnerPaymentExtraId,
+                setMaxOutputId: values.setMaxOutputId,
+            });
             // in case of not success, recomposeAndSign shows notification
             if (result?.success) {
                 dispatch(

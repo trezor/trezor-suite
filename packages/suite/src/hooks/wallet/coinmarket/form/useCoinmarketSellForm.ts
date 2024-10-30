@@ -474,12 +474,13 @@ export const useCoinmarketSellForm = ({
                 : selectedQuote.cryptoStringAmount;
             const destinationPaymentExtraId =
                 selectedQuote.destinationPaymentExtraId || trade?.data?.destinationPaymentExtraId;
-            const result = await recomposeAndSign(
+            const result = await recomposeAndSign({
                 account,
-                destinationAddress,
-                cryptoStringAmount,
-                destinationPaymentExtraId,
-            );
+                address: destinationAddress,
+                amount: cryptoStringAmount,
+                destinationTag: destinationPaymentExtraId,
+                setMaxOutputId: values.setMaxOutputId,
+            });
             if (result?.success) {
                 // send txid to the server as confirmation
                 const { txid } = result.payload;
