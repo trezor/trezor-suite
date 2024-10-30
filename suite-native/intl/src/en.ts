@@ -938,6 +938,22 @@ export const en = {
             title: 'Send from',
         },
         outputs: {
+            correctNetworkMessage:
+                'Make sure that you’re sending to an address on\u00A0{networkName} network. <link>Learn more</link>',
+            tokenOfNetworkSheet: {
+                title: 'You’re about to Send {tokenSymbol} that runs on {networkName} network.',
+                body: {
+                    self: {
+                        subtitle: 'Sending to yourself?',
+                        text: 'Make sure your exchange or wallet supports this token on {networkName} network.',
+                    },
+                    outside: {
+                        subtitle: 'Sending to someone else?',
+                        text: 'Check with them if they’re alright with receiving this token on {networkName} network.',
+                    },
+                },
+                warning: 'Sending to a wrong network might result in loss of funds.',
+            },
             recipients: {
                 title: 'Amount & recipients',
                 addressLabel: 'Recipient address',

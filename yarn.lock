@@ -10235,6 +10235,7 @@ __metadata:
     "@suite-native/helpers": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
+    "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
     "@suite-native/settings": "workspace:*"
