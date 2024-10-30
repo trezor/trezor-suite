@@ -10,6 +10,7 @@ import { spacingsPx } from '@trezor/theme';
 import { isTranslationMode } from 'src/utils/suite/l10n';
 import { useSelector } from 'src/hooks/suite';
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
+import { skippedHashCheckErrors } from 'src/constants/suite/firmware';
 import {
     selectFirmwareHashCheckError,
     selectFirmwareRevisionCheckError,
@@ -22,7 +23,7 @@ import { FailedBackup } from './FailedBackupBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
 import { TranslationMode } from './TranslationModeBanner';
 import { FirmwareHashMismatch } from './FirmwareHashMismatchBanner';
-import { FirmwareRevisionCheckBanner, skippedHashCheckErrors } from './FirmwareRevisionCheckBanner';
+import { FirmwareRevisionCheckBanner } from './FirmwareRevisionCheckBanner';
 
 const Container = styled.div<{ $isVisible?: boolean }>`
     width: 100%;
