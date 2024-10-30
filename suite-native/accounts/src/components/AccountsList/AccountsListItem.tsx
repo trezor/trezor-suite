@@ -99,7 +99,7 @@ export const AccountsListItem = ({
             showDivider={showDivider}
             onPress={handleOnPress}
             disabled={disabled}
-            icon={<RoundedIcon name={account.symbol} />}
+            icon={<RoundedIcon networkSymbol={account.symbol} />}
             title={
                 shouldShowAccountLabel ? (
                     accountLabel

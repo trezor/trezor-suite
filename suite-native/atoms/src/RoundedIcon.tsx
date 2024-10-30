@@ -1,13 +1,17 @@
 import { G } from '@mobily/ts-belt';
 
-import { CryptoIcon, CoinSymbolName, Icon, IconName, icons, IconSize } from '@suite-native/icons';
+import { CryptoIcon, Icon, IconName, icons, IconSize } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TokenAddress } from '@suite-common/wallet-types';
 
 import { Box, BoxProps } from './Box';
 
 export type RoundedIconProps = {
-    name: IconName | CoinSymbolName;
+    name?: IconName;
+    networkSymbol?: NetworkSymbol;
+    contractAddress?: TokenAddress;
     color?: Color;
     iconSize?: IconSize;
     containerSize?: number;
@@ -36,6 +40,8 @@ const iconContainerStyle = prepareNativeStyle<{ backgroundColor?: Color; contain
 
 export const RoundedIcon = ({
     name,
+    networkSymbol,
+    contractAddress,
     color,
     iconSize,
     backgroundColor,
@@ -50,10 +56,12 @@ export const RoundedIcon = ({
             style={[applyStyle(iconContainerStyle, { backgroundColor, containerSize }), style]}
             {...boxProps}
         >
-            {name in icons ? (
+            {name && name in icons ? (
                 <Icon name={name as IconName} color={color} size={iconSize} />
             ) : (
-                <CryptoIcon symbol={name as CoinSymbolName} />
+                networkSymbol && (
+                    <CryptoIcon symbol={networkSymbol} contractAddress={contractAddress} />
+                )
             )}
         </Box>
     );

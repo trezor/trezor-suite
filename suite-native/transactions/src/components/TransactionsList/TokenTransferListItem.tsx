@@ -3,7 +3,12 @@ import { useSelector } from 'react-redux';
 import { AccountKey } from '@suite-common/wallet-types';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
-import { selectIsPhishingTransaction, TransactionsRootState } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    selectAccountNetworkSymbol,
+    selectIsPhishingTransaction,
+    TransactionsRootState,
+} from '@suite-common/wallet-core';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -90,10 +95,14 @@ export const TokenTransferListItem = ({
     isFirst,
     isLast,
 }: TokenTransferListItemProps) => {
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
     const isFailedTxn = transaction.type === 'failed';
 
     return (
         <TransactionListItemContainer
+            networkSymbol={networkSymbol ?? undefined}
             tokenTransfer={tokenTransfer}
             transactionType={isFailedTxn ? 'failed' : tokenTransfer.type}
             txid={txid}

@@ -62,7 +62,11 @@ export const AccountBalanceScreenHeader = ({
                 <VStack spacing="sp4" alignItems="center">
                     <HStack spacing="sp8" alignItems="center">
                         {networkSymbol && (
-                            <CryptoIcon symbol={tokenContract ?? networkSymbol} size="extraSmall" />
+                            <CryptoIcon
+                                symbol={networkSymbol}
+                                contractAddress={tokenContract}
+                                size="extraSmall"
+                            />
                         )}
                         {accountTitle && <Text variant="highlight">{accountTitle}</Text>}
                     </HStack>

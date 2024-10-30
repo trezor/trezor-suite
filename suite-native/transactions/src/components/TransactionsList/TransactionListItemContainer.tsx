@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { RequireExactlyOne } from 'type-fest';
 import { useNavigation } from '@react-navigation/native';
 
 import { AccountKey, TransactionType } from '@suite-common/wallet-types';
@@ -28,20 +27,17 @@ import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
 import { TransactionIcon } from './TransactionIcon';
 
-type TransactionListItemContainerProps = RequireExactlyOne<
-    {
-        children: ReactNode;
-        txid: string;
-        accountKey: AccountKey;
-        includedCoinsCount: number;
-        isFirst?: boolean;
-        isLast?: boolean;
-        networkSymbol: NetworkSymbol;
-        tokenTransfer: TypedTokenTransfer;
-        transactionType: TransactionType;
-    },
-    'networkSymbol' | 'tokenTransfer'
->;
+type TransactionListItemContainerProps = {
+    children: ReactNode;
+    txid: string;
+    accountKey: AccountKey;
+    includedCoinsCount: number;
+    isFirst?: boolean;
+    isLast?: boolean;
+    networkSymbol?: NetworkSymbol | undefined;
+    tokenTransfer?: TypedTokenTransfer;
+    transactionType: TransactionType;
+};
 
 type TransactionListItemStyleProps = {
     isFirst: boolean;
@@ -166,7 +162,8 @@ export const TransactionListItemContainer = ({
     );
 
     const iconColor: Color = isTransactionPending ? 'backgroundAlertYellowBold' : 'iconSubdued';
-    const coinSymbol = isPhishingTransaction ? undefined : tokenTransfer?.contract ?? networkSymbol;
+    const coinSymbol = isPhishingTransaction ? undefined : networkSymbol;
+    const contractAddress = isPhishingTransaction ? undefined : tokenTransfer?.contract;
     const transactionTitle = getTransactionTitle(transactionType, isTransactionPending);
 
     const DateTextComponent = isPhishingTransaction ? DiscreetText : Text;
@@ -178,7 +175,8 @@ export const TransactionListItemContainer = ({
         >
             <Box style={applyStyle(descriptionBoxStyle)}>
                 <TransactionIcon
-                    symbol={coinSymbol}
+                    networkSymbol={coinSymbol}
+                    contractAddress={contractAddress}
                     transactionType={transactionType}
                     isAnimated={isTransactionPending}
                     iconColor={iconColor}

@@ -23,7 +23,7 @@ export const AccountDetailCryptoValue = memo(
         isBalance = true,
     }: AccountDetailBalanceProps) => (
         <HStack spacing="sp8" flexDirection="row" alignItems="center" justifyContent="center">
-            <CryptoIcon symbol={tokenAddress || networkSymbol} size="extraSmall" />
+            <CryptoIcon symbol={networkSymbol} contractAddress={tokenAddress} size="extraSmall" />
 
             {tokenSymbol ? (
                 <TokenAmountFormatter value={value} symbol={tokenSymbol} adjustsFontSizeToFit />

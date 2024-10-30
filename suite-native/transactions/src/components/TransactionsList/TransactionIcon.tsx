@@ -1,14 +1,16 @@
 import { Box, RoundedIcon } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { TransactionType } from '@suite-common/wallet-types';
-import { CoinSymbolName, CryptoIcon, IconName, IconSize } from '@suite-native/icons';
+import { TokenAddress, TransactionType } from '@suite-common/wallet-types';
+import { CryptoIcon, IconName, IconSize } from '@suite-native/icons';
 import { Color } from '@trezor/theme';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { TransactionIconSpinner } from './TransactionIconSpinner';
 
 type TransactionIconProps = {
     transactionType: TransactionType;
-    symbol?: CoinSymbolName;
+    networkSymbol?: NetworkSymbol;
+    contractAddress?: TokenAddress;
     isAnimated?: boolean;
     iconColor?: Color;
     spinnerColor?: Color;
@@ -40,7 +42,8 @@ const cryptoIconStyle = prepareNativeStyle(utils => ({
 }));
 
 export const TransactionIcon = ({
-    symbol,
+    networkSymbol,
+    contractAddress,
     transactionType,
     backgroundColor,
     spinnerColor,
@@ -68,9 +71,13 @@ export const TransactionIcon = ({
                     width={spinnerWidth}
                 />
             )}
-            {symbol && (
+            {networkSymbol && (
                 <Box style={applyStyle(cryptoIconStyle)}>
-                    <CryptoIcon symbol={symbol} size="extraSmall" />
+                    <CryptoIcon
+                        symbol={networkSymbol}
+                        contractAddress={contractAddress}
+                        size="extraSmall"
+                    />
                 </Box>
             )}
         </Box>

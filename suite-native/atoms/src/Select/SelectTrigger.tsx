@@ -10,7 +10,7 @@ import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Text } from '../Text';
 type SelectTriggerProps = {
     value: string | null;
     label: ReactNode;
-    icon: ReactNode;
+    icon?: ReactNode;
     handlePress: () => void;
 };
 

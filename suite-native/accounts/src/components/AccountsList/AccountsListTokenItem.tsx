@@ -37,7 +37,7 @@ export const AccountsListTokenItem = ({
             isFirst={isFirst}
             isLast={isLast}
             onPress={onSelectAccount}
-            icon={<RoundedIcon name={token.contract} />}
+            icon={<RoundedIcon networkSymbol={account.symbol} contractAddress={token.contract} />}
             title={getTokenName(token.name)}
             mainValue={
                 <TokenToFiatAmountFormatter

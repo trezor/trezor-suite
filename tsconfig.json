@@ -124,6 +124,7 @@
         { "path": "suite-native/video-assets" },
         { "path": "packages/address-validator" },
         { "path": "packages/analytics" },
+        { "path": "packages/asset-utils" },
         { "path": "packages/auth-server" },
         { "path": "packages/blockchain-link" },
         {

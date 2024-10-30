@@ -16,7 +16,7 @@ export type SelectItemProps = {
     onSelect: () => void;
     isSelected: boolean;
     isLastChild?: boolean;
-    icon: ReactNode;
+    icon?: ReactNode;
 };
 
 type SelectItemStyleProps = {
