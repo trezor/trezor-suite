@@ -10,6 +10,18 @@ import { networks } from '@suite-common/wallet-config';
 import type { Account, FormOptions } from '@suite-common/wallet-types';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 
+interface CoinmarketRecomposeAndSignProps {
+    account: Account;
+    address: string;
+    amount: string;
+    destinationTag?: string;
+    ethereumDataHex?: string;
+    recalcCustomLimit?: boolean;
+    ethereumAdjustGasLimit?: string;
+    setMaxOutputId?: number | undefined;
+    options?: FormOptions[];
+}
+
 export const useCoinmarketRecomposeAndSign = () => {
     const { translationString } = useTranslation();
     const { composed, selectedFee } = useSelector(
@@ -19,16 +31,17 @@ export const useCoinmarketRecomposeAndSign = () => {
     const dispatch = useDispatch();
 
     const recomposeAndSign = useCallback(
-        async (
-            account: Account,
-            address: string,
-            amount: string,
-            destinationTag?: string,
-            ethereumDataHex?: string,
-            recalcCustomLimit?: boolean,
-            ethereumAdjustGasLimit?: string,
-            options: FormOptions[] = ['broadcast'],
-        ) => {
+        async ({
+            account,
+            address,
+            amount,
+            destinationTag,
+            ethereumDataHex,
+            recalcCustomLimit,
+            ethereumAdjustGasLimit,
+            options = ['broadcast'],
+            setMaxOutputId,
+        }: CoinmarketRecomposeAndSignProps) => {
             const network = networks[account.symbol];
 
             if (!composed) {
@@ -53,6 +66,7 @@ export const useCoinmarketRecomposeAndSign = () => {
                         token: ethereumDataHex ? null : composed.token?.contract || null, // if we pass ethereumDataHex, do not use the token, the details are in the ethereumDataHex
                     },
                 ],
+                setMaxOutputId,
                 selectedFee,
                 feePerUnit: composed.feePerByte,
                 feeLimit: composed.feeLimit || '',
