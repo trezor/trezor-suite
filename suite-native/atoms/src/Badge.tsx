@@ -3,8 +3,9 @@ import { ReactNode } from 'react';
 import { G } from '@mobily/ts-belt';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon, IconSize, IconName, CoinSymbolName, icons, CryptoIcon } from '@suite-native/icons';
+import { Icon, IconSize, IconName, icons, CryptoIcon } from '@suite-native/icons';
 import { Color } from '@trezor/theme';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Text } from './Text';
 import { HStack } from './Stack';
@@ -17,7 +18,7 @@ type BadgeProps = {
     label: ReactNode;
     variant?: BadgeVariant;
     size?: BadgeSize;
-    icon?: IconName | CoinSymbolName;
+    icon?: IconName | NetworkSymbol;
     iconSize?: IconSize;
     elevation?: SurfaceElevation;
     isDisabled?: boolean;
@@ -140,7 +141,7 @@ export const Badge = ({
             <Icon name={icon as IconName} color={iconColor} size={iconSize ?? 'small'} />
         ) : (
             <CryptoIcon
-                symbol={icon as CoinSymbolName}
+                symbol={icon as NetworkSymbol}
                 size={size === 'small' ? 'extraSmall' : 'small'}
             />
         );

@@ -66,7 +66,7 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
             <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                 <Box flex={1} flexDirection="row" alignItems="center">
                     <Box marginRight="sp16">
-                        <RoundedIcon name={contract} />
+                        <RoundedIcon networkSymbol={network} contractAddress={contract} />
                     </Box>
                     <Box style={applyStyle(tokenDescriptionStyle)}>
                         <Text>{tokenName}</Text>

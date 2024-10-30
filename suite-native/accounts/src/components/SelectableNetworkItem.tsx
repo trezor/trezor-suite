@@ -46,7 +46,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
             testID={`@onboarding/select-coin/${symbol}`}
         >
             <Box flexDirection="row" alignItems="center">
-                <RoundedIcon name={symbol} />
+                <RoundedIcon networkSymbol={symbol} />
                 <Box style={applyStyle(selectableAssetContentStyle)}>
                     <Box flex={1} justifyContent="space-between" alignItems="flex-start">
                         <Text variant="body">{networkName}</Text>

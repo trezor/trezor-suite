@@ -4,8 +4,10 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Box, CardDivider, Text, VStack } from '@suite-native/atoms';
 import { AccountAddressFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { CoinSymbolName, CryptoIcon } from '@suite-native/icons';
+import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TokenAddress } from '@suite-common/wallet-types';
 
 import { SummaryRow } from './TransactionSummaryRow';
 import { formatAddressLabel } from './TransactionDetailAddressesSheet';
@@ -16,7 +18,8 @@ type TransactionDetailAddressesSectionProps = {
     addresses: VinVoutAddress[];
     addressesType: 'inputs' | 'outputs';
     onShowMore: () => void;
-    icon?: CoinSymbolName;
+    networkSymbol?: NetworkSymbol;
+    contractAddress?: TokenAddress;
 };
 
 const showMoreButtonContainerStyle = prepareNativeStyle(utils => ({
@@ -76,7 +79,8 @@ export const TransactionDetailAddressesSection = ({
     addressesType,
     addresses,
     onShowMore,
-    icon,
+    networkSymbol,
+    contractAddress,
 }: TransactionDetailAddressesSectionProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -110,9 +114,14 @@ export const TransactionDetailAddressesSection = ({
                             />
                         ))}
                     </Box>
-                    {icon && (
+
+                    {networkSymbol && (
                         <Box style={applyStyle(coinIconWrapperStyle)}>
-                            <CryptoIcon symbol={icon} size="extraSmall" />
+                            <CryptoIcon
+                                symbol={networkSymbol}
+                                contractAddress={contractAddress}
+                                size="extraSmall"
+                            />
                         </Box>
                     )}
                 </Box>

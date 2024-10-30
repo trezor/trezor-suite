@@ -1,19 +1,16 @@
+import { useMemo } from 'react';
+
 import { Image } from 'expo-image';
 
-import {
-    CryptoIconName,
-    cryptoIcons,
-    TokenIconName,
-    tokenIcons,
-    genericTokenIcon,
-} from '@suite-common/icons';
-import { networks } from '@suite-common/wallet-config';
-import { TokenAddress } from '@suite-common/wallet-types';
-
-export type CoinSymbolName = CryptoIconName | TokenAddress;
+import { cryptoIcons, genericTokenIcon, CryptoIconName } from '@suite-common/icons';
+import { getCoingeckoId, NetworkSymbol } from '@suite-common/wallet-config';
+import { getContractAddressForNetwork } from '@suite-common/wallet-utils';
+import { getAssetLogoUrl } from '@trezor/asset-utils';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 export interface CryptoIconProps {
-    symbol: CoinSymbolName;
+    symbol: NetworkSymbol;
+    contractAddress?: string;
     size?: CryptoIconSize | number;
 }
 
@@ -23,26 +20,43 @@ export const cryptoIconSizes = {
     large: 42,
 } as const;
 
+const iconStyle = prepareNativeStyle<{ width: number; height: number }>(
+    (utils, { width, height }) => ({
+        borderRadius: utils.borders.radii.round,
+        overflow: 'hidden',
+        width,
+        height,
+    }),
+);
+
 export type CryptoIconSize = keyof typeof cryptoIconSizes;
 
-const getIconFile = (symbol: CoinSymbolName) => {
-    if (symbol in networks) return cryptoIcons[symbol as CryptoIconName];
-
-    // the symbol in case of a token is a contract address. Since it is hexadecimal value, we can convert it
-    // to lowerCase to mach definition `suite-common/icons/icons.ts` without changing the meaning of the date.
-    return tokenIcons[symbol.toLowerCase() as TokenIconName] ?? genericTokenIcon;
-};
-
-export const CryptoIcon = ({ symbol, size = 'small' }: CryptoIconProps) => {
-    const iconFile = getIconFile(symbol);
+export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIconProps) => {
+    const { applyStyle } = useNativeStyles();
     const sizeNumber = typeof size === 'number' ? size : cryptoIconSizes[size];
+
+    const sourceUrl = useMemo(() => {
+        const coingeckoId = getCoingeckoId(symbol);
+        let url = cryptoIcons[symbol.toLowerCase() as CryptoIconName];
+        if (coingeckoId && contractAddress) {
+            const formattedAddress = getContractAddressForNetwork(symbol, contractAddress);
+            url = getAssetLogoUrl({
+                coingeckoId,
+                contractAddress: formattedAddress,
+                quality: '@2x',
+            });
+        }
+
+        return url;
+    }, [contractAddress, symbol]);
 
     return (
         <Image
-            source={iconFile}
-            style={{ width: sizeNumber, height: sizeNumber }}
-            // memory cause sounds like good idea, but IDK if it has any effect
-            cachePolicy="memory"
+            source={sourceUrl}
+            recyclingKey={sourceUrl}
+            style={applyStyle(iconStyle, { width: sizeNumber, height: sizeNumber })}
+            placeholder={genericTokenIcon}
+            cachePolicy="memory-disk"
         />
     );
 };

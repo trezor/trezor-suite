@@ -4,7 +4,6 @@ This package contains fully-fledged icon components using the Skia engine. There
 
 -   [icons](./assets/icons) - icons used to depict the universal concepts used commonly throughout a UI
 -   [cryptoIcons](./assets/cryptoIcons) - a collection of icons representing main network coins (btc, eth, etc.)
--   [tokenIcons](./assets/cryptoIcons) - a collection of icons representing tokens (erc20, dai, link, usdt, etc.)
 -   [flags](./assets/flags) - a collection of icons representing [country flags](https://github.com/HatScripts/circle-flags/tree/gh-pages/flags)
 
 Icon components are ready to use only with React Native app now, but it is planned to be used by the web in the future as well.
