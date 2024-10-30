@@ -131,7 +131,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     private readonly transportSessionOwner;
     private readonly transportDescriptorType;
     private session;
-    private isLocalSession;
+    private lastAcquiredHere;
 
     /**
      * descriptor was detected on transport layer but sending any messages (such as GetFeatures) to it failed either
@@ -220,7 +220,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.transportDescriptorType = descriptor.type;
 
         this.session = descriptor.session;
-        this.isLocalSession = false;
+        this.lastAcquiredHere = false;
 
         // this will be released after first run
         this.firstRunPromise = createDeferred();
@@ -268,7 +268,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             .then(result => {
                 if (result.success) {
                     this.session = result.payload;
-                    this.isLocalSession = true;
+                    this.lastAcquiredHere = true;
 
                     this.commands?.dispose();
                     this.commands = new DeviceCommands(this, this.transport, this.session);
@@ -499,10 +499,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     public usedElsewhere() {
         // only makes sense to continue when device held by this instance
-        if (!this.isLocalSession) {
+        if (!this.lastAcquiredHere) {
             return;
         }
-        this.isLocalSession = false;
+        this.lastAcquiredHere = false;
         this._featuresNeedsReload = true;
 
         _log.debug('interruptionFromOutside');
@@ -650,7 +650,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             // and device wasn't released in previous call (example: interrupted discovery which set "keepSession" to true but never released)
             // clear "keepTransportSession" and reset "transportSession" to ensure that "initialize" will be called
             if (this.keepTransportSession) {
-                this.isLocalSession = false;
+                this.lastAcquiredHere = false;
                 this.keepTransportSession = false;
             }
         }
@@ -1007,7 +1007,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         this.sessionDfd?.reject(new Error());
 
-        this.isLocalSession = false; // set to null to prevent transport.release and cancelableAction
+        this.lastAcquiredHere = false; // set to null to prevent transport.release and cancelableAction
 
         this.emitLifecycle(DEVICE.DISCONNECT);
 
@@ -1054,11 +1054,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     isUsedHere() {
-        return this.isUsed() && this.isLocalSession;
+        return this.isUsed() && this.lastAcquiredHere;
     }
 
     isUsedElsewhere() {
-        return this.isUsed() && !this.isUsedHere();
+        return this.isUsed() && !this.lastAcquiredHere;
     }
 
     isRunning() {
@@ -1074,7 +1074,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     getLocalSession() {
-        return this.isLocalSession ? this.session : null;
+        return this.lastAcquiredHere ? this.session : null;
     }
 
     getUniquePath() {
@@ -1110,7 +1110,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     async dispose() {
         this.removeAllListeners();
-        if (this.session && this.isLocalSession) {
+        if (this.session && this.lastAcquiredHere) {
             try {
                 await this.cancelableAction?.();
                 await this.commands?.cancel();
