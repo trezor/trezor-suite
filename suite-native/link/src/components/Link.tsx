@@ -9,7 +9,7 @@ import Animated, {
 import { RequireExactlyOne } from 'type-fest';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { Color, TypographyStyle } from '@trezor/theme';
 
 import { useOpenLink } from '../useOpenLink';
 
@@ -21,18 +21,22 @@ type LinkProps = RequireExactlyOne<
         isUnderlined?: boolean;
         textColor?: Color;
         textPressedColor?: Color;
+        textVariant?: TypographyStyle;
     },
     'href' | 'onPress'
 >;
 
-const textStyle = prepareNativeStyle<{ isUnderlined: boolean }>((_, { isUnderlined }) => ({
-    extend: {
-        condition: isUnderlined,
-        style: {
-            textDecorationLine: 'underline',
+const textStyle = prepareNativeStyle<{ isUnderlined: boolean; textVariant: TypographyStyle }>(
+    (utils, { isUnderlined, textVariant }) => ({
+        ...utils.typography[textVariant],
+        extend: {
+            condition: isUnderlined,
+            style: {
+                textDecorationLine: 'underline',
+            },
         },
-    },
-}));
+    }),
+);
 
 const ANIMATION_DURATION = 100;
 const IS_NOT_PRESSED_VALUE = 0;
@@ -44,6 +48,7 @@ export const Link = ({
     isUnderlined = false,
     textColor = 'textPrimaryDefault',
     textPressedColor = 'textPrimaryPressed',
+    textVariant = 'body',
     onPress,
 }: LinkProps) => {
     const { utils, applyStyle } = useNativeStyles();
@@ -80,7 +85,7 @@ export const Link = ({
             onPressIn={handlePressIn}
             onPress={handlePress}
             onPressOut={handlePressOut}
-            style={[applyStyle(textStyle, { isUnderlined }), animatedTextColorStyle]}
+            style={[applyStyle(textStyle, { isUnderlined, textVariant }), animatedTextColorStyle]}
             suppressHighlighting
         >
             {label}

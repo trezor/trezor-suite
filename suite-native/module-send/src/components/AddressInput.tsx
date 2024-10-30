@@ -19,6 +19,7 @@ import { isDebugEnv } from '@suite-native/config';
 import { QrCodeBottomSheetIcon } from './QrCodeBottomSheetIcon';
 import { getOutputFieldName } from '../utils';
 import { SendOutputsFormValues } from '../sendOutputsFormSchema';
+import { useTokenOfNetworkAlert } from '../hooks/useTokenOfNetworkAlert';
 
 type AddressInputProps = {
     index: number;
@@ -35,6 +36,8 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
         (state: NativeAccountsRootState & TransactionsRootState) =>
             selectFreshAccountAddress(state, accountKey),
     );
+
+    useTokenOfNetworkAlert({ inputIndex: index });
 
     const handleScanAddressQRCode = (qrCodeData: string) => {
         setValue(addressFieldName, qrCodeData, { shouldValidate: true });
