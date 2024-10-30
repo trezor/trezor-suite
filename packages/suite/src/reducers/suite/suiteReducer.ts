@@ -4,15 +4,9 @@ import type { InvityServerEnvironment } from '@suite-common/invity';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { discoveryActions, DeviceRootState, selectDevice } from '@suite-common/wallet-core';
-import { versionUtils } from '@trezor/utils';
+import { isArrayMember, versionUtils } from '@trezor/utils';
 import { isWeb } from '@trezor/env-utils';
-import {
-    TRANSPORT,
-    TransportInfo,
-    ConnectSettings,
-    FirmwareHashCheckError,
-    FirmwareRevisionCheckError,
-} from '@trezor/connect';
+import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
 
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
@@ -27,7 +21,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
-import { UpdateState } from './desktopUpdateReducer';
+import { skippedHashCheckErrors, skippedRevisionCheckErrors } from 'src/constants/suite/firmware';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -461,12 +455,8 @@ export const selectFirmwareRevisionCheckError = (state: AppState) => {
  */
 const selectIsFirmwareRevisionCheckEnabledAndFailed = (state: AppState): boolean => {
     const error = selectFirmwareRevisionCheckError(state);
-    const softErrors: FirmwareRevisionCheckError[] = [
-        'cannot-perform-check-offline',
-        'other-error',
-    ];
 
-    return error !== null ? !softErrors.includes(error) : false;
+    return error !== null ? !isArrayMember(error, skippedRevisionCheckErrors) : false;
 };
 
 /**
@@ -484,27 +474,15 @@ export const selectFirmwareHashCheckError = (state: AppState) => {
     return isCheckEnabled && checkResult?.success === false ? checkResult.error : null;
 };
 
-export const selectIsUnrecognizedFirmwareWithOutdatedSuite = (state: AppState): boolean => {
-    const device = selectDevice(state);
-    if (!isDeviceAcquired(device) || !device.authenticityChecks?.firmwareHash) return false;
-    const isUpdateAvailable = state.desktopUpdate.state === UpdateState.Available;
-    const checkResult = device.authenticityChecks.firmwareHash;
-
-    return !checkResult.success && checkResult.error === 'unknown-release' && isUpdateAvailable;
-};
-
 /**
  * Determine hard failure of firmware hash check - specific error types which are severe.
  * If check was skipped, don't consider it failed.
  * If check is unsupported by device, a banner is shown but device is accessible.
  */
 const selectIsFirmwareHashCheckEnabledAndFailed = (state: AppState): boolean => {
-    if (selectIsUnrecognizedFirmwareWithOutdatedSuite(state)) return false; // treat this as a soft failure
-
     const error = selectFirmwareHashCheckError(state);
-    const softErrors: FirmwareHashCheckError[] = ['check-skipped', 'check-unsupported'];
 
-    return error !== null ? !softErrors.includes(error) : false;
+    return error !== null ? !isArrayMember(error, skippedHashCheckErrors) : false;
 };
 
 /**

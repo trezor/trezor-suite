@@ -9,8 +9,8 @@ import { useSelector } from 'src/hooks/suite';
 import {
     selectFirmwareHashCheckError,
     selectFirmwareRevisionCheckError,
-    selectIsUnrecognizedFirmwareWithOutdatedSuite,
 } from 'src/reducers/suite/suiteReducer';
+import { skippedHashCheckErrors } from 'src/constants/suite/firmware';
 
 const revisionCheckMessages: Record<FirmwareRevisionCheckError, TranslationKey> = {
     'cannot-perform-check-offline': 'TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM',
@@ -19,10 +19,6 @@ const revisionCheckMessages: Record<FirmwareRevisionCheckError, TranslationKey> 
     'firmware-version-unknown': 'TR_FIRMWARE_REVISION_CHECK_FAILED',
 };
 
-export const skippedHashCheckErrors = [
-    'check-skipped',
-    'check-unsupported',
-] satisfies FirmwareHashCheckError[];
 type SkippedHashCheckMessage = (typeof skippedHashCheckErrors)[number];
 
 const hashCheckMessages: Record<
@@ -30,22 +26,15 @@ const hashCheckMessages: Record<
     TranslationKey
 > = {
     'hash-mismatch': 'TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH',
-    'unknown-release': 'TR_DEVICE_FIRMWARE_HASH_CHECK_UNKNOWN_RELEASE',
     'other-error': 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR',
 };
 
 const useAuthenticityCheckMessage = (): TranslationKey | null => {
     const firmwareRevisionError = useSelector(selectFirmwareRevisionCheckError);
     const firmwareHashError = useSelector(selectFirmwareHashCheckError);
-    const isUnrecognizedFwWithOutadedSuite = useSelector(
-        selectIsUnrecognizedFirmwareWithOutdatedSuite,
-    );
 
     if (firmwareRevisionError) {
         return revisionCheckMessages[firmwareRevisionError];
-    }
-    if (isUnrecognizedFwWithOutadedSuite) {
-        return 'TR_DEVICE_FIRMWARE_UNRECOGNIZED_OUTDATED_SUITE';
     }
     if (firmwareHashError && !isArrayMember(firmwareHashError, skippedHashCheckErrors)) {
         return hashCheckMessages[firmwareHashError];
