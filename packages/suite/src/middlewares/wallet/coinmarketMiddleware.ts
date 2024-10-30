@@ -145,8 +145,20 @@ export const coinmarketMiddleware =
             }
 
             if (isExchange) {
-                console.log('coinmarketMiddleware ROUTER.LOCATION_CHANGE');
                 api.dispatch(coinmarketCommonActions.setActiveSection('exchange'));
+            }
+
+            const wasBuy = state.router.route?.name === 'wallet-coinmarket-buy';
+            const wasSell = state.router.route?.name === 'wallet-coinmarket-sell';
+            const isBuyToSell = wasBuy && isSell;
+            const isSellToBuy = wasSell && isBuy;
+
+            const cleanupPrefilledFromCryptoId =
+                !!newState.wallet.coinmarket.prefilledFromCryptoId &&
+                ((!isSell && !isExchange && !isBuy) || isBuyToSell || isSellToBuy);
+
+            if (cleanupPrefilledFromCryptoId) {
+                api.dispatch(coinmarketCommonActions.setCoinmarketPrefilledFromCryptoId(undefined));
             }
         }
 

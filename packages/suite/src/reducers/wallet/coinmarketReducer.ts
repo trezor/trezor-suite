@@ -25,7 +25,7 @@ import {
     COINMARKET_INFO,
 } from 'src/actions/wallet/constants';
 import { STORAGE } from 'src/actions/suite/constants';
-import type { Action as SuiteAction } from 'src/types/suite';
+import type { AppState, Action as SuiteAction } from 'src/types/suite';
 import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import {
@@ -97,6 +97,7 @@ export interface State {
     isLoading: boolean;
     lastLoadedTimestamp: number;
     activeSection?: CoinmarketTradeType;
+    prefilledFromCryptoId: CryptoId | undefined;
 }
 
 export const initialState: State = {
@@ -145,6 +146,7 @@ export const initialState: State = {
     modalCryptoId: undefined,
     lastLoadedTimestamp: 0,
     activeSection: 'buy',
+    prefilledFromCryptoId: undefined,
 };
 
 export const coinmarketReducer = (
@@ -197,6 +199,9 @@ export const coinmarketReducer = (
                 break;
             case COINMARKET_BUY.DISPOSE:
                 draft.buy.addressVerified = undefined;
+                break;
+            case COINMARKET_COMMON.SET_COINMARKET_FROM_PREFILLED_CRYPTO_ID:
+                draft.prefilledFromCryptoId = action.prefilledFromCryptoId;
                 break;
             case COINMARKET_COMMON.SAVE_TRADE:
                 if (action.key) {
@@ -267,3 +272,17 @@ export const coinmarketReducer = (
             // no default
         }
     });
+
+export const selectSupportedSymbols =
+    (type: CoinmarketTradeType) =>
+    (state: AppState): Set<CryptoId> | undefined => {
+        const { coinmarket } = state.wallet;
+        switch (type) {
+            case 'buy':
+                return coinmarket.buy.buyInfo?.supportedCryptoCurrencies;
+            case 'exchange':
+                return coinmarket.exchange.exchangeInfo?.sellSymbols;
+            case 'sell':
+                return coinmarket.sell.sellInfo?.supportedCryptoCurrencies;
+        }
+    };

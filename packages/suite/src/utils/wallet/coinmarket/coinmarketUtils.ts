@@ -8,6 +8,7 @@ import {
     getNetworkByCoingeckoId,
     getNetworkByCoingeckoNativeId,
     getNetworkFeatures,
+    getNetworkType,
     networks,
 } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
@@ -205,7 +206,6 @@ export const getComposeAddressPlaceholder = async (
             // return '37btjrVyb4KDXBNC4haBVPCrro8AQPHwvCMp3RFhhSVWwfFmZ6wwzSK6JK1hY6wHNmtrpTf1kdbva8TCneM2YsiXT7mrzT21EacHnPpz5YyUdj64na';
             return '';
         case 'solana':
-            return '';
         case 'ethereum':
         case 'ripple':
             return account.descriptor;
@@ -492,4 +492,34 @@ export const coinmarketGetSectionActionLabel = (
     if (type === 'sell') return 'TR_COINMARKET_SELL';
 
     return 'TR_COINMARKET_SWAP';
+};
+
+interface GetAddressAndTokenFromAccountOptionsGroupProps {
+    address: string;
+    token: string | null;
+}
+
+export const getAddressAndTokenFromAccountOptionsGroupProps = (
+    selected: CoinmarketAccountOptionsGroupOptionProps | undefined,
+): GetAddressAndTokenFromAccountOptionsGroupProps => {
+    if (!selected) {
+        return { address: '', token: null };
+    }
+
+    const networkSymbol = cryptoIdToSymbol(selected.value);
+    const networkType = networkSymbol ? getNetworkType(networkSymbol) : null;
+
+    // set token address for ERC20 transaction to estimate the fees more precisely
+    if (networkType === 'ethereum') {
+        return {
+            address: selected.contractAddress ?? '',
+            token: selected.contractAddress ?? null,
+        };
+    }
+
+    if (networkType === 'solana' && !selected.contractAddress) {
+        return { address: selected.descriptor, token: null };
+    }
+
+    return { address: '', token: selected.contractAddress ?? null };
 };

@@ -9,6 +9,7 @@ import { spacings } from '@trezor/theme';
 import { Icon, Table, Paragraph, Card, Row, Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
+import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 
 import { TokenRow } from './TokenRow';
 
@@ -43,6 +44,7 @@ export const TokensTable = ({
     isUnverifiedTable,
 }: TokensTableProps) => {
     const [isZeroBalanceOpen, setIsZeroBalanceOpen] = useState(false);
+    useCoinmarketLoadData();
 
     return (
         <Card paddingType="none" overflow="hidden">

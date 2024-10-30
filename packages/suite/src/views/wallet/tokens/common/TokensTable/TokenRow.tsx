@@ -43,7 +43,10 @@ import {
 } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    getUnusedAddressFromAccount,
+    toTokenCryptoId,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { openModal } from 'src/actions/suite/modalActions';
 import { formatTokenSymbol } from 'src/utils/wallet/tokenUtils';
 import {
@@ -52,6 +55,9 @@ import {
 } from 'src/reducers/suite/suiteReducer';
 import { SUITE } from 'src/actions/suite/constants';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
+import { setCoinmarketExchangeAccount } from 'src/actions/wallet/coinmarketExchangeActions';
+import { setCoinmarketPrefilledFromCryptoId } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { setCoinmarketSellAccount } from 'src/actions/wallet/coinmarketSellActions';
 
 import { BlurUrls } from '../BlurUrls';
 
@@ -97,6 +103,7 @@ export const TokenRow = ({
     const isTokenKnown = useSelector(state =>
         selectIsSpecificCoinDefinitionKnown(state, account.symbol, token.contract as TokenAddress),
     );
+    const { coins } = useSelector(state => state.wallet.coinmarket.info);
     const isDeviceLocked = isLocked(true);
     const networkContractAddress = getContractAddressForNetwork(account.symbol, token.contract);
     const coingeckoId = getCoingeckoId(account.symbol);
@@ -124,6 +131,14 @@ export const TokenRow = ({
     };
 
     const isReceiveButtonDisabled = isDeviceLocked || !!device.authConfirm;
+
+    const tokenCryptoId = toTokenCryptoId(account.symbol, token.contract.toLowerCase());
+    const tokenTradingOptions = coins?.[tokenCryptoId]?.services;
+
+    const canBuyToken = !!tokenTradingOptions && tokenTradingOptions.buy;
+    const canSwapToken =
+        (!!tokenTradingOptions && tokenTradingOptions.exchange) || token.balance === '0';
+    const canSellToken = !!tokenTradingOptions && tokenTradingOptions.sell;
 
     return (
         <Table.Row isCollapsed={isCollapsed}>
@@ -182,11 +197,71 @@ export const TokenRow = ({
                         items={
                             [
                                 {
-                                    key: 'export',
+                                    key: 'options',
                                     options: [
                                         {
+                                            label: <Translation id="TR_BUY" />,
+                                            icon: 'currencyCircleDollar',
+                                            onClick: () => {
+                                                dispatch(
+                                                    setCoinmarketPrefilledFromCryptoId(
+                                                        tokenCryptoId,
+                                                    ),
+                                                );
+                                                goToWithAnalytics('wallet-coinmarket-buy', {
+                                                    params: {
+                                                        symbol: account.symbol,
+                                                        accountIndex: account.index,
+                                                        accountType: account.accountType,
+                                                    },
+                                                });
+                                            },
+                                            isDisabled: !canBuyToken,
+                                        },
+                                        {
+                                            label: <Translation id="TR_COINMARKET_SELL" />,
+                                            icon: 'currencyCircleDollar',
+                                            onClick: () => {
+                                                dispatch(setCoinmarketSellAccount(account));
+                                                dispatch(
+                                                    setCoinmarketPrefilledFromCryptoId(
+                                                        tokenCryptoId,
+                                                    ),
+                                                );
+                                                goToWithAnalytics('wallet-coinmarket-sell', {
+                                                    params: {
+                                                        symbol: account.symbol,
+                                                        accountIndex: account.index,
+                                                        accountType: account.accountType,
+                                                    },
+                                                });
+                                            },
+                                            isDisabled: token.balance === '0' || !canSellToken,
+                                        },
+                                        {
+                                            label: <Translation id="TR_COINMARKET_SWAP" />,
+                                            icon: 'arrowsLeftRight',
+                                            onClick: () => {
+                                                dispatch(setCoinmarketExchangeAccount(account));
+                                                dispatch(
+                                                    setCoinmarketPrefilledFromCryptoId(
+                                                        tokenCryptoId,
+                                                    ),
+                                                );
+                                                goToWithAnalytics('wallet-coinmarket-exchange', {
+                                                    params: {
+                                                        symbol: account.symbol,
+                                                        accountIndex: account.index,
+                                                        accountType: account.accountType,
+                                                    },
+                                                });
+                                            },
+                                            isHidden: !isMobileLayout,
+                                            isDisabled: !canSwapToken,
+                                        },
+                                        {
                                             label: <Translation id="TR_NAV_SEND" />,
-                                            icon: 'SEND',
+                                            icon: 'send',
                                             onClick: () => {
                                                 goToWithAnalytics('wallet-send', {
                                                     params: {
@@ -204,7 +279,7 @@ export const TokenRow = ({
                                         },
                                         {
                                             label: <Translation id="TR_NAV_RECEIVE" />,
-                                            icon: 'RECEIVE',
+                                            icon: 'receive',
                                             onClick: onReceive,
                                             isDisabled: isReceiveButtonDisabled,
                                             isHidden:
@@ -346,6 +421,33 @@ export const TokenRow = ({
                             ].filter(category => category) as GroupedMenuItems[]
                         }
                     />
+                    {!isMobileLayout && (
+                        <IconButton
+                            label={
+                                canSwapToken ? (
+                                    <Translation id="TR_COINMARKET_SWAP" />
+                                ) : (
+                                    <Translation id="TR_COINMARKET_SWAP_UNAVAILABLE" />
+                                )
+                            }
+                            isDisabled={!canSwapToken}
+                            key="swap"
+                            variant="tertiary"
+                            icon="arrowsLeftRight"
+                            size="small"
+                            onClick={() => {
+                                dispatch(setCoinmarketExchangeAccount(account));
+                                dispatch(setCoinmarketPrefilledFromCryptoId(tokenCryptoId));
+                                goToWithAnalytics('wallet-coinmarket-exchange', {
+                                    params: {
+                                        symbol: account.symbol,
+                                        accountIndex: account.index,
+                                        accountType: account.accountType,
+                                    },
+                                });
+                            }}
+                        />
+                    )}
                     {!isMobileLayout &&
                         (tokenStatusType === TokenManagementAction.SHOW ? (
                             <Button

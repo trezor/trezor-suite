@@ -16,9 +16,11 @@ import {
     coinmarketGetAmountLabels,
     coinmarketGetAccountLabel,
     testnetToProdCryptoId,
+    getAddressAndTokenFromAccountOptionsGroupProps,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     FIXTURE_ACCOUNTS,
+    FIXTURE_ACCOUNT_OPTIONS,
     accountBtc,
     accountEth,
     coinDefinitions,
@@ -322,5 +324,13 @@ describe('coinmarket utils', () => {
                 'ethereum--0x1234123412341234123412341234123412341236' as CryptoId,
             ),
         ).toEqual('ethereum--0x1234123412341234123412341234123412341236');
+    });
+
+    it('getAddressAndTokenFromAccountOptionsGroupProps - testing correct returning value fot setting FormState to send currency', () => {
+        FIXTURE_ACCOUNT_OPTIONS.forEach(item => {
+            expect(getAddressAndTokenFromAccountOptionsGroupProps(item.option)).toEqual(
+                item.result,
+            );
+        });
     });
 });

@@ -56,6 +56,10 @@ export type CoinmarketCommonAction =
     | {
           type: typeof COINMARKET_COMMON.SET_COINMARKET_ACTIVE_SECTION;
           activeSection: CoinmarketTradeType;
+      }
+    | {
+          type: typeof COINMARKET_COMMON.SET_COINMARKET_FROM_PREFILLED_CRYPTO_ID;
+          prefilledFromCryptoId: CryptoId | undefined;
       };
 
 type FormState = {
@@ -224,3 +228,10 @@ export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
         }
     });
 };
+
+export const setCoinmarketPrefilledFromCryptoId = (
+    prefilledFromCryptoId: CryptoId | undefined,
+): CoinmarketCommonAction => ({
+    type: COINMARKET_COMMON.SET_COINMARKET_FROM_PREFILLED_CRYPTO_ID,
+    prefilledFromCryptoId,
+});

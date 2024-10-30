@@ -1419,6 +1419,10 @@ const messages = defineMessagesWithTypeCheck({
         defaultMessage: 'Swap',
         id: 'TR_COINMARKET_SWAP',
     },
+    TR_COINMARKET_SWAP_UNAVAILABLE: {
+        defaultMessage: 'Swap unavailable',
+        id: 'TR_COINMARKET_SWAP_UNAVAILABLE',
+    },
     TR_COINMARKET_TRANS_ID: {
         defaultMessage: 'Trans. ID:',
         id: 'TR_COINMARKET_TRANS_ID',

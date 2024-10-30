@@ -3,7 +3,11 @@ import { useMemo } from 'react';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { FormState, Output } from '@suite-common/wallet-types';
 
-import { buildFiatOption, cryptoIdToSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    buildFiatOption,
+    cryptoIdToSymbol,
+    getAddressAndTokenFromAccountOptionsGroupProps,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Account } from 'src/types/wallet';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { useSelector } from 'src/hooks/suite';
@@ -33,6 +37,9 @@ export const useCoinmarketExchangeFormDefaultValues = (
 ): CoinmarketExchangeFormDefaultValuesProps => {
     const { buildDefaultCryptoOption } = useCoinmarketInfo();
     const localCurrency = useSelector(selectLocalCurrency);
+    const prefilledFromCryptoId = useSelector(
+        state => state.wallet.coinmarket.prefilledFromCryptoId,
+    );
     const defaultCurrency = useMemo(() => buildFiatOption(localCurrency), [localCurrency]);
     const cryptoGroups = useCoinmarketBuildAccountGroups('exchange');
     const cryptoOptions = useMemo(
@@ -41,13 +48,18 @@ export const useCoinmarketExchangeFormDefaultValues = (
     );
     const defaultSendCryptoSelect = useMemo(
         () =>
+            (prefilledFromCryptoId &&
+                cryptoOptions.find(option => option.value === prefilledFromCryptoId)) ||
             cryptoOptions.find(
                 option =>
                     option.descriptor === account.descriptor &&
                     cryptoIdToSymbol(option.value) === account.symbol,
             ),
-        [account.descriptor, account.symbol, cryptoOptions],
+        [account.descriptor, account.symbol, prefilledFromCryptoId, cryptoOptions],
     );
+    const { address, token } =
+        getAddressAndTokenFromAccountOptionsGroupProps(defaultSendCryptoSelect);
+
     const defaultReceiveCryptoSelect = useMemo(
         () =>
             buildDefaultCryptoOption(
@@ -60,8 +72,10 @@ export const useCoinmarketExchangeFormDefaultValues = (
         () => ({
             ...DEFAULT_PAYMENT,
             currency: defaultCurrency,
+            address,
+            token,
         }),
-        [defaultCurrency],
+        [address, defaultCurrency, token],
     );
     const defaultFormState: FormState = useMemo(
         () => ({

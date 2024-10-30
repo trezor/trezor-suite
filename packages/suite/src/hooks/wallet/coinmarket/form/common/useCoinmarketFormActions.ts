@@ -39,6 +39,7 @@ import {
 import {
     coinmarketGetSortedAccounts,
     cryptoIdToSymbol,
+    getAddressAndTokenFromAccountOptionsGroupProps,
     getCoinmarketNetworkDecimals,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { coinmarketGetExchangeReceiveCryptoId } from 'src/utils/wallet/coinmarket/exchangeUtils';
@@ -171,21 +172,12 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
 
         if (!account || isSameCryptoSelected) return;
 
-        setValue(FORM_OUTPUT_ADDRESS, '');
-        setValue(FORM_OUTPUT_AMOUNT, '');
-        setValue(FORM_CRYPTO_TOKEN, selected?.contractAddress ?? null);
-
-        if (account.networkType === 'ethereum') {
-            // set token address for ERC20 transaction to estimate the fees more precisely
-            setValue(FORM_OUTPUT_ADDRESS, selected?.contractAddress ?? '');
-        }
-        if (account.networkType === 'solana' && !selected?.contractAddress) {
-            setValue(FORM_OUTPUT_ADDRESS, selected?.descriptor ?? '');
-        }
-
+        const { address, token } = getAddressAndTokenFromAccountOptionsGroupProps(selected);
+        setValue(FORM_OUTPUT_ADDRESS, address);
+        setValue(FORM_CRYPTO_TOKEN, token);
         setValue(FORM_OUTPUT_MAX, undefined);
-        setValue(FORM_OUTPUT_AMOUNT, '');
         setValue(FORM_OUTPUT_FIAT, '');
+        setValue(FORM_OUTPUT_AMOUNT, '');
         setAmountLimits(undefined);
         setComposedLevels(undefined);
 

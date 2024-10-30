@@ -4,25 +4,22 @@ import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
 
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
+import { selectSupportedSymbols } from 'src/reducers/wallet/coinmarketReducer';
 import {
     CoinmarketAccountsOptionsGroupProps,
-    CoinmarketTradeSellExchangeType,
+    CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
 import { coinmarketBuildAccountOptions } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 export const useCoinmarketBuildAccountGroups = (
-    type: CoinmarketTradeSellExchangeType,
+    type: CoinmarketTradeType,
 ): CoinmarketAccountsOptionsGroupProps[] => {
     const accounts = useSelector(selectAccounts);
     const accountLabels = useSelector(selectAccountLabels);
     const device = useSelector(selectDevice);
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const { tokenDefinitions } = useSelector(state => state);
-    const supportedSymbols = useSelector(state =>
-        type === 'sell'
-            ? state.wallet.coinmarket.sell.sellInfo?.supportedCryptoCurrencies
-            : state.wallet.coinmarket.exchange.exchangeInfo?.sellSymbols,
-    );
+    const supportedSymbols = useSelector(selectSupportedSymbols(type));
 
     const groups = useMemo(
         () =>

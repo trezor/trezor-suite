@@ -14,13 +14,17 @@ import {
     FORM_DEFAULT_PAYMENT_METHOD,
 } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { useSelector } from 'src/hooks/suite';
 
 export const useCoinmarketBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],
     buyInfo: BuyInfo | undefined,
 ): CoinmarketBuyFormDefaultValuesProps => {
     const { buildDefaultCryptoOption } = useCoinmarketInfo();
-    const cryptoId = networks[accountSymbol]?.coingeckoNativeId;
+    const prefilledFromCryptoId = useSelector(
+        state => state.wallet.coinmarket.prefilledFromCryptoId,
+    );
+    const cryptoId = prefilledFromCryptoId || networks[accountSymbol]?.coingeckoNativeId;
 
     const country = buyInfo?.buyInfo?.country;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);

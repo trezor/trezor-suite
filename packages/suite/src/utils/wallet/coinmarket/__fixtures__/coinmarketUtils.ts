@@ -1,5 +1,9 @@
+import { CryptoId } from 'invity-api';
+
 import { DefinitionType, TokenDefinitions } from '@suite-common/token-definitions';
 import { Account } from '@suite-common/wallet-types';
+
+import { CoinmarketAccountOptionsGroupOptionProps } from 'src/types/coinmarket/coinmarket';
 
 export const accountBtc = {
     index: 1,
@@ -186,5 +190,91 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         symbol: 'btc',
         visible: true,
         accountType: 'coinjoin',
+    },
+];
+
+const accountOptionPlaceholder = {
+    label: '',
+    cryptoName: '',
+    balance: '',
+    decimals: 0,
+    accountType: 'normal' as const,
+};
+
+export const FIXTURE_ACCOUNT_OPTIONS: Array<{
+    option: CoinmarketAccountOptionsGroupOptionProps | undefined;
+    result: { address: string; token: string | null };
+}> = [
+    {
+        option: {
+            ...accountOptionPlaceholder,
+            value: 'bitcoin' as CryptoId,
+            contractAddress: undefined,
+            descriptor: 'bbb',
+        },
+        result: {
+            address: '',
+            token: null,
+        },
+    },
+    {
+        option: {
+            ...accountOptionPlaceholder,
+            value: 'ethereum' as CryptoId,
+            contractAddress: undefined,
+            descriptor: 'eee',
+        },
+        result: {
+            address: '',
+            token: null,
+        },
+    },
+    {
+        option: {
+            ...accountOptionPlaceholder,
+            value: 'ethereum--0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9' as CryptoId,
+            contractAddress: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
+            descriptor: 'aaa',
+        },
+        result: {
+            address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
+            token: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
+        },
+    },
+    {
+        option: {
+            ...accountOptionPlaceholder,
+            value: 'solana' as CryptoId,
+            contractAddress: undefined,
+            descriptor: 'sss',
+        },
+        result: {
+            address: 'sss',
+            token: null,
+        },
+    },
+    {
+        option: {
+            ...accountOptionPlaceholder,
+            value: 'solana' as CryptoId,
+            contractAddress: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
+            descriptor: 'ddd',
+        },
+        result: {
+            address: '',
+            token: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
+        },
+    },
+    {
+        option: {
+            ...accountOptionPlaceholder,
+            value: 'cardano' as CryptoId,
+            contractAddress: undefined,
+            descriptor: 'ccc',
+        },
+        result: {
+            address: '',
+            token: null,
+        },
     },
 ];
