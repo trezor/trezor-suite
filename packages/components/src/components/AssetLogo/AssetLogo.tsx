@@ -7,11 +7,10 @@ import {
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { borders } from '@trezor/theme';
+import { getAssetLogoUrl } from '@trezor/asset-utils';
 
 import { AssetInitials } from './AssetInitials';
 import { TransientProps } from '../../utils/transientProps';
-
-const ICONS_URL_BASE = 'https://data.trezor.io/suite/icons/coins/';
 
 export const allowedAssetLogoSizes = [20, 24];
 type AssetLogoSize = (typeof allowedAssetLogoSizes)[number];
@@ -46,9 +45,6 @@ const Logo = styled.img<{ $size: number; $isVisible: boolean }>(
     `,
 );
 
-const getAssetLogoUrl = (fileName: string, quality?: '@2x') =>
-    `${ICONS_URL_BASE}${fileName}${quality === undefined ? '' : quality}.webp`;
-
 export const AssetLogo = ({
     size,
     coingeckoId,
@@ -61,8 +57,9 @@ export const AssetLogo = ({
 }: AssetLogoProps) => {
     const [isLoading, setIsLoading] = useState(true);
     const [isPlaceholder, setIsPlaceholder] = useState(!shouldTryToFetch);
-    const fileName = contractAddress ? `${coingeckoId}--${contractAddress}` : coingeckoId;
-    const logoUrl = getAssetLogoUrl(fileName);
+
+    const logoUrl = getAssetLogoUrl({ coingeckoId, contractAddress });
+    const logoUrl2x = getAssetLogoUrl({ coingeckoId, contractAddress, quality: '@2x' });
 
     const frameProps = pickAndPrepareFrameProps(rest, allowedAssetLogoFrameProps);
 
@@ -86,7 +83,7 @@ export const AssetLogo = ({
             {!isPlaceholder && (
                 <Logo
                     src={logoUrl}
-                    srcSet={`${logoUrl} 1x, ${getAssetLogoUrl(fileName, '@2x')} 2x`}
+                    srcSet={`${logoUrl} 1x, ${logoUrl2x} 2x`}
                     $size={size}
                     onLoad={handleLoad}
                     onError={handleError}

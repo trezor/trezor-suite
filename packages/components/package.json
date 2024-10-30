@@ -23,6 +23,7 @@
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/validators": "workspace:*",
+        "@trezor/asset-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
