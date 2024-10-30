@@ -14,7 +14,7 @@ import {
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
     selectNetworkFeeInfo,
-    selectSendFormDraftByAccountKey,
+    selectSendFormDraftByKey,
     sendFormActions,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
@@ -91,7 +91,7 @@ export const SendOutputsScreen = ({
         selectNetworkFeeInfo(state, account?.symbol),
     );
     const sendFormDraft = useSelector((state: SendRootState) =>
-        selectSendFormDraftByAccountKey(state, accountKey),
+        selectSendFormDraftByKey(state, accountKey, tokenContract),
     );
 
     const network = account ? getNetwork(account.symbol) : null;
@@ -125,6 +125,7 @@ export const SendOutputsScreen = ({
         dispatch(
             sendFormActions.storeDraft({
                 accountKey,
+                tokenContract,
                 formState: constructFormDraft({ formValues: getValues(), tokenContract }),
             }),
         );
@@ -144,8 +145,6 @@ export const SendOutputsScreen = ({
     }, [getValues, accountKey, dispatch]);
 
     useEffect(() => {
-        // TODO: Store token draft to separate object so it do not override mainnet draft.
-        // https://github.com/trezor/trezor-suite/issues/15078
         const prefillValuesFromStoredDraft = async () => {
             if (sendFormDraft?.outputs) {
                 setValue('outputs', sendFormDraft.outputs);

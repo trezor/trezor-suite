@@ -5,7 +5,7 @@ import { Deferred } from '@trezor/utils';
 import {
     DeviceRootState,
     selectDevice,
-    selectSendFormDraftByAccountKey,
+    selectSendFormDraftByKey,
     selectSendFormReviewButtonRequestsCount,
     selectStakePrecomposedForm,
     StakeState,
@@ -69,7 +69,7 @@ export const TransactionReviewModalContent = ({
     const precomposedForm = useSelector(state =>
         isStakeState(txInfoState)
             ? selectStakePrecomposedForm(state)
-            : selectSendFormDraftByAccountKey(state, account?.key),
+            : selectSendFormDraftByKey(state, account?.key),
     );
 
     const isRbfAction = precomposedTx !== undefined && isRbfTransaction(precomposedTx);

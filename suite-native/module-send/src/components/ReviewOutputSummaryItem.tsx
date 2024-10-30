@@ -72,7 +72,7 @@ export const ReviewOutputSummaryItem = ({
     const { translate } = useTranslate();
     const summaryOutput = useSelector(
         (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectReviewSummaryOutput(state, accountKey),
+            selectReviewSummaryOutput(state, accountKey, tokenContract),
     );
 
     if (!summaryOutput) return null;

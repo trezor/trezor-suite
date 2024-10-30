@@ -28,12 +28,12 @@ export const SendAddressReviewScreen = ({
 
     const isAddressConfirmed = useSelector(
         (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectIsFirstTransactionAddressConfirmed(state, accountKey),
+            selectIsFirstTransactionAddressConfirmed(state, accountKey, tokenContract),
     );
 
     const isReviewInProgress = useSelector(
         (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectIsOutputsReviewInProgress(state, accountKey),
+            selectIsOutputsReviewInProgress(state, accountKey, tokenContract),
     );
 
     useEffect(() => {

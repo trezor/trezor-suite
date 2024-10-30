@@ -30,6 +30,9 @@ import type {
     CurrencyOption,
     ExcludedUtxos,
     GeneralPrecomposedTransactionFinal,
+    AccountKey,
+    TokenAddress,
+    SendFormDraftKey,
 } from '@suite-common/wallet-types';
 
 import { amountToSatoshi, getUtxoOutpoint, networkAmountToSatoshi } from './accountUtils';
@@ -459,6 +462,13 @@ export const getExcludedUtxos = ({
     });
 
     return excludedUtxos;
+};
+
+export const getSendFormDraftKey = (
+    accountKey: AccountKey,
+    tokenAddress?: TokenAddress,
+): SendFormDraftKey => {
+    return tokenAddress ? `${accountKey}-${tokenAddress}` : accountKey;
 };
 
 // SOL Specific
