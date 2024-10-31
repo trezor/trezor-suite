@@ -61,7 +61,7 @@ function setupAndAssertBuy(selectOffer: () => void) {
     cy.getTestElement('@coinmarket/detail/success').invoke('text').should('be.equal', 'Approved');
 
     // Goes back, then on the Last transactions page after verifies the transaction is listed
-    cy.getTestElement('@account-subpage/back').click();
+    cy.getTestElement('@coinmarket/menu/wallet-coinmarket-transactions').click();
 
     // Verifies fiat amount
     cy.getTestElement('@coinmarket/transaction/fiat-amount')
