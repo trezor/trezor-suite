@@ -1,6 +1,11 @@
 import { A } from '@mobily/ts-belt';
 
-import { getNetworkOptional, isNetworkSymbol, NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    getNetworkOptional,
+    isNetworkSymbol,
+    NetworkSymbol,
+    networks,
+} from '@suite-common/wallet-config';
 import {
     amountToSatoshi,
     formatAmount,
@@ -35,19 +40,18 @@ const truncateDecimals = (value: string, maxDecimals: number, isEllipsisAppended
     return value;
 };
 
-// We cannot use networks "A.includes(networks[symbol].features, 'amount-unit')" because this flag is on many coins like ETH.
-// These coins will looks very bad in app because for example ETH have 18 numbers... So we hardcode enabled coins here.
-const COINS_WITH_SATS = ['btc', 'test'] satisfies NetworkSymbol[];
-
 const convertToUnit = (
     value: string,
     isBalance: boolean,
     config: FormatterConfig,
-    symbol?: string,
+    symbol?: NetworkSymbol,
 ) => {
     const { bitcoinAmountUnit } = config;
     const decimals = getNetworkOptional(symbol)?.decimals ?? 0;
-    const areAmountUnitsSupported = A.includes(COINS_WITH_SATS, symbol);
+
+    const areAmountUnitsSupported = symbol
+        ? A.includes(networks[symbol]?.features, 'amount-unit')
+        : undefined;
 
     if (isBalance && areAmountUnitsSupported && bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI) {
         return amountToSatoshi(value, decimals);
