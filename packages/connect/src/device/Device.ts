@@ -390,10 +390,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     async updateDescriptor(descriptor: Descriptor) {
         this.sessionDfd?.resolve(descriptor.session);
 
-        const [_acquireResult, releaseResult] = await Promise.all([
-            this.acquirePromise,
-            this.releasePromise,
-        ]);
+        await Promise.all([this.acquirePromise, this.releasePromise]);
 
         // TODO improve these conditions
 
@@ -409,20 +406,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             const methodStillRunning = !this.commands?.isDisposed();
             if (methodStillRunning) {
                 this.releaseTransportSession();
-            }
-
-            // No release is currently running
-            // -> released by someone else
-            if (!releaseResult) {
-                createTimeoutPromise(1000).then(async () => {
-                    // after device was released in another window wait for a while (the other window might
-                    // have the intention of acquiring it again)
-                    // and if the device is still released and has never been acquired before, acquire it here.
-                    if (!this.isUsed() && this.isUnacquired() && !this.isInconsistent()) {
-                        // TODO this handshake should be different, e.g. no CONNECT_UNACQUIRED should be emitted again
-                        await this.handshake();
-                    }
-                });
             }
         }
 
