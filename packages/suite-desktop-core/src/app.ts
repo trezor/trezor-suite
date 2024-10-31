@@ -23,6 +23,7 @@ import { createInterceptor } from './libs/request-interceptor';
 import { hangDetect } from './hang-detect';
 import { Logger } from './libs/logger';
 import { MainWindowProxy } from './libs/main-window-proxy';
+import { isAutoStartEnabled } from './modules/auto-start';
 
 // @ts-expect-error using internal electron API to set suite version in dev mode correctly
 if (isDevEnv) app.setVersion(process.env.VERSION);
@@ -165,16 +166,14 @@ const init = async () => {
         app.off('open-url', openURL);
     }
 
-    await initUi({ store, daemon, quitBridgeModule });
+    await initUi({ store, quitBridgeModule });
 };
 
 const initUi = async ({
     store,
-    daemon,
     quitBridgeModule,
 }: {
     store: Store;
-    daemon: boolean;
     quitBridgeModule: () => Promise<void>;
 }) => {
     const buildInfo = getBuildInfo();
@@ -267,9 +266,10 @@ const initUi = async ({
         const mainWindow = mainWindowProxy.getInstance();
         const windowExists =
             mainWindow && !mainWindow.isDestroyed() && mainWindow.isClosable() && !app.isHidden();
+        const autoStartCurrentlyEnabled = isAutoStartEnabled();
         logger.info('main', `Before quit, window exists: ${windowExists}`);
         if (
-            daemon &&
+            autoStartCurrentlyEnabled &&
             (!isMacOs() || windowExists) // On Mac the window closing and app quitting are different
         ) {
             // Prevent quitting app when in daemon mode, unless the UI is already closed
