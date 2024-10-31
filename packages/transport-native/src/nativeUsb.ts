@@ -4,6 +4,7 @@ import { Transport as AbstractTransport, AbstractApiTransport, UsbApi } from '@t
 export class NativeUsbTransport extends AbstractApiTransport {
     // TODO: Not sure how to solve this type correctly.
     public name = 'NativeUsbTransport' as any;
+    public apiType = 'usb' as const;
 
     constructor(params: ConstructorParameters<typeof AbstractTransport>[0]) {
         const { logger, ...rest } = params;
