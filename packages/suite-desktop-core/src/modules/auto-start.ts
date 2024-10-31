@@ -37,7 +37,7 @@ StartupNotify=false
 Terminal=false
 `;
 
-const isAutoStartEnabled = () => {
+export const isAutoStartEnabled = () => {
     if (process.platform === 'linux') {
         return fs.existsSync(path.join(os.homedir(), LINUX_AUTOSTART_DIR, LINUX_AUTOSTART_FILE));
     } else {
