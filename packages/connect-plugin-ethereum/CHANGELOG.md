@@ -1,6 +1,6 @@
 # UNRELEASED
 
--   updated `@metamask/eth-sig-util` from `^7.0.1` to `^7.0.3`
+-   updated `@metamask/eth-sig-util` from `^7.0.1` to `^8.0.0`
 
 # 9.0.3
 
