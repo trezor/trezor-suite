@@ -66,7 +66,7 @@ export const AccountSelectBottomSheet = React.memo(
                                 }}
                             />
                         );
-                    case 'token':
+                    case 'token': {
                         const { token, account } = item;
 
                         return (
@@ -82,6 +82,7 @@ export const AccountSelectBottomSheet = React.memo(
                                 }
                             />
                         );
+                    }
                     default:
                         return null;
                 }

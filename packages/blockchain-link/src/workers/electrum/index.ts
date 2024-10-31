@@ -127,14 +127,14 @@ const onRequest = async <T extends Message>(
                     throw new CustomError(`Subscription ${request.payload.type} not implemented`);
             }
         // @ts-expect-error this message is used in tests
-        case 'raw':
+        case 'raw': {
             // @ts-expect-error
-
             const { method, params } = request.payload;
 
             return client
                 .request(method, ...params)
                 .then((res: any) => ({ type: method, payload: res }));
+        }
         default:
             throw new CustomError('worker_unknown_request', `+${request.type}`);
     }

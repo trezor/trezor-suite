@@ -7,7 +7,7 @@ export const enhanceMessageWithAnalytics = (
     data: { device?: Device },
 ): CoreEventMessage => {
     switch (message.type) {
-        case UI_REQUEST.REQUEST_CONFIRMATION:
+        case UI_REQUEST.REQUEST_CONFIRMATION: {
             const { device } = data;
 
             return {
@@ -37,6 +37,7 @@ export const enhanceMessageWithAnalytics = (
                     },
                 },
             };
+        }
 
         default:
             return message;

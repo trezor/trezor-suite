@@ -71,6 +71,7 @@ module.exports = {
                 allowArrowFunctions: true,
             },
         ],
+        'no-case-declarations': 'error',
         // Fix for TypeScript.
         'react/jsx-filename-extension': [
             'error',
