@@ -4,12 +4,12 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
 import { getStatus, deviceNeedsAttention } from '@suite-common/suite-utils';
-import { motionEasing } from '@trezor/components';
-import { selectDevicesCount, selectDevice } from '@suite-common/wallet-core';
+import { Button, motionEasing } from '@trezor/components';
+import { selectDevices, selectDevice } from '@suite-common/wallet-core';
 
-import { ConnectDevicePrompt } from 'src/components/suite';
+import { ConnectDevicePrompt, Translation } from 'src/components/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { Transport } from './Transport';
 import { DeviceConnect } from './DeviceConnect';
@@ -25,6 +25,7 @@ import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceDisconnectRequired } from './DeviceDisconnectRequired';
 import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
+import { goto } from 'src/actions/suite/routerActions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -35,6 +36,11 @@ const Wrapper = styled.div`
 
 const TipsContainer = styled(motion.div)`
     display: flex;
+    margin-top: 60px;
+`;
+
+const ButtonWrapper = styled.div`
+    margin-top: 30px;
 `;
 
 interface PrerequisitesGuideProps {
@@ -42,8 +48,10 @@ interface PrerequisitesGuideProps {
 }
 
 export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProps) => {
+    const dispatch = useDispatch();
     const device = useSelector(selectDevice);
-    const devices = useSelector(selectDevicesCount);
+    const devices = useSelector(selectDevices);
+    const connectedDevicesCount = devices.filter(d => d.connected === true).length;
     const transport = useSelector(state => state.suite.transport);
     const prerequisite = useSelector(selectPrerequisite);
 
@@ -86,6 +94,9 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
         [prerequisite, isWebUsbTransport, device],
     );
 
+    const handleSwitchDeviceClick = () =>
+        dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
+
     return (
         <Wrapper>
             <ConnectDevicePrompt
@@ -94,9 +105,16 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
                     !!(device && deviceNeedsAttention(getStatus(device))) ||
                     prerequisite === 'transport-bridge'
                 }
-                allowSwitchDevice={allowSwitchDevice && devices > 1}
                 prerequisite={prerequisite}
             />
+
+            {allowSwitchDevice && connectedDevicesCount > 1 && (
+                <ButtonWrapper>
+                    <Button variant="tertiary" onClick={handleSwitchDeviceClick}>
+                        <Translation id="TR_SWITCH_DEVICE" />
+                    </Button>
+                </ButtonWrapper>
+            )}
 
             <TipsContainer
                 initial={{ opacity: 0 }}
