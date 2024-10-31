@@ -2,7 +2,14 @@ import { ChangeEvent } from 'react';
 import { useArgs } from '@storybook/client-api';
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Input as InputComponent, InputProps } from './Input';
+import {
+    Input as InputComponent,
+    InputProps,
+    allowedInputFrameProps,
+    allowedInputTextProps,
+} from './Input';
+import { getFramePropsStory } from '../../../utils/frameProps';
+import { getTextPropsStory } from '../../typography/utils';
 
 const meta: Meta = {
     title: 'Form',
@@ -14,6 +21,8 @@ const meta: Meta = {
         inputState: null,
         innerAddonAlign: 'right',
         hasBottomPadding: true,
+        ...getFramePropsStory(allowedInputFrameProps).args,
+        ...getTextPropsStory(allowedInputTextProps).args,
     },
     argTypes: {
         bottomText: { control: 'text' },
@@ -46,6 +55,8 @@ const meta: Meta = {
             },
             options: [null, 'hover', 'always'],
         },
+        ...getFramePropsStory(allowedInputFrameProps).argTypes,
+        ...getTextPropsStory(allowedInputTextProps).argTypes,
     },
 } as Meta;
 export default meta;

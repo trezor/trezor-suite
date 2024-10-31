@@ -47,7 +47,7 @@ export const InfoRow = ({
         <Container {...frameProps}>
             <Flex
                 direction={direction}
-                alignItems={isRow ? 'center' : 'flex-start'}
+                alignItems={isRow ? 'center' : 'stretch'}
                 justifyContent={isRow ? 'space-between' : undefined}
                 gap={isRow ? spacings.md : spacings.xxs}
             >

@@ -1,12 +1,5 @@
-import styled from 'styled-components';
-import {
-    borders,
-    Elevation,
-    mapElevationToBackground,
-    nativeTypography,
-    spacingsPx,
-} from '@trezor/theme';
-import { Row, useElevation } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+import { Row, Card, Column, Spinner, Paragraph } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { ExchangeTrade } from 'invity-api';
 import {
@@ -21,33 +14,7 @@ import {
     FORM_RATE_FLOATING,
     FORM_RATE_TYPE,
 } from 'src/constants/wallet/coinmarket/form';
-import {
-    CoinmarketFormOfferSpinnerText,
-    CoinmarketFormOfferSpinnerWrapper,
-    CoinmarketSpinnerWrapper,
-} from 'src/views/wallet/coinmarket';
 import { CoinmarketFormOffersSwitcherItem } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOffersSwitcherItem';
-
-const BestOffers = styled.div<{ $elevation: Elevation }>`
-    padding: ${spacingsPx.xxs};
-    gap: ${spacingsPx.xxs};
-    border-radius: ${borders.radii.md};
-    background-color: ${mapElevationToBackground};
-`;
-
-const ProviderNotFound = styled.div`
-    text-align: center;
-    padding: ${spacingsPx.md};
-    font-size: ${nativeTypography.label.fontSize}px;
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-const NoOffers = styled.div`
-    height: 116px;
-    display: flex;
-    align-items: center;
-    padding: ${spacingsPx.md};
-`;
 
 interface CoinmarketFormOffersSwitcherProps {
     context: CoinmarketExchangeFormContextProps;
@@ -68,7 +35,6 @@ export const CoinmarketFormOffersSwitcher = ({
 }: CoinmarketFormOffersSwitcherProps) => {
     const { setValue, getValues, dexQuotes } = context;
     const { exchangeType } = getValues();
-    const { elevation } = useElevation();
     const cexQuote = quotes?.[0];
     const dexQuote = dexQuotes?.[0];
     const hasSingleOption = !cexQuote !== !dexQuote;
@@ -77,71 +43,86 @@ export const CoinmarketFormOffersSwitcher = ({
     if (!bestQuote || isFormLoading) {
         if (isFormLoading && !isFormInvalid) {
             return (
-                <BestOffers $elevation={elevation}>
-                    <NoOffers>
-                        <CoinmarketFormOfferSpinnerWrapper>
-                            <Row justifyContent="center" alignItems="center">
-                                <CoinmarketSpinnerWrapper size={32} isGrey={false} />
-                                <CoinmarketFormOfferSpinnerText>
-                                    <Translation id="TR_COINMARKET_OFFER_LOOKING" />
-                                </CoinmarketFormOfferSpinnerText>
-                            </Row>
-                        </CoinmarketFormOfferSpinnerWrapper>
-                    </NoOffers>
-                </BestOffers>
+                <Card>
+                    <Row
+                        justifyContent="center"
+                        margin={{ vertical: spacings.xs }}
+                        gap={spacings.sm}
+                    >
+                        <Spinner size={32} isGrey={false} />
+                        <Paragraph typographyStyle="hint" variant="tertiary">
+                            <Translation id="TR_COINMARKET_OFFER_LOOKING" />
+                        </Paragraph>
+                    </Row>
+                </Card>
             );
         }
 
         return (
-            <BestOffers $elevation={elevation}>
-                <NoOffers>
-                    <CoinmarketFormOfferSpinnerWrapper>
-                        <Row justifyContent="center" alignItems="center">
-                            <CoinmarketFormOfferSpinnerText>
-                                <Translation id="TR_COINMARKET_OFFER_NO_FOUND" />
-                                <br />
-                                <Translation id="TR_COINMARKET_CHANGE_AMOUNT_OR_CURRENCY" />
-                            </CoinmarketFormOfferSpinnerText>
-                        </Row>
-                    </CoinmarketFormOfferSpinnerWrapper>
-                </NoOffers>
-            </BestOffers>
+            <Card>
+                <Paragraph
+                    typographyStyle="hint"
+                    variant="tertiary"
+                    align="center"
+                    margin={{ vertical: spacings.xs }}
+                >
+                    <Translation id="TR_COINMARKET_OFFER_NO_FOUND" />
+                    <br />
+                    <Translation id="TR_COINMARKET_CHANGE_AMOUNT_OR_CURRENCY" />
+                </Paragraph>
+            </Card>
         );
     }
 
     return (
-        <BestOffers $elevation={elevation}>
-            {cexQuote ? (
-                <CoinmarketFormOffersSwitcherItem
-                    selectedExchangeType={exchangeType}
-                    isSelectable={!hasSingleOption}
-                    onSelect={() => setValue(FORM_EXCHANGE_TYPE, FORM_EXCHANGE_CEX)}
-                    providers={providers}
-                    quote={cexQuote}
-                    isBestRate={bestRatedQuote?.orderId === cexQuote?.orderId}
-                />
-            ) : (
-                <ProviderNotFound>
-                    <Translation id="TR_COINMARKET_NO_CEX_PROVIDER_FOUND" />
-                </ProviderNotFound>
-            )}
-            {dexQuote ? (
-                <CoinmarketFormOffersSwitcherItem
-                    selectedExchangeType={exchangeType}
-                    isSelectable={!hasSingleOption}
-                    onSelect={() => {
-                        setValue(FORM_EXCHANGE_TYPE, FORM_EXCHANGE_DEX);
-                        setValue(FORM_RATE_TYPE, FORM_RATE_FLOATING);
-                    }}
-                    providers={providers}
-                    quote={dexQuote}
-                    isBestRate={bestRatedQuote?.orderId === dexQuote?.orderId}
-                />
-            ) : (
-                <ProviderNotFound>
-                    <Translation id="TR_COINMARKET_NO_DEX_PROVIDER_FOUND" />
-                </ProviderNotFound>
-            )}
-        </BestOffers>
+        <Card paddingType="none">
+            <Column
+                alignItems="stretch"
+                margin={{ horizontal: spacings.xxs, vertical: spacings.xxs }}
+                gap={spacings.xxs}
+            >
+                {cexQuote ? (
+                    <CoinmarketFormOffersSwitcherItem
+                        selectedExchangeType={exchangeType}
+                        isSelectable={!hasSingleOption}
+                        onSelect={() => setValue(FORM_EXCHANGE_TYPE, FORM_EXCHANGE_CEX)}
+                        providers={providers}
+                        quote={cexQuote}
+                        isBestRate={bestRatedQuote?.orderId === cexQuote?.orderId}
+                    />
+                ) : (
+                    <Paragraph
+                        typographyStyle="label"
+                        variant="tertiary"
+                        align="center"
+                        margin={{ vertical: spacings.md }}
+                    >
+                        <Translation id="TR_COINMARKET_NO_CEX_PROVIDER_FOUND" />
+                    </Paragraph>
+                )}
+                {dexQuote ? (
+                    <CoinmarketFormOffersSwitcherItem
+                        selectedExchangeType={exchangeType}
+                        isSelectable={!hasSingleOption}
+                        onSelect={() => {
+                            setValue(FORM_EXCHANGE_TYPE, FORM_EXCHANGE_DEX);
+                            setValue(FORM_RATE_TYPE, FORM_RATE_FLOATING);
+                        }}
+                        providers={providers}
+                        quote={dexQuote}
+                        isBestRate={bestRatedQuote?.orderId === dexQuote?.orderId}
+                    />
+                ) : (
+                    <Paragraph
+                        typographyStyle="label"
+                        variant="tertiary"
+                        align="center"
+                        margin={{ vertical: spacings.md }}
+                    >
+                        <Translation id="TR_COINMARKET_NO_DEX_PROVIDER_FOUND" />
+                    </Paragraph>
+                )}
+            </Column>
+        </Card>
     );
 };

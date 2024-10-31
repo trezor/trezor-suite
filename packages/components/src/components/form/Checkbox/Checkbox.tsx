@@ -142,7 +142,7 @@ const CheckIcon = styled(Icon)<{ $isVisible: boolean }>`
 
 export const Label = styled.div<{ $isRed: boolean }>`
     display: flex;
-    justify-content: center;
+    flex: 1;
     text-align: left;
     user-select: none;
     color: ${({ theme, $isRed }) => $isRed && theme.textAlertRed};

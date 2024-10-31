@@ -1,8 +1,17 @@
 import { useState, useEffect, ReactNode, useCallback, KeyboardEvent } from 'react';
 import styled, { css } from 'styled-components';
 import { breakpointMediaQueries } from '@trezor/styles';
-import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
+import {
+    borders,
+    spacings,
+    spacingsPx,
+    typography,
+    Elevation,
+    mapElevationToBackground,
+    nextElevation,
+} from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
+import { useElevation } from '../../ElevationContext/ElevationContext';
 
 const Wrapper = styled.div<{ $isFullWidth?: boolean }>`
     display: flex;
@@ -35,14 +44,18 @@ const getTranslateValue = (index: number) => {
 const getPuckWidth = (optionsCount: number) =>
     `calc((100% - 8px - ${(optionsCount - 1) * spacings.xxs}px) / ${optionsCount})`;
 
-const Options = styled.div<{ $optionsCount: number; $isFullWidth?: boolean }>`
+const Options = styled.div<{
+    $optionsCount: number;
+    $isFullWidth?: boolean;
+    $elevation: Elevation;
+}>`
     position: relative;
     display: grid;
     grid-auto-columns: ${({ $optionsCount }) => `minmax(${getPuckWidth($optionsCount)}, 1fr)`};
     grid-auto-flow: column;
     gap: ${spacingsPx.xxs};
     padding: ${spacingsPx.xxs};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
+    background: ${mapElevationToBackground};
     border-radius: ${borders.radii.full};
     width: ${({ $isFullWidth }) => ($isFullWidth ? '100%' : 'auto')};
 
@@ -53,16 +66,16 @@ const Options = styled.div<{ $optionsCount: number; $isFullWidth?: boolean }>`
     }
 `;
 
-const Puck = styled.div<{ $optionsCount: number; $selectedIndex: number }>`
+const Puck = styled.div<{ $optionsCount: number; $selectedIndex: number; $elevation: Elevation }>`
     position: absolute;
     left: 4px;
     top: 4px;
     bottom: 4px;
     width: ${({ $optionsCount }) => getPuckWidth($optionsCount)};
     padding: ${spacingsPx.xxs} ${spacingsPx.xl};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    background: ${mapElevationToBackground};
     border-radius: ${borders.radii.full};
-    box-shadow: ${({ theme }) => theme.boxShadowBase};
+    box-shadow: ${({ theme, $elevation }) => $elevation === 1 && theme.boxShadowBase};
     transform: ${({ $selectedIndex }) => `translateX(${getTranslateValue($selectedIndex)})`};
     transition:
         transform 0.175s cubic-bezier(1, 0.02, 0.38, 0.74),
@@ -152,6 +165,7 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
     ...rest
 }) => {
     const [selectedOptionIn, setSelected] = useState<ValueTypes | undefined>(selectedOption);
+    const { elevation } = useElevation();
 
     useEffect(() => {
         if (selectedOption !== undefined) {
@@ -206,10 +220,15 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
         <Wrapper className={className} $isFullWidth={isFullWidth} {...rest}>
             {label && <Label>{label}</Label>}
 
-            <Options $optionsCount={options.length} $isFullWidth={isFullWidth}>
+            <Options
+                $optionsCount={options.length}
+                $isFullWidth={isFullWidth}
+                $elevation={elevation}
+            >
                 <Puck
                     $optionsCount={options.length}
                     $selectedIndex={selectedIndex}
+                    $elevation={nextElevation[elevation]}
                     tabIndex={0}
                     onKeyDown={handleKeyboardNav}
                 />
