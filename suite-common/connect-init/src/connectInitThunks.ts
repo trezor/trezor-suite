@@ -12,6 +12,7 @@ import { resolveStaticPath } from '@suite-common/suite-utils';
 import { isDesktop, isNative } from '@trezor/env-utils';
 
 import { cardanoConnectPatch } from './cardanoConnectPatch';
+import { getHost } from '@trezor/connect/src/utils/urlUtils';
 
 const CONNECT_INIT_MODULE = '@common/connect-init';
 
@@ -109,6 +110,8 @@ export const connectInitThunk = createThunk(
 
         cardanoConnectPatch(getEnabledNetworks);
 
+        const host = getHost(window.location.origin);
+        console.log('host', host);
         // note:
         // this way, for local development you will get http://localhost:8000/static/connect/workers/sessions-background-sharedworker.js which is still the not-shared shared-worker
         // meaning that testing it together with connect-explorer dev build (http://localhost:8088/workers/sessions-background-sharedworker.js) will not work locally.
@@ -116,12 +119,14 @@ export const connectInitThunk = createThunk(
         let sessionsBackground: string | undefined;
         if (typeof window !== 'undefined' && !isNative()) {
             sessionsBackground =
-                window.location.origin +
+                `https://${host}/` +
                 resolveStaticPath(
                     'connect/workers/sessions-background-sharedworker.js',
                     `${process.env.ASSET_PREFIX || ''}`,
                 );
         }
+
+        console.log('sessionsBackground', sessionsBackground);
 
         // Duplicates `getBinFilesBaseUrlThunk`, because calling any other thunk would change store.getActions() history,
         // and it would be impossible to test this thunk in isolation (many unit tests depend on it).
