@@ -1,7 +1,6 @@
-import { Row } from '@trezor/components';
+import { InfoRow } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { CoinmarketGetProvidersInfoProps } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketInfoLeftColumn, CoinmarketInfoRightColumn } from 'src/views/wallet/coinmarket';
 import { CoinmarketProviderInfo } from 'src/views/wallet/coinmarket/common/CoinmarketProviderInfo';
 
 interface CoinmarketInfoProviderProps {
@@ -10,12 +9,7 @@ interface CoinmarketInfoProviderProps {
 }
 
 export const CoinmarketInfoProvider = ({ exchange, providers }: CoinmarketInfoProviderProps) => (
-    <Row>
-        <CoinmarketInfoLeftColumn>
-            <Translation id="TR_BUY_PROVIDER" />
-        </CoinmarketInfoLeftColumn>
-        <CoinmarketInfoRightColumn>
-            <CoinmarketProviderInfo exchange={exchange} providers={providers} />
-        </CoinmarketInfoRightColumn>
-    </Row>
+    <InfoRow label={<Translation id="TR_BUY_PROVIDER" />} direction="row">
+        <CoinmarketProviderInfo exchange={exchange} providers={providers} />
+    </InfoRow>
 );

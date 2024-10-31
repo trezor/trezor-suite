@@ -1,15 +1,18 @@
-import { useState, ChangeEvent, MouseEventHandler } from 'react';
+import { useState, ChangeEvent } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import {
     Button,
     Icon,
     Input,
-    Paragraph,
+    InfoRow,
+    Column,
+    Card,
     Row,
+    Divider,
     SelectBar,
     Tooltip,
-    variables,
+    ElevationContext,
     getInputStateTextColor,
 } from '@trezor/components';
 import useDebounce from 'react-use/lib/useDebounce';
@@ -17,100 +20,13 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { FieldError } from 'react-hook-form';
 import { BottomText } from '@trezor/components/src/components/form/BottomText';
 import { TranslationKey } from '@suite-common/intl-types';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-top: ${spacingsPx.xs};
-`;
-
-const LabelText = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-`;
-
-const Value = styled.div`
-    padding-top: 6px;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const PaddedValue = styled(Value)`
-    padding-right: 15px;
-`;
-
-const BreakableValue = styled(Value)`
+const BreakableValue = styled.span`
     word-break: break-all;
-`;
-
-const ButtonWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: 20px;
-    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-    margin: 20px 0;
-`;
-
-const RowWrapper = styled.div`
-    margin: 10px 24px;
-`;
-
-const Address = styled.div``;
-
-const Columns = styled.div`
-    display: flex;
-    flex-direction: row;
-`;
-
-const PaddedColumns = styled(Columns)`
-    padding-top: 6px;
-`;
-
-const LeftColumn = styled.div`
-    display: flex;
-    flex: 1;
-`;
-
-const RightColumn = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    flex: 2;
-`;
-
-const Slippage = styled.div`
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const SlippageAmount = styled(Slippage)`
-    padding-right: 15px;
-`;
-
-const SlippageSettingsRow = styled.div`
-    margin: 0 24px;
-    min-height: 65px;
-`;
-
-const SlippageSettingsButton = styled.button`
-    background: none;
-    border: 0;
-    margin: 0 3px 0 15px;
-    cursor: pointer;
-    display: inline-block;
-    width: 25px;
-    height: auto;
-    position: relative;
-    line-height: 1;
-`;
-
-const InputWrapper = styled.div`
-    max-width: 70px;
 `;
 
 const SLIPPAGE_MIN = '0.01';
@@ -157,7 +73,6 @@ export const CoinmarketOfferExchangeSendSwap = () => {
     const { account, callInProgress, selectedQuote, exchangeInfo, confirmTrade, sendTransaction } =
         useCoinmarketFormContext<CoinmarketTradeExchangeType>();
     const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
-    const [slippageSettings, setSlippageSettings] = useState(false);
     const [slippage, setSlippage] = useState(selectedQuote?.swapSlippage ?? '1');
     const [customSlippage, setCustomSlippage] = useState(slippage);
     const [customSlippageError, setCustomSlippageError] = useState<
@@ -198,11 +113,6 @@ export const CoinmarketOfferExchangeSendSwap = () => {
         value: selectedQuote.approvalStringAmount,
         send: cryptoIdToCoinSymbol(selectedQuote.send),
         provider: providerName,
-    };
-
-    const toggleSlippage: MouseEventHandler<HTMLButtonElement> = e => {
-        e.preventDefault();
-        setSlippageSettings(!slippageSettings);
     };
 
     const selectedSlippage =
@@ -251,147 +161,114 @@ export const CoinmarketOfferExchangeSendSwap = () => {
     };
 
     return (
-        <Wrapper>
-            <RowWrapper>
-                <LabelText>
-                    <Translation id="TR_EXCHANGE_SEND_FROM" />
-                </LabelText>
-                <Value>
-                    <AccountLabeling account={account} />
-                </Value>
-            </RowWrapper>
-            <RowWrapper>
-                <LabelText>
-                    <Translation id="TR_EXCHANGE_SWAP_SEND_TO" values={translationValues} />
-                </LabelText>
-                <Value>
-                    <Address>{dexTx.to}</Address>
-                </Value>
-            </RowWrapper>
-            <RowWrapper>
-                <LabelText>
-                    <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE" />
-                </LabelText>
-                <PaddedColumns>
-                    <LeftColumn>
-                        <Slippage>
-                            <Tooltip
-                                content={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_INFO" />}
-                                dashed
-                            >
-                                <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_TOLERANCE" />
-                            </Tooltip>
-                        </Slippage>
-                    </LeftColumn>
-                    <RightColumn>
-                        <SlippageAmount>{selectedQuote.swapSlippage}%</SlippageAmount>
-                        <SlippageSettingsButton type="button" onClick={toggleSlippage}>
-                            <Icon
-                                name={slippageSettings ? 'chevronUp' : 'chevronDown'}
-                                color={theme.legacy.TYPE_DARK_GREY}
-                                size={14}
-                            />
-                        </SlippageSettingsButton>
-                    </RightColumn>
-                </PaddedColumns>
-            </RowWrapper>
-            {slippageSettings && (
-                <SlippageSettingsRow>
-                    <PaddedColumns>
-                        <LeftColumn>
-                            <SelectBar
-                                selectedOption={selectedSlippage}
-                                options={slippageOptions}
-                                onChange={changeSlippage}
-                            />
-                        </LeftColumn>
-                        {slippage === CUSTOM_SLIPPAGE && (
-                            <RightColumn>
-                                <Row margin={{ left: spacings.xs }} width="100%">
-                                    <InputWrapper>
-                                        <Input
-                                            value={customSlippage}
-                                            size="small"
-                                            inputState={customSlippageError && 'error'}
-                                            name="CustomSlippage"
-                                            data-testid="CustomSlippage"
-                                            onChange={changeCustomSlippage}
-                                        />
-                                    </InputWrapper>
-                                </Row>
-                            </RightColumn>
-                        )}
-                    </PaddedColumns>
-                    {customSlippageError?.message ? (
-                        <BottomText
-                            inputState={customSlippageError && 'error'}
-                            iconComponent={
-                                <Icon
-                                    name="warningCircle"
-                                    size="medium"
-                                    color={getInputStateTextColor('error', theme)}
-                                />
+        <Column gap={spacings.lg} alignItems="stretch" flex="1">
+            <InfoRow label={<Translation id="TR_EXCHANGE_SEND_FROM" />} typographyStyle="hint">
+                <AccountLabeling account={account} />
+            </InfoRow>
+            <InfoRow
+                label={<Translation id="TR_EXCHANGE_SWAP_SEND_TO" values={translationValues} />}
+                typographyStyle="hint"
+            >
+                {dexTx.to}
+            </InfoRow>
+
+            <Card
+                fillType="default"
+                margin={{ vertical: spacings.md }}
+                label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE" />}
+            >
+                <ElevationContext baseElevation={0}>
+                    <Column gap={spacings.lg} alignItems="stretch">
+                        <InfoRow
+                            label={
+                                <Tooltip
+                                    content={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_INFO" />}
+                                    hasIcon
+                                >
+                                    <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_TOLERANCE" />
+                                </Tooltip>
                             }
+                            typographyStyle="hint"
+                            margin={{ bottom: spacings.xxs }}
                         >
-                            <Translation id={customSlippageError?.message} />
-                        </BottomText>
-                    ) : null}
-                </SlippageSettingsRow>
-            )}
-            <RowWrapper>
-                <LabelText>
-                    <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_SUMMARY" />
-                </LabelText>
-                <PaddedValue>
-                    <Columns>
-                        <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED" />
-                        <RightColumn>
+                            <Row gap={spacings.sm} margin={{ top: spacings.xxs }}>
+                                <SelectBar
+                                    selectedOption={selectedSlippage}
+                                    options={slippageOptions}
+                                    onChange={changeSlippage}
+                                    isFullWidth
+                                />
+                                {slippage === CUSTOM_SLIPPAGE && (
+                                    <Input
+                                        value={customSlippage}
+                                        size="small"
+                                        inputState={customSlippageError && 'error'}
+                                        name="CustomSlippage"
+                                        data-testid="CustomSlippage"
+                                        onChange={changeCustomSlippage}
+                                        width={100}
+                                        align="center"
+                                        autoFocus
+                                    />
+                                )}
+                            </Row>
+                            {customSlippageError?.message ? (
+                                <BottomText
+                                    inputState={customSlippageError && 'error'}
+                                    iconComponent={
+                                        <Icon
+                                            name="warningCircle"
+                                            size="medium"
+                                            color={getInputStateTextColor('error', theme)}
+                                        />
+                                    }
+                                >
+                                    <Translation id={customSlippageError?.message} />
+                                </BottomText>
+                            ) : null}
+                        </InfoRow>
+
+                        <InfoRow
+                            label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED" />}
+                            typographyStyle="hint"
+                        >
                             <FormattedCryptoAmount
                                 value={receiveStringAmount}
                                 symbol={cryptoIdToCoinSymbol(receive)}
                             />
-                        </RightColumn>
-                    </Columns>
-                </PaddedValue>
-                <PaddedValue>
-                    <Columns>
-                        <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT" />
-                        <RightColumn>
-                            -
-                            {formatCryptoAmountAsAmount(
+                        </InfoRow>
+
+                        <InfoRow
+                            label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT" />}
+                            typographyStyle="hint"
+                        >
+                            {`-${formatCryptoAmountAsAmount(
                                 (Number(selectedQuote.swapSlippage) / 100) *
                                     Number(receiveStringAmount),
                                 Number(receiveStringAmount),
-                            )}{' '}
-                            {cryptoIdToCoinSymbol(receive)}
-                        </RightColumn>
-                    </Columns>
-                </PaddedValue>
-                <PaddedValue>
-                    <Columns>
-                        <LeftColumn>
-                            <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM" />
-                        </LeftColumn>
-                        <RightColumn>
-                            {formatCryptoAmountAsAmount(
+                            )} ${cryptoIdToCoinSymbol(receive)}`}
+                        </InfoRow>
+
+                        <InfoRow
+                            label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM" />}
+                            typographyStyle="hint"
+                        >
+                            {`${formatCryptoAmountAsAmount(
                                 ((100 - Number(selectedQuote.swapSlippage)) / 100) *
                                     Number(receiveStringAmount),
                                 Number(receiveStringAmount),
-                            )}{' '}
-                            {cryptoIdToCoinSymbol(receive)}
-                        </RightColumn>
-                    </Columns>
-                </PaddedValue>
-            </RowWrapper>
-            <RowWrapper>
-                <LabelText>
-                    <Translation id="TR_EXCHANGE_SWAP_DATA" />
-                </LabelText>
-                <BreakableValue>
-                    <Paragraph typographyStyle="hint">{dexTx.data}</Paragraph>
-                </BreakableValue>
-            </RowWrapper>
-            <ButtonWrapper>
+                            )} ${cryptoIdToCoinSymbol(receive)}`}
+                        </InfoRow>
+                    </Column>
+                </ElevationContext>
+            </Card>
+
+            <InfoRow label={<Translation id="TR_EXCHANGE_SWAP_DATA" />} typographyStyle="hint">
+                <BreakableValue>{dexTx.data}</BreakableValue>
+            </InfoRow>
+
+            <Column>
+                <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
                 <Button
                     isLoading={callInProgress}
                     isDisabled={callInProgress}
@@ -399,7 +276,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                 >
                     <Translation id="TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND" />
                 </Button>
-            </ButtonWrapper>
-        </Wrapper>
+            </Column>
+        </Column>
     );
 };

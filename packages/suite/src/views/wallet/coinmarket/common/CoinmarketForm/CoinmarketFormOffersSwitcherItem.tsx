@@ -1,48 +1,19 @@
 import { ExchangeTrade } from 'invity-api';
 import { CoinmarketUtilsProvidersProps } from 'src/types/coinmarket/coinmarket';
-import { Badge, Radio, Tooltip } from '@trezor/components';
+import { Badge, Radio, Tooltip, Row, Text, useElevation } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import styled, { css } from 'styled-components';
-import { borders, spacingsPx } from '@trezor/theme';
+import styled from 'styled-components';
+import { borders, spacings, spacingsPx, mapElevationToBackground, Elevation } from '@trezor/theme';
 import { ExchangeType } from 'src/types/coinmarket/coinmarketForm';
 import { FORM_EXCHANGE_CEX, FORM_EXCHANGE_DEX } from 'src/constants/wallet/coinmarket/form';
 import { CoinmarketUtilsProvider } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsProvider';
 
-const Offer = styled.div<{ $isSelected: boolean }>`
+const Offer = styled.div<{ $isSelected: boolean; $elevation: Elevation }>`
     padding: ${spacingsPx.md};
     border-radius: ${borders.radii.sm};
+    background: ${mapElevationToBackground};
 
-    /* full width radio label */
-    & > div[class^='Checkbox__'] > div:last-child {
-        width: 100%;
-    }
-
-    .content {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        gap: ${spacingsPx.xs};
-    }
-
-    .exchange-type {
-        color: ${({ theme }) => theme.textPrimaryDefault};
-        margin-left: auto;
-    }
-
-    ${({ $isSelected }) =>
-        $isSelected
-            ? css`
-                  background-color: ${({ theme }) => theme.backgroundSurfaceElevation1};
-              `
-            : css`
-                  .name {
-                      color: ${({ theme }) => theme.textDisabled};
-                  }
-
-                  .exchange-type {
-                      color: ${({ theme }) => theme.textSubdued};
-                  }
-              `}
+    ${({ $isSelected }) => !$isSelected && 'background: none;'}
 `;
 
 interface CoinmarketFormOffersSwitcherItemProps {
@@ -64,25 +35,26 @@ export const CoinmarketFormOffersSwitcherItem = ({
 }: CoinmarketFormOffersSwitcherItemProps) => {
     const exchangeType = quote.isDex ? FORM_EXCHANGE_DEX : FORM_EXCHANGE_CEX;
     const isSelected = Boolean(selectedExchangeType === exchangeType);
+    const { elevation } = useElevation();
 
     const content = (
-        <div className="content">
+        <Row gap={spacings.xs} flex="1">
             <CoinmarketUtilsProvider providers={providers} exchange={quote.exchange} />
             {isBestRate && (
                 <Badge variant="primary" size="small">
                     <Translation id="TR_COINMARKET_BEST_RATE" />
                 </Badge>
             )}
-            <div className="exchange-type">
+            <Text variant="primary" as="div" margin={{ left: 'auto' }}>
                 <Tooltip content={<Translation id={`TR_COINMARKET_${exchangeType}_TOOLTIP`} />}>
                     {exchangeType}
                 </Tooltip>
-            </div>
-        </div>
+            </Text>
+        </Row>
     );
 
     return (
-        <Offer $isSelected={isSelected}>
+        <Offer $isSelected={isSelected} $elevation={elevation}>
             {isSelectable ? (
                 <Radio labelAlignment="left" isChecked={isSelected} onClick={() => onSelect(quote)}>
                     {content}

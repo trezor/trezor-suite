@@ -9,12 +9,11 @@ import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils'
 const TextButtonContainer = styled.button<{
     $size: ButtonSize;
     $iconAlignment: IconAlignment;
-    $hasIcon: boolean;
 }>`
     display: flex;
     align-items: center;
     flex-direction: ${({ $iconAlignment }) => $iconAlignment === 'right' && 'row-reverse'};
-    gap: ${({ $hasIcon }) => $hasIcon && spacingsPx.xs};
+    gap: ${spacingsPx.xs};
     height: ${({ $size: size }) => (size === 'small' ? 22 : 26)}px;
     padding: ${spacingsPx.xxs};
     border: 1px solid transparent;
@@ -68,12 +67,10 @@ export const TextButton = ({
     ...rest
 }: TextButtonProps) => {
     const IconComponent = getIcon({ icon, size: getIconSize(size) });
-
     const Loader = <Spinner size={getIconSize(size)} />;
 
     return (
         <TextButtonContainer
-            $hasIcon={!!icon}
             $size={size}
             $iconAlignment={iconAlignment}
             disabled={isDisabled || isLoading}
@@ -81,7 +78,6 @@ export const TextButton = ({
         >
             {!isLoading && icon && IconComponent}
             {isLoading && Loader}
-
             {children}
         </TextButtonContainer>
     );

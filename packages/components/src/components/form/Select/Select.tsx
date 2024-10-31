@@ -28,8 +28,17 @@ import { useDetectPortalTarget } from './useDetectPortalTarget';
 import { DROPDOWN_MENU, menuStyle } from '../../Dropdown/menuStyle';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { TransientProps } from '../../../utils/transientProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../../utils/frameProps';
 
 const reactSelectClassNamePrefix = 'react-select';
+
+export const allowedSelectFrameProps = ['margin', 'width'] as const satisfies FramePropsKeys[];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectFrameProps)[number]>;
 
 const createSelectStyle = (
     theme: DefaultTheme,
@@ -103,7 +112,8 @@ type WrapperProps = TransientProps<
     Pick<
         SelectProps,
         'isClean' | 'isDisabled' | 'minValueWidth' | 'size' | 'isMenuOpen' | 'isSearchable'
-    >
+    > &
+        AllowedFrameProps
 > & {
     $isWithLabel: boolean;
     $isWithPlaceholder: boolean;
@@ -233,6 +243,8 @@ const Wrapper = styled.div<WrapperProps>`
             pointer-events: auto;
             cursor: not-allowed;
         `}
+
+    ${withFrameProps}
 `;
 
 const SelectLabel = styled(Label)`
@@ -272,7 +284,7 @@ type KeyPressScrollProps =
     | { useKeyPressScroll: true; isSearchable?: never }
     | { useKeyPressScroll?: false; isSearchable?: boolean };
 
-export type SelectProps = CommonProps & KeyPressScrollProps;
+export type SelectProps = CommonProps & KeyPressScrollProps & AllowedFrameProps;
 
 export const Select = ({
     className,
@@ -295,10 +307,11 @@ export const Select = ({
 }: SelectProps) => {
     const selectRef = useRef<SelectInstance<Option, boolean>>(null);
     const { elevation } = useElevation();
-
     const theme = useTheme();
     const onKeyDown = useOnKeyDown(selectRef, useKeyPressScroll);
     const menuPortalTarget = useDetectPortalTarget(selectRef);
+    const frameProps = pickAndPrepareFrameProps(props, allowedSelectFrameProps);
+
     const isRenderedInModal = menuPortalTarget !== null;
 
     const handleOnChange = useCallback<Required<ReactSelectProps>['onChange']>(
@@ -348,6 +361,7 @@ export const Select = ({
             $isWithLabel={!!label}
             $isWithPlaceholder={!!placeholder}
             $hasBottomPadding={hasBottomPadding === true && bottomText === null}
+            {...frameProps}
         >
             <ReactSelect
                 ref={selectRef}

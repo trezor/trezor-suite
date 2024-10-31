@@ -9,7 +9,6 @@ import {
     spacingsPx,
     typography,
 } from '@trezor/theme';
-import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { Margin } from 'recharts/types/util/types';
 import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
 
@@ -87,64 +86,6 @@ export const CoinmarketFormOptionNetwork = styled.div<{ $elevation: Elevation }>
     background: ${({ theme, $elevation }) =>
         mapElevationToBackground({ theme, $elevation: nextElevation[$elevation] })};
     border-radius: 4px;
-`;
-
-export const CoinmarketAmountContainer = styled.div`
-    display: flex;
-    align-items: center;
-    margin-top: ${spacingsPx.md};
-
-    ${SCREEN_QUERY.MOBILE} {
-        margin-top: ${spacingsPx.xs};
-    }
-`;
-
-export const CoinmarketAmountWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: ${spacingsPx.xs};
-    ${typography.titleMedium}
-    line-height: unset;
-    padding: ${spacingsPx.xxxs} ${spacingsPx.zero};
-
-    ${SCREEN_QUERY.BELOW_DESKTOP} {
-        font-size: 28px;
-    }
-
-    ${SCREEN_QUERY.BELOW_LAPTOP} {
-        font-size: ${nativeTypography.titleMedium.fontSize}px;
-    }
-
-    ${SCREEN_QUERY.MOBILE} {
-        font-size: ${nativeTypography.titleSmall.fontSize}px;
-        margin-top: ${spacingsPx.xs};
-    }
-`;
-
-export const CoinmarketAmountWrapperText = styled.div`
-    padding-right: ${spacingsPx.xs};
-    font-variant-numeric: tabular-nums;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 1;
-`;
-
-export const CoinmarketInfoLeftColumn = styled.div`
-    display: flex;
-    flex: 1;
-    ${typography.hint}
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-export const CoinmarketInfoRightColumn = styled.div`
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    flex-direction: column;
-    flex: 1;
-    ${typography.body}
-    color: ${({ theme }) => theme.textDefault};
 `;
 
 export const CoinmarketInfoAmount = styled.div`

@@ -1,4 +1,6 @@
-import { CoinmarketAmountContainer, CoinmarketAmountWrapper } from 'src/views/wallet/coinmarket';
+import { Row, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
@@ -21,16 +23,16 @@ export const CoinmarketFormOfferCryptoAmount = ({
     }
 
     return (
-        <CoinmarketAmountContainer>
-            <CoinmarketAmountWrapper>
-                <CoinmarketCoinLogo cryptoId={cryptoId} />
+        <Row gap={spacings.sm}>
+            <CoinmarketCoinLogo cryptoId={cryptoId} />
+            <Text typographyStyle="titleMedium" ellipsisLineCount={2}>
                 <FormattedCryptoAmount
                     value={amount}
                     symbol={networkSymbol}
                     isRawString
-                    isBalance
+                    isBalance={false}
                 />
-            </CoinmarketAmountWrapper>
-        </CoinmarketAmountContainer>
+            </Text>
+        </Row>
     );
 };

@@ -1,25 +1,11 @@
-import { Row, useElevation } from '@trezor/components';
-import { borders, Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
-import styled from 'styled-components';
+import { Row, Spinner, Card, Paragraph } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import {
     CoinmarketTradeDetailType,
     CoinmarketUtilsProvidersProps,
 } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketUtilsProvider } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsProvider';
-import {
-    CoinmarketFormOfferSpinnerText,
-    CoinmarketFormOfferSpinnerWrapper,
-    CoinmarketSpinnerWrapper,
-} from 'src/views/wallet/coinmarket';
-
-const CoinmarketFormOfferItemWrapper = styled.div<{ $elevation: Elevation }>`
-    display: flex;
-    padding: ${spacingsPx.md};
-    gap: ${spacingsPx.xs};
-    border-radius: ${borders.radii.sm};
-    background-color: ${mapElevationToBackground};
-`;
 
 interface CoinmarketFormOfferItemProps {
     bestQuote: CoinmarketTradeDetailType | undefined;
@@ -35,42 +21,43 @@ export const CoinmarketFormOfferItem = ({
     isFormInvalid,
     providers,
 }: CoinmarketFormOfferItemProps) => {
-    const { elevation } = useElevation();
-
     if (!bestQuote || isFormLoading) {
         if (isFormLoading && !isFormInvalid) {
             return (
-                <CoinmarketFormOfferItemWrapper $elevation={elevation}>
-                    <CoinmarketFormOfferSpinnerWrapper>
-                        <Row justifyContent="center" alignItems="center">
-                            <CoinmarketSpinnerWrapper size={32} isGrey={false} />
-                            <CoinmarketFormOfferSpinnerText>
-                                <Translation id="TR_COINMARKET_OFFER_LOOKING" />
-                            </CoinmarketFormOfferSpinnerText>
-                        </Row>
-                    </CoinmarketFormOfferSpinnerWrapper>
-                </CoinmarketFormOfferItemWrapper>
+                <Card>
+                    <Row
+                        justifyContent="center"
+                        margin={{ vertical: spacings.xs }}
+                        gap={spacings.sm}
+                    >
+                        <Spinner size={32} isGrey={false} />
+                        <Paragraph typographyStyle="hint" variant="tertiary">
+                            <Translation id="TR_COINMARKET_OFFER_LOOKING" />
+                        </Paragraph>
+                    </Row>
+                </Card>
             );
         }
 
         return (
-            <CoinmarketFormOfferItemWrapper $elevation={elevation}>
-                <CoinmarketFormOfferSpinnerWrapper>
-                    <Row justifyContent="center" alignItems="center">
-                        <CoinmarketFormOfferSpinnerText>
-                            <Translation id="TR_COINMARKET_OFFER_NO_FOUND" />
-                            <br />
-                            <Translation id="TR_COINMARKET_CHANGE_AMOUNT_OR_CURRENCY" />
-                        </CoinmarketFormOfferSpinnerText>
-                    </Row>
-                </CoinmarketFormOfferSpinnerWrapper>
-            </CoinmarketFormOfferItemWrapper>
+            <Card>
+                <Paragraph
+                    typographyStyle="hint"
+                    variant="tertiary"
+                    align="center"
+                    margin={{ vertical: spacings.xs }}
+                >
+                    <Translation id="TR_COINMARKET_OFFER_NO_FOUND" />
+                    <br />
+                    <Translation id="TR_COINMARKET_CHANGE_AMOUNT_OR_CURRENCY" />
+                </Paragraph>
+            </Card>
         );
     }
 
     return (
-        <CoinmarketFormOfferItemWrapper $elevation={elevation}>
+        <Card>
             <CoinmarketUtilsProvider providers={providers} exchange={bestQuote?.exchange} />
-        </CoinmarketFormOfferItemWrapper>
+        </Card>
     );
 };

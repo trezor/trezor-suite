@@ -1,4 +1,4 @@
-import { Button, Column, Divider, Text } from '@trezor/components';
+import { Button, Column, Divider, InfoRow } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
@@ -16,21 +16,16 @@ export const CoinmarketOfferExchangeSend = () => {
 
     return (
         <Column gap={spacings.lg} alignItems="stretch" flex="1">
-            <Column alignItems="stretch" gap={spacings.xxs}>
-                <Text typographyStyle="label" variant="tertiary">
-                    <Translation id="TR_EXCHANGE_SEND_FROM" />
-                </Text>
-                <Text typographyStyle="hint">
-                    <AccountLabeling account={account} />
-                </Text>
-            </Column>
-            <Column alignItems="stretch" gap={spacings.xxs} margin={{ bottom: 'auto' }}>
-                <Text typographyStyle="label" variant="tertiary">
-                    <Translation id="TR_EXCHANGE_SEND_TO" values={{ providerName }} />
-                </Text>
-                <Text typographyStyle="hint">{sendAddress}</Text>
-            </Column>
-            <Column>
+            <InfoRow label={<Translation id="TR_EXCHANGE_SEND_FROM" />} typographyStyle="hint">
+                <AccountLabeling account={account} />
+            </InfoRow>
+            <InfoRow
+                label={<Translation id="TR_EXCHANGE_SEND_TO" values={{ providerName }} />}
+                typographyStyle="hint"
+            >
+                {sendAddress}
+            </InfoRow>
+            <Column margin={{ top: 'auto' }}>
                 <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
                 <Button
                     data-testid="@coinmarket/offer/exchange/confirm-on-trezor-and-send"

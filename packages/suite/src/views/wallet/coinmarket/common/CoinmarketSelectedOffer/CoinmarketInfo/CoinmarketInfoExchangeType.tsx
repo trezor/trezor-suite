@@ -1,21 +1,10 @@
-import { Row } from '@trezor/components';
-import { spacingsPx, typography } from '@trezor/theme';
+import { Row, Tooltip, Text } from '@trezor/components';
 import { ExchangeTrade } from 'invity-api';
-import { QuestionTooltip, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import {
     CoinmarketExchangeProvidersInfoProps,
     CoinmarketTradeDetailType,
 } from 'src/types/coinmarket/coinmarket';
-import styled from 'styled-components';
-
-const QuestionTooltipWrapper = styled.div`
-    padding-left: ${spacingsPx.xxs};
-`;
-
-const Text = styled.div`
-    ${typography.body}
-    color: ${({ theme }) => theme.textSubdued};
-`;
 
 interface CoinmarketInfoExchangeTypeProps {
     selectedQuote: CoinmarketTradeDetailType;
@@ -32,23 +21,17 @@ export const CoinmarketInfoExchangeType = ({
         providers && exchangeQuote.exchange ? providers[exchangeQuote.exchange] : undefined;
 
     return (
-        <Row alignItems="center" justifyContent="center" flex="auto">
-            <Text>
+        <Row justifyContent="center" flex="auto">
+            <Text variant="tertiary">
                 {provider?.isFixedRate && !exchangeQuote.isDex && (
-                    <>
+                    <Tooltip content={<Translation id="TR_EXCHANGE_FIXED_OFFERS_INFO" />} hasIcon>
                         <Translation id="TR_EXCHANGE_FIXED" />
-                        <QuestionTooltipWrapper>
-                            <QuestionTooltip tooltip="TR_EXCHANGE_FIXED_OFFERS_INFO" />
-                        </QuestionTooltipWrapper>
-                    </>
+                    </Tooltip>
                 )}
                 {!provider?.isFixedRate && !exchangeQuote.isDex && (
-                    <>
+                    <Tooltip content={<Translation id="TR_EXCHANGE_FLOAT_OFFERS_INFO" />} hasIcon>
                         <Translation id="TR_EXCHANGE_FLOAT" />
-                        <QuestionTooltipWrapper>
-                            <QuestionTooltip tooltip="TR_EXCHANGE_FLOAT_OFFERS_INFO" />
-                        </QuestionTooltipWrapper>
-                    </>
+                    </Tooltip>
                 )}
                 {exchangeQuote.isDex && <Translation id="TR_EXCHANGE_DEX" />}
             </Text>
