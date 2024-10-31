@@ -40,7 +40,7 @@ export const useSendFormImport = ({
         const result = await dispatch(importSendFormRequestThunk()).unwrap();
         if (!result || result.length < 1) return; // cancelled
 
-        let rates: { currency: string; rate?: number }[] = [];
+        const rates: { currency: string; rate?: number }[] = [];
         const currencies = result.map(it => it.currency.toLowerCase());
         const uniqueCurrencies = [...new Set(currencies)];
 

@@ -81,12 +81,9 @@ const derToAsn1 = (byteArray: Uint8Array): Asn1 => {
         throw new Error('Unsupported length encoding');
     }
 
-    let length = getLength(); // As encoded, which may be special value 0
-    let byteLength;
-    let contents;
-
-    byteLength = position + length;
-    contents = byteArray.subarray(position, byteLength);
+    const length = getLength(); // As encoded, which may be special value 0
+    const byteLength = position + length;
+    const contents = byteArray.subarray(position, byteLength);
 
     const raw = byteArray.subarray(0, byteLength); // May not be the whole input array
 

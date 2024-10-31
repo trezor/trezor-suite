@@ -78,7 +78,7 @@ export const parseTextToPagesAndLines = ({
 
     let pageIndex = 0;
     let remaining = text;
-    let pages: ResultPage[] = [];
+    const pages: ResultPage[] = [];
 
     while (remaining.length > 0) {
         const isFirstPage = pageIndex === 0;

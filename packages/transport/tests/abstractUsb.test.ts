@@ -1,5 +1,4 @@
 import { v1 as v1Protocol } from '@trezor/protocol';
-import { AbstractTransport } from '../src/transports/abstract';
 import { AbstractApiTransport } from '../src/transports/abstractApi';
 import { UsbApi } from '../src/api/usb';
 import * as messages from '@trezor/protobuf/messages.json';
@@ -45,19 +44,16 @@ class TestUsbTransport extends AbstractApiTransport {
 
 // we cant directly use abstract class (UsbTransport)
 const initTest = async () => {
-    let transport: AbstractTransport;
-    let testUsbApi: UsbApi;
-
     // create usb api with navigator.usb mock
-    testUsbApi = new UsbApi({
+    const testUsbApi = new UsbApi({
         usbInterface: createUsbMock(),
     });
-
-    transport = new TestUsbTransport({
+    const transport = new TestUsbTransport({
         api: testUsbApi,
         messages,
         id: 'test',
     });
+
     const initResponse = await transport.init();
     expect(initResponse.success).toEqual(true);
 

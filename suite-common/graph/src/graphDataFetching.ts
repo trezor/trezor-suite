@@ -413,7 +413,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
         // findOldestBalanceMovementTimestamp resulted with start date being the same as end date
         // use 1 year into past and return zeroes for the range
         if (startOfTimeFrameDate.getTime() === endOfTimeFrameDate.getTime()) {
-            let startDate = startOfTimeFrameDate;
+            const startDate = startOfTimeFrameDate;
             startDate.setDate(startDate.getHours() - 8760);
 
             return [
@@ -445,7 +445,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
         coinsSet.add(getCoinKey({ coin, contractId }));
     });
 
-    let coins = Array.from(coinsSet).map(coin => {
+    const coins = Array.from(coinsSet).map(coin => {
         const [coinSymbol, contractId] = coin.split('-');
 
         return { coin: coinSymbol as NetworkSymbol, contractId: contractId as TokenAddress };

@@ -430,7 +430,7 @@ export class TrezordNode {
                 (req, res) => {
                     const parsedUrl = new URL(req.url, `http://${req.headers.host}/`);
 
-                    let pathname = path.join(__dirname, this.assetPrefix, parsedUrl.pathname);
+                    const pathname = path.join(__dirname, this.assetPrefix, parsedUrl.pathname);
 
                     const map: Record<string, string> = {
                         '.ico': 'image/x-icon',
