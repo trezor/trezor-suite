@@ -24,6 +24,7 @@ import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import { accountsReducer } from 'src/reducers/wallet';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { BITCOIN_ONLY_NETWORKS } from '@suite-common/suite-constants';
 
 import {
     paramsError,
@@ -182,7 +183,7 @@ export const getInitialState = (device = SUITE_DEVICE) => ({
         accounts: accountsReducer(undefined, { type: 'foo' } as any),
         settings: walletSettingsReducer(undefined, {
             type: walletSettingsActions.changeNetworks.type,
-            payload: ['btc', 'test'],
+            payload: BITCOIN_ONLY_NETWORKS,
         }),
     },
 });

@@ -9128,6 +9128,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -9961,6 +9962,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/graph": "workspace:*"
+    "@suite-common/suite-constants": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -11038,6 +11040,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/coinjoin@workspace:packages/coinjoin"
   dependencies:
+    "@suite-common/suite-constants": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"

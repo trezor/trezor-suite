@@ -60,6 +60,12 @@ export const fixtures = [
                     symbol: 'test',
                     accountType: 'legacy',
                 },
+                {
+                    error: 'Runtime discovery error',
+                    index: 3,
+                    symbol: 'regtest',
+                    accountType: 'legacy',
+                },
             ],
         },
     },

@@ -25,6 +25,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@suite-common/suite-constants": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",

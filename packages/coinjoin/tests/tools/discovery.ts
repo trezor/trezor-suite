@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
+import { BITCOIN_ONLY_NETWORKS } from '@suite-common/suite-constants';
 import { isArrayMember } from '@trezor/utils';
 
 import { CoinjoinBackend } from '../../src/backend/CoinjoinBackend';
@@ -8,7 +9,7 @@ import type { CoinjoinBackendSettings } from '../../src/types';
 
 const { getCoinjoinConfig } = require('../../../suite/src/services/coinjoin/config');
 
-const supportedNetworks = ['btc', 'test', 'regtest'] as const;
+const supportedNetworks = BITCOIN_ONLY_NETWORKS;
 type SupportedNetwork = (typeof supportedNetworks)[number];
 
 const isSupportedNetwork = (network: string): network is SupportedNetwork =>
