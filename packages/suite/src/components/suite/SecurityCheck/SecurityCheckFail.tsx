@@ -6,8 +6,10 @@ import { spacings, spacingsPx } from '@trezor/theme';
 import { Url } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite';
-import { SecurityChecklist } from '../../../views/onboarding/steps/SecurityCheck/SecurityChecklist';
+import { SecurityChecklist } from 'src/views/onboarding/steps/SecurityCheck/SecurityChecklist';
+import { SecurityChecklistItem } from 'src/views/onboarding/steps/SecurityCheck/types';
 import { SecurityCheckLayout } from './SecurityCheckLayout';
+import { hardFailureChecklistItems } from './checklistItems';
 
 const TopSection = styled.div`
     margin-top: ${spacingsPx.xs};
@@ -19,33 +21,20 @@ const Flex = styled.div`
     flex: 1;
 `;
 
-const checklistItems = [
-    {
-        icon: 'plugs',
-        content: <Translation id="TR_DISCONNECT_DEVICE" />,
-    },
-    {
-        icon: 'hand',
-        content: <Translation id="TR_AVOID_USING_DEVICE" />,
-    },
-    {
-        icon: 'chat',
-        content: <Translation id="TR_USE_CHAT" values={{ b: chunks => <b>{chunks}</b> }} />,
-    },
-] as const;
-
-interface SecurityCheckFailProps {
+export type SecurityCheckFailProps = {
     goBack?: () => void;
     heading?: TranslationKey;
     text?: TranslationKey;
     supportUrl: Url;
-}
+    checklistItems?: SecurityChecklistItem[];
+};
 
 export const SecurityCheckFail = ({
     goBack,
     heading = 'TR_DEVICE_COMPROMISED_HEADING',
     text = 'TR_DEVICE_COMPROMISED_TEXT',
     supportUrl,
+    checklistItems = hardFailureChecklistItems,
 }: SecurityCheckFailProps) => {
     const chatUrl = `${supportUrl}#open-chat`;
 

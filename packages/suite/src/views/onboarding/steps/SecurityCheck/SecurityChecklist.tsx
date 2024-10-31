@@ -1,16 +1,11 @@
-import { ReactNode } from 'react';
 import { useTheme } from 'styled-components';
 
-import { Column, Icon, IconName, Row, Text } from '@trezor/components';
+import { Column, Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-type Item = {
-    icon: IconName;
-    content: ReactNode;
-};
+import { SecurityChecklistItem } from './types';
 
 type SecurityChecklistProps = {
-    items: readonly Item[];
+    items: readonly SecurityChecklistItem[];
 };
 
 export const SecurityChecklist = ({ items }: SecurityChecklistProps) => {
