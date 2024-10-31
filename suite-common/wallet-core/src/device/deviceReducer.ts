@@ -10,8 +10,7 @@ import {
     hasBitcoinOnlyFirmware,
     isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
-import { NetworkDeviceSupport, NetworkSymbol, networks } from '@suite-common/wallet-config';
-import { versionUtils } from '@trezor/utils';
+import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { TrezorDevice, AcquiredDevice, ButtonRequest } from '@suite-common/suite-types';
 import {
@@ -742,33 +741,20 @@ export const selectDeviceStatus = (state: DeviceRootState) => {
 
 export const selectDeviceSupportedNetworks = (state: DeviceRootState) => {
     const device = selectDevice(state);
-    const deviceModelInternal = device?.features?.internal_model;
     const firmwareVersion = getFirmwareVersion(device);
 
     return Object.entries(networks)
-        .filter(([symbol, network]) => {
-            const support =
-                'support' in network ? (network.support as NetworkDeviceSupport) : undefined;
-
-            const firmwareSupportRestriction =
-                deviceModelInternal && support?.[deviceModelInternal];
-            const isSupportedByApp =
-                !firmwareVersion ||
-                !firmwareSupportRestriction ||
-                versionUtils.isNewerOrEqual(firmwareVersion, firmwareSupportRestriction);
-
-            const unavailableReason = isSupportedByApp
-                ? device?.unavailableCapabilities?.[symbol]
-                : 'update-required';
+        .filter(([symbol]) => {
+            const unavailableCapability = device?.unavailableCapabilities?.[symbol];
 
             // if device does not have fw, do not show coins which are not supported by device in any case
-            if (!firmwareVersion && unavailableReason === 'no-support') {
+            if (!firmwareVersion && unavailableCapability === 'no-support') {
                 return false;
             }
             // if device has fw, do not show coins which are not supported by current fw
             if (
                 firmwareVersion &&
-                ['no-support', 'no-capability'].includes(unavailableReason || '')
+                ['no-support', 'no-capability'].includes(unavailableCapability || '')
             ) {
                 return false;
             }
