@@ -94,3 +94,5 @@ wait-on
 jest-extended
 jest-environment-node
 scroll-into-view-if-needed
+@types/bn.js
+@types/events
