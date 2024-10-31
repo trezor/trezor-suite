@@ -1,20 +1,15 @@
-import { Icon, Row } from '@trezor/components';
+import { Icon, iconSizes, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import { CoinmarketTestWrapper } from 'src/views/wallet/coinmarket';
-import { useTheme } from 'styled-components';
 
-const Arrow = () => {
-    const theme = useTheme();
-
-    return (
-        <Row margin={{ left: spacings.xs, right: spacings.xs }}>
-            <Icon color={theme.iconSubdued} size={13} name="caretRight" />
-        </Row>
-    );
-};
+const Arrow = () => (
+    <Row margin={{ left: spacings.xs, right: spacings.xs }}>
+        <Icon variant="tertiary" size={iconSizes.small} name="caretRight" />
+    </Row>
+);
 
 interface CoinmarketTransactionAmountsProps {
     trade: Trade;

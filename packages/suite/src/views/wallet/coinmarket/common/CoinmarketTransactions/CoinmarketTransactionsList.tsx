@@ -1,7 +1,7 @@
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { H3, Paragraph, variables } from '@trezor/components';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 import { spacingsPx, typography } from '@trezor/theme';
 import { CoinmarketTransactionSell } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransactionsSell';
@@ -27,7 +27,6 @@ const TransactionCount = styled.div`
 `;
 
 export const CoinmarketTransactionsList = () => {
-    const theme = useTheme();
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const allTransactions = useSelector(state => state.wallet.coinmarket.trades);
     const activeSection = useSelector(state => state.wallet.coinmarket.activeSection);
@@ -67,7 +66,7 @@ export const CoinmarketTransactionsList = () => {
     return (
         <Wrapper>
             {isEmpty && (
-                <Paragraph align="center" color={theme.textSubdued}>
+                <Paragraph align="center" variant="tertiary">
                     <Translation id="TR_BUY_NOT_TRANSACTIONS" />
                 </Paragraph>
             )}

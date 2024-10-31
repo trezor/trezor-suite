@@ -1,16 +1,10 @@
-import { Row } from '@trezor/components';
-import { typographyStylesBase } from '@trezor/theme';
+import { Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { FormattedDate } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 import { Trade, TradeType } from 'src/types/wallet/coinmarketCommonTypes';
-import { CoinmarketTransactionText } from 'src/views/wallet/coinmarket';
 import { CoinmarketTransactionStatus } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransaction/CoinmarketTransactionStatus';
-import styled from 'styled-components';
-
-const CoinmarketTransactionMedium = styled.div`
-    font-weight: ${typographyStylesBase.highlight.fontWeight};
-`;
 
 interface CoinmarketTransactionInfoProps {
     trade: Trade;
@@ -31,13 +25,9 @@ export const CoinmarketTransactionInfo = ({ trade }: CoinmarketTransactionInfoPr
     const tradeType = translationString(translationKeys[trade.tradeType]).toUpperCase();
 
     return (
-        <CoinmarketTransactionText>
-            <CoinmarketTransactionMedium>
-                <Row flexWrap="wrap">
-                    {tradeType} • <FormattedDate value={date} date time /> •{' '}
-                    <CoinmarketTransactionStatus trade={trade} />
-                </Row>
-            </CoinmarketTransactionMedium>
-        </CoinmarketTransactionText>
+        <Text margin={{ top: spacings.xs }} variant="tertiary" typographyStyle="label" as="div">
+            {tradeType} • <FormattedDate value={date} date time /> •{' '}
+            <CoinmarketTransactionStatus trade={trade} />
+        </Text>
     );
 };
