@@ -13,10 +13,11 @@ export const getContractAddressForNetwork = (
         case 'dsol':
             return contractAddress;
         case 'ada':
-        case 'tada':
+        case 'tada': {
             const { policyId } = parseAsset(contractAddress);
 
             return policyId.toLowerCase();
+        }
         default:
             return contractAddress.toLowerCase();
     }

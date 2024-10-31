@@ -29,7 +29,7 @@ export const blockchainMiddleware = createMiddleware(
                 dispatch(onBlockchainConnectThunk({ symbol: action.payload.coin.shortcut }));
 
                 break;
-            case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK:
+            case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK: {
                 const networksWithPendingTransactions =
                     selectNetworksWithPendingTransactions(getState());
                 const symbol = action.payload.coin.shortcut.toLowerCase() as NetworkSymbol;
@@ -39,6 +39,7 @@ export const blockchainMiddleware = createMiddleware(
                 }
 
                 break;
+            }
             case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.NOTIFICATION:
                 dispatch(onBlockchainNotificationThunk(action.payload));
                 break;

@@ -70,7 +70,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
 
     const getStepConfig = (): StepConfig => {
         switch (step) {
-            case 'first-info':
+            case 'first-info': {
                 const goToStepNextStep = () => {
                     setIsSubmitted(true);
                     if (isChecked1 && isChecked2) {
@@ -107,8 +107,9 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                     isCancelable: true,
                     hasBackdropCancel: true,
                 };
+            }
 
-            case 'second-info':
+            case 'second-info': {
                 const enterBackup = async () => {
                     setStep('verify-ownership');
 
@@ -160,6 +161,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                     isCancelable: true,
                     hasBackdropCancel: true,
                 };
+            }
 
             case 'verify-ownership':
                 return {
