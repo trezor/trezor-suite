@@ -157,6 +157,7 @@ export abstract class BaseProcess {
             // When running without `autoRestart` the responsibility of restarting it is in the module
             // that started the process, so if it fails an error is thrown to let the module knows something
             // went wrong.
+            // eslint-disable-next-line prefer-const
             let resolveTimeout: ReturnType<typeof setTimeout> | undefined;
             const spawnErrorHandler = (message: any) => {
                 // This error handler will be triggered if there is an error during spawn of the process,

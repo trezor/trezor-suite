@@ -39,7 +39,7 @@ export const updateTxsFiatRatesThunk = createThunk(
 
         const isElectrumBackend = selectIsElectrumBackendSelected(getState(), account.symbol);
 
-        let rates: TickerResult[] = [];
+        const rates: TickerResult[] = [];
 
         const timestamps = txs.map(tx => tx.blockTime) as Timestamp[];
         await fetchTransactionsRates(

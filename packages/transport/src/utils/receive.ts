@@ -16,7 +16,7 @@ export async function receive<T extends () => ReturnType<AbstractApi['read']>>(
     }
     const data = readResult.payload;
     const { length, messageType, payload } = protocol.decode(data);
-    let result = Buffer.alloc(length);
+    const result = Buffer.alloc(length);
     const chunkHeader = protocol.getChunkHeader(Buffer.from(data));
 
     payload.copy(result);

@@ -27,6 +27,7 @@ const resolveAfterMs = (ms: number | undefined, clear: AbortSignal) =>
     new Promise<void>((resolve, reject) => {
         if (clear.aborted) return reject();
         if (ms === undefined) return resolve();
+        // eslint-disable-next-line prefer-const
         let timeout: ReturnType<typeof setTimeout>;
         const onClear = () => {
             clearTimeout(timeout);
@@ -43,6 +44,7 @@ const resolveAfterMs = (ms: number | undefined, clear: AbortSignal) =>
 const rejectAfterMs = (ms: number, reason: () => Error, clear: AbortSignal) =>
     new Promise<never>((_, reject) => {
         if (clear.aborted) return reject();
+        // eslint-disable-next-line prefer-const
         let timeout: ReturnType<typeof setTimeout> | undefined;
         const onClear = () => {
             clearTimeout(timeout);
