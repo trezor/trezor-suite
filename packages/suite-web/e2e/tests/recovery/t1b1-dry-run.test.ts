@@ -24,5 +24,3 @@ describe.skip('Recovery - dry run', () => {
         // todo: elaborate more, seems like finally T1B1 tests are stable so it would make finally sense to finish this
     });
 });
-
-export {};

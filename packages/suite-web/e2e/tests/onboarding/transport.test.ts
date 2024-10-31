@@ -13,5 +13,3 @@ describe('Onboarding - transport webusb/bridge', () => {
         cy.getTestElement('@connect-device-prompt/no-device-detected').click();
     });
 });
-
-export {};

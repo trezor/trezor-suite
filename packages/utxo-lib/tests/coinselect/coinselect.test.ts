@@ -19,7 +19,7 @@ describe('coinselect errors', () => {
                     sendMaxOutputIndex: -1,
                     sortingStrategy: 'bip69',
                 }),
-            ).toThrowError(f.expected);
+            ).toThrow(f.expected);
         });
     });
 });

@@ -196,5 +196,3 @@ describe('Coinmarket buy', () => {
         });
     });
 });
-
-export {};

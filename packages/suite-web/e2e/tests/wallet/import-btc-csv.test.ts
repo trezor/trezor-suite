@@ -75,5 +75,3 @@ describe('Import a BTC csv file', () => {
         });
     });
 });
-
-export {};

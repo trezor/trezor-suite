@@ -20,7 +20,7 @@ interface InitialState {
 
 jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
 
-export const getInitialState = (override?: InitialState): any => {
+const getInitialState = (override?: InitialState): any => {
     const suite = override ? override.suite : undefined;
     const device = override ? override.device : undefined;
 

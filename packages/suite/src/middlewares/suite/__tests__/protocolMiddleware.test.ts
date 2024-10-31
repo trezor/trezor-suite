@@ -14,7 +14,7 @@ const middlewares = [protocolMiddleware];
 type ProtocolState = ReturnType<typeof protocolReducer>;
 type NotificationsState = ReturnType<typeof notificationsReducer>;
 
-export const getInitialState = (
+const getInitialState = (
     notifications: Partial<NotificationsState>,
     protocol?: Partial<ProtocolState>,
 ) => ({

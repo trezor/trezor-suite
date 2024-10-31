@@ -51,5 +51,3 @@ describe('Overview and transactions check', () => {
         onAccountsPage.accountsPaginationCheck();
     });
 });
-
-export {};

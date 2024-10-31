@@ -43,5 +43,3 @@ describe('Passphrase', () => {
         // QA todo: continue to discovered wallet
     });
 });
-
-export {};

@@ -5,7 +5,7 @@ import settingsReducer from 'src/reducers/wallet/settingsReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import fixtures from '../__fixtures__/walletSettings';
 
-export const getInitialState = (settings?: any) => ({
+const getInitialState = (settings?: any) => ({
     suite: { ...suiteReducer(undefined, { type: 'foo' } as any) },
     wallet: {
         settings: {

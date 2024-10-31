@@ -23,24 +23,26 @@ describe('helpers/paramsValidator', () => {
             jest.clearAllMocks();
         });
         fixtures.getFirmwareRange.forEach(f => {
-            it(f.description, done => {
-                jest.resetModules();
+            it(f.description, () => {
+                return new Promise<void>(done => {
+                    jest.resetModules();
 
-                const mock = f.config;
-                jest.mock('../../../data/config', () => {
-                    const actualConfig = jest.requireActual('../../../data/config').config;
+                    const mock = f.config;
+                    jest.mock('../../../data/config', () => {
+                        const actualConfig = jest.requireActual('../../../data/config').config;
 
-                    return {
-                        __esModule: true,
-                        config: mock || actualConfig,
-                    };
-                });
+                        return {
+                            __esModule: true,
+                            config: mock || actualConfig,
+                        };
+                    });
 
-                import('../paramsValidator').then(({ getFirmwareRange }) => {
-                    // added new capability
-                    // @ts-expect-error
-                    expect(getFirmwareRange(...f.params)).toEqual(f.result);
-                    done();
+                    import('../paramsValidator').then(({ getFirmwareRange }) => {
+                        // added new capability
+                        // @ts-expect-error
+                        expect(getFirmwareRange(...f.params)).toEqual(f.result);
+                        done();
+                    });
                 });
             });
         });

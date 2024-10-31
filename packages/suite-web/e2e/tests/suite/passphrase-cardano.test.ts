@@ -92,5 +92,3 @@ describe('Passphrase with cardano', () => {
         cy.getTestElement('@toast/verify-address-error');
     });
 });
-
-export {};

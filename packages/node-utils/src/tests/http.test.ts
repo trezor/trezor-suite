@@ -26,14 +26,17 @@ describe('HttpServer', () => {
         });
     });
 
-    afterEach(done => {
-        server.stop().finally(() => {
-            done();
-        });
-    });
+    afterEach(
+        () =>
+            new Promise<void>(done => {
+                server.stop().finally(() => {
+                    done();
+                });
+            }),
+    );
 
     test('getServerAddress before server start', () => {
-        expect(() => server.getServerAddress()).toThrowError();
+        expect(() => server.getServerAddress()).toThrow();
     });
 
     test('getServerAddress after server start', async () => {

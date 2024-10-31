@@ -105,7 +105,7 @@ describe('Coinmarket Exchange Actions', () => {
 
         const store = initStore(getInitialState());
 
-        coinmarketExchangeActions.loadExchangeInfo().then(exchangeInfo => {
+        return coinmarketExchangeActions.loadExchangeInfo().then(exchangeInfo => {
             store.dispatch(coinmarketExchangeActions.saveExchangeInfo(exchangeInfo));
             expect(store.getState().wallet.coinmarket.exchange.exchangeInfo).toEqual({
                 exchangeList,

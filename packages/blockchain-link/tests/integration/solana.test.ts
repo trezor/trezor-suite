@@ -111,7 +111,7 @@ const fixtures = {
     ],
 };
 
-export const solanaApi = {
+const solanaApi = {
     getGenesisHash: () => '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d',
     getVersion: () => ({ 'feature-set': 1879391783, 'solana-core': '1.14.22' }),
     getParsedBlock: () => ({

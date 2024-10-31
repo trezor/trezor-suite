@@ -203,5 +203,3 @@ describe.skip('Coinmarket exchange', () => {
         cy.getTestElement('@coinmarket/exchange/payment/back-to-account').click();
     });
 });
-
-export {};

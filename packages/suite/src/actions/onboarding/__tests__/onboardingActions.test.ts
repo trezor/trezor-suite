@@ -18,7 +18,7 @@ import { Action } from 'src/types/suite';
 //     suite?: SuiteState;
 // }
 
-export const getInitialState = (custom?: any) => {
+const getInitialState = (custom?: any) => {
     const suite = custom ? custom.suite : undefined;
     const onboarding = custom ? custom.onboarding : undefined;
 

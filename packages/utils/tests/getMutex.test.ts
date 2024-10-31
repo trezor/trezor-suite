@@ -93,21 +93,22 @@ describe('getMutex', () => {
         ]);
     });
 
-    it('nested', done => {
-        lock().then(unlock =>
-            sequence(['a', 3])
-                .then(() => {
-                    // 'c' registers after 'a' ended and while 'b' is running
-                    delay(2).then(() =>
-                        lock()
-                            .then(unlock2 => sequence(['c', 3]).finally(unlock2))
-                            .then(done),
-                    );
-                })
-                .finally(unlock),
-        );
-        lock().then(unlock => sequence(['b', 8]).finally(unlock));
-    });
+    it('nested', () =>
+        new Promise<void>(done => {
+            lock().then(unlock =>
+                sequence(['a', 3])
+                    .then(() => {
+                        // 'c' registers after 'a' ended and while 'b' is running
+                        delay(2).then(() =>
+                            lock()
+                                .then(unlock2 => sequence(['c', 3]).finally(unlock2))
+                                .then(done),
+                        );
+                    })
+                    .finally(unlock),
+            );
+            lock().then(unlock => sequence(['b', 8]).finally(unlock));
+        }));
 
     it('with keys', async () => {
         let state1: any, state2: any;

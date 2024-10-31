@@ -46,7 +46,7 @@ interface InitialState {
     suite: Partial<SuiteState>;
 }
 
-export const getInitialState = (state?: InitialState) => {
+const getInitialState = (state?: InitialState) => {
     const metadata = state ? state.metadata : undefined;
     const suite = state ? state.suite : {};
 

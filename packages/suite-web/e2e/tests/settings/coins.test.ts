@@ -130,5 +130,3 @@ describe('Coin Settings', () => {
         });
     });
 });
-
-export {};

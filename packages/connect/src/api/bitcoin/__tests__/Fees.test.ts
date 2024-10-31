@@ -110,6 +110,7 @@ describe('api/bitcoin/Fees', () => {
 
     // const e2eNetworks = ['BTC', 'TEST', 'BCH', 'BTG', 'DASH', 'DGB', 'DOGE', 'LTC', 'NMC', 'VTC'];
     // e2eNetworks.forEach(network => {
+    // eslint-disable-next-line jest/no-commented-out-tests
     //     it.only(`${network} e2e smart FeeLevels`, async () => {
     //         const coinInfo = getBitcoinNetwork(network)!;
     //         if (!coinInfo) throw new Error('coinInfo is missing');

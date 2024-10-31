@@ -5,7 +5,7 @@ import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import { syncSelectedAccount } from '../selectedAccountActions';
 import fixtures from '../__fixtures__/selectedAccountActions';
 
-export const getInitialState = (_settings?: any) => ({
+const getInitialState = (_settings?: any) => ({
     wallet: {
         selectedAccount: {
             ...selectedAccountReducer(undefined, { type: 'foo' } as any),

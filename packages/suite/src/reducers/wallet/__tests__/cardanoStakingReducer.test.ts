@@ -162,28 +162,6 @@ describe('cardanoStakingReducer reducer', () => {
         });
     });
 
-    it('CARDANO_STAKING.SET_FETCH_ERROR mainnet', () => {
-        expect(
-            reducer(undefined, {
-                type: CARDANO_STAKING.SET_FETCH_ERROR,
-                error: true,
-                network: 'mainnet',
-            } as any),
-        ).toEqual({
-            mainnet: {
-                trezorPools: undefined,
-                isFetchError: true,
-                isFetchLoading: false,
-            },
-            preview: {
-                trezorPools: undefined,
-                isFetchError: false,
-                isFetchLoading: false,
-            },
-            pendingTx: [],
-        });
-    });
-
     it('CARDANO_STAKING.SET_TREZOR_POOLS mainnet', () => {
         expect(
             reducer(undefined, {

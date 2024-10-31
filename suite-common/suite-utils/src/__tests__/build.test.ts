@@ -11,7 +11,7 @@ describe('build', () => {
             process.env = { ...OLD_ENV };
         });
 
-        it.only('dev false when NODE_ENV is production', () => {
+        it('dev false when NODE_ENV is production', () => {
             process.env.NODE_ENV = 'production';
             const { isDevEnv } = require('../build');
 
@@ -40,5 +40,3 @@ describe('build', () => {
         });
     });
 });
-
-export {};

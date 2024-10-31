@@ -138,5 +138,3 @@ describe('Onboarding - T2T1 in recovery mode', () => {
         cy.getTestElement('@onboarding/skip-button').click();
     });
 });
-
-export {};

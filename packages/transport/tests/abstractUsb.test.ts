@@ -349,7 +349,7 @@ describe('Usb', () => {
             });
             abort.abort();
 
-            expect(promise).resolves.toMatchObject({
+            await expect(promise).resolves.toMatchObject({
                 success: false,
                 error: 'Aborted by signal',
             });
@@ -361,7 +361,7 @@ describe('Usb', () => {
                 protocol: v1Protocol,
             });
             await promise2;
-            expect(promise2).resolves.toEqual({
+            await expect(promise2).resolves.toEqual({
                 success: true,
                 payload: {
                     type: 'Success',

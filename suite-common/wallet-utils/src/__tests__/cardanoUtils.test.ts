@@ -30,38 +30,40 @@ describe('cardano utils', () => {
         dateSpy.mockRestore();
     });
 
-    expect(getProtocolMagic('ada')).toEqual(CARDANO.PROTOCOL_MAGICS.mainnet);
-    expect(getProtocolMagic('tada')).toEqual(1097911063);
+    it('basic test', () => {
+        expect(getProtocolMagic('ada')).toEqual(CARDANO.PROTOCOL_MAGICS.mainnet);
+        expect(getProtocolMagic('tada')).toEqual(1097911063);
 
-    expect(getDerivationType('normal')).toEqual(1);
-    expect(getDerivationType('legacy')).toEqual(2);
-    expect(getDerivationType('ledger')).toEqual(0);
-    // TS does not allow this, but in runtime, the default case handles it
-    expect(getDerivationType(undefined as any)).toEqual(1);
+        expect(getDerivationType('normal')).toEqual(1);
+        expect(getDerivationType('legacy')).toEqual(2);
+        expect(getDerivationType('ledger')).toEqual(0);
+        // TS does not allow this, but in runtime, the default case handles it
+        expect(getDerivationType(undefined as any)).toEqual(1);
 
-    expect(getNetworkId('ada')).toEqual(CARDANO.NETWORK_IDS.mainnet);
-    expect(getNetworkId('tada')).toEqual(CARDANO.NETWORK_IDS.testnet);
+        expect(getNetworkId('ada')).toEqual(CARDANO.NETWORK_IDS.mainnet);
+        expect(getNetworkId('tada')).toEqual(CARDANO.NETWORK_IDS.testnet);
 
-    expect(getAddressType()).toEqual(PROTO.CardanoAddressType.BASE);
-    expect(getAddressType()).toEqual(PROTO.CardanoAddressType.BASE);
+        expect(getAddressType()).toEqual(PROTO.CardanoAddressType.BASE);
+        expect(getAddressType()).toEqual(PROTO.CardanoAddressType.BASE);
 
-    // @ts-expect-error
-    expect(getStakingPath({ index: 1, symbol: 'ada' })).toEqual(`m/1852'/1815'/1'/2/0`);
+        // @ts-expect-error
+        expect(getStakingPath({ index: 1, symbol: 'ada' })).toEqual(`m/1852'/1815'/1'/2/0`);
 
-    // @ts-expect-error
-    expect(getStakingPath({ index: 12, symbol: 'ada' })).toEqual(`m/1852'/1815'/12'/2/0`);
-    expect(getShortFingerprint('asset1dffrfk79uxwq2a8yaslcfedycgga55tuv5dezd')).toEqual(
-        'asset1dffr…55tuv5dezd',
-    );
+        // @ts-expect-error
+        expect(getStakingPath({ index: 12, symbol: 'ada' })).toEqual(`m/1852'/1815'/12'/2/0`);
+        expect(getShortFingerprint('asset1dffrfk79uxwq2a8yaslcfedycgga55tuv5dezd')).toEqual(
+            'asset1dffr…55tuv5dezd',
+        );
 
-    // @ts-expect-error params are partial
-    expect(isCardanoTx({ networkType: 'cardano' }, {})).toBe(true);
-    // @ts-expect-error params are partial
-    expect(isCardanoTx({ networkType: 'bitcoin' }, {})).toBe(false);
-    // @ts-expect-error params are partial
-    expect(isCardanoExternalOutput({ address: 'addr1' }, {})).toBe(true);
-    // @ts-expect-error params are partial
-    expect(isCardanoExternalOutput({ addressParameters: {} }, {})).toBe(false);
+        // @ts-expect-error params are partial
+        expect(isCardanoTx({ networkType: 'cardano' }, {})).toBe(true);
+        // @ts-expect-error params are partial
+        expect(isCardanoTx({ networkType: 'bitcoin' }, {})).toBe(false);
+        // @ts-expect-error params are partial
+        expect(isCardanoExternalOutput({ address: 'addr1' }, {})).toBe(true);
+        // @ts-expect-error params are partial
+        expect(isCardanoExternalOutput({ addressParameters: {} }, {})).toBe(false);
+    });
 
     fixtures.getChangeAddressParameters.forEach(f => {
         it(`getChangeAddressParameters: ${f.description}`, () => {

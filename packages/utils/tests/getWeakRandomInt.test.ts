@@ -6,12 +6,7 @@ describe(getWeakRandomInt.name, () => {
             'The value of "max" is out of range. It must be greater than the value of "min" (0). Received -1',
         );
 
-        expect(() => getWeakRandomInt(0, -1)).toThrowError(EXPECTED_ERROR);
-    });
-
-    it('returns same value when range is trivial', () => {
-        expect(getWeakRandomInt(0, 1)).toEqual(0);
-        expect(getWeakRandomInt(100, 101)).toEqual(100);
+        expect(() => getWeakRandomInt(0, -1)).toThrow(EXPECTED_ERROR);
     });
 
     it('returns same value when range is trivial', () => {

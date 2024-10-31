@@ -54,5 +54,3 @@ describe('Check coins XPUB', () => {
         });
     });
 });
-
-export {};

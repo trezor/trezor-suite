@@ -22,7 +22,7 @@ invityAPI.getInfo = () =>
         platforms: {},
     });
 
-export const ACCOUNT = {
+const ACCOUNT = {
     descriptor: 'btc-descriptor',
 };
 
@@ -45,6 +45,7 @@ const COINMARKET_EXCHANGE_ROUTE = {
 type CoinmarketState = ReturnType<typeof coinmarketReducer>;
 type SelectedAccountState = ReturnType<typeof selectedAccountReducer>;
 type SuiteState = ReturnType<typeof suiteReducer>;
+
 interface Args {
     coinmarket?: CoinmarketState;
     selectedAccount?: SelectedAccountState;
@@ -53,7 +54,7 @@ interface Args {
     modal?: ModalState;
 }
 
-export const getInitialState = ({ coinmarket, selectedAccount }: Args = {}) => ({
+const getInitialState = ({ coinmarket, selectedAccount }: Args = {}) => ({
     wallet: {
         coinmarket:
             coinmarket ||

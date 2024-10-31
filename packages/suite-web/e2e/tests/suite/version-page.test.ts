@@ -15,5 +15,3 @@ describe('There is a hidden route (not accessible in UI)', () => {
         cy.getTestElement('@modal/version').screenshot('version-modal');
     });
 });
-
-export {};

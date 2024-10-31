@@ -32,7 +32,7 @@ describe('localizeNumber', () => {
 
         expect(localizeNumber(123456789.111, 'en', 2, 2)).toStrictEqual('123,456,789.11');
 
-        expect(() => localizeNumber(123456789, 'en', 3, 2)).toThrowError();
+        expect(() => localizeNumber(123456789, 'en', 3, 2)).toThrow();
     });
 
     it('formats negative numbers', () => {

@@ -62,5 +62,3 @@ describe('Install custom firmware', () => {
         cy.getTestElement('@firmware/reconnect-device').should('be.visible');
     });
 });
-
-export {};

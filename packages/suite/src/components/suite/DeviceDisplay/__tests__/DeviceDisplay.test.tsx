@@ -8,9 +8,9 @@ import { DeviceModelInternal } from '@trezor/connect';
 import { DeepPartial } from '@trezor/type-utils';
 import suiteReducer from '../../../../reducers/suite/suiteReducer';
 
-export const deviceReducer = prepareDeviceReducer(extraDependencies);
+const deviceReducer = prepareDeviceReducer(extraDependencies);
 
-export type State = {
+type State = {
     device: DeepPartial<ReturnType<typeof deviceReducer>>;
     suite: DeepPartial<ReturnType<typeof suiteReducer>>;
 };

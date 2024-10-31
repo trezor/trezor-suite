@@ -161,5 +161,3 @@ describe(
         });
     },
 );
-
-export {};

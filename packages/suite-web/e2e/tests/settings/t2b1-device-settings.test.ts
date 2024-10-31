@@ -148,5 +148,3 @@ describe('T2B1 - Device settings', () => {
         cy.task('pressYes');
     });
 });
-
-export {};

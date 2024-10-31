@@ -12,7 +12,7 @@ type InitialState = {
     analytics: Partial<AnalyticsState>;
 };
 
-export const getInitialState = (state?: InitialState) => ({
+const getInitialState = (state?: InitialState) => ({
     analytics: {
         ...analyticsReducer(undefined, { type: 'foo' } as any),
         ...state?.analytics,

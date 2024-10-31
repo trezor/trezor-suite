@@ -5,7 +5,7 @@ import recoveryReducer from 'src/reducers/recovery/recoveryReducer';
 import { Action } from 'src/types/suite';
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
 
-export const getInitialState = (custom?: any): any => ({
+const getInitialState = (custom?: any): any => ({
     suite: {
         flags: {},
         locks: [],

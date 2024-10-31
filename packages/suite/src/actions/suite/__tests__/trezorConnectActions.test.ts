@@ -12,7 +12,7 @@ const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
-export const getInitialState = (suite?: Partial<SuiteState>, device?: Partial<DevicesState>) => ({
+const getInitialState = (suite?: Partial<SuiteState>, device?: Partial<DevicesState>) => ({
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,

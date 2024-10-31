@@ -6,7 +6,7 @@ describe('helpers/ethereumSignTypeData', () => {
         fixtures.parseArrayType.forEach(f => {
             it(`${f.description} - ${f.input}`, () => {
                 if (f.error) {
-                    expect(() => parseArrayType(f.input)).toThrowError(...f.error);
+                    expect(() => parseArrayType(f.input)).toThrow(...f.error);
                 } else {
                     expect(parseArrayType(f.input)).toEqual(f.output);
                 }
@@ -19,7 +19,7 @@ describe('helpers/ethereumSignTypeData', () => {
             const { typeName, types } = f.input;
             it(`${f.description} - ${typeName}`, () => {
                 if (f.error) {
-                    expect(() => getFieldType(typeName, types as any)).toThrowError(...f.error);
+                    expect(() => getFieldType(typeName, types as any)).toThrow(...f.error);
                 } else {
                     expect(getFieldType(typeName, types as any)).toEqual(f.output);
                 }
@@ -32,7 +32,7 @@ describe('helpers/ethereumSignTypeData', () => {
             const { typeName, data } = f.input;
             it(`${f.description}`, () => {
                 if (f.error) {
-                    expect(() => encodeData(typeName, data)).toThrowError(...f.error);
+                    expect(() => encodeData(typeName, data)).toThrow(...f.error);
                 } else {
                     expect(encodeData(typeName, data)).toEqual(f.output);
                 }

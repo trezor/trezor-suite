@@ -6,6 +6,7 @@ import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 // TODO: enable this test once https://github.com/trezor/trezor-user-env/issues/54
 // is resolved
+// eslint-disable-next-line jest/no-commented-out-tests
 // describe('safety_checks Warning For PromptAlways', () => {
 //     beforeEach(() => {
 //         cy.task('startEmu', {  wipe: true });
@@ -17,6 +18,7 @@ import { onNavBar } from '../../support/pageObjects/topBarObject';
 //         // TODO: set safety_checks to `PromptAlways`
 //     });
 
+// eslint-disable-next-line jest/no-commented-out-tests
 //     it('Non-dismissible warning appears', () => {
 //         cy.getTestElement('@banner/safety-checks/button');
 //         cy.getTestElement('@banner/safety-checks/dismiss').should('not.exist');
@@ -102,5 +104,3 @@ describe('safety_checks Warning For PromptTemporarily', () => {
         cy.getTestElement('@banner/safety-checks/button');
     });
 });
-
-export {};

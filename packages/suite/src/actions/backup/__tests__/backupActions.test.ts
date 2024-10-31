@@ -9,7 +9,7 @@ import { SUITE } from 'src/actions/suite/constants';
 import { BACKUP } from 'src/actions/backup/constants';
 import * as backupActions from 'src/actions/backup/backupActions';
 
-export const getInitialState = (override: any) => {
+const getInitialState = (override: any) => {
     const defaults = {
         suite: {
             locks: [3],

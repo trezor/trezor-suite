@@ -10,7 +10,7 @@ import * as protocolConstants from '../constants/protocolConstants';
 
 jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
 
-export const getInitialState = (state?: ProtocolState) => ({
+const getInitialState = (state?: ProtocolState) => ({
     protocol: {
         ...protocolReducer(undefined, { type: 'foo' } as any),
         ...state,

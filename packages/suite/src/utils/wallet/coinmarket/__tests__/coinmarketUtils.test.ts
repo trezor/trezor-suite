@@ -289,7 +289,7 @@ describe('coinmarket utils', () => {
         });
     });
 
-    it('coinmarketBuildAccountOptions', () => {
+    it('coinmarketBuildAccountOptions: basic', () => {
         expect(coinmarketGetRoundedFiatAmount('0.23923')).toBe('0.24');
         expect(coinmarketGetRoundedFiatAmount('0.24423')).toBe('0.24');
         expect(coinmarketGetRoundedFiatAmount('0.2')).toBe('0.20');

@@ -16,7 +16,7 @@ const { getSuiteDevice } = testMocks;
 
 const device = getSuiteDevice();
 
-export const getInitialState = () => ({
+const getInitialState = () => ({
     router: routerReducer(undefined, { type: 'foo' } as any),
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),

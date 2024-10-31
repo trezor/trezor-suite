@@ -49,5 +49,3 @@ describe('Discovery', () => {
         });
     });
 });
-
-export {};
