@@ -26,11 +26,11 @@
         "lib/"
     ],
     "peerDependencies": {
-        "@metamask/eth-sig-util": "^7.0.3",
+        "@metamask/eth-sig-util": "^8.0.0",
         "tslib": "^2.6.2"
     },
     "devDependencies": {
-        "@metamask/eth-sig-util": "^7.0.3"
+        "@metamask/eth-sig-util": "^8.0.0"
     },
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
