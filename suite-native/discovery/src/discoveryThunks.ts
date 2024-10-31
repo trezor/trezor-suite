@@ -1,6 +1,6 @@
 import { A, G, pipe } from '@mobily/ts-belt';
 
-import { getWeakRandomId } from '@trezor/utils';
+import { getWeakRandomId, isArrayMember } from '@trezor/utils';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     accountsActions,
@@ -41,7 +41,6 @@ import {
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
-import { isArrayMember } from '@trezor/utils';
 
 import {
     selectDiscoveryInfo,

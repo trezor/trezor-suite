@@ -2,13 +2,12 @@ import styled from 'styled-components';
 
 import { typography } from '@trezor/theme';
 import { Button } from '@trezor/components';
-import { networks } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { ConnectionStatus } from '@suite-common/wallet-types';
 
 import { SectionItem, StatusLight, Translation } from 'src/components/suite';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { useBackendReconnection } from 'src/hooks/settings/backends';
 import { openModal } from 'src/actions/suite/modalActions';

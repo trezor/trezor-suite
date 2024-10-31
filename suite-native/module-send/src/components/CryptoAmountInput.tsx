@@ -4,8 +4,7 @@ import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { Text, Input } from '@suite-native/atoms';
-import { useFormContext } from '@suite-native/forms';
-import { useField } from '@suite-native/forms';
+import { useFormContext, useField } from '@suite-native/forms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useFormatters } from '@suite-common/formatters';

@@ -1,6 +1,5 @@
 import { AssetLogo, useElevation } from '@trezor/components';
-import { getCoingeckoId } from '@suite-common/wallet-config';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { getCoingeckoId, NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenInfo } from '@trezor/connect';
 import { getContractAddressForNetwork } from '@suite-common/wallet-utils';
 

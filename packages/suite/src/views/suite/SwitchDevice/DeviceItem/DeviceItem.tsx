@@ -2,13 +2,12 @@ import styled from 'styled-components';
 import { variables, Column } from '@trezor/components';
 import * as deviceUtils from '@suite-common/suite-utils';
 
-import { selectDevice, selectDeviceThunk } from '@suite-common/wallet-core';
+import { selectDevice, selectDeviceThunk, acquireDevice } from '@suite-common/wallet-core';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { WalletInstance } from './WalletInstance';
 import { AddWalletButton } from './AddWalletButton';
 
-import { acquireDevice } from '@suite-common/wallet-core';
 import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 import { spacings } from '@trezor/theme';
 import { CardWithDevice } from '../CardWithDevice';

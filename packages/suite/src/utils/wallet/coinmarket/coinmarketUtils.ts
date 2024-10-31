@@ -13,7 +13,11 @@ import regional from 'src/constants/wallet/coinmarket/regional';
 import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
 import { BuyTrade, SellFiatTrade, CryptoId } from 'invity-api';
 import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
-import { getContractAddressForNetwork, substituteBip43Path } from '@suite-common/wallet-utils';
+import {
+    getContractAddressForNetwork,
+    substituteBip43Path,
+    sortByCoin,
+} from '@suite-common/wallet-utils';
 import {
     CoinmarketAccountOptionsGroupOptionProps,
     CoinmarketAccountsOptionsGroupProps,
@@ -29,7 +33,6 @@ import {
 } from 'src/types/coinmarket/coinmarket';
 import { v4 as uuidv4 } from 'uuid';
 import { BigNumber } from '@trezor/utils';
-import { sortByCoin } from '@suite-common/wallet-utils';
 
 export const cryptoPlatformSeparator = '--';
 

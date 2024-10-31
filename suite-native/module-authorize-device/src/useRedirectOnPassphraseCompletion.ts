@@ -9,8 +9,8 @@ import {
     selectHasAuthFailed,
     selectHasVerificationCancelledError,
     selectPassphraseError,
+    useAuthorizationGoBack,
 } from '@suite-native/device-authorization';
-import { useAuthorizationGoBack } from '@suite-native/device-authorization';
 import { EventType, analytics } from '@suite-native/analytics';
 
 export const useRedirectOnPassphraseCompletion = () => {

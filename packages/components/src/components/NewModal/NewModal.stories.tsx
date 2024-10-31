@@ -5,10 +5,11 @@ import {
     NewModal as ModalComponent,
     NewModalProps,
     variables,
+    intermediaryTheme,
+    IconCircle,
 } from '../../index';
 import { newModalVariants, newModalSizes } from './types';
 import { ThemeProvider } from 'styled-components';
-import { intermediaryTheme, IconCircle } from '../../index';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const Buttons = () => (

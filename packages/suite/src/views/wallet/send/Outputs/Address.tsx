@@ -2,14 +2,22 @@ import { useCallback, useState } from 'react';
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 import styled, { useTheme } from 'styled-components';
 
-import { Input, Button, IconButton, getInputStateTextColor, Icon } from '@trezor/components';
+import {
+    Input,
+    Button,
+    IconButton,
+    getInputStateTextColor,
+    Icon,
+    Link,
+    Row,
+} from '@trezor/components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 import * as URLS from '@trezor/urls';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { formInputsMaxLength } from '@suite-common/validators';
 import type { Output } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector, useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
 import {
     isAddressValid,
     isAddressDeprecated,
@@ -19,18 +27,15 @@ import {
 } from '@suite-common/wallet-utils';
 
 import { AddressLabeling, MetadataLabeling } from 'src/components/suite';
-import { Link } from '@trezor/components';
 import { Translation } from '../../../../components/suite/Translation';
 
 import { scanOrRequestSendFormThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getProtocolInfo } from 'src/utils/suite/protocol';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 
 import { InputError } from 'src/components/wallet';
 import { InputErrorProps } from 'src/components/wallet/InputError';
-import { Row } from '@trezor/components';
 
 import { HELP_CENTER_EVM_ADDRESS_CHECKSUM } from '@trezor/urls';
 import { spacings } from '@trezor/theme';

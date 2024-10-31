@@ -21,8 +21,8 @@ import {
     PrecomposedLevels,
     PrecomposedTransaction,
     ExternalOutput,
+    AddressDisplayOptions,
 } from '@suite-common/wallet-types';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getNetwork } from '@suite-common/wallet-config';
 import { getTxStakeNameByDataHex } from '@suite-common/suite-utils';
 

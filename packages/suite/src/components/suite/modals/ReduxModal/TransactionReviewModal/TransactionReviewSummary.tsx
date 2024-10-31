@@ -7,11 +7,10 @@ import { borders, spacingsPx, typography } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Translation, FormattedCryptoAmount, AccountLabel } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
-import { Network } from '@suite-common/wallet-config';
+import { Network, NetworkType } from '@suite-common/wallet-config';
 import { GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
-import { NetworkType } from '@suite-common/wallet-config';
 import { CoinLogo } from '@trezor/product-components';
 
 const Wrapper = styled.div`

@@ -14,9 +14,8 @@ import type { Account } from 'src/types/wallet';
 import type { FormState, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getTransactionReviewOutputState } from '@suite-common/wallet-utils';
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
-import { ReviewOutput } from '@suite-common/wallet-types';
+import { ReviewOutput, StakeFormState, StakeType } from '@suite-common/wallet-types';
 import { spacingsPx } from '@trezor/theme';
-import { StakeFormState, StakeType } from '@suite-common/wallet-types';
 
 const Content = styled.div`
     display: flex;

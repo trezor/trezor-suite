@@ -1,5 +1,11 @@
 import { useCallback } from 'react';
-import { Timestamp, TokenAddress, FiatRatesResult } from '@suite-common/wallet-types';
+import {
+    Timestamp,
+    TokenAddress,
+    FiatRatesResult,
+    CurrencyOption,
+    Output,
+} from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
@@ -16,7 +22,6 @@ import {
     buildCurrencyOptions,
     getFiatRateKey,
 } from '@suite-common/wallet-utils';
-import { CurrencyOption, Output } from '@suite-common/wallet-types';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { NumberInput } from 'src/components/suite';

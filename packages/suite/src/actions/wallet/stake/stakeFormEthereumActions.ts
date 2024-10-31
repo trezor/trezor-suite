@@ -18,12 +18,12 @@ import {
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
     ExternalOutput,
+    AddressDisplayOptions,
 } from '@suite-common/wallet-types';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectDevice, ComposeActionContext } from '@suite-common/wallet-core';
 
 import { Dispatch, GetState } from 'src/types/suite';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import {
     getStakeTxGasLimit,
@@ -37,7 +37,6 @@ import {
     MIN_ETH_FOR_WITHDRAWALS,
 } from 'src/constants/suite/ethStaking';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { ComposeActionContext } from '@suite-common/wallet-core';
 
 const calculate = (
     availableBalance: string,

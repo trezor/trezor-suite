@@ -9,10 +9,10 @@ import {
     selectSendFormReviewButtonRequestsCount,
     selectStakePrecomposedForm,
     StakeState,
+    SendState,
 } from '@suite-common/wallet-core';
 import { FormState, StakeFormState } from '@suite-common/wallet-types';
 import { constructTransactionReviewOutputs, isRbfTransaction } from '@suite-common/wallet-utils';
-import { SendState } from '@suite-common/wallet-core';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { getTransactionReviewModalActionText } from 'src/utils/suite/transactionReview';

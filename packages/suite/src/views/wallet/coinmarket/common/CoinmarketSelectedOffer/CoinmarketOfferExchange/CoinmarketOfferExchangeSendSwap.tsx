@@ -10,6 +10,7 @@ import {
     SelectBar,
     Tooltip,
     variables,
+    getInputStateTextColor,
 } from '@trezor/components';
 import useDebounce from 'react-use/lib/useDebounce';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -19,7 +20,6 @@ import { TranslationKey } from '@suite-common/intl-types';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
-import { getInputStateTextColor } from '@trezor/components';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
 const Wrapper = styled.div`
