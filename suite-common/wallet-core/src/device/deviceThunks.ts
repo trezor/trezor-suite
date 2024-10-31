@@ -320,7 +320,7 @@ export const authorizeDeviceThunk = createThunk<
             isDeviceAcquired(device) &&
             // Should ignore device state serves as a variant to call "reauthorize" device. For example in passphrase mode
             // mobile has retry button which starts passphrase flow on the same device instance to override device state.
-            (!device.state || shouldIgnoreDeviceState) &&
+            (!device.state?.staticSessionId || shouldIgnoreDeviceState) &&
             device.mode === 'normal' &&
             device.firmware !== 'required';
 
