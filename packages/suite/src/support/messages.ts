@@ -6873,6 +6873,15 @@ export default defineMessages({
         defaultMessage:
             'We want to be sure that your device is in tip-top shape before you start using it. Reach out to Trezor Support to find out what to do next.',
     },
+    TR_DEVICE_MAYBE_COMPROMISED_HEADING: {
+        id: 'TR_DEVICE_MAYBE_COMPROMISED_HEADING',
+        defaultMessage: 'Device verification unsuccessful',
+    },
+    TR_DEVICE_MAYBE_COMPROMISED_TEXT: {
+        id: 'TR_DEVICE_MAYBE_COMPROMISED_TEXT',
+        defaultMessage:
+            "Reconnect your device to retry verification. If the issue persists, contact Trezor Support to figure out what's going on with your device and what to do next.",
+    },
     TR_DISCONNECT_DEVICE: {
         id: 'TR_DISCONNECT_DEVICE',
         defaultMessage: 'Disconnect your device from your laptop or computer.',
@@ -6884,6 +6893,10 @@ export default defineMessages({
     TR_USE_CHAT: {
         id: 'TR_USE_CHAT',
         defaultMessage: 'Click below and use the <b>Chat</b> option on the next page.',
+    },
+    TR_SEE_IF_ISSUE_PERSISTS: {
+        id: 'TR_SEE_IF_ISSUE_PERSISTS',
+        defaultMessage: 'See if issue persist.',
     },
     TR_CONTACT_TREZOR_SUPPORT: {
         id: 'TR_CONTACT_TREZOR_SUPPORT',

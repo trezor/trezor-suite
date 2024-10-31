@@ -11,7 +11,8 @@ import {
     selectFirmwareHashCheckError,
     selectFirmwareRevisionCheckError,
 } from 'src/reducers/suite/suiteReducer';
-import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
+import { SecurityCheckFail, SecurityCheckFailProps } from './SecurityCheckFail';
+import { softFailureChecklistItems } from './checklistItems';
 
 const reportCheckFail = (checkType: 'revision' | 'hash', contextData: any) => {
     withSentryScope(scope => {
@@ -48,12 +49,22 @@ export const DeviceCompromised = () => {
         if (hashCheckError) reportCheckFail('hash', { ...commonData, hashCheckError });
     }, [revisionCheckError, hashCheckError, revision, vendor, version]);
 
+    const isSoftFailure = revisionCheckError === null && hashCheckError === 'other-error';
+    const softFailureSecurityCheckFailProps: Partial<SecurityCheckFailProps> = isSoftFailure
+        ? {
+              heading: 'TR_DEVICE_MAYBE_COMPROMISED_HEADING',
+              text: 'TR_DEVICE_MAYBE_COMPROMISED_TEXT',
+              checklistItems: softFailureChecklistItems,
+          }
+        : {};
+
     return (
         <WelcomeLayout>
             <Card data-testid="@device-compromised">
                 <SecurityCheckFail
                     goBack={goToSuite}
                     supportUrl={TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL}
+                    {...softFailureSecurityCheckFailProps}
                 />
             </Card>
         </WelcomeLayout>
