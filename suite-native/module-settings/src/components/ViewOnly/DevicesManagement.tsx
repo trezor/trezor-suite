@@ -67,7 +67,7 @@ export const DevicesManagement = ({ onPressAbout }: AboutProps) => {
                         </HStack>
                         <Divider />
                         {devices.map(device => (
-                            <WalletRow key={`${device.state}`} device={device} />
+                            <WalletRow key={`${device.state?.staticSessionId}`} device={device} />
                         ))}
                     </Card>
                 );
