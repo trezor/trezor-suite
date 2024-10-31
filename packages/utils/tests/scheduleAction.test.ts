@@ -36,30 +36,32 @@ describe('scheduleAction', () => {
         jest.clearAllMocks();
     });
 
-    it('delay', done => {
-        const spy = jest.fn(() => Promise.resolve());
-        scheduleAction(spy, { delay: 1000 });
-        expect(spy).toHaveBeenCalledTimes(0);
-
-        setTimeout(() => {
-            expect(spy).toHaveBeenCalledTimes(1);
-            expect(checkListeners()).toBeUndefined();
-            done();
-        }, 1005);
-    });
-
-    it('delay aborted', done => {
-        const aborter = new AbortController();
-        const spy = jest.fn(() => Promise.resolve());
-        scheduleAction(spy, { delay: 1000, signal: aborter.signal }).catch(e => {
-            expect(e.message).toMatch(ERR_SIGNAL);
+    it('delay', () =>
+        new Promise<void>(done => {
+            const spy = jest.fn(() => Promise.resolve());
+            scheduleAction(spy, { delay: 1000 });
             expect(spy).toHaveBeenCalledTimes(0);
-            expect(checkListeners()).toBeUndefined();
-            done();
-        });
 
-        aborter.abort();
-    });
+            setTimeout(() => {
+                expect(spy).toHaveBeenCalledTimes(1);
+                expect(checkListeners()).toBeUndefined();
+                done();
+            }, 1005);
+        }));
+
+    it('delay aborted', () =>
+        new Promise<void>(done => {
+            const aborter = new AbortController();
+            const spy = jest.fn(() => Promise.resolve());
+            scheduleAction(spy, { delay: 1000, signal: aborter.signal }).catch(e => {
+                expect(e.message).toMatch(ERR_SIGNAL);
+                expect(spy).toHaveBeenCalledTimes(0);
+                expect(checkListeners()).toBeUndefined();
+                done();
+            });
+
+            aborter.abort();
+        }));
 
     it('deadline on always failing action', async () => {
         const spy = jest.fn(() => {

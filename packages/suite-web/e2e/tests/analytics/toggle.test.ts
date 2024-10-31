@@ -160,5 +160,3 @@ describe('Analytics Toggle - Enablement and Disablement', () => {
         });
     });
 });
-
-export {};

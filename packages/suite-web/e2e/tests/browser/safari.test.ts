@@ -31,5 +31,3 @@ describe('Safari on MacOS 14 ', () => {
         cy.getTestElement('@welcome/title');
     });
 });
-
-export {};

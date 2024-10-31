@@ -31,7 +31,7 @@ interface Args {
     transactions?: TransactionsState['transactions'];
 }
 
-export const getInitialState = (
+const getInitialState = (
     { accounts, transactions, blockchain, fees }: Args = {},
     action: any = { type: 'initial' },
 ) => ({

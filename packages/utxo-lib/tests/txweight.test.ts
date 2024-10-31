@@ -37,7 +37,9 @@ describe('TxWeightCalculator', () => {
         c.addOutputByKey('p2tr');
         expect(c.getTotal()).toEqual(4 * 94 + 68);
     });
+
     // multisig is not implemented
+    // eslint-disable-next-line jest/no-commented-out-tests
     // it('legacy multisig', () => {
     //     const c = new TxWeightCalculator();
     //     c.addInput({
@@ -51,6 +53,7 @@ describe('TxWeightCalculator', () => {
     //     expect(c.getTotal()).toEqual(4 * 341);
     // });
 
+    // eslint-disable-next-line jest/no-commented-out-tests
     // it('segwit multisig', () => {
     //     const c = new TxWeightCalculator();
     //     c.addInput({

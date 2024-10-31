@@ -32,6 +32,7 @@ describe('data/DataManager', () => {
         try {
             await DataManager.load(settings, false);
         } catch (err) {
+            // eslint-disable-next-line jest/no-standalone-expect
             expect(err).toBe(undefined);
         }
     });

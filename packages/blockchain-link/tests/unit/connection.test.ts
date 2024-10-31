@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-jasmine-globals */
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 import workers from './worker';
 import BlockchainLink from '../../src';
@@ -127,27 +128,29 @@ workers.forEach(instance => {
             expect(server.getFixtures()!.length).toEqual(2);
         });
 
-        it('Handle connect event', done => {
-            blockchain.on('connected', done);
-            blockchain.connect().then(result => {
-                expect(result).toEqual(true);
-            });
-        });
+        it('Handle connect event', () =>
+            new Promise<void>(done => {
+                blockchain.on('connected', done);
+                blockchain.connect().then(result => {
+                    expect(result).toEqual(true);
+                });
+            }));
 
-        it('Handle disconnect event', done => {
-            blockchain.on('disconnected', done);
-            blockchain.connect().then(() => {
-                // TODO: ripple-lib throws error when disconnect is called immediately
-                // investigate more, use setTimeout as a workaround
-                // Error [ERR_UNHANDLED_ERROR]: Unhandled error. (websocket)
-                // at Connection.RippleAPI.connection.on (../../node_modules/ripple-lib/src/api.ts:133:14)
-                if (instance.name === 'ripple') {
-                    setTimeout(() => blockchain.disconnect(), 100);
-                } else {
-                    blockchain.disconnect();
-                }
-            });
-        });
+        it('Handle disconnect event', () =>
+            new Promise<void>(done => {
+                blockchain.on('disconnected', done);
+                blockchain.connect().then(() => {
+                    // TODO: ripple-lib throws error when disconnect is called immediately
+                    // investigate more, use setTimeout as a workaround
+                    // Error [ERR_UNHANDLED_ERROR]: Unhandled error. (websocket)
+                    // at Connection.RippleAPI.connection.on (../../node_modules/ripple-lib/src/api.ts:133:14)
+                    if (instance.name === 'ripple') {
+                        setTimeout(() => blockchain.disconnect(), 100);
+                    } else {
+                        blockchain.disconnect();
+                    }
+                });
+            }));
 
         it('Connect (only one endpoint is valid)', async () => {
             // blockfrost has only one valid endpoint

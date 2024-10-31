@@ -3,7 +3,7 @@ import { configureStore } from 'src/support/tests/configureStore';
 import formDraftReducer, { FormDraftState } from 'src/reducers/wallet/formDraftReducer';
 import * as formDraftActions from '../formDraftActions';
 
-export const getInitialState = (state?: FormDraftState) => ({
+const getInitialState = (state?: FormDraftState) => ({
     wallet: {
         formDrafts: formDraftReducer(state, { type: 'foo' } as any),
     },

@@ -47,5 +47,3 @@ describe('Onboarding - recover wallet T1B1', () => {
         });
     });
 });
-
-export {};

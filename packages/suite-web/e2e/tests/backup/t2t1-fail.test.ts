@@ -52,5 +52,3 @@ describe('Backup fail', () => {
         });
     });
 });
-
-export {};

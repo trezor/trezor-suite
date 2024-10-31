@@ -66,5 +66,3 @@ describe('Passphrase numbering', () => {
 
     // TODO: add coverage for different wallet names displaying in the device switcher component
 });
-
-export {};

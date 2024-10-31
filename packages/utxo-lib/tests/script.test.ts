@@ -12,12 +12,14 @@ describe('script', () => {
             // @ts-expect-error
             expect(bscript.isCanonicalPubKey(0)).toBe(false);
         });
+        // eslint-disable-next-line jest/no-commented-out-tests
         // it('rejects smaller than 33', () => {
         //     for (let i = 0; i < 33; i++) {
         //         expect(bscript.isCanonicalPubKey(Buffer.from('', i))).toBe(false);
         //     }
         // });
     });
+    // eslint-disable-next-line jest/no-commented-out-tests
     // describe.skip('isCanonicalSignature', () => {});
 
     describe('fromASM/toASM', () => {

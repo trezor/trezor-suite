@@ -131,17 +131,19 @@ backends.forEach((b, i) => {
         }, 10000);
 
         describe('Event listeners', () => {
-            it('Handle connect event', done => {
-                blockchain.on('connected', () => done());
-                blockchain.connect();
-            });
+            it('Handle connect event', () =>
+                new Promise<void>(done => {
+                    blockchain.on('connected', () => done());
+                    blockchain.connect();
+                }));
 
-            it('Handle disconnect event', done => {
-                blockchain.on('disconnected', () => done());
-                blockchain.connect().then(() => {
-                    blockchain.disconnect();
-                });
-            });
+            it('Handle disconnect event', () =>
+                new Promise<void>(done => {
+                    blockchain.on('disconnected', () => done());
+                    blockchain.connect().then(() => {
+                        blockchain.disconnect();
+                    });
+                }));
         });
     });
 });

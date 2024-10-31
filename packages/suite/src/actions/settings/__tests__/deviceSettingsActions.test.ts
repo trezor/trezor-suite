@@ -16,7 +16,7 @@ jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
 
 const DEVICE = getSuiteDevice({ path: '1', connected: true });
 
-export const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}) => ({
+const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}) => ({
     suite: {
         ...suiteReducer(undefined, { type: '@suite/init' }),
     },

@@ -541,6 +541,6 @@ describe('Real messages', () => {
         expect(() => {
             // @ts-expect-error
             encode(null, {});
-        }).toThrowError();
+        }).toThrow();
     });
 });

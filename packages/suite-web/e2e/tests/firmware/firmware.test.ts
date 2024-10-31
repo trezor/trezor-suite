@@ -59,5 +59,3 @@ describe('Firmware', () => {
         // );
     });
 });
-
-export {};

@@ -34,5 +34,3 @@ describe('unacquired device', () => {
     // - also firmware update, maybe standalone backup/recovery might have custom implementation  that might be worth revisiting
     // - device state is incorrect is wrong copy!!!
 });
-
-export {};

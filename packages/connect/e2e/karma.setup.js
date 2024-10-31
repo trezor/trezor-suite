@@ -50,6 +50,7 @@ jasmine.getEnv().beforeAll(() => {
                         return match;
                     }, {});
 
+                // eslint-disable-next-line jest/no-standalone-expect
                 expect(actual).toEqual(jasmine.objectContaining(nested(expected)));
 
                 return success;

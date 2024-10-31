@@ -20,5 +20,3 @@ describe('Bridge page', () => {
         cy.getTestElement('@connect-device-prompt');
     });
 });
-
-export {};

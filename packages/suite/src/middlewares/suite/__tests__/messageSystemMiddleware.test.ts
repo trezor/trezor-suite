@@ -20,7 +20,7 @@ type WalletsState = ReturnType<typeof WalletReducers>;
 type MessageSystemState = ReturnType<typeof messageSystemReducer>;
 type SuiteState = ReturnType<typeof suiteReducer>;
 
-export const getInitialState = (
+const getInitialState = (
     messageSystem?: Partial<MessageSystemState>,
     wallet?: Partial<WalletsState>,
     suite?: Partial<SuiteState>,

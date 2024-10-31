@@ -35,5 +35,3 @@ describe('Passphrase cancel', () => {
         });
     });
 });
-
-export {};

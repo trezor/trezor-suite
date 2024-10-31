@@ -63,5 +63,3 @@ describe('Backup success', () => {
         onMultiShareBackupModal.finalizeMultiShareBackup();
     });
 });
-
-export {};

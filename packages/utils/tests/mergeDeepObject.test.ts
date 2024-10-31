@@ -162,7 +162,7 @@ describe('mergeDeepObject', () => {
         });
 
         it("can't mergeDeepObject arrays when provided directly as args", () => {
-            expect(() => mergeDeepObject([1], [2])).toThrowError(
+            expect(() => mergeDeepObject([1], [2])).toThrow(
                 new TypeError('Arguments provided to ts-deepmerge must be objects, not arrays.'),
             );
         });

@@ -24,7 +24,7 @@ interface InitialState {
     };
 }
 
-export const getInitialState = (initial: InitialState) => ({
+const getInitialState = (initial: InitialState) => ({
     ...DEFAULT_STORE,
     ...initial,
     wallet: {

@@ -14,7 +14,7 @@ import { actions } from '../__fixtures__/useDiscovery';
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 
-export const getInitialState = (action: any = { type: 'initial' }) => ({
+const getInitialState = (action: any = { type: 'initial' }) => ({
     wallet: {
         discovery: discoveryReducer(undefined, action),
     },

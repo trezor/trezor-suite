@@ -52,7 +52,7 @@ jest.mock('@trezor/suite-desktop-api', () => ({
 //     default: () => ['ref', { height: 0 }],
 // }));
 
-export const getInitialState = ({ suite, router, device }: any = {}) => ({
+const getInitialState = ({ suite, router, device }: any = {}) => ({
     suite: {
         lifecycle: {
             status: 'ready',

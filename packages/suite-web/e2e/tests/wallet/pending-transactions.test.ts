@@ -130,5 +130,3 @@ describe('Use regtest to test pending transactions', () => {
         });
     });
 });
-
-export {};

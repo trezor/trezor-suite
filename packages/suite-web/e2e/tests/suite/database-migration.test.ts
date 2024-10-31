@@ -169,5 +169,3 @@ describe('Database migration', () => {
         cy.get('body').should('have.css', 'background-color', 'rgb(23, 23, 23)');
     });
 });
-
-export {};

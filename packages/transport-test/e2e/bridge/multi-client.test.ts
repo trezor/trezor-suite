@@ -209,7 +209,7 @@ describe('bridge', () => {
                 input: { previous: session1.payload, path },
             });
 
-            expect(receive1res).resolves.toMatchObject({
+            await expect(receive1res).resolves.toMatchObject({
                 success: false,
                 // todo: this error is expected, fix errors. also emu error is weird
                 error: errorCase1,

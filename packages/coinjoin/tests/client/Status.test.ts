@@ -208,25 +208,26 @@ describe('Status', () => {
         expect(identities.length).toEqual(1);
     });
 
-    it('Status start and immediate stop', done => {
-        status = new Status(server?.requestOptions);
-        const errorListener = jest.fn();
-        status.on('log', errorListener);
-        const updateListener = jest.fn();
-        status.on('update', updateListener);
-        const requestListener = jest.fn();
-        server?.addListener('test-handle-request', requestListener);
+    it('Status start and immediate stop', () =>
+        new Promise<void>(done => {
+            status = new Status(server?.requestOptions);
+            const errorListener = jest.fn();
+            status.on('log', errorListener);
+            const updateListener = jest.fn();
+            status.on('update', updateListener);
+            const requestListener = jest.fn();
+            server?.addListener('test-handle-request', requestListener);
 
-        // start but not await
-        status.start().then(() => {
-            expect(requestListener).toHaveBeenCalledTimes(0); // aborted, request not sent
-            expect(updateListener).toHaveBeenCalledTimes(0); // not emitted, listener removed by .stop()
-            expect(errorListener).toHaveBeenCalledTimes(0); // not emitted, listener removed by .stop()
-            done();
-        });
-        // immediate stop
-        status.stop();
-    });
+            // start but not await
+            status.start().then(() => {
+                expect(requestListener).toHaveBeenCalledTimes(0); // aborted, request not sent
+                expect(updateListener).toHaveBeenCalledTimes(0); // not emitted, listener removed by .stop()
+                expect(errorListener).toHaveBeenCalledTimes(0); // not emitted, listener removed by .stop()
+                done();
+            });
+            // immediate stop
+            status.stop();
+        }));
 
     it('Status start attempts, keep lifecycle regardless of failed requests', async () => {
         jest.spyOn(STATUS_TIMEOUT, 'registered', 'get').mockReturnValue(250 as any);

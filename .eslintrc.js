@@ -25,6 +25,7 @@ module.exports = {
         'plugin:react/recommended',
         'plugin:import/typescript',
         'plugin:react-hooks/recommended',
+        'plugin:jest/recommended',
     ],
     settings: {
         react: {
@@ -307,6 +308,16 @@ module.exports = {
             'error',
             { packageNames: ['@trezor/product-components', '@trezor/components'] },
         ],
+
+        // Jest plugin config
+        'jest/valid-title': 'off', // This rule does not use Typescript and produces false positives
+        'jest/no-disabled-tests': 'off', // we still have a lot of skipped tests (WIP)
+        'jest/no-conditional-expect': 'off', // Todo: we shall solve this, this is bad practice
+        'jest/expect-expect': 'off', // Todo: we have test with no assertions, this may be legit but it needs to be checked
+        'jest/no-standalone-expect': [
+            'error',
+            { additionalTestBlockFunctions: ['conditionalTest'] },
+        ],
     },
     overrides: [
         {
@@ -371,6 +382,18 @@ module.exports = {
                 'import/no-extraneous-dependencies': 'off',
                 'import/no-unresolved': 'off',
                 'import/no-default-export': 'off',
+            },
+        },
+        {
+            files: ['packages/suite-web/e2e/**/*'],
+            rules: {
+                'jest/valid-expect': 'off', // Cypress
+            },
+        },
+        {
+            files: ['packages/connect/e2e/**/*'],
+            rules: {
+                'jest/no-jasmine-globals': 'off', // Kamma tests
             },
         },
     ],

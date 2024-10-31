@@ -36,5 +36,3 @@ describe('Settings changes persist when device disconnected', () => {
         cy.location('pathname').should('match', /\/accounts\/send$/);
     });
 });
-
-export {};

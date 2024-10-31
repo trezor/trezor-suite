@@ -108,7 +108,7 @@ type PartialState = Pick<AppState, 'suite' | 'device'> & {
     >;
 };
 
-export const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
+const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
     suite: suiteReducer(
         prevState ? prevState.suite : undefined,
         action || ({ type: 'foo' } as any),

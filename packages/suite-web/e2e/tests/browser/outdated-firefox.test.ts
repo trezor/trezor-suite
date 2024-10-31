@@ -32,5 +32,3 @@ describe('Ubuntu with outdated firefox ', () => {
         cy.getTestElement('@welcome/title');
     });
 });
-
-export {};

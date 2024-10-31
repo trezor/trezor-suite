@@ -110,5 +110,3 @@ describe('Metadata - cancel metadata on device', () => {
         cy.task('pressNo');
     });
 });
-
-export {};

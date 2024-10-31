@@ -11,21 +11,23 @@ describe('DesktopApi', () => {
     });
 
     describe('Events', () => {
-        it('DesktopApi.on omits event param', done => {
-            api.on('tor/status', state => {
-                expect(state).toBe(true);
-                done();
-            });
-            ipcRenderer.emit('tor/status', new Event('ipc'), true); // Event param should be omitted
-        });
+        it('DesktopApi.on omits event param', () =>
+            new Promise<void>(done => {
+                api.on('tor/status', state => {
+                    expect(state).toBe(true);
+                    done();
+                });
+                ipcRenderer.emit('tor/status', new Event('ipc'), true); // Event param should be omitted
+            }));
 
-        it('DesktopApi.once omits event param', done => {
-            api.once('tor/status', state => {
-                expect(state).toBe(true);
-                done();
-            });
-            ipcRenderer.emit('tor/status', new Event('ipc'), true); // Event param should be omitted
-        });
+        it('DesktopApi.once omits event param', () =>
+            new Promise<void>(done => {
+                api.once('tor/status', state => {
+                    expect(state).toBe(true);
+                    done();
+                });
+                ipcRenderer.emit('tor/status', new Event('ipc'), true); // Event param should be omitted
+            }));
 
         it('DesktopApi.removeAllListener', () => {
             const spy = jest.fn();

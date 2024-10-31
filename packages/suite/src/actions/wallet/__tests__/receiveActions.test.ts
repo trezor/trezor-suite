@@ -86,7 +86,7 @@ interface InitialState {
     modal: ModalState;
 }
 
-export const getInitialState = (state: Partial<InitialState> | undefined) => ({
+const getInitialState = (state: Partial<InitialState> | undefined) => ({
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...state?.suite,

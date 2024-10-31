@@ -223,53 +223,55 @@ describe('utils/deviceFeaturesUtils', () => {
             });
         });
 
-        it('T2T1 update-required', done => {
-            jest.resetModules();
+        it('T2T1 update-required', () =>
+            new Promise<void>(done => {
+                jest.resetModules();
 
-            jest.mock('../../data/config', () => ({
-                __esModule: true,
-                config: {
-                    supportedFirmware: [
-                        {
-                            min: { T1B1: '0', T2T1: '2.99.99' },
-                            capabilities: ['newCapabilityOrFeature'],
-                        },
-                    ],
-                },
+                jest.mock('../../data/config', () => ({
+                    __esModule: true,
+                    config: {
+                        supportedFirmware: [
+                            {
+                                min: { T1B1: '0', T2T1: '2.99.99' },
+                                capabilities: ['newCapabilityOrFeature'],
+                            },
+                        ],
+                    },
+                }));
+
+                import('../deviceFeaturesUtils').then(({ getUnavailableCapabilities }) => {
+                    // added new capability
+                    expect(getUnavailableCapabilities(featT2T1, coins)).toEqual({
+                        newCapabilityOrFeature: 'update-required',
+                    });
+                    done();
+                });
             }));
 
-            import('../deviceFeaturesUtils').then(({ getUnavailableCapabilities }) => {
-                // added new capability
-                expect(getUnavailableCapabilities(featT2T1, coins)).toEqual({
-                    newCapabilityOrFeature: 'update-required',
+        it('T2T1 no-support', () =>
+            new Promise<void>(done => {
+                jest.resetModules();
+
+                jest.mock('../../data/config', () => ({
+                    __esModule: true,
+                    config: {
+                        supportedFirmware: [
+                            {
+                                min: { T1B1: '0', T2T1: '0' },
+                                capabilities: ['newCapabilityOrFeature'],
+                            },
+                        ],
+                    },
+                }));
+
+                import('../deviceFeaturesUtils').then(({ getUnavailableCapabilities }) => {
+                    // added new capability
+                    expect(getUnavailableCapabilities(featT2T1, coins)).toEqual({
+                        newCapabilityOrFeature: 'no-support',
+                    });
+                    done();
                 });
-                done();
-            });
-        });
-
-        it('T2T1 no-support', done => {
-            jest.resetModules();
-
-            jest.mock('../../data/config', () => ({
-                __esModule: true,
-                config: {
-                    supportedFirmware: [
-                        {
-                            min: { T1B1: '0', T2T1: '0' },
-                            capabilities: ['newCapabilityOrFeature'],
-                        },
-                    ],
-                },
             }));
-
-            import('../deviceFeaturesUtils').then(({ getUnavailableCapabilities }) => {
-                // added new capability
-                expect(getUnavailableCapabilities(featT2T1, coins)).toEqual({
-                    newCapabilityOrFeature: 'no-support',
-                });
-                done();
-            });
-        });
 
         it('handles duplicated shortcuts correctly, ', () => {
             const customCoins = [

@@ -23,6 +23,7 @@ describe('bridge', () => {
 
         const enumerateResult = await bridge.enumerate();
         assertSuccess(enumerateResult);
+        // eslint-disable-next-line jest/no-standalone-expect
         expect(enumerateResult).toMatchObject({
             success: true,
             payload: [
@@ -35,6 +36,7 @@ describe('bridge', () => {
         });
 
         const { path } = enumerateResult.payload[0];
+        // eslint-disable-next-line jest/no-standalone-expect
         expect(path.length).toEqual(pathLength);
 
         descriptors = enumerateResult.payload;
@@ -43,6 +45,7 @@ describe('bridge', () => {
             input: { path: descriptors[0].path, previous: session },
         });
         assertSuccess(acquireResult);
+        // eslint-disable-next-line jest/no-standalone-expect
         expect(acquireResult).toEqual({
             success: true,
             payload: '1',

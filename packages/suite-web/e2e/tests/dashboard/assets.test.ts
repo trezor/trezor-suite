@@ -75,5 +75,3 @@ describe.skip('Assets', () => {
         // });
     });
 });
-
-export {};

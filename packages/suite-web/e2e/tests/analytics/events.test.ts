@@ -228,5 +228,3 @@ describe('Analytics Events', () => {
         });
     });
 });
-
-export {};

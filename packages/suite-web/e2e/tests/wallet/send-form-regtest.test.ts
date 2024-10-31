@@ -100,5 +100,3 @@ describe('Send form for bitcoin', () => {
         );
     });
 });
-
-export {};

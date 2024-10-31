@@ -59,15 +59,16 @@ describe('getSynchronize', () => {
         ]);
     });
 
-    it('nested', done => {
-        synchronize(() =>
-            sequence(['a', 3]).then(() => {
-                // 'c' registers after 'a' ended and while 'b' is running
-                delay(2).then(() => synchronize(() => sequence(['c', 3])).then(done));
-            }),
-        );
-        synchronize(() => sequence(['b', 8]));
-    });
+    it('nested', () =>
+        new Promise<void>(done => {
+            synchronize(() =>
+                sequence(['a', 3]).then(() => {
+                    // 'c' registers after 'a' ended and while 'b' is running
+                    delay(2).then(() => synchronize(() => sequence(['c', 3])).then(done));
+                }),
+            );
+            synchronize(() => sequence(['b', 8]));
+        }));
 
     it('with keys', async () => {
         let state1: any, state2: any;

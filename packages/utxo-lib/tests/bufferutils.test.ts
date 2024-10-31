@@ -68,7 +68,7 @@ describe('bufferutils', () => {
 
                 expect(() => {
                     bufferutils.readUInt64LE(buffer, 0);
-                }).toThrowError(new RegExp(f.exception));
+                }).toThrow(new RegExp(f.exception));
             });
         });
     });
@@ -90,14 +90,16 @@ describe('bufferutils', () => {
 
                 expect(() => {
                     bufferutils.readVarInt(buffer, 0);
-                }).toThrowError(new RegExp(f.exception));
+                }).toThrow(new RegExp(f.exception));
             });
         });
     });
 
     // TODO: not-used
+    // eslint-disable-next-line jest/no-commented-out-tests
     // describe('varIntBuffer', () => {
     //     fixtures.valid.forEach(f => {
+    // eslint-disable-next-line jest/no-commented-out-tests
     //         it(`encodes ${f.dec} correctly`, () => {
     //             const buffer = bufferutils.varIntBuffer(f.dec);
 
@@ -145,7 +147,7 @@ describe('bufferutils', () => {
 
                 expect(() => {
                     bufferutils.writeUInt64LE(buffer, f.dec, 0);
-                }).toThrowError(new RegExp(f.exception));
+                }).toThrow(new RegExp(f.exception));
             });
         });
     });
@@ -166,7 +168,7 @@ describe('bufferutils', () => {
 
                 expect(() => {
                     bufferutils.writeVarInt(buffer, f.dec, 0);
-                }).toThrowError(new RegExp(f.exception));
+                }).toThrow(new RegExp(f.exception));
             });
         });
     });

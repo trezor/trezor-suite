@@ -3,7 +3,7 @@ import { factory } from '../factory';
 import { ipcRenderer } from './ipcRenderer';
 
 describe('Renderer', () => {
-    it('api is not defined', () => {
+    it('api is not defined', async () => {
         const spyError = jest.spyOn(console, 'error').mockImplementation();
         expect(desktopApi.available).toBe(false);
         desktopApi.on('protocol/open', () => {});
@@ -11,7 +11,7 @@ describe('Renderer', () => {
         desktopApi.removeAllListeners('protocol/open');
         desktopApi.clearStore();
         expect(spyError).toHaveBeenCalledTimes(4);
-        expect(desktopApi.metadataRead({ file: 'foo.txt' })).rejects.toThrow();
+        await expect(desktopApi.metadataRead({ file: 'foo.txt' })).rejects.toThrow();
     });
 
     it('api is defined', () => {

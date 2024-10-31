@@ -105,5 +105,3 @@ describe('General settings', () => {
         // cy.getTestElement('@onboarding/welcome', { timeout: 20000 }).should('be.visible');
     });
 });
-
-export {};

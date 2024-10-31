@@ -100,5 +100,3 @@ describe.skip('fw update from empty device bootloader 2.0.3 to firmware 2.5.1', 
         }).click();
     });
 });
-
-export {};

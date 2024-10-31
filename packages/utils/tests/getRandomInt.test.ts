@@ -8,8 +8,8 @@ describe(getRandomInt.name, () => {
             'The value of "max" is out of range. It must be greater than the value of "min" (0). Received -1',
         );
 
-        expect(() => randomInt(0, -1)).toThrowError(EXPECTED_ERROR);
-        expect(() => getRandomInt(0, -1)).toThrowError(EXPECTED_ERROR);
+        expect(() => randomInt(0, -1)).toThrow(EXPECTED_ERROR);
+        expect(() => getRandomInt(0, -1)).toThrow(EXPECTED_ERROR);
     });
 
     it('raises error for range > 2^32', () => {
@@ -17,7 +17,7 @@ describe(getRandomInt.name, () => {
             'This function only provide 32 bits of entropy, therefore range cannot be more then 2^32.',
         );
 
-        expect(() => getRandomInt(0, Math.pow(2, 32) + 1)).toThrowError(EXPECTED_ERROR);
+        expect(() => getRandomInt(0, Math.pow(2, 32) + 1)).toThrow(EXPECTED_ERROR);
     });
 
     it('raises same error for unsafe integer', () => {
@@ -27,12 +27,8 @@ describe(getRandomInt.name, () => {
             'The "min" argument must be a safe integer. Received type number (9007199254740992)',
         );
 
-        expect(() => randomInt(UNSAFE_INTEGER, UNSAFE_INTEGER + 1)).toThrowError(
-            EXPECTED_ERROR_MIN,
-        );
-        expect(() => getRandomInt(UNSAFE_INTEGER, UNSAFE_INTEGER + 1)).toThrowError(
-            EXPECTED_ERROR_MIN,
-        );
+        expect(() => randomInt(UNSAFE_INTEGER, UNSAFE_INTEGER + 1)).toThrow(EXPECTED_ERROR_MIN);
+        expect(() => getRandomInt(UNSAFE_INTEGER, UNSAFE_INTEGER + 1)).toThrow(EXPECTED_ERROR_MIN);
 
         const EXPECTED_ERROR_MAX = new RangeError(
             'The "max" argument must be a safe integer. Received type number (9007199254740992)',
@@ -41,10 +37,10 @@ describe(getRandomInt.name, () => {
             'The "max" argument must be a safe integer. Received type number (-9007199254740992)',
         );
 
-        expect(() => randomInt(0, UNSAFE_INTEGER)).toThrowError(EXPECTED_ERROR_MAX);
-        expect(() => getRandomInt(0, UNSAFE_INTEGER)).toThrowError(EXPECTED_ERROR_MAX);
-        expect(() => randomInt(0, -UNSAFE_INTEGER)).toThrowError(EXPECTED_ERROR_MAX_NEGATIVE);
-        expect(() => getRandomInt(0, -UNSAFE_INTEGER)).toThrowError(EXPECTED_ERROR_MAX_NEGATIVE);
+        expect(() => randomInt(0, UNSAFE_INTEGER)).toThrow(EXPECTED_ERROR_MAX);
+        expect(() => getRandomInt(0, UNSAFE_INTEGER)).toThrow(EXPECTED_ERROR_MAX);
+        expect(() => randomInt(0, -UNSAFE_INTEGER)).toThrow(EXPECTED_ERROR_MAX_NEGATIVE);
+        expect(() => getRandomInt(0, -UNSAFE_INTEGER)).toThrow(EXPECTED_ERROR_MAX_NEGATIVE);
     });
 
     // This test takes 100+seconds to run. It is very needed for development and debugging,

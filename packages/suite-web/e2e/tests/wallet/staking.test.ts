@@ -75,5 +75,3 @@ describe('ETH staking', () => {
         });
     });
 });
-
-export {};

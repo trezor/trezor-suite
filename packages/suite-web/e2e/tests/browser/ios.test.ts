@@ -21,5 +21,3 @@ describe('iPhone with chrome browser ', () => {
         cy.get('html').should('not.contain.text', 'Continue at my own risk');
     });
 });
-
-export {};

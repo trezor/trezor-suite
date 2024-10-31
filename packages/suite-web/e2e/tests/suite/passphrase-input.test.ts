@@ -76,5 +76,3 @@ describe('Passphrase', () => {
         // todo: select part of test + copy/paste
     });
 });
-
-export {};

@@ -55,7 +55,7 @@ const setFetchMock = (mock: any) => {
 describe('Coinmarket Buy Actions', () => {
     invityAPI.createInvityAPIKey('mock');
 
-    it('load and saveBuyInfo', () => {
+    it('load and saveBuyInfo', async () => {
         const buyList = {
             country: 'CZ',
             suggestedFiatCurrency: 'CZK',
@@ -93,7 +93,7 @@ describe('Coinmarket Buy Actions', () => {
 
         const store = initStore(getInitialState());
 
-        coinmarketBuyActions.loadBuyInfo().then(buyInfo => {
+        await coinmarketBuyActions.loadBuyInfo().then(buyInfo => {
             store.dispatch(coinmarketBuyActions.saveBuyInfo(buyInfo));
             expect(store.getState().wallet.coinmarket.buy.buyInfo).toEqual({
                 buyInfo: {

@@ -342,15 +342,16 @@ describe('inputRegistration', () => {
         expect(spy.mock.calls.length).toBeGreaterThan(0);
 
         // 2. wait for confirmation interval to resolve
-        Promise.all(response.inputs.map(input => input.getConfirmationInterval()?.promise)).then(
-            res => {
-                res.forEach(input => {
-                    expect(input?.getConfirmationInterval()).toBeUndefined();
-                });
-            },
+        const promises = Promise.all(
+            response.inputs.map(input => input.getConfirmationInterval()?.promise),
         );
 
         // 1. abort confirmation interval
         response.inputs.forEach(input => input.clearConfirmationInterval());
+
+        const res = await promises;
+        res.forEach(input => {
+            expect(input?.getConfirmationInterval()).toBeUndefined();
+        });
     });
 });

@@ -23,7 +23,7 @@ import {
     wait,
 } from '../utils';
 
-export const SEND_FORM_ERROR_MESSAGES = {
+const SEND_FORM_ERROR_MESSAGES = {
     invalidAddress: 'The address format is incorrect.',
     invalidDecimalValue: 'Invalid decimal value.',
     dustAmount: 'The value is lower than the dust limit.',

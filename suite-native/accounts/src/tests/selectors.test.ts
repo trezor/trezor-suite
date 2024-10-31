@@ -32,13 +32,13 @@ describe('isFilterValueMatchingAccountLabelOrNetworkName', () => {
         expect(isFilterValueMatchingAccount(account, filterValue)).toBe(true);
     });
 
-    test('should return true if filter value matches the account type', () => {
+    test('should return true if filter value matches the account type: legacy', () => {
         const filterValue = 'legacy';
 
         expect(isFilterValueMatchingAccount(account, filterValue)).toBe(true);
     });
 
-    test('should return true if filter value matches the account type', () => {
+    test('should return true if filter value matches the account type: taproot', () => {
         const filterValue = 'taproot';
 
         expect(isFilterValueMatchingAccount(account, filterValue)).toBe(false);

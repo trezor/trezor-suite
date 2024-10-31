@@ -44,7 +44,7 @@ describe('createLazy', () => {
         expect(disposeFn).toHaveBeenCalledWith([42]);
     });
 
-    it('dispose during init', () => {
+    it('dispose during init', async () => {
         const initFn = jest.fn(returnDelayed(500));
         const lazy = createLazy(initFn);
 
@@ -62,8 +62,8 @@ describe('createLazy', () => {
 
         jest.advanceTimersByTime(400);
 
-        expect(initPromise).rejects.toThrow('Disposed during initialization');
         expect(lazy.getPending()).toEqual(undefined);
         expect(lazy.get()).toEqual(undefined);
+        await expect(initPromise).rejects.toThrow('Disposed during initialization');
     });
 });

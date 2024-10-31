@@ -43,8 +43,6 @@ describe('firmware/calculateFirmwareHash', () => {
     });
 
     it('Firmware too big', () => {
-        expect(() => calculateFirmwareHash(2, Buffer.alloc(100000000))).toThrowError(
-            'Firmware too big',
-        );
+        expect(() => calculateFirmwareHash(2, Buffer.alloc(100000000))).toThrow('Firmware too big');
     });
 });

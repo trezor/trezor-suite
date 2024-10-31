@@ -12,7 +12,7 @@ import * as fixtures from '../__fixtures__/messageSystemActions';
 
 const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesMock);
 
-export const getInitialState = (state?: MessageSystemState) => ({
+const getInitialState = (state?: MessageSystemState) => ({
     messageSystem: {
         ...messageSystemReducer(undefined, { type: 'foo' } as any),
         ...state,

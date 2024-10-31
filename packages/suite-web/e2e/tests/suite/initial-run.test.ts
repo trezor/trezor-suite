@@ -36,5 +36,3 @@ describe('Suite initial run', () => {
         cy.getTestElement('@menu/switch-device').should('contain.text', 'Connected');
     });
 });
-
-export {};

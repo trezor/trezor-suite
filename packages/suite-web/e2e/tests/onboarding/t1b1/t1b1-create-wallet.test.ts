@@ -69,5 +69,3 @@ describe('Onboarding - create wallet', () => {
         cy.getTestElement('@pin/input/1');
     });
 });
-
-export {};

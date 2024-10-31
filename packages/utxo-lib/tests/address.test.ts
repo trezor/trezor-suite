@@ -22,7 +22,7 @@ describe('address', () => {
             it(`throws on ${f.exception}`, () => {
                 expect(() => {
                     baddress.fromBase58Check(f.address, getNetwork(f.network));
-                }).toThrowError(new RegExp(`${f.address} ${f.exception}`));
+                }).toThrow(new RegExp(`${f.address} ${f.exception}`));
             });
         });
     });
@@ -50,7 +50,7 @@ describe('address', () => {
             it(`decode fails for ${f.address}(${f.exception})`, () => {
                 expect(() => {
                     baddress.fromBech32(f.address);
-                }).toThrowError(new RegExp(f.exception));
+                }).toThrow(new RegExp(f.exception));
             });
         });
     });
@@ -69,7 +69,7 @@ describe('address', () => {
                 const script = bscript.fromASM(f.script);
                 expect(() => {
                     baddress.fromOutputScript(script);
-                }).toThrowError(new RegExp(f.exception));
+                }).toThrow(new RegExp(f.exception));
             });
         });
     });
@@ -86,6 +86,7 @@ describe('address', () => {
 
         // TODO: These fixtures (according to TypeScript) have none of the data used below
         // fixtures.invalid.bech32.forEach((f, i) => {
+        // eslint-disable-next-line jest/no-commented-out-tests
         //     it(`encode fails (${f.exception}`, () => {
         //         expect(() => {
         //             baddress.toBech32(Buffer.from(f.data, 'hex'), f.version, f.prefix);
@@ -111,7 +112,7 @@ describe('address', () => {
                 const network = typeof f.network === 'string' ? getNetwork(f.network) : f.network;
                 expect(() => {
                     baddress.toOutputScript(f.address, network);
-                }).toThrowError(new RegExp(`${f.address} ${f.exception}`));
+                }).toThrow(new RegExp(`${f.address} ${f.exception}`));
             });
         });
     });

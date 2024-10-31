@@ -27,6 +27,7 @@ const TrezorConnect = testMocks.getTrezorConnectMock();
 
 type AccountsState = ReturnType<typeof accountsReducer>;
 type SettingsState = ReturnType<typeof walletSettingsReducer>;
+
 interface Args {
     router?: Partial<RouterState>;
     accounts?: AccountsState;
@@ -35,13 +36,7 @@ interface Args {
     send?: Partial<SendState>;
 }
 
-export const getInitialState = ({
-    router,
-    accounts,
-    settings,
-    selectedAccount,
-    send,
-}: Args = {}) => ({
+const getInitialState = ({ router, accounts, settings, selectedAccount, send }: Args = {}) => ({
     router: {
         app: 'wallet',
         ...router,

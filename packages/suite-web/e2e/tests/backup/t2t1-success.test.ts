@@ -64,5 +64,3 @@ describe('Backup success', () => {
         });
     });
 });
-
-export {};

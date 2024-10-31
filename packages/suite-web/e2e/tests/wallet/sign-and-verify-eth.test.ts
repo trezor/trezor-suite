@@ -83,5 +83,3 @@ describe('Sign and verify ETH', () => {
         cy.getTestElement('@toast/verify-message-success');
     });
 });
-
-export {};

@@ -29,5 +29,3 @@ describe('Onboarding - analytics consent', () => {
         cy.getTestElement('@wallet/menu/wallet-send');
     });
 });
-
-export {};

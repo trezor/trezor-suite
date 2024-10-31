@@ -420,6 +420,7 @@ describe(`CoinjoinRound`, () => {
         round.on('changed', spyChanged);
 
         // process but not wait for the result
+        // eslint-disable-next-line jest/valid-expect-in-promise
         round.process([]).then(() => {
             expect(spyEnded).toHaveBeenCalledTimes(1);
             expect(spyChanged).toHaveBeenCalledTimes(1);

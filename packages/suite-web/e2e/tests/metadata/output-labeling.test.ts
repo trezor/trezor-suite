@@ -109,5 +109,3 @@ describe('Metadata - Output labeling', () => {
         });
     });
 });
-
-export {};

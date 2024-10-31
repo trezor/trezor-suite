@@ -61,5 +61,3 @@ describe('Recovery - dry run', () => {
         cy.getTestElement('@recovery/success-title');
     });
 });
-
-export {};

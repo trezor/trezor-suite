@@ -28,7 +28,7 @@ describe('getRoundPhaseFromSessionPhase', () => {
             const getSessionPhase = () => coinjoinUtils.getRoundPhaseFromSessionPhase(sessionPhase);
 
             if (result === 'error') {
-                expect(getSessionPhase).toThrowError();
+                expect(getSessionPhase).toThrow();
             } else {
                 expect(getSessionPhase()).toEqual(result);
             }
@@ -43,7 +43,7 @@ describe('getFirstSessionPhaseFromRoundPhase', () => {
                 coinjoinUtils.getFirstSessionPhaseFromRoundPhase(roundPhase);
 
             if (result === 'error') {
-                expect(getSessionPhase).toThrowError();
+                expect(getSessionPhase).toThrow();
             } else {
                 expect(getSessionPhase()).toEqual(result);
             }

@@ -23,7 +23,7 @@ function verify(hd: BIP32.BIP32Interface, prv: boolean, f: Fixture, network: NET
     if (prv) expect(hd.toBase58()).toEqual(f.base58Priv);
     if (prv) expect(hd.privateKey?.toString('hex')).toEqual(f.privKey);
     if (prv) expect(hd.toWIF()).toEqual(f.wif);
-    if (!prv) expect(() => hd.toWIF()).toThrowError(/Missing private key/);
+    if (!prv) expect(() => hd.toWIF()).toThrow(/Missing private key/);
     if (!prv) expect(hd.privateKey).toEqual(undefined);
     expect(hd.neutered().toBase58()).toEqual(f.base58);
     expect(hd.isNeutered()).toEqual(!prv);
@@ -56,7 +56,7 @@ function verify(hd: BIP32.BIP32Interface, prv: boolean, f: Fixture, network: NET
 
         expect(() => {
             shd.derivePath('m/0');
-        }).toThrowError(/Expected master, got child/);
+        }).toThrow(/Expected master, got child/);
 
         verify(shd, prv, cf, network);
     });
@@ -104,7 +104,7 @@ describe('fromBase58 throws', () => {
         it(`throws ${f.exception}`, () => {
             expect(() => {
                 BIP32.fromBase58(f.string, getNetwork(f.network));
-            }).toThrowError(new RegExp(`${f.exception}`));
+            }).toThrow(new RegExp(`${f.exception}`));
         });
     });
 });
@@ -142,7 +142,7 @@ it('throws on Public -> public (hardened)', () => {
     const master = BIP32.fromBase58(f.base58);
     expect(() => {
         master.deriveHardened(c.m);
-    }).toThrowError(/Missing private key for hardened child key/);
+    }).toThrow(/Missing private key for hardened child key/);
 });
 
 it('throws on wrong types', () => {
@@ -152,19 +152,19 @@ it('throws on wrong types', () => {
     fixtures.invalid.derive.forEach(fx => {
         expect(() => {
             master.derive(fx as any);
-        }).toThrowError(/Expected UInt32/);
+        }).toThrow(/Expected UInt32/);
     });
 
     fixtures.invalid.deriveHardened.forEach(fx => {
         expect(() => {
             master.deriveHardened(fx as any);
-        }).toThrowError(/Expected UInt31/);
+        }).toThrow(/Expected UInt31/);
     });
 
     fixtures.invalid.derivePath.forEach(fx => {
         expect(() => {
             master.derivePath(fx as any);
-        }).toThrowError(/Expected BIP32Path, got/);
+        }).toThrow(/Expected BIP32Path, got/);
     });
 
     const ZERO = Buffer.alloc(32, 0);
@@ -172,13 +172,13 @@ it('throws on wrong types', () => {
 
     expect(() => {
         BIP32.fromPrivateKey(Buffer.alloc(2), ONES);
-    }).toThrowError(
+    }).toThrow(
         /Expected property "privateKey" of type Buffer\(Length: 32\), got Buffer\(Length: 2\)/,
     );
 
     expect(() => {
         BIP32.fromPrivateKey(ZERO, ONES);
-    }).toThrowError(/Private key not in range \[1, n\)/);
+    }).toThrow(/Private key not in range \[1, n\)/);
 });
 
 it('works when private key has leading zeros', () => {
@@ -201,7 +201,7 @@ it('fromSeed', () => {
     fixtures.invalid.fromSeed.forEach(f => {
         expect(() => {
             BIP32.fromSeed(Buffer.from(f.seed, 'hex'));
-        }).toThrowError(new RegExp(f.exception));
+        }).toThrow(new RegExp(f.exception));
     });
 });
 

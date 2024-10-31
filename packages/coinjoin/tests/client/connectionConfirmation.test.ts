@@ -196,38 +196,39 @@ describe('connectionConfirmation', () => {
             });
     });
 
-    it('connection-confirmation interval aborted, Alice unregistered', done => {
-        const alice = createInput('account-A', 'A1', {
-            registrationData: {
-                AliceId: '01A1-01a1',
-            },
-            realAmountCredentials: {},
-            realVsizeCredentials: {},
-        });
-
-        const interval = confirmationInterval(
-            createCoinjoinRound([alice], {
-                ...server?.requestOptions,
-                roundParameters: {
-                    ConnectionConfirmationTimeout: '0d 0h 0m 2s', // intervalDelay = 1 sec
+    it('connection-confirmation interval aborted, Alice unregistered', () =>
+        new Promise<void>(done => {
+            const alice = createInput('account-A', 'A1', {
+                registrationData: {
+                    AliceId: '01A1-01a1',
                 },
-                round: {
-                    phaseDeadline: Date.now() + 1000, // phase will end in less than intervalDelay
-                },
-            }),
-            alice,
-            server?.requestOptions,
-        );
+                realAmountCredentials: {},
+                realVsizeCredentials: {},
+            });
 
-        server?.addListener('test-request', ({ url, resolve }) => {
-            resolve();
-            if (url.includes('input-unregistration')) {
-                done();
-            }
-        });
+            const interval = confirmationInterval(
+                createCoinjoinRound([alice], {
+                    ...server?.requestOptions,
+                    roundParameters: {
+                        ConnectionConfirmationTimeout: '0d 0h 0m 2s', // intervalDelay = 1 sec
+                    },
+                    round: {
+                        phaseDeadline: Date.now() + 1000, // phase will end in less than intervalDelay
+                    },
+                }),
+                alice,
+                server?.requestOptions,
+            );
 
-        interval.abort();
-    });
+            server?.addListener('test-request', ({ url, resolve }) => {
+                resolve();
+                if (url.includes('input-unregistration')) {
+                    done();
+                }
+            });
+
+            interval.abort();
+        }));
 
     it('404 error in coordinator connection-confirmation', async () => {
         server?.addListener('test-request', ({ url, data, resolve, reject }) => {

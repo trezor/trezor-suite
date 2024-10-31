@@ -234,6 +234,7 @@ describe('coinjoinClientActions', () => {
         spy.mockClear();
 
         // for coverage, init same instance multiple times without waiting
+        // eslint-disable-next-line jest/valid-expect-in-promise
         store.dispatch(initCoinjoinService('test')).then(cli3 => {
             expect(cli3?.client.settings.network).toEqual('test');
         });

@@ -24,7 +24,6 @@ describe.skip('Test tooltip links', () => {
     });
 });
 
-export {};
 // TODO: review this test if it's indeed obsolete
 describe.skip('Test tooltip conditional rendering', () => {
     beforeEach(() => {
@@ -60,5 +59,3 @@ describe.skip('Test tooltip conditional rendering', () => {
             .should('exist');
     });
 });
-
-export {};

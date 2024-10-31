@@ -122,5 +122,3 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
         );
     });
 });
-
-export {};

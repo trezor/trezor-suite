@@ -9,9 +9,5 @@ describe('makeFormatter', () => {
         it('handles trivial formatting', () => {
             expect(upperCaseFormatter.format('foo')).toBe('FOO');
         });
-
-        it('handles trivial formatting', () => {
-            expect(upperCaseFormatter.format('foo')).toBe('FOO');
-        });
     });
 });
