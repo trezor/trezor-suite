@@ -148,7 +148,7 @@ export abstract class AbstractApi extends TypedEmitter<{
         return unknownError(err, expectedErrors);
     }
 
-    protected synchronize = getSynchronize();
+    private synchronize = getSynchronize();
 
     /**
      * call this to ensure single access to transport api.

@@ -1,4 +1,4 @@
-import { createDeferred, createTimeoutPromise } from '@trezor/utils';
+import { createDeferred, createTimeoutPromise, getSynchronize } from '@trezor/utils';
 
 import { AbstractApi, AbstractApiConstructorParams, DEVICE_TYPE } from './abstract';
 import { DescriptorApiLevel, PathInternal } from '../types';
@@ -40,6 +40,7 @@ export class UsbApi extends AbstractApi {
     private forceReadSerialOnConnect?: boolean;
     private abortController = new AbortController();
     private debugLink?: boolean;
+    private synchronizeCreateDevices = getSynchronize();
 
     constructor({ usbInterface, logger, forceReadSerialOnConnect, debugLink }: ConstructorParams) {
         super({ logger });
@@ -53,17 +54,15 @@ export class UsbApi extends AbstractApi {
         this.usbInterface.onconnect = event => {
             this.logger?.debug(`usb: onconnect: ${this.formatDeviceForLog(event.device)}`);
 
-            this.synchronize(() => {
-                this.createDevices([event.device], this.abortController.signal)
-                    .then(newDevices => {
-                        this.devices = [...this.devices, ...newDevices];
-                        this.emit('transport-interface-change', this.devicesToDescriptors());
-                    })
-                    .catch(err => {
-                        // empty
-                        this.logger?.error(`usb: createDevices error: ${err.message}`);
-                    });
-            });
+            return this.createDevices([event.device], this.abortController.signal)
+                .then(newDevices => {
+                    this.devices = [...this.devices, ...newDevices];
+                    this.emit('transport-interface-change', this.devicesToDescriptors());
+                })
+                .catch(err => {
+                    // empty
+                    this.logger?.error(`usb: createDevices error: ${err.message}`);
+                });
         };
 
         this.usbInterface.ondisconnect = event => {
@@ -174,22 +173,20 @@ export class UsbApi extends AbstractApi {
             });
     }
 
-    public enumerate(signal?: AbortSignal) {
-        return this.synchronize(async () => {
-            try {
-                this.logger?.debug('usb: enumerate');
-                const devices = await this.abortableMethod(() => this.usbInterface.getDevices(), {
-                    signal,
-                });
+    public async enumerate(signal?: AbortSignal) {
+        try {
+            this.logger?.debug('usb: enumerate');
+            const devices = await this.abortableMethod(() => this.usbInterface.getDevices(), {
+                signal,
+            });
 
-                this.devices = await this.createDevices(devices, signal);
+            this.devices = await this.createDevices(devices, signal);
 
-                return this.success(this.devicesToDescriptors());
-            } catch (err) {
-                // this shouldn't throw
-                return this.unknownError(err);
-            }
-        });
+            return this.success(this.devicesToDescriptors());
+        } catch (err) {
+            // this shouldn't throw
+            return this.unknownError(err);
+        }
     }
 
     public async read(path: string, signal?: AbortSignal) {
@@ -415,60 +412,63 @@ export class UsbApi extends AbstractApi {
         return device.device;
     }
 
-    private async createDevices(devices: USBDevice[], signal?: AbortSignal) {
-        let bootloaderId = 0;
+    private createDevices(devices: USBDevice[], signal?: AbortSignal) {
+        return this.synchronizeCreateDevices(async () => {
+            let bootloaderId = 0;
 
-        const getPathFromUsbDevice = (device: USBDevice) => {
-            // path is just serial number
-            // more bootloaders => number them, hope for the best
-            const { serialNumber } = device;
-            let path = serialNumber == null || serialNumber === '' ? 'bootloader' : serialNumber;
-            if (path === 'bootloader') {
-                this.logger?.debug('usb: device without serial number!');
-                bootloaderId++;
-                path += bootloaderId;
-            }
-
-            return path;
-        };
-
-        const [hidDevices, nonHidDevices] = this.filterDevices(devices);
-
-        hidDevices.forEach(device => {
-            // hidDevices that do not support webusb standard. emit them as normal descriptors. higher layers are responsible
-            // for displaying them as unreadable devices
-            this.logger?.error(
-                `usb: unreadable hid device connected. device: ${this.formatDeviceForLog(device)}`,
-            );
-        });
-
-        const loadedDevices = await Promise.all(
-            nonHidDevices.map(async device => {
-                this.logger?.debug(`usb: creating device ${this.formatDeviceForLog(device)}`);
-
-                if (
-                    this.forceReadSerialOnConnect &&
-                    // device already has serialNumber or it is open - both cases mean that we already seen it before and don't need to bother
-                    !device.opened &&
-                    !device.serialNumber
-                ) {
-                    // try to load serialNumber. if this doesn't succeed, we can still continue normally. the only problem is that multiple devices
-                    // connected at the same time will not be properly distinguished.
-                    await this.loadSerialNumber(device, signal);
+            const getPathFromUsbDevice = (device: USBDevice) => {
+                // path is just serial number
+                // more bootloaders => number them, hope for the best
+                const { serialNumber } = device;
+                let path =
+                    serialNumber == null || serialNumber === '' ? 'bootloader' : serialNumber;
+                if (path === 'bootloader') {
+                    this.logger?.debug('usb: device without serial number!');
+                    bootloaderId++;
+                    path += bootloaderId;
                 }
-                const path = getPathFromUsbDevice(device);
 
-                return { path, device };
-            }),
-        );
+                return path;
+            };
 
-        return [
-            ...loadedDevices,
-            ...hidDevices.map(d => ({
-                path: getPathFromUsbDevice(d),
-                device: d,
-            })),
-        ];
+            const [hidDevices, nonHidDevices] = this.filterDevices(devices);
+
+            hidDevices.forEach(device => {
+                // hidDevices that do not support webusb standard. emit them as normal descriptors. higher layers are responsible
+                // for displaying them as unreadable devices
+                this.logger?.error(
+                    `usb: unreadable hid device connected. device: ${this.formatDeviceForLog(device)}`,
+                );
+            });
+
+            const loadedDevices = await Promise.all(
+                nonHidDevices.map(async device => {
+                    this.logger?.debug(`usb: creating device ${this.formatDeviceForLog(device)}`);
+
+                    if (
+                        this.forceReadSerialOnConnect &&
+                        // device already has serialNumber or it is open - both cases mean that we already seen it before and don't need to bother
+                        !device.opened &&
+                        !device.serialNumber
+                    ) {
+                        // try to load serialNumber. if this doesn't succeed, we can still continue normally. the only problem is that multiple devices
+                        // connected at the same time will not be properly distinguished.
+                        await this.loadSerialNumber(device, signal);
+                    }
+                    const path = getPathFromUsbDevice(device);
+
+                    return { path, device };
+                }),
+            );
+
+            return [
+                ...loadedDevices,
+                ...hidDevices.map(d => ({
+                    path: getPathFromUsbDevice(d),
+                    device: d,
+                })),
+            ];
+        });
     }
 
     /*
