@@ -1,6 +1,11 @@
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@suite-common/wallet-utils';
 import { Account } from '@suite-common/wallet-types';
-import { useAccountSearch, useDiscovery, useSelector } from 'src/hooks/suite';
+import {
+    useAccountSearch,
+    useDiscovery,
+    useSelector,
+    useDefaultAccountLabel,
+} from 'src/hooks/suite';
 import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 import { Translation } from 'src/components/suite';
@@ -10,7 +15,6 @@ import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { spacings } from '@trezor/theme';
 import { Column } from '@trezor/components';
 import { AccountSection } from './AcccountSection';
-import { useDefaultAccountLabel } from 'src/hooks/suite';
 
 interface AccountListProps {
     onItemClick?: () => void;

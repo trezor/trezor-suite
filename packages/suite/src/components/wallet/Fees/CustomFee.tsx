@@ -9,12 +9,18 @@ import {
     UseFormReturn,
     UseFormSetValue,
 } from 'react-hook-form';
-import { Note, Banner, motionEasing, variables, Icon } from '@trezor/components';
+import {
+    Note,
+    Banner,
+    motionEasing,
+    variables,
+    Icon,
+    getInputStateTextColor,
+} from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { NumberInput } from 'src/components/suite/NumberInput';
 import { getInputState, getFeeUnits, isInteger } from '@suite-common/wallet-utils';
-import { FeeInfo } from '@suite-common/wallet-types';
-import { FormState } from '@suite-common/wallet-types';
+import { FeeInfo, FormState } from '@suite-common/wallet-types';
 import { NetworkType } from '@suite-common/wallet-config';
 import { useTranslation } from 'src/hooks/suite';
 import { InputError } from '../InputError';
@@ -24,7 +30,6 @@ import { BottomText } from '@trezor/components/src/components/form/BottomText';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { getInputStateTextColor } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;

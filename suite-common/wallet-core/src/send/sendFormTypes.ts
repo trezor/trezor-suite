@@ -6,10 +6,9 @@ import {
     ExcludedUtxos,
     FormState,
 } from '@suite-common/wallet-types';
-import { TokenInfo, Unsuccessful } from '@trezor/connect';
+import { TokenInfo, Unsuccessful, ERRORS as CONNECT_ERRORS } from '@trezor/connect';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { ERRORS as CONNECT_ERRORS } from '@trezor/connect';
 
 export type SerializedTx = { tx: string; coin: NetworkSymbol };
 

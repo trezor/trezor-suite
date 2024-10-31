@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 
-import Lottie from 'lottie-react-native';
 import LottieView from 'lottie-react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -49,7 +48,7 @@ export const Spinner = ({ loadingState, onComplete }: SpinnerProps) => {
     };
 
     return (
-        <Lottie
+        <LottieView
             autoPlay
             resizeMode="cover"
             loop={false}

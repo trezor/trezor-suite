@@ -1,7 +1,7 @@
 import { storage } from '@trezor/connect-common';
 import { versionUtils } from '@trezor/utils';
 import { DataManager } from '../data/DataManager';
-import { NETWORK } from '../constants';
+import { NETWORK, ERRORS } from '../constants';
 import {
     UI,
     DEVICE,
@@ -16,7 +16,6 @@ import {
 import { getHost } from '../utils/urlUtils';
 import type { Device } from '../device/Device';
 import type { FirmwareRange, DeviceState, StaticSessionId, DeviceUniquePath } from '../types';
-import { ERRORS } from '../constants';
 
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };
 export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethodResponse<M>;

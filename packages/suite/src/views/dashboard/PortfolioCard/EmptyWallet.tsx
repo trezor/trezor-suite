@@ -4,10 +4,12 @@ import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';
-import { selectIsDeviceUsingPassphrase } from '@suite-common/wallet-core';
+import {
+    selectIsDeviceUsingPassphrase,
+    selectDeviceSupportedNetworks,
+} from '@suite-common/wallet-core';
 import { goto } from 'src/actions/suite/routerActions';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
-import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 
 export const EmptyWallet = () => {
     const { enabledNetworks, mainnets } = useEnabledNetworks();

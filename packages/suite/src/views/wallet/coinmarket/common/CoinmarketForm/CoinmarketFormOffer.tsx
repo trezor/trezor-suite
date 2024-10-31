@@ -1,5 +1,5 @@
 import { Button, TextButton } from '@trezor/components';
-import { CryptoId } from 'invity-api';
+import { CryptoId, ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
@@ -27,7 +27,6 @@ import {
     parseCryptoId,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketFormOfferFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferFiatAmount';
-import { ExchangeTrade } from 'invity-api';
 import { CoinmarketTradeDetailType, CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
 import { FORM_EXCHANGE_DEX, FORM_EXCHANGE_TYPE } from 'src/constants/wallet/coinmarket/form';

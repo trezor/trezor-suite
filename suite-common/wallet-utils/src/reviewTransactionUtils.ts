@@ -8,8 +8,9 @@ import {
     FormState,
     GeneralPrecomposedTransactionFinal,
     ReviewOutputState,
+    StakeFormState,
+    ReviewOutput,
 } from '@suite-common/wallet-types';
-import { StakeFormState, ReviewOutput } from '@suite-common/wallet-types';
 import { TrezorDevice } from '@suite-common/suite-types';
 
 import { getShortFingerprint, isCardanoTx } from './cardanoUtils';

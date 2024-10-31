@@ -80,7 +80,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             device?.features?.capabilities?.includes('Capability_Shamir');
 
         switch (recovery.status) {
-            case 'initial':
+            case 'initial': {
                 const descriptionSuffix = isDeviceWithButtons(deviceModelInternal)
                     ? getNarrowedDeviceModelInternal(deviceModelInternal)
                     : 'TOUCHSCREEN';
@@ -143,6 +143,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                         </Card>
                     </>
                 );
+            }
             case 'select-word-count':
                 return (
                     <>

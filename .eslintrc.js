@@ -98,6 +98,7 @@ module.exports = {
                 'newlines-between': 'always',
             },
         ],
+        'import/no-duplicates': 'error',
         'import/no-extraneous-dependencies': [
             'error',
             {

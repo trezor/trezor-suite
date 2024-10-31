@@ -2,8 +2,7 @@ import { useSelector } from 'react-redux';
 import Animated, { SlideInDown } from 'react-native-reanimated';
 import { useEffect } from 'react';
 
-import { Text } from '@suite-native/atoms';
-import { VStack } from '@suite-native/atoms';
+import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useScrollView } from '@suite-native/navigation';
 

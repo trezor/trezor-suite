@@ -10,6 +10,7 @@ import {
     transactionsActions,
     createDiscoveryThunk,
     deviceActions,
+    prepareSendFormReducer,
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
 import { getAccountTransactions, getAccountIdentifier } from '@suite-common/wallet-utils';
@@ -18,7 +19,6 @@ import * as walletSettingsActions from 'src/actions/settings/walletSettingsActio
 import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
 import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { prepareSendFormReducer } from '@suite-common/wallet-core';
 import graphReducer from 'src/reducers/wallet/graphReducer';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';

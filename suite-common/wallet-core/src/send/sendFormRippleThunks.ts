@@ -12,9 +12,9 @@ import {
     PrecomposedLevels,
     PrecomposedTransaction,
     ExternalOutput,
+    AddressDisplayOptions,
 } from '@suite-common/wallet-types';
 import { createThunk } from '@suite-common/redux-utils';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import {
     ComposeTransactionThunkArguments,

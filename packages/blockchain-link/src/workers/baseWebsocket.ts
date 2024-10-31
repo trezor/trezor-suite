@@ -1,7 +1,5 @@
 import WebSocket from 'ws';
-import { createDeferred } from '@trezor/utils';
-import { createDeferredManager } from '@trezor/utils';
-import { TypedEmitter } from '@trezor/utils';
+import { createDeferred, createDeferredManager, TypedEmitter } from '@trezor/utils';
 
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 

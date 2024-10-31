@@ -15,8 +15,6 @@ import {
     calculateTotal,
     formatAmount,
     getExternalComposeOutput,
-} from '@suite-common/wallet-utils';
-import {
     getPubKeyFromAddress,
     buildTransferTransaction,
     buildTokenTransferTransaction,

@@ -9,18 +9,18 @@ import {
     UseFormSetValue,
 } from 'react-hook-form';
 import { Icon, Paragraph, SelectBar, Tooltip, motionEasing, variables } from '@trezor/components';
-import { FormState } from '@suite-common/wallet-types';
-import { spacingsPx, typography } from '@trezor/theme';
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Account } from 'src/types/wallet';
-import { ExtendedMessageDescriptor } from 'src/types/suite';
 import {
+    FormState,
     FeeInfo,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { spacingsPx, typography } from '@trezor/theme';
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { Account } from 'src/types/wallet';
+import { ExtendedMessageDescriptor } from 'src/types/suite';
 import { CustomFee } from './CustomFee';
 import { FeeDetails } from './FeeDetails';
 import { AnimatePresence, motion } from 'framer-motion';

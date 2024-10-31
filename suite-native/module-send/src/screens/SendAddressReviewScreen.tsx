@@ -2,10 +2,9 @@ import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
 import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
-import { Box, VStack } from '@suite-native/atoms';
+import { Box, VStack, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
-import { Text } from '@suite-native/atoms';
 
 import {
     selectIsFirstTransactionAddressConfirmed,

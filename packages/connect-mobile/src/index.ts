@@ -4,8 +4,12 @@ import * as ERRORS from '@trezor/connect/src/constants/errors';
 import { parseConnectSettings } from '@trezor/connect/src/data/connectSettings';
 import type { CallMethodPayload } from '@trezor/connect/src/events/call';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
-import type { ConnectSettingsMobile } from '@trezor/connect/src/types';
-import type { ConnectSettings, Manifest, Response } from '@trezor/connect/src/types';
+import type {
+    ConnectSettingsMobile,
+    ConnectSettings,
+    Manifest,
+    Response,
+} from '@trezor/connect/src/types';
 import { Login } from '@trezor/connect/src/types/api/requestLogin';
 import { Deferred, createDeferred } from '@trezor/utils';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';

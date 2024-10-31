@@ -2,7 +2,12 @@ import type { DBSchema } from 'idb';
 import { FieldValues } from 'react-hook-form';
 
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
-import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
+import type {
+    FormState,
+    RatesByTimestamps,
+    BackendSettings,
+    WalletSettings,
+} from '@suite-common/wallet-types';
 import type { MetadataState } from 'src/types/suite/metadata';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import type { MessageState } from '@suite-common/message-system';
@@ -10,7 +15,6 @@ import type { DeviceWithEmptyPath, MessageSystem } from '@suite-common/suite-typ
 import type { Account, Discovery, WalletAccountTransaction } from 'src/types/wallet';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
-import type { BackendSettings, WalletSettings } from '@suite-common/wallet-types';
 import type { StorageUpdateMessage } from '@trezor/suite-storage';
 import { AnalyticsState } from '@suite-common/analytics';
 import { GraphData } from '../types/wallet/graph';

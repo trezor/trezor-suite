@@ -10,11 +10,11 @@ import {
     preloadFeeInfoThunk,
     setCustomBackendThunk,
     updateFeeInfoThunk,
+    feesReducer,
 } from '@suite-common/wallet-core';
 
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 import { accountsReducer, transactionsReducer, blockchainReducer } from 'src/reducers/wallet';
-import { feesReducer } from '@suite-common/wallet-core';
 
 import * as fixtures from '../__fixtures__/blockchainActions';
 

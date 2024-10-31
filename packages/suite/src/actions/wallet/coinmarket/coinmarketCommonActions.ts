@@ -8,7 +8,7 @@ import {
     hasNetworkFeatures,
     parseFormDraftKey,
 } from '@suite-common/wallet-utils';
-import { Output } from '@suite-common/wallet-types/src';
+import { Output, AddressDisplayOptions } from '@suite-common/wallet-types/src';
 import {
     confirmAddressOnDeviceThunk,
     selectDevice,
@@ -24,7 +24,6 @@ import {
 } from 'src/reducers/wallet/coinmarketReducer';
 import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
 import * as formDraftActions from 'src/actions/wallet/formDraftActions';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { CryptoId } from 'invity-api';
 import {

@@ -15,6 +15,7 @@ import {
     selectHistoricFiatRates,
     updateTxsFiatRatesThunk,
     selectDeviceByStaticSessionId,
+    sendFormActions,
 } from '@suite-common/wallet-core';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { messageSystemActions } from '@suite-common/message-system';
@@ -32,7 +33,6 @@ import * as metadataActions from 'src/actions/suite/metadataActions';
 import { serializeDiscovery } from 'src/utils/suite/storage';
 import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
-import { sendFormActions } from '@suite-common/wallet-core';
 import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
 import { TokenManagementAction } from '@suite-common/token-definitions';
 

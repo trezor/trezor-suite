@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 
-import { ThemeProvider as NextThemeProvider } from 'next-themes';
+import { ThemeProvider as NextThemeProvider, useTheme } from 'next-themes';
 import { ThemeProvider } from 'styled-components';
 import type { AppProps } from 'next/app';
-import { useTheme } from 'next-themes';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 

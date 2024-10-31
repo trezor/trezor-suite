@@ -2,7 +2,7 @@ import { memo, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
 import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
-import { variables, Button, Card, Link } from '@trezor/components';
+import { variables, Button, Card, Link, Tooltip } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -35,7 +35,6 @@ import { BlurWrapper } from './TransactionItemBlurWrapper';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { getInstantStakeType } from 'src/utils/suite/stake';
 import { isStakeTypeTx } from '@suite-common/suite-utils';
-import { Tooltip } from '@trezor/components';
 import { HELP_CENTER_REPLACE_BY_FEE } from '@trezor/urls';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

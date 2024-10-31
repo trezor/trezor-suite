@@ -4,10 +4,9 @@ import { Select } from '@trezor/components';
 import styled from 'styled-components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Account } from 'src/types/wallet';
-import { Output } from '@suite-common/wallet-types';
+import { Output, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { updateFiatRatesThunk, selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { TooltipSymbol, Translation } from 'src/components/suite';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {

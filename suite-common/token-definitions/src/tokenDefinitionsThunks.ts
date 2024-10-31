@@ -1,10 +1,9 @@
 import { decode, verify } from 'jws';
 import { D, G } from '@mobily/ts-belt';
 
-import { getJWSPublicKey } from '@trezor/env-utils';
+import { getJWSPublicKey, isCodesignBuild } from '@trezor/env-utils';
 import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
-import { isCodesignBuild } from '@trezor/env-utils';
 import { Timeout } from '@trezor/type-utils';
 
 import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
