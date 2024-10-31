@@ -9,6 +9,7 @@ import {
 import { Button, motionEasing, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { Network } from '@suite-common/wallet-config';
+import { BITCOIN_ONLY_NETWORKS } from '@suite-common/suite-constants';
 
 import {
     DeviceBanner,
@@ -111,11 +112,11 @@ export const SettingsCoins = () => {
     const supportedTestnetNetworks = getNetworks(testnets);
 
     const bitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
-    const bitcoinNetworks = ['btc', 'test', 'regtest'];
+    const bitcoinOnlyNetworks = BITCOIN_ONLY_NETWORKS;
 
     const onlyBitcoinNetworksEnabled =
         !!supportedEnabledNetworks.length &&
-        supportedEnabledNetworks.every(coin => bitcoinNetworks.includes(coin));
+        supportedEnabledNetworks.every(coin => bitcoinOnlyNetworks.includes(coin));
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
 
     const showDeviceBanner = device?.connected === false; // device is remembered and disconnected

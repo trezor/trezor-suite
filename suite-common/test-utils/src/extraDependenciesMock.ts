@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { BITCOIN_ONLY_NETWORKS } from '@suite-common/suite-constants';
 import { createThunk, ExtraDependencies } from '@suite-common/redux-utils';
 import { PROTO } from '@trezor/connect';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
@@ -72,7 +73,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectDevices: mockSelector('selectDevices', []),
         selectBitcoinAmountUnit: mockSelector('selectBitcoinAmountUnit', PROTO.AmountUnit.BITCOIN),
         selectAreSatsAmountUnit: mockSelector('selectAreSatsAmountUnit', false),
-        selectEnabledNetworks: mockSelector('selectEnabledNetworks', ['btc', 'test']),
+        selectEnabledNetworks: mockSelector('selectEnabledNetworks', BITCOIN_ONLY_NETWORKS),
         selectTokenDefinitionsEnabledNetworks: mockSelector(
             'selectTokenDefinitonsEnabledNetworks',
             ['eth'],
