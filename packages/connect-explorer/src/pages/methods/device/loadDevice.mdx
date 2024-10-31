@@ -23,9 +23,13 @@ export const paramDescriptions = {
 
 <Callout type="error">
     **Management command** - this method is restricted to Trezor.io and can't be used in 3rd party
-    applications and it has to use a special debug build.
+    applications.
 </Callout>
-
+<Callout type="error">
+    **Management command** - this method is not going to work on Trezor with production firmware, it
+    requires a debug firmware. More details:
+    https://docs.trezor.io/trezor-firmware/tests/device-tests.html#extended-testing-and-debugging
+</Callout>
 Load seed and related internal settings. The devices has to be wiped before initiating this command.
 
 ```javascript
