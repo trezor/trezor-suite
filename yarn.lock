@@ -8145,7 +8145,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stellar/stellar-sdk@npm:^12.1.0":
+"@stellar/stellar-sdk@npm:^12.1.3":
   version: 12.3.0
   resolution: "@stellar/stellar-sdk@npm:12.3.0"
   dependencies:
@@ -11257,10 +11257,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-plugin-stellar@workspace:packages/connect-plugin-stellar"
   dependencies:
-    "@stellar/stellar-sdk": "npm:^12.1.0"
+    "@stellar/stellar-sdk": "npm:^12.1.3"
     "@trezor/utils": "workspace:*"
   peerDependencies:
-    "@stellar/stellar-sdk": ^12.1.0
+    "@stellar/stellar-sdk": ^12.1.3
     "@trezor/connect": 9.x.x
     tslib: ^2.6.2
   languageName: unknown

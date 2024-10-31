@@ -26,12 +26,12 @@
         "lib/"
     ],
     "peerDependencies": {
-        "@stellar/stellar-sdk": "^12.1.0",
+        "@stellar/stellar-sdk": "^12.1.3",
         "@trezor/connect": "9.x.x",
         "tslib": "^2.6.2"
     },
     "devDependencies": {
-        "@stellar/stellar-sdk": "^12.1.0"
+        "@stellar/stellar-sdk": "^12.1.3"
     },
     "dependencies": {
         "@trezor/utils": "workspace:*"
