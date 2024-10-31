@@ -154,7 +154,7 @@ export const selectCanRunDiscoveryForDevice = (
         DiscoveryConfigSliceRootState,
 ) => {
     const deviceState = selectDeviceState(state);
-    if (!deviceState) {
+    if (!deviceState?.staticSessionId) {
         return false;
     }
 

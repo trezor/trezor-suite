@@ -20,6 +20,7 @@ import {
     walletPersistTransform,
     devicePersistTransform,
     walletStopPersistTransform,
+    migrateDeviceState,
 } from '@suite-native/storage';
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import {
@@ -113,8 +114,19 @@ export const prepareRootReducers = async () => {
         reducer: deviceReducer,
         persistedKeys: ['devices'],
         key: 'devices',
-        version: 1,
+        version: 2,
         transforms: [devicePersistTransform],
+        migrations: {
+            2: oldState => {
+                if (!oldState.devices) return oldState;
+
+                const oldDevicesState: { devices: any } = { devices: oldState.devices };
+                const migratedDevices = migrateDeviceState(oldDevicesState.devices);
+                const migratedState = { ...oldState, devices: migratedDevices };
+
+                return migratedState;
+            },
+        },
     });
 
     const discoveryConfigPersistedReducer = await preparePersistReducer({
