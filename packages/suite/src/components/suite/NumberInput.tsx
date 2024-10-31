@@ -1,11 +1,11 @@
 import {
+    ClipboardEvent,
+    FormEvent,
+    KeyboardEvent,
     useCallback,
     useLayoutEffect,
     useRef,
     useState,
-    KeyboardEvent,
-    ClipboardEvent,
-    FormEvent,
 } from 'react';
 import { Control, FieldValues, useController, UseControllerProps } from 'react-hook-form';
 
@@ -33,19 +33,20 @@ const cleanValueString = (value: string, locale: Locale) => {
 
     const { decimalSeparator, thousandsSeparator } = getLocaleSeparators(locale);
 
+    const trimmedValue = value.replace(/\s/g, '');
+
     // clean the entered number string if it's not convertible to Number or if it has a non-conventional format
     if (
-        !Number.isNaN(Number(value)) &&
+        !Number.isNaN(Number(trimmedValue)) &&
         thousandsSeparator !== '.' &&
-        !hasLeadingZeroes(value) &&
-        value.at(0) !== '.' &&
-        value.at(-1) !== '.'
+        !hasLeadingZeroes(trimmedValue) &&
+        trimmedValue.at(0) !== '.' &&
+        trimmedValue.at(-1) !== '.'
     ) {
-        return value;
+        return trimmedValue;
     }
 
-    let cleanedValue = value
-        .replace(/\s/g, '')
+    let cleanedValue = trimmedValue
         .replaceAll(thousandsSeparator, '')
         .replaceAll(decimalSeparator, '.');
 
