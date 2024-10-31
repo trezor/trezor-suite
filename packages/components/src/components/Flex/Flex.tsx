@@ -15,6 +15,7 @@ export const allowedFlexFrameProps = [
     'width',
     'height',
     'minHeight',
+    'maxWidth',
     'overflow',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedFlexFrameProps)[number]>;
@@ -112,6 +113,7 @@ type ContainerProps = TransientProps<AllowedFrameProps> & {
     $direction: FlexDirection;
     $flex: Flex;
     $flexWrap: FlexWrap;
+    $order?: number;
     $isReversed: boolean;
     $hasDivider: boolean;
     $dividerColor?: string;
@@ -127,6 +129,7 @@ const Container = styled.div<ContainerProps>`
     gap: ${({ $gap }) => $gap}px;
     justify-content: ${({ $justifyContent }) => $justifyContent};
     align-items: ${({ $alignItems }) => $alignItems};
+    ${({ $order }) => (typeof $order !== 'undefined' ? `order: ${$order};` : '')}
 
     ${({ $hasDivider, ...props }) => $hasDivider && withDivider(props)}
     ${withFrameProps}
@@ -140,6 +143,7 @@ export type FlexProps = AllowedFrameProps & {
     direction?: FlexDirection;
     flex?: Flex;
     flexWrap?: FlexWrap;
+    order?: number;
     isReversed?: boolean;
     hasDivider?: boolean;
     /** @deprecated Use only is case of absolute desperation. Prefer keep it according to elevation. */
@@ -158,6 +162,7 @@ export const Flex = ({
     direction = 'row',
     flex = 'initial',
     flexWrap = 'nowrap',
+    order,
     isReversed = false,
     className,
     'data-testid': dataTestId,
@@ -182,6 +187,7 @@ export const Flex = ({
                 direction,
                 flex,
                 flexWrap,
+                order,
                 isReversed,
                 hasDivider,
                 dividerColor,

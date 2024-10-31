@@ -1,15 +1,8 @@
 import { ReactNode } from 'react';
-import styled from 'styled-components';
-import { typography } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { FORM_DEFAULT_PAYMENT_METHOD } from 'src/constants/wallet/coinmarket/form';
 import { CoinmarketPaymentMethodType } from 'src/types/coinmarket/coinmarket';
-
-const Text = styled.div`
-    display: flex;
-    align-items: center;
-    ${typography.body};
-`;
+import { Column, Text } from '@trezor/components';
 
 interface CoinmarketPaymentTypeProps {
     children?: ReactNode;
@@ -29,21 +22,23 @@ export const CoinmarketPaymentPlainType = ({
     methodName,
 }: CoinmarketPaymentTypeProps) => (
     <div>
-        <Text data-testid="@coinmarket/form/info/payment-method">
-            {method ? (
-                <>
-                    {method === 'bankTransfer' || method === FORM_DEFAULT_PAYMENT_METHOD ? (
-                        <Translation id={getPaymentMethod(method)} />
-                    ) : (
-                        <Text>{methodName || method}</Text>
-                    )}
-                </>
-            ) : (
-                <Text>
-                    <Translation id="TR_PAYMENT_METHOD_UNKNOWN" />
-                </Text>
-            )}
-        </Text>
+        <Column>
+            <Text data-testid="@coinmarket/form/info/payment-method">
+                {method ? (
+                    <>
+                        {method === 'bankTransfer' || method === FORM_DEFAULT_PAYMENT_METHOD ? (
+                            <Translation id={getPaymentMethod(method)} />
+                        ) : (
+                            <Text>{methodName || method}</Text>
+                        )}
+                    </>
+                ) : (
+                    <Text>
+                        <Translation id="TR_PAYMENT_METHOD_UNKNOWN" />
+                    </Text>
+                )}
+            </Text>
+        </Column>
         {children}
     </div>
 );
