@@ -185,7 +185,7 @@ export const calculateFeeLevelsMaxAmountThunk = createThunk<
         if (isFulfilled(response)) {
             return pipe(
                 response.payload,
-                D.filter(x => x.type === 'final'),
+                D.filter(x => 'max' in x),
                 D.map(y => (y as GeneralPrecomposedTransactionFinal).max),
             ) as FeeLevelsMaxAmount;
         }
