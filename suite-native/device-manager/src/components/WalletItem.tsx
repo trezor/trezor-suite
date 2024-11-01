@@ -6,9 +6,17 @@ import { Translation } from '@suite-native/intl';
 import { Icon } from '@suite-native/icons';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { selectDevice, selectDeviceByState } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    DeviceRootState,
+    FiatRatesRootState,
+    selectDevice,
+    selectDeviceByState,
+    selectDeviceHasAccountsByDeviceState,
+} from '@suite-common/wallet-core';
 import { FiatAmountFormatter } from '@suite-native/formatters';
 import { selectDeviceTotalFiatBalanceNative } from '@suite-native/device';
+import { SettingsSliceRootState } from '@suite-native/settings';
 
 type WalletItemProps = {
     deviceState: NonNullable<TrezorDevice['state']>;
@@ -53,10 +61,14 @@ const labelStyle = prepareNativeStyle(() => ({
 
 export const WalletItem = ({ deviceState, onPress, isSelectable = true }: WalletItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const device = useSelector((state: any) => selectDeviceByState(state, deviceState));
+    const device = useSelector((state: DeviceRootState) => selectDeviceByState(state, deviceState));
+    const hasAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
+        selectDeviceHasAccountsByDeviceState(state, device?.state),
+    );
     const selectedDevice = useSelector(selectDevice);
-    const fiatBalance = useSelector((state: any) =>
-        selectDeviceTotalFiatBalanceNative(state, deviceState.staticSessionId!),
+    const fiatBalance = useSelector(
+        (state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState) =>
+            selectDeviceTotalFiatBalanceNative(state, deviceState.staticSessionId!),
     );
 
     if (!device) {
@@ -93,11 +105,13 @@ export const WalletItem = ({ deviceState, onPress, isSelectable = true }: Wallet
                     </Text>
                 </HStack>
                 <HStack alignItems="center" spacing="sp12">
-                    <FiatAmountFormatter
-                        value={String(fiatBalance)}
-                        variant="hint"
-                        color="textSubdued"
-                    />
+                    {hasAccounts && (
+                        <FiatAmountFormatter
+                            value={String(fiatBalance)}
+                            variant="hint"
+                            color="textSubdued"
+                        />
+                    )}
                     {isSelectable && <Radio value="" onPress={onPress} isChecked={isSelected} />}
                 </HStack>
             </HStack>
