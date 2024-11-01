@@ -21,6 +21,7 @@ export default class BinanceGetAddress extends AbstractMethod<'binanceGetAddress
     init() {
         this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
+        this.requiredDeviceCapabilities = ['Capability_Binance'];
         this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('BNB'), this.firmwareRange);
 
         // create a bundle with only one batch if bundle doesn't exists

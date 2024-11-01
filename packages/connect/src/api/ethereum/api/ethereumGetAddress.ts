@@ -31,6 +31,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
     init() {
         this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
+        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;

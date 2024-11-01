@@ -27,6 +27,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
     init() {
         this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
+        this.requiredDeviceCapabilities = ['Capability_Cardano'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Cardano'),

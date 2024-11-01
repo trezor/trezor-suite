@@ -13,6 +13,7 @@ export default class SolanaSignTransaction extends AbstractMethod<
 > {
     init() {
         this.requiredPermissions = ['read', 'write'];
+        this.requiredDeviceCapabilities = ['Capability_Solana'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Solana'),

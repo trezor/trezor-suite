@@ -21,6 +21,7 @@ export default class RippleGetAddress extends AbstractMethod<'rippleGetAddress',
     init() {
         this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
+        this.requiredDeviceCapabilities = ['Capability_Ripple'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Ripple'),

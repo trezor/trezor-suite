@@ -269,6 +269,8 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
         return Promise.reject(ERRORS.TypedError('Device_ModeException', unexpectedMode));
     }
 
+    method.checkDeviceCapability();
+
     // check and request permissions [read, write...]
     method.checkPermissions();
     if (!trustedHost && method.requiredPermissions.length > 0) {

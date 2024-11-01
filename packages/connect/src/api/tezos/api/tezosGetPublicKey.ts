@@ -17,6 +17,7 @@ export default class TezosGetPublicKey extends AbstractMethod<
 
     init() {
         this.requiredPermissions = ['read'];
+        this.requiredDeviceCapabilities = ['Capability_Tezos'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Tezos'),

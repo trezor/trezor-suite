@@ -25,6 +25,7 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
     init() {
         this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
+        this.requiredDeviceCapabilities = ['Capability_NEM'];
         this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('NEM'), this.firmwareRange);
 
         // create a bundle with only one batch if bundle doesn't exists

@@ -19,6 +19,7 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
 
     init() {
         this.requiredPermissions = ['read'];
+        this.requiredDeviceCapabilities = ['Capability_Cardano'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Cardano'),

@@ -14,6 +14,7 @@ export default class RippleSignTransaction extends AbstractMethod<
 > {
     init() {
         this.requiredPermissions = ['read', 'write'];
+        this.requiredDeviceCapabilities = ['Capability_Ripple'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Ripple'),
