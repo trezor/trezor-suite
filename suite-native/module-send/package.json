@@ -41,6 +41,7 @@
         "@suite-native/settings": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/connect": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
@@ -53,6 +54,7 @@
         "react-native": "0.75.2",
         "react-native-reanimated": "3.16.1",
         "react-native-svg": "15.6.0",
-        "react-redux": "8.0.7"
+        "react-redux": "8.0.7",
+        "web3-utils": "^4.3.1"
     }
 }

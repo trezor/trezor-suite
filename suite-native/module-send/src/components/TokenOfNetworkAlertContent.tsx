@@ -1,26 +1,14 @@
-import { ReactNode, useEffect, useRef } from 'react';
+import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useRoute, RouteProp } from '@react-navigation/native';
-
 import { getNetwork } from '@suite-common/wallet-config';
-import { Box, VStack, Text, AlertBox } from '@suite-native/atoms';
-import { SendStackParamList, SendStackRoutes } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Translation } from '@suite-native/intl';
-import { selectAccountTokenSymbol, TokensRootState } from '@suite-native/tokens';
-import { CryptoIcon } from '@suite-native/icons';
-import { useAlert } from '@suite-native/alerts';
-import { useFormContext } from '@suite-native/forms';
-import { isAddressValid } from '@suite-common/wallet-utils';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-
-import { getOutputFieldName } from '../utils';
-
-type UseTokenOfNetworkAlertArgs = {
-    inputIndex: number;
-};
+import { VStack, Box, AlertBox, Text } from '@suite-native/atoms';
+import { CryptoIcon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
+import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const iconWrapperStyle = prepareNativeStyle(() => ({
     overflow: 'visible',
@@ -30,12 +18,12 @@ const iconWrapperStyle = prepareNativeStyle(() => ({
 
 const networkIconWrapperStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    padding: 3,
-    borderRadius: utils.borders.radii.round,
     right: 0,
     bottom: 0,
+    padding: 3,
     overflow: 'visible',
+    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    borderRadius: utils.borders.radii.round,
 }));
 
 type ParagraphProps = {
@@ -50,7 +38,7 @@ const Paragraph = ({ header, body }: ParagraphProps) => (
     </VStack>
 );
 
-const TokenOfNetworkAlertBody = ({
+export const TokenOfNetworkAlertBody = ({
     accountKey,
     tokenContract,
 }: {
@@ -116,41 +104,4 @@ const TokenOfNetworkAlertBody = ({
             />
         </VStack>
     );
-};
-
-export const useTokenOfNetworkAlert = ({ inputIndex }: UseTokenOfNetworkAlertArgs) => {
-    const wasAlertShown = useRef(false);
-    const { showAlert } = useAlert();
-    const {
-        params: { tokenContract, accountKey },
-    } = useRoute<RouteProp<SendStackParamList, SendStackRoutes.SendOutputs>>();
-
-    const tokenSymbol = useSelector((state: TokensRootState) =>
-        selectAccountTokenSymbol(state, accountKey, tokenContract),
-    );
-    const networkSymbol = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
-    );
-
-    const { watch } = useFormContext();
-
-    const addressValue = watch(getOutputFieldName(inputIndex, 'address'));
-
-    const isFilledValidAddress =
-        addressValue && networkSymbol && isAddressValid(addressValue, networkSymbol);
-
-    useEffect(() => {
-        if (tokenContract && isFilledValidAddress && !wasAlertShown.current) {
-            showAlert({
-                appendix: (
-                    <TokenOfNetworkAlertBody
-                        accountKey={accountKey}
-                        tokenContract={tokenContract}
-                    />
-                ),
-                primaryButtonTitle: <Translation id="generic.buttons.gotIt" />,
-            });
-            wasAlertShown.current = true;
-        }
-    }, [isFilledValidAddress, showAlert, tokenContract, tokenSymbol, accountKey]);
 };

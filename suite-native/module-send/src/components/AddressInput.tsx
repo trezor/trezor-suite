@@ -19,7 +19,8 @@ import { isDebugEnv } from '@suite-native/config';
 import { QrCodeBottomSheetIcon } from './QrCodeBottomSheetIcon';
 import { getOutputFieldName } from '../utils';
 import { SendOutputsFormValues } from '../sendOutputsFormSchema';
-import { useTokenOfNetworkAlert } from '../hooks/useTokenOfNetworkAlert';
+import { useAddressValidationAlerts } from '../hooks/useAddressValidationAlerts';
+import { AddressChecksumMessage } from './AddressChecksumMessage';
 
 type AddressInputProps = {
     index: number;
@@ -32,12 +33,13 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
+
     const freshAccountAddress = useSelector(
         (state: NativeAccountsRootState & TransactionsRootState) =>
             selectFreshAccountAddress(state, accountKey),
     );
 
-    useTokenOfNetworkAlert({ inputIndex: index });
+    const { wasAddressChecksummed } = useAddressValidationAlerts({ inputIndex: index });
 
     const handleScanAddressQRCode = (qrCodeData: string) => {
         setValue(addressFieldName, qrCodeData, { shouldValidate: true });
@@ -79,6 +81,7 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
                 accessibilityLabel="address input"
                 rightIcon={<QrCodeBottomSheetIcon onCodeScanned={handleScanAddressQRCode} />}
             />
+            {wasAddressChecksummed && <AddressChecksumMessage />}
         </VStack>
     );
 };
