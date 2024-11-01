@@ -10248,6 +10248,7 @@ __metadata:
     "@suite-native/settings": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/connect": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -10261,6 +10262,7 @@ __metadata:
     react-native-reanimated: "npm:3.16.1"
     react-native-svg: "npm:15.6.0"
     react-redux: "npm:8.0.7"
+    web3-utils: "npm:^4.3.1"
   languageName: unknown
   linkType: soft
 

@@ -46,6 +46,7 @@
         {
             "path": "../../packages/blockchain-link-types"
         },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },

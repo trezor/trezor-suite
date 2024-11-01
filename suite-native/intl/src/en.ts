@@ -962,6 +962,14 @@ export const en = {
             recipients: {
                 title: 'Amount & recipients',
                 addressLabel: 'Recipient address',
+                checksum: {
+                    label: 'We’ve adjusted the casing of your address to match checksum format. <link>Learn more</link>',
+                    alert: {
+                        title: 'This address needs to be converted to checksum format.',
+                        body: 'This will adjust the casing of your address to match checksum format and allow us to properly validate your address. <link>Learn more</link>',
+                        primaryButton: 'Convert',
+                    },
+                },
                 addressQrLabel: 'Scan recipient address',
                 amountLabel: 'Amount to be sent',
                 maxButton: 'Send max',
