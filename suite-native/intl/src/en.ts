@@ -108,6 +108,11 @@ export const en = {
                 alreadySynced: 'Coin already synced',
             },
             subtitle: "Here's what you have in your account.",
+            tokens: 'Tokens:',
+            button: {
+                importAnotherAsset: 'Import another asset',
+                continueToApp: 'Continue to app',
+            },
         },
         coinList: {
             mainnets: 'Select a coin to sync',
