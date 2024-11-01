@@ -2,8 +2,8 @@ import produce from 'immer';
 
 import { deviceActions } from '@suite-common/wallet-core';
 
-import { ACCOUNT_SEARCH } from 'src/actions/wallet/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import { ACCOUNT_SEARCH } from 'src/actions/wallet/constants';
 import { Action } from 'src/types/suite';
 import { Account as AccountType } from 'src/types/wallet';
 
@@ -28,8 +28,7 @@ const accountSearchReducer = (state: State = initialState, action: Action): Stat
                 break;
             // reset coin filter on:
             // 1) disabling/enabling coins
-            // 2) switching to another device/wallet
-            // * 3) adding a new account is handled directly in add account modal, reacting on ACCOUNT.CREATE would cause resetting during initial accounts discovery
+            // 2) adding a new account is handled directly in add account modal, reacting on ACCOUNT.CREATE would cause resetting during initial accounts discovery
             case walletSettingsActions.changeNetworks.type: {
                 if (walletSettingsActions.changeNetworks.match(action)) {
                     draft.coinFilter = undefined;
@@ -37,8 +36,9 @@ const accountSearchReducer = (state: State = initialState, action: Action): Stat
                 }
                 break;
             }
+
+            // reset coin filter search
             case deviceActions.selectDevice.type:
-                draft.coinFilter = undefined;
                 draft.searchString = undefined;
                 break;
 
