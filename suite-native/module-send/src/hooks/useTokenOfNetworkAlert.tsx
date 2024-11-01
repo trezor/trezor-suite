@@ -72,7 +72,7 @@ const TokenOfNetworkAlertBody = ({
     return (
         <VStack spacing="sp24">
             <Box style={applyStyle(iconWrapperStyle)}>
-                <CryptoIcon symbol={tokenContract} size={80} />
+                <CryptoIcon symbol={networkSymbol} contractAddress={tokenContract} size={80} />
                 <Box style={applyStyle(networkIconWrapperStyle)}>
                     <CryptoIcon symbol={networkSymbol} size={32} />
                 </Box>
