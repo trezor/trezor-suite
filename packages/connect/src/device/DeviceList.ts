@@ -101,7 +101,6 @@ interface DeviceListEvents {
 export interface IDeviceList {
     isConnected(): this is DeviceList;
     pendingConnection(): Promise<void> | undefined;
-    setTransports: DeviceList['setTransports'];
     addAuthPenalty: DeviceList['addAuthPenalty'];
     removeAuthPenalty: DeviceList['removeAuthPenalty'];
     on: DeviceList['on'];
@@ -122,7 +121,10 @@ type ConstructorParams = Pick<
 > & {
     messages: Record<string, any>;
 };
-type InitParams = Pick<ConnectSettings, 'pendingTransportEvent' | 'transportReconnect'>;
+type InitParams = Pick<
+    ConnectSettings,
+    'transports' | 'pendingTransportEvent' | 'transportReconnect'
+>;
 
 export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDeviceList {
     // @ts-expect-error has no initializer
@@ -217,7 +219,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         );
     }
 
-    setTransports(transports: ConnectSettings['transports']) {
+    private setTransports(transports: ConnectSettings['transports']) {
         // we fill in `transports` with a reasonable fallback in src/index.
         // since web index is released into npm, we can not rely
         // on that that transports will be always set here. We need to provide a 'fallback of the last resort'
@@ -264,6 +266,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
      * Init @trezor/transport and do something with its results
      */
     init(initParams: InitParams = {}) {
+        this.setTransports(initParams.transports);
+
         // TODO is it ok to return first init promise in case of second call?
         if (!this.initPromise) {
             _log.debug('Initializing transports');
