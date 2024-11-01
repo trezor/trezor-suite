@@ -545,11 +545,11 @@ const onCallDevice = async (
     const { deviceList, callMethods, getOverridePromise, setOverridePromise, sendCoreMessage } =
         context;
     const responseID = message.id;
-    const { origin, env, useCoreInPopup } = DataManager.getSettings();
+    const { origin, env, useCoreInPopup, transports } = DataManager.getSettings();
 
     if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
         // transport is missing try to initialize it once again
-        deviceList.init();
+        deviceList.init({ transports });
     }
     await deviceList.pendingConnection();
 
@@ -1240,15 +1240,12 @@ export class Core extends EventEmitter {
             DataManager.getSettings();
 
         try {
-            this.deviceList.setTransports(transports);
+            this.deviceList.init({ transports, pendingTransportEvent, transportReconnect });
         } catch (error) {
-            _log.error('setTransports', error);
             this.sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
             throttlePromise.reject(error);
             throw error;
         }
-
-        this.deviceList.init({ pendingTransportEvent, transportReconnect });
 
         // in auto core mode, we have to wait to check if transport is available
         if (!transportReconnect || coreMode === 'auto') {
@@ -1281,10 +1278,8 @@ const disableWebUSBTransport = async ({ deviceList, sendCoreMessage }: CoreConte
     try {
         // clean previous device list
         deviceList.cleanup();
-        // and init with new settings, without webusb
-        deviceList.setTransports(transports);
         // TODO possible issue with new init not replacing the old one???
-        await deviceList.init({ pendingTransportEvent, transportReconnect });
+        await deviceList.init({ transports, pendingTransportEvent, transportReconnect });
     } catch (error) {
         // do nothing
         sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
