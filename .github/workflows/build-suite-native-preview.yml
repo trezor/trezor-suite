@@ -8,9 +8,11 @@ on:
     types: [opened, synchronize, labeled]
     paths:
       - "suite-native/**"
+      - "suite-common/**"
       - "packages/react-native-usb/**"
       - "packages/transport-native/**"
       - "yarn.lock"
+      - ".github/workflows/build-suite-native-preview.yml"
       # list of paths is not complete, but it's always possible to dispatch manually using 'build-mobile' label
   workflow_dispatch:
     # manual dispatch will not add any comment to PR, use label 'build-mobile' if PR exists
@@ -44,7 +46,26 @@ jobs:
       - name: Install libs
         run: yarn workspaces focus @suite-native/app
 
+      - name: Check runtimeVersion builds
+        run: |
+          cd suite-native/app
+          # Read runtimeVersion from dynamic app.json
+          RUNTIME_VERSION=$(npx expo config --json | jq -r '.runtimeVersion')
+          echo "Current runtimeVersion is $RUNTIME_VERSION"
+          # Check if there is a build with the same runtimeVersion on EAS already
+          EXISTING_BUILD=$(eas build:list --status=finished  --build-profile=preview --channel=preview --limit=1  --non-interactive --runtime-version=$RUNTIME_VERSION)
+          if [ -z "$EXISTING_BUILD" ]; then
+            echo "No build with runtimeVersion $RUNTIME_VERSION found"
+            echo "RUNTIME_BUILD_EXISTS=false" >> $GITHUB_ENV
+          else
+            echo "Found build with runtimeVersion $RUNTIME_VERSION"
+            echo "$EXISTING_BUILD"
+            echo "RUNTIME_BUILD_EXISTS=true" >> $GITHUB_ENV
+          fi
+
       - name: Create preview builds if fingerprint changed
+        # Only create preview builds if there is no build with the same runtimeVersion on EAS already
+        if: env.RUNTIME_BUILD_EXISTS == 'false'
         uses: expo/expo-github-action/preview-build@main
         with:
           command: eas build --profile preview --platform all
