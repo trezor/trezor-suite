@@ -6,7 +6,7 @@ import { Assert } from '@trezor/schema-utils';
 
 export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadDevice> {
     init() {
-        this.allowDeviceMode = [UI.SEEDLESS];
+        this.allowDeviceMode = [UI.INITIALIZE];
         this.useDeviceState = false;
         this.requiredPermissions = ['management'];
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
