@@ -17,6 +17,7 @@ export default class EosGetPublicKey extends AbstractMethod<
 
     init() {
         this.requiredPermissions = ['read'];
+        this.requiredDeviceCapabilities = ['Capability_EOS'];
         this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('EOS'), this.firmwareRange);
 
         // create a bundle with only one batch if bundle doesn't exists

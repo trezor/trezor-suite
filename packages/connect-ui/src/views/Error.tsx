@@ -12,6 +12,8 @@ import {
     variables,
 } from '@trezor/components';
 import { isFirefox } from '@trezor/env-utils';
+import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
+import { spacings } from '@trezor/theme';
 
 export interface ErrorViewProps {
     type: 'error';
@@ -22,6 +24,7 @@ export interface ErrorViewProps {
         | 'core-missing' // core was loaded correctly but became unavailable later
         | 'core-failed-to-load'; // dynamic import of core failed
     // future errors when using connect-ui in different contexts
+    code?: string;
     message?: string;
 }
 
@@ -145,7 +148,25 @@ const getTroubleshootingTips = (props: ErrorViewProps) => {
             icon: 'question',
             title: 'Action not completed',
             detail: {
-                steps: [<Step>{props.message}</Step>],
+                steps: [
+                    props.code === 'Device_MissingCapabilityBtcOnly' ? (
+                        <>
+                            <Step>{props.message}</Step>
+                            <Button
+                                href={HELP_FIRMWARE_TYPE}
+                                size="small"
+                                variant="tertiary"
+                                icon="arrowRight"
+                                iconAlignment="right"
+                                margin={{ top: spacings.md }}
+                            >
+                                Learn more
+                            </Button>
+                        </>
+                    ) : (
+                        <Step>{props.message}</Step>
+                    ),
+                ],
             },
         });
     }

@@ -14,6 +14,7 @@ export default class EthereumVerifyMessage extends AbstractMethod<
     init() {
         this.requiredPermissions = ['read', 'write'];
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
 
         const { payload } = this;
 

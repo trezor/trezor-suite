@@ -29,6 +29,7 @@ export default class StellarSignTransaction extends AbstractMethod<
 > {
     init() {
         this.requiredPermissions = ['read', 'write'];
+        this.requiredDeviceCapabilities = ['Capability_Stellar'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Stellar'),

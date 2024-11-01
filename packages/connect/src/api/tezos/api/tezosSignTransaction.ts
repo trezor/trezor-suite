@@ -15,6 +15,7 @@ export default class TezosSignTransaction extends AbstractMethod<
 > {
     init() {
         this.requiredPermissions = ['read', 'write'];
+        this.requiredDeviceCapabilities = ['Capability_Tezos'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Tezos'),

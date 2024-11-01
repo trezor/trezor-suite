@@ -19,6 +19,7 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
     init() {
         this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
+        this.requiredDeviceCapabilities = ['Capability_Solana'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Solana'),

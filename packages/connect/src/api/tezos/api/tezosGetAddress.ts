@@ -21,6 +21,7 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
     init() {
         this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
+        this.requiredDeviceCapabilities = ['Capability_Tezos'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Tezos'),

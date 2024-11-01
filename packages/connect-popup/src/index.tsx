@@ -193,6 +193,7 @@ const handleResponseEvent = (data: MethodResponseMessage) => {
             default:
                 fail({
                     type: 'error',
+                    code,
                     detail: 'response-event-error',
                     message: ('error' in data.payload && data.payload.error) || 'Unknown error',
                 });

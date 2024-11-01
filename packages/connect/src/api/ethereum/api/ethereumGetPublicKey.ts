@@ -20,6 +20,7 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
 
     init() {
         this.requiredPermissions = ['read'];
+        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;

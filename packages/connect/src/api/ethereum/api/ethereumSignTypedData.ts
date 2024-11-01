@@ -42,6 +42,7 @@ const Params = Type.Intersect([
 export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignTypedData', Params> {
     init() {
         this.requiredPermissions = ['read', 'write'];
+        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
 
         const { payload } = this;
 

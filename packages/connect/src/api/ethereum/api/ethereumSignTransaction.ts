@@ -53,6 +53,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
 > {
     init() {
         this.requiredPermissions = ['read', 'write'];
+        this.requiredDeviceCapabilities = ['Capability_Ethereum'];
 
         const { payload } = this;
         // validate incoming parameters

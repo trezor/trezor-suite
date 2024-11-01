@@ -42,6 +42,8 @@ export const ERROR_CODES = {
     Device_InvalidState: 'Passphrase is incorrect', // authorization error (device state comparison)
     Device_CallInProgress: 'Device call in progress', // thrown when trying to make another call while current is still running
     Device_MultipleNotSupported: 'Multiple devices are not supported', // thrown by methods which require single device
+    Device_MissingCapability: 'Device is missing capability', // thrown by methods which require specific capability
+    Device_MissingCapabilityBtcOnly: 'Device is missing capability (BTC only)', // thrown by methods which require specific capability when using BTC only firmware
 
     Failure_ActionCancelled: 'Action cancelled by user',
     Failure_FirmwareError: 'Firmware installation failed',

@@ -16,6 +16,7 @@ export default class SolanaGetPublicKey extends AbstractMethod<
     init() {
         this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
+        this.requiredDeviceCapabilities = ['Capability_Solana'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Solana'),

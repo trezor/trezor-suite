@@ -21,6 +21,7 @@ export default class StellarGetAddress extends AbstractMethod<'stellarGetAddress
     init() {
         this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
+        this.requiredDeviceCapabilities = ['Capability_Stellar'];
         this.firmwareRange = getFirmwareRange(
             this.name,
             getMiscNetwork('Stellar'),

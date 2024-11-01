@@ -16,6 +16,7 @@ import {
 import { getHost } from '../utils/urlUtils';
 import type { Device } from '../device/Device';
 import type { FirmwareRange, DeviceState, StaticSessionId, DeviceUniquePath } from '../types';
+import { Capability } from '@trezor/protobuf/src/messages';
 
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };
 export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethodResponse<M>;
@@ -132,6 +133,8 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI.INITIALIZED)
 
     requireDeviceMode: DeviceMode[];
+
+    requiredDeviceCapabilities: Capability[] = [];
 
     network: NETWORK.NetworkType;
 
@@ -331,6 +334,24 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             name: this.name,
             // this could be used for more. it could tell clients what are min firmware versions (firmwareRange) and much more
         };
+    }
+
+    checkDeviceCapability() {
+        const deviceHasAllRequiredCapabilities = (this.requiredDeviceCapabilities || []).every(
+            capability => this.device.features.capabilities.includes(capability),
+        );
+        if (!deviceHasAllRequiredCapabilities) {
+            if (this.device.firmwareType === 'bitcoin-only') {
+                throw ERRORS.TypedError(
+                    'Device_MissingCapabilityBtcOnly',
+                    `Trezor has Bitcoin-only firmware installed, which does not support this operation. Please install Universal firmware through Trezor Suite.`,
+                );
+            }
+            throw ERRORS.TypedError(
+                'Device_MissingCapability',
+                'Device does not have capability to call this method. Make sure you have the latest firmware installed.',
+            );
+        }
     }
 
     abstract run(): Promise<MethodReturnType<Name>>;
