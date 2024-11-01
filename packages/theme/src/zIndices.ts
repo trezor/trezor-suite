@@ -11,6 +11,7 @@ export const zIndices = {
     discoveryProgress: 41,
 
     modal: 40, // above other suite content to disable interacting with it
+    legacyModal: 39, // below MODAL in case another modal overlaps it, e.g. ReconnectDevicePrompt
     draggableComponent: 30, // sidebar, above other content to be visible when dragged, resized
     navigationBar: 30,
     expandableNavigationHeader: 21, // above EXPANDABLE_NAVIGATION to cover its box-shadow

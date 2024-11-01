@@ -13,7 +13,7 @@ export type BackdropProps = {
 
 const Wrapper = styled.div<{ $alignment: ModalAlignment }>`
     position: absolute;
-    z-index: ${zIndices.modal};
+    z-index: ${zIndices.legacyModal};
     inset: 0;
     display: flex;
     flex-direction: column;
