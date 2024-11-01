@@ -9661,6 +9661,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/settings": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     jotai: "npm:1.9.1"
