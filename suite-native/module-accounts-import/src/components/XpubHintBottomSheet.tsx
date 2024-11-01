@@ -16,7 +16,7 @@ export const XpubHintBottomSheet = ({
     handleClose,
 }: XpubHintBottomSheetProps) => {
     const isAddressBased = isAddressBasedNetwork(networkType);
-    const video: VideoName = isAddressBased ? 'xpubImportBTC' : 'xpubImportETH';
+    const video: VideoName = isAddressBased ? 'xpubImportETH' : 'xpubImportBTC';
     const title = (
         <Translation
             id={
