@@ -242,6 +242,8 @@ export const TransactionReviewSummary = ({
     const isFeeCustom = drafts[currentAccountKey]?.selectedFee === 'custom';
     const isComposedFeeRateDifferent = isFeeCustom && formFeeRate !== fee;
 
+    const isZeroAmount = amount === '0'; // bump claim tx and trade approve has 0 value
+
     return (
         <Wrapper>
             <SummaryHead>
@@ -254,13 +256,15 @@ export const TransactionReviewSummary = ({
 
                 <Headline>
                     <Translation id={actionText} />
-                    <HeadlineAmount>
-                        <FormattedCryptoAmount
-                            disableHiddenPlaceholder
-                            value={amount}
-                            symbol={tx.token?.symbol ?? symbol}
-                        />
-                    </HeadlineAmount>
+                    {!isZeroAmount && (
+                        <HeadlineAmount>
+                            <FormattedCryptoAmount
+                                disableHiddenPlaceholder
+                                value={amount}
+                                symbol={tx.token?.symbol ?? symbol}
+                            />
+                        </HeadlineAmount>
+                    )}
                 </Headline>
 
                 <AccountWrapper>
