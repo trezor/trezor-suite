@@ -234,6 +234,8 @@ export const TransactionReviewOutputList = ({
                                 outputs={outputs}
                                 buttonRequestsCount={buttonRequestsCount}
                                 precomposedTx={precomposedTx}
+                                ethereumStakeType={ethereumStakeType}
+                                isRbfAction={isRbfAction}
                             />
                         )}
                     </RightTopInner>

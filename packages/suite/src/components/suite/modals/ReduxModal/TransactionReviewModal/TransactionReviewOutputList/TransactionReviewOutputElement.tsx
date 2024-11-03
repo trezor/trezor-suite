@@ -171,12 +171,13 @@ export const TransactionReviewOutputElement = forwardRef<
         const network = account?.networkType;
         const cardanoFingerprint = getFingerprint(account?.tokens, token?.symbol);
         const isActive = state === 'active';
-        const hasMultipleLines = lines.length > 1;
+
+        const showMultiIndicator = lines.length > 1;
 
         return (
             <OutputWrapper ref={ref}>
-                <OutputLeft $isCentered={hasMultipleLines}>
-                    {hasMultipleLines ? (
+                <OutputLeft $isCentered={showMultiIndicator}>
+                    {showMultiIndicator ? (
                         <MultiIndicatorWrapper $linesCount={lines.length - 1}>
                             {indicator}
                         </MultiIndicatorWrapper>
