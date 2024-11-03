@@ -56,7 +56,8 @@ export type TransactionReviewOutputProps = {
 
 export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionReviewOutputProps>(
     (props, ref) => {
-        const { type, state, label, value, symbol, token, account, ethereumStakeType } = props;
+        const { type, state, label, value, symbol, token, account, ethereumStakeType, isRbf } =
+            props;
         let outputLabel: ReactNode = label;
         const { networkType } = account;
         const { translationString } = useTranslation();
@@ -155,6 +156,11 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
             ];
         } else if (['data', 'address'].includes(type) && ethereumStakeType) {
             const displayModeStringsMap = getDisplayModeStringsMap();
+
+            // prevents double label when bumping stake type txs
+            if (type === 'address' && isRbf) {
+                return null;
+            }
 
             outputLines = [
                 {
