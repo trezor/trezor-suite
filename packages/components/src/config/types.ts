@@ -9,7 +9,7 @@ export const uiVariants = [
 ] as const;
 export type UIVariant = (typeof uiVariants)[number];
 
-export const uiSizes = ['large', 'medium', 'small', 'tiny'] as const;
+export const uiSizes = ['huge', 'large', 'medium', 'small', 'tiny'] as const;
 export type UISize = (typeof uiSizes)[number];
 
 export const uiHorizontalAlignments = ['left', 'center', 'right'] as const;
