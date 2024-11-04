@@ -17,7 +17,7 @@ describe('T2B1 - Device settings', () => {
     };
 
     beforeEach(() => {
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
     });
 
     /*

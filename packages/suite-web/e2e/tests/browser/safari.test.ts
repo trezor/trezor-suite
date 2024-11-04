@@ -6,7 +6,7 @@
 
 describe('Safari on MacOS 14 ', () => {
     before(() => {
-        cy.viewport(1440, 2560);
+        cy.viewport('macbook-13');
         cy.resetDb();
     });
 

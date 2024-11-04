@@ -4,7 +4,7 @@
 describe('Firmware', () => {
     beforeEach(() => {
         // use portrait mode monitor to prevent scrolling in settings
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
     });
 
     it(`Firmware 2.5.2 outdated notification banner should open firmware update modal`, () => {

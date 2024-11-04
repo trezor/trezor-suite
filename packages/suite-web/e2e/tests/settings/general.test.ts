@@ -5,6 +5,10 @@
 import { EventType } from '@trezor/suite-analytics';
 import { ExtractByEventType, Requests } from '../../support/types';
 import { onNavBar } from '../../support/pageObjects/topBarObject';
+import { onSettingGeneralPage } from '../../support/pageObjects/settings/settingsGeneralObject';
+import { Currency } from '../../support/enums/currency';
+import { Language } from '../../support/enums/language';
+import { Theme } from '../../support/enums/theme';
 
 let requests: Requests;
 
@@ -13,8 +17,7 @@ describe('General settings', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');
-        // use portrait mode monitor to prevent scrolling in settings
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
@@ -36,8 +39,7 @@ describe('General settings', () => {
         });
 
         // change fiat
-        cy.getTestElement('@settings/fiat-select/input').click({ scrollBehavior: false });
-        cy.getTestElement('@settings/fiat-select/option/eur').click({ force: true });
+        onSettingGeneralPage.changeFiatCurrency(Currency.EUR);
 
         cy.findAnalyticsEventByType<ExtractByEventType<EventType.SettingsGeneralChangeFiat>>(
             requests,
@@ -54,9 +56,7 @@ describe('General settings', () => {
         onNavBar.openSettings();
 
         // change dark mode
-        cy.getTestElement('@theme/color-scheme-select/input').click();
-        cy.getTestElement('@theme/color-scheme-select/option/dark').click({ force: true });
-        cy.getTestElement('@theme/color-scheme-select/input').should('contain', 'Dark');
+        onSettingGeneralPage.changeTheme(Theme.Dark);
 
         cy.findAnalyticsEventByType<ExtractByEventType<EventType.SettingsGeneralChangeTheme>>(
             requests,
@@ -74,9 +74,7 @@ describe('General settings', () => {
         cy.contains('Current version');
 
         // change language
-        cy.getTestElement('@settings/language-select/input').click({ scrollBehavior: 'bottom' });
-        cy.getTestElement('@settings/language-select/option/es').click({ force: true });
-        cy.getTestElement('@settings/language-select/input').should('contain', 'Español');
+        onSettingGeneralPage.changeLanguage(Language.Spanish);
 
         cy.findAnalyticsEventByType<ExtractByEventType<EventType.SettingsGeneralChangeLanguage>>(
             requests,

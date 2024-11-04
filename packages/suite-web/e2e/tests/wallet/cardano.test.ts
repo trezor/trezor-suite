@@ -2,7 +2,7 @@
 // @retry=2
 
 import { onModal } from '../../support/pageObjects/modalObject';
-import { onSettingsMenu } from '../../support/pageObjects/settingsMenuObject';
+import { onSettingsMenu } from '../../support/pageObjects/settings/settingsMenuObject';
 import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 describe('Cardano', () => {
@@ -16,7 +16,7 @@ describe('Cardano', () => {
         });
         cy.task('startBridge');
 
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();

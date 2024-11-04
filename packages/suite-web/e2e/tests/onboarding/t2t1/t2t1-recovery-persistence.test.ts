@@ -51,7 +51,7 @@ describe('Onboarding - T2T1 in recovery mode', () => {
         cy.task('startBridge');
         cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2.5.3' });
         cy.resetDb();
-        cy.viewport(1440, 2560);
+        cy.viewport('macbook-13');
         cy.prefixedVisit('/');
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@analytics/continue-button').click();

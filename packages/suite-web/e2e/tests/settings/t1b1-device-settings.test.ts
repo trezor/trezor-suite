@@ -1,8 +1,8 @@
 // @group_settings
 // @retry=2
 
-import { onSettingsDevicePage } from '../../support/pageObjects/settingsDeviceObject';
-import { onSettingsMenu } from '../../support/pageObjects/settingsMenuObject';
+import { onSettingsDevicePage } from '../../support/pageObjects/settings/settingsDeviceObject';
+import { onSettingsMenu } from '../../support/pageObjects/settings/settingsMenuObject';
 import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 // TODO: t1 tests are flaky in CI. I suspect it is something in bridge/udp layer. So next step is implementing
@@ -12,7 +12,7 @@ describe('T1B1 - Device settings', () => {
         cy.task('startEmu', { model: 'T1B1', version: '1-latest', wipe: true });
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
     });
@@ -70,7 +70,7 @@ describe('T1B1 - Device settings', () => {
         // Test preparation
         //
 
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
         cy.visit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();

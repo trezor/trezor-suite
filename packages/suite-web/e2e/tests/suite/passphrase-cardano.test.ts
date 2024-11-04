@@ -15,7 +15,7 @@ describe('Passphrase with cardano', () => {
         });
         cy.task('startBridge');
 
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
         cy.prefixedVisit('/');
         // cy.visit('/');
         cy.passThroughInitialRun();

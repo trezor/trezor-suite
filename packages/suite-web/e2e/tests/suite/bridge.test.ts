@@ -3,7 +3,7 @@
 
 describe('Bridge page', () => {
     beforeEach(() => {
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
     });
 
     it('/bridge', () => {
