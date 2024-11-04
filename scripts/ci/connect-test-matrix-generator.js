@@ -87,7 +87,7 @@ const firmwares2 = ['2.3.0', '2-latest', '2-main'];
 const inputs = [
     {
         key: 'model',
-        value: ['T1B1', 'T2T1', 'T2B1', 'T3B1', 'T3T1'],
+        value: ['T1B1', 'T2T1', 'T2B1', 'T3B1', 'T3T1', 'T3W1'],
     },
 
     {
