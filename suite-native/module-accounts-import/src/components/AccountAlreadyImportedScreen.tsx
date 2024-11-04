@@ -7,11 +7,10 @@ import { Translation } from '@suite-native/intl';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
-    AppTabsRoutes,
-    HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToTabCompositeProps,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -36,20 +35,13 @@ type NavigationProp = StackToTabCompositeProps<
 export const AccountAlreadyImportedScreen = ({ account }: AccountAlreadyImportedScreenProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
 
-    const handleImportAnotherAsset = () =>
+    const handleSyncAnotherAsset = () =>
         navigation.navigate(RootStackRoutes.AccountsImport, {
             screen: AccountsImportStackRoutes.XpubScan,
             params: {
                 networkSymbol: account.symbol,
-            },
-        });
-
-    const handleNavigateToDashboard = () =>
-        navigation.navigate(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.HomeStack,
-            params: {
-                screen: HomeStackRoutes.Home,
             },
         });
 
@@ -59,15 +51,15 @@ export const AccountAlreadyImportedScreen = ({ account }: AccountAlreadyImported
             subtitle={<Translation id="moduleAccountImport.summaryScreen.subtitle" />}
             footer={
                 <VStack spacing="sp16">
+                    <Button size="large" onPress={handleSyncAnotherAsset}>
+                        <Translation id="moduleAccountImport.summaryScreen.syncAnotherCoinButton" />
+                    </Button>
                     <Button
                         size="large"
                         colorScheme="tertiaryElevation0"
-                        onPress={handleImportAnotherAsset}
+                        onPress={navigateToInitialScreen}
                     >
-                        <Translation id="moduleAccountImport.summaryScreen.button.importAnotherAsset" />
-                    </Button>
-                    <Button size="large" onPress={handleNavigateToDashboard}>
-                        <Translation id="moduleAccountImport.summaryScreen.button.continueToApp" />
+                        <Translation id="generic.buttons.cancel" />
                     </Button>
                 </VStack>
             }

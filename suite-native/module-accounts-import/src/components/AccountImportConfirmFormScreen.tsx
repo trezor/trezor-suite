@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CommonActions, useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/core';
 import { FlashList } from '@shopify/flash-list';
 
 import { Translation } from '@suite-native/intl';
@@ -23,10 +23,9 @@ import { Form } from '@suite-native/forms';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
-    HomeStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { AccountInfo, TokenInfo } from '@trezor/connect';
 
@@ -53,6 +52,7 @@ export const AccountImportConfirmFormScreen = ({
 }: AccountImportConfirmFormScreenProps) => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProp>();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
     const showImportError = useShowImportError(networkSymbol, navigation);
 
     const knownTokens = useSelector((state: TokenDefinitionsRootState) =>
@@ -92,19 +92,7 @@ export const AccountImportConfirmFormScreen = ({
                 },
             });
 
-            navigation.dispatch(
-                CommonActions.reset({
-                    index: 0,
-                    routes: [
-                        {
-                            name: RootStackRoutes.AppTabs,
-                            params: {
-                                screen: HomeStackRoutes.Home,
-                            },
-                        },
-                    ],
-                }),
-            );
+            navigateToInitialScreen();
         } catch {
             showImportError();
         }

@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { BackHandler } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import {
@@ -37,6 +39,15 @@ export const AccountImportSummaryScreen = ({
         ),
     );
     const portfolioTrackerSupportedNetworks = useSelector(selectPortfolioTrackerNetworkSymbols);
+
+    useEffect(() => {
+        // prevent dismissing screen via HW
+        const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+            return true;
+        });
+
+        return () => subscription.remove();
+    }, []);
 
     const isAccountImportSupported =
         portfolioTrackerSupportedNetworks.some(symbol => symbol === networkSymbol) ||

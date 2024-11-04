@@ -15,15 +15,15 @@ export const AccountsImportStack = createNativeStackNavigator<AccountsImportStac
 
 export const AccountsImportStackNavigator = () => (
     <AccountsImportStack.Navigator screenOptions={stackNavigationOptionsConfig}>
-        <AccountsImportStack.Group>
-            <AccountsImportStack.Screen
-                name={AccountsImportStackRoutes.SelectNetwork}
-                component={SelectNetworkScreen}
-            />
-            <AccountsImportStack.Screen
-                name={AccountsImportStackRoutes.XpubScan}
-                component={XpubScanScreen}
-            />
+        <AccountsImportStack.Screen
+            name={AccountsImportStackRoutes.SelectNetwork}
+            component={SelectNetworkScreen}
+        />
+        <AccountsImportStack.Screen
+            name={AccountsImportStackRoutes.XpubScan}
+            component={XpubScanScreen}
+        />
+        <AccountsImportStack.Group screenOptions={{ gestureEnabled: false }}>
             <AccountsImportStack.Screen
                 name={AccountsImportStackRoutes.AccountImportLoading}
                 component={AccountImportLoadingScreen}
