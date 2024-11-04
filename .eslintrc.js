@@ -58,6 +58,7 @@ module.exports = {
         'eslint-local-rules/*',
     ],
     rules: {
+        'no-empty': 'error',
         '@typescript-eslint/no-empty-object-type': 'off',
         '@typescript-eslint/no-require-imports': 'off',
         '@typescript-eslint/prefer-ts-expect-error': 'error',

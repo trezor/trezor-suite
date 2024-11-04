@@ -144,7 +144,9 @@ export class UsbApi extends AbstractApi {
             this.logger?.debug('usb: abortableMethod onAbort start');
             try {
                 await onAbort?.();
-            } catch {}
+            } catch {
+                /* empty */
+            }
             this.logger?.debug('usb: abortableMethod onAbort done');
             dfd.reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
         };

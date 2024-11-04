@@ -37,7 +37,9 @@ const modifyDefinitionsJSON = (root: protobuf.Root, def: Definition) => {
                 try {
                     root.lookupType(def.type);
                     ignoreOptions.push('packed');
-                } catch {}
+                } catch {
+                    /* empty */
+                }
             }
         }
         const opts = options
