@@ -52,7 +52,7 @@ export class ThreadProxy<_Target extends object> {
         if (this.utility) throw new Error('Process already running');
         const utilityPath = path.join(THREADS_DIR_PATH, `${this.settings.name}.js`);
         const utility = utilityProcess.fork(utilityPath);
-        await new Promise((resolve, reject) => {
+        await new Promise<void>((resolve, reject) => {
             utility.once('spawn', resolve);
             utility.once('exit', reject);
         });

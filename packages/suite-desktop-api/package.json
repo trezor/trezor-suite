@@ -19,6 +19,6 @@
         "type-check": "yarn g:tsc --build tsconfig.json"
     },
     "dependencies": {
-        "electron": "32.1.2"
+        "electron": "33.1.0"
     }
 }
