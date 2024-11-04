@@ -9200,6 +9200,14 @@ export default defineMessages({
         id: 'TR_AUTO_START_DESCRIPTION',
         defaultMessage: 'Start Trezor Suite in the background when you log into your computer.',
     },
+    TR_SHOW_ON_TRAY: {
+        id: 'TR_SHOW_ON_TRAY',
+        defaultMessage: 'Show icon in tray',
+    },
+    TR_SHOW_ON_TRAY_DESCRIPTION: {
+        id: 'TR_SHOW_ON_TRAY_DESCRIPTION',
+        defaultMessage: 'Monitor if Trezor Suite is running in the background.',
+    },
     TR_CUSTOM_FEE_WARNING: {
         id: 'TR_CUSTOM_FEE_WARNING',
         defaultMessage:

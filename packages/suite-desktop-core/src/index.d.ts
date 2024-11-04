@@ -118,3 +118,7 @@ declare type BridgeSettings = {
      */
     newBridgeRollout?: number;
 };
+
+declare type TraySettings = {
+    showOnTray: boolean;
+};
