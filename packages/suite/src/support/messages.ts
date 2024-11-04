@@ -8552,9 +8552,9 @@ export default defineMessages({
         id: 'TR_TO',
         defaultMessage: 'To',
     },
-    TR_STAKE_ETH: {
-        id: 'TR_STAKE_ETH',
-        defaultMessage: 'Stake Ethereum',
+    TR_STAKE_NETWORK: {
+        id: 'TR_STAKE_NETWORK',
+        defaultMessage: 'Stake {network}',
     },
     TR_STAKE_RESTAKED_BADGE: {
         id: 'TR_STAKE_RESTAKED_BADGE',
@@ -8572,9 +8572,9 @@ export default defineMessages({
         id: 'TR_STAKE_ETH_SEE_MONEY_DANCE',
         defaultMessage: 'Watch your money dance',
     },
-    TR_STAKE_ETH_SEE_MONEY_DANCE_DESC: {
-        id: 'TR_STAKE_ETH_SEE_MONEY_DANCE_DESC',
-        defaultMessage: 'Earn {apyPercent}% <t>APY</t> by staking your Ethereum with Trezor.',
+    TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC: {
+        id: 'TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC',
+        defaultMessage: 'Earn {apyPercent}% <t>APY</t> by staking your {network} with Trezor.',
     },
     TR_STAKE_APY_DESC: {
         id: 'TR_STAKE_APY_DESC',
@@ -8623,7 +8623,7 @@ export default defineMessages({
     TR_STAKE_STAKING_IS: {
         id: 'TR_STAKE_STAKING_IS',
         defaultMessage:
-            "Staking involves temporarily locking your Ethereum assets to support the blockchain's operation. In return, you'll earn additional Ethereum as a reward.",
+            "Staking involves temporarily locking your {network} assets to support the blockchain's operation. In return, you'll earn additional {network} as a reward.",
     },
     TR_STAKE_ANY_AMOUNT_ETH: {
         id: 'TR_STAKE_ANY_AMOUNT_ETH',

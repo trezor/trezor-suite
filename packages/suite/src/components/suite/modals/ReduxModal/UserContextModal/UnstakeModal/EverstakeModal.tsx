@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { Checkbox, NewModal, Column, Banner, Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -24,7 +25,12 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
 
     return (
         <NewModal
-            heading={<Translation id="TR_STAKE_ETH" />}
+            heading={
+                <Translation
+                    id="TR_STAKE_NETWORK"
+                    values={{ network: capitalizeFirstLetter(account?.networkType ?? '') }}
+                />
+            }
             description={<Translation id="TR_STAKE_YOUR_FUNDS_MAINTAINED" />}
             onCancel={onCancel}
             size="small"

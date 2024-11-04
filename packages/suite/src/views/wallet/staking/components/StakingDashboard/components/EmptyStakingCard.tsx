@@ -15,6 +15,7 @@ import {
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { Translation, StakingFeature } from 'src/components/suite';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -26,9 +27,12 @@ import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking
 export const EmptyStakingCard = () => {
     const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
     const account = useSelector(selectSelectedAccount);
+    const capitalizedNetwork = capitalizeFirstLetter(account?.networkType ?? '');
+
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking();
 
     const ethApy = useSelector(state => selectPoolStatsApyData(state, account?.symbol));
+    // TODO: calc solApy
 
     const dispatch = useDispatch();
     const openStakingEthInANutshellModal = () => {
@@ -45,9 +49,10 @@ export const EmptyStakingCard = () => {
                 title: <Translation id="TR_STAKE_ETH_SEE_MONEY_DANCE" />,
                 description: (
                     <Translation
-                        id="TR_STAKE_ETH_SEE_MONEY_DANCE_DESC"
+                        id="TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC"
                         values={{
                             apyPercent: ethApy,
+                            network: capitalizedNetwork,
                             t: text => (
                                 <Tooltip
                                     dashed
@@ -74,11 +79,13 @@ export const EmptyStakingCard = () => {
                 description: <Translation id="TR_STAKE_ETH_EVERSTAKE_DESC" />,
             },
         ],
-        [ethApy],
+        [ethApy, capitalizedNetwork],
     );
 
     return (
-        <DashboardSection heading={<Translation id="TR_STAKE_ETH" />}>
+        <DashboardSection
+            heading={<Translation id="TR_STAKE_NETWORK" values={{ network: capitalizedNetwork }} />}
+        >
             <Card>
                 <Column>
                     <section>
@@ -88,7 +95,7 @@ export const EmptyStakingCard = () => {
                         <Paragraph variant="tertiary">
                             <Translation
                                 id="TR_STAKE_STAKING_IS"
-                                values={{ symbol: account?.symbol.toUpperCase() }}
+                                values={{ network: capitalizedNetwork }}
                             />
                         </Paragraph>
                     </section>

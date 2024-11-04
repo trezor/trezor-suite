@@ -5,7 +5,8 @@ import { AccountExceptionLayout, WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 
 import { CardanoStakingDashboard } from './components/CardanoStakingDashboard';
-import { EthStakingDashboard } from './components/EthStakingDashboard/EthStakingDashboard';
+import { EthStakingDashboard } from './components/EthStakingDashboard/components/EthStakingDashboard';
+import { SolStakingDashboard } from './components/SolStakingDashboard/SolStakingDashboard';
 
 export const WalletStaking = () => {
     const { selectedAccount } = useSelector(state => state.wallet);
@@ -20,6 +21,8 @@ export const WalletStaking = () => {
                 return <CardanoStakingDashboard selectedAccount={selectedAccount} />;
             case 'ethereum':
                 return <EthStakingDashboard selectedAccount={selectedAccount} />;
+            case 'solana':
+                return <SolStakingDashboard selectedAccount={selectedAccount} />;
             // no default
         }
     }
