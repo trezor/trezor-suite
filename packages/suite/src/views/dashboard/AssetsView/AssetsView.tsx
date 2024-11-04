@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Icon, Button, LoadingContent, Card } from '@trezor/components';
-import { selectCurrentFiatRates, selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
+import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { Account } from 'src/types/wallet';
@@ -65,21 +65,16 @@ const useAssetsFiatBalances = (
 
 export const AssetsView = () => {
     const { dashboardAssetsGridMode } = useSelector(s => s.suite.flags);
-    const deviceSupportedNetworks = useSelector(selectDeviceSupportedNetworks);
 
     const theme = useTheme();
     const dispatch = useDispatch();
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const { accounts } = useAccounts(discovery);
-    const { mainnets, enabledNetworks } = useEnabledNetworks();
+    const { supportedMainnets, enabledNetworks } = useEnabledNetworks();
     const { isMobileLayout } = useLayoutSize();
 
-    const mainnetSymbols = mainnets.map(mainnet => mainnet.symbol);
-    const supportedMainnetNetworks = deviceSupportedNetworks.filter(network =>
-        mainnetSymbols.includes(network),
-    );
-    const hasMainnetNetworksToEnable = supportedMainnetNetworks.some(
-        network => !enabledNetworks.includes(network),
+    const hasMainnetNetworksToEnable = supportedMainnets.some(
+        network => !enabledNetworks.includes(network.symbol),
     );
 
     const assets: { [key: string]: Account[] } = {};

@@ -4,24 +4,16 @@ import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';
-import {
-    selectIsDeviceUsingPassphrase,
-    selectDeviceSupportedNetworks,
-} from '@suite-common/wallet-core';
+import { selectIsDeviceUsingPassphrase } from '@suite-common/wallet-core';
 import { goto } from 'src/actions/suite/routerActions';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 
 export const EmptyWallet = () => {
-    const { enabledNetworks, mainnets } = useEnabledNetworks();
+    const { supportedMainnets, enabledNetworks } = useEnabledNetworks();
     const isPassphraseType = useSelector(selectIsDeviceUsingPassphrase);
-    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const dispatch = useDispatch();
 
-    const supportedNetworks = mainnets.filter(({ symbol }) =>
-        deviceSupportedNetworkSymbols.includes(symbol),
-    );
-
-    const areAllNetworksEnabled = supportedNetworks.length === enabledNetworks.length;
+    const areAllNetworksEnabled = supportedMainnets.length === enabledNetworks.length;
 
     return (
         <Column gap={spacings.xxs} data-testid="@dashboard/wallet-ready">

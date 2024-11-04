@@ -5,10 +5,9 @@ import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 import { CollapsibleBox } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { selectDeviceSupportedNetworks, selectDeviceModel } from '@suite-common/wallet-core';
+import { selectDeviceModel } from '@suite-common/wallet-core';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { DeviceModelInternal } from '@trezor/connect';
-import { Network } from '@suite-common/wallet-config';
 import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
 
 const Separator = styled.hr`
@@ -21,19 +20,10 @@ const Separator = styled.hr`
 `;
 
 export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
-    const { mainnets, testnets, enabledNetworks } = useEnabledNetworks();
-    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
+    const { supportedMainnets, unsupportedMainnets, supportedTestnets, enabledNetworks } =
+        useEnabledNetworks();
     const deviceModel = useSelector(selectDeviceModel);
     const dispatch = useDispatch();
-
-    const getNetworks = (networks: Network[], getUnsupported = false) =>
-        networks.filter(
-            ({ symbol }) => getUnsupported !== deviceSupportedNetworkSymbols.includes(symbol),
-        );
-
-    const supportedNetworks = getNetworks(mainnets);
-    const unsupportedNetworks = getNetworks(mainnets, true);
-    const supportedTestnetNetworks = getNetworks(testnets);
 
     // BTC should be enabled by default
     useEffect(() => {
@@ -43,7 +33,7 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
     return (
         <OnboardingStepBox image="COINS" {...props}>
             <Separator />
-            <CoinGroup networks={supportedNetworks} enabledNetworks={enabledNetworks} />
+            <CoinGroup networks={supportedMainnets} enabledNetworks={enabledNetworks} />
             <CollapsibleBox
                 margin={{ top: spacings.xl }}
                 heading={
@@ -56,7 +46,7 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
                 }
                 paddingType="large"
             >
-                <CoinGroup networks={supportedTestnetNetworks} enabledNetworks={enabledNetworks} />
+                <CoinGroup networks={supportedTestnets} enabledNetworks={enabledNetworks} />
             </CollapsibleBox>
             {deviceModel === DeviceModelInternal.T1B1 && (
                 <CollapsibleBox
@@ -71,7 +61,7 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
                     }
                     paddingType="large"
                 >
-                    <CoinGroup networks={unsupportedNetworks} enabledNetworks={enabledNetworks} />
+                    <CoinGroup networks={unsupportedMainnets} enabledNetworks={enabledNetworks} />
                 </CollapsibleBox>
             )}
         </OnboardingStepBox>

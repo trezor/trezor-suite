@@ -2,13 +2,12 @@ import { Dispatch } from 'react';
 import { spacings } from '@trezor/theme';
 import { Column, Card, Row, Button, H3, Paragraph } from '@trezor/components';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
-import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 import { CoinLogo } from '@trezor/product-components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { ContentType } from './types';
-import { useSelector, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { onCancel as onCancelModal } from 'src/actions/suite/modalActions';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
@@ -26,15 +25,10 @@ export const PassphraseWalletConfirmationStep1 = ({
     onCancel,
     'data-testid': dataTest,
 }: PassphraseWalletConfirmationStep1Props) => {
-    const { enabledNetworks, mainnets } = useEnabledNetworks();
-    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
+    const { enabledNetworks, supportedMainnets } = useEnabledNetworks();
     const dispatch = useDispatch();
 
-    const supportedNetworks = mainnets.filter(({ symbol }) =>
-        deviceSupportedNetworkSymbols.includes(symbol),
-    );
-
-    const areAllNetworksEnabled = supportedNetworks.length === enabledNetworks.length;
+    const areAllNetworksEnabled = supportedMainnets.length === enabledNetworks.length;
 
     return (
         <Column gap={spacings.sm} margin={{ top: spacings.xxs }} alignItems="stretch">
