@@ -9232,6 +9232,11 @@ export default defineMessages({
         defaultMessage:
             "Are you sure? Your device can only be used by one app at a time. If you're currently using another app with your Trezor device, finish that session first.",
     },
+    TR_BRIDGE_TIP_AUTOSTART: {
+        id: 'TR_BRIDGE_TIP_AUTOSTART',
+        defaultMessage:
+            'Tip: You can enable the auto-start feature and have the Bridge always running in the background.',
+    },
     TR_BRIDGE_NEEDED_DESCRIPTION: {
         id: 'TR_BRIDGE_NEEDED_DESCRIPTION',
         defaultMessage:

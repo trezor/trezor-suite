@@ -33,11 +33,7 @@ const saveCoinProtocol = (scheme: Protocol, address: string, amount?: number): P
 export const handleProtocolRequest = (uri: string) => (dispatch: Dispatch) => {
     const protocol = getProtocolInfo(uri);
 
-    if (protocol && 'error' in protocol) {
-        return;
-    }
-
-    if (protocol && getNetworkSymbolForProtocol(protocol.scheme)) {
+    if (protocol && !('error' in protocol) && getNetworkSymbolForProtocol(protocol.scheme)) {
         const { scheme, amount, address } = protocol as CoinProtocolInfo;
 
         dispatch(saveCoinProtocol(scheme, address, amount));
