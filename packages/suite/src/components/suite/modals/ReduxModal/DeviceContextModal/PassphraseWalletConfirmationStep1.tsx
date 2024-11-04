@@ -30,7 +30,9 @@ export const PassphraseWalletConfirmationStep1 = ({
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const dispatch = useDispatch();
 
-    const areAllNetworksEnabled = supportedMainnets.length === enabledNetworks.length;
+    const areAllNetworksEnabled = supportedMainnets.every(network =>
+        enabledNetworks.includes(network.symbol),
+    );
 
     return (
         <Column gap={spacings.sm} margin={{ top: spacings.xxs }} alignItems="stretch">
