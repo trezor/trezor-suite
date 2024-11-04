@@ -11474,9 +11474,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/e2e-utils@workspace:packages/e2e-utils"
   dependencies:
-    "@types/uuid": "npm:^10.0.0"
     express: "npm:^4.21.1"
-    uuid: "npm:^10.0.0"
+    uuid: "npm:^11.0.2"
     ws: "npm:^8.18.0"
   languageName: unknown
   linkType: soft
@@ -11977,7 +11976,6 @@ __metadata:
     "@types/redux-mock-store": "npm:^1.0.6"
     "@types/semver": "npm:^7.5.8"
     "@types/ua-parser-js": "npm:^0.7.39"
-    "@types/uuid": "npm:^10.0.0"
     "@types/zxcvbn": "npm:^4.4.4"
     bs58check: "npm:^4.0.0"
     date-fns: "npm:^2.30.0"
@@ -12021,7 +12019,7 @@ __metadata:
     stylelint: "npm:^16.2.1"
     stylelint-config-standard: "npm:^36.0.0"
     typescript-styled-plugin: "npm:^0.18.3"
-    uuid: "npm:^10.0.0"
+    uuid: "npm:^11.0.2"
     web3-utils: "npm:^4.3.1"
     zxcvbn: "npm:^4.4.2"
   languageName: unknown
@@ -13635,13 +13633,6 @@ __metadata:
   version: 0.0.3
   resolution: "@types/use-sync-external-store@npm:0.0.3"
   checksum: 10/161ddb8eec5dbe7279ac971531217e9af6b99f7783213566d2b502e2e2378ea19cf5e5ea4595039d730aa79d3d35c6567d48599f69773a02ffcff1776ec2a44e
-  languageName: node
-  linkType: hard
-
-"@types/uuid@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@types/uuid@npm:10.0.0"
-  checksum: 10/e3958f8b0fe551c86c14431f5940c3470127293280830684154b91dc7eb3514aeb79fe3216968833cf79d4d1c67f580f054b5be2cd562bebf4f728913e73e944
   languageName: node
   linkType: hard
 
@@ -41280,12 +41271,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "uuid@npm:10.0.0"
+"uuid@npm:^11.0.2":
+  version: 11.0.2
+  resolution: "uuid@npm:11.0.2"
   bin:
-    uuid: dist/bin/uuid
-  checksum: 10/35aa60614811a201ff90f8ca5e9ecb7076a75c3821e17f0f5ff72d44e36c2d35fcbc2ceee9c4ac7317f4cc41895da30e74f3885e30313bee48fda6338f250538
+    uuid: dist/esm/bin/uuid
+  checksum: 10/b98082f398fa2ece8cacc2264402f739256ca70def4bb82e3a14ec70777d189c01ce1054764c3b59b8fc098b62b135a15d1b24914712904c988822e2ac9b4f44
   languageName: node
   linkType: hard
 
