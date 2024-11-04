@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@hookform/resolvers": "3.9.0",
+        "@hookform/resolvers": "3.9.1",
         "@mobily/ts-belt": "^3.13.1",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
