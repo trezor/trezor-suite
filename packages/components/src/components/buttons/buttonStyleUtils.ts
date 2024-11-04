@@ -14,7 +14,7 @@ export const buttonVariants = ['primary', 'tertiary', ...subtleButtonVariants] a
 
 export type ButtonVariant = Extract<UIVariant, (typeof buttonVariants)[number]>;
 
-export const buttonSizes: Array<UISize> = ['large', 'medium', 'small', 'tiny'];
+export const buttonSizes = ['large', 'medium', 'small', 'tiny'] as const;
 export type ButtonSize = Extract<UISize, (typeof buttonSizes)[number]>;
 
 export type IconAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
