@@ -26,7 +26,7 @@ export const StakeModal = ({ onCancel }: StakeModalModalProps) => {
     return (
         <StakeEthFormContext.Provider value={stakeEthContextValues}>
             <NewModal
-                size="large"
+                size="huge"
                 heading={<Translation id="TR_STAKE_ETH" />}
                 onCancel={onCancel}
                 bottomContent={<StakeButton />}
