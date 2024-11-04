@@ -39,6 +39,10 @@ module.exports = {
             to: 'images/desktop/512x512.png',
         },
         {
+            from: 'build/static/images/favicons',
+            to: 'images/favicons',
+        },
+        {
             from: 'build/static/bin/firmware',
             to: 'bin/firmware',
         },

@@ -1,9 +1,9 @@
 import { ipcMain } from 'electron';
 
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { DEVICE_EVENT } from '@trezor/connect';
 import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy';
 
-import type { Module } from './index';
+import { mainThreadEmitter, type Module } from './index';
 
 export const SERVICE_NAME = '@trezor/connect';
 
@@ -51,6 +51,10 @@ export const init: Module = ({ store }) => {
     const onLoad = () => {
         // reset previous instance, possible left over after renderer refresh (F5)
         TrezorConnect.dispose();
+
+        TrezorConnect.on(DEVICE_EVENT, event => {
+            mainThreadEmitter.emit('module/trezor-connect/device-event', event);
+        });
     };
 
     const onQuit = () => {
