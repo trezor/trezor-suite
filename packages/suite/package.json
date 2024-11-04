@@ -22,7 +22,7 @@
         "@everstake/wallet-sdk": "^0.3.66",
         "@floating-ui/react": "^0.26.9",
         "@formatjs/intl": "2.10.0",
-        "@hookform/resolvers": "3.9.0",
+        "@hookform/resolvers": "3.9.1",
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "1.9.5",
         "@sentry/core": "^7.100.1",
