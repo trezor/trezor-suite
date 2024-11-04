@@ -7,6 +7,7 @@ export const mapModalSizeToWidth = (size: NewModalSize) => {
         small: 600,
         medium: 680,
         large: 760,
+        huge: 960,
     };
 
     return widthMap[size];
