@@ -7,13 +7,13 @@ import { checkFileExists } from '@trezor/node-utils';
 
 import { app, ipcMain } from '../typed-electron';
 
-import type { Module } from './index';
+import type { ModuleInit } from './index';
 
 const FILE_NAME = '51-trezor.rules';
 
 export const SERVICE_NAME = 'udev';
 
-export const init: Module = () => {
+export const init: ModuleInit = () => {
     ipcMain.handle('udev/install', async ipcEvent => {
         validateIpcMessage(ipcEvent);
 

@@ -5,11 +5,11 @@ import { captureMessage } from '@sentry/electron';
 
 import { allowedDomains } from '../config';
 
-import type { Module } from './index';
+import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = 'request-filter';
 
-export const init: Module = ({ interceptor }) => {
+export const init: ModuleInit = ({ interceptor }) => {
     const { logger } = global;
 
     const resourceTypeFilter = ['xhr']; // What resource types we want to filter

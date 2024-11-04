@@ -9,7 +9,7 @@ import { validateIpcMessage } from '@trezor/ipc-proxy';
 
 import { app, ipcMain } from '../typed-electron';
 
-import type { Module } from './index';
+import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = 'auto-start';
 
@@ -60,7 +60,7 @@ const linuxAutoStart = (enabled: boolean) => {
     }
 };
 
-export const init: Module = () => {
+export const init: ModuleInit = () => {
     const { logger } = global;
 
     ipcMain.on('app/auto-start', (_, enabled: boolean) => {

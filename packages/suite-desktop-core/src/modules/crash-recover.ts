@@ -2,7 +2,7 @@ import { app, dialog } from 'electron';
 
 import { restartApp } from '../libs/app-utils';
 
-import type { Module } from './index';
+import type { ModuleInit } from './index';
 
 // Reasons for prompting a restart
 const unexpectedReasons = [
@@ -13,7 +13,7 @@ const unexpectedReasons = [
 
 export const SERVICE_NAME = 'crash-recover';
 
-export const init: Module = ({ mainWindowProxy }) => {
+export const init: ModuleInit = ({ mainWindowProxy }) => {
     // Check if the renderer process got unexpectedly terminated
     mainWindowProxy.on('init', mainWindow => {
         mainWindow.webContents.on('render-process-gone', (_, { reason }) => {

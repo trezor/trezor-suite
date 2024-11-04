@@ -3,11 +3,11 @@
  */
 import { app, ipcMain } from '../typed-electron';
 
-import type { Module } from './index';
+import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = 'window-control';
 
-export const init: Module = ({ mainWindowProxy }) => {
+export const init: ModuleInit = ({ mainWindowProxy }) => {
     const { logger } = global;
 
     mainWindowProxy.on('init', mainWindow => {

@@ -1,10 +1,10 @@
 import { ipcMain } from '../typed-electron';
 
-import type { Module } from './index';
+import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = 'store';
 
-export const init: Module = ({ store }) => {
+export const init: ModuleInit = ({ store }) => {
     const { logger } = global;
 
     ipcMain.on('store/clear', () => {

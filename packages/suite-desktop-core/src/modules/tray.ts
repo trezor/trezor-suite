@@ -9,11 +9,11 @@ import { Status } from '@trezor/suite-desktop-api/src/messages';
 
 import { app } from '../typed-electron';
 
-import { mainThreadEmitter, type Module } from './index';
+import { mainThreadEmitter, ModuleInitBackground } from './index';
 
 export const SERVICE_NAME = 'tray';
 
-export const init: Module = () => {
+export const initBackground: ModuleInitBackground = () => {
     const { logger } = global;
 
     const state = {

@@ -15,7 +15,7 @@ import { app, ipcMain } from '../typed-electron';
 import { b2t } from '../libs/utils';
 import { verifySignature } from '../libs/update-checker';
 
-import type { Module } from './index';
+import type { ModuleInit } from './index';
 
 const defaultFeedURL = {
     // This should correspond with the value in electron-builder-config.js file.
@@ -31,7 +31,7 @@ const updaterURL = app.commandLine.getSwitchValue('updater-url');
 
 export const SERVICE_NAME = 'auto-updater';
 
-export const init: Module = ({ mainWindowProxy, store }) => {
+export const init: ModuleInit = ({ mainWindowProxy, store }) => {
     const { logger } = global;
     if (!isFeatureFlagEnabled('DESKTOP_AUTO_UPDATER') && !enableUpdater) {
         logger.info(SERVICE_NAME, 'Disabled via feature flag');

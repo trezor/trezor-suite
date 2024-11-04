@@ -132,12 +132,7 @@ const loadBridge = async (store: Dependencies['store']) => {
     }
 };
 
-type BridgeModule = ({ store }: Pick<Dependencies, 'store'>) => {
-    onLoad: () => void;
-    onQuit: () => Promise<void>;
-};
-
-export const initBackground: BridgeModule = ({ store }) => {
+export const initBackground = ({ store }: Pick<Dependencies, 'store'>) => {
     let loaded = false;
 
     const onLoad = () => {

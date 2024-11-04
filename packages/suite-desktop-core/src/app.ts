@@ -16,9 +16,8 @@ import { getBuildInfo, getComputerInfo } from './libs/info';
 import { restartApp, processStatePatch } from './libs/app-utils';
 import { clearAppCache, initUserData } from './libs/user-data';
 import { initSentry } from './libs/sentry';
-import { initModules, mainThreadEmitter } from './modules';
+import { initModules, initBackgroundModules, mainThreadEmitter } from './modules';
 import { init as initTorModule } from './modules/tor';
-import { initBackground as initBridgeModule, init as initBridgeUi } from './modules/bridge';
 import { createInterceptor } from './libs/request-interceptor';
 import { hangDetect } from './hang-detect';
 import { Logger } from './libs/logger';
@@ -133,8 +132,14 @@ const init = async () => {
     await app.whenReady();
 
     // Load bridge module first, it is required in both UI and daemon mode
-    const { onLoad: loadBridgeModule, onQuit: quitBridgeModule } = initBridgeModule({ store });
-    await loadBridgeModule();
+    const interceptor = createInterceptor();
+    const { loadModules: loadBackgroundModules, quitModules: quitBackgroundModules } =
+        initBackgroundModules({
+            store,
+            interceptor,
+            mainThreadEmitter,
+        });
+    await loadBackgroundModules(undefined);
 
     // Daemon mode with no UI
     const { wasOpenedAtLogin } = app.getLoginItemSettings();
@@ -168,15 +173,17 @@ const init = async () => {
         mainThreadEmitter.off('app/show', handleFullStart);
     }
 
-    await initUi({ store, quitBridgeModule });
+    await initUi({ store, interceptor, quitBackgroundModules });
 };
 
 const initUi = async ({
     store,
-    quitBridgeModule,
+    interceptor,
+    quitBackgroundModules,
 }: {
     store: Store;
-    quitBridgeModule: () => Promise<void>;
+    interceptor: RequestInterceptor;
+    quitBackgroundModules: () => Promise<any>;
 }) => {
     const buildInfo = getBuildInfo();
     logger.info('build', buildInfo);
@@ -190,15 +197,7 @@ const initUi = async ({
     const mainWindowProxy = new MainWindowProxy();
 
     // init modules
-    const interceptor = createInterceptor();
     const { loadModules, quitModules } = initModules({
-        mainWindowProxy,
-        store,
-        interceptor,
-        mainThreadEmitter,
-    });
-    // TODO: each module probably should have 2 exports - one to be initiated in the main layer and one to be initiated in UI layer?
-    initBridgeUi({
         mainWindowProxy,
         store,
         interceptor,
@@ -263,8 +262,9 @@ const initUi = async ({
     });
 
     let readyToQuit = false;
+    let stoppingDaemon = false;
     mainThreadEmitter.on('app/fully-quit', () => {
-        daemon = false;
+        stoppingDaemon = true;
     });
     app.on('before-quit', async event => {
         if (readyToQuit) return;
@@ -275,6 +275,7 @@ const initUi = async ({
         const autoStartCurrentlyEnabled = isAutoStartEnabled();
         logger.info('main', `Before quit, window exists: ${windowExists}`);
         if (
+            !stoppingDaemon &&
             autoStartCurrentlyEnabled &&
             (!isMacOs() || windowExists) // On Mac the window closing and app quitting are different
         ) {
@@ -292,7 +293,7 @@ const initUi = async ({
 
         await Promise.race([
             // await quitting all registered modules
-            Promise.allSettled([quitModules(), quitTorModule(), quitBridgeModule()]),
+            Promise.allSettled([quitModules(), quitTorModule(), quitBackgroundModules()]),
             // or timeout after 5s
             createTimeoutPromise(5000),
         ]);

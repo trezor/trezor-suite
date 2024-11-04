@@ -5,11 +5,11 @@ import { app } from 'electron';
 
 import { isValidProtocol } from '../libs/protocol';
 
-import type { Module } from './index';
+import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = 'custom-protocols';
 
-export const init: Module = ({ mainWindowProxy }) => {
+export const init: ModuleInit = ({ mainWindowProxy }) => {
     const { logger } = global;
 
     const protocols = process.env.PROTOCOLS as unknown as string[];

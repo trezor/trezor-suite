@@ -11,11 +11,11 @@ import { createInterceptor, InterceptedEvent } from '@trezor/request-manager';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { TorStatus } from '@trezor/suite-desktop-api';
 
-import type { Module } from './index';
+import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = 'request-interceptor';
 
-export const init: Module = ({ mainWindowProxy, store, mainThreadEmitter }) => {
+export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) => {
     const { logger } = global;
 
     const requestInterceptorEventHandler = (event: InterceptedEvent) => {

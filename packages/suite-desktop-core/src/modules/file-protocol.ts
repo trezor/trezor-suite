@@ -6,11 +6,11 @@ import { session } from 'electron';
 
 import { FILE_PROTOCOL, APP_SRC } from '../libs/constants';
 
-import type { Module } from './index';
+import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = 'file-protocol';
 
-export const init: Module = ({ mainWindowProxy }) => {
+export const init: ModuleInit = ({ mainWindowProxy }) => {
     // Point to the right directory for file protocol requests
     session.defaultSession.protocol.interceptFileProtocol(FILE_PROTOCOL, (request, callback) => {
         let url = request.url.substring(FILE_PROTOCOL.length + 1);

@@ -6,11 +6,11 @@ import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { app, ipcMain } from '../typed-electron';
 import { createHttpReceiver } from '../libs/http-receiver';
 
-import type { Module } from './index';
+import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = 'http-receiver';
 
-export const init: Module = ({ mainWindowProxy }) => {
+export const init: ModuleInit = ({ mainWindowProxy }) => {
     const { logger } = global;
     let httpReceiver: ReturnType<typeof createHttpReceiver> | null = null;
 

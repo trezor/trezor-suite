@@ -2,11 +2,11 @@ import electronLocalshortcut from 'electron-localshortcut';
 
 import { restartApp } from '../libs/app-utils';
 
-import type { Module } from './index';
+import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = 'shortcuts';
 
-export const init: Module = ({ mainWindowProxy }) => {
+export const init: ModuleInit = ({ mainWindowProxy }) => {
     const { logger } = global;
 
     mainWindowProxy.on('init', mainWindow => {
