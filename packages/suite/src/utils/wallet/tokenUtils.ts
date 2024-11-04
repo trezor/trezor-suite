@@ -11,7 +11,7 @@ import {
     isTokenDefinitionKnown,
 } from '@suite-common/token-definitions';
 
-interface TokensWithRates extends TokenInfo {
+export interface TokensWithRates extends TokenInfo {
     fiatValue: BigNumber;
     fiatRate?: Rate;
 }
