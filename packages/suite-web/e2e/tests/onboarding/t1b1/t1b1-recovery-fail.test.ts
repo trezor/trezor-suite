@@ -10,7 +10,7 @@ describe('Onboarding - recover wallet T1B1', () => {
     beforeEach(() => {
         cy.task('startBridge');
         cy.task('startEmu', { model: 'T1B1', version: '1-latest', wipe: true });
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
         cy.prefixedVisit('/');
         cy.disableFirmwareHashCheck();
 

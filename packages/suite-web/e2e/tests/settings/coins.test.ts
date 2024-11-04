@@ -64,7 +64,7 @@ describe('Coin Settings', () => {
         });
 
         // // this helps with unstable click to btc
-        cy.contains('span', 'Got it!').should('be.visible').click();
+        cy.contains('span', 'Got it!').should('be.visible').click({ scrollBehavior: 'bottom' });
         cy.wait(500);
         // disable Bitcoin
         cy.getTestElement('@settings/wallet/network/btc').click();

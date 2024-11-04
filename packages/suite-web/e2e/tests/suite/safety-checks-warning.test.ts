@@ -11,7 +11,7 @@ import { onNavBar } from '../../support/pageObjects/topBarObject';
 //         cy.task('startEmu', {  wipe: true });
 //         cy.task('setupEmu');
 //         cy.task('startBridge');
-//         cy.viewport(1440, 2560).resetDb();
+//         cy.viewport('macbook-13').resetDb();
 //         cy.prefixedVisit('/settings/device/');
 //         cy.passThroughInitialRun();
 //         // TODO: set safety_checks to `PromptAlways`
@@ -28,7 +28,7 @@ describe('safety_checks Warning For PromptTemporarily', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.task('startBridge');
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
         // Start in the device settings to easily open safety_checks setting modal.
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();

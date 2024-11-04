@@ -6,7 +6,7 @@
 
 describe('Ubuntu with outdated firefox ', () => {
     before(() => {
-        cy.viewport(1440, 2560);
+        cy.viewport('macbook-13');
         cy.resetDb();
     });
 

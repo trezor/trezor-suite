@@ -9,7 +9,7 @@ import { onNavBar } from '../../../support/pageObjects/topBarObject';
 describe('Onboarding - recover wallet T2T1', () => {
     beforeEach(() => {
         cy.task('startBridge');
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
         cy.prefixedVisit('/');
         // note: this is an example of test that can not be parametrized to be both integration (isolated) test and e2e test.
         // the problem is that it always needs to run the newest possible emulator. If this was pinned to use emulator which is currently

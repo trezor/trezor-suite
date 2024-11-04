@@ -8,7 +8,7 @@ const testedVersions = [
 
 describe('Passphrase cancel', () => {
     beforeEach(() => {
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
     });
 
     testedVersions.forEach(version => {

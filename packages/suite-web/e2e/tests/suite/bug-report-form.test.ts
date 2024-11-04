@@ -9,7 +9,7 @@ describe('Stories of bug report forms', () => {
         cy.task('setupEmu', { mnemonic: 'mnemonic_all' });
 
         cy.task('startBridge');
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
         cy.prefixedVisit('/');
     });
 

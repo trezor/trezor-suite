@@ -8,7 +8,7 @@ const providers = ['google'] as const;
 
 describe('Metadata - Output labeling', () => {
     beforeEach(() => {
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
         cy.task('rmDir', { dir: Cypress.config('downloadsFolder'), recursive: true, force: true });
     });
 

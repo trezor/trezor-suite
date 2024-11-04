@@ -23,7 +23,7 @@ describe(
     () => {
         beforeEach(() => {
             // use portrait mode monitor to prevent scrolling in settings
-            cy.viewport(1440, 2560).resetDb();
+            cy.viewport('macbook-13').resetDb();
         });
 
         providers.forEach(f => {

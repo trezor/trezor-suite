@@ -2,8 +2,8 @@
 // @retry=2
 
 import { onNavBar } from '../../support/pageObjects/topBarObject';
-import { onSettingsMenu } from '../../support/pageObjects/settingsMenuObject';
-import { onSettingsDevicePage } from '../../support/pageObjects/settingsDeviceObject';
+import { onSettingsMenu } from '../../support/pageObjects/settings/settingsMenuObject';
+import { onSettingsDevicePage } from '../../support/pageObjects/settings/settingsDeviceObject';
 import { onMultiShareBackupModal } from '../../support/pageObjects/multiShareBackupObject';
 
 const mnemonic =

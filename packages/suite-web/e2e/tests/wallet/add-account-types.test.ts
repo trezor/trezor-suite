@@ -2,7 +2,7 @@
 // @retry=2
 
 import { onAccountsPage } from '../../support/pageObjects/accountsObject';
-import { onSettingsCryptoPage } from '../../support/pageObjects/settingsCryptoObject';
+import { onSettingsCryptoPage } from '../../support/pageObjects/settings/settingsCryptoObject';
 import { onNavBar } from '../../support/pageObjects/topBarObject';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { EventType } from '@trezor/suite-analytics';
@@ -34,7 +34,7 @@ describe('Account types suite', () => {
         });
         cy.task('startBridge');
 
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
         cy.prefixedVisit('/');
 
         cy.passThroughInitialRun();
