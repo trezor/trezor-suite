@@ -17,7 +17,6 @@ minimaldata
 n64
 @types/wif
 wif
-@types/uuid
 tiny-secp256k1
 uuid
 
