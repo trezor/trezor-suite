@@ -92,7 +92,9 @@ const waitForReconnectedDevice = async (
         await createTimeoutPromise(2000);
         try {
             reconnectedDevice = deviceList.getOnlyDevice();
-        } catch {}
+        } catch {
+            /* empty */
+        }
         i++;
         log.debug('onCallFirmwareUpdate', 'waiting for device to reconnect', i);
     } while (

@@ -133,7 +133,9 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
         let parsedParams;
         try {
             parsedParams = JSON.parse(responseParam);
-        } catch {}
+        } catch {
+            /* empty */
+        }
 
         if (!parsedParams) {
             this.messagePromises[id].resolve({
