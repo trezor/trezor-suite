@@ -37,8 +37,6 @@ export const TokenInfoCard = ({
     return (
         <AccountImportOverviewCard
             coinName={name}
-            symbol={networkSymbol}
-            shouldDisplayDeleteIcon={false}
             cryptoAmount={
                 <TokenAmountFormatter
                     value={balance}

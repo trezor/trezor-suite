@@ -4,7 +4,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { Button, HeaderedCard, TextDivider, VStack } from '@suite-native/atoms';
+import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import {
@@ -164,7 +164,6 @@ export const XpubScanScreen = ({
     }, [handleXpubResult, route.params]);
 
     const handleOpenHint = () => setIsHintSheetVisible(true);
-    const handleGoBack = () => navigation.goBack();
 
     const handleToggleScanner = () => {
         setIsScannerVisible(prevState => !prevState);
@@ -177,19 +176,16 @@ export const XpubScanScreen = ({
 
     return (
         <Screen
-            screenHeader={<AccountImportSubHeader />}
+            screenHeader={<AccountImportSubHeader closeActionType="back" />}
             footer={<XpubHint networkType={networkType} handleOpen={handleOpenHint} />}
             extraKeyboardAvoidingViewHeight={EXTRA_KEYBOARD_AVOIDING_VIEW_HEIGHT}
+            customHorizontalPadding="sp16"
+            customVerticalPadding="sp16"
         >
-            <HeaderedCard
-                title="Coin to sync"
-                buttonTitle="Change"
-                buttonIcon="discover"
-                onButtonPress={handleGoBack}
-            >
+            <Card>
                 <SelectableNetworkItem symbol={networkSymbol} />
-            </HeaderedCard>
-            <VStack spacing="sp16" marginHorizontal="sp16">
+            </Card>
+            <VStack spacing="sp16">
                 <View style={applyStyle(cameraStyle)}>
                     <XpubImportSection
                         onRequestCamera={handleToggleScanner}

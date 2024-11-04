@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { BackHandler } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectFiatCurrencyCode } from '@suite-native/settings';
@@ -69,6 +70,15 @@ export const AccountImportLoadingScreen = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [error, showImportError],
     );
+
+    useEffect(() => {
+        // prevent dismissing screen via HW
+        const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+            return true;
+        });
+
+        return () => subscription.remove();
+    }, []);
 
     useEffect(() => {
         fetchAccountInfo();

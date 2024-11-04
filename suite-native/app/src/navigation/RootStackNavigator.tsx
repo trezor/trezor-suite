@@ -59,6 +59,7 @@ export const RootStackNavigator = () => {
             <RootStack.Screen
                 name={RootStackRoutes.AccountsImport}
                 component={AccountsImportStackNavigator}
+                options={{ animation: 'slide_from_bottom' }}
             />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.AccountSettings }}
@@ -88,12 +89,11 @@ export const RootStackNavigator = () => {
                 name={RootStackRoutes.AddCoinAccountStack}
                 component={AddCoinAccountStackNavigator}
             />
-            <RootStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
-                <RootStack.Screen
-                    name={RootStackRoutes.CoinEnablingInit}
-                    component={CoinEnablingInitScreen}
-                />
-            </RootStack.Group>
+            <RootStack.Screen
+                name={RootStackRoutes.CoinEnablingInit}
+                component={CoinEnablingInitScreen}
+                options={{ animation: 'slide_from_bottom' }}
+            />
             <RootStack.Screen name={RootStackRoutes.ReceiveModal} component={ReceiveModalScreen} />
             <RootStack.Screen
                 name={RootStackRoutes.AuthorizeDeviceStack}
@@ -103,12 +103,11 @@ export const RootStackNavigator = () => {
                     animation: 'slide_from_bottom',
                 }}
             />
-            <RootStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
-                <RootStack.Screen
-                    name={RootStackRoutes.DeviceSettingsStack}
-                    component={DeviceSettingsStackNavigator}
-                />
-            </RootStack.Group>
+            <RootStack.Screen
+                name={RootStackRoutes.DeviceSettingsStack}
+                component={DeviceSettingsStackNavigator}
+                options={{ animation: 'slide_from_bottom' }}
+            />
             <RootStack.Screen name={RootStackRoutes.SendStack} component={SendStackNavigator} />
             <RootStack.Screen
                 name={RootStackRoutes.ConnectPopup}

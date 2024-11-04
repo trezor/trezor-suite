@@ -41,7 +41,7 @@ export const HomeScreen = () => {
             customHorizontalPadding={0}
         >
             {isEmptyHomeRendererShown ? (
-                <Box marginHorizontal="sp8">
+                <Box marginHorizontal="sp16" marginBottom="sp8">
                     <EmptyHomeRenderer />
                 </Box>
             ) : (

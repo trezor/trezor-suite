@@ -1,61 +1,26 @@
-import { useSelector } from 'react-redux';
-
-import { useNavigation } from '@react-navigation/core';
-
-import { IconButton, Text, VStack } from '@suite-native/atoms';
+import { useTranslate } from '@suite-native/intl';
 import {
-    AccountsImportStackParamList,
-    AccountsImportStackRoutes,
-    AppTabsRoutes,
-    HomeStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
+    CloseActionType,
     ScreenSubHeader,
-    StackToTabCompositeProps,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { Translation } from '@suite-native/intl';
-import { selectIsDeviceAccountless } from '@suite-common/wallet-core';
 
-type NavigationProp = StackToTabCompositeProps<
-    AccountsImportStackParamList,
-    AccountsImportStackRoutes.AccountImportSummary,
-    RootStackParamList
->;
+type AccountImportSubHeaderProps = {
+    closeActionType?: CloseActionType;
+};
 
-export const AccountImportSubHeader = () => {
-    const navigation = useNavigation<NavigationProp>();
-    const isDeviceAccountless = useSelector(selectIsDeviceAccountless);
-
-    const handleCloseOnboarding = () => {
-        navigation.navigate(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.HomeStack,
-            params: {
-                screen: HomeStackRoutes.Home,
-            },
-        });
-    };
+export const AccountImportSubHeader = ({
+    closeActionType = 'close',
+}: AccountImportSubHeaderProps) => {
+    const { translate } = useTranslate();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
 
     return (
         <ScreenSubHeader
-            leftIcon={
-                !isDeviceAccountless ? (
-                    <IconButton
-                        iconName="x"
-                        colorScheme="tertiaryElevation0"
-                        onPress={handleCloseOnboarding}
-                        accessibilityRole="button"
-                        accessibilityLabel="close"
-                        size="medium"
-                    />
-                ) : null
-            }
-            content={
-                <VStack alignItems="center" spacing="sp8">
-                    <Text variant="titleSmall" adjustsFontSizeToFit numberOfLines={1}>
-                        <Translation id="moduleAccountImport.title" />
-                    </Text>
-                </VStack>
-            }
+            customHorizontalPadding="sp16"
+            closeActionType={closeActionType}
+            closeAction={closeActionType === 'close' ? navigateToInitialScreen : undefined}
+            content={translate('moduleAccountImport.title')}
         />
     );
 };
