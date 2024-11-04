@@ -31,7 +31,7 @@ export const useConnectParseParams = (url: ParsedURL): UseConnectParseParamsType
             typeof queryParams?.params !== 'string' ||
             typeof queryParams?.method !== 'string' ||
             typeof queryParams?.callback !== 'string' ||
-            !TrezorConnect.hasOwnProperty(queryParams?.method)
+            !Object.prototype.hasOwnProperty.call(TrezorConnect, queryParams?.method)
         ) {
             return { parseParamsError: TypedError('Method_InvalidParameter') };
         }

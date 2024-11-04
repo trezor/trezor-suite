@@ -47,14 +47,17 @@ const combineFiatRates = (fiatRates: RatesByTimestamps, accountRates: RatesByTim
     for (const fiatRate in accountRates) {
         const fiatRateKey = fiatRate as FiatRateKey;
 
-        if (accountRates.hasOwnProperty(fiatRateKey)) {
+        if (Object.prototype.hasOwnProperty.call(accountRates, fiatRateKey)) {
             if (!fiatRates[fiatRateKey]) {
                 fiatRates[fiatRateKey] = accountRates[fiatRateKey];
             } else {
                 for (const timestampRate in accountRates[fiatRateKey]) {
                     const timestamp = timestampRate as unknown as Timestamp;
                     if (
-                        accountRates[fiatRateKey].hasOwnProperty(timestamp) &&
+                        Object.prototype.hasOwnProperty.call(
+                            accountRates[fiatRateKey],
+                            timestamp,
+                        ) &&
                         !fiatRates[fiatRateKey][timestamp]
                     ) {
                         fiatRates[fiatRateKey][timestamp] = accountRates[fiatRateKey][timestamp];
@@ -70,7 +73,7 @@ export const buildHistoricRatesFromStorage = (storageHistoricRates: RatesByTimes
 
     storageHistoricRates.forEach(fiatRates => {
         for (const fiatRate in fiatRates) {
-            if (fiatRates.hasOwnProperty(fiatRate)) {
+            if (Object.prototype.hasOwnProperty.call(fiatRates, fiatRate)) {
                 const fiatRateKey = fiatRate as FiatRateKey;
 
                 if (!historicFiatRates[fiatRateKey]) {

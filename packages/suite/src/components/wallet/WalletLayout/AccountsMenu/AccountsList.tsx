@@ -49,7 +49,7 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
         searchString || coinFilter
             ? list.filter(account => {
                   const { key, accountType, symbol, index } = account;
-                  const accountLabel = accountLabels.hasOwnProperty(key)
+                  const accountLabel = Object.prototype.hasOwnProperty.call(accountLabels, key)
                       ? accountLabels[key]
                       : getDefaultAccountLabel({ accountType, symbol, index });
 

@@ -30,7 +30,12 @@ export const isChanged = (prev?: any, current?: any, filter?: { [k: string]: str
         for (let i = 0; i < currentKeys.length; i++) {
             const key = currentKeys[i];
 
-            if (filter && filter.hasOwnProperty(key) && prev[key] && current[key]) {
+            if (
+                filter &&
+                Object.prototype.hasOwnProperty.call(filter, key) &&
+                prev[key] &&
+                current[key]
+            ) {
                 const prevFiltered = {};
                 const currentFiltered = {};
                 for (let i2 = 0; i2 < filter[key].length; i2++) {

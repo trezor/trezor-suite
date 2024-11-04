@@ -51,7 +51,7 @@ export const getNetworkFeatures = (symbol: NetworkSymbol): NetworkFeature[] =>
 export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol].coingeckoId;
 
 export const isNetworkSymbol = (symbol: NetworkSymbol | string): symbol is NetworkSymbol =>
-    networks.hasOwnProperty(symbol);
+    Object.prototype.hasOwnProperty.call(networks, symbol);
 
 /**
  * Get network object by symbol as a generic `Network` type.
@@ -67,7 +67,8 @@ export const isAccountOfNetwork = (
     network: Network,
     accountType: string,
 ): accountType is AccountType =>
-    network.accountTypes.hasOwnProperty(accountType) || accountType === 'normal';
+    Object.prototype.hasOwnProperty.call(network.accountTypes, accountType) ||
+    accountType === 'normal';
 
 export const getNetworkByCoingeckoId = (coingeckoId: string) =>
     networksCollection.find(n => n.coingeckoId === coingeckoId);
