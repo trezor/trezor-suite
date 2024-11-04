@@ -4,6 +4,7 @@ import { isNotUndefined, TypedEmitter } from '@trezor/utils';
 import { InterceptedEvent } from '@trezor/request-manager';
 import { isDevEnv } from '@suite-common/suite-utils';
 import type { HandshakeClient, TorStatus } from '@trezor/suite-desktop-api';
+import type { DeviceEvent } from '@trezor/connect';
 
 import type { Store } from '../libs/store';
 import * as eventLogging from './event-logging';
@@ -31,6 +32,7 @@ import * as coinjoin from './coinjoin';
 import * as csp from './csp';
 import * as fileProtocol from './file-protocol';
 import * as autoStart from './auto-start';
+import * as tray from './tray';
 import { MainWindowProxy } from '../libs/main-window-proxy';
 
 // General modules (both dev & prod)
@@ -60,6 +62,7 @@ const MODULES = [
     requestInterceptor,
     coinjoin,
     autoStart,
+    tray,
     // Modules used only in dev/prod mode
     ...(isDevEnv ? [] : [csp, fileProtocol]),
 ];
@@ -69,6 +72,14 @@ interface MainThreadMessages {
     'module/request-interceptor': InterceptedEvent;
     'module/reset-tor-circuits': Extract<InterceptedEvent, { type: 'CIRCUIT_MISBEHAVING' }>;
     'module/tor-status-update': TorStatus;
+    'module/trezor-connect/device-event': DeviceEvent;
+    'module/bridge/toggle': void;
+    'module/bridge/status': {
+        service: boolean;
+        process: boolean;
+    };
+    'app/fully-quit': void;
+    'app/show': void;
 }
 export const mainThreadEmitter = new TypedEmitter<MainThreadMessages>();
 export type MainThreadEmitter = typeof mainThreadEmitter;

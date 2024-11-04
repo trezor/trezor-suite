@@ -18,7 +18,7 @@ import { clearAppCache, initUserData } from './libs/user-data';
 import { initSentry } from './libs/sentry';
 import { initModules, mainThreadEmitter } from './modules';
 import { init as initTorModule } from './modules/tor';
-import { init as initBridgeModule, initUi as initBridgeUi } from './modules/bridge';
+import { initBackground as initBridgeModule, init as initBridgeUi } from './modules/bridge';
 import { createInterceptor } from './libs/request-interceptor';
 import { hangDetect } from './hang-detect';
 import { Logger } from './libs/logger';
@@ -160,10 +160,12 @@ const init = async () => {
         app.on('second-instance', handleFullStart);
         app.on('activate', handleFullStart);
         app.on('open-url', openURL);
+        mainThreadEmitter.on('app/show', handleFullStart);
         await waitForFullStart.promise;
         app.off('second-instance', handleFullStart);
         app.off('activate', handleFullStart);
         app.off('open-url', openURL);
+        mainThreadEmitter.off('app/show', handleFullStart);
     }
 
     await initUi({ store, quitBridgeModule });
@@ -220,6 +222,7 @@ const initUi = async ({
         mainWindow.focus();
     };
     app.on('second-instance', reactivateWindow);
+    mainThreadEmitter.on('app/show', reactivateWindow);
     // restore window after click on the macOS Dock icon
     if (process.platform === 'darwin') {
         app.on('activate', reactivateWindow);
@@ -260,6 +263,9 @@ const initUi = async ({
     });
 
     let readyToQuit = false;
+    mainThreadEmitter.on('app/fully-quit', () => {
+        daemon = false;
+    });
     app.on('before-quit', async event => {
         if (readyToQuit) return;
 
