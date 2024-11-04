@@ -15,7 +15,9 @@ export const EmptyWallet = () => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const dispatch = useDispatch();
 
-    const areAllNetworksEnabled = supportedMainnets.length === enabledNetworks.length;
+    const areAllNetworksEnabled = supportedMainnets.every(network =>
+        enabledNetworks.includes(network.symbol),
+    );
 
     return (
         <Column gap={spacings.xxs} data-testid="@dashboard/wallet-ready">
