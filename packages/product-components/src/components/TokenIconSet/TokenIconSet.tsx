@@ -52,9 +52,9 @@ export const TokenIconSet = ({ network, tokens }: TokenIconSetProps) => {
     return (
         <IconContainer $length={length}>
             {length > 3 && <TokenIconPlaceholder $elevation={elevation} />}
-            {visibleTokens.map((token, i) => (
+            {visibleTokens.map(token => (
                 <AssetLogo
-                    key={token.contract + i}
+                    key={token.contract}
                     size={20}
                     coingeckoId={coingeckoId ?? ''}
                     contractAddress={getContractAddressForNetwork(network, token.contract)}

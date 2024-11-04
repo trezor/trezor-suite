@@ -2,10 +2,7 @@ import styled, { useTheme } from 'styled-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Icon, Button, LoadingContent, Card, Row } from '@trezor/components';
-import {
-    isSupportedEthStakingNetworkSymbol,
-    selectDeviceSupportedNetworks,
-} from '@suite-common/wallet-core';
+import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { Account } from 'src/types/wallet';
@@ -14,7 +11,7 @@ import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks
 import { useAccounts } from 'src/hooks/wallet';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
+import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { AssetFiatBalance } from '@suite-common/assets';
 
@@ -25,9 +22,9 @@ import { selectEnabledNetworks, selectLocalCurrency } from 'src/reducers/wallet/
 import { AssetTable } from './AssetTable/AssetTable';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { AssetTableRowProps } from './AssetTable/AssetRow';
-import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { RatesByKey } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 
 const InfoMessage = styled.div`
     padding: ${spacingsPx.md} ${spacingsPx.xl};
@@ -128,6 +125,7 @@ export const AssetsView = () => {
                 stakingAccounts: accounts.filter(account =>
                     isSupportedEthStakingNetworkSymbol(account.symbol),
                 ),
+                accounts,
             };
         })
         .filter(data => data !== null) as AssetTableRowPropsWithoutFiatBalances[];

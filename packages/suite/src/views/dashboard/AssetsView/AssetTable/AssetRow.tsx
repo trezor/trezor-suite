@@ -32,6 +32,7 @@ import { AssetStakingRow } from './AssetStakingRow';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
+import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
 
 export interface AssetTableRowProps {
     network: Network;
@@ -41,6 +42,7 @@ export interface AssetTableRowProps {
     assetTokens: TokenInfo[];
     isStakeNetwork?: boolean;
     assetsFiatBalances: AssetFiatBalance[];
+    accounts: Account[];
 }
 
 export const AssetRow = memo(
@@ -53,6 +55,7 @@ export const AssetRow = memo(
         assetsFiatBalances,
         localCurrency,
         currentFiatRates,
+        accounts,
     }: AssetTableRowProps & {
         localCurrency: FiatCurrencyCode;
         currentFiatRates?: RatesByKey;
@@ -178,7 +181,9 @@ export const AssetRow = memo(
                 )}
                 {shouldRenderTokenRow && (
                     <AssetTokenRow
-                        assetTokensShownWithBalance={sortedTokens ?? []}
+                        tokenIconSetWrapper={
+                            <TokenIconSetWrapper accounts={accounts} network={network.symbol} />
+                        }
                         network={network}
                         tokensDisplayFiatBalance={tokensFiatBalance.toFixed()}
                     />
