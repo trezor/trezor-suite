@@ -47,9 +47,7 @@ export const CoinmarketFormInputAccount = <
         | CoinmarketAccountOptionsGroupOptionProps
         | undefined;
     const fiatValues = useCoinmarketFiatValues({
-        accountBalance: selectedOption?.balance,
-        cryptoSymbol: selectedOption?.value,
-        tokenAddress: selectedOption?.contractAddress,
+        sendCryptoSelect: selectedOption,
         fiatCurrency: getValues().outputs?.[0]?.currency?.value as FiatCurrencyCode,
     });
 
@@ -89,6 +87,7 @@ export const CoinmarketFormInputAccount = <
                             <CoinmarketFormInputAccountOption
                                 option={option}
                                 optionGroups={optionGroups}
+                                decimals={option.decimals}
                                 isSelected={context === 'value'}
                             />
                         )}
@@ -105,6 +104,7 @@ export const CoinmarketFormInputAccount = <
                         networkSymbol={fiatValues.networkSymbol}
                         tokenAddress={fiatValues.tokenAddress}
                         cryptoSymbolLabel={selectedOption?.label}
+                        sendCryptoSelect={selectedOption}
                     />
                 </CoinmarketBalanceWrapper>
             )}

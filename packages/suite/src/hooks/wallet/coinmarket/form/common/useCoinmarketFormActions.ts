@@ -4,7 +4,6 @@ import {
     amountToSmallestUnit,
     formatAmount,
     fromFiatCurrency,
-    isEthereumAccountSymbol,
     isZero,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
@@ -37,7 +36,7 @@ import {
 import {
     coinmarketGetSortedAccounts,
     cryptoIdToNetworkSymbol,
-    getNetworkDecimals,
+    getCoinmarketNetworkDecimals,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { coinmarketGetExchangeReceiveCryptoId } from 'src/utils/wallet/coinmarket/exchangeUtils';
 
@@ -82,12 +81,12 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
         ? isZero(tokenData.balance || '0')
         : isZero(account.formattedBalance);
     const coinmarketFiatValues = useCoinmarketFiatValues({
-        accountBalance: account.formattedBalance,
-        cryptoSymbol: sendCryptoSelect?.value,
-        tokenAddress,
+        sendCryptoSelect,
         fiatCurrency: getValues().outputs?.[0]?.currency?.value as FiatCurrencyCode,
     });
-    const networkDecimals = getNetworkDecimals(coinmarketFiatValues?.networkDecimals);
+    const networkDecimals = getCoinmarketNetworkDecimals({
+        sendCryptoSelect,
+    });
 
     // on manual change of crypto amount, set fiat amount
     const onFiatCurrencyChange = async (value: FiatCurrencyCode) => {
@@ -199,12 +198,11 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
         setValue(FORM_OUTPUT_AMOUNT, '');
         setValue(FORM_CRYPTO_TOKEN, selected?.contractAddress ?? null);
 
-        if (networkSymbol && isEthereumAccountSymbol(networkSymbol)) {
+        if (account.networkType === 'ethereum') {
             // set token address for ERC20 transaction to estimate the fees more precisely
             setValue(FORM_OUTPUT_ADDRESS, selected?.contractAddress ?? '');
         }
-
-        if (networkSymbol === 'sol') {
+        if (account.networkType === 'solana' && !selected?.contractAddress) {
             setValue(FORM_OUTPUT_ADDRESS, selected?.descriptor ?? '');
         }
 

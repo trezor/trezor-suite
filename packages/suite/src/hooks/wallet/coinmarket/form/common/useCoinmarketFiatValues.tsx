@@ -2,21 +2,20 @@ import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectFiatRatesByFiatRateKey, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { FiatRatesResult, Rate, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { amountToSmallestUnit, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
-import { CryptoId, FiatCurrencyCode } from 'invity-api';
+import { FiatCurrencyCode } from 'invity-api';
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { CoinmarketAccountOptionsGroupOptionProps } from 'src/types/coinmarket/coinmarket';
 import {
     cryptoIdToNetworkSymbol,
     mapTestnetSymbol,
-    getNetworkDecimals,
+    getCoinmarketNetworkDecimals,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 interface CoinmarketBalanceProps {
-    cryptoSymbol: CryptoId | undefined;
-    tokenAddress?: string | null;
-    accountBalance?: string;
+    sendCryptoSelect?: CoinmarketAccountOptionsGroupOptionProps;
     fiatCurrency?: FiatCurrencyCode;
 }
 
@@ -32,17 +31,17 @@ interface CoinmarketBalanceReturnProps {
 }
 
 export const useCoinmarketFiatValues = ({
-    accountBalance,
-    cryptoSymbol,
-    tokenAddress,
+    sendCryptoSelect,
     fiatCurrency,
 }: CoinmarketBalanceProps): CoinmarketBalanceReturnProps | null => {
     const dispatch = useDispatch();
     const defaultCryptoSymbol = 'btc';
-    const networkSymbol = cryptoSymbol
-        ? cryptoIdToNetworkSymbol(cryptoSymbol) ?? defaultCryptoSymbol
+    const networkSymbol = sendCryptoSelect
+        ? cryptoIdToNetworkSymbol(sendCryptoSelect.value) ?? defaultCryptoSymbol
         : defaultCryptoSymbol;
-    const tokenAddressTyped = tokenAddress as TokenAddress | undefined;
+    const tokenAddressTyped = (sendCryptoSelect?.contractAddress ?? undefined) as
+        | TokenAddress
+        | undefined;
     const symbolForFiat = mapTestnetSymbol(networkSymbol);
     const localCurrency = useSelector(selectLocalCurrency);
     const fiatRateKey = getFiatRateKey(
@@ -51,6 +50,7 @@ export const useCoinmarketFiatValues = ({
         tokenAddressTyped,
     );
     const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
+    const balance = sendCryptoSelect?.balance;
 
     const network = networks[networkSymbol];
     const { shouldSendInSats } = useBitcoinAmountUnit(networkSymbol);
@@ -86,21 +86,22 @@ export const useCoinmarketFiatValues = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if (!accountBalance || !fiatCurrency) return null;
+    if (!balance || !fiatCurrency) return null;
 
-    const decimals = getNetworkDecimals(network?.decimals);
-    const formattedBalance = shouldSendInSats
-        ? amountToSmallestUnit(accountBalance, decimals)
-        : accountBalance;
-    const fiatValue = toFiatCurrency(accountBalance, fiatRate?.rate, 2);
+    const decimals = getCoinmarketNetworkDecimals({
+        sendCryptoSelect,
+        network,
+    });
+    const formattedBalance = shouldSendInSats ? amountToSmallestUnit(balance, decimals) : balance;
+    const fiatValue = toFiatCurrency(balance, fiatRate?.rate, 2);
 
     return {
         fiatValue,
         fiatRate,
-        accountBalance,
+        accountBalance: balance,
         formattedBalance,
         networkSymbol,
-        networkDecimals: network.decimals,
+        networkDecimals: decimals,
         tokenAddress: tokenAddressTyped,
         fiatRatesUpdater,
     };

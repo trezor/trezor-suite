@@ -20,7 +20,10 @@ import {
 } from 'src/types/coinmarket/coinmarketForm';
 import { CoinmarketFormOptionLabel } from 'src/views/wallet/coinmarket';
 import { FieldErrors } from 'react-hook-form';
-import { coinmarketGetAccountLabel } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    coinmarketGetAccountLabel,
+    getCoinmarketNetworkDecimals,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useDidUpdate } from '@trezor/react-utils';
 import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_MAX } from 'src/constants/wallet/coinmarket/form';
 import {
@@ -63,12 +66,16 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
             ? (errors as FieldErrors<CoinmarketSellExchangeFormProps>)?.outputs?.[0]?.amount
             : (errors as FieldErrors<CoinmarketBuyFormProps>).cryptoInput;
     const networkSymbol = cryptoSelect?.value && cryptoIdToCoinSymbol(cryptoSelect?.value);
+    const decimals = getCoinmarketNetworkDecimals({
+        sendCryptoSelect: cryptoSelect as CoinmarketAccountOptionsGroupOptionProps | undefined,
+        network,
+    });
 
     const cryptoInputRules = {
         validate: {
             min: validateMin(translationString),
             integer: validateInteger(translationString, { except: !shouldSendInSats }),
-            decimals: validateDecimals(translationString, { decimals: network.decimals }),
+            decimals: validateDecimals(translationString, { decimals }),
             limits: validateLimits(translationString, {
                 amountLimits,
                 areSatsUsed: !!shouldSendInSats,

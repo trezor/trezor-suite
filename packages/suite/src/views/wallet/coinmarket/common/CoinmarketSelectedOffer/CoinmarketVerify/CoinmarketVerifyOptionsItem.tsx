@@ -2,8 +2,11 @@ import { Column, Icon, Row, variables } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacingsPx } from '@trezor/theme';
 import { AccountLabeling, Translation } from 'src/components/suite';
+import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/coinmarket/form';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { CoinmarketVerifyOptionsItemProps } from 'src/types/coinmarket/coinmarketVerify';
+import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
 import styled, { useTheme } from 'styled-components';
@@ -25,6 +28,7 @@ export const CoinmarketVerifyOptionsItem = ({
     option,
     receiveNetwork,
 }: CoinmarketVerifyOptionsItemProps) => {
+    const context = useCoinmarketFormContext();
     const { cryptoIdToPlatformName, cryptoIdToCoinName } = useCoinmarketInfo();
     const theme = useTheme();
     const iconSize = 24;
@@ -54,6 +58,11 @@ export const CoinmarketVerifyOptionsItem = ({
                             balance={formattedBalance}
                             cryptoSymbolLabel={symbol.toLocaleUpperCase()}
                             networkSymbol={symbol}
+                            sendCryptoSelect={
+                                isCoinmarketExchangeContext(context)
+                                    ? context.getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT)
+                                    : undefined
+                            }
                         />
                     </Column>
                 </AccountWrapper>

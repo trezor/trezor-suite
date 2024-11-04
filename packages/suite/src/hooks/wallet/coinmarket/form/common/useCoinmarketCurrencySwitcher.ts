@@ -8,6 +8,7 @@ import {
     FORM_FIAT_INPUT,
     FORM_OUTPUT_AMOUNT,
     FORM_OUTPUT_FIAT,
+    FORM_SEND_CRYPTO_CURRENCY_SELECT,
 } from 'src/constants/wallet/coinmarket/form';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import {
@@ -17,7 +18,7 @@ import {
 import { SendContextValues } from 'src/types/wallet/sendForm';
 import {
     coinmarketGetRoundedFiatAmount,
-    getNetworkDecimals,
+    getCoinmarketNetworkDecimals,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 interface CoinmarketUseCurrencySwitcherProps<T extends CoinmarketAllFormProps> {
@@ -48,8 +49,12 @@ export const useCoinmarketCurrencySwitcher = <T extends CoinmarketAllFormProps>(
     const { setValue, getValues, control } =
         methods as unknown as UseFormReturn<CoinmarketAllFormProps>;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-    const networkDecimals = getNetworkDecimals(network?.decimals);
     const cryptoInputValue = useWatch({ control, name: inputNames.cryptoInput });
+    const sendCryptoSelect = getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT);
+    const networkDecimals = getCoinmarketNetworkDecimals({
+        sendCryptoSelect,
+        network,
+    });
 
     const toggleAmountInCrypto = () => {
         const { amountInCrypto } = getValues();

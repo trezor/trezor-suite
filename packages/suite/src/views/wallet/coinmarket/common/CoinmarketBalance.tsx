@@ -5,9 +5,10 @@ import { typography } from '@trezor/theme';
 import { FiatValue, HiddenPlaceholder, Translation } from 'src/components/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { CoinmarketAccountOptionsGroupOptionProps } from 'src/types/coinmarket/coinmarket';
 import {
     coinmarketGetAccountLabel,
-    getNetworkDecimals,
+    getCoinmarketNetworkDecimals,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import styled from 'styled-components';
 
@@ -23,6 +24,7 @@ interface CoinmarketBalanceProps {
     tokenAddress?: TokenAddress | undefined;
     showOnlyAmount?: boolean;
     amountInCrypto?: boolean;
+    sendCryptoSelect?: CoinmarketAccountOptionsGroupOptionProps;
 }
 
 export const CoinmarketBalance = ({
@@ -32,10 +34,14 @@ export const CoinmarketBalance = ({
     tokenAddress,
     showOnlyAmount,
     amountInCrypto,
+    sendCryptoSelect,
 }: CoinmarketBalanceProps) => {
     const { shouldSendInSats } = useBitcoinAmountUnit(networkSymbol);
     const balanceCurrency = coinmarketGetAccountLabel(cryptoSymbolLabel ?? '', shouldSendInSats);
-    const networkDecimals = getNetworkDecimals(networks[networkSymbol].decimals);
+    const networkDecimals = getCoinmarketNetworkDecimals({
+        sendCryptoSelect,
+        network: networks[networkSymbol],
+    });
     const stringBalance = !isNaN(Number(balance)) ? balance : '0';
     const formattedBalance =
         stringBalance && shouldSendInSats
@@ -48,7 +54,7 @@ export const CoinmarketBalance = ({
     });
 
     if (showOnlyAmount) {
-        if (!balance ?? isNaN(Number(balance))) return null;
+        if (typeof balance === 'undefined' || isNaN(Number(balance))) return null;
 
         return (
             <CoinmarketBalanceWrapper>

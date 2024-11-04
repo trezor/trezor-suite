@@ -10,6 +10,7 @@ import {
     addIdsToQuotes,
     coinmarketGetSuccessQuotes,
     filterQuotesAccordingTags,
+    getCoinmarketNetworkDecimals,
     getUnusedAddressFromAccount,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { createQuoteLink, getAmountLimits } from 'src/utils/wallet/coinmarket/sellUtils';
@@ -18,7 +19,11 @@ import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigatio
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { AmountLimits, TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { CoinmarketTradeSellType, UseCoinmarketFormProps } from 'src/types/coinmarket/coinmarket';
+import {
+    CoinmarketAccountOptionsGroupOptionProps,
+    CoinmarketTradeSellType,
+    UseCoinmarketFormProps,
+} from 'src/types/coinmarket/coinmarket';
 import {
     CoinmarketSellFormContextProps,
     CoinmarketSellFormProps,
@@ -152,6 +157,12 @@ export const useCoinmarketSellForm = ({
         innerQuotes,
         values?.paymentMethod?.value ?? '',
     );
+    const decimals = getCoinmarketNetworkDecimals({
+        sendCryptoSelect: values.sendCryptoSelect as
+            | CoinmarketAccountOptionsGroupOptionProps
+            | undefined,
+        network,
+    });
 
     const {
         isComposing,
@@ -198,7 +209,7 @@ export const useCoinmarketSellForm = ({
         const unformattedOutputAmount = outputs[0].amount ?? '';
         const cryptoStringAmount =
             unformattedOutputAmount && shouldSendInSats
-                ? formatAmount(unformattedOutputAmount, network.decimals)
+                ? formatAmount(unformattedOutputAmount, decimals)
                 : unformattedOutputAmount;
         const currencySelect = outputs[0].currency ?? '';
         const request: SellFiatTradeQuoteRequest = {
@@ -219,7 +230,7 @@ export const useCoinmarketSellForm = ({
         }
 
         return request;
-    }, [methods, network.decimals, shouldSendInSats]);
+    }, [methods, decimals, shouldSendInSats]);
 
     const handleChange = useCallback(
         async (offLoading?: boolean) => {
@@ -470,7 +481,7 @@ export const useCoinmarketSellForm = ({
             selectedQuote.cryptoStringAmount
         ) {
             const cryptoStringAmount = shouldSendInSats
-                ? amountToSmallestUnit(selectedQuote.cryptoStringAmount, network.decimals)
+                ? amountToSmallestUnit(selectedQuote.cryptoStringAmount, decimals)
                 : selectedQuote.cryptoStringAmount;
             const destinationPaymentExtraId =
                 selectedQuote.destinationPaymentExtraId || trade?.data?.destinationPaymentExtraId;
