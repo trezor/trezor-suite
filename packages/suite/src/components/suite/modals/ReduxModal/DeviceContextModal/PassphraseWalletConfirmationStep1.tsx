@@ -7,10 +7,11 @@ import { CoinLogo } from '@trezor/product-components';
 import { Translation } from 'src/components/suite/Translation';
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { ContentType } from './types';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { onCancel as onCancelModal } from 'src/actions/suite/modalActions';
-import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
+import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 
 type PassphraseWalletConfirmationStep1Props = {
     setContentType: Dispatch<React.SetStateAction<ContentType>>;
@@ -25,7 +26,8 @@ export const PassphraseWalletConfirmationStep1 = ({
     onCancel,
     'data-testid': dataTest,
 }: PassphraseWalletConfirmationStep1Props) => {
-    const { enabledNetworks, supportedMainnets } = useEnabledNetworks();
+    const { supportedMainnets } = useNetworkSupport();
+    const enabledNetworks = useSelector(selectEnabledNetworks);
     const dispatch = useDispatch();
 
     const areAllNetworksEnabled = supportedMainnets.length === enabledNetworks.length;

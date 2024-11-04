@@ -1,12 +1,13 @@
 import styled from 'styled-components';
-
-import { TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components';
 import { motion, AnimatePresence, MotionProps } from 'framer-motion';
-import { borders, spacingsPx } from '@trezor/theme';
+
 import { selectDevice } from '@suite-common/wallet-core';
+import { TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components';
+import { CoinLogo } from '@trezor/product-components';
+import { borders, spacingsPx } from '@trezor/theme';
 
 import { useSelector, useAccountSearch } from 'src/hooks/suite';
-import { CoinLogo } from '@trezor/product-components';
+import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCoinLogo = styled(CoinLogo)<{ $isSelected?: boolean }>`
@@ -42,7 +43,7 @@ const Container = styled.div`
 
 export const CoinsFilter = () => {
     const { coinFilter, setCoinFilter } = useAccountSearch();
-    const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
+    const enabledNetworks = useSelector(selectEnabledNetworks);
     const device = useSelector(selectDevice);
 
     const unavailableCapabilities = device?.unavailableCapabilities ?? {};

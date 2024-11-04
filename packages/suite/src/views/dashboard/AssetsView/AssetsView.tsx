@@ -11,13 +11,13 @@ import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks
 import { useAccounts } from 'src/hooks/wallet';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 
 import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { selectEnabledNetworks, selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { AssetTable, AssetTableRowType } from './AssetTable/AssetTable';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 
@@ -65,12 +65,13 @@ const useAssetsFiatBalances = (
 
 export const AssetsView = () => {
     const { dashboardAssetsGridMode } = useSelector(s => s.suite.flags);
+    const enabledNetworks = useSelector(selectEnabledNetworks);
 
     const theme = useTheme();
     const dispatch = useDispatch();
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const { accounts } = useAccounts(discovery);
-    const { supportedMainnets, enabledNetworks } = useEnabledNetworks();
+    const { supportedMainnets } = useNetworkSupport();
     const { isMobileLayout } = useLayoutSize();
 
     const hasMainnetNetworksToEnable = supportedMainnets.some(

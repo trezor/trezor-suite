@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 
-import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import {
     startDiscoveryThunk,
     selectDeviceModel,
@@ -10,6 +9,8 @@ import {
 import { Button, motionEasing, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { BITCOIN_ONLY_NETWORKS } from '@suite-common/suite-constants';
+import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
+import { spacingsPx } from '@trezor/theme';
 
 import {
     DeviceBanner,
@@ -18,7 +19,7 @@ import {
     SettingsSectionItem,
 } from 'src/components/settings';
 import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
-import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import {
     useDevice,
@@ -27,9 +28,9 @@ import {
     useSelector,
     useDiscovery,
 } from 'src/hooks/suite';
+import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
-import { spacingsPx } from '@trezor/theme';
 import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 
 const DiscoveryButtonWrapper = styled.div`
@@ -89,9 +90,9 @@ const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps =>
 
 export const SettingsCoins = () => {
     const { firmwareTypeBannerClosed } = useSelector(selectSuiteFlags);
+    const enabledNetworks = useSelector(selectEnabledNetworks);
     const isDiscoveryButtonVisible = useRediscoveryNeeded();
-    const { supportedMainnets, unsupportedMainnets, supportedTestnets, enabledNetworks } =
-        useEnabledNetworks();
+    const { supportedMainnets, unsupportedMainnets, supportedTestnets } = useNetworkSupport();
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const deviceModel = useSelector(selectDeviceModel);
     const { device, isLocked } = useDevice();
