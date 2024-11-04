@@ -24,7 +24,7 @@ export interface ConnectSettingsPublic {
      * for internal use only!
      * in some exotic setups (suite-web where iframe is embedded locally), you might need to tell connect where it should search for sessions background shared-worker
      */
-    _sessionsBackgroundUrl?: string;
+    _sessionsBackgroundUrl?: null | string;
     // URL for binary files such as firmware, may be local or remote
     binFilesBaseUrl?: string;
     // enable firmware hash check automatically when device connects. Requires binFilesBaseUrl to be set.

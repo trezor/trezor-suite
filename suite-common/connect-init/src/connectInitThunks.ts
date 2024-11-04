@@ -109,18 +109,36 @@ export const connectInitThunk = createThunk(
 
         cardanoConnectPatch(getEnabledNetworks);
 
-        // note:
-        // this way, for local development you will get http://localhost:8000/static/connect/workers/sessions-background-sharedworker.js which is still the not-shared shared-worker
-        // meaning that testing it together with connect-explorer dev build (http://localhost:8088/workers/sessions-background-sharedworker.js) will not work locally.
-        // in production however, suite and connect are served from the same domain (trezor.io, sldev.cz) so it will work as expected.
-        let sessionsBackground: string | undefined;
+        // suite-web                                               connect (explorer)                           webusb sync
+        // ======================================================  ====================                         ====================
+        // localhost:8000                                          localhost:8088                               NO
+        // https://dev.suite.sldev.cz/suite-web/develop/web/       https://dev.suite.sldev.cz/connect/develop/  YES - connect
+        // suite.trezor.io/web                                     connect.trezor.io/9(x.y)/                    YES - connect
+
+        let _sessionsBackgroundUrl: string | null = null;
+
         if (typeof window !== 'undefined' && !isNative()) {
-            sessionsBackground =
-                window.location.origin +
-                resolveStaticPath(
-                    'connect/workers/sessions-background-sharedworker.js',
-                    `${process.env.ASSET_PREFIX || ''}`,
-                );
+            if (window.location.origin.includes('localhost')) {
+                _sessionsBackgroundUrl = null;
+            } else if (window.location.origin.endsWith('dev.suite.sldev.cz')) {
+                // we are expecting accompanying connect build at specified location
+                const assetPrefixArr = (process.env.ASSET_PREFIX || '').split('/').filter(Boolean);
+                const relevantSegments = assetPrefixArr
+                    .map((segment, index) => {
+                        const first = index === 0;
+                        const last = index === assetPrefixArr.length - 1;
+                        if (segment === 'suite-web' && first) return 'connect';
+                        if (segment === 'web' && last) return null;
+
+                        return segment;
+                    })
+                    .filter(Boolean);
+
+                _sessionsBackgroundUrl = `${window.location.origin}/${relevantSegments.join('/')}/workers/sessions-background-sharedworker.js`;
+            } else {
+                _sessionsBackgroundUrl =
+                    'https://connect.trezor.io/9/workers/sessions-background-sharedworker.js';
+            }
         }
 
         // Duplicates `getBinFilesBaseUrlThunk`, because calling any other thunk would change store.getActions() history,
@@ -135,7 +153,7 @@ export const connectInitThunk = createThunk(
                 binFilesBaseUrl,
                 pendingTransportEvent: selectIsPendingTransportEvent(getState()),
                 transports: selectDebugSettings(getState()).transports,
-                _sessionsBackgroundUrl: sessionsBackground,
+                _sessionsBackgroundUrl,
                 // debug: true, // Enable debug logs in TrezorConnect
             });
         } catch (error) {
