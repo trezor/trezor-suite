@@ -20,7 +20,8 @@ const handleBigNumberFormatting = (
     const fiatValue = new BigNumber(value);
     const currencyForDisplay = currency ?? fiatCurrency;
 
-    if (fiatValue.gt(Number.MAX_SAFE_INTEGER)) {
+    if (fiatValue.gt(Number.MAX_VALUE)) {
+        // backup when number is too big, the formatting is different than should be for currencies
         return `${value} ${currencyForDisplay}`;
     }
 
