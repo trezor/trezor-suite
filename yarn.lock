@@ -11777,7 +11777,7 @@ __metadata:
     electron: "npm:33.1.0"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:8.2.0"
-    electron-updater: "npm:6.3.4"
+    electron-updater: "npm:6.3.9"
     fs-extra: "npm:^11.2.0"
     glob: "npm:^10.3.10"
     openpgp: "npm:^5.11.2"
@@ -11829,7 +11829,7 @@ __metadata:
     electron-builder: "npm:25.1.8"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:8.2.0"
-    electron-updater: "npm:6.3.4"
+    electron-updater: "npm:6.3.9"
     glob: "npm:^10.3.10"
     usb: "npm:^2.14.0"
   languageName: unknown
@@ -16554,16 +16554,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"builder-util-runtime@npm:9.2.5":
-  version: 9.2.5
-  resolution: "builder-util-runtime@npm:9.2.5"
-  dependencies:
-    debug: "npm:^4.3.4"
-    sax: "npm:^1.2.4"
-  checksum: 10/89c1e67c286ad5dd039abd56af91b3fa3d01eb62ce16c07e8d496a06eb0ed9ce015870d83dd919ffa387a32d47f9080923958672fc993154c8a184c6b1a78adc
-  languageName: node
-  linkType: hard
-
 "builder-util@npm:25.1.7":
   version: 25.1.7
   resolution: "builder-util@npm:25.1.7"
@@ -20443,11 +20433,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-updater@npm:6.3.4":
-  version: 6.3.4
-  resolution: "electron-updater@npm:6.3.4"
+"electron-updater@npm:6.3.9":
+  version: 6.3.9
+  resolution: "electron-updater@npm:6.3.9"
   dependencies:
-    builder-util-runtime: "npm:9.2.5"
+    builder-util-runtime: "npm:9.2.10"
     fs-extra: "npm:^10.1.0"
     js-yaml: "npm:^4.1.0"
     lazy-val: "npm:^1.0.5"
@@ -20455,7 +20445,7 @@ __metadata:
     lodash.isequal: "npm:^4.5.0"
     semver: "npm:^7.6.3"
     tiny-typed-emitter: "npm:^2.1.0"
-  checksum: 10/e31d827fc7f7372a5856e118e83e6e37ed22e5db26b8c2bc5ce7cebbd739bd9bacc1b6ed3fef21d69f2508a0266477ec6a0ec238a504b3ba108a3372f8c7b30b
+  checksum: 10/98a8a451fde48d6af71ef1e6c09df678feee59444ad296cb6276a01d8a2d0718b6233f884402ba61b736a8d7a16a5df7a86a8cf837ed686f9d3101ab4f34171f
   languageName: node
   linkType: hard
 
