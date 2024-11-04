@@ -122,10 +122,7 @@ export const useCoinmarketComposeTransaction = <T extends CoinmarketSellExchange
             });
         }
 
-        if (
-            composed.type === 'final' ||
-            (composed.type === 'nonfinal' && account.symbol === 'ada')
-        ) {
+        if (composed.type === 'final' || composed.type === 'nonfinal') {
             if (typeof setMaxOutputId === 'number' && composed.max) {
                 setValue(FORM_OUTPUT_AMOUNT, composed.max, {
                     shouldValidate: true,
