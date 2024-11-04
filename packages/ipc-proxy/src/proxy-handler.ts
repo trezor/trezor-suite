@@ -43,10 +43,11 @@ interface IpcMainHandlers<Api> {
     '/invoke': Parameters<ApiUnion<Api>>; // methodName, ...params
 }
 
+// Electron.IpcMainInvokeEvent narowed down only to properties we actually need
 export interface ElectronIpcMainInvokeEvent {
     senderFrame: {
         url: string;
-    };
+    } | null;
 }
 
 export interface ElectronIpcMainEvent {

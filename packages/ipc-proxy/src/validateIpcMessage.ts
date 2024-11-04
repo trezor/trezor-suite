@@ -1,6 +1,5 @@
 import { ElectronIpcMainInvokeEvent } from './proxy-handler';
 
-// ipcEvent: Electron.IpcMainInvokeEvent
 export const validateIpcMessage = (ipcEvent: ElectronIpcMainInvokeEvent) => {
     if (ipcEvent?.senderFrame && 'url' in ipcEvent.senderFrame) {
         const parsedUrl = new URL(ipcEvent.senderFrame.url);
