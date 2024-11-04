@@ -56,7 +56,7 @@ export const AddAccountModal = ({
     const { supportedMainnets, unsupportedMainnets, supportedTestnets } = useNetworkSupport();
 
     const supportedNetworks = [...supportedMainnets, ...supportedTestnets];
-    const allTestnetNetworksDisabled = supportedTestnets.some(network =>
+    const allTestnetNetworksDisabled = !supportedTestnets.some(network =>
         enabledNetworkSymbols.includes(network.symbol),
     );
     const isBitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
@@ -66,9 +66,7 @@ export const AddAccountModal = ({
     const preselectedNetwork = symbol && supportedNetworks.find(n => n.symbol === symbol);
     // or in case of only btc is enabled on bitcoin-only firmware
     const bitcoinOnlyDefaultNetworkSelection =
-        hasBitcoinOnlyFirmware(device) &&
-        supportedMainnets.length === 1 &&
-        allTestnetNetworksDisabled
+        isBitcoinOnlyFirmware && supportedMainnets.length === 1 && allTestnetNetworksDisabled
             ? networks.btc
             : undefined;
 
