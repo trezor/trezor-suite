@@ -63,6 +63,7 @@ module.exports = {
         'no-irregular-whitespace': 'error',
         'no-constant-binary-expression': 'error',
         'no-empty': 'error',
+        'no-prototype-builtins': 'error',
         '@typescript-eslint/no-empty-object-type': 'off',
         '@typescript-eslint/no-require-imports': 'off',
         '@typescript-eslint/prefer-ts-expect-error': 'error',
