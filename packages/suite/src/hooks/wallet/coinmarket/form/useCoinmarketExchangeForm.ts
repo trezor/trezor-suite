@@ -15,6 +15,7 @@ import { saveQuoteRequest, saveQuotes } from 'src/actions/wallet/coinmarketExcha
 import {
     addIdsToQuotes,
     coinmarketGetSuccessQuotes,
+    getCoinmarketNetworkDecimals,
     getUnusedAddressFromAccount,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
@@ -143,12 +144,10 @@ export const useCoinmarketExchangeForm = ({
     });
     const { reset, register, getValues, setValue, formState, control } = methods;
     const values = useWatch<CoinmarketExchangeFormProps>({ control });
-    const { rateType, exchangeType } = getValues();
+    const { rateType, exchangeType, sendCryptoSelect } = getValues();
     const output = values.outputs?.[0];
     const fiatValues = useCoinmarketFiatValues({
-        accountBalance: account.formattedBalance,
-        cryptoSymbol: values?.sendCryptoSelect?.value as CryptoId,
-        tokenAddress: output?.token,
+        sendCryptoSelect,
         fiatCurrency: output?.currency?.value as FiatCurrencyCode,
     });
     const fiatOfBestScoredQuote = innerQuotes?.[0]?.sendStringAmount
@@ -171,6 +170,7 @@ export const useCoinmarketExchangeForm = ({
         [rateType, innerQuotes, exchangeInfo],
     );
     const dexQuotes = useMemo(() => innerQuotes?.filter(q => q.isDex), [innerQuotes]);
+    const decimals = getCoinmarketNetworkDecimals({ sendCryptoSelect, network });
 
     const {
         isComposing,
@@ -218,7 +218,7 @@ export const useCoinmarketExchangeForm = ({
         const unformattedOutputAmount = outputs[0].amount ?? '';
         const sendStringAmount =
             unformattedOutputAmount && shouldSendInSats
-                ? formatAmount(unformattedOutputAmount, network.decimals)
+                ? formatAmount(unformattedOutputAmount, decimals)
                 : unformattedOutputAmount;
 
         if (
@@ -238,7 +238,7 @@ export const useCoinmarketExchangeForm = ({
         };
 
         return request;
-    }, [getValues, network.decimals, shouldSendInSats]);
+    }, [getValues, decimals, shouldSendInSats]);
 
     const handleChange = useCallback(
         async (offLoading?: boolean) => {
@@ -485,7 +485,7 @@ export const useCoinmarketExchangeForm = ({
             selectedQuote.sendStringAmount
         ) {
             const sendStringAmount = shouldSendInSats
-                ? amountToSmallestUnit(selectedQuote.sendStringAmount, network.decimals)
+                ? amountToSmallestUnit(selectedQuote.sendStringAmount, decimals)
                 : selectedQuote.sendStringAmount;
             const result = await recomposeAndSign({
                 account,

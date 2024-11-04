@@ -24,6 +24,8 @@ import { spacings } from '@trezor/theme';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { getCoinmarketNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/coinmarket/form';
 
 const BreakableValue = styled.span`
     word-break: break-all;
@@ -70,14 +72,25 @@ const formatCryptoAmountAsAmount = (amount: number, baseAmount: number, decimals
 
 export const CoinmarketOfferExchangeSendSwap = () => {
     const theme = useTheme();
-    const { account, callInProgress, selectedQuote, exchangeInfo, confirmTrade, sendTransaction } =
-        useCoinmarketFormContext<CoinmarketTradeExchangeType>();
+    const {
+        account,
+        callInProgress,
+        selectedQuote,
+        exchangeInfo,
+        confirmTrade,
+        sendTransaction,
+        getValues,
+    } = useCoinmarketFormContext<CoinmarketTradeExchangeType>();
     const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
     const [slippage, setSlippage] = useState(selectedQuote?.swapSlippage ?? '1');
     const [customSlippage, setCustomSlippage] = useState(slippage);
     const [customSlippageError, setCustomSlippageError] = useState<
         (FieldError & { message: TranslationKey }) | undefined
     >();
+    const sendCryptoSelect = getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT);
+    const decimals = getCoinmarketNetworkDecimals({
+        sendCryptoSelect,
+    });
 
     // only used for custom slippage
     useDebounce(
@@ -246,6 +259,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                                 (Number(selectedQuote.swapSlippage) / 100) *
                                     Number(receiveStringAmount),
                                 Number(receiveStringAmount),
+                                decimals,
                             )} ${cryptoIdToCoinSymbol(receive)}`}
                         </InfoRow>
 
@@ -257,6 +271,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                                 ((100 - Number(selectedQuote.swapSlippage)) / 100) *
                                     Number(receiveStringAmount),
                                 Number(receiveStringAmount),
+                                decimals,
                             )} ${cryptoIdToCoinSymbol(receive)}`}
                         </InfoRow>
                     </Column>

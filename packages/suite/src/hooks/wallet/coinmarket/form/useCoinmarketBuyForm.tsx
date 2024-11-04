@@ -19,6 +19,7 @@ import {
     coinmarketGetSuccessQuotes,
     cryptoIdToNetwork,
     filterQuotesAccordingTags,
+    getCoinmarketNetworkDecimals,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     CoinmarketBuyFormContextProps,
@@ -178,10 +179,9 @@ export const useCoinmarketBuyForm = ({
             countrySelect,
             amountInCrypto,
         } = methods.getValues();
+        const decimals = getCoinmarketNetworkDecimals({ network });
         const cryptoStringAmount =
-            cryptoInput && shouldSendInSats
-                ? formatAmount(cryptoInput, network.decimals)
-                : cryptoInput;
+            cryptoInput && shouldSendInSats ? formatAmount(cryptoInput, decimals) : cryptoInput;
 
         const request = {
             wantCrypto: amountInCrypto,
@@ -195,7 +195,7 @@ export const useCoinmarketBuyForm = ({
         };
 
         return request;
-    }, [methods, network.decimals, shouldSendInSats, quotesRequest]);
+    }, [methods, network, shouldSendInSats, quotesRequest]);
 
     const handleChange = useCallback(
         async (offLoading?: boolean) => {

@@ -13,10 +13,13 @@ import { useSelector } from 'src/hooks/suite';
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
 import { spacingsPx, typography } from '@trezor/theme';
 import { formatAmount } from '@suite-common/wallet-utils';
-import { getNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { getCoinmarketNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { networks } from '@suite-common/wallet-config';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { CryptoId } from 'invity-api';
+import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/coinmarket/form';
 
 const AddressWrapper = styled.div`
     display: flex;
@@ -84,6 +87,7 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
     const { control, setValue } =
         props as unknown as UseFormReturn<CoinmarketBuyAddressOptionsType>;
+    const context = useCoinmarketFormContext();
 
     const addresses = account?.addresses;
     const addressDictionary = useAccountAddressDictionary(account);
@@ -114,9 +118,14 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
                     formatOptionLabel={(accountAddress: AccountAddress) => {
                         if (!accountAddress || !account || !receiveSymbol) return null;
 
-                        const networkDecimals = getNetworkDecimals(
-                            networks[account.symbol].decimals,
-                        );
+                        const sendCryptoSelect = isCoinmarketExchangeContext(context)
+                            ? context.getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT)
+                            : undefined;
+
+                        const networkDecimals = getCoinmarketNetworkDecimals({
+                            sendCryptoSelect,
+                            network: networks[account.symbol],
+                        });
                         const balance = accountAddress.balance
                             ? formatAmount(accountAddress.balance, networkDecimals)
                             : accountAddress.balance;
@@ -133,6 +142,7 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
                                             balance={balance}
                                             cryptoSymbolLabel={cryptoIdToCoinSymbol(receiveSymbol)}
                                             networkSymbol={account.symbol}
+                                            sendCryptoSelect={sendCryptoSelect}
                                         />
                                         <span>•</span>
                                         <span>{accountAddress.path}</span>

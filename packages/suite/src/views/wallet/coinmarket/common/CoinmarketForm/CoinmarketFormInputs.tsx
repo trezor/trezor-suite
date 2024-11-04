@@ -28,7 +28,7 @@ import { Row } from '@trezor/components';
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { formatAmount } from '@suite-common/wallet-utils';
-import { getNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { getCoinmarketNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import {
     isCoinmarketExchangeContext,
@@ -62,7 +62,7 @@ export const CoinmarketFormInputs = () => {
         const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
         const outputAmount =
             shouldSendInSats && output.amount
-                ? formatAmount(output.amount, getNetworkDecimals(sendCryptoSelect?.decimals))
+                ? formatAmount(output.amount, getCoinmarketNetworkDecimals({ sendCryptoSelect }))
                 : output.amount;
 
         return (
@@ -102,6 +102,7 @@ export const CoinmarketFormInputs = () => {
                             tokenAddress={tokenAddress as TokenAddress}
                             showOnlyAmount
                             amountInCrypto={amountInCrypto}
+                            sendCryptoSelect={sendCryptoSelect}
                         />
                     </Row>
                 )}
@@ -150,7 +151,7 @@ export const CoinmarketFormInputs = () => {
         const supportedCryptoCurrencies = exchangeInfo?.buySymbols;
         const outputAmount =
             shouldSendInSats && output.amount
-                ? formatAmount(output.amount, getNetworkDecimals(sendCryptoSelect?.decimals))
+                ? formatAmount(output.amount, getCoinmarketNetworkDecimals({ sendCryptoSelect }))
                 : output.amount;
 
         return (
@@ -190,6 +191,7 @@ export const CoinmarketFormInputs = () => {
                             tokenAddress={tokenAddress}
                             showOnlyAmount
                             amountInCrypto={amountInCrypto}
+                            sendCryptoSelect={sendCryptoSelect}
                         />
                     </Row>
                 )}

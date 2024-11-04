@@ -75,8 +75,20 @@ export const getNetworkName = (networkSymbol: NetworkSymbol) => {
     return networks[networkSymbol].name;
 };
 
-export const getNetworkDecimals = (networkDecimals: number | undefined) => {
-    return networkDecimals ?? 8;
+interface CoinmarketGetDecimalsProps {
+    sendCryptoSelect?: CoinmarketAccountOptionsGroupOptionProps;
+    network?: Network | null;
+}
+
+export const getCoinmarketNetworkDecimals = ({
+    sendCryptoSelect,
+    network,
+}: CoinmarketGetDecimalsProps) => {
+    if (sendCryptoSelect) {
+        return sendCryptoSelect.decimals;
+    }
+
+    return network?.decimals ?? 8;
 };
 
 /** @deprecated */

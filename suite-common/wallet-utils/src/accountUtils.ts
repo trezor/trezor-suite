@@ -45,8 +45,6 @@ import { getFiatRateKey } from './fiatRatesUtils';
 import { getAccountTotalStakingBalance } from './ethereumStakingUtils';
 import { isRbfTransaction } from './transactionUtils';
 
-export const isEthereumAccountSymbol = (symbol: NetworkSymbol) => symbol === 'eth';
-
 export const isUtxoBased = (account: Account) =>
     account.networkType === 'bitcoin' || account.networkType === 'cardano';
 

@@ -22,12 +22,14 @@ import {
 interface CoinmarketFormInputAccountOptionProps {
     option: CoinmarketAccountOptionsGroupOptionProps;
     optionGroups: CoinmarketAccountsOptionsGroupProps[];
+    decimals: number;
     isSelected: boolean;
 }
 
 export const CoinmarketFormInputAccountOption = ({
     option,
     optionGroups,
+    decimals,
     isSelected,
 }: CoinmarketFormInputAccountOptionProps) => {
     const { contractAddress } = parseCryptoId(option.value);
@@ -40,7 +42,7 @@ export const CoinmarketFormInputAccountOption = ({
 
     const balanceLabel = coinmarketGetAccountLabel(option.label, shouldSendInSats);
     const balance = shouldSendInSats
-        ? amountToSmallestUnit(option.balance, network.decimals)
+        ? amountToSmallestUnit(option.balance, decimals)
         : option.balance;
     const accountType = optionGroups.find(group =>
         group.options.find(
