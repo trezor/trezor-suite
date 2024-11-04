@@ -90,7 +90,7 @@ const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps =>
 export const SettingsCoins = () => {
     const { firmwareTypeBannerClosed } = useSelector(selectSuiteFlags);
     const isDiscoveryButtonVisible = useRediscoveryNeeded();
-    const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
+    const { mainnets, testnets, enabledNetworks } = useEnabledNetworks();
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const deviceModel = useSelector(selectDeviceModel);
     const { device, isLocked } = useDevice();
@@ -147,11 +147,7 @@ export const SettingsCoins = () => {
 
             <StyledSettingsSection title={<Translation id="TR_COINS" />} icon="coin">
                 <StyledSectionItem anchorId={SettingsAnchor.Crypto}>
-                    <CoinGroup
-                        networks={supportedNetworks}
-                        onToggle={setEnabled}
-                        enabledNetworks={enabledNetworks}
-                    />
+                    <CoinGroup networks={supportedNetworks} enabledNetworks={enabledNetworks} />
                 </StyledSectionItem>
             </StyledSettingsSection>
 
@@ -169,7 +165,6 @@ export const SettingsCoins = () => {
                 <SettingsSectionItem anchorId={SettingsAnchor.TestnetCrypto}>
                     <CoinGroup
                         networks={supportedTestnetNetworks}
-                        onToggle={setEnabled}
                         enabledNetworks={enabledNetworks}
                     />
                 </SettingsSectionItem>
@@ -190,7 +185,6 @@ export const SettingsCoins = () => {
                     <SettingsSectionItem anchorId={SettingsAnchor.UnsupportedCrypto}>
                         <CoinGroup
                             networks={unsupportedNetworks}
-                            onToggle={setEnabled}
                             enabledNetworks={enabledNetworks}
                         />
                     </SettingsSectionItem>

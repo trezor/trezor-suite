@@ -19,13 +19,13 @@ const Wrapper = styled.div`
     gap: 16px 12px;
 `;
 
-interface CoinListProps {
+export type CoinListProps = {
     networks: Network[];
     enabledNetworks?: NetworkSymbol[];
     settingsMode?: boolean;
     onSettings?: (symbol: NetworkSymbol) => void;
     onToggle: (symbol: NetworkSymbol, toggled: boolean) => void;
-}
+};
 
 export const CoinList = ({
     networks,

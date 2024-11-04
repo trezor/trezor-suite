@@ -2,30 +2,32 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { useDispatch } from 'src/hooks/suite';
+import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
 import { openModal } from 'src/actions/suite/modalActions';
 import { CoinList } from 'src/components/suite';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { CoinGroupHeader } from './CoinGroupHeader';
+import { CoinListProps } from '../CoinList/CoinList';
 
 const CoinGroupWrapper = styled.div`
     width: 100%;
 `;
 
-interface CoinGroupProps {
+type CoinGroupProps = {
     networks: Network[];
     enabledNetworks?: NetworkSymbol[];
-    className?: string;
-    onToggle: (symbol: NetworkSymbol, toggled: boolean) => void;
-}
+};
 
-export const CoinGroup = ({ onToggle, networks, enabledNetworks, className }: CoinGroupProps) => {
+export const CoinGroup = ({ networks, enabledNetworks }: CoinGroupProps) => {
     const [settingsMode, setSettingsMode] = useState(false);
 
     const dispatch = useDispatch();
 
     const isAtLeastOneActive = networks.some(({ symbol }) => enabledNetworks?.includes(symbol));
 
+    const onToggle: CoinListProps['onToggle'] = (symbol, shouldBeVisible) =>
+        dispatch(changeCoinVisibility(symbol, shouldBeVisible));
     const onSettings = (symbol: NetworkSymbol) => {
         setSettingsMode(false);
         dispatch(
@@ -38,7 +40,7 @@ export const CoinGroup = ({ onToggle, networks, enabledNetworks, className }: Co
     const toggleSettingsMode = () => setSettingsMode(value => !value);
 
     return (
-        <CoinGroupWrapper className={className}>
+        <CoinGroupWrapper>
             <CoinGroupHeader
                 isAtLeastOneActive={isAtLeastOneActive}
                 settingsMode={settingsMode}
