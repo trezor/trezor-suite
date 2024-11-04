@@ -198,7 +198,7 @@ export const networks = {
         bip43Path: "m/44'/501'/i'/0'", // phantom - bip44Change
         decimals: 9,
         testnet: false,
-        features: ['tokens', 'coin-definitions' /*, 'staking' */],
+        features: ['tokens', 'coin-definitions', 'staking'],
         explorer: {
             tx: 'https://solscan.io/tx/',
             account: 'https://solscan.io/account/',
@@ -616,7 +616,7 @@ export const networks = {
         bip43Path: "m/44'/501'/i'/0'",
         decimals: 9,
         testnet: true,
-        features: ['tokens' /* , 'staking' */],
+        features: ['tokens', 'staking'],
         explorer: {
             tx: 'https://solscan.io/tx/',
             account: 'https://solscan.io/account/',

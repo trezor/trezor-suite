@@ -11,8 +11,8 @@ import {
     selectValidatorsQueue,
 } from '@suite-common/wallet-core';
 import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
+import { SelectedAccountStatus } from '@suite-common/wallet-types';
 
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
@@ -24,9 +24,14 @@ import { PayoutCard } from './PayoutCard';
 import { ClaimCard } from './ClaimCard';
 import { Transactions } from './Transactions';
 import { InstantStakeBanner } from './InstantStakeBanner';
+import { StakingDashboard } from '../../StakingDashboard/StakingDashboard';
 
-export const StakingDashboard = () => {
-    const account = useSelector(selectSelectedAccount);
+interface EthStakingDashboardProps {
+    selectedAccount: SelectedAccountStatus;
+}
+
+export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProps) => {
+    const { account } = selectedAccount;
     const accountKey = account?.key ?? '';
     const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
 
@@ -62,34 +67,46 @@ export const StakingDashboard = () => {
     const { canClaim = false } = getAccountEverstakeStakingPool(account) ?? {};
 
     return (
-        <Column gap={spacings.xxxxl}>
-            <DashboardSection heading={<Translation id="TR_STAKE_ETH" />}>
-                <Column gap={spacings.sm}>
-                    <InstantStakeBanner
-                        txs={txs}
-                        daysToAddToPool={daysToAddToPool}
-                        daysToUnstake={daysToUnstake}
-                    />
-                    <Grid columns={isBelowLaptop || !canClaim ? 1 : 2} gap={spacings.sm}>
-                        <ClaimCard />
-                        <Flex direction={canClaim ? 'column' : 'row'} gap={spacings.sm}>
-                            <ApyCard apy={ethApy} />
-                            <PayoutCard
-                                nextRewardPayout={nextRewardPayout}
-                                daysToAddToPool={daysToAddToPool}
-                                validatorWithdrawTime={data?.validatorWithdrawTime}
+        <StakingDashboard
+            selectedAccount={selectedAccount}
+            dashboard={
+                <Column gap={spacings.xxxxl}>
+                    <DashboardSection
+                        heading={
+                            <Translation
+                                id="TR_STAKE_NETWORK"
+                                values={{ networkSymbol: account?.symbol.toUpperCase() }}
                             />
-                        </Flex>
-                    </Grid>
-                    <StakingCard
-                        isValidatorsQueueLoading={isLoading}
-                        daysToAddToPool={daysToAddToPool}
-                        daysToUnstake={daysToUnstake}
-                    />
-                </Column>
-            </DashboardSection>
+                        }
+                    >
+                        <Column gap={spacings.sm}>
+                            <InstantStakeBanner
+                                txs={txs}
+                                daysToAddToPool={daysToAddToPool}
+                                daysToUnstake={daysToUnstake}
+                            />
+                            <Grid columns={isBelowLaptop || !canClaim ? 1 : 2} gap={spacings.sm}>
+                                <ClaimCard />
+                                <Flex direction={canClaim ? 'column' : 'row'} gap={spacings.sm}>
+                                    <ApyCard apy={ethApy} />
+                                    <PayoutCard
+                                        nextRewardPayout={nextRewardPayout}
+                                        daysToAddToPool={daysToAddToPool}
+                                        validatorWithdrawTime={data?.validatorWithdrawTime}
+                                    />
+                                </Flex>
+                            </Grid>
+                            <StakingCard
+                                isValidatorsQueueLoading={isLoading}
+                                daysToAddToPool={daysToAddToPool}
+                                daysToUnstake={daysToUnstake}
+                            />
+                        </Column>
+                    </DashboardSection>
 
-            <Transactions />
-        </Column>
+                    <Transactions />
+                </Column>
+            }
+        />
     );
 };

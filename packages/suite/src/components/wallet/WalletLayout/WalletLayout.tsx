@@ -38,6 +38,7 @@ const WalletPageHeader = ({ isSubpage }: WalletPageHeaderProps) => {
 
 type WalletLayoutProps = {
     title: ExtendedMessageDescriptor['id'];
+    titleValues?: Record<string, any>;
     account: AppState['wallet']['selectedAccount'];
     isSubpage?: boolean;
     showEmptyHeaderPlaceholder?: boolean;
@@ -48,13 +49,14 @@ type WalletLayoutProps = {
 export const WalletLayout = ({
     showEmptyHeaderPlaceholder = false,
     title,
+    titleValues,
     account,
     isSubpage,
     className,
     children,
 }: WalletLayoutProps) => {
     const { translationString } = useTranslation();
-    const l10nTitle = translationString(title);
+    const l10nTitle = translationString(title, titleValues);
 
     useLayout(l10nTitle, <WalletPageHeader isSubpage={isSubpage} />);
 
