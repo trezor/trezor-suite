@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
-import {
-    accountsActions,
-    selectDeviceSupportedNetworks,
-    selectDeviceModel,
-} from '@suite-common/wallet-core';
+import { accountsActions, selectDeviceModel } from '@suite-common/wallet-core';
 import { arrayPartition } from '@trezor/utils';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { networks, Network, NetworkSymbol, NetworkAccount } from '@suite-common/wallet-config';
@@ -49,23 +45,19 @@ export const AddAccountModal = ({
     isBackClickDisabled,
 }: AddAccountProps) => {
     const accounts = useSelector(state => state.wallet.accounts);
-    const supportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const app = useSelector(state => state.router.app);
     const isDebug = useSelector(selectIsDebugModeActive);
     const isCoinjoinPublic = useSelector(selectIsPublic);
     const deviceModel = useSelector(selectDeviceModel);
     const dispatch = useDispatch();
 
-    const { mainnets, testnets, enabledNetworks: enabledNetworkSymbols } = useEnabledNetworks();
+    const {
+        supportedMainnets,
+        unsupportedMainnets,
+        supportedTestnets,
+        enabledNetworks: enabledNetworkSymbols,
+    } = useEnabledNetworks();
 
-    const getNetworks = (networksToFilterFrom: Network[], getUnsupported = false) =>
-        networksToFilterFrom.filter(
-            ({ symbol }) => getUnsupported !== supportedNetworkSymbols.includes(symbol),
-        );
-
-    const supportedMainnets = getNetworks(mainnets);
-    const supportedTestnets = getNetworks(testnets);
-    const unsupportedNetworks = getNetworks(mainnets, true);
     const supportedNetworks = [...supportedMainnets, ...supportedTestnets];
     const allTestnetNetworksDisabled = supportedTestnets.some(network =>
         enabledNetworkSymbols.includes(network.symbol),
@@ -271,7 +263,7 @@ export const AddAccountModal = ({
                               >
                                   <CoinList
                                       onToggle={selectNetwork}
-                                      networks={unsupportedNetworks}
+                                      networks={unsupportedMainnets}
                                       enabledNetworks={selectedNetworks}
                                   />
                               </CollapsibleBox>
