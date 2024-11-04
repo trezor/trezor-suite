@@ -375,6 +375,7 @@ export const useCoinmarketSellForm = ({
 
                 return undefined;
             }
+            setCallInProgress(false);
 
             return response.trade;
         }
