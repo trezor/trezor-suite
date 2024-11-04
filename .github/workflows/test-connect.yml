@@ -89,7 +89,7 @@ jobs:
 
       - name: Set other devices matrix
         id: set-matrix-other-devices
-        run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=all --firmware=2-latest --env=node --groups=api --cache_tx=true --transport=Bridge)" >> $GITHUB_OUTPUT
+        run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=all --firmware=2-main --env=node --groups=api --cache_tx=true --transport=Bridge)" >> $GITHUB_OUTPUT
 
   PR-check:
     needs: [build, set-matrix]
@@ -173,7 +173,7 @@ jobs:
       testPattern: ${{ matrix.groups.pattern }}
       includeFilter: ${{ matrix.groups.includeFilter }}
       testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.model }}
+      testDescription: ${{ matrix.model }}-${{ matrix.firmware }}
       cache_tx: ${{ matrix.cache_tx }}
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
