@@ -126,9 +126,6 @@ const IOGridRow = ({
                 explorerUrlQueryString={network?.explorer.queryString}
                 shouldAllowCopy={!isPhishingTransaction}
             />
-
-            <br />
-
             <AmountRow>
                 {anonymity && <UtxoAnonymity anonymity={anonymity} />}
                 {value && (
