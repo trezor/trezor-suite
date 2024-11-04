@@ -71,11 +71,10 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
 
     const { getValues, setValue, clearErrors, handleSubmit, control } =
         methods as unknown as UseFormReturn<CoinmarketSellExchangeFormProps>;
-    const { outputs, sendCryptoSelect, setMaxOutputId } = getValues();
+    const { outputs, sendCryptoSelect } = getValues();
     const values = useWatch<CoinmarketSellExchangeFormProps>({ control });
     const previousValues = useRef<typeof values | null>(isNotFormPage ? draftUpdated : null);
     const tokenAddress = outputs?.[0]?.token;
-    const cryptoAmount = outputs?.[0]?.amount;
     const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
     const isBalanceZero = tokenData
         ? isZero(tokenData.balance || '0')
@@ -136,31 +135,6 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
             setValue(FORM_OUTPUT_AMOUNT, formattedCryptoAmount, { shouldValidate: true });
         },
         [getValues, coinmarketFiatValues, networkDecimals, shouldSendInSats, setValue],
-    );
-
-    const calculateFiatAmountFromCrypto = useCallback(
-        (cryptoAmount: string) => {
-            if (!coinmarketFiatValues) return;
-
-            const rate = coinmarketFiatValues.fiatRate;
-            const formattedAmount = new BigNumber(
-                shouldSendInSats ? formatAmount(cryptoAmount, networkDecimals) : cryptoAmount,
-            );
-
-            if (
-                rate?.rate &&
-                formattedAmount &&
-                !formattedAmount.isNaN() &&
-                formattedAmount.gt(0) // formatAmount() returns '-1' on error
-            ) {
-                const fiatValueBigNumber = formattedAmount.multipliedBy(rate.rate);
-
-                setValue(FORM_OUTPUT_FIAT, fiatValueBigNumber.toFixed(2), {
-                    shouldValidate: true,
-                });
-            }
-        },
-        [coinmarketFiatValues, networkDecimals, setValue, shouldSendInSats],
     );
 
     const setExchangeReceiveCrypto = (selected: CoinmarketAccountOptionsGroupOptionProps) => {
@@ -239,8 +213,6 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
         setValue(FORM_OUTPUT_AMOUNT, cryptoInputValue, { shouldDirty: true });
         setValue(FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
         setIsUsedFractionButton(true);
-
-        calculateFiatAmountFromCrypto(cryptoInputValue);
     };
 
     const setAllAmount = () => {
@@ -252,15 +224,6 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
         setIsUsedFractionButton(true);
         composeRequest(FORM_OUTPUT_AMOUNT);
     };
-
-    // update fiat amount in compute all crypto from the account
-    useEffect(() => {
-        if (cryptoAmount && typeof setMaxOutputId !== 'undefined') {
-            calculateFiatAmountFromCrypto(cryptoAmount);
-        }
-        // compute only if cryptoAmount and setMaxOutputId will changed
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cryptoAmount, setMaxOutputId]);
 
     // call change handler on every change of text inputs with debounce
     useDebounce(

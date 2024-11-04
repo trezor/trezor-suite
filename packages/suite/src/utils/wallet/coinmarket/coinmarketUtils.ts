@@ -202,9 +202,10 @@ export const getComposeAddressPlaceholder = async (
             // which need more fees than Shelley addresses used in the Suite, using dummy Byron address for the placeholder
             // return '37btjrVyb4KDXBNC4haBVPCrro8AQPHwvCMp3RFhhSVWwfFmZ6wwzSK6JK1hY6wHNmtrpTf1kdbva8TCneM2YsiXT7mrzT21EacHnPpz5YyUdj64na';
             return '';
+        case 'solana':
+            return '';
         case 'ethereum':
         case 'ripple':
-        case 'solana':
             return account.descriptor;
         // no default
     }
