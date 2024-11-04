@@ -209,9 +209,11 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
         <ElevationContext baseElevation={-1}>
             <TrafficLightOffset isVisible={Boolean(bannerMessage)}>
                 <Wrapper>
-                    <MessageContainer>
-                        {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
-                    </MessageContainer>
+                    {bannerMessage && (
+                        <MessageContainer>
+                            <MessageSystemBanner message={bannerMessage} />
+                        </MessageContainer>
+                    )}
 
                     <Body data-testid="@welcome-layout/body">
                         <ElevationDown>
