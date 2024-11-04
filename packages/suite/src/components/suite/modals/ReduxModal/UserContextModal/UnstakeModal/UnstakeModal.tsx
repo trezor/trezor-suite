@@ -36,7 +36,7 @@ export const UnstakeModal = ({ onCancel }: UnstakeModalModalProps) => {
     return (
         <UnstakeEthFormContext.Provider value={unstakeEthContextValues}>
             <NewModal
-                size="large"
+                size="huge"
                 heading={<Translation id="TR_STAKE_UNSTAKE" />}
                 description={<Translation id="TR_STAKE_CLAIM_AFTER_UNSTAKING" />}
                 onCancel={onCancel}
