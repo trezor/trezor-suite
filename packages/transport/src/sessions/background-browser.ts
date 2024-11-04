@@ -56,7 +56,7 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
                     | { type: 'descriptors'; payload: Descriptor[] }
                 >,
             ) => {
-                if ('type' in e?.data) {
+                if (e && 'type' in e.data) {
                     if (e.data.type === event) {
                         listener(e.data.payload);
                     }
