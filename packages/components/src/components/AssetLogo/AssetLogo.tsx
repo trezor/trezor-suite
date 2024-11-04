@@ -6,11 +6,12 @@ import {
 } from '../../utils/frameProps';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { borders } from '@trezor/theme';
+import { borders, Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 
 import { AssetInitials } from './AssetInitials';
 import { TransientProps } from '../../utils/transientProps';
+import { ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 
 export const allowedAssetLogoSizes = [20, 24];
 type AssetLogoSize = (typeof allowedAssetLogoSizes)[number];
@@ -36,14 +37,25 @@ const Container = styled.div<TransientProps<AllowedFrameProps> & { $size: number
     ${withFrameProps}
 `;
 
-const Logo = styled.img<{ $size: number; $isVisible: boolean }>(
-    ({ $size, $isVisible }) => `
-        width: ${$size}px;
-        height: ${$size}px;
-        border-radius: ${borders.radii.full};
-        visibility: ${$isVisible ? 'visible' : 'hidden'};
-    `,
-);
+const Logo = styled.img<{ $size: number; $isVisible: boolean; $elevation: Elevation }>`
+    width: ${({ $size }) => $size}px;
+    height: ${({ $size }) => $size}px;
+    border-radius: ${borders.radii.full};
+    visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
+    box-shadow: inset 0 0 0 1px ${mapElevationToBorder};
+    background-color: ${mapElevationToBackground};
+`;
+
+interface LogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+    $size: number;
+    $isVisible: boolean;
+}
+
+const ElevatedLogo = (props: LogoProps) => {
+    const { elevation } = useElevation();
+
+    return <Logo {...props} $elevation={elevation} />;
+};
 
 export const AssetLogo = ({
     size,
@@ -81,17 +93,19 @@ export const AssetLogo = ({
                 </AssetInitials>
             )}
             {!isPlaceholder && (
-                <Logo
-                    src={logoUrl}
-                    srcSet={`${logoUrl} 1x, ${logoUrl2x} 2x`}
-                    $size={size}
-                    onLoad={handleLoad}
-                    onError={handleError}
-                    $isVisible={!isLoading}
-                    data-testid={dataTest}
-                    alt={placeholder}
-                    loading="lazy"
-                />
+                <ElevationUp>
+                    <ElevatedLogo
+                        src={logoUrl}
+                        srcSet={`${logoUrl} 1x, ${logoUrl2x} 2x`}
+                        $size={size}
+                        onLoad={handleLoad}
+                        onError={handleError}
+                        $isVisible={!isLoading}
+                        data-testid={dataTest}
+                        alt={placeholder}
+                        loading="lazy"
+                    />
+                </ElevationUp>
             )}
         </Container>
     );
