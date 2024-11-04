@@ -6,7 +6,7 @@ import {
     selectDeviceFirmwareVersion,
     selectDeviceLanguage,
     selectDeviceModel,
-    selectIsDeviceBitcoinOnly,
+    selectHasBitcoinOnlyFirmware,
     selectIsDeviceProtectedByPin,
 } from '@suite-common/wallet-core';
 
@@ -17,7 +17,7 @@ export const useReportDeviceConnectToAnalytics = () => {
     const deviceFirmwareVersion = useSelector(selectDeviceFirmwareVersion);
     const isDeviceProtectedByPin = useSelector(selectIsDeviceProtectedByPin);
     const deviceModel = useSelector(selectDeviceModel);
-    const isDeviceBitcoinOnly = useSelector(selectIsDeviceBitcoinOnly);
+    const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const deviceLanguage = useSelector(selectDeviceLanguage);
 
     useEffect(() => {
@@ -28,7 +28,7 @@ export const useReportDeviceConnectToAnalytics = () => {
                     firmwareVersion: deviceFirmwareVersion,
                     pinProtection: isDeviceProtectedByPin,
                     deviceModel,
-                    isBitcoinOnly: isDeviceBitcoinOnly,
+                    isBitcoinOnly: hasBitcoinOnlyFirmware,
                     deviceLanguage,
                 },
             });
@@ -37,7 +37,7 @@ export const useReportDeviceConnectToAnalytics = () => {
         deviceFirmwareVersion,
         deviceLanguage,
         deviceModel,
-        isDeviceBitcoinOnly,
+        hasBitcoinOnlyFirmware,
         isDeviceProtectedByPin,
         isDeviceReadyToUseAndAuthorized,
     ]);
