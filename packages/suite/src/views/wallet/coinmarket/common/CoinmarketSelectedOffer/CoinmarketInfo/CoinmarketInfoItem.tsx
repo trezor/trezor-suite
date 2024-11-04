@@ -29,8 +29,12 @@ export const CoinmarketInfoItem = ({
         {type === 'exchange' || isReceive ? (
             <Column alignItems="flex-end" gap={spacings.xxxs}>
                 <Row gap={spacings.xs}>
-                    <CoinmarketCoinLogo cryptoId={currency!} size={20} />
-                    <CoinmarketCryptoAmount amount={amount} cryptoId={currency!} />
+                    {currency && (
+                        <>
+                            <CoinmarketCoinLogo cryptoId={currency} size={20} />
+                            <CoinmarketCryptoAmount amount={amount} cryptoId={currency} />
+                        </>
+                    )}
                 </Row>
                 {account && (
                     <Text variant="tertiary" typographyStyle="label" as="div">
