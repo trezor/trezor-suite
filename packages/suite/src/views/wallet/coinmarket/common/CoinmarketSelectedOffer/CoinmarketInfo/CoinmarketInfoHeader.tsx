@@ -18,7 +18,7 @@ export const CoinmarketInfoHeader = ({ receiveCurrency }: CoinmarketInfoHeaderPr
 
     return (
         <Row gap={spacings.xs}>
-            <CoinmarketCoinLogo cryptoId={receiveCurrency!} size={24} />
+            {receiveCurrency && <CoinmarketCoinLogo cryptoId={receiveCurrency} size={24} />}
             <Text typographyStyle="titleSmall">
                 {contractAddress && network ? (
                     <Translation
