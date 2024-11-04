@@ -92,7 +92,7 @@ export const TokensTable = ({
                         {tokensWithoutBalance.length !== 0 && (
                             <>
                                 <Table.Row onClick={() => setIsZeroBalanceOpen(!isZeroBalanceOpen)}>
-                                    <Table.Cell colSpan={5}>
+                                    <Table.Cell colSpan={1}>
                                         <ZeroBalanceToggle>
                                             <Row gap={spacings.xs}>
                                                 <IconWrapper $isActive={isZeroBalanceOpen}>
@@ -108,6 +108,7 @@ export const TokensTable = ({
                                             </Row>
                                         </ZeroBalanceToggle>
                                     </Table.Cell>
+                                    <Table.Cell colSpan={hideRates ? 2 : 4} />
                                 </Table.Row>
                                 {tokensWithoutBalance.map(token => (
                                     <TokenRow
