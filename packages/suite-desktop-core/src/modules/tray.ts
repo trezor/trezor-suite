@@ -5,19 +5,21 @@ import path from 'path';
 import { Menu, Tray } from 'electron';
 
 import { DEVICE, DeviceEvent } from '@trezor/connect';
-import { Status } from '@trezor/suite-desktop-api/src/messages';
+import { Status, TraySettings } from '@trezor/suite-desktop-api/src/messages';
+import { validateIpcMessage } from '@trezor/ipc-proxy';
 
-import { app } from '../typed-electron';
+import { app, ipcMain } from '../typed-electron';
 
 import { mainThreadEmitter, ModuleInitBackground } from './index';
 
 export const SERVICE_NAME = 'tray';
 
-export const initBackground: ModuleInitBackground = () => {
+export const initBackground: ModuleInitBackground = ({ store }) => {
     const { logger } = global;
+    const initialSettings = store.getTraySettings();
 
     const state = {
-        visible: true,
+        visible: initialSettings.showOnTray,
         bridgeStatus: true,
         devices: 0,
     };
@@ -107,6 +109,33 @@ export const initBackground: ModuleInitBackground = () => {
         logger.debug(SERVICE_NAME, 'Bridge status ' + status);
         state.bridgeStatus = status.process;
         renderTray();
+    });
+
+    ipcMain.handle('tray/change-settings', (ipcEvent, updatedSettings: TraySettings) => {
+        validateIpcMessage(ipcEvent);
+
+        try {
+            store.setTraySettings({
+                ...store.getTraySettings(),
+                ...updatedSettings,
+            });
+            state.visible = updatedSettings.showOnTray;
+            renderTray();
+
+            return { success: true };
+        } catch (error) {
+            return { success: false, error };
+        }
+    });
+
+    ipcMain.handle('tray/get-settings', ipcEvent => {
+        validateIpcMessage(ipcEvent);
+
+        try {
+            return { success: true, payload: store.getTraySettings() };
+        } catch (error) {
+            return { success: false, error };
+        }
     });
 
     return {

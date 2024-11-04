@@ -14,6 +14,7 @@ export class Store {
         themeSettings: SuiteThemeVariant;
         torSettings: TorSettings;
         bridgeSettings: BridgeSettings;
+        traySettings: TraySettings;
     }>;
 
     private constructor() {
@@ -84,6 +85,16 @@ export class Store {
 
     public setBridgeSettings(bridgeSettings: BridgeSettings) {
         this.store.set('bridgeSettings', bridgeSettings);
+    }
+
+    public getTraySettings() {
+        return this.store.get('traySettings', {
+            showOnTray: false,
+        });
+    }
+
+    public setTraySettings(traySettings: TraySettings) {
+        this.store.set('traySettings', traySettings);
     }
 
     /** Deletes all items from the store. */

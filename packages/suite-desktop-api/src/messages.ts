@@ -57,6 +57,10 @@ export type TorSettings = {
     snowflakeBinaryPath: string;
 };
 
+export type TraySettings = {
+    showOnTray: boolean;
+};
+
 export type HandshakeElectron = {
     protocol?: string;
     desktopUpdate?: {
