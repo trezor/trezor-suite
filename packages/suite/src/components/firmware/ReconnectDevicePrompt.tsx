@@ -1,7 +1,6 @@
 import * as semver from 'semver';
-import styled from 'styled-components';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { H2, DeviceAnimation, NewModal, Paragraph, List } from '@trezor/components';
+import { H2, DeviceAnimation, NewModal, Paragraph, List, Column } from '@trezor/components';
 import { DEVICE, Device, DeviceModelInternal, UI } from '@trezor/connect';
 import { Translation, WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
@@ -10,11 +9,6 @@ import { ConfirmOnDevice } from '@trezor/product-components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { spacings } from '@trezor/theme';
 import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
-
-const ImageWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-`;
 
 const RebootDeviceGraphics = ({
     device,
@@ -52,6 +46,7 @@ const RebootDeviceGraphics = ({
             type={getRebootType()}
             height="220px"
             width="220px"
+            shape="ROUNDED"
             deviceModelInternal={deviceModelInternal}
             loop
         />
@@ -167,28 +162,40 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                 }
             >
                 {!isRebootDone && (
-                    <ImageWrapper>
+                    <Column margin={{ bottom: spacings.md }}>
                         <RebootDeviceGraphics
                             device={uiEvent?.payload.device}
                             isManualRebootRequired={isManualRebootRequired}
                         />
-                    </ImageWrapper>
+                    </Column>
                 )}
                 <H2 align="center">
                     <Translation id={getHeading()} />
                 </H2>
                 {!isRebootDone && (
-                    <>
+                    <Column alignItems="stretch" gap={spacings.lg}>
                         {isManualRebootRequired ? (
                             <List isOrdered margin={{ top: spacings.md }}>
                                 {/* First step asks for disconnecting a device */}
                                 <List.Item data-testid="@firmware/disconnect-message">
-                                    <Translation id="TR_DISCONNECT_YOUR_DEVICE" />
+                                    <Paragraph
+                                        variant={
+                                            rebootPhase !== 'disconnected' ? 'primary' : 'default'
+                                        }
+                                    >
+                                        <Translation id="TR_DISCONNECT_YOUR_DEVICE" />
+                                    </Paragraph>
                                 </List.Item>
 
                                 {/* Second step reconnect in bootloader */}
                                 <List.Item data-testid="@firmware/connect-in-bootloader-message">
-                                    <Translation id={getSecondStep()} />
+                                    <Paragraph
+                                        variant={
+                                            rebootPhase === 'disconnected' ? 'primary' : 'default'
+                                        }
+                                    >
+                                        <Translation id={getSecondStep()} />
+                                    </Paragraph>
                                 </List.Item>
                             </List>
                         ) : (
@@ -205,7 +212,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                             </Paragraph>
                         )}
                         {showWebUsbButton && <WebUsbButton />}
-                    </>
+                    </Column>
                 )}
             </NewModal.ModalBase>
         </NewModal.Backdrop>
