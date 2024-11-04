@@ -124,7 +124,7 @@ export const Dropdown = forwardRef(
                 return;
             }
 
-            const { width, height } = menuRef.current?.getBoundingClientRect();
+            const { width, height } = menuRef.current.getBoundingClientRect();
 
             const adjustedCoords = getAdjustedCoords({
                 coords: coordsToUse,
