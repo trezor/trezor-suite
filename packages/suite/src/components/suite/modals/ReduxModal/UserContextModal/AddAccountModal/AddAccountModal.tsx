@@ -243,7 +243,7 @@ export const AddAccountModal = ({
                                   />
                               </CollapsibleBox>
                           )}
-                          {!!isBitcoinOnlyFirmware && deviceModel === DeviceModelInternal.T1B1 && (
+                          {!isBitcoinOnlyFirmware && deviceModel === DeviceModelInternal.T1B1 && (
                               <CollapsibleBox
                                   heading={
                                       <Tooltip
