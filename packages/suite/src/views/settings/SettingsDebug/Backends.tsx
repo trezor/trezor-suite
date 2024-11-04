@@ -1,17 +1,17 @@
 import styled from 'styled-components';
 
-import { typography } from '@trezor/theme';
-import { Button } from '@trezor/components';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { ConnectionStatus } from '@suite-common/wallet-types';
+import { Button } from '@trezor/components';
+import { CoinLogo } from '@trezor/product-components';
+import { typography } from '@trezor/theme';
 
 import { SectionItem, StatusLight, Translation } from 'src/components/suite';
-import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { useBackendReconnection } from 'src/hooks/settings/backends';
 import { openModal } from 'src/actions/suite/modalActions';
-import { CoinLogo } from '@trezor/product-components';
+import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 
 const CoinSection = styled.div`
     display: flex;
@@ -161,7 +161,7 @@ const CoinItem = ({ symbol }: { symbol: NetworkSymbol }) => {
 };
 
 export const Backends = () => {
-    const { enabledNetworks } = useEnabledNetworks();
+    const enabledNetworks = useSelector(selectEnabledNetworks);
 
     return enabledNetworks.map(symbol => <CoinItem key={symbol} symbol={symbol} />);
 };

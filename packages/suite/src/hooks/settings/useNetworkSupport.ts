@@ -8,8 +8,7 @@ import {
     selectIsDebugModeActive,
 } from 'src/reducers/suite/suiteReducer';
 
-export const useEnabledNetworks = () => {
-    const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
+export const useNetworkSupport = () => {
     const isDebug = useSelector(selectIsDebugModeActive);
     const opExperimentalFeature = useSelector(selectHasExperimentalFeature('optimism'));
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
@@ -27,6 +26,5 @@ export const useEnabledNetworks = () => {
         supportedMainnets,
         unsupportedMainnets,
         supportedTestnets,
-        enabledNetworks,
     };
 };

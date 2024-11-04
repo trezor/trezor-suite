@@ -6,11 +6,13 @@ import { Translation } from 'src/components/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';
 import { selectIsDeviceUsingPassphrase } from '@suite-common/wallet-core';
 import { goto } from 'src/actions/suite/routerActions';
-import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
+import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 
 export const EmptyWallet = () => {
-    const { supportedMainnets, enabledNetworks } = useEnabledNetworks();
+    const { supportedMainnets } = useNetworkSupport();
     const isPassphraseType = useSelector(selectIsDeviceUsingPassphrase);
+    const enabledNetworks = useSelector(selectEnabledNetworks);
     const dispatch = useDispatch();
 
     const areAllNetworksEnabled = supportedMainnets.length === enabledNetworks.length;

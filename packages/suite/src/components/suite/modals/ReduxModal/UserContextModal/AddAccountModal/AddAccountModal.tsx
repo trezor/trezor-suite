@@ -14,12 +14,13 @@ import { useSelector, useDispatch } from 'src/hooks/suite';
 import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';
-import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { AccountTypeSelect } from './AccountTypeSelect/AccountTypeSelect';
 import { SelectNetwork } from './SelectNetwork';
 import { AddAccountButton } from './AddAccountButton/AddAccountButton';
 import { DeviceModelInternal } from '@trezor/connect';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 
 const NetworksWrapper = styled.div`
     display: flex;
@@ -49,14 +50,10 @@ export const AddAccountModal = ({
     const isDebug = useSelector(selectIsDebugModeActive);
     const isCoinjoinPublic = useSelector(selectIsPublic);
     const deviceModel = useSelector(selectDeviceModel);
+    const enabledNetworkSymbols = useSelector(selectEnabledNetworks);
     const dispatch = useDispatch();
 
-    const {
-        supportedMainnets,
-        unsupportedMainnets,
-        supportedTestnets,
-        enabledNetworks: enabledNetworkSymbols,
-    } = useEnabledNetworks();
+    const { supportedMainnets, unsupportedMainnets, supportedTestnets } = useNetworkSupport();
 
     const supportedNetworks = [...supportedMainnets, ...supportedTestnets];
     const allTestnetNetworksDisabled = supportedTestnets.some(network =>
