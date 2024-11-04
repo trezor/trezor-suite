@@ -6,13 +6,13 @@ import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { ipcMain } from '../typed-electron';
 import { save, read, readDir, rename } from '../libs/user-data';
 
-import type { Module } from './index';
+import type { ModuleInit } from './index';
 
 const DATA_DIR = '/metadata';
 
 export const SERVICE_NAME = 'metadata';
 
-export const init: Module = () => {
+export const init: ModuleInit = () => {
     const { logger } = global;
 
     ipcMain.handle('metadata/write', async (ipcEvent, message) => {

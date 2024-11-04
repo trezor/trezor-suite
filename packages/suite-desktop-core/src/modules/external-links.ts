@@ -6,11 +6,11 @@ import { HandlerDetails } from 'electron/main';
 
 import * as config from '../config';
 
-import type { Module } from './index';
+import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = 'external-links';
 
-export const init: Module = ({ mainWindowProxy, store }) => {
+export const init: ModuleInit = ({ mainWindowProxy, store }) => {
     const { logger } = global;
 
     mainWindowProxy.on('init', mainWindow => {

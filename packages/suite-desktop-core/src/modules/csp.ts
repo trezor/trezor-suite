@@ -6,11 +6,11 @@ import { session } from 'electron';
 
 import * as config from '../config';
 
-import type { Module } from './index';
+import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = 'csp';
 
-export const init: Module = () => {
+export const init: ModuleInit = () => {
     const { logger } = global;
 
     session.defaultSession.webRequest.onHeadersReceived((details, callback) => {

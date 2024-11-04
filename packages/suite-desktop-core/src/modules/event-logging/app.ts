@@ -1,10 +1,10 @@
 import { app } from 'electron';
 
-import type { Module } from '../index';
+import type { ModuleInit } from '../index';
 
 export const SERVICE_NAME = 'app';
 
-export const init: Module = () => {
+export const init: ModuleInit = () => {
     const { logger } = global;
 
     app.on('ready', () => {

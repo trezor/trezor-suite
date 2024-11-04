@@ -1,12 +1,12 @@
 import { app } from 'electron';
 
-import type { Module } from '../index';
+import type { ModuleInit } from '../index';
 
 const logUI = app.commandLine.hasSwitch('log-ui');
 
 export const SERVICE_NAME = 'content';
 
-export const init: Module = ({ mainWindowProxy }) => {
+export const init: ModuleInit = ({ mainWindowProxy }) => {
     const { logger } = global;
 
     mainWindowProxy.on('init', mainWindow => {

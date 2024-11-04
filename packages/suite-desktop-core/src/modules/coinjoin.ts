@@ -16,14 +16,14 @@ import { CoinjoinProcess } from '../libs/processes/CoinjoinProcess';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
 import { ThreadProxy } from '../libs/thread-proxy';
 
-import type { Module } from './index';
+import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = '@trezor/coinjoin';
 
 const CLIENT_CHANNEL = 'CoinjoinClient';
 const BACKEND_CHANNEL = 'CoinjoinBackend';
 
-export const init: Module = ({ mainWindowProxy, store, mainThreadEmitter }) => {
+export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) => {
     const { logger } = global;
 
     const backends: ThreadProxy<CoinjoinBackend>[] = [];

@@ -1,8 +1,8 @@
-import type { Module } from '../index';
+import type { ModuleInit } from '../index';
 
 export const SERVICE_NAME = 'event-logging/process';
 
-export const init: Module = () => {
+export const init: ModuleInit = () => {
     const { logger } = global;
 
     process.on('uncaughtException', e => {
