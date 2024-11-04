@@ -773,8 +773,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         const btcOnly = this.firmwareType === FirmwareType.BitcoinOnly;
         const binary = await getBinaryOptional({ baseUrl, btcOnly, release });
+        // release was found, but not its binary - happens on desktop, where only local files are searched
         if (binary === null) {
-            // release was found, but not its binary - happens on desktop, where only local files are searched
+            return createFailResult('check-unsupported');
+        }
+        // binary was found, but it's likely a git LFS pointer (can happen on dev) - see onCallFirmwareUpdate.ts
+        if (binary.byteLength < 200) {
+            _log.warn(`Firmware binary for hash check suspiciously small (< 200 b)`);
+
             return createFailResult('check-unsupported');
         }
 
