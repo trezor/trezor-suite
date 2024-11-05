@@ -120,6 +120,7 @@ const coinjoinAccountAuthorizeFailed = (accountKey: string, error: string) =>
         },
     }) as const;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const coinjoinAccountUnregister = (accountKey: string) =>
     ({
         type: COINJOIN.ACCOUNT_UNREGISTER,

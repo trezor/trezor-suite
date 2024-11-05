@@ -718,7 +718,7 @@ const onCallDevice = async (
                 // (acquire > Initialize > nothing > release)
                 try {
                     await device.run(() => Promise.resolve(), { skipFinalReload: true });
-                } catch (err) {
+                } catch {
                     // ignore. on model T, this block of code is probably not needed at all. but I am keeping it here for
                     // backwards compatibility
                 }

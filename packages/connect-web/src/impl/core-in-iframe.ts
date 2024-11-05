@@ -348,7 +348,7 @@ export class CoreInIframe implements ConnectFactoryDependencies<ConnectSettingsW
         try {
             await window.navigator.usb.requestDevice({ filters: config.webusb });
             iframe.postMessage({ type: TRANSPORT.REQUEST_DEVICE });
-        } catch (_err) {
+        } catch {
             // user hits cancel gets "DOMException: No device selected."
             // no need to log this
         }

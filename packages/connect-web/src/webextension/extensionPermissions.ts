@@ -35,7 +35,7 @@ const init = (label: string) => {
                 await usb.requestDevice({ filters: config.webusb });
                 sendMessage(WEBEXTENSION.USB_PERMISSIONS_CLOSE, '*');
                 broadcastPermissionFinished();
-            } catch (error) {
+            } catch {
                 // empty
             }
         }

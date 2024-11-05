@@ -315,7 +315,7 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
             // throws DOMException: The operation is insecure.
             _popupMessagePort = new BroadcastChannel(broadcastID);
             _popupMessagePort.onmessage = message => handleMessage(message);
-        } catch (error) {
+        } catch {
             // popup will use MessageChannel fallback communication
         }
     }

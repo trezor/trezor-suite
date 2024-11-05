@@ -141,7 +141,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         account.availableBalance = new BigNumber(mempoolInfo.xrpBalance).minus(reserve).toString();
         account.misc.sequence = mempoolInfo.sequence;
         account.history.unconfirmed = mempoolInfo.txs;
-    } catch (error) {
+    } catch {
         // do not throw error for mempool (ledger_index: "current")
         // mainnet sometimes return "error": "noNetwork", "error_message": "InsufficientNetworkMode",
         // TODO: investigate

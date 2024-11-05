@@ -38,7 +38,7 @@ function wrapBody(body: unknown) {
 function parseResult(text: string): Record<string, unknown> | string {
     try {
         return JSON.parse(text);
-    } catch (e) {
+    } catch {
         return text;
     }
 }

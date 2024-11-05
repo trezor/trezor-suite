@@ -75,7 +75,7 @@ export class Parser {
                 .match(/^# (.+$)/m)![1]!
                 .replace(/[\\]/g, '')
                 .trim();
-        } catch (e) {
+        } catch {
             throw new Error(`Could not parse title from ${path}.`);
         }
     }

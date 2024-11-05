@@ -17,7 +17,7 @@ export const useLocales = () => {
             let dateLocale;
             try {
                 dateLocale = await import(`date-fns/locale/${lang}/index`);
-            } catch (error) {
+            } catch {
                 dateLocale = await import(`date-fns/locale/en-US/index`);
 
                 console.warn(

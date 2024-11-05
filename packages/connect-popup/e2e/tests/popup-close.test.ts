@@ -188,7 +188,7 @@ test(`device disconnected during device interaction`, async ({ page, context }) 
     try {
         log('waiting to click @connect-ui/error-close-button');
         await popup.click("button[data-testid='@connect-ui/error-close-button']");
-    } catch (error) {
+    } catch {
         // Sometimes this crashes with error that the page is already closed.
     }
 

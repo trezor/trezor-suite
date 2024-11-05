@@ -6,7 +6,7 @@ export const parseQuery = (uri: string) => {
         new URLSearchParams(uri.substring(index)).forEach((v, k) => {
             params[k] = v;
         });
-    } catch (e) {
+    } catch {
         // empty
     }
 
@@ -16,7 +16,7 @@ export const parseQuery = (uri: string) => {
 export const parseUri = (uri: string) => {
     try {
         return new URL(uri);
-    } catch (e) {
+    } catch {
         // empty
     }
 };

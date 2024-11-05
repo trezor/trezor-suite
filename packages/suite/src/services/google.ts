@@ -172,7 +172,7 @@ class Client {
     static async isAuthServerAvailable() {
         try {
             Client.authServerAvailable = (await fetch(`${Client.authServerUrl}/status`)).ok;
-        } catch (err) {
+        } catch {
             Client.authServerAvailable = false;
         }
 

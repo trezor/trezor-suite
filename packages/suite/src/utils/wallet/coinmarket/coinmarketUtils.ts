@@ -150,7 +150,7 @@ export const getCountryLabelParts = (label: string) => {
         const text = parts.join(' ');
 
         return { flag, text };
-    } catch (err) {
+    } catch {
         return null;
     }
 };

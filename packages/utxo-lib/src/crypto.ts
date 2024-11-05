@@ -9,7 +9,7 @@ import { createHash } from 'crypto';
 export function ripemd160(buffer: Buffer): Buffer {
     try {
         return createHash('rmd160').update(buffer).digest();
-    } catch (err) {
+    } catch {
         return createHash('ripemd160').update(buffer).digest();
     }
 }

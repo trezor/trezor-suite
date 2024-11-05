@@ -12,7 +12,7 @@ const tryConfirmBySignatureStatus = async (
     const getCurrentBlockHeight = async () => {
         try {
             return await api.getBlockHeight('finalized');
-        } catch (_) {
+        } catch {
             return -1;
         }
     };

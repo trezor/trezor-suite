@@ -29,7 +29,7 @@ export function fromBech32(address: string): Bech32Result {
     let version: number;
     try {
         result = bech32.decode(address);
-    } catch (e) {
+    } catch {
         // silent
     }
 
@@ -83,32 +83,32 @@ function toFutureSegwitAddress(output: Buffer, network = BITCOIN_NETWORK) {
 export function fromOutputScript(output: Buffer, network = BITCOIN_NETWORK) {
     try {
         return payments.p2pkh({ output, network }).address as string;
-    } catch (e) {
+    } catch {
         // empty
     }
     try {
         return payments.p2sh({ output, network }).address as string;
-    } catch (e) {
+    } catch {
         // empty
     }
     try {
         return payments.p2wpkh({ output, network }).address as string;
-    } catch (e) {
+    } catch {
         // empty
     }
     try {
         return payments.p2wsh({ output, network }).address as string;
-    } catch (e) {
+    } catch {
         // empty
     }
     try {
         return payments.p2tr({ output, network }).address as string;
-    } catch (e) {
+    } catch {
         // empty
     }
     try {
         return toFutureSegwitAddress(output, network);
-    } catch (e) {
+    } catch {
         // empty
     }
 

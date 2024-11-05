@@ -42,6 +42,7 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
     private connectPromise?: Promise<void>;
 
     protected abstract ping(): Promise<unknown>;
+
     protected abstract createWebsocket(): WebSocket;
 
     constructor(options: Options) {
@@ -79,7 +80,7 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
                 } else {
                     this.ws.close();
                 }
-            } catch (error) {
+            } catch {
                 // empty
             }
         }
@@ -123,7 +124,7 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
                     subs.callback(data);
                 }
             }
-        } catch (error) {
+        } catch {
             // empty
         }
 
@@ -168,7 +169,7 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
                 try {
                     ws.once('error', () => {}); // hack; ws throws uncaughtably when there's no error listener
                     ws.close();
-                } catch (error) {
+                } catch {
                     // empty
                 }
             },

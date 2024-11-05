@@ -4,6 +4,7 @@ import GoogleClient from 'src/services/google';
 class GoogleProvider extends AbstractMetadataProvider {
     connected = false;
     isCloud = true;
+
     constructor(tokens: Tokens, environment: OAuthServerEnvironment) {
         super('google');
         GoogleClient.init(tokens, environment);
@@ -179,7 +180,7 @@ class GoogleProvider extends AbstractMetadataProvider {
             const result = await GoogleClient.getAccessToken();
 
             return !!result;
-        } catch (_err) {
+        } catch {
             return false;
         }
     }

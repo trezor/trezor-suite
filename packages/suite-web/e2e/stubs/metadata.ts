@@ -16,7 +16,7 @@ export const rerouteMetadataToMockProvider = (
     let url;
     try {
         url = new URL(uri);
-    } catch (_err) {
+    } catch {
         // catching absolute next.js urls which throw in URL constructor
         return fetch(uri, options);
     }

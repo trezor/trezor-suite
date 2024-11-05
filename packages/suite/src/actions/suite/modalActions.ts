@@ -84,7 +84,7 @@ export const openDeferredModal =
         });
         try {
             return dfd.promise;
-        } catch (error) {
+        } catch {
             // do nothing, return void
         }
     };

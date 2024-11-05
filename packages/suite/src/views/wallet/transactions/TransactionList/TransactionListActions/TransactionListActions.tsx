@@ -60,7 +60,7 @@ export const TransactionListActions = ({
                             noLoading: true,
                         }),
                     );
-                } catch (err) {
+                } catch {
                     dispatch(
                         notificationsActions.addToast({
                             type: 'error',

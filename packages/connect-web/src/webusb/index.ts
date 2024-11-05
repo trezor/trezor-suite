@@ -16,7 +16,7 @@ const onload = () => {
         if (usb) {
             try {
                 await usb.requestDevice({ filters: config.webusb });
-            } catch (error) {
+            } catch {
                 // empty
             }
         }

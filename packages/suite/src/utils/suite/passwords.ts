@@ -1,7 +1,7 @@
 export const getDisplayKey = (title: string, username: string) => {
     try {
         return `Unlock ${new URL(title).host} for user ${username}?`;
-    } catch (err) {
+    } catch {
         return `Unlock ${title} for user ${username}?`;
     }
 };

@@ -278,7 +278,7 @@ export function isNetworkType(type: NetworkTypes, network?: Network) {
             },
             network,
         );
-    } catch (e) {
+    } catch {
         return false;
     }
 

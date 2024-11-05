@@ -19,7 +19,7 @@ export const dispose = () => {
     if (instance && instance.parentNode) {
         try {
             instance.parentNode.removeChild(instance);
-        } catch (e) {
+        } catch {
             // do nothing
         }
     }
@@ -109,7 +109,7 @@ export const init = async (settings: ConnectSettings) => {
 
                 return;
             }
-        } catch (e) {
+        } catch {
             // empty
         }
 

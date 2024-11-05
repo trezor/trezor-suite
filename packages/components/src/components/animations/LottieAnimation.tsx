@@ -48,7 +48,7 @@ export const LottieAnimation = ({
                 ).json();
 
                 setLottieAnimationData(animation);
-            } catch (error) {
+            } catch {
                 // do not need to handle error
             }
         };

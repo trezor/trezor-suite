@@ -50,7 +50,7 @@ const initWorker = async (settings: BlockchainSettings) => {
         worker.onerror = null;
         try {
             worker.terminate();
-        } catch (error) {
+        } catch {
             // empty
         }
 

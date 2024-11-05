@@ -132,7 +132,7 @@ export const fetchTrezorPools = (network: 'ADA' | 'tADA') => async (dispatch: Di
             trezorPools: responseJson as PoolsResponse,
             network: cardanoNetwork,
         });
-    } catch (err) {
+    } catch {
         dispatch({
             type: CARDANO_STAKING.SET_FETCH_ERROR,
             error: true,
