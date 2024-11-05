@@ -664,7 +664,6 @@
   "TR_COPY_ADDRESS_POLICY_ID": "N’envoyez jamais de fonds à une adresse relative à un identifiant de politique.",
   "TR_COPY_AND_CLOSE": "Copier et fermer",
   "TR_COPY_SIGNED_MESSAGE": "Copier le message signé",
-  "TR_COPY_TO_CLIPBOARD_TX_ID": "Copier",
   "TR_COULD_NOT_RETRIEVE_CHANGELOG": "Impossible de récupérer le journal des modifications",
   "TR_COULD_NOT_RETRIEVE_DATA": "Impossible de récupérer les données",
   "TR_COUNT_WALLETS": "{count} {count, plural, one {portefeuille} other {portefeuilles}}",

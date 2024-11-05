@@ -539,7 +539,6 @@
   "TR_COPY_ADDRESS_POLICY_ID": "Never send funds to a policy ID address.",
   "TR_COPY_AND_CLOSE": "Kopírovať a zavrieť",
   "TR_COPY_SIGNED_MESSAGE": "Skopírovať podpísanú správu",
-  "TR_COPY_TO_CLIPBOARD_TX_ID": "Skopírovať",
   "TR_COULD_NOT_RETRIEVE_CHANGELOG": "Nepodarilo sa načítať zoznam zmien",
   "TR_COULD_NOT_RETRIEVE_DATA": "Nepodarilo sa načítať údaje",
   "TR_COUNT_WALLETS": "{count} {count, plural, one {wallet} other {wallets}}",

@@ -664,7 +664,6 @@
   "TR_COPY_ADDRESS_POLICY_ID": "Sende niemals Assets an eine Richtlinien-ID-Adresse.",
   "TR_COPY_AND_CLOSE": "Kopieren und schließen",
   "TR_COPY_SIGNED_MESSAGE": "Signierte Nachricht kopieren",
-  "TR_COPY_TO_CLIPBOARD_TX_ID": "Kopieren",
   "TR_COULD_NOT_RETRIEVE_CHANGELOG": "Änderungsprotokoll konnte nicht abgerufen werden",
   "TR_COULD_NOT_RETRIEVE_DATA": "Daten konnten nicht abgerufen werden",
   "TR_COUNT_WALLETS": "{count} {count, plural, one {Wallet} other {Wallets}}",

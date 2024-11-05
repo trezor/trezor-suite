@@ -539,7 +539,6 @@
   "TR_COPY_ADDRESS_POLICY_ID": "Ніколи не надсилайте активи на ідентифікаційну адресу полісу.",
   "TR_COPY_AND_CLOSE": "Копіювати та Закрити",
   "TR_COPY_SIGNED_MESSAGE": "Копіювати підписане повідомлення",
-  "TR_COPY_TO_CLIPBOARD_TX_ID": "Копіювати",
   "TR_COULD_NOT_RETRIEVE_CHANGELOG": "Не вдалося отримати список змін",
   "TR_COULD_NOT_RETRIEVE_DATA": "Не вдалося отримати дані",
   "TR_COUNT_WALLETS": "{count} {count, plural, one {гаманець} few {гаманців} many {гаманців} other {гаманці}}",

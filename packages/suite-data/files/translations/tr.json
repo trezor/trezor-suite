@@ -664,7 +664,6 @@
   "TR_COPY_ADDRESS_POLICY_ID": "Asla bir politika kimliği adresine fon göndermeyin.",
   "TR_COPY_AND_CLOSE": "Kopyala ve Kapat",
   "TR_COPY_SIGNED_MESSAGE": "İmzalanan mesajı kopyala",
-  "TR_COPY_TO_CLIPBOARD_TX_ID": "Kopyala",
   "TR_COULD_NOT_RETRIEVE_CHANGELOG": "Değişiklik günlüğü alınamadı",
   "TR_COULD_NOT_RETRIEVE_DATA": "Veriler alınamadı",
   "TR_COUNT_WALLETS": "{count} {count, plural, one {cüzdan} other {cüzdanlar}}",

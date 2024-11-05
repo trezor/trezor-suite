@@ -664,7 +664,6 @@
   "TR_COPY_ADDRESS_POLICY_ID": "Non inviare mai fondi a un indirizzo ID policy.",
   "TR_COPY_AND_CLOSE": "Copia e chiudi",
   "TR_COPY_SIGNED_MESSAGE": "Copia messaggio firmato",
-  "TR_COPY_TO_CLIPBOARD_TX_ID": "Copia",
   "TR_COULD_NOT_RETRIEVE_CHANGELOG": "Impossibile recuperare il changelog",
   "TR_COULD_NOT_RETRIEVE_DATA": "Impossibile recuperare i dati",
   "TR_COUNT_WALLETS": "{count} {count, plural, one {wallet} other {wallet}}",
