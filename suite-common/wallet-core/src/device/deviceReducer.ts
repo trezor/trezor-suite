@@ -52,6 +52,30 @@ export const isUnlocked = (features: Features): boolean =>
           true;
 
 /**
+ * Local utility: get state in DeviceState format from AcquiredDevice in backwards compatible way
+ * @param upcoming
+ * @returns
+ */
+const mergeDeviceState = (
+    device: AcquiredDevice,
+    upcoming: Partial<
+        AcquiredDevice & { state?: DeviceState | StaticSessionId; _state?: DeviceState }
+    >,
+): DeviceState | undefined => {
+    const upcomingState = typeof upcoming.state === 'string' ? upcoming._state : upcoming.state;
+    if (
+        // state was previously not defined, we can set it
+        device.state === undefined ||
+        // update sessionId for the same staticSessionId
+        (upcomingState?.sessionId &&
+            device.state?.staticSessionId === upcomingState.staticSessionId &&
+            device.state?.sessionId !== upcomingState.sessionId)
+    ) {
+        return upcomingState;
+    }
+};
+
+/**
  * Local utility: set updated fields for device
  * @param {AcquiredDevice} device
  * @param {Partial<AcquiredDevice>} upcoming
@@ -60,12 +84,14 @@ export const isUnlocked = (features: Features): boolean =>
 const merge = (
     device: AcquiredDevice,
     // this method can take the old string state type, since it's not used here
-    upcoming: Partial<AcquiredDevice & { state?: DeviceState | StaticSessionId }>,
+    upcoming: Partial<
+        AcquiredDevice & { state?: DeviceState | StaticSessionId; _state: DeviceState }
+    >,
 ): TrezorDevice => ({
     ...device,
     ...upcoming,
     id: upcoming.id ?? device.id,
-    state: device.state,
+    state: mergeDeviceState(device, upcoming) ?? device.state,
     instance: device.instance,
     features: {
         // Don't override features if upcoming device is locked.
