@@ -16,7 +16,7 @@ const wrapperStyle = prepareNativeStyle(() => ({
 const cardStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     flex: 1,
-    width: '100%',
+    marginHorizontal: utils.spacings.sp16,
     paddingHorizontal: utils.spacings.sp24,
     paddingVertical: utils.spacings.sp32,
     borderRadius: utils.borders.radii.r20,

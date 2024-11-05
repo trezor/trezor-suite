@@ -60,7 +60,7 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
         alignItems: 'center',
         justifyContent: 'space-between',
         backgroundColor: utils.colors.backgroundSurfaceElevation1,
-        marginHorizontal: utils.spacings.sp8,
+        marginHorizontal: utils.spacings.sp16,
         paddingHorizontal: utils.spacings.sp16,
         paddingTop: utils.spacings.sp12,
         paddingBottom: utils.spacings.sp12,

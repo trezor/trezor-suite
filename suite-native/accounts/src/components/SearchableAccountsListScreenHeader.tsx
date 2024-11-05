@@ -78,6 +78,7 @@ export const SearchableAccountsListScreenHeader = ({
                     exiting={FadeOut.duration(HEADER_ANIMATION_DURATION)}
                 >
                     <ScreenSubHeader
+                        customHorizontalPadding="sp16"
                         content={title}
                         rightIcon={
                             <AddAccountButton
