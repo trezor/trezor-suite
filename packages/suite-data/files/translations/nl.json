@@ -437,7 +437,6 @@
   "TR_CONTRACT_TRANSACTION": "Contracttransactie",
   "TR_CONVERT_TO_LOWERCASE": "Zet om naar kleine letters",
   "TR_COPY_AND_CLOSE": "Kopieer & sluit",
-  "TR_COPY_TO_CLIPBOARD_TX_ID": "Kopiëren",
   "TR_COULD_NOT_RETRIEVE_CHANGELOG": "Kon de changelog niet ophalen",
   "TR_COULD_NOT_RETRIEVE_DATA": "Kon gegevens niet ophalen",
   "TR_COUNT_WALLETS": "{count} {count, plural, one {portemonnee} other {portemonnees}}",

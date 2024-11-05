@@ -664,7 +664,6 @@
   "TR_COPY_ADDRESS_POLICY_ID": "Nunca envie fundos para um endereço de ID de política.",
   "TR_COPY_AND_CLOSE": "Copiar e fechar",
   "TR_COPY_SIGNED_MESSAGE": "Copiar mensagem assinada",
-  "TR_COPY_TO_CLIPBOARD_TX_ID": "Copiar",
   "TR_COULD_NOT_RETRIEVE_CHANGELOG": "Não consegui recuperar o changelog",
   "TR_COULD_NOT_RETRIEVE_DATA": "Não consegui recuperar dados",
   "TR_COUNT_WALLETS": "{count} {count, plural, one {carteira} other {carteiras}}",

@@ -372,7 +372,6 @@
   "TR_CONTINUE_TO_PIN": "Continuați către PIN",
   "TR_COPY_AND_CLOSE": "Copiază și închide",
   "TR_COPY_SIGNED_MESSAGE": "Copiază mesajul semnat",
-  "TR_COPY_TO_CLIPBOARD_TX_ID": "Copiaţi",
   "TR_COULD_NOT_RETRIEVE_CHANGELOG": "Nu s-a putut prelua jurnalul modificărilor",
   "TR_COULD_NOT_RETRIEVE_DATA": "Nu s-au putut prelua datele",
   "TR_COUNT_WALLETS": "{count} {count, plural, one {portofel} other {portofele}}",
