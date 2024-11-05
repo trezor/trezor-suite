@@ -800,7 +800,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 return await this.getCommands().typedCall('GetFirmwareHash', 'FirmwareHash', {
                     challenge,
                 });
-            } catch (e) {
+            } catch {
                 return null;
             }
         };
@@ -1111,7 +1111,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     path: this.transportPath,
                     onClose: true,
                 });
-            } catch (err) {
+            } catch {
                 // empty
             }
         }

@@ -123,7 +123,7 @@ export const init =
             try {
                 // Verify if valid by loading core.js, if this file exists we can assume the connectSrc is valid
                 await testLoadingScript(options.connectSrc + 'js/core.js');
-            } catch (err) {
+            } catch {
                 dispatch({
                     type: ACTIONS.ON_INIT_ERROR,
                     payload: `Invalid connectSrc: ${options.connectSrc}`,

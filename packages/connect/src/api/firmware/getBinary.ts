@@ -17,7 +17,7 @@ export const getBinary = ({ baseUrl, btcOnly, release }: GetBinaryProps) => {
 export const getBinaryOptional = async (props: GetBinaryProps) => {
     try {
         return await getBinary(props);
-    } catch (error) {
+    } catch {
         return null;
     }
 };

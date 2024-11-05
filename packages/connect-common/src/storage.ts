@@ -73,7 +73,7 @@ class Storage extends TypedEmitter<Events> {
             const newState = getNewState(getPermanentStorage());
             localStorage.setItem(storageName, JSON.stringify(newState));
             this.emit('changed', newState);
-        } catch (err) {
+        } catch {
             // memory storage is fallback of the last resort
             console.warn('long term storage not available');
             memoryStorage = getNewState(memoryStorage);
@@ -104,7 +104,7 @@ class Storage extends TypedEmitter<Events> {
 
         try {
             return getPermanentStorage();
-        } catch (err) {
+        } catch {
             // memory storage is fallback of the last resort
             console.warn('long term storage not available');
 

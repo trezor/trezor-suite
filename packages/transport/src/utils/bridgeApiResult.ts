@@ -83,7 +83,7 @@ export function acquire(res: UnknownPayload) {
 export function call(res: UnknownPayload) {
     try {
         return success(validateProtocolMessage(res, true));
-    } catch (e) {
+    } catch {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
 }
@@ -91,7 +91,7 @@ export function call(res: UnknownPayload) {
 export function post(res: UnknownPayload) {
     try {
         return success(validateProtocolMessage(res, false));
-    } catch (e) {
+    } catch {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
 }

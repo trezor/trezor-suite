@@ -38,7 +38,7 @@ export function readUInt64LEasString(buffer: Buffer, offset: number) {
         const result = readUInt64LE(buffer, offset);
 
         return result.toString();
-    } catch (error) {
+    } catch {
         const aUint = buffer.readUInt32LE(offset);
         const bUint = buffer.readUInt32LE(offset + 4);
         const m = new BN(0x100000000);

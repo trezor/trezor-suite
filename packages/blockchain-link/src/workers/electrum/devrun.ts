@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // @ts-nocheck
 /// <reference path="../../../../suite/global.d.ts" />
 

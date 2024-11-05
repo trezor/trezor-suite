@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 let Trezor: {
     getController: (testName?: string) => any;
     setup: (controller: any, options: any) => any;

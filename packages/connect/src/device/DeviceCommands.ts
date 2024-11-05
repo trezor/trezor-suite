@@ -46,7 +46,7 @@ const assertType = (res: DefaultPayloadMessage, resType: MessageKey | MessageKey
 const generateEntropy = (len: number) => {
     try {
         return randomBytes(len);
-    } catch (err) {
+    } catch {
         throw ERRORS.TypedError(
             'Runtime',
             'generateEntropy: Environment does not support crypto random',
@@ -564,7 +564,7 @@ export class DeviceCommands {
                 await createTimeoutPromise(1);
                 await this.device.acquire();
                 await cancelPrompt(this.device, false);
-            } catch (err) {
+            } catch {
                 // ignore whatever happens
             }
         } else {

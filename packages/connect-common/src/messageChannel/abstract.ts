@@ -48,7 +48,9 @@ export abstract class AbstractMessageChannel<
     protected messageID = 0;
 
     public isConnected = false;
+
     abstract connect(): void;
+
     abstract disconnect(): void;
 
     private readonly handshakeMaxRetries = 5;
@@ -219,7 +221,7 @@ export abstract class AbstractMessageChannel<
         if (!usePromise) {
             try {
                 this.sendFn(message);
-            } catch (err) {
+            } catch {
                 if (useQueue) {
                     this.messagesQueue.push(message);
                 }
@@ -234,7 +236,7 @@ export abstract class AbstractMessageChannel<
 
         try {
             this.sendFn(message);
-        } catch (err) {
+        } catch {
             if (useQueue) {
                 this.messagesQueue.push(message);
             }

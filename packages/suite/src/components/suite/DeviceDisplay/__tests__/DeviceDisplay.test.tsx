@@ -9,10 +9,10 @@ import { renderWithProviders } from '../../../../support/tests/hooksHelper';
 import { extraDependencies } from '../../../../support/extraDependencies';
 import suiteReducer from '../../../../reducers/suite/suiteReducer';
 
-const deviceReducer = prepareDeviceReducer(extraDependencies);
+const _deviceReducer = prepareDeviceReducer(extraDependencies);
 
 type State = {
-    device: DeepPartial<ReturnType<typeof deviceReducer>>;
+    device: DeepPartial<ReturnType<typeof _deviceReducer>>;
     suite: DeepPartial<ReturnType<typeof suiteReducer>>;
 };
 

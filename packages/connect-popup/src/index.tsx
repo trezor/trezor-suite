@@ -57,7 +57,7 @@ const escapeHtml = (payload: any) => {
         div.appendChild(document.createTextNode(JSON.stringify(payload)));
 
         return JSON.parse(div.innerHTML);
-    } catch (error) {
+    } catch {
         // do nothing
     }
 };

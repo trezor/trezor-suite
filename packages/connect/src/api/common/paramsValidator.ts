@@ -42,7 +42,7 @@ export function validateParams<P extends Record<string, any>>(params: P, schema:
                     validateParams(p, [{ name: field.name, type: t }]);
 
                     return count + 1;
-                } catch (e) {
+                } catch {
                     return count;
                 }
             }, 0);

@@ -103,7 +103,7 @@ const useLogWorker = (setLogs: React.Dispatch<React.SetStateAction<any[]>>) => {
 
     try {
         logWorker = new SharedWorker('./workers/shared-logger-worker.js');
-    } catch (error) {
+    } catch {
         console.warn('Failed to initialize SharedWorker');
     }
 

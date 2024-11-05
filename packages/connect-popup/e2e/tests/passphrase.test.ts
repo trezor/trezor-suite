@@ -374,7 +374,7 @@ test('passphrase mismatch', async ({ page }) => {
             timeout: 10000,
         });
         await popup.click('.explain.unacquired');
-    } catch (error) {
+    } catch {
         // May appear or not
     }
 
