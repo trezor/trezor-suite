@@ -14,10 +14,8 @@ export const NORMAL_ACCOUNT_TYPE = 'normal' satisfies AccountType;
  */
 export const networksCollection: Network[] = Object.values(networks);
 
-export const getMainnets = (debug = false, op = false) =>
-    networksCollection.filter(
-        n => !n.testnet && (!n.isDebugOnlyNetwork || debug) && (op || n.symbol !== 'op'),
-    );
+export const getMainnets = (debug = false) =>
+    networksCollection.filter(n => !n.testnet && (!n.isDebugOnlyNetwork || debug));
 
 export const getTestnets = (debug = false) =>
     networksCollection.filter(n => n.testnet === true && (!n.isDebugOnlyNetwork || debug));

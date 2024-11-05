@@ -162,6 +162,7 @@ export const networks = {
         },
         coingeckoId: 'optimistic-ethereum',
         coingeckoNativeId: 'ethereum',
+        isDebugOnlyNetwork: true,
     },
     sol: {
         symbol: 'sol',
