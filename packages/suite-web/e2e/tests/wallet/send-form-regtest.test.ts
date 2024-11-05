@@ -11,7 +11,7 @@ describe('Send form for bitcoin', () => {
             mnemonic: 'mnemonic_all',
         });
         cy.task('startBridge');
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
