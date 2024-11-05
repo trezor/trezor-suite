@@ -64,8 +64,4 @@ export class DataManager {
 
         return this.settings;
     }
-
-    static getConfig() {
-        return config;
-    }
 }
