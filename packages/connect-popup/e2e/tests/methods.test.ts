@@ -63,6 +63,7 @@ filteredFixtures.forEach(f => {
         // - fixture require different device than prev fixture, or
         // - fixture is retried
         // FIXME: always reset for now, due to flaky tests with bridge bug
+        // eslint-disable-next-line no-constant-binary-expression
         if (true || JSON.stringify(device) !== JSON.stringify(f.device) || retry) {
             device = f.device;
             await TrezorUserEnvLink.stopBridge();
