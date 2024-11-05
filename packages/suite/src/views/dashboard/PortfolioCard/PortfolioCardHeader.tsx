@@ -55,7 +55,6 @@ export type PortfolioCardHeaderProps = {
     showGraphControls: boolean;
     hideBorder: boolean;
     receiveClickHandler: () => void;
-    buyClickHandler: () => void;
 };
 
 export const PortfolioCardHeader = ({
@@ -69,7 +68,6 @@ export const PortfolioCardHeader = ({
     showGraphControls,
     hideBorder,
     receiveClickHandler,
-    buyClickHandler,
 }: PortfolioCardHeaderProps) => {
     const accounts = useFastAccounts();
 
@@ -91,13 +89,6 @@ export const PortfolioCardHeader = ({
                             data-testid="@dashboard/receive-button"
                         >
                             <Translation id="TR_RECEIVE" />
-                        </WalletEmptyButton>
-                        <WalletEmptyButton
-                            onClick={buyClickHandler}
-                            data-testid="@dashboard/buy-button"
-                            variant="tertiary"
-                        >
-                            <Translation id="TR_BUY" />
                         </WalletEmptyButton>
                     </Buttons>
                 </>
