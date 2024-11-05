@@ -9,7 +9,7 @@ import { Placement, ShiftOptions } from '@floating-ui/react';
 import { TooltipBox, TooltipBoxProps } from './TooltipBox';
 import { TooltipArrow } from './TooltipArrow';
 import { TOOLTIP_DELAY_SHORT, TooltipDelay } from './TooltipDelay';
-import { intermediaryTheme } from '../..';
+import { intermediaryTheme } from '../../config/colors';
 
 export type Cursor = 'inherit' | 'pointer' | 'help' | 'default' | 'not-allowed';
 

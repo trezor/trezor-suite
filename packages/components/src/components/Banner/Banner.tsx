@@ -3,7 +3,6 @@ import styled, { css, DefaultTheme, useTheme } from 'styled-components';
 
 import { variables } from '../../config';
 import { Elevation, borders, spacingsPx, typography, spacings } from '@trezor/theme';
-import { Row, Column, TransientProps, useElevation, useMediaQuery } from '../..';
 import {
     FrameProps,
     FramePropsKeys,
@@ -23,6 +22,10 @@ import {
 } from './utils';
 import { Icon, IconName } from '../Icon/Icon';
 import { SCREEN_SIZE } from '../../config/variables';
+import { TransientProps } from '../../utils/transientProps';
+import { useMediaQuery } from '../../utils/useMediaQuery';
+import { useElevation } from '../ElevationContext/ElevationContext';
+import { Column, Row } from '../Flex/Flex';
 
 export const allowedBannerFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBannerFrameProps)[number]>;
@@ -72,7 +75,6 @@ const Wrapper = styled.div<WrapperParams>`
     padding: ${spacingsPx.sm} ${({ $spacingX }) => spacingsPx[$spacingX]};
 
     ${withFrameProps}
-
     ${variables.SCREEN_QUERY.MOBILE} {
         align-items: stretch;
         flex-direction: column;

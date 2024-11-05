@@ -364,7 +364,6 @@ module.exports = {
                 'no-console': 'off',
                 'react/jsx-no-undef': 'off',
                 'no-catch-shadow': 'off',
-                '@typescript-eslint/no-restricted-imports': 'off',
                 'no-restricted-syntax': 'off',
             },
         },

@@ -7,7 +7,7 @@ import suiteReducer, { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { configureMockStore } from '@suite-common/test-utils';
 import { ThemeProvider } from 'src/support/suite/ThemeProvider';
 import { Locale } from 'src/config/suite/languages';
-import { NumberInput } from '..';
+import { NumberInput } from '../NumberInput';
 
 const onChangeMock = jest.fn();
 
