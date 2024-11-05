@@ -48,10 +48,6 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      - name: Install missing Python deps (to build bcrypto lib in Node)
-        if: matrix.os == 'macos-14'
-        run: brew install python-setuptools
-
       - name: Install deps and build libs
         run: |
           yarn install --immutable
