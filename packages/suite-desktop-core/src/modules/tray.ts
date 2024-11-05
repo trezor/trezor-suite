@@ -76,6 +76,17 @@ export const initBackground: ModuleInitBackground = ({ store }) => {
                 click: () => mainThreadEmitter.emit('app/show'),
             },
             {
+                label: 'Hide icon from tray',
+                click: () => {
+                    store.setTraySettings({
+                        ...store.getTraySettings(),
+                        showOnTray: false,
+                    });
+                    state.visible = false;
+                    renderTray();
+                },
+            },
+            {
                 label: 'Stop Trezor Bridge and Quit',
                 click: () => {
                     mainThreadEmitter.emit('app/fully-quit');
