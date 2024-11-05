@@ -3,12 +3,11 @@ import styled from 'styled-components';
 import { Translation, Modal, Metadata } from 'src/components/suite';
 import { Button, Card, Image, Text } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
+import { useDispatch, useLayout } from 'src/hooks/suite';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { AutoStart } from 'src/views/settings/SettingsDebug/AutoStart';
+import { AutoStart } from 'src/views/settings/SettingsGeneral/AutoStart';
 import { isDesktop } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 const StyledModal = styled(Modal)`
     ${Modal.BottomBar} {
@@ -35,7 +34,6 @@ const StyledButton = styled(Button)`
  * This component renders only in desktop version
  */
 export const BridgeRequested = () => {
-    const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const [confirmGoToWallet, setConfirmGoToWallet] = useState(false);
 
     const dispatch = useDispatch();
@@ -99,7 +97,7 @@ export const BridgeRequested = () => {
             <Metadata title="Bridge | Trezor Suite" />
             <StyledImage image="CONNECT_DEVICE" width="360" />
 
-            {isDesktop() && isDebugModeActive && (
+            {isDesktop() && (
                 <>
                     <Text
                         typographyStyle="hint"

@@ -9198,7 +9198,8 @@ export default defineMessages({
     },
     TR_AUTO_START_DESCRIPTION: {
         id: 'TR_AUTO_START_DESCRIPTION',
-        defaultMessage: 'Start Trezor Suite in the background when you log into your computer.',
+        defaultMessage:
+            'Start Trezor Suite in the background when you log into your computer, to provide connectivity for third-party apps.',
     },
     TR_SHOW_ON_TRAY: {
         id: 'TR_SHOW_ON_TRAY',
@@ -9217,5 +9218,9 @@ export default defineMessages({
         id: 'TR_BUMP_FEE_DISABLED_TOOLTIP',
         defaultMessage:
             'To speed up your transactions, increase the fee on the oldest (by nonce) pending transaction in the queue. Transactions must be confirmed in order. <a>Learn more</a>',
+    },
+    TR_TREZOR_CONNECT: {
+        id: 'TR_TREZOR_CONNECT',
+        defaultMessage: 'Trezor Connect',
     },
 });
