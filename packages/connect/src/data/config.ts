@@ -66,45 +66,6 @@ export const config = {
     onionDomains: {
         'trezor.io': 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
     },
-    assets: [
-        {
-            name: 'coins',
-            url: './data/coins.json',
-        },
-        {
-            name: 'coinsEth',
-            url: './data/coins-eth.json',
-        },
-        {
-            name: 'bridge',
-            url: './data/bridge/releases.json',
-        },
-        {
-            name: 'firmware-t1b1',
-            url: './data/firmware/t1b1/releases.json',
-        },
-        {
-            name: 'firmware-t2t1',
-            url: './data/firmware/t2t1/releases.json',
-        },
-        {
-            name: 'firmware-t2b1',
-            url: './data/firmware/t2b1/releases.json',
-        },
-        {
-            name: 'firmware-t3b1',
-            url: './data/firmware/t3b1/releases.json',
-        },
-        {
-            name: 'firmware-t3t1',
-            url: './data/firmware/t3t1/releases.json',
-        },
-        {
-            name: 'firmware-t3tw1',
-            url: './data/firmware/t3w1/releases.json',
-        },
-    ],
-    messages: './data/messages/messages.json',
     supportedBrowsers: {
         chrome: {
             version: 59,
