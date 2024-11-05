@@ -1,4 +1,4 @@
-import { desktopReducer } from '..';
+import { desktopReducer } from '../index';
 import * as SUITE from 'src/actions/suite/constants/suiteConstants';
 import type { HandshakeElectron } from '@trezor/suite-desktop-api';
 

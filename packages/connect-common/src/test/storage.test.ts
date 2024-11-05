@@ -1,4 +1,4 @@
-import { storage } from '..';
+import { storage } from '../storage';
 
 const origin = 'foo.bar';
 

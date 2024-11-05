@@ -1,7 +1,7 @@
 // @ts-nocheck
 /// <reference path="../../../../suite/global.d.ts" />
 
-import ElectrumWorker from '.';
+import ElectrumWorker from './index';
 import { createSocket } from './sockets';
 import type { Message, Response } from '../../types';
 

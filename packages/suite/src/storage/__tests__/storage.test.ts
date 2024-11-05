@@ -1,6 +1,6 @@
 import '@suite-common/test-utils/src/mocks';
 
-import { db } from '..';
+import { db } from '../index';
 
 describe('storage', () => {
     test('2 calls to uninitiated db', async () => {
