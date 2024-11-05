@@ -153,7 +153,6 @@
   "TR_404_DESCRIPTION": "Kurza twarz! Przykro nam. Wygląda na to, że adres URL jest nieprawidłowy lub uszkodzony.",
   "TR_404_GO_TO_DASHBOARD": "Przejdź do pulpitu",
   "TR_404_TITLE": "Błąd 404: Nie znaleziono odnośnika",
-  "TR_ABORT": "Anuluj",
   "TR_ACCOUNT_DETAILS_HEADER": "Szczegóły konta",
   "TR_ACCOUNT_DETAILS_TYPE_HEADER": "Typ konta",
   "TR_ACCOUNT_DETAILS_XPUB": "Ostrożnie obchodź się ze swoim kluczem publicznym (xPUB). Gdy zostanie ujawniony, podmioty zewnętrzne uzyskają dostęp do całej Twojej historii transakcji.",
