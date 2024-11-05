@@ -1136,12 +1136,12 @@ export default defineMessages({
     },
     TR_COINMARKET_BUY_AND_SELL_COUNTER: {
         defaultMessage:
-            '{totalBuys, plural,\n            =0 {{totalBuys} buy}\n            one {{totalBuys} buy}\n            other {{totalBuys} buys}\n        } • {totalSells, plural,\n            =0 {{totalSells} sell}\n            one {{totalSells} sell}\n            other {{totalSells} sells}\n        }',
+            '{totalBuys, plural, =0 {{totalBuys} buy} one {{totalBuys} buy} other {{totalBuys} buys} } • {totalSells, plural, =0 {{totalSells} sell} one {{totalSells} sell} other {{totalSells} sells} }',
         id: 'TR_COINMARKET_BUY_AND_SELL_COUNTER',
     },
     TR_COINMARKET_SWAP_COUNTER: {
         defaultMessage:
-            '{totalSwaps, plural,\n            =0 {{totalSwaps} swap}\n            one {{totalSwaps} swap}\n            other {{totalSwaps} swaps}\n        }',
+            '{totalSwaps, plural, =0 {{totalSwaps} swap} one {{totalSwaps} swap} other {{totalSwaps} swaps} }',
         id: 'TR_COINMARKET_SWAP_COUNTER',
     },
     TR_COINMARKET_PAYMENT_METHOD: {
@@ -3664,7 +3664,7 @@ export default defineMessages({
     TOAST_QR_UNKNOWN_SCHEME_PROTOCOL: {
         id: 'TOAST_QR_UNKNOWN_SCHEME_PROTOCOL',
         defaultMessage:
-            'Unknown protocol scheme: "{scheme}". Please try again or enter the address manually.',
+            'Unknown protocol scheme: "{scheme}". Try again or enter the address manually.',
     },
     TOAST_COIN_SCHEME_PROTOCOL: {
         id: 'TOAST_COIN_SCHEME_PROTOCOL',
@@ -5370,7 +5370,7 @@ export default defineMessages({
         id: 'AMOUNT_IS_NOT_ENOUGH',
     },
     AMOUNT_EXCEEDS_MAX: {
-        defaultMessage: 'The amount exceeds the maximum allowed value of {maxAmount}',
+        defaultMessage: 'The amount exceeds the maximum allowed value of {maxAmount}.',
         id: 'AMOUNT_EXCEEDS_MAX',
     },
     AMOUNT_IS_NOT_IN_RANGE_DECIMALS: {
@@ -6746,17 +6746,17 @@ export default defineMessages({
     },
     TR_DEVICE_CONNECTED_UNACQUIRED: {
         id: 'TR_DEVICE_CONNECTED_UNACQUIRED',
-        defaultMessage: 'Device used elsewhere',
+        defaultMessage: 'This device is being used elsewhere.',
     },
     TR_DEVICE_CONNECTED_UNACQUIRED_DESCRIPTION: {
         id: 'TR_DEVICE_CONNECTED_UNACQUIRED_DESCRIPTION',
         defaultMessage:
-            'App {transportSessionOwner} might be using the device right now. You may acquire the device for yourself.',
+            'The app {transportSessionOwner} may currently be using this device. You can take control of the device if needed.',
     },
     TR_DEVICE_CONNECTED_UNACQUIRED_DESCRIPTION_UNKNOWN_APP: {
         id: 'TR_DEVICE_CONNECTED_UNACQUIRED_DESCRIPTION_UNKNOWN_APP',
         defaultMessage:
-            'Another app might be using the device right now. You may acquire the device for yourself.',
+            'Another app may currently be using this device. You can take control of the device if needed.',
     },
     TR_WIPE_OR_UPDATE: {
         id: 'TR_WIPE_OR_UPDATE',
@@ -6836,7 +6836,7 @@ export default defineMessages({
     TR_DEVICE_MAYBE_COMPROMISED_TEXT: {
         id: 'TR_DEVICE_MAYBE_COMPROMISED_TEXT',
         defaultMessage:
-            "Reconnect your device to retry verification. If the issue persists, contact Trezor Support to figure out what's going on with your device and what to do next.",
+            "Reconnect your device and try verifying again. If the issue continues, contact Trezor Support to figure out what's going on with your device and what to do next.",
     },
     TR_DISCONNECT_DEVICE: {
         id: 'TR_DISCONNECT_DEVICE',
@@ -6852,7 +6852,7 @@ export default defineMessages({
     },
     TR_SEE_IF_ISSUE_PERSISTS: {
         id: 'TR_SEE_IF_ISSUE_PERSISTS',
-        defaultMessage: 'See if issue persist.',
+        defaultMessage: 'See if issue persists.',
     },
     TR_CONTACT_TREZOR_SUPPORT: {
         id: 'TR_CONTACT_TREZOR_SUPPORT',
@@ -7108,12 +7108,12 @@ export default defineMessages({
         id: 'TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_DESCRIPTION',
     },
     TR_TROUBLESHOOTING_TIP_UNREADABLE_HID_TITLE: {
-        defaultMessage: 'You may be using a very old Trezor model',
+        defaultMessage: 'It appears that you may be using an older Trezor model.',
         id: 'TR_TROUBLESHOOTING_TIP_UNREADABLE_HID_TITLE',
     },
     TR_TROUBLESHOOTING_TIP_UNREADABLE_HID_DESCRIPTION: {
         defaultMessage:
-            'If the last time you updated your device firmware was in 2019 and earlier please follow instructions in <a>the knowledge base</a>',
+            'If you last updated your device firmware in 2019 or earlier, please follow the instructions in <a>the Knowledge Base</a>',
         id: 'TR_TROUBLESHOOTING_TIP_UNREADABLE_HID_DESCRIPTION',
     },
     TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TITLE: {
@@ -7420,7 +7420,7 @@ export default defineMessages({
     },
     TR_STAKING_YOUR_UNSTAKED_FUNDS: {
         id: 'TR_STAKING_YOUR_UNSTAKED_FUNDS',
-        defaultMessage: 'Your unstaked {symbol} is ready for you',
+        defaultMessage: 'Your unstaked {symbol} is ready',
     },
     TR_RECEIVING_SYMBOL: {
         id: 'TR_RECEIVING_SYMBOL',
@@ -8818,7 +8818,7 @@ export default defineMessages({
     TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION: {
         id: 'TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION',
         defaultMessage:
-            'Liquidity of the staking pool can allow for instant unstake of some funds. Remaining funds will follow the unstaking period',
+            'The liquidity of the staking pool can allow for instant unstake of some funds. The remaining funds will follow the unstaking period.',
     },
     TR_UP_TO_DAYS: {
         id: 'TR_UP_TO_DAYS',
@@ -9189,7 +9189,7 @@ export default defineMessages({
     TR_BRIDGE_TIP_AUTOSTART: {
         id: 'TR_BRIDGE_TIP_AUTOSTART',
         defaultMessage:
-            'Tip: You can enable the auto-start feature and have the Bridge always running in the background.',
+            'Tip: Enable the auto-start feature and have Bridge always running in the background.',
     },
     TR_BRIDGE_NEEDED_DESCRIPTION: {
         id: 'TR_BRIDGE_NEEDED_DESCRIPTION',
@@ -9206,8 +9206,7 @@ export default defineMessages({
     },
     TR_AUTO_START_DESCRIPTION: {
         id: 'TR_AUTO_START_DESCRIPTION',
-        defaultMessage:
-            'Start Trezor Suite in the background when you log into your computer, to provide connectivity for third-party apps.',
+        defaultMessage: 'Start Trezor Suite in the background when you log into your computer.',
     },
     TR_SHOW_ON_TRAY: {
         id: 'TR_SHOW_ON_TRAY',
