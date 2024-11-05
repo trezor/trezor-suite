@@ -95,6 +95,7 @@ type AssetCardProps = {
     index?: number;
     localCurrency: FiatCurrencyCode;
     currentFiatRates?: RatesByKey;
+    accounts: Account[];
 };
 
 export const AssetCard = ({
@@ -107,6 +108,7 @@ export const AssetCard = ({
     index,
     localCurrency,
     currentFiatRates,
+    accounts,
 }: AssetCardProps) => {
     const { symbol } = network;
     const dispatch = useDispatch();
@@ -134,20 +136,15 @@ export const AssetCard = ({
         selectAssetAccountsThatStaked(state, stakingAccountsForAsset),
     );
 
-    const {
-        sortedTokens,
-        tokensFiatBalance,
-        assetStakingBalance,
-        shouldRenderStakingRow,
-        shouldRenderTokenRow,
-    } = handleTokensAndStakingData(
-        assetTokens,
-        accountsThatStaked,
-        symbol,
-        localCurrency,
-        coinDefinitions,
-        currentFiatRates,
-    );
+    const { tokensFiatBalance, assetStakingBalance, shouldRenderStakingRow, shouldRenderTokenRow } =
+        handleTokensAndStakingData(
+            assetTokens,
+            accountsThatStaked,
+            symbol,
+            localCurrency,
+            coinDefinitions,
+            currentFiatRates,
+        );
 
     return (
         <StyledCard paddingType="small" onClick={handleCardClick}>
@@ -199,11 +196,11 @@ export const AssetCard = ({
             {(shouldRenderStakingRow || shouldRenderTokenRow) && (
                 <AssetCardTokensAndStakingInfo
                     symbol={symbol}
-                    tokens={sortedTokens}
                     tokensFiatBalance={tokensFiatBalance.toString()}
                     assetStakingBalance={assetStakingBalance.toString()}
                     shouldRenderStaking={shouldRenderStakingRow}
                     shouldRenderTokens={shouldRenderTokenRow}
+                    accounts={accounts}
                 />
             )}
             {!isTestnet(symbol) && (

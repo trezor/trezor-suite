@@ -38,7 +38,6 @@ export const handleTokensAndStakingData = (
     const shouldRenderTokenRow = tokens.shownWithBalance?.length > 0 && tokensFiatBalance.gt(0);
 
     return {
-        sortedTokens,
         tokensFiatBalance,
         assetStakingBalance,
         shouldRenderStakingRow,

@@ -221,6 +221,7 @@ export const AssetsView = () => {
                                 assetTokens={asset.assetTokens}
                                 localCurrency={localCurrency}
                                 currentFiatRates={currentFiatRates}
+                                accounts={asset.accounts}
                             />
                         ))}
                         {discoveryInProgress && <AssetCardSkeleton />}
