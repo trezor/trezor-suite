@@ -17,6 +17,7 @@ import { getHost } from '../utils/urlUtils';
 import type { Device } from '../device/Device';
 import type { FirmwareRange, DeviceState, StaticSessionId, DeviceUniquePath } from '../types';
 import { Capability } from '@trezor/protobuf/src/messages';
+import { config } from '../data/config';
 
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };
 export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethodResponse<M>;
@@ -317,7 +318,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         const { popup, origin } = DataManager.getSettings();
         if (popup && this.requiredPermissions.includes('management')) {
             const host = getHost(origin);
-            const allowed = DataManager.getConfig().management.find(
+            const allowed = config.management.find(
                 item => item.origin === host || item.origin === origin,
             );
 
