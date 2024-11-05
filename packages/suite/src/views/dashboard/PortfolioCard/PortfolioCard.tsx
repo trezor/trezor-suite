@@ -92,7 +92,6 @@ export const PortfolioCard = memo(() => {
         );
 
     const goToReceive = () => dispatch(goto('wallet-receive'));
-    const goToBuy = () => dispatch(goto('wallet-coinmarket-buy'));
     const heading = <Translation id="TR_MY_PORTFOLIO" />;
 
     return (
@@ -154,7 +153,6 @@ export const PortfolioCard = memo(() => {
                         isWalletError={isWalletError}
                         isDiscoveryRunning={isDiscoveryRunning}
                         receiveClickHandler={goToReceive}
-                        buyClickHandler={goToBuy}
                     />
                 )}
 
