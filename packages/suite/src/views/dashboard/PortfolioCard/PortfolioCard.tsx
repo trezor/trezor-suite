@@ -79,8 +79,8 @@ export const PortfolioCard = memo(() => {
     }
 
     const isWalletEmpty = !discoveryStatus && isDeviceEmpty;
-    const isWalletLoading = discoveryStatus?.status === 'loading' ?? false;
-    const isWalletError = discoveryStatus?.status === 'exception' ?? false;
+    const isWalletLoading = discoveryStatus?.status === 'loading';
+    const isWalletError = discoveryStatus?.status === 'exception';
     const showGraphControls =
         !isWalletEmpty && !isWalletLoading && !isWalletError && !dashboardGraphHidden;
 
