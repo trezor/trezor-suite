@@ -8,6 +8,8 @@ At any time, information stored here might be restructured or moved to a differe
 location, so as to ensure that the documentation is well structured overall.
 
 -   [build](./build.md)
+-   [development on Windows](./development-on-windows.md)
 -   [device naming](./device-naming.md)
 -   [review](./review.md)
+-   [suite setup troubleshooting](./suite-setup-troubleshooting.md)
 -   [videos](./videos.md)

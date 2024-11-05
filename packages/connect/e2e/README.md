@@ -36,7 +36,7 @@ Those data are automatically downloaded from backend defined in `coins.json` by 
 _Note: Backends hosted on `*.trezor.io` are limiting requests per min._
 _Too many requests from not whitelisted origins may be penalized with temporary ban. ("All backends are down" error)_
 
-Backend connection will be omitted in case of providing `refTxs` so even coins without officially supported backends (like zcash testnet) may sign a transaction in _"offline mode"_. [see docs](../docs/method/signTransaction.md)
+Backend connection will be omitted in case of providing `refTxs` so even coins without officially supported backends (like zcash testnet) may sign a transaction in _"offline mode"_. [see docs](https://connect.trezor.io/9/methods/bitcoin/signTransaction/)
 
 To reduce network traffic `Github Actions CI` is using **cached** (offline) mode and whitelisted `GitLab CI` is using **default** (online) mode.
 

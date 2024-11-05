@@ -21,6 +21,7 @@ Development is not possible on Windows. This can be circumvented by tools such a
 ### Getting started
 
 -   `git clone git@github.com:trezor/trezor-suite.git`
+-   `cd trezor-suite`
 -   `git submodule update --init --recursive`
 -   `git lfs install` // Set up Git LFS for your user account. You only need to run this once per user account.
 -   `git lfs pull`
