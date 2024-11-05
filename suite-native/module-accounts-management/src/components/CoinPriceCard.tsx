@@ -21,6 +21,7 @@ const cardStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItem: 'center',
+    marginHorizontal: utils.spacings.sp16,
     padding: utils.spacings.sp16,
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderRadius: utils.borders.radii.r16,

@@ -65,11 +65,6 @@ type TransactionListItem =
     | (TypedTokenTransferWithTx | MonthKey)
     | (WalletAccountTransaction | MonthKey);
 
-const sectionListStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.sp8,
-    flex: 1,
-}));
-
 const sectionListContainerStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.sp8,
 }));
@@ -277,7 +272,7 @@ export const TransactionList = ({
     );
 
     return (
-        <Box style={applyStyle(sectionListStyle)}>
+        <Box flex={1}>
             <FlashList<TransactionListItem>
                 data={data}
                 renderItem={renderItem}

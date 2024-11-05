@@ -67,8 +67,10 @@ export const AccountSettingsScreen = ({
 
     return (
         <Screen
+            customHorizontalPadding="sp16"
             screenHeader={
                 <ScreenSubHeader
+                    customHorizontalPadding="sp16"
                     content={accountLabel}
                     rightIcon={<AccountRenameButton accountKey={accountKey} />}
                 />
@@ -87,7 +89,7 @@ export const AccountSettingsScreen = ({
                         )}
                     </VStack>
                 </Card>
-                <VStack marginHorizontal="sp16" spacing="sp16">
+                <VStack spacing="sp16">
                     <AccountSettingsShowXpubButton accountKey={account.key} />
                     {isPortfolioTrackerDevice && (
                         <AccountSettingsRemoveCoinButton accountKey={account.key} />

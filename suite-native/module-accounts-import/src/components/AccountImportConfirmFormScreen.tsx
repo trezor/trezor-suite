@@ -100,7 +100,7 @@ export const AccountImportConfirmFormScreen = ({
 
     const renderItem = useCallback(
         ({ item }: { item: TokenInfo }) => (
-            <Box marginBottom="sp8">
+            <Box marginBottom="sp12">
                 <TokenInfoCard
                     networkSymbol={networkSymbol}
                     symbol={item.symbol as TokenSymbol}

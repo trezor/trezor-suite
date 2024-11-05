@@ -19,7 +19,7 @@ export const IncludeTokensToggle = ({
 
     return (
         <VStack spacing="sp24" marginTop="sp8">
-            <Box marginHorizontal="sp24">
+            <Box marginHorizontal="sp16">
                 <Toggle
                     leftLabel={networkName}
                     rightLabel={<Translation id="transactions.tokens.toggleTokens" />}
@@ -29,7 +29,7 @@ export const IncludeTokensToggle = ({
             </Box>
             {isToggled && (
                 <Animated.View entering={FadeIn}>
-                    <Box marginHorizontal="sp8">
+                    <Box marginHorizontal="sp16">
                         <AlertBox
                             variant="info"
                             title={

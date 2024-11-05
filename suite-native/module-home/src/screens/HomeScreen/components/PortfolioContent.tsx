@@ -37,12 +37,12 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     return (
         <VStack spacing="sp24" marginTop="sp8">
             <PortfolioGraph ref={ref} />
-            <VStack spacing="sp24" marginHorizontal="sp8">
+            <VStack spacing="sp24" marginHorizontal="sp16">
                 <Box>
                     <Assets />
                 </Box>
                 {isPortfolioTrackerDevice && (
-                    <Box>
+                    <Box marginBottom="sp8">
                         <Button
                             testID="@home/portfolio/sync-coins-button"
                             colorScheme="tertiaryElevation0"
