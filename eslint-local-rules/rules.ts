@@ -19,8 +19,10 @@ export default {
                 {
                     type: 'object',
                     properties: {
-                        packageName: {
-                            type: 'string',
+                        packageNames: {
+                            type: 'array',
+                            items: { type: 'string' },
+                            minItems: 1,
                         },
                     },
                     additionalProperties: false,
@@ -28,22 +30,25 @@ export default {
             ],
         },
         create(context) {
-            const packageName = context.options[0] && context.options[0].packageName;
-            if (!packageName) {
+            const packageNames = context.options[0]?.packageNames || [];
+            if (packageNames.length === 0) {
                 return {};
             }
 
-            const importedComponents = new Set();
+            const importedComponents = new Map<string, Set<string>>(); // Map to store components per package name
 
             return {
                 ImportDeclaration(node) {
-                    if (node.source.value === packageName) {
+                    if (packageNames.includes(node.source.value)) {
                         node.specifiers.forEach(specifier => {
                             if (
                                 specifier.type === 'ImportSpecifier' ||
                                 specifier.type === 'ImportDefaultSpecifier'
                             ) {
-                                importedComponents.add(specifier.local.name);
+                                if (!importedComponents.has(node.source.value)) {
+                                    importedComponents.set(node.source.value, new Set<string>());
+                                }
+                                importedComponents.get(node.source.value).add(specifier.local.name);
                             }
                         });
                     }
@@ -52,16 +57,23 @@ export default {
                     if (
                         node.tag.type === 'CallExpression' &&
                         node.tag.callee.name === 'styled' &&
-                        node.tag.arguments[0].type === 'Identifier' &&
-                        importedComponents.has(node.tag.arguments[0].name)
+                        node.tag.arguments[0].type === 'Identifier'
                     ) {
-                        context.report({
-                            node,
-                            messageId: 'avoidStyledComponent',
-                            data: {
-                                packageName,
-                            },
-                        });
+                        const componentName = node.tag.arguments[0].name;
+
+                        // Check if component name matches any imported component from the specified packages
+                        for (const [pkgName, components] of importedComponents) {
+                            if (components.has(componentName)) {
+                                context.report({
+                                    node,
+                                    messageId: 'avoidStyledComponent',
+                                    data: {
+                                        packageName: pkgName,
+                                    },
+                                });
+                                break;
+                            }
+                        }
                     }
                 },
             };

@@ -111,6 +111,7 @@ export const CoinmarketFormOfferSpinnerText = styled.div`
     text-align: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 export const CoinmarketSpinnerWrapper = styled(Spinner)`
     flex: none;
     margin: 0 ${spacingsPx.xs};

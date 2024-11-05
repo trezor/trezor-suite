@@ -33,6 +33,7 @@ const Description = styled.div`
     text-align: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const LinkWrapper = styled(Link)`
     margin-top: ${spacingsPx.xxs};
     margin-bottom: ${spacingsPx.lg};
