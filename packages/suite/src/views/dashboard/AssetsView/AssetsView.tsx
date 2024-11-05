@@ -11,17 +11,19 @@ import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks
 import { useAccounts } from 'src/hooks/wallet';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { AssetFiatBalance } from '@suite-common/assets';
 
 import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
-import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import {
+    getFiatRateKey,
+    toFiatCurrency,
+    isSupportedEthStakingNetworkSymbol,
+} from '@suite-common/wallet-utils';
 import { selectEnabledNetworks, selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { AssetTable } from './AssetTable/AssetTable';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { AssetTableRowProps } from './AssetTable/AssetRow';
+import { NetworkSymbol, getNetwork, Network } from '@suite-common/wallet-config';
 import { RatesByKey } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
@@ -39,10 +41,18 @@ const GridWrapper = styled.div`
     grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
 `;
 
-export type AssetTableRowPropsWithoutFiatBalances = Omit<AssetTableRowProps, 'assetsFiatBalances'>;
+export type AssetData = {
+    network: Network;
+    failed: boolean;
+    assetNativeCryptoBalance: string;
+    stakingAccounts: Account[];
+    assetTokens: TokenInfo[];
+    isStakeNetwork?: boolean;
+    accounts: Account[];
+};
 
 const useAssetsFiatBalances = (
-    assetsData: AssetTableRowPropsWithoutFiatBalances[],
+    assetsData: AssetData[],
     accounts: { [key: string]: Account[] },
     localCurrency: FiatCurrencyCode,
     currentFiatRates?: RatesByKey,
@@ -90,7 +100,7 @@ export const AssetsView = () => {
 
     const assetNetworkSymbols = Object.keys(assets) as NetworkSymbol[];
 
-    const assetsData: AssetTableRowPropsWithoutFiatBalances[] = assetNetworkSymbols
+    const assetsData: AssetData[] = assetNetworkSymbols
         .map(symbol => {
             const network = getNetwork(symbol);
             if (!network) {
@@ -128,7 +138,7 @@ export const AssetsView = () => {
                 accounts,
             };
         })
-        .filter(data => data !== null) as AssetTableRowPropsWithoutFiatBalances[];
+        .filter(data => data !== null) as AssetData[];
 
     const assetsFiatBalances = useAssetsFiatBalances(
         assetsData,

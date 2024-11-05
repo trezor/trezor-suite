@@ -1,6 +1,6 @@
 import { AssetRow } from './AssetRow';
 import { AssetRowSkeleton } from './AssetRowSkeleton';
-import { AssetTableRowPropsWithoutFiatBalances } from '../AssetsView';
+import { AssetData } from '../AssetsView';
 import { Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
@@ -10,7 +10,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 interface AssetTableProps {
     discoveryInProgress?: boolean;
-    assetsData: AssetTableRowPropsWithoutFiatBalances[];
+    assetsData: AssetData[];
     assetsFiatBalances: AssetFiatBalance[];
     localCurrency: FiatCurrencyCode;
     currentFiatRates?: RatesByKey;

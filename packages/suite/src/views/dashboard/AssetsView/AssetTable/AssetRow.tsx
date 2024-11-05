@@ -10,22 +10,16 @@ import {
     Translation,
     TrendTicker,
 } from 'src/components/suite';
-import { getAccountTotalStakingBalance, isTestnet } from '@suite-common/wallet-utils';
+import { isTestnet } from '@suite-common/wallet-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
 import { spacings } from '@trezor/theme';
 import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
 import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
-import { BigNumber } from '@trezor/utils';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { AssetTokenRow } from './AssetTokenRow';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import {
-    enhanceTokensWithRates,
-    getTokens,
-    sortTokensWithRates,
-} from 'src/utils/wallet/tokenUtils';
 import { selectAssetAccountsThatStaked } from '@suite-common/wallet-core';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { AssetStakingRow } from './AssetStakingRow';
@@ -33,6 +27,7 @@ import { AssetFiatBalance } from '@suite-common/assets';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
+import { handleTokensAndStakingData } from '../assetsViewUtils';
 
 export interface AssetTableRowProps {
     network: Network;
@@ -43,6 +38,8 @@ export interface AssetTableRowProps {
     isStakeNetwork?: boolean;
     assetsFiatBalances: AssetFiatBalance[];
     accounts: Account[];
+    localCurrency: FiatCurrencyCode;
+    currentFiatRates?: RatesByKey;
 }
 
 export const AssetRow = memo(
@@ -56,10 +53,7 @@ export const AssetRow = memo(
         localCurrency,
         currentFiatRates,
         accounts,
-    }: AssetTableRowProps & {
-        localCurrency: FiatCurrencyCode;
-        currentFiatRates?: RatesByKey;
-    }) => {
+    }: AssetTableRowProps) => {
         const { symbol } = network;
         const dispatch = useDispatch();
         const theme = useTheme();
@@ -86,22 +80,20 @@ export const AssetRow = memo(
         const accountsThatStaked = useSelector(state =>
             selectAssetAccountsThatStaked(state, stakingAccountsForAsset),
         );
-        const assetStakingBalance = accountsThatStaked.reduce((total, account) => {
-            return total.plus(getAccountTotalStakingBalance(account));
-        }, new BigNumber(0));
-        const tokens = getTokens(assetTokens ?? [], network.symbol, coinDefinitions);
-        const tokensWithRates = enhanceTokensWithRates(
-            tokens.shownWithBalance ?? [],
+
+        const {
+            tokensFiatBalance,
+            assetStakingBalance,
+            shouldRenderStakingRow,
+            shouldRenderTokenRow,
+        } = handleTokensAndStakingData(
+            assetTokens,
+            accountsThatStaked,
+            symbol,
             localCurrency,
-            network.symbol,
+            coinDefinitions,
             currentFiatRates,
         );
-        const sortedTokens = tokensWithRates.sort(sortTokensWithRates);
-        const tokensFiatBalance = sortedTokens.reduce((total, token) => {
-            return total.plus(token?.fiatValue ?? 0);
-        }, new BigNumber(0));
-        const shouldRenderStakingRow = accountsThatStaked.length > 0 && assetStakingBalance.gt(0);
-        const shouldRenderTokenRow = tokens.shownWithBalance?.length > 0 && tokensFiatBalance.gt(0);
 
         return (
             <>
@@ -176,7 +168,7 @@ export const AssetRow = memo(
                     <AssetStakingRow
                         stakingTotalBalance={assetStakingBalance.toFixed()}
                         symbol={symbol}
-                        renderBothRows={shouldRenderTokenRow && shouldRenderStakingRow}
+                        shouldRenderTokenRow={shouldRenderTokenRow}
                     />
                 )}
                 {shouldRenderTokenRow && (

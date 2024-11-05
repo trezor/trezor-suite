@@ -1,12 +1,12 @@
-import { AssetTableRowProps } from './AssetRow';
 import { Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { FiatValue, Translation } from 'src/components/suite';
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
+import { Network } from '@suite-common/wallet-config';
 
 interface AssetTokenProps {
     tokenIconSetWrapper: React.ReactNode;
-    network: AssetTableRowProps['network'];
+    network: Network;
     tokensDisplayFiatBalance: string;
 }
 

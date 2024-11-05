@@ -7,20 +7,20 @@ import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSect
 interface AssetStakingRowProps {
     stakingTotalBalance: string;
     symbol: NetworkSymbol;
-    renderBothRows: boolean;
+    shouldRenderTokenRow: boolean;
 }
 
 export const AssetStakingRow = ({
     stakingTotalBalance,
     symbol,
-    renderBothRows,
+    shouldRenderTokenRow,
 }: AssetStakingRowProps) => {
     if (!stakingTotalBalance) return null;
 
     return (
         <Table.Row hasBorderTop={false}>
             <Table.Cell align="center">
-                <Section $dashedLinePosition={renderBothRows ? 'topToBottom' : 'topToMiddle'}>
+                <Section $dashedLinePosition={shouldRenderTokenRow ? 'topToBottom' : 'topToMiddle'}>
                     <Icon name="piggyBankFilled" variant="tertiary" />
                 </Section>
             </Table.Cell>
