@@ -1410,9 +1410,9 @@ export default defineMessages({
         defaultMessage: 'Copy address',
         id: 'TR_ADDRESS_MODAL_CLIPBOARD',
     },
-    TR_COPY_TO_CLIPBOARD_TX_ID: {
+    TR_COPY_TO_CLIPBOARD: {
         defaultMessage: 'Copy',
-        id: 'TR_COPY_TO_CLIPBOARD_TX_ID',
+        id: 'TR_COPY_TO_CLIPBOARD',
     },
     TR_ADDRESS_MODAL_TITLE: {
         defaultMessage: '{networkName} receive address',

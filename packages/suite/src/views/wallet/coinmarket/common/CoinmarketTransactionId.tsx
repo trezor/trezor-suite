@@ -41,7 +41,7 @@ export const CoinmarketTransactionId = ({ transactionId }: CoinmarketTransaction
             </LabelWrapper>
             <ButtonWrapper>
                 <Button size="tiny" variant="tertiary" onClick={copy}>
-                    <Translation id="TR_COPY_TO_CLIPBOARD_TX_ID" />
+                    <Translation id="TR_COPY_TO_CLIPBOARD" />
                 </Button>
             </ButtonWrapper>
         </Row>
