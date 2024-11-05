@@ -33,7 +33,7 @@ export const StakeModal = ({ onCancel }: StakeModalModalProps) => {
                 onCancel={onCancel}
                 bottomContent={<StakeButton />}
             >
-                <Grid columns={isBelowTablet ? 1 : 2} gap={spacings.lg}>
+                <Grid columns={isBelowTablet ? 1 : 2} gap={spacings.xxl}>
                     <StakeEthForm />
                     <StakingInfoCards />
                 </Grid>

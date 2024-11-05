@@ -15,8 +15,18 @@ import {
 
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 import { useElevation } from '../../ElevationContext/ElevationContext';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../../utils/frameProps';
+import { TransientProps } from '../../../utils/transientProps';
 
-const Wrapper = styled.div<{ $isFullWidth?: boolean }>`
+export const allowedSelectBarFrameProps = ['margin', 'width'] as const satisfies FramePropsKeys[];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectBarFrameProps)[number]>;
+
+const Wrapper = styled.div<TransientProps<AllowedFrameProps> & { $isFullWidth?: boolean }>`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.sm};
@@ -27,6 +37,8 @@ const Wrapper = styled.div<{ $isFullWidth?: boolean }>`
         align-items: flex-start;
         width: 100%;
     }
+
+    ${withFrameProps}
 `;
 
 const Label = styled.span`
@@ -141,12 +153,12 @@ const Option = styled.div<{ $isSelected: boolean; $isDisabled: boolean }>`
 
 type ValueTypes = number | string | boolean;
 
-interface Option<V extends ValueTypes> {
+type Option<V extends ValueTypes> = {
     label: ReactNode;
     value: V;
-}
+};
 
-export interface SelectBarProps<V extends ValueTypes> {
+export type SelectBarProps<V extends ValueTypes> = {
     label?: ReactNode;
     options: Option<V>[];
     selectedOption?: V;
@@ -154,7 +166,8 @@ export interface SelectBarProps<V extends ValueTypes> {
     isDisabled?: boolean;
     isFullWidth?: boolean;
     className?: string;
-}
+    'data-testid'?: string;
+} & AllowedFrameProps;
 
 // Generic type V is determined by selectedOption/options values
 export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.Element = ({
@@ -165,10 +178,12 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
     isDisabled = false,
     isFullWidth,
     className,
+    'data-testid': dataTest,
     ...rest
 }) => {
     const [selectedOptionIn, setSelected] = useState<ValueTypes | undefined>(selectedOption);
     const { elevation } = useElevation();
+    const frameProps = pickAndPrepareFrameProps(rest, allowedSelectBarFrameProps);
 
     useEffect(() => {
         if (selectedOption !== undefined) {
@@ -220,7 +235,12 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
     const selectedIndex = options.findIndex(option => option.value === selectedOptionIn);
 
     return (
-        <Wrapper className={className} $isFullWidth={isFullWidth} {...rest}>
+        <Wrapper
+            className={className}
+            $isFullWidth={isFullWidth}
+            data-testid={dataTest}
+            {...frameProps}
+        >
             {label && <Label>{label}</Label>}
 
             <Options

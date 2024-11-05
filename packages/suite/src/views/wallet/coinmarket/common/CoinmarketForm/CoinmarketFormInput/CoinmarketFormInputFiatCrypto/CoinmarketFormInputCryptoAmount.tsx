@@ -23,7 +23,6 @@ import {
     CoinmarketFormInputFiatCryptoProps,
     CoinmarketSellExchangeFormProps,
 } from 'src/types/coinmarket/coinmarketForm';
-import { CoinmarketFormOptionLabel } from 'src/views/wallet/coinmarket';
 import {
     coinmarketGetAccountLabel,
     getCoinmarketNetworkDecimals,
@@ -49,6 +48,8 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
     fiatInputName,
     cryptoSelectName,
     methods,
+    labelLeft,
+    labelRight,
 }: CoinmarketFormInputFiatCryptoProps<TFieldValues>) => {
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
@@ -111,6 +112,8 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
     return (
         <NumberInput
             name={cryptoInputName}
+            labelLeft={labelLeft}
+            labelRight={labelRight}
             onChange={() => {
                 if (isCoinmarketSellContext(context)) {
                     context.setValue(FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
@@ -128,12 +131,12 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
             bottomText={cryptoInputError?.message || null}
             hasBottomPadding={false}
             innerAddon={
-                <CoinmarketFormOptionLabel>
+                <>
                     {coinmarketGetAccountLabel(
                         cryptoSelect?.value && networkSymbol ? networkSymbol : '',
                         shouldSendInSats,
                     )}
-                </CoinmarketFormOptionLabel>
+                </>
             }
             data-testid="@coinmarket/form/crypto-input"
         />

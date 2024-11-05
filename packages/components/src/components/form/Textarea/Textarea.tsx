@@ -1,4 +1,4 @@
-import { useState, Ref, ReactNode, TextareaHTMLAttributes } from 'react';
+import { Ref, ReactNode, TextareaHTMLAttributes } from 'react';
 
 import styled from 'styled-components';
 
@@ -13,20 +13,9 @@ import {
     INPUT_PADDING_TOP,
     LABEL_TRANSFORM,
 } from '../InputStyles';
-import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
-import { TopAddons } from '../TopAddons';
+import { FormCell, FormCellProps, pickFormCellProps } from '../FormCell/FormCell';
 import { CharacterCount, CharacterCountProps } from './CharacterCount';
 import { useElevation } from '../../ElevationContext/ElevationContext';
-
-const Wrapper = styled.div<{ $hasBottomPadding: boolean }>`
-    width: 100%;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding-bottom: ${({ $hasBottomPadding }) =>
-        $hasBottomPadding ? `${BOTTOM_TEXT_MIN_HEIGHT}px` : '0'};
-`;
 
 const TextareaWrapper = styled(InputWrapper)<{
     disabled?: boolean; // intentionally not transient, disabled is HTML <input> prop
@@ -76,57 +65,35 @@ const TextareaLabel = styled(Label)`
     }
 `;
 
-export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
-    isDisabled?: boolean;
-    label?: ReactNode;
-    labelHoverRight?: ReactNode;
-    labelRight?: ReactNode;
-    innerRef?: Ref<HTMLTextAreaElement>;
-    /**
-     * @description pass `null` if bottom text can be `undefined`
-     */
-    bottomText?: ReactNode;
-    inputState?: InputState;
-    hasBottomPadding?: boolean;
-    value?: string;
-    characterCount?: CharacterCountProps['characterCount'];
-    'data-testid'?: string;
-}
+export type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> &
+    Omit<FormCellProps, 'children'> & {
+        isDisabled?: boolean;
+        label?: ReactNode;
+        innerRef?: Ref<HTMLTextAreaElement>;
+        hasBottomPadding?: boolean;
+        value?: string;
+        characterCount?: CharacterCountProps['characterCount'];
+        'data-testid'?: string;
+    };
 
 export const Textarea = ({
-    className,
     value,
     maxLength,
-    labelHoverRight,
     isDisabled = false,
     innerRef,
     label,
-    inputState,
-    bottomText,
     placeholder,
     rows = 5,
-    labelRight,
+    inputState,
     characterCount,
-    hasBottomPadding = true,
     'data-testid': dataTest,
     ...rest
 }: TextareaProps) => {
-    const [isHovered, setIsHovered] = useState(false);
     const { elevation } = useElevation();
+    const formCellProps = pickFormCellProps(rest);
 
     return (
-        <Wrapper
-            className={className}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            $hasBottomPadding={hasBottomPadding === true && bottomText === null}
-        >
-            <TopAddons
-                isHovered={isHovered}
-                hoverAddonRight={labelHoverRight}
-                addonRight={labelRight}
-            />
-
+        <FormCell {...formCellProps} inputState={inputState} isDisabled={isDisabled}>
             <TextareaWrapper $inputState={inputState} disabled={isDisabled} $elevation={elevation}>
                 <StyledTextarea
                     $elevation={elevation}
@@ -152,12 +119,6 @@ export const Textarea = ({
 
                 {label && <TextareaLabel $isDisabled={isDisabled}>{label}</TextareaLabel>}
             </TextareaWrapper>
-
-            {bottomText && (
-                <BottomText inputState={inputState} isDisabled={isDisabled}>
-                    {bottomText}
-                </BottomText>
-            )}
-        </Wrapper>
+        </FormCell>
     );
 };

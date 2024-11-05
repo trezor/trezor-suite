@@ -2,12 +2,24 @@ import { ReactNode } from 'react';
 
 import styled, { keyframes } from 'styled-components';
 
-import { spacingsPx, typography } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
-import { getInputStateTextColor } from './InputStyles';
+import { IconName, Icon, IconVariant } from '../Icon/Icon';
 import { InputState } from './inputTypes';
+import { Row } from '../Flex/Flex';
+import { Text, TextVariant } from '../typography/Text/Text';
+import { UIVariant } from '../../config/types';
 
-export const BOTTOM_TEXT_MIN_HEIGHT = 26; // 1 line of text + top padding
+export const mapInputStateToUIVariant = (inputState: InputState): UIVariant => {
+    const variantMap: Record<InputState, UIVariant> = {
+        error: 'destructive',
+        primary: 'primary',
+        warning: 'warning',
+        default: 'tertiary',
+    };
+
+    return variantMap[inputState];
+};
 
 const slideDown = keyframes`
     from {
@@ -20,35 +32,38 @@ const slideDown = keyframes`
     }
 `;
 
-export const Container = styled.div<{ $inputState?: InputState; $isDisabled?: boolean }>`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.xxs};
-    padding: ${spacingsPx.xs} ${spacingsPx.sm} 0 ${spacingsPx.sm};
-    min-height: ${BOTTOM_TEXT_MIN_HEIGHT}px;
-    color: ${({ $inputState, $isDisabled, theme }) =>
-        $isDisabled ? theme.textDisabled : getInputStateTextColor($inputState, theme)};
-    ${typography.label}
+export const Container = styled.div`
     animation: ${slideDown} 0.18s ease-in-out forwards;
 `;
 
-interface BottomTextProps {
+type BottomTextProps = {
     inputState?: InputState;
     isDisabled?: boolean;
     iconComponent?: ReactNode;
+    iconName?: IconName;
     children: ReactNode;
-}
+};
 
 export const BottomText = ({
-    inputState,
+    inputState = 'default',
     isDisabled,
     iconComponent,
+    iconName,
     children,
 }: BottomTextProps) => {
+    const variant = isDisabled ? 'disabled' : mapInputStateToUIVariant(inputState);
+
     return (
-        <Container $inputState={inputState} $isDisabled={isDisabled}>
-            {iconComponent}
-            {children}
+        <Container>
+            <Row gap={spacings.xxs}>
+                {iconComponent ??
+                    (iconName && (
+                        <Icon name={iconName} size="medium" variant={variant as IconVariant} />
+                    ))}
+                <Text variant={variant as TextVariant} typographyStyle="hint" as="div">
+                    {children}
+                </Text>
+            </Row>
         </Container>
     );
 };

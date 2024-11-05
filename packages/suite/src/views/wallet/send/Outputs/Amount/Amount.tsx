@@ -1,11 +1,8 @@
 import { useCallback } from 'react';
 
-import styled, { useTheme } from 'styled-components';
-
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { Icon, Banner, variables } from '@trezor/components';
-import { breakpointMediaQueries } from '@trezor/styles';
-import { spacingsPx } from '@trezor/theme';
+import { Icon, Banner, Flex, Row, Text, variables, useMediaQuery } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
@@ -36,76 +33,10 @@ import { TokenSelect } from './TokenSelect';
 import { FiatInput } from './FiatInput';
 import { SendMaxSwitch } from './SendMaxSwitch';
 
-const Row = styled.div`
-    position: relative;
-    display: flex;
-    flex: 1;
-
-    ${breakpointMediaQueries.below_lg} {
-        flex-direction: column;
-        gap: ${spacingsPx.sm};
-    }
-`;
-
-const Heading = styled.div`
-    display: flex;
-    flex-direction: column;
-    white-space: nowrap;
-`;
-
-const AmountInput = styled(NumberInput)`
-    display: flex;
-    flex: 1;
-` as typeof NumberInput; // Styled wrapper doesn't preserve type argument, see https://github.com/styled-components/styled-components/issues/1803#issuecomment-857092410
-
-const Left = styled.div`
-    position: relative; /* for TokenBalance positioning */
-    display: flex;
-    flex: 1;
-`;
-
-const TokenBalance = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    height: 18px;
-`;
-
-const TokenBalanceValue = styled.span`
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledTransferIcon = styled(Icon)`
-    margin: 0 20px 46px;
-    align-self: end;
-
-    ${breakpointMediaQueries.below_lg} {
-        align-self: center;
-        margin: 0;
-        transform: rotate(90deg);
-    }
-`;
-
-const Right = styled.div`
-    display: flex;
-    flex: 1;
-    align-items: end;
-`;
-
-const Symbol = styled.span`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const WarningWrapper = styled.div`
-    margin-bottom: 8px;
-`;
-
-interface AmountProps {
+type AmountProps = {
     output: Partial<Output>;
     outputId: number;
-}
+};
 export const Amount = ({ output, outputId }: AmountProps) => {
     const { translationString } = useTranslation();
     const {
@@ -122,9 +53,8 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         composeTransaction,
     } = useSendFormContext();
     const { symbol, tokens } = account;
-
-    const theme = useTheme();
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
+    const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
 
     const amountName = `outputs.${outputId}.amount` as const;
     const currencyName = `outputs.${outputId}.currency.value` as const;
@@ -225,99 +155,94 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const isTokenSelected = !!token;
     const tokenBalance = isTokenSelected ? (
         <HiddenPlaceholder>
-            <TokenBalanceValue>{`${token.balance} ${formatTokenSymbol(token?.symbol || token.contract)}`}</TokenBalanceValue>
+            {`${token.balance} ${formatTokenSymbol(token?.symbol || token.contract)}`}
         </HiddenPlaceholder>
     ) : undefined;
 
-    const getSendMaxSwitchComponent = (
-        hideOnLargeScreens: boolean | undefined,
-        hideOnSmallScreens: boolean | undefined,
-    ) => (
+    const sendMaxSwitch = (
         <SendMaxSwitch
-            hideOnLargeScreens={hideOnLargeScreens}
-            hideOnSmallScreens={hideOnSmallScreens}
             isSetMaxActive={isSetMaxActive}
-            data-testid={!hideOnSmallScreens ? maxSwitchId : ''}
+            data-testid={maxSwitchId}
             onChange={onSwitchChange}
         />
     );
 
     return (
         <>
-            <Row>
-                <Left>
-                    <AmountInput
-                        inputState={inputState}
-                        labelHoverRight={
-                            !isSetMaxVisible && getSendMaxSwitchComponent(isWithRate, undefined)
-                        }
-                        labelRight={
-                            isSetMaxVisible && getSendMaxSwitchComponent(isWithRate, undefined)
-                        }
-                        labelLeft={
-                            <Heading>
-                                <Translation id="AMOUNT" />
-                                {isTokenSelected && (
-                                    <TokenBalance>
-                                        (
-                                        <Translation
-                                            id="TOKEN_BALANCE"
-                                            values={{ balance: tokenBalance }}
-                                        />
-                                        )
-                                    </TokenBalance>
-                                )}
-                            </Heading>
-                        }
-                        bottomText={bottomText || null}
-                        onChange={handleInputChange}
-                        name={amountName}
-                        data-testid={amountName}
-                        defaultValue={amountValue}
-                        maxLength={formInputsMaxLength.amount}
-                        rules={cryptoAmountRules}
-                        control={control}
-                        innerAddon={
-                            withTokens ? (
-                                <TokenSelect output={output} outputId={outputId} />
-                            ) : (
-                                <Symbol>{symbolToUse}</Symbol>
-                            )
-                        }
-                    />
-                </Left>
+            <Flex
+                direction={isBelowLaptop ? 'column' : 'row'}
+                alignItems="normal"
+                gap={spacings.sm}
+            >
+                <NumberInput
+                    inputState={inputState}
+                    labelHoverRight={
+                        !isSetMaxVisible && (!isWithRate || isBelowLaptop) && sendMaxSwitch
+                    }
+                    labelRight={isSetMaxVisible && (!isWithRate || isBelowLaptop) && sendMaxSwitch}
+                    labelLeft={
+                        <Row gap={spacings.sm} alignItems="baseline">
+                            <Translation id="AMOUNT" />
+                            {isTokenSelected && (
+                                <Text variant="tertiary" typographyStyle="label">
+                                    (
+                                    <Translation
+                                        id="TOKEN_BALANCE"
+                                        values={{ balance: tokenBalance }}
+                                    />
+                                    )
+                                </Text>
+                            )}
+                        </Row>
+                    }
+                    bottomText={bottomText || null}
+                    onChange={handleInputChange}
+                    name={amountName}
+                    data-testid={amountName}
+                    defaultValue={amountValue}
+                    maxLength={formInputsMaxLength.amount}
+                    rules={cryptoAmountRules}
+                    control={control}
+                    innerAddon={
+                        withTokens ? (
+                            <TokenSelect output={output} outputId={outputId} />
+                        ) : (
+                            <Text variant="tertiary" typographyStyle="hint">
+                                {symbolToUse}
+                            </Text>
+                        )
+                    }
+                />
 
                 {isWithRate && (
                     <FiatValue amount="1" symbol={symbol} fiatCurrency={localCurrencyOption.value}>
                         {({ rate }) =>
                             rate && (
                                 <>
-                                    <StyledTransferIcon
-                                        name="transfer"
-                                        size={16}
-                                        color={theme.legacy.TYPE_LIGHT_GREY}
+                                    <Icon
+                                        name={isBelowLaptop ? 'arrowsDownUp' : 'arrowsLeftRight'}
+                                        size={20}
+                                        variant="tertiary"
+                                        margin={{ top: isBelowLaptop ? 0 : spacings.xxxxl }}
                                     />
-
-                                    <Right>
-                                        <FiatInput
-                                            output={output}
-                                            outputId={outputId}
-                                            labelRight={getSendMaxSwitchComponent(undefined, true)}
-                                        />
-                                    </Right>
+                                    <FiatInput
+                                        output={output}
+                                        outputId={outputId}
+                                        // To fix alignment with the other input
+                                        labelLeft={isBelowLaptop ? undefined : <>&nbsp;</>}
+                                        labelRight={!isBelowLaptop && sendMaxSwitch}
+                                    />
                                 </>
                             )
                         }
                     </FiatValue>
                 )}
-            </Row>
+            </Flex>
 
             {isLowAnonymity && (
-                <WarningWrapper>
-                    <Banner icon>
-                        <Translation id="TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING" />
-                    </Banner>
-                </WarningWrapper>
+                <Banner icon margin={{ top: spacings.sm }}>
+                    <Translation id="TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING" />
+                </Banner>
             )}
         </>
     );

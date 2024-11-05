@@ -2,43 +2,21 @@ import React from 'react';
 
 import styled from 'styled-components';
 
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
-const Container = styled.div<{ $hasLeftAddon?: boolean }>`
-    display: flex;
-    justify-content: ${({ $hasLeftAddon }) => ($hasLeftAddon ? 'space-between' : 'flex-end')};
-    align-items: flex-end;
-    gap: ${spacingsPx.xs};
-    min-height: 30px;
-    padding-bottom: 6px;
-`;
-
-export const RightAddonWrapper = styled.div`
-    display: flex;
-    gap: 6px;
-`;
-
-export const RightAddon = styled.div`
-    display: flex;
-    align-items: center;
-`;
+import { Row } from '../Flex/Flex';
 
 export const HoverAddonRight = styled.div<{ $isVisible?: boolean }>`
     opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
     transition: opacity 0.1s ease-out;
 `;
 
-export const LeftAddon = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
-interface TopAddonsProps {
+type TopAddonsProps = {
     isHovered?: boolean;
     addonLeft?: React.ReactNode;
     addonRight?: React.ReactNode;
     hoverAddonRight?: React.ReactNode;
-}
+};
 
 export const TopAddons = ({
     isHovered,
@@ -55,16 +33,20 @@ export const TopAddons = ({
     }
 
     return (
-        <Container $hasLeftAddon={!!addonLeft}>
-            {addonLeft && <LeftAddon>{addonLeft}</LeftAddon>}
+        <Row
+            gap={spacings.xs}
+            alignItems="flex-end"
+            justifyContent={addonLeft ? 'space-between' : 'flex-end'}
+        >
+            {addonLeft && <Row>{addonLeft}</Row>}
             {isWithRightLabel && (
-                <RightAddonWrapper>
+                <Row gap={spacings.xxs}>
                     {hoverAddonRight && (
                         <HoverAddonRight $isVisible={isHovered}>{hoverAddonRight}</HoverAddonRight>
                     )}
-                    {addonRight && <RightAddon>{addonRight}</RightAddon>}
-                </RightAddonWrapper>
+                    {addonRight && <Row>{addonRight}</Row>}
+                </Row>
             )}
-        </Container>
+        </Row>
     );
 };

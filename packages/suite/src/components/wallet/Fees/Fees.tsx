@@ -7,11 +7,20 @@ import {
     UseFormSetValue,
 } from 'react-hook-form';
 
-import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { FeeLevel } from '@trezor/connect';
-import { Icon, Paragraph, SelectBar, Tooltip, motionEasing, variables } from '@trezor/components';
+import {
+    Banner,
+    SelectBar,
+    Tooltip,
+    Column,
+    Note,
+    motionEasing,
+    InfoRow,
+    Row,
+    Text,
+} from '@trezor/components';
 import {
     FormState,
     FeeInfo,
@@ -19,7 +28,7 @@ import {
     PrecomposedLevelsCardano,
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { spacingsPx, typography } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { TranslationKey } from '@suite-common/intl-types';
 
@@ -29,65 +38,6 @@ import { ExtendedMessageDescriptor } from 'src/types/suite';
 
 import { CustomFee } from './CustomFee';
 import { FeeDetails } from './FeeDetails';
-
-const Container = styled.div`
-    overflow: hidden; /* prevent scrollbar when custom fee is opened */
-    width: 100%;
-`;
-
-const FiatAmount = styled(FiatValue)`
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-const FeeInfoRow = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-    width: 100%;
-    min-height: 52px; /* reserve space for fiat/crypto amounts */
-`;
-
-const FeeAmount = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: center;
-    gap: ${spacingsPx.xxs};
-`;
-
-const FeeError = styled.div`
-    width: 100%;
-    padding-top: ${spacingsPx.xxs};
-    color: ${({ theme }) => theme.textAlertRed};
-    ${typography.label}
-    text-align: right;
-`;
-
-const Label = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: ${spacingsPx.xxs};
-`;
-
-const HeadingWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    gap: ${spacingsPx.xxs};
-    text-transform: capitalize;
-`;
-
-const StyledSelectBar = styled(SelectBar<FeeLevel['label']>)`
-    margin-top: ${spacingsPx.lg};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const HelperTextWrapper = styled(Paragraph)`
-    color: ${({ theme }) => theme.textSubdued};
-    font-size: ${variables.FONT_SIZE.SMALL};
-`;
 
 const FEE_LEVELS_TRANSLATIONS: Record<FeeLevel['label'], TranslationKey> = {
     custom: 'FEE_LEVEL_CUSTOM',
@@ -150,96 +100,115 @@ export const Fees = <TFieldValues extends FormState>({
     const shouldAnimateNormalFee = showNormalFee && !isCustomLevel;
 
     return (
-        <Container>
-            <FeeInfoRow>
-                <Label>
-                    <HeadingWrapper>
-                        <Translation
-                            id={label || (networkType === 'ethereum' ? 'MAX_FEE' : 'FEE')}
-                        />
-                        {networkType === 'ethereum' && (
-                            <Tooltip
-                                maxWidth={328}
-                                content={<Translation id="TR_STAKE_MAX_FEE_DESC" />}
-                            >
-                                {/* TODO: Add new info icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
-                                <Icon name="info" size={14} />
-                            </Tooltip>
-                        )}
-                    </HeadingWrapper>
-                    {helperText && <HelperTextWrapper>{helperText}</HelperTextWrapper>}
-                </Label>
-
+        <Column alignItems="stretch" gap={spacings.xs}>
+            <InfoRow
+                direction="row"
+                labelTypographyStyle="body"
+                label={
+                    networkType === 'ethereum' ? (
+                        <Tooltip
+                            maxWidth={328}
+                            hasIcon
+                            content={<Translation id="TR_STAKE_MAX_FEE_DESC" />}
+                        >
+                            <Translation id={label ?? 'MAX_FEE'} />
+                        </Tooltip>
+                    ) : (
+                        <Translation id={label ?? 'FEE'} />
+                    )
+                }
+            >
                 {transactionInfo !== undefined && transactionInfo.type !== 'error' && (
-                    <FeeAmount>
+                    <Row gap={spacings.md} alignItems="baseline">
                         <FormattedCryptoAmount
                             disableHiddenPlaceholder
                             value={formatNetworkAmount(transactionInfo.fee, symbol)}
                             symbol={symbol}
                         />
-
-                        <FiatAmount
-                            disableHiddenPlaceholder
-                            amount={formatNetworkAmount(transactionInfo.fee, symbol)}
-                            symbol={symbol}
-                        />
-                    </FeeAmount>
+                        <Text variant="tertiary" typographyStyle="label">
+                            <FiatValue
+                                disableHiddenPlaceholder
+                                amount={formatNetworkAmount(transactionInfo.fee, symbol)}
+                                symbol={symbol}
+                                showApproximationIndicator
+                            />
+                        </Text>
+                    </Row>
                 )}
-            </FeeInfoRow>
+            </InfoRow>
 
             {feeOptions.length > 0 && (
-                <StyledSelectBar
-                    selectedOption={selectedOption}
-                    options={feeOptions}
-                    onChange={changeFeeLevel}
-                    isFullWidth
-                />
-            )}
-
-            <AnimatePresence>
-                {shouldAnimateNormalFee && (
-                    <motion.div
-                        animate={shouldAnimateNormalFee ? 'open' : 'closed'}
-                        variants={{
-                            open: { opacity: 1, height: 'auto', marginTop: 20 },
-                            closed: { opacity: 0, height: 0, marginTop: 0 },
-                        }}
-                        transition={{
-                            opacity: { duration: 0.15, ease: motionEasing.transition },
-                            height: { duration: 0.2, ease: motionEasing.transition },
-                            marginTop: { duration: 0.25, ease: motionEasing.transition },
-                        }}
-                    >
-                        <FeeDetails
-                            networkType={networkType}
-                            feeInfo={feeInfo}
-                            selectedLevel={selectedLevel}
-                            transactionInfo={transactionInfo}
-                            showFee={showNormalFee}
-                        />
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            <AnimatePresence>
-                {isCustomLevel && (
-                    <CustomFee
-                        control={control}
-                        networkType={networkType}
-                        feeInfo={feeInfo}
-                        errors={errors}
-                        register={register}
-                        getValues={getValues}
-                        setValue={setValue}
-                        changeFeeLimit={changeFeeLimit}
-                        composedFeePerByte={
-                            (transactionInfo as PrecomposedTransactionFinal)?.feePerByte
-                        }
+                <>
+                    <SelectBar
+                        selectedOption={selectedOption}
+                        options={feeOptions}
+                        onChange={changeFeeLevel}
+                        isFullWidth
+                        margin={{ top: spacings.sm }}
                     />
-                )}
-            </AnimatePresence>
+                    <AnimatePresence>
+                        {shouldAnimateNormalFee && (
+                            <motion.div
+                                animate={shouldAnimateNormalFee ? 'open' : 'closed'}
+                                variants={{
+                                    open: { opacity: 1, height: 'auto', marginTop: 0 },
+                                    closed: { opacity: 0, height: 0, marginTop: 0 },
+                                }}
+                                transition={{
+                                    opacity: { duration: 0.15, ease: motionEasing.transition },
+                                    height: { duration: 0.2, ease: motionEasing.transition },
+                                    marginTop: { duration: 0.25, ease: motionEasing.transition },
+                                }}
+                            >
+                                <FeeDetails
+                                    networkType={networkType}
+                                    feeInfo={feeInfo}
+                                    selectedLevel={selectedLevel}
+                                    transactionInfo={transactionInfo}
+                                    showFee={showNormalFee}
+                                />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
-            {error && <FeeError>{error.message}</FeeError>}
-        </Container>
+                    <AnimatePresence>
+                        {isCustomLevel && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                                animate={{ opacity: 1, height: 'auto', marginTop: 0 }}
+                                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                                transition={{
+                                    opacity: { duration: 0.15, ease: motionEasing.transition },
+                                    height: { duration: 0.2, ease: motionEasing.transition },
+                                    marginTop: { duration: 0.25, ease: motionEasing.transition },
+                                }}
+                            >
+                                <CustomFee
+                                    control={control}
+                                    networkType={networkType}
+                                    feeInfo={feeInfo}
+                                    errors={errors}
+                                    register={register}
+                                    getValues={getValues}
+                                    setValue={setValue}
+                                    changeFeeLimit={changeFeeLimit}
+                                    composedFeePerByte={
+                                        (transactionInfo as PrecomposedTransactionFinal)?.feePerByte
+                                    }
+                                />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {error && (
+                        <Banner icon margin={{ top: spacings.sm }} variant="destructive">
+                            {error.message}
+                        </Banner>
+                    )}
+
+                    {helperText && <Note margin={{ top: spacings.md }}>{helperText}</Note>}
+                </>
+            )}
+        </Column>
     );
 };

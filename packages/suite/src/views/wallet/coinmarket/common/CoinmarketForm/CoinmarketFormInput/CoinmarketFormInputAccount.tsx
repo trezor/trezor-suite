@@ -1,11 +1,10 @@
 import { Controller } from 'react-hook-form';
 import { createFilter } from 'react-select';
 
-import styled from 'styled-components';
 import { FiatCurrencyCode } from 'invity-api';
 
-import { Row, Select } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { Row, Select, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import {
@@ -13,8 +12,6 @@ import {
     CoinmarketCryptoListProps,
     CoinmarketTradeSellExchangeType,
 } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketFormOptionGroupLabel } from 'src/views/wallet/coinmarket';
-import { CoinmarketFormInputLabel } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
 import {
     CoinmarketExchangeFormProps,
     CoinmarketFormInputAccountProps,
@@ -25,10 +22,7 @@ import { useCoinmarketFiatValues } from 'src/hooks/wallet/coinmarket/form/common
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { useCoinmarketBuildAccountGroups } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketBuildAccountGroups';
-
-const CoinmarketBalanceWrapper = styled.div`
-    padding: ${spacingsPx.xs} ${spacingsPx.sm} 0;
-`;
+import { Translation } from 'src/components/suite';
 
 export const CoinmarketFormInputAccount = <
     TFieldValues extends CoinmarketSellFormProps | CoinmarketExchangeFormProps,
@@ -55,62 +49,60 @@ export const CoinmarketFormInputAccount = <
     });
 
     return (
-        <>
-            <CoinmarketFormInputLabel label={label} />
-            <Controller
-                name={accountSelectName}
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                    <Select
-                        value={value}
-                        options={optionGroups}
-                        onChange={async (selected: CoinmarketAccountOptionsGroupOptionProps) => {
-                            await onCryptoCurrencyChange(selected); // order matters, this has to be called before onChange
-                            onChange(selected);
-                        }}
-                        filterOption={createFilter<CoinmarketCryptoListProps>({
-                            stringify: option => `${option.label} ${option.data.cryptoName}`,
-                        })}
-                        formatGroupLabel={group => (
-                            <CoinmarketFormOptionGroupLabel>
-                                <Row gap={spacings.xs}>
-                                    {group.label}
-                                    <AccountTypeBadge
-                                        accountType={group.options[0].accountType}
-                                        networkType={group.options[0].value}
-                                        size="small"
-                                    />
-                                </Row>
-                            </CoinmarketFormOptionGroupLabel>
-                        )}
-                        formatOptionLabel={(
-                            option: CoinmarketAccountOptionsGroupOptionProps,
-                            { context },
-                        ) => (
-                            <CoinmarketFormInputAccountOption
-                                option={option}
-                                optionGroups={optionGroups}
-                                decimals={option.decimals}
-                                isSelected={context === 'value'}
+        <Controller
+            name={accountSelectName}
+            control={control}
+            render={({ field: { onChange, value } }) => (
+                <Select
+                    value={value}
+                    labelLeft={label && <Translation id={label} />}
+                    options={optionGroups}
+                    onChange={async (selected: CoinmarketAccountOptionsGroupOptionProps) => {
+                        await onCryptoCurrencyChange(selected); // order matters, this has to be called before onChange
+                        onChange(selected);
+                    }}
+                    filterOption={createFilter<CoinmarketCryptoListProps>({
+                        stringify: option => `${option.label} ${option.data.cryptoName}`,
+                    })}
+                    formatGroupLabel={group => (
+                        <Text as="div" variant="tertiary">
+                            <Row gap={spacings.xs}>
+                                {group.label}
+                                <AccountTypeBadge
+                                    accountType={group.options[0].accountType}
+                                    networkType={group.options[0].value}
+                                    size="small"
+                                />
+                            </Row>
+                        </Text>
+                    )}
+                    formatOptionLabel={(
+                        option: CoinmarketAccountOptionsGroupOptionProps,
+                        { context },
+                    ) => (
+                        <CoinmarketFormInputAccountOption
+                            option={option}
+                            optionGroups={optionGroups}
+                            decimals={option.decimals}
+                            isSelected={context === 'value'}
+                        />
+                    )}
+                    data-testid="@coinmarket/form/select-account"
+                    isClearable={false}
+                    isSearchable
+                    bottomText={
+                        fiatValues && (
+                            <CoinmarketBalance
+                                balance={fiatValues.accountBalance}
+                                networkSymbol={fiatValues.networkSymbol}
+                                tokenAddress={fiatValues.tokenAddress}
+                                cryptoSymbolLabel={selectedOption?.label}
+                                sendCryptoSelect={selectedOption}
                             />
-                        )}
-                        data-testid="@coinmarket/form/select-account"
-                        isClearable={false}
-                        isSearchable
-                    />
-                )}
-            />
-            {fiatValues && (
-                <CoinmarketBalanceWrapper>
-                    <CoinmarketBalance
-                        balance={fiatValues.accountBalance}
-                        networkSymbol={fiatValues.networkSymbol}
-                        tokenAddress={fiatValues.tokenAddress}
-                        cryptoSymbolLabel={selectedOption?.label}
-                        sendCryptoSelect={selectedOption}
-                    />
-                </CoinmarketBalanceWrapper>
+                        )
+                    }
+                />
             )}
-        </>
+        />
     );
 };

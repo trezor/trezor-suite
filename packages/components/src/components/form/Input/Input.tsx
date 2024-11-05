@@ -1,7 +1,7 @@
-import { useState, Ref, ReactNode, ReactElement, InputHTMLAttributes } from 'react';
+import { useState, Ref, ReactElement, InputHTMLAttributes } from 'react';
 import { useMeasure } from 'react-use';
 
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { spacingsPx, spacings, typography } from '@trezor/theme';
 
@@ -13,9 +13,13 @@ import {
     Label,
     LABEL_TRANSFORM,
 } from '../InputStyles';
-import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
-import { InputState, InputSize } from '../inputTypes';
-import { TopAddons } from '../TopAddons';
+import { InputSize } from '../inputTypes';
+import {
+    FormCell,
+    FormCellProps,
+    allowedFormCellFrameProps,
+    pickFormCellProps,
+} from '../FormCell/FormCell';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { UIHorizontalAlignment } from '../../../config/types';
 import {
@@ -25,18 +29,9 @@ import {
     pickAndPrepareTextProps,
 } from '../../typography/utils';
 import { TransientProps } from '../../../utils/transientProps';
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../../utils/frameProps';
+import { FrameProps } from '../../../utils/frameProps';
 
-export const allowedInputFrameProps = [
-    'margin',
-    'width',
-    'maxWidth',
-] as const satisfies FramePropsKeys[];
+export const allowedInputFrameProps = allowedFormCellFrameProps;
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedInputFrameProps)[number]>;
 
 export const allowedInputTextProps = [
@@ -44,18 +39,6 @@ export const allowedInputTextProps = [
     'align',
 ] as const satisfies TextPropsKeys[];
 type AllowedTextProps = Pick<TextProps, (typeof allowedInputTextProps)[number]>;
-
-type WrapperProps = TransientProps<AllowedFrameProps> & { $hasBottomPadding: boolean };
-
-const Wrapper = styled.div<WrapperProps>`
-    display: inline-flex;
-    flex-direction: column;
-    width: 100%;
-    padding-bottom: ${({ $hasBottomPadding }) =>
-        $hasBottomPadding ? `${BOTTOM_TEXT_MIN_HEIGHT}px` : '0'};
-
-    ${withFrameProps}
-`;
 
 interface StyledInputProps extends BaseInputProps {
     $size: InputSize;
@@ -76,12 +59,13 @@ const StyledInput = styled.input<StyledInputProps & TransientProps<AllowedTextPr
     height: ${({ $size }) => `${INPUT_HEIGHTS[$size as InputSize]}px`};
     ${baseInputStyle}
     ${({ $size }) => $size === 'small' && typography.hint};
-    ${withTextProps}
 
     &:disabled {
         pointer-events: auto;
         cursor: not-allowed;
     }
+
+    ${withTextProps}
 `;
 
 const InputWrapper = styled.div`
@@ -114,24 +98,14 @@ type innerAddonAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
 
 export type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> &
     AllowedFrameProps &
-    AllowedTextProps & {
+    AllowedTextProps &
+    Omit<FormCellProps, 'children'> & {
         value?: string;
         innerRef?: Ref<HTMLInputElement>;
         label?: ReactElement | string;
-        labelHoverRight?: React.ReactNode;
-        labelLeft?: React.ReactNode;
-        labelRight?: React.ReactNode;
         innerAddon?: ReactElement;
-        /**
-         * @description pass `null` if bottom text can be `undefined`
-         */
-        bottomText?: ReactNode;
-        bottomTextIconComponent?: ReactNode;
-        isDisabled?: boolean;
         size?: InputSize;
-        className?: string;
         'data-testid'?: string;
-        inputState?: InputState; // TODO: do we need this? we only have the error state right now
         innerAddonAlign?: innerAddonAlignment;
         hasBottomPadding?: boolean;
         /**
@@ -146,28 +120,21 @@ const Input = ({
     innerRef,
     inputState,
     label,
-    labelLeft,
-    labelRight,
-    labelHoverRight,
     innerAddon,
-    bottomTextIconComponent,
     innerAddonAlign = 'right',
-    bottomText,
     size = 'large',
-    isDisabled,
     'data-testid': dataTest,
     showClearButton,
     placeholder,
+    isDisabled,
     onClear,
     hasBottomPadding = true,
-    className,
     ...rest
 }: InputProps) => {
     const [isHovered, setIsHovered] = useState(false);
-    const theme = useTheme();
     const { elevation } = useElevation();
-    const frameProps = pickAndPrepareFrameProps(rest, allowedInputFrameProps);
     const textProps = pickAndPrepareTextProps(rest, allowedInputTextProps);
+    const formCellProps = pickFormCellProps(rest);
 
     const hasShowClearButton =
         (showClearButton === 'always' || (showClearButton === 'hover' && isHovered)) &&
@@ -178,21 +145,11 @@ const Input = ({
     const [measureRightAddon, { width: rightAddonWidth }] = useMeasure<HTMLDivElement>();
 
     return (
-        <Wrapper
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            $hasBottomPadding={hasBottomPadding === true && bottomText === null}
-            className={className}
-            {...frameProps}
-        >
-            <TopAddons
-                isHovered={isHovered}
-                addonLeft={labelLeft}
-                hoverAddonRight={labelHoverRight}
-                addonRight={labelRight}
-            />
-
-            <InputWrapper>
+        <FormCell {...formCellProps} isDisabled={isDisabled} inputState={inputState}>
+            <InputWrapper
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+            >
                 {innerAddon && innerAddonAlign === 'left' && (
                     <InputAddon $align="left" ref={measureLeftAddon} $size={size}>
                         {innerAddon}
@@ -204,13 +161,7 @@ const Input = ({
                         {!hasShowClearButton && innerAddon}
 
                         {hasShowClearButton && (
-                            <Icon
-                                name="cancel"
-                                size={16}
-                                onClick={onClear}
-                                color={theme.legacy.TYPE_DARK_GREY}
-                                cursorPointer
-                            />
+                            <Icon name="xCircle" size={16} onClick={onClear} cursorPointer />
                         )}
                     </InputAddon>
                 )}
@@ -242,17 +193,7 @@ const Input = ({
                     </InputLabel>
                 )}
             </InputWrapper>
-
-            {bottomText && (
-                <BottomText
-                    inputState={inputState}
-                    isDisabled={isDisabled}
-                    iconComponent={bottomTextIconComponent}
-                >
-                    {bottomText}
-                </BottomText>
-            )}
-        </Wrapper>
+        </FormCell>
     );
 };
 

@@ -3,9 +3,9 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
-import { Card, motionEasing } from '@trezor/components';
+import { Card, motionEasing, Column } from '@trezor/components';
 import { motionEasingStrings } from '@trezor/components/src/config/motion';
-import { spacingsPx } from '@trezor/theme';
+import { spacingsPx, spacings } from '@trezor/theme';
 import { networks } from '@suite-common/wallet-config';
 import { CoinLogo } from '@trezor/product-components';
 
@@ -99,14 +99,14 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                             {output.type === 'opreturn' ? (
                                 <OpReturn outputId={index} />
                             ) : (
-                                <>
+                                <Column gap={spacings.md} alignItems="stretch">
                                     <Address
                                         output={outputs[index]}
                                         outputId={index}
                                         outputsCount={outputs.length}
                                     />
                                     <Amount output={outputs[index]} outputId={index} />
-                                </>
+                                </Column>
                             )}
                         </Card>
                     </motion.div>

@@ -23,12 +23,10 @@ import {
     isCoinmarketSellContext,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { CoinmarketFormOption, CoinmarketFormOptionLabel } from 'src/views/wallet/coinmarket';
 
 export const CoinmarketFormInputCurrency = ({
     isClean = true,
-    size = 'large',
-    isDarkLabel = false,
+    width = 100,
 }: CoinmarketFormInputCurrencyProps) => {
     const context = useCoinmarketFormContext();
     const { control, setAmountLimits, defaultCurrency } = context;
@@ -74,20 +72,12 @@ export const CoinmarketFormInputCurrency = ({
                         onChangeAdditional(selected);
                     }}
                     options={options}
-                    formatOptionLabel={option => (
-                        <CoinmarketFormOption>
-                            <CoinmarketFormOptionLabel $isDark={isDarkLabel}>
-                                {option.label}
-                            </CoinmarketFormOptionLabel>
-                        </CoinmarketFormOption>
-                    )}
                     data-testid="@coinmarket/form/fiat-currency-select"
-                    minValueWidth="58px"
                     isClearable={false}
                     isClean={isClean}
-                    size={size}
+                    size="small"
                     isSearchable
-                    width={100}
+                    width={width}
                 />
             )}
         />

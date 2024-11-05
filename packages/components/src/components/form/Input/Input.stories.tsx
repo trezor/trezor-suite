@@ -21,7 +21,6 @@ const meta: Meta = {
         size: 'large',
         inputState: null,
         innerAddonAlign: 'right',
-        hasBottomPadding: true,
         ...getFramePropsStory(allowedInputFrameProps).args,
         ...getTextPropsStory(allowedInputTextProps).args,
     },
@@ -38,12 +37,7 @@ const meta: Meta = {
             },
             options: ['large', 'small'],
         },
-        inputState: {
-            control: {
-                type: 'radio',
-            },
-            options: [null, 'warning', 'error'],
-        },
+        inputState: { control: 'select', options: ['error', 'warning', 'primary'] },
         innerAddonAlign: {
             control: {
                 type: 'radio',

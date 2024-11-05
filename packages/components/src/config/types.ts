@@ -6,6 +6,7 @@ export const uiVariants = [
     'info',
     'warning',
     'destructive',
+    'disabled',
 ] as const;
 export type UIVariant = (typeof uiVariants)[number];
 

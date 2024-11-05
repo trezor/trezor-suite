@@ -1,71 +1,61 @@
+import React from 'react';
+
 import styled from 'styled-components';
 
-import { Paragraph, Radio } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Radio, Column, Row, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
 
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import type { TranslationKey } from 'src/components/suite/Translation';
 
 import { Inputs } from './Inputs';
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const GreyP = styled(Paragraph)`
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-const RadioWrapper = styled.div`
-    & > div {
-        align-items: center;
-
-        & > div:nth-of-type(2) {
-            padding: 14px 0;
-            margin-left: ${spacingsPx.xxs};
-            border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
-            flex: 1 0 auto;
-        }
-    }
-`;
-
-const RadioWrapperLast = styled(RadioWrapper)`
-    & > div > div:nth-of-type(2) {
-        border-bottom: none;
-    }
-`;
-
-const RadioButtonLabelContent = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex: 1 0 auto;
-`;
-
-const RadioButtonLabelTxt = styled.div`
-    color: ${({ theme }) => theme.textDefault};
-`;
-
-const TxtRight = styled.div`
-    text-align: right;
-`;
-
-const GreenTxt = styled.span`
-    color: ${({ theme }) => theme.textPrimaryDefault};
-`;
-
 const InputsWrapper = styled.div<{ $isShown: boolean }>`
-    width: 100%;
-    margin-bottom: ${spacingsPx.sm};
     display: ${({ $isShown }) => ($isShown ? 'block' : 'none')};
 `;
 
-interface OptionsProps {
+type RadioContentProps = {
+    label: TranslationKey;
+    cryptoAmount: string;
+    rewardAmount?: string;
+    fiatValueComponent?: React.ReactNode;
     symbol: NetworkSymbol;
-}
+};
+
+const RadioContent = ({
+    label,
+    cryptoAmount,
+    rewardAmount,
+    fiatValueComponent,
+    symbol,
+}: RadioContentProps) => (
+    <Row flex="1" justifyContent="space-between" gap={spacings.sm}>
+        <Translation id={label} />
+        <Column alignItems="flex-end">
+            <Text variant="tertiary" typographyStyle="hint">
+                <FormattedCryptoAmount value={cryptoAmount} symbol={symbol} />
+            </Text>
+            <Text typographyStyle="hint">
+                {fiatValueComponent}
+                {rewardAmount && (
+                    <Text variant="primary">
+                        <FiatValue amount={rewardAmount} symbol={symbol} />
+                    </Text>
+                )}
+            </Text>
+        </Column>
+    </Row>
+);
+
+type OptionsProps = {
+    symbol: NetworkSymbol;
+};
 
 export const Options = ({ symbol }: OptionsProps) => {
     const selectedAccount = useSelector(selectSelectedAccount);
@@ -83,9 +73,9 @@ export const Options = ({ symbol }: OptionsProps) => {
     } = getAccountEverstakeStakingPool(selectedAccount) ?? {};
 
     return (
-        <div>
-            {new BigNumber(restakedReward).gt(0) && (
-                <RadioWrapper>
+        <Column alignItems="stretch" gap={spacings.sm}>
+            <Column alignItems="stretch" gap={spacings.md} hasDivider>
+                {new BigNumber(restakedReward).gt(0) && (
                     <Radio
                         isChecked={isRewardsSelected}
                         onClick={async () => {
@@ -94,28 +84,17 @@ export const Options = ({ symbol }: OptionsProps) => {
                             setUnstakeOption('rewards');
                             await onOptionChange(restakedReward);
                         }}
+                        verticalAlignment="center"
                     >
-                        <RadioButtonLabelContent>
-                            <RadioButtonLabelTxt>
-                                <Translation id="TR_STAKE_ONLY_REWARDS" />
-                            </RadioButtonLabelTxt>
-
-                            <TxtRight>
-                                <GreyP>
-                                    <FormattedCryptoAmount value={restakedReward} symbol={symbol} />
-                                </GreyP>
-                                <Paragraph>
-                                    <GreenTxt>
-                                        <FiatValue amount={restakedReward} symbol={symbol} />
-                                    </GreenTxt>
-                                </Paragraph>
-                            </TxtRight>
-                        </RadioButtonLabelContent>
+                        <RadioContent
+                            label="TR_STAKE_ONLY_REWARDS"
+                            cryptoAmount={restakedReward}
+                            rewardAmount={restakedReward}
+                            symbol={symbol}
+                        />
                     </Radio>
-                </RadioWrapper>
-            )}
+                )}
 
-            <RadioWrapper>
                 <Radio
                     isChecked={isAllSelected}
                     onClick={async () => {
@@ -124,33 +103,21 @@ export const Options = ({ symbol }: OptionsProps) => {
                         setUnstakeOption('all');
                         await onOptionChange(autocompoundBalance);
                     }}
+                    verticalAlignment="center"
                 >
-                    <RadioButtonLabelContent>
-                        <RadioButtonLabelTxt>
-                            <Translation id="TR_ALL" />
-                        </RadioButtonLabelTxt>
-
-                        <TxtRight>
-                            <GreyP>
-                                <FormattedCryptoAmount
-                                    value={autocompoundBalance}
-                                    symbol={symbol}
-                                />
-                            </GreyP>
-                            <Paragraph>
-                                <FiatValue amount={depositedBalance} symbol={symbol}>
-                                    {({ value }) => value && <span>{value} + </span>}
-                                </FiatValue>
-                                <GreenTxt>
-                                    <FiatValue amount={restakedReward} symbol={symbol} />
-                                </GreenTxt>
-                            </Paragraph>
-                        </TxtRight>
-                    </RadioButtonLabelContent>
+                    <RadioContent
+                        label="TR_ALL"
+                        cryptoAmount={autocompoundBalance}
+                        rewardAmount={restakedReward}
+                        fiatValueComponent={
+                            <FiatValue amount={depositedBalance} symbol={symbol}>
+                                {({ value }) => value && <span>{value} + </span>}
+                            </FiatValue>
+                        }
+                        symbol={symbol}
+                    />
                 </Radio>
-            </RadioWrapper>
 
-            <RadioWrapperLast>
                 <Radio
                     isChecked={isOtherAmountSelected}
                     onClick={() => {
@@ -158,40 +125,31 @@ export const Options = ({ symbol }: OptionsProps) => {
 
                         setUnstakeOption('other');
                     }}
+                    verticalAlignment="center"
                 >
-                    <RadioButtonLabelContent>
-                        <RadioButtonLabelTxt>
-                            <Translation id="TR_STAKE_OTHER_AMOUNT" />
-                        </RadioButtonLabelTxt>
-
-                        <TxtRight>
-                            <GreyP>
-                                <FormattedCryptoAmount
-                                    value={autocompoundBalance}
-                                    symbol={symbol}
-                                />
-                            </GreyP>
-                            <Paragraph>
-                                <FiatValue amount={autocompoundBalance} symbol={symbol}>
-                                    {({ value }) =>
-                                        value && (
-                                            <>
-                                                {' '}
-                                                <Translation id="TR_UP_TO" /> {value}
-                                            </>
-                                        )
-                                    }
-                                </FiatValue>
-                            </Paragraph>
-                        </TxtRight>
-                    </RadioButtonLabelContent>
+                    <RadioContent
+                        label="TR_STAKE_OTHER_AMOUNT"
+                        cryptoAmount={autocompoundBalance}
+                        symbol={symbol}
+                        fiatValueComponent={
+                            <FiatValue amount={autocompoundBalance} symbol={symbol}>
+                                {({ value }) =>
+                                    value && (
+                                        <>
+                                            <Translation id="TR_UP_TO" /> {value}
+                                        </>
+                                    )
+                                }
+                            </FiatValue>
+                        }
+                    />
                 </Radio>
-            </RadioWrapperLast>
+            </Column>
 
             {/* CSS display property is used, as conditional rendering resets form state */}
             <InputsWrapper $isShown={isOtherAmountSelected}>
                 <Inputs />
             </InputsWrapper>
-        </div>
+        </Column>
     );
 };

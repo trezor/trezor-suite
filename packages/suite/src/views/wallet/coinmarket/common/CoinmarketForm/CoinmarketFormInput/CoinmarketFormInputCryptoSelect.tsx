@@ -1,23 +1,17 @@
 import { Controller } from 'react-hook-form';
 import { useMemo, useState } from 'react';
 
-import { Select, useElevation } from '@trezor/components';
+import { Select, Row, Badge, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { SelectAssetModal } from '@trezor/product-components';
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 
 import {
     CoinmarketAccountOptionsGroupOptionProps,
     CoinmarketCryptoSelectItemProps,
     CoinmarketTradeBuyExchangeType,
 } from 'src/types/coinmarket/coinmarket';
-import {
-    CoinmarketFormOption,
-    CoinmarketFormOptionLabel,
-    CoinmarketFormOptionLabelLong,
-    CoinmarketFormOptionLogo,
-    CoinmarketFormOptionNetwork,
-} from 'src/views/wallet/coinmarket';
-import { CoinmarketFormInputLabel } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
+import { Translation } from 'src/components/suite';
 import {
     CoinmarketBuyFormProps,
     CoinmarketExchangeFormProps,
@@ -31,6 +25,7 @@ import {
     FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
 } from 'src/constants/wallet/coinmarket/form';
 import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
 
 export const CoinmarketFormInputCryptoSelect = <
     TFieldValues extends CoinmarketBuyFormProps | CoinmarketExchangeFormProps,
@@ -43,7 +38,6 @@ export const CoinmarketFormInputCryptoSelect = <
 }: CoinmarketFormInputCryptoSelectProps<TFieldValues>) => {
     const context = useCoinmarketFormContext<CoinmarketTradeBuyExchangeType>();
     const { buildCryptoOptions, cryptoIdToPlatformName } = useCoinmarketInfo();
-    const { elevation } = useElevation();
     const { control } = methods;
     const [isModalActive, setIsModalActive] = useState(false);
 
@@ -92,7 +86,6 @@ export const CoinmarketFormInputCryptoSelect = <
 
     return (
         <>
-            <CoinmarketFormInputLabel label={label} />
             {isModalActive && (
                 <SelectAssetModal
                     options={options}
@@ -108,26 +101,21 @@ export const CoinmarketFormInputCryptoSelect = <
                     <Select
                         value={value}
                         options={options}
+                        labelLeft={label && <Translation id={label} />}
                         onMenuOpen={() => setIsModalActive(true)}
                         formatOptionLabel={(option: CoinmarketAccountOptionsGroupOptionProps) => {
                             const { networkId, contractAddress } = parseCryptoId(option.value);
                             const platform = cryptoIdToPlatformName(networkId);
 
                             return (
-                                <CoinmarketFormOption>
-                                    <CoinmarketFormOptionLogo cryptoId={option.value} size={20} />
-                                    <CoinmarketFormOptionLabel>
-                                        {option.label}
-                                    </CoinmarketFormOptionLabel>
-                                    <CoinmarketFormOptionLabelLong>
+                                <Row gap={spacings.sm}>
+                                    <CoinmarketCoinLogo cryptoId={option.value} size={20} />
+                                    <Text>{option.label}</Text>
+                                    <Text variant="tertiary" typographyStyle="label">
                                         {option.cryptoName}
-                                    </CoinmarketFormOptionLabelLong>
-                                    {contractAddress && (
-                                        <CoinmarketFormOptionNetwork $elevation={elevation}>
-                                            {platform}
-                                        </CoinmarketFormOptionNetwork>
-                                    )}
-                                </CoinmarketFormOption>
+                                    </Text>
+                                    {contractAddress && <Badge size="small">{platform}</Badge>}
+                                </Row>
                             );
                         }}
                         data-testid="@coinmarket/form/select-crypto"

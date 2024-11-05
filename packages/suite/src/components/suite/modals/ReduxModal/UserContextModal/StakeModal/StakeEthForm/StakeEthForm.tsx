@@ -1,12 +1,10 @@
-import { Button, Column, Row } from '@trezor/components';
+import { Column, Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
 import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
-import { FormFractionButtons } from 'src/components/suite/FormFractionButtons';
-import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
+import { Translation } from 'src/components/suite';
+import { Fees } from 'src/components/wallet/Fees/Fees';
 
-import { StakeFees } from './StakeFees';
 import { Inputs } from './Inputs';
 import { ConfirmStakeEthModal } from './ConfirmStakeEthModal';
 import { AvailableBalance } from './AvailableBalance';
@@ -14,20 +12,21 @@ import { AvailableBalance } from './AvailableBalance';
 export const StakeEthForm = () => {
     const {
         account,
-        network,
-        formState: { isDirty },
-        setRatioAmount,
-        setMax,
-        watch,
-        clearForm,
         isConfirmModalOpen,
         closeConfirmModal,
         signTx,
         isLoading,
+        formState: { errors },
+        register,
+        control,
+        setValue,
+        getValues,
+        changeFeeLevel,
+        feeInfo,
+        composedLevels,
     } = useStakeEthFormContext();
 
     const { formattedBalance, symbol } = account;
-    const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
 
     return (
         <>
@@ -39,28 +38,26 @@ export const StakeEthForm = () => {
                 />
             )}
 
-            <Column gap={spacings.md} alignItems="stretch">
+            <Column gap={spacings.xxl} alignItems="stretch" margin={{ bottom: spacings.lg }}>
                 <AvailableBalance formattedBalance={formattedBalance} symbol={symbol} />
-
-                <Row justifyContent="space-between">
-                    <FormFractionButtons
-                        setRatioAmount={setRatioAmount}
-                        setMax={setMax}
-                        symbol={symbol}
-                        totalAmount={account.formattedBalance}
-                        decimals={network.decimals}
-                    />
-
-                    {(isDirty || hasValues) && (
-                        <Button type="button" variant="tertiary" size="tiny" onClick={clearForm}>
-                            <Translation id="TR_CLEAR_ALL" />
-                        </Button>
-                    )}
-                </Row>
 
                 <Inputs />
 
-                <StakeFees />
+                <Card paddingType="small" margin={{ top: spacings.xs }}>
+                    <Fees
+                        control={control}
+                        errors={errors}
+                        register={register}
+                        feeInfo={feeInfo}
+                        setValue={setValue}
+                        getValues={getValues}
+                        account={account}
+                        composedLevels={composedLevels}
+                        changeFeeLevel={changeFeeLevel}
+                        helperText={<Translation id="TR_STAKE_PAID_FROM_BALANCE" />}
+                        showFeeWhilePending={false}
+                    />
+                </Card>
             </Column>
         </>
     );

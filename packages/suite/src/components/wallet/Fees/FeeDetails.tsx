@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
-import styled from 'styled-components';
-
-import { spacingsPx, typography } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
+import { Row, Text } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { formatDuration } from '@suite-common/suite-utils';
@@ -13,27 +12,9 @@ import {
     FeeInfo,
 } from '@suite-common/wallet-types';
 
-import { Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
 
-const Wrapper = styled.div`
-    display: inline-flex;
-    align-items: baseline;
-    gap: ${spacingsPx.sm};
-    ${typography.hint}
-`;
-
-const Label = styled.span`
-    color: ${({ theme }) => theme.textSubdued};
-    padding-right: ${spacingsPx.xxs};
-`;
-
-// set min-width to prevent jumping when changing amount, width to fit 6 digits
-const FeeItem = styled.span`
-    min-width: 42px;
-    display: inline-block;
-`;
-
-interface DetailsProps {
+type DetailsProps = {
     networkType: NetworkType;
     selectedLevel: FeeLevel;
     // fields below are validated as false-positives, eslint claims that they are not used...
@@ -43,7 +24,19 @@ interface DetailsProps {
     transactionInfo?: PrecomposedTransaction | PrecomposedTransactionCardano;
 
     showFee: boolean;
-}
+};
+
+type ItemProps = {
+    label: React.ReactNode;
+    children: React.ReactNode;
+};
+
+const Item = ({ label, children }: ItemProps) => (
+    <Row gap={spacings.xxs}>
+        <Text variant="tertiary">{label}:</Text>
+        {children}
+    </Row>
+);
 
 const BitcoinDetails = ({
     networkType,
@@ -51,35 +44,25 @@ const BitcoinDetails = ({
     selectedLevel,
     transactionInfo,
     showFee,
-}: DetailsProps) => (
-    <Wrapper>
-        {showFee && (
+}: DetailsProps) => {
+    const hasInfo = transactionInfo && transactionInfo.type !== 'error';
+
+    return (
+        showFee && (
             <>
-                <span>
-                    <Label>
-                        <Translation id="ESTIMATED_TIME" />:
-                    </Label>
+                <Item label={<Translation id="ESTIMATED_TIME" />}>
                     {formatDuration(feeInfo.blockTime * selectedLevel.blocks * 60)}
-                </span>
+                </Item>
 
-                <span>
-                    <Label>
-                        <Translation id="TR_FEE_RATE" />:
-                    </Label>
-                    {`${
-                        transactionInfo && transactionInfo.type !== 'error'
-                            ? transactionInfo.feePerByte
-                            : selectedLevel.feePerUnit
-                    } ${getFeeUnits(networkType)}`}
-                </span>
-
-                {transactionInfo && transactionInfo.type !== 'error' && (
-                    <span>({transactionInfo.bytes} B)</span>
-                )}
+                <Item label={<Translation id="TR_FEE_RATE" />}>
+                    {hasInfo ? transactionInfo.feePerByte : selectedLevel.feePerUnit}{' '}
+                    {getFeeUnits(networkType)}
+                    {hasInfo ? ` (${transactionInfo.bytes} B)` : ''}
+                </Item>
             </>
-        )}
-    </Wrapper>
-);
+        )
+    );
+};
 
 const EthereumDetails = ({
     networkType,
@@ -108,41 +91,31 @@ const EthereumDetails = ({
         : lastKnownFeePerByte || selectedLevel.feePerUnit;
 
     return (
-        <Wrapper>
-            {showFee && (
-                <>
-                    <span>
-                        <Label>
-                            <Translation id="TR_GAS_LIMIT" />:
-                        </Label>
-                        <FeeItem>{gasLimit}</FeeItem>
-                    </span>
+        showFee && (
+            <>
+                <Item label={<Translation id="TR_GAS_LIMIT" />}>{gasLimit}</Item>
 
-                    <span>
-                        <Label>
-                            <Translation id="TR_GAS_PRICE" />:
-                        </Label>
-                        <FeeItem>
-                            {gasPrice} {getFeeUnits(networkType)}
-                        </FeeItem>
-                    </span>
-                </>
-            )}
-        </Wrapper>
+                <Item label={<Translation id="TR_GAS_PRICE" />}>
+                    {gasPrice} {getFeeUnits(networkType)}
+                </Item>
+            </>
+        )
     );
 };
 
-const RippleDetails = ({ networkType, selectedLevel, showFee }: DetailsProps) => (
-    <Wrapper>
-        {showFee && <span>{`${selectedLevel.feePerUnit}: ${getFeeUnits(networkType)}`}</span>}
-    </Wrapper>
-);
+const RippleDetails = ({ networkType, selectedLevel, showFee }: DetailsProps) =>
+    showFee && <Item label={selectedLevel.feePerUnit}>{getFeeUnits(networkType)}</Item>;
 
 export const FeeDetails = (props: DetailsProps) => {
     const { networkType } = props;
-    if (networkType === 'bitcoin') return <BitcoinDetails {...props} />;
-    if (networkType === 'ethereum') return <EthereumDetails {...props} />;
-    if (networkType === 'ripple') return <RippleDetails {...props} />;
 
-    return null;
+    return (
+        <Text as="div" typographyStyle="hint">
+            <Row gap={spacings.md}>
+                {networkType === 'bitcoin' && <BitcoinDetails {...props} />}
+                {networkType === 'ethereum' && <EthereumDetails {...props} />}
+                {networkType === 'ripple' && <RippleDetails {...props} />}
+            </Row>
+        </Text>
+    );
 };

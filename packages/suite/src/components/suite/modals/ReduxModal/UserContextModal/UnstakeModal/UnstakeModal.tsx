@@ -1,5 +1,4 @@
 import {
-    Card,
     CollapsibleBox,
     Column,
     Grid,
@@ -44,26 +43,22 @@ export const UnstakeModal = ({ onCancel }: UnstakeModalModalProps) => {
                 onCancel={onCancel}
                 bottomContent={<UnstakeButton />}
             >
-                <Grid columns={isBelowTablet ? 1 : 2} gap={spacings.lg}>
+                <Grid columns={isBelowTablet ? 1 : 2} gap={spacings.xxl}>
                     <UnstakeEthForm />
-                    <Column gap={spacings.sm} alignItems="normal">
-                        <Card paddingType="small">
-                            <CollapsibleBox
-                                heading={
-                                    <H3 typographyStyle="highlight">
-                                        <Translation id="TR_STAKE_UNSTAKING_PROCESS" />
-                                    </H3>
-                                }
-                                fillType="none"
-                                paddingType="none"
-                                hasDivider={false}
-                                defaultIsOpen
-                            >
-                                <List isOrdered bulletGap={spacings.sm} gap={spacings.md}>
-                                    <UnstakingInfo isExpanded />
-                                </List>
-                            </CollapsibleBox>
-                        </Card>
+                    <Column alignItems="stretch" gap={spacings.lg}>
+                        <CollapsibleBox
+                            heading={
+                                <H3 typographyStyle="highlight">
+                                    <Translation id="TR_STAKE_UNSTAKING_PROCESS" />
+                                </H3>
+                            }
+                            hasDivider={false}
+                            defaultIsOpen
+                        >
+                            <List isOrdered bulletGap={spacings.sm} gap={spacings.md}>
+                                <UnstakingInfo isExpanded />
+                            </List>
+                        </CollapsibleBox>
                     </Column>
                 </Grid>
             </NewModal>

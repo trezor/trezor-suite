@@ -8,52 +8,21 @@ import {
     UseFormSetValue,
 } from 'react-hook-form';
 
-import styled, { useTheme } from 'styled-components';
-import { motion } from 'framer-motion';
-
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import {
-    Note,
-    Banner,
-    motionEasing,
-    variables,
-    Icon,
-    getInputStateTextColor,
-} from '@trezor/components';
+import { Note, Banner, variables, Grid, Column, useMediaQuery, Text } from '@trezor/components';
 import { getInputState, getFeeUnits, isInteger } from '@suite-common/wallet-utils';
 import { FeeInfo, FormState } from '@suite-common/wallet-types';
 import { NetworkType } from '@suite-common/wallet-config';
-import { BottomText } from '@trezor/components/src/components/form/BottomText';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite';
-import { NumberInput } from 'src/components/suite/NumberInput';
-import { useTranslation } from 'src/hooks/suite';
 import { validateDecimals } from 'src/utils/suite/validation';
+import { useTranslation } from 'src/hooks/suite';
+import { NumberInput } from 'src/components/suite/NumberInput';
+import { Translation } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 import { InputError } from '../InputError';
-
-const Wrapper = styled.div`
-    display: flex;
-    width: 100%;
-    gap: ${spacingsPx.xs};
-
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        flex-direction: column;
-    }
-`;
-
-const Units = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledNote = styled(Note)`
-    text-align: left;
-`;
 
 const FEE_PER_UNIT = 'feePerUnit';
 const FEE_LIMIT = 'feeLimit';
@@ -80,7 +49,7 @@ export const CustomFee = <TFieldValues extends FormState>({
     ...props
 }: CustomFeeProps<TFieldValues>) => {
     const { translationString } = useTranslation();
-    const theme = useTheme();
+    const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
 
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
     const { getValues, setValue } = props as unknown as UseFormReturn<FormState>;
@@ -170,20 +139,10 @@ export const CustomFee = <TFieldValues extends FormState>({
         feeLimitError?.type === 'feeLimit' ? feeLimitValidationProps : undefined;
 
     return (
-        <motion.div
-            initial={{ opacity: 0, height: 0, marginTop: 0 }}
-            animate={{ opacity: 1, height: 'auto', marginTop: spacingsPx.sm }}
-            exit={{ opacity: 0, height: 0, marginTop: 0 }}
-            transition={{
-                opacity: { duration: 0.15, ease: motionEasing.transition },
-                height: { duration: 0.2, ease: motionEasing.transition },
-                marginTop: { duration: 0.25, ease: motionEasing.transition },
-            }}
-        >
+        <Column gap={spacings.xs} alignItems="stretch">
             <Banner
                 icon
                 variant="warning"
-                margin={{ bottom: spacings.xs }}
                 rightContent={
                     <LearnMoreButton
                         textWrap={false}
@@ -194,7 +153,7 @@ export const CustomFee = <TFieldValues extends FormState>({
             >
                 <Translation id="TR_CUSTOM_FEE_WARNING" />
             </Banner>
-            <Wrapper>
+            <Grid gap={spacings.xs} columns={useFeeLimit && !isBelowLaptop ? 2 : 1}>
                 {useFeeLimit ? (
                     <NumberInput
                         control={control}
@@ -203,6 +162,15 @@ export const CustomFee = <TFieldValues extends FormState>({
                         name={FEE_LIMIT}
                         data-testid={FEE_LIMIT}
                         onChange={changeFeeLimit}
+                        hasBottomPadding={false}
+                        bottomText={
+                            feeLimitError?.message ? (
+                                <InputError
+                                    message={feeLimitError?.message}
+                                    button={validationButtonProps}
+                                />
+                            ) : null
+                        }
                         rules={feeLimitRules}
                     />
                 ) : (
@@ -212,34 +180,19 @@ export const CustomFee = <TFieldValues extends FormState>({
                     control={control}
                     label={useFeeLimit ? <Translation id="TR_GAS_PRICE" /> : undefined}
                     inputState={getInputState(feePerUnitError)}
-                    innerAddon={<Units>{feeUnits}</Units>}
+                    innerAddon={
+                        <Text variant="tertiary" typographyStyle="label">
+                            {feeUnits}
+                        </Text>
+                    }
                     name={FEE_PER_UNIT}
                     data-testid={FEE_PER_UNIT}
                     rules={feeRules}
+                    hasBottomPadding={false}
                     bottomText={feePerUnitError?.message || null}
                 />
-            </Wrapper>
-            {useFeeLimit && feeLimitError?.message ? (
-                <div style={{ marginTop: '-1.5rem' }}>
-                    <BottomText
-                        inputState="error"
-                        iconComponent={
-                            <Icon
-                                name="warningCircle"
-                                size="medium"
-                                color={getInputStateTextColor('error', theme)}
-                            />
-                        }
-                    >
-                        <InputError
-                            message={feeLimitError?.message}
-                            button={validationButtonProps}
-                        />
-                    </BottomText>
-                </div>
-            ) : null}
-
-            {feeDifferenceWarning && <StyledNote>{feeDifferenceWarning}</StyledNote>}
-        </motion.div>
+            </Grid>
+            {feeDifferenceWarning && <Note>{feeDifferenceWarning}</Note>}
+        </Column>
     );
 };

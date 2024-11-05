@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
-import { Card } from '@trezor/components';
+import { Card, Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { CoinmarketFormInputs } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInputs';
 import { CoinmarketFormOffer } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOffer';
@@ -15,7 +16,9 @@ export const CoinmarketFormLayout = () => (
     <>
         <CoinmarketFormLayoutWrapper>
             <Card>
-                <CoinmarketFormInputs />
+                <Column alignItems="stretch" gap={spacings.lg}>
+                    <CoinmarketFormInputs />
+                </Column>
             </Card>
             <Card>
                 <CoinmarketFormOffer />

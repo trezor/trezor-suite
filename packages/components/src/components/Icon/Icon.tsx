@@ -27,6 +27,7 @@ export const iconVariants = [
     'warning',
     'destructive',
     'purple',
+    'disabled',
 ] as const;
 
 export type IconVariant = Extract<UIVariant, (typeof iconVariants)[number]> | 'purple';
@@ -67,6 +68,7 @@ const variantColorMap: Record<IconVariant, Color> = {
     destructive: 'iconAlertRed',
     purple: 'iconAlertPurple',
     default: 'iconDefault',
+    disabled: 'iconDisabled',
 };
 
 export const getColorForIconVariant = ({

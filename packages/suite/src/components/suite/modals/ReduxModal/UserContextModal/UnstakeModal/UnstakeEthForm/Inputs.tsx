@@ -1,8 +1,6 @@
-import styled from 'styled-components';
-
-import { Icon } from '@trezor/components';
+import { Icon, Text, Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { variables } from '@trezor/components/src/config';
 import { useFormatters } from '@suite-common/formatters';
 import { getInputState, getNonComposeErrorMessage } from '@suite-common/wallet-utils';
 
@@ -12,23 +10,6 @@ import { useSelector, useTranslation } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { validateDecimals, validateLimitsBigNum, validateMin } from 'src/utils/suite/validation';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
-
-const HStack = styled.div`
-    display: flex;
-    gap: 14px;
-`;
-
-const IconWrapper = styled.div`
-    height: 48px;
-    display: flex;
-    align-items: center;
-`;
-
-const InputAddon = styled.span`
-    text-transform: uppercase;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
 
 export const Inputs = () => {
     const { translationString } = useTranslation();
@@ -69,13 +50,13 @@ export const Inputs = () => {
     };
 
     return (
-        <HStack>
+        <Row gap={spacings.md} alignItems="flex-start">
             <NumberInput
                 name={CRYPTO_INPUT}
                 control={control}
                 rules={cryptoInputRules}
                 maxLength={formInputsMaxLength.amount}
-                innerAddon={<InputAddon>{symbol}</InputAddon>}
+                innerAddon={<Text variant="tertiary">{symbol?.toUpperCase()}</Text>}
                 bottomText={getNonComposeErrorMessage(errors[CRYPTO_INPUT])}
                 inputState={getInputState(cryptoError || fiatError)}
                 onChange={value => {
@@ -85,17 +66,13 @@ export const Inputs = () => {
 
             {currentRate?.rate && (
                 <>
-                    <IconWrapper>
-                        {/* TODO: Add new transfer icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
-                        <Icon name="transfer" size={16} />
-                    </IconWrapper>
-
+                    <Icon name="arrowsLeftRight" size={20} margin={{ top: spacings.md }} />
                     <NumberInput
                         name={FIAT_INPUT}
                         control={control}
                         rules={fiatInputRules}
                         maxLength={formInputsMaxLength.fiat}
-                        innerAddon={<InputAddon>{localCurrency}</InputAddon>}
+                        innerAddon={<Text variant="tertiary">{localCurrency?.toUpperCase()}</Text>}
                         bottomText={getNonComposeErrorMessage(errors[FIAT_INPUT])}
                         inputState={getInputState(fiatError || cryptoError)}
                         onChange={value => {
@@ -104,6 +81,6 @@ export const Inputs = () => {
                     />
                 </>
             )}
-        </HStack>
+        </Row>
     );
 };

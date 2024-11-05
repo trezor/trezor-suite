@@ -18,7 +18,7 @@ export const CoinmarketFormOfferFiatAmount = ({ amount }: CoinmarketFormOfferFia
             <Text typographyStyle="titleMedium" ellipsisLineCount={1}>
                 {formattedAmount}
             </Text>
-            <CoinmarketFormInputCurrency isClean={false} size="small" isDarkLabel={true} />
+            <CoinmarketFormInputCurrency isClean={false} />
         </Row>
     );
 };

@@ -1,5 +1,3 @@
-import { ReactNode } from 'react';
-
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -8,20 +6,13 @@ import { CoinmarketPaymentPlainType } from 'src/views/wallet/coinmarket/common/C
 import { CoinmarketPaymentMethodType } from 'src/types/coinmarket/coinmarket';
 
 interface CoinmarketPaymentTypeProps {
-    children?: ReactNode;
     method?: CoinmarketPaymentMethodType;
     methodName?: string;
 }
 
-export const CoinmarketPaymentType = ({
-    children,
-    method,
-    methodName,
-}: CoinmarketPaymentTypeProps) => (
+export const CoinmarketPaymentType = ({ method, methodName }: CoinmarketPaymentTypeProps) => (
     <Row gap={spacings.xs}>
         {method && <img width="24px" src={invityAPI.getPaymentMethodUrl(method)} alt="" />}
-        <CoinmarketPaymentPlainType method={method} methodName={methodName}>
-            {children}
-        </CoinmarketPaymentPlainType>
+        <CoinmarketPaymentPlainType method={method} methodName={methodName} />
     </Row>
 );

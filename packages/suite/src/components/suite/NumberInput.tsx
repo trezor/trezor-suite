@@ -64,13 +64,15 @@ const cleanValueString = (value: string, locale: Locale) => {
 
 const DECIMAL_SEPARATORS = [',', '.'];
 
-export interface NumberInputProps<TFieldValues extends FieldValues>
-    extends Omit<InputProps, 'defaultValue' | 'name' | 'onChange'>,
-        Omit<UseControllerProps<TFieldValues>, 'rules'> {
-    decimalScale?: number;
-    onChange?: (value: string) => void;
-    rules?: UseControllerProps['rules'];
-}
+export type NumberInputProps<TFieldValues extends FieldValues> = Omit<
+    InputProps,
+    'defaultValue' | 'name' | 'onChange'
+> &
+    Omit<UseControllerProps<TFieldValues>, 'rules'> & {
+        decimalScale?: number;
+        onChange?: (value: string) => void;
+        rules?: UseControllerProps['rules'];
+    };
 
 export const NumberInput = <TFieldValues extends FieldValues>({
     name,

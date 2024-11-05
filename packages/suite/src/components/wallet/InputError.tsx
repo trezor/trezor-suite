@@ -1,29 +1,10 @@
 import { MouseEventHandler } from 'react';
 
-import styled from 'styled-components';
-
-import { Button } from '@trezor/components';
+import { Button, Paragraph, Row } from '@trezor/components';
 import { Url } from '@trezor/urls';
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { LearnMoreButton } from '../suite/LearnMoreButton';
-
-const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.xs};
-`;
-
-const ButtonWrapper = styled.div`
-    position: absolute;
-    top: 4px;
-    right: 16px;
-`;
-
-const ContentWrapper = styled.div`
-    flex-grow: 1;
-    padding-right: 150px;
-`;
 
 type ButtonProps = { onClick: MouseEventHandler<HTMLButtonElement>; text: string };
 type LinkProps = { url: Url };
@@ -34,17 +15,15 @@ export type InputErrorProps = {
 };
 
 export const InputError = ({ button, message }: InputErrorProps) => (
-    <Wrapper>
-        <ContentWrapper>{message}</ContentWrapper>
+    <Row gap={spacings.xs} justifyContent="space-between" flex="1">
+        <Paragraph>{message}</Paragraph>
         {button &&
             ('url' in button ? (
                 <LearnMoreButton url={button.url} />
             ) : (
-                <ButtonWrapper>
-                    <Button size="tiny" variant="tertiary" onClick={button.onClick}>
-                        {button.text}
-                    </Button>
-                </ButtonWrapper>
+                <Button size="tiny" variant="tertiary" onClick={button.onClick} textWrap={false}>
+                    {button.text}
+                </Button>
             ))}
-    </Wrapper>
+    </Row>
 );
