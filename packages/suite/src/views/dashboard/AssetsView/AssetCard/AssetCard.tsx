@@ -33,16 +33,11 @@ import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { TokenInfo } from '@trezor/connect';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
-import { getAccountTotalStakingBalance, isTestnet } from '@suite-common/wallet-utils';
+import { isTestnet } from '@suite-common/wallet-utils';
 import { selectAssetAccountsThatStaked } from '@suite-common/wallet-core';
-import { BigNumber } from '@trezor/utils';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import {
-    enhanceTokensWithRates,
-    getTokens,
-    sortTokensWithRates,
-} from 'src/utils/wallet/tokenUtils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { handleTokensAndStakingData } from '../assetsViewUtils';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCard = styled(Card)`
@@ -132,28 +127,27 @@ export const AssetCard = ({
         setSearchString(undefined);
     };
 
+    const stakingAccountsForAsset = stakingAccounts.filter(account => account.symbol === symbol);
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
     const { fiatAmount } = useFiatFromCryptoValue({ amount: cryptoValue, symbol });
-    const stakingAccountsForAsset = stakingAccounts.filter(account => account.symbol === symbol);
     const accountsThatStaked = useSelector(state =>
         selectAssetAccountsThatStaked(state, stakingAccountsForAsset),
     );
-    const assetStakingBalance = accountsThatStaked.reduce((total, account) => {
-        return total.plus(getAccountTotalStakingBalance(account));
-    }, new BigNumber(0));
-    const tokens = getTokens(assetTokens ?? [], symbol, coinDefinitions);
-    const tokensWithRates = enhanceTokensWithRates(
-        tokens.shownWithBalance ?? [],
-        localCurrency,
+
+    const {
+        sortedTokens,
+        tokensFiatBalance,
+        assetStakingBalance,
+        shouldRenderStakingRow,
+        shouldRenderTokenRow,
+    } = handleTokensAndStakingData(
+        assetTokens,
+        accountsThatStaked,
         symbol,
+        localCurrency,
+        coinDefinitions,
         currentFiatRates,
     );
-    const sortedTokens = tokensWithRates.sort(sortTokensWithRates);
-    const tokensFiatBalance = sortedTokens.reduce((total, token) => {
-        return total.plus(token?.fiatValue ?? 0);
-    }, new BigNumber(0));
-    const shouldRenderStakingRow = accountsThatStaked.length > 0 && assetStakingBalance.gt(0);
-    const shouldRenderTokenRow = tokens.shownWithBalance?.length > 0 && tokensFiatBalance.gt(0);
 
     return (
         <StyledCard paddingType="small" onClick={handleCardClick}>
