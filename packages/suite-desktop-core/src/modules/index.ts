@@ -58,6 +58,7 @@ const MODULES: Module[] = [
     store,
     udevInstall,
     userData,
+    trezorConnect,
     devTools,
     requestInterceptor,
     coinjoin,
