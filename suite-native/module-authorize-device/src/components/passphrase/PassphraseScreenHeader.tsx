@@ -10,7 +10,6 @@ import TrezorConnect from '@trezor/connect';
 import {
     cancelPassphraseAndSelectStandardDeviceThunk,
     selectIsCreatingNewPassphraseWallet,
-    useAuthorizationGoBack,
 } from '@suite-native/device-authorization';
 import {
     RootStackRoutes,
@@ -20,6 +19,7 @@ import {
     AuthorizeDeviceStackRoutes,
     RootStackParamList,
     StackToTabCompositeProps,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
@@ -40,7 +40,7 @@ export const PassphraseScreenHeader = () => {
 
     const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
 
-    const { handleGoBack } = useAuthorizationGoBack();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const handleClose = useCallback(() => {
         navigation.navigate(RootStackRoutes.AppTabs, {
@@ -74,9 +74,9 @@ export const PassphraseScreenHeader = () => {
             });
         } else {
             TrezorConnect.cancel();
-            handleGoBack();
+            navigateToInitialScreen();
         }
-    }, [handleClose, handleGoBack, isCreatingNewWalletInstance, showAlert]);
+    }, [handleClose, navigateToInitialScreen, isCreatingNewWalletInstance, showAlert]);
 
     useEffect(() => {
         const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
