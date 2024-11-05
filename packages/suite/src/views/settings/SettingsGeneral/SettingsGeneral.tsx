@@ -32,6 +32,8 @@ import { Experimental } from './Experimental';
 import { networks, NetworkFeature } from '@suite-common/wallet-config';
 import { TorSnowflake } from './TorSnowflake';
 import { AutomaticUpdate } from './AutomaticUpdate';
+import { AutoStart } from './AutoStart';
+import { ShowOnTray } from './ShowOnTray';
 
 export const SettingsGeneral = () => {
     const shouldShowSettingsDesktopAppPromoBanner = useSelector(
@@ -99,6 +101,13 @@ export const SettingsGeneral = () => {
             <SettingsSection title={<Translation id="TR_VIEW_ONLY" />} icon="link">
                 <EnableViewOnly />
             </SettingsSection>
+
+            {isDesktop() && (
+                <SettingsSection title={<Translation id="TR_TREZOR_CONNECT" />} icon="plugs">
+                    <AutoStart />
+                    <ShowOnTray />
+                </SettingsSection>
+            )}
 
             <SettingsSection
                 title={<Translation id="TR_EXPERIMENTAL_FEATURES" />}
