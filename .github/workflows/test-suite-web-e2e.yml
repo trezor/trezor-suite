@@ -22,6 +22,7 @@ on:
       - ".github/workflows/release*"
       - ".github/workflows/template*"
       - ".github/actions/release*/**"
+  workflow_dispatch:
 
 env:
   DEV_SERVER_URL: "https://dev.suite.sldev.cz"
