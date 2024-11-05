@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../protobuf" },
         { "path": "../transport" },
         { "path": "../transport-bridge" },
         { "path": "../trezor-user-env-link" },
