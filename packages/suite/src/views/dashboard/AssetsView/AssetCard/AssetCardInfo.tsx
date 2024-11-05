@@ -4,6 +4,7 @@ import { AssetFiatBalance } from '@suite-common/assets';
 import { AssetCoinLogo, AssetCoinLogoSkeleton } from '../AssetCoinLogo';
 import { AssetCoinName, AssetCoinNameSkeleton } from '../AssetCoinName';
 import { Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 type AssetInfoProps = {
     network: Network;
@@ -12,7 +13,7 @@ type AssetInfoProps = {
 };
 
 export const AssetCardInfo = ({ network, assetsFiatBalances, index }: AssetInfoProps) => (
-    <Row>
+    <Row gap={spacings.sm}>
         <AssetCoinLogo
             symbol={network.symbol}
             index={index}
