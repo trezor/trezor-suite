@@ -13,6 +13,7 @@ module.exports = {
                 extensions: ['.tsx', '.mdx'],
             },
         ],
+        'local-rules/no-override-ds-component': 'off', // To not show errors in *.mdx example files
     },
     extends: ['plugin:mdx/recommended'],
 };
