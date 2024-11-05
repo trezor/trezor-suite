@@ -1,21 +1,20 @@
-import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { Screen, ScreenHeader, useNavigateToInitialScreen } from '@suite-native/navigation';
 import { IconButton, Text, VStack } from '@suite-native/atoms';
 import TrezorConnect from '@trezor/connect';
-import { useAuthorizationGoBack } from '@suite-native/device-authorization';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useIsConnectPopupOpened } from '@suite-native/module-connect-popup';
 
 import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
 
 export const PassphraseFeatureUnlockFormScreen = () => {
-    const { handleGoBack } = useAuthorizationGoBack();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
     const isConnectPopupOpened = useIsConnectPopupOpened();
 
     const { translate } = useTranslate();
 
     const handleClose = () => {
         TrezorConnect.cancel();
-        handleGoBack();
+        navigateToInitialScreen();
     };
 
     return (

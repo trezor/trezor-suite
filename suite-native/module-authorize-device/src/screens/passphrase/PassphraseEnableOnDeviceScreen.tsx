@@ -1,16 +1,12 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Screen } from '@suite-native/navigation';
+import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
 import { CenteredTitleHeader, IconButton, ScreenHeaderWrapper, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
-import {
-    resetError,
-    selectPassphraseError,
-    useAuthorizationGoBack,
-} from '@suite-native/device-authorization';
+import { resetError, selectPassphraseError } from '@suite-native/device-authorization';
 
 import { DeviceT3T1Svg } from '../../assets/passphrase/DeviceT3T1Svg';
 
@@ -22,13 +18,13 @@ export const PassphraseEnableOnDeviceScreen = () => {
     const { showToast } = useToast();
     const { translate } = useTranslate();
 
-    const { handleGoBack } = useAuthorizationGoBack();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const handleClose = useCallback(() => {
         TrezorConnect.cancel();
         dispatch(resetError());
-        handleGoBack();
-    }, [dispatch, handleGoBack]);
+        navigateToInitialScreen();
+    }, [dispatch, navigateToInitialScreen]);
 
     useEffect(() => {
         if (passphraseError?.error === 'passphrase-enabling-cancelled') {
@@ -39,7 +35,7 @@ export const PassphraseEnableOnDeviceScreen = () => {
                 message: translate('modulePassphrase.enablePassphrase.cancelledError'),
             });
         }
-    }, [dispatch, handleClose, handleGoBack, passphraseError, showToast, translate]);
+    }, [dispatch, handleClose, navigateToInitialScreen, passphraseError, showToast, translate]);
 
     return (
         <Screen

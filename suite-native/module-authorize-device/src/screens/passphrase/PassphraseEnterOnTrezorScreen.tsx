@@ -8,6 +8,7 @@ import {
     AuthorizeDeviceStackRoutes,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { Box, Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
@@ -16,7 +17,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     cancelPassphraseAndSelectStandardDeviceThunk,
     selectIsCreatingNewPassphraseWallet,
-    useAuthorizationGoBack,
     useHandlePassphraseMismatch,
 } from '@suite-native/device-authorization';
 import TrezorConnect from '@trezor/connect';
@@ -50,8 +50,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
     const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
 
     const navigation = useNavigation<NavigationProp>();
-
-    const { handleGoBack } = useAuthorizationGoBack();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
 
     // If this screen was present during authorizing device with passphrase for some feature,
     // on success, this hook will close the stack and go back
@@ -74,7 +73,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
                 payload: { screen: AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor },
             });
             TrezorConnect.cancel();
-            handleGoBack();
+            navigateToInitialScreen();
         }
     };
 

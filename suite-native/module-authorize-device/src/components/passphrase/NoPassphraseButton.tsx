@@ -1,19 +1,19 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Button } from '@suite-native/atoms';
 import { onPassphraseSubmit, selectDeviceInternalModel } from '@suite-common/wallet-core';
+import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useAuthorizationGoBack } from '@suite-native/device-authorization';
+import { useNavigateToInitialScreen } from '@suite-native/navigation';
 
 export const NoPassphraseButton = () => {
     const dispatch = useDispatch();
 
     const deviceModel = useSelector(selectDeviceInternalModel);
 
-    const { handleGoBack } = useAuthorizationGoBack();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
     const handleSubmitOnDevice = () => {
         dispatch(onPassphraseSubmit({ value: '', passphraseOnDevice: false }));
-        handleGoBack();
+        navigateToInitialScreen();
     };
 
     if (!deviceModel) return null;
