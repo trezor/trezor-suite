@@ -41,7 +41,7 @@ import {
 import { coinmarketGetExchangeReceiveCryptoId } from 'src/utils/wallet/coinmarket/exchangeUtils';
 
 /**
- * shareable sub-hook used in useCoinmarketSellForm & useCoinmarketExchangeForm
+ * shareable sub-hook used in useCoinmarketSellForm & useCoinmarketExchangeForm
  * managing effects on input changes
  * @return functions and values to handle form inputs and update fee levels
  */

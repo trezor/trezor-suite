@@ -20,7 +20,7 @@ import {
 } from 'src/types/coinmarket/coinmarketForm';
 import { getComposeAddressPlaceholder } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
-// shareable sub-hook used in useCoinmarketSellForm & useCoinmarketExchangeForm
+// shareable sub-hook used in useCoinmarketSellForm & useCoinmarketExchangeForm
 export const useCoinmarketComposeTransaction = <T extends CoinmarketSellExchangeFormProps>({
     account,
     network,
