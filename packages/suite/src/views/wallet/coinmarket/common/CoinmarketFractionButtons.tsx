@@ -23,13 +23,12 @@ export const CoinmarketFractionButtons = ({
     ];
 
     return (
-        <Row data-testid="@coinmarket/form/fraction-buttons">
+        <Row gap={spacings.xs} data-testid="@coinmarket/form/fraction-buttons">
             {buttons.map((button, index) => (
                 <Button
                     variant="tertiary"
                     type="button"
                     size="small"
-                    margin={{ right: spacings.sm }}
                     key={index}
                     isDisabled={disabled}
                     onClick={() => (!button.value ? onAllClick() : onFractionClick(button.value))}

@@ -1,9 +1,7 @@
-import styled from 'styled-components';
-
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
-import { typography } from '@trezor/theme';
+import { Text } from '@trezor/components';
 
 import { FiatValue, HiddenPlaceholder, Translation } from 'src/components/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
@@ -13,11 +11,6 @@ import {
     coinmarketGetAccountLabel,
     getCoinmarketNetworkDecimals,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-
-const CoinmarketBalanceWrapper = styled.div`
-    ${typography.label}
-    color: ${({ theme }) => theme.textSubdued};
-`;
 
 interface CoinmarketBalanceProps {
     balance: string | undefined;
@@ -56,10 +49,10 @@ export const CoinmarketBalance = ({
     });
 
     if (showOnlyAmount) {
-        if (typeof balance === 'undefined' || isNaN(Number(balance))) return null;
+        if (Number(balance) === 0 || isNaN(Number(balance))) return null;
 
         return (
-            <CoinmarketBalanceWrapper>
+            <Text variant="tertiary" typographyStyle="label">
                 &asymp;{' '}
                 {!amountInCrypto ? (
                     <HiddenPlaceholder>
@@ -68,8 +61,7 @@ export const CoinmarketBalance = ({
                 ) : (
                     stringBalance &&
                     fiatAmount &&
-                    networkSymbol &&
-                    stringBalance !== '0' && (
+                    networkSymbol && (
                         <FiatValue
                             amount={stringBalance}
                             symbol={networkSymbol}
@@ -77,12 +69,12 @@ export const CoinmarketBalance = ({
                         />
                     )
                 )}
-            </CoinmarketBalanceWrapper>
+            </Text>
         );
     }
 
     return (
-        <CoinmarketBalanceWrapper>
+        <Text variant="tertiary" typographyStyle="label">
             <Translation id="TR_BALANCE" />
             {': '}
             <HiddenPlaceholder>
@@ -100,6 +92,6 @@ export const CoinmarketBalance = ({
                     )
                 </>
             )}
-        </CoinmarketBalanceWrapper>
+        </Text>
     );
 };

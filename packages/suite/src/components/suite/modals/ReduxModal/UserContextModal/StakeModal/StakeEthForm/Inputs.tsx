@@ -1,11 +1,9 @@
-import styled from 'styled-components';
-
-import { Icon, Banner, Column, Text } from '@trezor/components';
+import { Icon, Banner, Column, Text, Button } from '@trezor/components';
 import { getInputState } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { MIN_ETH_FOR_WITHDRAWALS } from '@suite-common/wallet-constants';
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { NumberInput, Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
@@ -18,11 +16,7 @@ import {
 } from 'src/utils/suite/validation';
 import { FIAT_INPUT, CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { validateStakingMax } from 'src/utils/suite/stake';
-
-const IconWrapper = styled.div`
-    transform: rotate(90deg);
-    margin-bottom: ${spacingsPx.xl};
-`;
+import { FormFractionButtons } from 'src/components/suite/FormFractionButtons';
 
 export const Inputs = () => {
     const { translationString } = useTranslation();
@@ -32,7 +26,7 @@ export const Inputs = () => {
         control,
         account,
         network,
-        formState: { errors },
+        formState: { errors, isDirty },
         amountLimits,
         onCryptoAmountChange,
         onFiatAmountChange,
@@ -41,10 +35,15 @@ export const Inputs = () => {
         isLessAmountForWithdrawalWarningShown,
         isAdviceForWithdrawalWarningShown,
         currentRate,
+        setRatioAmount,
+        setMax,
+        watch,
+        clearForm,
     } = useStakeEthFormContext();
 
     const cryptoError = errors.cryptoInput;
     const fiatError = errors.fiatInput;
+    const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
 
     const fiatInputRules = {
         validate: {
@@ -73,9 +72,25 @@ export const Inputs = () => {
         isLessAmountForWithdrawalWarningShown || isAmountForWithdrawalWarningShown;
 
     return (
-        <Column>
+        <Column alignItems="normal" gap={spacings.sm}>
             <NumberInput
                 name={CRYPTO_INPUT}
+                labelLeft={
+                    <FormFractionButtons
+                        setRatioAmount={setRatioAmount}
+                        setMax={setMax}
+                        symbol={account.symbol}
+                        totalAmount={account.formattedBalance}
+                        decimals={network.decimals}
+                    />
+                }
+                labelRight={
+                    (isDirty || hasValues) && (
+                        <Button type="button" variant="tertiary" size="tiny" onClick={clearForm}>
+                            <Translation id="TR_CLEAR_ALL" />
+                        </Button>
+                    )
+                }
                 control={control}
                 rules={cryptoInputRules}
                 maxLength={formInputsMaxLength.amount}
@@ -89,10 +104,7 @@ export const Inputs = () => {
 
             {currentRate?.rate && (
                 <>
-                    <IconWrapper>
-                        <Icon name="transfer" size={16} />
-                    </IconWrapper>
-
+                    <Icon name="arrowsDownUp" size={20} variant="tertiary" />
                     <NumberInput
                         name={FIAT_INPUT}
                         control={control}

@@ -6,11 +6,11 @@ import {
     CoinmarketSellFormProps,
 } from 'src/types/coinmarket/coinmarketForm';
 import { CoinmarketFormSwitcherCryptoFiat } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormSwitcherCryptoFiat';
-import { CoinmarketFormInputLabel } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
 import { coinmarketGetAmountLabels } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketFormInputCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputCryptoAmount';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { CoinmarketFormInputFiat } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputFiat';
+import { Translation } from 'src/components/suite';
 
 export const CoinmarketFormInputFiatCrypto = <
     TFieldValues extends
@@ -28,40 +28,39 @@ export const CoinmarketFormInputFiatCrypto = <
             state: { isFormLoading, toggleAmountInCrypto },
         },
     } = useCoinmarketFormContext();
-
-    const { amountInCrypto } = formProps.methods.getValues();
+    const {
+        cryptoCurrencyLabel,
+        cryptoInputName,
+        currencySelectLabel,
+        cryptoSelectName,
+        methods,
+        fiatInputName,
+    } = formProps;
+    const { amountInCrypto } = methods.getValues();
     const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto });
 
-    return (
-        <>
-            {showLabel ? (
-                <CoinmarketFormInputLabel label={amountLabels.inputLabel}>
-                    <CoinmarketFormSwitcherCryptoFiat
-                        symbol={
-                            !amountInCrypto && formProps.cryptoCurrencyLabel
-                                ? cryptoIdToCoinSymbol(formProps.cryptoCurrencyLabel)
-                                : formProps.currencySelectLabel ?? ''
-                        }
-                        isDisabled={isFormLoading}
-                        toggleAmountInCrypto={toggleAmountInCrypto}
-                    />
-                </CoinmarketFormInputLabel>
-            ) : null}
-            {amountInCrypto ? (
-                <CoinmarketFormInputCryptoAmount
-                    cryptoInputName={formProps.cryptoInputName}
-                    fiatInputName={formProps.fiatInputName}
-                    cryptoSelectName={formProps.cryptoSelectName}
-                    methods={{ ...formProps.methods }}
-                />
-            ) : (
-                <CoinmarketFormInputFiat
-                    cryptoInputName={formProps.cryptoInputName}
-                    fiatInputName={formProps.fiatInputName}
-                    cryptoSelectName={formProps.cryptoSelectName}
-                    methods={{ ...formProps.methods }}
-                />
-            )}
-        </>
+    const inputProps = {
+        cryptoInputName,
+        fiatInputName,
+        cryptoSelectName,
+        methods,
+        labelLeft: showLabel ? <Translation id={amountLabels.inputLabel} /> : undefined,
+        labelRight: showLabel ? (
+            <CoinmarketFormSwitcherCryptoFiat
+                symbol={
+                    !amountInCrypto && cryptoCurrencyLabel
+                        ? cryptoIdToCoinSymbol(cryptoCurrencyLabel)
+                        : currencySelectLabel ?? ''
+                }
+                isDisabled={isFormLoading}
+                toggleAmountInCrypto={toggleAmountInCrypto}
+            />
+        ) : undefined,
+    };
+
+    return amountInCrypto ? (
+        <CoinmarketFormInputCryptoAmount {...inputProps} />
+    ) : (
+        <CoinmarketFormInputFiat {...inputProps} />
     );
 };

@@ -85,7 +85,6 @@ export type CollapsibleBoxProps = AllowedFrameProps & {
 };
 
 const Container = styled.div<TransientProps<AllowedFrameProps> & ContainerProps>`
-    flex: 1;
     width: 100%;
     border-radius: ${borders.radii.sm};
     transition: background 0.3s;

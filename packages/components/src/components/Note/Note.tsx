@@ -1,35 +1,25 @@
 import { ReactNode } from 'react';
 
-import styled, { useTheme } from 'styled-components';
-
-import { spacings, spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { Paragraph } from '../typography/Paragraph/Paragraph';
 import { Icon } from '../Icon/Icon';
+import { Row } from '../Flex/Flex';
+import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
 
-const Row = styled.div`
-    display: flex;
-    gap: ${spacingsPx.xs};
-`;
+export const allowedNoteFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedNoteFrameProps)[number]>;
 
-const StyledParagraph = styled(Paragraph)<{ $color?: string }>`
-    color: ${({ $color }) => $color};
-`;
-
-export interface NoteProps {
+export type NoteProps = AllowedFrameProps & {
     children: ReactNode;
     className?: string;
-}
-
-export const Note = ({ children, className }: NoteProps) => {
-    const theme = useTheme();
-
-    return (
-        <Row className={className}>
-            <Icon name="info" size={14} color={theme.textSubdued} margin={{ top: spacings.xxxs }} />
-            <StyledParagraph typographyStyle="hint" $color={theme.textSubdued}>
-                {children}
-            </StyledParagraph>
-        </Row>
-    );
 };
+
+export const Note = ({ children, className, margin }: NoteProps) => (
+    <Row className={className} gap={spacings.xs} margin={margin}>
+        <Icon name="info" size={14} variant="tertiary" />
+        <Paragraph typographyStyle="hint" variant="tertiary">
+            {children}
+        </Paragraph>
+    </Row>
+);

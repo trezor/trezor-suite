@@ -34,7 +34,6 @@ export const Select: StoryObj<SelectProps> = {
         isClean: false,
         isDisabled: false,
         isSearchable: false,
-        hasBottomPadding: true,
         size: 'large',
         minValueWidth: 'initial',
         isMenuOpen: undefined,
@@ -66,11 +65,9 @@ export const Select: StoryObj<SelectProps> = {
         bottomText: {
             control: { type: 'text' },
         },
-        hasBottomPadding: {
-            control: {
-                type: 'boolean',
-            },
-        },
+        labelHoverRight: { control: 'text' },
+        labelLeft: { control: 'text' },
+        labelRight: { control: 'text' },
         size: {
             control: {
                 type: 'radio',
@@ -90,12 +87,7 @@ export const Select: StoryObj<SelectProps> = {
                 type: 'boolean',
             },
         },
-        inputState: {
-            control: {
-                type: 'radio',
-            },
-            options: [null, 'warning', 'error'],
-        },
+        inputState: { control: 'select', options: ['error', 'warning', 'primary'] },
         placeholder: {
             control: { type: 'text' },
         },

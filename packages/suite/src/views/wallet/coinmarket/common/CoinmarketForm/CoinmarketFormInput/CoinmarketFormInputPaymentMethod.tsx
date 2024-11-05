@@ -11,14 +11,7 @@ import {
     CoinmarketBuySellFormProps,
     CoinmarketFormInputDefaultProps,
 } from 'src/types/coinmarket/coinmarketForm';
-import { CoinmarketFormInputLabel } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
-import {
-    CoinmarketFormInputInner,
-    CoinmarketFormOption,
-    CoinmarketFormOptionLabel,
-} from 'src/views/wallet/coinmarket';
 import { CoinmarketPaymentPlainType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentPlainType';
-import { CoinmarketFormInputLoader } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLoader';
 import { FORM_PAYMENT_METHOD_SELECT } from 'src/constants/wallet/coinmarket/form';
 import { Translation } from 'src/components/suite';
 
@@ -42,41 +35,32 @@ export const CoinmarketFormInputPaymentMethod = ({ label }: CoinmarketFormInputD
     };
 
     return (
-        <>
-            <CoinmarketFormInputLabel label={label} />
-            <CoinmarketFormInputInner>
-                <Controller
-                    name={FORM_PAYMENT_METHOD_SELECT}
-                    defaultValue={defaultPaymentMethod}
-                    control={control as Control<CoinmarketBuySellFormProps>}
-                    render={({ field: { onChange, value } }) => (
-                        <Select
-                            value={value}
-                            onChange={onChange}
-                            options={paymentMethods}
-                            formatOptionLabel={(option: CoinmarketPaymentMethodListProps) => (
-                                <CoinmarketFormOption>
-                                    <CoinmarketFormOptionLabel>
-                                        {option.value !== '' && quotes && quotes.length > 0 ? (
-                                            <CoinmarketPaymentPlainType
-                                                method={option.value}
-                                                methodName={option.label}
-                                            />
-                                        ) : (
-                                            getEmptyMethodsLabel()
-                                        )}
-                                    </CoinmarketFormOptionLabel>
-                                </CoinmarketFormOption>
-                            )}
-                            data-testid="@coinmarket/form/payment-method-select"
-                            isClearable={false}
-                            isSearchable
-                            isDisabled={isFormInvalid}
-                        />
-                    )}
+        <Controller
+            name={FORM_PAYMENT_METHOD_SELECT}
+            defaultValue={defaultPaymentMethod}
+            control={control as Control<CoinmarketBuySellFormProps>}
+            render={({ field: { onChange, value } }) => (
+                <Select
+                    value={value}
+                    onChange={onChange}
+                    options={paymentMethods}
+                    labelLeft={label && <Translation id={label} />}
+                    formatOptionLabel={(option: CoinmarketPaymentMethodListProps) =>
+                        option.value !== '' && quotes && quotes.length > 0 ? (
+                            <CoinmarketPaymentPlainType
+                                method={option.value}
+                                methodName={option.label}
+                            />
+                        ) : (
+                            getEmptyMethodsLabel()
+                        )
+                    }
+                    data-testid="@coinmarket/form/payment-method-select"
+                    isClearable={false}
+                    isDisabled={isFormInvalid}
+                    isLoading={isFormLoading}
                 />
-                {isFormLoading && <CoinmarketFormInputLoader />}
-            </CoinmarketFormInputInner>
-        </>
+            )}
+        />
     );
 };

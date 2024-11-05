@@ -44,11 +44,18 @@ const Wrapper = styled.div`
 type FiatInputProps = {
     output: Partial<Output>;
     outputId: number;
+    labelLeft?: React.ReactNode;
     labelHoverRight?: React.ReactNode;
     labelRight?: React.ReactNode;
 };
 
-export const FiatInput = ({ output, outputId, labelHoverRight, labelRight }: FiatInputProps) => {
+export const FiatInput = ({
+    output,
+    outputId,
+    labelLeft,
+    labelHoverRight,
+    labelRight,
+}: FiatInputProps) => {
     const {
         account,
         network,
@@ -233,6 +240,7 @@ export const FiatInput = ({ output, outputId, labelHoverRight, labelRight }: Fia
             <NumberInput
                 labelHoverRight={labelHoverRight}
                 labelRight={labelRight}
+                labelLeft={labelLeft}
                 control={control}
                 inputState={inputState}
                 onChange={handleChange}

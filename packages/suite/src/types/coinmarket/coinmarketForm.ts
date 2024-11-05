@@ -1,5 +1,5 @@
 import type { FieldValues, UseFormReturn, FieldPath } from 'react-hook-form';
-import { PropsWithChildren } from 'react';
+import React from 'react';
 
 import type {
     BankAccount,
@@ -41,7 +41,7 @@ import {
 import type { Account } from 'src/types/wallet';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import { AppState } from 'src/reducers/store';
-import { Dispatch, ExtendedMessageDescriptor, GetState } from 'src/types/suite';
+import { Dispatch, GetState } from 'src/types/suite';
 import {
     AmountLimits,
     CryptoAmountLimits,
@@ -67,6 +67,7 @@ import {
     FORM_RATE_FLOATING,
     FORM_RATE_TYPE,
 } from 'src/constants/wallet/coinmarket/form';
+import type { TranslationKey } from 'src/components/suite/Translation';
 
 export interface CoinmarketBuyFormProps {
     fiatInput?: string;
@@ -288,11 +289,9 @@ export type CoinmarketPaymentMethodHookProps<T extends CoinmarketTradeType> = {
     ) => CoinmarketTradeDetailMapProps[T][] | undefined;
 };
 
-export interface CoinmarketFormInputLabelProps extends PropsWithChildren {
-    label?: ExtendedMessageDescriptor['id'];
+export interface CoinmarketFormInputDefaultProps {
+    label?: TranslationKey;
 }
-
-export interface CoinmarketFormInputDefaultProps extends CoinmarketFormInputLabelProps {}
 
 export interface CoinmarketFormInputCryptoSelectProps<TFieldValues extends FieldValues>
     extends CoinmarketFormInputDefaultProps {
@@ -307,6 +306,8 @@ export interface CoinmarketFormInputFiatCryptoProps<TFieldValues extends FieldVa
     cryptoInputName: FieldPath<TFieldValues>;
     fiatInputName: FieldPath<TFieldValues>;
     cryptoSelectName: FieldPath<TFieldValues>;
+    labelLeft?: React.ReactNode;
+    labelRight?: React.ReactNode;
 }
 
 export interface CoinmarketFormInputFiatCryptoWrapProps<TFieldValues extends FieldValues> {
@@ -320,15 +321,14 @@ export interface CoinmarketFormInputFiatCryptoWrapProps<TFieldValues extends Fie
 }
 
 export interface CoinmarketFormInputAccountProps<TFieldValues extends FieldValues> {
-    label?: ExtendedMessageDescriptor['id'];
+    label?: TranslationKey;
     accountSelectName: FieldPath<TFieldValues>;
     methods: UseFormReturn<TFieldValues>;
 }
 
 export interface CoinmarketFormInputCurrencyProps {
     isClean?: boolean;
-    size?: 'small' | 'large';
-    isDarkLabel?: boolean;
+    width?: number;
 }
 
 export interface CoinmarketUseFormActionsProps<T extends CoinmarketSellExchangeFormProps> {

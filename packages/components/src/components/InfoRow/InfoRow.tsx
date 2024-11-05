@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { spacings } from '@trezor/theme';
+import { spacings, TypographyStyle } from '@trezor/theme';
 
 import {
     FrameProps,
@@ -34,6 +34,7 @@ export type InfoRowProps = AllowedFrameProps &
         children?: ReactNode;
         direction?: FlexDirection;
         label: ReactNode;
+        labelTypographyStyle?: TypographyStyle;
     };
 
 export const InfoRow = ({
@@ -41,6 +42,7 @@ export const InfoRow = ({
     label,
     direction = 'column',
     typographyStyle = 'body',
+    labelTypographyStyle = 'hint',
     ...rest
 }: InfoRowProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedInfoRowFrameProps);
@@ -54,7 +56,7 @@ export const InfoRow = ({
                 justifyContent={isRow ? 'space-between' : undefined}
                 gap={isRow ? spacings.md : spacings.xxs}
             >
-                <Text variant="tertiary" typographyStyle="hint" as="div">
+                <Text variant="tertiary" typographyStyle={labelTypographyStyle} as="div">
                     {label}
                 </Text>
                 <Text as="div" typographyStyle={typographyStyle} align={isRow ? 'right' : 'left'}>

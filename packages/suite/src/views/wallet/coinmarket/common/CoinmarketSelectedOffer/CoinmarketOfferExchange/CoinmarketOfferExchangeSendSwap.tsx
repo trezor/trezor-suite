@@ -2,11 +2,10 @@ import { useState, ChangeEvent } from 'react';
 import { FieldError } from 'react-hook-form';
 
 import useDebounce from 'react-use/lib/useDebounce';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import {
     Button,
-    Icon,
     Input,
     InfoRow,
     Column,
@@ -16,7 +15,6 @@ import {
     SelectBar,
     Tooltip,
     ElevationContext,
-    getInputStateTextColor,
 } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { BottomText } from '@trezor/components/src/components/form/BottomText';
@@ -74,7 +72,6 @@ const formatCryptoAmountAsAmount = (amount: number, baseAmount: number, decimals
 };
 
 export const CoinmarketOfferExchangeSendSwap = () => {
-    const theme = useTheme();
     const {
         account,
         callInProgress,
@@ -232,13 +229,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                             {customSlippageError?.message ? (
                                 <BottomText
                                     inputState={customSlippageError && 'error'}
-                                    iconComponent={
-                                        <Icon
-                                            name="warningCircle"
-                                            size="medium"
-                                            color={getInputStateTextColor('error', theme)}
-                                        />
-                                    }
+                                    iconName="warningCircle"
                                 >
                                     <Translation id={customSlippageError?.message} />
                                 </BottomText>

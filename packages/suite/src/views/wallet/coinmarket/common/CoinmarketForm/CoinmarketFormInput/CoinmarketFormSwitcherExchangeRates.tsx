@@ -1,11 +1,9 @@
 import { UseFormSetValue } from 'react-hook-form';
 
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
-import { Radio } from '@trezor/components';
-import { variables } from '@trezor/components/src/config';
-import { borders, spacingsPx } from '@trezor/theme';
-import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { Radio, Column, Card, Grid, Paragraph, useElevation } from '@trezor/components';
+import { borders, spacingsPx, spacings, Elevation, mapElevationToBackground } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { CoinmarketExchangeFormProps, RateType } from 'src/types/coinmarket/coinmarketForm';
@@ -14,52 +12,49 @@ import {
     FORM_RATE_FLOATING,
     FORM_RATE_TYPE,
 } from 'src/constants/wallet/coinmarket/form';
-import { CoinmarketFormInputLabel } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
+import { TranslationKey } from 'src/components/suite/Translation';
 
-const RadioItems = styled.div`
-    display: flex;
-    padding: ${spacingsPx.xxs};
-    gap: ${spacingsPx.xxs};
-    border-radius: ${borders.radii.md};
-    background-color: ${({ theme }) => theme.backgroundSurfaceElevation2};
-
-    ${SCREEN_QUERY.BELOW_LAPTOP} {
-        margin-bottom: ${spacingsPx.md};
-    }
-`;
-
-const RadioItem = styled.div<{ $isSelected: boolean }>`
-    flex: 1;
+const ItemWrapper = styled.div<{ $isSelected: boolean; $elevation: Elevation }>`
     padding: ${spacingsPx.sm} ${spacingsPx.md};
     border-radius: ${borders.radii.sm};
+    background: ${mapElevationToBackground};
 
-    .header {
-        margin-bottom: ${spacingsPx.xxs};
-        color: ${({ theme }) => theme.textDefault};
-    }
-
-    .description {
-        font-size: ${variables.FONT_SIZE.SMALL};
-        color: ${({ theme }) => theme.textSubdued};
-    }
-
-    ${({ $isSelected }) =>
-        $isSelected
-            ? css`
-                  background-color: ${({ theme }) => theme.backgroundSurfaceElevation1};
-              `
-            : css`
-                  .header,
-                  .description {
-                      color: ${({ theme }) => theme.textDisabled};
-                  }
-              `}
+    ${({ $isSelected }) => !$isSelected && 'background: none;'}
 `;
 
-interface CoinmarketFormSwitcherExchangeRatesProps {
+type ItemProps = {
+    isSelected: boolean;
+    onClick: () => void;
+    title: TranslationKey;
+    label: TranslationKey;
+};
+
+const Item = ({ isSelected, onClick, title, label }: ItemProps) => {
+    const { elevation } = useElevation();
+
+    return (
+        <ItemWrapper $isSelected={isSelected} $elevation={elevation}>
+            <Radio labelAlignment="left" isChecked={isSelected} onClick={onClick}>
+                <Column alignItems="flex-start" gap={spacings.xxxs}>
+                    <Paragraph variant={isSelected ? 'default' : 'disabled'}>
+                        <Translation id={title} />
+                    </Paragraph>
+                    <Paragraph
+                        typographyStyle="hint"
+                        variant={isSelected ? 'tertiary' : 'disabled'}
+                    >
+                        <Translation id={label} />
+                    </Paragraph>
+                </Column>
+            </Radio>
+        </ItemWrapper>
+    );
+};
+
+type CoinmarketFormSwitcherExchangeRatesProps = {
     rateType: RateType;
     setValue: UseFormSetValue<CoinmarketExchangeFormProps>;
-}
+};
 
 export const CoinmarketFormSwitcherExchangeRates = ({
     rateType,
@@ -68,42 +63,28 @@ export const CoinmarketFormSwitcherExchangeRates = ({
     const floatingRateSelected = rateType === FORM_RATE_FLOATING;
 
     return (
-        <>
-            <CoinmarketFormInputLabel label="TR_COINMARKET_RATE" />
-            <RadioItems>
-                <RadioItem $isSelected={!floatingRateSelected}>
-                    <Radio
-                        labelAlignment="left"
-                        isChecked={!floatingRateSelected}
+        <Column alignItems="stretch" gap={spacings.xs}>
+            <Translation id="TR_COINMARKET_RATE" />
+            <Card paddingType="none">
+                <Grid
+                    columns={2}
+                    margin={{ vertical: spacings.xs, horizontal: spacings.xs }}
+                    gap={spacings.xs}
+                >
+                    <Item
+                        isSelected={!floatingRateSelected}
                         onClick={() => setValue(FORM_RATE_TYPE, FORM_RATE_FIXED)}
-                    >
-                        <div>
-                            <div className="header">
-                                <Translation id="TR_COINMARKET_FIX_RATE" />
-                            </div>
-                            <div className="description">
-                                <Translation id="TR_COINMARKET_FIX_RATE_DESCRIPTION" />
-                            </div>
-                        </div>
-                    </Radio>
-                </RadioItem>
-                <RadioItem $isSelected={floatingRateSelected}>
-                    <Radio
-                        labelAlignment="left"
-                        isChecked={floatingRateSelected}
+                        title="TR_COINMARKET_FIX_RATE"
+                        label="TR_COINMARKET_FIX_RATE_DESCRIPTION"
+                    />
+                    <Item
+                        isSelected={floatingRateSelected}
                         onClick={() => setValue(FORM_RATE_TYPE, FORM_RATE_FLOATING)}
-                    >
-                        <div>
-                            <div className="header">
-                                <Translation id="TR_COINMARKET_FLOATING_RATE" />
-                            </div>
-                            <div className="description">
-                                <Translation id="TR_COINMARKET_FLOATING_RATE_DESCRIPTION" />
-                            </div>
-                        </div>
-                    </Radio>
-                </RadioItem>
-            </RadioItems>
-        </>
+                        title="TR_COINMARKET_FLOATING_RATE"
+                        label="TR_COINMARKET_FLOATING_RATE_DESCRIPTION"
+                    />
+                </Grid>
+            </Card>
+        </Column>
     );
 };
