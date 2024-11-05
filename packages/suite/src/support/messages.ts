@@ -4941,15 +4941,6 @@ export default defineMessages({
         defaultMessage:
             'For experienced users only. Use at your own risk. These features are in testing, may be unstable, and might not have long-term support.',
     },
-    TR_EXPERIMENTAL_OP_ETHEREUM: {
-        id: 'TR_EXPERIMENTAL_OP_ETHEREUM',
-        defaultMessage: 'Optimism',
-    },
-    TR_EXPERIMENTAL_OP_ETHEREUM_DESCRIPTION: {
-        id: 'TR_EXPERIMENTAL_OP_ETHEREUM_DESCRIPTION',
-        defaultMessage:
-            'Enables the Optimism network, but uses the incorrect symbol "OP" instead of "ETH" and sets a minimum gas fee of 1 gwei.',
-    },
     TR_EXPERIMENTAL_PASSWORD_MANAGER: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
         defaultMessage: 'Migrate Dropbox passwords',

@@ -5,7 +5,7 @@ import { EXPERIMENTAL_PASSWORD_MANAGER_KB_URL, TOR_SNOWFLAKE_PROJECT_URL, Url } 
 
 import { Dispatch } from '../../types/suite';
 
-export type ExperimentalFeature = 'password-manager' | 'optimism' | 'tor-snowflake';
+export type ExperimentalFeature = 'password-manager' | 'tor-snowflake';
 
 export type ExperimentalFeatureConfig = {
     title: TranslationKey;
@@ -20,10 +20,6 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         title: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
         description: 'TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION',
         knowledgeBaseUrl: EXPERIMENTAL_PASSWORD_MANAGER_KB_URL,
-    },
-    optimism: {
-        title: 'TR_EXPERIMENTAL_OP_ETHEREUM',
-        description: 'TR_EXPERIMENTAL_OP_ETHEREUM_DESCRIPTION',
     },
     'tor-snowflake': {
         title: 'TR_EXPERIMENTAL_TOR_SNOWFLAKE',

@@ -3,17 +3,13 @@ import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 import { arrayPartition } from '@trezor/utils';
 import { useSelector } from 'src/hooks/suite';
 
-import {
-    selectHasExperimentalFeature,
-    selectIsDebugModeActive,
-} from 'src/reducers/suite/suiteReducer';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 export const useNetworkSupport = () => {
     const isDebug = useSelector(selectIsDebugModeActive);
-    const opExperimentalFeature = useSelector(selectHasExperimentalFeature('optimism'));
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
 
-    const mainnets = getMainnets(isDebug, opExperimentalFeature);
+    const mainnets = getMainnets(isDebug);
     const testnets = getTestnets(isDebug);
 
     const isNetworkSupported = (network: Network) =>
