@@ -25,7 +25,7 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
             : 'T2T1';
     const latest = getLatestFirmware(model);
 
-    if (!latest) {
+    if (firmwareArg?.endsWith('-latest') && !latest) {
         // should never happen
         throw new Error('could not translate n-latest into specific firmware version');
     }
