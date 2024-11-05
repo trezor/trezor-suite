@@ -50,10 +50,10 @@ const DeeplinkFallback = () => {
                     You have opened a deep link to the Trezor Connect mobile application. Please
                     install the application from{' '}
                     <a href="https://play.google.com/store/apps/details?id=io.trezor.suite">
-                        Google Play
+                        Google&nbsp;Play
                     </a>
                     {' or '}
-                    <a href="https://apps.apple.com/app/id1631884497">App Store</a>.
+                    <a href="https://apps.apple.com/app/id1631884497">App&nbsp;Store</a>.
                 </StyledP>
             </View>
         </>
