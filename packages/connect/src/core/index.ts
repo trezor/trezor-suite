@@ -272,7 +272,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
     method.checkDeviceCapability();
 
     // check and request permissions [read, write...]
-    method.checkPermissions();
+    method.checkPermissions({ origin: DataManager.getSettings('origin') });
     if (!trustedHost && method.requiredPermissions.length > 0) {
         // wait for popup window
         await waitForPopup(context);
@@ -288,7 +288,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
         const { granted, remember } = await uiPromise.promise.then(({ payload }) => payload);
 
         if (granted) {
-            method.savePermissions(!remember);
+            method.savePermissions(!remember, { origin: DataManager.getSettings('origin') });
         } else {
             // interrupt process and go to "final" block
             return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
@@ -522,7 +522,7 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         return Promise.resolve();
     }
 
-    if (method.isManagementRestricted()) {
+    if (method.isManagementRestricted({ origin: DataManager.getSettings('origin') })) {
         sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
         sendCoreMessage(
             createResponseMessage(responseID, false, {

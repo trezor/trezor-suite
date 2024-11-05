@@ -1,6 +1,5 @@
 import { storage } from '@trezor/connect-common';
 import { versionUtils } from '@trezor/utils';
-import { DataManager } from '../data/DataManager';
 import { NETWORK, ERRORS } from '../constants';
 import {
     UI,
@@ -15,7 +14,13 @@ import {
 } from '../events';
 import { getHost } from '../utils/urlUtils';
 import type { Device } from '../device/Device';
-import type { FirmwareRange, DeviceState, StaticSessionId, DeviceUniquePath } from '../types';
+import type {
+    FirmwareRange,
+    DeviceState,
+    StaticSessionId,
+    DeviceUniquePath,
+    ConnectSettings,
+} from '../types';
 import { Capability } from '@trezor/protobuf/src/messages';
 import { config } from '../data/config';
 
@@ -208,8 +213,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.createUiPromise = (t, d) => originalFn(t, d || device);
     }
 
-    private getOriginPermissions() {
-        const origin = DataManager.getSettings('origin');
+    private getOriginPermissions({ origin }: Pick<ConnectSettings, 'origin'>) {
         if (!origin) {
             return [];
         }
@@ -217,8 +221,8 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         return storage.loadForOrigin(origin)?.permissions || [];
     }
 
-    checkPermissions() {
-        const originPermissions = this.getOriginPermissions();
+    checkPermissions({ origin }: Pick<ConnectSettings, 'origin'>) {
+        const originPermissions = this.getOriginPermissions({ origin });
         let notPermitted = [...this.requiredPermissions];
         if (originPermissions.length > 0) {
             // check if permission was granted
@@ -233,8 +237,8 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.requiredPermissions = notPermitted;
     }
 
-    savePermissions(temporary = false) {
-        const originPermissions = this.getOriginPermissions();
+    savePermissions(temporary = false, { origin }: Pick<ConnectSettings, 'origin'>) {
+        const originPermissions = this.getOriginPermissions({ origin });
 
         let permissionsToSave = this.requiredPermissions.map(p => ({
             type: p,
@@ -263,13 +267,12 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             });
         }
 
-        const origin = DataManager.getSettings('origin')!;
         storage.saveForOrigin(
             state => ({
                 ...state,
                 permissions: [...(state.permissions || []), ...permissionsToSave],
             }),
-            origin,
+            origin!,
             temporary,
         );
 
@@ -314,8 +317,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
     }
 
-    isManagementRestricted() {
-        const { popup, origin } = DataManager.getSettings();
+    isManagementRestricted({ popup, origin }: Pick<ConnectSettings, 'popup' | 'origin'>) {
         if (popup && this.requiredPermissions.includes('management')) {
             const host = getHost(origin);
             const allowed = config.management.find(
