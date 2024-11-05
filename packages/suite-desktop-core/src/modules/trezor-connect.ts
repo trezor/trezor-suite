@@ -3,7 +3,7 @@ import { ipcMain } from 'electron';
 import TrezorConnect, { DEVICE_EVENT } from '@trezor/connect';
 import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy';
 
-import { Dependencies, mainThreadEmitter, ModuleInitBackground } from './index';
+import { Dependencies, mainThreadEmitter, ModuleInitBackground, ModuleInit } from './index';
 
 export const SERVICE_NAME = '@trezor/connect';
 
@@ -49,9 +49,6 @@ export const initBackground: ModuleInitBackground = ({ store }: Pick<Dependencie
     const unregisterProxy = createIpcProxyHandler(ipcMain, 'TrezorConnect', ipcProxyOptions);
 
     const onLoad = () => {
-        // reset previous instance, possible left over after renderer refresh (F5)
-        TrezorConnect.dispose();
-
         TrezorConnect.on(DEVICE_EVENT, event => {
             mainThreadEmitter.emit('module/trezor-connect/device-event', event);
         });
@@ -63,4 +60,13 @@ export const initBackground: ModuleInitBackground = ({ store }: Pick<Dependencie
     };
 
     return { onLoad, onQuit };
+};
+
+export const init: ModuleInit = () => {
+    const onLoad = () => {
+        // reset previous instance, possible left over after renderer refresh (F5)
+        TrezorConnect.dispose();
+    };
+
+    return { onLoad };
 };
