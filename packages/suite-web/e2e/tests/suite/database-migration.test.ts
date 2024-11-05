@@ -31,7 +31,7 @@ describe('Database migration', () => {
         // this test can be run only in sldev so we ignore baseUrl env variable
         const baseUrl = 'https://dev.suite.sldev.cz/suite-web';
         const workaroundBtcAddressInputSelector = 'outputs.0.address';
-        cy.viewport(1440, 2560);
+        cy.viewport('macbook-13').resetDb();
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             passphrase_protection: true,
@@ -93,10 +93,15 @@ describe('Database migration', () => {
         cy.get('[data-test="@wallet/menu/wallet-send"]').click();
         cy.get('[data-test="outputs[0].address"]').should('be.visible').type(testData.btcAddress);
         cy.wait(500); // wait has to be for a state save to happen
-        cy.get('[data-test="@wallet/menu/close-button"]').last().click();
+        cy.get('[data-test="@wallet/menu/close-button"]')
+            .last()
+            .click({ scrollBehavior: 'bottom' });
 
         // check and store address of first btc tx
-        cy.get('[data-test^="@metadata/outputLabel"] > span').should('be.visible');
+        cy.get('[data-test^="@metadata/outputLabel"] > span')
+            .first()
+            .scrollIntoView()
+            .should('be.visible');
         cy.get('[data-test^="@metadata/outputLabel"] > span')
             .first()
             .invoke('text')

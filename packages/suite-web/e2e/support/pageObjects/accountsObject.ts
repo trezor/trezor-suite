@@ -92,7 +92,7 @@ class AccountsPage {
 
     exportDesiredTransactionType(typeOfExport: string) {
         cy.getTestElement('@wallet/accounts/export-transactions/dropdown').click({
-            scrollBehavior: false,
+            scrollBehavior: 'center',
         });
         cy.getTestElement(`@wallet/accounts/export-transactions/${typeOfExport}`)
             .should('be.visible')

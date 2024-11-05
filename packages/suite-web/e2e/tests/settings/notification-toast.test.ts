@@ -2,13 +2,15 @@
 // @retry=2
 
 import { onNavBar } from '../../support/pageObjects/topBarObject';
+import { onSettingsMenu } from '../../support/pageObjects/settings/settingsMenuObject';
+import { onSettingsDevicePage } from '../../support/pageObjects/settings/settingsDeviceObject';
 
 describe('Check notification toast', () => {
     beforeEach(() => {
         cy.task('startBridge');
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { needs_backup: false });
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport('macbook-13').resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
     });
@@ -27,12 +29,10 @@ describe('Check notification toast', () => {
     it('Check notification toast', () => {
         cy.log('turn on passphrase protection');
         onNavBar.openSettings();
-        cy.getTestElement('@settings/menu/device').click();
+        onSettingsMenu.openDeviceSettings();
         cy.getTestElement('@settings/device/safety-checks-button').should('be.enabled');
-        cy.getTestElement('@settings/device/passphrase-switch')
-            .should('be.visible')
-            .click({ force: true })
-            .getConfirmActionOnDeviceModal();
+        onSettingsDevicePage.togglePassphraseSwitch();
+        cy.getConfirmActionOnDeviceModal();
         cy.task('pressYes');
         cy.getConfirmActionOnDeviceModal().should('not.exist');
         //

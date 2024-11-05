@@ -11,6 +11,13 @@ class SettingsDevicePage {
     togglePinSwitch(): void {
         cy.getTestElement('@settings/device/pin-switch').should('be.visible').wait(500).click();
     }
+
+    togglePassphraseSwitch(): void {
+        cy.getTestElement('@settings/device/passphrase-switch')
+            .scrollIntoView()
+            .should('be.visible')
+            .click();
+    }
 }
 
 export const onSettingsDevicePage = new SettingsDevicePage();
