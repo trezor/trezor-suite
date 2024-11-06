@@ -6,8 +6,6 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsBitcoinLikeSendEnabled]: 'Bitcoin-like coins send',
     [FeatureFlagEnum.IsEthereumSendEnabled]: 'Ethereum-like coins send',
     [FeatureFlagEnum.IsRegtestEnabled]: 'Regtest',
-    [FeatureFlagEnum.IsPolygonEnabled]: 'Polygon',
-    [FeatureFlagEnum.IsBscEnabled]: 'BNB Smart Chain',
     [FeatureFlagEnum.IsSolanaEnabled]: 'Solana',
     [FeatureFlagEnum.IsConnectPopupEnabled]: 'Connect Popup',
 } as const satisfies Record<FeatureFlagEnum, string>;

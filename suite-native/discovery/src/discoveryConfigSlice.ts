@@ -94,19 +94,11 @@ export const selectDiscoveryInfo = (state: DiscoveryConfigSliceRootState) =>
 
 export const selectFeatureFlagEnabledNetworkSymbols = memoize(
     (state: FeatureFlagsRootState & DiscoveryConfigSliceRootState) => {
-        const isPolygonEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsPolygonEnabled);
-        const isBscEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsBscEnabled);
         const isSolanaEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsSolanaEnabled);
         const areTestnetsEnabled = selectAreTestnetsEnabled(state);
 
         const allowlist: NetworkSymbol[] = [];
 
-        if (isPolygonEnabled) {
-            allowlist.push('pol');
-        }
-        if (isBscEnabled) {
-            allowlist.push('bnb');
-        }
         if (isSolanaEnabled) {
             allowlist.push('sol');
             if (areTestnetsEnabled) {
