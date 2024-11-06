@@ -62,6 +62,7 @@ module.exports = {
         'no-extra-boolean-cast': 'error',
         'no-irregular-whitespace': 'error',
         'no-constant-binary-expression': 'error',
+        'no-async-promise-executor': 'error',
         'no-empty': 'error',
         'no-prototype-builtins': 'error',
         '@typescript-eslint/no-empty-object-type': 'off',
