@@ -89,6 +89,7 @@
         "cross-fetch": "^4.0.0"
     },
     "devDependencies": {
+        "@trezor/eslint": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/karma": "^6.3.8",
         "babel-loader": "^9.1.3",

@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import * as jws from 'jws';
 
 import { JWS_SIGN_ALGORITHM } from '../../src/tokenDefinitionsConstants';

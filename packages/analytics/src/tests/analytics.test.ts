@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { fixtures } from './fixtures/encodeDataToQueryString';
 import { Analytics } from '../analytics';
 import { encodeDataToQueryString, getRandomId } from '../utils';

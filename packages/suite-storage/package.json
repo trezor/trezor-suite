@@ -19,6 +19,7 @@
     "browser": "./src/web/index.ts",
     "dependencies": {
         "@trezor/env-utils": "workspace:*",
+        "@trezor/eslint": "workspace:*",
         "@trezor/utils": "workspace:*",
         "broadcast-channel": "^7.0.0",
         "idb": "^8.0.0"

@@ -1,6 +1,6 @@
 import { arrayPartition } from '@trezor/utils';
 
-/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/signmessage.json';
 

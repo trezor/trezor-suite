@@ -1,0 +1,24 @@
+{
+    "name": "@trezor/eslint",
+    "version": "1.0.0",
+    "license": "See LICENSE.md in repo root",
+    "private": true,
+    "sideEffects": false,
+    "main": "src/index.mjs",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.13.0",
+        "eslint": "^9.13.0",
+        "eslint-plugin-chai-friendly": "^1.0.1",
+        "eslint-plugin-import": "^2.31.0",
+        "eslint-plugin-jest": "^28.8.3",
+        "eslint-plugin-local-rules": "^3.0.2",
+        "eslint-plugin-react": "^7.37.2",
+        "eslint-plugin-react-hooks": "^5.0.0",
+        "typescript-eslint": "^8.12.2"
+    }
+}

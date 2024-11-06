@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
 import type { ReactElement } from 'react';
 import { createContext, useEffect, useMemo, useRef, useState } from 'react';
 

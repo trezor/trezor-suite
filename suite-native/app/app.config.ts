@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable import/no-default-export */
 /* eslint-disable import/no-anonymous-default-export */
 import { ExpoConfig, ConfigContext } from 'expo/config';

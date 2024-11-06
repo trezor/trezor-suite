@@ -17,6 +17,8 @@ export const generateBlock = () =>
     });
 
 export const waitForCoinjoinBackend = () =>
+    // Todo: refactor to not use async-promise-executor
+    // eslint-disable-next-line no-async-promise-executor
     new Promise<void>(async (resolve, reject) => {
         const limit = 60;
         const error = '';
