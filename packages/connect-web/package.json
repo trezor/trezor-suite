@@ -53,6 +53,7 @@
         "@playwright/browser-firefox": "^1.46.1",
         "@playwright/browser-webkit": "^1.46.1",
         "@playwright/test": "^1.46.1",
+        "@trezor/eslint": "workspace:*",
         "@types/chrome": "^0.0.278",
         "@types/w3c-web-usb": "^1.0.10",
         "babel-loader": "^9.1.3",

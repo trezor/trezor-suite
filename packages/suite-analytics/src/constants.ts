@@ -5,7 +5,6 @@ export enum AppUpdateEventStatus {
     InstallAndRestart = 'install-and-restart',
     InstallOnQuit = 'install-on-quit',
     Closed = 'closed',
-    // eslint-disable-next-line @typescript-eslint/no-shadow
     Error = 'error',
 }
 

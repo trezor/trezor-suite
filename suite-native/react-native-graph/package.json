@@ -19,5 +19,8 @@
         "react-native": "0.75.2",
         "react-native-gesture-handler": "2.18.1",
         "react-native-reanimated": "3.16.1"
+    },
+    "devDependencies": {
+        "@trezor/eslint": "workspace:*"
     }
 }

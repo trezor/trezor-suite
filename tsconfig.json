@@ -158,6 +158,7 @@
         },
         { "path": "packages/crypto-utils" },
         { "path": "packages/device-utils" },
+        { "path": "packages/eslint" },
         { "path": "packages/dom-utils" },
         { "path": "packages/e2e-utils" },
         { "path": "packages/env-utils" },

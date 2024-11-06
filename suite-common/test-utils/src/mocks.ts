@@ -606,7 +606,6 @@ type MockTrezorConnect = jest.Mocked<TrezorConnect> & {
 };
 
 const getTrezorConnectMock = () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const pkg = require('@trezor/connect');
 
     return {

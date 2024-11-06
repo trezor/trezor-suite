@@ -20,7 +20,6 @@ import * as utils from './payments.utils';
 ).forEach(p => {
     describe(p, () => {
         const fn: PaymentCreator = PAYMENTS[p];
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const { fixtures } = require(`./__fixtures__/payments/${p}`);
 
         fixtures.valid.forEach((f: any) => {

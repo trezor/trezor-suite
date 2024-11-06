@@ -65,6 +65,7 @@
     },
     "devDependencies": {
         "@trezor/e2e-utils": "workspace:*",
+        "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "fs-extra": "^11.2.0",
         "html-webpack-plugin": "^5.6.0",

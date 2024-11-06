@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { TrezorError } from '../../../constants/errors';
@@ -255,7 +254,6 @@ export const encodeData = [
         input: {
             typeName: 'int256',
             // `1n << 254n` instead of `2n ** 254n` since Babel replaces ** with Math.pow()
-            // @ts-ignore, BigInt literals are not available when targeting lower than ES2020
             data: -(1n << 254n) + 1n,
         },
         // Python (-(2 ** 254) + 1).to_bytes(32, "big", signed=True).hex()
@@ -265,7 +263,6 @@ export const encodeData = [
         description: `should encode int from string`,
         input: {
             typeName: 'int256',
-            // @ts-ignore, BigInt literals are not available when targeting lower than ES2020
             data: `${-(1n << 254n) + 1n}`,
         },
         // Python (-(2 ** 254) + 1).to_bytes(32, "big", signed=True).hex()

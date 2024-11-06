@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable require-await */
 const { AndroidConfig, withAndroidManifest } = require('expo/config-plugins');
 

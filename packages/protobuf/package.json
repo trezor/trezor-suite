@@ -39,6 +39,7 @@
         "protobufjs": "7.4.0"
     },
     "devDependencies": {
+        "@trezor/eslint": "workspace:*",
         "protobufjs-cli": "^1.1.3",
         "tsx": "^4.16.3"
     },

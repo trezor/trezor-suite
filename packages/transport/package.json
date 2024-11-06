@@ -53,6 +53,7 @@
     "devDependencies": {
         "@babel/preset-env": "^7.23.9",
         "@babel/preset-typescript": "^7.24.7",
+        "@trezor/eslint": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/bytebuffer": "^5.0.49",
         "@types/sharedworker": "^0.0.130",

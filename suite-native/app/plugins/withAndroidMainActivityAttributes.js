@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-shadow */
 const { withAndroidManifest } = require('expo/config-plugins');
 
 function addAttributesToMainApplication(androidManifest, attributes) {

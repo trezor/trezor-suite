@@ -68,4 +68,5 @@ export const transformTypedData = <T extends sigUtil.MessageTypes>(
     };
 };
 
+// eslint-disable-next-line import/no-default-export
 export default transformTypedData;

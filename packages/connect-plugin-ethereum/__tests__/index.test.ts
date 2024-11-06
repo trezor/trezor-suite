@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import commonFixtures from '../../../submodules/trezor-common/tests/fixtures/ethereum/sign_typed_data.json';
 import { transformTypedData } from '../src/index';
