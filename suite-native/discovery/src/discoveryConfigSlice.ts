@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { pipe } from '@mobily/ts-belt';
+import { A, F, pipe } from '@mobily/ts-belt';
 import { memoize, memoizeWithArgs } from 'proxy-memoize';
 
 import {
@@ -21,6 +21,10 @@ import {
     FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
+import {
+    selectNetworkSymbolsOfAccountsWithTokensAllowed,
+    TokensRootState,
+} from '@suite-native/tokens';
 
 type DiscoveryInfo = {
     startTimestamp: number;
@@ -191,6 +195,15 @@ export const selectDeviceEnabledDiscoveryNetworkSymbols = memoizeWithArgs(
             state.discoveryConfig.enabledDiscoveryNetworkSymbols.includes(s),
         ),
     { size: 2 },
+);
+
+export const selectTokenDefinitionsEnabledNetworks = memoize(
+    (state: TokensRootState & DiscoveryConfigSliceRootState) => {
+        const enabledNetworkSymbols = selectEnabledDiscoveryNetworkSymbols(state);
+        const accountNetworkSymbols = selectNetworkSymbolsOfAccountsWithTokensAllowed(state);
+
+        return F.toMutable(A.uniq([...enabledNetworkSymbols, ...accountNetworkSymbols]));
+    },
 );
 
 export const {

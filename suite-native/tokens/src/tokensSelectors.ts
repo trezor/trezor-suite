@@ -10,6 +10,7 @@ import {
     AccountsRootState,
     DeviceRootState,
     selectAccountByKey,
+    selectAccounts,
     selectAccountTransactions,
     selectVisibleDeviceAccountsByNetworkSymbol,
     TransactionsRootState,
@@ -275,3 +276,14 @@ export const selectAccountHasAnyKnownToken = (state: TokensRootState, accountKey
 
     return anyOfTokensIsKnown;
 };
+
+export const selectNetworkSymbolsOfAccountsWithTokensAllowed = (state: TokensRootState) =>
+    selectAccounts(state)
+        .filter(a => isCoinWithTokens(a.symbol))
+        .reduce((acc, account) => {
+            if (!acc.includes(account.symbol)) {
+                acc.push(account.symbol);
+            }
+
+            return acc;
+        }, new Array<NetworkSymbol>());
