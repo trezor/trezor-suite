@@ -11,7 +11,10 @@ import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
 import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-utils';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { selectFilterKnownTokens } from '@suite-common/token-definitions';
+import {
+    periodicCheckTokenDefinitionsThunk,
+    selectFilterKnownTokens,
+} from '@suite-common/token-definitions';
 
 import { paymentTypeToAccountType } from './constants';
 
@@ -71,6 +74,7 @@ export const importAccountThunk = createThunk(
                 }),
             );
         }
+        dispatch(periodicCheckTokenDefinitionsThunk());
     },
 );
 
