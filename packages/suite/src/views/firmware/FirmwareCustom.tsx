@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { useDevice, useFirmware } from 'src/hooks/suite';
 import { SelectCustomFirmware } from 'src/components/firmware';
+
 import { FirmwareModal } from './FirmwareModal';
 
 export const FirmwareCustom = () => {

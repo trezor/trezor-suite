@@ -1,10 +1,13 @@
 import styled from 'styled-components';
+
 import { Column, Select } from '@trezor/components';
-import { Translation } from 'src/components/suite/Translation';
 import { getAccountTypeName, getAccountTypeTech } from '@suite-common/wallet-utils';
-import { AccountTypeDescription } from './AccountTypeDescription';
 import { NetworkAccount, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { spacings, typography } from '@trezor/theme';
+
+import { Translation } from 'src/components/suite/Translation';
+
+import { AccountTypeDescription } from './AccountTypeDescription';
 
 const LabelWrapper = styled.div`
     display: flex;

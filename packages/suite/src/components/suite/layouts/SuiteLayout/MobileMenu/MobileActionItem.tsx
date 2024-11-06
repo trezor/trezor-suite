@@ -1,5 +1,7 @@
 import { useMemo, ReactNode, HTMLAttributes } from 'react';
+
 import styled, { useTheme } from 'styled-components';
+
 import { Icon, IconName, variables } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 

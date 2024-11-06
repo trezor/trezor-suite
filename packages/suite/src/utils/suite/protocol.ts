@@ -1,7 +1,8 @@
 import { Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
-import { parseQuery, parseUri } from './parseUri';
 import { analytics, EventType } from '@trezor/suite-analytics';
+
+import { parseQuery, parseUri } from './parseUri';
 
 export type CoinProtocolInfo = {
     scheme: Protocol;

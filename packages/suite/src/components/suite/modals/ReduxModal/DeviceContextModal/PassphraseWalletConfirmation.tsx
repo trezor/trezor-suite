@@ -1,7 +1,10 @@
-import { TrezorDevice } from '@suite-common/suite-types';
 import { Dispatch, SetStateAction, useState } from 'react';
+
+import { TrezorDevice } from '@suite-common/suite-types';
+
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
+
 import { PassphraseWalletConfirmationStep1 } from './PassphraseWalletConfirmationStep1';
 import { PassphraseWalletConfirmationStep2 } from './PassphraseWalletConfirmationStep2';
 import { PassphraseWalletConfirmationStep3 } from './PassphraseWalletConfirmationStep3';

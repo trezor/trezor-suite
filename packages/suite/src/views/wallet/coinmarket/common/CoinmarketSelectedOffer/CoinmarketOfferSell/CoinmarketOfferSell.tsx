@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+
 import { Divider, Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

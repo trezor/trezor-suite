@@ -1,5 +1,6 @@
-import { PublicKey } from '../../params';
 import { Type, Static } from '@trezor/schema-utils';
+
+import { PublicKey } from '../../params';
 
 // solanaGetPublicKey
 

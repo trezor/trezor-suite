@@ -1,6 +1,8 @@
 import React, { ReactNode } from 'react';
-import { Tooltip } from '@trezor/components';
+
 import styled from 'styled-components';
+
+import { Tooltip } from '@trezor/components';
 
 const Container = styled.div`
     height: 44px;

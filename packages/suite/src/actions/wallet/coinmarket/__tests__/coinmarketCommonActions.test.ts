@@ -1,11 +1,11 @@
-import { configureStore } from 'src/support/tests/configureStore';
+import { State as DeviceState } from '@suite-common/wallet-core';
+import type { DeepPartial } from '@trezor/type-utils';
 
+import { configureStore } from 'src/support/tests/configureStore';
 import { coinmarketReducer, ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import { transactionsReducer, accountsReducer } from 'src/reducers/wallet';
-import { State as DeviceState } from '@suite-common/wallet-core';
 import { SuiteState } from 'src/reducers/suite/suiteReducer';
-import type { DeepPartial } from '@trezor/type-utils';
 import { DEFAULT_STORE } from 'src/actions/wallet/coinmarket/__fixtures__/coinmarketCommonActions/store';
 import {
     VERIFY_BUY_ADDRESS_FIXTURES,

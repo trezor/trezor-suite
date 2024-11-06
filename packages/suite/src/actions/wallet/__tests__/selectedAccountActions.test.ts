@@ -1,5 +1,4 @@
 import { configureStore } from 'src/support/tests/configureStore';
-
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 
 import { syncSelectedAccount } from '../selectedAccountActions';

@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+
 import { Note as NoteComponent, NoteProps } from './Note';
 
 const meta: Meta = {

@@ -1,14 +1,17 @@
 import styled from 'styled-components';
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+
 import { Paragraph, Radio } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
-import { Inputs } from './Inputs';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
+
 import { useSelector } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+
+import { Inputs } from './Inputs';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const GreyP = styled(Paragraph)`

@@ -1,3 +1,5 @@
+import styled, { DefaultTheme } from 'styled-components';
+
 import { UIVariant } from '@trezor/components/src/config/types';
 import {
     borders,
@@ -7,7 +9,6 @@ import {
     spacingsPx,
     typography,
 } from '@trezor/theme';
-import styled, { DefaultTheme } from 'styled-components';
 
 export const tagVariants = ['primary', 'tertiary'] as const;
 export type TagVariant = Extract<UIVariant, (typeof tagVariants)[number]>;

@@ -1,7 +1,10 @@
-import styled, { keyframes } from 'styled-components';
-import { spacingsPx, typography } from '@trezor/theme';
-import { getInputStateTextColor } from './InputStyles';
 import { ReactNode } from 'react';
+
+import styled, { keyframes } from 'styled-components';
+
+import { spacingsPx, typography } from '@trezor/theme';
+
+import { getInputStateTextColor } from './InputStyles';
 import { InputState } from './inputTypes';
 
 export const BOTTOM_TEXT_MIN_HEIGHT = 26; // 1 line of text + top padding

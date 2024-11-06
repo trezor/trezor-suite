@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+
 import { Icon, iconVariants } from '../Icon/Icon';
 import {
     allowedComponentWithSubIconFrameProps,

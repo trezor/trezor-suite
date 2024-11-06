@@ -1,6 +1,7 @@
+import styled, { DefaultTheme } from 'styled-components';
+
 import { UIVariant } from '@trezor/components/src/config/types';
 import { CSSColor, Color } from '@trezor/theme';
-import styled, { DefaultTheme } from 'styled-components';
 
 type StatusLightVariant = Extract<UIVariant, 'primary' | 'warning' | 'destructive'>;
 

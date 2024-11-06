@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`

@@ -1,7 +1,9 @@
 import { RefObject, useEffect } from 'react';
+
+import { onAnchorChange } from 'src/actions/suite/routerActions';
+
 import { useDispatch } from './useDispatch';
 import { useSelector } from './useSelector';
-import { onAnchorChange } from 'src/actions/suite/routerActions';
 
 export const useClearAnchorHighlightOnClick = (elementRef: RefObject<HTMLElement>) => {
     const anchor = useSelector(state => state.router.anchor);

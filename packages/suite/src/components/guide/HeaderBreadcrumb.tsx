@@ -1,16 +1,16 @@
 import styled from 'styled-components';
 import { darken } from 'polished';
+
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { variables } from '@trezor/components';
+import type { GuideCategory } from '@suite-common/suite-types';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openNode, setView } from 'src/actions/suite/guideActions';
-import { variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { findAncestorNodes, getNodeTitle } from 'src/utils/suite/guide';
-
-import type { GuideCategory } from '@suite-common/suite-types';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 const BreadcrumbWrapper = styled.span`

@@ -1,9 +1,10 @@
 import { Banner } from '@trezor/components';
-import { Translation } from 'src/components/suite';
-import { Account } from 'src/types/wallet';
 import { networks } from '@suite-common/wallet-config';
 import { spacings } from '@trezor/theme';
 import { StakeType } from '@suite-common/wallet-types';
+
+import { Account } from 'src/types/wallet';
+import { Translation } from 'src/components/suite';
 
 type TransactionReviewEvmExplanationProps = {
     account: Account;

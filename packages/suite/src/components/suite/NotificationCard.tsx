@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+
 import styled, { DefaultTheme, useTheme } from 'styled-components';
 
 import {
@@ -12,8 +13,9 @@ import {
     Icon,
 } from '@trezor/components';
 import { Elevation, borders, spacingsPx, typography } from '@trezor/theme';
-import { TrezorLink } from './TrezorLink';
 import { UIVariant } from '@trezor/components/src/config/types';
+
+import { TrezorLink } from './TrezorLink';
 
 // TODO: move to components
 

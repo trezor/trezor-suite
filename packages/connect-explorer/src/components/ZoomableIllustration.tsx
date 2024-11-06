@@ -1,7 +1,7 @@
 import React from 'react';
 import Zoom from 'react-medium-image-zoom';
-import { useRouter } from 'next/router';
 
+import { useRouter } from 'next/router';
 import { createGlobalStyle, useTheme, styled } from 'styled-components';
 
 import 'react-medium-image-zoom/dist/styles.css';

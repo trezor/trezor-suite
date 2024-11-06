@@ -1,14 +1,12 @@
 import { defineConfig } from 'cypress';
-
 import fs from 'fs';
 import path from 'path';
 import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
+
 import { BridgeTransport } from '@trezor/transport';
 import * as messages from '@trezor/protobuf/src/messages';
-
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import * as metadataUtils from '@trezor/suite/src/utils/suite/metadata';
-
 import {
     TrezorBridgeMock,
     DropboxMock,

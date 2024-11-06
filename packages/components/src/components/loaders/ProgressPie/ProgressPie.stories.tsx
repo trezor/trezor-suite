@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+
 import { ProgressPie as ProgressPieComponent, ProgressPieProps } from './ProgressPie';
 
 const meta: Meta = {

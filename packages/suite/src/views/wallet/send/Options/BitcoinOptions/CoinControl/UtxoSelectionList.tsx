@@ -1,14 +1,18 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
 import { transparentize } from 'polished';
 
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
 import { Icon, variables, IconName } from '@trezor/components';
-import { useSelector } from 'src/hooks/suite';
 import type { AccountUtxo } from '@trezor/connect';
-import { useSendFormContext } from 'src/hooks/wallet';
-import { UtxoSelection } from './UtxoSelection';
 import { CSSColor } from '@trezor/theme';
+
+import { useSelector } from 'src/hooks/suite';
+import { useSendFormContext } from 'src/hooks/wallet';
+
+import { UtxoSelection } from './UtxoSelection';
+
 
 const Wrapper = styled.section`
     border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};

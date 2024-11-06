@@ -1,6 +1,7 @@
+import styled from 'styled-components';
+
 import { H2 } from '@trezor/components';
 import { borders, typography } from '@trezor/theme';
-import styled from 'styled-components';
 
 export const Heading = styled.div`
     padding-left: 5px;

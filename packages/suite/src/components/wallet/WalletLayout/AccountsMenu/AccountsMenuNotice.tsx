@@ -1,5 +1,6 @@
-import { spacingsPx, typography } from '@trezor/theme';
 import styled from 'styled-components';
+
+import { spacingsPx, typography } from '@trezor/theme';
 
 export const AccountsMenuNotice = styled.div`
     display: flex;

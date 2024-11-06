@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+
 import { IconButton as IconButtonComponent, IconButtonProps } from './IconButton';
 import { variables } from '../../../config';
 import { buttonSizes, buttonVariants, subtleButtonVariants } from '../buttonStyleUtils';

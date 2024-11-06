@@ -1,13 +1,13 @@
 import { analytics, EventType } from '@trezor/suite-analytics';
-
 import { desktopApi, SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { ThemeColorVariant } from '@trezor/theme';
+
 import { setAutodetect, setTheme } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { getOsTheme } from 'src/utils/suite/env';
-import { ThemeColorVariant } from '@trezor/theme';
 
 type ThemeColorVariantWithSystem = ThemeColorVariant | 'system';
 type Option = { value: ThemeColorVariantWithSystem; label: string };

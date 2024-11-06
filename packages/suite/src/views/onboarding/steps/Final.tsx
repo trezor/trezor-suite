@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react';
+
 import styled, { css } from 'styled-components';
 import useMeasure from 'react-use/lib/useMeasure';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
+import { analytics, EventType } from '@trezor/suite-analytics';
 import {
     Button,
     variables,
@@ -11,13 +12,14 @@ import {
     Tooltip,
     DeviceAnimation,
 } from '@trezor/components';
+import { spacingsPx, typography } from '@trezor/theme';
+
 import { Translation, HomescreenGallery } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
 import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { ChangeDeviceLabel } from 'src/components/suite/ChangeDeviceLabel';
-import { spacingsPx, typography } from '@trezor/theme';
 
 const Content = styled.div`
     flex-direction: column;

@@ -1,4 +1,5 @@
 import type { BlockchainLinkParams } from '@trezor/blockchain-link';
+
 import type { PROTO } from '../../constants';
 import type { Params, BundledParams, Response } from '../params';
 import type { AccountInfo, DiscoveryAccountType } from '../account';

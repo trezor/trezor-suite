@@ -1,7 +1,9 @@
 import bs58check from 'bs58check';
+
+import { Assert } from '@trezor/schema-utils';
+
 import { PROTO, ERRORS } from '../../constants';
 import { TezosOperation } from '../../types/api/tezos';
-import { Assert } from '@trezor/schema-utils';
 
 const PREFIX = {
     B: new Uint8Array([1, 52]),

@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+
 import { Link as LinkComponent, LinkProps } from '../../../index';
 
 const meta: Meta = {

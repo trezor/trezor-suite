@@ -1,4 +1,6 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
+import { randomBytes } from 'crypto';
+
 import {
     versionUtils,
     createDeferred,
@@ -8,6 +10,8 @@ import {
 } from '@trezor/utils';
 import { Session } from '@trezor/transport';
 import { TransportProtocol, v1 as v1Protocol } from '@trezor/protocol';
+import { type Transport, type Descriptor, TRANSPORT_ERROR } from '@trezor/transport';
+
 import { DeviceCommands } from './DeviceCommands';
 import { PROTO, ERRORS, FIRMWARE } from '../constants';
 import {
@@ -28,7 +32,6 @@ import {
     ensureInternalModelFeature,
 } from '../utils/deviceFeaturesUtils';
 import { initLog } from '../utils/debug';
-import { type Transport, type Descriptor, TRANSPORT_ERROR } from '@trezor/transport';
 import {
     Device as DeviceTyped,
     DeviceFirmwareStatus,
@@ -51,7 +54,6 @@ import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { IStateStorage } from './StateStorage';
 import type { PromptCallback } from './prompts';
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../api/firmware';
-import { randomBytes } from 'crypto';
 
 // custom log
 const _log = initLog('Device');

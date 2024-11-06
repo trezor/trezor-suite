@@ -1,14 +1,17 @@
-import { isAndroid } from '@trezor/env-utils';
-import { AnimatePresence, motion } from 'framer-motion';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { ChangeEvent, MutableRefObject, ReactNode, RefObject } from 'react';
+
+import { AnimatePresence, motion } from 'framer-motion';
+import styled, { useTheme } from 'styled-components';
+
+import { isAndroid } from '@trezor/env-utils';
 import { Button, Card, Column, Icon, Input, motionAnimation, Row } from '@trezor/components';
 import { ButtonVariant } from '@trezor/components/src/components/buttons/buttonStyleUtils';
 import { BannerVariant } from '@trezor/components/src/components/Banner/types';
-import { PasswordStrengthIndicator } from '../PasswordStrengthIndicator/PasswordStrengthIndicator';
-import styled, { useTheme } from 'styled-components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { useKeyPress } from '@trezor/react-utils';
-import { ChangeEvent, MutableRefObject, ReactNode, RefObject } from 'react';
+
+import { PasswordStrengthIndicator } from '../PasswordStrengthIndicator/PasswordStrengthIndicator';
 import { WalletType } from './types';
 import { DOT } from './consts';
 import { NonAsciiBanner } from './NonAsciiBanner';

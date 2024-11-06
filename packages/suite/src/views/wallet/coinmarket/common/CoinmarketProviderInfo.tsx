@@ -1,5 +1,6 @@
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
 import invityAPI from 'src/services/suite/invityAPI';
 
 export interface CoinmarketProviderInfoProps {

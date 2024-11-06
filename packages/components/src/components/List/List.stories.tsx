@@ -1,7 +1,9 @@
 import React from 'react';
+
 import { Meta, StoryObj } from '@storybook/react';
 
 import { spacings } from '@trezor/theme';
+
 import { Icon } from '../Icon/Icon';
 import {
     List as ListComponent,

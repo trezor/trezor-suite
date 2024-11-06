@@ -6,9 +6,10 @@ import {
 import { Row, SkeletonCircle, Tooltip } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { localizePercentage } from '@suite-common/wallet-utils';
+import { AssetShareIndicator } from '@trezor/product-components';
+
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from 'src/hooks/suite';
-import { AssetShareIndicator } from '@trezor/product-components';
 
 type AssetCoinLogoProps = {
     symbol: NetworkSymbol;

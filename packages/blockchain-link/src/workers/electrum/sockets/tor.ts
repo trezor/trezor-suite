@@ -1,5 +1,6 @@
-import { SocketBase, SocketConfig } from './base';
 import type { SocksProxyAgent } from 'socks-proxy-agent';
+
+import { SocketBase, SocketConfig } from './base';
 import type { SocketListener } from './interface';
 
 type TorSocketConfig = SocketConfig & {

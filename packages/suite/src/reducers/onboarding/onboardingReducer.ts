@@ -1,11 +1,11 @@
 import produce from 'immer';
+
 import { DEVICE } from '@trezor/connect';
 import { OnboardingAnalytics } from '@trezor/suite-analytics';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import * as STEP from 'src/constants/onboarding/steps';
 import { Action, TrezorDevice } from 'src/types/suite';
-
 import type { AnyStepId, AnyPath } from 'src/types/onboarding';
 
 export interface OnboardingRootState {

@@ -1,7 +1,8 @@
+import { getNetwork } from '@suite-common/wallet-config';
+
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
-import { getNetwork } from '@suite-common/wallet-config';
 
 interface NoTransactionsProps {
     account: Account;

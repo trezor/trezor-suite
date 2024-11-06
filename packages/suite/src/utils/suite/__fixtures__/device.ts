@@ -1,7 +1,8 @@
 import { testMocks } from '@suite-common/test-utils';
-import type { TrezorDevice } from 'src/types/suite';
 import { DeviceModelInternal } from '@trezor/connect';
 import * as URLS from '@trezor/urls';
+
+import type { TrezorDevice } from 'src/types/suite';
 
 const { getSuiteDevice } = testMocks;
 

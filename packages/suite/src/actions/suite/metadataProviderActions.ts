@@ -1,6 +1,7 @@
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { createDeferred } from '@trezor/utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { Device } from '@trezor/connect';
 
 import { METADATA, METADATA_PROVIDER } from 'src/actions/suite/constants';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -17,10 +18,9 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
 import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
-import { InMemoryTestProvider } from '../../services/suite/metadata/InMemoryTestProvider';
 
+import { InMemoryTestProvider } from '../../services/suite/metadata/InMemoryTestProvider';
 import * as metadataActions from './metadataActions';
-import { Device } from '@trezor/connect';
 
 export type MetadataAction = {
     type: typeof METADATA.SET_SELECTED_PROVIDER;

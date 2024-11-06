@@ -1,5 +1,4 @@
 import { getAccountLabel, isUtxoBased } from '../accountUtils';
-
 import * as fixtures from '../__fixtures__/accountUtils';
 
 describe('utils/accountUtils', () => {

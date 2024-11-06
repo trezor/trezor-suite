@@ -1,4 +1,5 @@
 import { act, render } from '@testing-library/react';
+
 import { fixtures } from 'src/hooks/suite/__fixtures__/useCountdownTimer';
 import { useCountdownTimer } from 'src/hooks/suite/useCountdownTimer';
 

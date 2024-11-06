@@ -1,6 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
+import useDebounce from 'react-use/lib/useDebounce';
+import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
+
 import {
     fromFiatCurrency,
     getAccountAutocompoundBalance,
@@ -8,6 +11,14 @@ import {
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
+import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { isChanged } from '@suite-common/suite-utils';
+import {
+    AmountLimitsString,
+    selectFiatRatesByFiatRateKey,
+    UnstakeContextValues as UnstakeContextValuesBase,
+    UnstakeFormState,
+} from '@suite-common/wallet-core';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
@@ -16,27 +27,16 @@ import {
     OUTPUT_AMOUNT,
     UseStakeFormsProps,
 } from 'src/types/wallet/stakeForms';
-
-import { useStakeCompose } from './form/useStakeCompose';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-
 import { signTransaction } from 'src/actions/wallet/stakeActions';
-import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import {
     getEthNetworkForWalletSdk,
     getStakeFormsDefaultValues,
     simulateUnstake,
 } from 'src/utils/suite/stake';
+
+import { useStakeCompose } from './form/useStakeCompose';
 import { useFormDraft } from './useFormDraft';
-import useDebounce from 'react-use/lib/useDebounce';
-import { isChanged } from '@suite-common/suite-utils';
-import {
-    AmountLimitsString,
-    selectFiatRatesByFiatRateKey,
-    UnstakeContextValues as UnstakeContextValuesBase,
-    UnstakeFormState,
-} from '@suite-common/wallet-core';
-import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
 import { useFees } from './form/useFees';
 
 type UnstakeOptions = 'all' | 'rewards' | 'other';

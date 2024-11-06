@@ -28,8 +28,9 @@ import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
 import { suggestBridgeInstaller } from '@trezor/connect/src/data/transportInfo';
 import { suggestUdevInstaller } from '@trezor/connect/src/data/udevInfo';
 import { storage, getSystemInfo, getInstallerPackage } from '@trezor/connect-common';
-import { parseConnectSettings, isOriginWhitelisted } from './connectSettings';
 import { analytics, EventType } from '@trezor/connect-analytics';
+
+import { parseConnectSettings, isOriginWhitelisted } from './connectSettings';
 // @ts-expect-error (typescript does not know this is worker constructor, this is done by webpack)
 import LogWorker from './sharedLoggerWorker';
 import { initLogWriterWithWorker } from './sharedLoggerUtils';

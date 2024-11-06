@@ -1,5 +1,7 @@
 import styled from 'styled-components';
+
 import { H3 } from '@trezor/components';
+
 import { Translation } from 'src/components/suite/Translation';
 
 import { CoinjoinBalanceSection } from './CoinjoinBalanceSection';

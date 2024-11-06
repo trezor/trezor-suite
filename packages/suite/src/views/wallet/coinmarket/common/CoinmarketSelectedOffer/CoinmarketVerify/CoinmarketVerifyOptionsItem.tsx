@@ -1,6 +1,9 @@
+import styled, { useTheme } from 'styled-components';
+
 import { Column, Icon, Row, variables } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacingsPx } from '@trezor/theme';
+
 import { AccountLabeling, Translation } from 'src/components/suite';
 import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
@@ -9,7 +12,6 @@ import { CoinmarketVerifyOptionsItemProps } from 'src/types/coinmarket/coinmarke
 import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
-import styled, { useTheme } from 'styled-components';
 
 const LogoWrapper = styled.div`
     padding: 0 0 0 ${spacingsPx.xxs};

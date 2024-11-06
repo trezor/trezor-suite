@@ -1,6 +1,8 @@
 import { css } from 'styled-components';
-import { makePropsTransient, TransientProps } from './transientProps';
+
 import { SpacingValues } from '@trezor/theme';
+
+import { makePropsTransient, TransientProps } from './transientProps';
 
 type Margin = {
     top?: SpacingValues | 'auto';

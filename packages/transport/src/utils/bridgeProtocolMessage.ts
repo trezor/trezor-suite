@@ -1,4 +1,5 @@
 import type { TransportProtocol } from '@trezor/protocol';
+
 import type { BridgeProtocolMessage } from '../types';
 
 // validate expected body:

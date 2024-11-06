@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
 import { Paragraph, Image, variables } from '@trezor/components';
-import { Translation } from 'src/components/suite';
 import { borders } from '@trezor/theme';
+
+import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`
     display: flex;

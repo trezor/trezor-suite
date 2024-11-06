@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+
 import { H3, Paragraph, IconCircle, IconName } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

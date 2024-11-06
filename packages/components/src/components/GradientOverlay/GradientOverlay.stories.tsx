@@ -1,9 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react';
+import styled from 'styled-components';
+
 import {
     GradientOverlay as GradientOverlayComponent,
     GradientOverlayProps,
 } from './GradientOverlay';
-import styled from 'styled-components';
 import { Card } from '../Card/Card';
 import { ElevationContext } from '../ElevationContext/ElevationContext';
 

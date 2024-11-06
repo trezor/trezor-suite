@@ -1,5 +1,6 @@
-import { borders } from '@trezor/theme';
 import styled, { CSSProperties, css } from 'styled-components';
+
+import { borders } from '@trezor/theme';
 
 export type Shape = 'CIRCLE' | 'ROUNDED' | 'ROUNDED-SMALL';
 

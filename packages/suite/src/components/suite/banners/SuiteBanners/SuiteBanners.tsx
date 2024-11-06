@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import styled from 'styled-components';
 
 import { selectBannerMessage } from '@suite-common/message-system';
@@ -15,6 +16,7 @@ import {
     selectFirmwareHashCheckError,
     selectFirmwareRevisionCheckError,
 } from 'src/reducers/suite/suiteReducer';
+
 import { MessageSystemBanner } from '../MessageSystemBanner';
 import { NoConnectionBanner } from './NoConnectionBanner';
 import { UpdateBridge } from './UpdateBridgeBanner';

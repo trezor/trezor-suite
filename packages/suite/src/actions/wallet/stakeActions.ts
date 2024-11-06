@@ -1,5 +1,4 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-
 import TrezorConnect from '@trezor/connect';
 import {
     selectDevice,
@@ -14,12 +13,11 @@ import {
     isRbfTransaction,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-
 import { StakeFormState, PrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
 
-import * as modalActions from '../suite/modalActions';
 import { Dispatch, GetState } from 'src/types/suite';
 
+import * as modalActions from '../suite/modalActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
 import { openModal } from '../suite/modalActions';
 

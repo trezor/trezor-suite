@@ -1,8 +1,8 @@
 import { useState, ReactNode } from 'react';
+
 import styled from 'styled-components';
-import { WalletAccountTransaction } from 'src/types/wallet';
+
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { DayHeader } from './DayHeader';
 import {
     getFiatRateKey,
     isNftTokenTransfer,
@@ -12,9 +12,13 @@ import {
 } from '@suite-common/wallet-utils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
-import { useSelector } from 'src/hooks/suite';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
+
+import { useSelector } from 'src/hooks/suite';
+import { WalletAccountTransaction } from 'src/types/wallet';
+
+import { DayHeader } from './DayHeader';
 
 const TransactionsGroupWrapper = styled.div`
     display: flex;

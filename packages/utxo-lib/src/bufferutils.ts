@@ -9,7 +9,9 @@ import BN from 'bn.js';
 import pushdata from 'pushdata-bitcoin';
 import * as varuint from 'varuint-bitcoin';
 import { Int64LE } from 'int64-buffer';
+
 import { bufferUtils } from '@trezor/utils';
+
 import * as types from './types';
 
 const OUT_OF_RANGE_ERROR = 'value out of range';

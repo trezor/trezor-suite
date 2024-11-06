@@ -1,4 +1,5 @@
 import { Type, Static } from '@trezor/schema-utils';
+
 import { PROTO } from '../../../constants';
 import { GetPublicKey, PublicKey, DerivationPath } from '../../params';
 

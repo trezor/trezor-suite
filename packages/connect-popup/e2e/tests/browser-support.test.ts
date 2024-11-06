@@ -1,6 +1,8 @@
 import { test, expect, Page, devices } from '@playwright/test';
+
 import { ensureDirectoryExists } from '@trezor/node-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+
 import { formatUrl, log, waitAndClick } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';

@@ -1,13 +1,17 @@
 import { useMemo } from 'react';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+
 import { useTheme } from 'styled-components';
+
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Card, Column, Icon } from '@trezor/components';
-import { Translation } from 'src/components/suite';
-import { AccentP, CardBottomContent, GreyP } from './styled';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useSelector } from 'src/hooks/suite';
 import { BACKUP_REWARD_PAYOUT_DAYS } from '@suite-common/wallet-constants';
 import { getAccountAutocompoundBalance } from '@suite-common/wallet-utils';
+
+import { Translation } from 'src/components/suite';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useSelector } from 'src/hooks/suite';
+
+import { AccentP, CardBottomContent, GreyP } from './styled';
 
 interface PayoutCardProps {
     nextRewardPayout?: number | null;

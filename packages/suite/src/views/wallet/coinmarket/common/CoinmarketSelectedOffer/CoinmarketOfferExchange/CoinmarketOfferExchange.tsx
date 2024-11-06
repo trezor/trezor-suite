@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+
 import { Divider, Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -10,7 +12,6 @@ import {
     CoinmarketSelectedOfferStepper,
     CoinmarketSelectedOfferStepperItemProps,
 } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferStepper';
-import { Fragment } from 'react';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketOfferExchangeSend } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferExchange/CoinmarketOfferExchangeSend';
 import { CoinmarketOfferExchangeSendSwap } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferExchange/CoinmarketOfferExchangeSendSwap';

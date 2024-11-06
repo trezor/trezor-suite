@@ -1,12 +1,14 @@
 import { useMemo } from 'react';
-import { goto } from 'src/actions/suite/routerActions';
+
 import { messageSystemActions } from '@suite-common/message-system';
 import { Message } from '@suite-common/suite-types';
+import { Row, Banner as WarningComponent, Banner } from '@trezor/components';
+
+import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
-
 import { selectLanguage, selectTorState } from 'src/reducers/suite/suiteReducer';
-import { Row, Banner as WarningComponent, Banner } from '@trezor/components';
+
 
 type MessageSystemBannerProps = {
     message: Message;

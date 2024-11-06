@@ -9,8 +9,10 @@ import {
     selectDevices,
 } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
-import { goto } from '../suite/routerActions';
+
 import { getBackgroundRoute } from 'src/utils/suite/router';
+
+import { goto } from '../suite/routerActions';
 
 export const redirectAfterWalletSelectedThunk = createThunk<void, void, void>(
     `${DEVICE_MODULE_PREFIX}/redirectAfterWalletSelectedThunk`,

@@ -1,10 +1,16 @@
 import { ReactNode, forwardRef } from 'react';
+
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { Translation } from 'src/components/suite';
 import { formatNetworkAmount, formatAmount, isTestnet } from '@suite-common/wallet-utils';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
+import { TranslationKey } from '@suite-common/intl-types';
+
+import type { Account } from 'src/types/wallet';
+import { useDisplayMode, useTranslation } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
+
 import {
     TransactionReviewStepIndicator,
     TransactionReviewStepIndicatorProps,
@@ -13,9 +19,8 @@ import {
     TransactionReviewOutputElement,
     OutputElementLine,
 } from './TransactionReviewOutputElement';
-import type { Account } from 'src/types/wallet';
-import { useDisplayMode, useTranslation } from 'src/hooks/suite';
-import { TranslationKey } from '@suite-common/intl-types';
+
+
 
 const getFeeLabel = (networkType: Account['networkType']) => {
     switch (networkType) {

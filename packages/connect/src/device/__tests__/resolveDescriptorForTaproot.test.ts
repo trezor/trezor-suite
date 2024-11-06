@@ -1,6 +1,7 @@
+import { MessagesSchema as Messages } from '@trezor/protobuf';
+
 import { resolveDescriptorForTaproot } from '../resolveDescriptorForTaproot';
 import { HDNodeResponse } from '../../types/api/getPublicKey';
-import { MessagesSchema as Messages } from '@trezor/protobuf';
 
 const originalResponse: HDNodeResponse = {
     path: [2147483734, 2147483648, 2147483648],

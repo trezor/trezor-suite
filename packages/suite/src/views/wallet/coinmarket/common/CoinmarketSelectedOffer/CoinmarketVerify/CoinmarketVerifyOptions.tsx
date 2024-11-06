@@ -1,4 +1,5 @@
 import { Select } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import {

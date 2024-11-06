@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
-import { StrictIpcRenderer } from '../ipc';
 import type { IpcRendererEvent } from 'electron';
+
+import { StrictIpcRenderer } from '../ipc';
 
 class IpcRendererMock extends EventEmitter implements StrictIpcRenderer<any, IpcRendererEvent> {
     send(..._args: any[]) {}

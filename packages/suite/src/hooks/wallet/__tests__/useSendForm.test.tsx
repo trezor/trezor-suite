@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { DeepPartial } from 'react-hook-form';
 
+import { act, waitFor } from '@testing-library/react';
+
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { PROTO } from '@trezor/connect';
+import { FormState } from '@suite-common/wallet-types';
 
 import { filterThunkActionTypes } from 'src/support/tests/configureStore';
 import {
@@ -12,13 +15,11 @@ import {
     UserAction,
     actionSequence,
 } from 'src/support/tests/hooksHelper';
-import { FormState } from '@suite-common/wallet-types';
 import SendIndex from 'src/views/wallet/send';
+import { SendContextValues } from 'src/types/wallet/sendForm';
 
 import * as fixtures from '../__fixtures__/useSendForm';
 import { useSendFormContext } from '../useSendForm';
-import { act, waitFor } from '@testing-library/react';
-import { SendContextValues } from 'src/types/wallet/sendForm';
 
 const TEST_TIMEOUT = 30000;
 

@@ -1,5 +1,6 @@
 import { TransactionsRootState } from '@suite-common/wallet-core';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
+
 import { accountReceivingCoins, accountSpendingCoins } from './moveLabelsForRbfAccounts.fixture';
 
 export const originalTransactionSpendAccount: WalletAccountTransaction = {

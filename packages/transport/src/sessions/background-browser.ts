@@ -1,6 +1,5 @@
 import type { Descriptor } from '../types';
 import { SessionsBackground } from './background';
-
 import { HandleMessageParams, HandleMessageResponse, SessionsBackgroundInterface } from './types';
 
 /**

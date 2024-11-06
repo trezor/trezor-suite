@@ -1,12 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/BinanceGetPublicKey.js
 
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath, fromHardened, getSerializedPath } from '../../../utils/pathUtils';
 import { UI, createUiMessage } from '../../../events';
 import type { PROTO } from '../../../constants';
-import { Assert } from '@trezor/schema-utils';
 import { Bundle, GetPublicKey as GetPublicKeySchema } from '../../../types';
 
 export default class BinanceGetPublicKey extends AbstractMethod<

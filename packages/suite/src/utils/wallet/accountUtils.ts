@@ -1,5 +1,6 @@
 import { Account } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
+
 import { WalletParams } from 'src/types/wallet';
 
 export const getSelectedAccount = (

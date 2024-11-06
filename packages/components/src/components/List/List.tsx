@@ -1,7 +1,9 @@
 import { createContext, useContext } from 'react';
 
-import { spacings, SpacingValues } from '@trezor/theme';
 import styled from 'styled-components';
+
+import { spacings, SpacingValues } from '@trezor/theme';
+
 import {
     FrameProps,
     FramePropsKeys,

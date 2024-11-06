@@ -1,8 +1,8 @@
 import { ArrayElement } from '@trezor/type-utils';
 import { Route } from '@suite-common/suite-types';
 import { routes } from '@suite-common/suite-config';
-
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
+
 import { RouteParams } from 'src/utils/suite/router';
 
 export type SettingsBackRoute = {

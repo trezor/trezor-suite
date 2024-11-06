@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
+
 import { GuideCategory, GuideArticle } from '@suite-common/suite-types';
+
 import { loadPageMarkdownFile } from 'src/hooks/guide/useGuideLoadArticle';
 
 const SEARCH_DELAY = 300;

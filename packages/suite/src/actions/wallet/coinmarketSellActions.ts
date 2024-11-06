@@ -1,4 +1,3 @@
-import { Account } from 'src/types/wallet';
 import {
     CryptoId,
     SellFiatTrade,
@@ -6,9 +5,12 @@ import {
     SellListResponse,
     SellProviderInfo,
 } from 'invity-api';
+
+import { Account } from 'src/types/wallet';
 import { Dispatch } from 'src/types/suite';
 import * as modalActions from 'src/actions/suite/modalActions';
 import invityAPI from 'src/services/suite/invityAPI';
+
 import { COINMARKET_COMMON, COINMARKET_SELL } from './constants';
 
 export interface SellInfo {

@@ -1,6 +1,9 @@
-import styled from 'styled-components';
-import { CSSColor, Color, Colors } from '@trezor/theme';
 import { ReactNode } from 'react';
+
+import styled from 'styled-components';
+
+import { CSSColor, Color, Colors } from '@trezor/theme';
+
 import { TransientProps } from '../../../utils/transientProps';
 import {
     FrameProps,

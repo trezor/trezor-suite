@@ -1,6 +1,8 @@
 import { Row, Table, SkeletonRectangle } from '@trezor/components';
-import { AssetCoinLogoSkeleton } from '../AssetCoinLogo';
+
 import { useLoadingSkeleton } from 'src/hooks/suite';
+
+import { AssetCoinLogoSkeleton } from '../AssetCoinLogo';
 
 type AssetRowSkeletonProps = {
     isAnimating?: boolean;

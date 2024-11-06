@@ -1,4 +1,5 @@
 import { DeviceModelInternal } from '@trezor/connect';
+
 import {
     OnboardingButtonBack,
     OnboardingStepBox,

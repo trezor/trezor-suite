@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/Fees.js
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+
 import { Blockchain } from '../../backend/BlockchainLink';
 import type { CoinInfo, FeeLevel } from '../../types';
 

@@ -1,5 +1,6 @@
-import { Translation } from 'src/components/suite';
 import { Banner } from '@trezor/components';
+
+import { Translation } from 'src/components/suite';
 
 export const NoConnectionBanner = () => (
     <Banner icon variant="destructive">

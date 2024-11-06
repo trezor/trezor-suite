@@ -1,10 +1,14 @@
 import { FC } from 'react';
+
 import styled from 'styled-components';
+
 import { spacingsPx } from '@trezor/theme';
-import { NavigationItem, NavigationItemProps } from './NavigationItem';
-import { NotificationDropdown } from './NotificationDropdown';
+
 import { useSelector } from 'src/hooks/suite';
 import { selectHasExperimentalFeature } from 'src/reducers/suite/suiteReducer';
+
+import { NavigationItem, NavigationItemProps } from './NavigationItem';
+import { NotificationDropdown } from './NotificationDropdown';
 
 const Nav = styled.nav`
     display: flex;

@@ -1,13 +1,10 @@
 import { useState, useCallback, ReactNode, ChangeEvent } from 'react';
+
 import styled, { css } from 'styled-components';
+
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { getFirmwareVersion } from '@trezor/device-utils';
-
-import { Translation } from 'src/components/suite';
 import { Textarea, Select, variables, Button, CollapsibleBox } from '@trezor/components';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { sendFeedback, setView } from 'src/actions/suite/guideActions';
-import { GuideViewWrapper, GuideHeader, GuideContent } from 'src/components/guide';
 import { Rating, FeedbackCategory, FeedbackType, UserData } from '@suite-common/suite-types';
 import {
     getEnvironment,
@@ -19,6 +16,12 @@ import {
     getSuiteVersion,
 } from '@trezor/env-utils';
 import { spacingsPx } from '@trezor/theme';
+
+import { Translation } from 'src/components/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { sendFeedback, setView } from 'src/actions/suite/guideActions';
+import { GuideViewWrapper, GuideHeader, GuideContent } from 'src/components/guide';
+
 
 const Headline = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};

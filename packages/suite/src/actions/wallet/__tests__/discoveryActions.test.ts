@@ -18,13 +18,13 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import * as discoveryActions from '@suite-common/wallet-core';
 import TrezorConnect, { ERRORS } from '@trezor/connect';
+import { BITCOIN_ONLY_NETWORKS } from '@suite-common/suite-constants';
 
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import { accountsReducer } from 'src/reducers/wallet';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { extraDependencies } from 'src/support/extraDependencies';
-import { BITCOIN_ONLY_NETWORKS } from '@suite-common/suite-constants';
 
 import {
     paramsError,

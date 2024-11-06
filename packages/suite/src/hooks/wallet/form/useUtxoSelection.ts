@@ -4,6 +4,7 @@ import { UseFormReturn } from 'react-hook-form';
 import { ExcludedUtxos, FormState } from '@suite-common/wallet-types';
 import type { AccountUtxo, PROTO } from '@trezor/connect';
 import { getUtxoOutpoint, isSameUtxo } from '@suite-common/wallet-utils';
+
 import { useCoinjoinRegisteredUtxos } from './useCoinjoinRegisteredUtxos';
 import {
     SendContextValues,

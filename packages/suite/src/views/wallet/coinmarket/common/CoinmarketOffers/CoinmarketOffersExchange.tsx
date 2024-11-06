@@ -1,3 +1,7 @@
+import { useMemo } from 'react';
+
+import { ExchangeTrade } from 'invity-api';
+
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import {
     EXCHANGE_COMPARATOR_KYC_FILTER,
@@ -8,9 +12,7 @@ import {
     EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX,
     EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX,
 } from 'src/constants/wallet/coinmarket/form';
-import { ExchangeTrade } from 'invity-api';
 import { KYC_DEX, KYC_NO_KYC } from 'src/constants/wallet/coinmarket/kyc';
-import { useMemo } from 'react';
 import { CoinmarketOffersExchangeQuotesByTypeSection } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffersExchangeQuotesByTypeSection';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 

@@ -1,5 +1,4 @@
 import { AbstractTransport } from './abstract';
-
 import { error } from '../utils/result';
 import { WRONG_ENVIRONMENT } from '../errors';
 

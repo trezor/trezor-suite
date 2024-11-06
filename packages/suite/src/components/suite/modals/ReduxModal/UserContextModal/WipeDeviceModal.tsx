@@ -1,9 +1,11 @@
 import { useState } from 'react';
+
 import { NewModal, Card, Column, H3, Paragraph } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
 import { Translation, CheckItem } from 'src/components/suite';
 import { wipeDevice } from 'src/actions/settings/deviceSettingsActions';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { spacings } from '@trezor/theme';
 
 type WipeDeviceModalProps = {
     onCancel: () => void;

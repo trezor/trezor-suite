@@ -2,11 +2,11 @@ import { MiddlewareAPI } from 'redux';
 
 import { selectDevice, deviceActions } from '@suite-common/wallet-core';
 import TrezorConnect, { UI } from '@trezor/connect';
+import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { ONBOARDING } from 'src/actions/onboarding/constants';
-import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 
 const buttonRequest =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

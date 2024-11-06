@@ -1,3 +1,5 @@
+import { CryptoId } from 'invity-api';
+
 import { isDesktop } from '@trezor/env-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { PROTO } from '@trezor/connect';
@@ -14,6 +16,7 @@ import {
     selectDevice,
     toggleRememberDevice,
 } from '@suite-common/wallet-core';
+
 import { GetState, Dispatch } from 'src/types/suite';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -22,7 +25,6 @@ import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
 import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
 import * as formDraftActions from 'src/actions/wallet/formDraftActions';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
-import { CryptoId } from 'invity-api';
 import {
     COINMARKET_BUY,
     COINMARKET_COMMON,

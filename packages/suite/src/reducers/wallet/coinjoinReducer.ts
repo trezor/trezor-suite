@@ -1,7 +1,7 @@
 import produce from 'immer';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { memoizeWithArgs } from 'proxy-memoize';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { getInputSize, getOutputSize, RoundPhase } from '@trezor/coinjoin';
 import { PartialRecord } from '@trezor/type-utils';
 import { Account, AccountKey } from '@suite-common/wallet-types';
@@ -58,6 +58,7 @@ import {
     ZKSNACKS_LEGAL_DOCUMENTS_VERSION,
     TREZOR_LEGAL_DOCUMENTS_VERSION,
 } from 'src/services/coinjoin';
+
 import { SelectedAccountRootState, selectSelectedAccount } from './selectedAccountReducer';
 
 export interface CoinjoinState {

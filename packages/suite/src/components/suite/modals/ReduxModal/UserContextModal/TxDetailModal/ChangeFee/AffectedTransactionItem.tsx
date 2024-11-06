@@ -1,9 +1,11 @@
 import styled, { useTheme } from 'styled-components';
+
 import { Icon, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { truncateMiddle } from '@trezor/utils';
+
 import { FormattedDate } from 'src/components/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { truncateMiddle } from '@trezor/utils';
 
 const TxRow = styled.div`
     display: flex;

@@ -2,6 +2,7 @@
 
 import fetch from 'cross-fetch';
 import { promises as fs } from 'fs';
+
 import { httpRequest as browserHttpRequest } from './assets-browser';
 import { tryLocalAssetRequire } from './assetUtils';
 

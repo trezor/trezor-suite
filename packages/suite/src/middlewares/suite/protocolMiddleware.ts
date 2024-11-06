@@ -1,8 +1,8 @@
 import { MiddlewareAPI } from 'redux';
 
 import { notificationsActions, ToastPayload } from '@suite-common/toast-notifications';
-import { PROTOCOL } from 'src/actions/suite/constants';
 
+import { PROTOCOL } from 'src/actions/suite/constants';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
 
 // close custom protocol notification of given type

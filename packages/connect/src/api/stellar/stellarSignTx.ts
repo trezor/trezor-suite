@@ -1,5 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/stellarSignTx.js
 
+import { Assert } from '@trezor/schema-utils';
+
 import { PROTO, ERRORS } from '../../constants';
 import type { TypedCall } from '../../device/DeviceCommands';
 import {
@@ -7,7 +9,6 @@ import {
     StellarOperation,
     StellarOperationMessage,
 } from '../../types/api/stellar';
-import { Assert } from '@trezor/schema-utils';
 
 const processTxRequest = async (
     typedCall: TypedCall,

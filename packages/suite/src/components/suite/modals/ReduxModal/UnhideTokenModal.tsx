@@ -1,15 +1,17 @@
-import { Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite/useDispatch';
+import { useState } from 'react';
+
 import { H2, Paragraph, Card, Checkbox, NewModal } from '@trezor/components';
 import {
     DefinitionType,
     tokenDefinitionsActions,
     TokenManagementAction,
 } from '@suite-common/token-definitions';
+import { spacings } from '@trezor/theme';
+
+import { Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useSelector } from 'src/hooks/suite';
-import { useState } from 'react';
-import { spacings } from '@trezor/theme';
 import { setFlag } from 'src/actions/suite/suiteActions';
 
 interface UnhideTokenModalProps {

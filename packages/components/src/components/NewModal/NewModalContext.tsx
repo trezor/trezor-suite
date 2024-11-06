@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+
 import { NewModalVariant } from './types';
 
 export const NewModalContext = createContext<{

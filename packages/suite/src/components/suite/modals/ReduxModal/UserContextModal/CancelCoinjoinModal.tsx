@@ -1,5 +1,7 @@
 import styled from 'styled-components';
+
 import { Button } from '@trezor/components';
+
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { Modal, Translation } from 'src/components/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';

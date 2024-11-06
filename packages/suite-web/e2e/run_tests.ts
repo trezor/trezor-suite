@@ -7,6 +7,7 @@ import child_process from 'child_process';
 import yargs from 'yargs/yargs';
 import path from 'path';
 import fs from 'fs';
+
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import cypressConfig from './cypress.config';

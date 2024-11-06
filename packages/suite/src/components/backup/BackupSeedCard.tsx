@@ -1,5 +1,7 @@
 import { ReactNode, SyntheticEvent } from 'react';
+
 import styled, { useTheme } from 'styled-components';
+
 import { variables, Checkbox, Card, Icon, IconName } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 

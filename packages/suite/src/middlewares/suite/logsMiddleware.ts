@@ -1,4 +1,5 @@
 import { MiddlewareAPI } from 'redux';
+
 import { authorizeDeviceThunk, deviceActions, discoveryActions } from '@suite-common/wallet-core';
 import { addLog } from '@suite-common/logger';
 import { TRANSPORT, DEVICE } from '@trezor/connect';

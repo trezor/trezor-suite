@@ -8,6 +8,7 @@ import { Url } from '@trezor/urls';
 import { Translation } from 'src/components/suite';
 import { SecurityChecklist } from 'src/views/onboarding/steps/SecurityCheck/SecurityChecklist';
 import { SecurityChecklistItem } from 'src/views/onboarding/steps/SecurityCheck/types';
+
 import { SecurityCheckLayout } from './SecurityCheckLayout';
 import { hardFailureChecklistItems } from './checklistItems';
 

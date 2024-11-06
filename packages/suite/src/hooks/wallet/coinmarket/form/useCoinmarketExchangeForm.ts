@@ -1,5 +1,6 @@
 import { useCallback, useState, useEffect, useRef, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+
 import type {
     CryptoId,
     ExchangeTrade,
@@ -7,8 +8,14 @@ import type {
     FiatCurrencyCode,
 } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
+
 import { amountToSmallestUnit, formatAmount, toFiatCurrency } from '@suite-common/wallet-utils';
 import { isChanged } from '@suite-common/suite-utils';
+import { Account } from '@suite-common/wallet-types';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { networks } from '@suite-common/wallet-config';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import { saveQuoteRequest, saveQuotes } from 'src/actions/wallet/coinmarketExchangeActions';
@@ -28,7 +35,6 @@ import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { CryptoAmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
-import { Account } from '@suite-common/wallet-types';
 import {
     CoinmarketTradeExchangeType,
     UseCoinmarketFormProps,
@@ -48,18 +54,16 @@ import {
 import { useCoinmarketExchangeFormDefaultValues } from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeFormDefaultValues';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { useCoinmarketRecomposeAndSign } from 'src/hooks/wallet/useCoinmarketRecomposeAndSign';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 import { useCoinmarketComposeTransaction } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketComposeTransaction';
 import { useCoinmarketFormActions } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketFormActions';
 import { useCoinmarketCurrencySwitcher } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketCurrencySwitcher';
 import { useCoinmarketModalCrypto } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketModalCrypto';
-import { networks } from '@suite-common/wallet-config';
 import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketAccount';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { useCoinmarketFiatValues } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketFiatValues';
+
 import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
 
 export const useCoinmarketExchangeForm = ({

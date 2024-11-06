@@ -1,7 +1,9 @@
 import { ExchangeTrade } from 'invity-api';
-import { ExtendedMessageDescriptor, Translation } from 'src/components/suite/Translation';
+
 import { H3, Icon, Row, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
+import { ExtendedMessageDescriptor, Translation } from 'src/components/suite/Translation';
 import { CoinmarketOffersItem } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffersItem';
 
 interface CoinmarketOffersExchangeQuotesByTypeSectionProps {

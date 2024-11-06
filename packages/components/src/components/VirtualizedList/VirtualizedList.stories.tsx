@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
+
 import { Meta, StoryFn } from '@storybook/react';
 import styled from 'styled-components';
+
 import { VirtualizedList as VirtualizedListComponent } from './VirtualizedList';
-import { useEffect, useState } from 'react';
 
 const meta: Meta = {
     title: 'VirtualizedList',

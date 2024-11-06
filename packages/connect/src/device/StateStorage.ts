@@ -1,6 +1,7 @@
+import { storage } from '@trezor/connect-common';
+
 import { DeviceState } from '../types';
 import { Device } from './Device';
-import { storage } from '@trezor/connect-common';
 
 export interface IStateStorage {
     saveState(device: Device, state: DeviceState): void;

@@ -1,6 +1,8 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+
 import styled from 'styled-components';
+
 import { Banner, Button, Code, Text } from '@trezor/components';
 import { BannerVariant } from '@trezor/components/src/components/Banner/types';
 import { borders, spacingsPx, typography } from '@trezor/theme';

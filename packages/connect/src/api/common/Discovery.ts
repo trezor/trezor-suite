@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/Discovery.js
 
 import EventEmitter from 'events';
+
 import { PROTO, ERRORS } from '../../constants';
 import { Blockchain } from '../../backend/BlockchainLink';
 import { DeviceCommands } from '../../device/DeviceCommands';

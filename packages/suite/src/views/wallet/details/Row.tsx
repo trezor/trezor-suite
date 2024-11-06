@@ -1,5 +1,6 @@
-import { Row as RowComponent } from '@trezor/components';
 import { ReactNode } from 'react';
+
+import { Row as RowComponent } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 interface RowProps {

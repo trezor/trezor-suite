@@ -2,8 +2,9 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import type { FieldWithBundle } from '../../types';
 import { Icon } from '@trezor/components';
+
+import type { FieldWithBundle } from '../../types';
 
 interface AddButtonProps {
     field: FieldWithBundle<any>;

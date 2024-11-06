@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { Paragraph, variables } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 

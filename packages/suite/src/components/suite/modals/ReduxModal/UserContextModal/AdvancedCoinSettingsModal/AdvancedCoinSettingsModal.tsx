@@ -1,11 +1,15 @@
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
-import { Modal, Translation } from 'src/components/suite';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
-import { CustomBackends } from './CustomBackends/CustomBackends';
+import { CoinLogo } from '@trezor/product-components';
+
+import { Modal, Translation } from 'src/components/suite';
 import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
 import { useSelector } from 'src/hooks/suite';
-import { CoinLogo } from '@trezor/product-components';
+
+import { CustomBackends } from './CustomBackends/CustomBackends';
+
 
 const Section = styled.div`
     display: flex;

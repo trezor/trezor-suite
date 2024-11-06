@@ -1,5 +1,7 @@
 import { Ref, forwardRef, ReactElement, HTMLAttributes } from 'react';
+
 import styled from 'styled-components';
+
 import { H3 } from '@trezor/components';
 
 const Wrapper = styled.section`

@@ -1,19 +1,21 @@
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@suite-common/wallet-utils';
 import { Account } from '@suite-common/wallet-types';
+import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
+import { spacings } from '@trezor/theme';
+import { Column } from '@trezor/components';
+
 import {
     useAccountSearch,
     useDiscovery,
     useSelector,
     useDefaultAccountLabel,
 } from 'src/hooks/suite';
-import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 import { Translation } from 'src/components/suite';
+
 import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AccountGroup } from './AccountGroup';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
-import { spacings } from '@trezor/theme';
-import { Column } from '@trezor/components';
 import { AccountSection } from './AccountSection';
 
 interface AccountListProps {

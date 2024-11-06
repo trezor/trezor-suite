@@ -1,5 +1,7 @@
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+
 import { ClaimEthFormContext, useClaimEthForm } from 'src/hooks/wallet/useClaimEthForm';
+
 import { ClaimEthForm } from './ClaimEthForm';
 
 interface ClaimModalContentProps {

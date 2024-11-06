@@ -1,4 +1,5 @@
 import type { BlockchainLinkParams, BlockchainLinkResponse } from '@trezor/blockchain-link';
+
 import type { FeeLevel, FeeInfo } from '../fees';
 import type { CommonParamsWithCoin, Response } from '../params';
 

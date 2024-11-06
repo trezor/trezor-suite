@@ -1,6 +1,8 @@
 import styled from 'styled-components';
-import { ViewOnlyPromoContent } from './ViewOnlyPromoContent';
+
 import { WelcomeLayout } from 'src/components/suite';
+
+import { ViewOnlyPromoContent } from './ViewOnlyPromoContent';
 
 const Content = styled.div`
     display: flex;

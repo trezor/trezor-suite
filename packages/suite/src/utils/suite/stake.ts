@@ -1,3 +1,6 @@
+import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
+import { fromWei, numberToHex, toWei } from 'web3-utils';
+
 import {
     PrecomposedLevels,
     StakeFormState,
@@ -11,13 +14,12 @@ import {
     MAX_ETH_AMOUNT_FOR_STAKING,
 } from '@suite-common/wallet-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
-import { fromWei, numberToHex, toWei } from 'web3-utils';
 import { getEthereumEstimateFeeParams, isPending, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, { EthereumTransaction, Success, InternalTransfer } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { ValidatorsQueue } from '@suite-common/wallet-core';
 import { BlockchainEstimatedFee } from '@trezor/connect/src/types/api/blockchainEstimateFee';
+
 import { TranslationFunction } from 'src/hooks/suite/useTranslation';
 
 // source is a required parameter for some functions in the Everstake Wallet SDK.

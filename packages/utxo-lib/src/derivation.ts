@@ -1,5 +1,7 @@
 import bs58 from 'bs58';
+
 import { throwError } from '@trezor/utils';
+
 import { p2pkh, p2sh, p2wpkh, p2tr } from './payments';
 import { fromBase58 } from './bip32';
 import { bitcoin, Network } from './networks';

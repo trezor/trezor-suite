@@ -1,4 +1,5 @@
 import { useEffect, useReducer } from 'react';
+
 import { ScanProgressInfo } from '@trezor/coinjoin';
 
 import { CoinjoinService } from 'src/services/coinjoin';

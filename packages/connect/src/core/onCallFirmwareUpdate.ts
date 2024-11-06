@@ -1,6 +1,7 @@
 import { randomBytes } from 'crypto';
 
 import { createTimeoutPromise } from '@trezor/utils';
+import { isNewer } from '@trezor/utils/src/versionUtils';
 
 import { DeviceList } from '../device/DeviceList';
 import { UI, DEVICE, createUiMessage, createDeviceMessage, CoreEventMessage } from '../events';
@@ -18,7 +19,6 @@ import { CommonParams, DeviceUniquePath, IntermediaryVersion } from '../types';
 import { FIRMWARE, PROTO, ERRORS } from '../constants';
 import type { Log } from '../utils/debug';
 import type { Device } from '../device/Device';
-import { isNewer } from '@trezor/utils/src/versionUtils';
 
 type PostMessage = (message: CoreEventMessage) => void;
 

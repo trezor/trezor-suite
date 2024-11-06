@@ -1,8 +1,12 @@
-import { useTheme } from 'styled-components';
 import { useRef, useLayoutEffect } from 'react';
-import { FormattedCryptoAmount } from 'src/components/suite';
+
+import { useTheme } from 'styled-components';
+
+
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+
+import { FormattedCryptoAmount } from 'src/components/suite';
 
 interface CommonProps {
     setWidth: (n: number) => void;

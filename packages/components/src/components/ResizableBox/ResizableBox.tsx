@@ -1,5 +1,7 @@
-import styled, { css } from 'styled-components';
 import { useCallback, useEffect, useRef, useState } from 'react';
+
+import styled, { css } from 'styled-components';
+
 import { createCooldown } from '@trezor/utils';
 import { ZIndexValues, zIndices } from '@trezor/theme';
 

@@ -2,6 +2,7 @@
 // @retry=2
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
+
 import { onAccountsPage } from '../../support/pageObjects/accountsObject';
 import { onSettingsCryptoPage } from '../../support/pageObjects/settings/settingsCryptoObject';
 

@@ -1,8 +1,10 @@
 import { Column, Image, Text, Banner } from '@trezor/components';
-import { useSelector } from '../../../../hooks/suite';
 import { selectDevice } from '@suite-common/wallet-core';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
+
 import { Translation } from 'src/components/suite';
+
+import { useSelector } from '../../../../hooks/suite';
 
 type ConnectDevicePromoProps = {
     title: JSX.Element | string;

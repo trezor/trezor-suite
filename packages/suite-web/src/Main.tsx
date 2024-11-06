@@ -1,12 +1,15 @@
-import { createRoot } from 'react-dom/client';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router as RouterProvider } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
+
+import { createRoot } from 'react-dom/client';
 import { init as initSentry } from '@sentry/browser';
+
+import { SENTRY_CONFIG } from '@suite-common/sentry';
+import { FormatterProvider } from '@suite-common/formatters';
 
 import { initStore } from 'src/reducers/store';
 import { preloadStore } from 'src/support/suite/preloadStore';
-import { SENTRY_CONFIG } from '@suite-common/sentry';
-
 import { Metadata, Preloader, ToastContainer } from 'src/components/suite';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import Resize from 'src/support/suite/Resize';
@@ -24,8 +27,8 @@ import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
 import AppRouter from './support/Router';
 import { useCypress } from './support/useCypress';
-import { FormatterProvider } from '@suite-common/formatters';
-import { HelmetProvider } from 'react-helmet-async';
+
+
 
 const Main = () => {
     useCypress();

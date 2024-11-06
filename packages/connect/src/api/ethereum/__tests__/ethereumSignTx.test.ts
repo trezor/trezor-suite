@@ -2,7 +2,6 @@ import { TransactionFactory } from '@ethereumjs/tx';
 import { keccak256, toHex } from 'web3-utils';
 
 import { serializeEthereumTx } from '../ethereumSignTx';
-
 import * as fixtures from '../__fixtures__/ethereumSignTx';
 
 describe('helpers/ethereumSignTx', () => {

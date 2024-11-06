@@ -1,5 +1,7 @@
-import { Icon, Tooltip } from '@trezor/components';
 import { useTheme } from 'styled-components';
+
+import { Icon, Tooltip } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
 import { TooltipIcon, TooltipText, TooltipWrap } from 'src/views/wallet/coinmarket';

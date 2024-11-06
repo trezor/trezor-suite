@@ -1,15 +1,18 @@
 import styled from 'styled-components';
+
 import { Icon } from '@trezor/components';
-import { NumberInput } from 'src/components/suite';
-import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { useSelector, useTranslation } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { variables } from '@trezor/components/src/config';
-import { validateDecimals, validateLimitsBigNum, validateMin } from 'src/utils/suite/validation';
-import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { useFormatters } from '@suite-common/formatters';
 import { getInputState, getNonComposeErrorMessage } from '@suite-common/wallet-utils';
+
+import { NumberInput } from 'src/components/suite';
+import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
+import { useSelector, useTranslation } from 'src/hooks/suite';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { validateDecimals, validateLimitsBigNum, validateMin } from 'src/utils/suite/validation';
+import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
+
 
 const HStack = styled.div`
     display: flex;

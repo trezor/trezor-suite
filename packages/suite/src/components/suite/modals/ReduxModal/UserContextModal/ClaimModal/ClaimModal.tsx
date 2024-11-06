@@ -1,6 +1,8 @@
 import styled from 'styled-components';
+
 import { useSelector } from 'src/hooks/suite';
 import { Modal, Translation } from 'src/components/suite';
+
 import { ClaimModalContent } from './ClaimModalContent';
 
 const StyledModal = styled(Modal)`

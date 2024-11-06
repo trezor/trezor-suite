@@ -1,18 +1,21 @@
+import { useEffect } from 'react';
+
+import { CryptoId } from 'invity-api';
+
 import addressValidator from '@trezor/address-validator';
-import { Translation } from 'src/components/suite';
 import { Input, Button, Paragraph, Divider, Column, Tooltip, H4 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { isHexValid, isInteger } from '@suite-common/wallet-utils';
+
+import { Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeBuyExchangeType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketVerifyOptions } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketVerify/CoinmarketVerifyOptions';
 import { CoinmarketVerifyAccountReturnProps } from 'src/types/coinmarket/coinmarketVerify';
-import { CryptoId } from 'invity-api';
-import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import { CoinmarketAddressOptions } from 'src/views/wallet/coinmarket/common/CoinmarketAddressOptions';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { useEffect } from 'react';
 import { useDispatch } from 'src/hooks/suite';
 import { COINMARKET_BUY } from 'src/actions/wallet/constants';
 import * as modalActions from 'src/actions/suite/modalActions';

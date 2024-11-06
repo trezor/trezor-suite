@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect, useCallback, Dispatch, SetStateAction } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+
+import { isFulfilled } from '@reduxjs/toolkit';
 
 import {
     FormState,
@@ -14,13 +17,12 @@ import { isChanged } from '@suite-common/suite-utils';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
+import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 
 import { TranslationKey } from 'src/components/suite/Translation';
-import { useDispatch } from 'react-redux';
-import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
-import { useTranslation } from '../suite';
 import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
-import { isFulfilled } from '@reduxjs/toolkit';
+
+import { useTranslation } from '../suite';
 
 type Props = UseFormReturn<FormState> & {
     state: UseSendFormState;

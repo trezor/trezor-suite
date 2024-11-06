@@ -1,10 +1,11 @@
 import { Translation } from 'src/components/suite';
-import { ConfirmValueModal, ConfirmValueModalProps } from './ConfirmValueModal/ConfirmValueModal';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { useSelector } from 'src/hooks/suite';
 import { DisplayMode } from 'src/types/suite';
+
+import { ConfirmValueModal, ConfirmValueModalProps } from './ConfirmValueModal/ConfirmValueModal';
 
 export const ConfirmXpubModal = (
     props: Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel'>,

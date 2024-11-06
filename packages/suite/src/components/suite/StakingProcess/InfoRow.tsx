@@ -1,4 +1,5 @@
 import { Badge, Column, List, Paragraph, Row } from '@trezor/components';
+
 import { Subheading } from './Subheading';
 import { RowContent, RowSubheading } from './types';
 

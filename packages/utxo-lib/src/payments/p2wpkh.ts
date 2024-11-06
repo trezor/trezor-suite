@@ -2,6 +2,7 @@
 
 import ecc from 'tiny-secp256k1';
 import { bech32 } from 'bech32';
+
 import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';

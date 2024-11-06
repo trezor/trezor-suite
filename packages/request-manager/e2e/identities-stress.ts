@@ -1,4 +1,5 @@
 import path from 'path';
+
 import { createInterceptor, TorController } from '../src';
 import { torRunner } from './torRunner';
 

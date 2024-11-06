@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 
 import { Checkbox } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { ArrayElement } from '@trezor/type-utils';
 
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { DebugModeOptions } from 'src/reducers/suite/suiteReducer';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';

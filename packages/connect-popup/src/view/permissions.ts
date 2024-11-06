@@ -2,6 +2,7 @@
 
 import { UI, createUiResponse, UiRequestPermission } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/connect-analytics';
+
 import { container, showView, postMessage, createTooltip, getState } from './common';
 
 const getPermissionText = (permissionType: string, _deviceName: string) => {

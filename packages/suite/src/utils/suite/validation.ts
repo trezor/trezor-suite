@@ -10,6 +10,7 @@ import {
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+
 import { TranslationFunction } from 'src/hooks/suite/useTranslation';
 import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 

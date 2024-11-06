@@ -19,12 +19,12 @@ import type {
 } from '@trezor/connect/src/types';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import { initLog, setLogWriter, LogMessage, LogWriter, Log } from '@trezor/connect/src/utils/debug';
-import * as popup from '../popup';
-
-import { parseConnectSettings } from '../connectSettings';
 import { Login } from '@trezor/connect/src/types/api/requestLogin';
 import { createDeferred } from '@trezor/utils';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
+
+import { parseConnectSettings } from '../connectSettings';
+import * as popup from '../popup';
 
 /**
  * Base class for CoreInPopup methods for TrezorConnect factory.

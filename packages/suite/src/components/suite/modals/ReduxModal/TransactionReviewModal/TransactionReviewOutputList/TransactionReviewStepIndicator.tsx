@@ -1,4 +1,5 @@
 import styled, { useTheme } from 'styled-components';
+
 import { Icon } from '@trezor/components';
 
 const IndicatorWrapper = styled.div`

@@ -1,8 +1,10 @@
 import styled from 'styled-components';
+
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { ButtonGroup, Dropdown, DropdownMenuItemProps, IconName } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+
 import { WalletParams } from 'src/types/wallet';
 import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';

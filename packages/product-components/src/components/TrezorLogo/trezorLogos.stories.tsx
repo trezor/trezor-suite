@@ -1,7 +1,9 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
-import { TrezorLogo } from './TrezorLogo';
+
 import { StoryColumn } from '@trezor/components';
+
+import { TrezorLogo } from './TrezorLogo';
 
 interface WrapperProps {
     isDark?: boolean;

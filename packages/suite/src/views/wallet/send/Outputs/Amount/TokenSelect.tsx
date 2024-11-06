@@ -1,14 +1,19 @@
 import { useMemo, useEffect } from 'react';
 import { Controller } from 'react-hook-form';
-import { Select } from '@trezor/components';
+
 import styled from 'styled-components';
+
+import { Select } from '@trezor/components';
+import { Output, Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { updateFiatRatesThunk, selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { TokenDefinitions, selectCoinDefinitions } from '@suite-common/token-definitions';
+
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Account } from 'src/types/wallet';
-import { Output, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { updateFiatRatesThunk, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { TooltipSymbol, Translation } from 'src/components/suite';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     enhanceTokensWithRates,
     formatTokenSymbol,
@@ -16,8 +21,6 @@ import {
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { TokenDefinitions, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { SUITE } from 'src/actions/suite/constants';
 
 const UnrecognizedTokensHeading = styled.div`

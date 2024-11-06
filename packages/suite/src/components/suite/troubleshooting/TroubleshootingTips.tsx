@@ -1,12 +1,15 @@
 import { useMemo, ReactNode } from 'react';
+
 import styled from 'styled-components';
-import { Translation, TrezorLink } from 'src/components/suite';
+
 import { variables, Button, CollapsibleBox, useElevation } from '@trezor/components';
 import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 import TrezorConnect from '@trezor/connect';
 import type TrezorConnectWeb from '@trezor/connect-web';
 import { isAndroid } from '@trezor/env-utils';
 import { Elevation, mapElevationToBorder } from '@trezor/theme';
+
+import { Translation, TrezorLink } from 'src/components/suite';
 
 const ItemLabel = styled.span`
     color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};

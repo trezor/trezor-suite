@@ -1,14 +1,16 @@
 import { FC, useEffect, PropsWithChildren } from 'react';
 
+import {
+    selectDevice,
+    selectIsFirmwareAuthenticityCheckDismissed,
+} from '@suite-common/wallet-core';
+
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Onboarding } from 'src/views/onboarding';
 import { ErrorPage } from 'src/views/suite/ErrorPage';
 import { useGuideKeyboard } from 'src/hooks/guide';
 import { init } from 'src/actions/suite/initAction';
 import type { AppState } from 'src/types/suite';
-import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
-import { InitialLoading } from './InitialLoading';
-import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import {
     selectPrerequisite,
     selectIsLoggedOut,
@@ -16,14 +18,14 @@ import {
     selectIsFirmwareAuthenticityCheckEnabledAndFailed,
 } from 'src/reducers/suite/suiteReducer';
 import { SuiteStart } from 'src/views/start/SuiteStart';
+import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
+
+import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
+import { InitialLoading } from './InitialLoading';
+import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
-import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
-import {
-    selectDevice,
-    selectIsFirmwareAuthenticityCheckDismissed,
-} from '@suite-common/wallet-core';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { RouterAppWithParams } from '../../../constants/suite/routes';
 

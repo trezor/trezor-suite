@@ -1,4 +1,5 @@
 import { Type, Static } from '@trezor/schema-utils';
+
 import type { Params, Response } from '../params';
 import { PROTO } from '../../constants';
 

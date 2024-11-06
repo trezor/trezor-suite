@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { Meta, StoryObj } from '@storybook/react';
+
 import { icons, IconName } from '@suite-common/icons/src/icons';
 
 import {

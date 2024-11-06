@@ -1,8 +1,10 @@
 import React from 'react';
+
+import { Meta, StoryObj } from '@storybook/react';
+
 import { IconButton } from '../../../index';
 import { StoryColumn } from '../../../support/Story';
 import { ButtonVariant } from '../buttonStyleUtils';
-import { Meta, StoryObj } from '@storybook/react';
 
 const variants: Array<Exclude<ButtonVariant, 'danger'>> = ['primary', 'tertiary'];
 

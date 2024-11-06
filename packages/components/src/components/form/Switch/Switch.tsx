@@ -1,7 +1,10 @@
 import { ReactNode } from 'react';
+
 import styled, { css } from 'styled-components';
+
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { getWeakRandomId } from '@trezor/utils';
+
 import {
     getInputColor,
     getLabelColor,

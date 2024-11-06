@@ -1,5 +1,7 @@
 import * as protobuf from 'protobufjs/light';
+
 import { v1 as v1Protocol, bridge as bridgeProtocol } from '@trezor/protocol';
+
 import { buildMessage, createChunks } from '../src/utils/send';
 import { receiveAndParse } from '../src/utils/receive';
 

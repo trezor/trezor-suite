@@ -1,5 +1,6 @@
-import { Translation } from '../Translation';
 import { SecurityChecklistItem } from 'src/views/onboarding/steps/SecurityCheck/types';
+
+import { Translation } from '../Translation';
 
 export const hardFailureChecklistItems: SecurityChecklistItem[] = [
     {

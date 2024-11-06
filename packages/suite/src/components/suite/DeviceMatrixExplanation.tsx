@@ -1,8 +1,11 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
+
 import { Icon, IconName, IconProps, Image, variables } from '@trezor/components';
-import { useGuide } from 'src/hooks/guide';
 import { DeviceModelInternal } from '@trezor/connect';
+
+import { useGuide } from 'src/hooks/guide';
 
 const Wrapper = styled.div<{ $isGuideOpen?: boolean }>`
     display: flex;

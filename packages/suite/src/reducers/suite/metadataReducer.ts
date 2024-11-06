@@ -10,6 +10,8 @@ import {
     deviceActions,
     selectDeviceByStaticSessionId,
 } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
+import { DeviceState, StaticSessionId } from '@trezor/connect';
 
 import {
     STORAGE,
@@ -31,8 +33,6 @@ import {
 } from 'src/actions/suite/constants/metadataLabelingConstants';
 
 import { SuiteRootState } from './suiteReducer';
-import { AccountKey } from '@suite-common/wallet-types';
-import { DeviceState, StaticSessionId } from '@trezor/connect';
 
 export const initialState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?

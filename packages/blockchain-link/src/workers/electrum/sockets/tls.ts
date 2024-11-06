@@ -1,4 +1,5 @@
 import { TLSSocket } from 'tls';
+
 import { SocketBase } from './base';
 import type { SocketListener } from './interface';
 

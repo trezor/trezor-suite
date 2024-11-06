@@ -1,13 +1,15 @@
-import { PROTOCOL } from './constants';
-import { CoinProtocolInfo, getProtocolInfo } from 'src/utils/suite/protocol';
-import type { Dispatch } from 'src/types/suite';
 import { Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
-
-import type { SendFormState } from 'src/reducers/suite/protocolReducer';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import * as routerActions from 'src/actions/suite/routerActions';
 import { SUITE_BRIDGE_DEEPLINK } from '@trezor/urls';
+
+import { CoinProtocolInfo, getProtocolInfo } from 'src/utils/suite/protocol';
+import type { Dispatch } from 'src/types/suite';
+import type { SendFormState } from 'src/reducers/suite/protocolReducer';
+import * as routerActions from 'src/actions/suite/routerActions';
+
+
+import { PROTOCOL } from './constants';
 
 export type ProtocolAction =
     | {

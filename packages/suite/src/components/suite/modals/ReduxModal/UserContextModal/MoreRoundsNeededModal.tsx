@@ -1,6 +1,8 @@
 import styled, { useTheme } from 'styled-components';
-import { useDispatch } from 'src/hooks/suite';
+
 import { Button, Icon, variables } from '@trezor/components';
+
+import { useDispatch } from 'src/hooks/suite';
 import { onCancel as closeModal } from 'src/actions/suite/modalActions';
 import { Modal, Translation } from 'src/components/suite';
 

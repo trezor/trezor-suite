@@ -2,6 +2,7 @@
 // @retry=2
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
+
 import { onAccountsPage } from '../../support/pageObjects/accountsObject';
 
 describe('Check coins XPUB', () => {

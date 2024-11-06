@@ -1,10 +1,12 @@
+import { NewModal, Paragraph, H2 } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
 import { onReceiveConfirmation } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { NewModal, Paragraph, H2 } from '@trezor/components';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { spacings } from '@trezor/theme';
+
 
 export const NoBackupModal = () => {
     const dispatch = useDispatch();

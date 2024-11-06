@@ -1,9 +1,9 @@
 import { DeviceModelInternal } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { Icon, SelectBar, Tooltip } from '@trezor/components';
 
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { Icon, SelectBar, Tooltip } from '@trezor/components';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';

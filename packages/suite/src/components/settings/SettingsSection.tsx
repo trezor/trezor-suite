@@ -1,5 +1,7 @@
 import { ReactNode, ReactElement } from 'react';
+
 import styled, { useTheme } from 'styled-components';
+
 import { Paragraph, IconName, Icon, H3, Card, Column } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { breakpointMediaQueries } from '@trezor/styles';

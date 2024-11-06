@@ -1,14 +1,16 @@
 import * as semver from 'semver';
+
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { H2, DeviceAnimation, NewModal, Paragraph, List, Column } from '@trezor/components';
 import { DEVICE, Device, DeviceModelInternal, UI } from '@trezor/connect';
-import { Translation, WebUsbButton } from 'src/components/suite';
-import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
-import { useDevice, useFirmware, useSelector } from 'src/hooks/suite';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { spacings } from '@trezor/theme';
 import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
+
+import { useDevice, useFirmware, useSelector } from 'src/hooks/suite';
+import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
+import { Translation, WebUsbButton } from 'src/components/suite';
 
 const RebootDeviceGraphics = ({
     device,

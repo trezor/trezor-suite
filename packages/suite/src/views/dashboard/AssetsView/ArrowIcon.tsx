@@ -1,6 +1,7 @@
+import styled, { css } from 'styled-components';
+
 import { Icon } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
-import styled, { css } from 'styled-components';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 export const ArrowIcon = styled(Icon)`

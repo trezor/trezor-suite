@@ -1,19 +1,20 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/PopupManager.js
 
 import EventEmitter from 'events';
+
 import { createDeferred, Deferred, scheduleAction } from '@trezor/utils';
 import { POPUP, IFRAME, UI, CoreEventMessage, IFrameLoaded } from '@trezor/connect/src/events';
 import type { ConnectSettings } from '@trezor/connect/src/types';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
 import { CONTENT_SCRIPT_VERSION, VERSION } from '@trezor/connect/src/data/version';
-import { showPopupRequest } from './showPopupRequest';
 import { Log } from '@trezor/connect/src/utils/debug';
-
-import { ServiceWorkerWindowChannel } from '../channels/serviceworker-window';
 import {
     AbstractMessageChannel,
     Message,
 } from '@trezor/connect-common/src/messageChannel/abstract';
+
+import { showPopupRequest } from './showPopupRequest';
+import { ServiceWorkerWindowChannel } from '../channels/serviceworker-window';
 import { WindowWindowChannel } from '../channels/window-window';
 
 // Util

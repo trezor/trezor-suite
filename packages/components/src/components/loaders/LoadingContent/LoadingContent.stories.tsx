@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+
 import { H1, LoadingContent as LoadingContentComponent, LoadingContentProps } from '../../../index';
 
 const meta: Meta = {

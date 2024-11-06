@@ -15,11 +15,17 @@ import {
 } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ExtraDependencies } from '@suite-common/redux-utils';
+import { PROTO, StaticSessionId } from '@trezor/connect';
+import {
+    TokenDefinitionsState,
+    buildTokenDefinitionsFromStorage,
+} from '@suite-common/token-definitions';
+import { isDesktop } from '@trezor/env-utils';
+
 import {
     findLabelsToBeMovedOrDeleted,
     moveLabelsForRbfAction,
 } from 'src/actions/wallet/moveLabelsForRbfActions';
-
 import { StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as metadataActions from 'src/actions/suite/metadataActions';
@@ -27,18 +33,14 @@ import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 import * as modalActions from 'src/actions/suite/modalActions';
+import { addWalletThunk, openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
 
 import * as suiteActions from '../actions/suite/suiteActions';
 import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
 import { METADATA, STORAGE } from '../actions/suite/constants';
-import { PROTO, StaticSessionId } from '@trezor/connect';
-import {
-    TokenDefinitionsState,
-    buildTokenDefinitionsFromStorage,
-} from '@suite-common/token-definitions';
 import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
-import { addWalletThunk, openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
-import { isDesktop } from '@trezor/env-utils';
+
+
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';

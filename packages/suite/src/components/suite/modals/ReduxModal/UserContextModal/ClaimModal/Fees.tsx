@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useClaimEthFormContext } from 'src/hooks/wallet/useClaimEthForm';
 import { Translation } from 'src/components/suite';

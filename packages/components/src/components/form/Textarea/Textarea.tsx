@@ -1,5 +1,7 @@
-import styled from 'styled-components';
 import { useState, Ref, ReactNode, TextareaHTMLAttributes } from 'react';
+
+import styled from 'styled-components';
+
 import { spacingsPx, Elevation } from '@trezor/theme';
 
 import { InputState } from '../inputTypes';

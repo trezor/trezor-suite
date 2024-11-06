@@ -1,7 +1,11 @@
+import { useIntl } from 'react-intl';
+
 import styled from 'styled-components';
+
 import TrezorConnect from '@trezor/connect';
 import { Paragraph } from '@trezor/components';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
+
 import {
     Translation,
     WordInputAdvanced,
@@ -9,7 +13,6 @@ import {
     Modal,
     ModalProps,
 } from 'src/components/suite';
-import { useIntl } from 'react-intl';
 import messages from 'src/support/messages';
 
 const ContentWrapper = styled.div`

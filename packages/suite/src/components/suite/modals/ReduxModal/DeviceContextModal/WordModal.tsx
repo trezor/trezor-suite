@@ -1,7 +1,10 @@
-import TrezorConnect from '@trezor/connect';
-import { Translation, WordInput, Modal, ModalProps } from 'src/components/suite';
-import styled from 'styled-components';
 import { useIntl } from 'react-intl';
+
+import styled from 'styled-components';
+
+import TrezorConnect from '@trezor/connect';
+
+import { Translation, WordInput, Modal, ModalProps } from 'src/components/suite';
 import messages from 'src/support/messages';
 
 const StyledModal = styled(Modal)`

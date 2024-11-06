@@ -1,7 +1,9 @@
 import styled from 'styled-components';
+
 import { spacingsPx, typography } from '@trezor/theme';
-import { Translation } from 'src/components/suite';
 import { FONT_SIZE, SCREEN_QUERY } from '@trezor/components/src/config/variables';
+
+import { Translation } from 'src/components/suite';
 import { coinmarketGetAmountLabels } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';

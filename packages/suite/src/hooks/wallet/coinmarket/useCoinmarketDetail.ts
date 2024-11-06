@@ -1,5 +1,6 @@
-import { useSelector } from 'src/hooks/suite';
 import { createContext, useContext } from 'react';
+
+import { useSelector } from 'src/hooks/suite';
 import {
     CoinmarketDetailContextValues,
     CoinmarketGetDetailDataOutputProps,

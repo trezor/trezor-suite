@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/pin.js
 
 import { UI, createUiResponse, UiRequestDeviceAction } from '@trezor/connect';
+
 import { container, showView, postMessage } from './common';
 
 const isSubmitButtonDisabled = (isDisabled: boolean) => {

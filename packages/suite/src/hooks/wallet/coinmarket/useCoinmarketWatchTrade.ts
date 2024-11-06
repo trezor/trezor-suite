@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTimeoutFn, useUnmount } from 'react-use';
-import { Trade, TradeType } from 'src/types/wallet/coinmarketCommonTypes';
-import invityAPI from 'src/services/suite/invityAPI';
-import { saveTrade as saveBuyTrade } from 'src/actions/wallet/coinmarketBuyActions';
-import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/coinmarketExchangeActions';
-import { saveTrade as saveSellTrade } from 'src/actions/wallet/coinmarketSellActions';
+
 import {
     BuyTradeFinalStatus,
     ExchangeTradeFinalStatus,
@@ -14,6 +10,12 @@ import {
     WatchExchangeTradeResponse,
     WatchSellTradeResponse,
 } from 'invity-api';
+
+import { Trade, TradeType } from 'src/types/wallet/coinmarketCommonTypes';
+import invityAPI from 'src/services/suite/invityAPI';
+import { saveTrade as saveBuyTrade } from 'src/actions/wallet/coinmarketBuyActions';
+import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/coinmarketExchangeActions';
+import { saveTrade as saveSellTrade } from 'src/actions/wallet/coinmarketSellActions';
 import {
     CoinmarketTradeStatusType,
     CoinmarketTradeType,

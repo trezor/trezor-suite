@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+
 import { Badge as BadgeComponent, BadgeProps, allowedBadgeFrameProps, badgeSizes } from './Badge';
 import { getFramePropsStory } from '../../utils/frameProps';
 

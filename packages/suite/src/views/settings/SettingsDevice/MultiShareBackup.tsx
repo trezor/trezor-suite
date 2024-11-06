@@ -1,4 +1,8 @@
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
+import { selectDevice } from '@suite-common/wallet-core';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { EventType, analytics } from '@trezor/suite-analytics';
+
 import {
     ActionButton,
     ActionColumn,
@@ -7,10 +11,9 @@ import {
     Translation,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectDevice } from '@suite-common/wallet-core';
-import { TrezorDevice } from '@suite-common/suite-types';
+
 import { goto } from '../../../actions/suite/routerActions';
-import { EventType, analytics } from '@trezor/suite-analytics';
+
 
 const doesSupportMultiShare = (device: TrezorDevice | undefined): boolean => {
     if (device?.features === undefined) {

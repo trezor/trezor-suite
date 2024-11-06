@@ -1,16 +1,19 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
 
 import { Button, Checkbox, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
+
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
-import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
-import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+
+import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
+import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCheckbox = styled(Checkbox)`

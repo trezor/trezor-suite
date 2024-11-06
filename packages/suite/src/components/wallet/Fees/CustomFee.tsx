@@ -1,5 +1,3 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import styled, { useTheme } from 'styled-components';
 import {
     Control,
     FieldErrors,
@@ -9,6 +7,11 @@ import {
     UseFormReturn,
     UseFormSetValue,
 } from 'react-hook-form';
+
+import styled, { useTheme } from 'styled-components';
+import { motion } from 'framer-motion';
+
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import {
     Note,
     Banner,
@@ -17,19 +20,22 @@ import {
     Icon,
     getInputStateTextColor,
 } from '@trezor/components';
-import { Translation } from 'src/components/suite';
-import { NumberInput } from 'src/components/suite/NumberInput';
 import { getInputState, getFeeUnits, isInteger } from '@suite-common/wallet-utils';
 import { FeeInfo, FormState } from '@suite-common/wallet-types';
 import { NetworkType } from '@suite-common/wallet-config';
-import { useTranslation } from 'src/hooks/suite';
-import { InputError } from '../InputError';
-import { validateDecimals } from 'src/utils/suite/validation';
-import { motion } from 'framer-motion';
 import { BottomText } from '@trezor/components/src/components/form/BottomText';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
+
+import { Translation } from 'src/components/suite';
+import { NumberInput } from 'src/components/suite/NumberInput';
+import { useTranslation } from 'src/hooks/suite';
+import { validateDecimals } from 'src/utils/suite/validation';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+
+import { InputError } from '../InputError';
+
+
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,5 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAddress.js
 
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
 import { validateCoinPath, getFirmwareRange } from './common/paramsValidator';
 import { validatePath, getLabel, getSerializedPath } from '../utils/pathUtils';
@@ -7,7 +9,6 @@ import { getBitcoinNetwork, fixCoinInfoNetwork, getUniqueNetworks } from '../dat
 import { PROTO, ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
 import { Bundle, type BitcoinNetworkInfo } from '../types';
-import { Assert } from '@trezor/schema-utils';
 import { GetAddress as GetAddressSchema } from '../types/api/getAddress';
 
 type Params = PROTO.GetAddress & {

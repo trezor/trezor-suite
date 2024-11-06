@@ -1,5 +1,7 @@
 import { FormattedMessage } from 'react-intl';
+
 import styled, { useTheme } from 'styled-components';
+
 import { Image, Card, Text, Row, Icon } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { spacings } from '@trezor/theme';

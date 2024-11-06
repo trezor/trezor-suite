@@ -1,6 +1,7 @@
 import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
 import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
 import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
+
 import { EventPayload, Requests } from '../types';
 import { onNavBar } from '../pageObjects/topBarObject';
 

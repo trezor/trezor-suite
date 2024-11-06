@@ -1,7 +1,6 @@
 // input checks for high-level transports
 
 import type { Descriptor, Session } from '../types';
-
 import { success, error } from './result';
 import { validateProtocolMessage } from './bridgeProtocolMessage';
 import * as ERRORS from '../errors';

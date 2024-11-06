@@ -1,9 +1,11 @@
+import { useState } from 'react';
+
 import { Checkbox, NewModal, Column, Banner, Card } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { spacings } from '@trezor/theme';
-import { useState } from 'react';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 interface EverstakeModalProps {

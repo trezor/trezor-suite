@@ -1,5 +1,7 @@
 import { ReactNode, HTMLAttributes } from 'react';
+
 import styled, { css } from 'styled-components';
+
 import { Icon, IconName, useElevation, variables } from '@trezor/components';
 import {
     Elevation,

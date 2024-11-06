@@ -1,3 +1,11 @@
+import { FieldErrors } from 'react-hook-form';
+
+import { getInputState } from '@suite-common/wallet-utils';
+import { formInputsMaxLength } from '@suite-common/validators';
+import { useFormatters } from '@suite-common/formatters';
+import { useDidUpdate } from '@trezor/react-utils';
+import { FormState } from '@suite-common/wallet-types';
+
 import { useTranslation } from 'src/hooks/suite';
 import { NumberInput } from 'src/components/suite';
 import {
@@ -7,10 +15,7 @@ import {
     validateMin,
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
-import { getInputState } from '@suite-common/wallet-utils';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { useFormatters } from '@suite-common/formatters';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import {
     CoinmarketAllFormProps,
@@ -19,18 +24,15 @@ import {
     CoinmarketSellExchangeFormProps,
 } from 'src/types/coinmarket/coinmarketForm';
 import { CoinmarketFormOptionLabel } from 'src/views/wallet/coinmarket';
-import { FieldErrors } from 'react-hook-form';
 import {
     coinmarketGetAccountLabel,
     getCoinmarketNetworkDecimals,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { useDidUpdate } from '@trezor/react-utils';
 import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_MAX } from 'src/constants/wallet/coinmarket/form';
 import {
     CoinmarketAccountOptionsGroupOptionProps,
     CoinmarketCryptoListProps,
 } from 'src/types/coinmarket/coinmarket';
-import { FormState } from '@suite-common/wallet-types';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import {
     isCoinmarketBuyContext,

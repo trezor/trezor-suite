@@ -2,6 +2,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { Icon } from '@trezor/components';
 import { isZero } from '@suite-common/wallet-utils';
+
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import {
@@ -9,6 +10,7 @@ import {
     selectCurrentCoinjoinSession,
 } from 'src/reducers/wallet/coinjoinReducer';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+
 import { CryptoAmountWithHeader } from './CryptoAmountWithHeader';
 
 const BalanceContainer = styled.div`

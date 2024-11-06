@@ -1,9 +1,9 @@
 import * as varuint from 'varuint-bitcoin';
+
 import { reverseBuffer, getChunkSize } from '../bufferutils';
 import * as bcrypto from '../crypto';
 import * as types from '../types';
 import * as bscript from '../script';
-
 import { bitcoin as BITCOIN_NETWORK, Network, isNetworkType } from '../networks';
 
 export function varSliceSize(someScript: Buffer) {

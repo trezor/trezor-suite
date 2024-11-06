@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-ts-expect-error */
 import { networks } from '@trezor/utxo-lib';
+
 // @ts-ignore
 import tx43d273 from '../../../../e2e/__txcache__/testnet/43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06.json';
 // @ts-ignore

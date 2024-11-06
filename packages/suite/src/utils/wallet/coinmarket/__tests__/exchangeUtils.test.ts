@@ -1,4 +1,5 @@
 import { CryptoId } from 'invity-api';
+
 import * as fixtures from 'src/utils/wallet/coinmarket/__fixtures__/exchangeUtils';
 import {
     coinmarketGetExchangeReceiveCryptoId,

@@ -1,4 +1,5 @@
 import { Button, ButtonProps, IconButton, IconButtonProps } from '@trezor/components';
+
 import { useSelector } from 'src/hooks/suite';
 
 export const HeaderActionButton = ({

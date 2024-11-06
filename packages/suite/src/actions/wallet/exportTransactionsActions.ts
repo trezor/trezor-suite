@@ -8,6 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Account, ExportFileType } from '@suite-common/wallet-types';
 import { advancedSearchTransactions, getAccountTransactions } from '@suite-common/wallet-utils';
+
 import { formatData, getExportedFileName } from 'src/utils/wallet/exportTransactionsUtils';
 
 export const exportTransactionsThunk = createThunk(

@@ -1,10 +1,14 @@
-import * as routerActions from 'src/actions/suite/routerActions';
+import { MouseEvent } from 'react';
+
 import { Button } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { EventType, analytics } from '@trezor/suite-analytics';
+
+import * as routerActions from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useAccountSearch } from 'src/hooks/suite';
-import { EventType, analytics } from '@trezor/suite-analytics';
-import { MouseEvent } from 'react';
+
+
 
 type CoinmarketBuyButtonProps = {
     symbol: NetworkSymbol;

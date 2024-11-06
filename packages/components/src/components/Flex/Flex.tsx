@@ -1,5 +1,9 @@
-import { Elevation, mapElevationToBorder, SpacingValues } from '@trezor/theme';
+import React from 'react';
+
 import styled, { css, DefaultTheme } from 'styled-components';
+
+import { Elevation, mapElevationToBorder, SpacingValues } from '@trezor/theme';
+
 import {
     FrameProps,
     FramePropsKeys,
@@ -8,7 +12,7 @@ import {
 } from '../../utils/frameProps';
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
-import React from 'react';
+
 
 export const allowedFlexFrameProps = [
     'margin',

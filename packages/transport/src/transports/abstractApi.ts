@@ -1,6 +1,6 @@
-import { SessionsBackground } from '../sessions/background';
 import { v1 as v1Protocol } from '@trezor/protocol';
 
+import { SessionsBackground } from '../sessions/background';
 import {
     AbstractTransport,
     AbstractTransportParams,

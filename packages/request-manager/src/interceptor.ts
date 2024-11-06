@@ -2,7 +2,9 @@ import net from 'net';
 import http from 'http';
 import https from 'https';
 import tls from 'tls';
+
 import { getWeakRandomId } from '@trezor/utils';
+
 import { TorIdentities } from './torIdentities';
 import { InterceptorOptions } from './types';
 import { createRequestPool } from './httpPool';

@@ -1,5 +1,7 @@
-import { CryptoId } from 'invity-api';
 import { useEffect } from 'react';
+
+import { CryptoId } from 'invity-api';
+
 import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/coinmarketCommonConstants';
 import { useDispatch } from 'src/hooks/suite';
 

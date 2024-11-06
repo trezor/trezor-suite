@@ -1,5 +1,6 @@
-import { borders } from '@trezor/theme';
 import styled from 'styled-components';
+
+import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     background: ${({ theme }) => theme.backgroundNeutralSubdued};

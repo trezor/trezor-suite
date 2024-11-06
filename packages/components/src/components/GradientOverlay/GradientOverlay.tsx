@@ -1,5 +1,7 @@
-import { Elevation, mapElevationToBackground } from '@trezor/theme';
 import styled from 'styled-components';
+
+import { Elevation, mapElevationToBackground } from '@trezor/theme';
+
 import { useElevation } from '../ElevationContext/ElevationContext';
 
 export interface GradientOverlayProps {

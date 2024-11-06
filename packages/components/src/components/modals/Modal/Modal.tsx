@@ -1,7 +1,8 @@
 import { useCallback, useState, ReactNode, useEffect } from 'react';
+import { useEvent } from 'react-use';
 
 import styled, { css, useTheme } from 'styled-components';
-import { useEvent } from 'react-use';
+
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { Stepper } from '../../loaders/Stepper/Stepper';

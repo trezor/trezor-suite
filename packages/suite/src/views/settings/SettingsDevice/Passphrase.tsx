@@ -1,9 +1,9 @@
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { Switch } from '@trezor/components';
 
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { Switch } from '@trezor/components';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';

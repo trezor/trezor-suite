@@ -1,7 +1,11 @@
-import { Translation, TooltipSymbol } from 'src/components/suite';
 import styled, { useTheme } from 'styled-components';
-import { TranslationKey } from '../Translation';
+
 import { typography } from '@trezor/theme';
+
+import { Translation, TooltipSymbol } from 'src/components/suite';
+
+import { TranslationKey } from '../Translation';
+
 
 const NoRatesMessage = styled.div`
     ${typography.label};

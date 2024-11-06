@@ -1,5 +1,6 @@
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
 import { useElevation } from '@trezor/components';
+
 import { HiddenPlaceholder } from 'src/components/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import {

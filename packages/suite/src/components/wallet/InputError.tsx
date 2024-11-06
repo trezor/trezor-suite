@@ -1,10 +1,12 @@
 import { MouseEventHandler } from 'react';
+
 import styled from 'styled-components';
 
 import { Button } from '@trezor/components';
-import { LearnMoreButton } from '../suite/LearnMoreButton';
 import { Url } from '@trezor/urls';
 import { spacingsPx } from '@trezor/theme';
+
+import { LearnMoreButton } from '../suite/LearnMoreButton';
 
 const Wrapper = styled.div`
     display: flex;

@@ -2,6 +2,7 @@ import { accountsActions } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { AnonymitySet } from '@trezor/blockchain-link';
 import { DEVICE, StaticSessionId } from '@trezor/connect';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
@@ -9,7 +10,6 @@ import { COINJOIN } from 'src/actions/wallet/constants';
 import { CoinjoinState } from 'src/reducers/wallet/coinjoinReducer';
 import { CoinjoinAccount, CoinjoinSession } from 'src/types/wallet/coinjoin';
 import { Account } from 'src/types/wallet';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { RouterState } from 'src/reducers/suite/routerReducer';
 
 const DEVICE_A = {

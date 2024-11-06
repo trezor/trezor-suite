@@ -8,6 +8,7 @@ import {
 } from 'react';
 
 import styled, { useTheme } from 'styled-components';
+
 import { Icon } from '@trezor/components';
 import { AutoScalingInput } from '@trezor/components/src/components/AutoScalingInput/AutoScalingInput';
 

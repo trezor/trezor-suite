@@ -1,4 +1,5 @@
 import { Dispatch } from 'react';
+
 import { spacings } from '@trezor/theme';
 import { Column, Card, Row, Button, H3, Paragraph } from '@trezor/components';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
@@ -6,12 +7,13 @@ import { CoinLogo } from '@trezor/product-components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { TrezorLink } from 'src/components/suite/TrezorLink';
-import { ContentType } from './types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { onCancel as onCancelModal } from 'src/actions/suite/modalActions';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
+
+import { ContentType } from './types';
 
 type PassphraseWalletConfirmationStep1Props = {
     setContentType: Dispatch<React.SetStateAction<ContentType>>;

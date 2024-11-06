@@ -1,10 +1,14 @@
+import { useCallback } from 'react';
+
+import styled from 'styled-components';
+
+import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
+
 import { TrezorDevice } from 'src/types/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
-import { useCallback } from 'react';
-import styled from 'styled-components';
-import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
+
 
 interface WalletLabellingProps {
     device: TrezorDevice;

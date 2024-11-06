@@ -6,6 +6,7 @@ import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { useDispatch, useDevice } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
 import { CoinjoinAccountDiscoveryProgress } from 'src/components/wallet';
+
 import { RememberWallet } from './RememberWallet';
 
 export const CoinjoinAccountDiscovery = () => {

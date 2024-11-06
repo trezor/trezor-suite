@@ -1,5 +1,6 @@
-import { parseBridgeJSON } from '../transportInfo';
 import * as releases from '@trezor/connect-common/files/bridge/releases.json';
+
+import { parseBridgeJSON } from '../transportInfo';
 
 describe('data/transportInfo', () => {
     test('parseBridgeJSON', () => {

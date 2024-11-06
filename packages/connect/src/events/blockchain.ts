@@ -4,6 +4,7 @@ import type {
     FiatRatesBySymbol,
     NotificationEvent,
 } from '@trezor/blockchain-link';
+
 import type { CoinInfo } from '../types/coinInfo';
 import type { MessageFactoryFn } from '../types/utils';
 

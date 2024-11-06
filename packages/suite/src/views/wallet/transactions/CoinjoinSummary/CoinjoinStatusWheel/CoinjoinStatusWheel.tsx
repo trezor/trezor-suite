@@ -1,13 +1,17 @@
 import styled from 'styled-components';
+
 import { Card, Button } from '@trezor/components';
-import { CoinjoinProgressWheel } from './CoinjoinProgressWheel';
-import { CoinjoinStatusMessage } from './CoinjoinStatusMessage';
+import { typography } from '@trezor/theme';
+
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectCurrentCoinjoinWheelStates } from 'src/reducers/wallet/coinjoinReducer';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
-import { typography } from '@trezor/theme';
+
+import { CoinjoinStatusMessage } from './CoinjoinStatusMessage';
+import { CoinjoinProgressWheel } from './CoinjoinProgressWheel';
+
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const Container = styled(Card)<{ $isWide?: boolean }>`

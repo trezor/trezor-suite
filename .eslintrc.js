@@ -360,7 +360,6 @@ module.exports = {
             rules: {
                 '@typescript-eslint/no-shadow': 'off',
                 'import/no-default-export': 'off',
-                'import/order': 'off',
                 '@typescript-eslint/no-unused-vars': 'off',
                 'no-console': 'off',
                 'react/jsx-no-undef': 'off',

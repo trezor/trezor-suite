@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+
 import { TextButton as TextButtonComponent, TextButtonProps } from './TextButton';
 import { variables } from '../../../config';
 import { buttonSizes } from '../buttonStyleUtils';

@@ -1,13 +1,15 @@
-import { transactionsReducer } from 'src/reducers/wallet';
+import { configureStore } from '@reduxjs/toolkit';
+
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 import {
     transactionsActions,
     transactionsInitialState,
     TransactionsState,
 } from '@suite-common/wallet-core';
-import { configureStore } from '@reduxjs/toolkit';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { testMocks } from '@suite-common/test-utils';
+
+import { transactionsReducer } from 'src/reducers/wallet';
 
 const { getWalletTransaction } = testMocks;
 

@@ -1,5 +1,12 @@
 import { Controller } from 'react-hook-form';
+import { createFilter } from 'react-select';
+
+import styled from 'styled-components';
+import { FiatCurrencyCode } from 'invity-api';
+
 import { Row, Select } from '@trezor/components';
+import { spacings, spacingsPx } from '@trezor/theme';
+
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import {
     CoinmarketAccountOptionsGroupOptionProps,
@@ -13,13 +20,9 @@ import {
     CoinmarketFormInputAccountProps,
     CoinmarketSellFormProps,
 } from 'src/types/coinmarket/coinmarketForm';
-import { createFilter } from 'react-select';
 import { CoinmarketFormInputAccountOption } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputAccountOption';
 import { useCoinmarketFiatValues } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketFiatValues';
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
-import styled from 'styled-components';
-import { spacings, spacingsPx } from '@trezor/theme';
-import { FiatCurrencyCode } from 'invity-api';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { useCoinmarketBuildAccountGroups } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketBuildAccountGroups';
 

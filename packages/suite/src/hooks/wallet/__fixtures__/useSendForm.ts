@@ -5,6 +5,7 @@ import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants'
 import { accountsActions, prepareSendFormReducer } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
 import { testMocks } from '@suite-common/test-utils';
+
 import { extraDependencies } from 'src/support/extraDependencies';
 
 const sendFormReducer = prepareSendFormReducer(extraDependencies);

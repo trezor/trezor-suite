@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+
 import { Stepper as StepperComponent, StepperProps } from './Stepper';
 
 const meta: Meta = {

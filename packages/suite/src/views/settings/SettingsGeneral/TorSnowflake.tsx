@@ -1,7 +1,7 @@
 import { ChangeEventHandler, useEffect, useState } from 'react';
+
 import styled from 'styled-components';
-import { useSelector, useTranslation } from 'src/hooks/suite';
-import { selectTorState } from 'src/reducers/suite/suiteReducer';
+
 import { TorSettings } from '@trezor/suite-desktop-api/src/messages';
 import { TOR_SNOWFLAKE_KB_URL } from '@trezor/urls';
 import { breakpointMediaQueries } from '@trezor/styles';
@@ -10,6 +10,8 @@ import { Button, Input } from '@trezor/components';
 import { isFullPath } from '@trezor/utils';
 import { spacingsPx } from '@trezor/theme';
 
+import { selectTorState } from 'src/reducers/suite/suiteReducer';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/components/suite';
 
 const Container = styled.div`

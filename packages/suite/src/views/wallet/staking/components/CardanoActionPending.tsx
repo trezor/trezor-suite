@@ -1,6 +1,7 @@
+import { Banner } from '@trezor/components';
+
 import { Translation } from 'src/components/suite/Translation';
 import { useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
-import { Banner } from '@trezor/components';
 
 export const CardanoActionPending = () => {
     const { pendingStakeTx } = useCardanoStaking();

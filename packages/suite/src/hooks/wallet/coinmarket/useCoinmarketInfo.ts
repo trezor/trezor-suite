@@ -1,8 +1,11 @@
-import { getNetworkByCoingeckoNativeId, networks } from '@suite-common/wallet-config';
-import { CoinInfo, CryptoId } from 'invity-api';
 import { useCallback } from 'react';
-import { useSelector } from 'src/hooks/suite/useSelector';
+
+import { CoinInfo, CryptoId } from 'invity-api';
+
+import { getNetworkByCoingeckoNativeId, networks } from '@suite-common/wallet-config';
 import addressValidator from '@trezor/address-validator';
+
+import { useSelector } from 'src/hooks/suite/useSelector';
 import {
     CoinmarketCryptoSelectItemProps,
     CoinmarketCryptoSelectOptionProps,

@@ -1,6 +1,9 @@
 import { useMemo } from 'react';
-import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
+
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
+import { FormState, Output } from '@suite-common/wallet-types';
+
+import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import {
     buildFiatOption,
     cryptoIdToNetworkSymbol,
@@ -9,7 +12,6 @@ import {
 import { Account } from 'src/types/wallet';
 import { CoinmarketPaymentMethodListProps } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketSellFormDefaultValuesProps } from 'src/types/coinmarket/coinmarketForm';
-import { FormState, Output } from '@suite-common/wallet-types';
 import {
     FORM_DEFAULT_FIAT_CURRENCY,
     FORM_DEFAULT_PAYMENT_METHOD,

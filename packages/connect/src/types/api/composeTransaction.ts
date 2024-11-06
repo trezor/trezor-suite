@@ -11,6 +11,7 @@ import type {
     ComposeResultNonFinal as ComposeResultNonFinalBase,
     TransactionInputOutputSortingStrategy,
 } from '@trezor/utxo-lib';
+
 import type { PROTO } from '../../constants';
 import type { Params, Response } from '../params';
 

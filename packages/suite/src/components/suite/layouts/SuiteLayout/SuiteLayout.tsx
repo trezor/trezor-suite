@@ -1,4 +1,5 @@
 import { useRef, useState, ReactNode } from 'react';
+
 import styled from 'styled-components';
 
 import {
@@ -9,6 +10,7 @@ import {
     variables,
 } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
+
 import { SuiteBanners } from 'src/components/suite/banners';
 import { Metadata } from 'src/components/suite';
 import { GuideRouter, GuideButton } from 'src/components/guide';
@@ -19,12 +21,13 @@ import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutCon
 import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
+import { MobileAccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/MobileAccountsMenu';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
 import { MobileMenu } from './MobileMenu/MobileMenu';
 import { Sidebar } from './Sidebar/Sidebar';
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
-import { MobileAccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/MobileAccountsMenu';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useAppShortcuts } from './useAppShortcuts';
 
 export const SCROLL_WRAPPER_ID = 'layout-scroll';

@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import FocusLock from 'react-focus-lock';
+
 import { Backdrop, ModalAlignment } from '@trezor/components';
 
 type ModalEnvironmentProps = {

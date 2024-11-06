@@ -1,10 +1,11 @@
-import { Row, Image, Text } from '@trezor/components';
 import styled from 'styled-components';
 
+import { Row, Image, Text } from '@trezor/components';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 import { ESHOP_KEEP_METAL_SINGLE_SHARE_URL, HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
+
 import { BackupInstructionsCard } from './BackupInstructionsCard';
 import { BackupInstructionsStepProps } from './BackupInstructionsStep';
 

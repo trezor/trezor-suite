@@ -1,10 +1,14 @@
 import styled from 'styled-components';
+
 import { Card, Column, InfoRow, Text } from '@trezor/components';
-import { useSendFormContext } from 'src/hooks/wallet';
 import { formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
-import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
-import { ReviewButton } from './ReviewButton';
 import { spacings } from '@trezor/theme';
+
+import { useSendFormContext } from 'src/hooks/wallet';
+import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
+
+import { ReviewButton } from './ReviewButton';
+
 
 const Container = styled.div`
     position: sticky;

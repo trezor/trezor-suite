@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/prefer-ts-expect-error */
 // @ts-ignore
-import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/stellar/sign_tx.json';
 import * as Messages from '@trezor/protobuf/src/messages';
+
+import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/stellar/sign_tx.json';
 
 // operations are in protobuf format (snake_case)
 

@@ -1,7 +1,9 @@
 import styled from 'styled-components';
+
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { Card } from '@trezor/components';
+
+import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { CoinjoinLogsAnchor } from 'src/constants/suite/anchors';

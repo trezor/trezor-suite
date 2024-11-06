@@ -3,7 +3,9 @@ import {
     Feature,
     selectFeatureMessageContent,
 } from '@suite-common/message-system';
+
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+
 import { useSelector } from './useSelector';
 
 export const useMessageSystemStaking = () => {

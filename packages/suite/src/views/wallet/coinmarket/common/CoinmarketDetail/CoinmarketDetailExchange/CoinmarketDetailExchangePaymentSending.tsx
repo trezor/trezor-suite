@@ -1,7 +1,9 @@
 import styled from 'styled-components';
+
 import { variables, Spinner, Button, Link } from '@trezor/components';
-import { Translation } from 'src/components/suite/Translation';
 import { spacingsPx } from '@trezor/theme';
+
+import { Translation } from 'src/components/suite/Translation';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,5 +1,6 @@
 import { Row, Spinner, Card, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
 import { Translation } from 'src/components/suite';
 import {
     CoinmarketTradeDetailType,

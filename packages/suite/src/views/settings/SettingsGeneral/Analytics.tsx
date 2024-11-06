@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+
 import styled from 'styled-components';
 
 import { selectHasUserAllowedTracking } from '@suite-common/analytics';

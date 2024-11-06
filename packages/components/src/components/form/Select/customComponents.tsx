@@ -1,4 +1,5 @@
 import { components, ControlProps, OptionProps, GroupHeadingProps } from 'react-select';
+
 import type { Option as OptionType } from './Select';
 
 export interface ControlComponentProps extends ControlProps<OptionType, boolean> {

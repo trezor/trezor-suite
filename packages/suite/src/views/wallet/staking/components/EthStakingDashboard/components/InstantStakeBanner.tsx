@@ -1,13 +1,16 @@
-import { Banner, Column, H3, Icon, Paragraph, Row } from '@trezor/components';
-import { Translation } from 'src/components/suite';
+import { useEffect, useRef, useState } from 'react';
+
 import styled, { useTheme } from 'styled-components';
+import { fromWei } from 'web3-utils';
+
+import { Banner, Column, H3, Icon, Paragraph, Row } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { useSelector } from 'src/hooks/suite';
 import { StakeType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { InternalTransfer } from '@trezor/connect';
-import { fromWei } from 'web3-utils';
+
+import { useSelector } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
 import { getChangedInternalTx, getInstantStakeType } from 'src/utils/suite/stake';
-import { useEffect, useRef, useState } from 'react';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const IconWrapper = styled.div`

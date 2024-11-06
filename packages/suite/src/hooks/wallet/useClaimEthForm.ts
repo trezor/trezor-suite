@@ -1,20 +1,20 @@
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
+
 import { getFeeLevels } from '@suite-common/wallet-utils';
+import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT, OUTPUT_AMOUNT, UseStakeFormsProps } from 'src/types/wallet/stakeForms';
-
-import { useStakeCompose } from './form/useStakeCompose';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-
 import { signTransaction } from 'src/actions/wallet/stakeActions';
-import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getEthNetworkForWalletSdk, getStakeFormsDefaultValues } from 'src/utils/suite/stake';
-import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
-import { useFees } from './form/useFees';
 import { ClaimContextValues, ClaimFormState } from 'src/types/wallet/claimForm';
+
+import { useFees } from './form/useFees';
+import { useStakeCompose } from './form/useStakeCompose';
 
 export const ClaimEthFormContext = createContext<ClaimContextValues | null>(null);
 ClaimEthFormContext.displayName = 'ClaimEthFormContext';

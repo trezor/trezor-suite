@@ -1,6 +1,5 @@
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
-
 import {
     selectDevices,
     selectDevice,

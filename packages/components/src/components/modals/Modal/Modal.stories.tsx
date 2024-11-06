@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+
 import { Modal as ModalComponent, Button, ModalProps } from '../../../index';
 import { Icon } from '../../Icon/Icon';
 

@@ -1,6 +1,7 @@
 import TrezorConnect from '@trezor/connect';
 import type TrezorConnectWeb from '@trezor/connect-web';
 import { ButtonProps, Button, IconButton, Tooltip } from '@trezor/components';
+
 import { Translation, TranslationKey } from './Translation';
 
 interface WebUsbButtonProps extends Omit<ButtonProps, 'children' | 'icon'> {

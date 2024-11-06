@@ -1,14 +1,16 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { fromUnixTime, getUnixTime, startOfMonth } from 'date-fns';
+
+import { BigNumber } from '@trezor/utils/src/bigNumber';
+import type { FiatRatesBySymbol } from '@trezor/connect';
+import { toFiatCurrency } from '@suite-common/wallet-utils';
 
 import {
     AggregatedAccountHistory,
     AggregatedDashboardHistory,
     GraphData,
 } from 'src/types/wallet/graph';
+
 import { ObjectType, TypeName, sumFiatValueMapInPlace } from './utilsShared';
-import type { FiatRatesBySymbol } from '@trezor/connect';
-import { toFiatCurrency } from '@suite-common/wallet-utils';
 
 const calcFiatValueMap = (
     amount: string,

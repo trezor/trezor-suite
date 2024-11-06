@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { useForm, useController } from 'react-hook-form';
-import { yup } from '@suite-common/validators';
-import { isAddressValid } from '@suite-common/wallet-utils';
+
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import type { Account } from 'src/types/wallet';
+import { yup } from '@suite-common/validators';
+import { isAddressValid } from '@suite-common/wallet-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+
+import type { Account } from 'src/types/wallet';
 
 export const MAX_LENGTH_MESSAGE = 1024;
 export const MAX_LENGTH_SIGNATURE = 255;

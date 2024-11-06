@@ -1,7 +1,5 @@
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
-import { BlockfrostAPI } from './websocket';
 import {
     transformUtxos,
     transformAccountInfo,
@@ -14,6 +12,9 @@ import type {
     BlockContent,
 } from '@trezor/blockchain-link-types/src/blockfrost';
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
+
+import { BlockfrostAPI } from './websocket';
+import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
 
 type Context = ContextType<BlockfrostAPI>;
 type Request<T> = T & Context;

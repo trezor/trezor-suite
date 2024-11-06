@@ -1,5 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignTransaction.js
 
+import { FeeMarketEIP1559TxData, LegacyTxData } from '@ethereumjs/tx';
+
+import { MessagesSchema } from '@trezor/protobuf';
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
@@ -17,9 +22,7 @@ import {
     EthereumNetworkInfo,
     EthereumSignTransaction as EthereumSignTransactionSchema,
 } from '../../../types';
-import { MessagesSchema } from '@trezor/protobuf';
-import { Assert } from '@trezor/schema-utils';
-import { FeeMarketEIP1559TxData, LegacyTxData } from '@ethereumjs/tx';
+
 
 type Params = {
     path: number[];

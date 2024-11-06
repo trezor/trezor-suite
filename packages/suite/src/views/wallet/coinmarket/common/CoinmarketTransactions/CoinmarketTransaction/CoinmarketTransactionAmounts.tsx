@@ -1,5 +1,6 @@
 import { Icon, iconSizes, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { Trade } from 'src/types/wallet/coinmarketCommonTypes';

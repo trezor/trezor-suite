@@ -1,11 +1,15 @@
 import { Controller } from 'react-hook-form';
+import { useMemo, useState } from 'react';
+
 import { Select, useElevation } from '@trezor/components';
+import { SelectAssetModal } from '@trezor/product-components';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+
 import {
     CoinmarketAccountOptionsGroupOptionProps,
     CoinmarketCryptoSelectItemProps,
     CoinmarketTradeBuyExchangeType,
 } from 'src/types/coinmarket/coinmarket';
-import { useMemo, useState } from 'react';
 import {
     CoinmarketFormOption,
     CoinmarketFormOptionLabel,
@@ -22,8 +26,6 @@ import {
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { SelectAssetModal } from '@trezor/product-components';
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     FORM_CRYPTO_CURRENCY_SELECT,
     FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,

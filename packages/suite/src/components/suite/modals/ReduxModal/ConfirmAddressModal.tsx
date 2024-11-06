@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Translation } from 'src/components/suite';
 import {

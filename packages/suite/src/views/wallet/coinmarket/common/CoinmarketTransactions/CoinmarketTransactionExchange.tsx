@@ -1,6 +1,7 @@
 import { ExchangeProviderInfo } from 'invity-api';
 
 import { Button } from '@trezor/components';
+
 import { TradeExchange } from 'src/types/wallet/coinmarketCommonTypes';
 import { goto } from 'src/actions/suite/routerActions';
 import { saveTransactionId } from 'src/actions/wallet/coinmarketExchangeActions';

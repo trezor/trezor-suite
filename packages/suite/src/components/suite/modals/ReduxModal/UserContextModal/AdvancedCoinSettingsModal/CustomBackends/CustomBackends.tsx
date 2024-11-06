@@ -1,18 +1,22 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
 
 import { Input, Button, H3, CollapsibleBox } from '@trezor/components';
+import { Network } from '@suite-common/wallet-config';
+import { spacings } from '@trezor/theme';
+
 import { Translation, TooltipSymbol } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { useDefaultUrls, useBackendsForm } from 'src/hooks/settings/backends';
+import { selectTorState } from 'src/reducers/suite/suiteReducer';
+
 import ConnectionInfo from './ConnectionInfo';
 import { BackendInput } from './BackendInput';
 import { BackendTypeSelect } from './BackendTypeSelect';
 import { TorModal, TorResult } from './TorModal';
-import { Network } from '@suite-common/wallet-config';
-import { selectTorState } from 'src/reducers/suite/suiteReducer';
-import { spacings } from '@trezor/theme';
+
 
 const Wrapper = styled.div`
     display: flex;

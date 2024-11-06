@@ -1,12 +1,17 @@
 import { useEffect } from 'react';
+
 import styled from 'styled-components';
+import { CryptoId } from 'invity-api';
+
+import { variables } from '@trezor/components';
+import { FeeLevel } from '@trezor/connect';
+
 import { useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
-import { variables } from '@trezor/components';
 import { useCoinmarketRedirect } from 'src/hooks/wallet/useCoinmarketRedirect';
 import { Translation } from 'src/components/suite';
-import { FeeLevel } from '@trezor/connect';
-import { CryptoId } from 'invity-api';
+
+
 
 const Wrapper = styled.div`
     display: flex;

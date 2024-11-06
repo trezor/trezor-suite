@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+
 import { getOsTheme, watchOsTheme } from 'src/utils/suite/env';
 import { getOsLocale, watchOsLocale } from 'src/utils/suite/l10n';
 import { useActions, useSelector } from 'src/hooks/suite';

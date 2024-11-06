@@ -1,4 +1,11 @@
+import styled from 'styled-components';
+
 import { spacings, spacingsPx } from '@trezor/theme';
+import { Row } from '@trezor/components';
+import { TokenAddress } from '@suite-common/wallet-types';
+import { formatAmount } from '@suite-common/wallet-utils';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import {
     FORM_CRYPTO_CURRENCY_SELECT,
@@ -20,16 +27,11 @@ import { CoinmarketFormInputCryptoSelect } from 'src/views/wallet/coinmarket/com
 import { CoinmarketFormInputAccount } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputAccount';
 import { CoinmarketFormInputCountry } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCountry';
 import { CoinmarketFormInputPaymentMethod } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputPaymentMethod';
-import styled from 'styled-components';
 import { CoinmarketFormSwitcherExchangeRates } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormSwitcherExchangeRates';
 import { CoinmarketFormInputFiatCrypto } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputFiatCrypto';
 import { CoinmarketFractionButtons } from 'src/views/wallet/coinmarket/common/CoinmarketFractionButtons';
-import { Row } from '@trezor/components';
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
-import { TokenAddress } from '@suite-common/wallet-types';
-import { formatAmount } from '@suite-common/wallet-utils';
 import { getCoinmarketNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import {
     isCoinmarketExchangeContext,
     isCoinmarketSellContext,

@@ -1,8 +1,11 @@
 import { useEvent } from 'react-use';
+
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+
 import { spacings } from '@trezor/theme';
 import { NewModal, Column } from '@trezor/components';
+
 import { TrafficLightOffset } from '../../../components/suite/TrafficLightOffset';
 
 type SwitchDeviceModalProps = {

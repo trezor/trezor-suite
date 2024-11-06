@@ -1,4 +1,5 @@
 import * as protobuf from 'protobufjs/light';
+
 import { scheduleAction, ScheduleActionParams, ScheduledAction, TypedEmitter } from '@trezor/utils';
 import { PROTOCOL_MALFORMED, TransportProtocol } from '@trezor/protocol';
 import { MessageFromTrezor } from '@trezor/protobuf';
@@ -15,7 +16,6 @@ import {
     PathPublic,
 } from '../types';
 import { success, error, unknownError } from '../utils/result';
-
 import * as ERRORS from '../errors';
 import { ACTION_TIMEOUT, TRANSPORT } from '../constants';
 

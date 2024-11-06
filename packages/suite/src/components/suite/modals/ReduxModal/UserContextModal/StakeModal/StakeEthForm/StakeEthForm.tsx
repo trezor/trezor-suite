@@ -1,10 +1,12 @@
 import { Button, Column, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
 import { Translation } from 'src/components/suite';
 import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 import { FormFractionButtons } from 'src/components/suite/FormFractionButtons';
-import { StakeFees } from './StakeFees';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
+
+import { StakeFees } from './StakeFees';
 import { Inputs } from './Inputs';
 import { ConfirmStakeEthModal } from './ConfirmStakeEthModal';
 import { AvailableBalance } from './AvailableBalance';

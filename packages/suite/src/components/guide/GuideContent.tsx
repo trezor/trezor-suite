@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
+
 import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`

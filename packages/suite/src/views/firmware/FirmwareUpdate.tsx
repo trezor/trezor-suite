@@ -1,6 +1,7 @@
 import { FirmwareInitial } from 'src/components/firmware';
 import { closeModalApp } from 'src/actions/suite/routerActions';
 import { useDispatch, useFirmware } from 'src/hooks/suite';
+
 import { FirmwareModal } from './FirmwareModal';
 
 type FirmwareUpdateProps = {

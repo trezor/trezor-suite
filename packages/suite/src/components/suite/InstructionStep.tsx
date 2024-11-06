@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
 
 const Container = styled.div`

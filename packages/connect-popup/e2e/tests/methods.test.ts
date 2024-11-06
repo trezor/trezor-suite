@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { ensureDirectoryExists } from '@trezor/node-utils';
+
 import { fixtures } from './__fixtures__/methods';
 import { buildOverview } from '../support/buildOverview';
-import { ensureDirectoryExists } from '@trezor/node-utils';
 import { getContexts, log, formatUrl, openPopup, setConnectSettings } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';

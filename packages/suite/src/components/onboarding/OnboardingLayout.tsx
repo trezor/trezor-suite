@@ -1,19 +1,23 @@
 import { useMemo, ReactNode } from 'react';
+
 import styled from 'styled-components';
 
 import { Button, variables } from '@trezor/components';
 import { TrezorLogo } from '@trezor/product-components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
+import { selectBannerMessage } from '@suite-common/message-system';
+import { spacingsPx, zIndices } from '@trezor/theme';
+
 import { TrezorLink, Translation } from 'src/components/suite';
 import { OnboardingProgressBar } from 'src/components/onboarding';
 import { useSelector, useOnboarding } from 'src/hooks/suite';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import steps from 'src/config/onboarding/steps';
 import { GuideButton, GuideRouter } from 'src/components/guide';
-import { selectBannerMessage } from '@suite-common/message-system';
 import { MessageSystemBanner } from 'src/components/suite/banners';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
-import { spacingsPx, zIndices } from '@trezor/theme';
+
+
 import { TrafficLightOffset } from '../suite/TrafficLightOffset';
 
 const Wrapper = styled.div`

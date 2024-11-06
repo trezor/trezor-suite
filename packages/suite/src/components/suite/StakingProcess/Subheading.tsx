@@ -1,6 +1,7 @@
 import { Icon, Paragraph, Row } from '@trezor/components';
-import { Translation } from '../Translation';
 import { spacings } from '@trezor/theme';
+
+import { Translation } from '../Translation';
 import { RowSubheading } from './types';
 
 interface SubheadingProps {

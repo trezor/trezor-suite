@@ -1,6 +1,7 @@
+import styled from 'styled-components';
+
 import { Spinner, useElevation } from '@trezor/components';
 import { Elevation, borders, mapElevationToBackground, spacingsPx, zIndices } from '@trezor/theme';
-import styled from 'styled-components';
 
 const CoinmarketFormInputLoaderWrapper = styled.div<{ $elevation: Elevation }>`
     display: flex;

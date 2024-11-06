@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+
 import { useSelector } from 'src/hooks/suite';
 import {
     CoinmarketPaymentMethodListProps,

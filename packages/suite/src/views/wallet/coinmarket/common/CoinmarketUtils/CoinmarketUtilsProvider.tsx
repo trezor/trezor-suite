@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { spacings } from '@trezor/theme';
 import { Row } from '@trezor/components';
 

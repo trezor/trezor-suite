@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 import { Button, ProgressBar, Icon, variables } from '@trezor/components';
+import { borders } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { borders } from '@trezor/theme';
 
 const IconWrapper = styled.div`
     width: 120px;

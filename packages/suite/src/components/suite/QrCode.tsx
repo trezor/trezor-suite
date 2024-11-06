@@ -2,8 +2,9 @@ import { QRCodeSVG } from 'qrcode.react';
 import styled from 'styled-components';
 
 import { Icon, Tooltip, variables, intermediaryTheme } from '@trezor/components';
-import { Translation } from './Translation';
 import { CSSColor } from '@trezor/theme';
+
+import { Translation } from './Translation';
 
 export const QRCODE_SIZE = 384;
 export const QRCODE_PADDING = 12;

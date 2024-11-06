@@ -11,6 +11,7 @@ import {
     deleteDB,
 } from 'idb';
 import { BroadcastChannel } from 'broadcast-channel';
+
 import { isFirefox } from '@trezor/env-utils';
 import { createLazy } from '@trezor/utils';
 

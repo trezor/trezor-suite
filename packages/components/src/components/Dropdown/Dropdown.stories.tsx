@@ -1,6 +1,8 @@
 import React from 'react';
+
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
+
 import { Dropdown as DropdownComponent, DropdownProps } from './Dropdown';
 
 const Center = styled.div`

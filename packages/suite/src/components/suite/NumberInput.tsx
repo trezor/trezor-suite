@@ -7,15 +7,15 @@ import {
     ClipboardEvent,
     FormEvent,
 } from 'react';
-
 import { Control, FieldValues, useController, UseControllerProps } from 'react-hook-form';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Input, InputProps } from '@trezor/components';
 import { localizeNumber } from '@suite-common/wallet-utils';
+import { getLocaleSeparators } from '@trezor/utils';
+
 import { Locale } from 'src/config/suite/languages';
 import { useSelector } from 'src/hooks/suite';
-import { getLocaleSeparators } from '@trezor/utils';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 const isValidDecimalString = (value: string) => /^([^.]*)\.[^.]+$/.test(value);

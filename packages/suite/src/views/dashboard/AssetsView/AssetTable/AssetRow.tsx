@@ -1,7 +1,18 @@
 import { memo } from 'react';
+
 import { useTheme } from 'styled-components';
+
 import { Network } from '@suite-common/wallet-config';
 import { Icon, Table, Row, IconButton, Column, Text } from '@trezor/components';
+import { isTestnet } from '@suite-common/wallet-utils';
+import { spacings } from '@trezor/theme';
+import { TokenInfo } from '@trezor/blockchain-link-types';
+import { selectCoinDefinitions } from '@suite-common/token-definitions';
+import { selectAssetAccountsThatStaked } from '@suite-common/wallet-core';
+import { Account, RatesByKey } from '@suite-common/wallet-types';
+import { AssetFiatBalance } from '@suite-common/assets';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+
 import {
     AmountUnitSwitchWrapper,
     CoinBalance,
@@ -10,23 +21,16 @@ import {
     Translation,
     TrendTicker,
 } from 'src/components/suite';
-import { isTestnet } from '@suite-common/wallet-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
-import { spacings } from '@trezor/theme';
+import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
+
 import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
 import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
-import { TokenInfo } from '@trezor/blockchain-link-types';
 import { AssetTokenRow } from './AssetTokenRow';
-import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import { selectAssetAccountsThatStaked } from '@suite-common/wallet-core';
-import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { AssetStakingRow } from './AssetStakingRow';
-import { AssetFiatBalance } from '@suite-common/assets';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
-import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
 
 export interface AssetTableRowProps {

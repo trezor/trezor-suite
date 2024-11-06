@@ -1,15 +1,19 @@
 import { useEffect } from 'react';
+
 import styled from 'styled-components';
+
 import { Button, Paragraph, Tooltip, Banner } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
+import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
+
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { useClaimEthFormContext } from 'src/hooks/wallet/useClaimEthForm';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
-import { spacingsPx } from '@trezor/theme';
-import ClaimFees from './Fees';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+
+import ClaimFees from './Fees';
 
 const AmountInfo = styled.div`
     display: flex;

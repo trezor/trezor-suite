@@ -1,4 +1,8 @@
 import { ArgTypes, Meta, StoryObj } from '@storybook/react';
+import styled from 'styled-components';
+
+import { spacings } from '@trezor/theme';
+
 import {
     FlexProps,
     flexAlignItems,
@@ -8,8 +12,6 @@ import {
     Column as ColumnComponent,
     allowedFlexFrameProps,
 } from './Flex';
-import { spacings } from '@trezor/theme';
-import styled from 'styled-components';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const Container = styled.div`

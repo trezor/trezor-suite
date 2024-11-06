@@ -1,4 +1,11 @@
 import { Meta, StoryObj } from '@storybook/react';
+
+import { IconName, icons } from '@suite-common/icons/src/icons';
+import {
+    icons as iconsDeprecated,
+    IconName as IconNameDeprecated,
+} from '@suite-common/icons-deprecated';
+
 import {
     allowedIconFrameProps,
     Icon as IconComponent,
@@ -6,11 +13,6 @@ import {
     iconVariants,
     iconSizes,
 } from './Icon';
-import { IconName, icons } from '@suite-common/icons/src/icons';
-import {
-    icons as iconsDeprecated,
-    IconName as IconNameDeprecated,
-} from '@suite-common/icons-deprecated';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta = {

@@ -6,6 +6,7 @@ import { isDesktop } from '@trezor/env-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { selectDevice } from '@suite-common/wallet-core';
+import { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';
@@ -13,7 +14,6 @@ import { createCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { openDeferredModal, openModal } from 'src/actions/suite/modalActions';
 import { Account } from 'src/types/wallet';
-import { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
 import { AddButton } from './AddButton';

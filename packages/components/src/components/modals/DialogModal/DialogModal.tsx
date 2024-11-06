@@ -1,8 +1,11 @@
+import { ReactNode } from 'react';
+
 import styled from 'styled-components';
+
 import { borders, spacingsPx, typography } from '@trezor/theme';
+
 import { Icon, IconName } from '../../Icon/Icon';
 import { Modal, ModalProps } from '../Modal/Modal';
-import { ReactNode } from 'react';
 
 const BodyHeading = styled.div`
     margin-bottom: ${spacingsPx.xs};

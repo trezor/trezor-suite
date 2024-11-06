@@ -10,16 +10,16 @@ import {
     TRANSPORT,
     isTransportInstance,
 } from '@trezor/transport';
+import { Descriptor, PathPublic } from '@trezor/transport/src/types';
+
 import { ERRORS } from '../constants';
 import { DEVICE, TransportInfo } from '../events';
 import { Device } from './Device';
 import { ConnectSettings, DeviceUniquePath, Device as DeviceTyped } from '../types';
-
 import { getBridgeInfo } from '../data/transportInfo';
 import { initLog } from '../utils/debug';
 import { resolveAfter } from '../utils/promiseUtils';
 import { typedObjectKeys } from '../types/utils';
-import { Descriptor, PathPublic } from '@trezor/transport/src/types';
 
 // custom log
 const _log = initLog('DeviceList');

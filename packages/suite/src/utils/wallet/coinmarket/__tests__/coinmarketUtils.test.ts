@@ -1,3 +1,5 @@
+import { CryptoId } from 'invity-api';
+
 import { Account } from 'src/types/wallet';
 import {
     buildFiatOption,
@@ -24,7 +26,6 @@ import {
 import * as BUY_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/buyUtils';
 import * as SELL_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/sellUtils';
 import * as EXCHANGE_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/exchangeUtils';
-import { CryptoId } from 'invity-api';
 import { useDefaultAccountLabel } from 'src/hooks/suite/useDefaultAccountLabel';
 
 jest.mock('src/hooks/suite/useDefaultAccountLabel', () => ({

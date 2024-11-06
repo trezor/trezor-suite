@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 
+import type { InvityServerEnvironment } from '@suite-common/invity';
+
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
-import type { InvityServerEnvironment } from '@suite-common/invity';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { reloadApp } from 'src/utils/suite/reload';
 

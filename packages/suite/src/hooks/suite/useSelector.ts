@@ -1,5 +1,6 @@
-import { AppState } from 'src/types/suite';
 import { useSelector as useReduxSelector, shallowEqual, TypedUseSelectorHook } from 'react-redux';
+
+import { AppState } from 'src/types/suite';
 
 /**
  * Properly typed useSelector hook, use this one instead of directly importing it from react-redux.

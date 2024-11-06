@@ -7,6 +7,7 @@ import { DEVICE } from '@trezor/connect';
 
 import { NotificationViewProps } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
+
 import { ActionRenderer } from './ActionRenderer';
 import { TransactionRenderer } from './TransactionRenderer';
 import { CoinProtocolRenderer } from './CoinProtocolRenderer';

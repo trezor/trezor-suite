@@ -1,5 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/CardanoGetAddress.js
 
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
@@ -12,7 +14,6 @@ import {
 } from '../cardanoAddressParameters';
 import { PROTO, ERRORS } from '../../../constants';
 import { UI, createUiMessage } from '../../../events';
-import { Assert } from '@trezor/schema-utils';
 import { Bundle } from '../../../types';
 import { CardanoGetAddress as CardanoGetAddressSchema } from '../../../types/api/cardano';
 

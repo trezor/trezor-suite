@@ -44,7 +44,6 @@ import {
     useTranslation,
 } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { BlurUrls } from '../BlurUrls';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -54,6 +53,8 @@ import {
     selectIsUnhideTokenModalShown,
 } from 'src/reducers/suite/suiteReducer';
 import { SUITE } from 'src/actions/suite/constants';
+
+import { BlurUrls } from '../BlurUrls';
 
 const ContractAddress = styled.div`
     display: inline-block;

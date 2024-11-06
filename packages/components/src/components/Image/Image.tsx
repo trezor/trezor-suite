@@ -1,5 +1,7 @@
 import { ImgHTMLAttributes } from 'react';
+
 import styled from 'styled-components';
+
 import { PngImage, SvgImage, PNG_IMAGES, SVG_IMAGES } from './images';
 import { resolveStaticPath } from '../../utils/resolveStaticPath';
 

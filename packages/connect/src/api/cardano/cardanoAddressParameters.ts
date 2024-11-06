@@ -1,9 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoAddressParameters.js
 
+import { Assert } from '@trezor/schema-utils';
+
 import { validatePath } from '../../utils/pathUtils';
 import { PROTO, ERRORS } from '../../constants';
 import { CardanoAddressParameters } from '../../types/api/cardano';
-import { Assert } from '@trezor/schema-utils';
 
 export const validateAddressParameters = (addressParameters: CardanoAddressParameters) => {
     Assert(CardanoAddressParameters, addressParameters);

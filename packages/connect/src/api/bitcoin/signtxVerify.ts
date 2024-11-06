@@ -6,8 +6,8 @@ import {
     payments as BitcoinJsPayments,
     Transaction as BitcoinJsTransaction,
 } from '@trezor/utxo-lib';
-import { PROTO, ERRORS } from '../../constants';
 
+import { PROTO, ERRORS } from '../../constants';
 import type { BitcoinNetworkInfo } from '../../types';
 import type { DeviceCommands } from '../../device/DeviceCommands';
 

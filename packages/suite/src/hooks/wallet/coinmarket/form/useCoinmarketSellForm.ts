@@ -1,9 +1,15 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+
 import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeQuoteRequest } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
+
 import { amountToSmallestUnit, formatAmount } from '@suite-common/wallet-utils';
 import { isChanged } from '@suite-common/suite-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { networks } from '@suite-common/wallet-config';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import {
@@ -38,7 +44,6 @@ import {
     FORM_PAYMENT_METHOD_SELECT,
 } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketRecomposeAndSign } from 'src/hooks/wallet/useCoinmarketRecomposeAndSign';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
@@ -47,10 +52,10 @@ import { useCoinmarketFormActions } from 'src/hooks/wallet/coinmarket/form/commo
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 import { useCoinmarketComposeTransaction } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketComposeTransaction';
 import { useCoinmarketCurrencySwitcher } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketCurrencySwitcher';
-import { networks } from '@suite-common/wallet-config';
 import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketAccount';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { analytics, EventType } from '@trezor/suite-analytics';
+
+
 import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
 
 export const useCoinmarketSellForm = ({

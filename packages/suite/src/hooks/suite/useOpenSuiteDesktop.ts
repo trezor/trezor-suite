@@ -2,6 +2,7 @@ import TrezorConnect from '@trezor/connect';
 import type TrezorConnectWeb from '@trezor/connect-web';
 import { useWindowFocus } from '@trezor/react-utils';
 import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
+
 import { isWebUsb } from 'src/utils/suite/transport';
 import { useSelector } from 'src/hooks/suite';
 

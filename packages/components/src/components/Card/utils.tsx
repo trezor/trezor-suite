@@ -1,3 +1,5 @@
+import { css, DefaultTheme, RuleSet } from 'styled-components';
+
 import {
     spacingsPx,
     Elevation,
@@ -5,7 +7,7 @@ import {
     mapElevationToBorder,
     SpacingPxValues,
 } from '@trezor/theme';
-import { css, DefaultTheme, RuleSet } from 'styled-components';
+
 import { PaddingType, FillType } from './types';
 
 type PaddingMapArgs = {

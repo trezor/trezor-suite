@@ -1,4 +1,9 @@
+import { ReactNode } from 'react';
+
 import styled, { useTheme } from 'styled-components';
+
+import { borders, spacingsPx } from '@trezor/theme';
+
 import {
     ExclusiveColorOrVariant,
     getColorForIconVariant,
@@ -6,9 +11,7 @@ import {
     Icon,
     IconProps,
 } from '../Icon/Icon';
-import { borders, spacingsPx } from '@trezor/theme';
 import { TransientProps } from '../../utils/transientProps';
-import { ReactNode } from 'react';
 import {
     FramePropsKeys,
     FrameProps,

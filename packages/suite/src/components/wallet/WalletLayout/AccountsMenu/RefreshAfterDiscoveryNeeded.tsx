@@ -1,4 +1,5 @@
 import React from 'react';
+
 import styled from 'styled-components';
 import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 
@@ -7,8 +8,8 @@ import { spacingsPx, typography } from '@trezor/theme';
 import { selectDevice, startDiscoveryThunk } from '@suite-common/wallet-core';
 
 import { useRediscoveryNeeded, useDispatch, useSelector } from 'src/hooks/suite';
-
 import { Translation } from 'src/components/suite';
+
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 
 const DiscoveryButtonContainer = styled(motion.div)`

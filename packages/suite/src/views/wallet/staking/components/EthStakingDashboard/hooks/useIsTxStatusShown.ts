@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export const useIsTxStatusShown = (totalPendingStake: BigNumber, accountDescriptor?: string) => {

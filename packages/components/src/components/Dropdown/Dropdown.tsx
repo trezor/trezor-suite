@@ -11,8 +11,11 @@ import {
     useEffect,
 } from 'react';
 import { createPortal } from 'react-dom';
+
 import styled from 'styled-components';
+
 import { useOnClickOutside } from '@trezor/react-utils';
+
 import { Menu, MenuProps, DropdownMenuItemProps } from './Menu';
 import { Coords, getAdjustedCoords } from './getAdjustedCoords';
 import { IconButton } from '../buttons/IconButton/IconButton';

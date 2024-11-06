@@ -1,8 +1,10 @@
 import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
+
+import { PrimitiveType } from '@trezor/type-utils';
+
 import messages from 'src/support/messages';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
-import { PrimitiveType } from '@trezor/type-utils';
 
 export type TranslationFunction = (
     id: ExtendedMessageDescriptor['id'],

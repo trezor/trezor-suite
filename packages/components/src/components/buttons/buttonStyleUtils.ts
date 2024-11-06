@@ -1,9 +1,10 @@
 import { DefaultTheme, css, useTheme } from 'styled-components';
 
 import { Color, Colors, Elevation, spacings, spacingsPx } from '@trezor/theme';
-import type { UIHorizontalAlignment, UISize, UIVariant } from '../../config/types';
 import { hexToRgba } from '@suite-common/suite-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
+
+import type { UIHorizontalAlignment, UISize, UIVariant } from '../../config/types';
 
 const SUBTLE_ALPHA = 0.12;
 const SUBTLE_ALPHA_HOVER = 0.2;

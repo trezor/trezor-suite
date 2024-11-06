@@ -1,5 +1,6 @@
-import styled from 'styled-components';
 import { ToastContainer as BaseToastContainer, Slide } from 'react-toastify';
+
+import styled from 'styled-components';
 
 import { borders, zIndices } from '@trezor/theme';
 

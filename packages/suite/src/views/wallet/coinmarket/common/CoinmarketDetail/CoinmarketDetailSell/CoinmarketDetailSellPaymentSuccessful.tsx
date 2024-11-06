@@ -1,10 +1,12 @@
 import styled from 'styled-components';
+
 import { Button, variables, Image } from '@trezor/components';
+import { borders } from '@trezor/theme';
+
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
-import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;

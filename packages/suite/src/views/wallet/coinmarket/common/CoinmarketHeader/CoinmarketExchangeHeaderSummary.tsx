@@ -1,11 +1,13 @@
 import { useTheme } from 'styled-components';
-import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
-import { useSelector } from 'src/hooks/suite';
-import { H3, Icon, Row, Text } from '@trezor/components';
 import { CryptoId } from 'invity-api';
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+
+import { H3, Icon, Row, Text } from '@trezor/components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { spacings } from '@trezor/theme';
+
+import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
+import { useSelector } from 'src/hooks/suite';
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 

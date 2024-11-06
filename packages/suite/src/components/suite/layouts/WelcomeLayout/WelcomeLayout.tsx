@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -13,22 +14,25 @@ import {
     Column,
 } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
+import { selectBannerMessage } from '@suite-common/message-system';
+import { isWeb } from '@trezor/env-utils';
+import { TREZOR_URL, SUITE_URL } from '@trezor/urls';
+import { resolveStaticPath } from '@suite-common/suite-utils';
+import { Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
+import { TrezorLogo } from '@trezor/product-components';
+
 import { Translation } from 'src/components/suite';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useSelector } from 'src/hooks/suite';
-import { selectBannerMessage } from '@suite-common/message-system';
 import { MessageSystemBanner } from 'src/components/suite/banners';
-import { isWeb } from '@trezor/env-utils';
-import { TREZOR_URL, SUITE_URL } from '@trezor/urls';
-import { resolveStaticPath } from '@suite-common/suite-utils';
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { useGuide } from 'src/hooks/guide';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
+
 import { NavSettings } from './NavSettings';
-import { Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 import { TrafficLightOffset } from '../../TrafficLightOffset';
-import { TrezorLogo } from '@trezor/product-components';
+
 
 const MessageContainer = styled.div`
     margin: ${spacingsPx.xxs} ${spacingsPx.xs} ${spacingsPx.xs};

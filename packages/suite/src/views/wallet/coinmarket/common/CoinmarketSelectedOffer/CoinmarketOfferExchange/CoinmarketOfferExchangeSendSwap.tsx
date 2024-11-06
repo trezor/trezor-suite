@@ -1,6 +1,9 @@
 import { useState, ChangeEvent } from 'react';
+import { FieldError } from 'react-hook-form';
+
+import useDebounce from 'react-use/lib/useDebounce';
 import styled, { useTheme } from 'styled-components';
-import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
+
 import {
     Button,
     Icon,
@@ -15,12 +18,12 @@ import {
     ElevationContext,
     getInputStateTextColor,
 } from '@trezor/components';
-import useDebounce from 'react-use/lib/useDebounce';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { FieldError } from 'react-hook-form';
 import { BottomText } from '@trezor/components/src/components/form/BottomText';
 import { TranslationKey } from '@suite-common/intl-types';
 import { spacings } from '@trezor/theme';
+
+import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';

@@ -1,5 +1,7 @@
-import { Row, Tooltip, Text } from '@trezor/components';
 import { ExchangeTrade } from 'invity-api';
+
+import { Row, Tooltip, Text } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import {
     CoinmarketExchangeProvidersInfoProps,

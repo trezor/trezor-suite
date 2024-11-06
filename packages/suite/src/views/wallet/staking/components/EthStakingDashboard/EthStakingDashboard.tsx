@@ -1,7 +1,9 @@
 import { selectAccountHasStaked } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+
 import { WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
+
 import { EmptyStakingCard } from './components/EmptyStakingCard';
 import { StakingDashboard } from './components/StakingDashboard';
 import { EverstakeFooter } from './components/EverstakeFooter';

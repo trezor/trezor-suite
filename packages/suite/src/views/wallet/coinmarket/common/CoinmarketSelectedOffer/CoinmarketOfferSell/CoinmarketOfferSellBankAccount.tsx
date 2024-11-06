@@ -1,12 +1,16 @@
 import { useState } from 'react';
+
 import styled, { useTheme } from 'styled-components';
-import { QuestionTooltip, Translation } from 'src/components/suite';
-import { Button, Select, Icon, Row } from '@trezor/components';
 import { BankAccount } from 'invity-api';
+
+import { Button, Select, Icon, Row } from '@trezor/components';
+import { fontWeights, spacingsPx, typography } from '@trezor/theme';
+
+import { QuestionTooltip, Translation } from 'src/components/suite';
 import { formatIban } from 'src/utils/wallet/coinmarket/sellUtils';
 import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { fontWeights, spacingsPx, typography } from '@trezor/theme';
+
 
 const Wrapper = styled.div`
     display: flex;

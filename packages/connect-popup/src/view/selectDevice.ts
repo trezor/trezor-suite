@@ -12,8 +12,9 @@ import {
 } from '@trezor/connect';
 import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport/src/constants';
 import { SUITE_URL, SUITE_UDEV_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
-import { container, getState, showView, postMessage } from './common';
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
+
+import { container, getState, showView, postMessage } from './common';
 
 const initWebUsbButton = (showLoader: boolean) => {
     const webusbContainer = container.getElementsByClassName('webusb')[0] as HTMLElement;

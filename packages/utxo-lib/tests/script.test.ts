@@ -1,9 +1,9 @@
-import * as bscript from '../src/script';
+import minimalData from 'minimaldata';
 
+import * as bscript from '../src/script';
 import { fixtures } from './__fixtures__/script';
 import { templates } from './__fixtures__/templates';
 
-import minimalData from 'minimaldata';
 
 describe('script', () => {
     // TODO

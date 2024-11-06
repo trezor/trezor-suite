@@ -1,17 +1,22 @@
 import { ReactNode } from 'react';
+import { useIntl } from 'react-intl';
+
 import styled from 'styled-components';
+
 import TrezorConnect from '@trezor/connect';
 import { Backdrop } from '@trezor/components';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { spacingsPx, zIndices } from '@trezor/theme';
+import { ConfirmOnDevice } from '@trezor/product-components';
+
 import { Translation } from 'src/components/suite';
-import { useIntl } from 'react-intl';
 import messages from 'src/support/messages';
+
 import {
     CollapsibleOnboardingCard,
     CollapsibleOnboardingCardProps,
 } from './CollapsibleOnboardingCard';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { spacingsPx, zIndices } from '@trezor/theme';
-import { ConfirmOnDevice } from '@trezor/product-components';
+
 
 const WrapperWrapper = styled.div`
     z-index: ${zIndices.onboardingForeground};

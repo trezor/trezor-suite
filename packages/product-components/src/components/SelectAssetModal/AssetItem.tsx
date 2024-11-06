@@ -1,6 +1,7 @@
+import styled, { useTheme } from 'styled-components';
+
 import { spacings, spacingsPx } from '@trezor/theme';
 import { Badge, Column, Icon, Row, Text } from '@trezor/components';
-import styled, { useTheme } from 'styled-components';
 
 const ClickableContainer = styled.div`
     cursor: pointer;

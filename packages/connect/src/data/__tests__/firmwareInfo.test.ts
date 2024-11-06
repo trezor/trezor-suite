@@ -1,5 +1,6 @@
-import { getReleases, parseFirmware, getFirmwareStatus } from '../firmwareInfo';
 import * as releases2 from '@trezor/connect-common/files/firmware/t2t1/releases.json';
+
+import { getReleases, parseFirmware, getFirmwareStatus } from '../firmwareInfo';
 import { DeviceModelInternal } from '../../types';
 
 describe('data/firmwareInfo', () => {

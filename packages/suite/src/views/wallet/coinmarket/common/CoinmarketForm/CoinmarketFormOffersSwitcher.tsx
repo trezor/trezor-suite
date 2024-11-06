@@ -1,7 +1,9 @@
+import { ExchangeTrade } from 'invity-api';
+
 import { spacings } from '@trezor/theme';
 import { Row, Card, Column, Spinner, Paragraph } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
-import { ExchangeTrade } from 'invity-api';
 import {
     CoinmarketTradeDetailType,
     CoinmarketUtilsProvidersProps,

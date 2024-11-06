@@ -1,5 +1,4 @@
 import { prioritizeEndpoints } from '../../src/workers/utils';
-
 import * as fixtures from './fixtures/utils';
 
 describe('prioritizeEndpoints', () => {

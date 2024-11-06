@@ -1,4 +1,7 @@
 import React from 'react';
+
+import styled from 'styled-components';
+
 import {
     Card,
     Column,
@@ -11,12 +14,12 @@ import {
     Row,
     Text,
 } from '@trezor/components';
-import styled from 'styled-components';
 import { borders, palette, spacings, spacingsPx } from '@trezor/theme';
-import { Translation, TrezorLink } from 'src/components/suite';
 import { COINMARKET_DOWNLOAD_INVITY_APP_URL } from '@trezor/urls';
-import { useSelector } from 'src/hooks/suite';
 import { variables } from '@trezor/components/src/config';
+
+import { Translation, TrezorLink } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketLayout';
 import { CoinmarketContainer } from 'src/views/wallet/coinmarket/common/CoinmarketContainer';
 

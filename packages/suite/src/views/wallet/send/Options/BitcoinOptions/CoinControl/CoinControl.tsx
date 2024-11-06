@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import styled, { useTheme } from 'styled-components';
 
 import { typography } from '@trezor/theme';
@@ -6,17 +7,19 @@ import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { amountToSmallestUnit, formatNetworkAmount } from '@suite-common/wallet-utils';
+import { Card, Checkbox, Icon, Switch, variables } from '@trezor/components';
+
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Pagination } from 'src/components/wallet';
-import { Card, Checkbox, Icon, Switch, variables } from '@trezor/components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { filterAndCategorizeUtxos } from 'src/utils/wallet/filterAndCategorizeUtxosUtils';
+
 import { UtxoSelectionList } from './UtxoSelectionList';
 import { UtxoSearch } from './UtxoSearch';
-import { filterAndCategorizeUtxos } from 'src/utils/wallet/filterAndCategorizeUtxosUtils';
 
 const Row = styled.div`
     align-items: center;

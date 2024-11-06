@@ -1,6 +1,8 @@
-import { isChanged } from '@suite-common/suite-utils';
 import React, { useState, useEffect, useCallback, forwardRef, useRef } from 'react';
+
 import styled from 'styled-components';
+
+import { isChanged } from '@suite-common/suite-utils';
 
 function debounce<T extends (...args: unknown[]) => void>(
     func: T,

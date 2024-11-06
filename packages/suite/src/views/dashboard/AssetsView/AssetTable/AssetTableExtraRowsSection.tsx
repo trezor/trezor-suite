@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+
 import { borders } from '@trezor/theme';
 
 type DashedLinePosition = 'middleToBottom' | 'topToBottom' | 'topToMiddle';

@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 
 import { selectDevice } from '@suite-common/wallet-core';
+import { TrezorDevice } from '@suite-common/suite-types';
 
 import { SUITE } from 'src/actions/suite/constants';
 
 import { useSelector } from './useSelector';
-import { TrezorDevice } from '@suite-common/suite-types';
 
 type Result = {
     device?: TrezorDevice;

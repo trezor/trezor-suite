@@ -1,4 +1,5 @@
 import { EventType } from '@trezor/connect-analytics';
+
 import { CoreEventMessage, UI_REQUEST } from '../events';
 import type { Device } from '../types';
 

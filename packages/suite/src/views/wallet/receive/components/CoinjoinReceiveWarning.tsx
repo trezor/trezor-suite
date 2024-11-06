@@ -1,8 +1,10 @@
 import styled, { useTheme } from 'styled-components';
 import { darken } from 'polished';
+
+import { Button, Icon, variables, Banner } from '@trezor/components';
+
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
-import { Button, Icon, variables, Banner } from '@trezor/components';
 import { hideCoinjoinReceiveWarning } from 'src/actions/suite/suiteActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 

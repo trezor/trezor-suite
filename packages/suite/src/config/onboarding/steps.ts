@@ -1,6 +1,7 @@
+import { DeviceModelInternal } from '@trezor/connect';
+
 import type { Step } from 'src/types/onboarding';
 import * as STEP from 'src/constants/onboarding/steps';
-import { DeviceModelInternal } from '@trezor/connect';
 
 const commonPrerequisites: Step['prerequisites'] = [
     'transport-bridge',

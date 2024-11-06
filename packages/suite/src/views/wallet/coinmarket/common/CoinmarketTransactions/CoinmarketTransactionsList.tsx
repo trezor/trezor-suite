@@ -1,9 +1,11 @@
+import styled from 'styled-components';
+
+import { H3, Paragraph, variables } from '@trezor/components';
+import { spacingsPx, typography } from '@trezor/theme';
+
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { H3, Paragraph, variables } from '@trezor/components';
-import styled from 'styled-components';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
-import { spacingsPx, typography } from '@trezor/theme';
 import { CoinmarketTransactionSell } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransactionsSell';
 import { CoinmarketTransactionBuy } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransactionsBuy';
 import { CoinmarketTransactionExchange } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransactionExchange';

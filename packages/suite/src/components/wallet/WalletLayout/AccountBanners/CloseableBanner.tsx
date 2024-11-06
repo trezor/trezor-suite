@@ -1,7 +1,9 @@
-import { Text, Banner, BannerProps, Column } from '@trezor/components';
-import { Translation } from 'src/components/suite';
 import { ReactNode } from 'react';
+
+import { Text, Banner, BannerProps, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme/src';
+
+import { Translation } from 'src/components/suite';
 
 interface Props {
     onClose: () => void;

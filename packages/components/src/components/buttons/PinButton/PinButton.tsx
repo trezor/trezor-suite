@@ -1,3 +1,7 @@
+import { ButtonHTMLAttributes } from 'react';
+
+import styled from 'styled-components';
+
 import {
     Elevation,
     borders,
@@ -5,8 +9,7 @@ import {
     mapElevationToBorder,
     spacingsPx,
 } from '@trezor/theme';
-import { ButtonHTMLAttributes } from 'react';
-import styled from 'styled-components';
+
 import { useElevation } from '../../ElevationContext/ElevationContext';
 
 const Button = styled.button<{ $elevation: Elevation }>`

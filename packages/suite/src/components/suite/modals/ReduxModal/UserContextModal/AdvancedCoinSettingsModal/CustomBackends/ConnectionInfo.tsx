@@ -1,8 +1,10 @@
 import styled from 'styled-components';
+
 import { Paragraph } from '@trezor/components';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+
 import { useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite/Translation';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const Wrapper = styled(Paragraph)`

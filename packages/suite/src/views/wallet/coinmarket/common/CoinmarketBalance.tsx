@@ -1,7 +1,10 @@
+import styled from 'styled-components';
+
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
 import { typography } from '@trezor/theme';
+
 import { FiatValue, HiddenPlaceholder, Translation } from 'src/components/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -10,7 +13,6 @@ import {
     coinmarketGetAccountLabel,
     getCoinmarketNetworkDecimals,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import styled from 'styled-components';
 
 const CoinmarketBalanceWrapper = styled.div`
     ${typography.label}

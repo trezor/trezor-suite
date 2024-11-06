@@ -1,6 +1,6 @@
 import { Checkbox } from '@trezor/components';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';

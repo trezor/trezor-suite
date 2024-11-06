@@ -1,9 +1,12 @@
 import { useRef, useCallback, useMemo, useState, MouseEvent, DragEvent, ChangeEvent } from 'react';
+
 import styled from 'styled-components';
+
 import { Icon, IconName, Paragraph } from '@trezor/components';
+import { borders, spacings } from '@trezor/theme';
+
 import { Translation } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
-import { borders, spacings } from '@trezor/theme';
 
 interface DropZoneProps {
     // 'accept' attribute for underlying HTML file input

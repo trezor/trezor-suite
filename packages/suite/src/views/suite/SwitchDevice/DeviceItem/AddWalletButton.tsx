@@ -1,11 +1,11 @@
 import { Button, Column, HotkeyBadge, Row, Tooltip } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+import { WalletType } from '@suite-common/wallet-types';
 
 import { Translation } from 'src/components/suite';
 import { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { SUITE } from 'src/actions/suite/constants';
-import { spacings } from '@trezor/theme';
-import { WalletType } from '@suite-common/wallet-types';
 import { addWalletThunk } from 'src/actions/wallet/addWalletThunk';
 
 interface AddWalletButtonProps {

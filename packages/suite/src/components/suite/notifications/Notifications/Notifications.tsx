@@ -1,9 +1,13 @@
-import { useSelector } from 'src/hooks/suite';
-import { Icon, variables } from '@trezor/components';
 import { useState } from 'react';
+
 import styled, { useTheme } from 'styled-components';
+
+import { Icon, variables } from '@trezor/components';
+
+import { useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { SETTINGS } from 'src/config/suite';
+
 import { NotificationGroup } from './NotificationGroup/NotificationGroup';
 
 const Wrapper = styled.div`

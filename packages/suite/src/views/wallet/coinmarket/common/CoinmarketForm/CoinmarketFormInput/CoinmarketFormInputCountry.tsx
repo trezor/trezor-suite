@@ -1,11 +1,14 @@
 import { Control, Controller } from 'react-hook-form';
+
+import styled from 'styled-components';
+
 import { Flag, Select } from '@trezor/components';
+import { borders, spacingsPx } from '@trezor/theme';
+
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { CountryOption } from 'src/types/wallet/coinmarketCommonTypes';
 import { getCountryLabelParts } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import styled from 'styled-components';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { borders, spacingsPx } from '@trezor/theme';
 import { CoinmarketFormInputLabel } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
 import {
     CoinmarketBuySellFormProps,

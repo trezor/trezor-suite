@@ -1,8 +1,12 @@
+import { useState } from 'react';
+
 import styled from 'styled-components';
-import { Tooltip as TooltipComponent, TooltipProps } from './Tooltip';
 import { Meta, StoryObj } from '@storybook/react';
 import { Placement } from '@floating-ui/react';
+
 import { Elevation, mapElevationToBackground, spacingsPx, zIndices } from '@trezor/theme';
+
+import { Tooltip as TooltipComponent, TooltipProps } from './Tooltip';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
 import {
     TOOLTIP_DELAY_LONG,
@@ -10,7 +14,6 @@ import {
     TOOLTIP_DELAY_NORMAL,
     TOOLTIP_DELAY_SHORT,
 } from './TooltipDelay';
-import { useState } from 'react';
 import { Button } from '../buttons/Button/Button';
 
 const Center = styled.div`

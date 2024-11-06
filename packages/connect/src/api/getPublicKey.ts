@@ -1,5 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetPublicKey.js
 
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
 import { validateCoinPath, getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
@@ -8,7 +10,6 @@ import { getBitcoinNetwork } from '../data/coinInfo';
 import { getPublicKeyLabel } from '../utils/accountUtils';
 import type { BitcoinNetworkInfo } from '../types';
 import type { PROTO } from '../constants';
-import { Assert } from '@trezor/schema-utils';
 import { Bundle } from '../types';
 import { GetPublicKey as GetPublicKeySchema } from '../types/api/getPublicKey';
 

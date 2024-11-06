@@ -1,9 +1,11 @@
-import { Banner, Icon, Tooltip } from '@trezor/components';
 import { useTheme } from 'styled-components';
+import { ExchangeKYCType } from 'invity-api';
+
+import { Banner, Icon, Tooltip } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { TooltipIcon, TooltipText, TooltipWrap } from 'src/views/wallet/coinmarket';
 import { CoinmarketExchangeProvidersInfoProps } from 'src/types/coinmarket/coinmarket';
-import { ExchangeKYCType } from 'invity-api';
 import {
     KYC_DEX,
     KYC_NO_KYC,

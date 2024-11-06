@@ -1,10 +1,13 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
-import { FiatValue } from 'src/components/suite/FiatValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
+
+import { FiatValue } from 'src/components/suite/FiatValue';
+import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
 const Container = styled.div`
     display: flex;

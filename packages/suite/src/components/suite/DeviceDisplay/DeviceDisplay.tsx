@@ -1,13 +1,16 @@
-import styled from 'styled-components';
 import { ReactNode } from 'react';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
+import styled from 'styled-components';
+
 import { selectDeviceInternalModel } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/connect';
+
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { DisplayMode } from 'src/types/suite';
+
 import { DisplayChunks } from './DisplayChunks';
 import { DisplayPaginatedText } from './DisplayPaginatedText';
 import { DisplaySinglePageWrapText } from './DisplaySinglePageWrapText';
-import { DisplayMode } from 'src/types/suite';
 
 const Display = styled.div`
     display: flex;

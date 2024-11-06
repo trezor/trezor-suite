@@ -20,9 +20,9 @@ import type {
     AccountBalanceHistoryParams,
     RpcCallParams,
 } from '@trezor/blockchain-link-types/src/params';
+import { getSuiteVersion } from '@trezor/env-utils';
 
 import { BaseWebsocket } from '../baseWebsocket';
-import { getSuiteVersion } from '@trezor/env-utils';
 
 interface BlockbookEvents {
     block: BlockNotification;

@@ -1,13 +1,15 @@
 import { transparentize } from 'polished';
 import styled, { css } from 'styled-components';
 
-import { findRouteByName } from 'src/utils/suite/router';
 import { variables } from '@trezor/components';
+import { typography } from '@trezor/theme';
+
+import { findRouteByName } from 'src/utils/suite/router';
 import { HoverAnimation, Translation } from 'src/components/suite';
 import { MAIN_MENU_ITEMS } from 'src/constants/suite/menu';
 import { useAccountSearch, useSelector, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { typography } from '@trezor/theme';
+
 
 interface ComponentProps {
     isActive: boolean;

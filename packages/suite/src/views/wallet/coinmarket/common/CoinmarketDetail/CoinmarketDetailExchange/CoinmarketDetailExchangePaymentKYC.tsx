@@ -1,12 +1,13 @@
 import styled from 'styled-components';
+import { ExchangeProviderInfo } from 'invity-api';
 
 import { Button, variables, Link, Image } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
+
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite/Translation';
-import { ExchangeProviderInfo } from 'invity-api';
 import { goto } from 'src/actions/suite/routerActions';
-import { spacingsPx } from '@trezor/theme';
 import { CoinmarketTransactionId } from 'src/views/wallet/coinmarket/common/CoinmarketTransactionId';
 
 const Wrapper = styled.div`

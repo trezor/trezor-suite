@@ -1,5 +1,10 @@
-import { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import { useMemo } from 'react';
+
+import { FiatCurrencyCode, CryptoId } from 'invity-api';
+
+import { networks } from '@suite-common/wallet-config';
+
+import { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import { Account } from 'src/types/wallet';
 import { buildFiatOption, getDefaultCountry } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketBuyFormDefaultValuesProps } from 'src/types/coinmarket/coinmarketForm';
@@ -8,9 +13,8 @@ import {
     FORM_DEFAULT_FIAT_CURRENCY,
     FORM_DEFAULT_PAYMENT_METHOD,
 } from 'src/constants/wallet/coinmarket/form';
-import { FiatCurrencyCode, CryptoId } from 'invity-api';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { networks } from '@suite-common/wallet-config';
+
 
 export const useCoinmarketBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],

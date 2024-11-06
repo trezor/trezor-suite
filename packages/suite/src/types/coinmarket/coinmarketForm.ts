@@ -1,3 +1,27 @@
+import type { FieldValues, UseFormReturn, FieldPath } from 'react-hook-form';
+import { PropsWithChildren } from 'react';
+
+import type {
+    BankAccount,
+    BuyTrade,
+    CryptoId,
+    ExchangeTrade,
+    ExchangeTradeQuoteRequest,
+    FiatCurrencyCode,
+    SellFiatTrade,
+} from 'invity-api';
+
+import { Network } from '@suite-common/wallet-config';
+import { Timer } from '@trezor/react-utils';
+import {
+    FeeInfo,
+    FormState,
+    PrecomposedLevels,
+    PrecomposedLevelsCardano,
+} from '@suite-common/wallet-types';
+import { FeeLevel } from '@trezor/connect';
+import { AccountsState } from '@suite-common/wallet-core';
+
 import {
     CoinmarketAccountOptionsGroupOptionProps,
     CoinmarketCryptoSelectItemProps,
@@ -15,39 +39,17 @@ import {
     CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
 import type { Account } from 'src/types/wallet';
-import { Network } from '@suite-common/wallet-config';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
-import type { FieldValues, UseFormReturn, FieldPath } from 'react-hook-form';
-import type {
-    BankAccount,
-    BuyTrade,
-    CryptoId,
-    ExchangeTrade,
-    ExchangeTradeQuoteRequest,
-    FiatCurrencyCode,
-    SellFiatTrade,
-} from 'invity-api';
-import { Timer } from '@trezor/react-utils';
 import { AppState } from 'src/reducers/store';
 import { Dispatch, ExtendedMessageDescriptor, GetState } from 'src/types/suite';
-import { PropsWithChildren } from 'react';
 import {
     AmountLimits,
     CryptoAmountLimits,
     Option,
     TradeSell,
 } from 'src/types/wallet/coinmarketCommonTypes';
-import {
-    FeeInfo,
-    FormState,
-    PrecomposedLevels,
-    PrecomposedLevelsCardano,
-} from '@suite-common/wallet-types';
-import { FeeLevel } from '@trezor/connect';
 import { SendContextValues } from 'src/types/wallet/sendForm';
 import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
-
-import { AccountsState } from '@suite-common/wallet-core';
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import {
     EXCHANGE_COMPARATOR_KYC_FILTER,

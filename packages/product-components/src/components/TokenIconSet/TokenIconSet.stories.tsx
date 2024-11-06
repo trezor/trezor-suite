@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+
 import { TokenIconSet as TokenIconSetComponent, TokenIconSetProps } from './TokenIconSet';
 
 const getToken = (contract: string, symbol: string, decimals: number) => ({

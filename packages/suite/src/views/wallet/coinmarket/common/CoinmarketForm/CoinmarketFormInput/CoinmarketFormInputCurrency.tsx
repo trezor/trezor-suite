@@ -1,7 +1,9 @@
-import { buildCurrencyOptions } from '@suite-common/wallet-utils';
-import { Select } from '@trezor/components';
 import { useMemo } from 'react';
 import { Control, Controller } from 'react-hook-form';
+
+import { buildCurrencyOptions } from '@suite-common/wallet-utils';
+import { Select } from '@trezor/components';
+
 import {
     FORM_FIAT_CURRENCY_SELECT,
     FORM_FIAT_INPUT,

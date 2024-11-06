@@ -1,6 +1,8 @@
+import { Fragment } from 'react';
+
 import { Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { Fragment } from 'react';
+
 import { Translation } from 'src/components/suite';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 

@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 
+import { variables } from '@trezor/components';
+
 import { ConfirmKey, toggleCheckboxByKey } from 'src/actions/backup/backupActions';
 import { Translation } from 'src/components/suite/Translation';
-import { variables } from '@trezor/components';
 import { useSelector, useDispatch } from 'src/hooks/suite';
+
 import { BackupSeedCard } from './BackupSeedCard';
 
 const Wrapper = styled.div`

@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { analytics, EventType } from '@trezor/suite-analytics';
 import { isUrl } from '@trezor/utils';
-import { isOnionUrl } from 'src/utils/suite/tor';
 import { blockchainActions } from '@suite-common/wallet-core';
 import { isElectrumUrl } from '@suite-common/wallet-utils';
 import { NetworkSymbol, BackendType } from '@suite-common/wallet-config';
 import { BackendSettings } from '@suite-common/wallet-types';
+
+import { isOnionUrl } from 'src/utils/suite/tor';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 
 export type BackendOption = BackendType | 'default';
 

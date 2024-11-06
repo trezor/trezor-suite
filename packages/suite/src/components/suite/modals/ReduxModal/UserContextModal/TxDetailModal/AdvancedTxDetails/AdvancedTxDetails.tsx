@@ -1,14 +1,18 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
-import { Translation } from 'src/components/suite';
+
 import { useElevation, variables } from '@trezor/components';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction, ChainedTransactions } from '@suite-common/wallet-types';
 import { AccountType, Network } from '@suite-common/wallet-config';
+import { Elevation, mapElevationToBorder, spacingsPx } from '@trezor/theme';
+
+import { Translation } from 'src/components/suite';
+
 import { AmountDetails } from './AmountDetails';
 import { IODetails } from './IODetails/IODetails';
 import { ChainedTxs } from '../ChainedTxs';
-import { Elevation, mapElevationToBorder, spacingsPx } from '@trezor/theme';
 import { Data } from './Data';
 
 const Wrapper = styled.div`

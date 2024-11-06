@@ -1,9 +1,12 @@
-import { Meta, StoryObj } from '@storybook/react';
-import { SelectAssetModal as SelectAssetModalComponent, SelectAssetModalProps } from '../../index';
-import { ThemeProvider } from 'styled-components';
-import { intermediaryTheme, NewModal } from '@trezor/components';
-import { action } from '@storybook/addon-actions';
 import { IntlProvider } from 'react-intl';
+
+import { Meta, StoryObj } from '@storybook/react';
+import { ThemeProvider } from 'styled-components';
+import { action } from '@storybook/addon-actions';
+
+import { intermediaryTheme, NewModal } from '@trezor/components';
+
+import { SelectAssetModal as SelectAssetModalComponent, SelectAssetModalProps } from '../../index';
 import { selectAssetModalOptions, selectAssetModalNetworks } from './mockData';
 
 const meta: Meta = {

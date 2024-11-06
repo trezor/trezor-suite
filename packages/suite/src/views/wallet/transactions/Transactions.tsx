@@ -1,12 +1,17 @@
 import { ReactNode } from 'react';
 
-import { WalletLayout, CoinjoinAccountDiscoveryProgress } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
-import { AppState } from 'src/types/suite';
+import styled from 'styled-components';
+
 import {
     selectAccountTransactions,
     selectIsLoadingAccountTransactions,
 } from '@suite-common/wallet-core';
+import { spacingsPx } from '@trezor/theme';
+
+import { WalletLayout, CoinjoinAccountDiscoveryProgress } from 'src/components/wallet';
+import { useSelector } from 'src/hooks/suite';
+import { AppState } from 'src/types/suite';
+
 import { NoTransactions } from './components/NoTransactions';
 import { AccountEmpty } from './components/AccountEmpty';
 import { TransactionList } from './TransactionList/TransactionList';
@@ -14,8 +19,8 @@ import { TransactionSummary } from './components/TransactionSummary';
 import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
 import { CoinjoinSummary } from './CoinjoinSummary/CoinjoinSummary';
 import { TradeBox } from './TradeBox/TradeBox';
-import styled from 'styled-components';
-import { spacingsPx } from '@trezor/theme';
+
+
 
 const AccountLayout = styled(WalletLayout)`
     display: flex;

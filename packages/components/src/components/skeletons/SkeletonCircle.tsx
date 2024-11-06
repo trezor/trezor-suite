@@ -1,7 +1,9 @@
 import styled, { css } from 'styled-components';
+
+import { Elevation, mapElevationToBackground } from '@trezor/theme';
+
 import { getValue, shimmerEffect } from './utils';
 import { SkeletonBaseProps } from './types';
-import { Elevation, mapElevationToBackground } from '@trezor/theme';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { TransientProps } from '../../utils/transientProps';
 

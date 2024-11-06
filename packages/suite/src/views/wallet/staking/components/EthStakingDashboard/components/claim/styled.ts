@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
 
 export const FormattedCryptoAmountWrapper = styled.div`

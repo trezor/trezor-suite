@@ -1,6 +1,8 @@
 import { Component, ErrorInfo } from 'react';
 import { connect, ConnectedComponent } from 'react-redux';
+
 import { bindActionCreators, Dispatch } from 'redux';
+
 import { Error } from 'src/components/suite/Error';
 import { reportToSentry } from 'src/utils/suite/sentry';
 

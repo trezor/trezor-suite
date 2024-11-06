@@ -1,9 +1,12 @@
+import { useCallback, useEffect } from 'react';
+
+import { FiatCurrencyCode } from 'invity-api';
+
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectFiatRatesByFiatRateKey, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { FiatRatesResult, Rate, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { amountToSmallestUnit, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
-import { FiatCurrencyCode } from 'invity-api';
-import { useCallback, useEffect } from 'react';
+
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';

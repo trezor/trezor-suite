@@ -2,6 +2,7 @@
 
 import { SystemInfo } from '@trezor/connect';
 import { storage } from '@trezor/connect-common';
+
 import { container, showView } from './common';
 
 export const initBrowserView = (systemInfo: SystemInfo): Promise<boolean> => {

@@ -1,6 +1,9 @@
 import React from 'react';
+
 import styled from 'styled-components';
+
 import { borders, spacingsPx, typography } from '@trezor/theme';
+
 import { ButtonProps, getIcon } from '../Button/Button';
 import { ButtonSize, getIconSize, IconAlignment } from '../buttonStyleUtils';
 import { Spinner } from '../../loaders/Spinner/Spinner';

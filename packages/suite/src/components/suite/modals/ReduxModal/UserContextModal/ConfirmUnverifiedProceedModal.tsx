@@ -1,6 +1,7 @@
-import { ConfirmUnverifiedModal } from './ConfirmUnverifiedModal';
 import { COINMARKET_BUY } from 'src/actions/wallet/constants';
 import { Dispatch } from 'src/types/suite';
+
+import { ConfirmUnverifiedModal } from './ConfirmUnverifiedModal';
 
 interface ConfirmUnverifiedProceedModalProps {
     value: string;

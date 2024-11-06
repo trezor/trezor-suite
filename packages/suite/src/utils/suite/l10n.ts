@@ -1,5 +1,6 @@
-import LANGUAGES, { Locale, TRANSLATION_PSEUDOLANGUAGE } from 'src/config/suite/languages';
 import { getPlatformLanguages } from '@trezor/env-utils';
+
+import LANGUAGES, { Locale, TRANSLATION_PSEUDOLANGUAGE } from 'src/config/suite/languages';
 
 const TRANSLATION_MODE_FLAG = 'translation_mode';
 const DEFAULT_LOCALE = 'en';

@@ -1,6 +1,8 @@
-import { typography } from '@trezor/theme';
-import animations from './animations';
 import { createGlobalStyle, DefaultTheme } from 'styled-components';
+
+import { typography } from '@trezor/theme';
+
+import animations from './animations';
 
 const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
     #app {

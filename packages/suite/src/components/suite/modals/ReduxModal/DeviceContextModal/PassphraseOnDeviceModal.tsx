@@ -1,5 +1,6 @@
-import styled from 'styled-components';
 import { useIntl } from 'react-intl';
+
+import styled from 'styled-components';
 
 import { H2, NewModal, Paragraph } from '@trezor/components';
 import { ConfirmOnDevice } from '@trezor/product-components';

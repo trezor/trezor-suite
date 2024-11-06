@@ -1,7 +1,9 @@
+import { ReactNode } from 'react';
+
+import styled, { css } from 'styled-components';
+
 import { Icon, IconName, IconVariant, Text } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
-import styled, { css } from 'styled-components';
-import { ReactNode } from 'react';
 
 const Container = styled.span<{ $isAction?: boolean }>`
     ${typography.label}

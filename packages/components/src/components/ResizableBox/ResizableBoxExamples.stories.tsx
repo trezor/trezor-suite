@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
+
 import { ResizableBox } from './ResizableBox';
 
 const Container = styled.div`

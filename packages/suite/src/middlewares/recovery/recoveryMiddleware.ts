@@ -7,6 +7,7 @@ import { SUITE } from 'src/actions/suite/constants';
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { AppState, Action, Dispatch } from 'src/types/suite';
+
 import { isRecoveryInProgress } from '../../utils/device/isRecoveryInProgress';
 
 const recovery =

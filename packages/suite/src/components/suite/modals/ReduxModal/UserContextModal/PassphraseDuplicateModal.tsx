@@ -1,5 +1,4 @@
 import { Button, Column, H3, Text } from '@trezor/components';
-
 import { authorizeDeviceThunk, switchDuplicatedDevice } from '@suite-common/wallet-core';
 import { spacings } from '@trezor/theme';
 

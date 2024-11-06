@@ -1,9 +1,12 @@
 import { useRef, ReactNode, KeyboardEventHandler, ChangeEventHandler } from 'react';
+
 import styled from 'styled-components';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
 import { Range, RangeProps, variables } from '@trezor/components';
+
+import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectCurrentCoinjoinSession } from 'src/reducers/wallet/coinjoinReducer';
+
 import { SliderInput, SliderInputProps } from './SliderInput';
 
 const Row = styled.div`

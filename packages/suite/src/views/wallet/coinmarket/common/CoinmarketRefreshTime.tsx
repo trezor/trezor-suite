@@ -1,5 +1,7 @@
 import { ReactElement } from 'react';
+
 import styled from 'styled-components';
+
 import { variables, Spinner, ProgressPie } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 

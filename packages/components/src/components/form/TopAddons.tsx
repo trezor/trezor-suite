@@ -1,5 +1,7 @@
 import React from 'react';
+
 import styled from 'styled-components';
+
 import { spacingsPx } from '@trezor/theme';
 
 const Container = styled.div<{ $hasLeftAddon?: boolean }>`

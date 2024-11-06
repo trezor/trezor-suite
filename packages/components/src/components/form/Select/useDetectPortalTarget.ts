@@ -1,5 +1,6 @@
 import { useState, useEffect, RefObject } from 'react';
 import { SelectInstance } from 'react-select';
+
 import { MODAL_CONTENT_ID } from '../../modals/Modal/Modal';
 import type { Option } from './Select';
 

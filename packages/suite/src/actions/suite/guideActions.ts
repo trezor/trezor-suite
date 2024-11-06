@@ -1,5 +1,4 @@
 import { analytics, EventType } from '@trezor/suite-analytics';
-
 import type {
     ActiveView,
     Feedback,
@@ -11,6 +10,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { isCodesignBuild } from '@trezor/env-utils';
 
 import { Dispatch } from 'src/types/suite';
+
 import { GUIDE } from './constants';
 
 export type GuideAction =

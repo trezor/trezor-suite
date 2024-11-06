@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
-import { FirmwareCloseButton } from './FirmwareCloseButton';
 import { spacingsPx } from '@trezor/theme';
 import { breakpointMediaQueries } from '@trezor/styles';
+
+import { FirmwareCloseButton } from './FirmwareCloseButton';
 
 const Row = styled.div`
     display: flex;

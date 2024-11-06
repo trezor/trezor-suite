@@ -1,6 +1,4 @@
-import TrezorConnect from '../src';
 import { versionUtils } from '@trezor/utils';
-import { UI } from '../src/events';
 import {
     TrezorUserEnvLink,
     type TrezorUserEnvLinkClass,
@@ -8,6 +6,9 @@ import {
     MNEMONICS,
 } from '@trezor/trezor-user-env-link';
 import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
+
+import { UI } from '../src/events';
+import TrezorConnect from '../src';
 
 const emulatorStartOpts =
     (process.env.emulatorStartOpts as StartEmu) || global.emulatorStartOpts || {};

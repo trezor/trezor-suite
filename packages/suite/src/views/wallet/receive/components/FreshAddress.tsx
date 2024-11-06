@@ -1,16 +1,18 @@
 import { useMemo } from 'react';
+
 import styled from 'styled-components';
+
+import { Button, Card, variables, H2, Tooltip, GradientOverlay } from '@trezor/components';
+import { getFirstFreshAddress } from '@suite-common/wallet-utils';
+import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
+import { networks } from '@suite-common/wallet-config';
+import { spacingsPx, typography } from '@trezor/theme';
 
 import { Translation, QuestionTooltip, ReadMoreLink } from 'src/components/suite';
 import { AppState } from 'src/types/suite';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
-import { Button, Card, variables, H2, Tooltip, GradientOverlay } from '@trezor/components';
-import { getFirstFreshAddress } from '@suite-common/wallet-utils';
-import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
-import { networks } from '@suite-common/wallet-config';
 import { EvmExplanationBox } from 'src/components/wallet/EvmExplanationBox';
-import { spacingsPx, typography } from '@trezor/theme';
 import { selectIsFirmwareAuthenticityCheckEnabledAndFailed } from 'src/reducers/suite/suiteReducer';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

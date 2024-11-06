@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { spacingsPx } from '@trezor/theme';
 
 import { Tor } from './Tor';

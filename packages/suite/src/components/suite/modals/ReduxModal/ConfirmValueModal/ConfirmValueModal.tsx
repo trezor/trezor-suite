@@ -13,18 +13,20 @@ import {
 } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { selectDevice, selectDeviceLabelOrName } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
+import { palette, spacings } from '@trezor/theme';
+import { getNetworkFeatures } from '@suite-common/wallet-config';
+import { ConfirmOnDevice } from '@trezor/product-components';
+
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { QrCode } from 'src/components/suite/QrCode';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { MODAL } from 'src/actions/suite/constants';
 import { DisplayMode, ThunkAction } from 'src/types/suite';
+
 import { TransactionReviewStepIndicator } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewStepIndicator';
 import { TransactionReviewOutputElement } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
-import { Account } from '@suite-common/wallet-types';
-import { palette, spacings } from '@trezor/theme';
-import { getNetworkFeatures } from '@suite-common/wallet-config';
-import { ConfirmOnDevice } from '@trezor/product-components';
 
 export interface ConfirmValueModalProps extends Pick<NewModalProps, 'onCancel' | 'heading'> {
     account: Account;

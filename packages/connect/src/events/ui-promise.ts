@@ -1,4 +1,5 @@
 import type { Deferred } from '@trezor/utils';
+
 import type { DEVICE } from './device';
 import type { Device } from '../device/Device';
 import type { UiResponseEvent } from './ui-response';

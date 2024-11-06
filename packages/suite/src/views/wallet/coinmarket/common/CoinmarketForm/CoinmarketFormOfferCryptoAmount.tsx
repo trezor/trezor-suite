@@ -1,10 +1,11 @@
+import { CryptoId } from 'invity-api';
+
 import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
-import { CryptoId } from 'invity-api';
 
 interface CoinmarketCryptoAmountProps {
     amount: string | number;

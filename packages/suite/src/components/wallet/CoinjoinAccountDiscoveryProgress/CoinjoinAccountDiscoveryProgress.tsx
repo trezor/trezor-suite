@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+
 import styled, { useTheme } from 'styled-components';
 
 import {
@@ -11,12 +12,14 @@ import {
     variables,
 } from '@trezor/components';
 import { localizeNumber } from '@suite-common/wallet-utils';
+import { spacings } from '@trezor/theme';
+
 import { Translation } from 'src/components/suite';
 import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
-import { RotatingFacts } from './RotatingFacts';
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
-import { spacings } from '@trezor/theme';
+
+import { RotatingFacts } from './RotatingFacts';
 
 const Subheader = styled.div`
     display: flex;

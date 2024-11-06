@@ -1,8 +1,19 @@
 import styled, { useTheme } from 'styled-components';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Icon, Button, LoadingContent, Card, Row } from '@trezor/components';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { TokenInfo } from '@trezor/blockchain-link-types';
+import { AssetFiatBalance } from '@suite-common/assets';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
+import {
+    getFiatRateKey,
+    toFiatCurrency,
+    isSupportedEthStakingNetworkSymbol,
+} from '@suite-common/wallet-utils';
+import { NetworkSymbol, getNetwork, Network } from '@suite-common/wallet-config';
+import { RatesByKey } from '@suite-common/wallet-types';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { Account } from 'src/types/wallet';
@@ -11,22 +22,13 @@ import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks
 import { useAccounts } from 'src/hooks/wallet';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { TokenInfo } from '@trezor/blockchain-link-types';
-import { AssetFiatBalance } from '@suite-common/assets';
+import { selectEnabledNetworks, selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 
 import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
-import {
-    getFiatRateKey,
-    toFiatCurrency,
-    isSupportedEthStakingNetworkSymbol,
-} from '@suite-common/wallet-utils';
-import { selectEnabledNetworks, selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { AssetTable } from './AssetTable/AssetTable';
-import { NetworkSymbol, getNetwork, Network } from '@suite-common/wallet-config';
-import { RatesByKey } from '@suite-common/wallet-types';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
+
+
 
 const InfoMessage = styled.div`
     padding: ${spacingsPx.md} ${spacingsPx.xl};

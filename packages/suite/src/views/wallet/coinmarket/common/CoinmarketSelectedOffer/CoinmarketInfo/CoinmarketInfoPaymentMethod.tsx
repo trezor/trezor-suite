@@ -1,4 +1,5 @@
 import { InfoRow } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { CoinmarketPaymentMethodType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketPaymentType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentType';

@@ -1,9 +1,12 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
+
 import { H2 } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
+
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import { Translation } from 'src/components/suite';
-import { spacingsPx } from '@trezor/theme';
 
 const HeaderWrapper = styled.div`
     display: flex;

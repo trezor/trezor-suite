@@ -1,5 +1,6 @@
-import { UI } from './events';
 import type { EventEmitter } from 'events';
+
+import { UI } from './events';
 import type { TrezorConnect } from './types';
 import type { CallMethod } from './events/call';
 import type { InitType } from './types/api/init';

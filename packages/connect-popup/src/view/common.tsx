@@ -1,5 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/common.js
 
+import { createRoot } from 'react-dom/client';
+
 import {
     POPUP,
     ERRORS,
@@ -8,11 +10,10 @@ import {
     CoreRequestMessage,
     CoreEventMessage,
 } from '@trezor/connect';
-import { createRoot } from 'react-dom/client';
-
 import { ConnectUI, State, getDefaultState } from '@trezor/connect-ui';
-import { StyleSheetWrapper } from './react/StylesSheetWrapper';
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
+
+import { StyleSheetWrapper } from './react/StylesSheetWrapper';
 
 export const header: HTMLElement = document.getElementsByTagName('header')[0];
 export const container: HTMLElement = document.getElementById('container')!;

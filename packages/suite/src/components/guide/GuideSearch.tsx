@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
+
 import styled from 'styled-components';
+
 import { Icon, Input, Spinner, variables } from '@trezor/components';
+import type { GuideCategory } from '@suite-common/suite-types';
+import { spacingsPx } from '@trezor/theme';
+
 import { Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
 import { GuideNode } from 'src/components/guide';
 import { useGuideSearch } from 'src/hooks/guide';
 
-import type { GuideCategory } from '@suite-common/suite-types';
-import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     margin-bottom: ${spacingsPx.xs};

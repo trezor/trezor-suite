@@ -1,5 +1,7 @@
 import { test, Page, BrowserContext } from '@playwright/test';
+
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+
 import {
     findElementByDataTest,
     formatUrl,

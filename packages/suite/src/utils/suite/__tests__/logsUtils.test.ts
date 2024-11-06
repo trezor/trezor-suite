@@ -1,6 +1,7 @@
 import { testMocks } from '@suite-common/test-utils';
 import { discoveryActions } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import { StaticSessionId } from '@trezor/connect';
 
 import {
     redactAccount,
@@ -9,7 +10,6 @@ import {
     redactDiscovery,
     REDACTED_REPLACEMENT,
 } from 'src/utils/suite/logsUtils';
-import { StaticSessionId } from '@trezor/connect';
 
 describe('logsUtils', () => {
     const account = testMocks.getWalletAccount({

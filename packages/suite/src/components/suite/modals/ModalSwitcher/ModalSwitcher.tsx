@@ -1,4 +1,5 @@
 import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
+
 import { ReduxModal } from '../ReduxModal/ReduxModal';
 import { ForegroundAppModal } from './ForegroundAppModal';
 import { DiscoveryLoader } from './DiscoveryLoader';

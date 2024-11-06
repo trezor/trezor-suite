@@ -1,8 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/word.js
 
 import { UI, createUiResponse, UiRequestDeviceAction } from '@trezor/connect';
-import { container, showView, postMessage } from './common';
 import { bip39 } from '@trezor/crypto-utils';
+
+import { container, showView, postMessage } from './common';
 
 const initWordPlainView = (payload: UiRequestDeviceAction['payload']) => {
     showView('word-plain');

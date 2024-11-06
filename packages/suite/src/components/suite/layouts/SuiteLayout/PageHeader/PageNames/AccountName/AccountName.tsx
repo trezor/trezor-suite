@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
+
 import { spacings } from '@trezor/theme';
 import { Account } from '@suite-common/wallet-types';
+
 import { ACCOUNT_INFO_HEIGHT } from 'src/components/wallet/WalletLayout/AccountTopPanel/AccountTopPanel';
+
 import { AccountDetails } from './AccountDetails';
 import { SCROLL_WRAPPER_ID } from '../../../SuiteLayout';
 

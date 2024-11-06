@@ -1,15 +1,9 @@
+import { useEffect, useMemo } from 'react';
+
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Divider, Translation } from 'src/components/suite';
-import { DashboardSection } from 'src/components/dashboard';
-import { StakingCard } from './StakingCard';
-import { ApyCard } from './ApyCard';
-import { PayoutCard } from './PayoutCard';
-import { ClaimCard } from './claim/ClaimCard';
-import { Transactions } from './Transactions';
 import {
     fetchAllTransactionsForAccountThunk,
     selectAccountStakeTransactions,
@@ -18,9 +12,19 @@ import {
     selectPoolStatsNextRewardPayout,
     selectValidatorsQueue,
 } from '@suite-common/wallet-core';
+
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { Divider, Translation } from 'src/components/suite';
+import { DashboardSection } from 'src/components/dashboard';
 import { getDaysToAddToPool, getDaysToUnstake } from 'src/utils/suite/stake';
+
+import { StakingCard } from './StakingCard';
+import { ApyCard } from './ApyCard';
+import { PayoutCard } from './PayoutCard';
+import { ClaimCard } from './claim/ClaimCard';
+import { Transactions } from './Transactions';
 import { InstantStakeBanner } from './InstantStakeBanner';
-import { useEffect, useMemo } from 'react';
 
 const FlexCol = styled.div`
     display: flex;

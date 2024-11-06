@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
+
 import { Checkbox, Switch, Banner } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';

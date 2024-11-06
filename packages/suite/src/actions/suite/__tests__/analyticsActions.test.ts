@@ -1,8 +1,9 @@
+import { prepareAnalyticsReducer, analyticsActions } from '@suite-common/analytics';
+
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 import { init } from 'src/actions/suite/analyticsActions';
 
-import { prepareAnalyticsReducer, analyticsActions } from '@suite-common/analytics';
 
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 

@@ -1,14 +1,19 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
+
 import { Icon, variables, Radio, motionAnimation } from '@trezor/components';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { spacings } from '@trezor/theme';
+
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 import { Translation, TranslationKey } from 'src/components/suite/Translation';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
+
 import { GreyCard } from './GreyCard';
 import { WarnHeader } from './WarnHeader';
-import { spacings } from '@trezor/theme';
+
 
 const OutputsWrapper = styled.div`
     display: flex;

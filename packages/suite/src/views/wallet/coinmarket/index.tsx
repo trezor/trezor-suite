@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { Margin } from 'recharts/types/util/types';
+
 import { variables, Spinner } from '@trezor/components';
 import {
     Elevation,
@@ -9,7 +11,7 @@ import {
     spacingsPx,
     typography,
 } from '@trezor/theme';
-import { Margin } from 'recharts/types/util/types';
+
 import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
 
 interface ResponsiveSize {

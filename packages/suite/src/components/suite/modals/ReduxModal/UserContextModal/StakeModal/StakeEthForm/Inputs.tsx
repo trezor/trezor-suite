@@ -1,8 +1,12 @@
 import styled from 'styled-components';
+
 import { Icon, Banner, Column, Text } from '@trezor/components';
 import { getInputState } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
+import { MIN_ETH_FOR_WITHDRAWALS } from '@suite-common/wallet-constants';
+import { spacingsPx } from '@trezor/theme';
+
 import { NumberInput, Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
 import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
@@ -13,8 +17,6 @@ import {
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
 import { FIAT_INPUT, CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
-import { MIN_ETH_FOR_WITHDRAWALS } from '@suite-common/wallet-constants';
-import { spacingsPx } from '@trezor/theme';
 import { validateStakingMax } from 'src/utils/suite/stake';
 
 const IconWrapper = styled.div`

@@ -1,5 +1,6 @@
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
+
 import { SettingsAnchor } from '../../../constants/suite/anchors';
 import { useDevice, useDispatch } from '../../../hooks/suite';
 import { changeLanguage } from '../../../actions/settings/deviceSettingsActions';

@@ -1,7 +1,9 @@
-import { H3, Icon, Row } from '@trezor/components';
 import styled from 'styled-components';
+
+import { H3, Icon, Row } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacingsPx } from '@trezor/theme';
+
 import { CoinmarketExchangeHeaderSummary } from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketExchangeHeaderSummary';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';

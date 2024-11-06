@@ -1,8 +1,10 @@
 import { UserContextPayload } from '@suite-common/suite-types';
 import { selectStake, cancelSignSendFormTransactionThunk } from '@suite-common/wallet-core';
+
 import { cancelSignTx as cancelSignStakingTx } from 'src/actions/wallet/stakeActions';
-import { TransactionReviewModalContent } from './TransactionReviewModalContent';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+
+import { TransactionReviewModalContent } from './TransactionReviewModalContent';
 
 // This modal is opened either in Device (button request) or User (push tx) context
 // contexts are distinguished by `type` prop

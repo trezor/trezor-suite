@@ -1,9 +1,12 @@
 import styled from 'styled-components';
+
 import { BadgeSize, Row, TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { AccountType, NetworkSymbol, Bip43Path, NetworkType } from '@suite-common/wallet-config';
-import { AccountTypeBadge } from './AccountTypeBadge';
+
 import { useDefaultAccountLabel } from 'src/hooks/suite';
+
+import { AccountTypeBadge } from './AccountTypeBadge';
 
 const TabularNums = styled.span`
     font-variant-numeric: tabular-nums;

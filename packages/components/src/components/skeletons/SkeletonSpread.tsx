@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { SkeletonStack, SkeletonStackProps } from './SkeletonStack';
 
 export interface SkeletonSpreadProps extends SkeletonStackProps {

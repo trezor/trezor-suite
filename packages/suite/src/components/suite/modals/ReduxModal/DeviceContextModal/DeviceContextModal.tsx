@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl';
 
 import TrezorConnect, { UI } from '@trezor/connect';
 import { selectDevice } from '@suite-common/wallet-core';
+
 import messages from 'src/support/messages';
 import { MODAL } from 'src/actions/suite/constants';
 import { useSelector } from 'src/hooks/suite';
@@ -18,6 +19,7 @@ import {
     ConfirmAddressModal,
     ConfirmXpubModal,
 } from 'src/components/suite/modals';
+
 import type { ReduxModalProps } from '../ReduxModal';
 
 /** Modals requested by Device from `trezor-connect` */

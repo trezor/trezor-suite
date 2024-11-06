@@ -12,7 +12,6 @@ import {
     TREZOR_USB_DESCRIPTORS,
     WEBUSB_BOOTLOADER_PRODUCT,
 } from '../constants';
-
 import * as ERRORS from '../errors';
 
 interface ConstructorParams extends AbstractApiConstructorParams {

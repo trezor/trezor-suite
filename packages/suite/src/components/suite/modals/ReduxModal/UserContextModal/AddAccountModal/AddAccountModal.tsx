@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
 
 import { accountsActions, selectDeviceModel } from '@suite-common/wallet-core';
@@ -7,6 +8,8 @@ import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { networks, Network, NetworkSymbol, NetworkAccount } from '@suite-common/wallet-config';
 import { CollapsibleBox, NewModal, Tooltip } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
+import { DeviceModelInternal } from '@trezor/connect';
+
 import { Translation, CoinList } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 import { TrezorDevice } from 'src/types/suite';
@@ -15,12 +18,12 @@ import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions
 import { goto } from 'src/actions/suite/routerActions';
 import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
+
 import { AccountTypeSelect } from './AccountTypeSelect/AccountTypeSelect';
 import { SelectNetwork } from './SelectNetwork';
 import { AddAccountButton } from './AddAccountButton/AddAccountButton';
-import { DeviceModelInternal } from '@trezor/connect';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
-import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 
 const NetworksWrapper = styled.div`
     display: flex;

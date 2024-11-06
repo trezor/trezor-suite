@@ -1,6 +1,7 @@
 import { findAccountDevice } from '@suite-common/wallet-utils';
 import { isSelectedDevice } from '@suite-common/suite-utils';
 import { selectDevices, selectDevice } from '@suite-common/wallet-core';
+import { BadgeProps } from '@trezor/components';
 
 import { AccountLabel } from 'src/components/suite';
 import { Account as WalletAccount } from 'src/types/wallet';
@@ -8,7 +9,6 @@ import { useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 
 import { WalletLabeling } from './WalletLabeling';
-import { BadgeProps } from '@trezor/components';
 
 interface AccountProps {
     account: WalletAccount | WalletAccount[];

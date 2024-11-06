@@ -1,8 +1,11 @@
-import { Button, Text, Banner, Card, Icon, H3, Column, List } from '@trezor/components';
-import { Translation } from 'src/components/suite/Translation';
-import { ContentType } from './types';
 import { Dispatch } from 'react';
+
+import { Button, Text, Banner, Card, Icon, H3, Column, List } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
+import { Translation } from 'src/components/suite/Translation';
+
+import { ContentType } from './types';
 
 type PassphraseWalletConfirmationStep2Props = {
     setContentType: Dispatch<React.SetStateAction<ContentType>>;

@@ -1,6 +1,13 @@
 import styled, { useTheme } from 'styled-components';
-import { useDevice, useSelector } from '../../../../../../../hooks/suite';
+
 import { Column, getIconSize, Icon, IconSize, iconSizes } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+import { TranslationKey } from '@suite-common/intl-types';
+import { getFirmwareVersion } from '@trezor/device-utils';
+import { isDesktop } from '@trezor/env-utils';
+import { mapTrezorModelToIcon } from '@trezor/product-components';
+
+import { Translation } from '../../../../../Translation';
 import {
     mapUpdateStatusToIcon,
     mapUpdateStatusToVariant,
@@ -8,12 +15,7 @@ import {
     UpdateStatusSuite,
     UpdateStatusDevice,
 } from './updateQuickActionTypes';
-import { Translation } from '../../../../../Translation';
-import { spacings } from '@trezor/theme';
-import { TranslationKey } from '@suite-common/intl-types';
-import { getFirmwareVersion } from '@trezor/device-utils';
-import { isDesktop } from '@trezor/env-utils';
-import { mapTrezorModelToIcon } from '@trezor/product-components';
+import { useDevice, useSelector } from '../../../../../../../hooks/suite';
 import { TooltipRow } from '../TooltipRow';
 
 const SuiteIconRectangle = styled.div<{ $size: IconSize }>`

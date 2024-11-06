@@ -1,8 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SetBrightness.js
 
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod } from '../core/AbstractMethod';
 import { PROTO } from '../constants';
-import { Assert } from '@trezor/schema-utils';
 
 export default class SetBrightness extends AbstractMethod<'setBrightness', PROTO.SetBrightness> {
     init() {

@@ -1,9 +1,9 @@
 import { css } from 'styled-components';
 
-import { AccountTransactionBaseAnchor, AnchorType } from 'src/constants/suite/anchors';
-
-import type { WalletAccountTransaction } from 'src/types/wallet';
 import { borders } from '@trezor/theme';
+
+import { AccountTransactionBaseAnchor, AnchorType } from 'src/constants/suite/anchors';
+import type { WalletAccountTransaction } from 'src/types/wallet';
 
 export const getTxIdFromAnchor = (anchor?: string): string => anchor?.split('/').pop() || '';
 

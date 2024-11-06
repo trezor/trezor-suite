@@ -1,9 +1,12 @@
+import styled from 'styled-components';
+
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Paragraph, Row } from '@trezor/components';
 import { palette, spacingsPx } from '@trezor/theme';
-import styled from 'styled-components';
-import { Translation } from 'src/components/suite';
 import { TranslationKey } from '@suite-common/intl-types';
+
+import { Translation } from 'src/components/suite';
+
 
 const Container = styled.div`
     display: grid;

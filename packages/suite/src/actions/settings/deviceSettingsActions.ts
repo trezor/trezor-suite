@@ -8,12 +8,13 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import TrezorConnect, { ERRORS } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { createThunk } from '@suite-common/redux-utils';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { Dispatch, GetState } from 'src/types/suite';
 import * as DEVICE from 'src/constants/suite/device';
-import { createThunk } from '@suite-common/redux-utils';
+
 import { selectSuiteSettings } from '../../reducers/suite/suiteReducer';
 
 export const applySettings =

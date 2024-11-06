@@ -1,4 +1,5 @@
 import { StartEmu, SetupEmu } from '@trezor/trezor-user-env-link';
+
 import { getController, initTrezorConnect } from '../../common.setup';
 import TrezorConnect from '../../../src';
 

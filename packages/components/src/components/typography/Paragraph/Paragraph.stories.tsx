@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+
 import { Paragraph as P } from './Paragraph';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { getTextPropsStory } from '../utils';

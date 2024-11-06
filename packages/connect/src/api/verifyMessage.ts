@@ -1,5 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/VerifyMessage.js
 
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
@@ -7,7 +9,6 @@ import { getLabel } from '../utils/pathUtils';
 import { messageToHex } from '../utils/formatUtils';
 import { PROTO, ERRORS } from '../constants';
 import { VerifyMessage as VerifyMessageSchema } from '../types';
-import { Assert } from '@trezor/schema-utils';
 
 export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO.VerifyMessage> {
     init() {

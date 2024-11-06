@@ -1,4 +1,20 @@
 import {
+    useState,
+    useMemo,
+    createContext,
+    useContext,
+    ReactNode,
+    HTMLProps,
+    forwardRef,
+    isValidElement,
+    cloneElement,
+    useRef,
+    RefObject,
+    CSSProperties,
+    MutableRefObject,
+} from 'react';
+
+import {
     useFloating,
     autoUpdate,
     offset,
@@ -15,21 +31,6 @@ import {
     arrow,
 } from '@floating-ui/react';
 import type { Placement, ShiftOptions, UseFloatingReturn } from '@floating-ui/react';
-import {
-    useState,
-    useMemo,
-    createContext,
-    useContext,
-    ReactNode,
-    HTMLProps,
-    forwardRef,
-    isValidElement,
-    cloneElement,
-    useRef,
-    RefObject,
-    CSSProperties,
-    MutableRefObject,
-} from 'react';
 
 /**
  * Based on https://floating-ui.com/docs/tooltip but heavily modified

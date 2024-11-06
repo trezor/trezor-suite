@@ -1,9 +1,12 @@
 import styled, { useTheme } from 'styled-components';
+
 import { spacingsPx } from '@trezor/theme';
-import { Translation } from 'src/components/suite';
-import { EverstakeLogo } from './EverstakeLogo';
 import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
+
+import { Translation } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+
+import { EverstakeLogo } from './EverstakeLogo';
 
 const Wrapper = styled.div`
     display: flex;

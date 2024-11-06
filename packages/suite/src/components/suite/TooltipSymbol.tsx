@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
+
 import { Icon, IconName, Tooltip } from '@trezor/components';
 import { CSSColor } from '@trezor/theme';
 

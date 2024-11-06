@@ -1,4 +1,5 @@
 import { INVALID_HASH_ERROR } from '@suite-common/wallet-core';
+
 import { OnboardingStepBox } from '../onboarding';
 import { Translation } from '../suite';
 

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
 const Container = styled.div`

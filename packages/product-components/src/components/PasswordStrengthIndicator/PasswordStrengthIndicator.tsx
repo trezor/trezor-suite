@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import styled from 'styled-components';
 
+import styled from 'styled-components';
 import type { ZXCVBNScore } from 'zxcvbn';
 
 interface WrapperProps {

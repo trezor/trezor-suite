@@ -1,8 +1,10 @@
+import { BuyTrade, BuyTradeQuoteRequest, BuyTradeStatus } from 'invity-api';
+
 import { desktopApi } from '@trezor/suite-desktop-api';
+import { isDesktop, getLocationOrigin } from '@trezor/env-utils';
+
 import { Account } from 'src/types/wallet';
 import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
-import { BuyTrade, BuyTradeQuoteRequest, BuyTradeStatus } from 'invity-api';
-import { isDesktop, getLocationOrigin } from '@trezor/env-utils';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return the limits
 export function getAmountLimits(

@@ -1,8 +1,9 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+
 import { fromWei } from 'web3-utils';
-import { useSelector } from 'src/hooks/suite';
+
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { DEFAULT_PAYMENT, DEFAULT_OPRETURN, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { getFeeLevels } from '@suite-common/wallet-utils';
 import {
@@ -13,10 +14,13 @@ import {
     FormState,
     FeeInfo,
 } from '@suite-common/wallet-types';
-import { useFees } from './form/useFees';
-import { useCompose } from './form/useCompose';
+
+import { useSelector } from 'src/hooks/suite';
 import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
 import { useCoinjoinRegisteredUtxos } from 'src/hooks/wallet/form/useCoinjoinRegisteredUtxos';
+
+import { useCompose } from './form/useCompose';
+import { useFees } from './form/useFees';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 
 export type UseRbfProps = {

@@ -1,9 +1,11 @@
-import { Column, IconCircle, Paragraph, NewModal, List, H4 } from '@trezor/components';
-import { Translation } from 'src/components/suite';
-import type { Deferred } from '@trezor/utils';
 import { CryptoId } from 'invity-api';
-import { useDevice } from 'src/hooks/suite';
+
+import { Column, IconCircle, Paragraph, NewModal, List, H4 } from '@trezor/components';
+import type { Deferred } from '@trezor/utils';
 import { spacings } from '@trezor/theme';
+
+import { Translation } from 'src/components/suite';
+import { useDevice } from 'src/hooks/suite';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
 type CoinmarketTermsModalProps = {

@@ -1,3 +1,7 @@
+import { Fragment } from 'react';
+
+import styled from 'styled-components';
+
 import {
     Elevation,
     borders,
@@ -5,10 +9,10 @@ import {
     spacingsPx,
     typography,
 } from '@trezor/theme';
-import styled from 'styled-components';
+
 import { ElevationDown, useElevation } from '../ElevationContext/ElevationContext';
 import { Keys, keyboardKeys } from './keyboardKeys';
-import { Fragment } from 'react';
+
 
 export const Container = styled.div<{ $elevation: Elevation; $isActive: boolean }>`
     display: flex;

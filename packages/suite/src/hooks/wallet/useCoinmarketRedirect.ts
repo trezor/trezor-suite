@@ -1,11 +1,14 @@
-import { Account } from 'src/types/wallet';
 import { BuyTradeQuoteRequest, CryptoId, SellFiatTradeQuoteRequest } from 'invity-api';
+
+import { FeeLevel } from '@trezor/connect';
+
+import { Account } from 'src/types/wallet';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
 import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import { FeeLevel } from '@trezor/connect';
+
 
 interface OfferRedirectParams {
     symbol: Account['symbol'];

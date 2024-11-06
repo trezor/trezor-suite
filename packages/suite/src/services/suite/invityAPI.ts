@@ -23,8 +23,10 @@ import {
     SellFiatTradeResponse,
     InfoResponse,
 } from 'invity-api';
+
 import { getSuiteVersion, isDesktop } from '@trezor/env-utils';
 import type { InvityServerEnvironment, InvityServers } from '@suite-common/invity';
+
 import {
     CoinmarketPaymentMethodType,
     CoinmarketTradeDetailType,

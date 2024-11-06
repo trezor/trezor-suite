@@ -1,10 +1,11 @@
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath, getScriptType, getSerializedPath } from '../utils/pathUtils';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { PROTO } from '../constants';
 import { UI, createUiMessage } from '../events';
-import { Assert } from '@trezor/schema-utils';
 import { Bundle } from '../exports';
 import { GetOwnershipProof as GetOwnershipProofSchema } from '../types/api/getOwnershipProof';
 

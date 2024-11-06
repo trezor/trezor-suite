@@ -1,9 +1,11 @@
 import { MouseEventHandler } from 'react';
+
 import styled, { css, useTheme } from 'styled-components';
 
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import { Checkbox, Spinner, TextButton, Tooltip } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import {
@@ -17,12 +19,12 @@ import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import { UtxoTag } from './UtxoTag';
 import {
     selectIsLabelingInitPossible,
     selectLabelingDataForSelectedAccount,
 } from 'src/reducers/suite/metadataReducer';
-import { borders, spacingsPx, typography } from '@trezor/theme';
+
+import { UtxoTag } from './UtxoTag';
 
 const transitionSpeed = '0.16s';
 

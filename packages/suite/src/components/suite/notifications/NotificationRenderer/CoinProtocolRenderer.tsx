@@ -1,16 +1,18 @@
 import { useRouteMatch } from 'react-router-dom';
+
 import styled from 'styled-components';
 
 import { CoinLogo } from '@trezor/product-components';
 import { capitalizeFirstLetter } from '@trezor/utils';
+import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
-
 import type { NotificationRendererProps } from 'src/components/suite';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+
+
 import { ConditionalActionRenderer } from './ConditionalActionRenderer';
 
 const Row = styled.span`

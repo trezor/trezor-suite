@@ -1,4 +1,5 @@
 import UDP from 'dgram';
+
 import { createTimeoutPromise, isNotUndefined, arrayPartition } from '@trezor/utils';
 
 import {

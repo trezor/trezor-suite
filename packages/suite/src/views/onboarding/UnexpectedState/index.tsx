@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+
 import styled from 'styled-components';
 
 import { selectDevice } from '@suite-common/wallet-core';

@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+
 import intervalToDuration from 'date-fns/intervalToDuration';
 
 export const useCountdownTimer = (deadline: number) => {

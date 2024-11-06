@@ -1,4 +1,5 @@
 import { InfoResponse } from 'invity-api';
+
 import { COINMARKET_INFO } from 'src/actions/wallet/constants';
 import { CoinmarketPaymentMethodListProps } from 'src/types/coinmarket/coinmarket';
 

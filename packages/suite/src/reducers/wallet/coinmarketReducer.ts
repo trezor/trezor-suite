@@ -1,7 +1,4 @@
 import produce from 'immer';
-import type { WalletAction, Account } from 'src/types/wallet';
-import type { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
-
 import type {
     BuyTrade,
     BuyTradeQuoteRequest,
@@ -13,6 +10,11 @@ import type {
     CryptoId,
     Platforms,
 } from 'invity-api';
+
+import type { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import type { FeeLevel } from '@trezor/connect';
+
+import type { WalletAction, Account } from 'src/types/wallet';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import type { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import {
@@ -25,7 +27,6 @@ import {
 import { STORAGE } from 'src/actions/suite/constants';
 import type { Action as SuiteAction } from 'src/types/suite';
 import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
-import type { FeeLevel } from '@trezor/connect';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import {
     CoinmarketPaymentMethodListProps,

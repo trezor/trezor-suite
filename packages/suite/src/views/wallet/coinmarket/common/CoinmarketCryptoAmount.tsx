@@ -1,10 +1,12 @@
-import { spacings } from '@trezor/theme';
-import { FormattedCryptoAmount } from 'src/components/suite';
 import styled from 'styled-components';
+import { CryptoId } from 'invity-api';
+
+import { spacings } from '@trezor/theme';
 import { Row } from '@trezor/components';
+
+import { FormattedCryptoAmount } from 'src/components/suite';
 import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { CryptoId } from 'invity-api';
 import { CoinmarketTestWrapper } from 'src/views/wallet/coinmarket';
 
 const LogoWrapper = styled.div`

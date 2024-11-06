@@ -1,5 +1,6 @@
 import { spacings } from '@trezor/theme';
 import { Row, Text } from '@trezor/components';
+
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { CoinmarketFormInputCurrency } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCurrency';

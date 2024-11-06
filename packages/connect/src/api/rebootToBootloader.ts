@@ -1,9 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/RebootToBootloader.js
 
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { UI } from '../events';
-import { Assert } from '@trezor/schema-utils';
 import { PROTO } from '../constants';
 
 export default class RebootToBootloader extends AbstractMethod<

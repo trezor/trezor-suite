@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
+
 import styled, { useTheme } from 'styled-components';
+
 import { DeviceModelInternal } from '@trezor/connect';
 import { HELP_CENTER_PIN_URL } from '@trezor/urls';
 import { variables } from '@trezor/components';
+
 import { DeviceMatrixExplanation, Translation, TrezorLink } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
 import { onPinSubmit } from 'src/actions/suite/modalActions';
 import { useDispatch } from 'src/hooks/suite';
+
 import { PinInput } from './PinInput/PinInput';
 
 export const PIN_MATRIX_MAX_WIDTH = '316px';

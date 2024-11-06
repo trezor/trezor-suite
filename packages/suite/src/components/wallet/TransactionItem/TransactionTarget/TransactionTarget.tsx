@@ -10,17 +10,20 @@ import {
 } from '@suite-common/wallet-utils';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { ArrayElement } from '@trezor/type-utils';
+import { selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+
 import { FiatValue, Translation, MetadataLabeling, AddressLabeling } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { AccountLabels } from 'src/types/suite/metadata';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
 import { TargetAddressLabel } from './TargetAddressLabel';
-import { AccountLabels } from 'src/types/suite/metadata';
 import { TransactionTargetLayout } from '../TransactionTargetLayout';
 import { StyledFormattedCryptoAmount, StyledFormattedNftAmount } from '../CommonComponents';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+
 
 interface BaseTransfer {
     singleRowLayout?: boolean;

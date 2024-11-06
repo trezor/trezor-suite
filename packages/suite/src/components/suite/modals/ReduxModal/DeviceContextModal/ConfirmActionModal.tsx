@@ -1,13 +1,15 @@
-import styled from 'styled-components';
 import { useIntl } from 'react-intl';
+
+import styled from 'styled-components';
 
 import TrezorConnect from '@trezor/connect';
 import { H2, NewModal } from '@trezor/components';
 import { ConfirmOnDevice } from '@trezor/product-components';
+import { spacings } from '@trezor/theme';
+
 import { Translation } from 'src/components/suite/Translation';
 import { DeviceConfirmImage } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
-import { spacings } from '@trezor/theme';
 import messages from 'src/support/messages';
 
 const ImageWrapper = styled.div`

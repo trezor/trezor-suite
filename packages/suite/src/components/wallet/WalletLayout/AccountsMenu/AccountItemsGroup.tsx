@@ -1,16 +1,20 @@
 import styled from 'styled-components';
-import { AccountItem } from './AccountItem';
-import { Account } from 'src/types/wallet';
+
 import { borders, spacingsPx, spacings } from '@trezor/theme';
-import { useSelector } from 'src/hooks/suite';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import {
     getAccountTotalStakingBalance,
     getAccountTokensFiatBalance,
 } from '@suite-common/wallet-utils';
+import { Column } from '@trezor/components';
+
+import { Account } from 'src/types/wallet';
+import { useSelector } from 'src/hooks/suite';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { Column } from '@trezor/components';
+
+
+import { AccountItem } from './AccountItem';
 
 const Section = styled.div<{ $selected?: boolean }>`
     display: flex;

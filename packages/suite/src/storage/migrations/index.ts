@@ -1,21 +1,23 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { toWei } from 'web3-utils';
-import { isDesktop } from '@trezor/env-utils';
-import type { State } from 'src/reducers/wallet/settingsReducer';
-import type { CustomBackend, BlockbookUrl } from 'src/types/wallet/backend';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { isDesktop } from '@trezor/env-utils';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { BackendSettings } from '@suite-common/wallet-types';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
-import type { DBWalletAccountTransaction, SuiteDBSchema } from '../definitions';
 import {
     formatNetworkAmount,
     networkAmountToSmallestUnit,
     amountToSmallestUnit,
 } from '@suite-common/wallet-utils';
-import { updateAll } from './utils';
 import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
+
+import type { CustomBackend, BlockbookUrl } from 'src/types/wallet/backend';
+import type { State } from 'src/reducers/wallet/settingsReducer';
+
+import { updateAll } from './utils';
+import type { DBWalletAccountTransaction, SuiteDBSchema } from '../definitions';
 
 type WalletWithBackends = {
     backends?: Partial<{

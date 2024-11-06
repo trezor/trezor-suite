@@ -1,4 +1,5 @@
 import { Route } from '@suite-common/suite-types';
+
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { selectIsAccountTabPage } from 'src/reducers/suite/routerReducer';

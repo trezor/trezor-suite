@@ -1,8 +1,10 @@
 import produce from 'immer';
+
+import { ReceiveInfo } from '@suite-common/wallet-types';
+
 import { RECEIVE } from 'src/actions/wallet/constants';
 import { Action as SuiteAction } from 'src/types/suite';
 
-import { ReceiveInfo } from '@suite-common/wallet-types';
 
 export type State = ReceiveInfo[];
 

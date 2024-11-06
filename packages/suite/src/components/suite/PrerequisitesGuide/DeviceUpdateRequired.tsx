@@ -1,4 +1,5 @@
 import { MouseEventHandler } from 'react';
+
 import { Button } from '@trezor/components';
 
 import { Translation, TroubleshootingTips } from 'src/components/suite';

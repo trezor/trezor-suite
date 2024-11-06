@@ -3,6 +3,7 @@
 // - `fromBase58Check` method is using additional "network" param and bs58check.decodeAddress instead of bs58check.decode. checking multibyte version (Zcash and Decred support).
 
 import { bech32, bech32m } from 'bech32';
+
 import * as bs58check from './bs58check';
 import * as bscript from './script';
 import * as payments from './payments';

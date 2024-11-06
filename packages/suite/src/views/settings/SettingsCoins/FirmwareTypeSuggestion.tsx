@@ -1,13 +1,14 @@
 import styled from 'styled-components';
 
+import { Button, Banner } from '@trezor/components';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { typography } from '@trezor/theme';
+
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { Button, Banner } from '@trezor/components';
-import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { typography } from '@trezor/theme';
 
 const InlineButtonWrapper = styled.div`
     display: inline-block;

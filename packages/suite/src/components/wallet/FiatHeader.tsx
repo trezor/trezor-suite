@@ -1,11 +1,14 @@
+import { PropsWithChildren } from 'react';
+
+import styled from 'styled-components';
+
 import { useFormatters } from '@suite-common/formatters';
 import { typography } from '@trezor/theme';
 import { useShouldRedactNumbers } from '@suite-common/wallet-utils';
+
 import { HiddenPlaceholder, RedactNumericalValue } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
-import { PropsWithChildren } from 'react';
-import styled from 'styled-components';
 
 const ValueWrapper = styled.div`
     display: flex;

@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
+import { Route, Switch } from 'react-router-dom';
 
 import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
+
 import { CoinsTable } from './coins/CoinsTable';
-import { Route, Switch } from 'react-router-dom';
 import { TokensNavigation } from './TokensNavigation';
 import { HiddenTokensTable } from './hidden-tokens/HiddenTokensTable';
-import { goto } from 'src/actions/suite/routerActions';
+
 
 export const Tokens = () => {
     const [searchQuery, setSearchQuery] = useState('');

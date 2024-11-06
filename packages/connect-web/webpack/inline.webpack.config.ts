@@ -1,6 +1,7 @@
 import webpack from 'webpack';
 import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
+
 import prod from './prod.webpack.config';
 
 // Generate inline script hosted on https://connect.trezor.io/X/trezor-connect.js

@@ -1,8 +1,10 @@
 import { forwardRef, HTMLAttributes } from 'react';
+
 import styled from 'styled-components';
 
 import { borders, spacingsPx } from '@trezor/theme';
 import { variables } from '@trezor/components';
+
 import { anchorOutlineStyles } from 'src/utils/suite/anchor';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 

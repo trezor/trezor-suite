@@ -1,22 +1,27 @@
 import { useState, useMemo } from 'react';
+
 import styled from 'styled-components';
+
 import { Button, NewModal } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import { isPending, findChainedTransactions, getAccountKey } from '@suite-common/wallet-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import { useSelector } from 'src/hooks/suite';
 import {
     selectAccountByKey,
     selectTransactionConfirmations,
     selectAllPendingTransactions,
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
+import { borders, spacingsPx, typography } from '@trezor/theme';
+
+import { useSelector } from 'src/hooks/suite';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
+
 import { BasicTxDetails } from './BasicTxDetails';
 import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
 import { ChangeFee } from './ChangeFee/ChangeFee';
-import { borders, spacingsPx, typography } from '@trezor/theme';
+
 
 const PhishingBanner = styled.div`
     margin-bottom: ${spacingsPx.xs};

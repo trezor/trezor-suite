@@ -1,21 +1,24 @@
 import { useEffect, useRef } from 'react';
+
 import styled from 'styled-components';
 
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { Button, variables, Banner } from '@trezor/components';
-import { Translation } from 'src/components/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { TranslationKey } from '@suite-common/intl-types';
 import { copyToClipboard, download } from '@trezor/dom-utils';
-import { useDispatch } from 'src/hooks/suite';
-import { TransactionReviewDetails } from './TransactionReviewDetails';
-import { TransactionReviewOutput } from './TransactionReviewOutput';
-import type { Account } from 'src/types/wallet';
 import type { FormState, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getTransactionReviewOutputState } from '@suite-common/wallet-utils';
-import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
 import { ReviewOutput, StakeFormState, StakeType } from '@suite-common/wallet-types';
 import { spacingsPx } from '@trezor/theme';
+
+import type { Account } from 'src/types/wallet';
+import { useDispatch } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
+
+import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
+import { TransactionReviewOutput } from './TransactionReviewOutput';
+import { TransactionReviewDetails } from './TransactionReviewDetails';
 
 const Content = styled.div`
     display: flex;

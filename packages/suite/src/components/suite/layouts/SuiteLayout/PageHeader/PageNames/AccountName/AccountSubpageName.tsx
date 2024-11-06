@@ -1,11 +1,14 @@
 import styled from 'styled-components';
+
 import { IconButton } from '@trezor/components';
 import { Account } from '@suite-common/wallet-types';
 import { spacingsPx } from '@trezor/theme';
-import { useDispatch } from 'src/hooks/suite';
-import { AccountDetails } from './AccountDetails';
-import { goto } from 'src/actions/suite/routerActions';
 import { Route } from '@suite-common/suite-types';
+
+import { useDispatch } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
+
+import { AccountDetails } from './AccountDetails';
 
 const Container = styled.div`
     display: flex;

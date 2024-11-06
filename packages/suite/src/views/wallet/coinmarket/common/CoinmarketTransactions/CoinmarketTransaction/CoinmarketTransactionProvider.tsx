@@ -1,5 +1,6 @@
 import { Flex, FlexProps, useMediaQuery, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
 import { CoinmarketPaymentMethodType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketPaymentType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentType';
 import {

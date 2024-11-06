@@ -1,8 +1,11 @@
 import { useRef, useState, useEffect } from 'react';
+
 import { render, screen } from '@testing-library/react';
+
 import { testMocks } from '@suite-common/test-utils';
-import { useExcludedUtxos } from '../form/useExcludedUtxos';
 import * as walletUtils from '@suite-common/wallet-utils';
+
+import { useExcludedUtxos } from '../form/useExcludedUtxos';
 
 type Props = Parameters<typeof useExcludedUtxos>[0];
 

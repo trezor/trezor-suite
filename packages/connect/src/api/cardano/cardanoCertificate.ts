@@ -1,5 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoCertificate.js
 
+import { Assert } from '@trezor/schema-utils';
+
 import { validatePath } from '../../utils/pathUtils';
 import { PROTO, ERRORS } from '../../constants';
 import {
@@ -9,7 +11,6 @@ import {
     CardanoPoolRelay,
     CardanoDRep,
 } from '../../types/api/cardano';
-import { Assert } from '@trezor/schema-utils';
 
 const ipv4AddressToHex = (ipv4Address: string) =>
     Buffer.from(ipv4Address.split('.').map(ipPart => parseInt(ipPart, 10))).toString('hex');

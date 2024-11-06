@@ -1,12 +1,16 @@
 import { DefaultTheme, useTheme } from 'styled-components';
+import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
+
+import { Icon, Row, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
 import { Translation } from 'src/components/suite';
 import { getStatusMessage as getBuyStatusMessage } from 'src/utils/wallet/coinmarket/buyUtils';
 import { getStatusMessage as getExchangeStatusMessage } from 'src/utils/wallet/coinmarket/exchangeUtils';
 import { getStatusMessage as getSellStatusMessage } from 'src/utils/wallet/coinmarket/sellUtils';
-import { Icon, Row, Text } from '@trezor/components';
 import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
-import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
-import { spacings } from '@trezor/theme';
+
+
 
 const getBuyTradeData = (status: BuyTradeStatus, theme: DefaultTheme) => {
     const message = getBuyStatusMessage(status);

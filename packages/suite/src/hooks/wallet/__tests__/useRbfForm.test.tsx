@@ -1,7 +1,8 @@
-import TrezorConnect from '@trezor/connect';
 import { screen } from '@testing-library/react';
+
+import TrezorConnect from '@trezor/connect';
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
-import * as fixtures from '../__fixtures__/useRbfForm';
+
 import {
     renderWithProviders,
     waitForLoader,
@@ -9,6 +10,8 @@ import {
     findByTestId,
 } from 'src/support/tests/hooksHelper';
 import { ChangeFee } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';
+
+import * as fixtures from '../__fixtures__/useRbfForm';
 import { useRbfContext } from '../useRbfForm';
 
 // do not mock

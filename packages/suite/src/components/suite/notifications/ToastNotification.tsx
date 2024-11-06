@@ -1,12 +1,17 @@
 import { useLayoutEffect, useRef, useState } from 'react';
+
 import styled, { css, useTheme } from 'styled-components';
+
 import { Button, Icon, variables } from '@trezor/components';
-import { NotificationRenderer, NotificationViewProps, Translation } from 'src/components/suite';
 import { notificationsActions, NotificationEntry } from '@suite-common/toast-notifications';
+import { spacings } from '@trezor/theme';
+
+import { NotificationRenderer, NotificationViewProps, Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { getNotificationIcon, getVariantColor } from 'src/utils/suite/notification';
+
 import { ToastNotificationVariant } from '../../../types/suite';
-import { spacings } from '@trezor/theme';
+
 
 const Wrapper = styled.div<{ $variant: ToastNotificationVariant; $isTall: boolean }>`
     display: flex;

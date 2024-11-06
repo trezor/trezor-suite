@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { AutoScalingInput as Input } from './AutoScalingInput';
 import { Meta } from '@storybook/react';
+
+import { AutoScalingInput as Input } from './AutoScalingInput';
 
 const Wrapper = styled.div`
     display: flex;

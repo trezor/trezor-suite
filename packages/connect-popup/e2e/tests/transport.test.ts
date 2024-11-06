@@ -1,8 +1,10 @@
 import { test, expect, firefox, chromium, Page, BrowserContext } from '@playwright/test';
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-import { waitAndClick, log, formatUrl } from '../support/helpers';
 import http from 'http';
 import https from 'https';
+
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+
+import { waitAndClick, log, formatUrl } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 

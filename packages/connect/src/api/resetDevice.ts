@@ -1,10 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ResetDevice.js
 
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { PROTO } from '../constants';
-import { Assert } from '@trezor/schema-utils';
 
 export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.ResetDevice> {
     init() {

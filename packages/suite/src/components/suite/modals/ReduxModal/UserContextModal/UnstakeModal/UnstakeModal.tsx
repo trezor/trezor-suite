@@ -1,5 +1,3 @@
-import { useSelector } from 'src/hooks/suite';
-import { Translation } from 'src/components/suite';
 import {
     Card,
     CollapsibleBox,
@@ -12,11 +10,16 @@ import {
     variables,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo';
-import { UnstakeButton } from './UnstakeEthForm/UnstakeButton';
-import { UnstakeEthFormContext, useUnstakeEthForm } from 'src/hooks/wallet/useUnstakeEthForm';
-import { UnstakeEthForm } from './UnstakeEthForm/UnstakeEthForm';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+
+import { useSelector } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
+import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo';
+import { UnstakeEthFormContext, useUnstakeEthForm } from 'src/hooks/wallet/useUnstakeEthForm';
+
+import { UnstakeButton } from './UnstakeEthForm/UnstakeButton';
+import { UnstakeEthForm } from './UnstakeEthForm/UnstakeEthForm';
+
 
 interface UnstakeModalModalProps {
     onCancel?: () => void;

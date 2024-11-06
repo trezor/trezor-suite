@@ -7,6 +7,7 @@
 
 import ecc from 'tiny-secp256k1';
 import * as wif from 'wif';
+
 import { typeforce } from './types/typeforce';
 import * as bs58check from './bs58check';
 import * as crypto from './crypto';

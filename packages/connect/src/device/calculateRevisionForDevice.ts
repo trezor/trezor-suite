@@ -1,4 +1,5 @@
 import { isNewer } from '@trezor/utils/src/versionUtils';
+
 import { VersionArray } from '../exports';
 
 type calculateRevisionForDeviceParams = {

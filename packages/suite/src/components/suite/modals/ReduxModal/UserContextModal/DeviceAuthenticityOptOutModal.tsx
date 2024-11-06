@@ -1,10 +1,11 @@
 import { useState } from 'react';
 
 import { Column, NewModal, Card, Banner, H3, Paragraph } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
 import { Translation, CheckItem } from 'src/components/suite';
 import { deviceAuthenticityOptOut } from 'src/actions/suite/suiteActions';
 import { useDispatch } from 'src/hooks/suite';
-import { spacings } from '@trezor/theme';
 
 type DeviceAuthenticityOptOutModalProps = {
     onCancel: () => void;

@@ -1,5 +1,6 @@
-import modalReducer, { State } from '../modalReducer';
 import { Action } from 'src/types/suite';
+
+import modalReducer, { State } from '../modalReducer';
 import fixtures from '../__fixtures__/modalReducer';
 
 describe('modalReducer', () => {

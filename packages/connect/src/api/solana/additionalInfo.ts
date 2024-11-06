@@ -1,4 +1,5 @@
 import { Assert } from '@trezor/schema-utils';
+
 import { SolanaTxAdditionalInfo } from '../../types/api/solana';
 
 export const transformAdditionalInfo = (additionalInfo?: SolanaTxAdditionalInfo) => {

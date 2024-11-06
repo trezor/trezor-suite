@@ -1,9 +1,12 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js
 
 import { randomBytes } from 'crypto';
+
 import { Transport, Session } from '@trezor/transport';
 import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { createTimeoutPromise, versionUtils } from '@trezor/utils';
+import { Assert } from '@trezor/schema-utils';
+
 import { ERRORS } from '../constants';
 import { DEVICE } from '../events';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
@@ -11,11 +14,9 @@ import { isTaprootPath, getSerializedPath, getScriptType, toHardened } from '../
 import { getAccountAddressN } from '../utils/accountUtils';
 import { getSegwitNetwork, getBech32Network } from '../data/coinInfo';
 import { initLog } from '../utils/debug';
-
 import { Device } from './Device';
 import type { CoinInfo, BitcoinNetworkInfo, Network } from '../types';
 import type { HDNodeResponse } from '../types/api/getPublicKey';
-import { Assert } from '@trezor/schema-utils';
 import { resolveDescriptorForTaproot } from './resolveDescriptorForTaproot';
 import { promptPin, promptPassphrase, promptWord, cancelPrompt } from './prompts';
 

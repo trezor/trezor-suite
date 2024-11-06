@@ -1,4 +1,5 @@
 import { Type, Static } from '@trezor/schema-utils';
+
 import { DerivationPath } from '../../params';
 
 // ethereumSignMessage
