@@ -1,12 +1,13 @@
 import produce from 'immer';
 
-import { WalletSettings } from '@suite-common/wallet-types';
+import type { WalletSettings } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
+import { networkSymbolCollection } from '@suite-common/wallet-config';
 
-import { STORAGE } from 'src/actions/suite/constants';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import { Action, AppState } from 'src/types/suite';
+import { STORAGE } from 'src/actions/suite/constants';
+import type { Action, AppState } from 'src/types/suite';
 
 export type State = WalletSettings;
 
@@ -36,7 +37,10 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
 
             case walletSettingsActions.changeNetworks.type: {
                 if (walletSettingsActions.changeNetworks.match(action)) {
-                    draft.enabledNetworks = action.payload;
+                    draft.enabledNetworks = [...action.payload].sort(
+                        (a, b) =>
+                            networkSymbolCollection.indexOf(a) - networkSymbolCollection.indexOf(b),
+                    );
                 }
                 break;
             }

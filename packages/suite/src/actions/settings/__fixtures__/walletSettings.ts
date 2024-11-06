@@ -46,7 +46,7 @@ export default [
         initialState: { enabledNetworks: [] },
         action: () => walletSettingsActions.changeNetworks(['ltc', 'eth']),
         result: {
-            enabledNetworks: ['ltc', 'eth'],
+            enabledNetworks: ['eth', 'ltc'],
         },
     },
     {
