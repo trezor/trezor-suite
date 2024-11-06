@@ -53,7 +53,7 @@ export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIc
     return (
         <Image
             source={sourceUrl}
-            recyclingKey={sourceUrl}
+            recyclingKey={symbol + contractAddress}
             style={applyStyle(iconStyle, { width: sizeNumber, height: sizeNumber })}
             placeholder={genericTokenIcon}
             cachePolicy="memory-disk"
