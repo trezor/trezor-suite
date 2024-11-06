@@ -35,8 +35,8 @@ export const getStaticProps = ({ params }) => {
             content = content.replace(/^(#+)/gm, '$1#');
             // Add links to commit hashes
             content = content.replace(
-                /([a-f0-9]{7,10})([\),])/g,
-                `[\$1](https://github.com/trezor/trezor-suite/commit/\$1)$2`,
+                /([a-f0-9]{7,10})([),])/g,
+                `[$1](https://github.com/trezor/trezor-suite/commit/$1)$2`,
             );
             content = `---\ntitle: ${name}\n---\n${content}`;
 
