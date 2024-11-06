@@ -312,6 +312,7 @@ module.exports = {
 
         // Jest plugin config
         'jest/valid-title': 'off', // This rule does not use Typescript and produces false positives
+        'jest/valid-describe-callback': 'off', // This rule does not use Typescript and produces false positives
         'jest/no-disabled-tests': 'off', // we still have a lot of skipped tests (WIP)
         'jest/no-conditional-expect': 'off', // Todo: we shall solve this, this is bad practice
         'jest/expect-expect': 'off', // Todo: we have test with no assertions, this may be legit but it needs to be checked
@@ -393,7 +394,7 @@ module.exports = {
         {
             files: ['packages/connect/e2e/**/*'],
             rules: {
-                'jest/no-jasmine-globals': 'off', // Kamma tests
+                'jest/no-jasmine-globals': 'off', // Karma tests
             },
         },
     ],
