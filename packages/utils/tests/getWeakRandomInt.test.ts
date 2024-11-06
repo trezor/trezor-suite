@@ -10,6 +10,11 @@ describe(getWeakRandomInt.name, () => {
     });
 
     it('returns same value when range is trivial', () => {
+        expect(getWeakRandomInt(0, 1)).toEqual(0);
+        expect(getWeakRandomInt(100, 101)).toEqual(100);
+    });
+
+    it('returns value in the given range', () => {
         for (let i = 0; i < 10_000; i++) {
             const result = getWeakRandomInt(0, 100);
 
