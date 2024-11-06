@@ -7,7 +7,6 @@ import { WalletAccountTransaction } from 'src/types/wallet';
 import { Translation, AddressLabeling } from 'src/components/suite';
 import { AccountLabels } from 'src/types/suite/metadata';
 
-
 const TruncatedSpan = styled.span<{ $isBlurred?: boolean }>`
     overflow: hidden;
     text-overflow: ellipsis;

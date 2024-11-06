@@ -2,7 +2,6 @@ import { useRef, useLayoutEffect } from 'react';
 
 import { useTheme } from 'styled-components';
 
-
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 

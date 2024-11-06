@@ -12,7 +12,6 @@ import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import type { NotificationRendererProps } from 'src/components/suite';
 
-
 import { ConditionalActionRenderer } from './ConditionalActionRenderer';
 
 const Row = styled.span`

@@ -14,7 +14,6 @@ import {
 } from 'src/actions/suite/suiteActions';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
-
 export const useTor = () => {
     const { torBootstrap, isTorEnabling } = useSelector(selectTorState);
     const dispatch = useDispatch();

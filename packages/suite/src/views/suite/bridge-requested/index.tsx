@@ -12,7 +12,6 @@ import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useLayout } from 'src/hooks/suite';
 import { AutoStart } from 'src/views/settings/SettingsGeneral/AutoStart';
 
-
 const StyledModal = styled(Modal)`
     ${Modal.BottomBar} {
         > * {

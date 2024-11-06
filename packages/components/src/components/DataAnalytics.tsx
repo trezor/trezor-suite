@@ -11,7 +11,6 @@ import { CollapsibleBox } from './CollapsibleBox/CollapsibleBox';
 import { Card } from './Card/Card';
 import { Switch } from './form/Switch/Switch';
 
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;

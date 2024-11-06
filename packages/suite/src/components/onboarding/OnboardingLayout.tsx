@@ -17,7 +17,6 @@ import { GuideButton, GuideRouter } from 'src/components/guide';
 import { MessageSystemBanner } from 'src/components/suite/banners';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
-
 import { TrafficLightOffset } from '../suite/TrafficLightOffset';
 
 const Wrapper = styled.div`

@@ -14,8 +14,6 @@ import { WalletAccountTransaction } from 'src/types/wallet';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { getInstantStakeType } from 'src/utils/suite/stake';
 
-
-
 const Wrapper = styled.div`
     display: flex;
     gap: ${spacingsPx.xxs};

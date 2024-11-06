@@ -8,7 +8,6 @@ import type { State as ModalState } from 'src/reducers/suite/modalReducer';
 import { useFilteredModal } from '../useFilteredModal';
 import { filters, fixtures } from '../__fixtures__/useFilteredModal';
 
-
 const mockStore = configureStore<{ modal: ModalState }, any>();
 
 type Result = ModalState | null;

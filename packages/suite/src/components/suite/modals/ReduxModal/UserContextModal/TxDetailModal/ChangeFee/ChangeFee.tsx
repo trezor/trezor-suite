@@ -16,7 +16,6 @@ import { AffectedTransactions } from './AffectedTransactions';
 import { DecreasedOutputs } from './DecreasedOutputs';
 import { ReplaceTxButton } from './ReplaceTxButton';
 
-
 const Wrapper = styled.div`
     margin: 12px 0;
 `;

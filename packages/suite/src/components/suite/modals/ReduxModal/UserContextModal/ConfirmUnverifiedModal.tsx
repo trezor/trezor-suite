@@ -10,7 +10,6 @@ import { Dispatch, GetState } from 'src/types/suite';
 import { onCancel } from 'src/actions/suite/modalActions';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 
-
 interface ConfirmUnverifiedModalProps {
     action: {
         event: () => (dispatch: Dispatch) => void;

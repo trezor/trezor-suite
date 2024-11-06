@@ -4,7 +4,6 @@ import { Paragraph, H2, Button, Link, Image } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 
-
 const Wrapper = styled.div`
     display: flex;
     flex: 1;

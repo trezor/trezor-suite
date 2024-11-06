@@ -5,7 +5,6 @@ import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { useTranslation } from './useTranslation';
 
-
 export interface GetDefaultAccountLabelParams {
     accountType: AccountType;
     symbol: NetworkSymbol;

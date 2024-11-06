@@ -6,7 +6,6 @@ import styled from 'styled-components';
 
 import { zIndices, spacings } from '@trezor/theme';
 
-
 import { NewModalAlignment } from './types';
 import { mapAlignmentToAlignItems, mapAlignmentToJustifyContent } from './utils';
 import { useModalTarget } from './NewModalProvider';

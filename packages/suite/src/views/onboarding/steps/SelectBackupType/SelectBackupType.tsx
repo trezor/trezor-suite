@@ -33,7 +33,6 @@ import { OptionText, SelectedOption } from './OptionWithContent';
 import { FloatingSelections } from './FloatingSelections';
 import { typesToLabelMap } from './typesToLabelMap';
 
-
 const SELECT_ELEMENT_HEIGHT = 84;
 const SELECT_ELEMENT_HEIGHT_MOBILE = 62;
 

@@ -16,7 +16,6 @@ import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 
-
 /**
  * A Modal that allows user to set the `safety_checks` feature of connected Trezor.
  * Only supports setting it to `Strict` or `PromptTemporarily`.

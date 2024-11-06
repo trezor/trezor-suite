@@ -14,7 +14,6 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { goto } from '../../../actions/suite/routerActions';
 
-
 const doesSupportMultiShare = (device: TrezorDevice | undefined): boolean => {
     if (device?.features === undefined) {
         return false;

@@ -10,7 +10,6 @@ import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 import { useSelector } from '../../../hooks/suite';
 
-
 const PositionedSwitch = styled.div`
     align-self: center;
 `;

@@ -17,7 +17,6 @@ import { BackendInput } from './BackendInput';
 import { BackendTypeSelect } from './BackendTypeSelect';
 import { TorModal, TorResult } from './TorModal';
 
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;

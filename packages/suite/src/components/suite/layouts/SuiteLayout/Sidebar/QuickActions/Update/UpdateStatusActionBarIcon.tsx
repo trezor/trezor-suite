@@ -21,7 +21,6 @@ import {
     UpdateVariant,
 } from './updateQuickActionTypes';
 
-
 type MapArgs = {
     $variant: UpdateVariant;
     theme: DefaultTheme;

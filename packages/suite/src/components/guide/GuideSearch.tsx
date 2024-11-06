@@ -11,7 +11,6 @@ import { useTranslation } from 'src/hooks/suite';
 import { GuideNode } from 'src/components/guide';
 import { useGuideSearch } from 'src/hooks/guide';
 
-
 const Wrapper = styled.div`
     margin-bottom: ${spacingsPx.xs};
 `;

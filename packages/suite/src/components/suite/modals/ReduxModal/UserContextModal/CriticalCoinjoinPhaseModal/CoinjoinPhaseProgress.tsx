@@ -9,7 +9,6 @@ import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { Translation } from 'src/components/suite/Translation';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 
-
 const Container = styled.div`
     padding: ${spacingsPx.xxl} ${spacingsPx.xxxl} 0;
 `;

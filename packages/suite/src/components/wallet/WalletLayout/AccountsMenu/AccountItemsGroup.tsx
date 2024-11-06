@@ -13,7 +13,6 @@ import { useSelector } from 'src/hooks/suite';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
-
 import { AccountItem } from './AccountItem';
 
 const Section = styled.div<{ $selected?: boolean }>`

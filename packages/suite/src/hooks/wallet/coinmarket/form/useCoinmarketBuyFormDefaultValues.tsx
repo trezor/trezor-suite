@@ -15,7 +15,6 @@ import {
 } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
-
 export const useCoinmarketBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],
     buyInfo: BuyInfo | undefined,

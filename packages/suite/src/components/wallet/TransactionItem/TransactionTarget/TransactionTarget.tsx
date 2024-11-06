@@ -24,7 +24,6 @@ import { TargetAddressLabel } from './TargetAddressLabel';
 import { TransactionTargetLayout } from '../TransactionTargetLayout';
 import { StyledFormattedCryptoAmount, StyledFormattedNftAmount } from '../CommonComponents';
 
-
 interface BaseTransfer {
     singleRowLayout?: boolean;
     useAnimation?: boolean;

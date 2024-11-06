@@ -10,7 +10,6 @@ import { MAIN_MENU_ITEMS } from 'src/constants/suite/menu';
 import { useAccountSearch, useSelector, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 
-
 interface ComponentProps {
     isActive: boolean;
     isDisabled?: boolean;

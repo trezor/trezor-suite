@@ -8,7 +8,6 @@ import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { Action, AppState } from 'src/types/suite';
 
-
 export type State = WalletSettings;
 
 export const initialState: State = {

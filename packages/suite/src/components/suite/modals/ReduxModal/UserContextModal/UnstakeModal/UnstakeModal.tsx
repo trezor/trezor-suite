@@ -20,7 +20,6 @@ import { UnstakeEthFormContext, useUnstakeEthForm } from 'src/hooks/wallet/useUn
 import { UnstakeButton } from './UnstakeEthForm/UnstakeButton';
 import { UnstakeEthForm } from './UnstakeEthForm/UnstakeEthForm';
 
-
 interface UnstakeModalModalProps {
     onCancel?: () => void;
 }

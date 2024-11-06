@@ -38,7 +38,6 @@ import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 
 import * as COINJOIN from './constants/coinjoinConstants';
 
-
 const clientEnable = (symbol: Account['symbol']) =>
     ({
         type: COINJOIN.CLIENT_ENABLE,

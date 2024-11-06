@@ -22,7 +22,6 @@ import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { sendFeedback, setView } from 'src/actions/suite/guideActions';
 import { GuideViewWrapper, GuideHeader, GuideContent } from 'src/components/guide';
 
-
 const Headline = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};

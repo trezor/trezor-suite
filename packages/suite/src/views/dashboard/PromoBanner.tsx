@@ -13,7 +13,6 @@ import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { HORIZONTAL_LAYOUT_PADDINGS } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 
-
 const Container = styled.div`
     position: absolute;
     bottom: 0;

@@ -12,7 +12,6 @@ import { onCancel } from 'src/actions/suite/modalActions';
 import { TranslationKey } from 'src/components/suite/Translation';
 import { SUITE } from 'src/actions/suite/constants';
 
-
 const ImageWrapper = styled.div`
     position: relative;
     width: 97.5%;

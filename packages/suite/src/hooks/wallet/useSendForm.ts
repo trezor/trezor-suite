@@ -38,7 +38,6 @@ import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { useUtxoSelection } from './form/useUtxoSelection';
 import { useExcludedUtxos } from './form/useExcludedUtxos';
 
-
 export const SendContext = createContext<SendContextValues | null>(null);
 SendContext.displayName = 'SendContext';
 

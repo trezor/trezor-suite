@@ -15,7 +15,6 @@ import { ViewOnlyTooltip } from 'src/views/view-only/ViewOnlyTooltip';
 
 import { SidebarDeviceStatus } from './SidebarDeviceStatus';
 
-
 const CaretContainer = styled.div`
     background: transparent;
     padding: 10px;

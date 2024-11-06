@@ -15,7 +15,6 @@ import * as metadataUtils from 'src/utils/suite/metadata';
 import { PATH } from 'src/actions/suite/constants/metadataPasswordsConstants';
 import { getDisplayKey } from 'src/utils/suite/passwords';
 
-
 const FormWrapper = styled.div`
     display: flex;
     flex: 1;

@@ -10,7 +10,6 @@ import { Translation } from 'src/components/suite';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { useTranslation } from 'src/hooks/suite';
 
-
 const Inputs = styled.div`
     display: flex;
     place-items: center space-between;

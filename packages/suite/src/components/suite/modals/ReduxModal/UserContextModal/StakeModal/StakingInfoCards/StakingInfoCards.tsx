@@ -6,7 +6,6 @@ import { StakingInfo } from 'src/components/suite/StakingProcess/StakingInfo';
 
 import { EstimatedGains } from './EstimatedGains';
 
-
 export const StakingInfoCards = () => {
     const cards = [
         {

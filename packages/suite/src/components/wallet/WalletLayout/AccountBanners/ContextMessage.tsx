@@ -7,7 +7,6 @@ import { NotificationCard } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
-
 type ContextMessageProps = {
     context: (typeof Context)[keyof typeof Context];
 };

@@ -55,7 +55,6 @@ import { useCoinmarketCurrencySwitcher } from 'src/hooks/wallet/coinmarket/form/
 import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketAccount';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
-
 import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
 
 export const useCoinmarketSellForm = ({

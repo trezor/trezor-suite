@@ -25,7 +25,6 @@ import {
     SET_SELECTED_VIEW,
 } from './constants/graphConstants';
 
-
 export type GraphAction =
     | {
           type: typeof ACCOUNT_GRAPH_SUCCESS;

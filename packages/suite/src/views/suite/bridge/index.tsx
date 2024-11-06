@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 
-
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     path {

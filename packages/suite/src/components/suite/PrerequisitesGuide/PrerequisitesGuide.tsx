@@ -27,7 +27,6 @@ import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceDisconnectRequired } from './DeviceDisconnectRequired';
 import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
 
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;

@@ -1,9 +1,10 @@
 // @ts-nocheck
 /// <reference path="../../../../suite/global.d.ts" />
 
-import ElectrumWorker from './index';
 import { createSocket } from './sockets';
 import type { Message, Response } from '../../types';
+
+import ElectrumWorker from './index';
 
 const TOR_ADDRESS = '127.0.0.1:9050';
 

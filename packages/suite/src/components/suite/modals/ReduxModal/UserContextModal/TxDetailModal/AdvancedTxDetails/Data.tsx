@@ -7,7 +7,6 @@ import { TranslationKey } from '@suite-common/intl-types';
 
 import { Translation } from 'src/components/suite';
 
-
 const Container = styled.div`
     display: grid;
     grid-template-columns: 130px 3fr;

@@ -7,7 +7,6 @@ import type { Locale } from 'date-fns';
 import { mediaQueries } from '@trezor/styles';
 import { borders, spacingsPx, zIndices } from '@trezor/theme';
 
-
 import { Button } from '../buttons/Button/Button';
 
 type Selection = {

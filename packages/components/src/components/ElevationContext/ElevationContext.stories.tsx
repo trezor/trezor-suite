@@ -21,7 +21,6 @@ import {
     ElevationUp,
 } from './ElevationContext';
 
-
 const UiBox = styled.div<{ $elevation: Elevation }>`
     background-color: ${mapElevationToBackground};
     border: 1px solid ${mapElevationToBorder};

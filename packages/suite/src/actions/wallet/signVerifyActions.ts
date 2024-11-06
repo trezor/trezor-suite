@@ -9,7 +9,6 @@ import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 
 import { SIGN_VERIFY } from './constants';
 
-
 export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }
     | { type: typeof SIGN_VERIFY.VERIFY_SUCCESS };

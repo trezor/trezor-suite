@@ -33,7 +33,6 @@ import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { NavSettings } from './NavSettings';
 import { TrafficLightOffset } from '../../TrafficLightOffset';
 
-
 const MessageContainer = styled.div`
     margin: ${spacingsPx.xxs} ${spacingsPx.xs} ${spacingsPx.xs};
 `;

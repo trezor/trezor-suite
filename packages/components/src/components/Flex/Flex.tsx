@@ -13,7 +13,6 @@ import {
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
-
 export const allowedFlexFrameProps = [
     'margin',
     'width',

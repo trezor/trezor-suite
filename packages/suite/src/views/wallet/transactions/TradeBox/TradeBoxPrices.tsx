@@ -9,7 +9,6 @@ import { networks } from '@suite-common/wallet-config';
 import { PriceTicker, Translation, TrendTicker } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 
-
 const Wrapper = styled.div`
     display: flex;
     gap: 42px;

@@ -4,7 +4,6 @@ import { MessagesSchema } from '@trezor/protobuf';
 
 import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/cardano/get_base_address.derivations.json';
 
-
 const { CardanoAddressType, CardanoDerivationType } = MessagesSchema;
 
 const legacyResults = {

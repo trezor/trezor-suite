@@ -9,7 +9,6 @@ import {
     getOauthReceiverUrl,
 } from 'src/utils/suite/oauth';
 
-
 // Dropbox messed up types, that's why @ts-expect-error occurs in this file
 
 class DropboxProvider extends AbstractMetadataProvider {

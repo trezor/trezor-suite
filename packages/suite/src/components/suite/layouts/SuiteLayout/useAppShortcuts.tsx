@@ -7,7 +7,6 @@ import { closeModalApp, goto } from 'src/actions/suite/routerActions';
 import { addWalletThunk } from 'src/actions/wallet/addWalletThunk';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-
 export const useAppShortcuts = () => {
     const selectedDevice = useSelector(selectDevice);
     const dispatch = useDispatch();

@@ -14,7 +14,6 @@ import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 import { GreyCard } from './GreyCard';
 import { WarnHeader } from './WarnHeader';
 
-
 const OutputsWrapper = styled.div`
     display: flex;
     flex-direction: column;

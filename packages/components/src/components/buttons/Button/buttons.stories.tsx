@@ -7,7 +7,6 @@ import { Button } from '../../../index';
 import { StoryColumn } from '../../../support/Story';
 import { ButtonVariant } from '../buttonStyleUtils';
 
-
 const variants: Array<ButtonVariant> = ['primary', 'tertiary', 'info', 'warning', 'destructive'];
 
 const meta: Meta<typeof Button> = {

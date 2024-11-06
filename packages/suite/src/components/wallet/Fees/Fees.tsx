@@ -30,8 +30,6 @@ import { ExtendedMessageDescriptor } from 'src/types/suite';
 import { CustomFee } from './CustomFee';
 import { FeeDetails } from './FeeDetails';
 
-
-
 const Container = styled.div`
     overflow: hidden; /* prevent scrollbar when custom fee is opened */
     width: 100%;

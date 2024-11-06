@@ -1,6 +1,7 @@
 import { DeviceModelInternal } from '@trezor/connect';
 
 import { TrezorDevice } from 'src/types/suite';
+
 import { getFormattedFingerprint, validateFirmware } from '../index';
 
 describe('getFormattedFingerprint', () => {

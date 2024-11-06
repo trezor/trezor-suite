@@ -10,7 +10,6 @@ import { useDevice } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Translation } from 'src/components/suite/Translation';
 
-
 const Container = styled.div`
     display: flex;
     flex-direction: column;

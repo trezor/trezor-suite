@@ -19,7 +19,6 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
-
 export const NavigationItemBase = styled.div.attrs(() => ({
     tabIndex: 0,
 }))`

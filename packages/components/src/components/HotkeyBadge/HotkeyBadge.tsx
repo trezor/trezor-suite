@@ -13,7 +13,6 @@ import {
 import { ElevationDown, useElevation } from '../ElevationContext/ElevationContext';
 import { Keys, keyboardKeys } from './keyboardKeys';
 
-
 export const Container = styled.div<{ $elevation: Elevation; $isActive: boolean }>`
     display: flex;
     gap: ${spacingsPx.xxs};

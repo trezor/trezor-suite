@@ -12,7 +12,6 @@ import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
 import { CoinjoinStatusMessage } from './CoinjoinStatusMessage';
 import { CoinjoinProgressWheel } from './CoinjoinProgressWheel';
 
-
 // eslint-disable-next-line local-rules/no-override-ds-component
 const Container = styled(Card)<{ $isWide?: boolean }>`
     position: relative;

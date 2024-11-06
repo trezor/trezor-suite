@@ -2,7 +2,6 @@ import { FormattedNumber } from 'react-intl';
 
 import styled from 'styled-components';
 
-
 import { TranslationKey } from '@suite-common/intl-types';
 
 import { useCountdownTimer } from 'src/hooks/suite';

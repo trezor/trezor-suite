@@ -7,7 +7,6 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { CoinLogo } from '../../index';
 import { COINS } from './coins';
 
-
 const CoinName = styled.div`
     margin-bottom: 0.5rem;
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};

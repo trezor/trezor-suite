@@ -1,8 +1,6 @@
-
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 
 import styled from 'styled-components';
-
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';

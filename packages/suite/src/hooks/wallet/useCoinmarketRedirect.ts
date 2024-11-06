@@ -9,7 +9,6 @@ import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
 import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 
-
 interface OfferRedirectParams {
     symbol: Account['symbol'];
     index: Account['index'];

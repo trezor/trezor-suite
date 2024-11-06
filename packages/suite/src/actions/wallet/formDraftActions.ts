@@ -7,7 +7,6 @@ import { Dispatch, GetState } from 'src/types/suite';
 
 import { FORM_DRAFT } from './constants';
 
-
 export type FormDraftAction =
     | {
           type: typeof FORM_DRAFT.STORE_DRAFT;

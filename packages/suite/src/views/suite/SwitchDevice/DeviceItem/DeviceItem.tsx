@@ -14,7 +14,6 @@ import { AddWalletButton } from './AddWalletButton';
 import { CardWithDevice } from '../CardWithDevice';
 import { DeviceWarning } from './DeviceWarning';
 
-
 const WalletsWrapper = styled.div<{ $enabled: boolean }>`
     opacity: ${({ $enabled }) => ($enabled ? 1 : 0.5)};
     pointer-events: ${({ $enabled }) => ($enabled ? 'unset' : 'none')};

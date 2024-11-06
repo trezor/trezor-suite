@@ -2,7 +2,6 @@ import { MessagesSchema } from '@trezor/protobuf';
 
 import { NETWORK_IDS, PROTOCOL_MAGICS } from '../../src/constants/cardano';
 
-
 const {
     CardanoAddressType,
     CardanoCVoteRegistrationFormat,

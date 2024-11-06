@@ -17,7 +17,6 @@ import { AccountsList } from './AccountsList';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { RefreshAfterDiscoveryNeeded } from './RefreshAfterDiscoveryNeeded';
 
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;

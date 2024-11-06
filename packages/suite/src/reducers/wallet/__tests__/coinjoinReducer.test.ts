@@ -8,7 +8,6 @@ import {
 } from '../coinjoinReducer';
 import { actionFixtures, selectorFixtures } from '../__fixtures__/coinjoinReducer';
 
-
 describe('Coinjoin reducer actions', () => {
     actionFixtures.forEach(f => {
         it(f.description, () => {

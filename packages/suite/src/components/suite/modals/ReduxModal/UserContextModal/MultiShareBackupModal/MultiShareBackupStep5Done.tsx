@@ -10,7 +10,6 @@ import { Translation } from 'src/components/suite';
 
 import { Body, Section } from './multiShareModalLayout';
 
-
 const GradientCallout = styled.div`
     background-image: linear-gradient(
         to right,

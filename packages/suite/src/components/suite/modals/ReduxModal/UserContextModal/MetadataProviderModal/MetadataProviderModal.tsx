@@ -10,7 +10,6 @@ import { useDispatch } from 'src/hooks/suite';
 import { connectProvider } from 'src/actions/suite/metadataProviderActions';
 import { MetadataProviderType } from 'src/types/suite/metadata';
 
-
 import { DropboxLogo } from './DropboxLogo';
 import { GoogleDriveLogo } from './GoogleDriveLogo';
 

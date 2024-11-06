@@ -1,4 +1,3 @@
-
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { TokenDefinition } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';

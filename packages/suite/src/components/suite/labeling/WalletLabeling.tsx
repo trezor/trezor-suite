@@ -9,7 +9,6 @@ import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 
-
 interface WalletLabellingProps {
     device: TrezorDevice;
     shouldUseDeviceLabel?: boolean;

@@ -11,7 +11,6 @@ import { close } from 'src/actions/suite/guideActions';
 import { useDispatch } from 'src/hooks/suite';
 import { HeaderBreadcrumb, ContentScrolledContext } from 'src/components/guide';
 
-
 const HeaderWrapper = styled.div<{ $noLabel?: boolean; $isScrolled: boolean }>`
     display: flex;
     align-items: center;

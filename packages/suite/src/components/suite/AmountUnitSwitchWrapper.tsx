@@ -10,7 +10,6 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 import { Translation } from './Translation';
 
-
 const Container = styled.div`
     position: relative;
     display: flex;

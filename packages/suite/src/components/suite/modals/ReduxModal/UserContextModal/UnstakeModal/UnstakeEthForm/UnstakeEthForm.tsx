@@ -17,8 +17,6 @@ import { ApproximateInstantEthAmount } from 'src/views/wallet/staking/components
 import { Options } from './Options';
 import UnstakeFees from './Fees';
 
-
-
 const DividerWrapper = styled.div`
     & > div {
         background: ${({ theme }) => theme.borderElevation2};

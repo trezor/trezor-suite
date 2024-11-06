@@ -20,8 +20,6 @@ import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
 import { CoinjoinSummary } from './CoinjoinSummary/CoinjoinSummary';
 import { TradeBox } from './TradeBox/TradeBox';
 
-
-
 const AccountLayout = styled(WalletLayout)`
     display: flex;
     flex-direction: column;
