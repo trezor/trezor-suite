@@ -1,7 +1,6 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath, getScriptType, getSerializedPath } from '../utils/pathUtils';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { PROTO } from '../constants';
@@ -31,7 +30,7 @@ export default class GetOwnershipId extends AbstractMethod<
             const address_n = validatePath(batch.path, 1);
             const coinInfo = getBitcoinNetwork(batch.coin || address_n);
             const script_type = batch.scriptType || getScriptType(address_n);
-            this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+            this.setFirmwareRange(this.name, coinInfo);
 
             return {
                 address_n,

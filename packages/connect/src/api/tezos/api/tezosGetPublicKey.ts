@@ -3,7 +3,6 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath, fromHardened, getSerializedPath } from '../../../utils/pathUtils';
 import { UI, createUiMessage } from '../../../events';
@@ -19,11 +18,7 @@ export default class TezosGetPublicKey extends AbstractMethod<
     init() {
         this.requiredPermissions = ['read'];
         this.requiredDeviceCapabilities = ['Capability_Tezos'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Tezos'),
-            this.firmwareRange,
-        );
+        this.setFirmwareRange(this.name, getMiscNetwork('Tezos'));
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;

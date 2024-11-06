@@ -4,7 +4,6 @@ import { Assert } from '@trezor/schema-utils';
 
 import { UI, createUiMessage } from '../events';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
 import type { PROTO } from '../constants';
 import { Bundle } from '../types/params';
@@ -18,7 +17,7 @@ export default class CipherKeyValue extends AbstractMethod<
 
     init() {
         this.requiredPermissions = ['read', 'write'];
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+        this.setFirmwareRange(this.name, null);
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;

@@ -4,7 +4,6 @@ import { MessagesSchema } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
@@ -33,7 +32,7 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
 
         const path = validatePath(payload.path, 3);
         const network = getEthereumNetwork(path);
-        this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
+        this.setFirmwareRange(this.name, network);
 
         const messageHex = payload.hex
             ? messageToHex(payload.message)

@@ -1,7 +1,6 @@
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodReturnType, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
+import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
 import { validatePath, getSerializedPath } from '../utils/pathUtils';
 import { getAccountLabel } from '../utils/accountUtils';
 import { getCoinInfo } from '../data/coinInfo';
@@ -46,7 +45,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
             const address_n = validatePath(batch.path, 3);
 
             // set firmware range
-            this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+            this.setFirmwareRange(this.name, coinInfo);
 
             return {
                 ...batch,
@@ -110,11 +109,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
         const invalid = [];
         for (let i = 0; i < this.params.length; i++) {
             // set FW range for current batch
-            this.firmwareRange = getFirmwareRange(
-                this.name,
-                this.params[i].coinInfo,
-                DEFAULT_FIRMWARE_RANGE,
-            );
+            this.setFirmwareRange(this.name, this.params[i].coinInfo);
             const exception = super.checkFirmwareRange();
             if (exception) {
                 invalid.push({

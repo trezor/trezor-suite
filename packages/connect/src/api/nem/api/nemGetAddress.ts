@@ -3,7 +3,6 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath, fromHardened, getSerializedPath } from '../../../utils/pathUtils';
 import { PROTO, ERRORS } from '../../../constants';
@@ -27,7 +26,7 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
         this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
         this.requiredDeviceCapabilities = ['Capability_NEM'];
-        this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('NEM'), this.firmwareRange);
+        this.setFirmwareRange(this.name, getMiscNetwork('NEM'));
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;

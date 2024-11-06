@@ -1,10 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/paramsValidator.js
-import { versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../../constants';
 import { fromHardened } from '../../utils/pathUtils';
-import { config } from '../../data/config';
-import type { CoinInfo, FirmwareRange, DeviceModelInternal } from '../../types';
+import type { CoinInfo } from '../../types';
 
 type ParamType = 'string' | 'number' | 'array' | 'array-buffer' | 'boolean' | 'uint' | 'object';
 
@@ -98,104 +96,4 @@ export const validateCoinPath = (path: number[], coinInfo?: CoinInfo) => {
     if (coinInfo && coinInfo.slip44 !== fromHardened(path[1])) {
         throw invalidParameter('Parameters "path" and "coin" do not match.');
     }
-};
-
-export const getFirmwareRange = (
-    method: string,
-    coinInfo: CoinInfo | null | undefined,
-    currentRange: FirmwareRange,
-) => {
-    const range = JSON.parse(JSON.stringify(currentRange)) as FirmwareRange;
-    const models = Object.keys(range) as DeviceModelInternal[];
-    // set minimum required firmware from coins.json (coinInfo)
-    if (coinInfo) {
-        models.forEach(model => {
-            const supportVersion = coinInfo.support ? coinInfo.support[model] : false;
-            if (supportVersion === false) {
-                range[model].min = '0';
-            } else if (
-                range[model].min !== '0' &&
-                typeof supportVersion === 'string' &&
-                versionUtils.isNewer(supportVersion, range[model].min)
-            ) {
-                range[model].min = supportVersion;
-            }
-        });
-    }
-
-    const coinType = coinInfo?.type;
-    const shortcut = coinInfo?.shortcut.toLowerCase();
-    // find firmware range in config.json
-    const configRules = config.supportedFirmware
-        .filter(rule => {
-            // check if rule applies to requested method
-            if (rule.methods) {
-                return rule.methods.includes(method);
-            }
-            // check if rule applies to capability
-            if (rule.capabilities) {
-                return rule.capabilities.includes(method);
-            }
-
-            // rule doesn't have specified methods
-            // it may be a global rule for coin or coinType
-            return true;
-        })
-        .filter(rule => {
-            // REF_TODO: there is no coinType in config. possibly obsolete code?
-            // probably still useful, we just need to define type for config and not infer it.
-            // @ts-expect-error
-            if (rule.coinType) {
-                // rule for coin type
-                // @ts-expect-error
-                return rule.coinType === coinType;
-            }
-            if (rule.coin) {
-                // rule for coin shortcut
-                // @ts-expect-error
-                return (typeof rule.coin === 'string' ? [rule.coin] : rule.coin).includes(shortcut);
-            }
-
-            // rule for method
-            return rule.methods || rule.capabilities;
-        });
-
-    configRules.forEach(rule => {
-        // override defaults
-        // NOTE:
-        // 0 may be confusing. means: no-support for "min" and unlimited support for "max"
-        if (rule.min) {
-            models.forEach(model => {
-                const modelMin = (rule.min as Record<DeviceModelInternal, string | undefined>)[
-                    model
-                ];
-                if (modelMin) {
-                    if (
-                        modelMin === '0' ||
-                        range[model].min === '0' ||
-                        !versionUtils.isNewerOrEqual(range[model].min, modelMin)
-                    ) {
-                        range[model].min = modelMin;
-                    }
-                }
-            });
-        }
-        if (rule.max) {
-            models.forEach(model => {
-                // @ts-expect-error same issue as in coinType above, config needs to be typed not inferred.
-                const modelMax = rule.max[model];
-                if (modelMax) {
-                    if (
-                        modelMax === '0' ||
-                        range[model].max === '0' ||
-                        !versionUtils.isNewerOrEqual(range[model].max, modelMax)
-                    ) {
-                        range[model].max = modelMax;
-                    }
-                }
-            });
-        }
-    });
-
-    return range;
 };

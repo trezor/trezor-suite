@@ -3,7 +3,6 @@ import { Assert } from '@trezor/schema-utils';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { DEVICE, createDeviceMessage } from '../events';
 import { PROTO } from '../constants';
-import { getFirmwareRange } from './common/paramsValidator';
 
 export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
     init() {
@@ -14,7 +13,7 @@ export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
 
         Assert(PROTO.SetBusy, payload);
 
-        this.firmwareRange = getFirmwareRange(this.name, undefined, this.firmwareRange);
+        this.setFirmwareRange(this.name, undefined);
 
         this.params = {
             expiry_ms: payload.expiry_ms,

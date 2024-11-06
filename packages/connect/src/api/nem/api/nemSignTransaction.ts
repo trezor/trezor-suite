@@ -3,7 +3,6 @@
 import { AssertWeak } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import * as helper from '../nemSignTx';
@@ -17,7 +16,7 @@ export default class NEMSignTransaction extends AbstractMethod<
     init() {
         this.requiredPermissions = ['read', 'write'];
         this.requiredDeviceCapabilities = ['Capability_NEM'];
-        this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('NEM'), this.firmwareRange);
+        this.setFirmwareRange(this.name, getMiscNetwork('NEM'));
 
         const { payload } = this;
         // validate incoming parameters

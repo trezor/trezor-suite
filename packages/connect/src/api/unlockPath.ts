@@ -3,14 +3,13 @@ import { Assert } from '@trezor/schema-utils';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { PROTO } from '../constants';
 import { validatePath } from '../utils/pathUtils';
-import { getFirmwareRange } from './common/paramsValidator';
 import { UnlockPathParams } from '../types/api/unlockPath';
 
 export default class UnlockPath extends AbstractMethod<'unlockPath', PROTO.UnlockPath> {
     init() {
         this.requiredPermissions = ['read'];
         this.skipFinalReload = true;
-        this.firmwareRange = getFirmwareRange(this.name, undefined, this.firmwareRange);
+        this.setFirmwareRange(this.name, undefined);
 
         const { payload } = this;
 

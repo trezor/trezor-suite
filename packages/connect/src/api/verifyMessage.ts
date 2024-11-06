@@ -3,7 +3,6 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { getLabel } from '../utils/pathUtils';
 import { messageToHex } from '../utils/formatUtils';
@@ -24,7 +23,7 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO
             throw ERRORS.TypedError('Method_UnknownCoin');
         } else {
             // check required firmware with coinInfo support
-            this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+            this.setFirmwareRange(this.name, coinInfo);
         }
         const messageHex = payload.hex
             ? messageToHex(payload.message)

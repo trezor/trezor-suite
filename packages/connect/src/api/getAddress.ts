@@ -3,7 +3,7 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
-import { validateCoinPath, getFirmwareRange } from './common/paramsValidator';
+import { validateCoinPath } from './common/paramsValidator';
 import { validatePath, getLabel, getSerializedPath } from '../utils/pathUtils';
 import { getBitcoinNetwork, fixCoinInfoNetwork, getUniqueNetworks } from '../data/coinInfo';
 import { PROTO, ERRORS } from '../constants';
@@ -59,7 +59,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
                 throw ERRORS.TypedError('Method_UnknownCoin');
             } else if (coinInfo) {
                 // set required firmware from coinInfo support
-                this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+                this.setFirmwareRange(this.name, coinInfo);
             }
 
             // fix coinInfo network values (segwit/legacy)

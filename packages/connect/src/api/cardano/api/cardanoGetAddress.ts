@@ -3,7 +3,6 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { fromHardened, getSerializedPath } from '../../../utils/pathUtils';
 import {
@@ -29,11 +28,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
         this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Cardano'),
-            this.firmwareRange,
-        );
+        this.setFirmwareRange(this.name, getMiscNetwork('Cardano'));
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;

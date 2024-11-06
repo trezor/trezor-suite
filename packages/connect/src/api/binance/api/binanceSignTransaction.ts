@@ -3,7 +3,6 @@
 import { AssertWeak } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import * as helper from '../binanceSignTx';
@@ -23,7 +22,7 @@ export default class BinanceSignTransaction extends AbstractMethod<
     init() {
         this.requiredPermissions = ['read', 'write'];
         this.requiredDeviceCapabilities = ['Capability_Binance'];
-        this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('BNB'), this.firmwareRange);
+        this.setFirmwareRange(this.name, getMiscNetwork('BNB'));
 
         const { payload } = this;
         // validate incoming parameters

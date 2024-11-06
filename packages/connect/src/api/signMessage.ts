@@ -3,7 +3,7 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { validateCoinPath, getFirmwareRange } from './common/paramsValidator';
+import { validateCoinPath } from './common/paramsValidator';
 import { validatePath, getLabel, getScriptType } from '../utils/pathUtils';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { messageToHex } from '../utils/formatUtils';
@@ -31,10 +31,9 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
 
         // firmware range depends on used no_script_type parameter
         // no_script_type is possible since 1.10.4 / 2.4.3
-        this.firmwareRange = getFirmwareRange(
+        this.setFirmwareRange(
             payload.no_script_type ? 'signMessageNoScriptType' : this.name,
             coinInfo,
-            this.firmwareRange,
         );
 
         const messageHex = payload.hex

@@ -3,7 +3,6 @@
 import { Assert, Type } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 import { ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
 import { DataManager } from '../data/DataManager';
@@ -16,7 +15,7 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
 
     init() {
         this.requiredPermissions = ['read', 'write'];
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+        this.setFirmwareRange(this.name, null);
         this.useEmptyPassphrase = true;
 
         const { payload } = this;

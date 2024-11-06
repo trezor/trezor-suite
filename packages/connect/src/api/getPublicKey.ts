@@ -3,7 +3,7 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
-import { validateCoinPath, getFirmwareRange } from './common/paramsValidator';
+import { validateCoinPath } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
 import { UI, createUiMessage } from '../events';
 import { getBitcoinNetwork } from '../data/coinInfo';
@@ -52,7 +52,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             }
 
             // set required firmware from coinInfo support
-            this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+            this.setFirmwareRange(this.name, coinInfo);
 
             return {
                 address_n,

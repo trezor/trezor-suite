@@ -3,7 +3,6 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { stripHexPrefix, messageToHex } from '../../../utils/formatUtils';
 import type { PROTO } from '../../../constants';
 import { EthereumVerifyMessage as EthereumVerifyMessageSchema } from '../../../types';
@@ -14,7 +13,7 @@ export default class EthereumVerifyMessage extends AbstractMethod<
 > {
     init() {
         this.requiredPermissions = ['read', 'write'];
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+        this.setFirmwareRange(this.name, null);
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
 
         const { payload } = this;

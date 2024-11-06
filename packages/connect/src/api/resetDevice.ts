@@ -4,7 +4,6 @@ import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI } from '../events';
-import { getFirmwareRange } from './common/paramsValidator';
 import { PROTO } from '../constants';
 
 export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.ResetDevice> {
@@ -12,7 +11,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.useDeviceState = false;
         this.requiredPermissions = ['management'];
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+        this.setFirmwareRange(this.name, null);
 
         const { payload } = this;
         // validate bundle type

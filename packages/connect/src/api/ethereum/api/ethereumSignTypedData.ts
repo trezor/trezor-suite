@@ -4,7 +4,6 @@ import { MessagesSchema } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
@@ -52,7 +51,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
 
         const path = validatePath(payload.path, 3);
         const network = getEthereumNetwork(path);
-        this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
+        this.setFirmwareRange(this.name, network);
 
         this.params = {
             address_n: path,
@@ -85,11 +84,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         if (this.params.data.primaryType === 'EIP712Domain') {
             // Only newer firmwares support this feature
             // Older firmwares will give wrong results / throw errors
-            this.firmwareRange = getFirmwareRange(
-                'eip712-domain-only',
-                network,
-                this.firmwareRange,
-            );
+            this.setFirmwareRange('eip712-domain-only', network);
 
             if ('message_hash' in this.params) {
                 throw ERRORS.TypedError(

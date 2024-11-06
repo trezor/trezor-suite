@@ -3,7 +3,6 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { validatePath } from '../../../utils/pathUtils';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
@@ -35,7 +34,7 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
         this.params = payload.bundle.map(batch => {
             const path = validatePath(batch.path, 3);
             const network = getEthereumNetwork(path);
-            this.firmwareRange = getFirmwareRange(this.name, network, this.firmwareRange);
+            this.setFirmwareRange(this.name, network);
 
             return {
                 address_n: path,

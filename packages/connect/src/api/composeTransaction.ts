@@ -7,7 +7,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
 import { Discovery } from './common/Discovery';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
+import { validateParams } from './common/paramsValidator';
 import * as pathUtils from '../utils/pathUtils';
 import { resolveAfter } from '../utils/promiseUtils';
 import { formatAmount } from '../utils/formatUtils';
@@ -92,7 +92,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         isBackendSupported(coinInfo);
 
         // set required firmware from coinInfo support
-        this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+        this.setFirmwareRange(this.name, coinInfo);
 
         // validate each output and transform into @trezor/utxo-lib/compose format
         const outputs: ComposeOutput[] = [];

@@ -1,8 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
-import { AbstractMethod, MethodReturnType, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
+import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
 import { Discovery } from './common/Discovery';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
+import { validateParams } from './common/paramsValidator';
 import { validatePath, getSerializedPath } from '../utils/pathUtils';
 import { getAccountLabel, isUtxoBased } from '../utils/accountUtils';
 import { resolveAfter } from '../utils/promiseUtils';
@@ -82,7 +82,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             }
 
             // set firmware range
-            this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+            this.setFirmwareRange(this.name, coinInfo);
 
             return {
                 ...batch,
@@ -165,11 +165,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         const invalid = [];
         for (let i = 0; i < this.params.length; i++) {
             // set FW range for current batch
-            this.firmwareRange = getFirmwareRange(
-                this.name,
-                this.params[i].coinInfo,
-                DEFAULT_FIRMWARE_RANGE,
-            );
+            this.setFirmwareRange(this.name, this.params[i].coinInfo);
             const exception = super.checkFirmwareRange();
             if (exception) {
                 invalid.push({

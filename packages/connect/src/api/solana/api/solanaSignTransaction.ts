@@ -2,7 +2,6 @@ import { AssertWeak } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import { transformAdditionalInfo } from '../additionalInfo';
@@ -15,11 +14,7 @@ export default class SolanaSignTransaction extends AbstractMethod<
     init() {
         this.requiredPermissions = ['read', 'write'];
         this.requiredDeviceCapabilities = ['Capability_Solana'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Solana'),
-            this.firmwareRange,
-        );
+        this.setFirmwareRange(this.name, getMiscNetwork('Solana'));
 
         const { payload } = this;
 

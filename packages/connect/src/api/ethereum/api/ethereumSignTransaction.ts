@@ -6,7 +6,6 @@ import { MessagesSchema } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
@@ -73,11 +72,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
 
         // get firmware range depending on used transaction type
         // eip1559 is possible since 2.4.2
-        this.firmwareRange = getFirmwareRange(
-            isEIP1559 ? 'eip1559' : this.name,
-            network,
-            this.firmwareRange,
-        );
+        this.setFirmwareRange(isEIP1559 ? 'eip1559' : this.name, network);
 
         if (isEIP1559) {
             this.params = { path, network, type: 'eip1559', tx: strip(tx), chunkify };

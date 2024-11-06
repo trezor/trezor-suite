@@ -3,7 +3,6 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 import { UI } from '../events';
 import { PROTO } from '../constants';
 
@@ -17,7 +16,7 @@ export default class RebootToBootloader extends AbstractMethod<
         this.keepSession = false;
         this.requiredPermissions = ['management'];
         this.useDeviceState = false;
-        this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+        this.setFirmwareRange(this.name, null);
 
         const { payload } = this;
         Assert(PROTO.RebootToBootloader, payload);

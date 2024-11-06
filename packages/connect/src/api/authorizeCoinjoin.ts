@@ -1,7 +1,6 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath, getScriptType } from '../utils/pathUtils';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { PROTO } from '../constants';
@@ -18,7 +17,7 @@ export default class AuthorizeCoinjoin extends AbstractMethod<
         const address_n = validatePath(payload.path, 3);
         const script_type = payload.scriptType || getScriptType(address_n);
         const coinInfo = getBitcoinNetwork(payload.coin || address_n);
-        this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+        this.setFirmwareRange(this.name, coinInfo);
         this.preauthorized = payload.preauthorized;
 
         this.params = {

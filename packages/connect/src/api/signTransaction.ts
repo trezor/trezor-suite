@@ -3,7 +3,7 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
+import { validateParams } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { getLabel } from '../utils/pathUtils';
 import { PROTO, ERRORS } from '../constants';
@@ -87,7 +87,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             throw ERRORS.TypedError('Method_UnknownCoin');
         }
         // set required firmware from coinInfo support
-        this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+        this.setFirmwareRange(this.name, coinInfo);
         this.preauthorized = payload.preauthorized;
 
         const inputs = validateTrezorInputs(payload.inputs, coinInfo);

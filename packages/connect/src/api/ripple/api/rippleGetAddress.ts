@@ -3,7 +3,6 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath, fromHardened, getSerializedPath } from '../../../utils/pathUtils';
 import { PROTO, ERRORS } from '../../../constants';
@@ -23,11 +22,7 @@ export default class RippleGetAddress extends AbstractMethod<'rippleGetAddress',
         this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
         this.requiredDeviceCapabilities = ['Capability_Ripple'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Ripple'),
-            this.firmwareRange,
-        );
+        this.setFirmwareRange(this.name, getMiscNetwork('Ripple'));
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;

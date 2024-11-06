@@ -3,7 +3,6 @@
 import { AssertWeak } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import * as helper from '../tezosSignTx';
@@ -17,11 +16,7 @@ export default class TezosSignTransaction extends AbstractMethod<
     init() {
         this.requiredPermissions = ['read', 'write'];
         this.requiredDeviceCapabilities = ['Capability_Tezos'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Tezos'),
-            this.firmwareRange,
-        );
+        this.setFirmwareRange(this.name, getMiscNetwork('Tezos'));
 
         const { payload } = this;
 

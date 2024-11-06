@@ -4,7 +4,6 @@ import { Assert } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import {
@@ -19,11 +18,7 @@ export default class CardanoGetNativeScriptHash extends AbstractMethod<
     init() {
         this.requiredPermissions = ['read'];
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
-        this.firmwareRange = getFirmwareRange(
-            this.name,
-            getMiscNetwork('Cardano'),
-            this.firmwareRange,
-        );
+        this.setFirmwareRange(this.name, getMiscNetwork('Cardano'));
 
         const { payload } = this;
 

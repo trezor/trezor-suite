@@ -3,7 +3,6 @@
 import { AssertWeak } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import * as helper from '../eosSignTx';
@@ -22,7 +21,7 @@ export default class EosSignTransaction extends AbstractMethod<'eosSignTransacti
     init() {
         this.requiredPermissions = ['read', 'write'];
         this.requiredDeviceCapabilities = ['Capability_EOS'];
-        this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('EOS'), this.firmwareRange);
+        this.setFirmwareRange(this.name, getMiscNetwork('EOS'));
 
         const { payload } = this;
         // validate incoming parameters

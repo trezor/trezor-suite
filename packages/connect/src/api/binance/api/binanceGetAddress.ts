@@ -3,7 +3,6 @@
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath, fromHardened, getSerializedPath } from '../../../utils/pathUtils';
 import { PROTO, ERRORS } from '../../../constants';
@@ -23,7 +22,7 @@ export default class BinanceGetAddress extends AbstractMethod<'binanceGetAddress
         this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
         this.requiredDeviceCapabilities = ['Capability_Binance'];
-        this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('BNB'), this.firmwareRange);
+        this.setFirmwareRange(this.name, getMiscNetwork('BNB'));
 
         // create a bundle with only one batch if bundle doesn't exists
         this.hasBundle = !!this.payload.bundle;
