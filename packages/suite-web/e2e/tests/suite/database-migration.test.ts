@@ -130,7 +130,10 @@ describe('Database migration', () => {
 
         cy.getTestElement('@switch-device/cancel-button').click();
 
-        cy.get('[data-testid^="@metadata/outputLabel"]').first().should('be.visible');
+        cy.get('[data-testid^="@metadata/outputLabel"]')
+            .first()
+            .scrollIntoView()
+            .should('be.visible');
 
         // TODO: cypress alias is empty for unknown reason, refactor this test to playwright
         // check the first tx and verify it against the stored one
