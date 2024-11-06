@@ -3,6 +3,7 @@ import {
     Elevation,
     mapElevationToBackground,
     mapElevationToBorder,
+    SpacingPxValues,
 } from '@trezor/theme';
 import { css, DefaultTheme, RuleSet } from 'styled-components';
 import { PaddingType, FillType } from './types';
@@ -19,8 +20,8 @@ type FillTypeMapArgs = {
     theme: DefaultTheme;
 };
 
-export const mapPaddingTypeToLabelPadding = ({ $paddingType }: PaddingMapArgs): number | string => {
-    const paddingMap: Record<PaddingType, number | string> = {
+export const mapPaddingTypeToLabelPadding = ({ $paddingType }: PaddingMapArgs): string => {
+    const paddingMap: Record<PaddingType, string> = {
         none: `${spacingsPx.xxs} 0`,
         small: `${spacingsPx.xxs} ${spacingsPx.sm}`,
         normal: `${spacingsPx.xs} ${spacingsPx.lg}`,
@@ -30,9 +31,9 @@ export const mapPaddingTypeToLabelPadding = ({ $paddingType }: PaddingMapArgs): 
     return paddingMap[$paddingType];
 };
 
-export const mapPaddingTypeToPadding = ({ $paddingType }: PaddingMapArgs): number | string => {
-    const paddingMap: Record<PaddingType, number | string> = {
-        none: 0,
+export const mapPaddingTypeToPadding = ({ $paddingType }: PaddingMapArgs): SpacingPxValues => {
+    const paddingMap: Record<PaddingType, SpacingPxValues> = {
+        none: '0px',
         small: spacingsPx.sm,
         normal: spacingsPx.lg,
         large: spacingsPx.xl,

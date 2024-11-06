@@ -1,13 +1,13 @@
-import styled, { css } from 'styled-components';
-
 import {
     selectDiscoveryByDeviceState,
     selectCurrentFiatRates,
     selectDeviceThunk,
+    selectDevice,
+    createDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { variables, Card, Divider, Icon, Tooltip } from '@trezor/components';
+import { Card, Icon, Tooltip, Row, Column, Text, Divider } from '@trezor/components';
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
-import { spacingsPx, typography } from '@trezor/theme';
+import { spacings, negativeSpacings } from '@trezor/theme';
 
 import {
     WalletLabeling,
@@ -29,61 +29,6 @@ import { ViewOnly } from './ViewOnly';
 import { EjectButton } from './EjectButton';
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 
-const RelativeContainer = styled.div`
-    position: relative;
-    border-radius: 16px;
-    overflow: hidden;
-`;
-
-const DividerWrapper = styled.div`
-    position: relative;
-    left: -${spacingsPx.xs};
-    width: calc(100% + ${spacingsPx.lg});
-`;
-
-const InstanceType = styled.div<{ $isSelected: boolean }>`
-    display: flex;
-    gap: ${spacingsPx.xxs};
-    align-items: center;
-    color: ${({ theme, $isSelected }) => ($isSelected ? theme.textDefault : theme.textSubdued)};
-    ${({ $isSelected }) => $isSelected && typography.highlight}
-    /* these styles ensure proper metadata behavior */
-    white-space: nowrap;
-    overflow: hidden;
-`;
-
-const InstanceTitle = styled.div`
-    font-weight: 500;
-    line-height: 1.57;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-variant-numeric: tabular-nums;
-`;
-
-const Col = styled.div<{ $grow?: number; $centerItems?: boolean }>`
-    display: flex;
-    flex-grow: ${({ $grow }) => $grow || 0};
-    flex-direction: column;
-    align-items: ${({ $centerItems }) => ($centerItems ? 'center' : 'flex-start')};
-
-    &:first-child {
-        cursor: pointer;
-    }
-`;
-
-const SelectedHighlight = styled.div`
-    ${({ theme }) => css`
-        &::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: ${spacingsPx.xxs};
-            background: ${theme.backgroundSecondaryDefault};
-        }
-    `}
-`;
 interface WalletInstanceProps {
     instance: AcquiredDevice;
     enabled: boolean;
@@ -109,6 +54,7 @@ export const WalletInstance = ({
     const discoveryProcess = useSelector(state =>
         selectDiscoveryByDeviceState(state, instance.state),
     );
+    const device = useSelector(selectDevice);
     const { defaultAccountLabelString } = useWalletLabeling();
 
     const deviceAccounts = getAllAccounts(instance.state, accounts);
@@ -133,13 +79,25 @@ export const WalletInstance = ({
         e.stopPropagation();
     };
 
-    const handleClick = () => {
-        if (!editing) {
-            dispatch(selectDeviceThunk({ device: instance }));
-            dispatch(redirectAfterWalletSelectedThunk());
-            onCancel(false);
-        }
-    };
+    const handleClick = discoveryProcess
+        ? () => {
+              if (!editing) {
+                  dispatch(selectDeviceThunk({ device: instance }));
+                  dispatch(redirectAfterWalletSelectedThunk());
+                  onCancel(false);
+              }
+          }
+        : () => {
+              if (device && device.state?.staticSessionId) {
+                  dispatch(
+                      createDiscoveryThunk({
+                          deviceState: device?.state?.staticSessionId,
+                          device,
+                      }),
+                  );
+              }
+              onCancel(false);
+          };
 
     const isViewOnlyRendered = contentType === 'default' && enabled && discoveryProcess;
     const isEjectConfirmationRendered = contentType === 'eject-confirmation';
@@ -147,93 +105,95 @@ export const WalletInstance = ({
         contentType === 'disabling-view-only-ejects-wallet';
 
     return (
-        <RelativeContainer data-testid={dataTestBase}>
-            <EjectButton setContentType={setContentType} data-testid={dataTestBase} />
-            <Card
-                key={`${instance.instance}${instance.state}`}
-                paddingType="small"
-                onClick={handleClick}
-                tabIndex={0}
-                {...rest}
-            >
-                {isSelected && <SelectedHighlight />}
-
-                <Col $grow={1}>
-                    {discoveryProcess && (
-                        <InstanceType $isSelected={isSelected}>
-                            {!instance.useEmptyPassphrase && (
-                                <Tooltip content={<Translation id="TR_WALLET_PASSPHRASE_WALLET" />}>
-                                    <Icon name="asterisk" size={12} />
-                                </Tooltip>
-                            )}
-                            {instance.state?.staticSessionId ? (
-                                <MetadataLabeling
-                                    defaultVisibleValue={
-                                        walletLabel === undefined || walletLabel.trim() === ''
-                                            ? defaultWalletLabel
-                                            : walletLabel
-                                    }
-                                    payload={{
-                                        type: 'walletLabel',
-                                        entityKey: instance.state.staticSessionId,
-                                        defaultValue: instance.state.staticSessionId,
-                                        value: instance?.metadata[
-                                            METADATA_LABELING.ENCRYPTION_VERSION
-                                        ]
-                                            ? walletLabel
-                                            : '',
-                                    }}
-                                    defaultEditableValue={defaultWalletLabel}
-                                />
-                            ) : (
-                                <WalletLabeling device={instance} />
-                            )}
-                        </InstanceType>
-                    )}
-
-                    {!discoveryProcess && (
-                        <InstanceType $isSelected={isSelected}>
+        <Card
+            key={`${instance.instance}${instance.state}`}
+            paddingType="small"
+            onClick={handleClick}
+            tabIndex={0}
+            data-testid={dataTestBase}
+            isHiglighted={isSelected}
+            {...rest}
+        >
+            <Column alignItems="stretch">
+                <Text
+                    as="div"
+                    variant={isSelected ? 'default' : 'tertiary'}
+                    typographyStyle={isSelected ? 'highlight' : 'body'}
+                    ellipsisLineCount={1}
+                >
+                    <Row justifyContent="space-between">
+                        {discoveryProcess ? (
+                            <Row gap={spacings.xxs}>
+                                {!instance.useEmptyPassphrase && (
+                                    <Tooltip
+                                        content={<Translation id="TR_WALLET_PASSPHRASE_WALLET" />}
+                                    >
+                                        <Icon name="asterisk" size={12} />
+                                    </Tooltip>
+                                )}
+                                {instance.state?.staticSessionId ? (
+                                    <MetadataLabeling
+                                        defaultVisibleValue={
+                                            walletLabel === undefined || walletLabel.trim() === ''
+                                                ? defaultWalletLabel
+                                                : walletLabel
+                                        }
+                                        payload={{
+                                            type: 'walletLabel',
+                                            entityKey: instance.state.staticSessionId,
+                                            defaultValue: instance.state.staticSessionId,
+                                            value: instance?.metadata[
+                                                METADATA_LABELING.ENCRYPTION_VERSION
+                                            ]
+                                                ? walletLabel
+                                                : '',
+                                        }}
+                                        defaultEditableValue={defaultWalletLabel}
+                                    />
+                                ) : (
+                                    <WalletLabeling device={instance} />
+                                )}
+                            </Row>
+                        ) : (
                             <Translation id="TR_UNDISCOVERED_WALLET" />
-                        </InstanceType>
-                    )}
+                        )}
+                        <EjectButton setContentType={setContentType} data-testid={dataTestBase} />
+                    </Row>
+                </Text>
 
-                    <InstanceTitle>
-                        <HiddenPlaceholder>
-                            <FiatHeader
-                                size="medium"
-                                fiatAmount={instanceBalance.toString() ?? '0'}
-                                localCurrency={localCurrency}
-                            />
-                        </HiddenPlaceholder>
-                    </InstanceTitle>
-                </Col>
-
-                {(isViewOnlyRendered ||
-                    isEjectConfirmationRendered ||
-                    isDisablingViewOnlyEjectsWalletRendered) && (
-                    <DividerWrapper>
-                        <Divider />
-                    </DividerWrapper>
-                )}
-
-                {isViewOnlyRendered && (
-                    <ViewOnly setContentType={setContentType} instance={instance} />
-                )}
-                {isEjectConfirmationRendered && (
-                    <EjectConfirmation
-                        instance={instance}
-                        onClick={stopPropagation}
-                        onCancel={onEjectCancelClick}
+                <HiddenPlaceholder>
+                    <FiatHeader
+                        size="medium"
+                        fiatAmount={instanceBalance.toString() ?? '0'}
+                        localCurrency={localCurrency}
                     />
-                )}
-                {isDisablingViewOnlyEjectsWalletRendered && (
-                    <EjectConfirmationDisableViewOnly
-                        instance={instance}
-                        onClick={stopPropagation}
-                        onCancel={onEjectCancelClick}
-                    />
-                )}
-            </Card>
-        </RelativeContainer>
+                </HiddenPlaceholder>
+            </Column>
+
+            {(isViewOnlyRendered ||
+                isEjectConfirmationRendered ||
+                isDisablingViewOnlyEjectsWalletRendered) && (
+                <Divider
+                    margin={{ vertical: spacings.sm, horizontal: negativeSpacings.sm }}
+                    width="auto"
+                />
+            )}
+
+            {isViewOnlyRendered && <ViewOnly setContentType={setContentType} instance={instance} />}
+            {isEjectConfirmationRendered && (
+                <EjectConfirmation
+                    instance={instance}
+                    onClick={stopPropagation}
+                    onCancel={onEjectCancelClick}
+                />
+            )}
+            {isDisablingViewOnlyEjectsWalletRendered && (
+                <EjectConfirmationDisableViewOnly
+                    instance={instance}
+                    onClick={stopPropagation}
+                    onCancel={onEjectCancelClick}
+                />
+            )}
+        </Card>
     );
 };
