@@ -36,8 +36,16 @@ const dismissMessage = createAction(
     }),
 );
 
+const updateValidExperiments = createAction(
+    `${ACTION_PREFIX}/updateValidExperiments`,
+    (payload: string[]) => ({
+        payload,
+    }),
+);
+
 export const messageSystemActions = {
     updateValidMessages,
+    updateValidExperiments,
     dismissMessage,
     fetchSuccess,
     fetchSuccessUpdate,

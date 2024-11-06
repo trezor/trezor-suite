@@ -479,6 +479,40 @@ const getMessageSystemConfig = (
             ...action2,
         },
     ],
+    experiments: [
+        {
+            conditions: [],
+            experiment: {
+                id: '3bed56a4-ecd8-4e0f-9e5f-014b484c2aff',
+                groups: [
+                    {
+                        variant: 'A',
+                        percentage: 25,
+                    },
+                    {
+                        variant: 'B',
+                        percentage: 10,
+                    },
+                ],
+            },
+        },
+        {
+            conditions: [],
+            experiment: {
+                id: '3bed56a4-ecd8-4e0f-9e5f-014b484c2afa',
+                groups: [
+                    {
+                        variant: 'A',
+                        percentage: 25,
+                    },
+                    {
+                        variant: 'B',
+                        percentage: 75,
+                    },
+                ],
+            },
+        },
+    ],
     ...root,
 });
 

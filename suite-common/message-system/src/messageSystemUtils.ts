@@ -20,6 +20,8 @@ import type {
     Transport,
     Device,
     Environment,
+    Condition,
+    ExperimentsItem,
 } from '@suite-common/suite-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { TransportInfo } from '@trezor/connect';
@@ -217,11 +219,7 @@ export const validateEnvironmentCompatibility = (
     );
 };
 
-export const getValidMessages = (config: MessageSystem | null, options: Options): Message[] => {
-    if (!config) {
-        return [];
-    }
-
+export const validateConditions = (condition: Condition, options: Options) => {
     const { device, transport, settings } = options;
 
     const currentOsName = getOsName();
@@ -234,76 +232,89 @@ export const getValidMessages = (config: MessageSystem | null, options: Options)
     const suiteVersion = transformVersionToSemverFormat(getSuiteVersion());
     const commitHash = getCommitHash();
 
+    const {
+        duration: durationCondition,
+        environment: environmentCondition,
+        os: osCondition,
+        browser: browserCondition,
+        transport: transportCondition,
+        settings: settingsCondition,
+        devices: deviceCondition,
+    } = condition;
+
+    if (durationCondition && !validateDurationCompatibility(durationCondition)) {
+        return false;
+    }
+
+    if (
+        environmentCondition &&
+        !validateEnvironmentCompatibility(
+            environmentCondition,
+            environment,
+            suiteVersion,
+            commitHash,
+        )
+    ) {
+        return false;
+    }
+
+    if (
+        osCondition &&
+        !validateVersionCompatibility(osCondition, currentOsName, currentOsVersion)
+    ) {
+        return false;
+    }
+
+    if (
+        environment === 'web' &&
+        browserCondition &&
+        !validateVersionCompatibility(browserCondition, currentBrowserName, currentBrowserVersion)
+    ) {
+        return false;
+    }
+
+    if (settingsCondition && !validateSettingsCompatibility(settingsCondition, settings)) {
+        return false;
+    }
+
+    if (transportCondition && !validateTransportCompatibility(transportCondition, transport)) {
+        return false;
+    }
+
+    if (deviceCondition && !validateDeviceCompatibility(deviceCondition, device)) {
+        return false;
+    }
+
+    return true;
+};
+
+export const getValidMessages = (config: MessageSystem | null, options: Options): Message[] => {
+    if (!config) {
+        return [];
+    }
+
     return config.actions
         .filter(
             action =>
                 !action.conditions.length ||
-                action.conditions.some(condition => {
-                    const {
-                        duration: durationCondition,
-                        environment: environmentCondition,
-                        os: osCondition,
-                        browser: browserCondition,
-                        transport: transportCondition,
-                        settings: settingsCondition,
-                        devices: deviceCondition,
-                    } = condition;
-
-                    if (durationCondition && !validateDurationCompatibility(durationCondition)) {
-                        return false;
-                    }
-
-                    if (
-                        environmentCondition &&
-                        !validateEnvironmentCompatibility(
-                            environmentCondition,
-                            environment,
-                            suiteVersion,
-                            commitHash,
-                        )
-                    ) {
-                        return false;
-                    }
-
-                    if (
-                        osCondition &&
-                        !validateVersionCompatibility(osCondition, currentOsName, currentOsVersion)
-                    ) {
-                        return false;
-                    }
-
-                    if (
-                        environment === 'web' &&
-                        browserCondition &&
-                        !validateVersionCompatibility(
-                            browserCondition,
-                            currentBrowserName,
-                            currentBrowserVersion,
-                        )
-                    ) {
-                        return false;
-                    }
-
-                    if (
-                        settingsCondition &&
-                        !validateSettingsCompatibility(settingsCondition, settings)
-                    ) {
-                        return false;
-                    }
-
-                    if (
-                        transportCondition &&
-                        !validateTransportCompatibility(transportCondition, transport)
-                    ) {
-                        return false;
-                    }
-
-                    if (deviceCondition && !validateDeviceCompatibility(deviceCondition, device)) {
-                        return false;
-                    }
-
-                    return true;
-                }),
+                action.conditions.some(condition => validateConditions(condition, options)),
         )
         .map(action => action.message);
+};
+
+export const getValidExperiments = (
+    config: MessageSystem | null,
+    options: Options,
+): ExperimentsItem[] => {
+    if (!config?.experiments) {
+        return [];
+    }
+
+    return config.experiments
+        .filter(
+            experiment =>
+                !experiment.conditions.length ||
+                experiment.conditions.some(condition => validateConditions(condition, options)),
+        )
+        .map(experiment => experiment.experiment);
 };

@@ -243,4 +243,14 @@ describe('Message system actions', () => {
             feature: false,
         });
     });
+
+    it('updateValidExperiments', () => {
+        const store = initStore(getInitialState());
+
+        const payload = [fixtures.experimentId1];
+
+        store.dispatch(messageSystemActions.updateValidExperiments(payload));
+
+        expect(store.getState().messageSystem.validExperiments).toEqual(payload);
+    });
 });

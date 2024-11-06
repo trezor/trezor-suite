@@ -15,6 +15,7 @@ export type FirmwareVariant = '*' | 'bitcoin-only' | 'regular';
  * Eligible authorized vendors.
  */
 export type Vendor = '*' | 'trezor.io';
+export type Conditions = Condition[];
 export type Variant = 'info' | 'warning' | 'critical';
 export type Category = 'banner' | 'context' | 'modal' | 'feature';
 
@@ -32,9 +33,10 @@ export interface MessageSystem {
      */
     sequence: number;
     actions: Action[];
+    experiments?: Experiments[];
 }
 export interface Action {
-    conditions: Condition[];
+    conditions: Conditions;
     message: Message;
 }
 export interface Condition {
@@ -163,4 +165,25 @@ export interface Context {
      * The domain to which the message applies. Only used for 'context' category.
      */
     domain: string | string[];
+}
+export interface Experiments {
+    conditions: Conditions;
+    experiment: ExperimentsItem;
+}
+/**
+ * Used for AB testing
+ */
+export interface ExperimentsItem {
+    id: string;
+    groups: {
+        /**
+         * The name of the variant, e.g., 'A' or 'B'
+         */
+        variant: string;
+        /**
+         * Percentage of users for this variant (0-100)
+         */
+        percentage: number;
+        [k: string]: unknown;
+    }[];
 }

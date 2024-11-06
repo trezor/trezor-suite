@@ -10,6 +10,7 @@ export type MessageSystemState = {
     dismissedMessages: {
         [key: string]: MessageState;
     };
+    validExperiments: string[];
 };
 
 export type MessageSystemRootState = {

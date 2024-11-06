@@ -30,186 +30,7 @@
                 "required": ["conditions", "message"],
                 "properties": {
                     "conditions": {
-                        "type": "array",
-                        "items": {
-                            "title": "Condition",
-                            "type": "object",
-                            "properties": {
-                                "duration": {
-                                    "title": "Duration",
-                                    "type": "object",
-                                    "required": ["from", "to"],
-                                    "properties": {
-                                        "from": {
-                                            "$ref": "#/definitions/date-time"
-                                        },
-                                        "to": {
-                                            "$ref": "#/definitions/date-time"
-                                        }
-                                    },
-                                    "additionalProperties": false
-                                },
-                                "os": {
-                                    "title": "Operating System",
-                                    "type": "object",
-                                    "required": [
-                                        "macos",
-                                        "linux",
-                                        "windows",
-                                        "android",
-                                        "ios",
-                                        "chromeos"
-                                    ],
-                                    "properties": {
-                                        "macos": {
-                                            "$ref": "#/definitions/version"
-                                        },
-                                        "linux": {
-                                            "$ref": "#/definitions/version"
-                                        },
-                                        "windows": {
-                                            "$ref": "#/definitions/version"
-                                        },
-                                        "android": {
-                                            "$ref": "#/definitions/version"
-                                        },
-                                        "ios": {
-                                            "$ref": "#/definitions/version"
-                                        },
-                                        "chromeos": {
-                                            "$ref": "#/definitions/version"
-                                        }
-                                    },
-                                    "additionalProperties": {
-                                        "$ref": "#/definitions/version"
-                                    }
-                                },
-                                "environment": {
-                                    "title": "Environment",
-                                    "type": "object",
-                                    "required": ["desktop", "mobile", "web"],
-                                    "properties": {
-                                        "desktop": {
-                                            "$ref": "#/definitions/version"
-                                        },
-                                        "mobile": {
-                                            "$ref": "#/definitions/version"
-                                        },
-                                        "web": {
-                                            "$ref": "#/definitions/version"
-                                        },
-                                        "revision": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "browser": {
-                                    "title": "Browser",
-                                    "type": "object",
-                                    "required": ["firefox", "chrome", "chromium"],
-                                    "properties": {
-                                        "firefox": {
-                                            "$ref": "#/definitions/version"
-                                        },
-                                        "chrome": {
-                                            "$ref": "#/definitions/version"
-                                        },
-                                        "chromium": {
-                                            "$ref": "#/definitions/version"
-                                        }
-                                    },
-                                    "additionalProperties": {
-                                        "$ref": "#/definitions/version"
-                                    }
-                                },
-                                "transport": {
-                                    "title": "Transport",
-                                    "type": "object",
-                                    "required": ["bridge", "webusbplugin"],
-                                    "properties": {
-                                        "bridge": {
-                                            "$ref": "#/definitions/version"
-                                        },
-                                        "webusbplugin": {
-                                            "$ref": "#/definitions/version"
-                                        }
-                                    },
-                                    "additionalProperties": {
-                                        "$ref": "#/definitions/version"
-                                    }
-                                },
-                                "settings": {
-                                    "type": "array",
-                                    "minItems": 1,
-                                    "items": {
-                                        "title": "Settings",
-                                        "description": "If a setting is not specified, then it can be either true or false. Currently, 'tor' and coin symbols are supported.",
-                                        "type": "object",
-                                        "properties": {
-                                            "tor": {
-                                                "type": "boolean"
-                                            }
-                                        },
-                                        "additionalProperties": true
-                                    }
-                                },
-                                "devices": {
-                                    "type": "array",
-                                    "items": {
-                                        "title": "Device",
-                                        "type": "object",
-                                        "required": [
-                                            "model",
-                                            "firmwareRevision",
-                                            "firmware",
-                                            "bootloader",
-                                            "variant",
-                                            "vendor"
-                                        ],
-                                        "properties": {
-                                            "model": {
-                                                "title": "Model",
-                                                "type": "string",
-                                                "enum": [
-                                                    "1",
-                                                    "T",
-                                                    "T1B1",
-                                                    "T2T1",
-                                                    "T2B1",
-                                                    "Safe 3",
-                                                    "T3B1",
-                                                    "T3T1",
-                                                    ""
-                                                ]
-                                            },
-                                            "firmwareRevision": {
-                                                "title": "Firmware Revision",
-                                                "type": "string"
-                                            },
-                                            "firmware": {
-                                                "$ref": "#/definitions/version"
-                                            },
-                                            "bootloader": {
-                                                "$ref": "#/definitions/version"
-                                            },
-                                            "variant": {
-                                                "title": "Firmware Variant",
-                                                "type": "string",
-                                                "enum": ["*", "bitcoin-only", "regular"]
-                                            },
-                                            "vendor": {
-                                                "title": "Vendor",
-                                                "description": "Eligible authorized vendors.",
-                                                "type": "string",
-                                                "enum": ["*", "trezor.io"]
-                                            }
-                                        },
-                                        "additionalProperties": false
-                                    }
-                                }
-                            },
-                            "additionalProperties": false
-                        }
+                        "$ref": "#/definitions/conditions"
                     },
                     "message": {
                         "title": "Message",
@@ -346,6 +167,53 @@
                 },
                 "additionalProperties": false
             }
+        },
+        "experiments": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Experiments",
+                "type": "object",
+                "required": ["conditions", "experiment"],
+                "properties": {
+                    "conditions": {
+                        "$ref": "#/definitions/conditions"
+                    },
+                    "experiment": {
+                        "title": "Experiments item",
+                        "description": "Used for AB testing",
+                        "type": "object",
+                        "required": ["id", "groups"],
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "groups": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "required": ["variant", "percentage"],
+                                    "properties": {
+                                        "variant": {
+                                            "type": "string",
+                                            "description": "The name of the variant, e.g., 'A' or 'B'"
+                                        },
+                                        "percentage": {
+                                            "type": "number",
+                                            "minimum": 0,
+                                            "maximum": 100,
+                                            "description": "Percentage of users for this variant (0-100)"
+                                        }
+                                    },
+                                    "additionalProperties": true
+                                }
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "additionalProperties": false
+            }
         }
     },
     "additionalProperties": false,
@@ -436,6 +304,181 @@
             "description": "ISO 8601 date-time format.",
             "type": "string",
             "examples": ["2021-03-03T03:48:16+00:00", "2021-03-03T03:48:16Z"]
+        },
+        "conditions": {
+            "type": "array",
+            "items": {
+                "title": "Condition",
+                "type": "object",
+                "properties": {
+                    "duration": {
+                        "title": "Duration",
+                        "type": "object",
+                        "required": ["from", "to"],
+                        "properties": {
+                            "from": {
+                                "$ref": "#/definitions/date-time"
+                            },
+                            "to": {
+                                "$ref": "#/definitions/date-time"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "os": {
+                        "title": "Operating System",
+                        "type": "object",
+                        "required": ["macos", "linux", "windows", "android", "ios", "chromeos"],
+                        "properties": {
+                            "macos": {
+                                "$ref": "#/definitions/version"
+                            },
+                            "linux": {
+                                "$ref": "#/definitions/version"
+                            },
+                            "windows": {
+                                "$ref": "#/definitions/version"
+                            },
+                            "android": {
+                                "$ref": "#/definitions/version"
+                            },
+                            "ios": {
+                                "$ref": "#/definitions/version"
+                            },
+                            "chromeos": {
+                                "$ref": "#/definitions/version"
+                            }
+                        },
+                        "additionalProperties": {
+                            "$ref": "#/definitions/version"
+                        }
+                    },
+                    "environment": {
+                        "title": "Environment",
+                        "type": "object",
+                        "required": ["desktop", "mobile", "web"],
+                        "properties": {
+                            "desktop": {
+                                "$ref": "#/definitions/version"
+                            },
+                            "mobile": {
+                                "$ref": "#/definitions/version"
+                            },
+                            "web": {
+                                "$ref": "#/definitions/version"
+                            },
+                            "revision": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "browser": {
+                        "title": "Browser",
+                        "type": "object",
+                        "required": ["firefox", "chrome", "chromium"],
+                        "properties": {
+                            "firefox": {
+                                "$ref": "#/definitions/version"
+                            },
+                            "chrome": {
+                                "$ref": "#/definitions/version"
+                            },
+                            "chromium": {
+                                "$ref": "#/definitions/version"
+                            }
+                        },
+                        "additionalProperties": {
+                            "$ref": "#/definitions/version"
+                        }
+                    },
+                    "transport": {
+                        "title": "Transport",
+                        "type": "object",
+                        "required": ["bridge", "webusbplugin"],
+                        "properties": {
+                            "bridge": {
+                                "$ref": "#/definitions/version"
+                            },
+                            "webusbplugin": {
+                                "$ref": "#/definitions/version"
+                            }
+                        },
+                        "additionalProperties": {
+                            "$ref": "#/definitions/version"
+                        }
+                    },
+                    "settings": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "title": "Settings",
+                            "description": "If a setting is not specified, then it can be either true or false. Currently, 'tor' and coin symbols are supported.",
+                            "type": "object",
+                            "properties": {
+                                "tor": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "additionalProperties": true
+                        }
+                    },
+                    "devices": {
+                        "type": "array",
+                        "items": {
+                            "title": "Device",
+                            "type": "object",
+                            "required": [
+                                "model",
+                                "firmwareRevision",
+                                "firmware",
+                                "bootloader",
+                                "variant",
+                                "vendor"
+                            ],
+                            "properties": {
+                                "model": {
+                                    "title": "Model",
+                                    "type": "string",
+                                    "enum": [
+                                        "1",
+                                        "T",
+                                        "T1B1",
+                                        "T2T1",
+                                        "T2B1",
+                                        "Safe 3",
+                                        "T3B1",
+                                        "T3T1",
+                                        ""
+                                    ]
+                                },
+                                "firmwareRevision": {
+                                    "title": "Firmware Revision",
+                                    "type": "string"
+                                },
+                                "firmware": {
+                                    "$ref": "#/definitions/version"
+                                },
+                                "bootloader": {
+                                    "$ref": "#/definitions/version"
+                                },
+                                "variant": {
+                                    "title": "Firmware Variant",
+                                    "type": "string",
+                                    "enum": ["*", "bitcoin-only", "regular"]
+                                },
+                                "vendor": {
+                                    "title": "Vendor",
+                                    "description": "Eligible authorized vendors.",
+                                    "type": "string",
+                                    "enum": ["*", "trezor.io"]
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    }
+                },
+                "additionalProperties": false
+            }
         }
     }
 }

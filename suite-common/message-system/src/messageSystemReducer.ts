@@ -17,6 +17,8 @@ const initialState: MessageSystemState = {
         feature: [],
     },
     dismissedMessages: {},
+
+    validExperiments: [],
 };
 
 export const messageSystemPersistedWhitelist: Array<keyof MessageSystemState> = [
@@ -62,6 +64,9 @@ export const prepareMessageSystemReducer = createReducerWithExtraDeps(
                 const { id, category } = payload;
                 const messageState = getMessageStateById(state, id);
                 messageState[category] = true;
+            })
+            .addCase(messageSystemActions.updateValidExperiments, (state, { payload }) => {
+                state.validExperiments = payload;
             })
             .addMatcher(
                 action => action.type === extra.actionTypes.storageLoad,

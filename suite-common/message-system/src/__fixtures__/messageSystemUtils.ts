@@ -1827,3 +1827,148 @@ export const getValidMessages = [
         result: [getMessageSystemConfig().actions[1].message],
     },
 ];
+
+export const validateExperiments = [
+    {
+        conditions: [
+            {
+                environment: {
+                    desktop: '*',
+                    mobile: '!',
+                    web: '*',
+                },
+            },
+        ],
+        experiment: {
+            id: 'experiment - case 1',
+            groups: [
+                {
+                    variant: 'A',
+                    percentage: 30,
+                },
+                {
+                    variant: 'B',
+                    percentage: 70,
+                },
+            ],
+        },
+    },
+    {
+        conditions: [
+            {
+                environment: {
+                    desktop: '*',
+                    mobile: '!',
+                    web: '*',
+                },
+            },
+        ],
+        experiment: {
+            id: 'experiment - case 3',
+            groups: [
+                {
+                    variant: 'A',
+                    percentage: 70,
+                },
+            ],
+        },
+    },
+    {
+        conditions: [
+            {
+                environment: {
+                    desktop: '*',
+                    mobile: '!',
+                    web: '*',
+                },
+            },
+        ],
+        experiment: {
+            id: 'experiment - case 4',
+            groups: [
+                {
+                    variant: 'A',
+                    percentage: 70,
+                },
+                {
+                    variant: 'B',
+                    percentage: 29,
+                },
+                {
+                    variant: 'C',
+                    percentage: 1,
+                },
+            ],
+        },
+    },
+    {
+        conditions: [
+            {
+                environment: {
+                    desktop: '*',
+                    mobile: '!',
+                    web: '*',
+                },
+            },
+        ],
+        experiment: {
+            id: 'experiment - case 5',
+            groups: [
+                {
+                    variant: 'A',
+                    percentage: 70,
+                },
+                {
+                    variant: 'B',
+                    percentage: 29,
+                },
+            ],
+        },
+    },
+    {
+        conditions: [
+            {
+                environment: {
+                    desktop: '*',
+                    mobile: '!',
+                    web: '*',
+                },
+            },
+        ],
+        experiment: {
+            id: 'experiment - case 6',
+            groups: [
+                {
+                    variant: 'A',
+                    percentage: 70,
+                },
+                {
+                    variant: 'B',
+                    percentage: 70,
+                },
+                {
+                    variant: 'C',
+                    percentage: 20,
+                },
+            ],
+        },
+    },
+];
+
+export const getValidExperiments = [
+    {
+        description: 'getValidExperiments - case 1',
+        currentDate: '2021-04-01T12:10:00.000Z',
+        userAgent:
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osName: 'macos',
+        environment: '',
+        suiteVersion: '',
+        config: getMessageSystemConfig(),
+        result: [
+            ...(getMessageSystemConfig().experiments ?? []).map(
+                experiment => experiment.experiment,
+            ),
+        ],
+    },
+];
