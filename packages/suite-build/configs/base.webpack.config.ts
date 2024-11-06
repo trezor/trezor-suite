@@ -134,7 +134,7 @@ const config: webpack.Configuration = {
             },
             // Workers
             {
-                test: /\/workers\/[^\/]+\/index\.ts$/,
+                test: /\/workers\/[^/]+\/index\.ts$/,
                 use: [
                     {
                         loader: 'worker-loader',

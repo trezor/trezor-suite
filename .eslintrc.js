@@ -237,6 +237,7 @@ module.exports = {
         'no-undefined': 'off', // disallow use of undefined variable (off by default)
         'no-undef-init': 'error', // disallow use of undefined when initializing variables
         'no-unused-vars': 'off',
+        'no-useless-escape': 'error',
         'no-unused-expressions': 0,
         'chai-friendly/no-unused-expressions': 2,
         '@typescript-eslint/no-unused-vars': [
