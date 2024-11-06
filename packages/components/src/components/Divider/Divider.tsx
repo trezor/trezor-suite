@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Color, Elevation, mapElevationToBorder, spacings } from '@trezor/theme';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import {
@@ -8,13 +8,16 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
-import { allowedHeadingFrameProps } from '../typography/Heading/Heading';
 
-export const allowedDividerFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+export const allowedDividerFrameProps = [
+    'margin',
+    'width',
+    'overflow',
+] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedDividerFrameProps)[number]>;
 type DividerOrientation = 'horizontal' | 'vertical';
 
-type DividerProps = AllowedFrameProps & {
+export type DividerProps = AllowedFrameProps & {
     orientation?: DividerOrientation;
     strokeWidth?: number;
     color?: Color;
@@ -30,15 +33,16 @@ const Line = styled.div<
 >`
     ${({ $orientation, $strokeWidth }) =>
         $orientation === 'vertical'
-            ? `
-                height: 100%;
-                width: ${$strokeWidth}px;
-                min-width: ${$strokeWidth}px;`
-            : `
-                width: 100%;
-                height: ${$strokeWidth}px;
-                min-height: ${$strokeWidth}px;
-    `}
+            ? css`
+                  height: 100%;
+                  width: ${$strokeWidth}px;
+                  min-width: ${$strokeWidth}px;
+              `
+            : css`
+                  width: 100%;
+                  height: ${$strokeWidth}px;
+                  min-height: ${$strokeWidth}px;
+              `}
 
     background: ${({ theme, $elevation, $color }) =>
         $color ? theme[$color] : mapElevationToBorder({ theme, $elevation })};
@@ -56,7 +60,7 @@ export const Divider = ({
 
     const frameProps = pickAndPrepareFrameProps(
         { ...rest, margin: rest.margin ?? { top: spacings.md, bottom: spacings.md } },
-        allowedHeadingFrameProps,
+        allowedDividerFrameProps,
     );
 
     return (

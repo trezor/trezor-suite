@@ -1,26 +1,16 @@
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { H3, Button, Text } from '@trezor/components';
+import { H4, Button, Paragraph, Row } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { deviceActions } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { MouseEventHandler, ReactNode } from 'react';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import { selectSuiteSettings } from '../../../../reducers/suite/suiteReducer';
 
 const Container = styled.div`
-    margin: 0 ${spacingsPx.xxs};
     cursor: auto;
-`;
-
-const Description = styled.div`
-    margin: ${spacingsPx.xs} 0 ${spacingsPx.md} 0;
-`;
-
-const Buttons = styled.div`
-    display: flex;
-    gap: ${spacingsPx.xxs};
 `;
 
 type EjectConfirmationProps = {
@@ -57,19 +47,19 @@ const EjectConfirmationContainer = ({
 
     return (
         <Container onClick={onClick}>
-            <H3>{title}</H3>
-            <Description>
-                <Text variant="tertiary">{description}</Text>
-            </Description>
-            <Buttons>
+            <H4>{title}</H4>
+            <Paragraph variant="tertiary" typographyStyle="hint" margin={{ top: spacings.xxs }}>
+                {description}
+            </Paragraph>
+            <Row gap={spacings.xs} margin={{ top: spacings.md }}>
                 <Button
                     size="small"
                     icon="eject"
                     iconSize={spacings.lg}
                     onClick={handleEject}
                     variant="primary"
-                    isFullWidth
                     data-testid="@switch-device/eject"
+                    isFullWidth
                 >
                     {primaryButtonLabel}
                 </Button>
@@ -77,12 +67,12 @@ const EjectConfirmationContainer = ({
                     size="small"
                     onClick={onCancel}
                     variant="tertiary"
-                    isFullWidth
                     data-testid="@switch-device/cancelEject"
+                    isFullWidth
                 >
                     <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON" />
                 </Button>
-            </Buttons>
+            </Row>
         </Container>
     );
 };

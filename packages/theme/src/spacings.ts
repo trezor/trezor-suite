@@ -32,7 +32,8 @@ export type Spacing = keyof Spacings;
 export type NegativeSpacings = typeof negativeSpacings;
 export type SpacingValues = Spacings[Spacing] | NegativeSpacings[Spacing];
 export type SpacingPx = { [K in Spacing]: `${Spacings[K]}px` };
-export type SpacingPxValues = SpacingPx[Spacing];
+export type NegativeSpacingPx = { [K in Spacing]: `-${Spacings[K]}px` };
+export type SpacingPxValues = SpacingPx[Spacing] | NegativeSpacingPx[Spacing];
 
 export const spacingsPx = (Object.keys(spacings) as Array<Spacing>).reduce((result, key) => {
     (result as Record<Spacing, string>)[key] = `${spacings[key]}px`;

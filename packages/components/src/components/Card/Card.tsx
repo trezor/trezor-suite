@@ -1,5 +1,5 @@
 import { forwardRef, HTMLAttributes, ReactNode } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { borders, Elevation, spacingsPx } from '@trezor/theme';
 import { ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 import {
@@ -46,12 +46,14 @@ const CardContainer = styled.div<
         $paddingType: PaddingType;
         $fillType: FillType;
         $isClickable: boolean;
+        $isHiglighted: boolean;
         $hasLabel: boolean;
     } & TransientProps<AllowedFrameProps>
 >`
     width: 100%;
     display: flex;
     flex-direction: column;
+    position: relative;
     padding: ${mapPaddingTypeToPadding};
     border-radius: ${borders.radii.md};
     transition:
@@ -59,6 +61,23 @@ const CardContainer = styled.div<
         box-shadow 0.2s,
         border-color 0.2s;
     cursor: ${({ $isClickable }) => ($isClickable ? 'pointer' : 'default')};
+
+    ${({ theme, $isHiglighted, $paddingType }) =>
+        $isHiglighted &&
+        css`
+            overflow: hidden;
+            padding-left: calc(${spacingsPx.xxs} + ${mapPaddingTypeToPadding({ $paddingType })});
+
+            &::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: ${spacingsPx.xxs};
+                background: ${theme.backgroundSecondaryDefault};
+            }
+        `}
 
     ${mapFillTypeToCSS}
     ${withFrameProps}
@@ -73,6 +92,7 @@ type CommonCardProps = AccessibilityProps & {
     children?: ReactNode;
     className?: string;
     label?: ReactNode;
+    isHiglighted?: boolean;
     'data-testid'?: string;
 };
 
@@ -91,6 +111,7 @@ const CardComponent = forwardRef<HTMLDivElement, CardPropsWithTransientProps>(
             className,
             tabIndex,
             label,
+            isHiglighted = false,
             'data-testid': dataTest,
             ...rest
         },
@@ -105,6 +126,7 @@ const CardComponent = forwardRef<HTMLDivElement, CardPropsWithTransientProps>(
                 $paddingType={paddingType}
                 $fillType={fillType}
                 $isClickable={Boolean(onClick)}
+                $isHiglighted={isHiglighted}
                 $hasLabel={Boolean(label)}
                 onClick={onClick}
                 onMouseEnter={onMouseEnter}
@@ -133,6 +155,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
             tabIndex,
             children,
             'data-testid': dataTest,
+            isHiglighted,
             ...rest
         },
         ref,
@@ -147,6 +170,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
             fillType,
             children,
             label,
+            isHiglighted,
             'data-testid': dataTest,
         };
         const frameProps = pickAndPrepareFrameProps(rest, allowedCardFrameProps);
