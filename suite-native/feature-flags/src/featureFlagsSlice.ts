@@ -8,8 +8,6 @@ export const FeatureFlag = {
     IsBitcoinLikeSendEnabled: 'isBitcoinLikeSendEnabled',
     IsEthereumSendEnabled: 'isEthereumSendEnabled',
     IsRegtestEnabled: 'isRegtestEnabled',
-    IsPolygonEnabled: 'IsPolygonEnabled',
-    IsBscEnabled: 'IsBscEnabled',
     IsSolanaEnabled: 'IsSolanaEnabled',
     IsConnectPopupEnabled: 'IsConnectPopupEnabled',
 } as const;
@@ -26,8 +24,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsBitcoinLikeSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
     [FeatureFlag.IsEthereumSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
     [FeatureFlag.IsRegtestEnabled]: isDebugEnv() || isDetoxTestBuild(),
-    [FeatureFlag.IsPolygonEnabled]: false,
-    [FeatureFlag.IsBscEnabled]: false,
     [FeatureFlag.IsSolanaEnabled]: false,
     [FeatureFlag.IsConnectPopupEnabled]: isDevelopOrDebugEnv(),
 };
@@ -37,8 +33,6 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsBitcoinLikeSendEnabled,
     FeatureFlag.IsEthereumSendEnabled,
     FeatureFlag.IsRegtestEnabled,
-    FeatureFlag.IsPolygonEnabled,
-    FeatureFlag.IsBscEnabled,
     FeatureFlag.IsSolanaEnabled,
     FeatureFlag.IsConnectPopupEnabled,
 ];
