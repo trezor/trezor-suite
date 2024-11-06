@@ -696,6 +696,15 @@ const onCallDevice = async (
         }
         // Work done
 
+        if (
+            method.keepSession &&
+            method.deviceState &&
+            method.deviceState.sessionId !== device.getState()?.sessionId
+        ) {
+            // if session was changed from the one that was sent, send a device changed event
+            sendCoreMessage(createDeviceMessage(DEVICE.CHANGED, device.toMessageObject()));
+        }
+
         // TODO: This requires a massive refactoring https://github.com/trezor/trezor-suite/issues/5323
         // @ts-expect-error TODO: messageResponse should be assigned from the response of "inner" function
         const response = messageResponse;

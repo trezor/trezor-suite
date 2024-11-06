@@ -67,7 +67,7 @@ const mergeDeviceState = (
         // state was previously not defined, we can set it
         device.state === undefined ||
         // update sessionId for the same staticSessionId
-        (upcomingState?.sessionId &&
+        (upcomingState &&
             device.state?.staticSessionId === upcomingState.staticSessionId &&
             device.state?.sessionId !== upcomingState.sessionId)
     ) {
