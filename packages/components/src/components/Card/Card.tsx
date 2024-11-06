@@ -1,6 +1,9 @@
 import { forwardRef, HTMLAttributes, ReactNode } from 'react';
+
 import styled, { css } from 'styled-components';
+
 import { borders, Elevation, spacingsPx } from '@trezor/theme';
+
 import { ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 import {
     FrameProps,

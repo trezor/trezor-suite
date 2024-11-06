@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
     selectDiscoveryByDeviceState,
     selectCurrentFiatRates,
@@ -18,16 +20,16 @@ import {
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
-import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
 import { METADATA_LABELING } from 'src/actions/suite/constants';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useState } from 'react';
+import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
+
+import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
 import { EjectConfirmation, EjectConfirmationDisableViewOnly } from './EjectConfirmation';
 import { ContentType } from '../types';
 import { ViewOnly } from './ViewOnly';
 import { EjectButton } from './EjectButton';
-import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 
 interface WalletInstanceProps {
     instance: AcquiredDevice;
