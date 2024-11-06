@@ -53,8 +53,8 @@ jobs:
           RUNTIME_VERSION=$(npx expo config --json | jq -r '.runtimeVersion')
           echo "Current runtimeVersion is $RUNTIME_VERSION"
           # Check if there is a build with the same runtimeVersion on EAS already
-          EXISTING_BUILD=$(eas build:list --status=finished  --build-profile=preview --channel=preview --limit=1  --non-interactive --runtime-version=$RUNTIME_VERSION)
-          if [ -z "$EXISTING_BUILD" ]; then
+          EXISTING_BUILD=$(eas build:list --status=finished  --build-profile=preview --channel=preview --limit=1  --non-interactive --json --runtime-version=$RUNTIME_VERSION)
+          if [ "$EXISTING_BUILD" = "[]" ]; then
             echo "No build with runtimeVersion $RUNTIME_VERSION found"
             echo "RUNTIME_BUILD_EXISTS=false" >> $GITHUB_ENV
           else
