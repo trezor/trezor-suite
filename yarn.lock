@@ -11779,7 +11779,7 @@ __metadata:
     electron-updater: "npm:6.3.9"
     fs-extra: "npm:^11.2.0"
     glob: "npm:^10.3.10"
-    openpgp: "npm:^5.11.2"
+    openpgp: "npm:^6.0.0"
     systeminformation: "npm:^5.23.5"
     terser-webpack-plugin: "npm:^5.3.9"
     webpack: "npm:^5.96.1"
@@ -15164,7 +15164,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"asn1.js@npm:^5.0.0, asn1.js@npm:^5.2.0":
+"asn1.js@npm:^5.2.0":
   version: 5.4.1
   resolution: "asn1.js@npm:5.4.1"
   dependencies:
@@ -32768,12 +32768,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openpgp@npm:^5.11.2":
-  version: 5.11.2
-  resolution: "openpgp@npm:5.11.2"
-  dependencies:
-    asn1.js: "npm:^5.0.0"
-  checksum: 10/75052f8b89aa946d2b927f2a679d57671b2da5bf3dab1a223b9ba54305635ce37a86cb2ea274d0dcd830511e3fe1bae16d85259e907f56ec31219c4367c311a8
+"openpgp@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "openpgp@npm:6.0.0"
+  checksum: 10/ca634862edb04c3da0d4d25e0157015111f588fd5698f7dc9fc69a515455db52a798bda69de3f1eecfbb6a96a0f8f0d2fe2fde6d4a68736c95460d140d5c2c9c
   languageName: node
   linkType: hard
 

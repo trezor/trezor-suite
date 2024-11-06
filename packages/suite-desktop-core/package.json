@@ -36,7 +36,7 @@
         "electron-localshortcut": "^3.2.1",
         "electron-store": "8.2.0",
         "electron-updater": "6.3.9",
-        "openpgp": "^5.11.2",
+        "openpgp": "^6.0.0",
         "systeminformation": "^5.23.5"
     },
     "devDependencies": {
