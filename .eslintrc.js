@@ -58,6 +58,7 @@ module.exports = {
         'eslint-local-rules/*',
     ],
     rules: {
+        'no-extra-boolean-cast': 'error',
         'no-irregular-whitespace': 'error',
         'no-empty': 'error',
         '@typescript-eslint/no-empty-object-type': 'off',

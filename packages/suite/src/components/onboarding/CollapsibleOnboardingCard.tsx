@@ -242,7 +242,7 @@ export const CollapsibleOnboardingCard = ({
 
                             {heading && (
                                 <H2
-                                    margin={{ bottom: !!description ? spacings.sm : spacings.xxl }}
+                                    margin={{ bottom: description ? spacings.sm : spacings.xxl }}
                                     align="center"
                                 >
                                     {heading}
