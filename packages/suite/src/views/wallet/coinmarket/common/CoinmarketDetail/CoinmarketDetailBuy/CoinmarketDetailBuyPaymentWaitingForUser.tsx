@@ -13,7 +13,6 @@ import { createTxLink } from 'src/utils/wallet/coinmarket/buyUtils';
 import { submitRequestForm } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { useDispatch } from 'src/hooks/suite';
 
-
 const Wrapper = styled.div`
     display: flex;
     align-items: center;

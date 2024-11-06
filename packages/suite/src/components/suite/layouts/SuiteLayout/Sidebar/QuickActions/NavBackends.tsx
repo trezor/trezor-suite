@@ -13,7 +13,6 @@ import { goto } from 'src/actions/suite/routerActions';
 import type { CustomBackend } from 'src/types/wallet';
 import { openModal } from 'src/actions/suite/modalActions';
 
-
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledDropdown = styled(Dropdown)`
     display: block;

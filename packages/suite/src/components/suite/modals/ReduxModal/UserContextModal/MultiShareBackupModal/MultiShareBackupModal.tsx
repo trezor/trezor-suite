@@ -21,7 +21,6 @@ import { isAdditionalShamirBackupInProgress } from '../../../../../../utils/devi
 import { MultiShareBackupStep3VerifyOwnership } from './MultiShareBackupStep3VerifyOwnership';
 import { MultiShareBackupStep4BackupSeed } from './MultiShareBackupStep4BackupSeed';
 
-
 type Steps = 'first-info' | 'second-info' | 'verify-ownership' | 'backup-seed' | 'done';
 
 type MultiShareBackupModalProps = {

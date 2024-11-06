@@ -18,8 +18,6 @@ import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { TransactionTargetLayout } from './TransactionTargetLayout';
 import { StyledFormattedCryptoAmount } from './CommonComponents';
 
-
-
 export const CustomRow = ({
     transaction,
     title,

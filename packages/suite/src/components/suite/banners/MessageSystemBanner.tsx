@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 import { selectLanguage, selectTorState } from 'src/reducers/suite/suiteReducer';
 
-
 type MessageSystemBannerProps = {
     message: Message;
 };

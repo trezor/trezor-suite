@@ -15,7 +15,6 @@ import { isOnionUrl } from 'src/utils/suite/tor';
 import { useCustomBackends } from 'src/hooks/settings/backends';
 import { AdvancedCoinSettingsModal } from 'src/components/suite/modals';
 
-
 const BackendRowWrapper = styled.div`
     display: flex;
     width: 100%;

@@ -6,7 +6,6 @@ import { typography } from '@trezor/theme';
 
 import { variables } from '../../config';
 
-
 const StyledMarkdown = styled.div`
     ${typography.hint}
 

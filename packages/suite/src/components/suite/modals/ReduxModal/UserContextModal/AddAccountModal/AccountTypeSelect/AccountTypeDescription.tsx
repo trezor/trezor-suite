@@ -12,7 +12,6 @@ import { Translation } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useTranslation } from 'src/hooks/suite';
 
-
 interface AccountTypeDescriptionProps {
     bip43Path: Bip43PathTemplate;
     accountType?: AccountType;

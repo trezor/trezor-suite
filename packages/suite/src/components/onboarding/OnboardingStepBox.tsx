@@ -17,7 +17,6 @@ import {
     CollapsibleOnboardingCardProps,
 } from './CollapsibleOnboardingCard';
 
-
 const WrapperWrapper = styled.div`
     z-index: ${zIndices.onboardingForeground};
 `;

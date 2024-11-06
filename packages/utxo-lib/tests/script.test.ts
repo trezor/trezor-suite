@@ -4,7 +4,6 @@ import * as bscript from '../src/script';
 import { fixtures } from './__fixtures__/script';
 import { templates } from './__fixtures__/templates';
 
-
 describe('script', () => {
     // TODO
     describe('isCanonicalPubKey', () => {

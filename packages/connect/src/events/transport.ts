@@ -4,7 +4,6 @@ import { TRANSPORT } from '@trezor/transport/src/constants';
 import { serializeError } from '../constants/errors';
 import type { MessageFactoryFn } from '../types/utils';
 
-
 export { TRANSPORT } from '@trezor/transport/src/constants';
 
 export const TRANSPORT_EVENT = 'TRANSPORT_EVENT';

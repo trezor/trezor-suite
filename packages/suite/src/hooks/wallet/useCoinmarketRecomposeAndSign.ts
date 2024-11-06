@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 
-
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { FormState } from '@suite-common/wallet-types';

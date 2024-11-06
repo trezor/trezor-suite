@@ -10,7 +10,6 @@ import { Account } from 'src/types/wallet';
 
 import { AnimationWrapper } from '../../AnimationWrapper';
 
-
 const ICON_SIZE = 18;
 
 const IconWrapper = styled.div<{ $isActive: boolean }>`

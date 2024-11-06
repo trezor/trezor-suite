@@ -32,7 +32,6 @@ import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
 import { TransactionReviewEvmExplanation } from './TransactionReviewEvmExplanation';
 
-
 const StyledModal = styled(Modal)`
     ${Modal.Body} {
         padding: 10px;

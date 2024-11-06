@@ -9,7 +9,6 @@ import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/su
 
 import { ReviewButton } from './ReviewButton';
 
-
 const Container = styled.div`
     position: sticky;
     top: 80px;

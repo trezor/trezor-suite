@@ -13,7 +13,6 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
-
 const Wrapper = styled.div`
     display: flex;
     gap: ${spacingsPx.sm};

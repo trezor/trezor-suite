@@ -26,7 +26,6 @@ import {
 } from 'src/types/coinmarket/coinmarketVerify';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 
-
 const getSelectAccountOptions = (
     suiteReceiveAccounts: Account[] | undefined,
     device: TrezorDevice | undefined,

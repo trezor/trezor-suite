@@ -1,4 +1,3 @@
-
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';

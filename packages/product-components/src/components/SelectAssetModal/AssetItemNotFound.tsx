@@ -5,7 +5,6 @@ import { spacings } from '@trezor/theme';
 
 import { SelectAssetNetworkProps, SelectAssetSearchCategoryType } from './SelectAssetModal';
 
-
 interface AssetItemNotFoundProps {
     searchCategory: SelectAssetSearchCategoryType;
     networkCategories: SelectAssetNetworkProps[];

@@ -8,7 +8,6 @@ import type { Dispatch } from 'src/types/suite';
 import type { SendFormState } from 'src/reducers/suite/protocolReducer';
 import * as routerActions from 'src/actions/suite/routerActions';
 
-
 import { PROTOCOL } from './constants';
 
 export type ProtocolAction =

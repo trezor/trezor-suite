@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 import styled, { css, DefaultTheme, useTheme } from 'styled-components';
 
 import { Elevation, borders, spacingsPx, typography, spacings } from '@trezor/theme';
+
 import {
     FrameProps,
     FramePropsKeys,

@@ -14,8 +14,6 @@ import {
 } from './PasswordEntry';
 import { EntryForm } from './EntryForm';
 
-
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;

@@ -8,7 +8,6 @@ import { Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useTranslation } from 'src/hooks/suite';
 
-
 interface DestinationTagProps {
     close: () => void;
 }

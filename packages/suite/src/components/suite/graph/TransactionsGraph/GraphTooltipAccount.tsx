@@ -11,7 +11,6 @@ import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
 import type { CryptoGraphProps } from './TransactionsGraph';
 import { GraphTooltipBase } from './GraphTooltipBase';
 
-
 const StyledCryptoAmount = styled(FormattedCryptoAmount)`
     margin-right: 2px;
 `;

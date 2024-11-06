@@ -34,8 +34,6 @@ import { NumberInput } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { validateDecimals } from 'src/utils/suite/validation';
 
-
-
 const Wrapper = styled.div`
     display: flex;
     width: 100%;

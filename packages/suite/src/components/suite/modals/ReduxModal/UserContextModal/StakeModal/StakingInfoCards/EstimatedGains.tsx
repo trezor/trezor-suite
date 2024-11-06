@@ -14,7 +14,6 @@ import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { FiatValue, FormattedCryptoAmount, TrezorLink } from 'src/components/suite';
 import { calculateGains } from 'src/utils/suite/stake';
 
-
 const Heading = styled.div`
     margin-bottom: ${spacingsPx.xl};
 `;

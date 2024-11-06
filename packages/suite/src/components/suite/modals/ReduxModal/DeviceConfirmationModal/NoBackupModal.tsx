@@ -7,7 +7,6 @@ import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
-
 export const NoBackupModal = () => {
     const dispatch = useDispatch();
 

@@ -6,7 +6,6 @@ import { verifyTxBytes } from './compose.utils';
 import { composeTxFixture } from './__fixtures__/compose';
 import { fixturesCrossCheck } from './__fixtures__/compose.crosscheck';
 
-
 jest.mock('@trezor/utils', () => ({
     ...jest.requireActual('@trezor/utils'),
     getRandomInt: jest.fn(),

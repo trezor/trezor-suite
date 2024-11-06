@@ -17,7 +17,6 @@ import { AssetItem } from './AssetItem';
 import { NetworkTabs } from './NetworkTabs';
 import { AssetItemNotFound } from './AssetItemNotFound';
 
-
 export interface SelectAssetOptionCurrencyProps {
     type: 'currency';
     value: string; // CryptoId (networkId + contractAddress)

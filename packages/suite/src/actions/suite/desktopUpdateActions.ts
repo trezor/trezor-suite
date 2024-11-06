@@ -7,7 +7,6 @@ import { Dispatch, GetState } from 'src/types/suite';
 import { UpdateState, UpdateModalVisibility } from 'src/reducers/suite/desktopUpdateReducer';
 import { getAppUpdatePayload } from 'src/utils/suite/analytics';
 
-
 export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.CHECKING }
     | { type: typeof DESKTOP_UPDATE.AVAILABLE; payload: UpdateInfo }

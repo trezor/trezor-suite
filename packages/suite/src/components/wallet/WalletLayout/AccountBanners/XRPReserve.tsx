@@ -5,7 +5,6 @@ import { HELP_CENTER_XRP_URL } from '@trezor/urls';
 import { NotificationCard, Translation } from 'src/components/suite';
 import type { Account } from 'src/types/wallet/index';
 
-
 interface XRPReserveProps {
     account: Account | undefined;
 }

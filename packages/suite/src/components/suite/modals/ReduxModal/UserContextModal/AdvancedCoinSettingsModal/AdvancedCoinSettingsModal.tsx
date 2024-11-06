@@ -10,7 +10,6 @@ import { useSelector } from 'src/hooks/suite';
 
 import { CustomBackends } from './CustomBackends/CustomBackends';
 
-
 const Section = styled.div`
     display: flex;
     flex-direction: column;

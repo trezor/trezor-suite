@@ -6,7 +6,6 @@ import { Translation, TooltipSymbol } from 'src/components/suite';
 
 import { TranslationKey } from '../Translation';
 
-
 const NoRatesMessage = styled.div`
     ${typography.label};
     display: flex;

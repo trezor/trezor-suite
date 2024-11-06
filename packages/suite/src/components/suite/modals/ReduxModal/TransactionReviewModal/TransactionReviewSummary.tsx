@@ -15,7 +15,6 @@ import { Account } from 'src/types/wallet';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
-
 const Wrapper = styled.div`
     padding: 20px 15px 12px;
     display: flex;

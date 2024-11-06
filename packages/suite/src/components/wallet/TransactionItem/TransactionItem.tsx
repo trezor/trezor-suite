@@ -45,8 +45,6 @@ import {
 } from './CommonComponents';
 import { BlurWrapper } from './TransactionItemBlurWrapper';
 
-
-
 // eslint-disable-next-line local-rules/no-override-ds-component
 const Wrapper = styled(Card)<{
     $isPending: boolean;

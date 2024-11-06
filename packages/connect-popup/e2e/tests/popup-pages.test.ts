@@ -12,7 +12,6 @@ import {
     waitAndClick,
 } from '../support/helpers';
 
-
 const url = process.env.URL || 'http://localhost:8088/';
 
 const bridgeVersion = '2.0.33';

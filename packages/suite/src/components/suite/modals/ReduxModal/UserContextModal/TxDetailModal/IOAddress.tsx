@@ -5,7 +5,6 @@ import styled, { css, useTheme } from 'styled-components';
 import { Icon, Link, Paragraph } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 
-
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 
 const IconWrapper = styled.div`

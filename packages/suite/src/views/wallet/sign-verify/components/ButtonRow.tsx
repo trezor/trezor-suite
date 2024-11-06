@@ -7,7 +7,6 @@ import { Button, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useLayoutSize } from 'src/hooks/suite';
 
-
 export const Row = styled.div`
     position: relative;
     display: flex;

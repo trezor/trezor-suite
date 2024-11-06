@@ -22,7 +22,6 @@ import { BasicTxDetails } from './BasicTxDetails';
 import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
 import { ChangeFee } from './ChangeFee/ChangeFee';
 
-
 const PhishingBanner = styled.div`
     margin-bottom: ${spacingsPx.xs};
     padding: ${spacingsPx.xs} ${spacingsPx.sm};

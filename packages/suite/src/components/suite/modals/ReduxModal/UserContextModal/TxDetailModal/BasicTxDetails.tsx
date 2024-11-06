@@ -21,7 +21,6 @@ import { TransactionHeader } from 'src/components/wallet/TransactionItem/Transac
 
 import { IOAddress } from './IOAddress';
 
-
 const Wrapper = styled.div<{ $elevation: Elevation }>`
     background: ${mapElevationToBackground};
     padding: ${spacingsPx.lg};

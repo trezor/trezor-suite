@@ -16,7 +16,6 @@ import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsAc
 import { Account } from 'src/types/wallet';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
-
 export interface ExportActionProps {
     account: Account;
     searchQuery: string;

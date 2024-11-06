@@ -16,7 +16,6 @@ import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 import { bannerAnimationConfig } from './banner-animations';
 
-
 const Container = styled(motion.div)`
     width: 100%;
 `;

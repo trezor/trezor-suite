@@ -8,8 +8,6 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useAccountSearch } from 'src/hooks/suite';
 
-
-
 type CoinmarketBuyButtonProps = {
     symbol: NetworkSymbol;
     'data-testid'?: string;

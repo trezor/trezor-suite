@@ -5,7 +5,6 @@ import { ReceiveInfo } from '@suite-common/wallet-types';
 import { RECEIVE } from 'src/actions/wallet/constants';
 import { Action as SuiteAction } from 'src/types/suite';
 
-
 export type State = ReceiveInfo[];
 
 const showAddress = (draft: State, path: string, address: string) => {

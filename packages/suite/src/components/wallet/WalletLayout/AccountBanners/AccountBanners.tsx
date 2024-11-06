@@ -19,9 +19,6 @@ import { StakeEthBanner } from './StakeEthBanner';
 import { EvmExplanationBanner } from './EvmExplanationBanner';
 import { TaprootBanner } from './TaprootBanner';
 
-
-
-
 const BannersWrapper = styled.div`
     display: flex;
     flex-direction: column;

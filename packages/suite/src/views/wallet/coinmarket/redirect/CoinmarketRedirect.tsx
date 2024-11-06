@@ -11,8 +11,6 @@ import { Account } from 'src/types/wallet';
 import { useCoinmarketRedirect } from 'src/hooks/wallet/useCoinmarketRedirect';
 import { Translation } from 'src/components/suite';
 
-
-
 const Wrapper = styled.div`
     display: flex;
     justify-content: center;

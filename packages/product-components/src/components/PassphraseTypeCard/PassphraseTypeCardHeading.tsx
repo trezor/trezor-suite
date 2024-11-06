@@ -8,7 +8,6 @@ import { Tooltip, TooltipProps, Column, Row, Icon } from '@trezor/components';
 
 import { WalletType } from './types';
 
-
 const IconWrapper = styled.div<{ $type: WalletType }>`
     width: 38px;
     height: 38px;

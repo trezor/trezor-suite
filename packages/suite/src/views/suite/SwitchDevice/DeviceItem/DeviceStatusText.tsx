@@ -11,7 +11,6 @@ import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling'
 
 import { DeviceConnectionText } from './DeviceConnectionText';
 
-
 type DeviceStatusTextProps = {
     onRefreshClick?: MouseEventHandler;
     device: TrezorDevice;

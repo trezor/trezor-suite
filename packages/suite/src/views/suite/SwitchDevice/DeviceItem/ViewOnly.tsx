@@ -11,7 +11,6 @@ import { useDispatch } from 'src/hooks/suite';
 import { ViewOnlyRadios } from './ViewOnlyRadios';
 import { ContentType } from '../types';
 
-
 type ViewOnlyProps = {
     setContentType: (contentType: ContentType) => void;
     instance: AcquiredDevice;

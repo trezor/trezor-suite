@@ -28,8 +28,6 @@ import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import AppRouter from './support/Router';
 import { useCypress } from './support/useCypress';
 
-
-
 const Main = () => {
     useCypress();
     useTor();

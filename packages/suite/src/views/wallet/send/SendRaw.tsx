@@ -11,7 +11,6 @@ import { useDispatch, useTranslation } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 
-
 const INPUT_NAME = 'rawTx';
 
 type SendRawProps = {

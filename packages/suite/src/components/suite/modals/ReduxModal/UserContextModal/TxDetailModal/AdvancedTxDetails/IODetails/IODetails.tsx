@@ -17,7 +17,6 @@ import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { IOAddress } from '../../IOAddress';
 
-
 export const blurFix = css`
     margin-left: -10px;
     margin-right: -10px;

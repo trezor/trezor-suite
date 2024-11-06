@@ -15,7 +15,6 @@ import { BridgeRequested } from 'src/views/suite/bridge-requested';
 
 import { MultiShareBackupModal } from '../ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';
 
-
 // would not work if defined directly in the switch
 const FirmwareType = () => <FirmwareUpdate shouldSwitchFirmwareType />;
 

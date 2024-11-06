@@ -12,7 +12,6 @@ import { sumFiatValueMap } from 'src/utils/wallet/graph';
 
 import { InfoCard } from './InfoCard';
 
-
 const InfoCardsWrapper = styled.div`
     display: grid;
     margin-top: 20px;

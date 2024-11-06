@@ -23,7 +23,6 @@ import {
     EthereumSignTransaction as EthereumSignTransactionSchema,
 } from '../../../types';
 
-
 type Params = {
     path: number[];
     network?: EthereumNetworkInfo;

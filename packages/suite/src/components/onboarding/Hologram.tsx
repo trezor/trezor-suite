@@ -12,7 +12,6 @@ import { DeviceModelInternal } from '@trezor/connect';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 
-
 const HologramSubHeading = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};

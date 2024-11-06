@@ -28,8 +28,6 @@ import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';
 import { AssetTable } from './AssetTable/AssetTable';
 
-
-
 const InfoMessage = styled.div`
     padding: ${spacingsPx.md} ${spacingsPx.xl};
     display: flex;

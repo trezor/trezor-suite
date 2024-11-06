@@ -20,8 +20,6 @@ import {
     OutputElementLine,
 } from './TransactionReviewOutputElement';
 
-
-
 const getFeeLabel = (networkType: Account['networkType']) => {
     switch (networkType) {
         case 'ethereum':

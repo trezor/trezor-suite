@@ -11,7 +11,6 @@ import { Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useTranslation } from 'src/hooks/suite';
 
-
 const inputAsciiName = 'ethereumDataAscii';
 const inputHexName = 'ethereumDataHex';
 const inputAmountName = 'outputs.0.amount';

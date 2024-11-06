@@ -13,7 +13,6 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 import { validateDecimals, validateLimitsBigNum, validateMin } from 'src/utils/suite/validation';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 
-
 const HStack = styled.div`
     display: flex;
     gap: 14px;

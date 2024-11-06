@@ -40,8 +40,6 @@ import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
 import { METADATA, STORAGE } from '../actions/suite/constants';
 import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
 
-
-
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
 // 'https://connect.corp.sldev.cz/develop/';

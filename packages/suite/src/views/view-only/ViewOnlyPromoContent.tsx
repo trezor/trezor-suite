@@ -30,8 +30,6 @@ import { setFlag } from '../../actions/suite/suiteActions';
 import { IllustrativeExample } from './images/IllustrativeExample';
 import { IllustrativeExampleArrow } from './images/IllustrativeExampleArrow';
 
-
-
 const Callout = styled.div`
     display: flex;
     flex-direction: row;

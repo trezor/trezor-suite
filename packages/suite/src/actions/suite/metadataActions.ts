@@ -18,7 +18,6 @@ import * as metadataUtils from 'src/utils/suite/metadata';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
 import type { AbstractMetadataProvider, PasswordManagerState } from 'src/types/suite/metadata';
 
-
 export type MetadataAction =
     | { type: typeof METADATA.ENABLE }
     | { type: typeof METADATA.DISABLE }

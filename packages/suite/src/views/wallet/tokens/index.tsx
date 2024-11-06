@@ -9,7 +9,6 @@ import { CoinsTable } from './coins/CoinsTable';
 import { TokensNavigation } from './TokensNavigation';
 import { HiddenTokensTable } from './hidden-tokens/HiddenTokensTable';
 
-
 export const Tokens = () => {
     const [searchQuery, setSearchQuery] = useState('');
 

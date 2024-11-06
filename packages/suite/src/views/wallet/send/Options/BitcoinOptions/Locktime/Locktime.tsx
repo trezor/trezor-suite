@@ -12,7 +12,6 @@ import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { NumberInput, Translation } from 'src/components/suite';
 
-
 import { canLocktimeTxBeBroadcast } from './canLocktimeTxBeBroadcast';
 
 const Label = styled.div`

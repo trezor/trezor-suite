@@ -8,7 +8,6 @@ import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 
-
 const Container = styled(motion.div)`
     background-color: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
     border-radius: 48px;

@@ -13,7 +13,6 @@ import { useSendFormContext } from 'src/hooks/wallet';
 
 import { UtxoSelection } from './UtxoSelection';
 
-
 const Wrapper = styled.section`
     border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     margin: 12px 0 16px;

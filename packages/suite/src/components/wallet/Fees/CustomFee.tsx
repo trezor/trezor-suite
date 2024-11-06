@@ -35,8 +35,6 @@ import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 import { InputError } from '../InputError';
 
-
-
 const Wrapper = styled.div`
     display: flex;
     width: 100%;

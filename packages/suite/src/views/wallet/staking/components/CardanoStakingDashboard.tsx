@@ -9,7 +9,6 @@ import { CardanoRewards } from './CardanoRewards';
 import { CardanoStake } from './CardanoStake';
 import { CardanoRedelegate } from './CardanoRedelegate';
 
-
 interface CardanoStakingDashboardProps {
     selectedAccount: SelectedAccountLoaded;
 }

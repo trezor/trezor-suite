@@ -11,7 +11,6 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 import { CommonAggregatedHistory, GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
 
-
 import { ObjectType, TypeName, sumFiatValueMapInPlace } from './utilsShared';
 
 export const deviceGraphDataFilterFn = (d: GraphData, deviceState: StaticSessionId | undefined) => {

@@ -15,8 +15,6 @@ import { selectIsDashboardT3T1PromoBannerShown } from 'src/reducers/suite/suiteR
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation, TrezorLink } from 'src/components/suite';
 
-
-
 import { T3T1PromoLogo } from './T3T1PromoLogo';
 import { bannerAnimationConfig } from '../banner-animations';
 

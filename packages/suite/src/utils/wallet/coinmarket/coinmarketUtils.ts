@@ -36,8 +36,6 @@ import {
     CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
 
-
-
 export const cryptoPlatformSeparator = '--';
 
 interface ParsedCryptoId {

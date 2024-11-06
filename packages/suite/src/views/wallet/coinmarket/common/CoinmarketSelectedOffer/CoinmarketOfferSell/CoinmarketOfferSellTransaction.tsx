@@ -8,7 +8,6 @@ import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmark
 import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;

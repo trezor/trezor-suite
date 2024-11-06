@@ -12,7 +12,6 @@ import { getNotificationIcon, getVariantColor } from 'src/utils/suite/notificati
 
 import { ToastNotificationVariant } from '../../../types/suite';
 
-
 const Wrapper = styled.div<{ $variant: ToastNotificationVariant; $isTall: boolean }>`
     display: flex;
     align-items: ${({ $isTall }) => ($isTall ? 'start' : 'center')};

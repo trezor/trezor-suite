@@ -11,7 +11,6 @@ import { Translation } from 'src/components/suite';
 import { TradeBoxMenu } from './TradeBoxMenu';
 import { TradeBoxPrices } from './TradeBoxPrices';
 
-
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCard = styled(Card)`
     flex-flow: row wrap;

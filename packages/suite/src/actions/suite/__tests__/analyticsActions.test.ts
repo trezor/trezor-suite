@@ -4,7 +4,6 @@ import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 import { init } from 'src/actions/suite/analyticsActions';
 
-
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 
 type AnalyticsState = ReturnType<typeof analyticsReducer>;

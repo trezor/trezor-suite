@@ -24,7 +24,6 @@ import type {
 import type { RefTransaction, TransactionOptions } from '../../types/api/bitcoin';
 import { PROTO } from '../../constants';
 
-
 // Referenced transactions are not required if:
 // - all internal inputs script_type === SPENDTAPROOT
 // - zcash tx version is NU5 (or greater)

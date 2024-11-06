@@ -6,7 +6,6 @@ import { Action } from 'src/types/suite';
 
 import fixtures from '../__fixtures__/onboardingActions';
 
-
 // todo fighting with typescript here. How to keep string literal being exported from fixtures and not converted
 // to string? if exported as const, it makes all properties readonly and thus not assignable to reducer which
 // expects mutable properties;

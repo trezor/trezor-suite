@@ -10,8 +10,6 @@ import { getStatusMessage as getExchangeStatusMessage } from 'src/utils/wallet/c
 import { getStatusMessage as getSellStatusMessage } from 'src/utils/wallet/coinmarket/sellUtils';
 import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 
-
-
 const getBuyTradeData = (status: BuyTradeStatus, theme: DefaultTheme) => {
     const message = getBuyStatusMessage(status);
 
