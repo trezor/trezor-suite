@@ -941,7 +941,7 @@ export const en = {
         },
         outputs: {
             correctNetworkMessage:
-                'Make sure that you’re sending to an address on\u00A0{networkName} network. <link>Learn more</link>',
+                'Make sure that you’re sending to an address\non {networkName} network. <link>Learn more</link>',
             tokenOfNetworkSheet: {
                 title: 'You’re about to Send {tokenSymbol} that runs on {networkName} network.',
                 body: {
