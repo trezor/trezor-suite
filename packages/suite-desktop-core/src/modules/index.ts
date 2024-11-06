@@ -105,9 +105,7 @@ type ModuleInterface = {
 
 export type ModuleInit = (dependencies: Dependencies) => ModuleInterface;
 
-export type ModuleInitBackground = (
-    dependencies: Omit<Dependencies, 'mainWindowProxy'>,
-) => ModuleInterface;
+export type ModuleInitBackground = (dependencies: Dependencies) => ModuleInterface;
 
 export type Module = { SERVICE_NAME: string; init: ModuleInit };
 export type ModuleBackground = { SERVICE_NAME: string; initBackground: ModuleInitBackground };
@@ -219,5 +217,5 @@ export const initModules = (dependencies: Dependencies) => {
     return { loadModules, quitModules };
 };
 
-export const initBackgroundModules = (dependencies: Omit<Dependencies, 'mainWindowProxy'>) =>
+export const initBackgroundModules = (dependencies: Dependencies) =>
     initModulesInner(dependencies, true, MODULES_BACKGROUND);

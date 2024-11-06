@@ -43,5 +43,6 @@ const validChannels: Array<keyof RendererChannels> = [
     'handshake/event',
     'bridge/status',
     'bridge/settings',
+    'tray/settings',
 ];
 export const isValidChannel = (channel: any) => validChannels.includes(channel);
