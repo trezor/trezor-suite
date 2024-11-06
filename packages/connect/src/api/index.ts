@@ -41,7 +41,6 @@ export { default as getSettings } from './getSettings';
 // export { default as off } from './off';
 // export { default as on } from './on';
 export { default as pushTransaction } from './pushTransaction';
-export { default as rebootToBootloader } from './rebootToBootloader';
 export { default as recoveryDevice } from './recoveryDevice';
 // export { default as removeAllListeners } from './composeTransaction';
 // export { default as renderWebUSBButton } from './composeTransaction';

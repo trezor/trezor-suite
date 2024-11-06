@@ -28,7 +28,6 @@ import {
 } from '../events';
 import { getMethod } from './method';
 import { AbstractMethod } from './AbstractMethod';
-import { resolveAfter } from '../utils/promiseUtils';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';
 import { createPopupPromiseManager } from '../utils/popupPromiseManager';
 import { initLog, enableLog, setLogWriter, LogWriter } from '../utils/debug';
@@ -710,20 +709,6 @@ const onCallDevice = async (
         const response = messageResponse;
 
         if (response) {
-            if (method.name === 'rebootToBootloader' && response.success) {
-                // Wait for device to switch to bootloader
-                // This delay is crucial see https://github.com/trezor/trezor-firmware/issues/1983
-                await resolveAfter(1000).promise;
-                // call Device.run with empty function to fetch new Features
-                // (acquire > Initialize > nothing > release)
-                try {
-                    await device.run(() => Promise.resolve(), { skipFinalReload: true });
-                } catch {
-                    // ignore. on model T, this block of code is probably not needed at all. but I am keeping it here for
-                    // backwards compatibility
-                }
-            }
-
             await device.cleanup();
 
             if (useCoreInPopup) {

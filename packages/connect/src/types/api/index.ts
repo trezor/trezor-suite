@@ -58,7 +58,6 @@ import { nemSignTransaction } from './nemSignTransaction';
 import { off } from './off';
 import { on } from './on';
 import { pushTransaction } from './pushTransaction';
-import { rebootToBootloader } from './rebootToBootloader';
 import { recoveryDevice } from './recoveryDevice';
 import { removeAllListeners } from './removeAllListeners';
 import { requestLogin } from './requestLogin';
@@ -267,9 +266,6 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/bitcoin/pushTransaction/
     pushTransaction: typeof pushTransaction;
-
-    // todo: link docs
-    rebootToBootloader: typeof rebootToBootloader;
 
     // todo: link docs
     recoveryDevice: typeof recoveryDevice;

@@ -10,7 +10,6 @@ import changeLanguage from './changeLanguage';
 import changeWipeCode from './changeWipeCode';
 import recoverDevice from './recoverDevice';
 import firmwareUpdate from './firmwareUpdate';
-import rebootToBootloader from './rebootToBootloader';
 
 export default [
     ...getFeatures,
@@ -25,5 +24,4 @@ export default [
     ...changeWipeCode,
     ...recoverDevice,
     ...firmwareUpdate,
-    ...rebootToBootloader,
 ];
