@@ -113,5 +113,3 @@ describe('Passphrase reconnection', () => {
         cy.getTestElement('@modal/close-button').click();
     });
 });
-
-export {};

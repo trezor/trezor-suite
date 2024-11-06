@@ -1,5 +1,5 @@
 // Regular expression to match non-ASCII characters
-const nonAsciiPattern = /[^\x00-\x7F]/g;
+const nonAsciiPattern = /[^\x20-\x7E]/g;
 
 export function isAscii(value?: string): boolean {
     if (!value) return true;

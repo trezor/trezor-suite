@@ -225,6 +225,7 @@ module.exports = {
         'no-sync': 'off', // disallow use of synchronous methods (off by default)
         'eol-last': 'error',
         'import/no-default-export': 'error',
+        'no-control-regex': 'error',
 
         // Variables
         // These rules have to do with variable declarations.
