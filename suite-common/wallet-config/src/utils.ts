@@ -14,6 +14,11 @@ export const NORMAL_ACCOUNT_TYPE = 'normal' satisfies AccountType;
  */
 export const networksCollection: Network[] = Object.values(networks);
 
+/**
+ * array of network symbols
+ */
+export const networkSymbolCollection = networksCollection.map(n => n.symbol);
+
 export const getMainnets = (debug = false) =>
     networksCollection.filter(n => !n.testnet && (!n.isDebugOnlyNetwork || debug));
 
