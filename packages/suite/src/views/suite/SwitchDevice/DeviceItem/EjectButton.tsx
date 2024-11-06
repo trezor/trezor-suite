@@ -1,7 +1,9 @@
 import { useTheme } from 'styled-components';
 
 import { Tooltip, Icon } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
+
 import { ContentType } from '../types';
 
 interface EjectButtonProps {
