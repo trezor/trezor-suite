@@ -1,7 +1,5 @@
-import { goto } from 'src/actions/suite/routerActions';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectTorState } from '../../../../../../reducers/suite/suiteReducer';
+import { useTheme } from 'styled-components';
+
 import { isDesktop } from '@trezor/env-utils';
 import {
     Column,
@@ -11,10 +9,15 @@ import {
     iconSizes,
     IconVariant,
 } from '@trezor/components';
-import { TorStatus } from 'src/types/suite';
-import { useTheme } from 'styled-components';
-import { QuickActionButton } from './QuickActionButton';
 import { spacings } from '@trezor/theme';
+
+import { goto } from 'src/actions/suite/routerActions';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { TorStatus } from 'src/types/suite';
+
+import { selectTorState } from '../../../../../../reducers/suite/suiteReducer';
+import { QuickActionButton } from './QuickActionButton';
 import { TooltipRow } from './TooltipRow';
 import { Translation, TranslationKey } from '../../../../Translation';
 

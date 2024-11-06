@@ -1,14 +1,18 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
-import { Button, variables, Image } from '@trezor/components';
-import { Translation } from 'src/components/suite/Translation';
 import { BuyTrade, BuyTradeStatus } from 'invity-api';
+
+import { Button, variables, Image } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
+import { Translation } from 'src/components/suite/Translation';
 import { Account } from 'src/types/wallet';
 import invityAPI from 'src/services/suite/invityAPI';
 import { createTxLink } from 'src/utils/wallet/coinmarket/buyUtils';
 import { submitRequestForm } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { useDispatch } from 'src/hooks/suite';
-import { spacings } from '@trezor/theme';
+
 
 const Wrapper = styled.div`
     display: flex;

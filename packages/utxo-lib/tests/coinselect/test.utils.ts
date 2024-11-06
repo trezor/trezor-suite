@@ -1,4 +1,5 @@
 import BN from 'bn.js';
+
 import { INPUT_SCRIPT_LENGTH, OUTPUT_SCRIPT_LENGTH } from '../../src/coinselect/coinselectUtils';
 
 function addScriptLength(values: any[], scriptLength: number) {

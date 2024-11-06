@@ -1,4 +1,5 @@
 import produce from 'immer';
+
 import { BACKUP } from 'src/actions/backup/constants';
 import { ConfirmKey, BackupStatus } from 'src/actions/backup/backupActions';
 import { Action } from 'src/types/suite';

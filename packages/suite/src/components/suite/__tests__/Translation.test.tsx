@@ -1,4 +1,5 @@
 import createComponentWithIntl from 'src/support/tests/IntlHelper';
+
 import { Translation } from '../Translation';
 
 const messages = {

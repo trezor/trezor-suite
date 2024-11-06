@@ -1,6 +1,7 @@
 import { FetchError } from 'node-fetch';
 
 import { DeviceModelInternal } from '@trezor/protobuf';
+
 import { checkFirmwareRevision, CheckFirmwareRevisionParams } from '../checkFirmwareRevision';
 import { FirmwareRelease, FirmwareRevisionCheckResult } from '../../exports';
 import * as utilsAssets from '../../utils/assets';

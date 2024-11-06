@@ -1,13 +1,15 @@
+import styled, { css } from 'styled-components';
+
 import { TranslationKey } from '@suite-common/intl-types';
 import { Route } from '@suite-common/suite-types';
 import { Button, IconName } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { typography, borders, spacingsPx } from '@trezor/theme';
+
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { NavigationItem } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import styled, { css } from 'styled-components';
 
 const NavListItemWrapper = styled(NavigationItem)`
     padding: ${spacingsPx.xs} ${spacingsPx.md};

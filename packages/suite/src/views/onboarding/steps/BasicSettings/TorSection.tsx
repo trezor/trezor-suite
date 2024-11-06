@@ -1,5 +1,7 @@
 import styled from 'styled-components';
+
 import { variables, Switch } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { toggleTor } from 'src/actions/suite/suiteActions';

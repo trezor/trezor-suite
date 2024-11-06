@@ -2,6 +2,7 @@
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { composeTx, ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
+
 import { FeeLevels } from './Fees';
 import { Blockchain } from '../../backend/BlockchainLink';
 import type { BitcoinNetworkInfo, DiscoveryAccount, SelectFeeLevel } from '../../types';

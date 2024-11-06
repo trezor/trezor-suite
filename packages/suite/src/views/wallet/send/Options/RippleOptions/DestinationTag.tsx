@@ -1,11 +1,13 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Input, Icon } from '@trezor/components';
-import { Translation } from 'src/components/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
 import { U_INT_32 } from '@suite-common/wallet-constants';
-import { useTranslation } from 'src/hooks/suite';
 import { formInputsMaxLength } from '@suite-common/validators';
+
+import { Translation } from 'src/components/suite';
+import { useSendFormContext } from 'src/hooks/wallet';
+import { useTranslation } from 'src/hooks/suite';
+
 
 interface DestinationTagProps {
     close: () => void;

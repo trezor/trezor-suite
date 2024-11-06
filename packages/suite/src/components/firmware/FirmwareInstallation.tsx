@@ -1,5 +1,8 @@
+import styled from 'styled-components';
+
 import { Button } from '@trezor/components';
 import { UI } from '@trezor/connect';
+import { spacingsPx } from '@trezor/theme';
 
 import { Translation, WebUsbButton } from 'src/components/suite';
 import { useFirmware } from 'src/hooks/suite';
@@ -8,8 +11,6 @@ import { OnboardingStepBox } from 'src/components/onboarding';
 import { TrezorDevice } from 'src/types/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import styled from 'styled-components';
-import { spacingsPx } from '@trezor/theme';
 
 const SelectDevice = styled.div`
     display: flex;

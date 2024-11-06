@@ -1,12 +1,14 @@
-import { AssetRow } from './AssetRow';
-import { AssetRowSkeleton } from './AssetRowSkeleton';
-import { AssetData } from '../AssetsView';
 import { Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { Translation } from 'src/components/suite';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { RatesByKey } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+
+import { Translation } from 'src/components/suite';
+
+import { AssetData } from '../AssetsView';
+import { AssetRowSkeleton } from './AssetRowSkeleton';
+import { AssetRow } from './AssetRow';
 
 interface AssetTableProps {
     discoveryInProgress?: boolean;

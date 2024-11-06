@@ -22,11 +22,12 @@ import type { Core } from '@trezor/connect/src/core';
 import { config } from '@trezor/connect/src/data/config';
 import { parseConnectSettings } from '@trezor/connect-iframe/src/connectSettings';
 import { initLogWriterWithSrcPath } from '@trezor/connect-iframe/src/sharedLoggerUtils';
-
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
 import { ErrorViewProps } from '@trezor/connect-ui/src/views/Error';
 import { analytics, EventType } from '@trezor/connect-analytics';
 import { getSystemInfo } from '@trezor/connect-common';
+import { initLog, setLogWriter, LogWriter } from '@trezor/connect/src/utils/debug';
+import { DEFAULT_DOMAIN } from '@trezor/connect/src/data/version';
 
 import * as view from './view';
 import {
@@ -38,8 +39,6 @@ import {
     showView,
 } from './view/common';
 import { isPhishingDomain } from './utils/isPhishingDomain';
-import { initLog, setLogWriter, LogWriter } from '@trezor/connect/src/utils/debug';
-import { DEFAULT_DOMAIN } from '@trezor/connect/src/data/version';
 
 const INTERVAL_CHECK_PARENT_ALIVE_MS = 1000;
 const INTERVAL_HANDSHAKE_TIMEOUT_MS = 90 * 1000;

@@ -1,10 +1,10 @@
-import { configureStore } from 'src/support/tests/configureStore';
+import { BuyTrade, BuyTradeQuoteRequest, CryptoId } from 'invity-api';
 
+import { configureStore } from 'src/support/tests/configureStore';
 import { coinmarketReducer } from 'src/reducers/wallet/coinmarketReducer';
+import invityAPI from 'src/services/suite/invityAPI';
 
 import * as coinmarketBuyActions from '../coinmarketBuyActions';
-import invityAPI from 'src/services/suite/invityAPI';
-import { BuyTrade, BuyTradeQuoteRequest, CryptoId } from 'invity-api';
 
 const getInitialState = () => ({
     wallet: {

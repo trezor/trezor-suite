@@ -1,9 +1,12 @@
 import { ReactPortal } from 'react';
 import { createPortal } from 'react-dom';
+
 import { Modal, ModalProps, Icon, intermediaryTheme } from '@trezor/components';
+
 import { useGuide } from 'src/hooks/guide';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useModalTarget } from 'src/support/suite/ModalContext';
+
 import { ModalEnvironment } from '../ModalEnvironment';
 
 /**

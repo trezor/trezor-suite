@@ -1,6 +1,7 @@
 import { Button, Row } from '@trezor/components';
-import { Translation } from 'src/components/suite';
 import { spacings } from '@trezor/theme';
+
+import { Translation } from 'src/components/suite';
 
 interface CoinmarketFractionButtonsProps {
     onFractionClick: (divisor: number) => void;

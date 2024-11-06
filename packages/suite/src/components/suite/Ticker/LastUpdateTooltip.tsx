@@ -1,9 +1,12 @@
-import { Translation } from 'src/components/suite';
-import styled from 'styled-components';
-import { Tooltip } from '@trezor/components';
 import { FormattedRelativeTime } from 'react-intl';
 import { ReactNode } from 'react';
+
+import styled from 'styled-components';
 import { differenceInMinutes } from 'date-fns';
+
+import { Tooltip } from '@trezor/components';
+
+import { Translation } from 'src/components/suite';
 
 const LastUpdate = styled.div`
     text-transform: none;

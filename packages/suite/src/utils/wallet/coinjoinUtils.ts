@@ -1,21 +1,9 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { createHash } from 'crypto';
 import hoursToMilliseconds from 'date-fns/hoursToMilliseconds';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { getUtxoOutpoint, getBip43Type } from '@suite-common/wallet-utils';
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
-import {
-    ANONYMITY_GAINS_HINDSIGHT_COUNT,
-    ANONYMITY_GAINS_HINDSIGHT_DAYS,
-    MAX_ROUNDS_ALLOWED,
-    ESTIMATED_MIN_ROUNDS_NEEDED,
-    SKIP_ROUNDS_VALUE_WHEN_ENABLED,
-} from 'src/services/coinjoin/config';
-import {
-    AnonymityGainPerRound,
-    CoinjoinAccount,
-    CoinjoinSessionParameters,
-} from 'src/types/wallet/coinjoin';
 import { AnonymitySet } from '@trezor/blockchain-link';
 import {
     CoinjoinStatusEvent,
@@ -24,6 +12,19 @@ import {
     SessionPhase,
     RoundPhase,
 } from '@trezor/coinjoin';
+
+import {
+    AnonymityGainPerRound,
+    CoinjoinAccount,
+    CoinjoinSessionParameters,
+} from 'src/types/wallet/coinjoin';
+import {
+    ANONYMITY_GAINS_HINDSIGHT_COUNT,
+    ANONYMITY_GAINS_HINDSIGHT_DAYS,
+    MAX_ROUNDS_ALLOWED,
+    ESTIMATED_MIN_ROUNDS_NEEDED,
+    SKIP_ROUNDS_VALUE_WHEN_ENABLED,
+} from 'src/services/coinjoin/config';
 
 export type CoinjoinBalanceBreakdown = {
     notAnonymized: string;

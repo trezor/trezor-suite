@@ -1,15 +1,18 @@
+import { useTheme } from 'styled-components';
+
 import { Button, Text, IconButton, Row, Banner, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { Translation } from 'src/components/suite';
-import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { setFlag } from 'src/actions/suite/suiteActions';
-import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
 import { Account } from '@suite-common/wallet-types';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { MIN_ETH_AMOUNT_FOR_STAKING } from '@suite-common/wallet-constants';
 import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
-import { useTheme } from 'styled-components';
+
+import { Translation } from 'src/components/suite';
+import { goto } from 'src/actions/suite/routerActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { setFlag } from 'src/actions/suite/suiteActions';
+
+import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
 
 interface StakeEthBannerProps {
     account: Account;

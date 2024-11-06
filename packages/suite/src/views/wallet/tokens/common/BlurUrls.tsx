@@ -1,9 +1,12 @@
 import { Fragment } from 'react';
+
 import styled from 'styled-components';
+
 import { Tooltip } from '@trezor/components';
+import { extractUrlsFromText } from '@trezor/utils';
+
 import { BlurWrapper } from 'src/components/wallet/TransactionItem/TransactionItemBlurWrapper';
 import { Translation } from 'src/components/suite';
-import { extractUrlsFromText } from '@trezor/utils';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledTooltip = styled(Tooltip)`

@@ -1,5 +1,6 @@
 import { Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
 import { FormattedDate } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
 import { ExtendedMessageDescriptor } from 'src/types/suite';

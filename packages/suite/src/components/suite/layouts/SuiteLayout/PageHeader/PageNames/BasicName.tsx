@@ -1,6 +1,8 @@
 import styled from 'styled-components';
+
 import { H2 } from '@trezor/components';
 import { TranslationKey } from '@suite-common/intl-types';
+
 import { Translation } from 'src/components/suite';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

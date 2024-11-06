@@ -2,12 +2,13 @@
 
 // allow for...of statements
 
+import { Assert, Type } from '@trezor/schema-utils';
+
 import { addressParametersToProto, validateAddressParameters } from './cardanoAddressParameters';
 import { tokenBundleToProto, AssetGroupWithTokens } from './cardanoTokenBundle';
 import { PROTO } from '../../constants';
 import { hexStringByteLength, sendChunkedHexString } from './cardanoUtils';
 import { CardanoAssetGroup, CardanoAddressParameters } from '../../types/api/cardano';
-import { Assert, Type } from '@trezor/schema-utils';
 
 export type OutputWithData = {
     output: PROTO.CardanoTxOutput;

@@ -1,8 +1,11 @@
+import { FormattedMessage } from 'react-intl';
+
+import styled from 'styled-components';
+
 import { AssetLogo, Row, Tooltip, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
+
 import { SelectAssetNetworkProps, SelectAssetSearchCategoryType } from './SelectAssetModal';
-import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
 import { CheckableTag } from './CheckableTag';
 
 interface NetworkTabsWrapperProps {

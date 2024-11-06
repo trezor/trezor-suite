@@ -1,4 +1,5 @@
 import { SocksProxyAgent } from 'socks-proxy-agent';
+
 import type { TorSettings } from './types';
 
 export class TorIdentities {

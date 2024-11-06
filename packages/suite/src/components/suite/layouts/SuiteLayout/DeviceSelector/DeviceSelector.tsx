@@ -1,15 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
+
 import styled, { css } from 'styled-components';
+
 import { selectDevicesCount, selectDevice } from '@suite-common/wallet-core';
 import type { Timeout } from '@trezor/type-utils';
+import { borders, spacingsPx } from '@trezor/theme';
+import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
+import { Icon } from '@trezor/components';
+
 import { SHAKE } from 'src/support/suite/styles/animations';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { borders, spacingsPx } from '@trezor/theme';
-import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
-import { SidebarDeviceStatus } from './SidebarDeviceStatus';
 import { ViewOnlyTooltip } from 'src/views/view-only/ViewOnlyTooltip';
-import { Icon } from '@trezor/components';
+
+import { SidebarDeviceStatus } from './SidebarDeviceStatus';
+
 
 const CaretContainer = styled.div`
     background: transparent;

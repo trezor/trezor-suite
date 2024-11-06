@@ -1,4 +1,7 @@
 import { SellProviderInfo } from 'invity-api';
+
+import { Button } from '@trezor/components';
+
 import { goto } from 'src/actions/suite/routerActions';
 import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import {
@@ -6,7 +9,6 @@ import {
     saveTransactionId,
     setIsFromRedirect,
 } from 'src/actions/wallet/coinmarketSellActions';
-import { Button } from '@trezor/components';
 import { CoinmarketTransactionId } from 'src/views/wallet/coinmarket/common';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';

@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
+
 import styled, { css } from 'styled-components';
 
 import { formInputsMaxLength } from '@suite-common/validators';
 import { Button, KEYBOARD_CODE, PinButton } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { usePin } from 'src/hooks/suite/usePinModal';
+
 import { InputPin } from './InputPin';
 
 const Wrapper = styled.div`

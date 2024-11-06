@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 import styled, { useTheme } from 'styled-components';
 
@@ -17,7 +18,6 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { formInputsMaxLength } from '@suite-common/validators';
 import type { Output } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
-import { useSelector, useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
 import {
     isAddressValid,
     isAddressDeprecated,
@@ -25,22 +25,21 @@ import {
     isBech32AddressUppercase,
     getInputState,
 } from '@suite-common/wallet-utils';
-
-import { AddressLabeling, MetadataLabeling } from 'src/components/suite';
-import { Translation } from '../../../../components/suite/Translation';
+import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+import { HELP_CENTER_EVM_ADDRESS_CHECKSUM } from '@trezor/urls';
+import { spacings } from '@trezor/theme';
+import { CoinLogo } from '@trezor/product-components';
 
 import { scanOrRequestSendFormThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getProtocolInfo } from 'src/utils/suite/protocol';
-import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
-
 import { InputError } from 'src/components/wallet';
 import { InputErrorProps } from 'src/components/wallet/InputError';
-
-import { HELP_CENTER_EVM_ADDRESS_CHECKSUM } from '@trezor/urls';
-import { spacings } from '@trezor/theme';
-import { CoinLogo } from '@trezor/product-components';
+import { AddressLabeling, MetadataLabeling } from 'src/components/suite';
+import { useSelector, useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
+
+import { Translation } from '../../../../components/suite/Translation';
 
 const Container = styled.div`
     position: relative;

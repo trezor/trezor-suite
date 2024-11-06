@@ -1,5 +1,6 @@
-import { DerivationPath } from '../../params';
 import { Type, Static } from '@trezor/schema-utils';
+
+import { DerivationPath } from '../../params';
 
 export type TezosRevealOperation = Static<typeof TezosRevealOperation>;
 export const TezosRevealOperation = Type.Object({

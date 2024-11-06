@@ -1,7 +1,10 @@
 import styled from 'styled-components';
-import { DeviceDisplayText } from './DeviceDisplayText';
+
 import { splitStringEveryNCharacters } from '@trezor/utils';
+
 import { handleOnCopy } from 'src/utils/suite/deviceDisplay';
+
+import { DeviceDisplayText } from './DeviceDisplayText';
 
 const Row = styled.div<{ $isAlignedRight?: boolean }>`
     display: flex;

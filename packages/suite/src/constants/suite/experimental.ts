@@ -1,6 +1,5 @@
 import { TranslationKey } from '@suite-common/intl-types';
 import { desktopApi } from '@trezor/suite-desktop-api';
-
 import { EXPERIMENTAL_PASSWORD_MANAGER_KB_URL, TOR_SNOWFLAKE_PROJECT_URL, Url } from '@trezor/urls';
 
 import { Dispatch } from '../../types/suite';

@@ -1,7 +1,9 @@
 import styled from 'styled-components';
+
+import { spacingsPx, typography } from '@trezor/theme';
+
 import { FormattedDate } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import { spacingsPx, typography } from '@trezor/theme';
 
 const TimestampLink = styled.div`
     display: block;

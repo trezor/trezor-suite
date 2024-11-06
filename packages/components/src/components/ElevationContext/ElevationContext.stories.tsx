@@ -1,14 +1,8 @@
+import { ReactNode } from 'react';
+
 import { Meta, StoryObj } from '@storybook/react';
-import { Card } from '../Card/Card';
-import { Modal } from '../modals/Modal/Modal';
 import styled from 'styled-components';
-import { Textarea } from '../form/Textarea/Textarea';
-import {
-    useElevation,
-    ElevationContext as ElevationContextComponent,
-    ElevationDown,
-    ElevationUp,
-} from './ElevationContext';
+
 import {
     Elevation,
     borders,
@@ -16,7 +10,17 @@ import {
     mapElevationToBorder,
     spacingsPx,
 } from '@trezor/theme';
-import { ReactNode } from 'react';
+
+import { Card } from '../Card/Card';
+import { Modal } from '../modals/Modal/Modal';
+import { Textarea } from '../form/Textarea/Textarea';
+import {
+    useElevation,
+    ElevationContext as ElevationContextComponent,
+    ElevationDown,
+    ElevationUp,
+} from './ElevationContext';
+
 
 const UiBox = styled.div<{ $elevation: Elevation }>`
     background-color: ${mapElevationToBackground};

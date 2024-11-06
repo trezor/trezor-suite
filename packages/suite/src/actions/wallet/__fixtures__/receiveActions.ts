@@ -1,12 +1,12 @@
 import { connectInitThunk } from '@suite-common/connect-init';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
 
 import * as receiveActions from 'src/actions/wallet/receiveActions';
 import { MODAL, SUITE } from 'src/actions/suite/constants';
 
 import { RECEIVE } from '../constants';
-import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
 
 const PATH = "m/49'/0'/0'/0/0";
 const ADDRESS = 'AddRe5s';

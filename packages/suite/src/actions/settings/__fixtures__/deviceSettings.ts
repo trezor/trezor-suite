@@ -1,3 +1,5 @@
+import assert from 'assert';
+
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -5,14 +7,13 @@ import {
     deviceActions,
     prepareDeviceReducer,
 } from '@suite-common/wallet-core';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { Response } from '@trezor/connect';
 
+import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import * as deviceSettingsActions from '../deviceSettingsActions';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { Response } from '@trezor/connect';
-import assert from 'assert';
 
 const { getSuiteDevice } = testMocks;
 

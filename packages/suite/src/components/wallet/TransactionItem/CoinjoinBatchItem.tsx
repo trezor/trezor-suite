@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import {
     formatNetworkAmount,
     getFiatRateKey,
@@ -11,6 +11,10 @@ import {
 } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { CollapsibleBox } from '@trezor/components';
+import { borders } from '@trezor/theme';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { selectHistoricFiatRates } from '@suite-common/wallet-core';
+import { Timestamp } from '@suite-common/wallet-types';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -29,10 +33,6 @@ import {
     TimestampWrapper,
     TxTypeIconWrapper,
 } from './CommonComponents';
-import { borders } from '@trezor/theme';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { selectHistoricFiatRates } from '@suite-common/wallet-core';
-import { Timestamp } from '@suite-common/wallet-types';
 
 const CryptoAmount = styled(StyledFormattedCryptoAmount)`
     width: unset;

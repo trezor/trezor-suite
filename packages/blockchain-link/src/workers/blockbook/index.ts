@@ -1,7 +1,5 @@
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
-import { BlockbookAPI } from './websocket';
 import * as utils from '@trezor/blockchain-link-utils/src/blockbook';
 import type { Response, SubscriptionAccountInfo } from '@trezor/blockchain-link-types';
 import type {
@@ -11,6 +9,9 @@ import type {
     MempoolTransactionNotification,
 } from '@trezor/blockchain-link-types/src/blockbook';
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
+
+import { BlockbookAPI } from './websocket';
+import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
 
 type Context = ContextType<BlockbookAPI>;
 type Request<T> = T & Context;

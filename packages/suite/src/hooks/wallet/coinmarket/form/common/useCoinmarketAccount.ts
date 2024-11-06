@@ -1,7 +1,9 @@
+import { useState } from 'react';
+
 import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
 import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
-import { useState } from 'react';
+
 import { useSelector } from 'src/hooks/suite';
 import {
     coinmarketGetSortedAccounts,

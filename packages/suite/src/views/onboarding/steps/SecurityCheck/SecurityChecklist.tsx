@@ -2,6 +2,7 @@ import { useTheme } from 'styled-components';
 
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
 import { SecurityChecklistItem } from './types';
 
 type SecurityChecklistProps = {

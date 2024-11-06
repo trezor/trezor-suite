@@ -1,10 +1,10 @@
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { formatDurationStrict } from '@suite-common/suite-utils';
 
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
 import { useDevice, useDispatch, useLocales } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { formatDurationStrict } from '@suite-common/suite-utils';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 // auto lock times in seconds; allowed lock times by device: <1 minute, 6 days>

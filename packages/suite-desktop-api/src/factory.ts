@@ -1,4 +1,5 @@
 import type { IpcRendererEvent } from 'electron';
+
 import { DesktopApi, RendererChannels } from './api';
 import { StrictIpcRenderer } from './ipc';
 import * as validation from './validation';

@@ -1,5 +1,4 @@
 import { useDispatch } from 'src/hooks/suite';
-
 import { ActionColumn, ActionButton, SectionItem, TextColumn } from 'src/components/suite';
 import { toggleTor } from 'src/actions/suite/suiteActions';
 

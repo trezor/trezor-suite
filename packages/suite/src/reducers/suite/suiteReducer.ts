@@ -7,6 +7,9 @@ import { discoveryActions, DeviceRootState, selectDevice } from '@suite-common/w
 import { isArrayMember, versionUtils } from '@trezor/utils';
 import { isWeb } from '@trezor/env-utils';
 import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
 
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
@@ -16,12 +19,10 @@ import { SUITE, STORAGE } from 'src/actions/suite/constants';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { Action, AppState, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
-import { RouterRootState, selectRouter } from './routerReducer';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
-import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { skippedHashCheckErrors, skippedRevisionCheckErrors } from 'src/constants/suite/firmware';
+
+import { RouterRootState, selectRouter } from './routerReducer';
 
 export interface SuiteRootState {
     suite: SuiteState;

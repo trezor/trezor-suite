@@ -10,9 +10,9 @@ import type {
     EstimateFeeParams,
     AccountBalanceHistoryParams,
 } from '@trezor/blockchain-link-types/src/params';
+import { getSuiteVersion } from '@trezor/env-utils';
 
 import { BaseWebsocket } from '../baseWebsocket';
-import { getSuiteVersion } from '@trezor/env-utils';
 
 interface BlockfrostEvents {
     block: BlockContent;

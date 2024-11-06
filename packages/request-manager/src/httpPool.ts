@@ -1,4 +1,5 @@
 import http from 'http';
+
 import { InterceptorOptions } from './types';
 
 export const createRequestPool = (interceptorOptions: InterceptorOptions) => {

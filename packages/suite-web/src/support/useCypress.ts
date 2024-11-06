@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
-import TrezorConnect from '@trezor/connect';
 import { useStore } from 'react-redux';
+
+import TrezorConnect from '@trezor/connect';
 
 /**
  * Utility for running tests in Cypress.

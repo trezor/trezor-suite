@@ -1,7 +1,8 @@
-import TrezorConnect from '@trezor/connect';
 import styled from 'styled-components';
 
+import TrezorConnect from '@trezor/connect';
 import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
+
 import { Modal, ModalProps, PinMatrix, Translation } from 'src/components/suite';
 import { PIN_MATRIX_MAX_WIDTH } from 'src/components/suite/PinMatrix/PinMatrix';
 import { usePin } from 'src/hooks/suite/usePinModal';

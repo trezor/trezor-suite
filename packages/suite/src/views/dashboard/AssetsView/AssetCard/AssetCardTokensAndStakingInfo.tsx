@@ -1,9 +1,10 @@
 import { Row, Column, Icon, Divider, Text } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { spacings } from '@trezor/theme';
+import { Account } from '@suite-common/wallet-types';
+
 import { CoinBalance, FiatValue, HiddenPlaceholder, Translation } from 'src/components/suite';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
-import { Account } from '@suite-common/wallet-types';
 
 type AssetCardTokensAndStakingInfoProps = {
     symbol: NetworkSymbol;

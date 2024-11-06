@@ -1,5 +1,4 @@
 import { BackendManager } from './BackendManager';
-
 import type { BlockchainOptions as Options } from './Blockchain';
 import type { CoinInfo } from '../types';
 

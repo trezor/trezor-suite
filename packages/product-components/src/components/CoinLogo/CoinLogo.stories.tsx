@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
+
 import { CoinLogo as CoinLogoComponent } from '../../index';
 import { COINS } from './coins';
 import { CoinLogoProps } from './CoinLogo';

@@ -1,6 +1,5 @@
 import TrezorConnect from '../../../src';
 import * as fixtures from '../../__fixtures__';
-
 import {
     getController,
     skipTest,

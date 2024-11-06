@@ -1,6 +1,8 @@
-import { Color, CSSColor } from '@trezor/theme';
-import { IconCircleVariant, IconCircleExclusiveColorOrVariant } from './types';
 import { DefaultTheme } from 'styled-components';
+
+import { Color, CSSColor } from '@trezor/theme';
+
+import { IconCircleVariant, IconCircleExclusiveColorOrVariant } from './types';
 import { TransientProps } from '../../utils/transientProps';
 
 type MapArgs = {

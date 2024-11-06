@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react';
 
 import { KEYBOARD_CODE } from '@trezor/components';
+
 import { useGuide } from 'src/hooks/guide';
 
 export const useGuideKeyboard = () => {

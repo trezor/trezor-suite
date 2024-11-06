@@ -1,7 +1,9 @@
 import styled from 'styled-components';
+
 import { GradientOverlay, useElevation } from '@trezor/components';
-import type { AddressItem } from 'src/hooks/wallet/sign-verify/useSignAddressOptions';
 import { borders, nextElevation, spacingsPx } from '@trezor/theme';
+
+import type { AddressItem } from 'src/hooks/wallet/sign-verify/useSignAddressOptions';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledGradientOverlay = styled(GradientOverlay)`

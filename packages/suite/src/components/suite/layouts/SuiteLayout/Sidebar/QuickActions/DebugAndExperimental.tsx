@@ -1,11 +1,14 @@
+import styled from 'styled-components';
+
 import { Column, getIconSize, Icon, iconSizes } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+
 import { QuickActionButton } from './QuickActionButton';
-import styled from 'styled-components';
 import { TooltipRow } from './TooltipRow';
-import { spacings } from '@trezor/theme';
 import { Translation } from '../../../../Translation';
 
 type DebugAndExperimentalTooltipProps = {

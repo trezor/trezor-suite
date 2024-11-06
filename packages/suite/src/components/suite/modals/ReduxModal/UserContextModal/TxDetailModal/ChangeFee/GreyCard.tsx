@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
+
 import { Card, Column } from '@trezor/components';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

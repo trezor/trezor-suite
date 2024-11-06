@@ -1,15 +1,17 @@
+import { differenceInMonths } from 'date-fns';
+
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { resetTime } from '@suite-common/suite-utils';
 import { networks, type NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { differenceInMonths } from 'date-fns';
+import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 import { CommonAggregatedHistory, GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
 
-import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+
 import { ObjectType, TypeName, sumFiatValueMapInPlace } from './utilsShared';
 
 export const deviceGraphDataFilterFn = (d: GraphData, deviceState: StaticSessionId | undefined) => {

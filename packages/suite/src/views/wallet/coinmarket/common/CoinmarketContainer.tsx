@@ -1,4 +1,5 @@
 import { ElementType } from 'react';
+
 import { useSelector } from 'src/hooks/suite';
 import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common/CoinmarketFooter/CoinmarketFooter';
 import { CoinmarketLayoutHeader } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketLayoutHeader';

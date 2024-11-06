@@ -1,15 +1,19 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
+
 import { DataAnalytics } from '@trezor/components';
 import { analytics } from '@trezor/suite-analytics';
 import { DOCS_ANALYTICS_URL, DATA_TOS_URL } from '@trezor/urls';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics';
+import { typography } from '@trezor/theme';
+
 import { rerun } from 'src/actions/recovery/recoveryActions';
 import { PrerequisitesGuide, TrezorLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
+
 import { SecurityCheck } from '../onboarding/steps/SecurityCheck/SecurityCheck';
-import { typography } from '@trezor/theme';
 
 const StyledTrezorLink = styled(TrezorLink)`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};

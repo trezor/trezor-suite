@@ -1,9 +1,12 @@
 import { FieldValues } from 'react-hook-form';
 
-import { Dispatch, GetState } from 'src/types/suite';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
-import { FORM_DRAFT } from './constants';
 import type { FormDraftKeyPrefix } from '@suite-common/wallet-types';
+
+import { Dispatch, GetState } from 'src/types/suite';
+
+import { FORM_DRAFT } from './constants';
+
 
 export type FormDraftAction =
     | {

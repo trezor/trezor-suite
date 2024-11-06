@@ -1,16 +1,21 @@
+import { useState } from 'react';
+
+import { AnimatePresence, motion } from 'framer-motion';
+import styled from 'styled-components';
+
 import { selectDevice } from '@suite-common/wallet-core';
 import { Banner, Text, Button, IconButton, Row, Column } from '@trezor/components';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import { WalletType } from '@suite-common/wallet-types';
+
 import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+
 import { bannerAnimationConfig } from './banner-animations';
-import { WalletType } from '@suite-common/wallet-types';
-import styled from 'styled-components';
+
 
 const Container = styled(motion.div)`
     width: 100%;

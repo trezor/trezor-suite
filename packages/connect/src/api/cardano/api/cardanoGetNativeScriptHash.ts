@@ -1,5 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/CardanoGetNativeScriptHash.js
 
+import { Assert } from '@trezor/schema-utils';
+
 import { PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getFirmwareRange } from '../../common/paramsValidator';
@@ -9,7 +11,6 @@ import {
     CardanoGetNativeScriptHash as CardanoGetNativeScriptHashSchema,
     CardanoNativeScript,
 } from '../../../types/api/cardano';
-import { Assert } from '@trezor/schema-utils';
 
 export default class CardanoGetNativeScriptHash extends AbstractMethod<
     'cardanoGetNativeScriptHash',

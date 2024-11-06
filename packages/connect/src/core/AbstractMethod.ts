@@ -1,5 +1,7 @@
 import { storage } from '@trezor/connect-common';
 import { versionUtils } from '@trezor/utils';
+import { Capability } from '@trezor/protobuf/src/messages';
+
 import { NETWORK, ERRORS } from '../constants';
 import {
     UI,
@@ -21,7 +23,6 @@ import type {
     DeviceUniquePath,
     ConnectSettings,
 } from '../types';
-import { Capability } from '@trezor/protobuf/src/messages';
 import { config } from '../data/config';
 
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };

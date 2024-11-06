@@ -1,14 +1,15 @@
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
-
-import { getTokens } from 'src/utils/wallet/tokenUtils';
-import { useSelector } from 'src/hooks/suite';
-import { NoTokens } from '../common/NoTokens';
-import { TokensTable } from '../common/TokensTable/TokensTable';
-import { Translation } from 'src/components/suite';
 import { spacings } from '@trezor/theme';
 import { Banner, H3, Column } from '@trezor/components';
 import { isTestnet } from '@suite-common/wallet-utils';
+
+import { getTokens } from 'src/utils/wallet/tokenUtils';
+import { useSelector } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
+
+import { NoTokens } from '../common/NoTokens';
+import { TokensTable } from '../common/TokensTable/TokensTable';
 
 interface HiddenTokensTableProps {
     selectedAccount: SelectedAccountLoaded;

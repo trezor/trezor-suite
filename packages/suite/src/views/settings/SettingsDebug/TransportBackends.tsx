@@ -1,9 +1,10 @@
 import { Checkbox } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
+import { isDevEnv } from '@suite-common/suite-utils';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { isDevEnv } from '@suite-common/suite-utils';
 import { useSelector } from 'src/hooks/suite';
+
 import { useBridgeDesktopApi } from '../../../hooks/suite/useBridgeDesktopApi';
 
 // note that this variable is duplicated with suite-desktop-core

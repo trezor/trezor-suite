@@ -1,3 +1,5 @@
+import { FunctionComponent } from 'react';
+
 import { FirmwareUpdate } from 'src/views/firmware/FirmwareUpdate';
 import { FirmwareCustom } from 'src/views/firmware/FirmwareCustom';
 import { Recovery } from 'src/views/recovery';
@@ -9,9 +11,10 @@ import { UdevRules } from 'src/views/suite/udev';
 import { Version } from 'src/views/suite/version';
 import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
 import type { ForegroundAppRoute } from 'src/types/suite';
-import { FunctionComponent } from 'react';
-import { MultiShareBackupModal } from '../ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';
 import { BridgeRequested } from 'src/views/suite/bridge-requested';
+
+import { MultiShareBackupModal } from '../ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';
+
 
 // would not work if defined directly in the switch
 const FirmwareType = () => <FirmwareUpdate shouldSwitchFirmwareType />;

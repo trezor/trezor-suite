@@ -1,7 +1,9 @@
 import styled from 'styled-components';
+
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { Card, SVG_IMAGES, variables } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
+
 import { useSelector } from 'src/hooks/suite';
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 import { TransactionTypeIcon } from 'src/components/wallet/TransactionItem/TransactionTypeIcon';

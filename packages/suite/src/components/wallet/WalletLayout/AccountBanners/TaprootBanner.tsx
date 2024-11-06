@@ -1,12 +1,15 @@
+import styled from 'styled-components';
+
+import { getBip43Type } from '@suite-common/wallet-utils';
+
 import { Translation } from 'src/components/suite';
-import { CloseableBanner } from './CloseableBanner';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { setFlag } from 'src/actions/suite/suiteActions';
-import { getBip43Type } from '@suite-common/wallet-utils';
 import { Account } from 'src/types/wallet';
+
+import { CloseableBanner } from './CloseableBanner';
 import { BannerPoints } from './BannerPoints';
-import styled from 'styled-components';
 import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
 
 interface TaprootBannerProps {

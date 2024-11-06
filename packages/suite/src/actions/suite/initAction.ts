@@ -8,6 +8,8 @@ import {
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
+import { desktopApi } from '@trezor/suite-desktop-api';
+import { isDesktop } from '@trezor/env-utils';
 
 import * as routerActions from 'src/actions/suite/routerActions';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
@@ -17,8 +19,6 @@ import type { Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
 import { onSuiteReady, setFlag } from './suiteActions';
-import { desktopApi } from '@trezor/suite-desktop-api';
-import { isDesktop } from '@trezor/env-utils';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const {

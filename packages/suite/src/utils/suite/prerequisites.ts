@@ -1,7 +1,9 @@
 import type { TransportInfo } from '@trezor/connect';
 import { DefinedUnionMember } from '@trezor/type-utils';
+
 import { RouterState } from 'src/reducers/suite/routerReducer';
 import type { TrezorDevice, AppState } from 'src/types/suite';
+
 import {
     isAdditionalShamirBackupInProgress,
     isRecoveryInProgress,

@@ -8,6 +8,7 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { Dispatch, GetState } from 'src/types/suite';
 import { WordCount } from 'src/types/recovery';
 import { DEFAULT_PASSPHRASE_PROTECTION } from 'src/constants/suite/device';
+
 import { isRecoveryInProgress } from '../../utils/device/isRecoveryInProgress';
 
 export type SeedInputStatus =

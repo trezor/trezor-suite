@@ -1,8 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoTokenBundle.js
 
+import { Assert, Type, Static } from '@trezor/schema-utils';
+
 import { PROTO } from '../../constants';
 import { CardanoAssetGroup, CardanoToken } from '../../types/api/cardano';
-import { Assert, Type, Static } from '@trezor/schema-utils';
 
 export type AssetGroupWithTokens = Static<typeof AssetGroupWithTokens>;
 export const AssetGroupWithTokens = Type.Object({

@@ -1,5 +1,7 @@
 import { MouseEvent } from 'react';
+
 import { Button } from '@trezor/components';
+
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';

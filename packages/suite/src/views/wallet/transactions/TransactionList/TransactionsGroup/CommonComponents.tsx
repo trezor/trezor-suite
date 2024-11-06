@@ -1,6 +1,8 @@
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
+
 import { HiddenPlaceholder } from 'src/components/suite';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 

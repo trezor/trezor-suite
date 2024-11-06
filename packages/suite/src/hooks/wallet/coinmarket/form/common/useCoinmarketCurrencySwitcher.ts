@@ -1,8 +1,10 @@
+import { UseFormReturn, useWatch } from 'react-hook-form';
+
 import { Network } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { amountToSmallestUnit, formatAmount } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
-import { UseFormReturn, useWatch } from 'react-hook-form';
+
 import {
     FORM_CRYPTO_INPUT,
     FORM_FIAT_INPUT,

@@ -1,8 +1,10 @@
 import { ReactNode } from 'react';
+
+import { Column, Text } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { FORM_DEFAULT_PAYMENT_METHOD } from 'src/constants/wallet/coinmarket/form';
 import { CoinmarketPaymentMethodType } from 'src/types/coinmarket/coinmarket';
-import { Column, Text } from '@trezor/components';
 
 interface CoinmarketPaymentTypeProps {
     children?: ReactNode;

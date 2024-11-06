@@ -1,16 +1,10 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+
 import styled, { useTheme } from 'styled-components';
+
 import { Network } from '@suite-common/wallet-config';
-
-import {
-    AmountUnitSwitchWrapper,
-    CoinBalance,
-    PriceTicker,
-    Translation,
-    TrendTicker,
-} from 'src/components/suite';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
-
 import {
     Card,
     Column,
@@ -21,22 +15,38 @@ import {
     variables,
     Text,
 } from '@trezor/components';
-import { useDispatch } from 'react-redux';
-import { useAccountSearch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
 import { AssetFiatBalance } from '@suite-common/assets';
-import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { ArrowIcon, styledHoverOnParentOfArrowIcon } from '../ArrowIcon';
-import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
-import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { TokenInfo } from '@trezor/connect';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
-import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { selectAssetAccountsThatStaked } from '@suite-common/wallet-core';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
+
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import {
+    AmountUnitSwitchWrapper,
+    CoinBalance,
+    PriceTicker,
+    Translation,
+    TrendTicker,
+} from 'src/components/suite';
+
+
+import { useAccountSearch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+import { goto } from 'src/actions/suite/routerActions';
+
+
+import { FiatHeader } from 'src/components/wallet/FiatHeader';
+import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
+
+import { ArrowIcon, styledHoverOnParentOfArrowIcon } from '../ArrowIcon';
+import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
+import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
+
+
+import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
+
+
 import { handleTokensAndStakingData } from '../assetsViewUtils';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

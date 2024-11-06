@@ -1,4 +1,5 @@
 import { DeviceModelInternal } from '@trezor/connect';
+
 import * as STEP from 'src/constants/onboarding/steps';
 import { PrerequisiteType } from 'src/utils/suite/prerequisites';
 

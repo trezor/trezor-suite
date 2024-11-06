@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
+
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
@@ -9,6 +8,9 @@ import { getFeeLevels } from '@suite-common/wallet-utils';
 import { networks } from '@suite-common/wallet-config';
 import type { Account, FormOptions } from '@suite-common/wallet-types';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
+
+import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 
 interface CoinmarketRecomposeAndSignProps {
     account: Account;

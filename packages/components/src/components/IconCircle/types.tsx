@@ -1,5 +1,6 @@
-import { UIVariant } from '../../config/types';
 import { CSSColor } from '@trezor/theme';
+
+import { UIVariant } from '../../config/types';
 
 export const iconCircleVariants = [
     'primary',

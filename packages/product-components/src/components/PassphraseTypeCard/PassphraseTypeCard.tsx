@@ -1,18 +1,21 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+
 import { AnimatePresence } from 'framer-motion';
+import styled, { css } from 'styled-components';
+
 import { useKeyPress } from '@trezor/react-utils';
 import { setCaretPosition } from '@trezor/dom-utils';
-import styled, { css } from 'styled-components';
 import { countBytesInString } from '@trezor/utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { TooltipProps } from '@trezor/components';
-import { EnterOnTrezorButton } from './EnterOnTrezorButton';
 import { DeviceModelInternal, Features } from '@trezor/connect';
+import { borders, spacingsPx } from '@trezor/theme';
+
+import { EnterOnTrezorButton } from './EnterOnTrezorButton';
 import { PassphraseTypeCardHeading } from './PassphraseTypeCardHeading';
 import { WalletType } from './types';
 import { PassphraseTypeCardContent } from './PassphraseTypeCardContent';
 import { DOT } from './consts';
-import { borders, spacingsPx } from '@trezor/theme';
 import { useNonAsciiChars } from './useNonAsciiChars';
 import { getSubmitLabel } from './getSubmitLabel';
 

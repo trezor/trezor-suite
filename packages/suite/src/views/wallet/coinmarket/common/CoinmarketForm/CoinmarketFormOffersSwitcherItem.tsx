@@ -1,9 +1,11 @@
 import { ExchangeTrade } from 'invity-api';
-import { CoinmarketUtilsProvidersProps } from 'src/types/coinmarket/coinmarket';
-import { Badge, Radio, Tooltip, Row, Text, useElevation } from '@trezor/components';
-import { Translation } from 'src/components/suite';
 import styled from 'styled-components';
+
+import { Badge, Radio, Tooltip, Row, Text, useElevation } from '@trezor/components';
 import { borders, spacings, spacingsPx, mapElevationToBackground, Elevation } from '@trezor/theme';
+
+import { CoinmarketUtilsProvidersProps } from 'src/types/coinmarket/coinmarket';
+import { Translation } from 'src/components/suite';
 import { ExchangeType } from 'src/types/coinmarket/coinmarketForm';
 import { FORM_EXCHANGE_CEX, FORM_EXCHANGE_DEX } from 'src/constants/wallet/coinmarket/form';
 import { CoinmarketUtilsProvider } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsProvider';

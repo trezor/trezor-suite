@@ -1,4 +1,5 @@
 import { ComponentProps } from 'react';
+
 import styled from 'styled-components';
 
 import { SkeletonRectangle, SkeletonSpread, SkeletonStack, variables } from '@trezor/components';

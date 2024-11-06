@@ -1,4 +1,5 @@
 import { MetadataState } from '@suite-common/metadata-types';
+
 import {
     originalTransactionSpendAccount,
     chainSpendingReceivedCoins,

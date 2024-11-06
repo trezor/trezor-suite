@@ -1,9 +1,12 @@
-import { Button } from '../../../index';
 import { Meta, StoryFn } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
+
 import { capitalizeFirstLetter } from '@trezor/utils';
+
+import { Button } from '../../../index';
 import { StoryColumn } from '../../../support/Story';
 import { ButtonVariant } from '../buttonStyleUtils';
-import { action } from '@storybook/addon-actions';
+
 
 const variants: Array<ButtonVariant> = ['primary', 'tertiary', 'info', 'warning', 'destructive'];
 

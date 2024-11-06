@@ -1,11 +1,15 @@
 import { useRef, useCallback } from 'react';
+
 import styled, { css } from 'styled-components';
+
 import { breakpointMediaQueries } from '@trezor/styles';
 import { DropdownRef, Dropdown } from '@trezor/components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
+
 import { Notifications } from 'src/components/suite/notifications';
 import { useDispatch } from 'src/hooks/suite';
+
 import { NavigationItem, NavigationItemProps } from './NavigationItem';
 
 const NotificationsWrapper = styled.div`

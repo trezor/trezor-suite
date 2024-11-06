@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/formatUtils.js
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+
 import type { CoinInfo } from '../types';
 
 export const formatAmount = (n: string, coinInfo: CoinInfo) =>

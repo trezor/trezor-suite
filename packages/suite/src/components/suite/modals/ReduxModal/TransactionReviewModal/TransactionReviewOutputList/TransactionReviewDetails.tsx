@@ -1,9 +1,10 @@
 import styled, { useTheme } from 'styled-components';
 
-import { Translation } from 'src/components/suite';
 import { variables, Card, Icon } from '@trezor/components';
 import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { borders, typography, zIndices } from '@trezor/theme';
+
+import { Translation } from 'src/components/suite';
 
 const TransactionDetailsWrapper = styled.div`
     display: flex;

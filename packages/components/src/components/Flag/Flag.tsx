@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { FLAGS } from './flags';
 
 export type FlagType = keyof typeof FLAGS;

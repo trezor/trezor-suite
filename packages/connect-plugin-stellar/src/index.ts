@@ -9,6 +9,7 @@ import {
     MemoHash,
     MemoReturn,
 } from '@stellar/stellar-sdk';
+
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 /**

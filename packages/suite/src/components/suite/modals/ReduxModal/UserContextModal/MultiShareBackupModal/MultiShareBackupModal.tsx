@@ -1,24 +1,26 @@
 import { useState } from 'react';
-import { selectDevice } from '@suite-common/wallet-core';
 
+import { selectDevice } from '@suite-common/wallet-core';
 import { Button, ModalProps } from '@trezor/components';
 import {
     HELP_CENTER_KEEPING_SEED_SAFE_URL,
     TREZOR_SUPPORT_RECOVERY_ISSUES_URL,
     HELP_CENTER_UPGRADING_TO_MULTI_SHARE_URL,
 } from '@trezor/urls';
+import TrezorConnect, { PROTO } from '@trezor/connect';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { useSelector } from 'src/hooks/suite';
 import { Modal, Translation } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+
 import { MultiShareBackupStep1FirstInfo } from './MultiShareBackupStep1FirstInfo';
 import { MultiShareBackupStep2SecondInfo } from './MultiShareBackupStep2SecondInfo';
-import TrezorConnect, { PROTO } from '@trezor/connect';
 import { MultiShareBackupStep5Done } from './MultiShareBackupStep5Done';
 import { isAdditionalShamirBackupInProgress } from '../../../../../../utils/device/isRecoveryInProgress';
 import { MultiShareBackupStep3VerifyOwnership } from './MultiShareBackupStep3VerifyOwnership';
 import { MultiShareBackupStep4BackupSeed } from './MultiShareBackupStep4BackupSeed';
-import { EventType, analytics } from '@trezor/suite-analytics';
+
 
 type Steps = 'first-info' | 'second-info' | 'verify-ownership' | 'backup-seed' | 'done';
 

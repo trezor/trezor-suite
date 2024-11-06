@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
-import { Tag } from './Tag';
 import { PasswordTag } from '@suite-common/metadata-types';
 import { spacingsPx } from '@trezor/theme';
+
+import { Tag } from './Tag';
 
 const TagsListWrapper = styled.div`
     display: flex;

@@ -11,6 +11,7 @@ import { FiatValue } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+
 import { NoRatesTooltip } from './NoRatesTooltip';
 
 const PercentageWrapper = styled.div<{ $isRateGoingUp: boolean }>`

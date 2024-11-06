@@ -1,14 +1,17 @@
 import styled from 'styled-components';
 import { LayoutGroup, motion } from 'framer-motion';
+
 import { spacingsPx, zIndices } from '@trezor/theme';
 import { motionEasing, variables } from '@trezor/components';
+import { Route } from '@suite-common/suite-types';
+
 import { useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { selectIsLoggedOut } from 'src/reducers/suite/suiteReducer';
+
 import { HoverAnimation } from '../../HoverAnimation';
 import { AppNavigationTooltip } from '../../AppNavigation/AppNavigationTooltip';
-import { Route } from '@suite-common/suite-types';
 
 const Container = styled.div<{ $isFullWidth: boolean }>`
     position: sticky;

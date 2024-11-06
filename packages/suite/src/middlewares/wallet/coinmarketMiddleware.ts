@@ -1,4 +1,7 @@
 import { MiddlewareAPI } from 'redux';
+
+import { UI } from '@trezor/connect';
+
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { COINMARKET_COMMON } from 'src/actions/wallet/constants';
 import { INVITY_API_RELOAD_DATA_AFTER_MS } from 'src/constants/wallet/coinmarket/metadata';
@@ -8,7 +11,6 @@ import * as coinmarketInfoAction from 'src/actions/wallet/coinmarketInfoActions'
 import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
-import { UI } from '@trezor/connect';
 import { ROUTER, MODAL } from 'src/actions/suite/constants';
 
 export const coinmarketMiddleware =

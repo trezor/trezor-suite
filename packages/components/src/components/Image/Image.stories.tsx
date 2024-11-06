@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+
 import { Image as ImageComponent, ImageProps } from './Image';
 import { PNG_IMAGES, SVG_IMAGES } from './images';
 

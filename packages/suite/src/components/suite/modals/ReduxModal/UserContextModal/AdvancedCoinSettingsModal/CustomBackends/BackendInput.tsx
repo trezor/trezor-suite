@@ -1,4 +1,5 @@
 import { Input, Spinner, Tooltip } from '@trezor/components';
+
 import { Translation, StatusLight } from 'src/components/suite';
 
 const ActiveStatus = (

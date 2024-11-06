@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+
 import { TrezorLogoProps, TrezorLogo as TrezorLogoComponent } from './TrezorLogo';
 
 const meta: Meta = {

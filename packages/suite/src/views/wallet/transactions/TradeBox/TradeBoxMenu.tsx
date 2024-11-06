@@ -1,14 +1,18 @@
+import { ReactNode } from 'react';
+
+import styled, { css } from 'styled-components';
+
 import { Route } from '@suite-common/suite-types';
 import { Account } from '@suite-common/wallet-types';
 import { Button, variables } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacingsPx } from '@trezor/theme';
-import { ReactNode } from 'react';
+
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import styled, { css } from 'styled-components';
+
 
 const Wrapper = styled.div`
     display: flex;

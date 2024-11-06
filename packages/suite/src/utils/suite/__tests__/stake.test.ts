@@ -6,25 +6,13 @@ import TrezorConnect, {
     Unsuccessful,
 } from '@trezor/connect';
 import {
-    transformTxFixtures,
-    stakeFixture,
-    stakeFailedFixture,
-    unstakeFixture,
-    unstakeFailedFixture,
-    claimFixture,
-    claimFailedFixture,
-    getStakeFormsDefaultValuesFixture,
-    getStakeTxGasLimitFixture,
-    getUnstakingPeriodInDaysFixture,
-    getDaysToAddToPoolFixture,
-    getDaysToUnstakeFixture,
-    getDaysToAddToPoolInitialFixture,
-    getAdjustedGasLimitConsumptionFixture,
-    getEthNetworkForWalletSdkFixture,
-    getInstantStakeTypeFixture,
-    getChangedInternalTxFixture,
-    simulateUnstakeFixture,
-} from '../__fixtures__/stake';
+    BlockchainEstimatedFee,
+    BlockchainEstimatedFeeLevel,
+} from '@trezor/connect/src/types/api/blockchainEstimateFee';
+import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { ValidatorsQueue } from '@suite-common/wallet-core';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+
 import {
     transformTx,
     stake,
@@ -46,12 +34,25 @@ import {
     simulateUnstake,
 } from '../stake';
 import {
-    BlockchainEstimatedFee,
-    BlockchainEstimatedFeeLevel,
-} from '@trezor/connect/src/types/api/blockchainEstimateFee';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { ValidatorsQueue } from '@suite-common/wallet-core';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+    transformTxFixtures,
+    stakeFixture,
+    stakeFailedFixture,
+    unstakeFixture,
+    unstakeFailedFixture,
+    claimFixture,
+    claimFailedFixture,
+    getStakeFormsDefaultValuesFixture,
+    getStakeTxGasLimitFixture,
+    getUnstakingPeriodInDaysFixture,
+    getDaysToAddToPoolFixture,
+    getDaysToUnstakeFixture,
+    getDaysToAddToPoolInitialFixture,
+    getAdjustedGasLimitConsumptionFixture,
+    getEthNetworkForWalletSdkFixture,
+    getInstantStakeTypeFixture,
+    getChangedInternalTxFixture,
+    simulateUnstakeFixture,
+} from '../__fixtures__/stake';
 
 describe('transformTx', () => {
     transformTxFixtures.forEach(test => {

@@ -2,14 +2,15 @@
 icon: log
 ---
 
+import Markdown from 'react-markdown';
+
 import rehypeSectionize from '@hbsnow/rehype-sectionize';
 import remarkGfm from 'remark-gfm';
 import remarkGemoji from 'remark-gemoji';
 import useSWR from 'swr';
-import Markdown from 'react-markdown';
-import { useMDXComponents } from '@trezor/connect-explorer-theme';
 import { Callout } from 'nextra/components';
 
+import { useMDXComponents } from '@trezor/connect-explorer-theme';
 import { spacings } from '@trezor/theme';
 import { CollapsibleBox } from '@trezor/components';
 import { isNewer } from '@trezor/utils/src/versionUtils';

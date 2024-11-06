@@ -5,6 +5,7 @@
 import * as bip66 from 'bip66';
 import pushdata from 'pushdata-bitcoin';
 import ecc from 'tiny-secp256k1';
+
 import * as scriptNumber from './scriptNumber';
 import * as scriptSignature from './scriptSignature';
 import { OPS, REVERSE_OPS } from './ops';

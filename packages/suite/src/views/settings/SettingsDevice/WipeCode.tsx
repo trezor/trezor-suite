@@ -1,13 +1,14 @@
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { useSelector } from 'react-redux';
 
+import { analytics, EventType } from '@trezor/suite-analytics';
 import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
+import { selectIsDeviceProtectedByWipeCode } from '@suite-common/wallet-core';
+
 import { changeWipeCode } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch } from 'src/hooks/suite';
-import { selectIsDeviceProtectedByWipeCode } from '@suite-common/wallet-core';
 
 interface Props {
     isDeviceLocked: boolean;

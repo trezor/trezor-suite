@@ -1,6 +1,8 @@
-import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
-import { Translation } from 'src/components/suite';
 import { Tooltip } from '@trezor/components';
+
+import { Translation } from 'src/components/suite';
+
+import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
 import { OptionWithContent } from './OptionWithContent';
 import { DefaultTag } from './DefaultTag';
 

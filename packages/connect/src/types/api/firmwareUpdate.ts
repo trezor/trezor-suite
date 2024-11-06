@@ -1,4 +1,5 @@
 import { Static, Type } from '@trezor/schema-utils';
+
 import type { Params, Response } from '../params';
 
 export type FirmwareUpdate = Static<typeof FirmwareUpdate>;

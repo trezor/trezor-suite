@@ -1,5 +1,4 @@
 import { Translation, TroubleshootingTips } from 'src/components/suite';
-
 import {
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_RESTART_COMPUTER,

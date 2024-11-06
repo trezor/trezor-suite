@@ -1,5 +1,6 @@
-import { setTranslationMode } from 'src/utils/suite/l10n';
 import { Banner } from '@trezor/components';
+
+import { setTranslationMode } from 'src/utils/suite/l10n';
 
 export const TranslationMode = () => (
     <Banner

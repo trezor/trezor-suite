@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
-import { ROUTER } from 'src/actions/suite/constants';
 
+import { ROUTER } from 'src/actions/suite/constants';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 
 const router = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (action: Action) => {

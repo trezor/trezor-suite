@@ -1,5 +1,8 @@
 import { useMemo } from 'react';
+
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
+import { FormState, Output } from '@suite-common/wallet-types';
+
 import {
     buildFiatOption,
     cryptoIdToNetworkSymbol,
@@ -14,7 +17,6 @@ import {
     RateType,
     RateTypeFilter,
 } from 'src/types/coinmarket/coinmarketForm';
-import { FormState, Output } from '@suite-common/wallet-types';
 import {
     EXCHANGE_COMPARATOR_KYC_FILTER,
     EXCHANGE_COMPARATOR_KYC_FILTER_ALL,

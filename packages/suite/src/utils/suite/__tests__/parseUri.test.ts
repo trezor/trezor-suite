@@ -1,4 +1,5 @@
 import { parseUri, parseQuery } from 'src/utils/suite/parseUri';
+
 import * as fixtures from '../__fixtures__/parseUri';
 
 describe('parseUri', () => {

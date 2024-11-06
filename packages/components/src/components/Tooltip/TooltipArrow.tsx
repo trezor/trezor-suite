@@ -1,6 +1,8 @@
 import { FloatingArrow } from '@floating-ui/react';
-import { ArrowProps } from './TooltipFloatingUi';
+
 import { palette } from '@trezor/theme';
+
+import { ArrowProps } from './TooltipFloatingUi';
 import { TOOLTIP_BORDER_RADIUS } from './TooltipBox';
 
 export const TooltipArrow = ({ ref, context }: ArrowProps) => (

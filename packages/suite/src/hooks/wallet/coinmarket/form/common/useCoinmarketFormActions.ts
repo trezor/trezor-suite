@@ -1,3 +1,9 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { UseFormReturn, useWatch } from 'react-hook-form';
+import { useDebounce } from 'react-use';
+
+import { FiatCurrencyCode } from 'invity-api';
+
 import { isChanged } from '@suite-common/suite-utils';
 import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
 import {
@@ -7,10 +13,7 @@ import {
     isZero,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
-import { FiatCurrencyCode } from 'invity-api';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { UseFormReturn, useWatch } from 'react-hook-form';
-import { useDebounce } from 'react-use';
+
 import {
     FORM_CRYPTO_TOKEN,
     FORM_OUTPUT_ADDRESS,

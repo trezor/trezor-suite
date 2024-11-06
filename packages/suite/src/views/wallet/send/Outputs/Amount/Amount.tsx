@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+
 import styled, { useTheme } from 'styled-components';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Icon, Banner, variables } from '@trezor/components';
 import { breakpointMediaQueries } from '@trezor/styles';
 import { spacingsPx } from '@trezor/theme';
@@ -30,6 +31,7 @@ import {
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
 import { formatTokenSymbol } from 'src/utils/wallet/tokenUtils';
+
 import { TokenSelect } from './TokenSelect';
 import { FiatInput } from './FiatInput';
 import { SendMaxSwitch } from './SendMaxSwitch';

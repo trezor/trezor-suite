@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+
 import { BannerVariant } from './types';
 
 export const BannerContext = createContext<{

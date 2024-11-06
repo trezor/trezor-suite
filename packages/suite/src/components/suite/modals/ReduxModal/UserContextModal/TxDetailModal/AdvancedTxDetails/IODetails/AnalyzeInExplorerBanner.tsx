@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import { NotificationCard, Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { typography } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBlockchainExplorerBySymbol } from '@suite-common/wallet-core';
+
+import { useSelector } from 'src/hooks/suite';
+import { NotificationCard, Translation } from 'src/components/suite';
 
 const TextWrapper = styled.div`
     display: flex;

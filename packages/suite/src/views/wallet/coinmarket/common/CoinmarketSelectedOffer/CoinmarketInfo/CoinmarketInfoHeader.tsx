@@ -1,6 +1,8 @@
+import { CryptoId } from 'invity-api';
+
 import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { CryptoId } from 'invity-api';
+
 import { Translation } from 'src/components/suite';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';

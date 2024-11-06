@@ -1,8 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ApplySettings.js
 
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod } from '../core/AbstractMethod';
 import { PROTO } from '../constants';
-import { Assert } from '@trezor/schema-utils';
 import { ApplySettings as ApplySettingsSchema } from '../types/api/applySettings';
 
 export default class ApplySettings extends AbstractMethod<'applySettings', PROTO.ApplySettings> {

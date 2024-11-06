@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { DeviceDisplayText } from './DeviceDisplayText';
 
 const TextWrapper = styled.div<{ $isPixelType: boolean }>`

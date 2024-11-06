@@ -1,7 +1,8 @@
 import { isNotUndefined, arrayDistinct, objectPartition } from '@trezor/utils';
-import { addressToScripthash } from './transform';
 import type { Network } from '@trezor/utxo-lib';
 import type { AccountAddresses, SubscriptionAccountInfo } from '@trezor/blockchain-link-types/src';
+
+import { addressToScripthash } from './transform';
 
 type AddressMap = { [address: string]: string };
 type AccountMap = { [descriptor: string]: AccountAddresses };

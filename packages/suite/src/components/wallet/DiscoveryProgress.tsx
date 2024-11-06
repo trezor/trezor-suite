@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
-import { useDiscovery } from 'src/hooks/suite';
 import { ProgressBar } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
+
+import { useDiscovery } from 'src/hooks/suite';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledProgressBar = styled(ProgressBar)`

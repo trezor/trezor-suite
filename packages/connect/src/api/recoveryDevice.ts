@@ -1,8 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/RecoveryDevice.js
 
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI } from '../events';
-import { Assert } from '@trezor/schema-utils';
 import type { PROTO } from '../constants';
 import { RecoveryDevice as RecoveryDeviceSchema } from '../types/api/recoveryDevice';
 

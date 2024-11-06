@@ -2,6 +2,7 @@ import { DeviceModelInternal } from '@trezor/connect';
 
 import * as STEP from 'src/constants/onboarding/steps';
 import { Step } from 'src/types/onboarding';
+
 import { findNextStep, findPrevStep, isStepUsed } from '../steps';
 
 const firmwareStep: Step = {

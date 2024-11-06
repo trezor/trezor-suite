@@ -1,12 +1,15 @@
 import styled, { useTheme } from 'styled-components';
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+
 import { Button, Icon, Paragraph, Tooltip, variables } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
+
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { FiatValueWrapper, FormattedCryptoAmountWrapper } from './styled';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+
+import { FiatValueWrapper, FormattedCryptoAmountWrapper } from './styled';
 
 const StyledCard = styled.div`
     border-radius: ${borders.radii.md};

@@ -29,12 +29,12 @@ import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory
 import { Log, initLog } from '@trezor/connect/src/utils/debug';
 import { config } from '@trezor/connect/src/data/config';
 import { DeferredManager, createDeferredManager } from '@trezor/utils/src/createDeferredManager';
+import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 
 import * as iframe from '../iframe';
 import * as popup from '../popup';
 import webUSBButton from '../webusb/button';
 import { parseConnectSettings } from '../connectSettings';
-import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 
 export class CoreInIframe implements ConnectFactoryDependencies<ConnectSettingsWeb> {
     public eventEmitter = new EventEmitter();

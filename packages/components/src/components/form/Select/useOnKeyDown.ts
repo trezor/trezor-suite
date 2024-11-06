@@ -1,5 +1,6 @@
 import { useRef, useCallback, RefObject, KeyboardEvent } from 'react';
 import { GroupBase, Options, OptionsOrGroups, SelectInstance } from 'react-select';
+
 import type { Option } from './Select';
 
 /** Custom Type Guards to check if options are grouped or not */

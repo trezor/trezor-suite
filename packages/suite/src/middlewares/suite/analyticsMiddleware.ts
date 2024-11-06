@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { getPhysicalDeviceCount } from '@suite-common/suite-utils';
 import {
     discoveryActions,
@@ -18,6 +18,7 @@ import {
     hasBitcoinOnlyFirmware,
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
+import { Account } from '@suite-common/wallet-types';
 
 import { SUITE, ROUTER } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
@@ -32,7 +33,6 @@ import {
     selectCoinjoinAccountByKey,
 } from 'src/reducers/wallet/coinjoinReducer';
 import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
-import { Account } from '@suite-common/wallet-types';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:

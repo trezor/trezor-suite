@@ -1,4 +1,6 @@
-import { Account } from 'src/types/wallet';
+import { BuyTrade, SellFiatTrade, CryptoId } from 'invity-api';
+import { v4 as uuidv4 } from 'uuid';
+
 import {
     Network,
     NetworkSymbol,
@@ -9,15 +11,17 @@ import {
     networks,
 } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
-import regional from 'src/constants/wallet/coinmarket/regional';
-import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
-import { BuyTrade, SellFiatTrade, CryptoId } from 'invity-api';
 import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
 import {
     getContractAddressForNetwork,
     substituteBip43Path,
     sortByCoin,
 } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
+
+import { Account } from 'src/types/wallet';
+import regional from 'src/constants/wallet/coinmarket/regional';
+import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
 import {
     CoinmarketAccountOptionsGroupOptionProps,
     CoinmarketAccountsOptionsGroupProps,
@@ -31,8 +35,8 @@ import {
     CoinmarketTradeDetailType,
     CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
-import { v4 as uuidv4 } from 'uuid';
-import { BigNumber } from '@trezor/utils';
+
+
 
 export const cryptoPlatformSeparator = '--';
 

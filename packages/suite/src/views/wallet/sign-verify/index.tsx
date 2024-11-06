@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { FieldError } from 'react-hook-form';
+
 import styled from 'styled-components';
+
 import {
     Input,
     Button,
@@ -11,6 +13,8 @@ import {
     SelectBar,
     Tooltip,
 } from '@trezor/components';
+import { getInputState } from '@suite-common/wallet-utils';
+import { spacingsPx } from '@trezor/theme';
 
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
 import { Translation } from 'src/components/suite';
@@ -18,10 +22,6 @@ import { useDevice, useDispatch, useSelector, useTranslation } from 'src/hooks/s
 import { sign, verify } from 'src/actions/wallet/signVerifyActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { TranslationKey } from 'src/components/suite/Translation';
-
-import { Navigation, NavPages } from './components/Navigation';
-import { SignAddressInput } from './components/SignAddressInput';
-import { ButtonRow, Row } from './components/ButtonRow';
 import { useCopySignedMessage } from 'src/hooks/wallet/sign-verify/useCopySignedMessage';
 import {
     useSignVerifyForm,
@@ -29,8 +29,10 @@ import {
     MAX_LENGTH_MESSAGE,
     MAX_LENGTH_SIGNATURE,
 } from 'src/hooks/wallet/sign-verify/useSignVerifyForm';
-import { getInputState } from '@suite-common/wallet-utils';
-import { spacingsPx } from '@trezor/theme';
+
+import { Navigation, NavPages } from './components/Navigation';
+import { SignAddressInput } from './components/SignAddressInput';
+import { ButtonRow, Row } from './components/ButtonRow';
 
 const SwitchWrapper = styled.label`
     display: flex;

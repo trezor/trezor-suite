@@ -1,5 +1,7 @@
 import { ReactSVG } from 'react-svg';
+
 import styled, { useTheme } from 'styled-components';
+
 import { LOGOS } from './trezorLogos';
 
 export type TrezorLogoType =

@@ -1,4 +1,5 @@
 import styled, { useTheme } from 'styled-components';
+import { motion } from 'framer-motion';
 
 import {
     variables,
@@ -9,11 +10,11 @@ import {
     Icon,
 } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
+import { Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
+
 import { Translation } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite';
 import type { PrerequisiteType } from 'src/types/suite';
-import { motion } from 'framer-motion';
-import { Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 const Wrapper = styled(motion.div)<{ $elevation: Elevation }>`
     display: flex;

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import TrezorConnect, { BlockchainLink } from '@trezor/connect';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 

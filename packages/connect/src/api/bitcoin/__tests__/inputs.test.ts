@@ -1,4 +1,5 @@
 import { networks } from '@trezor/utxo-lib';
+
 import { validateTrezorInputs } from '../inputs';
 import * as fixtures from '../__fixtures__/inputs';
 

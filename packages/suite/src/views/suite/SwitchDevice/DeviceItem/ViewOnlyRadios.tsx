@@ -2,9 +2,11 @@ import styled, { useTheme } from 'styled-components';
 
 import { Text, Radio, Icon, useElevation, Row, Column, Paragraph } from '@trezor/components';
 import { Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
-import { Translation } from 'src/components/suite';
-import { ContentType } from '../types';
 import { AcquiredDevice } from '@suite-common/suite-types';
+
+import { Translation } from 'src/components/suite';
+
+import { ContentType } from '../types';
 
 type ViewOnlyRadiosProps = {
     isViewOnlyActive: boolean;

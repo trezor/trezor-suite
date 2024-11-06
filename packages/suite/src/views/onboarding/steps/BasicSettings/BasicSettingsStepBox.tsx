@@ -1,13 +1,16 @@
 import { useEffect } from 'react';
+
 import styled from 'styled-components';
-import { OnboardingStepBox, OnboardingStepBoxProps } from 'src/components/onboarding';
-import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
-import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
+
 import { CollapsibleBox } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { selectDeviceModel } from '@suite-common/wallet-core';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { DeviceModelInternal } from '@trezor/connect';
+
+import { OnboardingStepBox, OnboardingStepBoxProps } from 'src/components/onboarding';
+import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
+import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 

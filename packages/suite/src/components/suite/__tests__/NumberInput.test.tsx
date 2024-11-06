@@ -1,12 +1,16 @@
-import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
+import { useForm } from 'react-hook-form';
+
+import { render } from '@testing-library/react';
 import { Store } from 'redux';
 import userEvent from '@testing-library/user-event';
-import { useForm } from 'react-hook-form';
-import suiteReducer, { SuiteState } from 'src/reducers/suite/suiteReducer';
+
 import { configureMockStore } from '@suite-common/test-utils';
+
+import suiteReducer, { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { ThemeProvider } from 'src/support/suite/ThemeProvider';
 import { Locale } from 'src/config/suite/languages';
+
 import { NumberInput } from '../NumberInput';
 
 const onChangeMock = jest.fn();

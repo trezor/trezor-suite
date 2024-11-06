@@ -1,5 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/binanceSignTx.js
 
+import { Assert } from '@trezor/schema-utils';
+
 import { PROTO, ERRORS } from '../../constants';
 import {
     BinanceSDKTransaction,
@@ -7,7 +9,6 @@ import {
     BinancePreparedTransaction,
 } from '../../types/api/binance';
 import type { TypedCall } from '../../device/DeviceCommands';
-import { Assert } from '@trezor/schema-utils';
 
 const processTxRequest = async (
     typedCall: TypedCall,

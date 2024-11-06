@@ -10,6 +10,8 @@ import { selectDevices, selectDevice } from '@suite-common/wallet-core';
 import { ConnectDevicePrompt, Translation } from 'src/components/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
+import { goto } from 'src/actions/suite/routerActions';
 
 import { Transport } from './Transport';
 import { DeviceConnect } from './DeviceConnect';
@@ -23,9 +25,8 @@ import { DeviceBootloader } from './DeviceBootloader';
 import { DeviceNoFirmware } from './DeviceNoFirmware';
 import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceDisconnectRequired } from './DeviceDisconnectRequired';
-import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
-import { goto } from 'src/actions/suite/routerActions';
+
 
 const Wrapper = styled.div`
     display: flex;

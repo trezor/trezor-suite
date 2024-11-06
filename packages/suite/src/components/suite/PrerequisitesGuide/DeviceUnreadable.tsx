@@ -1,4 +1,5 @@
 import { useState, MouseEvent } from 'react';
+
 import { Button } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { isDesktop, isLinux } from '@trezor/env-utils';

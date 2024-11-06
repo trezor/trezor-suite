@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/prefer-ts-expect-error */
 // @ts-ignore
+import { MessagesSchema } from '@trezor/protobuf';
+
 import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/cardano/get_base_address.derivations.json';
 
-import { MessagesSchema } from '@trezor/protobuf';
 
 const { CardanoAddressType, CardanoDerivationType } = MessagesSchema;
 

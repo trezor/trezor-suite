@@ -1,16 +1,20 @@
-import { Translation, FormattedCryptoAmount } from 'src/components/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
-import { StakeType } from '@suite-common/wallet-types';
+import { useSelector } from 'react-redux';
+import { memo } from 'react';
 
-import { Badge, Icon } from '@trezor/components';
 import styled from 'styled-components';
+
+import { StakeType } from '@suite-common/wallet-types';
+import { Badge, Icon } from '@trezor/components';
 import { isNetworkSymbol, NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { useSelector } from 'react-redux';
+import { spacings, spacingsPx } from '@trezor/theme';
+
+import { Translation, FormattedCryptoAmount } from 'src/components/suite';
+import { WalletAccountTransaction } from 'src/types/wallet';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { getInstantStakeType } from 'src/utils/suite/stake';
-import { memo } from 'react';
-import { spacings, spacingsPx } from '@trezor/theme';
+
+
 
 const Wrapper = styled.div`
     display: flex;

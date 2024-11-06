@@ -1,4 +1,5 @@
 import { isEqual } from '@trezor/utils/src/versionUtils';
+
 import { PROTO } from '../constants';
 import { downloadReleasesMetadata } from '../data/downloadReleasesMetadata';
 import { FirmwareRelease, VersionArray } from '../types';

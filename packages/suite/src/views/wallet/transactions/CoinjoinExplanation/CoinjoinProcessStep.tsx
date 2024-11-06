@@ -1,6 +1,9 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
+
 import { H3, Image, ImageType, Paragraph, variables } from '@trezor/components';
+
 import { Translation } from 'src/components/suite/Translation';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

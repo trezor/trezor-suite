@@ -5,6 +5,7 @@ import {
     v1 as protocolV1,
     TransportProtocol,
 } from '@trezor/protocol';
+
 import { bridgeApiCall } from '../utils/bridgeApiCall';
 import * as bridgeApiResult from '../utils/bridgeApiResult';
 import { createProtocolMessage } from '../utils/bridgeProtocolMessage';
@@ -15,7 +16,6 @@ import {
     AbstractTransportParams,
     AbstractTransportMethodParams,
 } from './abstract';
-
 import * as ERRORS from '../errors';
 import {
     AnyError,

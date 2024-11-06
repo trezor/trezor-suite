@@ -1,5 +1,7 @@
-import { CurrencyOption } from '@suite-common/wallet-types';
 import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
+
+import { CurrencyOption } from '@suite-common/wallet-types';
+
 import {
     FORM_FIAT_CURRENCY_SELECT,
     FORM_OUTPUT_CURRENCY,

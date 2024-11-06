@@ -10,10 +10,10 @@ import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useGuide } from 'src/hooks/guide/useGuide';
 import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
+import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 import { MobileActionItem } from './MobileActionItem';
 import { useEnabledBackends } from '../utils';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 const MobileWrapper = styled.div`
     display: flex;

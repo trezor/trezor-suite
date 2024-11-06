@@ -1,9 +1,11 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import useDebounce from 'react-use/lib/useDebounce';
+import { fromWei } from 'web3-utils';
+import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import {
     fromFiatCurrency,
     getFeeLevels,
@@ -11,24 +13,7 @@ import {
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { isChanged } from '@suite-common/suite-utils';
-
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import {
-    UseStakeFormsProps,
-    FIAT_INPUT,
-    CRYPTO_INPUT,
-    OUTPUT_AMOUNT,
-} from 'src/types/wallet/stakeForms';
-import { useFormDraft } from './useFormDraft';
-
-import { fromWei } from 'web3-utils';
-import { useStakeCompose } from './form/useStakeCompose';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-
-import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
-import { getEthNetworkForWalletSdk, getStakeFormsDefaultValues } from 'src/utils/suite/stake';
 import {
     AmountLimitsString,
     StakeContextValues,
@@ -39,7 +24,21 @@ import {
     MIN_ETH_BALANCE_FOR_STAKING,
     MIN_ETH_FOR_WITHDRAWALS,
 } from '@suite-common/wallet-constants';
-import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
+
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import {
+    UseStakeFormsProps,
+    FIAT_INPUT,
+    CRYPTO_INPUT,
+    OUTPUT_AMOUNT,
+} from 'src/types/wallet/stakeForms';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { signTransaction } from 'src/actions/wallet/stakeActions';
+import { getEthNetworkForWalletSdk, getStakeFormsDefaultValues } from 'src/utils/suite/stake';
+
+import { useStakeCompose } from './form/useStakeCompose';
+import { useFormDraft } from './useFormDraft';
 import { useFees } from './form/useFees';
 
 export const StakeEthFormContext = createContext<StakeContextValues | null>(null);

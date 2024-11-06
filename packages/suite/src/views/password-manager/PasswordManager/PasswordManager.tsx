@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+
 import styled from 'styled-components';
+
 import { Button } from '@trezor/components';
 
 import { TextColumn, ActionColumn } from 'src/components/suite';

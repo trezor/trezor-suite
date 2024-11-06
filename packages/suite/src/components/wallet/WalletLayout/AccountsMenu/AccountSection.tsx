@@ -1,11 +1,13 @@
 import { Account } from '@suite-common/wallet-types';
-import { AccountItemsGroup } from './AccountItemsGroup';
-import { AccountItem } from './AccountItem';
-import { useSelector } from 'src/hooks/suite';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectAccountHasStaked } from '@suite-common/wallet-core';
 import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
+
+import { useSelector } from 'src/hooks/suite';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
+
+import { AccountItem } from './AccountItem';
+import { AccountItemsGroup } from './AccountItemsGroup';
 
 interface AccountSectionProps {
     account: Account;

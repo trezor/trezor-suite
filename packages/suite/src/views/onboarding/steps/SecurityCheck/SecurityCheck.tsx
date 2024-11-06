@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import styled, { useTheme } from 'styled-components';
 
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
@@ -23,6 +24,7 @@ import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from 'src/constants/suite/device';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+
 import { SecurityChecklist } from './SecurityChecklist';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 

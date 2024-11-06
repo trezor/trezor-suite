@@ -1,12 +1,14 @@
 import { useCallback, useEffect } from 'react';
 
 import { KEYBOARD_CODE } from '@trezor/components';
-import { useSelector } from './useSelector';
-import { useDispatch } from './useDispatch';
+
 import { setLanguage } from 'src/actions/settings/languageActions';
 import LANGUAGES, { Locale } from 'src/config/suite/languages';
 import { setAutodetect } from 'src/actions/suite/suiteActions';
 import { selectIsDebugModeActive, selectLanguage } from 'src/reducers/suite/suiteReducer';
+
+import { useDispatch } from './useDispatch';
+import { useSelector } from './useSelector';
 
 const languages: { value: Locale; label: string }[] = Object.entries(LANGUAGES)
     .filter(lang => ['official', 'community'].includes(lang[1].type || ''))

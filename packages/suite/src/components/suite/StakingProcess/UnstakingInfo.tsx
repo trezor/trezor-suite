@@ -1,15 +1,18 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+
 import {
     selectAccountUnstakeTransactions,
     selectValidatorsQueue,
     TransactionsRootState,
     StakeRootState,
 } from '@suite-common/wallet-core';
+
 import { Translation } from 'src/components/suite';
-import { InfoRow } from './InfoRow';
-import { useSelector } from 'react-redux';
 import { getDaysToUnstake } from 'src/utils/suite/stake';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
+
+import { InfoRow } from './InfoRow';
 
 interface UnstakingInfoProps {
     isExpanded?: boolean;

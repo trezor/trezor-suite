@@ -1,8 +1,9 @@
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { PROTO } from '../constants';
-import { Assert } from '@trezor/schema-utils';
 
 export default class LoadDevice extends AbstractMethod<'loadDevice', PROTO.LoadDevice> {
     init() {

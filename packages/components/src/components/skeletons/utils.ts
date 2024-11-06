@@ -1,5 +1,7 @@
-import { Elevation, mapElevationToBackground } from '@trezor/theme';
 import { css, keyframes } from 'styled-components';
+
+import { Elevation, mapElevationToBackground } from '@trezor/theme';
+
 import { mapElevationToSkeletonForeground } from './colors';
 
 const SHINE = keyframes`

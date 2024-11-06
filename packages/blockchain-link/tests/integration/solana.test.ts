@@ -1,4 +1,5 @@
 import { AccountInfoParams } from '@trezor/blockchain-link-types';
+
 import BlockchainLink from '../../src';
 import SolanaWorker, { SolanaAPI } from '../../src/workers/solana';
 

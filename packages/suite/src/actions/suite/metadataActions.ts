@@ -1,6 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { selectDevices } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
+import { StaticSessionId } from '@trezor/connect';
 
 import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -14,9 +16,8 @@ import {
 } from 'src/types/suite/metadata';
 import * as metadataUtils from 'src/utils/suite/metadata';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
-import { Account } from '@suite-common/wallet-types';
 import type { AbstractMetadataProvider, PasswordManagerState } from 'src/types/suite/metadata';
-import { StaticSessionId } from '@trezor/connect';
+
 
 export type MetadataAction =
     | { type: typeof METADATA.ENABLE }

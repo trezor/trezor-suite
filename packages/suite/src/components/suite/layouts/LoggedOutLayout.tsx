@@ -1,10 +1,14 @@
 import { ReactNode, useRef, useState } from 'react';
+
+import { ElevationContext, ElevationUp } from '@trezor/components';
+
 import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { useLayoutSize } from 'src/hooks/suite';
 import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
+
 import { Metadata } from '../Metadata';
 import { ModalSwitcher } from '../modals/ModalSwitcher/ModalSwitcher';
 import {
@@ -15,7 +19,6 @@ import {
     PageWrapper,
     Wrapper,
 } from './SuiteLayout/SuiteLayout';
-import { ElevationContext, ElevationUp } from '@trezor/components';
 import { TrafficLightOffset } from '../TrafficLightOffset';
 
 interface LoggedOutLayout {

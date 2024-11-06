@@ -1,6 +1,9 @@
 import { useTheme } from 'styled-components';
+
 import { Card, Column, Icon } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
+
 import { AccentP, CardBottomContent, GreyP } from './styled';
 
 interface ApyCardProps {

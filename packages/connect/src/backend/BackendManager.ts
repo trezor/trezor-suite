@@ -2,7 +2,6 @@ import { DataManager } from '../data/DataManager';
 import { ERRORS } from '../constants';
 import { Blockchain, BlockchainOptions } from './Blockchain';
 import { createBlockchainMessage, BLOCKCHAIN } from '../events';
-
 import type { CoinInfo, BlockchainLink } from '../types';
 
 type CoinShortcut = CoinInfo['shortcut'];

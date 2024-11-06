@@ -1,6 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ComposeTransaction.js
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
+
 import { AbstractMethod } from '../core/AbstractMethod';
 import { ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
@@ -25,7 +27,6 @@ import {
     verifyTx,
     parseTransactionHexes,
 } from './bitcoin';
-import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
 import type { BitcoinNetworkInfo, DiscoveryAccount, AccountUtxo } from '../types';
 import type {
     SignedTransaction,

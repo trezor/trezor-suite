@@ -1,20 +1,24 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { FiatValue, Translation } from 'src/components/suite';
 import {
     formatCardanoWithdrawal,
     formatCardanoDeposit,
     formatNetworkAmount,
     getFiatRateKey,
 } from '@suite-common/wallet-utils';
-import { WalletAccountTransaction } from 'src/types/wallet';
-import { TransactionTargetLayout } from './TransactionTargetLayout';
-import { ExtendedMessageDescriptor } from 'src/types/suite';
 import { SignOperator } from '@suite-common/suite-types';
-import { StyledFormattedCryptoAmount } from './CommonComponents';
-import { useSelector } from 'src/hooks/suite';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { Timestamp } from '@suite-common/wallet-types';
 import { selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
+
+import { FiatValue, Translation } from 'src/components/suite';
+import { WalletAccountTransaction } from 'src/types/wallet';
+import { ExtendedMessageDescriptor } from 'src/types/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+
+import { TransactionTargetLayout } from './TransactionTargetLayout';
+import { StyledFormattedCryptoAmount } from './CommonComponents';
+
+
 
 export const CustomRow = ({
     transaction,

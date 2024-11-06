@@ -1,8 +1,9 @@
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod } from '../core/AbstractMethod';
 import { DEVICE, createDeviceMessage } from '../events';
 import { PROTO } from '../constants';
 import { getFirmwareRange } from './common/paramsValidator';
-import { Assert } from '@trezor/schema-utils';
 
 export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
     init() {

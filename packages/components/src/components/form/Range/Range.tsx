@@ -6,6 +6,7 @@ import {
     KeyboardEventHandler,
     ChangeEventHandler,
 } from 'react';
+
 import styled, { css, CSSObject } from 'styled-components';
 
 import { borders, spacingsPx, typography } from '@trezor/theme';

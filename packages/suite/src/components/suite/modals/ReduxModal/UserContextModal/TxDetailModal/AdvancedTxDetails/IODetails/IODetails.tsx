@@ -1,18 +1,22 @@
 import { ReactElement, ReactNode } from 'react';
+
 import styled, { css, useTheme } from 'styled-components';
 
 import { spacingsPx, spacings, typography } from '@trezor/theme';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatAmount, formatNetworkAmount, isNftTokenTransfer } from '@suite-common/wallet-utils';
-import { FormattedCryptoAmount, Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
 import { AnonymitySet, TokenTransfer } from '@trezor/blockchain-link';
 import { Icon, CollapsibleBox, Divider } from '@trezor/components';
-import { UtxoAnonymity } from 'src/components/wallet';
-import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
-import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
-import { IOAddress } from '../../IOAddress';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+
+import { FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { UtxoAnonymity } from 'src/components/wallet';
+import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
+
+import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
+import { IOAddress } from '../../IOAddress';
+
 
 export const blurFix = css`
     margin-left: -10px;

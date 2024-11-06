@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import {
     formatAmount,
     formatNetworkAmount,
@@ -10,16 +10,18 @@ import {
     getIsUpdatedEthereumSendFlow,
 } from '@suite-common/wallet-utils';
 import { selectDevice } from '@suite-common/wallet-core';
+import { StakeType } from '@suite-common/wallet-types';
+
 import { TrezorDevice } from 'src/types/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
+
 import { TransactionReviewStepIndicator } from './TransactionReviewStepIndicator';
 import {
     TransactionReviewOutputElement,
     OutputElementLine,
 } from './TransactionReviewOutputElement';
 import type { TransactionReviewOutputListProps } from './TransactionReviewOutputList';
-import { StakeType } from '@suite-common/wallet-types';
 
 type StepIndicatorProps = Pick<
     TransactionReviewOutputListProps,

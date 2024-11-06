@@ -1,9 +1,8 @@
-import { Radio, Row, variables, Text, Icon, useElevation, Tooltip } from '@trezor/components';
-import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
 import { ReactNode, forwardRef } from 'react';
-import { Translation } from 'src/components/suite';
-import { useLayoutSize } from 'src/hooks/suite';
+
 import styled, { css } from 'styled-components';
+
+import { Radio, Row, variables, Text, Icon, useElevation, Tooltip } from '@trezor/components';
 import {
     spacingsPx,
     borders,
@@ -11,6 +10,11 @@ import {
     mapElevationToBackground,
     mapElevationToBorder,
 } from '@trezor/theme';
+
+import { useLayoutSize } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
+
+import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
 import { typesToLabelMap } from './typesToLabelMap';
 
 export const OptionText = styled.div`

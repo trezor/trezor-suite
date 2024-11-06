@@ -1,6 +1,7 @@
 // API params
 
 import { Type, TSchema, Static } from '@trezor/schema-utils';
+
 import { DeviceState, DeviceUniquePath } from './device';
 import { ErrorCode } from '../constants/errors';
 

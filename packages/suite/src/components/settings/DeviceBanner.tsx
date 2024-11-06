@@ -1,11 +1,13 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
+
 import { Card, LottieAnimation, Paragraph, Row, variables, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { WebUsbButton } from 'src/components/suite/WebUsbButton';
-import { spacings } from '@trezor/theme';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLottieAnimation = styled(LottieAnimation)`

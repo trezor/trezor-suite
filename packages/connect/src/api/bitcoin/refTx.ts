@@ -7,12 +7,14 @@ import {
     Network,
 } from '@trezor/utxo-lib';
 import { bufferUtils } from '@trezor/utils';
-import { getHDPath, getScriptType, getOutputScriptType } from '../../utils/pathUtils';
-import { TypedError } from '../../constants/errors';
 import type {
     TxInput as BitcoinJsInput,
     TxOutput as BitcoinJsOutput,
 } from '@trezor/utxo-lib/src/transaction/base';
+import { Assert, Type } from '@trezor/schema-utils';
+
+import { getHDPath, getScriptType, getOutputScriptType } from '../../utils/pathUtils';
+import { TypedError } from '../../constants/errors';
 import type {
     CoinInfo,
     AccountAddresses,
@@ -21,7 +23,7 @@ import type {
 } from '../../types';
 import type { RefTransaction, TransactionOptions } from '../../types/api/bitcoin';
 import { PROTO } from '../../constants';
-import { Assert, Type } from '@trezor/schema-utils';
+
 
 // Referenced transactions are not required if:
 // - all internal inputs script_type === SPENDTAPROOT

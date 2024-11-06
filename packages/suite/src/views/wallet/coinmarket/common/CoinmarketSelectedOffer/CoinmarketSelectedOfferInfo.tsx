@@ -1,4 +1,5 @@
 import { CryptoId } from 'invity-api';
+
 import { Column, Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

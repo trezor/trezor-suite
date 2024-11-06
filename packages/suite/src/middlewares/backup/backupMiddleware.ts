@@ -1,4 +1,5 @@
 import { MiddlewareAPI } from 'redux';
+
 import { SUITE } from 'src/actions/suite/constants';
 import * as backupActions from 'src/actions/backup/backupActions';
 import { AppState, Action, Dispatch } from 'src/types/suite';

@@ -1,5 +1,13 @@
 import styled from 'styled-components';
 
+import { Button } from '@trezor/components';
+import {
+    getFirmwareVersion,
+    hasBitcoinOnlyFirmware,
+    isBitcoinOnlyDevice,
+} from '@trezor/device-utils';
+import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
+
 import { SettingsSectionItem } from 'src/components/settings';
 import {
     ActionButton,
@@ -10,14 +18,7 @@ import {
 } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { Button } from '@trezor/components';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import {
-    getFirmwareVersion,
-    hasBitcoinOnlyFirmware,
-    isBitcoinOnlyDevice,
-} from '@trezor/device-utils';
-import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 const Version = styled.div`

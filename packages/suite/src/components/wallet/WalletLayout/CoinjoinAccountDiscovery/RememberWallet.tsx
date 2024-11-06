@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 import { spacings, spacingsPx } from '@trezor/theme';
-
 import { Card, Image, Note, Paragraph, Row, Switch } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

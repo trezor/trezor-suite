@@ -2,6 +2,7 @@
 
 import { bip32 } from '@trezor/utxo-lib';
 import type { Network, BIP32Interface } from '@trezor/utxo-lib';
+
 import { PROTO, ERRORS } from '../constants';
 
 const pubNode2bjsNode = (node: PROTO.HDNodeType, network?: Network) => {

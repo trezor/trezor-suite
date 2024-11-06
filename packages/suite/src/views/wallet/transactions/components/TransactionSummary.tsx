@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 import { getUnixTime } from 'date-fns';
 
+import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
+import { variables, Button, Card } from '@trezor/components';
+
 import { Account } from 'src/types/wallet';
 import {
     GraphRangeSelector,
@@ -10,14 +13,11 @@ import {
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
-
-import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
-import { variables, Button, Card } from '@trezor/components';
+import { aggregateBalanceHistory, getMinMaxValueFromData } from 'src/utils/wallet/graph';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 import { TransactionSummaryDropdown } from './TransactionSummaryDropdown';
 import { SummaryCards } from './SummaryCards';
-import { aggregateBalanceHistory, getMinMaxValueFromData } from 'src/utils/wallet/graph';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const Wrapper = styled.div`
     display: flex;

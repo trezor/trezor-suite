@@ -1,6 +1,12 @@
 import styled from 'styled-components';
 
+import { spacingsPx } from '@trezor/theme';
+import { Context } from '@suite-common/message-system';
+import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
+
 import { Account } from 'src/types/wallet';
+import { useSelector } from 'src/hooks/suite';
+
 import { AuthConfirmFailed } from './AuthConfirmFailed';
 import { BackendDisconnected } from './BackendDisconnected';
 import { DeviceUnavailable } from './DeviceUnavailable';
@@ -10,12 +16,11 @@ import { AccountOutOfSync } from './AccountOutOfSync';
 import { TorDisconnected } from './TorDisconnected';
 import { ContextMessage } from './ContextMessage';
 import { StakeEthBanner } from './StakeEthBanner';
-import { spacingsPx } from '@trezor/theme';
 import { EvmExplanationBanner } from './EvmExplanationBanner';
 import { TaprootBanner } from './TaprootBanner';
-import { Context } from '@suite-common/message-system';
-import { useSelector } from 'src/hooks/suite';
-import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
+
+
+
 
 const BannersWrapper = styled.div`
     display: flex;

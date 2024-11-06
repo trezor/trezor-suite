@@ -1,11 +1,10 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
+
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import {
     ComposeActionContext,
     composeSendFormTransactionFeeLevelsThunk,
@@ -19,7 +18,11 @@ import {
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
+
+import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+
 import { SendContextValues, UseSendFormState } from '../../../types/wallet/sendForm';
 
 const DEFAULT_FIELD = 'outputs.0.amount';

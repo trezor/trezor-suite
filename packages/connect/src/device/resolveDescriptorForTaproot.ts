@@ -1,5 +1,6 @@
-import { HDNodeResponse } from '../types/api/getPublicKey';
 import { MessagesSchema as Messages } from '@trezor/protobuf';
+
+import { HDNodeResponse } from '../types/api/getPublicKey';
 
 interface Params {
     response: HDNodeResponse;

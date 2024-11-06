@@ -13,14 +13,15 @@ import {
     Divider,
     CollapsibleBox,
 } from '@trezor/components';
-import { Translation } from 'src/components/suite';
 import { TranslationKey } from '@suite-common/intl-types';
+import { spacings } from '@trezor/theme';
+import { selectValidatorsQueueData } from '@suite-common/wallet-core';
+
+import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { spacings } from '@trezor/theme';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { getUnstakingPeriodInDays } from 'src/utils/suite/stake';
-import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { StakingInfo } from 'src/components/suite/StakingProcess/StakingInfo';
 import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo';
 

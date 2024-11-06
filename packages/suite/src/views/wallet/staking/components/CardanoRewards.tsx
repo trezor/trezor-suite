@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Column, Icon } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/connect';
+import { spacings } from '@trezor/theme';
 
 import { getReasonForDisabledAction, useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { Translation } from 'src/components/suite/Translation';
@@ -21,8 +23,6 @@ import {
     Column as CardanoColumn,
 } from './CardanoPrimitives';
 import { CardanoActionPending } from './CardanoActionPending';
-import { DeviceModelInternal } from '@trezor/connect';
-import { spacings } from '@trezor/theme';
 
 interface CardanoRewardsProps {
     account: Account;

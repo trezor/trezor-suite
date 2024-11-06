@@ -1,12 +1,14 @@
 import { useTheme } from 'styled-components';
+
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { coinjoinAccountUpdateMaxMiningFee } from 'src/actions/wallet/coinjoinAccountActions';
-import { SetupSlider } from './SetupSlider/SetupSlider';
 import {
     selectDefaultMaxMiningFeeByAccountKey,
     selectFeeRateMedianByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
+
+import { SetupSlider } from './SetupSlider/SetupSlider';
 
 const min = 1;
 const max = 500;

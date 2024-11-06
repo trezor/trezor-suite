@@ -1,5 +1,4 @@
 import { formatAmount } from '../formatUtils';
-
 import * as fixtures from '../__fixtures__/formatUtils';
 
 describe('utils/formatUtils', () => {

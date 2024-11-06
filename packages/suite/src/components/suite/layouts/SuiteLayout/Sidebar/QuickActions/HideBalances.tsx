@@ -1,4 +1,5 @@
 import { Icon, iconSizes } from '@trezor/components';
+
 import { setDiscreetMode } from '../../../../../../actions/settings/walletSettingsActions';
 import { useDispatch, useSelector, useTranslation } from '../../../../../../hooks/suite';
 import { selectIsDiscreteModeActive } from '../../../../../../reducers/wallet/settingsReducer';

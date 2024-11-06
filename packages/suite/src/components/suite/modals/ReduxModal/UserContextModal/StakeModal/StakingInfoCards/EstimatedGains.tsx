@@ -1,15 +1,19 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+
+import styled, { useTheme } from 'styled-components';
+
 import { selectPoolStatsApyData, StakeRootState } from '@suite-common/wallet-core';
 import { Column, Grid, H2, Image, Paragraph, Text } from '@trezor/components';
-import { useSelector } from 'react-redux';
+import { spacings, spacingsPx } from '@trezor/theme';
+import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
+
 import { Translation } from 'src/components/suite/Translation';
 import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { FiatValue, FormattedCryptoAmount, TrezorLink } from 'src/components/suite';
-import styled, { useTheme } from 'styled-components';
-import { spacings, spacingsPx } from '@trezor/theme';
 import { calculateGains } from 'src/utils/suite/stake';
-import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
+
 
 const Heading = styled.div`
     margin-bottom: ${spacingsPx.xl};

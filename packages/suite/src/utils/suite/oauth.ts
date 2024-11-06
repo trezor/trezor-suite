@@ -1,7 +1,8 @@
 import { desktopApi } from '@trezor/suite-desktop-api';
+import { Deferred, createDeferred } from '@trezor/utils';
+
 import { getPrefixedURL } from 'src/utils/suite/router';
 import { METADATA_PROVIDER } from 'src/actions/suite/constants';
-import { Deferred, createDeferred } from '@trezor/utils';
 import { urlHashParams, urlSearchParams } from 'src/utils/suite/metadata';
 
 /**

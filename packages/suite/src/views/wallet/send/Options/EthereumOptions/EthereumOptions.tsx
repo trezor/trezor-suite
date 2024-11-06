@@ -2,8 +2,10 @@ import styled from 'styled-components';
 
 import { FormOptions } from '@suite-common/wallet-types';
 import { Button, Tooltip } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
+
 import { EthereumData } from './EthereumData';
 import { OnOffSwitcher } from '../OnOffSwitcher';
 

@@ -1,6 +1,9 @@
 import { ReactNode } from 'react';
-import { spacings } from '@trezor/theme';
+
 import styled from 'styled-components';
+
+import { spacings } from '@trezor/theme';
+
 import {
     FrameProps,
     FramePropsKeys,

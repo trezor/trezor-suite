@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
+
 import styled from 'styled-components';
+import { AnimatePresence, motion } from 'framer-motion';
+import { rgba } from 'polished';
 
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { TREZOR_SAFE_5_URL } from '@trezor/urls';
+import { Button, IconButton, Image, SVG_IMAGES, SVG_PATH, variables } from '@trezor/components';
+import { resolveStaticPath } from '@suite-common/suite-utils';
+import { colorVariants } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDashboardT3T1PromoBannerShown } from 'src/reducers/suite/suiteReducer';
-import { Button, IconButton, Image, SVG_IMAGES, SVG_PATH, variables } from '@trezor/components';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation, TrezorLink } from 'src/components/suite';
-import { AnimatePresence, motion } from 'framer-motion';
-import { resolveStaticPath } from '@suite-common/suite-utils';
-import { colorVariants } from '@trezor/theme';
-import { rgba } from 'polished';
+
+
+
 import { T3T1PromoLogo } from './T3T1PromoLogo';
 import { bannerAnimationConfig } from '../banner-animations';
 

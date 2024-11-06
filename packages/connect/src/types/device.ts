@@ -1,4 +1,5 @@
 import { Descriptor } from '@trezor/transport';
+
 import type { PROTO } from '../constants';
 import type { ReleaseInfo } from './firmware';
 

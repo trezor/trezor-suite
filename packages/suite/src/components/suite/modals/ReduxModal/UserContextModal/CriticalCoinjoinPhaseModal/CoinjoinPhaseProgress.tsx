@@ -1,11 +1,14 @@
 import styled, { useTheme } from 'styled-components';
-import { CoinjoinSession, SessionPhase } from 'src/types/wallet/coinjoin';
+
 import { Spinner, Icon } from '@trezor/components';
+import { RoundPhase } from '@trezor/coinjoin';
+import { spacingsPx, typography } from '@trezor/theme';
+
+import { CoinjoinSession, SessionPhase } from 'src/types/wallet/coinjoin';
 import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { Translation } from 'src/components/suite/Translation';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
-import { RoundPhase } from '@trezor/coinjoin';
-import { spacingsPx, typography } from '@trezor/theme';
+
 
 const Container = styled.div`
     padding: ${spacingsPx.xxl} ${spacingsPx.xxxl} 0;

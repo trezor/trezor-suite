@@ -1,11 +1,13 @@
 import { useCallback, useRef, Dispatch, SetStateAction, KeyboardEvent } from 'react';
+
 import styled, { css } from 'styled-components';
+
 import { Input, Icon, KEYBOARD_CODE, motionEasing, Row } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
+import { TranslationKey } from '@suite-common/intl-types';
 
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { TooltipSymbol, Translation } from 'src/components/suite';
-import { TranslationKey } from '@suite-common/intl-types';
 
 const TRANSITION_DURATION = 0.26;
 const easingValues = motionEasing.transition.join(', '); // TODO: add to motionEasing

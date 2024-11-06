@@ -1,4 +1,9 @@
 import { useCallback } from 'react';
+import { Controller } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+
+import styled from 'styled-components';
+
 import {
     Timestamp,
     TokenAddress,
@@ -7,11 +12,7 @@ import {
     Output,
 } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import styled from 'styled-components';
-import { Controller } from 'react-hook-form';
-
 import { Select } from '@trezor/components';
-import { useSendFormContext } from 'src/hooks/wallet';
 import {
     fromFiatCurrency,
     getInputState,
@@ -23,14 +24,17 @@ import {
     getFiatRateKey,
 } from '@suite-common/wallet-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { selectFiatRatesByFiatRateKey, updateFiatRatesThunk } from '@suite-common/wallet-core';
+
+import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { NumberInput } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { validateDecimals } from 'src/utils/suite/validation';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { selectFiatRatesByFiatRateKey, updateFiatRatesThunk } from '@suite-common/wallet-core';
-import { useDispatch } from 'react-redux';
+
+
 
 const Wrapper = styled.div`
     display: flex;

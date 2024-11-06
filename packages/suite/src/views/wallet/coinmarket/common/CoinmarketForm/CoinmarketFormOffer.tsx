@@ -1,6 +1,10 @@
-import { Button, TextButton, Row, Column, Paragraph } from '@trezor/components';
+import { useState } from 'react';
+
 import { CryptoId, ExchangeTrade } from 'invity-api';
+
+import { Button, TextButton, Row, Column, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import {
     getCryptoQuoteAmountProps,
@@ -9,7 +13,6 @@ import {
     getSelectQuoteTyped,
     isCoinmarketExchangeContext,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import { useState } from 'react';
 import { Translation } from 'src/components/suite';
 import { CoinmarketFormOfferItem } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferItem';
 import { CoinmarketFormOfferCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferCryptoAmount';

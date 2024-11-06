@@ -4,7 +4,6 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     WEBEXTENSION,
 } from '@trezor/connect-web';
-
 import TrezorConnectMobile from '@trezor/connect-mobile';
 
 import { TrezorConnectDevice, Dispatch, Field, GetState } from '../types';

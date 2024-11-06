@@ -1,11 +1,10 @@
 import { useCallback, useState } from 'react';
+
 import styled, { css, DefaultTheme, keyframes } from 'styled-components';
-import { Tooltip } from '@trezor/components';
-import {
-    CoinjoinProgressContent,
-    Container as ProgressContentContainer,
-} from './CoinjoinProgressContent';
 import { lighten, rgba } from 'polished';
+
+import { Tooltip } from '@trezor/components';
+
 import { useSelector } from 'src/hooks/suite/useSelector';
 import {
     selectCurrentCoinjoinWheelStates,
@@ -22,6 +21,11 @@ import {
     startCoinjoinSession,
     coinjoinSessionAutostop,
 } from 'src/actions/wallet/coinjoinAccountActions';
+
+import {
+    CoinjoinProgressContent,
+    Container as ProgressContentContainer,
+} from './CoinjoinProgressContent';
 
 export const DELAYED_SPIN = keyframes`
     0% {

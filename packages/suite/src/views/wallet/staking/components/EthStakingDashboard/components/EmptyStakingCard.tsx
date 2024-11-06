@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+
 import {
     Button,
     Card,
@@ -13,12 +14,13 @@ import {
     IconName,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+
 import { Translation, StakingFeature } from 'src/components/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 export const EmptyStakingCard = () => {

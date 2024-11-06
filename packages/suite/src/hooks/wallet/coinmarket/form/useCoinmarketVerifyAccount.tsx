@@ -1,11 +1,15 @@
-import { Network, networksCollection } from '@suite-common/wallet-config';
-import { selectDevice } from '@suite-common/wallet-core';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+
+import { Network, networksCollection } from '@suite-common/wallet-config';
+import { selectDevice } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { filterReceiveAccounts } from '@suite-common/wallet-utils';
+
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { openModal } from 'src/actions/suite/modalActions';
-import { Account } from '@suite-common/wallet-types';
 import {
     cryptoIdToNetworkSymbol,
     getUnusedAddressFromAccount,
@@ -21,8 +25,7 @@ import {
     CoinmarketVerifyFormProps,
 } from 'src/types/coinmarket/coinmarketVerify';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { filterReceiveAccounts } from '@suite-common/wallet-utils';
+
 
 const getSelectAccountOptions = (
     suiteReceiveAccounts: Account[] | undefined,

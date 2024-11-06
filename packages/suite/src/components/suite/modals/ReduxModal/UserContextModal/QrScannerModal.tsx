@@ -1,4 +1,5 @@
 import { lazy, Suspense, useState } from 'react';
+
 import styled from 'styled-components';
 
 import { UserContextPayload } from '@suite-common/suite-types';

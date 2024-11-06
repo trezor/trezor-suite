@@ -4,7 +4,6 @@ import { httpRequest } from '../utils/assets';
 import { parseCoinsJson } from './coinInfo';
 import { parseFirmware } from './firmwareInfo';
 import { parseBridgeJSON } from './transportInfo';
-
 import { ConnectSettings, DeviceModelInternal } from '../types';
 
 type AssetCollection = { [key: string]: Record<string, any> };

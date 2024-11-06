@@ -1,3 +1,8 @@
+import styled from 'styled-components';
+
+import { Row, Select } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
 import { Translation } from 'src/components/suite';
 import {
     EXCHANGE_COMPARATOR_KYC_FILTER,
@@ -10,9 +15,6 @@ import {
     EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX,
 } from 'src/constants/wallet/coinmarket/form';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
-import { Row, Select } from '@trezor/components';
-import styled from 'styled-components';
-import { spacings } from '@trezor/theme';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const SelectWrapper = styled.div`

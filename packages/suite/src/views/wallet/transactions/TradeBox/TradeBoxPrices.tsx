@@ -1,10 +1,14 @@
+import { PropsWithChildren, ReactNode } from 'react';
+
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
-import { PropsWithChildren, ReactNode } from 'react';
+import { networks } from '@suite-common/wallet-config';
+
 import { PriceTicker, Translation, TrendTicker } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
-import { networks } from '@suite-common/wallet-config';
+
 
 const Wrapper = styled.div`
     display: flex;

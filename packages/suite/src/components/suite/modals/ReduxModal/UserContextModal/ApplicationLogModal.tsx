@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
 
 import { selectLogs } from '@suite-common/logger';
@@ -14,11 +15,11 @@ import {
     variables,
     useScrollShadow,
 } from '@trezor/components';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { getApplicationInfo, getApplicationLog, prettifyLog } from 'src/utils/suite/logsUtils';
-import { spacings, spacingsPx } from '@trezor/theme';
 
 const ScrollContainer = styled.div`
     overflow: auto;

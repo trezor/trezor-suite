@@ -3,6 +3,7 @@ import { createIpcProxy } from '@trezor/ipc-proxy';
 import { PartialRecord } from '@trezor/type-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+
 import { CoinjoinNetworksConfig, getCoinjoinConfig } from './config';
 
 const loadInstance = (settings: ReturnType<typeof getCoinjoinConfig>) => {

@@ -1,5 +1,6 @@
 /* eslint-disable jest/no-jasmine-globals */
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
+
 import workers from './worker';
 import BlockchainLink from '../../src';
 

@@ -1,9 +1,11 @@
+import { useEffect, useMemo, useState } from 'react';
+import { UseFormReturn } from 'react-hook-form';
+
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getFeeLevels } from '@suite-common/wallet-utils';
-import { useEffect, useMemo, useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+
 import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { FORM_OUTPUT_ADDRESS, FORM_OUTPUT_AMOUNT } from 'src/constants/wallet/coinmarket/form';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';

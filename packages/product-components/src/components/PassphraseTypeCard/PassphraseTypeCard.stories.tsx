@@ -1,9 +1,11 @@
 import { IntlProvider } from 'react-intl';
+
+import { Meta, StoryObj } from '@storybook/react';
+
 import {
     PassphraseTypeCard as PassphraseTypeCardComponent,
     PassphraseTypeCardProps,
 } from './PassphraseTypeCard';
-import { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta = {
     title: 'PassphraseTypeCard',

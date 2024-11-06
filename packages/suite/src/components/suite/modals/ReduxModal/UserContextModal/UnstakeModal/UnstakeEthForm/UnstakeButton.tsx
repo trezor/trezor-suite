@@ -1,4 +1,5 @@
 import { Tooltip, Button } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';

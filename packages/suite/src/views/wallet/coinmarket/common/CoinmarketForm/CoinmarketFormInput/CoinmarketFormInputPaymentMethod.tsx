@@ -1,5 +1,7 @@
 import { Control, Controller } from 'react-hook-form';
+
 import { Select } from '@trezor/components';
+
 import {
     CoinmarketPaymentMethodListProps,
     CoinmarketTradeBuySellType,

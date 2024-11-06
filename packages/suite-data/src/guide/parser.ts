@@ -1,9 +1,10 @@
 import { join } from 'path';
 import * as fs from 'fs-extra';
 
+import type { GuideNode, GuideCategory } from '@suite-common/suite-types';
+
 import { GITBOOK_ASSETS_DIR_PREFIX } from './constants';
 import { transformImagesMarkdown } from './transformer';
-import type { GuideNode, GuideCategory } from '@suite-common/suite-types';
 
 /** @returns true if given path is a directory. */
 const isDirectory = (path: string): boolean => fs.lstatSync(path).isDirectory();

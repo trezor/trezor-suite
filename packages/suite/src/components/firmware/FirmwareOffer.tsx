@@ -8,11 +8,11 @@ import {
 import { Icon, Markdown, Tooltip, variables } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/connect';
+import { spacingsPx } from '@trezor/theme';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useFirmware, useTranslation, useSelector } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
-import { spacingsPx } from '@trezor/theme';
 
 const FwVersionWrapper = styled.div`
     display: flex;

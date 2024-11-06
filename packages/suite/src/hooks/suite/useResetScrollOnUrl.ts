@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef } from 'react';
+
 import { useSelector } from './useSelector';
 
 export const useResetScrollOnUrl = () => {

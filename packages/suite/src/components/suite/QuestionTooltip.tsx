@@ -1,5 +1,7 @@
 import styled from 'styled-components';
+
 import { Tooltip, H3 } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 

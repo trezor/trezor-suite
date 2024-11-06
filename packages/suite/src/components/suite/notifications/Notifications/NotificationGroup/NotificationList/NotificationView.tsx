@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import type { NotificationEntry } from '@suite-common/toast-notifications';
 import { Button, Icon, ButtonProps, Paragraph, IconName } from '@trezor/components';
+
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';
 import { getNotificationIcon } from 'src/utils/suite/notification';
 import { useLayoutSize } from 'src/hooks/suite';

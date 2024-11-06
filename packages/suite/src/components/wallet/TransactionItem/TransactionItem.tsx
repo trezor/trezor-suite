@@ -1,20 +1,32 @@
 import { memo, useMemo, useState } from 'react';
+
 import styled, { css } from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
+
 import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
 import { variables, Button, Card, Link, Tooltip } from '@trezor/components';
-import { Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { openModal } from 'src/actions/suite/modalActions';
 import {
     formatNetworkAmount,
     isTestnet,
     isTxFeePaid,
     isStakeTypeTx,
 } from '@suite-common/wallet-utils';
+import { AccountType, Network } from '@suite-common/wallet-config';
+import { HELP_CENTER_REPLACE_BY_FEE } from '@trezor/urls';
+
+import { Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { openModal } from 'src/actions/suite/modalActions';
 import { AccountLabels } from 'src/types/suite/metadata';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import { AccountType, Network } from '@suite-common/wallet-config';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
+import { anchorOutlineStyles } from 'src/utils/suite/anchor';
+import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
+import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { getInstantStakeType } from 'src/utils/suite/stake';
+
 import { TransactionTypeIcon } from './TransactionTypeIcon';
 import { TransactionHeading } from './TransactionHeading';
 import {
@@ -31,15 +43,9 @@ import {
     TimestampWrapper,
     TxTypeIconWrapper,
 } from './CommonComponents';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
-import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
-import { anchorOutlineStyles } from 'src/utils/suite/anchor';
-import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
-import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { BlurWrapper } from './TransactionItemBlurWrapper';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { getInstantStakeType } from 'src/utils/suite/stake';
-import { HELP_CENTER_REPLACE_BY_FEE } from '@trezor/urls';
+
+
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const Wrapper = styled(Card)<{

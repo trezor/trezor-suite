@@ -1,9 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react';
+import styled from 'styled-components';
+
 import {
     TruncateWithTooltip as TruncateWithTooltipComponent,
     TruncateWithTooltipProps,
 } from './TruncateWithTooltip';
-import styled from 'styled-components';
 
 const Container = styled.div`
     overflow: hidden;

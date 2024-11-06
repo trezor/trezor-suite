@@ -1,6 +1,8 @@
-import { Icon, ProgressBar, variables } from '@trezor/components';
 import styled, { useTheme } from 'styled-components';
+
+import { Icon, ProgressBar, variables } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
+
 import { useFirmware } from 'src/hooks/suite';
 
 const Wrapper = styled.div`

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
+
 import { Timerange as TimerangeComponent, TimerangeProps } from './Timerange';
 
 const Center = styled.div`

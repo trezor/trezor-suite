@@ -1,3 +1,5 @@
+import { MouseEvent } from 'react';
+
 import styled, { css, useTheme } from 'styled-components';
 
 import { ExtendedMessageDescriptor, TranslationKey } from '@suite-common/intl-types';
@@ -9,13 +11,14 @@ import {
     TypographyStyle,
 } from '@trezor/theme';
 import { getFocusShadowStyle } from '@trezor/components/src/utils/utils';
-import { Translation } from 'src/components/suite/Translation';
 import { Route } from '@suite-common/suite-types';
+import { Icon, IconName, IconSize, useElevation, Paragraph } from '@trezor/components';
+
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { MouseEvent } from 'react';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { Icon, IconName, IconSize, useElevation, Paragraph } from '@trezor/components';
+
 
 export const NavigationItemBase = styled.div.attrs(() => ({
     tabIndex: 0,

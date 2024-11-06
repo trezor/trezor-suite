@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
 
 import { Banner } from '@trezor/components';
@@ -14,6 +15,7 @@ import {
 } from 'src/reducers/wallet/coinjoinReducer';
 import { Translation } from 'src/components/suite';
 import { ConfirmEvmExplanationModal } from 'src/components/suite/modals';
+
 import { SendHeader } from './SendHeader';
 import { Outputs } from './Outputs/Outputs';
 import { Options } from './Options/Options';

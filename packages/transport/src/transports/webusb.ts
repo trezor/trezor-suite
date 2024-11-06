@@ -1,5 +1,4 @@
 import { AbstractTransport, AbstractTransportParams } from './abstract';
-
 import { WRONG_ENVIRONMENT } from '../errors';
 import { empty, emptySync } from '../utils/resultEmpty';
 

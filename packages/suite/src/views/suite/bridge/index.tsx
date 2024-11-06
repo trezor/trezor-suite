@@ -1,11 +1,14 @@
 import styled from 'styled-components';
-import { Translation, Modal, Metadata } from 'src/components/suite';
+
 import { Button, Link } from '@trezor/components';
+import { DATA_URL } from '@trezor/urls';
+
+import { Translation, Modal, Metadata } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
-import { DATA_URL } from '@trezor/urls';
+
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`

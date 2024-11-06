@@ -1,6 +1,8 @@
 import { transparentize } from 'polished';
 import styled, { css } from 'styled-components';
+
 import { Icon, variables } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`

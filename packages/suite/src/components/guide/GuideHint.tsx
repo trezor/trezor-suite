@@ -1,4 +1,5 @@
 import { Children, BlockquoteHTMLAttributes, cloneElement, isValidElement } from 'react';
+
 import styled from 'styled-components';
 
 import { Banner } from '@trezor/components';

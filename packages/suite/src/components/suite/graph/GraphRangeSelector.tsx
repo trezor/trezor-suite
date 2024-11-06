@@ -1,8 +1,6 @@
 import { useState, useRef } from 'react';
 
 import styled, { css } from 'styled-components';
-import { Translation } from 'src/components/suite';
-import { useGraph, useLocales } from 'src/hooks/suite';
 import {
     startOfDay,
     startOfToday,
@@ -14,6 +12,9 @@ import {
 } from 'date-fns';
 
 import { variables, Dropdown, DropdownRef, Timerange, intermediaryTheme } from '@trezor/components';
+
+import { Translation } from 'src/components/suite';
+import { useGraph, useLocales } from 'src/hooks/suite';
 import { GraphRange } from 'src/types/wallet/graph';
 
 const Wrapper = styled.div`

@@ -1,5 +1,6 @@
-import { configureStore } from 'src/support/tests/configureStore';
+import { UI } from '@trezor/connect';
 
+import { configureStore } from 'src/support/tests/configureStore';
 import { coinmarketReducer, initialState } from 'src/reducers/wallet/coinmarketReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import { coinmarketMiddleware } from 'src/middlewares/wallet/coinmarketMiddleware';
@@ -11,7 +12,6 @@ import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants'
 import routerReducer, { RouterState } from 'src/reducers/suite/routerReducer';
 import modalReducer, { State as ModalState } from 'src/reducers/suite/modalReducer';
 import { MODAL, ROUTER } from 'src/actions/suite/constants';
-import { UI } from '@trezor/connect';
 
 jest.mock('src/services/suite/invityAPI');
 invityAPI.setInvityServersEnvironment = () => {};

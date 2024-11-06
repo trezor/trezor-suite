@@ -1,3 +1,7 @@
+import { ReactNode } from 'react';
+
+import styled from 'styled-components';
+
 import { ElevationContext, useElevation, variables } from '@trezor/components';
 import {
     Elevation,
@@ -6,8 +10,6 @@ import {
     mapElevationToBorder,
     spacingsPx,
 } from '@trezor/theme';
-import { ReactNode } from 'react';
-import styled from 'styled-components';
 
 const MAC_WINDOW_HEIGHT = '184px';
 

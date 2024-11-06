@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+
 import { deviceActions } from '@suite-common/wallet-core';
 import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -11,6 +12,7 @@ import {
     selectFirmwareHashCheckError,
     selectFirmwareRevisionCheckError,
 } from 'src/reducers/suite/suiteReducer';
+
 import { SecurityCheckFail, SecurityCheckFailProps } from './SecurityCheckFail';
 import { softFailureChecklistItems } from './checklistItems';
 

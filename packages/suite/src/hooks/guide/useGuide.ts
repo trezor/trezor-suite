@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
+
 import { useDispatch, useSelector, useLayoutSize } from 'src/hooks/suite';
 import { close, open } from 'src/actions/suite/guideActions';
+
 import { usePreferredModal } from '../suite/usePreferredModal';
 
 export const GUIDE_ANIMATION_DURATION_MS = 300;

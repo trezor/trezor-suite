@@ -1,6 +1,7 @@
 import coinsJSON from '@trezor/connect-common/files/coins.json';
 import coinsJSONEth from '@trezor/connect-common/files/coins-eth.json';
 import BlockchainLink from '@trezor/blockchain-link';
+
 import { parseCoinsJson, getBitcoinNetwork, getEthereumNetwork } from '../../data/coinInfo';
 import { initBlockchain } from '../BlockchainLink';
 

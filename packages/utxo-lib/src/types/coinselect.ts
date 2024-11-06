@@ -1,4 +1,5 @@
 import BN from 'bn.js';
+
 import { TransactionInputOutputSortingStrategy } from './compose';
 
 export type CoinSelectPaymentType = 'p2pkh' | 'p2sh' | 'p2tr' | 'p2wpkh' | 'p2wsh';

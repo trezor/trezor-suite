@@ -1,4 +1,5 @@
 import { TypedEmitter, getSynchronize } from '@trezor/utils';
+
 import type {
     AnyError,
     AsyncResultWithTypedError,
@@ -8,7 +9,6 @@ import type {
     PathInternal,
 } from '../types';
 import { success, error, unknownError } from '../utils/result';
-
 import * as ERRORS from '../errors';
 
 export interface AbstractApiConstructorParams {

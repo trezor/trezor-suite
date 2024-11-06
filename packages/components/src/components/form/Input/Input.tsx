@@ -1,7 +1,10 @@
 import { useState, Ref, ReactNode, ReactElement, InputHTMLAttributes } from 'react';
-import styled, { useTheme } from 'styled-components';
 import { useMeasure } from 'react-use';
+
+import styled, { useTheme } from 'styled-components';
+
 import { spacingsPx, spacings, typography } from '@trezor/theme';
+
 import { Icon } from '../../Icon/Icon';
 import {
     baseInputStyle,

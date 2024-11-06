@@ -1,6 +1,8 @@
-import { borders, spacingsPx } from '@trezor/theme';
 import React, { type ReactNode } from 'react';
+
 import styled from 'styled-components';
+
+import { borders, spacingsPx } from '@trezor/theme';
 
 const StyledCode = styled.code`
     font-family: RobotoMono, 'PixelOperatorMono8', monospace;

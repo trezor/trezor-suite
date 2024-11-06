@@ -4,7 +4,6 @@ import { ConnectFactoryDependencies } from '../factory';
 import type { Manifest } from '../types/settings';
 import { CallMethodPayload } from '../events';
 import { ERRORS } from '../constants';
-
 import { ProxyEventEmitter } from '../utils/proxy-event-emitter';
 import { InitFullSettings } from '../types/api/init';
 

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
+
 import styled, { css, DefaultTheme, useTheme } from 'styled-components';
 
-import { variables } from '../../config';
 import { Elevation, borders, spacingsPx, typography, spacings } from '@trezor/theme';
 import {
     FrameProps,
@@ -26,6 +26,7 @@ import { TransientProps } from '../../utils/transientProps';
 import { useMediaQuery } from '../../utils/useMediaQuery';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { Column, Row } from '../Flex/Flex';
+import { variables } from '../../config';
 
 export const allowedBannerFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBannerFrameProps)[number]>;

@@ -1,9 +1,12 @@
-import { Translation } from 'src/components/suite';
-
-import { useLayoutSize } from 'src/hooks/suite';
-import { Button, variables } from '@trezor/components';
 import { useState } from 'react';
+
 import styled from 'styled-components';
+
+import { Button, variables } from '@trezor/components';
+
+import { Translation } from 'src/components/suite';
+import { useLayoutSize } from 'src/hooks/suite';
+
 
 export const Row = styled.div`
     position: relative;

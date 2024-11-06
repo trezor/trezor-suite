@@ -1,10 +1,19 @@
 import { isWithinInterval, fromUnixTime } from 'date-fns';
-import { Dispatch, GetState } from 'src/types/suite';
-import { Account } from 'src/types/wallet';
 
 import { tryGetAccountIdentity, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
-
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
+import { selectIsElectrumBackendSelected } from '@suite-common/wallet-core';
+
+import { Dispatch, GetState } from 'src/types/suite';
+import { Account } from 'src/types/wallet';
+import { GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
+import {
+    ensureHistoryRates,
+    enhanceBlockchainAccountHistory,
+    accountGraphDataFilterFn,
+    deviceGraphDataFilterFn,
+} from 'src/utils/wallet/graph';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 import {
     ACCOUNT_GRAPH_SUCCESS,
@@ -15,15 +24,7 @@ import {
     SET_SELECTED_RANGE,
     SET_SELECTED_VIEW,
 } from './constants/graphConstants';
-import { GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
-import {
-    ensureHistoryRates,
-    enhanceBlockchainAccountHistory,
-    accountGraphDataFilterFn,
-    deviceGraphDataFilterFn,
-} from 'src/utils/wallet/graph';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { selectIsElectrumBackendSelected } from '@suite-common/wallet-core';
+
 
 export type GraphAction =
     | {

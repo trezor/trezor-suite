@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { Spinner } from '@trezor/components';
 
 const LoaderWrapper = styled.div`

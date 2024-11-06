@@ -1,10 +1,14 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
+
 import { Tooltip, TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_NORMAL } from '@trezor/components';
 import { mediaQueries } from '@trezor/styles';
-import { Translation } from './Translation';
+
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
+
+import { Translation } from './Translation';
 
 const Container = styled.div`
     position: relative;

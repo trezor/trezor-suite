@@ -1,8 +1,10 @@
 import { ArrayElement } from '@trezor/type-utils';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+
 import { Translation, AddressLabeling } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
+
 import { BlurWrapper } from '../TransactionItemBlurWrapper';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 
 interface TokenTransferAddressLabelProps {
     networkSymbol: NetworkSymbol;

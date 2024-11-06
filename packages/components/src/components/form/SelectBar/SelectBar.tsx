@@ -1,5 +1,7 @@
 import { useState, useEffect, ReactNode, useCallback, KeyboardEvent } from 'react';
+
 import styled, { css } from 'styled-components';
+
 import { breakpointMediaQueries } from '@trezor/styles';
 import {
     borders,
@@ -10,6 +12,7 @@ import {
     mapElevationToBackground,
     nextElevation,
 } from '@trezor/theme';
+
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 

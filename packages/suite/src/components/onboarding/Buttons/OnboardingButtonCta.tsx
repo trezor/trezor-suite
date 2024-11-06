@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { Button, ButtonProps } from '@trezor/components';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

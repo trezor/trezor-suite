@@ -1,7 +1,9 @@
 import produce from 'immer';
+
+import type { Protocol } from '@suite-common/suite-constants';
+
 import { PROTOCOL } from 'src/actions/suite/constants';
 import type { Action } from 'src/types/suite';
-import type { Protocol } from '@suite-common/suite-constants';
 
 export interface SendFormState {
     scheme: Protocol;

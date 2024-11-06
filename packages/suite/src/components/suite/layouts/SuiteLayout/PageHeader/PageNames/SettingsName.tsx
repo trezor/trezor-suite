@@ -1,13 +1,17 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
+
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { IconButton } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
+
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive, selectIsLoggedOut } from 'src/reducers/suite/suiteReducer';
 import { goto } from 'src/actions/suite/routerActions';
+
 import { HeaderHeading } from './BasicName';
 
 const Container = styled.div`

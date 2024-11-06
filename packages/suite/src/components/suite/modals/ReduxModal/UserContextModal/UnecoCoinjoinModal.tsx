@@ -3,11 +3,12 @@ import { transparentize } from 'polished';
 
 import { selectIsAccountWithRatesByKey } from '@suite-common/wallet-core';
 import { Button, variables } from '@trezor/components';
+import { formatAmount, getAccountDecimals } from '@suite-common/wallet-utils';
+
 import { FiatValue, FormattedCryptoAmount, Modal, Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { onCancel } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { formatAmount, getAccountDecimals } from '@suite-common/wallet-utils';
 import { UNECONOMICAL_COINJOIN_THRESHOLD } from 'src/services/coinjoin';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useSelector } from 'src/hooks/suite/useSelector';

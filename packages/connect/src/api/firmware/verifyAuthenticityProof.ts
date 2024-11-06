@@ -1,4 +1,5 @@
 import * as crypto from 'crypto';
+
 import { bufferUtils } from '@trezor/utils';
 
 import { PROTO } from '../../constants';

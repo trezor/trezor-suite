@@ -1,8 +1,10 @@
 import { Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { FiatValue, Translation } from 'src/components/suite';
-import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 import { Network } from '@suite-common/wallet-config';
+
+import { FiatValue, Translation } from 'src/components/suite';
+
+import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 
 interface AssetTokenProps {
     tokenIconSetWrapper: React.ReactNode;

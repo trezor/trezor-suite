@@ -9,6 +9,7 @@ import {
     SelectFeeLevel,
 } from '@trezor/connect';
 import { formatAmount, formatTime } from '@trezor/connect/src/utils/formatUtils';
+
 import { container, showView, postMessage } from './common';
 
 const fees: SelectFeeLevel[] = [];

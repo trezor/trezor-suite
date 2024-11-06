@@ -1,11 +1,14 @@
 import { useCallback } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
+
 import { formatNetworkAmount, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { FormState, FormOptions, TokenAddress, Rate } from '@suite-common/wallet-types';
-import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
-import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
+
+import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
+
+import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { useSelector } from '../suite';
 
 type Props = UseFormReturn<FormState> & {

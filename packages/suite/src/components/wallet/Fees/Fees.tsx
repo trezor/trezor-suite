@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-import { FeeLevel } from '@trezor/connect';
 import {
     Control,
     FieldErrors,
@@ -8,6 +6,11 @@ import {
     UseFormReturn,
     UseFormSetValue,
 } from 'react-hook-form';
+
+import styled from 'styled-components';
+import { AnimatePresence, motion } from 'framer-motion';
+
+import { FeeLevel } from '@trezor/connect';
 import { Icon, Paragraph, SelectBar, Tooltip, motionEasing, variables } from '@trezor/components';
 import {
     FormState,
@@ -17,14 +20,17 @@ import {
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { spacingsPx, typography } from '@trezor/theme';
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { TranslationKey } from '@suite-common/intl-types';
+
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
+
 import { CustomFee } from './CustomFee';
 import { FeeDetails } from './FeeDetails';
-import { AnimatePresence, motion } from 'framer-motion';
-import { TranslationKey } from '@suite-common/intl-types';
+
+
 
 const Container = styled.div`
     overflow: hidden; /* prevent scrollbar when custom fee is opened */

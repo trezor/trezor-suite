@@ -6,8 +6,9 @@ import {
 } from '@trezor/coinjoin/src/constants';
 import type { CoinjoinBackendSettings, CoinjoinClientSettings } from '@trezor/coinjoin';
 import type { PartialRecord } from '@trezor/type-utils';
-import type { CoinjoinServerEnvironment } from 'src/types/wallet/coinjoin';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+
+import type { CoinjoinServerEnvironment } from 'src/types/wallet/coinjoin';
 
 export type CoinjoinNetworksConfig = CoinjoinBackendSettings &
     CoinjoinClientSettings & { blockbookUrls: string[] };

@@ -2,6 +2,7 @@ import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/compone
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { rescanCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions';
 import type { Account } from 'src/types/wallet';
+
 import { Row } from './Row';
 
 type RescanAccountProps = {

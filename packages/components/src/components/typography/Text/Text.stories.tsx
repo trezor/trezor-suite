@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
+
 import { allowedTextFrameProps, allowedTextTextProps, Text as TextComponent } from './Text';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { getTextPropsStory } from '../utils';

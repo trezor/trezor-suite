@@ -1,10 +1,12 @@
-import { Network } from '@suite-common/wallet-config';
 import React from 'react';
+
+import { Network } from '@suite-common/wallet-config';
 import { AssetFiatBalance } from '@suite-common/assets';
-import { AssetCoinLogo, AssetCoinLogoSkeleton } from '../AssetCoinLogo';
-import { AssetCoinName, AssetCoinNameSkeleton } from '../AssetCoinName';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
+import { AssetCoinLogo, AssetCoinLogoSkeleton } from '../AssetCoinLogo';
+import { AssetCoinName, AssetCoinNameSkeleton } from '../AssetCoinName';
 
 type AssetInfoProps = {
     network: Network;

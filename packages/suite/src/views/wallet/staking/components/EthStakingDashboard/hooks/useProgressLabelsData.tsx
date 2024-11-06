@@ -1,8 +1,12 @@
 import { useMemo } from 'react';
+
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
-import { ProgressLabelData } from '../components/ProgressLabels/types';
+
 import { Translation } from 'src/components/suite';
+
+import { ProgressLabelData } from '../components/ProgressLabels/types';
 
 const DaysToAddToPool = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};

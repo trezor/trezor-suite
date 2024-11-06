@@ -1,6 +1,8 @@
-import { ExchangeTrade } from 'invity-api';
 import { useEffect, useState } from 'react';
 import { useTimeoutFn, useUnmount } from 'react-use';
+
+import { ExchangeTrade } from 'invity-api';
+
 import { useDispatch } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';

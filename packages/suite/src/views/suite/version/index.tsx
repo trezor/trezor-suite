@@ -1,7 +1,9 @@
 import styled from 'styled-components';
+
 import { Link, H2, Paragraph } from '@trezor/components';
-import { Modal } from 'src/components/suite';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
+
+import { Modal } from 'src/components/suite';
 
 const Wrapper = styled.div`
     display: flex;

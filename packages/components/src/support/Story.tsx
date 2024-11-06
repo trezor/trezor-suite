@@ -1,4 +1,5 @@
 import styled, { ThemeProvider } from 'styled-components';
+
 import { intermediaryTheme } from '../index';
 
 const Wrapper = styled.div`

@@ -12,7 +12,6 @@ import { selectSelectedProviderForPasswords } from 'src/reducers/suite/metadataR
 
 import * as metadataActions from './metadataActions';
 import * as metadataProviderActions from './metadataProviderActions';
-
 import type { FetchIntervalTrackingId } from './metadataProviderActions';
 
 export const fetchPasswords =

@@ -1,10 +1,11 @@
 import styled from 'styled-components';
-import { useDispatch } from 'src/hooks/suite';
 import { transparentize } from 'polished';
 
 import { Button, Icon, variables } from '@trezor/components';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { WalletParams } from '@suite-common/wallet-types';
+
+import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectRouterParams } from 'src/reducers/suite/routerReducer';

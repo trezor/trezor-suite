@@ -1,12 +1,15 @@
 import { useWatch } from 'react-hook-form';
+
 import styled from 'styled-components';
 
 import { Checkbox, Button, Banner, variables, Tooltip } from '@trezor/components';
+import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
+import { spacingsPx } from '@trezor/theme';
+
 import { useDevice } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
 import { Translation } from 'src/components/suite/Translation';
-import { spacingsPx } from '@trezor/theme';
+
 
 const Container = styled.div`
     display: flex;

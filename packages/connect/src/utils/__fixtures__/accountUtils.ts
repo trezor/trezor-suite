@@ -2,7 +2,6 @@ import coinsJSON from '@trezor/connect-common/files/coins.json';
 import coinsJSONEth from '@trezor/connect-common/files/coins-eth.json';
 
 import { getAccountLabel, isUtxoBased } from '../accountUtils';
-
 import {
     parseCoinsJson,
     getBitcoinNetwork,

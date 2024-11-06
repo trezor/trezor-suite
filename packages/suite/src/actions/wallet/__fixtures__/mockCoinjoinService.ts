@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export const mockCoinjoinService = () => {

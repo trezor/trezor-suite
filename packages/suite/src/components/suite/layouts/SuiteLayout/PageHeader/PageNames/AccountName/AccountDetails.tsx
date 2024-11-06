@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
+
 import styled, { keyframes } from 'styled-components';
+
 import { Account } from '@suite-common/wallet-types';
 import { spacingsPx, zIndices, typography } from '@trezor/theme';
 import { H2 } from '@trezor/components';
+import { CoinLogo } from '@trezor/product-components';
+import { isTestnet } from '@suite-common/wallet-utils';
+
 import {
     MetadataLabeling,
     AccountLabel,
@@ -12,8 +17,6 @@ import {
 } from 'src/components/suite';
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
-import { CoinLogo } from '@trezor/product-components';
-import { isTestnet } from '@suite-common/wallet-utils';
 
 const rotateIn = keyframes`
     from {

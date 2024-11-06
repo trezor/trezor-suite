@@ -1,4 +1,5 @@
 import { EventType } from '@trezor/suite-analytics';
+
 import { ExtractByEventType, Requests } from '../../support/types';
 
 // @group_device-management

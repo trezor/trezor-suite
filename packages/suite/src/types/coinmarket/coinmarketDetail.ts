@@ -1,7 +1,8 @@
+import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
+
 import type { CoinmarketTradeCommonProps } from 'src/reducers/wallet/coinmarketReducer';
 import type { Account } from 'src/types/wallet';
 import type { TradeType } from 'src/types/wallet/coinmarketCommonTypes';
-import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import {
     CoinmarketTradeInfoMapProps,
     CoinmarketTradeMapProps,

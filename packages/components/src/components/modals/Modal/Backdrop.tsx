@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
+
 import styled, { css } from 'styled-components';
+
 import { zIndices } from '@trezor/theme';
 
 export type ModalAlignment = { x: 'center' | 'left'; y: 'center' | 'top' };

@@ -1,4 +1,5 @@
 import { CSSProperties, MouseEventHandler, forwardRef } from 'react';
+
 import styled, { useTheme } from 'styled-components';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';

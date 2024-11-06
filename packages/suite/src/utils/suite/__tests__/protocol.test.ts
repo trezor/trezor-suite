@@ -1,6 +1,7 @@
 import { testMocks } from '@suite-common/test-utils';
 
 import { getProtocolInfo } from 'src/utils/suite/protocol';
+
 import * as fixtures from '../__fixtures__/protocol';
 
 jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());

@@ -1,8 +1,11 @@
 import { ReactNode } from 'react';
-import styled from 'styled-components';
 import FocusLock from 'react-focus-lock';
-import { zIndices, spacings } from '@trezor/theme';
 import { createPortal } from 'react-dom';
+
+import styled from 'styled-components';
+
+import { zIndices, spacings } from '@trezor/theme';
+
 
 import { NewModalAlignment } from './types';
 import { mapAlignmentToAlignItems, mapAlignmentToJustifyContent } from './utils';

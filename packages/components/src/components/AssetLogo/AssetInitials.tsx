@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
+
 import {
     borders,
     Elevation,
@@ -7,6 +7,8 @@ import {
     mapElevationToBorder,
     spacingsPx,
 } from '@trezor/theme';
+
+import { ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 import { Text } from '../typography/Text/Text';
 import { Tooltip } from '../Tooltip/Tooltip';
 

@@ -1,6 +1,8 @@
-import type { Account } from 'src/types/wallet';
 import type { BuyTrade, SellFiatTrade, ExchangeTrade, FiatCurrencyCode } from 'invity-api';
+
 import type { FlagProps } from '@trezor/components';
+
+import type { Account } from 'src/types/wallet';
 
 type CommonTrade = {
     date: string;

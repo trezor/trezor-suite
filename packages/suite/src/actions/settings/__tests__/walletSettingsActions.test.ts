@@ -3,6 +3,7 @@ import { testMocks } from '@suite-common/test-utils';
 import { configureStore } from 'src/support/tests/configureStore';
 import settingsReducer from 'src/reducers/wallet/settingsReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
+
 import fixtures from '../__fixtures__/walletSettings';
 
 const getInitialState = (settings?: any) => ({

@@ -1,4 +1,7 @@
+import { ReactNode } from 'react';
+
 import styled, { useTheme } from 'styled-components';
+
 import {
     Column,
     Row,
@@ -9,7 +12,6 @@ import {
     IconVariant,
     IconName,
 } from '@trezor/components';
-import { ReactNode } from 'react';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 type IconCircleWrapperProps = {

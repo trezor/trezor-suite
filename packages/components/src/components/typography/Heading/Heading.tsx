@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { Color, TypographyStyle } from '@trezor/theme';
+
 import {
     FrameProps,
     FramePropsKeys,

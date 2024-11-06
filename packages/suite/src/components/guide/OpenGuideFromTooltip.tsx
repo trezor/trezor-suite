@@ -1,11 +1,13 @@
 import { MouseEvent } from 'react';
+
 import styled, { useTheme } from 'styled-components';
 import { transparentize } from 'polished';
 
 import { borders, spacingsPx, typography } from '@trezor/theme';
+import { Icon } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { useGuideOpenNode } from 'src/hooks/guide';
-import { Icon } from '@trezor/components';
 
 const OpenGuideLink = styled.span`
     display: flex;

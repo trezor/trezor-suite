@@ -1,10 +1,12 @@
 import React from 'react';
 
+import styled from 'styled-components';
+
 import { TrezorDevice } from '@suite-common/suite-types';
 import { variables } from '@trezor/components';
 import { RotateDeviceImage } from '@trezor/product-components';
+
 import { Translation } from 'src/components/suite';
-import styled from 'styled-components';
 
 const Confirmed = styled.div`
     display: flex;

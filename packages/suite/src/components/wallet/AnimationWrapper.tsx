@@ -1,4 +1,5 @@
 import { ReactNode, ReactText } from 'react';
+
 import { AnimatePresence, motion } from 'framer-motion';
 
 interface AnimationWrapperProps {

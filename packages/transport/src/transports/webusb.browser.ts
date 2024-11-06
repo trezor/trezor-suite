@@ -1,7 +1,6 @@
 import { AbstractTransportMethodParams, AbstractTransportParams } from './abstract';
 import { AbstractApiTransport } from './abstractApi';
 import { UsbApi } from '../api/usb';
-
 import { BrowserSessionsBackground } from '../sessions/background-browser';
 
 const defaultSessionsBackgroundUrl =

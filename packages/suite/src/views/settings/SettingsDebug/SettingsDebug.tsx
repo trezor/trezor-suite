@@ -1,6 +1,8 @@
 import { isDesktop, isWeb } from '@trezor/env-utils';
 
 import { SettingsSection, SettingsLayout } from 'src/components/settings';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { useSelector } from 'src/hooks/suite';
 
 import { TranslationMode } from './TranslationMode';
 import { GithubIssue } from './GithubIssue';
@@ -17,8 +19,6 @@ import { TransportBackends } from './TransportBackends';
 import { ViewOnlySettings } from './ViewOnlySettings';
 import { TriggerHighlight } from './TriggerHighlight';
 import { Backends } from './Backends';
-import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
-import { useSelector } from 'src/hooks/suite';
 import { PreField } from './PreField';
 import { Tor } from './Tor';
 

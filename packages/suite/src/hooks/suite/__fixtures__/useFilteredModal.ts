@@ -1,4 +1,5 @@
 import { MODAL } from 'src/actions/suite/constants';
+
 import { useFilteredModal } from '../useFilteredModal';
 
 export const filters: Parameters<typeof useFilteredModal>[] = [

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+
 import {
     Radio,
     Paragraph,
@@ -10,9 +10,12 @@ import {
     Card,
     Text,
 } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { spacings } from '@trezor/theme';
+
 
 /**
  * A Modal that allows user to set the `safety_checks` feature of connected Trezor.

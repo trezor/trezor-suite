@@ -1,6 +1,8 @@
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
 import { TranslationKey } from '@suite-common/intl-types';
+
 import { Translation } from 'src/components/suite/Translation';
 
 const StyledBalanceContainer = styled.div`

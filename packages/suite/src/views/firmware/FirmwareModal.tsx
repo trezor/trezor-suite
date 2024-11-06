@@ -1,5 +1,6 @@
 import { ReactElement } from 'react';
 import { useIntl } from 'react-intl';
+
 import styled from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';

@@ -1,10 +1,12 @@
 import { useState, ReactNode } from 'react';
 import { DateRange } from 'react-date-range';
+
 import styled, { css } from 'styled-components';
+import type { Locale } from 'date-fns';
+
 import { mediaQueries } from '@trezor/styles';
 import { borders, spacingsPx, zIndices } from '@trezor/theme';
 
-import type { Locale } from 'date-fns';
 
 import { Button } from '../buttons/Button/Button';
 

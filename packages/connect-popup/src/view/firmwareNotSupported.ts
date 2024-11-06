@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/firmwareNotSupported.js
 
 import { UiRequestUnexpectedDeviceMode } from '@trezor/connect';
+
 import { showView } from './common';
 
 export const firmwareNotSupported = (device: UiRequestUnexpectedDeviceMode['payload']) => {

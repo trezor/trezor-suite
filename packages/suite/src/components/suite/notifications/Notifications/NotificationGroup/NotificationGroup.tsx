@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 
 import { variables, Paragraph } from '@trezor/components';
+
 import { AppState } from 'src/types/suite';
 import { Translation } from 'src/components/suite';
 import { getSeenAndUnseenNotifications } from 'src/utils/suite/notification';
+
 import { NotificationList } from './NotificationList/NotificationList';
 
 const SectionHeadline = styled.div`

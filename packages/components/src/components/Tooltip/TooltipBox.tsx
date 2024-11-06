@@ -1,6 +1,9 @@
 import { ReactElement, ReactNode } from 'react';
-import { borders, palette, spacings, spacingsPx, typography } from '@trezor/theme';
+
 import styled from 'styled-components';
+
+import { borders, palette, spacings, spacingsPx, typography } from '@trezor/theme';
+
 import { Icon, IconName } from '../Icon/Icon';
 
 export const TOOLTIP_BORDER_RADIUS = borders.radii.sm;

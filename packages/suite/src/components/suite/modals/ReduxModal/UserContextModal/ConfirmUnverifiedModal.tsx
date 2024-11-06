@@ -1,12 +1,15 @@
+import { useEffect } from 'react';
+
+import { Button, H3, NewModal, Paragraph } from '@trezor/components';
+import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
+
 import { Translation } from 'src/components/suite';
 import { TranslationKey } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { Dispatch, GetState } from 'src/types/suite';
-import { Button, H3, NewModal, Paragraph } from '@trezor/components';
 import { onCancel } from 'src/actions/suite/modalActions';
-import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useEffect } from 'react';
+
 
 interface ConfirmUnverifiedModalProps {
     action: {

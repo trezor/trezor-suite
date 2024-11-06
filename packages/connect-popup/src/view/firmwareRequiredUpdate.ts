@@ -2,6 +2,7 @@
 
 import { UiRequestUnexpectedDeviceMode } from '@trezor/connect';
 import { SUITE_FIRMWARE_URL } from '@trezor/urls';
+
 import { showView } from './common';
 
 export const firmwareRequiredUpdate = (device: UiRequestUnexpectedDeviceMode['payload']) => {

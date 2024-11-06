@@ -1,6 +1,6 @@
 import { configureStore } from 'src/support/tests/configureStore';
-
 import formDraftReducer, { FormDraftState } from 'src/reducers/wallet/formDraftReducer';
+
 import * as formDraftActions from '../formDraftActions';
 
 const getInitialState = (state?: FormDraftState) => ({

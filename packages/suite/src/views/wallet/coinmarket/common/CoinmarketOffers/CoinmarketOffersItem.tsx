@@ -1,8 +1,11 @@
 import styled, { useTheme } from 'styled-components';
+import { SellFiatTrade } from 'invity-api';
+
 import { Badge, Button, Card, Row, Text } from '@trezor/components';
-import { Translation } from 'src/components/suite';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+
+import { Translation } from 'src/components/suite';
 import { CoinmarketTradeDetailMapProps } from 'src/types/coinmarket/coinmarket';
 import {
     getCryptoQuoteAmountProps,
@@ -12,7 +15,6 @@ import {
     isCoinmarketSellContext,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { SellFiatTrade } from 'invity-api';
 import { CoinmarketUtilsKyc } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsKyc';
 import { CoinmarketTestWrapper } from 'src/views/wallet/coinmarket';
 import { CoinmarketUtilsPrice } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsPrice';

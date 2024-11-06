@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+
 import { useSelector } from 'src/hooks/suite';
 import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';

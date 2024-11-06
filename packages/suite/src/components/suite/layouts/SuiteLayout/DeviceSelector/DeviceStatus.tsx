@@ -1,14 +1,16 @@
+import { MouseEventHandler } from 'react';
+
 import styled from 'styled-components';
 
 import { DeviceModelInternal } from '@trezor/connect';
-import { DeviceDetail } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceDetail';
-import { MouseEventHandler } from 'react';
-import { TrezorDevice } from 'src/types/suite';
 import { spacings } from '@trezor/theme';
 import { Row } from '@trezor/components';
 import { RotateDeviceImage } from '@trezor/product-components';
-import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
 import { selectDeviceLabelOrNameById } from '@suite-common/wallet-core';
+
+import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
+import { TrezorDevice } from 'src/types/suite';
+import { DeviceDetail } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceDetail';
 import { useSelector } from 'src/hooks/suite';
 
 type DeviceStatusProps = {

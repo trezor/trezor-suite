@@ -1,8 +1,6 @@
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
-import { Translation, FormattedCryptoAmount, FiatValue, FormattedDate } from 'src/components/suite';
-import { AmountRow } from './AmountRow';
-import { WalletAccountTransaction } from 'src/types/wallet';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     formatAmount,
@@ -17,14 +15,19 @@ import {
     isStakeTypeTx,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
-import { useSelector } from 'src/hooks/suite';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import {
     selectHistoricFiatRates,
     selectHistoricFiatRatesByTimestamp,
 } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+
+import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
+import { useSelector } from 'src/hooks/suite';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { WalletAccountTransaction } from 'src/types/wallet';
+import { Translation, FormattedCryptoAmount, FiatValue, FormattedDate } from 'src/components/suite';
+
+import { AmountRow } from './AmountRow';
 
 const MainContainer = styled.div`
     display: flex;

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
+import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+
 import {
     onboardingShouldLoad,
     dashboardShouldLoad,
@@ -30,7 +32,6 @@ import {
     clearInput,
 } from './utils/shortcuts';
 import { interceptInvityApi } from './utils/intercept-invity-api';
-import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
 import { EventPayload, Requests } from './types';
 
 const command = require('cypress-image-snapshot/command');

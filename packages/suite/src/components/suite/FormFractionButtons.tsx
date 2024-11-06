@@ -1,9 +1,11 @@
 import styled from 'styled-components';
-import { Translation } from 'src/components/suite';
+
 import { Button, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { MIN_ETH_AMOUNT_FOR_STAKING } from '@suite-common/wallet-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+
+import { Translation } from 'src/components/suite';
 
 const Flex = styled.div`
     display: flex;

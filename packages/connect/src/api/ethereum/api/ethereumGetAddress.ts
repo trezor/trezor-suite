@@ -1,5 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumGetAddress.js
 
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import { validatePath, getSerializedPath, getSlip44ByPath } from '../../../utils/pathUtils';
@@ -14,7 +16,6 @@ import {
     decodeEthereumDefinition,
     ethereumNetworkInfoFromDefinition,
 } from '../ethereumDefinitions';
-import { Assert } from '@trezor/schema-utils';
 import { Bundle } from '../../../types';
 import { GetAddress as GetAddressSchema } from '../../../types/api/getAddress';
 

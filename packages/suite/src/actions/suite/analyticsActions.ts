@@ -3,10 +3,7 @@
  * @docs docs/misc/analytics.md
  */
 
-import { allowSentryReport, setSentryUser } from 'src/utils/suite/sentry';
 import { getEnvironment, getCommitHash, isCodesignBuild } from '@trezor/env-utils';
-import type { Dispatch, GetState } from 'src/types/suite';
-
 import {
     analyticsActions,
     selectHasUserAllowedTracking,
@@ -16,6 +13,9 @@ import {
 } from '@suite-common/analytics';
 import { getTrackingRandomId } from '@trezor/analytics';
 import { analytics, EventType } from '@trezor/suite-analytics';
+
+import type { Dispatch, GetState } from 'src/types/suite';
+import { allowSentryReport, setSentryUser } from 'src/utils/suite/sentry';
 
 export const enableAnalyticsThunk = () => (dispatch: Dispatch) => {
     analytics.report({ type: EventType.SettingsAnalytics, payload: { value: true } });

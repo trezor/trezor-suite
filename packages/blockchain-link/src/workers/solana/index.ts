@@ -1,3 +1,5 @@
+import { Connection, Message, PublicKey, SendTransactionError } from '@solana/web3.js';
+
 import type {
     Response,
     AccountInfo,
@@ -13,20 +15,19 @@ import type {
 } from '@trezor/blockchain-link-types/src/solana';
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { Connection, Message, PublicKey, SendTransactionError } from '@solana/web3.js';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 import { createLazy } from '@trezor/utils';
-
 import {
     transformTokenInfo,
     TOKEN_PROGRAM_PUBLIC_KEY,
 } from '@trezor/blockchain-link-utils/src/solana';
+import { getSuiteVersion } from '@trezor/env-utils';
+
 import { TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
 import { getBaseFee, getPriorityFee } from './fee';
 import { confirmTransactionWithResubmit } from './transactionConfirmation';
-import { getSuiteVersion } from '@trezor/env-utils';
+import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 
 export type SolanaAPI = Connection;
 

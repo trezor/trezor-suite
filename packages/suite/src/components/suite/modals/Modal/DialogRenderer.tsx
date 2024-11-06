@@ -1,7 +1,10 @@
-import { DialogModal as BaseDialogModal, DialogModalProps } from '@trezor/components';
 import { ReactPortal } from 'react';
 import { createPortal } from 'react-dom';
+
+import { DialogModal as BaseDialogModal, DialogModalProps } from '@trezor/components';
+
 import { useModalTarget } from 'src/support/suite/ModalContext';
+
 import { ModalEnvironment } from '../ModalEnvironment';
 import { ModalProps, Modal } from './Modal';
 

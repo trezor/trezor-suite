@@ -1,6 +1,9 @@
 import { ReactNode, MouseEvent } from 'react';
+
 import styled, { css } from 'styled-components';
+
 import { TypographyStyle, spacingsPx, typography, typographyStylesBase } from '@trezor/theme';
+
 import { Icon, IconName } from '../../Icon/Icon';
 
 type AProps = {

@@ -1,3 +1,5 @@
+import { DeviceModelInternal } from '@trezor/connect';
+
 import {
     dataUrlToImage,
     fileToArrayBuffer,
@@ -8,8 +10,8 @@ import {
     isValidImageSize,
     isValidImageWidth,
 } from 'src/utils/suite/homescreen';
+
 import * as fixtures from '../__fixtures__/homescreen';
-import { DeviceModelInternal } from '@trezor/connect';
 
 describe('homescreen', () => {
     describe('fileToDataUrl', () => {

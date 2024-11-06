@@ -3,8 +3,9 @@ import { AddressDisplayOptions, StakeType, ReviewOutput } from '@suite-common/wa
 
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useSelector } from './useSelector';
 import { DisplayMode } from 'src/types/suite';
+
+import { useSelector } from './useSelector';
 
 type UseDisplayModeProps = {
     type: ReviewOutput['type'];

@@ -1,5 +1,7 @@
 import React, { forwardRef, useEffect, useState } from 'react';
+
 import styled, { css, keyframes, useTheme } from 'styled-components';
+
 import {
     borders,
     spacings,
@@ -9,6 +11,7 @@ import {
     mapElevationToBackground,
     nextElevation,
 } from '@trezor/theme';
+
 import type { Coords } from './getAdjustedCoords';
 import { menuStyle } from './menuStyle';
 import { useElevation } from '../ElevationContext/ElevationContext';

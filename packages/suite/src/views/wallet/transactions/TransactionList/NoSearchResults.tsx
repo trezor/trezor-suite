@@ -1,9 +1,12 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
+
 import { Card, Column, variables } from '@trezor/components';
-import { Translation } from 'src/components/suite';
 import { getWeakRandomNumberInRange } from '@trezor/utils';
 import { typography } from '@trezor/theme';
+
+import { Translation } from 'src/components/suite';
 
 const NoResults = styled.div`
     text-align: center;

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+
 import styled from 'styled-components';
 import useDebounce from 'react-use/lib/useDebounce';
 
@@ -12,19 +13,21 @@ import {
     groupTransactionsByDate,
     isPending,
 } from '@suite-common/wallet-utils';
+import { getTxsPerPage } from '@suite-common/suite-utils';
+import { SkeletonStack } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
-import { TransactionListActions } from './TransactionListActions/TransactionListActions';
 import { Pagination } from 'src/components/wallet';
+import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
+import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
+
+import { TransactionListActions } from './TransactionListActions/TransactionListActions';
 import { SkeletonTransactionItem } from './SkeletonTransactionItem';
 import { NoSearchResults } from './NoSearchResults';
-import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
 import { TransactionCandidates } from './TransactionCandidates';
-import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
-import { getTxsPerPage } from '@suite-common/suite-utils';
-import { SkeletonStack } from '@trezor/components';
 import { PendingGroupHeader } from './TransactionsGroup/PendingGroupHeader';
 import { TransactionGroupedList } from './TransactionGroupedList';
 

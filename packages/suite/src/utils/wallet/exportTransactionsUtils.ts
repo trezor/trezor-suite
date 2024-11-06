@@ -15,7 +15,6 @@ import {
 } from '@suite-common/wallet-types';
 import { TransactionTarget } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-
 import {
     formatAmount,
     formatNetworkAmount,

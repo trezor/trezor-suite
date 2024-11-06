@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

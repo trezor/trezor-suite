@@ -1,5 +1,7 @@
 import { test, chromium, Page } from '@playwright/test';
+
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+
 import { setConnectSettings, waitAndClick } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';

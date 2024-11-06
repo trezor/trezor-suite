@@ -3,6 +3,7 @@ import { execSync } from 'child_process';
 import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
+
 import { version } from '../package.json';
 
 const COMMON_DATA_SRC = '../../packages/connect-common/files';

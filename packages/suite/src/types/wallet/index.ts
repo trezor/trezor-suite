@@ -5,6 +5,8 @@ import {
     stakeActions,
     sendFormActions,
 } from '@suite-common/wallet-core';
+import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
+
 import { ReceiveAction } from 'src/actions/wallet/receiveActions';
 import { SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
 import { CoinmarketBuyAction } from 'src/actions/wallet/coinmarketBuyActions';
@@ -18,7 +20,6 @@ import { CardanoStakingAction } from 'src/actions/wallet/cardanoStakingActions';
 import { CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions';
 import { CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
 import { CoinmarketInfoAction } from 'src/actions/wallet/coinmarketInfoActions';
-import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
 
 // reexport
 export type { Icon } from './iconTypes';

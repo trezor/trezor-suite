@@ -1,18 +1,19 @@
 import styled from 'styled-components';
+
 import { variables, Column } from '@trezor/components';
 import * as deviceUtils from '@suite-common/suite-utils';
-
 import { selectDevice, selectDeviceThunk, acquireDevice } from '@suite-common/wallet-core';
+import { spacings } from '@trezor/theme';
+
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
+import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 
 import { WalletInstance } from './WalletInstance';
 import { AddWalletButton } from './AddWalletButton';
-
-import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
-import { spacings } from '@trezor/theme';
 import { CardWithDevice } from '../CardWithDevice';
 import { DeviceWarning } from './DeviceWarning';
-import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
+
 
 const WalletsWrapper = styled.div<{ $enabled: boolean }>`
     opacity: ${({ $enabled }) => ($enabled ? 1 : 0.5)};

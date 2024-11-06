@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+
 import { Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { CoinLogo } from '@trezor/product-components';

@@ -1,19 +1,23 @@
 import { useCallback, useEffect, useState } from 'react';
+
 import styled from 'styled-components';
+
 import { selectDevice } from '@suite-common/wallet-core';
+import { Button, Divider, Text } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/connect';
+
 import * as STEP from 'src/constants/onboarding/steps';
 import { OnboardingButtonBack, OptionsWrapper, OnboardingStepBox } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector, useOnboarding, useDevice } from 'src/hooks/suite';
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
-import { Button, Divider, Text } from '@trezor/components';
+
 import {
     SelectBackupType,
     getDefaultBackupType,
     isShamirBackupType,
 } from './SelectBackupType/SelectBackupType';
-import { DeviceModelInternal } from '@trezor/connect';
 import { BackupType } from '../../../reducers/onboarding/onboardingReducer';
 
 const SelectWrapper = styled.div`

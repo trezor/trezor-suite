@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+
 import { waitAndClick } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';

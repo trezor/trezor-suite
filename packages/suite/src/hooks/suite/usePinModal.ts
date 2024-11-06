@@ -1,5 +1,6 @@
 import { ButtonRequest } from '@suite-common/suite-types';
 import { selectDeviceButtonRequests } from '@suite-common/wallet-core';
+
 import { useSelector } from 'src/hooks/suite';
 
 const NEW_PIN_REQUEST_TYPES = ['PinMatrixRequestType_NewFirst', 'PinMatrixRequestType_NewSecond'];

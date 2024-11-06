@@ -1,12 +1,16 @@
+import React, { MouseEventHandler } from 'react';
+
 import * as deviceUtils from '@suite-common/suite-utils';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
-import React, { MouseEventHandler } from 'react';
+import { TrezorDevice } from '@suite-common/suite-types';
+
 import { Translation } from 'src/components/suite';
-import { DeviceConnectionText } from './DeviceConnectionText';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { useSelector } from 'src/hooks/suite';
 import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
-import { TrezorDevice } from '@suite-common/suite-types';
+
+import { DeviceConnectionText } from './DeviceConnectionText';
+
 
 type DeviceStatusTextProps = {
     onRefreshClick?: MouseEventHandler;

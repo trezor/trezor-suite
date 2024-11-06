@@ -1,9 +1,12 @@
-import { selectDevice } from '@suite-common/wallet-core';
 import { useEvent } from 'react-use';
+
+import { selectDevice } from '@suite-common/wallet-core';
+import { KEYBOARD_CODE } from '@trezor/components';
+
 import { closeModalApp, goto } from 'src/actions/suite/routerActions';
 import { addWalletThunk } from 'src/actions/wallet/addWalletThunk';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { KEYBOARD_CODE } from '@trezor/components';
+
 
 export const useAppShortcuts = () => {
     const selectedDevice = useSelector(selectDevice);

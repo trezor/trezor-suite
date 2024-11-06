@@ -3,13 +3,14 @@ import { useEffect } from 'react';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Banner } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { useCardanoStaking, getReasonForDisabledAction } from 'src/hooks/wallet/useCardanoStaking';
-import { CardanoActionPending } from './CardanoActionPending';
 import { Account } from 'src/types/wallet';
 
+import { CardanoActionPending } from './CardanoActionPending';
 import { DeviceButton } from './DeviceButton';
 import {
     Title,
@@ -22,7 +23,6 @@ import {
     Content,
     StyledH2,
 } from './CardanoPrimitives';
-import { spacings } from '@trezor/theme';
 
 interface CardanoStakeProps {
     account: Account;

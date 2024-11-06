@@ -1,5 +1,7 @@
-import { SpacingValues } from '@trezor/theme';
 import styled from 'styled-components';
+
+import { SpacingValues } from '@trezor/theme';
+
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 

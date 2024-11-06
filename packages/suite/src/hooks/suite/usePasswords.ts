@@ -5,7 +5,6 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { useSelector, useDispatch } from 'src/hooks/suite';
 import * as metadataProviderActions from 'src/actions/suite/metadataProviderActions';
 import * as metadataPasswordsActions from 'src/actions/suite/metadataPasswordsActions';
-
 import type { PasswordEntry } from 'src/types/suite/metadata';
 import {
     selectPasswordManagerState,

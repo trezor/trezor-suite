@@ -1,10 +1,13 @@
-import { variables, Icon, Link, Image, Row } from '@trezor/components';
 import { useState, useRef } from 'react';
+
 import styled, { css } from 'styled-components';
+
+import { variables, Icon, Link, Image, Row } from '@trezor/components';
 import { useOnClickOutside } from '@trezor/react-utils';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
-import { Translation } from 'src/components/suite';
 import { borders, spacings, spacingsPx, zIndices } from '@trezor/theme';
+
+import { Translation } from 'src/components/suite';
 import { CoinmarketFooterLogoWrapper } from 'src/views/wallet/coinmarket';
 import { CoinmarketProvidedByInvity } from 'src/views/wallet/coinmarket/common/CoinmarketFooter/CoinmarketProvidedByInvity';
 

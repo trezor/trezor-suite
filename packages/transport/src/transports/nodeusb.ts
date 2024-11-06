@@ -1,4 +1,5 @@
 import { WebUSB } from 'usb';
+
 import { AbstractTransportParams } from './abstract';
 import { AbstractApiTransport } from './abstractApi';
 import { UsbApi } from '../api/usb';

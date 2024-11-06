@@ -1,15 +1,17 @@
 import { Paragraph, Column } from '@trezor/components';
 import { Bip43PathTemplate, AccountType, NetworkType } from '@suite-common/wallet-config';
-import { Translation } from 'src/components/suite';
 import {
     getAccountTypeDesc,
     getAccountTypeUrl,
     getTitleForNetwork,
 } from '@suite-common/wallet-utils';
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { useTranslation } from 'src/hooks/suite';
 import { spacings } from '@trezor/theme';
 import { Account } from '@suite-common/wallet-types';
+
+import { Translation } from 'src/components/suite';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { useTranslation } from 'src/hooks/suite';
+
 
 interface AccountTypeDescriptionProps {
     bip43Path: Bip43PathTemplate;

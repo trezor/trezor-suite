@@ -1,23 +1,25 @@
 import { memo, useMemo } from 'react';
+
 import styled from 'styled-components';
 
 import { Dropdown, Card, Tooltip, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { getTotalFiatBalance } from '@suite-common/wallet-utils';
+import { selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+
 import { GraphScaleDropdownItem, GraphSkeleton, Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useFastAccounts } from 'src/hooks/wallet';
 import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
-import { getTotalFiatBalance } from '@suite-common/wallet-utils';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 import { PortfolioCardHeader } from './PortfolioCardHeader';
 import { PortfolioCardException } from './PortfolioCardException';
 import { EmptyWallet } from './EmptyWallet';
 import { DashboardGraph } from './DashboardGraph';
-import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledDropdown = styled(Dropdown)`

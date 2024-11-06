@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useDiscovery, useSelector } from 'src/hooks/suite';
+
 import { selectDeviceDiscovery } from '@suite-common/wallet-core';
+
+import { useDiscovery, useSelector } from 'src/hooks/suite';
 
 export const useRediscoveryNeeded = () => {
     const [isRediscoveryNeeded, setIsRediscoveryNeeded] = useState(false);

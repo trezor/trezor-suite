@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+
 import styled from 'styled-components';
 
 import { Account } from '@suite-common/wallet-types';
-import { Translation, TrezorLink } from 'src/components/suite';
-import { Error } from 'src/components/suite/Error';
 import {
     Button,
     Card,
@@ -18,12 +16,17 @@ import {
 } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { DATA_TOS_URL, ZKSNACKS_TERMS_URL } from '@trezor/urls';
+
+import { Error } from 'src/components/suite/Error';
+import { Translation, TrezorLink } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { startCoinjoinSession } from 'src/actions/wallet/coinjoinAccountActions';
 import {
     selectCoinjoinClient,
     selectStartCoinjoinSessionArguments,
 } from 'src/reducers/wallet/coinjoinReducer';
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
+
 import { Tile, TileProps } from './Tile';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

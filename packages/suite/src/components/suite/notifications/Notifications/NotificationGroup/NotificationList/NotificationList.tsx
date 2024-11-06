@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
 import { NotificationRenderer } from 'src/components/suite';
-import { NotificationView } from './NotificationView';
 import type { AppState } from 'src/types/suite';
+
+import { NotificationView } from './NotificationView';
 
 const Wrapper = styled.div`
     display: flex;

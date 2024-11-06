@@ -1,6 +1,7 @@
 import type { Socket as TCPSocket } from 'net';
 import type { TLSSocket } from 'tls';
 import type { SocksProxyAgent } from 'socks-proxy-agent';
+
 import type { ISocket, SocketListener } from './interface';
 
 const TIMEOUT = 10000;

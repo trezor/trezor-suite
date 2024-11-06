@@ -1,7 +1,9 @@
+import { CryptoId } from 'invity-api';
+
 import { Account } from '@suite-common/wallet-types';
 import { Column, Row, InfoRow, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { CryptoId } from 'invity-api';
+
 import { AccountLabeling, Translation } from 'src/components/suite';
 import { CoinmarketPayGetLabelType, CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';

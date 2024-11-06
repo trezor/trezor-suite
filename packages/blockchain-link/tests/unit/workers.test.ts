@@ -1,5 +1,6 @@
 /* eslint-disable jest/no-jasmine-globals */
 import TinyWorker from 'tiny-worker';
+
 import BlockchainLink from '../../src';
 
 class BaseMockWorker {

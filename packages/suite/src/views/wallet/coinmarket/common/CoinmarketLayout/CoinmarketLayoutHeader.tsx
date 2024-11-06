@@ -1,7 +1,9 @@
-import { IconButton, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
+
+import { IconButton, Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
 import { useLayout, useSelector, useTranslation } from 'src/hooks/suite';

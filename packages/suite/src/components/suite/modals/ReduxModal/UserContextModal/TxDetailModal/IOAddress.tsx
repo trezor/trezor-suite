@@ -1,8 +1,12 @@
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
-import { Icon, Link, Paragraph } from '@trezor/components';
 import { useState } from 'react';
-import { copyToClipboard } from '@trezor/dom-utils';
+
 import styled, { css, useTheme } from 'styled-components';
+
+import { Icon, Link, Paragraph } from '@trezor/components';
+import { copyToClipboard } from '@trezor/dom-utils';
+
+
+import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 
 const IconWrapper = styled.div`
     display: none;

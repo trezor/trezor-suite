@@ -1,4 +1,5 @@
 import { IconButton } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';

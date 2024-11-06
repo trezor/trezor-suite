@@ -1,4 +1,3 @@
-import { Account } from 'src/types/wallet';
 import {
     BuyListResponse,
     BuyProviderInfo,
@@ -7,13 +6,16 @@ import {
     CryptoId,
     FiatCurrencyCode,
 } from 'invity-api';
+
+import { Account } from 'src/types/wallet';
 import invityAPI from 'src/services/suite/invityAPI';
-import { COINMARKET_BUY, COINMARKET_COMMON } from './constants';
 import { Dispatch } from 'src/types/suite';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { verifyAddress as verifyBuyAddress } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { CoinmarketFiatCurrenciesProps } from 'src/types/coinmarket/coinmarket';
+
+import { COINMARKET_BUY, COINMARKET_COMMON } from './constants';
 
 export interface BuyInfo {
     buyInfo: Omit<BuyListResponse, 'defaultAmountsOfFiatCurrencies'> & {

@@ -1,5 +1,7 @@
 import { HtmlHTMLAttributes } from 'react';
+
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
 
 const StyledSpan = styled.span`

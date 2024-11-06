@@ -1,5 +1,6 @@
-import produce from 'immer';
 import { FieldValues } from 'react-hook-form';
+
+import produce from 'immer';
 
 import { FORM_DRAFT } from 'src/actions/wallet/constants';
 import { Action } from 'src/types/suite';

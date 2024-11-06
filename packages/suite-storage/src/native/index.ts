@@ -7,6 +7,7 @@ import {
     IDBPDatabase,
     IDBPTransaction,
 } from 'idb';
+
 import { StorageMessageEvent } from './types';
 
 export type OnUpgradeFunc<TDBStructure> = (

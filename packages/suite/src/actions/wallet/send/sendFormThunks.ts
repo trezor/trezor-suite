@@ -26,11 +26,12 @@ import {
     selectSelectedAccountKey,
     selectIsSelectedAccountLoaded,
 } from 'src/reducers/wallet/selectedAccountReducer';
-import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from '../moveLabelsForRbfActions';
 import { selectMetadata } from 'src/reducers/suite/metadataReducer';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { RbfLabelsToBeUpdated } from 'src/types/wallet/sendForm';
+
+import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from '../moveLabelsForRbfActions';
 
 export const MODULE_PREFIX = '@send';
 

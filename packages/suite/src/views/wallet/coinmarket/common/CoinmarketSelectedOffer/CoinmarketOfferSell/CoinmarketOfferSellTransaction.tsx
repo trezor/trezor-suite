@@ -1,10 +1,13 @@
 import styled from 'styled-components';
-import { Translation, AccountLabeling } from 'src/components/suite';
+
 import { Button, Spinner } from '@trezor/components';
+import { fontWeights, spacingsPx, typography } from '@trezor/theme';
+
+import { Translation, AccountLabeling } from 'src/components/suite';
 import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
 import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { fontWeights, spacingsPx, typography } from '@trezor/theme';
+
 
 const Wrapper = styled.div`
     display: flex;

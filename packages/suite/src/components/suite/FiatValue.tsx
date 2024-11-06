@@ -1,18 +1,22 @@
 import { ReactElement } from 'react';
+
 import styled from 'styled-components';
-import { HiddenPlaceholder } from 'src/components/suite';
-import { useFormatters } from '@suite-common/formatters';
 import type { FormatNumberOptions } from '@formatjs/intl';
-import {
-    useFiatFromCryptoValue,
-    useFiatFromCryptoValueParams,
-} from 'src/hooks/suite/useFiatFromCryptoValue';
-import { HiddenPlaceholderProps } from './HiddenPlaceholder';
-import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+
+import { useFormatters } from '@suite-common/formatters';
 import { SkeletonRectangle } from '@trezor/components';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
+
+import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+import {
+    useFiatFromCryptoValue,
+    useFiatFromCryptoValueParams,
+} from 'src/hooks/suite/useFiatFromCryptoValue';
+import { HiddenPlaceholder } from 'src/components/suite';
+
+import { HiddenPlaceholderProps } from './HiddenPlaceholder';
 
 const StyledHiddenPlaceholder = styled((props: HiddenPlaceholderProps) => (
     <HiddenPlaceholder {...props} />

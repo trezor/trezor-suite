@@ -16,6 +16,7 @@ import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDeviceInstances } from '@suite-common/suite-utils';
+import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 
 import {
     prepareCoinjoinTransaction,
@@ -33,11 +34,10 @@ import {
     selectRoundsDurationInHours,
     selectCoinjoinAccounts,
 } from 'src/reducers/wallet/coinjoinReducer';
+import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 
 import * as COINJOIN from './constants/coinjoinConstants';
 
-import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
-import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 
 const clientEnable = (symbol: Account['symbol']) =>
     ({

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+
 import { useTranslation } from 'src/hooks/suite';
 import type { Account } from 'src/types/wallet';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';

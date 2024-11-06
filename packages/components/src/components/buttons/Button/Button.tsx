@@ -1,6 +1,9 @@
 import { ButtonHTMLAttributes } from 'react';
+
 import styled, { useTheme } from 'styled-components';
+
 import { borders, CSSColor, Elevation, spacingsPx, typography } from '@trezor/theme';
+
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import {
     ButtonSize,

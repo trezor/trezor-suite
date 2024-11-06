@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
+
 import styled, { css } from 'styled-components';
+
 import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div<{ $size?: string; $isHoverable?: boolean }>`

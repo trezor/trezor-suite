@@ -1,9 +1,13 @@
 import { Provider } from 'react-redux';
-import { configureStore } from 'src/support/tests/configureStore';
+
 import { render } from '@testing-library/react';
+
+import { configureStore } from 'src/support/tests/configureStore';
+import type { State as ModalState } from 'src/reducers/suite/modalReducer';
+
 import { useFilteredModal } from '../useFilteredModal';
 import { filters, fixtures } from '../__fixtures__/useFilteredModal';
-import type { State as ModalState } from 'src/reducers/suite/modalReducer';
+
 
 const mockStore = configureStore<{ modal: ModalState }, any>();
 

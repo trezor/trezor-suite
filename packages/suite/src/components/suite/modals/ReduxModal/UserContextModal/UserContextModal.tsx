@@ -1,3 +1,5 @@
+import { CryptoId } from 'invity-api';
+
 import { onCancel as onCancelAction } from 'src/actions/suite/modalActions';
 import { MODAL } from 'src/actions/suite/constants';
 import { useDispatch } from 'src/hooks/suite';
@@ -42,8 +44,8 @@ import {
     ConfirmUnverifiedProceedModal,
 } from 'src/components/suite/modals';
 import type { AcquiredDevice } from 'src/types/suite';
+
 import type { ReduxModalProps } from '../ReduxModal';
-import { CryptoId } from 'invity-api';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { PassphraseMismatchModal } from './PassphraseMismatchModal';
 import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';

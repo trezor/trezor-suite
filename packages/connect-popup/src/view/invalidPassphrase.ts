@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/invalidPassphrase.js
 
 import { UI, createUiResponse, UiRequestDeviceAction } from '@trezor/connect';
+
 import { container, showView, postMessage } from './common';
 
 export const initInvalidPassphraseView = (_payload: UiRequestDeviceAction['payload']) => {

@@ -1,7 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ChangePin.js
 
-import { AbstractMethod } from '../core/AbstractMethod';
 import { Assert } from '@trezor/schema-utils';
+
+import { AbstractMethod } from '../core/AbstractMethod';
 import { PROTO } from '../constants';
 
 export default class ChangePin extends AbstractMethod<'changePin', PROTO.ChangePin> {

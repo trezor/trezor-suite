@@ -1,6 +1,8 @@
 import { useState, ReactNode, MouseEvent } from 'react';
+
 import { motion } from 'framer-motion';
 import styled, { css } from 'styled-components';
+
 import {
     spacingsPx,
     borders,
@@ -9,6 +11,7 @@ import {
     mapElevationToBorder,
     spacings,
 } from '@trezor/theme';
+
 import { Icon } from '../Icon/Icon';
 import { Row, Column } from '../Flex/Flex';
 import { Text } from '../typography/Text/Text';

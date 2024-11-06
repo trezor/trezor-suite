@@ -1,12 +1,9 @@
 import styled, { useTheme } from 'styled-components';
+import { fromWei } from 'web3-utils';
+
 import { Icon, variables, H3, useElevation } from '@trezor/components';
-import { Translation, FormattedDateWithBullet } from 'src/components/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
 import { Network } from '@suite-common/wallet-config';
 import { getTxIcon, isPending, getFeeUnits, getFeeRate } from '@suite-common/wallet-utils';
-import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
-import { fromWei } from 'web3-utils';
-import { IOAddress } from './IOAddress';
 import {
     Elevation,
     borders,
@@ -17,6 +14,13 @@ import {
     spacings,
 } from '@trezor/theme';
 import { CoinLogo } from '@trezor/product-components';
+
+import { Translation, FormattedDateWithBullet } from 'src/components/suite';
+import { WalletAccountTransaction } from 'src/types/wallet';
+import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
+
+import { IOAddress } from './IOAddress';
+
 
 const Wrapper = styled.div<{ $elevation: Elevation }>`
     background: ${mapElevationToBackground};

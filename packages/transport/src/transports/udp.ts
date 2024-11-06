@@ -1,5 +1,4 @@
 import { AbstractTransportParams } from './abstract';
-
 import { UdpApi } from '../api/udp';
 import { AbstractApiTransport } from './abstractApi';
 

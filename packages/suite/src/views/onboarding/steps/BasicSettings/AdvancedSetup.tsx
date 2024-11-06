@@ -1,12 +1,16 @@
 import { useState, ReactNode } from 'react';
+
 import styled, { useTheme } from 'styled-components';
-import { Translation } from 'src/components/suite';
+
 import { Icon } from '@trezor/components';
-import { useSelector } from 'src/hooks/suite';
 import { isDesktop, isWeb } from '@trezor/env-utils';
-import { TorSection } from './TorSection';
+
+import { useSelector } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
 import { getIsTorEnabled } from 'src/utils/suite/tor';
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
+
+import { TorSection } from './TorSection';
 
 const AdvancedSetupWrapper = styled.div`
     width: 100%;

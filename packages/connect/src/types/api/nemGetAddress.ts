@@ -1,4 +1,5 @@
 import { Static, Type } from '@trezor/schema-utils';
+
 import { GetAddress, Address, Params, BundledParams, Response } from '../params';
 
 export type NEMGetAddress = Static<typeof NEMGetAddress>;

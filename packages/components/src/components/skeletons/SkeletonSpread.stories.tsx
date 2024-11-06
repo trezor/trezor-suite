@@ -1,7 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
+import styled from 'styled-components';
+
 import { SkeletonSpread as SkeletonSpreadComponent, SkeletonSpreadProps } from './SkeletonSpread';
 import { SkeletonCircle } from './SkeletonCircle';
-import styled from 'styled-components';
 import { ElevationContext } from '../ElevationContext/ElevationContext';
 
 const Container = styled.div`

@@ -1,5 +1,7 @@
 import { createContext, useCallback, useState, ReactNode, UIEventHandler } from 'react';
+
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
 
 const Wrapper = styled.div`

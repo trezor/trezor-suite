@@ -1,6 +1,8 @@
 import { BuyProviderInfo } from 'invity-api';
-import { saveTransactionDetailId } from 'src/actions/wallet/coinmarketBuyActions';
+
 import { Button } from '@trezor/components';
+
+import { saveTransactionDetailId } from 'src/actions/wallet/coinmarketBuyActions';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
 import { TradeBuy } from 'src/types/wallet/coinmarketCommonTypes';

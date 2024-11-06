@@ -15,6 +15,7 @@ import {
     EndRoundState,
     WabiSabiProtocolErrorCode,
 } from '@trezor/coinjoin/src/enums';
+
 import type { CoinjoinNetworksConfig } from 'src/services/coinjoin';
 
 export { EndRoundState, WabiSabiProtocolErrorCode };

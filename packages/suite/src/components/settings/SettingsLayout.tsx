@@ -1,4 +1,5 @@
 import { ReactNode, useMemo } from 'react';
+
 import { useDiscovery, useDispatch, useLayout, useSelector } from 'src/hooks/suite';
 import { SettingsLoading } from 'src/views/settings/SettingsLoader';
 import {

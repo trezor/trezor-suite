@@ -3,6 +3,7 @@
 
 import { EventType } from '@trezor/suite-analytics';
 import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
+
 import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 type Requests = ReturnType<typeof urlSearchParams>[];

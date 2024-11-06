@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { TrezorDevice } from 'src/types/suite';
 import { getFormattedFingerprint } from 'src/utils/firmware';
 

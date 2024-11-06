@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
-import { CoinjoinStatusBar } from './CoinjoinStatusBar';
+
 import { useSelector } from 'src/hooks/suite';
+
+import { CoinjoinStatusBar } from './CoinjoinStatusBar';
 
 export const CoinjoinBars = () => {
     const coinjoinAccounts = useSelector(state => state.wallet.coinjoin.accounts);

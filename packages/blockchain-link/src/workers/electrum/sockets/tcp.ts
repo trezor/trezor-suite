@@ -1,4 +1,5 @@
 import { Socket as TCPSocket } from 'net';
+
 import { SocketBase } from './base';
 import type { SocketListener } from './interface';
 

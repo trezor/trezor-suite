@@ -1,8 +1,11 @@
-import type { Account } from 'src/types/wallet';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { CryptoId } from 'invity-api';
 import { UseFormReturn } from 'react-hook-form';
+
+import { CryptoId } from 'invity-api';
+
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountAddress } from '@trezor/connect';
+
+import type { Account } from 'src/types/wallet';
 import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
 
 export interface CoinmarketVerifyFormProps {

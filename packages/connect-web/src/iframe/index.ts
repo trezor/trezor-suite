@@ -6,6 +6,7 @@ import { IFRAME, CoreRequestMessage } from '@trezor/connect/src/events';
 import type { ConnectSettings } from '@trezor/connect/src/types';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
 import { setLogWriter, LogMessage, LogWriter } from '@trezor/connect/src/utils/debug';
+
 import css from './inlineStyles';
 
 export let instance: HTMLIFrameElement | null;

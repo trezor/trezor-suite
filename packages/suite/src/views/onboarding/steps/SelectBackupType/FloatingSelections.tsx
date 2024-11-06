@@ -1,3 +1,7 @@
+import { CSSProperties, forwardRef, useRef } from 'react';
+
+import styled from 'styled-components';
+
 import {
     useElevation,
     Divider,
@@ -15,13 +19,13 @@ import {
     spacingsPx,
     zIndices,
 } from '@trezor/theme';
-import { CSSProperties, forwardRef, useRef } from 'react';
+import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
+
 import { Translation, TrezorLink } from 'src/components/suite';
+
 import { LegacyOptions } from './LegacyOptions';
 import { isShamirBackupType } from './SelectBackupType';
 import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
-import styled from 'styled-components';
-import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 import { ShamirOptions } from './ShamirOptions';
 
 const OptionGroupHeading = styled.div`

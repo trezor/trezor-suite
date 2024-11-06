@@ -1,6 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { accountsReducer, transactionsReducer } from '../../../reducers/wallet';
+
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
+
+import { accountsReducer, transactionsReducer } from '../../../reducers/wallet';
 import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from '../moveLabelsForRbfActions';
 import {
     accountReceivingCoins,

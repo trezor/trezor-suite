@@ -1,5 +1,7 @@
 import { ReactNode, Fragment } from 'react';
+
 import styled, { css, useTheme } from 'styled-components';
+
 import { Icon, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 

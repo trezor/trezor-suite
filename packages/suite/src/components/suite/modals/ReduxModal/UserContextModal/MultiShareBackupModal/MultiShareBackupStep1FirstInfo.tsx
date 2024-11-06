@@ -1,10 +1,12 @@
 import { Dispatch, SetStateAction } from 'react';
+
 import styled from 'styled-components';
 
 import { Checkbox, Image, Paragraph } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
+
 import { Body, Section } from './multiShareModalLayout';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

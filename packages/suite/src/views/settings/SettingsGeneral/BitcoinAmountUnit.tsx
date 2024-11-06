@@ -1,8 +1,8 @@
 import { PROTO } from '@trezor/connect';
+import { UNIT_LABELS, UNIT_OPTIONS } from '@suite-common/suite-constants';
 
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
-import { UNIT_LABELS, UNIT_OPTIONS } from '@suite-common/suite-constants';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 

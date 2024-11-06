@@ -1,9 +1,12 @@
 import { FormattedDate } from 'react-intl';
+
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { useFormatters } from '@suite-common/formatters';
 import { isTestnet, parseTransactionDateKey } from '@suite-common/wallet-utils';
-import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+
+import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
+
 import { ColAmount, ColDate, ColFiat, HeaderWrapper } from './CommonComponents';
 
 interface DayHeaderProps {

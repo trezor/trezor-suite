@@ -1,9 +1,10 @@
 import { ReactNode } from 'react';
 
 import { Button, ButtonProps } from '@trezor/components';
+import { Url } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite';
-import { Url } from '@trezor/urls';
+
 import { useExternalLink } from '../../hooks/suite';
 
 interface LearnMoreButtonProps extends Omit<ButtonProps, 'children'> {

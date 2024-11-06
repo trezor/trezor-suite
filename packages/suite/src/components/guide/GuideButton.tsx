@@ -1,9 +1,11 @@
+import { FreeFocusInside } from 'react-focus-lock';
+
 import styled from 'styled-components';
 
 import { Icon, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBackground, mapElevationToBorder, zIndices } from '@trezor/theme';
+
 import { useGuide } from 'src/hooks/guide';
-import { FreeFocusInside } from 'react-focus-lock';
 
 const Wrapper = styled.button<{ $isGuideOpen: boolean; $elevation: Elevation }>`
     display: flex;

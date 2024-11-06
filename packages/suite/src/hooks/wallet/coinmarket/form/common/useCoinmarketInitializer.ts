@@ -1,5 +1,7 @@
-import { useTimer } from '@trezor/react-utils';
 import { useState } from 'react';
+
+import { useTimer } from '@trezor/react-utils';
+
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from 'src/constants/wallet/coinmarket/metadata';
 import { useDevice } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/coinmarket/useServerEnviroment';

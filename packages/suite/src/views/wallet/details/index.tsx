@@ -2,20 +2,21 @@ import styled from 'styled-components';
 
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Paragraph, variables, Card, Column } from '@trezor/components';
+import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL } from '@trezor/urls';
+import { spacings } from '@trezor/theme';
 
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
-
-import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL } from '@trezor/urls';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { WalletLayout } from 'src/components/wallet';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { AccountTypeDescription } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AccountTypeSelect/AccountTypeDescription';
+import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
+
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
-import { spacings } from '@trezor/theme';
 import { Row } from './Row';
-import { AccountTypeDescription } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AccountTypeSelect/AccountTypeDescription';
-import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
+
 
 const Heading = styled.h3`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};

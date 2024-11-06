@@ -1,7 +1,7 @@
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { Switch } from '@trezor/components';
 
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { Switch } from '@trezor/components';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';

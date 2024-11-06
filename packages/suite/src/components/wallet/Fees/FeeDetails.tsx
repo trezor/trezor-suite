@@ -1,17 +1,19 @@
+import { useState, useEffect } from 'react';
+
 import styled from 'styled-components';
+
 import { spacingsPx, typography } from '@trezor/theme';
 import { FeeLevel } from '@trezor/connect';
-import { Translation } from 'src/components/suite';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { formatDuration } from '@suite-common/suite-utils';
 import { NetworkType } from '@suite-common/wallet-config';
-
-import { useState, useEffect } from 'react';
 import {
     PrecomposedTransaction,
     PrecomposedTransactionCardano,
     FeeInfo,
 } from '@suite-common/wallet-types';
+
+import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`
     display: inline-flex;

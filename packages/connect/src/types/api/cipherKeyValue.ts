@@ -1,5 +1,6 @@
-import { Params, BundledParams, Response, DerivationPath } from '../params';
 import { Static, Type } from '@trezor/schema-utils';
+
+import { Params, BundledParams, Response, DerivationPath } from '../params';
 
 export type CipherKeyValue = Static<typeof CipherKeyValue>;
 export const CipherKeyValue = Type.Object({

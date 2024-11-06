@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { Card } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';

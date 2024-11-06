@@ -1,19 +1,22 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import styled, { useTheme } from 'styled-components';
+
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Badge, Button, Card, Icon, Row, Tooltip, variables } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { selectAccountStakeTransactions } from '@suite-common/wallet-core';
 import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
+
 import { FiatValue, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+
 import { InfoBox, ProgressBar } from './styled';
 import { ProgressLabels } from './ProgressLabels/ProgressLabels';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 import { TrimmedCryptoAmount } from './TrimmedCryptoAmount';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 const AmountsWrapper = styled.div<{ $isStakeOrUnstakePending: boolean }>`
     display: flex;

@@ -1,15 +1,17 @@
 import styled from 'styled-components';
 
-import { Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Image, NewModal, Paragraph } from '@trezor/components';
-import { onCancel } from 'src/actions/suite/modalActions';
 import { Account } from '@suite-common/wallet-types';
 import { networks } from '@suite-common/wallet-config';
-import { TranslationKey } from 'src/components/suite/Translation';
-import { SUITE } from 'src/actions/suite/constants';
 import { spacings } from '@trezor/theme';
 import { CoinLogo } from '@trezor/product-components';
+
+import { Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { onCancel } from 'src/actions/suite/modalActions';
+import { TranslationKey } from 'src/components/suite/Translation';
+import { SUITE } from 'src/actions/suite/constants';
+
 
 const ImageWrapper = styled.div`
     position: relative;

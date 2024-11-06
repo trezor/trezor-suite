@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
 
 import { Account } from '@suite-common/wallet-types';
@@ -8,6 +9,7 @@ import { spacings } from '@trezor/theme';
 import { Icon, Table, Paragraph, Card, Row, Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
+
 import { TokenRow } from './TokenRow';
 
 const IconWrapper = styled.div<{ $isActive: boolean }>`

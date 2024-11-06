@@ -2,6 +2,7 @@ import { ReactSVG } from 'react-svg';
 import { forwardRef, MouseEvent, Ref } from 'react';
 
 import styled, { css, DefaultTheme } from 'styled-components';
+
 import {
     icons as iconsDeprecated,
     IconName as IconNameDeprecated,

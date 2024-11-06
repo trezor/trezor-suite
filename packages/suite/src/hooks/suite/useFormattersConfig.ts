@@ -1,6 +1,7 @@
+import { FormatterProviderConfig } from '@suite-common/formatters';
+
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { FormatterProviderConfig } from '@suite-common/formatters';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 export const useFormattersConfig = (): FormatterProviderConfig => {

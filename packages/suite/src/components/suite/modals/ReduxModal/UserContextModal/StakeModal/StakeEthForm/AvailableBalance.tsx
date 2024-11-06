@@ -1,6 +1,8 @@
 import React from 'react';
+
 import { Paragraph, Column, Text } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+
 import { Translation, FormattedCryptoAmount, FiatValue } from 'src/components/suite';
 
 interface AvailableBalanceProps {

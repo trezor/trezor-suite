@@ -1,5 +1,6 @@
-import { deviceModelInformation } from 'src/utils/suite/homescreen';
 import { DeviceModelInternal } from '@trezor/connect';
+
+import { deviceModelInformation } from 'src/utils/suite/homescreen';
 
 export const isValidImageFormat = [
     {

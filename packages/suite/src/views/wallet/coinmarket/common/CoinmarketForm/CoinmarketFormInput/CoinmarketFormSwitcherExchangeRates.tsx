@@ -1,11 +1,14 @@
+import { UseFormSetValue } from 'react-hook-form';
+
 import styled, { css } from 'styled-components';
+
 import { Radio } from '@trezor/components';
 import { variables } from '@trezor/components/src/config';
-import { Translation } from 'src/components/suite';
 import { borders, spacingsPx } from '@trezor/theme';
-import { CoinmarketExchangeFormProps, RateType } from 'src/types/coinmarket/coinmarketForm';
-import { UseFormSetValue } from 'react-hook-form';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+
+import { Translation } from 'src/components/suite';
+import { CoinmarketExchangeFormProps, RateType } from 'src/types/coinmarket/coinmarketForm';
 import {
     FORM_RATE_FIXED,
     FORM_RATE_FLOATING,

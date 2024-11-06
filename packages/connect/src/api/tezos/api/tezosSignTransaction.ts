@@ -1,12 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/TezosSignTransaction.js
 
+import { AssertWeak } from '@trezor/schema-utils';
+
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import * as helper from '../tezosSignTx';
 import type { PROTO } from '../../../constants';
-import { AssertWeak } from '@trezor/schema-utils';
 import { TezosSignTransaction as TezosSignTransactionSchema } from '../../../types/api/tezos';
 
 export default class TezosSignTransaction extends AbstractMethod<

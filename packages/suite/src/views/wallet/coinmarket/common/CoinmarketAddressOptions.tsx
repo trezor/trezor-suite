@@ -1,22 +1,24 @@
 import { useEffect, ReactElement } from 'react';
 import { UseFormReturn, Control, Controller } from 'react-hook-form';
 import type { MenuPlacement } from 'react-select';
+
 import styled from 'styled-components';
+import { CryptoId } from 'invity-api';
 
 import type { AccountAddress } from '@trezor/connect';
-import { Translation } from 'src/components/suite';
 import { variables, Select } from '@trezor/components';
+import { spacingsPx, typography } from '@trezor/theme';
+import { formatAmount } from '@suite-common/wallet-utils';
+import { networks } from '@suite-common/wallet-config';
+
+import { Translation } from 'src/components/suite';
 import type { Account } from 'src/types/wallet';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { useSelector } from 'src/hooks/suite';
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
-import { spacingsPx, typography } from '@trezor/theme';
-import { formatAmount } from '@suite-common/wallet-utils';
 import { getCoinmarketNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { networks } from '@suite-common/wallet-config';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { CryptoId } from 'invity-api';
 import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/coinmarket/form';

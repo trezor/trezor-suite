@@ -1,8 +1,11 @@
 import { ReactNode, useLayoutEffect, useRef, useState } from 'react';
+
 import styled, { css } from 'styled-components';
+
+import { RedactNumbersContext } from '@suite-common/wallet-utils';
+
 import { useSelector } from 'src/hooks/suite';
 import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
-import { RedactNumbersContext } from '@suite-common/wallet-utils';
 
 type WrapperProps = {
     $intensity: number;

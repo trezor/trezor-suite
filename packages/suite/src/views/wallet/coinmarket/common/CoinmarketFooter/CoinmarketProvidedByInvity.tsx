@@ -1,7 +1,9 @@
 import styled from 'styled-components';
-import { Translation } from 'src/components/suite';
+
 import { INVITY_URL } from '@trezor/urls';
 import { variables, Link, Image } from '@trezor/components';
+
+import { Translation } from 'src/components/suite';
 import { CoinmarketFooterLogoWrapper } from 'src/views/wallet/coinmarket';
 
 const Wrapper = styled.div`

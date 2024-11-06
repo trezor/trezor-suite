@@ -1,7 +1,8 @@
-import { NotificationCard, Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { tryGetAccountIdentity, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+
+import { NotificationCard, Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useBackendReconnection } from 'src/hooks/settings/backends';
 
 const DisconnectedNotification = ({

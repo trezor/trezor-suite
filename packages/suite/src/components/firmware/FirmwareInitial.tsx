@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
 
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
@@ -8,14 +9,15 @@ import { AcquiredDevice } from '@suite-common/suite-types';
 import { getFirmwareVersion, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/connect';
 import { selectDevices } from '@suite-common/wallet-core';
+import { spacingsPx } from '@trezor/theme';
 
 import { OnboardingStepBox, OnboardingButtonSkip } from 'src/components/onboarding';
-import { PrerequisitesGuide, Translation } from '../suite';
 import { useDevice, useFirmware, useOnboarding, useSelector } from 'src/hooks/suite';
 import { FirmwareInstallButton, FirmwareOffer } from 'src/components/firmware';
+
+import { PrerequisitesGuide, Translation } from '../suite';
 import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
 import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';
-import { spacingsPx } from '@trezor/theme';
 
 const Description = styled.div`
     align-items: center;

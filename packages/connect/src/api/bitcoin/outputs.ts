@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/outputs.js
 
 import { ComposeOutput as ComposeOutputBase } from '@trezor/utxo-lib';
+
 import { getOutputScriptType, fixPath, getHDPath } from '../../utils/pathUtils';
 import { isValidAddress } from '../../utils/addressUtils';
 import { convertMultisigPubKey } from '../../utils/hdnodeUtils';

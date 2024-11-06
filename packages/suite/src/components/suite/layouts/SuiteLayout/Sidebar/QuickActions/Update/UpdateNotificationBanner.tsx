@@ -1,6 +1,10 @@
+import { MouseEvent } from 'react';
+
 import styled from 'styled-components';
+
 import { Column, ElevationContext, Icon, Row, Text } from '@trezor/components';
 import { borders, Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
+
 import {
     UpdateStatus,
     UpdateStatusSuite,
@@ -10,7 +14,6 @@ import {
 } from './updateQuickActionTypes';
 import { Translation, TranslationKey } from '../../../../../Translation';
 import { useDispatch } from '../../../../../../../hooks/suite';
-import { MouseEvent } from 'react';
 
 type ContainerProps = { $elevation: Elevation };
 

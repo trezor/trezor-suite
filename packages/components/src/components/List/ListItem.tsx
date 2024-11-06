@@ -1,6 +1,9 @@
 import { useEffect, useRef } from 'react';
-import { SpacingValues, spacingsPx, borders } from '@trezor/theme';
+
 import styled, { css } from 'styled-components';
+
+import { SpacingValues, spacingsPx, borders } from '@trezor/theme';
+
 import { FlexAlignItems } from '../Flex/Flex';
 import { useList, BulletVerticalAlignment } from './List';
 

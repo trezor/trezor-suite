@@ -1,10 +1,15 @@
 import { useState, ReactNode } from 'react';
+
 import styled from 'styled-components';
-import { Translation } from 'src/components/suite';
+
 import { Icon, Column } from '@trezor/components';
-import { Account } from 'src/types/wallet';
-import { AnimationWrapper } from '../../AnimationWrapper';
 import { spacingsPx, spacings, typography } from '@trezor/theme';
+
+import { Translation } from 'src/components/suite';
+import { Account } from 'src/types/wallet';
+
+import { AnimationWrapper } from '../../AnimationWrapper';
+
 
 const ICON_SIZE = 18;
 

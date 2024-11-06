@@ -1,5 +1,7 @@
 import styled from 'styled-components';
+
 import { WelcomeLayout } from 'src/components/suite';
+
 import { StartContent } from './StartContent';
 
 const Content = styled.div`

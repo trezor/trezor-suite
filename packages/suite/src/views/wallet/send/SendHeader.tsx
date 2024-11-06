@@ -1,11 +1,13 @@
 import styled from 'styled-components';
+
 import { Button, Dropdown, DropdownMenuItemProps } from '@trezor/components';
+import { sendFormActions } from '@suite-common/wallet-core';
+import { FADE_IN } from '@trezor/components/src/config/animations';
+
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { WalletSubpageHeading } from 'src/components/wallet';
-import { sendFormActions } from '@suite-common/wallet-core';
-import { FADE_IN } from '@trezor/components/src/config/animations';
 import { ConnectDeviceSendPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

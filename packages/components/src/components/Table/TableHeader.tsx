@@ -1,4 +1,5 @@
 import { createContext, useContext, ReactNode } from 'react';
+
 import styled from 'styled-components';
 
 import { Elevation, mapElevationToBorder } from '@trezor/theme';

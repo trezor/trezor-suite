@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+
 import {
     selectAccountStakeTransactions,
     selectValidatorsQueue,
@@ -6,11 +8,12 @@ import {
     StakeRootState,
     selectPoolStatsApyData,
 } from '@suite-common/wallet-core';
-import { useSelector } from 'react-redux';
+
 import { Translation } from 'src/components/suite';
 import { getDaysToAddToPool } from 'src/utils/suite/stake';
-import { InfoRow } from './InfoRow';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
+
+import { InfoRow } from './InfoRow';
 
 interface StakingInfoProps {
     isExpanded?: boolean;

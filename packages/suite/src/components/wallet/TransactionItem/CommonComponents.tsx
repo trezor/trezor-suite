@@ -1,6 +1,9 @@
 import styled, { css } from 'styled-components';
+
 import { variables } from '@trezor/components';
+
 import { FormattedCryptoAmount, FormattedNftAmount, HiddenPlaceholder } from 'src/components/suite';
+
 import { MIN_ROW_HEIGHT } from './TransactionTargetLayout';
 
 export const TxTypeIconWrapper = styled.div`

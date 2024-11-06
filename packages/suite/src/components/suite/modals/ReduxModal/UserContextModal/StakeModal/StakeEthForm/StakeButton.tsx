@@ -1,4 +1,5 @@
 import { Tooltip, NewModal } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 import { useDevice } from 'src/hooks/suite';

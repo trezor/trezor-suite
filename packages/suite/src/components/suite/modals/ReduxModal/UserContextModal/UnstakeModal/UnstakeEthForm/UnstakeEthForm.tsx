@@ -1,18 +1,23 @@
 import styled from 'styled-components';
+
 import { Divider, Icon, Paragraph, Tooltip, Banner, Row, Column } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
+import { selectValidatorsQueueData } from '@suite-common/wallet-core';
+import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
+
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
-import { Options } from './Options';
 import { getUnstakingPeriodInDays } from 'src/utils/suite/stake';
-import UnstakeFees from './Fees';
-import { selectValidatorsQueueData } from '@suite-common/wallet-core';
-import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
 import { ApproximateInstantEthAmount } from 'src/views/wallet/staking/components/EthStakingDashboard/components/ApproximateInstantEthAmount';
-import { BigNumber } from '@trezor/utils';
+
+import { Options } from './Options';
+import UnstakeFees from './Fees';
+
+
 
 const DividerWrapper = styled.div`
     & > div {

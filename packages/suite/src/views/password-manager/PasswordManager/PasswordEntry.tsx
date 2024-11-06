@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+
 import styled from 'styled-components';
+
 import TrezorConnect, { DeviceUniquePath } from '@trezor/connect';
 import { Button } from '@trezor/components';
-
 import { spacingsPx } from '@trezor/theme';
 
 import { DialogModal } from 'src/components/suite/modals/Modal/DialogRenderer';

@@ -1,12 +1,14 @@
 import { useState } from 'react';
+
 import { Checkbox, NewModal, Column, Banner, Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { selectValidatorsQueueData } from '@suite-common/wallet-core';
+import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
+
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { selectValidatorsQueueData } from '@suite-common/wallet-core';
-import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
 import { getDaysToAddToPoolInitial } from 'src/utils/suite/stake';
 
 interface ConfirmStakeEthModalProps {

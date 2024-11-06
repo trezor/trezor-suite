@@ -1,4 +1,5 @@
 import { forwardRef, Ref } from 'react';
+
 import styled from 'styled-components';
 
 import { isTestnet } from '@suite-common/wallet-utils';
@@ -11,6 +12,8 @@ import {
     TOOLTIP_DELAY_LONG,
     TruncateWithTooltip,
 } from '@trezor/components';
+import { useFormatters } from '@suite-common/formatters';
+import { CoinLogo } from '@trezor/product-components';
 
 import {
     AccountLabel,
@@ -23,9 +26,7 @@ import { useDispatch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { Account, AccountItemType } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
 import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
-import { useFormatters } from '@suite-common/formatters';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { CoinLogo } from '@trezor/product-components';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
 
 const ICON_SIZE = 24;

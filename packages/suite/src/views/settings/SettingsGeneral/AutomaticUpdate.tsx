@@ -1,13 +1,15 @@
 import styled from 'styled-components';
 
 import { Switch } from '@trezor/components';
+import { isDesktop } from '@trezor/env-utils';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { isDesktop } from '@trezor/env-utils';
+
 import { useSelector } from '../../../hooks/suite';
-import { desktopApi } from '@trezor/suite-desktop-api';
+
 
 const PositionedSwitch = styled.div`
     align-self: center;

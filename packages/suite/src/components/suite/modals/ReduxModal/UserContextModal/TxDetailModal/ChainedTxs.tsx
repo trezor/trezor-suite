@@ -2,10 +2,11 @@ import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 import { ChainedTransactions } from '@suite-common/wallet-types';
+import { AccountType, Network } from '@suite-common/wallet-config';
 
 import { TrezorLink, Translation } from 'src/components/suite';
 import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
-import { AccountType, Network } from '@suite-common/wallet-config';
+
 import { AffectedTransactionItem } from './ChangeFee/AffectedTransactionItem';
 
 const Wrapper = styled.div`

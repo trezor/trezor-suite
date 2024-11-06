@@ -1,5 +1,3 @@
-import { STORAGE } from 'src/actions/suite/constants';
-import { Action } from 'src/types/suite';
 import { FormState, PrecomposedTransactionFinal, Account } from '@suite-common/wallet-types';
 import {
     SerializedTx,
@@ -9,6 +7,8 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 
+import { STORAGE } from 'src/actions/suite/constants';
+import { Action } from 'src/types/suite';
 import { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { extraDependencies } from 'src/support/extraDependencies';
 

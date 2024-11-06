@@ -1,5 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignMessage.js
 
+import { MessagesSchema } from '@trezor/protobuf';
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
@@ -12,8 +15,6 @@ import {
     EthereumNetworkInfo,
     EthereumSignMessage as EthereumSignMessageSchema,
 } from '../../../types';
-import { MessagesSchema } from '@trezor/protobuf';
-import { Assert } from '@trezor/schema-utils';
 
 type Params = PROTO.EthereumSignMessage & {
     network?: EthereumNetworkInfo;

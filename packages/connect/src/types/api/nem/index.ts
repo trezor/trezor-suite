@@ -1,6 +1,7 @@
+import { Type, Static } from '@trezor/schema-utils';
+
 import { PROTO, NEM } from '../../../constants';
 import { DerivationPath } from '../../params';
-import { Type, Static } from '@trezor/schema-utils';
 
 // NEM types from nem-sdk
 // https://nemproject.github.io/#transferTransaction

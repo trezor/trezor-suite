@@ -1,7 +1,11 @@
 import { useState } from 'react';
+
 import styled, { useTheme } from 'styled-components';
+
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { spacingsPx, typography, zIndices } from '@trezor/theme';
+import { Column, Divider, Icon } from '@trezor/components';
+
 import { Translation } from 'src/components/suite';
 import { setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -12,7 +16,6 @@ import {
     GuideCategories,
     GuideSearch,
 } from 'src/components/guide';
-import { Column, Divider, Icon } from '@trezor/components';
 
 const FeedbackLinkWrapper = styled.div`
     padding: ${spacingsPx.md};

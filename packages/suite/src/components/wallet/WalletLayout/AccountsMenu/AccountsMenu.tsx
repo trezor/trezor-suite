@@ -1,19 +1,22 @@
 import React from 'react';
+
 import styled from 'styled-components';
 
 import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 import { selectDevice } from '@suite-common/wallet-core';
+import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
+import { useScrollShadow, Row } from '@trezor/components';
 
 import { useDiscovery, useSelector } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
+
 import { AccountSearchBox } from './AccountSearchBox';
 import { AddAccountButton } from './AddAccountButton';
 import { CoinsFilter } from './CoinsFilter';
 import { AccountsList } from './AccountsList';
-import { Translation } from 'src/components/suite';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
-import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
 import { RefreshAfterDiscoveryNeeded } from './RefreshAfterDiscoveryNeeded';
-import { useScrollShadow, Row } from '@trezor/components';
+
 
 const Wrapper = styled.div`
     display: flex;

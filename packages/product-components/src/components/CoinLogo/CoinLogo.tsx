@@ -1,8 +1,11 @@
 import { ImgHTMLAttributes } from 'react';
 import { ReactSVG } from 'react-svg';
+
 import styled from 'styled-components';
-import { COINS, LegacyNetworkSymbol } from './coins';
+
 import { NetworkSymbol } from '@suite-common/wallet-config';
+
+import { COINS, LegacyNetworkSymbol } from './coins';
 
 export interface CoinLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
     symbol: NetworkSymbol | LegacyNetworkSymbol;

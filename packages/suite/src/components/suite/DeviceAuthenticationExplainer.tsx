@@ -1,9 +1,9 @@
 import styled, { css } from 'styled-components';
 
 import { Icon, IconName, variables } from '@trezor/components';
+import { TranslationKey } from '@suite-common/intl-types';
 
 import { Translation } from 'src/components/suite';
-import { TranslationKey } from '@suite-common/intl-types';
 
 const Item = styled.div`
     display: flex;

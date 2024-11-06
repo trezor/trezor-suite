@@ -1,7 +1,9 @@
+import { DefaultTheme } from 'styled-components';
+
 import { IconName } from '@trezor/components';
 import { UIVariant } from '@trezor/components/src/config/types';
 import { Color, CSSColor } from '@trezor/theme';
-import { DefaultTheme } from 'styled-components';
+
 import { goto } from '../../../../../../../actions/suite/routerActions';
 import {
     installUpdate,

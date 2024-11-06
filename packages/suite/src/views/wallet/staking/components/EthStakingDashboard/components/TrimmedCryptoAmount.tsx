@@ -1,8 +1,10 @@
-import { FormattedCryptoAmount } from 'src/components/suite';
 import styled from 'styled-components';
+
 import { spacingsPx } from '@trezor/theme';
 import { Tooltip, variables } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+
+import { FormattedCryptoAmount } from 'src/components/suite';
 
 const StyledFormattedCryptoAmount = styled(FormattedCryptoAmount)<{
     $isRewards?: boolean;

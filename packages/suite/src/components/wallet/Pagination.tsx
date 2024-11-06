@@ -1,7 +1,10 @@
 import { useMemo } from 'react';
-import { Translation } from 'src/components/suite';
+
 import styled, { css } from 'styled-components';
+
 import { borders, spacingsPx, typography } from '@trezor/theme';
+
+import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`
     display: flex;

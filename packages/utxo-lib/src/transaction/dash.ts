@@ -1,4 +1,5 @@
 import * as varuint from 'varuint-bitcoin';
+
 import { BufferReader, BufferWriter } from '../bufferutils';
 import { TransactionBase, TransactionOptions, varSliceSize, vectorSize } from './base';
 

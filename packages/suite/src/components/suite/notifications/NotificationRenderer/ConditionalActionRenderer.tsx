@@ -1,7 +1,9 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
+
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import type { NotificationRendererProps } from 'src/components/suite';
 

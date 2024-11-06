@@ -1,6 +1,8 @@
-import { isDesktop, isMacOs } from '@trezor/env-utils';
 import React from 'react';
+
 import styled from 'styled-components';
+
+import { isDesktop, isMacOs } from '@trezor/env-utils';
 
 type Props = {
     children?: React.ReactNode;

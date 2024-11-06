@@ -1,10 +1,13 @@
 import { useMemo } from 'react';
+
 import styled, { useTheme } from 'styled-components';
 
 import { selectHasAccountTransactions } from '@suite-common/wallet-core';
 import { Card, Column } from '@trezor/components';
+
 import { useSelector } from 'src/hooks/suite';
 import { selectHasAnonymitySetError } from 'src/reducers/wallet/coinjoinReducer';
+
 import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown/BalancePrivacyBreakdown';
 import { CoinjoinBalanceError, CoinjoinBalanceErrorProps } from './CoinjoinBalanceError';
 import { CoinjoinStatusWheel } from './CoinjoinStatusWheel/CoinjoinStatusWheel';

@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
+
 import styled, { CSSObject, DefaultTheme } from 'styled-components';
-import { useElevation } from '../components/ElevationContext/ElevationContext';
+
 import { Color, Elevation, mapElevationToBackground } from '@trezor/theme';
+
+import { useElevation } from '../components/ElevationContext/ElevationContext';
 import { UIHorizontalAlignment, UIVerticalAlignment } from '../config/types';
 
 type GradientDirection = Exclude<UIHorizontalAlignment | UIVerticalAlignment, 'center'>;

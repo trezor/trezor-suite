@@ -7,6 +7,7 @@ import {
     UiRequestSelectAccount,
     DiscoveryAccountType,
 } from '@trezor/connect';
+
 import { container, showView, postMessage } from './common';
 
 const setHeader = (payload: UiRequestSelectAccount['payload']) => {

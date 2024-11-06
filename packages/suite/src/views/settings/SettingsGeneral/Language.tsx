@@ -1,5 +1,8 @@
 import { useMemo } from 'react';
+
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { getPlatformLanguages } from '@trezor/env-utils';
+import { CROWDIN_URL } from '@trezor/urls';
 
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
@@ -9,8 +12,6 @@ import LANGUAGES, { Locale, LocaleInfo } from 'src/config/suite/languages';
 import { setAutodetect } from 'src/actions/suite/suiteActions';
 import { setLanguage } from 'src/actions/settings/languageActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { getPlatformLanguages } from '@trezor/env-utils';
-import { CROWDIN_URL } from '@trezor/urls';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 const onlyOfficial = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>

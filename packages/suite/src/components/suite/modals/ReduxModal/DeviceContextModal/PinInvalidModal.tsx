@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Paragraph } from '@trezor/components';
+
 import { Translation } from 'src/components/suite/Translation';
 import { DeviceConfirmImage, Modal, ModalProps } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';

@@ -1,8 +1,8 @@
 import { testMocks } from '@suite-common/test-utils';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { MODAL } from 'src/actions/suite/constants';
 import { COINMARKET_BUY, COINMARKET_EXCHANGE } from 'src/actions/wallet/constants';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import {
     BTC_ACCOUNT,
     ETH_ACCOUNT,

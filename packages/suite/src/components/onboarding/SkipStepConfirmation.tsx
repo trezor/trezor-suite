@@ -1,7 +1,9 @@
 import { ReactNode } from 'react';
+
+import { NewModal } from '@trezor/components';
+
 import * as STEP from 'src/constants/onboarding/steps';
 import { AnyStepId } from 'src/types/onboarding';
-import { NewModal } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useOnboarding } from 'src/hooks/suite';
 

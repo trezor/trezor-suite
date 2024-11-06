@@ -1,7 +1,9 @@
+import styled from 'styled-components';
+
 import { AssetLogo } from '@trezor/components';
+
 import { CoinmarketCoinLogoProps } from 'src/types/coinmarket/coinmarket';
 import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import styled from 'styled-components';
 
 const Wrapper = styled.div``;
 

@@ -1,7 +1,9 @@
 import { ReactNode } from 'react';
+
 import { ButtonProps, Tooltip, NewModal } from '@trezor/components';
-import { Translation } from 'src/components/suite';
 import { Network } from '@suite-common/wallet-config';
+
+import { Translation } from 'src/components/suite';
 
 interface AddButtonProps extends Omit<ButtonProps, 'children'> {
     disabledMessage: ReactNode;

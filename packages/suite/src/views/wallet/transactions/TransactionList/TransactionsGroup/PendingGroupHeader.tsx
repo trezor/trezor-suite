@@ -1,4 +1,5 @@
 import { Translation } from 'src/components/suite';
+
 import { ColPending, HeaderWrapper } from './CommonComponents';
 
 type PendingGroupHeaderProps = { txsCount: number };

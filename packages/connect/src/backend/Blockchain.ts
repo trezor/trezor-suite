@@ -4,6 +4,7 @@ import BlockchainLink, {
     BlockchainLinkParams,
     BlockchainLinkResponse,
 } from '@trezor/blockchain-link';
+
 import { createBlockchainMessage, BLOCKCHAIN, CoreEventMessage } from '../events';
 import { ERRORS } from '../constants';
 import {
@@ -13,7 +14,6 @@ import {
     ElectrumWorker,
     SolanaWorker,
 } from '../workers/workers';
-
 import type { CoinInfo, Proxy } from '../types';
 
 const getWorker = (type: string) => {

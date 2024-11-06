@@ -1,10 +1,13 @@
 import { useEffect, useCallback } from 'react';
+
 import styled from 'styled-components';
+
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { Button, PinButton, KEYBOARD_CODE } from '@trezor/components';
-import { Translation, TrezorLink, DeviceMatrixExplanation } from 'src/components/suite';
 import { createTimeoutPromise } from '@trezor/utils';
 import TrezorConnect, { DeviceModelInternal, UI } from '@trezor/connect';
+
+import { Translation, TrezorLink, DeviceMatrixExplanation } from 'src/components/suite';
 
 const Wrapper = styled.div`
     display: flex;

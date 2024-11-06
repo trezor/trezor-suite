@@ -1,4 +1,5 @@
 import { Row } from '@trezor/components';
+
 import { CoinmarketLayoutNavigationItem } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketLayoutNavigation/CoinmarketLayoutNavigationItem';
 
 export const CoinmarketLayoutNavigation = () => (

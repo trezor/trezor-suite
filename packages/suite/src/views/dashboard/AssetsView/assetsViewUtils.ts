@@ -1,8 +1,3 @@
-import {
-    enhanceTokensWithRates,
-    getTokens,
-    sortTokensWithRates,
-} from 'src/utils/wallet/tokenUtils';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { TokenDefinition } from '@suite-common/token-definitions';
@@ -11,6 +6,12 @@ import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
+
+import {
+    enhanceTokensWithRates,
+    getTokens,
+    sortTokensWithRates,
+} from 'src/utils/wallet/tokenUtils';
 
 export const handleTokensAndStakingData = (
     assetTokens: TokenInfo[],

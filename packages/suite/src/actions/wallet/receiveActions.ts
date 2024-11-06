@@ -1,12 +1,11 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { confirmAddressOnDeviceThunk, selectDevice } from '@suite-common/wallet-core';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { RECEIVE } from 'src/actions/wallet/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { GetState, Dispatch } from 'src/types/suite';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
-
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 
 export type ReceiveAction =

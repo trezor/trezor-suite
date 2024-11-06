@@ -1,4 +1,5 @@
 import { ButtonRequest } from '@suite-common/suite-types';
+
 import { usePinWithoutSelector } from '../usePinModal';
 
 describe('usePinWithoutSelector', () => {

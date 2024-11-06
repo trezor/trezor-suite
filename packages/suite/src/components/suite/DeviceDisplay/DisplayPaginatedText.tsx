@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 
 import { DeviceModelInternal } from '@trezor/connect';
+import { Icon, IconName, IconProps } from '@trezor/components';
+
+import { handleOnCopy } from 'src/utils/suite/deviceDisplay';
 
 import { ResultRow, parseTextToPagesAndLines } from './parseTextToPagesAndLines';
 import { DeviceDisplayText } from './DeviceDisplayText';
 import { DisplayPageSeparator } from './DisplayPageSeparator';
-import { handleOnCopy } from 'src/utils/suite/deviceDisplay';
-import { Icon, IconName, IconProps } from '@trezor/components';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledNextIcon = styled(Icon)<{ $isPixelType: boolean }>`

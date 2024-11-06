@@ -1,7 +1,9 @@
-import { MiddlewareAPI } from 'redux';
 import { toast } from 'react-toastify';
 
+import { MiddlewareAPI } from 'redux';
+
 import { notificationsActions } from '@suite-common/toast-notifications';
+
 import { renderToast } from 'src/components/suite';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 

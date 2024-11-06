@@ -1,5 +1,6 @@
-import { DEVICE, UiPromise, AnyUiPromise, UiPromiseCreator, UiPromiseResponse } from '../events';
 import { createDeferred, arrayPartition } from '@trezor/utils';
+
+import { DEVICE, UiPromise, AnyUiPromise, UiPromiseCreator, UiPromiseResponse } from '../events';
 import { DeviceUniquePath } from '../types/device';
 
 export const createUiPromiseManager = (interactionTimeout: () => void) => {

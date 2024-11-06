@@ -1,13 +1,16 @@
 import styled from 'styled-components';
 
 import { CollapsibleBox, Text, Row } from '@trezor/components';
-import { Translation } from 'src/components/suite';
-import { ViewOnlyRadios } from './ViewOnlyRadios';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { useDispatch } from 'src/hooks/suite';
 import { toggleRememberDevice } from '@suite-common/wallet-core';
-import { ContentType } from '../types';
 import { AcquiredDevice } from '@suite-common/suite-types';
+
+import { Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite';
+
+import { ViewOnlyRadios } from './ViewOnlyRadios';
+import { ContentType } from '../types';
+
 
 type ViewOnlyProps = {
     setContentType: (contentType: ContentType) => void;

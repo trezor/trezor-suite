@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { Card } from '@trezor/components';
+
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';

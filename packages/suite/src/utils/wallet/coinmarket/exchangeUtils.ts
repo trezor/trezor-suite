@@ -1,6 +1,7 @@
+import { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
+
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import { CryptoAmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
-import { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
 import { RateType } from 'src/types/coinmarket/coinmarketForm';
 import {
     FORM_DEFAULT_CRYPTO_CURRENCY,

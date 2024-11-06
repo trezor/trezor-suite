@@ -1,15 +1,17 @@
+import { useRef } from 'react';
+
 import styled from 'styled-components';
 
 import { selectDevice } from '@suite-common/wallet-core';
 import { getPackagingUrl } from '@suite-common/suite-utils';
 import { DeviceAnimation, Banner, variables } from '@trezor/components';
 import { TREZOR_RESELLERS_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
-
-import { Translation, TrezorLink } from 'src/components/suite';
-import { useRef } from 'react';
-import { useSelector } from 'src/hooks/suite';
 import { typography } from '@trezor/theme';
 import { DeviceModelInternal } from '@trezor/connect';
+
+import { Translation, TrezorLink } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
+
 
 const HologramSubHeading = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};

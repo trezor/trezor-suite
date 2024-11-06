@@ -1,9 +1,11 @@
 import { Button, Paragraph, Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
 import { Translation } from 'src/components/suite';
-import { NetworkBadge } from './NetworkBadge';
 import { useAccountSearch, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { spacings } from '@trezor/theme';
+
+import { NetworkBadge } from './NetworkBadge';
 
 type StakeEthCardFooterProps = {
     accountIndex: number | undefined;

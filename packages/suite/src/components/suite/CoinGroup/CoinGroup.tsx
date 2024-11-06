@@ -1,11 +1,13 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
+
+import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { useDispatch } from 'src/hooks/suite';
 import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
 import { openModal } from 'src/actions/suite/modalActions';
 import { CoinList } from 'src/components/suite';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { CoinGroupHeader } from './CoinGroupHeader';
 import { CoinListProps } from '../CoinList/CoinList';

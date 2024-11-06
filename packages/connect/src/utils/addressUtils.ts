@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/addressUtils.js
 
 import { address as BitcoinJSAddress } from '@trezor/utxo-lib';
+
 import type { BitcoinNetworkInfo } from '../types';
 
 // Base58

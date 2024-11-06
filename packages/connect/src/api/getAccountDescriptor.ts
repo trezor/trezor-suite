@@ -1,3 +1,5 @@
+import { Assert } from '@trezor/schema-utils';
+
 import { AbstractMethod, MethodReturnType, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath, getSerializedPath } from '../utils/pathUtils';
@@ -10,7 +12,6 @@ import {
     GetAccountDescriptorParams,
     GetAccountDescriptorResponse,
 } from '../types/api/getAccountDescriptor';
-import { Assert } from '@trezor/schema-utils';
 
 type Request = GetAccountDescriptorParams & { address_n: number[]; coinInfo: CoinInfo };
 

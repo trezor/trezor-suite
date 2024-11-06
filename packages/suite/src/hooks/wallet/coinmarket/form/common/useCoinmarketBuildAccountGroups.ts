@@ -1,5 +1,7 @@
-import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
 import { useMemo } from 'react';
+
+import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
+
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 import {

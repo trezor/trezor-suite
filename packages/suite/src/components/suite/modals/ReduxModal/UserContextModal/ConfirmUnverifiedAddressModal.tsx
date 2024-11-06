@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
 import { openAddressModal, showAddress } from 'src/actions/wallet/receiveActions';
+
 import { ConfirmUnverifiedModal } from './ConfirmUnverifiedModal';
 
 interface ConfirmUnverifiedAddressModalProps {

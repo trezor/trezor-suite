@@ -1,6 +1,7 @@
 import path from 'path';
 import { merge } from 'webpack-merge';
 import { WebpackPluginServe } from 'webpack-plugin-serve';
+
 import prod from './prod.webpack.config';
 
 const dev = {

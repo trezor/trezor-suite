@@ -1,6 +1,8 @@
 import { useState } from 'react';
+
 import styled from 'styled-components';
-import { Translation, AccountLabeling } from 'src/components/suite';
+import { DexApprovalType } from 'invity-api';
+
 import {
     Button,
     Banner,
@@ -14,8 +16,9 @@ import {
     Card,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
+import { Translation, AccountLabeling } from 'src/components/suite';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
-import { DexApprovalType } from 'invity-api';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';

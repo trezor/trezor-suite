@@ -1,7 +1,5 @@
 import { configureStore } from 'src/support/tests/configureStore';
-
 import { SUITE } from 'src/actions/suite/constants';
-
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';

@@ -1,7 +1,9 @@
 import { Meta, StoryFn } from '@storybook/react';
+
 import { DeviceModelInternal } from '@trezor/connect';
-import { ConfirmOnDevice as ConfirmOnDeviceComponent } from './ConfirmOnDevice';
 import { StoryColumn } from '@trezor/components';
+
+import { ConfirmOnDevice as ConfirmOnDeviceComponent } from './ConfirmOnDevice';
 
 const meta: Meta = {
     title: 'ConfirmOnDevice',

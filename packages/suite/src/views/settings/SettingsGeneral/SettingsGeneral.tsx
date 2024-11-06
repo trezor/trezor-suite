@@ -1,4 +1,5 @@
 import { isDesktop, isWeb } from '@trezor/env-utils';
+import { networks, NetworkFeature } from '@suite-common/wallet-config';
 
 import { SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
@@ -29,7 +30,6 @@ import { DesktopSuiteBanner } from './DesktopSuiteBanner';
 import { AddressDisplay } from './AddressDisplay';
 import { EnableViewOnly } from './EnableViewOnly';
 import { Experimental } from './Experimental';
-import { networks, NetworkFeature } from '@suite-common/wallet-config';
 import { TorSnowflake } from './TorSnowflake';
 import { AutomaticUpdate } from './AutomaticUpdate';
 import { AutoStart } from './AutoStart';
