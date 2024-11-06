@@ -268,6 +268,8 @@ export class WebsocketClient extends TypedEmitter<WebsocketClientEvents> {
     }
 
     waitForTrezorUserEnv() {
+        // Todo: refactor to not use async-promise-executor
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise<void>(async (resolve, reject) => {
             // unfortunately, it can take incredibly long for trezor-user-env to start, we should
             // do something about it
