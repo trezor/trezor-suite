@@ -14,7 +14,7 @@ import { mainThreadEmitter, ModuleInitBackground } from './index';
 
 export const SERVICE_NAME = 'tray';
 
-export const initBackground: ModuleInitBackground = ({ store }) => {
+export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy }) => {
     const { logger } = global;
     const initialSettings = store.getTraySettings();
 
@@ -82,6 +82,9 @@ export const initBackground: ModuleInitBackground = ({ store }) => {
                         ...store.getTraySettings(),
                         showOnTray: false,
                     });
+                    mainWindowProxy
+                        .getInstance()
+                        ?.webContents.send('tray/settings', store.getTraySettings());
                     state.visible = false;
                     renderTray();
                 },
@@ -95,6 +98,12 @@ export const initBackground: ModuleInitBackground = ({ store }) => {
             },
         ]);
         tray.setContextMenu(contextMenu);
+        // Windows left click to show context menu
+        if (process.platform === 'win32') {
+            tray.on('click', () => {
+                tray?.popUpContextMenu();
+            });
+        }
     };
 
     // Listeners for events that affect state

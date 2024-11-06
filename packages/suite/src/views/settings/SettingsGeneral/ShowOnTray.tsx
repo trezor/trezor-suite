@@ -26,6 +26,14 @@ export const ShowOnTray = () => {
     // set initial state based on real electron settings
     useEffect(() => {
         updateStatus();
+
+        desktopApi.on('tray/settings', result => {
+            setShowOnTrayEnabled(result.showOnTray);
+        });
+
+        return () => {
+            desktopApi.removeAllListeners('tray/settings');
+        };
     }, []);
 
     const handleChange = (enabled: boolean) => {

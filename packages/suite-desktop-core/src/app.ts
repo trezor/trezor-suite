@@ -133,8 +133,10 @@ const init = async () => {
 
     // Load bridge module first, it is required in both UI and daemon mode
     const interceptor = createInterceptor();
+    const mainWindowProxy = new MainWindowProxy();
     const { loadModules: loadBackgroundModules, quitModules: quitBackgroundModules } =
         initBackgroundModules({
+            mainWindowProxy,
             store,
             interceptor,
             mainThreadEmitter,
@@ -173,18 +175,7 @@ const init = async () => {
         mainThreadEmitter.off('app/show', handleFullStart);
     }
 
-    await initUi({ store, interceptor, quitBackgroundModules });
-};
-
-const initUi = async ({
-    store,
-    interceptor,
-    quitBackgroundModules,
-}: {
-    store: Store;
-    interceptor: RequestInterceptor;
-    quitBackgroundModules: () => Promise<any>;
-}) => {
+    // UI is opening
     const buildInfo = getBuildInfo();
     logger.info('build', buildInfo);
 
@@ -193,8 +184,6 @@ const initUi = async ({
 
     const winBounds = store.getWinBounds();
     logger.debug('init', `Create Browser Window (${winBounds.width}x${winBounds.height})`);
-
-    const mainWindowProxy = new MainWindowProxy();
 
     // init modules
     const { loadModules, quitModules } = initModules({

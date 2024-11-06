@@ -69,6 +69,8 @@ export interface RendererChannels {
     'bridge/status': Status;
     'bridge/settings': BridgeSettings;
 
+    'tray/settings': TraySettings;
+
     'handshake/event': HandshakeEvent;
 }
 
