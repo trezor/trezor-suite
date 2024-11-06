@@ -73,7 +73,7 @@ export const selectContextMessageContent = createMemoizedSelector(
 
         return {
             ...message,
-            content: message?.content[language] ?? message?.content.en,
+            content: message.content[language] ?? message.content.en,
             cta: message?.cta
                 ? {
                       ...message.cta,
@@ -130,6 +130,8 @@ export const selectIsFeatureDisabled = (
 };
 
 const selectValidMessages = (state: MessageSystemRootState) => state.messageSystem.validMessages;
+const selectValidExperiments = (state: MessageSystemRootState) =>
+    state.messageSystem.validExperiments;
 const selectConfig = (state: MessageSystemRootState) => state.messageSystem.config;
 
 export const selectAllValidMessages = createMemoizedSelector(
@@ -147,3 +149,23 @@ export const selectAllValidMessages = createMemoizedSelector(
         );
     },
 );
+
+export const selectAllValidExperiments = createMemoizedSelector(
+    [selectConfig, selectValidExperiments],
+    (config, validExperiments) => {
+        if (!config?.experiments) return [];
+
+        const experiments = config.experiments
+            .filter(experiment => validExperiments.includes(experiment.experiment.id))
+            .map(experiment => experiment.experiment);
+
+        if (!experiments?.length) return [];
+
+        return experiments;
+    },
+);
+
+export const selectExperimentById = (id: string) =>
+    createMemoizedSelector([selectAllValidExperiments], allValidExperiments =>
+        allValidExperiments.find(experiment => experiment.id === id),
+    );

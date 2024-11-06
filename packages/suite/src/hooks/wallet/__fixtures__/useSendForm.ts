@@ -318,6 +318,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                     feature: [],
                 },
                 dismissedMessages: {},
+                validExperiments: [],
             },
             () => ({}),
         ),

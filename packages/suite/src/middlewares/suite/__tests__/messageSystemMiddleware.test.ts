@@ -12,7 +12,7 @@ import { AppState } from 'src/reducers/store';
 
 import messageSystemMiddleware from '../messageSystemMiddleware';
 
-// Type annotation as workaround for typecheck error "The inferred type of 'default' cannot be named..."
+// Type annotation as workaround for type-check error "The inferred type of 'default' cannot be named..."
 const messageSystemReducer: Reducer = prepareMessageSystemReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 
@@ -71,7 +71,7 @@ const initStore = (preloadedState: State) => {
 };
 
 describe('Message system middleware', () => {
-    it('prepares valid messages for being displayed', async () => {
+    it('prepares valid messages for being displayed', () => {
         const message1 = {
             id: '22e6444d-a586-4593-bc8d-5d013f193eba',
             category: 'banner',
@@ -96,9 +96,10 @@ describe('Message system middleware', () => {
             message3,
             message4,
         ]);
+        jest.spyOn(messageSystemUtils, 'getValidExperiments').mockImplementation(() => []);
 
         const store = initStore(getInitialState(undefined, undefined));
-        await store.dispatch({
+        store.dispatch({
             type: messageSystemActions.fetchSuccessUpdate.type,
             payload: { config: { sequence: 1 }, timestamp: 0 },
         });
@@ -118,14 +119,19 @@ describe('Message system middleware', () => {
                     feature: [message4.id],
                 },
             },
+            {
+                type: messageSystemActions.updateValidExperiments.type,
+                payload: [],
+            },
         ]);
     });
 
-    it('saves messages even if there are no valid messages', async () => {
+    it('saves messages even if there are no valid messages', () => {
         jest.spyOn(messageSystemUtils, 'getValidMessages').mockImplementation(() => []);
+        jest.spyOn(messageSystemUtils, 'getValidExperiments').mockImplementation(() => []);
 
         const store = initStore(getInitialState(undefined, undefined));
-        await store.dispatch({
+        store.dispatch({
             type: messageSystemActions.fetchSuccessUpdate.type,
             payload: { config: { sequence: 1 }, timestamp: 0 },
         });
@@ -139,6 +145,52 @@ describe('Message system middleware', () => {
             {
                 type: messageSystemActions.updateValidMessages.type,
                 payload: { banner: [], context: [], modal: [], feature: [] },
+            },
+            {
+                type: messageSystemActions.updateValidExperiments.type,
+                payload: [],
+            },
+        ]);
+    });
+
+    it('test of experiment action', () => {
+        const experiment1 = {
+            id: '3bed56a4-ecd8-4e0f-9e5f-014b484c2afa',
+            groups: [
+                {
+                    variant: 'A',
+                    percentage: 25,
+                },
+                {
+                    variant: 'B',
+                    percentage: 75,
+                },
+            ],
+        };
+
+        jest.spyOn(messageSystemUtils, 'getValidExperiments').mockImplementation(() => [
+            experiment1,
+        ]);
+
+        const store = initStore(getInitialState(undefined, undefined));
+        store.dispatch({
+            type: messageSystemActions.fetchSuccessUpdate.type,
+            payload: { config: { sequence: 1 }, timestamp: 0 },
+        });
+
+        const result = store.getActions();
+        expect(result).toEqual([
+            {
+                type: messageSystemActions.fetchSuccessUpdate.type,
+                payload: { config: { sequence: 1 }, timestamp: 0 },
+            },
+            {
+                type: messageSystemActions.updateValidMessages.type,
+                payload: { banner: [], context: [], modal: [], feature: [] },
+            },
+            {
+                type: messageSystemActions.updateValidExperiments.type,
+                payload: [experiment1.id],
             },
         ]);
     });

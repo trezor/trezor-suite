@@ -1,6 +1,9 @@
 export const messageId1 = '22e6444d-a586-4593-bc8d-5d013f193eba';
 export const messageId2 = '469c65a8-8632-11eb-8dcd-0242ac130003';
 export const messageId3 = '506b1322-8632-11eb-8dcd-0242ac130003';
+export const messageId4 = '2d5579ec-a7c2-4c50-9311-c404133c8804';
+
+export const experimentId1 = '3bed56a4-ecd8-4e0f-9e5f-014b484c2aff';
 
 /*
 JWS below is signed config with only mandatory fields:

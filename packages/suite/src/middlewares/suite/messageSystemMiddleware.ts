@@ -6,6 +6,7 @@ import {
     messageSystemActions,
     categorizeMessages,
     getValidMessages,
+    getValidExperiments,
 } from '@suite-common/message-system';
 
 import { SUITE } from 'src/actions/suite/constants';
@@ -43,10 +44,19 @@ const messageSystemMiddleware =
                     enabledNetworks,
                 },
             });
-
             const categorizedValidMessages = categorizeMessages(validMessages);
 
+            const validExperiments = getValidExperiments(config, {
+                device,
+                transport,
+                settings: {
+                    tor: getIsTorEnabled(torStatus),
+                    enabledNetworks,
+                },
+            }).map(item => item.id);
+
             api.dispatch(messageSystemActions.updateValidMessages(categorizedValidMessages));
+            api.dispatch(messageSystemActions.updateValidExperiments(validExperiments));
         }
 
         return action;

@@ -123,4 +123,45 @@ describe('Message system utils', () => {
             });
         });
     });
+
+    describe('validateExperiment - control of total sum of groups percentage', () => {
+        const idOfValidExperiment = [0, 2];
+
+        fixtures.validateExperiments.forEach((f, index) => {
+            it(f.experiment.id, () => {
+                expect(messageSystem.validateExperiment(f.experiment)).toEqual(
+                    idOfValidExperiment.includes(index),
+                );
+            });
+        });
+    });
+
+    describe('getValidExperiments', () => {
+        let userAgentGetter: any;
+        const OLD_ENV = { ...process.env };
+
+        beforeEach(() => {
+            userAgentGetter = jest.spyOn(window.navigator, 'userAgent', 'get');
+        });
+
+        afterEach(() => {
+            jest.resetModules();
+            process.env = OLD_ENV;
+        });
+
+        fixtures.getValidExperiments.forEach(f => {
+            it(f.description, () => {
+                jest.spyOn(Date, 'now').mockImplementation(() => new Date(f.currentDate).getTime());
+                // @ts-expect-error (getOsName returns union of string literals)
+                jest.spyOn(envUtils, 'getOsName').mockImplementation(() => f.osName);
+                userAgentGetter.mockReturnValue(f.userAgent);
+                // @ts-expect-error
+                jest.spyOn(envUtils, 'getEnvironment').mockImplementation(() => f.environment);
+                process.env.VERSION = f.suiteVersion;
+
+                // @ts-expect-error
+                expect(messageSystem.getValidExperiments(f.config, f.options)).toEqual(f.result);
+            });
+        });
+    });
 });
