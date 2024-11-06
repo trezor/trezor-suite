@@ -7,9 +7,10 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { isDesktop } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { Translation, Modal, Metadata } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch, useLayout } from 'src/hooks/suite';
+import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
 import { AutoStart } from 'src/views/settings/SettingsGeneral/AutoStart';
 
 const StyledModal = styled(Modal)`
@@ -50,6 +51,7 @@ export const BridgeRequested = () => {
     };
 
     useLayout('Bridge');
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
     if (confirmGoToWallet) {
         return (
@@ -100,7 +102,7 @@ export const BridgeRequested = () => {
             <Metadata title="Bridge | Trezor Suite" />
             <StyledImage image="CONNECT_DEVICE" width="360" />
 
-            {isDesktop() && (
+            {isDesktop() && isDebugModeActive && (
                 <>
                     <Text
                         typographyStyle="hint"
