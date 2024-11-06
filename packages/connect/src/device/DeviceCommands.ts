@@ -373,10 +373,10 @@ export class DeviceCommands {
     }
 
     async _commonCall(type: MessageKey, msg?: DefaultPayloadMessage['message']) {
-        const resp = await this.call(type, msg);
         if (this.disposed) {
             throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
         }
+        const resp = await this.call(type, msg);
 
         return this._filterCommonTypes(resp);
     }
