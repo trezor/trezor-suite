@@ -1,6 +1,5 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { PartialRecord } from '@trezor/type-utils';
-
+import { NetworkSymbol } from '@suite-common/wallet-config';
 // @trezor/coinjoin package is meant to be imported dynamically
 // importing types is safe, but importing an enum thru index will bundle whole lib
 import {

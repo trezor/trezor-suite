@@ -2,7 +2,6 @@ import { merge } from 'webpack-merge';
 
 // Env utils
 import { project, isDev } from './utils/env';
-
 // Configs
 import base from './configs/base.webpack.config';
 import dev from './configs/dev.webpack.config';

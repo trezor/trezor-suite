@@ -20,7 +20,6 @@ import walletReducers from 'src/reducers/wallet';
 import onboardingReducers from 'src/reducers/onboarding';
 import recoveryReducers from 'src/reducers/recovery';
 import backupReducers from 'src/reducers/backup';
-
 // toastMiddleware can be used only in suite-desktop and suite-web
 // it's not included into `@suite-middlewares` index
 import toastMiddleware from 'src/middlewares/suite/toastMiddleware';
