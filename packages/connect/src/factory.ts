@@ -250,8 +250,6 @@ export const factory = <
 
     getCoinInfo: params => call({ ...params, method: 'getCoinInfo' }),
 
-    rebootToBootloader: params => call({ ...params, method: 'rebootToBootloader' }),
-
     setBrightness: params => call({ ...params, method: 'setBrightness' }),
 
     setBusy: params => call({ ...params, method: 'setBusy' }),

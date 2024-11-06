@@ -88,7 +88,6 @@ export { default as loadDevice } from './loadDevice';
 // getDeviceState
 // getSettings
 // pushTransaction
-// rebootToBootloader
 // recoveryDevice
 // requestLogin
 // resetDevice

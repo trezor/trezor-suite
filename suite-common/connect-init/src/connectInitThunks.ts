@@ -80,7 +80,6 @@ export const connectInitThunk = createThunk(
             'getOwnershipProof',
             'getPublicKey',
             'pushTransaction',
-            'rebootToBootloader',
             'recoveryDevice',
             'resetDevice',
             'rippleGetAddress',

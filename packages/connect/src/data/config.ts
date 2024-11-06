@@ -229,10 +229,6 @@ export const config = {
             },
         },
         {
-            methods: ['rebootToBootloader'],
-            min: { T1B1: '1.10.0', T2T1: '2.6.0' },
-        },
-        {
             methods: ['getFirmwareHash'],
             min: { T1B1: '1.11.1', T2T1: '2.5.1' },
         },

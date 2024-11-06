@@ -70,7 +70,4 @@ export const management = async (api: TrezorConnect) => {
         word_count: 24,
     });
     if (recovery.success) recovery.payload.message.toLowerCase();
-
-    const reboot = await api.rebootToBootloader();
-    if (reboot.success) reboot.payload.message.toLowerCase();
 };
