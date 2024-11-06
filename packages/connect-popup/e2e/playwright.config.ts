@@ -12,4 +12,6 @@ const config: PlaywrightTestConfig = {
         ...devices[process.env.MOBILE ? 'Pixel 7' : 'Desktop Chrome'],
     },
 };
+
+// eslint-disable-next-line import/no-default-export
 export default config;

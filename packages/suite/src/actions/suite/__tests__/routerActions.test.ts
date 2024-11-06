@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { configureStore } from 'src/support/tests/configureStore';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
@@ -10,6 +9,7 @@ import * as routerActions from '../routerActions';
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
+
 interface InitialState {
     suite?: Partial<SuiteState>;
     router?: Exclude<RouterState, 'app|url|pathname'>;

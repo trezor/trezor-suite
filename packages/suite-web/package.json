@@ -35,6 +35,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/e2e-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/eslint": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/suite-analytics": "workspace:*",
         "@trezor/transport": "workspace:*",

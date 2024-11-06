@@ -58,6 +58,7 @@
         "wif": "^5.0.0"
     },
     "devDependencies": {
+        "@trezor/eslint": "workspace:*",
         "@types/bchaddrjs": "^0.4.3",
         "@types/bn.js": "^5.1.6",
         "@types/bs58": "^4.0.4",

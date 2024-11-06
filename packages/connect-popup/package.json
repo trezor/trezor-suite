@@ -36,6 +36,7 @@
         "@playwright/browser-firefox": "^1.46.1",
         "@playwright/browser-webkit": "^1.46.1",
         "@playwright/test": "^1.46.1",
+        "@trezor/eslint": "workspace:*",
         "@trezor/node-utils": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/utils": "workspace:*",

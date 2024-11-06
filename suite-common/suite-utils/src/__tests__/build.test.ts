@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const OLD_ENV = { ...process.env };
 
 describe('build', () => {

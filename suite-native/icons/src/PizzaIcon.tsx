@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 import { Easing, SharedValue, useDerivedValue, withTiming } from 'react-native-reanimated';
 import { useState } from 'react';
 

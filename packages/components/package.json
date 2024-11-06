@@ -55,6 +55,7 @@
         "@storybook/client-api": "^7.6.13",
         "@storybook/react": "^7.6.13",
         "@storybook/react-webpack5": "^7.6.13",
+        "@storybook/theming": "^7.6.13",
         "@types/react": "18.2.79",
         "@types/react-date-range": "^1.4.9",
         "postcss-styled-syntax": "^0.6.4",

@@ -117,7 +117,7 @@ type NewModalProps = AllowedFrameProps & {
     'data-testid'?: string;
 } & ExclusiveIconNameOrComponent;
 
-const _NewModalBase = ({
+const InnerNewModalBase = ({
     children,
     variant,
     size = 'medium',
@@ -222,7 +222,7 @@ const _NewModalBase = ({
 const NewModalBase = (props: NewModalProps) => (
     <ElevationContext baseElevation={prevElevation[MODAL_ELEVATION]}>
         <NewModalContext.Provider value={{ variant: props.variant }}>
-            <_NewModalBase {...props} />
+            <InnerNewModalBase {...props} />
         </NewModalContext.Provider>
     </ElevationContext>
 );

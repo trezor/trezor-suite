@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 import { MessagesSchema } from '@trezor/protobuf';
 

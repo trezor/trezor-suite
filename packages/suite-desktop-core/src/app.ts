@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
 import path from 'path';
 import { app, BrowserWindow } from 'electron';
 

@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-var-requires */
 
 import { BITCOIN_ONLY_NETWORKS } from '@suite-common/suite-constants';
 import { isArrayMember } from '@trezor/utils';

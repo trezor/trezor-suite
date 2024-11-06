@@ -28,6 +28,7 @@
     },
     "devDependencies": {
         "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "tsx": "^4.16.3"
     },
