@@ -2,6 +2,7 @@ import { A } from '@mobily/ts-belt';
 
 import { isTestnet } from '@suite-common/wallet-utils';
 import {
+    networks,
     AccountType,
     Network,
     NetworkSymbol,
@@ -50,10 +51,12 @@ export const discoverySupportedNetworks = [
     ...networkSymbolsWhitelistMap.testnet,
 ];
 
-export const sortNetworks = (networks: Network[]) =>
-    A.sort(networks, (a, b) => {
-        const aOrder = discoverySupportedNetworks.indexOf(a.symbol) ?? Number.MAX_SAFE_INTEGER;
-        const bOrder = discoverySupportedNetworks.indexOf(b.symbol) ?? Number.MAX_SAFE_INTEGER;
+export const orderedNetworkSymbols = Object.keys(networks) as NetworkSymbol[];
+
+export const sortNetworks = (networksToSort: Network[]) =>
+    A.sort(networksToSort, (a, b) => {
+        const aOrder = orderedNetworkSymbols.indexOf(a.symbol);
+        const bOrder = orderedNetworkSymbols.indexOf(b.symbol);
 
         return aOrder - bOrder;
     });
@@ -67,8 +70,11 @@ export const filterTestnetNetworks = (
     return networkSymbols.filter(networkSymbol => !isTestnet(networkSymbol));
 };
 
-export const filterBlacklistedNetworks = (networks: Network[], allowList: NetworkSymbol[]) =>
-    networks.filter(
+export const filterBlacklistedNetworks = (
+    networksToFilter: Network[],
+    allowList: NetworkSymbol[],
+) =>
+    networksToFilter.filter(
         network =>
             !discoveryBlacklist.includes(network.symbol) || allowList.includes(network.symbol),
     );

@@ -16,7 +16,7 @@ import {
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { selectAccountListSections } from '@suite-native/accounts';
 import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
-import { discoverySupportedNetworks } from '@suite-native/config';
+import { orderedNetworkSymbols } from '@suite-native/config';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
 import {
     NativeStakingRootState,
@@ -60,8 +60,8 @@ export const selectDeviceNetworksWithAssets = (state: AssetsRootState) => {
         A.map(account => account.symbol),
         A.uniq,
         A.sort((a, b) => {
-            const aOrder = discoverySupportedNetworks.indexOf(a) ?? Number.MAX_SAFE_INTEGER;
-            const bOrder = discoverySupportedNetworks.indexOf(b) ?? Number.MAX_SAFE_INTEGER;
+            const aOrder = orderedNetworkSymbols.indexOf(a) ?? Number.MAX_SAFE_INTEGER;
+            const bOrder = orderedNetworkSymbols.indexOf(b) ?? Number.MAX_SAFE_INTEGER;
 
             return aOrder - bOrder;
         }),
