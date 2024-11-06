@@ -103,7 +103,7 @@
         "node-libs-browser": "^2.2.1",
         "ts-node": "^10.9.1",
         "tsx": "^4.16.3",
-        "webpack": "^5.94.0",
+        "webpack": "^5.96.1",
         "ws": "^8.18.0"
     },
     "peerDependencies": {
