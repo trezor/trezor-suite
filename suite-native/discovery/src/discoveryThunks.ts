@@ -209,7 +209,6 @@ const getCardanoSupportedAccountTypesThunk = createThunk(
                 dispatch(
                     getAvailableCardanoDerivationsThunk({
                         deviceState,
-                        device,
                     }),
                 ).unwrap(),
         });

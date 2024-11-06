@@ -38,6 +38,7 @@ import {
 } from './discoveryReducer';
 import { selectAccounts } from '../accounts/accountsReducer';
 import { accountsActions } from '../accounts/accountsActions';
+import { selectDeviceByStaticSessionId } from '../device/deviceReducer';
 
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
 
@@ -332,9 +333,12 @@ export const getBundleThunk = createThunk(
 export const getAvailableCardanoDerivationsThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/getAvailableCardanoDerivations`,
     async (
-        { deviceState, device }: { deviceState: StaticSessionId; device: TrezorDevice },
-        { dispatch },
+        { deviceState }: { deviceState: StaticSessionId },
+        { getState, dispatch },
     ): Promise<('normal' | 'legacy' | 'ledger')[] | undefined> => {
+        const device = selectDeviceByStaticSessionId(getState(), deviceState);
+        if (!device) return;
+
         // If icarus and icarus-trezor derivations return same pub key
         // we can skip derivation of the latter as it would discover same accounts.
         // Ledger derivation will always result in different pub key except in shamir where all derivations are the same
@@ -353,11 +357,13 @@ export const getAvailableCardanoDerivationsThunk = createThunk(
 
         const icarusTrezorPubKeyResult = await TrezorConnect.cardanoGetPublicKey({
             ...commonParams,
+            device: icarusPubKeyResult.success ? icarusPubKeyResult.device : device,
             derivationType: getDerivationType('legacy'),
         });
 
         const ledgerPubKeyResult = await TrezorConnect.cardanoGetPublicKey({
             ...commonParams,
+            device: icarusTrezorPubKeyResult.success ? icarusTrezorPubKeyResult.device : device,
             derivationType: getDerivationType('ledger'),
         });
 
@@ -487,7 +493,7 @@ export const startDiscoveryThunk = createThunk(
         ) {
             // check if discovery of legacy (icarus-trezor) or ledger accounts is needed and update discovery accordingly
             availableCardanoDerivations = await dispatch(
-                getAvailableCardanoDerivationsThunk({ deviceState, device }),
+                getAvailableCardanoDerivationsThunk({ deviceState }),
             ).unwrap();
             if (!availableCardanoDerivations) {
                 // Edge case where getAvailableCardanoDerivations dispatches error, stops discovery and returns undefined.
