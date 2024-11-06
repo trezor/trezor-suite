@@ -29,8 +29,7 @@ export const selectIsNetworkSendFlowEnabled = (
         FeatureFlag.IsEthereumSendEnabled,
     );
 
-    if (isEthereumSendEnabled && ['eth', 'etc', 'tsep', 'thol'].includes(networkSymbol))
-        return true;
+    if (isEthereumSendEnabled && networkType === 'ethereum') return true;
 
     return false;
 };
