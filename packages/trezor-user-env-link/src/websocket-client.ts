@@ -267,43 +267,39 @@ export class WebsocketClient extends TypedEmitter<WebsocketClientEvents> {
         this.removeAllListeners();
     }
 
-    waitForTrezorUserEnv() {
-        // Todo: refactor to not use async-promise-executor
-        // eslint-disable-next-line no-async-promise-executor
-        return new Promise<void>(async (resolve, reject) => {
-            // unfortunately, it can take incredibly long for trezor-user-env to start, we should
-            // do something about it
-            const limit = 300;
-            let error = '';
+    async waitForTrezorUserEnv() {
+        // unfortunately, it can take incredibly long for trezor-user-env to start, we should
+        // do something about it
+        const limit = 300;
+        let error = '';
 
-            console.log('waiting for trezor-user-env');
+        console.log('waiting for trezor-user-env');
 
-            for (let i = 0; i < limit; i++) {
-                if (i === limit - 1) {
-                    console.log(`cant connect to trezor-user-env: ${error}\n`);
+        for (let i = 0; i < limit; i++) {
+            if (i === limit - 1) {
+                console.log(`cant connect to trezor-user-env: ${error}\n`);
+            }
+            await delay(1000);
+
+            try {
+                const res = await fetch(USER_ENV_URL.DASHBOARD);
+                if (res.status === 200) {
+                    console.log('trezor-user-env is online');
+
+                    return;
                 }
-                await delay(1000);
-
-                try {
-                    const res = await fetch(USER_ENV_URL.DASHBOARD);
-                    if (res.status === 200) {
-                        console.log('trezor-user-env is online');
-
-                        return resolve();
-                    }
-                } catch (err) {
-                    error = err.message;
-                    // using process.stdout.write instead of console.log since the latter always prints also newline
-                    // but in karma, this code runs in browser and process is not available.
-                    if (typeof process !== 'undefined') {
-                        process.stdout.write('.');
-                    } else {
-                        console.log('.');
-                    }
+            } catch (err) {
+                error = err.message;
+                // using process.stdout.write instead of console.log since the latter always prints also newline
+                // but in karma, this code runs in browser and process is not available.
+                if (typeof process !== 'undefined') {
+                    process.stdout.write('.');
+                } else {
+                    console.log('.');
                 }
             }
+        }
 
-            reject(error);
-        });
+        throw error;
     }
 }

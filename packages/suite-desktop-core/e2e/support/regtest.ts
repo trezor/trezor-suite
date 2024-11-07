@@ -16,33 +16,30 @@ export const generateBlock = () =>
         method: 'GET',
     });
 
-export const waitForCoinjoinBackend = () =>
-    // Todo: refactor to not use async-promise-executor
-    // eslint-disable-next-line no-async-promise-executor
-    new Promise<void>(async (resolve, reject) => {
-        const limit = 60;
-        const error = '';
+export const waitForCoinjoinBackend = async () => {
+    const limit = 60;
+    const error = '';
 
-        console.log('waiting for coinjoin backend');
+    console.log('waiting for coinjoin backend');
 
-        for (let i = 0; i < limit; i++) {
-            if (i === limit - 1) {
-                console.log(`waiting for coinjoin backend: ${error}\n`);
-            }
-
-            await new Promise(resolve => setTimeout(() => resolve(undefined), 1000));
-
-            try {
-                const res = await fetch('http://localhost:19121/');
-                if (res.status === 200) {
-                    console.log('coinjoin backend is online');
-
-                    return resolve();
-                }
-            } catch {
-                process.stdout.write('.');
-            }
+    for (let i = 0; i < limit; i++) {
+        if (i === limit - 1) {
+            console.log(`waiting for coinjoin backend: ${error}\n`);
         }
 
-        reject(error);
-    });
+        await new Promise(resolve => setTimeout(() => resolve(undefined), 1000));
+
+        try {
+            const res = await fetch('http://localhost:19121/');
+            if (res.status === 200) {
+                console.log('coinjoin backend is online');
+
+                return;
+            }
+        } catch {
+            process.stdout.write('.');
+        }
+    }
+
+    throw error;
+};
