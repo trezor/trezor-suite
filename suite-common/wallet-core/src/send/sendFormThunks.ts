@@ -260,12 +260,12 @@ const synchronizeSentTransactionThunk = createThunk(
 
 export const pushSendFormTransactionThunk = createThunk<
     Success<{ txid: string }>,
-    { selectedAccount: Account },
+    { selectedAccount: Account; shouldDiscardTransaction?: boolean },
     { rejectValue: PushTransactionError }
 >(
     `${SEND_MODULE_PREFIX}/pushSendFormTransactionThunk`,
     async (
-        { selectedAccount },
+        { selectedAccount, shouldDiscardTransaction = true },
         { dispatch, getState, extra, rejectWithValue, fulfillWithValue },
     ) => {
         const {
@@ -338,7 +338,7 @@ export const pushSendFormTransactionThunk = createThunk<
         }
 
         // cleanup send form state and close review modal
-        dispatch(cancelSignSendFormTransactionThunk());
+        if (shouldDiscardTransaction) dispatch(cancelSignSendFormTransactionThunk());
 
         return pushTxResponse.success
             ? fulfillWithValue(pushTxResponse)

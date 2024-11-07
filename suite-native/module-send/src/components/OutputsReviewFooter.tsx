@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Animated, { SlideInDown } from 'react-native-reanimated';
 
@@ -8,9 +8,12 @@ import { isFulfilled } from '@reduxjs/toolkit';
 
 import {
     AccountsRootState,
+    pushSendFormTransactionThunk,
     selectAccountByKey,
     selectSendFormDraftByKey,
+    selectTransactionByTxidAndAccountKey,
     SendRootState,
+    TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Button } from '@suite-native/atoms';
@@ -20,7 +23,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
 
 import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
-import { sendTransactionAndCleanupSendFormThunk } from '../sendFormThunks';
+import { cleanupSendFormThunk } from '../sendFormThunks';
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
 import { selectIsTransactionAlreadySigned } from '../selectors';
 
@@ -70,11 +73,16 @@ export const OutputsReviewFooter = ({
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
 }) => {
+    const [txid, setTxid] = useState<string>('');
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const { applyStyle } = useNativeStyles();
     const [isSendInProgress, setIsSendInProgress] = useState(false);
     const wasAppLeftDuringReview = useAtomValue(wasAppLeftDuringReviewAtom);
+
+    const isTransactionProcessedByBackend = !!useSelector((state: TransactionsRootState) =>
+        selectTransactionByTxidAndAccountKey(state, txid, accountKey),
+    );
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -85,18 +93,36 @@ export const OutputsReviewFooter = ({
         selectSendFormDraftByKey(state, accountKey, tokenContract),
     );
 
-    {
-        /* TODO: improve the illustration: https://github.com/trezor/trezor-suite/issues/13965 */
-    }
+    useEffect(() => {
+        // Navigate to transaction detail screen only at the moment when the transaction was already processed by backend and we have all its data.
+        if (isTransactionProcessedByBackend) {
+            navigation.dispatch(
+                navigateToAccountDetail({
+                    accountKey,
+                    tokenContract,
+                    txid,
+                }),
+            );
+
+            dispatch(cleanupSendFormThunk({ accountKey }));
+        }
+    }, [isTransactionProcessedByBackend, accountKey, tokenContract, txid, navigation, dispatch]);
+
+    /* TODO: improve the illustration: https://github.com/trezor/trezor-suite/issues/13965 */
     if (!isTransactionAlreadySigned || !account) return <SendConfirmOnDeviceImage />;
 
     const handleSendTransaction = async () => {
         setIsSendInProgress(true);
 
-        const sendResponse = await dispatch(sendTransactionAndCleanupSendFormThunk({ account }));
+        const sendResponse = await dispatch(
+            pushSendFormTransactionThunk({
+                selectedAccount: account,
+                shouldDiscardTransaction: false,
+            }),
+        );
 
         if (isFulfilled(sendResponse)) {
-            const { txid } = sendResponse.payload;
+            const { txid: sentTxid } = sendResponse.payload.payload;
 
             if (formValues) {
                 analytics.report({
@@ -110,13 +136,7 @@ export const OutputsReviewFooter = ({
                 });
             }
 
-            navigation.dispatch(
-                navigateToAccountDetail({
-                    accountKey,
-                    tokenContract,
-                    txid,
-                }),
-            );
+            setTxid(sentTxid);
         }
     };
 
