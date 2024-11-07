@@ -5,5 +5,5 @@
         "outDir": "./libDev"
     },
     "include": ["."],
-    "references": []
+    "references": [{ "path": "../eslint" }]
 }

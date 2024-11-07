@@ -5,6 +5,7 @@
         { "path": "../env-utils" },
         { "path": "../utils" },
         { "path": "../blockchain-link-types" },
+        { "path": "../eslint" },
         { "path": "../type-utils" }
     ]
 }

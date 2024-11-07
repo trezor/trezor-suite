@@ -131,6 +131,7 @@
         "@types/tar": "^6.1.11",
         "babel-jest": "29.7.0",
         "depcheck": "^1.4.7",
+        "eslint": "^9.13.0",
         "globals": "^15.11.0",
         "jest": "29.7.0",
         "jest-environment-jsdom": "29.7.0",

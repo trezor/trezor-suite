@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../eslint" },
         { "path": "../protobuf" },
         { "path": "../transport" },
         { "path": "../transport-bridge" },

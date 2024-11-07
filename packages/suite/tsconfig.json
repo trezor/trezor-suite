@@ -107,6 +107,7 @@
         { "path": "../theme" },
         { "path": "../type-utils" },
         { "path": "../urls" },
-        { "path": "../utils" }
+        { "path": "../utils" },
+        { "path": "../eslint" }
     ]
 }

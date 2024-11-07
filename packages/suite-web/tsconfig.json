@@ -24,6 +24,7 @@
         },
         { "path": "../e2e-utils" },
         { "path": "../env-utils" },
+        { "path": "../eslint" },
         { "path": "../protobuf" },
         { "path": "../suite-analytics" },
         { "path": "../transport" },

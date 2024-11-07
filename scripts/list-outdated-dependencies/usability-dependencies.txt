@@ -9,6 +9,7 @@
 @storybook/client-api
 @storybook/react
 @storybook/react-webpack5
+@storybook/theming
 @types/qrcode.react
 @types/react-date-range
 @types/react-qr-reader

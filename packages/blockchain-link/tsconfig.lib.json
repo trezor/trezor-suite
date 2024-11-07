@@ -26,6 +26,9 @@
             "path": "../e2e-utils"
         },
         {
+            "path": "../eslint"
+        },
+        {
             "path": "../type-utils"
         }
     ]

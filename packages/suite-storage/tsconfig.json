@@ -4,6 +4,7 @@
     "include": [".", "**/*.json"],
     "references": [
         { "path": "../env-utils" },
+        { "path": "../eslint" },
         { "path": "../utils" }
     ]
 }
