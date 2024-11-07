@@ -40,11 +40,11 @@ import {
     selectWeightedAnonymityByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
 import { openModal } from 'src/actions/suite/modalActions';
+import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
 
 import * as coinjoinClientActions from './coinjoinClientActions';
 import { goto } from '../suite/routerActions';
 import * as COINJOIN from './constants/coinjoinConstants';
-import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
 
 export const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymity: number) =>
     ({

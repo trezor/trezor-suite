@@ -1,5 +1,58 @@
 import type { Rule } from 'eslint';
 
+const findNodeWithCalleeInSubTree = (node, calleeName) => {
+    if (node.type === 'CallExpression' && node.callee.name === calleeName) {
+        return node;
+    }
+
+    if (
+        'callee' in node &&
+        typeof node.callee === 'object' &&
+        node.callee !== null &&
+        'object' in node.callee
+    ) {
+        return findNodeWithCalleeInSubTree(node.callee.object, calleeName);
+    }
+
+    return null;
+};
+
+const checkNodeForAvoidStyledComponent = (node, context, nodeRef, importedComponents) => {
+    if (node[nodeRef]?.type === 'CallExpression') {
+        // We need to recursively search for the styled component in the call tree in case its chained
+        //
+        // Example:
+        //      styled(Button).attrs(props => ({ ... {))`...`
+        //
+        const nodeWithCallee = findNodeWithCalleeInSubTree(node[nodeRef], 'styled');
+
+        if (nodeWithCallee === null) {
+            return;
+        }
+
+        if (
+            nodeWithCallee.callee.name === 'styled' &&
+            nodeWithCallee.arguments[0].type === 'Identifier'
+        ) {
+            const componentName = nodeWithCallee.arguments[0].name;
+
+            // Check if component name matches any imported component from the specified packages
+            for (const [pkgName, components] of importedComponents) {
+                if (components.has(componentName)) {
+                    context.report({
+                        node,
+                        messageId: 'avoidStyledComponent',
+                        data: {
+                            packageName: pkgName,
+                        },
+                    });
+                    break;
+                }
+            }
+        }
+    }
+};
+
 export default {
     'no-override-ds-component': {
         meta: {
@@ -53,28 +106,15 @@ export default {
                         });
                     }
                 },
-                TaggedTemplateExpression(node) {
-                    if (
-                        node.tag.type === 'CallExpression' &&
-                        node.tag.callee.name === 'styled' &&
-                        node.tag.arguments[0].type === 'Identifier'
-                    ) {
-                        const componentName = node.tag.arguments[0].name;
 
-                        // Check if component name matches any imported component from the specified packages
-                        for (const [pkgName, components] of importedComponents) {
-                            if (components.has(componentName)) {
-                                context.report({
-                                    node,
-                                    messageId: 'avoidStyledComponent',
-                                    data: {
-                                        packageName: pkgName,
-                                    },
-                                });
-                                break;
-                            }
-                        }
-                    }
+                // This is for case the styled component is assigned to a variable but not evaluated with `...`
+                VariableDeclarator(node) {
+                    checkNodeForAvoidStyledComponent(node, context, 'init', importedComponents);
+                },
+
+                // This for case when the standard styled(Component)`...` is used
+                TaggedTemplateExpression(node) {
+                    checkNodeForAvoidStyledComponent(node, context, 'tag', importedComponents);
                 },
             };
         },
