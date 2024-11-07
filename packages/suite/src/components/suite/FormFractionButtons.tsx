@@ -12,7 +12,6 @@ const Flex = styled.div`
     gap: 4px;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
 const TinyButton = styled(Button).attrs(props => ({
     ...props,
     variant: 'tertiary',

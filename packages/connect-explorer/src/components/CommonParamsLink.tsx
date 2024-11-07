@@ -7,7 +7,6 @@ const Floating = styled.div`
     margin-top: -2rem;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLink = styled(Link)`
     color: ${({ theme }) => theme.textPrimaryDefault};
     text-decoration: underline;

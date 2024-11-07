@@ -23,6 +23,7 @@ export default [
         files: ['**/*.mdx'],
         rules: {
             'react/no-unescaped-entities': 'off',
+            'local-rules/no-override-ds-component': 'off',
         },
     },
     {

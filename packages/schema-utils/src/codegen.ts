@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import * as Codegen from '@sinclair/typebox-codegen/typescript';
 import fs from 'fs';
 
