@@ -76,6 +76,7 @@ export const TransactionDetailData = ({
                                         label={chunks}
                                         textColor="textDefault"
                                         isUnderlined
+                                        textVariant="label"
                                     />
                                 ),
                             }}

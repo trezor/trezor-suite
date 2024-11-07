@@ -26,7 +26,6 @@ import { getTransactionValueSign } from '../../utils';
 type TransactionListItemProps = {
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
-    areTokensIncluded: boolean;
     isFirst?: boolean;
     isLast?: boolean;
 };
@@ -98,14 +97,12 @@ export const TransactionListItemValues = ({
 export const TransactionListItem = ({
     transaction,
     accountKey,
-    areTokensIncluded,
     isFirst = false,
     isLast = false,
 }: TransactionListItemProps) => {
-    const includedCoinsCount = areTokensIncluded ? transaction.tokens.length : 0;
+    const includedCoinsCount = transaction.tokens.length;
 
-    const isTokenOnlyTransaction =
-        areTokensIncluded && transaction.amount === '0' && transaction.tokens.length !== 0;
+    const isTokenOnlyTransaction = transaction.amount === '0' && transaction.tokens.length !== 0;
 
     if (isTokenOnlyTransaction)
         return (

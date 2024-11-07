@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { AccountKey, TransactionType } from '@suite-common/wallet-types';
+import { AccountKey, TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     RootStackParamList,
@@ -17,6 +17,7 @@ import {
     selectIsPhishingTransaction,
     selectIsTransactionPending,
     selectTransactionBlockTimeById,
+    selectTransactionByAccountKeyAndTxid,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -26,6 +27,7 @@ import { Translation } from '@suite-native/intl';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
 import { TransactionIcon } from './TransactionIcon';
+import { TransactionName } from '../TransactionName';
 
 type TransactionListItemContainerProps = {
     children: ReactNode;
@@ -43,16 +45,6 @@ type TransactionListItemStyleProps = {
     isFirst: boolean;
     isLast: boolean;
 };
-
-const transactionTitleMap = {
-    recv: 'Received',
-    sent: 'Sent',
-    self: 'Self',
-    joint: 'Joined',
-    contract: 'Contract',
-    failed: 'Transaction failed',
-    unknown: 'Unknown',
-} as const satisfies Record<TransactionType, string>;
 
 export const transactionListItemContainerStyle = prepareNativeStyle<TransactionListItemStyleProps>(
     (utils, { isFirst, isLast }) => ({
@@ -104,23 +96,6 @@ export const valuesContainerStyle = prepareNativeStyle(utils => ({
     maxWidth: '40%',
 }));
 
-const getTransactionTitle = (transactionType: TransactionType, isPending: boolean) => {
-    if (isPending) {
-        switch (transactionType) {
-            case 'recv':
-                return 'Receiving';
-
-            case 'sent':
-                return 'Sending';
-
-            default:
-                return 'Pending';
-        }
-    }
-
-    return transactionTitleMap[transactionType];
-};
-
 export const TransactionListItemContainer = ({
     children,
     txid,
@@ -148,6 +123,9 @@ export const TransactionListItemContainer = ({
     const includedCoinsLabel = `+${includedCoinsCount} coin${includedCoinsCount > 1 ? 's' : ''}`;
 
     const { DateTimeFormatter } = useFormatters();
+    const transaction = useSelector((state: TransactionsRootState) =>
+        selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
+    ) as WalletAccountTransaction;
     const transactionBlockTime = useSelector((state: TransactionsRootState) =>
         selectTransactionBlockTimeById(state, accountKey, txid),
     );
@@ -164,7 +142,6 @@ export const TransactionListItemContainer = ({
     const iconColor: Color = isTransactionPending ? 'backgroundAlertYellowBold' : 'iconSubdued';
     const coinSymbol = isPhishingTransaction ? undefined : networkSymbol;
     const contractAddress = isPhishingTransaction ? undefined : tokenTransfer?.contract;
-    const transactionTitle = getTransactionTitle(transactionType, isTransactionPending);
 
     const DateTextComponent = isPhishingTransaction ? DiscreetText : Text;
 
@@ -184,7 +161,12 @@ export const TransactionListItemContainer = ({
                 <Box marginLeft="sp16" flex={1}>
                     <HStack flexDirection="row" alignItems="center" spacing="sp4">
                         <Box style={applyStyle(titleStyle)}>
-                            <Text variant="body">{transactionTitle}</Text>
+                            <Text variant="body">
+                                <TransactionName
+                                    transaction={transaction}
+                                    isPending={isTransactionPending}
+                                />
+                            </Text>
                             {isPhishingTransaction && (
                                 <Badge
                                     label={<Translation id="transactions.phishing.badge" />}

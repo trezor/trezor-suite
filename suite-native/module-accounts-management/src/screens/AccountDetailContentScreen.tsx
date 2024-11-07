@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -25,7 +25,6 @@ export const AccountDetailContentScreen = ({
     accountKey,
     tokenContract,
 }: AccountDetailContentScreenProps) => {
-    const [areTokensIncluded, setAreTokensIncluded] = useState(false);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -50,20 +49,9 @@ export const AccountDetailContentScreen = ({
         }
     }, [account, token?.symbol, token?.contract]);
 
-    const toggleIncludeTokenTransactions = useCallback(() => {
-        setAreTokensIncluded(prev => !prev);
-    }, []);
-
     const listHeaderComponent = useMemo(
-        () => (
-            <TransactionListHeader
-                accountKey={accountKey}
-                tokenContract={tokenContract}
-                areTokensIncluded={areTokensIncluded}
-                toggleIncludeTokenTransactions={toggleIncludeTokenTransactions}
-            />
-        ),
-        [accountKey, tokenContract, areTokensIncluded, toggleIncludeTokenTransactions],
+        () => <TransactionListHeader accountKey={accountKey} tokenContract={tokenContract} />,
+        [accountKey, tokenContract],
     );
 
     return (
@@ -87,7 +75,6 @@ export const AccountDetailContentScreen = ({
             isScrollable={false}
         >
             <TransactionList
-                areTokensIncluded={areTokensIncluded}
                 accountKey={accountKey}
                 tokenContract={tokenContract}
                 listHeaderComponent={listHeaderComponent}

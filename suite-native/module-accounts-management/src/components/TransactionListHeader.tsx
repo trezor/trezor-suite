@@ -21,18 +21,14 @@ import {
 } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
 import { FeatureFlag, FeatureFlagsRootState, useFeatureFlag } from '@suite-native/feature-flags';
-import { isCoinWithTokens } from '@suite-native/tokens';
 
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
-import { IncludeTokensToggle } from './IncludeTokensToggle';
 import { CoinPriceCard } from './CoinPriceCard';
 import { selectIsNetworkSendFlowEnabled } from '../selectors';
 
 type TransactionListHeaderProps = {
     accountKey: AccountKey;
-    areTokensIncluded: boolean;
-    toggleIncludeTokenTransactions: () => void;
     tokenContract?: TokenAddress;
 };
 
@@ -90,12 +86,7 @@ const TransactionListHeaderContent = ({
 };
 
 export const TransactionListHeader = memo(
-    ({
-        accountKey,
-        areTokensIncluded,
-        toggleIncludeTokenTransactions,
-        tokenContract,
-    }: TransactionListHeaderProps) => {
+    ({ accountKey, tokenContract }: TransactionListHeaderProps) => {
         const navigation = useNavigation<AccountsNavigationProps>();
         const [isDeviceConnectEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
@@ -135,7 +126,6 @@ export const TransactionListHeader = memo(
         };
 
         const isTokenDetail = !!tokenContract;
-        const canHaveTokens = !isTokenDetail && isCoinWithTokens(account.symbol);
         const isPriceCardDisplayed = !isTestnetAccount && !isTokenDetail;
 
         const isSendButtonDisplayed =
@@ -196,14 +186,6 @@ export const TransactionListHeader = memo(
                         </>
                     )}
                 </VStack>
-
-                {canHaveTokens && accountHasTransactions && (
-                    <IncludeTokensToggle
-                        networkSymbol={account.symbol}
-                        isToggled={areTokensIncluded}
-                        onToggle={toggleIncludeTokenTransactions}
-                    />
-                )}
             </Box>
         );
     },

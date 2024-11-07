@@ -10250,7 +10250,6 @@ __metadata:
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.53.1"
     react-native: "npm:0.76.1"
-    react-native-reanimated: "npm:3.16.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft

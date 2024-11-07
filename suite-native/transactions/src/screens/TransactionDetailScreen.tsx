@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import {
     BlockchainRootState,
     selectBlockchainExplorerBySymbol,
+    selectIsTransactionPending,
     selectTransactionByAccountKeyAndTxid,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
@@ -19,21 +20,12 @@ import {
 } from '@suite-native/navigation';
 import { useNativeStyles } from '@trezor/styles';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
-import { TokenAddress, TokenSymbol, TransactionType } from '@suite-common/wallet-types';
+import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 
 import { TransactionDetailData } from '../components/TransactionDetail/TransactionDetailData';
 import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';
-
-const typeHeaderMap = {
-    recv: 'Received',
-    sent: 'Sent',
-    contract: 'Contract',
-    self: 'Self',
-    joint: 'Joint',
-    failed: 'Failed',
-    unknown: 'Unknown',
-} as const satisfies Record<TransactionType, string>;
+import { TransactionName } from '../components/TransactionName';
 
 export const TransactionDetailScreen = ({
     route,
@@ -46,6 +38,9 @@ export const TransactionDetailScreen = ({
     ) as WalletAccountTransaction;
     const blockchainExplorer = useSelector((state: BlockchainRootState) =>
         selectBlockchainExplorerBySymbol(state, transaction?.symbol),
+    );
+    const isPending = useSelector((state: TransactionsRootState) =>
+        selectIsTransactionPending(state, txid, accountKey),
     );
 
     const tokenTransfer = transaction?.tokens.find(token => token.contract === tokenContract);
@@ -82,7 +77,12 @@ export const TransactionDetailScreen = ({
                             <Translation
                                 id="transactions.detail.header"
                                 values={{
-                                    transactionType: _ => typeHeaderMap[transaction.type],
+                                    transactionType: _ => (
+                                        <TransactionName
+                                            transaction={transaction}
+                                            isPending={isPending}
+                                        />
+                                    ),
                                 }}
                             />
                         </Text>

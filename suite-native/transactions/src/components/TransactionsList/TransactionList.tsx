@@ -5,8 +5,10 @@ import { RefreshControl } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 
 import {
+    AccountsRootState,
     fetchAndUpdateAccountThunk,
     fetchTransactionsPageThunk,
+    selectAccountByKey,
     selectIsLoadingAccountTransactions,
     selectIsPageAlreadyFetched,
     TransactionsRootState,
@@ -16,12 +18,13 @@ import { groupTransactionsByDate, isPending, MonthKey } from '@suite-common/wall
 import { Box } from '@suite-native/atoms';
 import {
     TypedTokenTransfer,
-    selectAccountOrTokenTransactions,
+    selectAccountTransactionsWithTokenTransfers,
     WalletAccountTransaction,
     TokensRootState,
 } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { arrayPartition } from '@trezor/utils';
+import { getTxsPerPage } from '@suite-common/suite-utils';
 
 import { TransactionsEmptyState } from '../TransactionsEmptyState';
 import { TokenTransferListItem } from './TokenTransferListItem';
@@ -30,7 +33,6 @@ import { TransactionListItem } from './TransactionListItem';
 import { TransactionsListFooter } from './TransactionsListFooter';
 
 type AccountTransactionProps = {
-    areTokensIncluded: boolean;
     listHeaderComponent: JSX.Element;
     accountKey: string;
     tokenContract?: TokenAddress;
@@ -45,7 +47,7 @@ type RenderSectionHeaderParams = {
 type RenderTransactionItemParams = {
     item: WalletAccountTransaction;
     accountKey: AccountKey;
-    areTokensIncluded: boolean;
+
     isFirst: boolean;
     isLast: boolean;
 };
@@ -54,10 +56,7 @@ type TypedTokenTransferWithTx = TypedTokenTransfer & {
     originalTransaction: WalletAccountTransaction;
 };
 
-type RenderTokenTransferItemParams = Omit<
-    RenderTransactionItemParams,
-    'areTokensIncluded' | 'item'
-> & {
+type RenderTokenTransferItemParams = Omit<RenderTransactionItemParams, 'item'> & {
     item: TypedTokenTransferWithTx;
     txid: string;
 };
@@ -94,14 +93,12 @@ const renderTransactionItem = ({
     isFirst,
     isLast,
     accountKey,
-    areTokensIncluded,
 }: RenderTransactionItemParams) => (
     <TransactionListItem
         transaction={item}
         isFirst={isFirst}
         isLast={isLast}
         accountKey={accountKey}
-        areTokensIncluded={areTokensIncluded}
     />
 );
 
@@ -126,10 +123,7 @@ const renderSectionHeader = ({ section: { monthKey } }: RenderSectionHeaderParam
     <TransactionListGroupTitle key={monthKey} monthKey={monthKey} />
 );
 
-export const TX_PER_PAGE = 25;
-
 export const TransactionList = ({
-    areTokensIncluded,
     listHeaderComponent,
     accountKey,
     tokenContract,
@@ -141,41 +135,44 @@ export const TransactionList = ({
         applyStyle,
         utils: { colors },
     } = useNativeStyles();
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
     const isLoadingTransactions = useSelector((state: TransactionsRootState) =>
         selectIsLoadingAccountTransactions(state, accountKey),
     );
 
-    const transactions = useSelector((state: TokensRootState) =>
-        selectAccountOrTokenTransactions(
-            state,
-            accountKey,
-            tokenContract ?? null,
-            areTokensIncluded,
-        ),
-    );
-    const isFirstPageAlreadyFetched = useSelector((state: TransactionsRootState) =>
-        selectIsPageAlreadyFetched(state, accountKey, 1, TX_PER_PAGE),
+    const transactions = useSelector((state: TransactionsRootState & TokensRootState) =>
+        selectAccountTransactionsWithTokenTransfers(state, accountKey),
     );
 
-    const initialPageNumber = Math.ceil((transactions.length || 1) / TX_PER_PAGE);
+    const txnsPerPage = account ? getTxsPerPage(account.networkType) : 25;
+
+    const isFirstPageAlreadyFetched = useSelector((state: TransactionsRootState) =>
+        selectIsPageAlreadyFetched(state, accountKey, 1, txnsPerPage),
+    );
+
+    const initialPageNumber = Math.ceil((transactions.length || 1) / txnsPerPage);
     const [page, setPage] = useState(initialPageNumber);
 
     useEffect(() => {
         // We need to check manually if the first page was already fetched, because fetchTransactionsPageThunk will
         // always force refetch the first page, but we want to save resources and not do that if it's not necessary.
         if (!isFirstPageAlreadyFetched) {
-            dispatch(fetchTransactionsPageThunk({ accountKey, page: 1, perPage: TX_PER_PAGE }));
+            dispatch(fetchTransactionsPageThunk({ accountKey, page: 1, perPage: txnsPerPage }));
         }
-    }, [dispatch, accountKey, isFirstPageAlreadyFetched]);
+    }, [dispatch, accountKey, isFirstPageAlreadyFetched, txnsPerPage]);
 
-    const handleOnEndReached = useCallback(async () => {
+    const handleOnLoadMore = useCallback(async () => {
         try {
-            await dispatch(fetchTransactionsPageThunk({ accountKey, page, perPage: TX_PER_PAGE }));
+            await dispatch(
+                fetchTransactionsPageThunk({ accountKey, page: page + 1, perPage: txnsPerPage }),
+            );
             setPage((currentPage: number) => currentPage + 1);
         } catch {
             // TODO handle error state (show retry button or something
         }
-    }, [page, accountKey, dispatch]);
+    }, [dispatch, accountKey, page, txnsPerPage]);
 
     const handleOnRefresh = useCallback(async () => {
         try {
@@ -186,7 +183,7 @@ export const TransactionList = ({
                     fetchTransactionsPageThunk({
                         accountKey,
                         page: 1,
-                        perPage: TX_PER_PAGE,
+                        perPage: txnsPerPage,
                         forceRefetch: true,
                     }),
                 ),
@@ -196,7 +193,7 @@ export const TransactionList = ({
         }
         // It's usually too fast so loading indicator only flashes for a moment, which is not nice
         setTimeout(() => setIsRefreshing(false), 1500);
-    }, [dispatch, accountKey]);
+    }, [dispatch, accountKey, txnsPerPage]);
 
     const data = useMemo((): TransactionListItem[] => {
         // groupTransactionsByDate now sorts also pending transactions, if they have blockTime set.
@@ -263,12 +260,11 @@ export const TransactionList = ({
                 : renderTransactionItem({
                       item,
                       accountKey,
-                      areTokensIncluded,
                       isFirst: isFirstInSection,
                       isLast: isLastInSection,
                   });
         },
-        [data, accountKey, areTokensIncluded],
+        [data, accountKey],
     );
 
     return (
@@ -283,7 +279,7 @@ export const TransactionList = ({
                     <TransactionsListFooter
                         accountKey={accountKey}
                         isLoading={isLoadingTransactions}
-                        onButtonPress={handleOnEndReached}
+                        onButtonPress={handleOnLoadMore}
                     />
                 }
                 refreshControl={

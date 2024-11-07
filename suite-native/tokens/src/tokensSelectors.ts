@@ -1,9 +1,8 @@
-import { A, G, pipe } from '@mobily/ts-belt';
+import { A, pipe } from '@mobily/ts-belt';
 
 import {
     filterKnownTokens,
     getSimpleCoinDefinitionsByNetwork,
-    isTokenDefinitionKnown,
     selectIsSpecificCoinDefinitionKnown,
     selectTokenDefinitions,
     TokenDefinitionsRootState,
@@ -146,84 +145,23 @@ export const selectAnyOfTokensIsKnown = (
     return result;
 };
 
-const isNotZeroAmountTransfer = (tokenTransfer: TokenTransfer) =>
-    tokenTransfer.amount !== '' && tokenTransfer.amount !== '0';
-
-/** Is not a transaction with zero amount and no internal transfers. */
-const isNotEmptyTransaction = (transaction: WalletAccountTransaction) =>
-    transaction.amount !== '0' ||
-    (G.isArray(transaction.internalTransfers) && A.isNotEmpty(transaction.internalTransfers));
-
-const isTransactionWithTokenTransfers = (transaction: WalletAccountTransaction) =>
-    G.isArray(transaction.tokens) && A.isNotEmpty(transaction.tokens);
-
-const selectAccountTransactionsWithTokensWithFiatRates = createMemoizedSelector(
-    [
-        selectAccountTransactions,
-        selectTokenDefinitions,
-        (_state, _accountKey: AccountKey, areTokenOnlyTransactionsIncluded: boolean) =>
-            areTokenOnlyTransactionsIncluded,
-    ],
-    (
-        transactions,
-        tokenDefinitions,
-        areTokenOnlyTransactionsIncluded,
-    ): WalletAccountTransaction[] => {
-        return pipe(
+export const selectAccountTransactionsWithTokenTransfers = createMemoizedSelector(
+    [selectAccountTransactions],
+    (transactions): WalletAccountTransaction[] =>
+        pipe(
             transactions,
-            A.map(transaction => {
-                const tokenDefinitionsForNetwork = getSimpleCoinDefinitionsByNetwork(
-                    tokenDefinitions,
-                    transaction.symbol,
-                );
-
-                return {
-                    ...transaction,
-                    tokens: pipe(
-                        transaction?.tokens ?? [],
-                        A.filter(isNotZeroAmountTransfer),
-                        A.filter(
-                            token =>
-                                !!isTokenDefinitionKnown(
-                                    tokenDefinitionsForNetwork,
-                                    transaction.symbol,
-                                    token.contract,
-                                ),
-                        ),
-                        A.map((tokenTransfer: TokenTransfer) => ({
-                            ...tokenTransfer,
-                            symbol: tokenTransfer.symbol,
-                        })),
-                    ) as TypedTokenTransfer[],
-                };
-            }),
-            A.filter(
-                transaction =>
-                    isNotEmptyTransaction(transaction) ||
-                    (areTokenOnlyTransactionsIncluded &&
-                        isTransactionWithTokenTransfers(transaction)),
-            ),
-            returnStableArrayIfEmpty,
-        );
-    },
+            A.map(transaction => ({
+                ...transaction,
+                tokens: pipe(
+                    transaction?.tokens ?? [],
+                    A.map((tokenTransfer: TokenTransfer) => ({
+                        ...tokenTransfer,
+                        symbol: tokenTransfer.symbol,
+                    })),
+                ) as TypedTokenTransfer[],
+            })),
+        ) as WalletAccountTransaction[],
 );
-
-export const selectAccountOrTokenTransactions = (
-    state: TokensRootState,
-    accountKey: AccountKey,
-    tokenAddress: TokenAddress | null,
-    areTokenOnlyTransactionsIncluded: boolean,
-): WalletAccountTransaction[] => {
-    if (tokenAddress) {
-        return selectAccountTokenTransactions(state, accountKey, tokenAddress);
-    }
-
-    return selectAccountTransactionsWithTokensWithFiatRates(
-        state,
-        accountKey,
-        areTokenOnlyTransactionsIncluded,
-    ) as WalletAccountTransaction[];
-};
 
 export const selectAccountsKnownTokens = createMemoizedSelector(
     [selectAccountByKey, selectTokenDefinitions],

@@ -822,6 +822,22 @@ export const en = {
             toggleTokens: 'Include tokens',
             title: 'Note, your {networkName} balance doesn’t include tokens.',
         },
+        name: {
+            received: 'Received',
+            receiving: 'Receiving',
+            sent: 'Sent',
+            sending: 'Sending',
+            pending: 'Pending',
+            contract: 'Contract',
+            self: 'Self',
+            joint: 'Joined',
+            failed: 'Failed',
+            unknown: 'Unknown',
+            withdrawal: 'Rewards withdrawal',
+            stakeDelegation: 'Stake delegation',
+            stakeRegistration: 'Registration of a stake address',
+            stakeDeregistration: 'Deregistration of a stake address',
+        },
     },
     device: {
         title: {
