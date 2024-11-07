@@ -14,6 +14,7 @@ export const ModalEnvironment = ({
     children,
     alignment,
 }: ModalEnvironmentProps) => (
+    // eslint-disable-next-line jsx-a11y/no-autofocus
     <FocusLock autoFocus={false}>
         <Backdrop onClick={onClickBackdrop} alignment={alignment}>
             {children}

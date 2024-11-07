@@ -1,4 +1,5 @@
 import globals from 'globals';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
 
 import { reactConfig } from './reactConfig.mjs';
 import { javascriptConfig } from './javascriptConfig.mjs';
@@ -48,6 +49,7 @@ export const eslint = [
     ...jestConfig,
     ...localRulesConfig,
     ...chaiFriendlyConfig,
+    jsxA11y.flatConfigs.recommended,
 
     // Tests
     {

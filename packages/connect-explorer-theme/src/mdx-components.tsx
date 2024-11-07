@@ -224,6 +224,7 @@ export const getComponents = ({
             return <section {...props} />;
         },
         h1: props => (
+            // eslint-disable-next-line jsx-a11y/heading-has-content
             <h1
                 className="nx-mt-2 nx-mb-2 nx-text-4xl nx-font-bold nx-tracking-tight nx-text-slate-900 dark:nx-text-slate-100"
                 {...props}
