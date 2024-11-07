@@ -69,8 +69,7 @@ jobs:
     outputs:
       dailyMatrix: ${{ steps.set-matrix-daily.outputs.dailyMatrix }}
       otherDevicesMatrix: ${{ steps.set-matrix-other-devices.outputs.otherDevicesMatrix }}
-      legacyFirmwareMatrix: ${{ steps.set-matrix-legacy-firmware.outputs.legacyFirmwareMatrix }}
-      canaryFirmwareMatrix: ${{ steps.set-matrix-canary-firmware.outputs.canaryFirmwareMatrix }}
+      allFwsMatrix: ${{ steps.set-matrix-all-firmwares.outputs.allFwsMatrix }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -79,13 +78,9 @@ jobs:
         id: set-matrix-daily
         run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=all --groups=api,api-flaky --cache_tx=true --transport=Bridge)" >> $GITHUB_OUTPUT
 
-      - name: Set legacy devices matrix
-        id: set-matrix-legacy-firmware
-        run: echo "legacyFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2.3.0 --env=all --groups=all --cache_tx=false --transport=Bridge)" >> $GITHUB_OUTPUT
-
-      - name: Set canary devices matrix
-        id: set-matrix-canary-firmware
-        run: echo "canaryFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-main --env=all --groups=all --cache_tx=false --transport=Bridge)" >> $GITHUB_OUTPUT
+      - name: Set all firmwares matrix
+        id: set-matrix-all-firmwares
+        run: echo "allFwsMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=all --env=all --groups=all --cache_tx=false --transport=Bridge)" >> $GITHUB_OUTPUT
 
       - name: Set other devices matrix
         id: set-matrix-other-devices
@@ -128,41 +123,23 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
 
-  legacy-fw:
+  all-fws:
     needs: [build, set-matrix]
-    name: legacy-fw ${{ matrix.key }}
+    name: all-fws ${{ matrix.key }} ${{ matrix.firmware }}
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       testPattern: ${{ matrix.groups.pattern }}
       includeFilter: ${{ matrix.groups.includeFilter }}
       testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.groups.pattern }}-${{ matrix.groups.name }}-${{ matrix.env }}
+      testDescription: ${{ matrix.firmware }}-${{ matrix.groups.pattern }}-${{ matrix.groups.name }}-${{ matrix.env }}
       cache_tx: ${{ matrix.cache_tx }}
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.set-matrix.outputs.legacyFirmwareMatrix) }}
-
-  canary-fw:
-    needs: [build, set-matrix]
-    name: canary-fw ${{ matrix.key }}
-    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      testPattern: ${{ matrix.groups.pattern }}
-      includeFilter: ${{ matrix.groups.includeFilter }}
-      testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.groups.pattern }}-${{ matrix.groups.name }}-${{ matrix.env }}
-      cache_tx: ${{ matrix.cache_tx }}
-      transport: ${{ matrix.transport }}
-      testEnv: ${{ matrix.env }}
-      testFirmwareModel: ${{ matrix.model }}
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.set-matrix.outputs.canaryFirmwareMatrix) }}
+      matrix: ${{ fromJson(needs.set-matrix.outputs.allFwsMatrix) }}
 
   all-models-api:
     needs: [build, set-matrix]
