@@ -109,13 +109,7 @@ export const RootStackNavigator = () => {
                 options={{ animation: 'slide_from_bottom' }}
             />
             <RootStack.Screen name={RootStackRoutes.SendStack} component={SendStackNavigator} />
-            <RootStack.Screen
-                name={RootStackRoutes.ConnectPopup}
-                component={ConnectPopupScreen}
-                options={{
-                    presentation: 'fullScreenModal',
-                }}
-            />
+            <RootStack.Screen name={RootStackRoutes.ConnectPopup} component={ConnectPopupScreen} />
         </RootStack.Navigator>
     );
 };
