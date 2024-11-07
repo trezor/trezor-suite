@@ -29,6 +29,7 @@
         { "path": "../react-utils" },
         { "path": "../theme" },
         { "path": "../urls" },
-        { "path": "../utils" }
+        { "path": "../utils" },
+        { "path": "../eslint" }
     ]
 }

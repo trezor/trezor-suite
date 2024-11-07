@@ -16,6 +16,9 @@
             "path": "../utils"
         },
         {
+            "path": "../eslint"
+        },
+        {
             "path": "../trezor-user-env-link"
         }
     ]

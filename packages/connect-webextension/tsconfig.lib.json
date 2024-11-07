@@ -20,6 +20,9 @@
             "path": "../utils"
         },
         {
+            "path": "../eslint"
+        },
+        {
             "path": "../node-utils"
         },
         {

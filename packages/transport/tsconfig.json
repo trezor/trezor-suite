@@ -8,6 +8,7 @@
         { "path": "../protobuf" },
         { "path": "../protocol" },
         { "path": "../utils" },
+        { "path": "../eslint" },
         { "path": "../trezor-user-env-link" }
     ]
 }

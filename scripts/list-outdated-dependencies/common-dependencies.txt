@@ -43,6 +43,7 @@ fake-indexeddb
 file-saver
 fs-extra
 glob
+globals
 history
 html-webpack-plugin
 immer
@@ -52,6 +53,7 @@ jest-environment-jsdom
 jest-watch-typeahead
 jsdom
 minimatch
+node-fetch
 nx
 octokit
 patch-package

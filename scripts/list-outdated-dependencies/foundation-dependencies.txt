@@ -45,3 +45,16 @@ express
 # STORAGE
 idb
 broadcast-channel
+
+# ESLINT
+@eslint/js
+eslint
+typescript-eslint
+eslint-plugin-chai-friendly
+eslint-plugin-import
+eslint-plugin-jest
+eslint-plugin-jsx-a11y
+eslint-plugin-local-rules
+eslint-plugin-mdx
+eslint-plugin-react-hooks
+eslint-plugin-react

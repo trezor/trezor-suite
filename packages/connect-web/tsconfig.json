@@ -23,6 +23,7 @@
     "references": [
         { "path": "../connect" },
         { "path": "../connect-common" },
-        { "path": "../utils" }
+        { "path": "../utils" },
+        { "path": "../eslint" }
     ]
 }

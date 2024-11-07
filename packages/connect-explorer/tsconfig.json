@@ -24,6 +24,7 @@
         { "path": "../protobuf" },
         { "path": "../schema-utils" },
         { "path": "../theme" },
-        { "path": "../utils" }
+        { "path": "../utils" },
+        { "path": "../eslint" }
     ]
 }

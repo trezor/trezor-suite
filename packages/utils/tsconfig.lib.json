@@ -4,5 +4,9 @@
         "outDir": "lib"
     },
     "include": ["./src"],
-    "references": []
+    "references": [
+        {
+            "path": "../eslint"
+        }
+    ]
 }
