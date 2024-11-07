@@ -224,6 +224,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                                         onChange={changeCustomSlippage}
                                         width={100}
                                         align="center"
+                                        // eslint-disable-next-line jsx-a11y/no-autofocus
                                         autoFocus
                                     />
                                 )}

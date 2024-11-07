@@ -44,6 +44,7 @@ export const NewModalBackdrop = ({
     const modalTarget = useModalTarget();
 
     const backdrop = (
+        // eslint-disable-next-line jsx-a11y/no-autofocus
         <FocusLock autoFocus={false}>
             <Wrapper onClick={onClick} $alignment={alignment} $padding={padding}>
                 {children}

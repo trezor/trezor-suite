@@ -12,10 +12,12 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.13.0",
+        "@types/eslint-plugin-jsx-a11y": "^6",
         "eslint": "^9.13.0",
         "eslint-plugin-chai-friendly": "^1.0.1",
         "eslint-plugin-import": "^2.31.0",
         "eslint-plugin-jest": "^28.8.3",
+        "eslint-plugin-jsx-a11y": "^6.10.2",
         "eslint-plugin-local-rules": "^3.0.2",
         "eslint-plugin-react": "^7.37.2",
         "eslint-plugin-react-hooks": "^5.0.0",
