@@ -3,8 +3,8 @@ import { FieldErrors } from 'react-hook-form';
 import { getInputState } from '@suite-common/wallet-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { useFormatters } from '@suite-common/formatters';
-import { useDidUpdate } from '@trezor/react-utils';
 import { FormState } from '@suite-common/wallet-types';
+import { useDidUpdate } from '@trezor/react-utils';
 
 import { useTranslation } from 'src/hooks/suite';
 import { NumberInput } from 'src/components/suite';
@@ -28,7 +28,11 @@ import {
     coinmarketGetAccountLabel,
     getCoinmarketNetworkDecimals,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_MAX } from 'src/constants/wallet/coinmarket/form';
+import {
+    FORM_OUTPUT_AMOUNT,
+    FORM_OUTPUT_MAX,
+    FORM_SEND_CRYPTO_CURRENCY_SELECT,
+} from 'src/constants/wallet/coinmarket/form';
 import {
     CoinmarketAccountOptionsGroupOptionProps,
     CoinmarketCryptoListProps,
@@ -69,7 +73,9 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
             : (errors as FieldErrors<CoinmarketBuyFormProps>).cryptoInput;
     const networkSymbol = cryptoSelect?.value && cryptoIdToCoinSymbol(cryptoSelect?.value);
     const decimals = getCoinmarketNetworkDecimals({
-        sendCryptoSelect: cryptoSelect as CoinmarketAccountOptionsGroupOptionProps | undefined,
+        sendCryptoSelect: !isCoinmarketBuyContext(context)
+            ? context.getValues()[FORM_SEND_CRYPTO_CURRENCY_SELECT]
+            : undefined,
         network,
     });
 
