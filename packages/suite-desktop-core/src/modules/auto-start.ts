@@ -40,6 +40,11 @@ Terminal=false
 export const isAutoStartEnabled = () => {
     if (process.platform === 'linux') {
         return fs.existsSync(path.join(os.homedir(), LINUX_AUTOSTART_DIR, LINUX_AUTOSTART_FILE));
+    } else if (process.platform === 'win32') {
+        return (
+            app.getLoginItemSettings().openAtLogin ||
+            app.getLoginItemSettings().executableWillLaunchAtLogin
+        );
     } else {
         return app.getLoginItemSettings().openAtLogin;
     }
