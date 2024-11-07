@@ -26,12 +26,14 @@ export interface SelectAssetOptionCurrencyProps {
     contractAddress?: string; // CryptoId (contractAddress)
     networkName?: string;
 }
+
 export interface SelectAssetOptionGroupProps {
     type: 'group';
     label: string;
     networkName?: string;
     coingeckoId?: string;
 }
+
 export type SelectAssetOptionProps = SelectAssetOptionCurrencyProps | SelectAssetOptionGroupProps;
 
 export interface SelectAssetNetworkProps {
@@ -160,6 +162,7 @@ export const SelectAssetModal = ({
                     })}
                     value={search}
                     onChange={event => setSearch(event.target.value)}
+                    // eslint-disable-next-line jsx-a11y/no-autofocus
                     autoFocus
                     onClear={() => {
                         setSearch('');

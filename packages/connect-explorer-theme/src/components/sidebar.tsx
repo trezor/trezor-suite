@@ -109,6 +109,7 @@ export function Sidebar({
             {includePlaceholder && asPopover ? (
                 <div className="max-xl:nx-hidden nx-h-0 nx-w-64 nx-shrink-0" />
             ) : null}
+            {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
             <div
                 className={cn(
                     'motion-reduce:nx-transition-none [transition:background-color_1.5s_ease]',

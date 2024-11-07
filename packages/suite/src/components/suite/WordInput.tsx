@@ -71,6 +71,7 @@ export const WordInput = memo(() => {
     return (
         <SelectWrapper>
             <Select
+                // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus
                 isSearchable
                 isClearable={false}

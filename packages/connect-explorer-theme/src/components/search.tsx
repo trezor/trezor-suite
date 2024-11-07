@@ -155,6 +155,7 @@ export function Search({
             leaveFrom="nx-opacity-100"
             leaveTo="nx-opacity-0"
         >
+            {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
             <kbd
                 className={cn(
                     'nx-absolute nx-my-1.5 nx-select-none ltr:nx-right-1.5 rtl:nx-left-1.5',
@@ -240,6 +241,7 @@ export function Search({
     return (
         <div className={cn('nextra-search nx-relative md:nx-w-64', className)}>
             {renderList && (
+                // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
                 <div className="nx-fixed nx-inset-0 nx-z-10" onClick={() => setShow(false)} />
             )}
 
