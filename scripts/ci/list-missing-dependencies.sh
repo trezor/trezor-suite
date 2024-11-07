@@ -1,7 +1,7 @@
 #!/bin/bash
 # List dependencies missing from the domain lists.
 
-domains=("common" "connect" "mission" "mobile" "qa" "trends" "usability")
+domains=("common" "connect" "foundation" "mobile" "qa" "trends" "usability")
 
 dependencies_in_lists=()
 dependencies_missing_from_lists=()
@@ -42,7 +42,7 @@ for installed_package in "${all_packages_array[@]}"; do
             break
         fi
     done
-    
+
     if [[ "$found" == false ]]; then
         dependencies_missing_from_lists+=("$installed_package")
     fi
@@ -57,7 +57,7 @@ for listed_package in "${dependencies_in_lists[@]}"; do
             break
         fi
     done
-    
+
     if [[ "$found" == false ]]; then
         dependencies_listed_but_unused+=("$listed_package")
     fi
