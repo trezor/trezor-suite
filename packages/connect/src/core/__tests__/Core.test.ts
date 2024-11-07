@@ -7,7 +7,11 @@ import { initCoreState } from '../index';
 const { createTestTransport } = global.JestMocks;
 
 const getSettings = (partial: Partial<ConnectSettings> = {}) =>
-    parseConnectSettings({ transports: [createTestTransport()], ...partial });
+    parseConnectSettings({
+        transports: [createTestTransport()],
+        transportReconnect: false,
+        ...partial,
+    });
 
 describe('Core', () => {
     beforeAll(async () => {});

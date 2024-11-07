@@ -127,6 +127,7 @@ export const initTrezorConnect = async (
         debug: false,
         popup: false,
         pendingTransportEvent: true,
+        transportReconnect: false,
         connectSrc: process.env.TREZOR_CONNECT_SRC, // custom source for karma tests
         ...options,
     });
