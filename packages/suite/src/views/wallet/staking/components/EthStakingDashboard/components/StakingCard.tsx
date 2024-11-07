@@ -56,7 +56,6 @@ const ButtonsWrapper = styled.div`
     flex-wrap: wrap;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button).attrs(props => ({
     ...props,
     variant: 'tertiary',

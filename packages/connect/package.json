@@ -101,9 +101,11 @@
         "karma-jasmine-async": "^0.0.1",
         "karma-sourcemap-loader": "^0.4.0",
         "karma-webpack": "^5.0.1",
+        "node-fetch": "^3.3.2",
         "node-libs-browser": "^2.2.1",
         "ts-node": "^10.9.1",
         "tsx": "^4.16.3",
+        "web3-utils": "^4.3.2",
         "webpack": "^5.96.1",
         "ws": "^8.18.0"
     },

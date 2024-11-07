@@ -12,7 +12,6 @@ const Row = styled.div`
     gap: ${spacingsPx.xs};
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledParagraph = styled(Paragraph)<{ $color?: string }>`
     color: ${({ $color }) => $color};
 `;

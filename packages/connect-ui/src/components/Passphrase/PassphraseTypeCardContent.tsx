@@ -153,6 +153,7 @@ export const PassphraseTypeCardContent = ({
                                         ) : null
                                     }
                                     inputState={isPassphraseTooLong ? 'error' : undefined}
+                                    // eslint-disable-next-line jsx-a11y/no-autofocus
                                     autoFocus={!isAndroid()}
                                     innerAddon={
                                         <Icon

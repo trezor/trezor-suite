@@ -330,16 +330,16 @@ const coinjoinAccountAddTransactions =
     };
 
 /**
-Action called from coinjoinMiddleware as reaction to prepending tx creation.
-Prepending tx could be created either as result of successful CoinjoinRound (not broadcasted by suite)
-or as result of sendFormActions > addFakePendingTxThunk (broadcasted by suite)
-in both cases Account should:
-- exclude spent utxo
-- mark addresses as used
-- recalculate anonymity
-- recalculate balance
-Prepending txs have deadline (blockHeight) when they should be removed from UI.
-In case of adding a coinjoin transaction, log anonymity gain.
+ Action called from coinjoinMiddleware as reaction to prepending tx creation.
+ Prepending tx could be created either as result of successful CoinjoinRound (not broadcasted by suite)
+ or as result of sendFormActions > addFakePendingTxThunk (broadcasted by suite)
+ in both cases Account should:
+ - exclude spent utxo
+ - mark addresses as used
+ - recalculate anonymity
+ - recalculate balance
+ Prepending txs have deadline (blockHeight) when they should be removed from UI.
+ In case of adding a coinjoin transaction, log anonymity gain.
  */
 export const updatePendingAccountInfo =
     (accountKey: string) => async (dispatch: Dispatch, getState: GetState) => {

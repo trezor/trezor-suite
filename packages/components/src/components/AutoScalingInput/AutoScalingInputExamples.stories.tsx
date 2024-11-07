@@ -9,7 +9,6 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
 const BorderAutoScalingInput = styled(Input)`
     padding: 1px 5px;
     border-radius: 3px;
@@ -17,7 +16,6 @@ const BorderAutoScalingInput = styled(Input)`
     border-width: 1px;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
 const BorderlessAutoScalingInput = styled(Input)`
     padding: 1px 5px;
     border-style: solid;

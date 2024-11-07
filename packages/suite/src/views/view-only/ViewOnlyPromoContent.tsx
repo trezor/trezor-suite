@@ -58,12 +58,10 @@ const DeviceImage = styled(Image)`
     object-fit: contain;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
 const SmallDeviceImage = styled(DeviceImage)`
     width: 18px;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
 const LargeDeviceImage = styled(DeviceImage)`
     width: 93px;
 `;
