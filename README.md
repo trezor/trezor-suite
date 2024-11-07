@@ -29,8 +29,6 @@ Development is not possible on Windows. This can be circumvented by tools such a
 -   `yarn`
 -   `yarn build:libs`
 
-For troubleshooting of common issues, [see guide](https://docs.trezor.io/trezor-suite/misc/suite-setup-troubleshooting.html).
-
 It's recommended to enable `git config --global submodule.recurse true` so you don't need to run `git submodule update --init --recursive` every time when submodules are updated.
 
 > You don't need a Trezor device to get into the app, you can use emulator. There is a [Trezor User Env](https://github.com/trezor/trezor-user-env) to help you set it up and run emulator for any Trezor model 🎉
