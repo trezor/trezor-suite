@@ -6,7 +6,6 @@ import { Account } from '@suite-common/wallet-types';
 import { spacingsPx, zIndices, typography } from '@trezor/theme';
 import { H2 } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
-import { isTestnet } from '@suite-common/wallet-utils';
 
 import {
     MetadataLabeling,
@@ -143,12 +142,13 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                             <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />
                         </AmountUnitSwitchWrapper>
                     </CryptoBalance>
-                    {!isTestnet(symbol) && (
-                        <ForegroundWrapper>
-                            ≈&nbsp;
-                            <FiatValue amount={formattedBalance} symbol={symbol} />
-                        </ForegroundWrapper>
-                    )}
+                    <ForegroundWrapper>
+                        <FiatValue
+                            amount={formattedBalance}
+                            symbol={symbol}
+                            showApproximationIndicator
+                        />
+                    </ForegroundWrapper>
                 </AccountBalance>
             )}
         </DetailsContainer>

@@ -20,6 +20,7 @@ import {
     AccountTransaction,
     TokenTransfer,
     InternalTransfer,
+    TokenInfo,
 } from '@trezor/connect';
 import { SignOperator } from '@suite-common/suite-types';
 import { arrayPartition } from '@trezor/utils';
@@ -477,6 +478,9 @@ export const getTxOperation = (
 
 export const isNftTokenTransfer = (transfer: TokenTransfer) =>
     ['ERC1155', 'ERC721'].includes(transfer.standard || '');
+
+// TODO: TokenInfo should use TokenStandard type
+export const isNftToken = (token: TokenInfo) => ['ERC1155', 'ERC721'].includes(token.type || '');
 
 export const getNftTokenId = (transfer: TokenTransfer) =>
     // use 0 index, haven't found an example where multiTokenValues.length > 1

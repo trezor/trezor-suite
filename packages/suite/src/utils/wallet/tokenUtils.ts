@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Account, Rate, TokenAddress, RatesByKey } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/connect';
-import { getFiatRateKey, isTokenMatchesSearch } from '@suite-common/wallet-utils';
+import { getFiatRateKey, isNftToken, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
@@ -72,7 +72,7 @@ export const getTokens = (
     searchQuery?: string,
 ) => {
     // filter out NFT tokens until we implement them
-    const tokensWithoutNFTs = tokens.filter(token => !['ERC1155', 'ERC721'].includes(token.type));
+    const tokensWithoutNFTs = tokens.filter(token => !isNftToken(token));
 
     const hasCoinDefinitions = getNetworkFeatures(symbol).includes('coin-definitions');
 

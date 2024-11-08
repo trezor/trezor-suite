@@ -373,6 +373,10 @@ const messages = defineMessagesWithTypeCheck({
         defaultMessage: 'Search by name, symbol, network, or contract address',
         id: 'TR_SELECT_NAME_OR_ADDRESS',
     },
+    TR_SEARCH_TOKEN_IN_SEND_FORM_MODAL: {
+        defaultMessage: 'Search by name, symbol, or contract address',
+        id: 'TR_SEARCH_TOKEN_IN_SEND_FORM_MODAL',
+    },
     TR_TOKEN_NOT_FOUND: {
         defaultMessage: 'No token found',
         id: 'TR_TOKEN_NOT_FOUND',
@@ -9155,6 +9159,10 @@ const messages = defineMessagesWithTypeCheck({
     TR_PASSPHRASE_DESCRIPTION_ITEM3: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM3',
         defaultMessage: 'No one can recover it, not even Trezor Support',
+    },
+    TR_UNRECOGNIZED: {
+        id: 'TR_UNRECOGNIZED',
+        defaultMessage: 'Unrecognized',
     },
     TR_CONNECT_DEVICE_SEND_PROMO_TITLE: {
         id: 'TR_CONNECT_DEVICE_SEND_PROMO_TITLE',

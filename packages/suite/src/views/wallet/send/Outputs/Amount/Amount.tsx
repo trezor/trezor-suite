@@ -13,7 +13,7 @@ import {
     findToken,
 } from '@suite-common/wallet-utils';
 
-import { FiatValue, Translation, NumberInput, HiddenPlaceholder } from 'src/components/suite';
+import { FiatValue, Translation, NumberInput } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTranslation } from 'src/hooks/suite';
@@ -23,16 +23,14 @@ import {
     validateMin,
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
-import { formatTokenSymbol } from 'src/utils/wallet/tokenUtils';
 
-import { TokenSelect } from './TokenSelect';
 import { FiatInput } from './FiatInput';
 import { SendMaxSwitch } from './SendMaxSwitch';
 
-type AmountProps = {
+interface AmountProps {
     output: Partial<Output>;
     outputId: number;
-};
+}
 export const Amount = ({ output, outputId }: AmountProps) => {
     const { translationString } = useTranslation();
     const {
@@ -83,7 +81,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     }
 
     const withTokens = hasNetworkFeatures(account, 'tokens');
-    const symbolToUse = shouldSendInSats ? 'sat' : symbol.toUpperCase();
+    const displayNetworkSymbol = shouldSendInSats ? 'sat' : symbol.toUpperCase();
     const isLowAnonymity = isLowAnonymityWarning(outputError);
     const inputState = isLowAnonymity ? 'warning' : getInputState(error);
     const bottomText = isLowAnonymity ? undefined : error?.message;
@@ -129,13 +127,6 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         composeTransaction(amountName);
     };
 
-    const isTokenSelected = !!token;
-    const tokenBalance = isTokenSelected ? (
-        <HiddenPlaceholder>
-            {`${token.balance} ${formatTokenSymbol(token?.symbol || token.contract)}`}
-        </HiddenPlaceholder>
-    ) : undefined;
-
     const sendMaxSwitch = (
         <SendMaxSwitch
             isSetMaxActive={isSetMaxActive}
@@ -158,18 +149,8 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                     }
                     labelRight={isSetMaxVisible && (!isWithRate || isBelowLaptop) && sendMaxSwitch}
                     labelLeft={
-                        <Row gap={spacings.sm} alignItems="baseline">
+                        <Row>
                             <Translation id="AMOUNT" />
-                            {isTokenSelected && (
-                                <Text variant="tertiary" typographyStyle="label">
-                                    (
-                                    <Translation
-                                        id="TOKEN_BALANCE"
-                                        values={{ balance: tokenBalance }}
-                                    />
-                                    )
-                                </Text>
-                            )}
                         </Row>
                     }
                     bottomText={bottomText || null}
@@ -181,13 +162,11 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                     rules={cryptoAmountRules}
                     control={control}
                     innerAddon={
-                        withTokens ? (
-                            <TokenSelect output={output} outputId={outputId} />
-                        ) : (
-                            <Text variant="tertiary" typographyStyle="hint">
-                                {symbolToUse}
-                            </Text>
-                        )
+                        <Text variant="tertiary">
+                            {withTokens && token
+                                ? token?.symbol?.toUpperCase()
+                                : displayNetworkSymbol}
+                        </Text>
                     }
                 />
 
