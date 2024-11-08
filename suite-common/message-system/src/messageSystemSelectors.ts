@@ -2,6 +2,8 @@ import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/r
 import { Message, Category } from '@suite-common/suite-types';
 
 import { ContextDomain, FeatureDomain, MessageSystemRootState } from './messageSystemTypes';
+import { ExperimentIdType } from './experiment/experiments';
+import { ExperimentsItemUuidType } from './experiment';
 
 // Create app-specific selectors with correct types
 export const createMemoizedSelector = createWeakMapSelector.withTypes<MessageSystemRootState>();
@@ -165,7 +167,9 @@ export const selectAllValidExperiments = createMemoizedSelector(
     },
 );
 
-export const selectExperimentById = (id: string) =>
+export const selectExperimentById = (id: ExperimentIdType) =>
     createMemoizedSelector([selectAllValidExperiments], allValidExperiments =>
-        allValidExperiments.find(experiment => experiment.id === id),
+        allValidExperiments.find(
+            (experiment): experiment is ExperimentsItemUuidType => experiment.id === id,
+        ),
     );
