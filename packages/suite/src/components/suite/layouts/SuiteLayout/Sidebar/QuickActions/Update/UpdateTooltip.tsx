@@ -31,6 +31,7 @@ const SuiteIconRectangle = styled.div<{ $size: IconSize }>`
 `;
 
 const mapUpdateStatusToTranslation: Record<UpdateStatus, TranslationKey> = {
+    disconnected: 'TR_QUICK_ACTION_TOOLTIP_DEVICE_DISCONNECTED',
     'update-downloaded-manual': 'TR_QUICK_ACTION_TOOLTIP_UPDATE_AVAILABLE',
     'update-downloaded-auto-restart-to-update': 'TR_QUICK_ACTION_TOOLTIP_RESTART_TO_UPDATE',
     'up-to-date': 'TR_QUICK_ACTION_TOOLTIP_UP_TO_DATE',
