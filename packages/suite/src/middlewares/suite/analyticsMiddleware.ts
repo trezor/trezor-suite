@@ -1,4 +1,5 @@
 import { MiddlewareAPI } from 'redux';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { getPhysicalDeviceCount } from '@suite-common/suite-utils';
@@ -7,6 +8,11 @@ import {
     selectDevices,
     selectDevicesCount,
     authorizeDeviceThunk,
+    deviceActions,
+    firmwareActions,
+    handleFwHashError,
+    INVALID_HASH_ERROR,
+    firmwareUpdate,
 } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
@@ -54,6 +60,34 @@ const analyticsMiddleware =
                 type: EventType.SelectWalletType,
                 payload: { type: action.payload.device.walletNumber ? 'hidden' : 'standard' },
             });
+        }
+
+        if (handleFwHashError.fulfilled.match(action)) {
+            analytics.report({
+                type: EventType.FirmwareValidateHashError,
+                payload: {
+                    error: action.meta.arg.errorMessage,
+                },
+            });
+        }
+
+        if (isAnyOf(firmwareUpdate.fulfilled, firmwareUpdate.rejected)(action)) {
+            const { device, toBtcOnly, toFwVersion, error = '' } = action.payload ?? {};
+
+            if (device?.features) {
+                analytics.report({
+                    type: EventType.DeviceUpdateFirmware,
+                    payload: {
+                        model: device.features.internal_model,
+                        fromFwVersion:
+                            device?.firmware === 'none' ? 'none' : getFirmwareVersion(device),
+                        fromBlVersion: getBootloaderVersion(device),
+                        error,
+                        toBtcOnly,
+                        toFwVersion,
+                    },
+                });
+            }
         }
 
         switch (action.type) {
@@ -218,6 +252,24 @@ const analyticsMiddleware =
                         { anonymize: true },
                     );
                     api.dispatch(updateLastAnonymityReportTimestamp(action.payload.accountKey));
+                }
+                break;
+            }
+
+            case deviceActions.rememberDevice.type: {
+                analytics.report({
+                    type: action.payload.remember
+                        ? EventType.SwitchDeviceRemember
+                        : EventType.SwitchDeviceForget,
+                });
+                break;
+            }
+
+            case firmwareActions.setFirmwareUpdateError.type: {
+                if (action.payload === INVALID_HASH_ERROR) {
+                    analytics.report({
+                        type: EventType.FirmwareValidateHashMismatch,
+                    });
                 }
                 break;
             }

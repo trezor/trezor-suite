@@ -187,6 +187,15 @@ export const actions = [
                 { type: firmwareActions.cacheDevice.type, payload: bootloaderDevice },
                 { type: firmwareActions.setStatus.type, payload: 'error' },
                 { type: firmwareActions.setFirmwareUpdateError.type, payload: 'foo' },
+                {
+                    type: firmwareUpdate.rejected.type,
+                    payload: {
+                        device: bootloaderDevice,
+                        error: 'foo',
+                        toBtcOnly: false,
+                        toFwVersion: '2.0.0',
+                    },
+                },
             ],
         },
     },
@@ -217,6 +226,15 @@ export const actions = [
                 {
                     type: firmwareActions.setFirmwareUpdateError.type,
                     payload: 'Firmware install failed',
+                },
+                {
+                    type: firmwareUpdate.rejected.type,
+                    payload: {
+                        device: bootloaderDevice,
+                        error: 'Firmware install failed',
+                        toBtcOnly: false,
+                        toFwVersion: '2.0.0',
+                    },
                 },
             ],
         },

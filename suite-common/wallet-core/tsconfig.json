@@ -24,9 +24,6 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
-        {
-            "path": "../../packages/suite-analytics"
-        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]

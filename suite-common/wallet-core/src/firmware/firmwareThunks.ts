@@ -1,10 +1,4 @@
-import {
-    getBootloaderVersion,
-    getFirmwareVersion,
-    hasBitcoinOnlyFirmware,
-    isBitcoinOnlyDevice,
-} from '@trezor/device-utils';
-import { analytics, EventType } from '@trezor/suite-analytics';
+import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import TrezorConnect, { FirmwareType } from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
@@ -13,7 +7,7 @@ import { selectFirmware } from './firmwareReducer';
 import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
 import { getBinFilesBaseUrlThunk } from './getBinFilesBaseUrlThunk';
 
-const handleFwHashError = createThunk(
+export const handleFwHashError = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/handleFwHashError`,
     ({ device, errorMessage }: { device: TrezorDevice; errorMessage: string }, { dispatch }) => {
         // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
@@ -25,12 +19,6 @@ const handleFwHashError = createThunk(
                 `${errorMessage}. Unable to validate firmware hash. If you want to check authenticity of newly installed firmware please proceed to device settings and reinstall firmware.`,
             ),
         );
-        analytics.report({
-            type: EventType.FirmwareValidateHashError,
-            payload: {
-                error: errorMessage,
-            },
-        });
     },
 );
 
@@ -44,9 +32,6 @@ const handleFwHashMismatch = createThunk(
             dispatch(firmwareActions.setHashInvalid(device.id));
         }
         dispatch(firmwareActions.setFirmwareUpdateError(INVALID_HASH_ERROR));
-        analytics.report({
-            type: EventType.FirmwareValidateHashMismatch,
-        });
     },
 );
 
@@ -62,11 +47,27 @@ const handleFwHashValid = createThunk(
     },
 );
 
-export const firmwareUpdate = createThunk(
+type FirmwareUpdateProps = {
+    firmwareType?: FirmwareType;
+    binary?: ArrayBuffer;
+};
+
+type FirmwareUpdateResult = {
+    device?: TrezorDevice;
+    toFwVersion?: string;
+    toBtcOnly?: boolean;
+    error?: string;
+};
+
+export const firmwareUpdate = createThunk<
+    FirmwareUpdateResult,
+    FirmwareUpdateProps,
+    { rejectValue: FirmwareUpdateResult }
+>(
     `${FIRMWARE_MODULE_PREFIX}/firmwareUpdate`,
     async (
-        { firmwareType, binary }: { firmwareType?: FirmwareType; binary?: ArrayBuffer },
-        { dispatch, getState, extra },
+        { firmwareType, binary },
+        { dispatch, getState, extra, fulfillWithValue, rejectWithValue },
     ) => {
         dispatch(firmwareActions.setStatus('started'));
 
@@ -92,7 +93,9 @@ export const firmwareUpdate = createThunk(
             dispatch(firmwareActions.setStatus('error'));
             dispatch(firmwareActions.setFirmwareUpdateError('Device not connected'));
 
-            return;
+            return rejectWithValue({
+                error: 'Device not connected',
+            });
         }
 
         // Cache device when firmware installation starts so that we can reference the original firmware version and type during the installation process.
@@ -130,32 +133,22 @@ export const firmwareUpdate = createThunk(
             language: device.firmware === 'none' ? targetTranslationLanguage : undefined,
         });
 
-        // condition to satisfy TS
-        if (device.features) {
-            const targetProperties = binary
-                ? {}
-                : {
-                      toFwVersion: device?.firmwareRelease?.release.version.join('.'),
-                      toBtcOnly: toBitcoinOnlyFirmware,
-                  };
-            analytics.report({
-                type: EventType.DeviceUpdateFirmware,
-                payload: {
-                    model: device.features.internal_model,
-                    fromFwVersion:
-                        device?.firmware === 'none' ? 'none' : getFirmwareVersion(device),
-                    fromBlVersion: getBootloaderVersion(device),
-                    error: !firmwareUpdateResponse.success
-                        ? firmwareUpdateResponse.payload.error
-                        : '',
-                    ...targetProperties,
-                },
-            });
-        }
+        const targetProperties = binary
+            ? {}
+            : {
+                  toFwVersion: device?.firmwareRelease?.release.version.join('.'),
+                  toBtcOnly: toBitcoinOnlyFirmware,
+              };
 
         if (!firmwareUpdateResponse.success) {
             dispatch(firmwareActions.setStatus('error'));
             dispatch(firmwareActions.setFirmwareUpdateError(firmwareUpdateResponse.payload.error));
+
+            return rejectWithValue({
+                device,
+                error: firmwareUpdateResponse.payload.error,
+                ...targetProperties,
+            });
         } else {
             const { check } = firmwareUpdateResponse.payload;
             if (check === 'mismatch') {
@@ -172,6 +165,11 @@ export const firmwareUpdate = createThunk(
             } else {
                 dispatch(handleFwHashValid(device));
             }
+
+            return fulfillWithValue({
+                device,
+                ...targetProperties,
+            });
         }
     },
 );

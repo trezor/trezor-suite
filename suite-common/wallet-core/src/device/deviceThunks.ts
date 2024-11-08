@@ -11,7 +11,6 @@ import TrezorConnect, {
     DeviceState,
 } from '@trezor/connect';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     sortByTimestamp,
@@ -87,20 +86,15 @@ export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void
  */
 export const toggleRememberDevice = createThunk(
     `${DEVICE_MODULE_PREFIX}/toggleRememberDevice`,
-    ({ device, forceRemember }: { device: TrezorDevice; forceRemember?: true }, { dispatch }) => {
-        analytics.report({
-            type: device.remember ? EventType.SwitchDeviceForget : EventType.SwitchDeviceRemember,
-        });
-
-        return dispatch(
+    ({ device, forceRemember }: { device: TrezorDevice; forceRemember?: true }, { dispatch }) =>
+        dispatch(
             deviceActions.rememberDevice({
                 device,
                 remember: !device.remember || !!forceRemember,
                 // if device is already remembered, do not force it, it would remove the remember on return to suite
                 forceRemember: device.remember ? undefined : forceRemember,
             }),
-        );
-    },
+        ),
 );
 
 export type CreateDeviceInstanceError = {
