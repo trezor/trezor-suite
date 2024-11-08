@@ -55,13 +55,15 @@ export const TransactionDetailHeader = ({
     const isPendingTx = isPending(transaction);
     const isFailedTx = transaction.type === 'failed';
     const signValue = getTransactionValueSign(tokenTransfer?.type ?? transaction.type);
+    const isTokenOnlyTransaction = transaction.amount === '0' && transaction.tokens.length !== 0;
+    const txType = isTokenOnlyTransaction ? transaction.tokens[0].type : type;
 
     return (
         <DiscreetTextTrigger>
             <Box alignItems="center">
                 <VStack spacing="sp16" alignItems="center" justifyContent="center">
                     <TransactionIcon
-                        transactionType={type}
+                        transactionType={txType}
                         isAnimated={isPendingTx}
                         containerSize={ICON_SIZE}
                         iconSize="extraLarge"
@@ -86,7 +88,7 @@ export const TransactionDetailHeader = ({
                         )
                     )}
 
-                    <Box>
+                    <Box flexDirection="row">
                         {!isFailedTx && (
                             <SignValueFormatter
                                 color="textDefault"
