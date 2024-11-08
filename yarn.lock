@@ -9622,6 +9622,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/device-manager@workspace:suite-native/device-manager"
   dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/redux-utils": "workspace:*"
