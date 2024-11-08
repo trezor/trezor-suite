@@ -4,15 +4,11 @@ import styled from 'styled-components';
 
 import { AssetLogo, Row, Tooltip, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
+import { Network } from '@suite-common/wallet-config';
 
-import { SelectAssetNetworkProps, SelectAssetSearchCategoryType } from './SelectAssetModal';
 import { CheckableTag } from './CheckableTag';
 
-interface NetworkTabsWrapperProps {
-    $elevation: Elevation;
-}
-
-const NetworkTabsWrapper = styled.div<NetworkTabsWrapperProps>`
+const NetworkTabsWrapper = styled.div<{ $elevation: Elevation }>`
     margin-left: -${spacingsPx.md};
     width: calc(100% + ${spacings.md * 2}px);
     padding: ${spacings.zero} ${spacingsPx.md} ${spacingsPx.lg};
@@ -20,19 +16,26 @@ const NetworkTabsWrapper = styled.div<NetworkTabsWrapperProps>`
         ${({ theme, $elevation }) => mapElevationToBorder({ $elevation, theme })};
 `;
 
+export type NetworkFilterCategory = {
+    name: Network['name'];
+    symbol: Network['symbol'];
+    coingeckoId: Network['coingeckoId'];
+    coingeckoNativeId?: Network['coingeckoNativeId'];
+};
+
+export type SelectAssetSearchCategory = {
+    coingeckoId: string;
+    coingeckoNativeId?: string;
+} | null;
+
 interface NetworkTabsProps {
-    networkCategories: SelectAssetNetworkProps[];
+    tabs: NetworkFilterCategory[];
+    activeTab: SelectAssetSearchCategory;
+    setActiveTab: (value: SelectAssetSearchCategory) => void;
     networkCount: number;
-    searchCategory: SelectAssetSearchCategoryType;
-    setSearchCategory: (value: SelectAssetSearchCategoryType) => void;
 }
 
-export const NetworkTabs = ({
-    networkCategories,
-    networkCount,
-    searchCategory,
-    setSearchCategory,
-}: NetworkTabsProps) => {
+export const NetworkTabs = ({ tabs, activeTab, setActiveTab, networkCount }: NetworkTabsProps) => {
     const { elevation } = useElevation();
 
     // TODO: FormattedMessage - resolve messages sharing https://github.com/trezor/trezor-suite/issues/5325}
@@ -41,9 +44,9 @@ export const NetworkTabs = ({
             <Row gap={spacings.xs} flexWrap="wrap">
                 <CheckableTag
                     $elevation={elevation}
-                    $variant={searchCategory === null ? 'primary' : 'tertiary'}
+                    $variant={activeTab === null ? 'primary' : 'tertiary'}
                     onClick={() => {
-                        setSearchCategory(null);
+                        setActiveTab(null);
                     }}
                 >
                     <Tooltip
@@ -62,26 +65,24 @@ export const NetworkTabs = ({
                         />
                     </Tooltip>
                 </CheckableTag>
-                {networkCategories.map(network => (
+                {tabs.map(network => (
                     <CheckableTag
                         $elevation={elevation}
                         $variant={
-                            searchCategory?.coingeckoId === network.coingeckoId
-                                ? 'primary'
-                                : 'tertiary'
+                            activeTab?.coingeckoId === network.coingeckoId ? 'primary' : 'tertiary'
                         }
                         onClick={() => {
                             if (
-                                searchCategory?.coingeckoId === network.coingeckoId &&
-                                searchCategory?.coingeckoNativeId === network.coingeckoNativeId
+                                activeTab?.coingeckoId === network.coingeckoId &&
+                                activeTab?.coingeckoNativeId === network.coingeckoNativeId
                             ) {
-                                setSearchCategory(null);
+                                setActiveTab(null);
 
                                 return;
                             }
 
                             if (network.coingeckoId) {
-                                setSearchCategory({
+                                setActiveTab({
                                     coingeckoId: network.coingeckoId,
                                     coingeckoNativeId: network.coingeckoNativeId,
                                 });

@@ -26,7 +26,8 @@ function toCryptoOption(cryptoId: CryptoId, coinInfo: CoinInfo): CoinmarketCrypt
         label: coinInfo.symbol.toUpperCase(),
         cryptoName: coinInfo.name,
         coingeckoId: networkId,
-        contractAddress,
+        contractAddress: contractAddress || null,
+        networkSymbol: coinInfo.symbol,
     };
 }
 
@@ -34,14 +35,16 @@ const sortPopularCurrencies = (
     a: CoinmarketCryptoSelectItemProps,
     b: CoinmarketCryptoSelectItemProps,
 ) => {
-    const order = ['bitcoin', 'ethereum', 'litecoin', 'cardano', 'solana'];
+    if (a.coingeckoId && b.coingeckoId) {
+        const order = ['bitcoin', 'ethereum', 'litecoin', 'cardano', 'solana'];
 
-    const indexA = order.indexOf(a.coingeckoId);
-    const indexB = order.indexOf(b.coingeckoId);
+        const indexA = order.indexOf(a.coingeckoId);
+        const indexB = order.indexOf(b.coingeckoId);
 
-    if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-    if (indexA !== -1) return -1;
-    if (indexB !== -1) return 1;
+        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+        if (indexA !== -1) return -1;
+        if (indexB !== -1) return 1;
+    }
 
     return 0;
 };
@@ -159,8 +162,10 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
                 type: 'currency',
                 value: coingeckoId as CryptoId,
                 label: symbol.toUpperCase(),
+                networkSymbol: symbol.toUpperCase(),
                 cryptoName: name,
                 coingeckoId,
+                contractAddress: null,
             };
 
             return item;

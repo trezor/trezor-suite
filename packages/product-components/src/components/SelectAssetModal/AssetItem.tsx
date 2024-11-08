@@ -1,7 +1,12 @@
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { spacings, spacingsPx } from '@trezor/theme';
-import { Badge, Column, Icon, Row, Text } from '@trezor/components';
+import { AssetLogo, Badge, Column, Row, Text } from '@trezor/components';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { getContractAddressForNetwork } from '@suite-common/wallet-utils';
+
+import { CoinLogo } from '../CoinLogo/CoinLogo';
+import { AssetOptionBaseProps } from './SelectAssetModal';
 
 const ClickableContainer = styled.div`
     cursor: pointer;
@@ -13,10 +18,6 @@ const ClickableContainer = styled.div`
     }
 `;
 
-const IconWrapper = styled.div`
-    cursor: pointer;
-`;
-
 const TextWrapper = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
@@ -26,67 +27,64 @@ const BadgeWrapper = styled.div`
     flex: none;
 `;
 
-type AssetItemProps = {
-    cryptoId: string;
-    name: string;
-    symbol: string;
-    badge: string | undefined;
-    logo: JSX.Element;
-    isFavorite?: boolean;
-    handleClick: (selectedAsset: string) => void;
-    onFavoriteClick?: (isFavorite: boolean) => void;
-};
+interface AssetItemProps extends AssetOptionBaseProps {
+    handleClick: (selectedAsset: AssetOptionBaseProps) => void;
+}
 
 export const AssetItem = ({
-    cryptoId,
-    name,
+    cryptoName,
     symbol,
     badge,
-    logo,
-    isFavorite = false,
+    networkSymbol,
+    coingeckoId,
+    shouldTryToFetch,
+    contractAddress,
     handleClick,
-    onFavoriteClick,
-}: AssetItemProps) => {
-    const theme = useTheme();
-
-    const handleFavoriteClick = onFavoriteClick ? () => onFavoriteClick(isFavorite) : undefined;
-
-    return (
-        <ClickableContainer onClick={() => handleClick(cryptoId)}>
-            <Row gap={spacings.sm}>
-                {logo}
-                <Column flex="1" alignItems="stretch">
-                    <Row gap={spacings.xs} alignItems="center">
-                        <TextWrapper>
-                            <Text typographyStyle="body" textWrap="nowrap">
-                                {name}
-                            </Text>
-                        </TextWrapper>
-                        {badge && (
-                            <BadgeWrapper>
-                                <Badge>{badge}</Badge>
-                            </BadgeWrapper>
-                        )}
-                    </Row>
-                    <Text typographyStyle="hint" variant="tertiary">
-                        {symbol}
-                    </Text>
-                </Column>
-
-                {handleFavoriteClick && (
-                    <IconWrapper>
-                        {isFavorite ? (
-                            <Icon
-                                name="starFilled"
-                                color={theme.backgroundAlertYellowBoldAlt}
-                                onClick={handleFavoriteClick}
-                            />
-                        ) : (
-                            <Icon name="star" onClick={handleFavoriteClick} />
-                        )}
-                    </IconWrapper>
-                )}
-            </Row>
-        </ClickableContainer>
-    );
-};
+}: AssetItemProps) => (
+    <ClickableContainer
+        onClick={() =>
+            handleClick({
+                symbol,
+                contractAddress: contractAddress ?? null,
+                networkSymbol,
+                coingeckoId,
+                cryptoName,
+            })
+        }
+    >
+        <Row gap={spacings.sm}>
+            {coingeckoId ? (
+                <AssetLogo
+                    size={24}
+                    coingeckoId={coingeckoId}
+                    contractAddress={
+                        networkSymbol && contractAddress
+                            ? getContractAddressForNetwork(networkSymbol, contractAddress)
+                            : undefined
+                    }
+                    placeholder={symbol.toUpperCase()}
+                    shouldTryToFetch={shouldTryToFetch}
+                />
+            ) : (
+                <CoinLogo size={24} symbol={networkSymbol as NetworkSymbol} />
+            )}
+            <Column flex="1" alignItems="stretch">
+                <Row gap={spacings.xs} alignItems="center">
+                    <TextWrapper>
+                        <Text typographyStyle="body" textWrap="nowrap">
+                            {cryptoName}
+                        </Text>
+                    </TextWrapper>
+                    {badge && (
+                        <BadgeWrapper>
+                            <Badge>{badge}</Badge>
+                        </BadgeWrapper>
+                    )}
+                </Row>
+                <Text typographyStyle="hint" variant="tertiary">
+                    {symbol.toUpperCase()}
+                </Text>
+            </Column>
+        </Row>
+    </ClickableContainer>
+);

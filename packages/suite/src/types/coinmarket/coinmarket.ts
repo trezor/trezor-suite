@@ -24,12 +24,8 @@ import { Timer } from '@trezor/react-utils';
 import { AccountsState } from '@suite-common/wallet-core';
 import { TokenDefinitionsState } from '@suite-common/token-definitions';
 import { AssetLogoProps } from '@trezor/components';
-import {
-    SelectAssetOptionCurrencyProps,
-    SelectAssetOptionGroupProps,
-    SelectAssetOptionProps,
-} from '@trezor/product-components/src/components/SelectAssetModal/SelectAssetModal';
 import { StaticSessionId } from '@trezor/connect';
+import { AssetOptionBaseProps } from '@trezor/product-components';
 
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
 import { State } from 'src/reducers/wallet/coinmarketReducer';
@@ -149,7 +145,7 @@ export interface CoinmarketPaymentMethodListProps extends Option {
 export interface CoinmarketCryptoListProps {
     value: CryptoId;
     label: string; // token shortcut
-    cryptoName: string | undefined; // full name
+    cryptoName?: string | undefined; // full name
 }
 
 export type CoinmarketUtilsProvidersProps = {
@@ -180,11 +176,15 @@ export interface CoinmarketCoinLogoProps {
 }
 
 export interface CoinmarketCryptoSelectItemProps
-    extends Omit<SelectAssetOptionCurrencyProps, 'value'> {
+    extends Omit<SelectAssetOptionCurrencyProps, 'value' | 'symbol'> {
     value: CryptoId;
+    label: string;
+    symbol?: string;
 }
 export interface CoinmarketCryptoSelectGroupProps extends SelectAssetOptionGroupProps {}
-export type CoinmarketCryptoSelectOptionProps = SelectAssetOptionProps;
+export type CoinmarketCryptoSelectOptionProps =
+    | CoinmarketCryptoSelectItemProps
+    | SelectAssetOptionGroupProps;
 
 export interface CoinmarketGetSortedAccountsProps {
     accounts: AccountsState;
@@ -279,3 +279,19 @@ export interface CoinmarketCryptoAmountProps {
     receiveCurrency: CryptoId | undefined;
     className?: string;
 }
+
+export interface SelectAssetOptionCurrencyProps extends AssetOptionBaseProps {
+    type: 'currency';
+    label?: string;
+    balance?: string;
+    networkName?: string;
+}
+
+export interface SelectAssetOptionGroupProps {
+    type: 'group';
+    label: string;
+    networkName?: string;
+    coingeckoId?: string;
+}
+
+export type SelectAssetOptionProps = SelectAssetOptionCurrencyProps | SelectAssetOptionGroupProps;

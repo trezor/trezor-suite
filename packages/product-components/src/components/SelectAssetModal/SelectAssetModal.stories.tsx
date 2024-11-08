@@ -6,8 +6,13 @@ import { action } from '@storybook/addon-actions';
 
 import { intermediaryTheme, NewModal } from '@trezor/components';
 
-import { SelectAssetModal as SelectAssetModalComponent, SelectAssetModalProps } from '../../index';
-import { selectAssetModalOptions, selectAssetModalNetworks } from './mockData';
+import { selectAssetModalOptions } from './SelectAssetModal.storiesData';
+import {
+    SelectAssetModalProps,
+    SelectAssetModal as SelectAssetModalComponent,
+    AssetProps,
+    ITEM_HEIGHT,
+} from './SelectAssetModal';
 
 const meta: Meta = {
     title: 'SelectAssetModal',
@@ -26,13 +31,24 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
+const getData = (options: typeof selectAssetModalOptions): AssetProps[] =>
+    options
+        .filter(item => item.type === 'currency')
+        .map(item => ({
+            symbol: item.label ?? item.symbol,
+            networkSymbol: item.networkSymbol,
+            cryptoName: item.cryptoName ?? item.symbol,
+            badge: item.badge ?? item.networkName,
+            coingeckoId: item.coingeckoId,
+            contractAddress: item.contractAddress,
+            height: ITEM_HEIGHT,
+        }));
+
 export const SelectAssetModal: StoryObj<SelectAssetModalProps> = {
     args: {
-        onSelectAssetModal: action('onSelectAssetModal'),
-        // onFavoriteClick: undefined,
+        onSelectAsset: action('onSelectAsset'),
         onClose: action('onClose'),
-        options: selectAssetModalOptions,
-        networkCategories: selectAssetModalNetworks,
+        options: getData(selectAssetModalOptions),
     },
     argTypes: {},
 };

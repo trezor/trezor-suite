@@ -1,61 +1,27 @@
-import { FormattedMessage } from 'react-intl';
+import { ReactNode } from 'react';
 
 import { Column, Paragraph, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { SelectAssetNetworkProps, SelectAssetSearchCategoryType } from './SelectAssetModal';
-
 interface AssetItemNotFoundProps {
-    searchCategory: SelectAssetSearchCategoryType;
-    networkCategories: SelectAssetNetworkProps[];
+    noItemsAvailablePlaceholder: { heading: ReactNode; body?: ReactNode };
     listHeight: string;
     listMinHeight: number;
 }
 
 export const AssetItemNotFound = ({
-    searchCategory,
-    networkCategories,
+    noItemsAvailablePlaceholder,
     listHeight,
     listMinHeight,
-}: AssetItemNotFoundProps) => {
-    // TODO: resolve messages sharing https://github.com/trezor/trezor-suite/issues/5325
-    const translations = searchCategory
-        ? {
-              heading: {
-                  id: 'TR_TOKEN_NOT_FOUND_ON_NETWORK',
-                  defaultMessage: 'Token not found on the {networkName} network',
-                  values: {
-                      networkName: networkCategories.find(
-                          category => category.coingeckoId === searchCategory.coingeckoId,
-                      )?.name,
-                  },
-              },
-              paragraph: {
-                  id: 'TR_TOKEN_TRY_DIFFERENT_SEARCH_OR_SWITCH',
-                  defaultMessage: 'Please try a different search or switch to another network.',
-              },
-          }
-        : {
-              heading: {
-                  id: 'TR_TOKEN_NOT_FOUND',
-                  defaultMessage: 'Token not found',
-              },
-              paragraph: {
-                  id: 'TR_TOKEN_TRY_DIFFERENT_SEARCH',
-                  defaultMessage: 'Please try a different search.',
-              },
-          };
-
-    return (
-        <Column
-            alignItems="center"
-            justifyContent="center"
-            height={listHeight}
-            minHeight={listMinHeight}
-        >
-            <Text typographyStyle="body">
-                <FormattedMessage {...translations.heading} />
-            </Text>
+}: AssetItemNotFoundProps) => (
+    <Column
+        alignItems="center"
+        justifyContent="center"
+        height={listHeight}
+        minHeight={listMinHeight}
+    >
+        <Text typographyStyle="body">{noItemsAvailablePlaceholder.heading}</Text>
+        {noItemsAvailablePlaceholder.body && (
             <Paragraph
                 align="center"
                 maxWidth={280}
@@ -66,9 +32,9 @@ export const AssetItemNotFound = ({
                 }}
             >
                 <Text variant="tertiary" typographyStyle="hint">
-                    <FormattedMessage {...translations.paragraph} />
+                    {noItemsAvailablePlaceholder.body}
                 </Text>
             </Paragraph>
-        </Column>
-    );
-};
+        )}
+    </Column>
+);
