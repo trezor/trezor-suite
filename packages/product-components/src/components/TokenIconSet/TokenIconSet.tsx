@@ -60,6 +60,7 @@ export const TokenIconSet = ({ network, tokens }: TokenIconSetProps) => {
                     contractAddress={getContractAddressForNetwork(network, token.contract)}
                     placeholder={token.symbol?.toUpperCase() ?? ''}
                     placeholderWithTooltip={false}
+                    // TODO: shouldFetch?
                 />
             ))}
         </IconContainer>

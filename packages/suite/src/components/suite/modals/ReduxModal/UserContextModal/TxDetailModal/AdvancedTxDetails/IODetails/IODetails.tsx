@@ -23,9 +23,9 @@ import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { UtxoAnonymity } from 'src/components/wallet';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
+import { IOAddress } from 'src/components/suite/copy/IOAddress';
 
 import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
-import { IOAddress } from '../../IOAddress';
 
 const GridWrapper = styled.div`
     position: relative;

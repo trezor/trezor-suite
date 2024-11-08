@@ -55,6 +55,8 @@ export const getNetworkFeatures = (symbol: NetworkSymbol): NetworkFeature[] =>
 
 export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol].coingeckoId;
 
+export const getCoingeckoNativeId = (symbol: NetworkSymbol) => networks[symbol].coingeckoNativeId;
+
 export const isNetworkSymbol = (symbol: NetworkSymbol | string): symbol is NetworkSymbol =>
     Object.prototype.hasOwnProperty.call(networks, symbol);
 

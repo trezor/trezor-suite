@@ -22,8 +22,7 @@ import { CoinLogo } from '@trezor/product-components';
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
-
-import { IOAddress } from './IOAddress';
+import { IOAddress } from 'src/components/suite/copy/IOAddress';
 
 const IconWrapper = styled.div<{ $elevation: Elevation }>`
     display: flex;

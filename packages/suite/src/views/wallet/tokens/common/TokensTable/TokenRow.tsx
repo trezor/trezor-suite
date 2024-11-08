@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { selectDevice } from '@suite-common/wallet-core';
-import { Account, AddressType, TokenAddress } from '@suite-common/wallet-types';
+import { Account, TokenAddress } from '@suite-common/wallet-types';
 import { Network, getCoingeckoId } from '@suite-common/wallet-config';
 import {
     DefinitionType,
@@ -10,9 +10,6 @@ import {
     selectIsSpecificCoinDefinitionKnown,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { getContractAddressForNetwork } from '@suite-common/wallet-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { copyToClipboard } from '@trezor/dom-utils';
 import {
     Dropdown,
     IconButton,
@@ -28,6 +25,7 @@ import {
 } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { getContractAddressForNetwork, getTokenExplorerUrl } from '@suite-common/wallet-utils';
 
 import {
     FiatValue,
@@ -53,6 +51,7 @@ import {
     selectIsUnhideTokenModalShown,
 } from 'src/reducers/suite/suiteReducer';
 import { SUITE } from 'src/actions/suite/constants';
+import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 
 import { BlurUrls } from '../BlurUrls';
 
@@ -67,15 +66,6 @@ const IconWrapper = styled.div`
     display: inline-block;
     margin-left: ${spacingsPx.xxs};
 `;
-
-const getTokenExplorerUrl = (network: Network, token: EnhancedTokenInfo) => {
-    const explorerUrl =
-        network.networkType === 'cardano' ? network.explorer.token : network.explorer.account;
-    const contractAddress = network.networkType === 'cardano' ? token.fingerprint : token.contract;
-    const queryString = network.explorer.queryString ?? '';
-
-    return `${explorerUrl}${contractAddress}${queryString}`;
-};
 
 interface TokenRowProps {
     account: Account;
@@ -133,23 +123,6 @@ export const TokenRow = ({
         }
     };
 
-    const onCopyAddress = (address: string, addressType: AddressType) => {
-        if (shouldShowCopyAddressModal) {
-            dispatch(
-                openModal({
-                    type: 'copy-address',
-                    addressType,
-                    address,
-                }),
-            );
-        } else {
-            const result = copyToClipboard(address);
-            if (typeof result !== 'string') {
-                dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
-            }
-        }
-    };
-
     const isReceiveButtonDisabled = isDeviceLocked || !!device.authConfirm;
 
     return (
@@ -159,7 +132,7 @@ export const TokenRow = ({
                     <AssetLogo
                         coingeckoId={coingeckoId || ''}
                         placeholder={token.name || token.symbol || 'token'}
-                        contractAddress={networkContractAddress as TokenAddress}
+                        contractAddress={networkContractAddress}
                         size={24}
                         shouldTryToFetch={isTokenKnown}
                     />
@@ -307,7 +280,14 @@ export const TokenRow = ({
                                                 </ContractAddress>
                                             ),
                                             onClick: () =>
-                                                onCopyAddress(token.contract, 'contract'),
+                                                dispatch(
+                                                    shouldShowCopyAddressModal
+                                                        ? showCopyAddressModal(
+                                                              token.contract,
+                                                              'contract',
+                                                          )
+                                                        : copyAddressToClipboard(token.contract),
+                                                ),
                                         },
                                     ],
                                 },
@@ -325,9 +305,14 @@ export const TokenRow = ({
                                                 </ContractAddress>
                                             ),
                                             onClick: () =>
-                                                onCopyAddress(
-                                                    token.fingerprint as string,
-                                                    'fingerprint',
+                                                token.fingerprint &&
+                                                dispatch(
+                                                    shouldShowCopyAddressModal
+                                                        ? showCopyAddressModal(
+                                                              token.fingerprint,
+                                                              'fingerprint',
+                                                          )
+                                                        : copyAddressToClipboard(token.contract),
                                                 ),
                                         },
                                     ],
@@ -346,7 +331,15 @@ export const TokenRow = ({
                                                 </ContractAddress>
                                             ),
                                             onClick: () =>
-                                                onCopyAddress(token.policyId as string, 'policyId'),
+                                                token.policyId &&
+                                                dispatch(
+                                                    shouldShowCopyAddressModal
+                                                        ? showCopyAddressModal(
+                                                              token.policyId,
+                                                              'policyId',
+                                                          )
+                                                        : copyAddressToClipboard(token.contract),
+                                                ),
                                         },
                                     ],
                                 },
