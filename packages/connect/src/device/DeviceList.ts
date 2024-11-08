@@ -179,10 +179,19 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         ];
     }
 
-    private createTransport(transportType: NonNullable<ConnectSettings['transports']>[number]) {
+    private tryGetTransport(name: string) {
+        return this.transports.find(t => t.name === name);
+    }
+
+    private getOrCreateTransport(
+        transportType: NonNullable<ConnectSettings['transports']>[number],
+    ) {
         const { transportCommonArgs } = this;
 
         if (typeof transportType === 'string') {
+            const existing = this.tryGetTransport(transportType);
+            if (existing) return existing;
+
             switch (transportType) {
                 case 'WebUsbTransport':
                     return new WebUsbTransport(transportCommonArgs);
@@ -199,9 +208,13 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         } else if (typeof transportType === 'function' && 'prototype' in transportType) {
             const transportInstance = new transportType(transportCommonArgs);
             if (isTransportInstance(transportInstance)) {
-                return transportInstance;
+                return this.tryGetTransport(transportInstance.name) ?? transportInstance;
             }
         } else if (isTransportInstance(transportType)) {
+            if (this.tryGetTransport(transportType.name)) {
+                return transportType;
+            }
+
             // custom Transport might be initialized without messages, update them if so
             if (!transportType.getMessage()) {
                 transportType.updateMessages(transportCommonArgs.messages);
@@ -217,13 +230,11 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         );
     }
 
-    private setTransports(transports: ConnectSettings['transports']) {
-        // we fill in `transports` with a reasonable fallback in src/index.
-        // since web index is released into npm, we can not rely
-        // on that that transports will be always set here. We need to provide a 'fallback of the last resort'
+    private createTransports(transports: ConnectSettings['transports']) {
+        // BridgeTransport is the ultimate fallback
         const transportTypes = transports?.length ? transports : ['BridgeTransport' as const];
 
-        this.transports = transportTypes.map(this.createTransport.bind(this));
+        return transportTypes.map(this.getOrCreateTransport.bind(this));
     }
 
     private onDeviceConnected(descriptor: Descriptor, transport: Transport) {
@@ -271,7 +282,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         }
 
         // throws when unknown transport is requested, in that case nothing is changed
-        this.setTransports(initParams.transports);
+        this.transports = this.createTransports(initParams.transports);
         this.initTask = this.createInitTask(initParams);
 
         return this.initTask.promise;
