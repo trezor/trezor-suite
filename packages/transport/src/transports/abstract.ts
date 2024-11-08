@@ -366,6 +366,7 @@ export abstract class AbstractTransport extends TransportEmitter {
         const controller = new AbortController();
         const onAbort = () => controller.abort();
         signal.addEventListener('abort', onAbort);
+        if (signal.aborted) controller.abort(signal.reason);
         this.abortController.signal.addEventListener('abort', onAbort);
         const clear = () => {
             signal.removeEventListener('abort', onAbort);
