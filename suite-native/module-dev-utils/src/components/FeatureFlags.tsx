@@ -3,8 +3,9 @@ import { FeatureFlag as FeatureFlagEnum, useFeatureFlag } from '@suite-native/fe
 
 const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsDeviceConnectEnabled]: 'Connect device',
-    [FeatureFlagEnum.IsBitcoinLikeSendEnabled]: 'Bitcoin-like coins send',
-    [FeatureFlagEnum.IsEthereumSendEnabled]: 'Ethereum-like coins send',
+    [FeatureFlagEnum.IsRippleSendEnabled]: 'Ripple send',
+    [FeatureFlagEnum.IsCardanoSendEnabled]: 'Cardano send',
+    [FeatureFlagEnum.IsSolanaSendEnabled]: 'Solana send',
     [FeatureFlagEnum.IsRegtestEnabled]: 'Regtest',
     [FeatureFlagEnum.IsSolanaEnabled]: 'Solana',
     [FeatureFlagEnum.IsConnectPopupEnabled]: 'Connect Popup',

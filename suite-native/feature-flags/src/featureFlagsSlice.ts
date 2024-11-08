@@ -5,8 +5,9 @@ import { isDebugEnv, isDetoxTestBuild, isDevelopOrDebugEnv } from '@suite-native
 
 export const FeatureFlag = {
     IsDeviceConnectEnabled: 'isDeviceConnectEnabled',
-    IsBitcoinLikeSendEnabled: 'isBitcoinLikeSendEnabled',
-    IsEthereumSendEnabled: 'isEthereumSendEnabled',
+    IsRippleSendEnabled: 'isRippleSendEnabled',
+    IsCardanoSendEnabled: 'isCardanoSendEnabled',
+    IsSolanaSendEnabled: 'isSolanaSendEnabled',
     IsRegtestEnabled: 'isRegtestEnabled',
     IsSolanaEnabled: 'IsSolanaEnabled',
     IsConnectPopupEnabled: 'IsConnectPopupEnabled',
@@ -21,8 +22,9 @@ export type FeatureFlagsRootState = {
 
 export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsDeviceConnectEnabled]: isAndroid() || isDebugEnv(),
-    [FeatureFlag.IsBitcoinLikeSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
-    [FeatureFlag.IsEthereumSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
+    [FeatureFlag.IsRippleSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
+    [FeatureFlag.IsCardanoSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
+    [FeatureFlag.IsSolanaSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
     [FeatureFlag.IsRegtestEnabled]: isDebugEnv() || isDetoxTestBuild(),
     [FeatureFlag.IsSolanaEnabled]: false,
     [FeatureFlag.IsConnectPopupEnabled]: isDevelopOrDebugEnv(),
@@ -30,8 +32,9 @@ export const featureFlagsInitialState: FeatureFlagsState = {
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsDeviceConnectEnabled,
-    FeatureFlag.IsBitcoinLikeSendEnabled,
-    FeatureFlag.IsEthereumSendEnabled,
+    FeatureFlag.IsRippleSendEnabled,
+    FeatureFlag.IsCardanoSendEnabled,
+    FeatureFlag.IsSolanaSendEnabled,
     FeatureFlag.IsRegtestEnabled,
     FeatureFlag.IsSolanaEnabled,
     FeatureFlag.IsConnectPopupEnabled,

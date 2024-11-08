@@ -1,35 +1,41 @@
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { BITCOIN_ONLY_NETWORKS } from '@suite-common/suite-constants';
+import { D, pipe } from '@mobily/ts-belt';
+
+import { NetworkSymbol, getNetworkType, networks } from '@suite-common/wallet-config';
 import {
     FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
     FeatureFlag,
 } from '@suite-native/feature-flags';
 
-const SEND_COINS_WHITELIST = BITCOIN_ONLY_NETWORKS;
+const PRODUCTION_SEND_COINS_WHITELIST = pipe(
+    networks,
+    D.filter(network => network.networkType === 'bitcoin' || network.networkType === 'ethereum'),
+    D.keys,
+);
 
 export const selectIsNetworkSendFlowEnabled = (
     state: FeatureFlagsRootState,
     networkSymbol?: NetworkSymbol,
 ) => {
     if (!networkSymbol) return false;
-
-    if (SEND_COINS_WHITELIST.includes(networkSymbol)) return true;
-
-    const isBitcoinLikeSendEnabled = selectIsFeatureFlagEnabled(
-        state,
-        FeatureFlag.IsBitcoinLikeSendEnabled,
-    );
-
     const networkType = getNetworkType(networkSymbol);
-    if (isBitcoinLikeSendEnabled && networkType === 'bitcoin') return true;
 
-    const isEthereumSendEnabled = selectIsFeatureFlagEnabled(
+    if (PRODUCTION_SEND_COINS_WHITELIST.includes(networkSymbol)) return true;
+
+    const isRippleSendEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsRippleSendEnabled);
+
+    if (isRippleSendEnabled && networkType === 'ripple') return true;
+
+    const isCardanoSendEnabled = selectIsFeatureFlagEnabled(
         state,
-        FeatureFlag.IsEthereumSendEnabled,
+        FeatureFlag.IsCardanoSendEnabled,
     );
 
-    if (isEthereumSendEnabled && networkType === 'ethereum') return true;
+    if (isCardanoSendEnabled && networkType === 'cardano') return true;
+
+    const isSolanaSendEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsSolanaSendEnabled);
+
+    if (isSolanaSendEnabled && networkType === 'solana') return true;
 
     return false;
 };

@@ -7,9 +7,6 @@
         },
         { "path": "../../suite-common/graph" },
         {
-            "path": "../../suite-common/suite-constants"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
