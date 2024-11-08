@@ -138,7 +138,7 @@ export const unstakeFixture = [
             amount: '0.1', // eth
             symbol: 'eth',
             identity: '0',
-            interchanges: 0,
+            interchanges: 5,
         },
         accountInfo: {
             success: true,
@@ -159,7 +159,7 @@ export const unstakeFixture = [
             },
         },
         result: {
-            data: '0x76ec871c000000000000000000000000000000000000000000000000016345785d8a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001',
+            data: '0x76ec871c000000000000000000000000000000000000000000000000016345785d8a000000000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000001',
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
             gasLimit: 241000, // 21000 + 220000
             to: '0xD523794C879D9eC028960a231F866758e405bE34',
@@ -176,7 +176,7 @@ export const unstakeFailedFixture = [
             amount: '0.1', // eth
             symbol: 'eth',
             identity: '0',
-            interchanges: 0,
+            interchanges: 5,
         },
         accountInfo: {
             success: false,
@@ -199,7 +199,7 @@ export const unstakeFailedFixture = [
             amount: '0.1', // eth
             symbol: 'eth',
             identity: '0',
-            interchanges: 0,
+            interchanges: 5,
         },
         accountInfo: {
             success: true,
@@ -224,7 +224,7 @@ export const unstakeFailedFixture = [
             amount: '0.1', // eth
             symbol: 'eth',
             identity: '0',
-            interchanges: 0,
+            interchanges: 5,
         },
         accountInfo: {
             success: true,
@@ -253,7 +253,7 @@ export const unstakeFailedFixture = [
             amount: '0.1', // eth
             symbol: 'eth',
             identity: '0',
-            interchanges: 0,
+            interchanges: 5,
         },
         accountInfo: {
             success: true,
