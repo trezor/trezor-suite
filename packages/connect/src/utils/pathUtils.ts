@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/pathUtils.js
 
+import { cloneObject } from '@trezor/utils';
 import { PROTO, ERRORS } from '../constants';
 import type {
     CoinInfo,
@@ -207,16 +208,18 @@ export const fixPath = <
 >(
     utxo: T,
 ): ProtoWithAddressN<T> => {
+    const newUtxo = cloneObject(utxo);
+
     // make sure bip32 indices are unsigned
-    if (utxo.address_n && Array.isArray(utxo.address_n)) {
-        utxo.address_n = utxo.address_n.map(i => i >>> 0);
+    if (newUtxo.address_n && Array.isArray(newUtxo.address_n)) {
+        newUtxo.address_n = newUtxo.address_n.map(i => i >>> 0);
     }
-    // make sure that address_n is an array
-    if (utxo.address_n && typeof utxo.address_n === 'string') {
-        utxo.address_n = getHDPath(utxo.address_n);
+    // Make sure that address_n is an array
+    if (newUtxo.address_n && typeof newUtxo.address_n === 'string') {
+        newUtxo.address_n = getHDPath(newUtxo.address_n);
     }
 
-    return utxo as ProtoWithAddressN<T>;
+    return newUtxo as ProtoWithAddressN<T>;
 };
 
 export const getLabel = (label: string, coinInfo?: CoinInfo) => {

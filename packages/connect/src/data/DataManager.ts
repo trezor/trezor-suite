@@ -1,51 +1,33 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/DataManager.js
 
-import { httpRequest } from '../utils/assets';
 import { parseCoinsJson } from './coinInfo';
 import { parseFirmware } from './firmwareInfo';
 import { parseBridgeJSON } from './transportInfo';
 import { ConnectSettings, DeviceModelInternal } from '../types';
 
-type AssetCollection = { [key: string]: Record<string, any> };
+// We need to declare those imports explicitly so webpack does not include the whole directories.
+require('@trezor/connect-common/files/coins.json');
+require('@trezor/connect-common/files/coins-eth.json');
+require('@trezor/connect-common/files/bridge/releases.json');
+require('@trezor/connect-common/files/firmware/t1b1/releases.json');
+require('@trezor/connect-common/files/firmware/t2t1/releases.json');
+require('@trezor/connect-common/files/firmware/t2b1/releases.json');
+require('@trezor/connect-common/files/firmware/t3b1/releases.json');
+require('@trezor/connect-common/files/firmware/t3t1/releases.json');
+require('@trezor/connect-common/files/firmware/t3w1/releases.json');
+require('@trezor/protobuf/messages.json');
 
-const assets = [
-    {
-        name: 'coins',
-        url: './data/coins.json',
-    },
-    {
-        name: 'coinsEth',
-        url: './data/coins-eth.json',
-    },
-    {
-        name: 'bridge',
-        url: './data/bridge/releases.json',
-    },
-    {
-        name: 'firmware-t1b1',
-        url: './data/firmware/t1b1/releases.json',
-    },
-    {
-        name: 'firmware-t2t1',
-        url: './data/firmware/t2t1/releases.json',
-    },
-    {
-        name: 'firmware-t2b1',
-        url: './data/firmware/t2b1/releases.json',
-    },
-    {
-        name: 'firmware-t3b1',
-        url: './data/firmware/t3b1/releases.json',
-    },
-    {
-        name: 'firmware-t3t1',
-        url: './data/firmware/t3t1/releases.json',
-    },
-    {
-        name: 'firmware-t3tw1',
-        url: './data/firmware/t3w1/releases.json',
-    },
-];
+import coins from '@trezor/connect-common/files/coins.json';
+import coinsEth from '@trezor/connect-common/files/coins-eth.json';
+import bridge from '@trezor/connect-common/files/bridge/releases.json';
+import t1b1 from '@trezor/connect-common/files/firmware/t1b1/releases.json';
+import t2t2 from '@trezor/connect-common/files/firmware/t2t1/releases.json';
+import t2b1 from '@trezor/connect-common/files/firmware/t2b1/releases.json';
+import t3b1 from '@trezor/connect-common/files/firmware/t3b1/releases.json';
+import t3t1 from '@trezor/connect-common/files/firmware/t3t1/releases.json';
+import t3w1 from '@trezor/connect-common/files/firmware/t3w1/releases.json';
+
+type AssetCollection = { [key: string]: Record<string, any> };
 
 export class DataManager {
     static assets: AssetCollection = {};
@@ -54,18 +36,21 @@ export class DataManager {
     private static messages: Record<string, any>;
 
     static async load(settings: ConnectSettings, withAssets = true) {
-        const ts = settings.env === 'web' ? `?r=${settings.timestamp}` : '';
         this.settings = settings;
 
         if (!withAssets) return;
 
-        const assetPromises = assets.map(async asset => {
-            const json = await httpRequest(`${asset.url}${ts}`, 'json');
-            this.assets[asset.name] = json;
-        });
-        await Promise.all(assetPromises);
+        this.assets['coins'] = coins;
+        this.assets['coinsEth'] = coinsEth;
+        this.assets['bridge'] = bridge;
+        this.assets['firmware-t1b1'] = t1b1;
+        this.assets['firmware-t2t1'] = t2t2;
+        this.assets['firmware-t2b1'] = t2b1;
+        this.assets['firmware-t3b1'] = t3b1;
+        this.assets['firmware-t3t1'] = t3t1;
+        this.assets['firmware-t3w1'] = t3w1;
 
-        this.messages = await httpRequest('./data/messages/messages.json', 'json');
+        this.messages = (await import('@trezor/protobuf/messages.json')).default;
 
         // parse bridge JSON
         parseBridgeJSON(this.assets.bridge);

@@ -132,7 +132,7 @@ const config: webpack.Configuration = {
                     },
                 ],
             },
-            // Workers
+            // Workers TODO(karliatto): is this worker-loader really loading anything here?
             {
                 test: /\/workers\/[^/]+\/index\.ts$/,
                 use: [

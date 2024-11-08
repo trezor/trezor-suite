@@ -35,12 +35,6 @@ const config: webpack.Configuration = {
                         ),
                         to: path.join(baseDir, 'build', 'static', 'message-system'),
                     },
-                ])
-                .concat([
-                    {
-                        from: path.join(__dirname, '..', '..', 'connect-iframe', 'build'),
-                        to: path.join(baseDir, 'build', 'static', 'connect'),
-                    },
                 ]),
             options: {
                 concurrency: 100,
@@ -72,8 +66,11 @@ const config: webpack.Configuration = {
                     filename: path.join(baseDir, 'build', route.pattern, 'index.html'),
                 }),
         ),
-        // imports from @trezor/connect in @trezor/suite package need to be replaced by imports from @trezor/connect-web
-        new webpack.NormalModuleReplacementPlugin(/@trezor\/connect$/, '@trezor/connect-web'),
+        // imports from @trezor/connect in @trezor/suite package need to be replaced by imports from @trezor/connect-web/src/module
+        new webpack.NormalModuleReplacementPlugin(
+            /@trezor\/connect$/,
+            '@trezor/connect-web/src/module',
+        ),
         ...(!isDev ? [new CssMinimizerPlugin()] : []),
     ],
 };
