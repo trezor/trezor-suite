@@ -20,7 +20,6 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../settings" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ]
