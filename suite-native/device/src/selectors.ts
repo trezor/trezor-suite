@@ -17,6 +17,7 @@ import {
     selectIsUnacquiredDevice,
     PORTFOLIO_TRACKER_DEVICE_ID,
     selectDevices,
+    selectDeviceInstances,
 } from '@suite-common/wallet-core';
 import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
 import { getTotalFiatBalance } from '@suite-common/wallet-utils';
@@ -98,4 +99,8 @@ export const selectViewOnlyDevicesAccountsNetworkSymbols = memoize(
             F.toMutable,
         );
     },
+);
+
+export const selectHasNoDeviceWithEmptyPassphrase = memoize((state: DeviceRootState) =>
+    A.isEmpty(selectDeviceInstances(state).filter(d => d.useEmptyPassphrase)),
 );
