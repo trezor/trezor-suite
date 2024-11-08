@@ -62,28 +62,28 @@ describe('DeviceList', () => {
         list.dispose();
     });
 
-    it('setTransports throws error on unknown transport (string)', () => {
-        expect(() =>
-            list.setTransports(
+    it('.init() throws error on unknown transport (string)', async () => {
+        await expect(() =>
+            list.init({
                 // @ts-expect-error
-                ['FooBarTransport'],
-            ),
-        ).toThrow('unexpected type: FooBarTransport');
+                transports: ['FooBarTransport'],
+            }),
+        ).rejects.toThrow('unexpected type: FooBarTransport');
     });
 
-    it('setTransports throws error on unknown transport (class)', () => {
-        expect(() =>
-            list.setTransports(
+    it('.init() throws error on unknown transport (class)', async () => {
+        await expect(() =>
+            list.init({
                 // @ts-expect-error
-                [{}, () => {}, [], String, 1, 'meow-non-existent'],
-            ),
-        ).toThrow('DeviceList.init: transports[] of unexpected type');
+                transports: [{}, () => {}, [], String, 1, 'meow-non-existent'],
+            }),
+        ).rejects.toThrow('DeviceList.init: transports[] of unexpected type');
     });
 
-    it('setTransports accepts transports in form of transport class', () => {
+    it('.init() accepts transports in form of transport class', async () => {
         const transport = createTestTransport();
         const classConstructor = transport.constructor as unknown as typeof transport;
-        expect(() => list.setTransports([classConstructor])).not.toThrow();
+        await expect(list.init({ transports: [classConstructor] })).resolves.not.toThrow();
     });
 
     it('.init() throws async error from transport.init()', async () => {
@@ -96,8 +96,7 @@ describe('DeviceList', () => {
             } as const),
         );
 
-        list.setTransports([transport]);
-        list.init({ pendingTransportEvent: true });
+        list.init({ transports: [transport], pendingTransportEvent: true });
         // transport-error is not emitted yet because list.init is not awaited
         expect(eventsSpy).toHaveBeenCalledTimes(0);
         await list.pendingConnection();
@@ -114,8 +113,7 @@ describe('DeviceList', () => {
             } as const),
         );
 
-        list.setTransports([transport]);
-        list.init({ pendingTransportEvent: true });
+        list.init({ transports: [transport], pendingTransportEvent: true });
         // transport-error is not emitted yet because list.init is not awaited
         expect(eventsSpy).toHaveBeenCalledTimes(0);
         await list.pendingConnection();
@@ -128,8 +126,7 @@ describe('DeviceList', () => {
             openDevice: () => Promise.resolve({ success: false, error: 'wrong previous session' }),
         });
 
-        list.setTransports([transport]);
-        list.init({ pendingTransportEvent: true });
+        list.init({ transports: [transport], pendingTransportEvent: true });
         await list.pendingConnection();
 
         const events = eventsSpy.mock.calls.map(call => call[0]);
@@ -141,8 +138,7 @@ describe('DeviceList', () => {
             openDevice: () => Promise.resolve({ success: false, error: 'device not found' }),
         });
 
-        list.setTransports([transport]);
-        list.init({ pendingTransportEvent: true });
+        list.init({ transports: [transport], pendingTransportEvent: true });
         const transportFirstEvent = list.pendingConnection();
 
         // NOTE: this behavior is wrong, if device creation fails DeviceList shouldn't wait 10 secs.
@@ -170,8 +166,7 @@ describe('DeviceList', () => {
                 }),
         });
 
-        list.setTransports([transport]);
-        list.init({ pendingTransportEvent: true });
+        list.init({ transports: [transport], pendingTransportEvent: true });
         await list.pendingConnection();
 
         const events = eventsSpy.mock.calls.map(call => call[0]);
@@ -186,8 +181,7 @@ describe('DeviceList', () => {
             }),
         });
 
-        list.setTransports([transport]);
-        list.init({ pendingTransportEvent: true });
+        list.init({ transports: [transport], pendingTransportEvent: true });
         await list.pendingConnection();
 
         const events = eventsSpy.mock.calls.map(([event, { path }]) => [event, path]);
@@ -218,8 +212,7 @@ describe('DeviceList', () => {
 
         // NOTE: this behavior is wrong
         jest.useFakeTimers();
-        list.setTransports([transport]);
-        list.init({ pendingTransportEvent: true });
+        list.init({ transports: [transport], pendingTransportEvent: true });
         const transportFirstEvent = list.pendingConnection();
         await jest.advanceTimersByTimeAsync(6 * 1000); // TODO: this is wrong
         await transportFirstEvent;
@@ -238,8 +231,7 @@ describe('DeviceList', () => {
     it('.init() without pendingTransportEvent (device connected after start)', async () => {
         const transport = createTestTransport();
 
-        list.setTransports([transport]);
-        list.init();
+        list.init({ transports: [transport] });
         await list.pendingConnection();
         // transport start emitted almost immediately (after first enumerate)
         expect(eventsSpy).toHaveBeenCalledTimes(1);
@@ -262,8 +254,7 @@ describe('DeviceList', () => {
             },
         });
 
-        list.setTransports([transport]);
-        list.init({ pendingTransportEvent: true });
+        list.init({ transports: [transport], pendingTransportEvent: true });
         await list.pendingConnection();
 
         // emit TRANSPORT.CHANGE 3 times
