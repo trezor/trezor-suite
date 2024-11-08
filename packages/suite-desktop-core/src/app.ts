@@ -129,6 +129,10 @@ const init = async () => {
         restartApp();
     });
 
+    // Electron 32 has a bug with Worker due to Chromium changes
+    // https://github.com/electron/electron/issues/43556
+    app.commandLine.appendSwitch('disable-features', 'PlzDedicatedWorker');
+
     await app.whenReady();
 
     // Load bridge module first, it is required in both UI and daemon mode
