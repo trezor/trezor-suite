@@ -37,7 +37,7 @@
         "lint-staged": "npx lint-staged",
         "lint:shellcheck": "./scripts/shellcheck.sh",
         "_______ Global Scripts _______": "Shared scripts for running in all workspaces",
-        "g:eslint": "cd $INIT_CWD && eslint --report-unused-disable-directives --cache --ignore-path ../../.gitignore",
+        "g:eslint": "cd $INIT_CWD && eslint . --cache --cache-strategy content --flag unstable_config_lookup_from_file",
         "g:jest": "cd $INIT_CWD && jest",
         "g:prettier": "cd $INIT_CWD && prettier",
         "g:rimraf": "cd $INIT_CWD && rimraf",
