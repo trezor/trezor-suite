@@ -85,6 +85,7 @@ export * from './constants/keyboardEvents';
 export * from './utils/useScrollShadow';
 export * from './utils/transientProps';
 export { useMediaQuery } from './utils/useMediaQuery';
+export { getSafeWindowSize } from './utils/getSafeWindowSize';
 
 export { intermediaryTheme } from './config/colors';
 export type { SuiteThemeColors } from './config/colors';
