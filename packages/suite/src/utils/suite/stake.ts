@@ -12,6 +12,7 @@ import {
     STAKE_GAS_LIMIT_RESERVE,
     MIN_ETH_AMOUNT_FOR_STAKING,
     MAX_ETH_AMOUNT_FOR_STAKING,
+    UNSTAKE_INTERCHANGES,
 } from '@suite-common/wallet-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { getEthereumEstimateFeeParams, isPending, sanitizeHex } from '@suite-common/wallet-utils';
@@ -367,7 +368,7 @@ export const prepareUnstakeEthTx = async ({
     nonce,
     chainId,
     identity,
-    interchanges = 0,
+    interchanges = UNSTAKE_INTERCHANGES,
 }: PrepareUnstakeEthTxParams): Promise<PrepareStakeEthTxResponse> => {
     try {
         const tx = await unstake({
@@ -471,7 +472,7 @@ export const getStakeTxGasLimit = async ({
             txData = await unstake({
                 from,
                 amount,
-                interchanges: 0,
+                interchanges: UNSTAKE_INTERCHANGES,
                 symbol,
                 identity,
             });
@@ -645,10 +646,9 @@ export const simulateUnstake = async ({
     if (!amount || !from || !symbol) return null;
 
     const amountWei = toWei(amount, 'ether');
-    const interchanges = 0;
 
     const data = contractPool.methods
-        .unstake(amountWei, interchanges, WALLET_SDK_SOURCE)
+        .unstake(amountWei, UNSTAKE_INTERCHANGES, WALLET_SDK_SOURCE)
         .encodeABI();
     if (!data) return null;
 

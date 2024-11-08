@@ -24,6 +24,7 @@ import {
     MIN_ETH_AMOUNT_FOR_STAKING,
     MIN_ETH_BALANCE_FOR_STAKING,
     MIN_ETH_FOR_WITHDRAWALS,
+    UNSTAKE_INTERCHANGES,
 } from '@suite-common/wallet-constants';
 import { selectDevice, ComposeActionContext } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -248,7 +249,7 @@ export const signTransaction =
                 gasPrice: transactionInfo.feePerByte,
                 nonce,
                 chainId: network.chainId,
-                interchanges: 0,
+                interchanges: UNSTAKE_INTERCHANGES,
             });
         }
         if (ethereumStakeType === 'claim') {
