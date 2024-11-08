@@ -1,6 +1,6 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
 
-import { TypedEmitter, createDeferred, getSynchronize } from '@trezor/utils';
+import { TypedEmitter, getSynchronize } from '@trezor/utils';
 import {
     BridgeTransport,
     WebUsbTransport,
@@ -11,7 +11,6 @@ import {
     isTransportInstance,
 } from '@trezor/transport';
 import { Descriptor, PathPublic } from '@trezor/transport/src/types';
-import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 
 import { ERRORS } from '../constants';
 import { DEVICE, TransportInfo } from '../events';
@@ -24,9 +23,7 @@ import {
 } from '../types';
 import { getBridgeInfo } from '../data/transportInfo';
 import { initLog } from '../utils/debug';
-
-// custom log
-const _log = initLog('DeviceList');
+import { abortablePromise } from '../utils/abortablePromise';
 
 const createAuthPenaltyManager = (priority: number) => {
     const penalizedDevices: { [deviceID: string]: number } = {};
@@ -139,9 +136,10 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     private readonly handshakeLock;
     private readonly authPenaltyManager;
 
-    private initPromise?: Promise<void>;
-
-    private rejectPending?: (e: Error) => void;
+    private initTask?: {
+        promise: Promise<void>;
+        abort: AbortController['abort'];
+    };
 
     private transportCommonArgs;
 
@@ -150,7 +148,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     pendingConnection() {
-        return this.initPromise;
+        return this.initTask?.promise;
     }
 
     constructor({
@@ -265,55 +263,87 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     /**
      * Init @trezor/transport and do something with its results
      */
-    init(initParams: InitParams = {}) {
-        this.setTransports(initParams.transports);
-
-        // TODO is it ok to return first init promise in case of second call?
-        if (!this.initPromise) {
-            _log.debug('Initializing transports');
-            this.initPromise = this.createInitPromise(initParams);
+    async init(initParams: InitParams = {}) {
+        // abort all potentially queued inits
+        while (this.initTask) {
+            this.initTask.abort(new Error('Reinited'));
+            await this.initTask.promise.catch(() => {});
         }
 
-        return this.initPromise;
+        // throws when unknown transport is requested, in that case nothing is changed
+        this.setTransports(initParams.transports);
+        this.initTask = this.createInitTask(initParams);
+
+        return this.initTask.promise;
     }
 
-    private createInitPromise(initParams: InitParams) {
-        return this.selectTransport(this.transports)
-            .then(transport => this.initializeTransport(transport, initParams))
+    private async stopActiveTransport() {
+        // if newly set transports don't include active transport, kill it
+        if (this.transport && !this.transports.includes(this.transport)) {
+            // stop cannot be aborted as active devices should be released first
+            await this.stopTransport(this.transport);
+            // @ts-expect-error will be fixed later
+            this.transport = undefined;
+        }
+    }
+
+    private createInitTask(initParams: InitParams) {
+        const abort = new AbortController();
+
+        return {
+            abort: () => abort.abort(),
+            promise: this.stopActiveTransport().then(() =>
+                this.createInitPromise(initParams, abort.signal),
+            ),
+        };
+    }
+
+    private createReconnectTask(initParams: InitParams) {
+        const abort = new AbortController();
+        const { promise, resolve } = abortablePromise(abort.signal);
+        const timeout = setTimeout(resolve, 1000);
+
+        return {
+            abort: () => abort.abort(),
+            promise: promise
+                .finally(() => clearTimeout(timeout))
+                .then(() => this.createInitPromise(initParams, abort.signal)),
+        };
+    }
+
+    private createInitPromise(initParams: InitParams, signal: AbortSignal) {
+        return this.selectTransport(this.transports, signal)
+            .then(transport => this.initializeTransport(transport, initParams, signal))
             .then(transport => {
                 this.transport = transport;
                 this.emit(TRANSPORT.START, this.getTransportInfo());
-                this.initPromise = undefined;
+                this.initTask = undefined;
             })
             .catch(error => {
                 this.cleanup();
                 this.emit(TRANSPORT.ERROR, error);
-                this.initPromise = initParams.transportReconnect
-                    ? this.createReconnectPromise(initParams)
+                this.initTask = initParams.transportReconnect
+                    ? this.createReconnectTask(initParams)
                     : undefined;
             });
     }
 
-    private createReconnectPromise(initParams: InitParams) {
-        const { promise, reject } = resolveAfter(1000, initParams);
-        this.rejectPending = reject;
-
-        return promise
-            .then(this.createInitPromise.bind(this))
-            .catch(() => {})
-            .finally(() => {
-                this.rejectPending = undefined;
-            });
-    }
-
-    private async selectTransport([transport, ...rest]: Transport[]): Promise<Transport> {
-        const result = await transport.init();
+    private async selectTransport(
+        [transport, ...rest]: Transport[],
+        signal: AbortSignal,
+    ): Promise<Transport> {
+        if (signal.aborted) throw new Error(signal.reason);
+        const result = await transport.init({ signal });
         if (result.success) return transport;
-        else if (rest.length) return this.selectTransport(rest);
+        else if (rest.length) return this.selectTransport(rest, signal);
         else throw new Error(result.error);
     }
 
-    private async initializeTransport(transport: Transport, initParams: InitParams) {
+    private async initializeTransport(
+        transport: Transport,
+        initParams: InitParams,
+        signal: AbortSignal,
+    ) {
         /**
          * listen to change of descriptors reported by @trezor/transport
          * we can say that this part lets connect know about
@@ -336,13 +366,14 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
             this.cleanup();
             this.emit(TRANSPORT.ERROR, error);
             if (initParams.transportReconnect) {
-                this.initPromise = this.createReconnectPromise(initParams);
+                this.initTask?.abort(new Error('Transport error'));
+                this.initTask = this.createReconnectTask(initParams);
             }
         });
 
         // enumerating for the first time. we intentionally postpone emitting TRANSPORT_START
         // event until we read descriptors for the first time
-        const enumerateResult = await transport.enumerate();
+        const enumerateResult = await transport.enumerate({ signal });
 
         if (!enumerateResult.success) {
             throw new Error(enumerateResult.error);
@@ -352,7 +383,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         const waitForDevicesPromise =
             initParams.pendingTransportEvent && descriptors.length
-                ? this.waitForDevices(descriptors.length, 10000)
+                ? this.waitForDevices(descriptors.length, 10000, signal)
                 : Promise.resolve();
 
         transport.handleDescriptorsChange(descriptors);
@@ -363,8 +394,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return transport;
     }
 
-    private waitForDevices(deviceCount: number, autoResolveMs: number) {
-        const { promise, resolve, reject } = createDeferred();
+    private waitForDevices(deviceCount: number, autoResolveMs: number, signal: AbortSignal) {
+        const { promise, resolve } = abortablePromise(signal);
         let transportStartPending = deviceCount;
 
         /**
@@ -375,7 +406,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
          * we emit TRANSPORT.START event after autoResolveTransportEventTimeout
          */
         const autoResolveTransportEventTimeout = setTimeout(resolve, autoResolveMs);
-        this.rejectPending = reject;
 
         const onDeviceConnect = () => {
             transportStartPending--;
@@ -389,7 +419,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         this.on(DEVICE.CONNECT_UNACQUIRED, onDeviceConnect);
 
         return promise.finally(() => {
-            this.rejectPending = undefined;
             clearTimeout(autoResolveTransportEventTimeout);
             this.off(DEVICE.CONNECT, onDeviceConnect);
             this.off(DEVICE.CONNECT_UNACQUIRED, onDeviceConnect);
@@ -432,19 +461,22 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     dispose() {
         this.removeAllListeners();
+        this.initTask?.abort(new Error('Disposed'));
 
         return this.cleanup();
     }
 
     async cleanup() {
         const { transport } = this;
-        const devices = this.devices.clear();
-
         // @ts-expect-error will be fixed later
         this.transport = undefined;
         this.authPenaltyManager.clear();
 
-        this.rejectPending?.(new Error('Disposed'));
+        await this.stopTransport(transport);
+    }
+
+    private async stopTransport(transport: Transport) {
+        const devices = this.devices.clear();
 
         // disconnect devices
         devices.forEach(device => {
