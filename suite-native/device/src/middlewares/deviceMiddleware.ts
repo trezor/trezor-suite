@@ -1,5 +1,4 @@
 import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
-import { A } from '@mobily/ts-belt';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { DEVICE } from '@trezor/connect';
@@ -14,8 +13,6 @@ import {
     selectAccountsByDeviceState,
     createDeviceInstanceThunk,
     createImportedDeviceThunk,
-    selectDevice,
-    selectDeviceInstances,
 } from '@suite-common/wallet-core';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
@@ -41,7 +38,7 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
 };
 
 export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
-    async (action, { dispatch, next, getState }) => {
+    (action, { dispatch, next, getState }) => {
         if (action.type === DEVICE.DISCONNECT) {
             dispatch(forgetDisconnectedDevices(action.payload));
         }
@@ -78,26 +75,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             case DEVICE.CONNECT:
             case DEVICE.CONNECT_UNACQUIRED:
                 if (isUsbDeviceConnectFeatureEnabled) {
-                    await dispatch(selectDeviceThunk(action.payload));
-
-                    const deviceInstances = selectDeviceInstances(getState());
-                    const selectedDevice = selectDevice(getState());
-
-                    // If there is selected device, but no useEmptyPassphrase device for connected trezor,
-                    // add normal wallet but keep the original one selected.
-                    // This happens after connecting device with only remembered passphrases wallet.
-                    if (
-                        selectedDevice &&
-                        A.isEmpty(deviceInstances.filter(d => d.useEmptyPassphrase))
-                    ) {
-                        await dispatch(
-                            createDeviceInstanceThunk({
-                                device: selectedDevice,
-                                useEmptyPassphrase: true,
-                            }),
-                        );
-                        dispatch(selectDeviceThunk({ device: selectedDevice }));
-                    }
+                    dispatch(selectDeviceThunk(action.payload));
                 }
                 break;
             case DEVICE.DISCONNECT:

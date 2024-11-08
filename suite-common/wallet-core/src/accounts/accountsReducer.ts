@@ -282,22 +282,6 @@ export const selectVisibleNonEmptyDeviceAccountsByNetworkSymbol = (
 export const selectNonEmptyDeviceAccounts = (state: AccountsRootState & DeviceRootState) =>
     selectDeviceAccounts(state).filter(account => !account.empty);
 
-export const selectDeviceHasAccountsByDeviceState = memoizeWithArgs(
-    (
-        state: AccountsRootState & DeviceRootState,
-        deviceState: StaticSessionId | DeviceState | undefined,
-    ) => {
-        if (!deviceState) {
-            return false;
-        }
-
-        return selectAccountsByDeviceState(state, deviceState).length > 0;
-    },
-    {
-        size: 10,
-    },
-);
-
 export const selectAccountsByNetworkAndDeviceState = memoizeWithArgs(
     (state: AccountsRootState, deviceState: StaticSessionId, networkSymbol: NetworkSymbol) => {
         const accounts = selectAccounts(state);
