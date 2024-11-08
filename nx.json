@@ -45,7 +45,7 @@
             "cache": true
         },
         "lint:js": {
-            "inputs": ["default", "{workspaceRoot}/.eslintrc.js"],
+            "inputs": ["default", "{workspaceRoot}/eslint.config.mjs"],
             "outputs": ["{projectRoot}/.eslintcache"],
             "cache": true
         },

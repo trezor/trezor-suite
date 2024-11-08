@@ -22,10 +22,10 @@ export const eslint = [
             '**/build-electron/*',
             '**/node_modules/*',
             '**/public/*',
-            'packages/suite-data/files/*',
-            'packages/protobuf/scripts/protobuf-patches/*',
-            'packages/address-validator',
-            'packages/connect-examples',
+            // 'packages/suite-data/files/*', // Todo: fix or ignore locally in repo
+            // 'packages/protobuf/scripts/protobuf-patches/*', // Todo: ignore locally in repo
+            // 'packages/address-validator', // Todo: fix or ignore locally in repo
+            // 'packages/connect-examples', // Todo: fix or ignore locally in repo
             '**/ci/',
             'eslint-local-rules/*',
         ],
