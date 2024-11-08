@@ -47,6 +47,7 @@ type UpdateNotificationBannerProps = {
 };
 
 const mapDeviceUpdateStatusToTranslation: Record<UpdateStatusDevice, TranslationKey | null> = {
+    disconnected: null,
     'up-to-date': null,
     'update-available': 'TR_QUICK_ACTION_UPDATE_POPOVER_TREZOR_UPDATE_AVAILABLE',
 };
@@ -61,6 +62,7 @@ const mapSuiteUpdateStatusToHeaderTranslation: Record<UpdateStatusSuite, Transla
 };
 
 const mapSuiteUpdateStatusToCallToActionTranslation: Record<UpdateStatus, TranslationKey | null> = {
+    disconnected: null,
     'just-updated': 'TR_QUICK_ACTION_UPDATE_POPOVER_WHATS_NEW',
     'up-to-date': null,
     'update-available': 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE',

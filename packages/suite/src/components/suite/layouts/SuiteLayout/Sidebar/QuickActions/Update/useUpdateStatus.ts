@@ -43,10 +43,33 @@ const getSuiteUpdateStatus = ({ desktopUpdate }: GetSuiteUpdateStatusArgs): Upda
     return 'up-to-date';
 };
 
+type GetDeviceStatusParams = {
+    isDeviceDisconnected: boolean;
+    isSuiteUpdateInProgress: boolean;
+    isFirmwareOutdated: boolean;
+};
+
+const getDeviceStatus = ({
+    isDeviceDisconnected,
+    isSuiteUpdateInProgress,
+    isFirmwareOutdated,
+}: GetDeviceStatusParams): UpdateStatusDevice => {
+    if (isDeviceDisconnected) {
+        return 'disconnected';
+    }
+
+    if (isFirmwareOutdated && !isSuiteUpdateInProgress) {
+        return 'update-available';
+    }
+
+    return 'up-to-date';
+};
+
 export const useUpdateStatus = (): UpdateStatusData => {
     const { device } = useDevice();
     const { desktopUpdate } = useSelector(state => state);
 
+    const isDeviceDisconnected = device?.connected !== true;
     const isFirmwareOutdated = device?.firmware === 'outdated';
 
     // If firmware is outdated and suite update download/check is in progress,
@@ -58,8 +81,11 @@ export const useUpdateStatus = (): UpdateStatusData => {
 
     const updateStatusSuite = getSuiteUpdateStatus({ desktopUpdate });
 
-    const updateStatusDevice =
-        isFirmwareOutdated && !isSuiteUpdateInProgress ? 'update-available' : 'up-to-date';
+    const updateStatusDevice = getDeviceStatus({
+        isDeviceDisconnected,
+        isSuiteUpdateInProgress,
+        isFirmwareOutdated,
+    });
 
     const common: Omit<UpdateStatusData, 'updateStatus'> = {
         updateStatusDevice,

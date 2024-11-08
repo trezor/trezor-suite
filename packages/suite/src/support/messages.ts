@@ -3863,6 +3863,10 @@ export default defineMessages({
         id: 'TR_QUICK_ACTION_TOOLTIP_UPDATE_AVAILABLE',
         defaultMessage: 'Update available ({newVersion})',
     },
+    TR_QUICK_ACTION_TOOLTIP_DEVICE_DISCONNECTED: {
+        id: 'TR_QUICK_ACTION_TOOLTIP_DEVICE_DISCONNECTED',
+        defaultMessage: 'Device disconnected',
+    },
     TR_QUICK_ACTION_TOOLTIP_RESTART_TO_UPDATE: {
         id: 'TR_QUICK_ACTION_TOOLTIP_RESTART_TO_UPDATE',
         defaultMessage: 'Restart to update',
