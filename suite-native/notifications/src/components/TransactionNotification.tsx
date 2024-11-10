@@ -9,7 +9,7 @@ import {
     selectTransactionFirstTargetAddress,
     AccountsRootState,
     selectDeviceAccountKeyByDescriptorAndNetworkSymbol,
-    selectTransactionByTxidAndAccountKey,
+    selectTransactionByAccountKeyAndTxid,
     DeviceRootState,
 } from '@suite-common/wallet-core';
 import {
@@ -84,7 +84,7 @@ export const TransactionNotification = ({
     const txid = notification?.txid ?? '';
 
     const transaction = useSelector((state: TransactionsRootState) =>
-        selectTransactionByTxidAndAccountKey(state, txid, accountKey ?? ''),
+        selectTransactionByAccountKeyAndTxid(state, accountKey ?? '', txid),
     );
 
     const transactionTargetAddress = useSelector((state: TransactionsRootState) =>

@@ -11,7 +11,7 @@ import {
     pushSendFormTransactionThunk,
     selectAccountByKey,
     selectSendFormDraftByKey,
-    selectTransactionByTxidAndAccountKey,
+    selectTransactionByAccountKeyAndTxid,
     SendRootState,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
@@ -81,7 +81,7 @@ export const OutputsReviewFooter = ({
     const wasAppLeftDuringReview = useAtomValue(wasAppLeftDuringReviewAtom);
 
     const isTransactionProcessedByBackend = !!useSelector((state: TransactionsRootState) =>
-        selectTransactionByTxidAndAccountKey(state, txid, accountKey),
+        selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
     );
 
     const account = useSelector((state: AccountsRootState) =>

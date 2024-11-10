@@ -1,24 +1,26 @@
 import { A, pipe } from '@mobily/ts-belt';
-import { memoizeWithArgs } from 'proxy-memoize';
 
 import {
+    SimpleTokenStructure,
     TokenDefinitionsRootState,
-    selectFilterKnownTokens,
+    filterKnownTokens,
+    getSimpleCoinDefinitionsByNetwork,
+    selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
     FiatRatesRootState,
+    TransactionsRootState,
     selectAccountByKey,
     selectAccounts,
     selectCurrentFiatRates,
     selectIsAccountUtxoBased,
     selectPendingAccountAddresses,
     selectVisibleDeviceAccounts,
-    TransactionsRootState,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenInfoBranded } from '@suite-common/wallet-types';
+import { Account, AccountKey, TokenInfoBranded } from '@suite-common/wallet-types';
 import {
     getAccountFiatBalance,
     getAccountTotalStakingBalance,
@@ -27,6 +29,7 @@ import {
 import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
 import { isCoinWithTokens } from '@suite-native/tokens';
 import type { StaticSessionId } from '@trezor/connect';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 
 import { AccountSelectBottomSheetSection, GroupedByTypeAccounts } from './types';
 import {
@@ -41,12 +44,16 @@ export type NativeAccountsRootState = AccountsRootState &
     DeviceRootState &
     TokenDefinitionsRootState;
 
+const createMemoizedSelector = createWeakMapSelector.withTypes<NativeAccountsRootState>();
+
 // TODO: It searches for filterValue even in tokens without fiat rates.
 // These are currently hidden in UI, but they should be made accessible in some way.
-export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = memoizeWithArgs(
-    (state: NativeAccountsRootState, filterValue: string) => {
-        const accounts = selectVisibleDeviceAccounts(state);
-
+export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = createMemoizedSelector(
+    [
+        selectVisibleDeviceAccounts,
+        (_state: NativeAccountsRootState, filterValue: string) => filterValue,
+    ],
+    (accounts, filterValue) => {
         return pipe(
             accounts,
             sortAccountsByNetworksAndAccountTypes,
@@ -54,8 +61,6 @@ export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = memoizeWi
             groupAccountsByNetworkAccountType,
         ) as GroupedByTypeAccounts;
     },
-    // This selector is used only in one search component, so cache size equal to 1 is enough.
-    { size: 1 },
 );
 
 export const selectIsAccountAlreadyDiscovered = (
@@ -95,61 +100,75 @@ export const selectAccountFiatBalance = (state: NativeAccountsRootState, account
     return totalBalance;
 };
 
-const EMPTY_ARRAY: AccountSelectBottomSheetSection[] = [];
+export const getAccountListSections = (
+    account: Account,
+    tokenDefinitions: SimpleTokenStructure | undefined,
+    hideStaking?: boolean,
+) => {
+    const sections: AccountSelectBottomSheetSection[] = [];
 
-export const selectAccountListSections = memoizeWithArgs(
-    (state: NativeAccountsRootState, accountKey?: AccountKey | null, hideStaking?: boolean) => {
-        if (!accountKey) return EMPTY_ARRAY;
-        const account = selectAccountByKey(state, accountKey);
-        if (!account) return EMPTY_ARRAY;
+    const canHasTokens = isCoinWithTokens(account.symbol);
+    const tokens = filterKnownTokens(tokenDefinitions, account.symbol, account.tokens ?? []);
+    const hasAnyKnownTokens = canHasTokens && !!tokens.length;
+    const stakingBalance = getAccountTotalStakingBalance(account);
+    const hasStaking = stakingBalance !== '0' && !hideStaking;
 
-        const sections: AccountSelectBottomSheetSection[] = [];
-
-        const canHasTokens = isCoinWithTokens(account.symbol);
-        const tokens = selectFilterKnownTokens(state, account.symbol, account.tokens ?? []);
-        const hasAnyKnownTokens = canHasTokens && !!tokens.length;
-        const stakingBalance = getAccountTotalStakingBalance(account);
-        const hasStaking = stakingBalance !== '0' && !hideStaking;
-
-        if (canHasTokens) {
-            sections.push({
-                type: 'sectionTitle',
-                account,
-                hasAnyKnownTokens,
-            });
-        }
+    if (canHasTokens) {
         sections.push({
-            type: 'account',
+            type: 'sectionTitle',
             account,
-            isLast: !hasAnyKnownTokens && !hasStaking,
-            isFirst: true,
             hasAnyKnownTokens,
         });
+    }
+    sections.push({
+        type: 'account',
+        account,
+        isLast: !hasAnyKnownTokens && !hasStaking,
+        isFirst: true,
+        hasAnyKnownTokens,
+    });
 
-        if (hasStaking) {
+    if (hasStaking) {
+        sections.push({
+            type: 'staking',
+            account,
+            stakingCryptoBalance: stakingBalance,
+            isLast: !hasAnyKnownTokens,
+        });
+    }
+
+    if (hasAnyKnownTokens) {
+        tokens.forEach((token, index) => {
             sections.push({
-                type: 'staking',
+                type: 'token',
                 account,
-                stakingCryptoBalance: stakingBalance,
-                isLast: !hasAnyKnownTokens,
+                token: token as TokenInfoBranded,
+                isLast: index === tokens.length - 1,
             });
-        }
+        });
+    }
 
-        if (hasAnyKnownTokens) {
-            tokens.forEach((token, index) => {
-                sections.push({
-                    type: 'token',
-                    account,
-                    token: token as TokenInfoBranded,
-                    isLast: index === tokens.length - 1,
-                });
-            });
-        }
+    return sections;
+};
 
-        return sections;
+const EMPTY_ARRAY: AccountSelectBottomSheetSection[] = [];
+
+export const selectAccountListSections = createMemoizedSelector(
+    [
+        selectAccountByKey,
+        selectTokenDefinitions,
+        (_state, _accountKey?: AccountKey, hideStaking?: boolean) => hideStaking,
+    ],
+    (account, tokenDefinitions, hideStaking) => {
+        if (!account) return EMPTY_ARRAY;
+
+        const networkTokenDefinitions = getSimpleCoinDefinitionsByNetwork(
+            tokenDefinitions,
+            account.symbol,
+        );
+
+        return getAccountListSections(account, networkTokenDefinitions, hideStaking);
     },
-    // Some reasonable number of accounts that could be in app
-    { size: 40 },
 );
 
 export const selectFreshAccountAddress = (

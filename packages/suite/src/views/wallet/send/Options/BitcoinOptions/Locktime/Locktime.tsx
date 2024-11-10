@@ -35,7 +35,7 @@ export const Locktime = ({ close }: LocktimeProps) => {
         watch,
     } = useSendFormContext();
 
-    const blockchain = useSelector(selectNetworkBlockchainInfo(network.symbol));
+    const blockchain = useSelector(state => selectNetworkBlockchainInfo(state, network.symbol));
 
     const { translationString } = useTranslation();
 

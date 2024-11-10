@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { A, F, pipe } from '@mobily/ts-belt';
-import { memoize, memoizeWithArgs } from 'proxy-memoize';
 
 import {
+    AccountsRootState,
     DeviceRootState,
     filterUnavailableNetworks,
     selectDeviceSupportedNetworks,
@@ -17,6 +17,7 @@ import {
 } from '@suite-native/config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    createSelectIsFeatureFlagEnabled,
     FeatureFlag,
     FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
@@ -25,6 +26,7 @@ import {
     selectNetworkSymbolsOfAccountsWithTokensAllowed,
     TokensRootState,
 } from '@suite-native/tokens';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 
 type DiscoveryInfo = {
     startTimestamp: number;
@@ -40,7 +42,9 @@ type DiscoveryConfigState = {
 
 export type DiscoveryConfigSliceRootState = {
     discoveryConfig: DiscoveryConfigState;
-};
+} & AccountsRootState &
+    DeviceRootState &
+    TokensRootState;
 
 const discoveryConfigInitialState: DiscoveryConfigState = {
     areTestnetsEnabled: isDetoxTestBuild(),
@@ -92,11 +96,15 @@ export const selectAreTestnetsEnabled = (state: DiscoveryConfigSliceRootState) =
 export const selectDiscoveryInfo = (state: DiscoveryConfigSliceRootState) =>
     state.discoveryConfig.discoveryInfo;
 
-export const selectFeatureFlagEnabledNetworkSymbols = memoize(
-    (state: FeatureFlagsRootState & DiscoveryConfigSliceRootState) => {
-        const isSolanaEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsSolanaEnabled);
-        const areTestnetsEnabled = selectAreTestnetsEnabled(state);
+const createMemoizedSelector = createWeakMapSelector.withTypes<
+    DeviceRootState & DiscoveryConfigSliceRootState & FeatureFlagsRootState
+>();
 
+const selectIsSolanaEnabled = createSelectIsFeatureFlagEnabled(FeatureFlag.IsSolanaEnabled);
+
+export const selectFeatureFlagEnabledNetworkSymbols = createMemoizedSelector(
+    [selectIsSolanaEnabled, selectAreTestnetsEnabled],
+    (isSolanaEnabled, areTestnetsEnabled) => {
         const allowlist: NetworkSymbol[] = [];
 
         if (isSolanaEnabled) {
@@ -106,67 +114,57 @@ export const selectFeatureFlagEnabledNetworkSymbols = memoize(
             }
         }
 
-        return allowlist;
+        return returnStableArrayIfEmpty(allowlist);
     },
 );
 
-export const selectDiscoverySupportedNetworks = memoizeWithArgs(
-    (
-        state: DeviceRootState & DiscoveryConfigSliceRootState & FeatureFlagsRootState,
-        forcedAreTestnetsEnabled?: boolean,
-    ) => {
-        const areTestnetsEnabled = forcedAreTestnetsEnabled ?? selectAreTestnetsEnabled(state);
-        const allowlist = selectFeatureFlagEnabledNetworkSymbols(state);
+export const selectDiscoverySupportedNetworks = createMemoizedSelector(
+    [
+        selectDeviceSupportedNetworks,
+        selectAreTestnetsEnabled,
+        selectFeatureFlagEnabledNetworkSymbols,
+        (_state, forcedAreTestnetsEnabled?: boolean) => forcedAreTestnetsEnabled,
+    ],
+    (deviceNetworks, defaultAreTestnetsEnabled, allowlist, forcedAreTestnetsEnabled) => {
+        const areTestnetsEnabled = forcedAreTestnetsEnabled ?? defaultAreTestnetsEnabled;
 
         return pipe(
-            selectDeviceSupportedNetworks(state),
+            deviceNetworks,
             networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
             filterUnavailableNetworks,
             availableNetworks => filterBlacklistedNetworks(availableNetworks, allowlist),
             sortNetworks,
+            returnStableArrayIfEmpty,
         );
     },
-    // for all areTestnetsEnabled states
-    { size: 2 },
 );
 
-export const selectDiscoveryNetworkSymbols = memoizeWithArgs(
-    (
-        state: DeviceRootState & DiscoveryConfigSliceRootState & FeatureFlagsRootState,
-        forcedAreTestnetsEnabled?: boolean,
-    ) => {
-        const supportedNetworks = selectDiscoverySupportedNetworks(state, forcedAreTestnetsEnabled);
-
-        return supportedNetworks.map(n => n.symbol);
-    },
-    { size: 2 },
+export const selectDiscoveryNetworkSymbols = createMemoizedSelector(
+    [
+        selectDiscoverySupportedNetworks,
+        (_state, forcedAreTestnetsEnabled?: boolean) => forcedAreTestnetsEnabled,
+    ],
+    supportedNetworks => returnStableArrayIfEmpty(supportedNetworks.map(n => n.symbol)),
 );
 
-export const selectPortfolioTrackerMainnetNetworkSymbols = memoize(
-    (state: FeatureFlagsRootState & DiscoveryConfigSliceRootState) => {
-        const allowlist = selectFeatureFlagEnabledNetworkSymbols(state);
-
-        return [...portfolioTrackerMainnets, ...allowlist];
-    },
+export const selectPortfolioTrackerMainnetNetworkSymbols = createMemoizedSelector(
+    [selectFeatureFlagEnabledNetworkSymbols],
+    allowlist => returnStableArrayIfEmpty([...portfolioTrackerMainnets, ...allowlist]),
 );
 
-export const selectPortfolioTrackerTestnetNetworkSymbols = memoize(
-    (state: FeatureFlagsRootState) => {
-        const isRegtestEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsRegtestEnabled);
-
-        return isRegtestEnabled
-            ? [...portfolioTrackerTestnets, 'regtest' as NetworkSymbol]
-            : portfolioTrackerTestnets;
-    },
+export const selectPortfolioTrackerTestnetNetworkSymbols = createMemoizedSelector(
+    [state => selectIsFeatureFlagEnabled(state, FeatureFlag.IsRegtestEnabled)],
+    isRegtestEnabled =>
+        returnStableArrayIfEmpty(
+            isRegtestEnabled
+                ? [...portfolioTrackerTestnets, 'regtest' as NetworkSymbol]
+                : portfolioTrackerTestnets,
+        ),
 );
 
-export const selectPortfolioTrackerNetworkSymbols = memoize(
-    (state: FeatureFlagsRootState & DiscoveryConfigSliceRootState) => {
-        const mainnets = selectPortfolioTrackerMainnetNetworkSymbols(state);
-        const testnets = selectPortfolioTrackerTestnetNetworkSymbols(state);
-
-        return [...mainnets, ...testnets];
-    },
+export const selectPortfolioTrackerNetworkSymbols = createMemoizedSelector(
+    [selectPortfolioTrackerMainnetNetworkSymbols, selectPortfolioTrackerTestnetNetworkSymbols],
+    (mainnets, testnets) => returnStableArrayIfEmpty([...mainnets, ...testnets]),
 );
 
 export const selectIsCoinEnablingInitFinished = (
@@ -178,24 +176,18 @@ export const selectEnabledDiscoveryNetworkSymbols = (state: DiscoveryConfigSlice
     state.discoveryConfig.enabledDiscoveryNetworkSymbols;
 
 // this includes only networks supported by current device
-export const selectDeviceEnabledDiscoveryNetworkSymbols = memoizeWithArgs(
-    (
-        state: DiscoveryConfigSliceRootState & DeviceRootState & FeatureFlagsRootState,
-        forcedAreTestnetsEnabled?: boolean,
-    ) =>
-        selectDiscoveryNetworkSymbols(state, forcedAreTestnetsEnabled).filter(s =>
-            state.discoveryConfig.enabledDiscoveryNetworkSymbols.includes(s),
-        ),
-    { size: 2 },
+export const selectDeviceEnabledDiscoveryNetworkSymbols = createMemoizedSelector(
+    [selectDiscoveryNetworkSymbols, selectEnabledDiscoveryNetworkSymbols],
+    (networkSymbols, enabledSymbols) =>
+        returnStableArrayIfEmpty(networkSymbols.filter(s => enabledSymbols.includes(s))),
 );
 
-export const selectTokenDefinitionsEnabledNetworks = memoize(
-    (state: TokensRootState & DiscoveryConfigSliceRootState) => {
-        const enabledNetworkSymbols = selectEnabledDiscoveryNetworkSymbols(state);
-        const accountNetworkSymbols = selectNetworkSymbolsOfAccountsWithTokensAllowed(state);
-
-        return F.toMutable(A.uniq([...enabledNetworkSymbols, ...accountNetworkSymbols]));
-    },
+export const selectTokenDefinitionsEnabledNetworks = createMemoizedSelector(
+    [selectEnabledDiscoveryNetworkSymbols, selectNetworkSymbolsOfAccountsWithTokensAllowed],
+    (enabledNetworkSymbols, accountNetworkSymbols) =>
+        returnStableArrayIfEmpty(
+            F.toMutable(A.uniq([...enabledNetworkSymbols, ...accountNetworkSymbols])),
+        ),
 );
 
 export const {

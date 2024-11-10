@@ -13,7 +13,9 @@ interface EthStakingDashboardProps {
 }
 
 export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProps) => {
-    const hasStaked = useSelector(state => selectAccountHasStaked(state, selectedAccount.account));
+    const hasStaked = useSelector(state =>
+        selectAccountHasStaked(state, selectedAccount.account.key),
+    );
 
     return (
         <WalletLayout title="TR_STAKE_ETH" account={selectedAccount}>

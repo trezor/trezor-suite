@@ -47,11 +47,7 @@ export const selectHasAnyDeviceAccountsWithStaking = (
     return selectDeviceAccountsWithStaking(state, networkSymbol).length > 0;
 };
 
-export const selectAccountCryptoBalanceWithStaking = (
-    state: NativeStakingRootState,
-    accountKey: AccountKey,
-) => {
-    const account = selectAccountByKey(state, accountKey);
+export const getAccountCryptoBalanceWithStaking = (account: Account | null) => {
     if (!account) return '0';
 
     if (!doesCoinSupportStaking(account.symbol)) {
@@ -69,6 +65,15 @@ export const selectAccountCryptoBalanceWithStaking = (
 
             return account.formattedBalance;
     }
+};
+
+export const selectAccountCryptoBalanceWithStaking = (
+    state: NativeStakingRootState,
+    accountKey: AccountKey,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+
+    return getAccountCryptoBalanceWithStaking(account);
 };
 
 export const selectAccountHasStaking = (state: NativeStakingRootState, accountKey: AccountKey) => {

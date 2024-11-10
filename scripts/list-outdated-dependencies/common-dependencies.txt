@@ -68,7 +68,6 @@ nx
 octokit
 patch-package
 prettier
-proxy-memoize
 raw-loader
 react
 react-dom
@@ -88,6 +87,7 @@ redux-logger
 redux-mock-store
 redux-thunk
 rimraf
+reselect
 sort-package-json
 tar
 ts-mixer

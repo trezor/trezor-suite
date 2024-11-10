@@ -13,7 +13,7 @@ import { useFormContext } from '@suite-native/forms';
 import { useDebounce } from '@trezor/react-utils';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { Translation } from '@suite-native/intl';
-import { selectAccountTokenBalance } from '@suite-native/tokens';
+import { selectAccountTokenBalance, TokensRootState } from '@suite-native/tokens';
 
 import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
 import { getOutputFieldName, constructFormDraft } from '../utils';
@@ -32,7 +32,7 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const tokenBalance = useSelector((state: AccountsRootState) =>
+    const tokenBalance = useSelector((state: TokensRootState) =>
         selectAccountTokenBalance(state, accountKey, tokenContract),
     );
 

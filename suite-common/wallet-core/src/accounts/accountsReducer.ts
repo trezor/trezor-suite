@@ -1,8 +1,11 @@
 import { isAnyOf } from '@reduxjs/toolkit';
-import { A, D, F, G, pipe } from '@mobily/ts-belt';
-import { memoize, memoizeWithArgs } from 'proxy-memoize';
+import { A, G, pipe } from '@mobily/ts-belt';
 
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    createReducerWithExtraDeps,
+    createWeakMapSelector,
+    returnStableArrayIfEmpty,
+} from '@suite-common/redux-utils';
 import { enhanceHistory, isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { AccountType, networks, NetworkSymbol } from '@suite-common/wallet-config';
@@ -147,303 +150,306 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
     },
 );
 
+const createMemoizedSelector = createWeakMapSelector.withTypes<
+    AccountsRootState & DeviceRootState & DiscoveryRootState
+>();
+
+const EMPTY_STABLE_ACCOUNTS_ARRAY: Account[] = [];
+
 export const selectAccounts = (state: AccountsRootState) => state.wallet.accounts;
 
-export const selectAccountsByDeviceState = (
-    state: AccountsRootState,
+export const getAccountsByDeviceState = (
+    accounts: Account[],
     deviceState: StaticSessionId | DeviceState,
-): Account[] =>
-    pipe(
-        selectAccounts(state),
-        A.filter(account =>
-            typeof deviceState === 'string'
-                ? account.deviceState === deviceState
-                : account.deviceState === deviceState.staticSessionId,
-        ),
-    ) as Account[];
-
-export const selectAccountsByDeviceStateAndNetworkSymbol = (
-    state: AccountsRootState,
-    deviceState: StaticSessionId | DeviceState,
-    networkSymbol: NetworkSymbol,
-): Account[] =>
-    pipe(
-        selectAccountsByDeviceState(state, deviceState),
-        A.filter(account => account.symbol === networkSymbol),
-        F.toMutable,
-    );
-
-export const selectDeviceAccounts = (state: AccountsRootState & DeviceRootState) => {
-    const device = selectDevice(state);
-
-    if (!device?.state?.staticSessionId) return [];
-
-    return selectAccountsByDeviceState(state, device.state);
-};
-
-export const selectVisibleDeviceAccounts = memoize((state: AccountsRootState & DeviceRootState) =>
-    selectDeviceAccounts(state).filter(account => account.visible),
-);
-
-export const selectDeviceAccountsForNetworkSymbolAndAccountType = memoizeWithArgs(
-    (
-        state: AccountsRootState & DeviceRootState,
-        networkSymbol?: NetworkSymbol,
-        accountType?: AccountType,
-    ) => {
-        if (!networkSymbol || !accountType) {
-            return [];
-        }
-        const accounts = selectDeviceAccounts(state);
-
-        return accounts.filter(
-            account => account.symbol === networkSymbol && account.accountType === accountType,
-        );
-    },
-    // memoize data for every network
-    { size: D.keys(networks).length },
-);
-
-export const selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex = (
-    state: AccountsRootState & DeviceRootState,
-    networkSymbol?: NetworkSymbol,
-    accountType?: AccountType,
-    accountIndex?: number,
-) => {
-    if (!networkSymbol || !accountType || accountIndex === undefined || accountIndex < 0) {
-        return undefined;
-    }
-    const accounts = selectDeviceAccountsForNetworkSymbolAndAccountType(
-        state,
-        networkSymbol,
-        accountType,
-    );
-
-    return accounts[accountIndex]?.key;
-};
-
-export const selectDeviceMainnetAccounts = memoize((state: AccountsRootState & DeviceRootState) =>
-    pipe(
-        selectDeviceAccounts(state),
-        A.filter(account => !isTestnet(account.symbol)),
-    ),
-);
-
-export const selectNumberOfAccounts = (state: AccountsRootState) => selectAccounts(state).length;
-
-export const selectUserHasAccounts = (state: AccountsRootState): boolean =>
-    pipe(selectAccounts(state), A.isNotEmpty);
-
-export const selectAccountByKey = (state: AccountsRootState, accountKey?: AccountKey) => {
-    if (!accountKey) return null;
-
-    const accounts = selectAccounts(state);
-
-    return accounts.find(account => account.key === accountKey) ?? null;
-};
-
-export const selectHasAccountTransactions = (state: AccountsRootState, accountKey: AccountKey) => {
-    const account = selectAccountByKey(state, accountKey);
-
-    return !!account?.history.total;
-};
-
-export const selectDeviceAccountsByNetworkSymbol = memoizeWithArgs(
-    (state: AccountsRootState & DeviceRootState, networkSymbol: NetworkSymbol | null) => {
-        if (G.isNull(networkSymbol)) return [];
-
-        const accounts = selectDeviceAccounts(state);
-
-        return A.filter(accounts, account => account.symbol === networkSymbol);
-    },
-    {
-        size: Object.keys(networks).length,
-    },
-);
-
-export const selectVisibleDeviceAccountsByNetworkSymbol = memoizeWithArgs(
-    (state: AccountsRootState & DeviceRootState, networkSymbol: NetworkSymbol | null) =>
-        selectDeviceAccountsByNetworkSymbol(state, networkSymbol).filter(
-            account => account.visible,
-        ),
-    {
-        size: Object.keys(networks).length,
-    },
-);
-
-export const selectVisibleNonEmptyDeviceAccountsByNetworkSymbol = (
-    state: AccountsRootState & DeviceRootState,
-    networkSymbol: NetworkSymbol | null,
 ) =>
-    selectDeviceAccountsByNetworkSymbol(state, networkSymbol).filter(
-        account => !account.empty || account.visible,
+    accounts.filter(account =>
+        typeof deviceState === 'string'
+            ? account.deviceState === deviceState
+            : account.deviceState === deviceState.staticSessionId,
     );
 
-export const selectNonEmptyDeviceAccounts = (state: AccountsRootState & DeviceRootState) =>
-    selectDeviceAccounts(state).filter(account => !account.empty);
+export const selectAccountsByDeviceState = createMemoizedSelector(
+    [
+        selectAccounts,
+        (_state: AccountsRootState, deviceState: StaticSessionId | DeviceState) => deviceState,
+    ],
+    (accounts, deviceState) =>
+        pipe(getAccountsByDeviceState(accounts, deviceState), returnStableArrayIfEmpty),
+);
 
-export const selectAccountsByNetworkAndDeviceState = memoizeWithArgs(
-    (state: AccountsRootState, deviceState: StaticSessionId, networkSymbol: NetworkSymbol) => {
-        const accounts = selectAccounts(state);
+export const selectAccountsByDeviceStateAndNetworkSymbol = createMemoizedSelector(
+    [
+        selectAccountsByDeviceState,
+        (
+            _state: AccountsRootState,
+            _deviceState: StaticSessionId | DeviceState,
+            networkSymbol: NetworkSymbol,
+        ) => networkSymbol,
+    ],
+    (accounts, networkSymbol) =>
+        pipe(
+            accounts,
+            A.filter(account => account.symbol === networkSymbol),
+            returnStableArrayIfEmpty,
+        ),
+);
 
-        return accounts.filter(
-            account => account.deviceState === deviceState && account.symbol === networkSymbol,
+export const selectDeviceAccounts = createMemoizedSelector(
+    [selectAccounts, selectDevice],
+    (accounts, device) => {
+        if (!device?.state?.staticSessionId) return EMPTY_STABLE_ACCOUNTS_ARRAY;
+
+        return pipe(getAccountsByDeviceState(accounts, device.state), returnStableArrayIfEmpty);
+    },
+);
+
+export const selectVisibleDeviceAccounts = createMemoizedSelector(
+    [selectDeviceAccounts],
+    accounts =>
+        pipe(
+            accounts,
+            A.filter(account => account.visible),
+            returnStableArrayIfEmpty,
+        ),
+);
+
+export const selectDeviceAccountsForNetworkSymbolAndAccountType = createMemoizedSelector(
+    [
+        selectDeviceAccounts,
+        (_state: AccountsRootState & DeviceRootState, networkSymbol?: NetworkSymbol) =>
+            networkSymbol,
+        (
+            _state: AccountsRootState & DeviceRootState,
+            _networkSymbol?: NetworkSymbol,
+            accountType?: AccountType,
+        ) => accountType,
+    ],
+    (accounts, networkSymbol, accountType) => {
+        if (!networkSymbol || !accountType) return EMPTY_STABLE_ACCOUNTS_ARRAY;
+
+        return pipe(
+            accounts,
+            A.filter(
+                account => account.symbol === networkSymbol && account.accountType === accountType,
+            ),
+            returnStableArrayIfEmpty,
         );
     },
-    {
-        size: 80,
+);
+
+export const selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex = createMemoizedSelector(
+    [
+        selectDeviceAccountsForNetworkSymbolAndAccountType,
+        (
+            _state: AccountsRootState & DeviceRootState,
+            _networkSymbol?: NetworkSymbol,
+            _accountType?: AccountType,
+            accountIndex?: number,
+        ) => accountIndex,
+    ],
+    (accounts, accountIndex) => {
+        if (accountIndex === undefined || accountIndex < 0) return undefined;
+
+        return accounts[accountIndex]?.key;
     },
 );
 
-export const selectFirstNormalAccountForNetworkSymbol = memoizeWithArgs(
-    (state: AccountsRootState & DeviceRootState, networkSymbol: NetworkSymbol) =>
-        selectDeviceAccountsForNetworkSymbolAndAccountType(state, networkSymbol, 'normal').filter(
-            account => account.index === 0,
-        )[0] ?? null,
-    {
-        size: Object.keys(networks).length,
+export const selectDeviceMainnetAccounts = createMemoizedSelector(
+    [selectDeviceAccounts],
+    accounts =>
+        pipe(
+            accounts,
+            A.filter(account => !isTestnet(account.symbol)),
+            returnStableArrayIfEmpty,
+        ),
+);
+
+export const selectNumberOfAccounts = createMemoizedSelector(
+    [selectAccounts],
+    accounts => accounts.length,
+);
+
+export const selectUserHasAccounts = createMemoizedSelector(
+    [selectAccounts],
+    accounts => accounts.length > 0,
+);
+
+export const selectAccountByKey = createMemoizedSelector(
+    [selectAccounts, (_state: AccountsRootState, accountKey?: AccountKey) => accountKey],
+    (accounts, accountKey) => {
+        if (!accountKey) return null;
+
+        return accounts.find(account => account.key === accountKey) ?? null;
     },
 );
 
-export const selectAccountLabel = (
-    state: AccountsRootState,
-    accountKey?: AccountKey,
-): string | null => {
-    const account = selectAccountByKey(state, accountKey);
+export const selectHasAccountTransactions = createMemoizedSelector(
+    [selectAccountByKey],
+    account => !!account?.history.total,
+);
 
+export const selectDeviceAccountsByNetworkSymbol = createMemoizedSelector(
+    [
+        selectDeviceAccounts,
+        (_state: AccountsRootState & DeviceRootState, networkSymbol: NetworkSymbol | null) =>
+            networkSymbol,
+    ],
+    (accounts, networkSymbol) => {
+        if (G.isNull(networkSymbol)) return EMPTY_STABLE_ACCOUNTS_ARRAY;
+
+        return pipe(
+            accounts,
+            A.filter(account => account.symbol === networkSymbol),
+            returnStableArrayIfEmpty,
+        );
+    },
+);
+
+export const selectVisibleDeviceAccountsByNetworkSymbol = createMemoizedSelector(
+    [selectDeviceAccountsByNetworkSymbol],
+    accounts =>
+        pipe(
+            accounts,
+            A.filter(account => account.visible),
+            returnStableArrayIfEmpty,
+        ),
+);
+
+export const selectVisibleNonEmptyDeviceAccountsByNetworkSymbol = createMemoizedSelector(
+    [selectDeviceAccountsByNetworkSymbol],
+    accounts =>
+        pipe(
+            accounts,
+            A.filter(account => !account.empty || account.visible),
+            returnStableArrayIfEmpty,
+        ),
+);
+
+export const selectNonEmptyDeviceAccounts = createMemoizedSelector(
+    [selectDeviceAccounts],
+    accounts =>
+        pipe(
+            accounts.filter(account => !account.empty),
+            returnStableArrayIfEmpty,
+        ),
+);
+
+export const selectAccountsByNetworkAndDeviceState = createMemoizedSelector(
+    [
+        selectAccounts,
+        (_state: AccountsRootState, deviceState: StaticSessionId) => deviceState,
+        (_state: AccountsRootState, _deviceState: StaticSessionId, networkSymbol: NetworkSymbol) =>
+            networkSymbol,
+    ],
+    (accounts, deviceState, networkSymbol) =>
+        pipe(
+            accounts.filter(
+                account => account.deviceState === deviceState && account.symbol === networkSymbol,
+            ),
+            returnStableArrayIfEmpty,
+        ),
+);
+
+export const selectFirstNormalAccountForNetworkSymbol = createMemoizedSelector(
+    [
+        (state: AccountsRootState & DeviceRootState, networkSymbol: NetworkSymbol) =>
+            selectDeviceAccountsForNetworkSymbolAndAccountType(state, networkSymbol, 'normal'),
+    ],
+    accounts => accounts.find(account => account.index === 0) ?? null,
+);
+
+export const selectAccountLabel = createMemoizedSelector(
+    [selectAccountByKey],
+    account => account?.accountLabel ?? null,
+);
+
+export const selectAccountNetworkSymbol = createMemoizedSelector(
+    [selectAccountByKey],
+    account => account?.symbol ?? null,
+);
+
+export const selectAccountAvailableBalance = createMemoizedSelector(
+    [selectAccountByKey],
+    account => account?.availableBalance ?? null,
+);
+
+export const selectFormattedAccountType = createMemoizedSelector([selectAccountByKey], account => {
     if (!account) return null;
-
-    return account.accountLabel ?? null;
-};
-
-export const selectAccountNetworkSymbol = (
-    state: AccountsRootState,
-    accountKey?: AccountKey,
-): NetworkSymbol | null => {
-    const account = selectAccountByKey(state, accountKey);
-
-    if (!account) return null;
-
-    return account.symbol;
-};
-
-export const selectAccountAvailableBalance = (
-    state: AccountsRootState,
-    accountKey?: AccountKey,
-): string | null => {
-    const account = selectAccountByKey(state, accountKey);
-
-    if (!account) return null;
-
-    return account.availableBalance;
-};
-
-export const selectFormattedAccountType = (
-    state: AccountsRootState,
-    accountKey: AccountKey,
-): string | null => {
-    const account = selectAccountByKey(state, accountKey);
-    if (!account) return null;
-
     const { networkType, accountType } = account;
     const formattedType = formattedAccountTypeMap[networkType]?.[accountType];
 
-    if (!formattedType) return null;
+    return formattedType ?? null;
+});
 
-    return formattedType;
-};
-
-export const selectIsAccountUtxoBased = (state: AccountsRootState, accountKey: AccountKey) => {
-    const account = selectAccountByKey(state, accountKey);
-
-    return account ? isUtxoBased(account) : false;
-};
-
-export const selectIsTestnetAccount = (state: AccountsRootState, accountKey: AccountKey) => {
-    const account = selectAccountByKey(state, accountKey);
-
-    return account ? isTestnet(account.symbol) : false;
-};
-
-export const selectDeviceAccountByDescriptorAndNetworkSymbol = (
-    state: AccountsRootState & DeviceRootState,
-    accountDescriptor: string,
-    networkSymbol: NetworkSymbol,
-) => {
-    const accounts = selectDeviceAccounts(state);
-
-    return (
-        A.find(
-            accounts,
-            account => account.descriptor === accountDescriptor && account.symbol === networkSymbol,
-        ) ?? null
-    );
-};
-
-export const selectDeviceAccountKeyByDescriptorAndNetworkSymbol = (
-    state: AccountsRootState & DeviceRootState,
-    accountDescriptor?: string,
-    networkSymbol?: NetworkSymbol,
-): AccountKey | null => {
-    if (!accountDescriptor || !networkSymbol) return null;
-    const account = selectDeviceAccountByDescriptorAndNetworkSymbol(
-        state,
-        accountDescriptor,
-        networkSymbol,
-    );
-
-    return account?.key ?? null;
-};
-
-export const selectAccountsSymbols = memoize(
-    (state: AccountsRootState): NetworkSymbol[] =>
-        pipe(
-            selectAccounts(state),
-            A.map(a => a.symbol),
-            A.uniq,
-        ) as NetworkSymbol[],
+export const selectIsAccountUtxoBased = createMemoizedSelector([selectAccountByKey], account =>
+    account ? isUtxoBased(account) : false,
 );
 
-export const selectIsDeviceAccountless = (state: AccountsRootState & DeviceRootState) =>
-    pipe(selectVisibleDeviceAccounts(state), A.isEmpty);
+export const selectIsTestnetAccount = createMemoizedSelector([selectAccountByKey], account =>
+    account ? isTestnet(account.symbol) : false,
+);
 
-// Selected device has no accounts and no active discovery. It can be empty portfolio device.
-export const selectIsDiscoveredDeviceAccountless = (
-    state: AccountsRootState & DeviceRootState & DiscoveryRootState,
-) => {
-    const isDeviceAccountless = selectIsDeviceAccountless(state);
-    const isDeviceDiscoveryActive = selectIsDeviceDiscoveryActive(state);
+export const selectDeviceAccountByDescriptorAndNetworkSymbol = createMemoizedSelector(
+    [
+        selectDeviceAccounts,
+        (_state: AccountsRootState & DeviceRootState, accountDescriptor?: string) =>
+            accountDescriptor,
+        (
+            _state: AccountsRootState & DeviceRootState,
+            _accountDescriptor?: string,
+            networkSymbol?: NetworkSymbol,
+        ) => networkSymbol,
+    ],
+    (accounts, accountDescriptor, networkSymbol) => {
+        if (!accountDescriptor || !networkSymbol) return null;
 
-    return isDeviceAccountless && !isDeviceDiscoveryActive;
-};
-
-export const selectHasOnlyEmptyPortfolioTracker = memoize(
-    (state: AccountsRootState & DeviceRootState & DiscoveryRootState) => {
-        const isDiscoveredDeviceAccountless = selectIsDiscoveredDeviceAccountless(state);
-        const hasOnlyPortfolioDevice = selectHasOnlyPortfolioDevice(state);
-
-        return isDiscoveredDeviceAccountless && hasOnlyPortfolioDevice;
+        return (
+            accounts.find(
+                account =>
+                    account.descriptor === accountDescriptor && account.symbol === networkSymbol,
+            ) ?? null
+        );
     },
 );
 
-// If we know that device is not empty, we can return true right away.
-// Otherwise we return null and wait until discovery finishes
-export const selectIsDeviceNotEmpty = (
-    state: AccountsRootState & DeviceRootState & DiscoveryRootState,
-) => {
-    const deviceState = selectDeviceState(state);
-    const nonEmptyAccounts = selectNonEmptyDeviceAccounts(state);
-    const hasDiscovery = selectHasDeviceDiscovery(state);
+export const selectDeviceAccountKeyByDescriptorAndNetworkSymbol = createMemoizedSelector(
+    [selectDeviceAccountByDescriptorAndNetworkSymbol],
+    account => account?.key ?? null,
+);
 
-    const isNotEmpty = A.isNotEmpty(nonEmptyAccounts);
+export const selectAccountsSymbols = createMemoizedSelector(
+    [selectAccounts],
+    accounts =>
+        pipe(
+            accounts,
+            A.map(a => a.symbol),
+            A.uniq,
+            returnStableArrayIfEmpty,
+        ) as NetworkSymbol[],
+);
 
-    if (isNotEmpty) {
-        return true;
-    }
+export const selectIsDeviceAccountless = createMemoizedSelector(
+    [selectVisibleDeviceAccounts],
+    accounts => accounts.length === 0,
+);
 
-    if (hasDiscovery || !deviceState) {
-        return null;
-    }
+export const selectIsDiscoveredDeviceAccountless = createMemoizedSelector(
+    [selectIsDeviceAccountless, selectIsDeviceDiscoveryActive],
+    (isAccountless, isDiscoveryActive) => isAccountless && !isDiscoveryActive,
+);
 
-    return isNotEmpty;
-};
+export const selectHasOnlyEmptyPortfolioTracker = createMemoizedSelector(
+    [selectIsDiscoveredDeviceAccountless, selectHasOnlyPortfolioDevice],
+    (isDiscoveredAccountless, hasOnlyPortfolio) => isDiscoveredAccountless && hasOnlyPortfolio,
+);
+
+export const selectIsDeviceNotEmpty = createMemoizedSelector(
+    [selectNonEmptyDeviceAccounts, selectHasDeviceDiscovery, selectDeviceState],
+    (nonEmptyAccounts, hasDiscovery, deviceState) => {
+        const isNotEmpty = nonEmptyAccounts.length > 0;
+        if (isNotEmpty) return true;
+        if (hasDiscovery || !deviceState) return null;
+
+        return isNotEmpty;
+    },
+);

@@ -10,8 +10,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useFormatters } from '@suite-common/formatters';
 import { Color } from '@trezor/theme';
 import { useDebounce } from '@trezor/react-utils';
-import { selectAccountTokenSymbol } from '@suite-native/tokens';
-import { AccountsRootState } from '@suite-common/wallet-core';
+import { selectAccountTokenSymbol, TokensRootState } from '@suite-native/tokens';
 
 import { SendAmountInputProps } from '../types';
 import { useSendAmountTransformers } from '../hooks/useSendAmountTransformers';
@@ -57,7 +56,7 @@ export const CryptoAmountInput = ({
     const { NetworkSymbolFormatter: formatter } = useFormatters();
     const debounce = useDebounce();
 
-    const tokenSymbol = useSelector((state: AccountsRootState) =>
+    const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
 

@@ -65,7 +65,7 @@ export const SendFeesForm = ({ accountKey, tokenContract, feeLevels }: SendFormP
     const selectedFeeLevelTransaction = feeLevels[selectedFeeLevel] as PrecomposedTransactionFinal;
 
     const feePerUnit = useSelector((state: FeesRootState) =>
-        selectNetworkFeeLevelFeePerUnit(state, selectedFeeLevel, account?.symbol),
+        selectNetworkFeeLevelFeePerUnit(state, account?.symbol, selectedFeeLevel),
     );
 
     if (!account) return;

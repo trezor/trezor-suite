@@ -18,10 +18,10 @@ import {
     TypedTokenTransfer,
     selectAccountOrTokenTransactions,
     WalletAccountTransaction,
+    TokensRootState,
 } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { arrayPartition } from '@trezor/utils';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
 import { TransactionsEmptyState } from '../TransactionsEmptyState';
 import { TokenTransferListItem } from './TokenTransferListItem';
@@ -144,7 +144,7 @@ export const TransactionList = ({
         selectIsLoadingAccountTransactions(state, accountKey),
     );
 
-    const transactions = useSelector((state: TransactionsRootState & TokenDefinitionsRootState) =>
+    const transactions = useSelector((state: TokensRootState) =>
         selectAccountOrTokenTransactions(
             state,
             accountKey,

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { selectAccountTokenInfo } from '@suite-native/tokens';
+import { selectAccountTokenInfo, TokensRootState } from '@suite-native/tokens';
 import { TextProps } from '@suite-native/atoms';
 
 import { FormatterProps } from '../types';
@@ -30,7 +30,7 @@ export const CoinToFiatAmountFormatter = ({
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const tokenInfo = useSelector((state: AccountsRootState) =>
+    const tokenInfo = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenContract),
     );
 

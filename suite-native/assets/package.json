@@ -30,7 +30,6 @@
         "@suite-native/settings": "workspace:*",
         "@suite-native/staking": "workspace:*",
         "@suite-native/tokens": "workspace:*",
-        "proxy-memoize": "2.0.2",
         "react": "^18.2.0",
         "react-native": "0.75.2",
         "react-native-reanimated": "3.16.1",

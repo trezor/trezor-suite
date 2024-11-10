@@ -32,7 +32,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useForm, Form } from '@suite-native/forms';
 import { selectIsAmountInSats, SettingsSliceRootState } from '@suite-native/settings';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { selectAccountTokenInfo } from '@suite-native/tokens';
+import { selectAccountTokenInfo, TokensRootState } from '@suite-native/tokens';
 
 import { SendScreen } from '../components/SendScreen';
 import { SendOutputFields } from '../components/SendOutputFields';
@@ -80,7 +80,7 @@ export const SendOutputsScreen = ({
         selectAccountByKey(state, accountKey),
     );
 
-    const tokenInfo = useSelector((state: AccountsRootState) =>
+    const tokenInfo = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenContract),
     );
 

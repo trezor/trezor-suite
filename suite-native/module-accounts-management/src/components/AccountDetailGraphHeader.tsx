@@ -7,7 +7,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { DiscreetTextTrigger, VStack } from '@suite-native/atoms';
-import { selectAccountTokenSymbol } from '@suite-native/tokens';
+import { selectAccountTokenSymbol, TokensRootState } from '@suite-native/tokens';
 import { GraphFiatBalance } from '@suite-native/graph';
 
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
@@ -51,7 +51,7 @@ export const AccountDetailGraphHeader = ({ accountKey, tokenAddress }: AccountBa
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const tokenSymbol = useSelector((state: AccountsRootState) =>
+    const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenAddress),
     );
     const setPoint = useSetAtom(selectedPointAtom);

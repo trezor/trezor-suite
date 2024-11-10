@@ -16,8 +16,11 @@ import { EventTooltipComponentProps } from '@suite-native/react-native-graph/src
 import { SignValue } from '@suite-common/suite-types';
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { AccountsRootState } from '@suite-common/wallet-core';
-import { selectAccountTokenInfo, selectAccountTokenSymbol } from '@suite-native/tokens';
+import {
+    selectAccountTokenInfo,
+    selectAccountTokenSymbol,
+    TokensRootState,
+} from '@suite-native/tokens';
 
 export type TransactionEventTooltipProps =
     EventTooltipComponentProps<GroupedBalanceMovementEventPayload>;
@@ -67,10 +70,10 @@ const TokenAmountTooltipFormatter = ({
     networkSymbol: NetworkSymbol;
     value: number;
 }) => {
-    const tokenInfo = useSelector((state: AccountsRootState) =>
+    const tokenInfo = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenAddress),
     );
-    const tokenSymbol = useSelector((state: AccountsRootState) =>
+    const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenAddress),
     );
     const tokenDecimals = tokenInfo?.decimals;

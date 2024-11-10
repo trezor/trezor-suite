@@ -1,11 +1,14 @@
 import { A, G, pipe } from '@mobily/ts-belt';
-import { memoizeWithArgs } from 'proxy-memoize';
 
 import {
-    selectFilterKnownTokens,
+    filterKnownTokens,
+    getSimpleCoinDefinitionsByNetwork,
+    isTokenDefinitionKnown,
     selectIsSpecificCoinDefinitionKnown,
+    selectTokenDefinitions,
     TokenDefinitionsRootState,
 } from '@suite-common/token-definitions';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -22,20 +25,24 @@ import {
     TokenSymbol,
 } from '@suite-common/wallet-types';
 import { TokenInfo, TokenTransfer } from '@trezor/blockchain-link';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 
-import { isCoinWithTokens } from './utils';
 import { TypedTokenTransfer, WalletAccountTransaction } from './types';
+import { isCoinWithTokens } from './utils';
 
-export type TokensRootState = AccountsRootState & DeviceRootState & TokenDefinitionsRootState;
+export type TokensRootState = AccountsRootState &
+    DeviceRootState &
+    TokenDefinitionsRootState &
+    TransactionsRootState;
 
-export const selectAccountTokenInfo = memoizeWithArgs(
-    (
-        state: AccountsRootState,
-        accountKey?: AccountKey,
-        tokenAddress?: TokenAddress,
-    ): TokenInfoBranded | null => {
-        const account = selectAccountByKey(state, accountKey);
+const createMemoizedSelector = createWeakMapSelector.withTypes<TokensRootState>();
+
+export const selectAccountTokenInfo = createMemoizedSelector(
+    [
+        selectAccountByKey,
+        (_state, _accountKey?: AccountKey, tokenAddress?: TokenAddress) => tokenAddress,
+    ],
+    (account, tokenAddress?: TokenAddress): TokenInfoBranded | null => {
         if (!account || !account.tokens) {
             return null;
         }
@@ -47,63 +54,52 @@ export const selectAccountTokenInfo = memoizeWithArgs(
             ) as TokenInfoBranded) ?? null
         );
     },
-    // 100 is a reasonable size for the cache
-    { size: 100 },
 );
 
-export const selectAccountTokenSymbol = (
-    state: AccountsRootState,
-    accountKey?: AccountKey,
-    tokenAddress?: TokenAddress,
-): TokenSymbol | null => {
-    const tokenInfo = selectAccountTokenInfo(state, accountKey, tokenAddress);
+export const selectAccountTokenSymbol = createMemoizedSelector(
+    [selectAccountTokenInfo],
+    (tokenInfo): TokenSymbol | null => {
+        if (!tokenInfo) {
+            return null;
+        }
 
-    if (!tokenInfo) {
-        return null;
-    }
+        // FIXME: This is the only place in the codebase where we change case of token symbol.
+        // The `toUpperCase()` operation is necessary because we are receiving wrongly formatted token symbol from connect.
+        // Can be removed at the moment when desktop issue https://github.com/trezor/trezor-suite/issues/8037 is resolved.
+        return tokenInfo.symbol.toUpperCase() as TokenSymbol;
+    },
+);
 
-    // FIXME: This is the only place in the codebase where we change case of token symbol.
-    // The `toUpperCase()` operation is necessary because we are receiving wrongly formatted token symbol from connect.
-    // Can be removed at the moment when desktop issue https://github.com/trezor/trezor-suite/issues/8037 is resolved.
-    return tokenInfo.symbol.toUpperCase() as TokenSymbol;
-};
+export const selectAccountTokenBalance = createMemoizedSelector(
+    [selectAccountTokenInfo],
+    (tokenInfo): string | null => {
+        if (!tokenInfo) {
+            return null;
+        }
 
-export const selectAccountTokenBalance = (
-    state: AccountsRootState,
-    accountKey?: AccountKey,
-    tokenAddress?: TokenAddress,
-): string | null => {
-    const tokenInfo = selectAccountTokenInfo(state, accountKey, tokenAddress);
+        return tokenInfo.balance ?? null;
+    },
+);
 
-    if (!tokenInfo) {
-        return null;
-    }
+export const selectAccountTokenDecimals = createMemoizedSelector(
+    [selectAccountTokenInfo],
+    (tokenInfo): number | null => {
+        if (!tokenInfo) {
+            return null;
+        }
 
-    return tokenInfo.balance ?? null;
-};
+        return tokenInfo.decimals ?? null;
+    },
+);
 
-export const selectAccountTokenDecimals = (
-    state: AccountsRootState,
-    accountKey?: AccountKey,
-    tokenAddress?: TokenAddress,
-): number | null => {
-    const tokenInfo = selectAccountTokenInfo(state, accountKey, tokenAddress);
-
-    if (!tokenInfo) {
-        return null;
-    }
-
-    return tokenInfo.decimals ?? null;
-};
-
-export const selectAccountTokenTransactions = memoizeWithArgs(
-    (
-        state: TransactionsRootState,
-        accountKey: AccountKey,
-        tokenAddress: TokenAddress,
-    ): WalletAccountTransaction[] =>
+export const selectAccountTokenTransactions = createMemoizedSelector(
+    [
+        selectAccountTransactions,
+        (_state, _accountKey: AccountKey, tokenAddress: TokenAddress) => tokenAddress,
+    ],
+    (transactions, tokenAddress): WalletAccountTransaction[] =>
         pipe(
-            selectAccountTransactions(state, accountKey),
+            transactions,
             A.map(transaction => ({
                 ...transaction,
                 tokens: transaction.tokens.map((tokenTransfer: TokenTransfer) => ({
@@ -117,8 +113,8 @@ export const selectAccountTokenTransactions = memoizeWithArgs(
                     tokenTransfer => tokenTransfer.contract === tokenAddress,
                 ),
             ),
+            returnStableArrayIfEmpty,
         ) as WalletAccountTransaction[],
-    { size: 50 },
 );
 
 const selectAllAccountTokens = (
@@ -126,11 +122,8 @@ const selectAllAccountTokens = (
     accountKey: AccountKey,
 ): TokenInfoBranded[] => {
     const account = selectAccountByKey(state, accountKey);
-    if (!account || !account.tokens) {
-        return [];
-    }
 
-    return account.tokens as TokenInfoBranded[];
+    return returnStableArrayIfEmpty(account?.tokens) as TokenInfoBranded[];
 };
 
 export const selectAnyOfTokensIsKnown = (
@@ -164,44 +157,59 @@ const isNotEmptyTransaction = (transaction: WalletAccountTransaction) =>
 const isTransactionWithTokenTransfers = (transaction: WalletAccountTransaction) =>
     G.isArray(transaction.tokens) && A.isNotEmpty(transaction.tokens);
 
-const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
+const selectAccountTransactionsWithTokensWithFiatRates = createMemoizedSelector(
+    [
+        selectAccountTransactions,
+        selectTokenDefinitions,
+        (_state, _accountKey: AccountKey, areTokenOnlyTransactionsIncluded: boolean) =>
+            areTokenOnlyTransactionsIncluded,
+    ],
     (
-        state: TransactionsRootState & TokenDefinitionsRootState,
-        accountKey: AccountKey,
-        areTokenOnlyTransactionsIncluded: boolean,
-    ): WalletAccountTransaction[] =>
-        pipe(
-            selectAccountTransactions(state, accountKey),
-            A.map(transaction => ({
-                ...transaction,
-                tokens: pipe(
-                    transaction?.tokens ?? [],
-                    A.filter(isNotZeroAmountTransfer),
-                    A.filter(token =>
-                        selectIsSpecificCoinDefinitionKnown(
-                            state,
-                            transaction.symbol,
-                            token.contract as TokenAddress,
+        transactions,
+        tokenDefinitions,
+        areTokenOnlyTransactionsIncluded,
+    ): WalletAccountTransaction[] => {
+        return pipe(
+            transactions,
+            A.map(transaction => {
+                const tokenDefinitionsForNetwork = getSimpleCoinDefinitionsByNetwork(
+                    tokenDefinitions,
+                    transaction.symbol,
+                );
+
+                return {
+                    ...transaction,
+                    tokens: pipe(
+                        transaction?.tokens ?? [],
+                        A.filter(isNotZeroAmountTransfer),
+                        A.filter(
+                            token =>
+                                !!isTokenDefinitionKnown(
+                                    tokenDefinitionsForNetwork,
+                                    transaction.symbol,
+                                    token.contract,
+                                ),
                         ),
-                    ),
-                    A.map((tokenTransfer: TokenTransfer) => ({
-                        ...tokenTransfer,
-                        symbol: tokenTransfer.symbol,
-                    })),
-                ) as TypedTokenTransfer[],
-            })),
+                        A.map((tokenTransfer: TokenTransfer) => ({
+                            ...tokenTransfer,
+                            symbol: tokenTransfer.symbol,
+                        })),
+                    ) as TypedTokenTransfer[],
+                };
+            }),
             A.filter(
                 transaction =>
                     isNotEmptyTransaction(transaction) ||
                     (areTokenOnlyTransactionsIncluded &&
                         isTransactionWithTokenTransfers(transaction)),
             ),
-        ) as WalletAccountTransaction[],
-    { size: 50 },
+            returnStableArrayIfEmpty,
+        );
+    },
 );
 
 export const selectAccountOrTokenTransactions = (
-    state: TransactionsRootState & TokenDefinitionsRootState,
+    state: TokensRootState,
     accountKey: AccountKey,
     tokenAddress: TokenAddress | null,
     areTokenOnlyTransactionsIncluded: boolean,
@@ -217,23 +225,26 @@ export const selectAccountOrTokenTransactions = (
     ) as WalletAccountTransaction[];
 };
 
-export const selectAccountsKnownTokens = memoizeWithArgs(
-    (
-        state: AccountsRootState & TokenDefinitionsRootState,
-        accountKey: AccountKey,
-    ): TokenInfoBranded[] => {
-        const account = selectAccountByKey(state, accountKey);
+export const selectAccountsKnownTokens = createMemoizedSelector(
+    [selectAccountByKey, selectTokenDefinitions],
+    (account, tokenDefinitions): TokenInfoBranded[] => {
         if (!account || !isCoinWithTokens(account.symbol)) {
-            return [];
+            return returnStableArrayIfEmpty<TokenInfoBranded>([]);
         }
 
-        return selectFilterKnownTokens(
-            state,
+        const tokenDefinitionsForNetwork = getSimpleCoinDefinitionsByNetwork(
+            tokenDefinitions,
+            account.symbol,
+        );
+
+        const knownTokens = filterKnownTokens(
+            tokenDefinitionsForNetwork,
             account.symbol,
             account.tokens ?? [],
         ) as TokenInfoBranded[];
+
+        return returnStableArrayIfEmpty(knownTokens);
     },
-    { size: 50 },
 );
 
 export const selectNumberOfAccountTokensWithFiatRates = (

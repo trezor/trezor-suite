@@ -33,7 +33,7 @@ export const AccountSection = ({
     } = account;
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
-    const hasStaked = useSelector(state => selectAccountHasStaked(state, account));
+    const hasStaked = useSelector(state => selectAccountHasStaked(state, account.key));
 
     const isStakeShown = isSupportedEthStakingNetworkSymbol(symbol) && hasStaked;
 

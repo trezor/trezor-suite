@@ -1,6 +1,10 @@
-import { memoizeWithArgs } from 'proxy-memoize';
 import { isAnyOf } from '@reduxjs/toolkit';
 
+import {
+    createWeakMapSelector,
+    returnStableArrayIfEmpty,
+    createReducerWithExtraDeps,
+} from '@suite-common/redux-utils';
 import { Account, WalletAccountTransaction, AccountKey } from '@suite-common/wallet-types';
 import {
     findTransaction,
@@ -16,7 +20,6 @@ import {
     getIsPhishingTransaction,
     TokenDefinitionsRootState,
 } from '@suite-common/token-definitions';
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions/src/tokenDefinitionsSelectors';
 
 import { accountsActions } from '../accounts/accountsActions';
@@ -66,7 +69,7 @@ export type TransactionsRootState = {
             transactions: { [key: AccountKey]: (WalletAccountTransaction | null | undefined)[] };
         };
     };
-};
+} & AccountsRootState;
 
 const initializeAccount = (state: TransactionsState, accountKey: AccountKey) => {
     // initialize an empty array at 'accountKey' index if not yet initialized
@@ -220,8 +223,9 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
     },
 );
 
-// Used to define selector cache size
-const EXPECTED_MAX_NUMBER_OF_ACCOUNTS = 50;
+const createMemoizedSelector = createWeakMapSelector.withTypes<
+    TransactionsRootState & AccountsRootState
+>();
 
 export const selectIsLoadingAccountTransactions = (
     state: TransactionsRootState,
@@ -236,6 +240,7 @@ export const selectAreAllTransactionsLoaded = (
     accountKey: AccountKey | null,
 ) => state.wallet.transactions.fetchStatusDetail?.[accountKey ?? '']?.areAllTransactionsLoaded;
 
+const EMPTY_STABLE_TRANSACTIONS: WalletAccountTransaction[] = [];
 /**
  * The list is not sorted here because it may contain null values as placeholders
  * for transactions that have not been fetched yet. (This affects pagination.)
@@ -244,106 +249,76 @@ export const selectAreAllTransactionsLoaded = (
 export const selectAccountTransactionsWithNulls = (
     state: TransactionsRootState,
     accountKey: AccountKey | null,
-) => state.wallet.transactions.transactions[accountKey ?? ''] ?? [];
+) => state.wallet.transactions.transactions[accountKey ?? ''] ?? EMPTY_STABLE_TRANSACTIONS;
 
-export const selectAccountTransactions = memoizeWithArgs(
-    (state: TransactionsRootState, accountKey: AccountKey | null): WalletAccountTransaction[] => {
-        const transactions = selectAccountTransactionsWithNulls(state, accountKey);
-
-        return transactions.filter(t => !!t);
-    },
-    { size: EXPECTED_MAX_NUMBER_OF_ACCOUNTS },
+export const selectAccountTransactions = createMemoizedSelector(
+    [selectAccountTransactionsWithNulls],
+    transactions => returnStableArrayIfEmpty(transactions.filter(t => !!t)),
 );
 
-export const selectPendingAccountAddresses = memoizeWithArgs(
-    (state: TransactionsRootState, accountKey: AccountKey | null) => {
-        const accountTransactions = selectAccountTransactions(state, accountKey);
+export const selectPendingAccountAddresses = createMemoizedSelector(
+    [selectAccountTransactions],
+    transactions => {
         const pendingAddresses: string[] = [];
-        const pendingTxs = accountTransactions.filter(isPending);
+        const pendingTxs = transactions.filter(isPending);
         pendingTxs.forEach(t =>
             t.targets.forEach(target =>
                 target.addresses?.forEach(a => pendingAddresses.unshift(a)),
             ),
         );
 
-        return pendingAddresses;
+        return returnStableArrayIfEmpty(pendingAddresses);
     },
-    { size: EXPECTED_MAX_NUMBER_OF_ACCOUNTS },
 );
 
-export const selectAllPendingTransactions = (state: TransactionsRootState) => {
-    const { transactions } = state.wallet.transactions;
+export const selectAllPendingTransactions = createMemoizedSelector(
+    [selectTransactions],
+    transactions =>
+        Object.keys(transactions).reduce(
+            (response, accountKey) => {
+                response[accountKey] = (transactions[accountKey] ?? []).filter(isPending);
 
-    return Object.keys(transactions).reduce(
-        (response, accountKey) => {
-            response[accountKey] = (transactions[accountKey] ?? []).filter(isPending);
+                return response;
+            },
+            {} as typeof transactions,
+        ),
+);
 
-            return response;
-        },
-        {} as typeof transactions,
-    );
-};
+export const selectTransactionByAccountKeyAndTxid = createMemoizedSelector(
+    [selectAccountTransactions, (_state, _accountKey: AccountKey | null, txid: string) => txid],
+    (transactions, txid) => {
+        const transaction = transactions.find(tx => tx?.txid === txid);
 
-// Note: Account key is passed because there can be duplication of TXIDs if self transaction was sent.
-export const selectTransactionByTxidAndAccountKey = (
-    state: TransactionsRootState,
-    txid: string,
-    accountKey: AccountKey,
-) => {
-    const transactions = selectAccountTransactions(state, accountKey);
+        return transaction ?? null;
+    },
+);
 
-    return transactions.find(tx => tx?.txid === txid) ?? null;
-};
+export const selectTransactionBlockTimeById = createMemoizedSelector(
+    [selectTransactionByAccountKeyAndTxid],
+    transaction => (transaction?.blockTime ? transaction.blockTime * 1000 : null),
+);
 
-export const selectTransactionBlockTimeById = (
-    state: TransactionsRootState,
-    txid: string,
-    accountKey: AccountKey,
-) => {
-    const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
-    if (transaction?.blockTime) {
-        return transaction.blockTime * 1000;
-    }
+export const selectTransactionTargets = createMemoizedSelector(
+    [selectTransactionByAccountKeyAndTxid],
+    transaction => transaction?.targets,
+);
 
-    return null;
-};
+export const selectTransactionFirstTargetAddress = createMemoizedSelector(
+    [selectTransactionTargets],
+    targets => targets?.[0]?.addresses?.[0],
+);
 
-export const selectTransactionTargets = (
-    state: TransactionsRootState,
-    txid: string,
-    accountKey: AccountKey,
-) => {
-    const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
-
-    return transaction?.targets;
-};
-
-export const selectTransactionFirstTargetAddress = (
-    state: TransactionsRootState,
-    txid: string,
-    accountKey: AccountKey,
-) => {
-    const transactionTargets = selectTransactionTargets(state, txid, accountKey);
-
-    return transactionTargets?.[0]?.addresses?.[0];
-};
-
-export const selectIsTransactionPending = (
-    state: TransactionsRootState,
-    txid: string,
-    accountKey: AccountKey,
-): boolean => {
-    const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
-
-    return transaction ? isPending(transaction) : false;
-};
+export const selectIsTransactionPending = createMemoizedSelector(
+    [selectTransactionByAccountKeyAndTxid],
+    transaction => (transaction ? isPending(transaction) : false),
+);
 
 export const selectTransactionConfirmations = (
-    state: TransactionsRootState & BlockchainRootState,
+    state: TransactionsRootState & BlockchainRootState & AccountsRootState,
     txid: string,
     accountKey: AccountKey,
 ) => {
-    const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
+    const transaction = selectTransactionByAccountKeyAndTxid(state, accountKey, txid);
     if (!transaction) return 0;
 
     const blockchainHeight = selectBlockchainHeightBySymbol(state, transaction.symbol);
@@ -352,11 +327,11 @@ export const selectTransactionConfirmations = (
 };
 
 export const selectIsPhishingTransaction = (
-    state: TokenDefinitionsRootState & TransactionsRootState,
+    state: TokenDefinitionsRootState & TransactionsRootState & AccountsRootState,
     txid: string,
     accountKey: AccountKey,
 ) => {
-    const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
+    const transaction = selectTransactionByAccountKeyAndTxid(state, accountKey, txid);
 
     if (!transaction) return false;
 
@@ -367,106 +342,109 @@ export const selectIsPhishingTransaction = (
     return getIsPhishingTransaction(transaction, tokenDefinitions);
 };
 
-export const selectAccountStakeTypeTransactions = (
-    state: TransactionsRootState,
-    accountKey: AccountKey,
-) => {
-    const transactions = selectAccountTransactions(state, accountKey);
+export const selectAccountStakeTypeTransactions = createMemoizedSelector(
+    [selectAccountTransactions],
+    transactions =>
+        returnStableArrayIfEmpty(
+            transactions.filter(tx => isStakeTypeTx(tx?.ethereumSpecific?.parsedData?.methodId)),
+        ),
+);
 
-    return transactions.filter(tx => isStakeTypeTx(tx?.ethereumSpecific?.parsedData?.methodId));
-};
+export const selectAccountStakeTransactions = createMemoizedSelector(
+    [selectAccountTransactions],
+    transactions =>
+        returnStableArrayIfEmpty(
+            transactions.filter(tx => isStakeTx(tx?.ethereumSpecific?.parsedData?.methodId)),
+        ),
+);
 
-export const selectAccountStakeTransactions = (
-    state: TransactionsRootState,
-    accountKey: AccountKey,
-) => {
-    const transactions = selectAccountTransactions(state, accountKey);
+export const selectAccountUnstakeTransactions = createMemoizedSelector(
+    [selectAccountTransactions],
+    transactions =>
+        returnStableArrayIfEmpty(
+            transactions.filter(tx => isUnstakeTx(tx?.ethereumSpecific?.parsedData?.methodId)),
+        ),
+);
 
-    return transactions.filter(tx => isStakeTx(tx?.ethereumSpecific?.parsedData?.methodId));
-};
+export const selectAccountClaimTransactions = createMemoizedSelector(
+    [selectAccountTransactions],
+    transactions =>
+        returnStableArrayIfEmpty(
+            transactions.filter(tx => isClaimTx(tx?.ethereumSpecific?.parsedData?.methodId)),
+        ),
+);
 
-export const selectAccountUnstakeTransactions = (
-    state: TransactionsRootState,
-    accountKey: AccountKey,
-) => {
-    const transactions = selectAccountTransactions(state, accountKey);
+export const selectAccountHasStaked = createMemoizedSelector(
+    [selectAccountStakeTransactions, selectAccountByKey],
+    (stakeTxs, account) => {
+        if (!account) return false;
 
-    return transactions.filter(tx => isUnstakeTx(tx?.ethereumSpecific?.parsedData?.methodId));
-};
+        return stakeTxs.length > 0 || !!getEverstakePool(account);
+    },
+);
 
-export const selectAccountClaimTransactions = (
-    state: TransactionsRootState,
-    accountKey: AccountKey,
-) => {
-    const transactions = selectAccountTransactions(state, accountKey);
-
-    return transactions.filter(tx => isClaimTx(tx?.ethereumSpecific?.parsedData?.methodId));
-};
-
-export const selectAccountHasStaked = (state: TransactionsRootState, account: Account) => {
-    const stakeTxs = selectAccountStakeTransactions(state, account.key);
-
-    return stakeTxs.length > 0 || !!getEverstakePool(account);
-};
-
-export const selectAssetAccountsThatStaked = (state: TransactionsRootState, accounts: Account[]) =>
-    accounts.filter(account => selectAccountHasStaked(state, account));
+export const selectAssetAccountsThatStaked = (
+    state: TransactionsRootState & AccountsRootState,
+    accounts: Account[],
+) => accounts.filter(account => selectAccountHasStaked(state, account.key));
 
 export const selectAccountTransactionsFetchStatus = (
     state: TransactionsRootState,
     accountKey: AccountKey,
 ) => state.wallet.transactions.fetchStatusDetail?.[accountKey];
 
-export const selectAreAllAccountTransactionsLoaded = (
-    state: TransactionsRootState & AccountsRootState,
-    accountKey: AccountKey,
-) => {
-    const areAllTransactionsLoaded =
-        !!state.wallet.transactions.fetchStatusDetail?.[accountKey]?.areAllTransactionsLoaded;
-    if (areAllTransactionsLoaded) return true;
+export const selectAccountTotalTransactions = createMemoizedSelector(
+    [selectAccountByKey],
+    account => account?.history.total ?? 0,
+);
 
-    const transactions = selectAccountTransactions(state, accountKey);
-    const accountTotalTransactions = selectAccountByKey(state, accountKey)?.history.total ?? 0;
+export const selectAreAllAccountTransactionsLoaded = createMemoizedSelector(
+    [
+        selectAccountTransactions,
+        selectAccountTotalTransactions,
+        selectAccountTransactionsFetchStatus,
+    ],
+    (transactions, accountTotalTransactions, fetchStatusDetail) => {
+        const areAllTransactionsLoaded = !!fetchStatusDetail?.areAllTransactionsLoaded;
+        if (areAllTransactionsLoaded) return true;
 
-    return transactions.length >= accountTotalTransactions;
-};
+        return transactions.length >= accountTotalTransactions;
+    },
+);
 
-export const selectIsPageAlreadyFetched = (
-    state: TransactionsRootState,
-    accountKey: AccountKey,
-    page: number,
-    perPage: number,
-) => {
-    const transactions = selectAccountTransactionsWithNulls(state, accountKey); // get all transactions including "null" values because of pagination
-    const startIndex = (page - 1) * perPage;
-    const stopIndex = startIndex + perPage;
-    const txsForPage = transactions.slice(startIndex, stopIndex).filter(tx => !!tx?.txid); // filter out "empty" values
+export const selectIsPageAlreadyFetched = createMemoizedSelector(
+    [
+        selectAccountTransactionsWithNulls,
+        (_state, _accountKey: AccountKey, page: number) => page,
+        (_state, _accountKey: AccountKey, _page: number, perPage: number) => perPage,
+    ],
+    (transactions, page, perPage) => {
+        const startIndex = (page - 1) * perPage;
+        const stopIndex = startIndex + perPage;
+        const txsForPage = transactions.slice(startIndex, stopIndex).filter(tx => !!tx?.txid);
 
-    const isPageAlreadyFetched = txsForPage.length === perPage;
+        return txsForPage.length === perPage;
+    },
+);
 
-    return isPageAlreadyFetched;
-};
+export const selectAreAllAccountTransactionsLoadedFromNowUntilTimestamp = createMemoizedSelector(
+    [
+        selectAreAllAccountTransactionsLoaded,
+        selectAccountTransactions,
+        (_state, _accountKey: AccountKey, timestamp: number) => timestamp,
+    ],
+    (areAllTransactionsLoaded, transactions, timestamp) => {
+        if (areAllTransactionsLoaded) return true;
+        const lastTransaction = transactions[transactions.length - 1];
 
-export const selectAreAllAccountTransactionsLoadedFromNowUntilTimestamp = (
-    state: TransactionsRootState & AccountsRootState,
-    accountKey: AccountKey,
-    timestamp: number,
-) => {
-    const areAllTransactionsLoaded = selectAreAllAccountTransactionsLoaded(state, accountKey);
-    if (areAllTransactionsLoaded) return true;
+        return lastTransaction?.blockTime && lastTransaction.blockTime < timestamp;
+    },
+);
 
-    const transactions = selectAccountTransactions(state, accountKey);
-    const lastTransaction = transactions[transactions.length - 1];
-
-    return lastTransaction?.blockTime && lastTransaction.blockTime < timestamp;
-};
-
-export const selectAccountTransactionsFromNowUntilTimestamp = (
-    state: TransactionsRootState & AccountsRootState,
-    accountKey: AccountKey,
-    timestamp: number,
-) => {
-    const transactions = selectAccountTransactions(state, accountKey);
-
-    return transactions.filter(tx => tx.blockTime && tx.blockTime >= timestamp);
-};
+export const selectAccountTransactionsFromNowUntilTimestamp = createMemoizedSelector(
+    [selectAccountTransactions, (_state, _accountKey: AccountKey, timestamp: number) => timestamp],
+    (transactions, timestamp) =>
+        returnStableArrayIfEmpty(
+            transactions.filter(tx => tx.blockTime && tx.blockTime >= timestamp),
+        ),
+);

@@ -1,10 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account, TokenInfoBranded } from '@suite-common/wallet-types';
 import { RoundedIcon } from '@suite-native/atoms';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
-import { getTokenName, selectAccountTokenSymbol } from '@suite-native/tokens';
+import { getTokenName, selectAccountTokenSymbol, TokensRootState } from '@suite-native/tokens';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 
@@ -26,7 +25,7 @@ export const AccountsListTokenItem = ({
     isFirst,
     isLast,
 }: AccountListTokenItemProps) => {
-    const tokenSymbol = useSelector((state: AccountsRootState) =>
+    const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, account.key, token.contract),
     );
     const balance = token.balance ?? '0';

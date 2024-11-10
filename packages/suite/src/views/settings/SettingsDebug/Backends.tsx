@@ -110,8 +110,8 @@ const BackendItem = ({
 };
 
 const CoinItem = ({ symbol }: { symbol: NetworkSymbol }) => {
-    const { url, error, connected, reconnectionTime, identityConnections } = useSelector(
-        selectNetworkBlockchainInfo(symbol),
+    const { url, error, connected, reconnectionTime, identityConnections } = useSelector(state =>
+        selectNetworkBlockchainInfo(state, symbol),
     );
 
     const dispatch = useDispatch();

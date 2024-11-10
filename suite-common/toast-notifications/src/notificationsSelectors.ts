@@ -1,4 +1,4 @@
-import { memoizeWithArgs } from 'proxy-memoize';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 
 import {
     NotificationId,
@@ -7,40 +7,43 @@ import {
     TransactionNotification,
 } from './types';
 
+const createMemoizedSelector = createWeakMapSelector.withTypes<NotificationsRootState>();
+
 export const selectNotifications = (state: NotificationsRootState) => state.notifications;
 
-export const selectVisibleNotificationsByType = (
-    state: NotificationsRootState,
-    notificationType: ToastPayload[keyof ToastPayload],
-) => {
-    const notifications = selectNotifications(state);
-
-    return notifications.filter(
-        notification => notification.type === notificationType && !notification.closed,
-    );
-};
-
-export const selectTransactionNotificationById = memoizeWithArgs(
-    (
-        state: NotificationsRootState,
-        notificationId: NotificationId,
-    ): TransactionNotification | null => {
-        const notifications = selectNotifications(state);
-
-        return (
-            (notifications.find(
-                notification => notification.id === notificationId,
-            ) as TransactionNotification) ?? null
-        );
-    },
+export const selectVisibleNotificationsByType = createMemoizedSelector(
+    [
+        selectNotifications,
+        (_state: NotificationsRootState, notificationType: ToastPayload[keyof ToastPayload]) =>
+            notificationType,
+    ],
+    (notifications, notificationType) =>
+        returnStableArrayIfEmpty(
+            notifications.filter(
+                notification => notification.type === notificationType && !notification.closed,
+            ),
+        ),
 );
 
-export const selectOpenedTransactionNotifications = (state: NotificationsRootState) => {
-    const notifications = selectNotifications(state);
+export const selectTransactionNotificationById = createMemoizedSelector(
+    [
+        selectNotifications,
+        (_state: NotificationsRootState, notificationId: NotificationId) => notificationId,
+    ],
+    (notifications, notificationId): TransactionNotification | null =>
+        (notifications.find(
+            notification => notification.id === notificationId,
+        ) as TransactionNotification) ?? null,
+);
 
-    return notifications.filter(
-        n =>
-            !n.closed &&
-            (n.type === 'tx-received' || n.type === 'tx-sent' || n.type === 'tx-confirmed'),
-    ) as TransactionNotification[];
-};
+export const selectOpenedTransactionNotifications = createMemoizedSelector(
+    [selectNotifications],
+    notifications =>
+        returnStableArrayIfEmpty(
+            notifications.filter(
+                n =>
+                    !n.closed &&
+                    (n.type === 'tx-received' || n.type === 'tx-sent' || n.type === 'tx-confirmed'),
+            ) as TransactionNotification[],
+        ),
+);

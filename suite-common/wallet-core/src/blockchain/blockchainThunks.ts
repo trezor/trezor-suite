@@ -107,7 +107,7 @@ export const updateFeeInfoThunk = createThunk(
     async (symbol: string, { dispatch, getState }) => {
         const network = getNetworkOptional(symbol.toLowerCase());
         if (!network) return;
-        const blockchainInfo = selectNetworkBlockchainInfo(network.symbol)(getState());
+        const blockchainInfo = selectNetworkBlockchainInfo(getState(), network.symbol);
         const feeInfo = selectNetworkFeeInfo(getState(), network.symbol);
 
         if (
@@ -341,7 +341,7 @@ export const syncAccountsWithBlockchainThunk = createThunk(
             ),
         );
 
-        const blockchainInfo = selectNetworkBlockchainInfo(symbol)(getState());
+        const blockchainInfo = selectNetworkBlockchainInfo(getState(), symbol);
         // Second clear, just to be sure that no other sync was planned while executing this one
         tryClearTimeout(blockchainInfo.syncTimeout);
         const timeout = setTimeout(

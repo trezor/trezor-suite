@@ -7,3 +7,4 @@ export * from './createReducerWithExtraDeps';
 export * from './createActionWithExtraDeps';
 export * from './createSingleInstanceThunk';
 export * from './hooks/useSelectorDeepComparison';
+export * from './selectorsUtils';
