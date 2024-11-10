@@ -145,7 +145,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                                 data-testid="@settings/device/homescreen-upload"
                                 key="@settings/device/homescreen-upload"
                             >
-                                <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />s
+                                <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
                             </Button>
                             <Button
                                 onClick={openGallery}
