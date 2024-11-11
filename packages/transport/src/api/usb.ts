@@ -354,7 +354,7 @@ export class UsbApi extends AbstractApi {
     }
 
     public async closeDevice(path: string) {
-        const device = this.findDevice(path);
+        let device = this.findDevice(path);
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
@@ -362,13 +362,24 @@ export class UsbApi extends AbstractApi {
         this.logger?.debug(`usb: closeDevice. device.opened: ${device.opened}`);
 
         if (device.opened) {
+            if (!this.debugLink) {
+                try {
+                    // NOTE: `device.reset()` interrupts transfers for all interfaces (debugLink and normal)
+                    await device.reset();
+                } catch (err) {
+                    this.logger?.error(
+                        `usb: device.reset error ${err}. device: ${this.formatDeviceForLog(device)}`,
+                    );
+                }
+            }
+        }
+
+        device = this.findDevice(path);
+        if (device?.opened) {
             try {
                 const interfaceId = this.debugLink ? DEBUGLINK_INTERFACE_ID : INTERFACE_ID;
                 this.logger?.debug(`usb: device.releaseInterface: ${interfaceId}`);
-                if (!this.debugLink) {
-                    // NOTE: `device.reset()` interrupts transfers for all interfaces (debugLink and normal)
-                    await device.reset();
-                }
+
                 await device.releaseInterface(interfaceId);
                 this.logger?.debug(
                     `usb: device.releaseInterface done: ${interfaceId}. device: ${this.formatDeviceForLog(device)}`,
@@ -380,7 +391,8 @@ export class UsbApi extends AbstractApi {
                 // ignore
             }
         }
-        if (device.opened) {
+        device = this.findDevice(path);
+        if (device?.opened) {
             try {
                 this.logger?.debug(`usb: device.close`);
                 await device.close();
