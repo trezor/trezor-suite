@@ -9,7 +9,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { createDeferred, getSynchronize } from '@trezor/utils';
 import { deviceConnectThunks, selectDevice } from '@suite-common/wallet-core';
-import { resolveStaticPath } from '@suite-common/suite-utils';
+import { resolveConnectPath } from '@suite-common/suite-utils';
 import { isDesktop, isNative } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { serializeError } from '@trezor/connect/src/constants/errors';
@@ -147,7 +147,7 @@ export const connectInitThunk = createThunk(
         // and it would be impossible to test this thunk in isolation (many unit tests depend on it).
         const binFilesBaseUrl = isDesktop()
             ? extra.selectors.selectDesktopBinDir(getState())
-            : resolveStaticPath('connect/data');
+            : resolveConnectPath('data');
 
         try {
             await TrezorConnect.init({
