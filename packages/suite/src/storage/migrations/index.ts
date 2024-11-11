@@ -2,7 +2,7 @@ import { toWei } from 'web3-utils';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { isDesktop } from '@trezor/env-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import type { BackendSettings } from '@suite-common/wallet-types';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
 import {
@@ -1123,6 +1123,16 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             }
 
             return device;
+        });
+    }
+
+    if (oldVersion < 49) {
+        await updateAll(transaction, 'walletSettings', walletSettings => {
+            walletSettings.enabledNetworks.sort(
+                (a, b) => networkSymbolCollection.indexOf(a) - networkSymbolCollection.indexOf(b),
+            );
+
+            return walletSettings;
         });
     }
 };
