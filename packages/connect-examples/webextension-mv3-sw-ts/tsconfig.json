@@ -5,6 +5,7 @@
         "types": ["chrome"]
     },
     "references": [
-        { "path": "../../connect-webextension" }
+        { "path": "../../connect-webextension" },
+        { "path": "../../eslint" }
     ]
 }

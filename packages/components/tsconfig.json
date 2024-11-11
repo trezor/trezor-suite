@@ -33,6 +33,7 @@
         { "path": "../react-utils" },
         { "path": "../styles" },
         { "path": "../theme" },
-        { "path": "../utils" }
+        { "path": "../utils" },
+        { "path": "../eslint" }
     ]
 }
