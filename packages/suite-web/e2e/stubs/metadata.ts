@@ -17,7 +17,11 @@ export const rerouteMetadataToMockProvider = (
     try {
         url = new URL(uri);
     } catch {
-        // catching absolute next.js urls which throw in URL constructor
+        // When requests like `./data/firmware/t3w1/releases.json` from connect they need to be
+        // provided with baseUrl so cypress can figure out where it is going.
+        const baseUrl = window.location.origin;
+        uri = new URL(uri, baseUrl).href;
+
         return fetch(uri, options);
     }
 

@@ -30,8 +30,15 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
             cy.task('startEmu', { wipe: true });
             cy.task('setupEmu', { mnemonic: 'mnemonic_all' });
             cy.task('startBridge');
+            cy.prefixedVisit('/', {
+                onBeforeLoad: win => {
+                    cy.stub(win, 'open').callsFake(stubOpen(win));
+                    cy.stub(win, 'fetch').callsFake(rerouteMetadataToMockProvider);
+                },
+            });
+            cy.getTestElement('@welcome-layout/body', { timeout: 30_000 });
             cy.task('metadataStartProvider', f.provider);
-            cy.clock();
+
             // prepare some initial files
             cy.task('metadataSetFileContent', {
                 provider: f.provider,
@@ -44,13 +51,8 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
                 },
                 aesKey: 'c785ef250807166bffc141960c525df97647fcc1bca57f6892ca3742ba86ed8d',
             });
-            cy.prefixedVisit('/', {
-                onBeforeLoad: win => {
-                    cy.stub(win, 'open').callsFake(stubOpen(win));
-                    cy.stub(win, 'fetch').callsFake(rerouteMetadataToMockProvider);
-                },
-            });
             cy.disableFirmwareHashCheck();
+            cy.clock();
             cy.tick(1000);
             cy.getTestElement('@analytics/continue-button', { timeout: 30_000 }).click();
             cy.getTestElement('@onboarding/exit-app-button').click();
@@ -83,7 +85,6 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
                 },
                 aesKey: 'c785ef250807166bffc141960c525df97647fcc1bca57f6892ca3742ba86ed8d',
             });
-
             // and this does the time travel to trigger fetch
             cy.tick(METADATA_LABELING.FETCH_INTERVAL);
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', f.content);

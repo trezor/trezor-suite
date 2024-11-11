@@ -33,7 +33,7 @@ describe.skip('fw update from empty device bootloader 2.0.3 to firmware 2.5.1', 
         cy.task('startMockedBridge', har);
 
         // make sure that we always upgrade to version 2.5.1
-        cy.intercept('*', { pathname: '/static/connect/data/firmware/t2t1/releases.json' }, [
+        cy.intercept('*', { pathname: '/data/firmware/t2t1/releases.json' }, [
             {
                 required: false,
                 version: [2, 5, 1],
@@ -53,7 +53,7 @@ describe.skip('fw update from empty device bootloader 2.0.3 to firmware 2.5.1', 
         // make sure that 2.5.1 does not return 404
         cy.intercept(
             '*',
-            { pathname: '/static/connect/data/firmware/t2t1/trezor-t2t1-2.5.1.bin' },
+            { pathname: '/data/firmware/t2t1/trezor-t2t1-2.5.1.bin' },
             // seems like response does not matter. I thought there was firmware validation but it is probably
             // only in place for custom firmware?
             'foo-bar',

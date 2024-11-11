@@ -69,7 +69,6 @@ export default defineConfig({
         video: true,
         trashAssetsBeforeRuns: false,
         chromeWebSecurity: false,
-        experimentalFetchPolyfill: true,
         experimentalRunAllSpecs: true,
         setupNodeEvents(on, config) {
             on('before:browser:launch', _browser => {
