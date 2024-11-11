@@ -72,7 +72,7 @@ export const MultiShareBackupStep5Done = () => (
             </Text>
             <Row gap={spacings.lg} alignItems="stretch">
                 <Callout
-                    header="TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_HEADER"
+                    header="TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT"
                     items={[
                         <>
                             <Icon name="coins" />
@@ -85,7 +85,7 @@ export const MultiShareBackupStep5Done = () => (
                     ]}
                 />
                 <Callout
-                    header="TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_HEADER"
+                    header="TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT"
                     items={[
                         <>
                             <Icon name="coins" />
