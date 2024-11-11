@@ -10,6 +10,45 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.4.3-beta.2
+
+## Feature
+
+-   new (non public) method TrezorConnect.loadDevice (14aec5d5b6, f8a47401ec, 0d5b592ae7, e46c95ef9d, 18b5cbc9d3, 580f3a9325)
+-   make TrezorConnect.init transportReconnect implicitly true (19aeb1a0f7)
+-   in connect popup improve error handling screen for missing capabilities in FW (d2c8870944)
+-   Support for t3w1 support in types (f98990dfa0, 01cdee48f1, e9827eeaa8)
+-   remove auto-acquire after device was released elsewhere (dfa070fa2d, cdd2ac1ec7)
+-   implement random strategy for utxo sorting (6c3137fdf8)
+-   new public method TrezorConnect.blockchainEvmRpcCall (a507d1322a)
+-   make `manifest.appUrl` available as part of `Device.transportSessionOwner` (c98f7f8bf4)
+
+## Fixes
+
+-   local url in mobile example (e4365278aa)
+-   emit changed event with state change in keepSession (f8bcaf7203)
+-   don't trump Cancel with DeviceCommand disposed (d2f876e47c)
+-   WebUSB sessions sync in all deployments (13ec59a53d)
+-   skip fw hash check when binary too tiny (DX) (584d742ccc)
+-   usedElsewhere only for localSession (8fc98762ec)
+-   device.unreadableError is always string (aeab689d34)
+-   api.dispose on transport.stop (e79130e88e)
+-   analytics for core in popup (f08deff345)
+-   deeplink core mode from options (3eb7512b89)
+
+## Chores and improvements
+
+-   try to reuse initialized (passphrase) session (422476c9c0)
+-   uncouple enableFirmwareHashCheck setting from binFilesBaseUrl (768596bbe5)
+-   add sortingStrategy param to connect, deprecate skipPermutation param in composeTransaction (283d3f1eae)
+-   Eslint improvements (1ad7b6f9b1, 12b6fb18b9, f1bdc399e5, e22b683733, 5d1104bfeb, 4a3cdc7893, 5e33e3abb5)
+-   add recommended checks from eslint-plugin-jest (55d
+
+### Dependencies update
+
+-   chore(connect): update @ethereumjs libs (2d6465f, d6bc8c5020)
+-   bump electron,electron-builder and webpack (2b80c45c5f, e7a980bcf3, fc04fea1de)
+
 # 9.4.3-beta.1
 
 This release introduces `@trezor/connect-mobile`, which allows mobile apps to integrate with Trezor Suite mobile using deeplinks.
