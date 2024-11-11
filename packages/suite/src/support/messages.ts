@@ -1699,7 +1699,7 @@ export default defineMessages({
         defaultMessage: 'My backups',
         id: 'TR_MULTI_SHARE_BACKUP_BACKUPS',
     },
-    TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_HEADER: {
+    TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT: {
         defaultMessage: 'My previous backup',
         id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT',
     },
@@ -1711,7 +1711,7 @@ export default defineMessages({
         defaultMessage: 'Store securely, separate from your new wallet backup',
         id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_LINE2',
     },
-    TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_HEADER: {
+    TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT: {
         defaultMessage: 'My new Multi-share Backup',
         id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT',
     },
