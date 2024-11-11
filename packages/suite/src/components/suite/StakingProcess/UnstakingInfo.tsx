@@ -6,6 +6,7 @@ import {
     selectValidatorsQueue,
     TransactionsRootState,
     StakeRootState,
+    AccountsRootState,
 } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
@@ -24,7 +25,7 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
     const { data } =
         useSelector((state: StakeRootState) => selectValidatorsQueue(state, account?.symbol)) || {};
 
-    const unstakeTxs = useSelector((state: TransactionsRootState) =>
+    const unstakeTxs = useSelector((state: TransactionsRootState & AccountsRootState) =>
         selectAccountUnstakeTransactions(state, account?.key ?? ''),
     );
 

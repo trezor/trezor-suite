@@ -96,11 +96,11 @@ export const FeeOption = ({
     const dispatch = useDispatch();
 
     const feeTimeEstimate = useSelector((state: FeesRootState) =>
-        selectNetworkFeeLevelTimeEstimate(state, feeKey, networkSymbol),
+        selectNetworkFeeLevelTimeEstimate(state, networkSymbol, feeKey),
     );
 
     const backendFeePerUnit = useSelector((state: FeesRootState) =>
-        selectNetworkFeeLevelFeePerUnit(state, feeKey, networkSymbol),
+        selectNetworkFeeLevelFeePerUnit(state, networkSymbol, feeKey),
     );
 
     const areFeeValuesComplete = isFinalPrecomposedTransaction(feeLevel);

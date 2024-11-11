@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
-import { selectAccountTokenInfo } from '@suite-native/tokens';
+import { selectAccountTokenInfo, TokensRootState } from '@suite-native/tokens';
 import { Screen } from '@suite-native/navigation';
 import { TransactionList } from '@suite-native/transactions';
 
@@ -33,7 +33,7 @@ export const AccountDetailContentScreen = ({
         selectAccountLabel(state, accountKey),
     );
 
-    const token = useSelector((state: AccountsRootState) =>
+    const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenContract),
     );
 

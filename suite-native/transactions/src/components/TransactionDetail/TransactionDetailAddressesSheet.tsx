@@ -10,6 +10,7 @@ import { TransactionsRootState } from '@suite-common/wallet-core';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
 import { selectTransactionAddresses } from '../../selectors';
 import { ChangeAddressesHeader } from './ChangeAddressesHeader';
@@ -76,11 +77,12 @@ export const TransactionDetailAddressesSheet = ({
 }: TransactionDetailAddressesSheetProps) => {
     const [displayedAddressesType, setDisplayedAddressesType] = useState<AddressesType>('inputs');
 
-    const inputAddresses = useSelector((state: TransactionsRootState) =>
-        selectTransactionAddresses(state, txid, accountKey, 'inputs'),
+    const inputAddresses = useSelector((state: TransactionsRootState & TokenDefinitionsRootState) =>
+        selectTransactionAddresses(state, accountKey, txid, 'inputs'),
     );
-    const outputAddresses = useSelector((state: TransactionsRootState) =>
-        selectTransactionAddresses(state, txid, accountKey, 'outputs'),
+    const outputAddresses = useSelector(
+        (state: TransactionsRootState & TokenDefinitionsRootState) =>
+            selectTransactionAddresses(state, accountKey, txid, 'outputs'),
     );
 
     const displayedAddresses =

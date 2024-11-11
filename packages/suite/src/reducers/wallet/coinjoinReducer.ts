@@ -1,5 +1,4 @@
 import produce from 'immer';
-import { memoizeWithArgs } from 'proxy-memoize';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { getInputSize, getOutputSize, RoundPhase } from '@trezor/coinjoin';
@@ -18,6 +17,7 @@ import {
     selectIsFeatureDisabled,
     selectFeatureConfig,
 } from '@suite-common/message-system';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 
 import { STORAGE } from 'src/actions/suite/constants';
 import {
@@ -610,6 +610,8 @@ export const coinjoinReducer = (
         }
     });
 
+const createMemoizedSelector = createWeakMapSelector.withTypes<CoinjoinRootState>();
+
 export const selectCoinjoinAccounts = (state: CoinjoinRootState) => state.wallet.coinjoin.accounts;
 
 export const selectCoinjoinClients = (state: CoinjoinRootState) => state.wallet.coinjoin.clients;
@@ -672,9 +674,9 @@ export const selectCurrentCoinjoinBalanceBreakdown = (state: CoinjoinRootState) 
     return balanceBreakdown;
 };
 
-export const selectRegisteredUtxosByAccountKey = memoizeWithArgs(
-    (state: CoinjoinRootState, accountKey: AccountKey) => {
-        const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+export const selectRegisteredUtxosByAccountKey = createMemoizedSelector(
+    [selectCoinjoinAccountByKey],
+    coinjoinAccount => {
         if (!coinjoinAccount?.prison) return;
         const { prison, session, transactionCandidates } = coinjoinAccount;
 

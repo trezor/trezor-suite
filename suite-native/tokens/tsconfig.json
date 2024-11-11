@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/token-definitions"
         },
         {

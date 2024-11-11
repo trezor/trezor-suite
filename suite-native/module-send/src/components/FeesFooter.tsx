@@ -18,8 +18,11 @@ import { FormContext } from '@suite-native/forms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { AccountsRootState } from '@suite-common/wallet-core';
-import { selectAccountTokenDecimals, selectAccountTokenSymbol } from '@suite-native/tokens';
+import {
+    selectAccountTokenDecimals,
+    selectAccountTokenSymbol,
+    TokensRootState,
+} from '@suite-native/tokens';
 
 type FeesFooterProps = {
     accountKey: AccountKey;
@@ -99,11 +102,11 @@ const TokenSummary = ({
     networkSymbol: NetworkSymbol;
     tokenContract?: TokenAddress;
 }) => {
-    const tokenSymbol = useSelector((state: AccountsRootState) =>
+    const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
 
-    const tokenDecimals = useSelector((state: AccountsRootState) =>
+    const tokenDecimals = useSelector((state: TokensRootState) =>
         selectAccountTokenDecimals(state, accountKey, tokenContract),
     );
 

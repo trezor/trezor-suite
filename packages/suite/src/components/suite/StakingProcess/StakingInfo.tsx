@@ -7,6 +7,7 @@ import {
     TransactionsRootState,
     StakeRootState,
     selectPoolStatsApyData,
+    AccountsRootState,
 } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
@@ -25,7 +26,7 @@ export const StakingInfo = ({ isExpanded }: StakingInfoProps) => {
     const { data } =
         useSelector((state: StakeRootState) => selectValidatorsQueue(state, account?.symbol)) || {};
 
-    const stakeTxs = useSelector((state: TransactionsRootState) =>
+    const stakeTxs = useSelector((state: TransactionsRootState & AccountsRootState) =>
         selectAccountStakeTransactions(state, account?.key ?? ''),
     );
 

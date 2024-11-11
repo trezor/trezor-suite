@@ -95,7 +95,7 @@ export const BitcoinOptions = () => {
         setDraftSaveRequest(true);
     };
 
-    const blockchain = useSelector(selectNetworkBlockchainInfo(network.symbol));
+    const blockchain = useSelector(state => selectNetworkBlockchainInfo(state, network.symbol));
 
     const locktime = watch('bitcoinLockTime');
 

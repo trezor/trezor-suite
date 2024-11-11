@@ -13,6 +13,7 @@ import {
     getTokenName,
     selectAccountTokenInfo,
     selectAccountTokenSymbol,
+    TokensRootState,
 } from '@suite-native/tokens';
 import { Translation } from '@suite-native/intl';
 
@@ -41,11 +42,11 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
     const accountNetworkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     )!;
-    const token = useSelector((state: AccountsRootState) =>
+    const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, contract),
     );
 
-    const tokenSymbol = useSelector((state: AccountsRootState) =>
+    const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, contract),
     );
 

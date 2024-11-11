@@ -1,5 +1,6 @@
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { getContractAddressForNetwork } from '@suite-common/wallet-utils';
+import { TokenInfo } from '@trezor/connect';
 
 import {
     DefinitionType,
@@ -25,6 +26,16 @@ export const isTokenDefinitionKnown = (
     const contractAddressForNetwork = getContractAddressForNetwork(networkSymbol, contractAddress);
 
     return tokenDefinitionsMap.get(tokenDefinitions)?.has(contractAddressForNetwork);
+};
+
+export const filterKnownTokens = (
+    tokenDefinitions: SimpleTokenStructure | undefined,
+    networkSymbol: NetworkSymbol,
+    tokens: TokenInfo[],
+) => {
+    return tokens.filter(token =>
+        isTokenDefinitionKnown(tokenDefinitions, networkSymbol, token.contract),
+    );
 };
 
 export const getSupportedDefinitionTypes = (networkSymbol: NetworkSymbol) => {

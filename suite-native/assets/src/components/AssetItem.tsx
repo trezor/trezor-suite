@@ -6,9 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useFormatters } from '@suite-common/formatters';
 import { CryptoIconWithPercentage, Icon } from '@suite-native/icons';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import { AccountsListItemBase, StakingBadge } from '@suite-native/accounts';
 import { Badge, Box, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
@@ -24,7 +22,7 @@ import {
     selectHasAnyDeviceAccountsWithStaking,
     NativeStakingRootState,
 } from '@suite-native/staking';
-import { selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
+import { selectHasDeviceAnyTokensForNetwork, TokensRootState } from '@suite-native/tokens';
 
 import {
     AssetsRootState,
@@ -89,9 +87,8 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetIte
     );
 
     const accountsPerAsset = accountsKeysForNetworkSymbol.length;
-    const hasAnyTokens = useSelector(
-        (state: AccountsRootState & DeviceRootState & TokenDefinitionsRootState) =>
-            selectHasDeviceAnyTokensForNetwork(state, cryptoCurrencySymbol),
+    const hasAnyTokens = useSelector((state: TokensRootState) =>
+        selectHasDeviceAnyTokensForNetwork(state, cryptoCurrencySymbol),
     );
     const hasAnyAccountsWithStaking = useSelector((state: NativeStakingRootState) =>
         selectHasAnyDeviceAccountsWithStaking(state, cryptoCurrencySymbol),

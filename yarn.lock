@@ -9010,7 +9010,6 @@ __metadata:
     fs-extra: "npm:^11.2.0"
     json-schema-to-typescript: "npm:^13.1.2"
     jws: "npm:^4.0.0"
-    proxy-memoize: "npm:2.0.2"
     semver: "npm:^7.6.3"
     tsx: "npm:^4.16.3"
   languageName: unknown
@@ -9037,6 +9036,7 @@ __metadata:
     react: "npm:18.2.0"
     react-redux: "npm:8.0.7"
     redux: "npm:^4.2.1"
+    reselect: "npm:5.1.1"
   languageName: unknown
   linkType: soft
 
@@ -9127,7 +9127,6 @@ __metadata:
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/connect": "workspace:*"
-    proxy-memoize: "npm:2.0.2"
   languageName: unknown
   linkType: soft
 
@@ -9150,7 +9149,6 @@ __metadata:
     "@trezor/utils": "workspace:*"
     ajv: "npm:^8.17.1"
     jws: "npm:^4.0.0"
-    proxy-memoize: "npm:2.0.2"
   languageName: unknown
   linkType: soft
 
@@ -9211,7 +9209,6 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
-    proxy-memoize: "npm:2.0.2"
     react-hook-form: "npm:^7.53.1"
     web3-utils: "npm:^4.3.1"
   languageName: unknown
@@ -9270,6 +9267,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
     "@suite-common/formatters": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -9292,7 +9290,6 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
     jotai: "npm:1.9.1"
-    proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
     react-native-reanimated: "npm:3.16.1"
@@ -9475,7 +9472,6 @@ __metadata:
     "@suite-native/settings": "workspace:*"
     "@suite-native/staking": "workspace:*"
     "@suite-native/tokens": "workspace:*"
-    proxy-memoize: "npm:2.0.2"
     react: "npm:^18.2.0"
     react-native: "npm:0.75.2"
     react-native-reanimated: "npm:3.16.1"
@@ -9681,7 +9677,6 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
     lottie-react-native: "npm:6.7.2"
-    proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
     react-native-reanimated: "npm:3.16.1"
@@ -9712,7 +9707,6 @@ __metadata:
     "@suite-native/tokens": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/utils": "workspace:*"
-    proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -10564,13 +10558,13 @@ __metadata:
   resolution: "@suite-native/tokens@workspace:suite-native/tokens"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/utils": "workspace:*"
-    proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
   languageName: unknown
   linkType: soft
@@ -10585,6 +10579,7 @@ __metadata:
     "@shopify/flash-list": "npm:1.7.1"
     "@shopify/react-native-skia": "npm:1.3.11"
     "@suite-common/formatters": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -10605,7 +10600,6 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
-    proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
     react-native-gesture-handler: "npm:2.18.1"
@@ -11976,7 +11970,6 @@ __metadata:
     pako: "npm:^2.1.0"
     pdfmake: "npm:^0.2.9"
     polished: "npm:^4.3.1"
-    proxy-memoize: "npm:2.0.2"
     qrcode.react: "npm:^3.1.0"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
@@ -34485,13 +34478,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"proxy-compare@npm:2.4.0":
-  version: 2.4.0
-  resolution: "proxy-compare@npm:2.4.0"
-  checksum: 10/56b97f040d4bc5addcfcc0df3cc07e63a8f6f2af8f1cd4e72e7c1c66e4f75a27029e92c3b42a5111ee286f8076157d9eac242b8f95996491471fc12db3f2f464
-  languageName: node
-  linkType: hard
-
 "proxy-from-env@npm:1.0.0":
   version: 1.0.0
   resolution: "proxy-from-env@npm:1.0.0"
@@ -34503,15 +34489,6 @@ __metadata:
   version: 1.1.0
   resolution: "proxy-from-env@npm:1.1.0"
   checksum: 10/f0bb4a87cfd18f77bc2fba23ae49c3b378fb35143af16cc478171c623eebe181678f09439707ad80081d340d1593cd54a33a0113f3ccb3f4bc9451488780ee23
-  languageName: node
-  linkType: hard
-
-"proxy-memoize@npm:2.0.2":
-  version: 2.0.2
-  resolution: "proxy-memoize@npm:2.0.2"
-  dependencies:
-    proxy-compare: "npm:2.4.0"
-  checksum: 10/680f2799bacc76098a4b44c9ac0448750e5f446dcd8bf8aa31d9663e2b197e97961139d2f30589cd42934ec697169e1cd19f00c00a24dc6a82e7581b097756f9
   languageName: node
   linkType: hard
 
@@ -36391,17 +36368,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"reselect@npm:^4.1.8":
-  version: 4.1.8
-  resolution: "reselect@npm:4.1.8"
-  checksum: 10/199984d9872f71cd207f4aa6e6fd2bd48d95154f7aa9b3aee3398335f39f5491059e732f28c12e9031d5d434adab2c458dc8af5afb6564d0ad37e1644445e09c
-  languageName: node
-  linkType: hard
-
-"reselect@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "reselect@npm:5.1.0"
-  checksum: 10/657c379d9461781b7cb5f0a32133e23b4266886660c94fcc77c102bec8abe484b32bf43a911b99b747ecf7439f157696561d744d40dc920024611beb1a0d921f
+"reselect@npm:5.1.1":
+  version: 5.1.1
+  resolution: "reselect@npm:5.1.1"
+  checksum: 10/1fdae11a39ed9c8d85a24df19517c8372ee24fefea9cce3fae9eaad8e9cefbba5a3d4940c6fe31296b6addf76e035588c55798f7e6e147e1b7c0855f119e7fa5
   languageName: node
   linkType: hard
 

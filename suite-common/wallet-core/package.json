@@ -36,7 +36,6 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^2.30.0",
-        "proxy-memoize": "2.0.2",
         "react-hook-form": "^7.53.1",
         "web3-utils": "^4.3.1"
     }

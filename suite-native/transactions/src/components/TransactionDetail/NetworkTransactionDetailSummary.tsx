@@ -4,11 +4,12 @@ import { A } from '@mobily/ts-belt';
 
 import {
     TransactionsRootState,
-    selectTransactionByTxidAndAccountKey,
+    selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box, ErrorMessage, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
 import { selectTransactionAddresses } from '../../selectors';
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
@@ -62,13 +63,15 @@ export const NetworkTransactionDetailSummary = ({
     onShowMore: () => void;
 }) => {
     const transaction = useSelector((state: TransactionsRootState) =>
-        selectTransactionByTxidAndAccountKey(state, txid, accountKey),
+        selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
     );
-    const transactionInputAddresses = useSelector((state: TransactionsRootState) =>
-        selectTransactionAddresses(state, txid, accountKey, 'inputs'),
+    const transactionInputAddresses = useSelector(
+        (state: TransactionsRootState & TokenDefinitionsRootState) =>
+            selectTransactionAddresses(state, accountKey, txid, 'inputs'),
     );
-    const transactionOutputAddresses = useSelector((state: TransactionsRootState) =>
-        selectTransactionAddresses(state, txid, accountKey, 'outputs'),
+    const transactionOutputAddresses = useSelector(
+        (state: TransactionsRootState & TokenDefinitionsRootState) =>
+            selectTransactionAddresses(state, accountKey, txid, 'outputs'),
     );
 
     if (!transaction) {

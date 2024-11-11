@@ -46,7 +46,7 @@ export const AccountBalanceScreenHeader = ({
         selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
 
-    const tokenBalance = useSelector((state: AccountsRootState) =>
+    const tokenBalance = useSelector((state: TokensRootState) =>
         selectAccountTokenBalance(state, accountKey, tokenContract),
     );
 

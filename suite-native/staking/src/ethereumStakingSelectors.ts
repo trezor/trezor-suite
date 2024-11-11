@@ -7,7 +7,6 @@ import {
     selectDeviceAccounts,
     selectPoolStatsApyData,
     StakeRootState,
-    TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
@@ -54,7 +53,7 @@ export const selectEthereumIsStakePendingByAccountKey = (
 };
 
 export const selectEthereumIsStakeConfirmingByAccountKey = (
-    state: TransactionsRootState,
+    state: NativeStakingRootState,
     accountKey: string,
 ) => {
     const stakeTxs = selectAccountStakeTransactions(state, accountKey);

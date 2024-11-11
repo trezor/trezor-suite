@@ -1,26 +1,30 @@
 import { A, G, pipe } from '@mobily/ts-belt';
-import { memoizeWithArgs } from 'proxy-memoize';
 
 import {
-    selectIsSpecificCoinDefinitionKnown,
+    getSimpleCoinDefinitionsByNetwork,
+    isTokenDefinitionKnown,
+    selectTokenDefinitions,
     TokenDefinitionsRootState,
 } from '@suite-common/token-definitions';
 import { getNetworkType, NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    selectTransactionByTxidAndAccountKey,
+    selectTransactionByAccountKeyAndTxid,
     selectTransactionTargets,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 
 import { AddressesType, VinVoutAddress } from './types';
 import { mapTransactionInputsOutputsToAddresses, sortTargetAddressesToBeginning } from './utils';
 
-const selectTransactionTargetAddresses = memoizeWithArgs(
-    (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
-        const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
+const createMemoizedSelector = createWeakMapSelector.withTypes<
+    TransactionsRootState & TokenDefinitionsRootState
+>();
 
-        const transactionTargets = selectTransactionTargets(state, txid, accountKey);
+const selectTransactionTargetAddresses = createMemoizedSelector(
+    [selectTransactionByAccountKeyAndTxid, selectTransactionTargets],
+    (transaction, transactionTargets) => {
         if (G.isNullable(transaction) || G.isNullable(transactionTargets)) return [];
 
         const isSentTransactionType = transaction.type === 'sent';
@@ -31,18 +35,16 @@ const selectTransactionTargetAddresses = memoizeWithArgs(
             isSentTransactionType,
         });
     },
-    { size: 50 },
 );
 
-export const selectTransactionAddresses = memoizeWithArgs(
-    (
-        state: TransactionsRootState,
-        txid: string,
-        accountKey: AccountKey,
-        addressesType: AddressesType,
-    ): VinVoutAddress[] => {
-        const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
-
+export const selectTransactionAddresses = createMemoizedSelector(
+    [
+        selectTransactionByAccountKeyAndTxid,
+        selectTransactionTargetAddresses,
+        (_state, _accountKey: AccountKey, _txid: string, addressesType: AddressesType) =>
+            addressesType,
+    ],
+    (transaction, transactionTargetAddresses, addressesType): VinVoutAddress[] => {
         if (G.isNullable(transaction)) return [];
 
         const networkType = getNetworkType(transaction.symbol);
@@ -54,10 +56,10 @@ export const selectTransactionAddresses = memoizeWithArgs(
             }
 
             // We have only one output so we don't need to sort it
-            return selectTransactionTargetAddresses(state, txid, accountKey);
+            return transactionTargetAddresses;
         }
 
-        const targetAddresses = selectTransactionTargetAddresses(state, txid, accountKey);
+        const targetAddresses = transactionTargetAddresses;
 
         const inputsOutputs =
             addressesType === 'inputs' ? transaction.details.vin : transaction.details.vout;
@@ -72,7 +74,6 @@ export const selectTransactionAddresses = memoizeWithArgs(
 
         return sortTargetAddressesToBeginning(addresses, targetAddresses);
     },
-    { size: 100 },
 );
 
 type TransactionTransferInputOutput = { address: string; amount?: string };
@@ -83,18 +84,16 @@ export type TransactionTranfer = {
     decimals?: number;
 };
 
-export const selectTransactionInputAndOutputTransfers = memoizeWithArgs(
+export const selectTransactionInputAndOutputTransfers = createMemoizedSelector(
+    [selectTransactionByAccountKeyAndTxid, selectTokenDefinitions],
     (
-        state: TransactionsRootState & TokenDefinitionsRootState,
-        txid: string,
-        accountKey: AccountKey,
+        transaction,
+        tokenDefinitions,
     ): {
         externalTransfers: TransactionTranfer[];
         internalTransfers: TransactionTranfer[];
         tokenTransfers: TransactionTranfer[];
     } | null => {
-        const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
-
         if (G.isNullable(transaction)) return null;
 
         const networkType = getNetworkType(transaction.symbol);
@@ -135,14 +134,20 @@ export const selectTransactionInputAndOutputTransfers = memoizeWithArgs(
             }),
         );
 
+        const tokenDefinitionsForNetwork = getSimpleCoinDefinitionsByNetwork(
+            tokenDefinitions,
+            transaction.symbol,
+        );
+
         const tokenTransfers: TransactionTranfer[] = pipe(
             tokens,
-            A.filter(({ contract }) =>
-                selectIsSpecificCoinDefinitionKnown(
-                    state,
-                    transaction.symbol,
-                    contract as TokenAddress,
-                ),
+            A.filter(
+                ({ contract }) =>
+                    !!isTokenDefinitionKnown(
+                        tokenDefinitionsForNetwork,
+                        transaction.symbol,
+                        contract,
+                    ),
             ),
             A.map(({ from, to, amount, symbol, decimals }) => ({
                 inputs: [{ address: from }],
@@ -154,5 +159,4 @@ export const selectTransactionInputAndOutputTransfers = memoizeWithArgs(
 
         return { externalTransfers, internalTransfers, tokenTransfers };
     },
-    { size: 100 },
 );

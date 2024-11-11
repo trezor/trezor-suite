@@ -1,9 +1,13 @@
-import { A, D, F, G, pipe } from '@mobily/ts-belt';
-import { memoize, memoizeWithArgs } from 'proxy-memoize';
+import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import { calculateAssetsPercentage } from '@suite-common/assets';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
+import {
+    getSimpleCoinDefinitionsByNetwork,
+    selectTokenDefinitions,
+    TokenDefinitionsRootState,
+} from '@suite-common/token-definitions';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -14,14 +18,12 @@ import {
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
-import { selectAccountListSections } from '@suite-native/accounts';
+import { getAccountListSections } from '@suite-native/accounts';
 import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
 import { orderedNetworkSymbols } from '@suite-native/config';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
-import {
-    NativeStakingRootState,
-    selectAccountCryptoBalanceWithStaking,
-} from '@suite-native/staking';
+import { getAccountCryptoBalanceWithStaking, NativeStakingRootState } from '@suite-native/staking';
+
 export interface AssetType {
     symbol: NetworkSymbol;
     assetBalance: string;
@@ -35,8 +37,11 @@ export type AssetsRootState = AccountsRootState &
     NativeStakingRootState &
     DeviceRootState;
 
+const createMemoizedSelector = createWeakMapSelector.withTypes<AssetsRootState>();
+
 /*
-We do not memoize any of following selectors because they are using only with `useSelectorDeepComparison` hook which is faster than memoization in proxy-memoize.
+We do not memoize most of following selectors because they are using only with `useSelectorDeepComparison` hook which is faster than memoization.
+TODO: revalidate if this is still true for reselect
 */
 
 export const selectVisibleDeviceAccountsKeysByNetworkSymbol = (
@@ -68,69 +73,80 @@ export const selectDeviceNetworksWithAssets = (state: AssetsRootState) => {
     );
 };
 
-export const selectBottomSheetDeviceNetworkItems = memoizeWithArgs(
-    (state: AssetsRootState, networkSymbol: NetworkSymbol) =>
+export const selectBottomSheetDeviceNetworkItems = createMemoizedSelector(
+    [
+        selectVisibleDeviceAccountsByNetworkSymbol,
+        selectTokenDefinitions,
+        (_state, networkSymbol: NetworkSymbol) => networkSymbol,
+    ],
+    (accounts, tokenDefinitions, networkSymbol) =>
         pipe(
-            selectVisibleDeviceAccountsByNetworkSymbol(state, networkSymbol),
+            accounts,
             sortAccountsByNetworksAndAccountTypes,
-            A.map(account => selectAccountListSections(state, account.key)),
+            A.map(account =>
+                getAccountListSections(
+                    account,
+                    getSimpleCoinDefinitionsByNetwork(tokenDefinitions, networkSymbol),
+                    true,
+                ),
+            ),
             A.flat,
             F.toMutable,
         ),
-    { size: D.keys(networks).length },
 );
 
-const selectDeviceAssetsWithBalances = memoize((state: AssetsRootState) => {
-    const accounts = selectVisibleDeviceAccounts(state);
+const selectDeviceAssetsWithBalances = createMemoizedSelector(
+    [
+        selectVisibleDeviceAccounts,
+        selectDeviceNetworksWithAssets,
+        selectFiatCurrencyCode,
+        selectCurrentFiatRates,
+    ],
+    (accounts, deviceNetworksWithAssets, fiatCurrencyCode, rates) => {
+        const accountsWithFiatBalance = accounts.map(account => {
+            const fiatValue = getAccountFiatBalance({
+                account,
+                localCurrency: fiatCurrencyCode,
+                rates,
+            });
 
-    const deviceNetworksWithAssets = selectDeviceNetworksWithAssets(state);
-
-    const fiatCurrencyCode = selectFiatCurrencyCode(state);
-    const rates = selectCurrentFiatRates(state);
-
-    const accountsWithFiatBalance = accounts.map(account => {
-        const fiatValue = getAccountFiatBalance({
-            account,
-            localCurrency: fiatCurrencyCode,
-            rates,
+            return {
+                symbol: account.symbol,
+                fiatValue,
+                cryptoValue: getAccountCryptoBalanceWithStaking(account),
+            };
         });
 
-        return {
-            symbol: account.symbol,
-            fiatValue,
-            cryptoValue: selectAccountCryptoBalanceWithStaking(state, account.key),
-        };
-    });
+        let totalFiatBalance = 0;
 
-    let totalFiatBalance = 0;
+        const assets = deviceNetworksWithAssets.map((networkSymbol: NetworkSymbol) => {
+            const networkAccounts = accountsWithFiatBalance.filter(
+                account => account.symbol === networkSymbol,
+            );
+            const assetBalance = networkAccounts.reduce(
+                (sum, { cryptoValue }) => sum + Number(cryptoValue),
+                0,
+            );
+            const fiatBalance = networkAccounts.reduce(
+                (sum, { fiatValue }) => (fiatValue ? Number(fiatValue) + (sum ?? 0) : sum),
+                null as number | null,
+            );
 
-    const assets = deviceNetworksWithAssets.map((networkSymbol: NetworkSymbol) => {
-        const networkAccounts = accountsWithFiatBalance.filter(
-            account => account.symbol === networkSymbol,
-        );
-        const assetBalance = networkAccounts.reduce(
-            (sum, { cryptoValue }) => sum + Number(cryptoValue),
-            0,
-        );
-        const fiatBalance = networkAccounts.reduce(
-            (sum, { fiatValue }) => (fiatValue ? Number(fiatValue) + (sum ?? 0) : sum),
-            null as number | null,
-        );
+            totalFiatBalance += fiatBalance ?? 0;
 
-        totalFiatBalance += fiatBalance ?? 0;
+            const asset: AssetType = {
+                symbol: networkSymbol,
+                // For assets we should always only 8 decimals to save space
+                assetBalance: assetBalance.toFixed(8),
+                fiatBalance: fiatBalance !== null ? fiatBalance.toFixed(2) : null,
+            };
 
-        const asset: AssetType = {
-            symbol: networkSymbol,
-            // For assets we should always only 8 decimals to save space
-            assetBalance: assetBalance.toFixed(8),
-            fiatBalance: fiatBalance !== null ? fiatBalance.toFixed(2) : null,
-        };
+            return asset;
+        });
 
-        return asset;
-    });
-
-    return { assets, totalFiatBalance: totalFiatBalance.toFixed(2) };
-});
+        return { assets, totalFiatBalance: totalFiatBalance.toFixed(2) };
+    },
+);
 
 export const selectAssetCryptoValue = (state: AssetsRootState, symbol: NetworkSymbol) => {
     const assets = selectDeviceAssetsWithBalances(state);

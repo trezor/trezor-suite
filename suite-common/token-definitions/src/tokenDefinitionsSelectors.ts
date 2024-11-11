@@ -1,11 +1,16 @@
-import { getUntracked } from 'proxy-memoize';
-
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/connect';
 
-import { TokenDefinitionsRootState } from './tokenDefinitionsTypes';
+import { TokenDefinitionsRootState, TokenDefinitionsState } from './tokenDefinitionsTypes';
 import { isTokenDefinitionKnown } from './tokenDefinitionsUtils';
+
+export const selectTokenDefinitions = (state: TokenDefinitionsRootState) => state.tokenDefinitions;
+
+export const getSimpleCoinDefinitionsByNetwork = (
+    state: TokenDefinitionsState,
+    networkSymbol: NetworkSymbol,
+) => state[networkSymbol]?.coin?.data;
 
 export const selectNetworkTokenDefinitions = (
     state: TokenDefinitionsRootState,
@@ -23,13 +28,10 @@ export const selectNftDefinitions = (
 ) => state.tokenDefinitions?.[networkSymbol]?.nft;
 
 export const selectCoinDefinition = (
-    stateTracked: TokenDefinitionsRootState,
+    state: TokenDefinitionsRootState,
     networkSymbol: NetworkSymbol,
     contractAddress: TokenAddress,
 ) => {
-    // We need to use getUntracked here otherwise this could interfere with memoization in isTokenDefinitionKnown
-    const state = getUntracked(stateTracked) ?? stateTracked;
-
     const coinDefinitions = state.tokenDefinitions?.[networkSymbol]?.coin?.data;
     const isKnown = isTokenDefinitionKnown(coinDefinitions, networkSymbol, contractAddress);
 

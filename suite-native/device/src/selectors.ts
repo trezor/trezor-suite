@@ -1,29 +1,38 @@
-import { memoize, memoizeWithArgs } from 'proxy-memoize';
-import { pipe, A, F } from '@mobily/ts-belt';
+import { A, pipe } from '@mobily/ts-belt';
 
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     AccountsRootState,
     DeviceRootState,
     DiscoveryRootState,
-    selectDevice,
     FiatRatesRootState,
+    getAccountsByDeviceState,
+    PORTFOLIO_TRACKER_DEVICE_ID,
+    selectAccounts,
     selectAccountsByDeviceState,
     selectCurrentFiatRates,
+    selectDevice,
     selectDeviceFirmwareVersion,
+    selectDeviceInstances,
     selectDeviceModel,
+    selectDevices,
     selectIsConnectedDeviceUninitialized,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDiscoveredDeviceAccountless,
     selectIsUnacquiredDevice,
-    PORTFOLIO_TRACKER_DEVICE_ID,
-    selectDevices,
-    selectDeviceInstances,
 } from '@suite-common/wallet-core';
-import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
 import { getTotalFiatBalance } from '@suite-common/wallet-utils';
-import { StaticSessionId } from '@trezor/connect';
+import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
 
 import { isFirmwareVersionSupported } from './utils';
+
+type NativeDeviceRootState = DeviceRootState &
+    AccountsRootState &
+    DiscoveryRootState &
+    SettingsSliceRootState &
+    FiatRatesRootState;
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<NativeDeviceRootState>();
 
 export const selectIsDeviceFirmwareSupported = (state: DeviceRootState) => {
     const deviceFwVersion = selectDeviceFirmwareVersion(state);
@@ -60,47 +69,40 @@ export const selectDeviceError = (
     return device?.error;
 };
 
-export const selectDeviceTotalFiatBalanceNative = memoizeWithArgs(
-    (
-        state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState,
-        deviceState: StaticSessionId,
-    ) => {
-        const deviceAccounts = deviceState ? selectAccountsByDeviceState(state, deviceState) : [];
-        const rates = selectCurrentFiatRates(state);
-
+export const selectDeviceTotalFiatBalanceNative = createMemoizedSelector(
+    [selectAccountsByDeviceState, selectCurrentFiatRates, selectFiatCurrencyCode],
+    (deviceAccounts, rates, localCurrency) => {
         const fiatBalance = getTotalFiatBalance({
             deviceAccounts,
-            localCurrency: selectFiatCurrencyCode(state),
+            localCurrency,
             rates,
             shouldIncludeStaking: false,
         });
 
         return fiatBalance;
     },
-    {
-        // reasonably high cache size for a lot of devices and passphrases
-        size: 20,
-    },
 );
 
 // Unique symbols for all accounts that are on view only devices (excluding portfolio tracker)
-export const selectViewOnlyDevicesAccountsNetworkSymbols = memoize(
-    (state: DeviceRootState & AccountsRootState) => {
-        const devices = selectDevices(state);
-
-        return pipe(
+// Using WeakMap for complex object comparisons and array results
+export const selectViewOnlyDevicesAccountsNetworkSymbols = createMemoizedSelector(
+    [selectDevices, selectAccounts],
+    (devices, accounts) => {
+        const symbols = pipe(
             devices,
             A.filter(d => !!d.remember && d.id !== PORTFOLIO_TRACKER_DEVICE_ID && !!d.state),
-            A.map(d => selectAccountsByDeviceState(state, d.state!)),
+            A.map(d => getAccountsByDeviceState(accounts, d.state!)),
             A.flat,
             A.filter(a => a.visible),
             A.map(a => a.symbol),
             A.uniq,
-            F.toMutable,
         );
+
+        return returnStableArrayIfEmpty(symbols);
     },
 );
 
-export const selectHasNoDeviceWithEmptyPassphrase = memoize((state: DeviceRootState) =>
-    A.isEmpty(selectDeviceInstances(state).filter(d => d.useEmptyPassphrase)),
+export const selectHasNoDeviceWithEmptyPassphrase = createMemoizedSelector(
+    [selectDeviceInstances],
+    deviceInstances => A.isEmpty(deviceInstances.filter(d => d.useEmptyPassphrase)),
 );

@@ -108,7 +108,8 @@
         "@types/node": "20.12.7",
         "@types/react": "18.2.55",
         "bn.js": "5.2.1",
-        "node-gyp": "10.2.0"
+        "node-gyp": "10.2.0",
+        "reselect": "5.1.1"
     },
     "devDependencies": {
         "@babel/cli": "^7.23.9",

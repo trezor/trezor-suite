@@ -1,7 +1,6 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { memoizeWithArgs } from 'proxy-memoize';
 
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { createReducerWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     BackendType,
     getNetworkOptional,
@@ -229,36 +228,29 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
     },
 );
 
+const createMemoizedSelector = createWeakMapSelector.withTypes<BlockchainRootState>();
+
 export const selectBlockchainState = (state: BlockchainRootState) => state.wallet.blockchain;
-export const selectNetworkBlockchainInfo =
-    (networkSymbol: NetworkSymbol) => (state: BlockchainRootState) =>
-        state.wallet.blockchain[networkSymbol];
 
-export const selectBlockchainHeightBySymbol = memoizeWithArgs(
-    (state: BlockchainRootState, symbol: NetworkSymbol) => {
-        const blockchain = selectNetworkBlockchainInfo(symbol)(state);
+export const selectNetworkBlockchainInfo = (
+    state: BlockchainRootState,
+    networkSymbol: NetworkSymbol,
+) => state.wallet.blockchain[networkSymbol];
 
-        return blockchain.blockHeight;
-    },
+export const selectBlockchainHeightBySymbol = createMemoizedSelector(
+    [selectNetworkBlockchainInfo],
+    blockchain => blockchain?.blockHeight ?? null,
 );
 
-export const selectBlockchainExplorerBySymbol = memoizeWithArgs(
-    (state: BlockchainRootState, symbol?: NetworkSymbol) => {
-        if (!symbol) return null;
-        const blockchain = selectNetworkBlockchainInfo(symbol)(state);
-
-        return blockchain.explorer;
-    },
-    { size: 100 },
+export const selectBlockchainExplorerBySymbol = createMemoizedSelector(
+    [selectNetworkBlockchainInfo],
+    blockchain => blockchain?.explorer ?? null,
 );
 
-export const selectBlockchainBlockInfoBySymbol = memoizeWithArgs(
-    (state: BlockchainRootState, symbol: NetworkSymbol) => {
-        const blockchain = selectNetworkBlockchainInfo(symbol)(state);
-
-        return {
-            blockhash: blockchain.blockHash,
-            blockHeight: blockchain.blockHeight,
-        };
-    },
+export const selectBlockchainBlockInfoBySymbol = createMemoizedSelector(
+    [selectNetworkBlockchainInfo],
+    blockchain => ({
+        blockhash: blockchain.blockHash,
+        blockHeight: blockchain.blockHeight,
+    }),
 );
