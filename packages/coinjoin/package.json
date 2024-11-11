@@ -16,7 +16,6 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "scripts": {
-        "lint:js": "eslint '**/*.{ts,js}'",
         "test:unit": "yarn g:jest",
         "test:discovery": "yarn g:tsx ./tests/tools/discovery-test.ts",
         "test:anonymity": "yarn g:tsx ./tests/tools/anonymity-test.ts",

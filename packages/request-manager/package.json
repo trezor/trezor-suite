@@ -6,7 +6,6 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "scripts": {
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:e2e": "yarn g:jest --runInBand -c ../../jest.config.base.js",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:stress": "ts-node  -O '{\"module\": \"commonjs\"}' ./e2e/identities-stress.ts"
@@ -17,6 +16,7 @@
         "socks-proxy-agent": "8.0.4"
     },
     "devDependencies": {
+        "@trezor/eslint": "workspace:*",
         "ts-node": "^10.9.1",
         "ws": "^8.18.0"
     }

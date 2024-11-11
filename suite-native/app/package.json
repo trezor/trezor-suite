@@ -8,7 +8,6 @@
         "android:clean": "cd android && ./gradlew clean",
         "ios": "expo run:ios",
         "start": "expo start --dev-client",
-        "lint:js": "yarn g:eslint .",
         "type-check": "yarn g:tsc -b",
         "pods": "npx pod-install",
         "prebuild": "expo prebuild",

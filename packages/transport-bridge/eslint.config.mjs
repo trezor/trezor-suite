@@ -4,8 +4,6 @@ export default [
     ...eslint,
     {
         rules: {
-            'import/no-default-export': 'off', // Todo: shall be fixed
-
             'import/no-extraneous-dependencies': [
                 'error',
                 {

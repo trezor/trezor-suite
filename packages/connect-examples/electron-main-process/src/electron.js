@@ -1,6 +1,7 @@
 const { app, ipcMain, BrowserWindow } = require('electron');
 const path = require('path');
 const url = require('url');
+
 const { initTrezorConnect, callTrezorConnect } = require('./trezor-connect-ipc');
 
 let mainWindow;
@@ -34,7 +35,7 @@ app.on('ready', init);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-    // On macOS it is common for applications and their menu bar
+    // On macOS, it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
         app.quit();

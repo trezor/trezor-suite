@@ -29,7 +29,6 @@
     ],
     "scripts": {
         "predev": "node webpack/generate_dev_cert.js",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest",

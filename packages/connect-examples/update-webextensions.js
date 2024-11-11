@@ -41,7 +41,7 @@ rootPaths.forEach(dir => {
     const usbPermissionsScriptPath = path.join(vendorPath, 'trezor-usb-permissions.js');
     const usbPermissionsHtmlPath = path.join(rootPath, 'trezor-usb-permissions.html');
     const contentScriptPath = path.join(vendorPath, 'trezor-content-script.js');
-    const backgroundScriptPath = path.join(rootPath, 'background.js');
+    // const backgroundScriptPath = path.join(rootPath, 'background.js');
 
     fs.rmSync(buildPath, { recursive: true, force: true });
     if (!fs.existsSync(buildPath)) {
@@ -105,11 +105,13 @@ rootPaths.forEach(dir => {
         const isJustCopied = ['.png'].some(ext => p.endsWith(ext));
         if (isJustCopied) {
             fs.copyFileSync(path.join(rootPath, 'src', p), path.join(rootPath, buildFolder, p));
+
             return;
         }
         fs.readFile(path.join(rootPath, 'src', p), 'utf-8', (err, contents) => {
             if (err) {
                 console.log(err);
+
                 return;
             }
 
@@ -118,6 +120,7 @@ rootPaths.forEach(dir => {
             fs.writeFile(path.join(rootPath, buildFolder, p), replaced, 'utf-8', err => {
                 if (err) {
                     console.log(err);
+
                     return;
                 }
             });

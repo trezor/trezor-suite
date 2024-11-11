@@ -6,7 +6,6 @@
     "sideEffects": false,
     "main": "src/index",
     "scripts": {
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest -c ./jest.config.js",
         "test-unit:watch": "yarn g:jest -c ../../jest.config.base.js -o --watch"

@@ -56,7 +56,6 @@
         "build:workers": "yarn g:rimraf build && yarn build:workers-web && yarn build:workers-module",
         "build:workers-web": "webpack --config ./webpack/workers.web.js",
         "build:workers-module": "webpack --config ./webpack/workers.module.js",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest --verbose -c jest.config.unit.js",
         "test:integration": "yarn g:jest -c jest.config.integration.js",
         "type-check": "yarn g:tsc --build tsconfig.json",

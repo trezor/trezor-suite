@@ -4,11 +4,13 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 import { reactConfig } from './reactConfig.mjs';
 import { javascriptConfig } from './javascriptConfig.mjs';
 import { typescriptConfig } from './typescriptConfig.mjs';
-import { importConfig } from './importConfig.mjs';
+import { importConfig, globalNoExtraneousDependenciesDevDependencies } from './importConfig.mjs';
 import { jestConfig } from './jestConfig.mjs';
 import { javascriptNodejsConfig } from './javascriptNodejsConfig.mjs';
 import { localRulesConfig } from './localRulesConfig.mjs';
 import { chaiFriendlyConfig } from './chaiFriendlyConfig.mjs';
+
+export { globalNoExtraneousDependenciesDevDependencies };
 
 export const eslint = [
     {
@@ -22,10 +24,6 @@ export const eslint = [
             '**/build-electron/*',
             '**/node_modules/*',
             '**/public/*',
-            // 'packages/suite-data/files/*', // Todo: fix or ignore locally in repo
-            // 'packages/protobuf/scripts/protobuf-patches/*', // Todo: ignore locally in repo
-            // 'packages/address-validator', // Todo: fix or ignore locally in repo
-            // 'packages/connect-examples', // Todo: fix or ignore locally in repo
             '**/ci/',
             'eslint-local-rules/*',
         ],
@@ -64,7 +62,6 @@ export const eslint = [
         files: ['eslint.config.mjs'],
         rules: {
             'import/no-default-export': 'off',
-            'import/no-extraneous-dependencies': 'off',
         },
     },
 ];

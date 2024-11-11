@@ -7,7 +7,6 @@
         "dev:explorer": "next -p 8088",
         "build": "next build && rm -rf build && mv out build",
         "build:webextension": "BUILD_TARGET=webextension yarn build && yarn g:rimraf build-webextension && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/webextension.webpack.config.ts && bash ./webpack/replace-next-filenames.sh",
-        "lint:js": "yarn g:eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "type-check": "yarn g:tsc --build tsconfig.json"
     },

@@ -7,7 +7,6 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
         "generate-icons": "yarn workspace @suite-common/icons generate-icons"
     },

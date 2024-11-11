@@ -1,9 +1,11 @@
 async function sendMessageToBackground(type, data = null) {
     try {
         const response = await chrome.runtime.sendMessage({ type, data });
+
         return response;
     } catch (error) {
         console.error('sendMessageToBackground error: ', error);
+
         return null;
     }
 }

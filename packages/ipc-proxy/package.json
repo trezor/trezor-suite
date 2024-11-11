@@ -16,7 +16,6 @@
     "main": "src/index",
     "browser": "src/proxy",
     "scripts": {
-        "lint:js": "eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"

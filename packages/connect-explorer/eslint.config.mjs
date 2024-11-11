@@ -1,6 +1,6 @@
 import * as mdx from 'eslint-plugin-mdx';
 
-import { eslint } from '@trezor/eslint';
+import { eslint, globalNoExtraneousDependenciesDevDependencies } from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -37,6 +37,15 @@ export default [
                 'error',
                 {
                     extensions: ['.tsx', '.mdx'],
+                },
+            ],
+            'import/no-extraneous-dependencies': [
+                'error',
+                {
+                    devDependencies: [
+                        ...globalNoExtraneousDependenciesDevDependencies,
+                        '**/webpack/**',
+                    ],
                 },
             ],
         },

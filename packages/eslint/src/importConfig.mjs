@@ -5,6 +5,18 @@ import pluginImport from 'eslint-plugin-import';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+export const globalNoExtraneousDependenciesDevDependencies = [
+    // ----------------------------------------------------------------
+    // !!! DO NOT PUT STUFF THAT BELONGS TO THE PACKAGE ITSELF HERE !!!
+    // Only shared stuff (like tests.*.ts(x) or fixtures shall be here)
+    // ----------------------------------------------------------------
+    '**/*fixtures*/**',
+    '**/*.test.{tsx,ts,js}',
+    '**/eslint.config.mjs',
+
+    '**/*e2e/**', // Todo: This shall be only in packages that has e2e tests
+];
+
 export const importConfig = [
     pluginImport.flatConfigs.recommended,
     {
@@ -49,21 +61,7 @@ export const importConfig = [
             'import/no-extraneous-dependencies': [
                 'error',
                 {
-                    devDependencies: [
-                        '**/*fixtures*/**',
-                        '**/*.test.{tsx,ts,js}',
-                        '**/blockchain-link/tests/**',
-                        '**/blockchain-link/webpack/**',
-                        '**/suite-desktop-core/**',
-                        '**/*e2e/**',
-                        '**/suite/src/support/tests/**',
-                        '**/suite-data/**',
-                        '**/*.stories.*',
-                        '**/*webpack.config*',
-                        '**/webpack/**',
-                        '**/.storybook/**',
-                    ],
-
+                    devDependencies: globalNoExtraneousDependenciesDevDependencies,
                     includeTypes: true,
                 },
             ],

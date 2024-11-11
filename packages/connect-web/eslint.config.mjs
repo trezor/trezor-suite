@@ -1,4 +1,4 @@
-import { eslint } from '@trezor/eslint';
+import { eslint, globalNoExtraneousDependenciesDevDependencies } from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -8,6 +8,15 @@ export default [
             camelcase: 'off', // camelcase is used
             'jest/valid-expect': 'off', // because of cypress tests
             'import/no-default-export': 'off', // Todo: shall be fixed
+            'import/no-extraneous-dependencies': [
+                'error',
+                {
+                    devDependencies: [
+                        ...globalNoExtraneousDependenciesDevDependencies,
+                        '**/webpack/**',
+                    ],
+                },
+            ],
         },
     },
 ];
