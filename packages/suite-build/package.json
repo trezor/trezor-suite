@@ -11,7 +11,8 @@
     "description": "trezor suite build",
     "scripts": {
         "base": "TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./webpack.config.ts",
-        "web": "PROJECT=web yarn run base",
+        "core:web": "PROJECT=\"suite-web\" yarn workspace @trezor/connect-iframe build:core-module",
+        "web": "yarn run core:web && PROJECT=web yarn run base",
         "dev:web": "yarn run web",
         "build:web": "NODE_ENV=production yarn run web",
         "desktop": "PROJECT=desktop yarn run base",

@@ -132,7 +132,7 @@ const config: webpack.Configuration = {
                     },
                 ],
             },
-            // Workers
+            // This worker loader is used for suite-desktop
             {
                 test: /\/workers\/[^/]+\/index\.ts$/,
                 use: [
