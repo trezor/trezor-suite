@@ -1,15 +1,20 @@
-import path from 'path';
 import { execSync } from 'child_process';
 import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 
 import { version } from '../package.json';
+import { getDistPathForProject } from './utils';
 
 const COMMON_DATA_SRC = '../../packages/connect-common/files';
 const MESSAGES_SRC = '../../packages/protobuf/messages.json';
 
-const DIST = path.resolve(__dirname, '../build');
+const project = process.env.PROJECT || 'iframe';
+
+if (project !== 'iframe' && project !== 'suite-web' && project !== 'popup') {
+    throw new Error(`Unsupported project: ${project}`);
+}
+const DIST = getDistPathForProject(project);
 
 // Because of Expo EAS, we need to use the commit hash from expo to avoid failing git command inside EAS
 // because we need to call `yarn build:libs during native build`
