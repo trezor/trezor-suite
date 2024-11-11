@@ -211,7 +211,7 @@ const SecurityCheckContent = ({
     return isFailed ? (
         <SecurityCheckFail
             goBack={toggleView}
-            heading="TR_DEVICE_COMPROMISED_HEADING_SOFT"
+            heading="TR_PLAY_IT_SAFE"
             text="TR_DEVICE_COMPROMISED_TEXT_SOFT"
             supportUrl={supportUrl}
         />

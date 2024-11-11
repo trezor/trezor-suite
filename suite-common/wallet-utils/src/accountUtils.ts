@@ -304,9 +304,9 @@ export const getAccountTypeDesc = ({ path, accountType, networkType }: getAccoun
         case 'solana':
             return 'TR_ACCOUNT_TYPE_NORMAL_SOLANA_DESC';
         case 'cardano':
-            return 'TR_ACCOUNT_TYPE_NORMAL_CARDANO_DESC';
+            return 'TR_ACCOUNT_TYPE_CARDANO_DESC';
         case 'ripple':
-            return 'TR_ACCOUNT_TYPE_NORMAL_XRP_DESC';
+            return 'TR_ACCOUNT_TYPE_XRP_DESC';
     }
 
     const accountTypePrefix = getAccountTypePrefix(path);

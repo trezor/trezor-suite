@@ -19,6 +19,7 @@ _Do not manually edit language json files in `suite-data/files/translations/` di
 -   `id`: We don't have strict conventions for generating these IDs, although using a prefix `TR_`, or expanded variant `TR_<SCOPE>`, where scope is, for example, "ONBOARDING" is really handy. ID must be the same as the object's key.
 -   `defaultMessage`: Used as a source string for translator. It's also a text that is shown in the app as a fallback till someone changes/improves it in Crowdin.
 -   `description`: Optional. Useful for describing the context in which the message occurs, especially if it is not clear from a `defaultMessage` field.
+-   `dynamic`: Optional. Must be set to true for programmatically constructed keys. Otherwise, the keys will be deleted by the list-duplicates script.
 
 Example:
 
