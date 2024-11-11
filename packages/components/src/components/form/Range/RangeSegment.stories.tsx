@@ -8,7 +8,7 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const Range: StoryObj<RangeProps> = {
+export const RangeSegment: StoryObj<RangeProps> = {
     render: args => {
         // eslint-disable-next-line
         const [, updateArgs] = useArgs();
@@ -24,13 +24,12 @@ export const Range: StoryObj<RangeProps> = {
     args: {
         disabled: false,
         labels: [
-            { component: '0', max: 0, value: 0 },
-            { component: '50', max: 50, value: 50 },
-            { component: '100', max: 100, value: 100 },
+            { max: 30, value: 'Reward' },
+            { max: 100, value: 'Staked' },
         ],
         max: 100,
         min: 0,
-        mode: 'normal',
+        mode: 'segments',
         value: 21,
         fill: true,
     },

@@ -15,6 +15,7 @@ const max = 500;
 const unit = 'sat/vB';
 const labels = [min, max / 2, max].map(number => ({
     value: `${number} ${unit}`,
+    max,
 }));
 
 const getPercentage = (value: number) => ((value - min) / (max - min)) * 100;

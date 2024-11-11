@@ -84,6 +84,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
         () => [
             {
                 value: 1,
+                max: 1,
                 component: (
                     <Label>
                         <Icon name="oneUser" size={14} color={theme.legacy.TYPE_DARK_GREY} /> 1
@@ -92,6 +93,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
             },
             {
                 value: 3,
+                max: 3,
                 component: (
                     <Label>
                         <Icon name="twoUsers" size={14} color={theme.legacy.TYPE_DARK_GREY} /> 3
@@ -100,6 +102,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
             },
             {
                 value: 10,
+                max: 10,
                 component: (
                     <Label>
                         <Icon name="threeUsers" size={14} color={theme.legacy.TYPE_DARK_GREY} /> 10
@@ -108,6 +111,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
             },
             {
                 value: 30,
+                max: 30,
                 component: (
                     <Label>
                         <Icon name="fourUsers" size={14} color={theme.legacy.TYPE_DARK_GREY} /> 30
@@ -116,6 +120,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
             },
             {
                 value: 100,
+                max: 100,
                 component: (
                     <Label>
                         <Icon name="fourUsers" size={14} color={theme.legacy.TYPE_DARK_GREY} /> 100
