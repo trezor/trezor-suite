@@ -49,7 +49,11 @@ export const AddressReviewStepList = () => {
 
     const [childHeights, setChildHeights] = useState<number[]>([]);
     const [stepIndex, setStepIndex] = useState(0);
-    const handleSendReviewFailure = useHandleSendReviewFailure({ accountKey, transaction });
+    const handleSendReviewFailure = useHandleSendReviewFailure({
+        accountKey,
+        transaction,
+        tokenContract,
+    });
     const setWasAppLeftDuringReview = useSetAtom(wasAppLeftDuringReviewAtom);
 
     useFocusEffect(
