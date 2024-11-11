@@ -1,4 +1,4 @@
-import { eslint } from '@trezor/eslint';
+import { eslint, globalNoExtraneousDependenciesDevDependencies } from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -8,6 +8,16 @@ export default [
             'no-underscore-dangle': 'off',
             'no-console': 'warn',
             'import/no-default-export': 'off',
+            'import/no-extraneous-dependencies': [
+                'error',
+                {
+                    devDependencies: [
+                        ...globalNoExtraneousDependenciesDevDependencies,
+                        '**/tests/**',
+                        '**/webpack/**',
+                    ],
+                },
+            ],
         },
     },
 ];

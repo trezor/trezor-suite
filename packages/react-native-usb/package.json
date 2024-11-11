@@ -4,7 +4,6 @@
     "description": "React Native WebUSB implementation",
     "main": "src/index",
     "scripts": {
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "open:ios": "open -a \"Xcode\" example/ios",
         "open:android": "open -a \"Android Studio\" example/android"

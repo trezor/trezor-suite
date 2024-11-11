@@ -4,14 +4,15 @@ export default [
     ...eslint,
     {
         rules: {
-            'import/no-default-export': 'off', // Todo: shall be fixed
+            'no-console': 'off',
 
             'import/no-extraneous-dependencies': [
                 'error',
                 {
                     devDependencies: [
                         ...globalNoExtraneousDependenciesDevDependencies,
-                        '**/webpack/**',
+                        '**/src/**', // Examples are just for development
+                        '**/webpack.config.js',
                     ],
                 },
             ],

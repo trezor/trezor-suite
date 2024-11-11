@@ -31,7 +31,6 @@
         "typings": "lib/index.d.ts"
     },
     "scripts": {
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest",
         "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "type-check": "yarn g:tsc --build tsconfig.json",

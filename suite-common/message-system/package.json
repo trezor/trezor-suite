@@ -10,7 +10,6 @@
         "msg-system-types": "yarn tsx ./scripts/generate-types.ts",
         "validate-config": "yarn tsx ./scripts/validate-config.ts",
         "sign-config": "yarn tsx ./scripts/sign-config.ts",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"

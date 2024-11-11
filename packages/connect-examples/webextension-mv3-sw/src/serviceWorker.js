@@ -30,12 +30,14 @@ chrome.runtime.onInstalled.addListener(details => {
             }).then(res => {
                 sendResponse(res); // Send the response back to the sender
             });
+
             // Return true to indicate you want to send a response asynchronously
             return true;
         } else if (message.action === 'getFeatures') {
             TrezorConnect.getFeatures().then(res => {
                 sendResponse(res); // Send the response back to the sender
             });
+
             // Return true to indicate you want to send a response asynchronously
             return true;
         }

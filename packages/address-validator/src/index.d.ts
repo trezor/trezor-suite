@@ -3,6 +3,7 @@ declare module '@trezor/address-validator' {
         name: string;
         symbol: string;
     }
+
     export type AddressType =
         | 'address'
         | 'p2pkh'
@@ -11,16 +12,20 @@ declare module '@trezor/address-validator' {
         | 'p2sh'
         | 'p2tr'
         | 'pw-unknown';
+
     export function validate(
         address: string,
         currencyNameOrSymbol?: string,
         networkType?: string,
     ): boolean;
+
     export function getAddressType(
         address: string,
         currencyNameOrSymbol?: string,
         networkType?: string,
     ): AddressType | undefined;
+
     export function getCurrencies(): Currency[];
+
     export function findCurrency(symbol: string): Currency;
 }

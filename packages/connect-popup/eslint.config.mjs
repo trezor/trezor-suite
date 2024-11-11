@@ -1,4 +1,4 @@
-import { eslint } from '@trezor/eslint';
+import { eslint, globalNoExtraneousDependenciesDevDependencies } from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -6,6 +6,15 @@ export default [
         rules: {
             'no-console': 'off',
             'no-restricted-syntax': 'off', // Todo: fix and solve
+            'import/no-extraneous-dependencies': [
+                'error',
+                {
+                    devDependencies: [
+                        ...globalNoExtraneousDependenciesDevDependencies,
+                        '**/webpack/**',
+                    ],
+                },
+            ],
         },
     },
 ];

@@ -4,7 +4,6 @@
     "private": true,
     "sideEffects": false,
     "scripts": {
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",

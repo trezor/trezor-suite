@@ -19,6 +19,7 @@
         "lodash": "^4.17.15"
     },
     "devDependencies": {
+        "@trezor/eslint": "workspace:*",
         "rimraf": "^6.0.1"
     }
 }
