@@ -89,7 +89,7 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
                 <div>
                     <Paragraph typographyStyle="highlight" variant="primary">
                         <Translation
-                            id="TR_VERSION_HAS_RELEASED"
+                            id="TR_VERSION_HAS_BEEN_RELEASED"
                             values={{ version: suiteNewVersion }}
                         />
                     </Paragraph>

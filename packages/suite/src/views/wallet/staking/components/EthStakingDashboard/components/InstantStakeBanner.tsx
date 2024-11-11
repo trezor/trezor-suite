@@ -26,7 +26,7 @@ const IconWrapper = styled.div`
 const getSubheadingTranslationId = (stakeType: StakeType) => {
     if (stakeType === 'stake') return 'TR_STAKING_INSTANTLY_STAKED';
 
-    return 'TR_STAKING_INSTANTLY_UNSTAKED';
+    return 'TR_STAKE_INSTANTLY_UNSTAKED_WITH_DAYS';
 };
 
 const getHeadingTranslationId = (stakeType: StakeType) => {

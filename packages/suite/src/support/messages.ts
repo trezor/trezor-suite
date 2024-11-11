@@ -1,6 +1,24 @@
 import { defineMessages } from 'react-intl';
 
-export default defineMessages({
+type MessageDescriptor<K extends string> = {
+    // Must correspond to the property name.
+    id: K;
+    // Default text in English. This value is only used directly if the corresponding key is missing from the JSON translation files.
+    defaultMessage: string;
+    // Not integrated into Crowdin so not really used.
+    description?: string;
+    // Must be set to true for programmatically constructed keys. Otherwise, the keys will be deleted by the list-duplicates script.
+    dynamic?: boolean;
+};
+
+/**
+Checks whether id corresponds to the property name. Otherwise, text is not translated. Returns the same value that was passed in.
+ */
+const defineMessagesWithTypeCheck = <Key extends string>(messages: {
+    [K in Key]: MessageDescriptor<K>;
+}) => messages;
+
+const messages = defineMessagesWithTypeCheck({
     TR_404_DESCRIPTION: {
         defaultMessage: 'Looks like a wrong URL or broken link.',
         id: 'TR_404_DESCRIPTION',
@@ -170,7 +188,7 @@ export default defineMessages({
         id: 'TR_XPUB',
     },
     TR_ADDRESS: {
-        id: 'TR_ADDRESSES',
+        id: 'TR_ADDRESS',
         defaultMessage: 'Address',
     },
     TR_ADDRESSES_FRESH: {
@@ -971,11 +989,11 @@ export default defineMessages({
         id: 'TR_BUY_MODAL_TERMS_6',
         dynamic: true,
     },
-    TR_VALIDATION_ERROR_MINIMUM_CRYPTO: {
+    TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO: {
         defaultMessage: 'Minimum is {minimum}',
         id: 'TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO',
     },
-    TR_VALIDATION_ERROR_MAXIMUM_CRYPTO: {
+    TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO: {
         defaultMessage: 'Maximum is {maximum}',
         id: 'TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO',
     },
@@ -3557,12 +3575,12 @@ export default defineMessages({
         defaultMessage:
             'The current and most widely accepted method of generating and managing Solana addresses ensures interoperability, security, and support for SOL and SPL tokens.',
     },
-    TR_ACCOUNT_TYPE_NORMAL_CARDANO_DESC: {
+    TR_ACCOUNT_TYPE_CARDANO_DESC: {
         id: 'TR_ACCOUNT_TYPE_CARDANO_DESC',
         defaultMessage:
             'The current and most widely accepted method of generating and managing Cardano addresses ensures interoperability, security, and support for all types of tokens.',
     },
-    TR_ACCOUNT_TYPE_NORMAL_XRP_DESC: {
+    TR_ACCOUNT_TYPE_XRP_DESC: {
         id: 'TR_ACCOUNT_TYPE_XRP_DESC',
         defaultMessage:
             'XRP is a digital currency that enables fast, low-cost cross-border payments without relying on traditional mining, using a consensus ledger for quick transaction confirmations.',
@@ -3667,7 +3685,7 @@ export default defineMessages({
     },
     TOAST_COIN_SCHEME_PROTOCOL: {
         id: 'TOAST_COIN_SCHEME_PROTOCOL',
-        describe: 'Required for current notifications. Do not change.',
+        description: 'Required for current notifications. Do not change.',
         defaultMessage: '{header}{body}',
     },
     TOAST_COIN_SCHEME_PROTOCOL_ACTION: {
@@ -4148,7 +4166,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_CHECK_RECOVERY_SEED_DESC_T3B1: {
-        id: 'TR_CHECK_RECOVERY_SEED_DESC_T2B1',
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_T3B1',
         defaultMessage:
             "Use the two-button pad to enter your wallet backup. By doing this, you're keeping all your sensitive info safe and sound, away from any shady or insecure computer or web browser.",
         dynamic: true,
@@ -4664,7 +4682,7 @@ export default defineMessages({
     TR_DISABLE_WEBUSB_TRY_BRIDGE: {
         id: 'TR_DISABLE_WEBUSB_TRY_BRIDGE',
         defaultMessage: 'Disable WebUSB and use Bridge',
-        describe:
+        description:
             'Bridge is a communication deamon that some users will need to download and install. So word bridge should not be translated.',
     },
     TR_YOUR_DEVICE_IS_SEEDLESS: {
@@ -5173,7 +5191,7 @@ export default defineMessages({
         id: 'IMAGE_VALIDATION_ERROR_INVALID_DIMENSIONS',
         defaultMessage: 'Invalid dimensions (Image must be {width} x {height} px)',
     },
-    IMAGE_VALIDATION_ERROR_INVALID_SIZE: {
+    IMAGE_VALIDATION_ERROR_INVALID_SIZE_JPG: {
         id: 'IMAGE_VALIDATION_ERROR_INVALID_SIZE_JPG',
         defaultMessage: 'Invalid size (Image must be less than 16KB)',
     },
@@ -6199,7 +6217,7 @@ export default defineMessages({
         id: 'TR_MANAGE',
         defaultMessage: 'manage',
     },
-    TR_VERSION_HAS_RELEASED: {
+    TR_VERSION_HAS_BEEN_RELEASED: {
         id: 'TR_VERSION_HAS_BEEN_RELEASED',
         defaultMessage: 'v{version} has released!',
     },
@@ -6823,7 +6841,7 @@ export default defineMessages({
         defaultMessage:
             "Contact Trezor Support to figure out what's going on with your device and what to do next.",
     },
-    TR_DEVICE_COMPROMISED_HEADING_SOFT: {
+    TR_PLAY_IT_SAFE: {
         id: 'TR_PLAY_IT_SAFE',
         defaultMessage: "Let's play it safe",
     },
@@ -7050,7 +7068,7 @@ export default defineMessages({
     TR_ONBOARDING_TROUBLESHOOTING_FAILED: {
         id: 'TR_ONBOARDING_TROUBLESHOOTING_FAILED',
         defaultMessage: 'Still not working?',
-        decription:
+        description:
             "If troubleshooting steps for connecting a device in Onboarding didn't do the trick there is at the end link to contact a support",
     },
     TR_STILL_DONT_SEE_YOUR_TREZOR: {
@@ -7379,7 +7397,7 @@ export default defineMessages({
         id: 'TR_STAKING_IS_NOT_SUPPORTED',
         defaultMessage: 'Staking is not supported on this network.',
     },
-    TR_STAKING_INSTANT_STAKING: {
+    TR_INSTANT_STAKING: {
         id: 'TR_INSTANT_STAKING',
         defaultMessage: 'Staked instantly',
     },
@@ -7391,7 +7409,7 @@ export default defineMessages({
         id: 'TR_STAKING_AMOUNT_UNSTAKED_INSTANTLY',
         defaultMessage: '{amount} {symbol} unstaked instantly!',
     },
-    TR_STAKING_INSTANT_UNSTAKING: {
+    TR_INSTANT_UNSTAKING: {
         id: 'TR_INSTANT_UNSTAKING',
         defaultMessage: 'Unstaked instantly',
     },
@@ -7400,7 +7418,7 @@ export default defineMessages({
         defaultMessage:
             "You've instantly staked {amount} {symbol}. {days, plural, =0 {} one {The remaining {symbol} will be staked within # day.} other { The remaining {symbol} will be staked within # days}}",
     },
-    TR_STAKING_INSTANTLY_UNSTAKED: {
+    TR_STAKE_INSTANTLY_UNSTAKED_WITH_DAYS: {
         id: 'TR_STAKE_INSTANTLY_UNSTAKED_WITH_DAYS',
         defaultMessage:
             'You received {amount} {symbol} "Instantly". {days, plural, =0 {} one {The rest will be payed out within # day.} other { The rest will be payed out within # days}}',
@@ -8361,7 +8379,7 @@ export default defineMessages({
         id: 'TR_DESKTOP_APP_PROMO_GET',
         defaultMessage: 'Get for desktop',
     },
-    TR_DESKTOP_APP_PROMO_TEXT_FOOTER: {
+    TR_MOBILE_APP_PROMO_TEXT: {
         id: 'TR_MOBILE_APP_PROMO_TEXT',
         defaultMessage: 'With more security features',
     },
@@ -9234,3 +9252,5 @@ export default defineMessages({
         defaultMessage: 'Trezor Connect',
     },
 });
+
+export default defineMessages(messages);

@@ -41,7 +41,7 @@ export const JustUpdated = ({ onCancel }: AvailableProps) => {
             heading={
                 <Paragraph typographyStyle="titleSmall" variant="primary">
                     <Translation
-                        id="TR_VERSION_HAS_RELEASED"
+                        id="TR_VERSION_HAS_BEEN_RELEASED"
                         values={{ version: suiteCurrentVersion }}
                     />
                 </Paragraph>

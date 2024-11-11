@@ -23,9 +23,9 @@ const Wrapper = styled.div`
 const getTranslationId = (instantStakeType: StakeType) => {
     switch (instantStakeType) {
         case 'stake':
-            return 'TR_STAKING_INSTANT_STAKING';
+            return 'TR_INSTANT_STAKING';
         case 'unstake':
-            return 'TR_STAKING_INSTANT_UNSTAKING';
+            return 'TR_INSTANT_UNSTAKING';
         default:
             return null; // there is no badge for claiming
     }
