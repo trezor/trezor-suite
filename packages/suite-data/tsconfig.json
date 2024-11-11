@@ -15,6 +15,7 @@
         { "path": "../connect" },
         { "path": "../env-utils" },
         { "path": "../urls" },
-        { "path": "../utils" }
+        { "path": "../utils" },
+        { "path": "../eslint" }
     ]
 }

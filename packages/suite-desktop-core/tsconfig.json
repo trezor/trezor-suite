@@ -27,6 +27,7 @@
         { "path": "../connect" },
         { "path": "../connect-common" },
         { "path": "../env-utils" },
+        { "path": "../eslint" },
         { "path": "../ipc-proxy" },
         { "path": "../node-utils" },
         { "path": "../request-manager" },
