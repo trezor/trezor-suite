@@ -112,12 +112,12 @@ export const ElevationContext: StoryObj = {
 
             <Background>
                 <Card>
-                    Card and Textarea inside it wrapped in the &#34;extender&#34; component with
+                    Card and Textarea inside it wrapped in the &quot;extender&quot; component with
                     same elevation as the Textarea has.
                     <TextareaExtender>
                         <Textarea>
-                            &#34;If you don’t believe it or don’t get it, I don’t have the time to
-                            try to convince you, sorry.&#34; ― Satoshi Nakamoto
+                            &quot;If you don’t believe it or don’t get it, I don’t have the time to
+                            try to convince you, sorry.&quot; ― Satoshi Nakamoto
                         </Textarea>
                     </TextareaExtender>
                 </Card>

@@ -24,49 +24,56 @@ export const AllTypography: StoryFn = () => (
                 feugiat vel mi.
             </Paragraph>
             <Paragraph typographyStyle="titleLarge" data-testid="paragraph-titleLarge">
-                type=&#34;titleLarge&#34; <br />
+                type=&quot;titleLarge&quot;
+                <br />
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis lectus
                 eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed suscipit
                 interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus eu porta vel,
                 feugiat vel mi.
             </Paragraph>
             <Paragraph typographyStyle="titleMedium" data-testid="paragraph-titleMedium">
-                type=&#34;titleMedium&#34; <br />
+                type=&quot;titleMedium&quot;
+                <br />
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis lectus
                 eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed suscipit
                 interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus eu porta vel,
                 feugiat vel mi.
             </Paragraph>
             <Paragraph typographyStyle="titleSmall" data-testid="paragraph-titleSmall">
-                type=&#34;titleSmall&#34; <br />
+                type=&quot;titleSmall&quot;
+                <br />
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis lectus
                 eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed suscipit
                 interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus eu porta vel,
                 feugiat vel mi.
             </Paragraph>
             <Paragraph typographyStyle="highlight" data-testid="paragraph-highlight">
-                type=&#34;highlight&#34; <br />
+                type=&quot;highlight&quot;
+                <br />
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis lectus
                 eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed suscipit
                 interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus eu porta vel,
                 feugiat vel mi.
             </Paragraph>
             <Paragraph typographyStyle="callout" data-testid="paragraph-callout">
-                type=&#34;callout&#34; <br />
+                type=&quot;callout&quot;
+                <br />
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis lectus
                 eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed suscipit
                 interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus eu porta vel,
                 feugiat vel mi.
             </Paragraph>
             <Paragraph typographyStyle="hint" data-testid="paragraph-hint">
-                type=&#34;hint&#34; <br />
+                type=&quot;hint&quot;
+                <br />
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis lectus
                 eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed suscipit
                 interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus eu porta vel,
                 feugiat vel mi.
             </Paragraph>
             <Paragraph typographyStyle="label" data-testid="paragraph-label">
-                type=&#34;label&#34; <br />
+                type=&quot;label&quot;
+                <br />
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis lectus
                 eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed suscipit
                 interdum eros, eget placerat lorem pulvinar in. Ut elit orci, rhoncus eu porta vel,
