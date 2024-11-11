@@ -15,7 +15,8 @@
     "include": [
         ".",
         "../connect-iframe/webpack/base.webpack.config.ts",
-        "../connect-iframe/webpack/prod.webpack.config.ts",
+        "../connect-iframe/webpack/iframe.webpack.config.ts",
+        "../connect-iframe/webpack/utils.ts",
         "../connect-iframe/package.json",
         "../connect-popup/webpack/prod.webpack.config.ts",
         "../connect-popup/package.json"
