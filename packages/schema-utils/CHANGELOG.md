@@ -1,3 +1,7 @@
+# 1.2.2
+
+-   fix(schema-utils): typescript + typebox package resolution issue (cc22068b2a)
+
 # 1.2.1
 
 -   npm-prerelease: @trezor/schema-utils 1.2.1-beta.1 (557eefaa0d)
