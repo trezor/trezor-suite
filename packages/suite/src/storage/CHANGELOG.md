@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 49
+
+-   networks now have same order everywhere
+
 ## 48
 
 -   device state to new object format (`device._state` -> `device.state`)
