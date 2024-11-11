@@ -1,71 +1,41 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/DataManager.js
 
-import { httpRequest } from '../utils/assets';
+import coins from '@trezor/connect-common/files/coins.json';
+import coinsEth from '@trezor/connect-common/files/coins-eth.json';
+import bridge from '@trezor/connect-common/files/bridge/releases.json';
+import messages from '@trezor/protobuf/messages.json';
+
 import { parseCoinsJson } from './coinInfo';
 import { parseFirmware } from './firmwareInfo';
 import { parseBridgeJSON } from './transportInfo';
 import { ConnectSettings, DeviceModelInternal } from '../types';
+import { firmwareAssets } from '../utils/assetUtils'; // Adjust the path as necessary
 
 type AssetCollection = { [key: string]: Record<string, any> };
-
-const assets = [
-    {
-        name: 'coins',
-        url: './data/coins.json',
-    },
-    {
-        name: 'coinsEth',
-        url: './data/coins-eth.json',
-    },
-    {
-        name: 'bridge',
-        url: './data/bridge/releases.json',
-    },
-    {
-        name: 'firmware-t1b1',
-        url: './data/firmware/t1b1/releases.json',
-    },
-    {
-        name: 'firmware-t2t1',
-        url: './data/firmware/t2t1/releases.json',
-    },
-    {
-        name: 'firmware-t2b1',
-        url: './data/firmware/t2b1/releases.json',
-    },
-    {
-        name: 'firmware-t3b1',
-        url: './data/firmware/t3b1/releases.json',
-    },
-    {
-        name: 'firmware-t3t1',
-        url: './data/firmware/t3t1/releases.json',
-    },
-    {
-        name: 'firmware-t3tw1',
-        url: './data/firmware/t3w1/releases.json',
-    },
-];
 
 export class DataManager {
     static assets: AssetCollection = {};
 
     private static settings: ConnectSettings;
-    private static messages: Record<string, any>;
+    private static messages: Record<string, any> = messages;
 
-    static async load(settings: ConnectSettings, withAssets = true) {
-        const ts = settings.env === 'web' ? `?r=${settings.timestamp}` : '';
+    static load(settings: ConnectSettings, withAssets = true) {
         this.settings = settings;
 
         if (!withAssets) return;
 
-        const assetPromises = assets.map(async asset => {
-            const json = await httpRequest(`${asset.url}${ts}`, 'json');
-            this.assets[asset.name] = json;
-        });
-        await Promise.all(assetPromises);
-
-        this.messages = await httpRequest('./data/messages/messages.json', 'json');
+        const assetsMap = {
+            coins,
+            coinsEth,
+            bridge,
+            ...Object.fromEntries(
+                Object.entries(firmwareAssets).map(([key, value]) => [
+                    `firmware-${key.toLowerCase()}`,
+                    value,
+                ]),
+            ),
+        };
+        Object.assign(this.assets, assetsMap);
 
         // parse bridge JSON
         parseBridgeJSON(this.assets.bridge);

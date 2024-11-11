@@ -1,5 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/pathUtils.js
-
+// TODO: There might be other issues with side-effects https://github.com/trezor/trezor-suite/issues/15559
 import { PROTO, ERRORS } from '../constants';
 import type {
     CoinInfo,

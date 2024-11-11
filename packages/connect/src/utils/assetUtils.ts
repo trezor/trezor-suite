@@ -5,7 +5,7 @@ import { DeviceModelInternal } from '../types';
 const isDeviceModel = (model: string): model is DeviceModelInternal =>
     isArrayMember(model, Object.values(DeviceModelInternal));
 
-const firmwareAssets: Record<DeviceModelInternal, NodeRequire> = {
+export const firmwareAssets: Record<DeviceModelInternal, NodeRequire> = {
     [DeviceModelInternal.T1B1]: require('@trezor/connect-common/files/firmware/t1b1/releases.json'),
     [DeviceModelInternal.T2T1]: require('@trezor/connect-common/files/firmware/t2t1/releases.json'),
     [DeviceModelInternal.T2B1]: require('@trezor/connect-common/files/firmware/t2b1/releases.json'),
