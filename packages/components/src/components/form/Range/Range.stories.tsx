@@ -25,9 +25,15 @@ export const Range: StoryObj<RangeProps> = {
         max: 100,
         min: 0,
         value: 21,
+        fill: true,
     },
     argTypes: {
         disabled: {
+            control: {
+                type: 'boolean',
+            },
+        },
+        fill: {
             control: {
                 type: 'boolean',
             },

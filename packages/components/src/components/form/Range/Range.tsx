@@ -11,6 +11,16 @@ import styled, { css, CSSObject } from 'styled-components';
 
 import { borders, spacingsPx, typography } from '@trezor/theme';
 
+const StyledRange = styled.div<{ $fill?: boolean }>`
+    position: relative;
+
+    ${({ $fill }) =>
+        $fill &&
+        css`
+            width: 100%;
+        `}
+`;
+
 type TrackProps = {
     $trackStyle?: CSSObject;
     disabled?: boolean; // intentionally not transient (no $), it is HTML attribute of the <input>
@@ -116,6 +126,7 @@ const LabelsWrapper = styled.div<{ $count: number; $width?: number }>`
 export interface RangeProps {
     className?: string;
     disabled?: boolean;
+    fill?: boolean;
     labels?: Array<{ value: string | number; component?: ReactNode }>;
     max?: number;
     min?: number;
@@ -130,6 +141,7 @@ export interface RangeProps {
 export const Range = ({
     className,
     disabled = false,
+    fill = false,
     labels,
     onLabelClick,
     trackStyle,
@@ -166,13 +178,13 @@ export const Range = ({
     });
 
     return (
-        <div className={className}>
+        <StyledRange className={className} $fill={fill}>
             <Input {...props} type="range" disabled={disabled} $trackStyle={trackStyle} />
             {labels?.length && (
                 <LabelsWrapper $count={labels.length} $width={labelsElWidth}>
                     {labelComponents}
                 </LabelsWrapper>
             )}
-        </div>
+        </StyledRange>
     );
 };
