@@ -14,6 +14,7 @@ import { isAddressValid } from '@suite-common/wallet-utils';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { Link } from '@suite-native/link';
+import { getNetworkType } from '@suite-common/wallet-config';
 
 import { getOutputFieldName } from '../utils';
 import { TokenOfNetworkAlertBody } from '../components/TokenOfNetworkAlertContent';
@@ -40,6 +41,7 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
+    const networkType = networkSymbol ? getNetworkType(networkSymbol) : null;
 
     const { watch, setValue } = useFormContext();
 
@@ -104,7 +106,10 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
         const shouldShowTokenAlert =
             tokenContract && isFilledValidAddress && !wasTokenAlertDisplayed;
         const shouldChecksumAddress =
-            !wasAddressChecksummed && isFilledValidAddress && wasTokenAlertDisplayed;
+            networkType === 'ethereum' &&
+            !wasAddressChecksummed &&
+            isFilledValidAddress &&
+            wasTokenAlertDisplayed;
 
         if (shouldShowTokenAlert) {
             showAlert({
@@ -120,7 +125,7 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
         } else if (shouldChecksumAddress) handleAddressChecksum();
         // TODO: add path for contract address alert: https://github.com/trezor/trezor-suite/issues/14936.
         else if (!isFilledValidAddress) {
-            setWasTokenAlertDisplayed(false);
+            if (tokenContract) setWasTokenAlertDisplayed(false);
             setWasAddressChecksummed(false);
         }
     }, [
@@ -129,6 +134,7 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
         tokenContract,
         tokenSymbol,
         accountKey,
+        networkType,
         wasAddressChecksummed,
         handleAddressChecksum,
         wasTokenAlertDisplayed,
