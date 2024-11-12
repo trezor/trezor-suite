@@ -12,6 +12,7 @@ type CryptoToFiatAmountFormatterProps = FormatterProps<string | number | null> &
         useHistoricRate?: boolean;
         isBalance?: boolean;
         isForcedDiscreetMode?: boolean;
+        isLoading?: boolean;
     };
 
 export const CryptoToFiatAmountFormatter = ({
@@ -20,6 +21,7 @@ export const CryptoToFiatAmountFormatter = ({
     historicRate,
     useHistoricRate,
     isBalance = false,
+    isLoading = false,
     ...otherProps
 }: CryptoToFiatAmountFormatterProps) => {
     const fiatValue = useFiatFromCryptoValue({
@@ -30,5 +32,12 @@ export const CryptoToFiatAmountFormatter = ({
         cryptoValue: value ? value.toString() : null,
     });
 
-    return <FiatAmountFormatter network={network} value={fiatValue} {...otherProps} />;
+    return (
+        <FiatAmountFormatter
+            network={network}
+            value={fiatValue}
+            isLoading={isLoading}
+            {...otherProps}
+        />
+    );
 };

@@ -15,16 +15,23 @@ type FiatAmountFormatterProps = FormatterProps<string | null> &
         network?: NetworkSymbol;
         isDiscreetText?: boolean;
         isForcedDiscreetMode?: boolean;
+        isLoading?: boolean;
     };
 
 export const FiatAmountFormatter = React.memo(
-    ({ network, value, isDiscreetText = true, ...otherProps }: FiatAmountFormatterProps) => {
+    ({
+        network,
+        value,
+        isDiscreetText = true,
+        isLoading = false,
+        ...otherProps
+    }: FiatAmountFormatterProps) => {
         const { FiatAmountFormatter: formatter } = useFormatters();
 
         if (!!network && isTestnet(network)) {
             return <EmptyAmountText />;
         }
-        if (value === null) {
+        if (isLoading || value === null) {
             return <EmptyAmountSkeleton />;
         }
 

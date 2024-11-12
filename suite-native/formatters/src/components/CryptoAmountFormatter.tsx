@@ -10,6 +10,7 @@ import { FormatterProps } from '../types';
 import { EmptyAmountText } from './EmptyAmountText';
 import { AmountText } from './AmountText';
 import { formatNumberWithThousandCommas } from '../utils';
+import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
 
 type CryptoToFiatAmountFormatterProps = FormatterProps<string | null | number> &
     TextProps & {
@@ -18,6 +19,7 @@ type CryptoToFiatAmountFormatterProps = FormatterProps<string | null | number> &
         isDiscreetText?: boolean;
         decimals?: number;
         isForcedDiscreetMode?: boolean;
+        isLoading?: boolean;
     };
 
 export const CryptoAmountFormatter = React.memo(
@@ -28,10 +30,15 @@ export const CryptoAmountFormatter = React.memo(
         isDiscreetText = true,
         variant = 'hint',
         color = 'textSubdued',
+        isLoading = false,
         decimals,
         ...otherProps
     }: CryptoToFiatAmountFormatterProps) => {
         const { CryptoAmountFormatter: formatter } = useFormatters();
+
+        if (value === null || isLoading) {
+            return <EmptyAmountSkeleton />;
+        }
 
         if (G.isNullable(value)) return <EmptyAmountText />;
 
