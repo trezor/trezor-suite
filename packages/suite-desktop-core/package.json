@@ -37,7 +37,7 @@
         "@trezor/utils": "workspace:*",
         "chalk": "^4.1.2",
         "electron-localshortcut": "^3.2.1",
-        "electron-store": "8.2.0",
+        "electron-store": "10.0.0",
         "electron-updater": "6.3.9",
         "openpgp": "^6.0.1",
         "systeminformation": "^5.23.5",
