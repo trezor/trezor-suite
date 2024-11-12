@@ -23,7 +23,6 @@ module.exports = {
             directory: `${SRC}ui`,
         },
         hot: false,
-        https: false,
         port: PORT,
     },
     module: {
