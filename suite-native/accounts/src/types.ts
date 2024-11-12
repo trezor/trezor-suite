@@ -4,7 +4,10 @@ export type GroupedByTypeAccounts = Record<string, [Account, ...Account[]]>;
 
 export type OnSelectAccount = (params: {
     account: Account;
+    // if clicked item is staking item
     isStaking?: boolean;
+    // if account has staking
+    hasStaking?: boolean;
     tokenAddress?: TokenAddress;
     hasAnyKnownTokens: boolean;
 }) => void;

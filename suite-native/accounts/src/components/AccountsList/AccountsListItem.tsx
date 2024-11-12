@@ -83,8 +83,9 @@ export const AccountsListItem = ({
         onPress?.({
             account,
             hasAnyKnownTokens: accountHasAnyTokens,
+            hasStaking: accountHasStaking,
         });
-    }, [account, accountHasAnyTokens, onPress]);
+    }, [account, accountHasAnyTokens, accountHasStaking, onPress]);
 
     const doesCoinSupportTokens = isCoinWithTokens(account.symbol);
     const shouldShowAccountLabel = !doesCoinSupportTokens || !isInModal;
