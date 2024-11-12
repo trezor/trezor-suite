@@ -3,6 +3,9 @@ import { eslint, globalNoExtraneousDependenciesDevDependencies } from '@trezor/e
 export default [
     ...eslint,
     {
+        ignores: ['**/.build-storybook/*'],
+    },
+    {
         files: ['**/*.stories.tsx'],
         rules: {
             'no-console': 'off',
