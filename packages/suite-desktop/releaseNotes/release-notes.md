@@ -1,13 +1,13 @@
+### 🚀 New features
+
+-   Opt in to auto-updates to automatically download and install the latest updates, with a one-click restart to apply.
+-   BNB Smart Chain is now supported.
+
 ### 🎨 Improvements
 
--   MATIC has been fully migrated to POL (Polygon network update).
--   Device and Suite update status has been added to the bottom navigation.
--   Token lists have been enhanced across all networks.
--   The "Hide Balances" feature has been improved for better privacy.
--   A new, simplified token selection has been introduced in the Buy & Swap flows.
--   The 'Trade' button has been replaced with clearer 'Buy & Sell' and 'Swap' options.
--   Simplified Chinese has been added as a community language — thank you, contributors!
+-   Buy/Sell and Swap are now accessible directly from the main dashboard for quicker access.
+-   Removed BIP-69 sorting to shuffle inputs and reduce fingerprinting, enhancing privacy.
 
 ### 🔧 Bug fixes
 
--   Various small improvements and bug fixes.
+-   Minor fixes, usability enhancements, and performance improvements.
