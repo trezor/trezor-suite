@@ -73,9 +73,7 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
         };
         if (request && request.feeLevels) {
             const fees = new FeeLevels(coinInfo);
-            // TODO: https://github.com/trezor/trezor-suite/issues/5340
-            // smart fees for DOGE are not relevant since their fee policy changed, see @trezor/utxo-lib/compose: baseFee
-            if (request.feeLevels === 'smart' && coinInfo.shortcut !== 'DOGE') {
+            if (request.feeLevels === 'smart') {
                 const backend = await initBlockchain(coinInfo, this.postMessage, identity);
                 await fees.load(backend);
             }
