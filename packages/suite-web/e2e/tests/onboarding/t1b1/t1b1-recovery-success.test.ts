@@ -41,7 +41,7 @@ describe('Onboarding - recover wallet T1B1', () => {
         cy.prefixedVisit('/');
         cy.disableFirmwareHashCheck();
 
-        cy.step('Go through analytics and confirm firmware', () => {
+        cy.step('Go through analytics', () => {
             onAnalyticsPage.continue();
             onAnalyticsPage.continue();
         });

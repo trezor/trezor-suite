@@ -11,7 +11,7 @@ describe('Onboarding - recover wallet T2T1', () => {
         cy.viewport('macbook-13').resetDb();
         cy.prefixedVisit('/');
 
-        cy.step('Go through analytics and confirm firmware', () => {
+        cy.step('Go through analytics', () => {
             onAnalyticsPage.continue();
             onAnalyticsPage.continue();
         });
