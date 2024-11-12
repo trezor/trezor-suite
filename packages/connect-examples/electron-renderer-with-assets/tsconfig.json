@@ -4,6 +4,7 @@
     "include": ["."],
     "references": [
         { "path": "../../connect" },
-        { "path": "../../connect-web" }
+        { "path": "../../connect-web" },
+        { "path": "../../eslint" }
     ]
 }
