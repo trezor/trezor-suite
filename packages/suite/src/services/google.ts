@@ -90,6 +90,7 @@ type Flow = 'implicit' | 'code';
  * - oauth v2
  * - drive v3
  */
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class Client {
     static nameIdMap: Record<string, string>;
     static listPromise?: Promise<ListResponse>;

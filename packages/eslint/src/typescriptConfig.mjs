@@ -5,15 +5,6 @@ export const typescriptConfig = [
     {
         rules: {
             // Additional rules
-            '@typescript-eslint/no-unused-vars': [
-                'error',
-                {
-                    vars: 'all',
-                    args: 'none',
-                    ignoreRestSiblings: true,
-                    varsIgnorePattern: '^_',
-                },
-            ],
             '@typescript-eslint/no-shadow': [
                 'off',
                 {
@@ -30,11 +21,7 @@ export const typescriptConfig = [
                 },
             ],
 
-            // Additions from "plugin:@typescript-eslint/strict" (we may turn this on one day as a whole)
-            '@typescript-eslint/no-useless-constructor': ['error'],
-
             // Offs
-            '@typescript-eslint/no-require-imports': 'off', // We just use require a lot (mostly for dynamic imports)
             '@typescript-eslint/no-explicit-any': 'off', // Todo: write description
             '@typescript-eslint/ban-ts-comment': [
                 'error',
@@ -43,7 +30,7 @@ export const typescriptConfig = [
                 },
             ],
             '@typescript-eslint/no-empty-object-type': 'off', // Todo: we shall solve this, this is bad practice
-            '@typescript-eslint/triple-slash-reference': 'off', // Todo: solve before merge
+            '@typescript-eslint/triple-slash-reference': 'off', // Todo: https://github.com/trezor/trezor-suite/issues/15310
         },
     },
 ];

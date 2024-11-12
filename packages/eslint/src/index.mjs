@@ -9,6 +9,7 @@ import { jestConfig } from './jestConfig.mjs';
 import { javascriptNodejsConfig } from './javascriptNodejsConfig.mjs';
 import { localRulesConfig } from './localRulesConfig.mjs';
 import { chaiFriendlyConfig } from './chaiFriendlyConfig.mjs';
+import { typescriptStrictConfig } from './typescriptStrictConfig.mjs';
 
 export { globalNoExtraneousDependenciesDevDependencies };
 
@@ -43,6 +44,7 @@ export const eslint = [
     ...javascriptConfig,
     ...javascriptNodejsConfig,
     ...typescriptConfig,
+    ...typescriptStrictConfig,
     ...importConfig,
     ...jestConfig,
     ...localRulesConfig,
