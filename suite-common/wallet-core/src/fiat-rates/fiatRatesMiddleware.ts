@@ -108,21 +108,22 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
         if (accountsActions.createIndexLabeledAccount.match(action)) {
             const localCurrency = selectLocalCurrency(getState());
 
-            const { tokens, symbol } = action.payload;
-            const tickers = tokens?.map(token => ({
+            const { tokens = [], symbol } = action.payload;
+            const tokenTickers = tokens.map(token => ({
                 symbol,
                 tokenAddress: token.contract as TokenAddress,
             }));
-            if (tickers) {
-                dispatch(
-                    updateFiatRatesThunk({
-                        tickers,
-                        rateType: 'current',
-                        localCurrency,
-                        fetchAttemptTimestamp: Date.now() as Timestamp,
-                    }),
-                );
-            }
+            // include main account fiat rate ticker
+            const tickers = [...tokenTickers, { symbol }];
+
+            dispatch(
+                updateFiatRatesThunk({
+                    tickers,
+                    rateType: 'current',
+                    localCurrency,
+                    fetchAttemptTimestamp: Date.now() as Timestamp,
+                }),
+            );
         }
 
         return next(action);
