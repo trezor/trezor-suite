@@ -17917,6 +17917,7 @@ __metadata:
   resolution: "connect-example-electron-main@workspace:packages/connect-examples/electron-main-process"
   dependencies:
     "@trezor/connect": "workspace:*"
+    "@trezor/eslint": "workspace:*"
     electron: "npm:33.1.0"
     electron-builder: "npm:25.1.8"
   languageName: unknown
@@ -17926,6 +17927,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "connect-example-electron-renderer-popup@workspace:packages/connect-examples/electron-renderer-with-popup"
   dependencies:
+    "@trezor/eslint": "workspace:*"
     electron: "npm:33.1.0"
     electron-builder: "npm:25.1.8"
   languageName: unknown
@@ -17937,6 +17939,7 @@ __metadata:
   dependencies:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-web": "workspace:*"
+    "@trezor/eslint": "workspace:*"
     babel-loader: "npm:^9.1.3"
     concurrently: "npm:^8.2.2"
     copy-webpack-plugin: "npm:^12.0.2"
