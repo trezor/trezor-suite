@@ -368,6 +368,11 @@ export const selectAccountNetworkSymbol = createMemoizedSelector(
     account => account?.symbol ?? null,
 );
 
+export const selectAccountNetworkType = createMemoizedSelector(
+    [selectAccountByKey],
+    account => account?.networkType ?? null,
+);
+
 export const selectAccountAvailableBalance = createMemoizedSelector(
     [selectAccountByKey],
     account => account?.availableBalance ?? null,
