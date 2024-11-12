@@ -87,7 +87,6 @@ export const selectBottomSheetDeviceNetworkItems = createMemoizedSelector(
                 getAccountListSections(
                     account,
                     getSimpleCoinDefinitionsByNetwork(tokenDefinitions, networkSymbol),
-                    true,
                 ),
             ),
             A.flat,

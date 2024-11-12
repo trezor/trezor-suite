@@ -103,7 +103,6 @@ export const selectAccountFiatBalance = (state: NativeAccountsRootState, account
 export const getAccountListSections = (
     account: Account,
     tokenDefinitions: SimpleTokenStructure | undefined,
-    hideStaking?: boolean,
 ) => {
     const sections: AccountSelectBottomSheetSection[] = [];
 
@@ -111,7 +110,7 @@ export const getAccountListSections = (
     const tokens = filterKnownTokens(tokenDefinitions, account.symbol, account.tokens ?? []);
     const hasAnyKnownTokens = canHasTokens && !!tokens.length;
     const stakingBalance = getAccountTotalStakingBalance(account);
-    const hasStaking = stakingBalance !== '0' && !hideStaking;
+    const hasStaking = stakingBalance !== '0';
 
     if (canHasTokens) {
         sections.push({
@@ -154,12 +153,8 @@ export const getAccountListSections = (
 const EMPTY_ARRAY: AccountSelectBottomSheetSection[] = [];
 
 export const selectAccountListSections = createMemoizedSelector(
-    [
-        selectAccountByKey,
-        selectTokenDefinitions,
-        (_state, _accountKey?: AccountKey, hideStaking?: boolean) => hideStaking,
-    ],
-    (account, tokenDefinitions, hideStaking) => {
+    [selectAccountByKey, selectTokenDefinitions],
+    (account, tokenDefinitions) => {
         if (!account) return EMPTY_ARRAY;
 
         const networkTokenDefinitions = getSimpleCoinDefinitionsByNetwork(
@@ -167,7 +162,7 @@ export const selectAccountListSections = createMemoizedSelector(
             account.symbol,
         );
 
-        return getAccountListSections(account, networkTokenDefinitions, hideStaking);
+        return getAccountListSections(account, networkTokenDefinitions);
     },
 );
 
