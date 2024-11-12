@@ -356,7 +356,7 @@ export default defineMessages({
         id: 'TR_SELECT_NAME_OR_ADDRESS',
     },
     TR_TOKEN_NOT_FOUND: {
-        defaultMessage: 'Token not found',
+        defaultMessage: 'No token found',
         id: 'TR_TOKEN_NOT_FOUND',
     },
     TR_TOKEN_NOT_FOUND_ON_NETWORK: {
@@ -1089,12 +1089,11 @@ export default defineMessages({
         id: 'TR_BUY_DETAIL_SUBMITTED_TITLE',
     },
     TR_BUY_DETAIL_SUBMITTED_TEXT: {
-        defaultMessage:
-            "Click the button below to finish entering your details on the provider's site.",
+        defaultMessage: "Click to complete your details on the provider's site.",
         id: 'TR_BUY_DETAIL_SUBMITTED_TEXT',
     },
     TR_BUY_DETAIL_SUBMITTED_GATE: {
-        defaultMessage: 'Go to payment gateway',
+        defaultMessage: 'Proceed to pay',
         id: 'TR_BUY_DETAIL_SUBMITTED_GATE',
     },
     TR_BUY_DETAIL_WAITING_FOR_USER_TITLE: {
@@ -1136,12 +1135,12 @@ export default defineMessages({
     },
     TR_COINMARKET_BUY_AND_SELL_COUNTER: {
         defaultMessage:
-            '{totalBuys, plural, =0 {{totalBuys} buy} one {{totalBuys} buy} other {{totalBuys} buys} } • {totalSells, plural, =0 {{totalSells} sell} one {{totalSells} sell} other {{totalSells} sells} }',
+            '{totalBuys, plural, =0 {{totalBuys} buys} one {{totalBuys} buy} other {{totalBuys} buys} } • {totalSells, plural, =0 {{totalSells} sells} one {{totalSells} sell} other {{totalSells} sells} }',
         id: 'TR_COINMARKET_BUY_AND_SELL_COUNTER',
     },
     TR_COINMARKET_SWAP_COUNTER: {
         defaultMessage:
-            '{totalSwaps, plural, =0 {{totalSwaps} swap} one {{totalSwaps} swap} other {{totalSwaps} swaps} }',
+            '{totalSwaps, plural, =0 {{totalSwaps} swaps} one {{totalSwaps} swap} other {{totalSwaps} swaps} }',
         id: 'TR_COINMARKET_SWAP_COUNTER',
     },
     TR_COINMARKET_PAYMENT_METHOD: {
@@ -1829,11 +1828,11 @@ export default defineMessages({
         id: 'TR_CHECK_FOR_DEVICES',
     },
     TR_CHECK_RECOVERY_SEED: {
-        defaultMessage: 'Check backup',
+        defaultMessage: 'Check wallet backup',
         id: 'TR_CHECK_RECOVERY_SEED',
     },
     TR_CHECK_SEED: {
-        defaultMessage: 'Check backup',
+        defaultMessage: 'Check wallet backup',
         id: 'TR_CHECK_SEED',
     },
     TR_CHECK_YOUR_DEVICE: {
@@ -1901,7 +1900,7 @@ export default defineMessages({
         id: 'TR_PASSPHRASE_NON_ASCII_CHARS',
     },
     TR_PASSPHRASE_NON_ASCII_CHARS_WARNING: {
-        defaultMessage: 'Using non-listed special characters risk future compatibility',
+        defaultMessage: 'Use of unlisted special characters may impact future compatibility.',
         id: 'TR_PASSPHRASE_NON_ASCII_CHARS_WARNING',
     },
     TR_CONFIRMED_TX: {
@@ -3701,11 +3700,11 @@ export default defineMessages({
     },
     TOAST_BACKUP_FAILED: {
         id: 'TOAST_BACKUP_FAILED',
-        defaultMessage: 'Backup failed',
+        defaultMessage: 'Wallet backup failed',
     },
     TOAST_BACKUP_SUCCESS: {
         id: 'TOAST_BACKUP_SUCCESS',
-        defaultMessage: 'Backup successful',
+        defaultMessage: 'Wallet backup successful',
     },
     TOAST_SETTINGS_APPLIED: {
         id: 'TOAST_SETTINGS_APPLIED',
@@ -5126,21 +5125,21 @@ export default defineMessages({
     },
     BACKUP_BACKUP_ALREADY_FINISHED_HEADING: {
         id: 'BACKUP_BACKUP_ALREADY_FINISHED_HEADING',
-        defaultMessage: 'Backup already finished',
+        defaultMessage: 'Wallet backup already finished',
     },
     BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION: {
         id: 'BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION',
         defaultMessage:
-            'Connected device has already been backed up. You should have the wallet backup written down and hidden in a safe place.',
+            'The connected device already has a wallet backup. You should have the wallet backup written down and hidden in a safe place.',
     },
     BACKUP_BACKUP_ALREADY_FAILED_HEADING: {
         id: 'BACKUP_BACKUP_ALREADY_FAILED_HEADING',
-        defaultMessage: 'Backup failed',
+        defaultMessage: 'Wallet backup failed',
     },
     BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION: {
         id: 'BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION',
         defaultMessage:
-            'A previous attempt to backup this device failed. Device backup may be done only once.',
+            'A previous attempt to backup this device failed. Wallet backup may be done only once.',
     },
     DISCONNECT_DEVICE_DESCRIPTION: {
         id: 'DISCONNECT_DEVICE_DESCRIPTION',
@@ -6965,21 +6964,21 @@ export default defineMessages({
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE',
-        defaultMessage: 'Turn off firmware revision check',
+        defaultMessage: 'Turn off firmware authenticity check',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE_DISABLED: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE_DISABLED',
-        defaultMessage: 'Turn on firmware revision check',
+        defaultMessage: 'Turn on firmware authenticity check',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION',
         defaultMessage:
-            'Firmware revision check is a crucial security feature. We strongly recommend keeping it turned on.',
+            'Firmware authenticity check is a crucial security feature. We strongly recommend keeping it turned on.',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION_DISABLED: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION_DISABLED',
         defaultMessage:
-            'Firmware revision check is a crucial security feature. We strongly recommend keeping it turned on.',
+            'Firmware authenticity check is a crucial security feature. We strongly recommend keeping it turned on.',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON',
@@ -6996,7 +6995,7 @@ export default defineMessages({
     TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_1: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_1',
         defaultMessage:
-            'Turn off the firmware revision check only if you fully understand the risks and have a valid reason. If unsure, contact Trezor Support for help.',
+            'Turn off the firmware authenticity check only if you fully understand the risks and have a valid reason. If unsure, contact Trezor Support for help.',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_2: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_2',
@@ -7010,16 +7009,16 @@ export default defineMessages({
     },
     TR_FIRMWARE_REVISION_CHECK_FAILED: {
         id: 'TR_FIRMWARE_REVISION_CHECK_FAILED',
-        defaultMessage: 'Firmware revision check failed. Your Trezor may be counterfeit.',
+        defaultMessage: 'Firmware authenticity check failed. Your Trezor may be counterfeit.',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM',
         defaultMessage:
-            "Firmware revision check couldn't be performed. Go online to verify your firmware version.",
+            "Firmware authenticity check couldn't be performed. Go online to verify your firmware version.",
     },
     TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR: {
         id: 'TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR',
-        defaultMessage: "Couldn't perform firmware revision check.",
+        defaultMessage: "Couldn't perform firmware authenticity check.",
     },
     TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH: {
         id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH',
@@ -8817,7 +8816,7 @@ export default defineMessages({
     },
     TR_STAKE_UNSTAKING_APPROXIMATE: {
         id: 'TR_STAKE_UNSTAKING_APPROXIMATE',
-        defaultMessage: 'Approximate {symbol} available instantly',
+        defaultMessage: 'Approximate amount of {symbol} available instantly.',
     },
     TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION: {
         id: 'TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION',
@@ -9193,7 +9192,7 @@ export default defineMessages({
     TR_BRIDGE_TIP_AUTOSTART: {
         id: 'TR_BRIDGE_TIP_AUTOSTART',
         defaultMessage:
-            'Tip: Enable the auto-start feature and have Bridge always running in the background.',
+            'Tip: Enable the auto-start feature and have Trezor Bridge always running in the background.',
     },
     TR_BRIDGE_NEEDED_DESCRIPTION: {
         id: 'TR_BRIDGE_NEEDED_DESCRIPTION',
