@@ -1,10 +1,12 @@
 // @group_device-management
 // @retry=2
 
+import { onDeviceCompromisedModal } from '../../../support/pageObjects/deviceCompromisedObject';
+
 describe('Onboarding - create wallet', () => {
     beforeEach(() => {
         cy.task('startBridge');
-        cy.viewport(1920, 1080).resetDb();
+        cy.viewport('macbook-13').resetDb();
         cy.prefixedVisit('/');
     });
 
@@ -15,7 +17,7 @@ describe('Onboarding - create wallet', () => {
         cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2-main' });
 
         // firmware revision check will fail with 2-main version, but we just need to get through onboarding, so it's fine to just dismiss it
-        cy.getTestElement('@device-compromised/back-button').click();
+        onDeviceCompromisedModal.ignoreDeviceCompromisedWarning();
 
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@analytics/continue-button').click();
