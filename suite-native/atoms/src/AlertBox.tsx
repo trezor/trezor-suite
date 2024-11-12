@@ -82,6 +82,7 @@ export type AlertBoxProps = {
     variant: AlertBoxVariant;
     title: ReactNode;
     borderRadius?: NativeRadius | number;
+    contentColor?: Color;
 };
 
 const AlertSpinner = ({ color }: { color: Color }) => {
@@ -92,9 +93,20 @@ const AlertSpinner = ({ color }: { color: Color }) => {
     return <ActivityIndicator size={16} color={colors[color]} />;
 };
 
-export const AlertBox = ({ title, variant = 'info', borderRadius = 'r16' }: AlertBoxProps) => {
+export const AlertBox = ({
+    title,
+    variant = 'info',
+    borderRadius = 'r16',
+    contentColor,
+}: AlertBoxProps) => {
     const { applyStyle } = useNativeStyles();
-    const { contentColor, backgroundColor, borderColor } = variantToColorMap[variant];
+    const {
+        contentColor: defaultContentColor,
+        backgroundColor,
+        borderColor,
+    } = variantToColorMap[variant];
+
+    const color = contentColor ?? defaultContentColor;
 
     return (
         <Box
@@ -105,11 +117,11 @@ export const AlertBox = ({ title, variant = 'info', borderRadius = 'r16' }: Aler
             })}
         >
             {variant === 'loading' ? (
-                <AlertSpinner color={contentColor} />
+                <AlertSpinner color={color} />
             ) : (
-                <Icon name={variantToIconName[variant]} color={contentColor} size="mediumLarge" />
+                <Icon name={variantToIconName[variant]} color={color} size="mediumLarge" />
             )}
-            <Text color={contentColor} variant="label" style={applyStyle(textStyle)}>
+            <Text color={color} variant="label" style={applyStyle(textStyle)}>
                 {title}
             </Text>
         </Box>

@@ -7,7 +7,7 @@ import { Color } from '@trezor/theme';
 import { Text } from './Text';
 import { HStack } from './Stack';
 
-type HintVariant = 'hint' | 'error';
+type HintVariant = 'hint' | 'error' | 'info';
 
 type HintProps = {
     variant?: HintVariant;
@@ -37,6 +37,10 @@ const hintVariants: Record<HintVariant, { iconName: IconName; color: Color }> = 
     error: {
         color: 'textAlertRed',
         iconName: 'warningCircle',
+    },
+    info: {
+        color: 'textAlertBlue',
+        iconName: 'info',
     },
 };
 
