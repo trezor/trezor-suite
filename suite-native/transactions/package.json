@@ -12,10 +12,10 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "6.1.18",
+        "@react-navigation/native": "^7.0.0",
         "@reduxjs/toolkit": "1.9.5",
-        "@shopify/flash-list": "1.7.1",
-        "@shopify/react-native-skia": "1.3.11",
+        "@shopify/flash-list": "^1.7.2",
+        "@shopify/react-native-skia": "^1.5.3",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -39,8 +39,8 @@
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "18.2.0",
-        "react-native": "0.75.2",
-        "react-native-gesture-handler": "2.18.1",
+        "react-native": "^0.76.1",
+        "react-native-gesture-handler": "^2.20.2",
         "react-native-reanimated": "3.16.1",
         "react-redux": "8.0.7"
     }

@@ -13,7 +13,7 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@suite-native/toasts": "workspace:*",
-        "expo-clipboard": "6.0.3",
+        "expo-clipboard": "^7.0.0",
         "react": "18.2.0"
     }
 }

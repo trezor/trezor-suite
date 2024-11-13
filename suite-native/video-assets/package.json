@@ -13,9 +13,9 @@
     },
     "dependencies": {
         "@trezor/styles": "workspace:*",
-        "expo-av": "14.0.7",
+        "expo-av": "^15.0.1",
         "prettier": "^3.3.2",
         "react": "18.2.0",
-        "react-native": "0.75.2"
+        "react-native": "^0.76.1"
     }
 }

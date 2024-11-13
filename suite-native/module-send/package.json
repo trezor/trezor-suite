@@ -11,8 +11,8 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "6.1.18",
-        "@react-navigation/native-stack": "6.11.0",
+        "@react-navigation/native": "^7.0.0",
+        "@react-navigation/native-stack": "^7.0.0",
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
@@ -46,13 +46,13 @@
         "@trezor/theme": "workspace:*",
         "@trezor/transport": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-linear-gradient": "13.0.2",
+        "expo-linear-gradient": "^14.0.1",
         "jotai": "1.9.1",
         "react": "18.2.0",
         "react-hook-form": "^7.53.1",
-        "react-native": "0.75.2",
+        "react-native": "^0.76.1",
         "react-native-reanimated": "3.16.1",
-        "react-native-svg": "15.6.0",
+        "react-native-svg": "^15.9.0",
         "react-redux": "8.0.7",
         "web3-utils": "^4.3.1"
     }

@@ -19,10 +19,10 @@
         "@suite-native/toasts": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "expo-camera": "15.0.15",
-        "expo-image-picker": "15.0.7",
+        "expo-camera": "^16.0.4",
+        "expo-image-picker": "^16.0.1",
         "react": "18.2.0",
-        "react-native": "0.75.2",
+        "react-native": "^0.76.1",
         "react-qr-code": "2.0.12"
     }
 }

@@ -11,9 +11,9 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "6.1.18",
+        "@react-navigation/native": "^7.0.0",
         "@reduxjs/toolkit": "1.9.5",
-        "@sentry/react-native": "5.33.0",
+        "@sentry/react-native": "^5.35.0",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
@@ -30,9 +30,9 @@
         "@suite-native/settings": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "lottie-react-native": "6.7.2",
+        "lottie-react-native": "^7.1.0",
         "react": "18.2.0",
-        "react-native": "0.75.2",
+        "react-native": "^0.76.1",
         "react-native-reanimated": "3.16.1",
         "react-redux": "8.0.7",
         "semver": "^7.6.3"
