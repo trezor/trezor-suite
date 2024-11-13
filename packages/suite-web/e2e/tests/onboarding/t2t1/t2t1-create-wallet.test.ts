@@ -1,23 +1,19 @@
 // @group_device-management
 // @retry=2
 
-import { onDeviceCompromisedModal } from '../../../support/pageObjects/deviceCompromisedObject';
-
 describe('Onboarding - create wallet', () => {
     beforeEach(() => {
         cy.task('startBridge');
         cy.viewport('macbook-13').resetDb();
         cy.prefixedVisit('/');
+        cy.disableFirmwareHashCheck();
     });
 
     it('Success (Shamir backup)', () => {
         // note: this is an example of test that can not be parametrized to be both integration (isolated) test and e2e test.
         // the problem is that it always needs to run the newest possible emulator. If this was pinned to use emulator which is currently
         // in production, and we locally bumped emulator version, we would get into a screen saying "update your firmware" and the test would fail.
-        cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2-main' });
-
-        // firmware revision check will fail with 2-main version, but we just need to get through onboarding, so it's fine to just dismiss it
-        onDeviceCompromisedModal.ignoreDeviceCompromisedWarning();
+        cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2-latest' });
 
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@analytics/continue-button').click();

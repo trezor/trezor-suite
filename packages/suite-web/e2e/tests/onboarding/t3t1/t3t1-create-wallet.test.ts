@@ -3,7 +3,6 @@
 
 import { SeedType } from '../../../support/enums/seedType';
 import { onAnalyticsPage } from '../../../support/pageObjects/analyticsObject';
-import { onDeviceCompromisedModal } from '../../../support/pageObjects/deviceCompromisedObject';
 import { onOnboardingPage } from '../../../support/pageObjects/onboardingObject';
 import { getConfirmActionOnDeviceModal } from '../../../support/utils/selectors';
 
@@ -23,8 +22,7 @@ describe('Onboarding - create wallet', () => {
         cy.viewport('macbook-13').resetDb();
         cy.prefixedVisit('/');
         cy.disableFirmwareHashCheck();
-        cy.task('startEmu', { wipe: true, model: 'T3T1', version: '2-main' });
-        onDeviceCompromisedModal.ignoreDeviceCompromisedWarning();
+        cy.task('startEmu', { wipe: true, model: 'T3T1', version: '2-latest' });
 
         cy.step('Go through analytics', () => {
             onAnalyticsPage.continue();
@@ -34,7 +32,7 @@ describe('Onboarding - create wallet', () => {
 
     it('Success (Shamir backup)', () => {
         cy.step('Go through Device onboarding step', () => {
-            onOnboardingPage.continueFirmware();
+            onOnboardingPage.skipFirmware();
             cy.passThroughAuthenticityCheck();
 
             cy.wait(500);
