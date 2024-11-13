@@ -474,16 +474,16 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
     try {
         method = await methodSynchronize(async () => {
             _log.debug('loading method...');
-            const method = await getMethod(message);
-            _log.debug('method selected', method.name);
+            const method2 = await getMethod(message);
+            _log.debug('method selected', method2.name);
             // bind callbacks
-            method.postMessage = sendCoreMessage;
-            method.createUiPromise = uiPromises.create;
+            method2.postMessage = sendCoreMessage;
+            method2.createUiPromise = uiPromises.create;
             // start validation process
-            method.init();
-            await method.initAsync?.();
+            method2.init();
+            await method2.initAsync?.();
 
-            return method;
+            return method2;
         });
         resolveWaitForFirstMethod();
         callMethods.push(method);

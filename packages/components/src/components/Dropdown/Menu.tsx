@@ -273,11 +273,11 @@ const getNextIndex =
                 nextIndex = getPrevIndex(nextIndex);
             }
         } else if (keyboardKey === 'ArrowDown') {
-            const getNextIndex = (current: number) => (current < lastIndex ? current + 1 : 0);
-            nextIndex = getNextIndex(nextIndex);
+            const getNextIndex2 = (current: number) => (current < lastIndex ? current + 1 : 0);
+            nextIndex = getNextIndex2(nextIndex);
             // skip disabled items
             while (flatGroupItems[nextIndex].isDisabled) {
-                nextIndex = getNextIndex(nextIndex);
+                nextIndex = getNextIndex2(nextIndex);
             }
         }
 

@@ -52,9 +52,9 @@ rootPaths.forEach(dir => {
     }
 
     [inlineScriptPath, usbPermissionsScriptPath, usbPermissionsHtmlPath, contentScriptPath].forEach(
-        path => {
-            if (fs.existsSync(path)) {
-                fs.rmSync(path);
+        path2 => {
+            if (fs.existsSync(path2)) {
+                fs.rmSync(path2);
             }
         },
     );
@@ -117,9 +117,9 @@ rootPaths.forEach(dir => {
 
             const replaced = contents.replace(DEFAULT_SRC, trezorConnectSrc);
 
-            fs.writeFile(path.join(rootPath, buildFolder, p), replaced, 'utf-8', err => {
-                if (err) {
-                    console.log(err);
+            fs.writeFile(path.join(rootPath, buildFolder, p), replaced, 'utf-8', err2 => {
+                if (err2) {
+                    console.log(err2);
 
                     return;
                 }

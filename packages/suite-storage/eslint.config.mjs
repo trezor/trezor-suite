@@ -5,6 +5,7 @@ export default [
     {
         rules: {
             'import/no-default-export': 'off',
+            '@typescript-eslint/no-shadow': 'off', // Todo: shall be fixed
         },
     },
 ];

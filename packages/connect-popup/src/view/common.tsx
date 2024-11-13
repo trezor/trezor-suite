@@ -34,10 +34,10 @@ export const createTooltip = (text: string) => {
 
 export const clearLegacyView = () => {
     // clear and hide legacy views
-    const container = document.getElementById('container');
-    if (container) {
-        container.innerHTML = '';
-        container.style.display = 'none';
+    const container2 = document.getElementById('container');
+    if (container2) {
+        container2.innerHTML = '';
+        container2.style.display = 'none';
     }
 };
 
@@ -107,9 +107,9 @@ export const initMessageChannelWithIframe = async (
     const handshakeLoader = (api: Pick<MessagePort, 'addEventListener' | 'removeEventListener'>) =>
         Promise.race([
             new Promise<boolean>(resolve => {
-                api.addEventListener('message', function handler(event) {
+                api.addEventListener('message', function messageHandler(event) {
                     if (event.data.type === POPUP.HANDSHAKE) {
-                        api.removeEventListener('message', handler);
+                        api.removeEventListener('message', messageHandler);
                         resolve(true);
                     }
                 });

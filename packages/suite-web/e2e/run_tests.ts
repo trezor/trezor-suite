@@ -18,12 +18,12 @@ const { argv } = yargs(process.argv.slice(2)).options({
     group: { type: 'string' },
 });
 
-const getGrepCommand = (word = '', args = '-rlIw', path = TEST_DIR) =>
+const getGrepCommand = (word = '', args = '-rlIw', path2 = TEST_DIR) =>
     // -r, recursive search on subdirectories
     // -I, ignore binary
     // -l, only names of files to stdout/return
     // -w, expression is searched for as a word
-    [args, word, path];
+    [args, word, path2];
 
 /**
  * get value of labels, for example there is
@@ -31,8 +31,8 @@ const getGrepCommand = (word = '', args = '-rlIw', path = TEST_DIR) =>
  * grepForValue('@retry', './tests/backup.test.ts');
  * will return 3
  */
-const grepForValue = (word: string, path: string) => {
-    const command = getGrepCommand(word, '-rIw', path);
+const grepForValue = (word: string, path2: string) => {
+    const command = getGrepCommand(word, '-rIw', path2);
     const res = child_process.spawnSync('grep', command, {
         encoding: 'utf-8',
     });

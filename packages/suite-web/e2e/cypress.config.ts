@@ -176,7 +176,7 @@ export default defineConfig({
                     return Promise.resolve(true);
                 },
                 readDir: dir => fs.readdirSync(dir, { encoding: 'utf-8' }),
-                readFile: path => fs.readFileSync(path, { encoding: 'utf-8' }),
+                readFile: path2 => fs.readFileSync(path2, { encoding: 'utf-8' }),
                 rmDir: (opts: {
                     recursive: fs.RmDirOptions['recursive'];
                     dir: string;

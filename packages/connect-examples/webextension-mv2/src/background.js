@@ -38,10 +38,10 @@ chrome.runtime.onMessage.addListener((message, sender) => {
     const { type, data } = message;
     if (type === 'getAddress') {
         getAddress().then(response => {
-            const message = response.success
+            const message2 = response.success
                 ? `BTC Address: ${response.payload.address}`
                 : `Error: ${response.payload.error}`;
-            sendMessageToContentScript(tab.id, 'getAddress', message);
+            sendMessageToContentScript(tab.id, 'getAddress', message2);
         });
     } else if (type === 'pageLoaded') {
         loadTrezorConnect().then(() => {

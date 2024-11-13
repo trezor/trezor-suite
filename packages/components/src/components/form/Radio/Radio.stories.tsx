@@ -71,7 +71,7 @@ export const RadioButtonGroup: StoryObj = {
         // eslint-disable-next-line
         const [{ option }, updateArgs] = useArgs();
 
-        const setOption = (option: string) => updateArgs({ option });
+        const setOption = (option2: string) => updateArgs({ option: option2 });
 
         return (
             <Wrapper>

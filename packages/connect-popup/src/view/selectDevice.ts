@@ -58,6 +58,7 @@ const initWebUsbButton = (showLoader: boolean) => {
                 filters: TREZOR_USB_DESCRIPTORS,
             });
 
+            // eslint-disable-next-line @typescript-eslint/no-shadow
             const { iframe, core } = getState();
 
             if (iframe) {

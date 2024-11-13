@@ -152,9 +152,9 @@ export const Dropdown = forwardRef(
             }
         }, [isToggled, content]);
 
-        const setToggled = (isToggled: boolean) => {
-            if (onToggle) onToggle(isToggled);
-            setIsToggledState(isToggled);
+        const setToggled = (isToggled2: boolean) => {
+            if (onToggle) onToggle(isToggled2);
+            setIsToggledState(isToggled2);
         };
 
         useImperativeHandle(ref, () => ({

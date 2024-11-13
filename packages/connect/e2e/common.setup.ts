@@ -37,6 +37,7 @@ type Options = {
     wiped?: boolean;
 };
 export const setup = async (
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     TrezorUserEnvLink: TrezorUserEnvLinkClass,
     options?: Partial<Options>,
 ) => {
@@ -86,6 +87,7 @@ export const setup = async (
 };
 
 export const initTrezorConnect = async (
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     TrezorUserEnvLink: TrezorUserEnvLinkClass,
     options?: Partial<Parameters<typeof TrezorConnect.init>[0]>,
 ) => {

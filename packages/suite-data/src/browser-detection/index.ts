@@ -196,8 +196,8 @@ window.addEventListener('load', () => {
 
         // browser-detection styles are removed because they should not be available and used in app
         // styles.css gets id="browser-detection-style" on its <style> tag due to "style-loader" configuration in webpack
-        const style = document.getElementById('browser-detection-style');
-        style?.parentNode?.removeChild(style);
+        const style2 = document.getElementById('browser-detection-style');
+        style2?.parentNode?.removeChild(style2);
 
         const appDiv = document.createElement('div');
         appDiv.id = 'app';

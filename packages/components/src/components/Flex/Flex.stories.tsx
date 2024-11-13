@@ -92,9 +92,9 @@ const meta: Meta = {
 export default meta;
 
 export const Row: StoryObj<FlexProps> = {
-    render: args => (
+    render: rowArgs => (
         <Container>
-            <RowComponent {...args} />
+            <RowComponent {...rowArgs} />
         </Container>
     ),
     args,
@@ -102,9 +102,9 @@ export const Row: StoryObj<FlexProps> = {
 };
 
 export const Column: StoryObj<FlexProps> = {
-    render: args => (
+    render: columnArgs => (
         <Container>
-            <ColumnComponent {...args} />
+            <ColumnComponent {...columnArgs} />
         </Container>
     ),
     args,

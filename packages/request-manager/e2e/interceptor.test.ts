@@ -6,7 +6,7 @@ import { TorController, createInterceptor } from '../src';
 import { torRunner } from './torRunner';
 import { TorIdentities } from '../src/torIdentities';
 
-const host = '127.0.0.1';
+const hostIp = '127.0.0.1';
 const port = 38835;
 const controlPort = 35527;
 const processId = process.pid;
@@ -29,7 +29,7 @@ describe('Interceptor', () => {
     let torController: TorController;
     let torIdentities: TorIdentities;
 
-    const torSettings = { running: true, host, port, snowflakeBinaryPath };
+    const torSettings = { running: true, host: hostIp, port, snowflakeBinaryPath };
 
     const INTERCEPTOR = {
         handler: () => {},
@@ -37,11 +37,11 @@ describe('Interceptor', () => {
     };
 
     beforeAll(async () => {
-        // Callback in in createInterceptor should return true in order for the request to use Tor.
+        // Callback in createInterceptor should return true in order for the request to use Tor.
         torIdentities = createInterceptor(INTERCEPTOR).torIdentities;
         // Starting Tor controller to make sure that Tor is running.
         torController = new TorController({
-            host,
+            host: hostIp,
             port,
             controlPort,
             torDataDir,

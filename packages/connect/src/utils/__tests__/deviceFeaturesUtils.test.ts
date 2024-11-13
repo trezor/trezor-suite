@@ -124,9 +124,9 @@ describe('utils/deviceFeaturesUtils', () => {
         featT2B1.capabilities = parseCapabilities(featT2B1);
 
         it('default T1B1', () => {
-            const coins = getAllNetworks();
+            const coins2 = getAllNetworks();
 
-            expect(getUnavailableCapabilities(featT1B1, coins)).toEqual({
+            expect(getUnavailableCapabilities(featT1B1, coins2)).toEqual({
                 ada: 'no-support',
                 tada: 'no-support',
                 bnb: 'update-required',
@@ -165,9 +165,9 @@ describe('utils/deviceFeaturesUtils', () => {
         });
 
         it('default T2T1', () => {
-            const coins = getAllNetworks();
+            const coins2 = getAllNetworks();
 
-            expect(getUnavailableCapabilities(featT2T1, coins)).toEqual({
+            expect(getUnavailableCapabilities(featT2T1, coins2)).toEqual({
                 replaceTransaction: 'update-required',
                 amountUnit: 'update-required',
                 bnb: 'update-required',
@@ -192,9 +192,9 @@ describe('utils/deviceFeaturesUtils', () => {
         });
 
         it('default T2B1', () => {
-            const coins = getAllNetworks();
+            const coins2 = getAllNetworks();
 
-            expect(getUnavailableCapabilities(featT2B1, coins)).toEqual({
+            expect(getUnavailableCapabilities(featT2B1, coins2)).toEqual({
                 breeze: 'no-support',
                 btg: 'no-support',
                 tbtg: 'no-support',
@@ -238,6 +238,7 @@ describe('utils/deviceFeaturesUtils', () => {
                     },
                 }));
 
+                // eslint-disable-next-line @typescript-eslint/no-shadow
                 import('../deviceFeaturesUtils').then(({ getUnavailableCapabilities }) => {
                     // added new capability
                     expect(getUnavailableCapabilities(featT2T1, coins)).toEqual({
@@ -263,6 +264,7 @@ describe('utils/deviceFeaturesUtils', () => {
                     },
                 }));
 
+                // eslint-disable-next-line @typescript-eslint/no-shadow
                 import('../deviceFeaturesUtils').then(({ getUnavailableCapabilities }) => {
                     // added new capability
                     expect(getUnavailableCapabilities(featT2T1, coins)).toEqual({

@@ -152,8 +152,8 @@ describe('Coinmarket buy', () => {
                         // Test provider
                         cy.wrap($el)
                             .find('[data-testid="@coinmarket/offers/quote/provider"]')
-                            .then($el => {
-                                const text = $el.text();
+                            .then($el2 => {
+                                const text = $el2.text();
 
                                 expect(exchangeProvider).to.include(text);
                             });

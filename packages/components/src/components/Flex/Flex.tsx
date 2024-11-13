@@ -164,6 +164,7 @@ export const Flex = ({
     children,
     direction = 'row',
     flex = 'initial',
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     flexWrap = 'nowrap',
     order,
     isReversed = false,

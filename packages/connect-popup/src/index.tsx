@@ -520,8 +520,8 @@ const initCoreInIframe = async (payload: PopupInit['payload']) => {
 };
 
 // handle POPUP.HANDSHAKE message from iframe or npm-client
-const handshake = (handshake: PopupHandshake, origin: string) => {
-    const { payload, ...handshakeRest } = handshake;
+const handshake = (handshake2: PopupHandshake, origin: string) => {
+    const { payload, ...handshakeRest } = handshake2;
     log.debug('handshake with origin: ', origin, 'payload: ', payload);
 
     if (!payload) return;
@@ -551,7 +551,7 @@ const handshake = (handshake: PopupHandshake, origin: string) => {
         const core = ensureCore();
         core.handleMessage(handshakeRest);
     }
-    reactEventBus.dispatch({ type: 'state-update', payload: handshake.payload });
+    reactEventBus.dispatch({ type: 'state-update', payload: handshake2.payload });
 
     log.debug('handshake done');
 };

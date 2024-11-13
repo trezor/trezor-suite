@@ -96,8 +96,8 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
         deviceBackup,
     } = props;
     const submit = useCallback(
-        (value: string, passphraseOnDevice?: boolean) => {
-            onSubmit(value, passphraseOnDevice);
+        (value2: string, passphraseOnDevice?: boolean) => {
+            onSubmit(value2, passphraseOnDevice);
         },
         [onSubmit],
     );

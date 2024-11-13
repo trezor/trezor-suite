@@ -61,9 +61,9 @@ async function setCustomConfigAsync(config, androidManifest) {
 }
 
 module.exports = config =>
-    withAndroidManifest(config, async config => {
+    withAndroidManifest(config, async config2 => {
         // Modifiers can be async, but try to keep them fast.
-        config.modResults = await setCustomConfigAsync(config, config.modResults);
+        config2.modResults = await setCustomConfigAsync(config2, config2.modResults);
 
-        return config;
+        return config2;
     });

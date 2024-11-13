@@ -24,17 +24,17 @@ const info: UdevInfo = {
 export const getUdevInfo = () => info;
 
 export const suggestUdevInstaller = (platform?: string) => {
-    const info = getUdevInfo();
+    const info2 = getUdevInfo();
     // check if preferred field was already added
-    if (!info.packages.find(p => p.preferred)) {
+    if (!info2.packages.find(p => p.preferred)) {
         if (platform) {
             // override UdevInfo packages, add preferred field
-            info.packages = info.packages.map(p => ({
+            info2.packages = info2.packages.map(p => ({
                 ...p,
                 preferred: p.platform.indexOf(platform) >= 0,
             }));
         }
     }
 
-    return info;
+    return info2;
 };
