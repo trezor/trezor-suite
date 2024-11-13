@@ -5,22 +5,6 @@ export const typescriptConfig = [
     {
         rules: {
             // Additional rules
-            '@typescript-eslint/no-unused-vars': [
-                'error',
-                {
-                    vars: 'all',
-                    args: 'none',
-                    ignoreRestSiblings: true,
-                    varsIgnorePattern: '^_',
-                },
-            ],
-            '@typescript-eslint/no-shadow': [
-                'off',
-                {
-                    builtinGlobals: false,
-                    allow: ['_', 'error', 'resolve', 'reject', 'fetch'],
-                },
-            ],
             '@typescript-eslint/no-use-before-define': ['error'],
             '@typescript-eslint/no-restricted-imports': [
                 'error',
@@ -32,6 +16,15 @@ export const typescriptConfig = [
 
             // Additions from "plugin:@typescript-eslint/strict" (we may turn this on one day as a whole)
             '@typescript-eslint/no-useless-constructor': ['error'],
+            '@typescript-eslint/no-unused-vars': [
+                'error',
+                {
+                    vars: 'all',
+                    args: 'none',
+                    ignoreRestSiblings: true,
+                    varsIgnorePattern: '^_',
+                },
+            ],
 
             // Offs
             '@typescript-eslint/no-require-imports': 'off', // We just use require a lot (mostly for dynamic imports)
