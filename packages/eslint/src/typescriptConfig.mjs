@@ -2,6 +2,15 @@ import tseslint from 'typescript-eslint';
 
 export const typescriptConfig = [
     ...tseslint.configs.recommended,
+    ...tseslint.configs.recommendedTypeChecked,
+    {
+        languageOptions: {
+            parserOptions: {
+                projectService: true,
+                tsconfigRootDir: import.meta.dirname,
+            },
+        },
+    },
     {
         rules: {
             // Additional rules
