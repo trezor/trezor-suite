@@ -8,3 +8,4 @@ cypress-image-snapshot
 cypress-real-events
 @currents/playwright
 @types/cypress-image-snapshot
+eslint-plugin-cypress

@@ -11968,6 +11968,7 @@ __metadata:
     cypress-file-upload: "npm:^5.0.8"
     cypress-image-snapshot: "npm:^4.0.1"
     cypress-real-events: "npm:^1.11.0"
+    eslint-plugin-cypress: "npm:^4.1.0"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
     react-helmet-async: "npm:^2.0.4"
@@ -21433,6 +21434,17 @@ __metadata:
   peerDependencies:
     eslint: ">=3.0.0"
   checksum: 10/459c0162b606d290bc6b10caa7bd7b67a3ce3d37d98ee1b9b91646842553d7282887858efd20cb6a6b8cbaa42746e83258244a32bce0e1d038ebe5559e747730
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-cypress@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "eslint-plugin-cypress@npm:4.1.0"
+  dependencies:
+    globals: "npm:^15.11.0"
+  peerDependencies:
+    eslint: ">=9"
+  checksum: 10/50d3650e70410bf1924e88695532fa532c9823210f8791ac0bc0d05f451e6199c7ba3323b90c4753122de3f1bdfc3140bea33c772a2f827c92d4d412606bd5fe
   languageName: node
   linkType: hard
 

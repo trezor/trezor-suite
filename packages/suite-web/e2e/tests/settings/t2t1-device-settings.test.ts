@@ -47,7 +47,8 @@ describe('T2T1 - Device settings', () => {
 
         // change device's name
         cy.log(`-> Filling in ${newDeviceName} as new trezor's name.`);
-        cy.getTestElement('@settings/device/label-input').clear().type(newDeviceName);
+        cy.getTestElement('@settings/device/label-input').clear();
+        cy.getTestElement('@settings/device/label-input').type(newDeviceName);
         cy.getTestElement(editNameBtn).should('be.enabled');
         cy.getTestElement(editNameBtn).click();
         cy.getConfirmActionOnDeviceModal();
@@ -60,7 +61,8 @@ describe('T2T1 - Device settings', () => {
 
         // change display rotation
         cy.log('change display rotation');
-        cy.getTestElement('select-bar/90').click().getConfirmActionOnDeviceModal();
+        cy.getTestElement('select-bar/90').click();
+        cy.getConfirmActionOnDeviceModal();
         cy.task('pressYes');
         cy.getConfirmActionOnDeviceModal().should('not.exist');
     });

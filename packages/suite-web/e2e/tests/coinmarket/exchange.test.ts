@@ -75,7 +75,8 @@ describe.skip('Coinmarket exchange', () => {
 
         // Custom fee setup
         cy.getTestElement('select-bar/custom').click();
-        cy.getTestElement('feePerUnit').clear().type('1');
+        cy.getTestElement('feePerUnit').clear();
+        cy.getTestElement('feePerUnit').type('1');
         cy.getTestElement('@coinmarket/exchange/compare-button').click();
 
         // Verifies the offers displayed match the mock

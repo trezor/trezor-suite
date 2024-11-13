@@ -40,8 +40,8 @@ describe('LTC send form with mocked blockbook', () => {
                 cy.getTestElement('@settings/wallet/network/btc').click();
                 cy.getTestElement('@settings/wallet/network/ltc', { timeout: 30000 })
                     .should('exist')
-                    .click()
-                    .trigger('mouseover');
+                    .click();
+                cy.getTestElement('@settings/wallet/network/ltc').trigger('mouseover');
                 cy.getTestElement('@settings/wallet/network/ltc/advance').click();
                 cy.getTestElement('@modal').should('exist');
                 cy.getTestElement('@settings/advance/select-type/input').click();

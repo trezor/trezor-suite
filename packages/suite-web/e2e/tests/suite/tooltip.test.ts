@@ -42,20 +42,16 @@ describe.skip('Test tooltip conditional rendering', () => {
         cy.getTestElement('@switch-device/wallet-on-index/0/toggle-remember-switch').click({
             force: true,
         });
-        cy.getTestElement('@switch-device/add-hidden-wallet-button')
-            .trigger('mouseenter')
-            .getTestElement('@tooltip')
-            .should('not.exist');
+        cy.getTestElement('@switch-device/add-hidden-wallet-button').trigger('mouseenter');
+        cy.getTestElement('@tooltip').should('not.exist');
 
         // Tooltip should render if device is disconnected
         cy.task('stopEmu');
         cy.task('stopBridge');
-        cy.getTestElement('@deviceStatus-disconnected', { timeout: 20000 })
-            .getTestElement('@switch-device/add-hidden-wallet-button')
-            .trigger('mouseenter', {
-                force: true,
-            })
-            .getTestElement('@tooltip')
-            .should('exist');
+        cy.getTestElement('@deviceStatus-disconnected', { timeout: 20000 });
+        cy.getTestElement('@switch-device/add-hidden-wallet-button').trigger('mouseenter', {
+            force: true,
+        });
+        cy.getTestElement('@tooltip').should('exist');
     });
 });

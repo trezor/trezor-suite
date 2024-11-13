@@ -47,6 +47,7 @@ export const eslint = [
     ...jestConfig,
     ...localRulesConfig,
     ...chaiFriendlyConfig,
+
     jsxA11y.flatConfigs.recommended,
 
     // Tests
