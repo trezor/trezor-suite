@@ -9,7 +9,8 @@
         "type-check": "yarn g:tsc --build",
         "dev": "yarn g:rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
         "build:popup": "TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
-        "build": "yarn g:rimraf build && yarn workspace @trezor/connect-popup build:popup",
+        "build": "yarn g:rimraf build && yarn core:popup && yarn workspace @trezor/connect-popup build:popup",
+        "core:popup": "PROJECT=\"popup\" yarn workspace @trezor/connect-iframe build:core-module",
         "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
         "test:unit": "yarn g:jest"
     },
