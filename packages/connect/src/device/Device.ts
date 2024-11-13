@@ -516,16 +516,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
             await this.releasePromise;
         }
 
-        const { staticSessionId, deriveCardano } = this.getState() || {};
-        if (
-            !this.isUsedHere() ||
-            this.commands?.disposed ||
-            !staticSessionId ||
-            (!deriveCardano && options.useCardanoDerivation)
-        ) {
+        const acquireNeeded = !this.isUsedHere() || this.commands?.disposed;
+        if (acquireNeeded) {
             // acquire session
             await this.acquire();
+        }
 
+        const { staticSessionId, deriveCardano } = this.getState() || {};
+        if (acquireNeeded || !staticSessionId || (!deriveCardano && options.useCardanoDerivation)) {
             // update features
             try {
                 if (fn) {
