@@ -7,14 +7,13 @@ import {
     isDeviceAcquired,
     isDeviceWithButtons,
 } from '@suite-common/suite-utils';
-import { H2, H3, Paragraph, Image, NewModal, Card, List } from '@trezor/components';
+import { Card, H2, H3, Image, List, NewModal, Paragraph } from '@trezor/components';
 import { pickByDeviceModel } from '@trezor/device-utils';
 import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import { SelectWordCount, SelectRecoveryType } from 'src/components/recovery';
-import { Loading, Translation, CheckItem } from 'src/components/suite';
-import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
+import { SelectRecoveryType, SelectWordCount } from 'src/components/recovery';
+import { CheckItem, Loading, Translation } from 'src/components/suite';
 import {
     checkSeed,
     setAdvancedRecovery,
@@ -26,6 +25,10 @@ import type { ForegroundAppProps } from 'src/types/suite';
 import type { WordCount } from 'src/types/recovery';
 import messages from 'src/support/messages';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { MODAL } from 'src/actions/suite/constants';
+
+import { T1B1InputStep } from './steps/T1B1InputStep';
+import { EnterOnDeviceStep } from './steps/EnterOnDeviceStep';
 
 export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const recovery = useSelector(state => state.recovery);
@@ -164,18 +167,16 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 );
             case 'in-progress':
             case 'waiting-for-confirmation':
-                return modal.context !== '@modal/context-none' ? (
-                    <>
-                        {device.features.capabilities.includes('Capability_PassphraseEntry') && (
-                            <Paragraph>
-                                <Translation id="TR_ENTER_SEED_WORDS_ON_DEVICE" />
-                            </Paragraph>
-                        )}
-                        <ReduxModal {...modal} />
-                    </>
+                if (modal.context !== MODAL.CONTEXT_DEVICE) {
+                    return <Loading />;
+                }
+
+                return device.features.capabilities.includes('Capability_PassphraseEntry') ? (
+                    <EnterOnDeviceStep />
                 ) : (
-                    <Loading />
+                    <T1B1InputStep />
                 );
+
             case 'finished':
                 return !hasError ? (
                     <>
