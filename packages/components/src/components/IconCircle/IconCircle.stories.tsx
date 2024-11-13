@@ -9,7 +9,7 @@ import {
     IconCircleProps,
     allowedIconCircleFrameProps,
 } from './IconCircle';
-import { iconCircleVariants } from './types';
+import { iconCircleVariants, iconCirclePaddingTypes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta = {
@@ -22,6 +22,7 @@ export const IconCircle: StoryObj = {
     args: {
         variant: 'primary',
         name: 'butterfly',
+        paddingType: 'large',
         size: 40,
         hasBorder: true,
         ...getFramePropsStory(allowedIconCircleFrameProps).args,
@@ -37,6 +38,12 @@ export const IconCircle: StoryObj = {
             control: {
                 type: 'number',
             },
+        },
+        paddingType: {
+            control: {
+                type: 'select',
+            },
+            options: iconCirclePaddingTypes,
         },
         hasBorder: {
             control: {

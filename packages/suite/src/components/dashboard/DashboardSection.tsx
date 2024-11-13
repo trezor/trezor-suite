@@ -1,38 +1,31 @@
 import { Ref, forwardRef, ReactElement, HTMLAttributes } from 'react';
 
-import styled from 'styled-components';
+import { H3, Column, Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { H3 } from '@trezor/components';
-
-const Wrapper = styled.section`
-    display: flex;
-    flex-direction: column;
-`;
-const Header = styled.header`
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 25px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Title = styled(H3)`
-    display: flex;
-    align-items: center;
-`;
-
-interface DashboardSectionProps extends HTMLAttributes<HTMLDivElement> {
+type DashboardSectionProps = HTMLAttributes<HTMLDivElement> & {
     heading: ReactElement;
     actions?: ReactElement;
-}
+    'data-testid'?: string;
+};
 
 export const DashboardSection = forwardRef(
-    ({ heading, actions, children, ...rest }: DashboardSectionProps, ref: Ref<HTMLDivElement>) => (
-        <Wrapper {...rest} ref={ref}>
-            <Header>
-                {heading && <Title>{heading}</Title>}
-                {actions && <div>{actions}</div>}
-            </Header>
-            {children}
-        </Wrapper>
+    (
+        { heading, actions, children, 'data-testid': dataTestId, ...rest }: DashboardSectionProps,
+        ref: Ref<HTMLDivElement>,
+    ) => (
+        <div ref={ref} {...rest}>
+            <Column alignItems="normal" data-testid={dataTestId}>
+                <Row as="header" justifyContent="space-between" margin={{ bottom: spacings.lg }}>
+                    {heading && (
+                        <H3>
+                            <Row as="span">{heading}</Row>
+                        </H3>
+                    )}
+                    {actions && <div>{actions}</div>}
+                </Row>
+                {children}
+            </Column>
+        </div>
     ),
 );

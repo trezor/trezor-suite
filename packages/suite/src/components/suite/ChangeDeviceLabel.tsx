@@ -81,7 +81,6 @@ export const ChangeDeviceLabel = ({
                 inputState={error ? 'error' : undefined}
                 onChange={handleChange}
                 data-testid="@settings/device/label-input"
-                hasBottomPadding={false}
                 size={isVertical ? 'small' : 'large'}
             />
             <Button

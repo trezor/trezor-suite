@@ -162,7 +162,6 @@ export const CustomFee = <TFieldValues extends FormState>({
                         name={FEE_LIMIT}
                         data-testid={FEE_LIMIT}
                         onChange={changeFeeLimit}
-                        hasBottomPadding={false}
                         bottomText={
                             feeLimitError?.message ? (
                                 <InputError
@@ -188,7 +187,6 @@ export const CustomFee = <TFieldValues extends FormState>({
                     name={FEE_PER_UNIT}
                     data-testid={FEE_PER_UNIT}
                     rules={feeRules}
-                    hasBottomPadding={false}
                     bottomText={feePerUnitError?.message || null}
                 />
             </Grid>

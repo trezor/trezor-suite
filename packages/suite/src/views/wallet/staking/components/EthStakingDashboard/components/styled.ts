@@ -1,56 +1,5 @@
 import styled from 'styled-components';
 
-import { Paragraph, variables } from '@trezor/components';
-import { borders, spacingsPx } from '@trezor/theme';
-
-export const CardBottomContent = styled.div`
-    margin-top: ${spacingsPx.lg};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-export const AccentP = styled(Paragraph)`
-    color: ${({ theme }) => theme.textDefault};
-    font-size: ${variables.FONT_SIZE.H2};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-export const GreyP = styled(Paragraph)`
-    color: ${({ theme }) => theme.textSubdued};
-    font-size: ${variables.FONT_SIZE.SMALL};
-`;
-
-export const InfoBox = styled.div`
-    margin: -10px -10px ${spacingsPx.md} -10px;
-    padding: 6px;
-    border: 1px solid ${({ theme }) => theme.borderElevation2};
-    border-radius: ${borders.radii.md};
-    position: relative;
-
-    &::after {
-        content: '';
-        display: block;
-        position: absolute;
-        bottom: -6px;
-        left: 12px;
-        background-color: ${({ theme }) => theme.backgroundSurfaceElevation1};
-        height: 14px;
-        width: 16px;
-        clip-path: polygon(100% 50%, 0 50%, 50% 100%);
-    }
-
-    &::before {
-        content: '';
-        display: block;
-        position: absolute;
-        bottom: -7px;
-        left: 12px;
-        background-color: ${({ theme }) => theme.borderElevation2};
-        height: 14px;
-        width: 16px;
-        clip-path: polygon(100% 50%, 0 50%, 50% 100%);
-    }
-`;
-
 export const ProgressBar = styled.div<{
     $rewards?: number;
     $unstaking?: number;

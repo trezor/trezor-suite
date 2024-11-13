@@ -12,16 +12,17 @@ import {
 } from '../../utils/frameProps';
 import { TextPropsKeys, TextProps } from '../typography/utils';
 import { TransientProps } from '../../utils/transientProps';
-import { FlexDirection, Flex } from '../Flex/Flex';
+import { FlexDirection, Flex, Row } from '../Flex/Flex';
+import { IconName, Icon } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 
 export const allowedInfoRowTextProps = ['typographyStyle'] as const satisfies TextPropsKeys[];
-type AllowedInfoRowTextProps = Pick<TextProps, (typeof allowedInfoRowTextProps)[number]>;
+type AllowedTextProps = Pick<TextProps, (typeof allowedInfoRowTextProps)[number]>;
 
 export const allowedInfoRowFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedInfoRowFrameProps)[number]>;
 
-type ContainerProps = TransientProps<AllowedFrameProps & AllowedInfoRowTextProps>;
+type ContainerProps = TransientProps<AllowedFrameProps & AllowedTextProps>;
 
 const Container = styled.div<ContainerProps>`
     width: 100%;
@@ -30,9 +31,10 @@ const Container = styled.div<ContainerProps>`
 `;
 
 export type InfoRowProps = AllowedFrameProps &
-    AllowedInfoRowTextProps & {
+    AllowedTextProps & {
         children?: ReactNode;
         direction?: FlexDirection;
+        iconName?: IconName;
         label: ReactNode;
         labelTypographyStyle?: TypographyStyle;
     };
@@ -41,6 +43,7 @@ export const InfoRow = ({
     children,
     label,
     direction = 'column',
+    iconName,
     typographyStyle = 'body',
     labelTypographyStyle = 'hint',
     ...rest
@@ -54,11 +57,14 @@ export const InfoRow = ({
                 direction={direction}
                 alignItems={isRow ? 'center' : 'stretch'}
                 justifyContent={isRow ? 'space-between' : undefined}
-                gap={isRow ? spacings.md : spacings.xxs}
+                gap={isRow ? spacings.md : spacings.xxxs}
             >
-                <Text variant="tertiary" typographyStyle={labelTypographyStyle} as="div">
-                    {label}
-                </Text>
+                <Row gap={spacings.xxs}>
+                    {iconName && <Icon name={iconName} size="medium" variant="tertiary" />}
+                    <Text variant="tertiary" typographyStyle={labelTypographyStyle} as="div">
+                        {label}
+                    </Text>
+                </Row>
                 <Text as="div" typographyStyle={typographyStyle} align={isRow ? 'right' : 'left'}>
                     {children}
                 </Text>

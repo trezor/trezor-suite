@@ -1,30 +1,23 @@
-import { useTheme } from 'styled-components';
-
-import { Card, Column, Icon } from '@trezor/components';
+import { Card, Column, Icon, Paragraph } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-
-import { AccentP, CardBottomContent, GreyP } from './styled';
 
 interface ApyCardProps {
     apy: number;
 }
 
-export const ApyCard = ({ apy }: ApyCardProps) => {
-    const theme = useTheme();
+export const ApyCard = ({ apy }: ApyCardProps) => (
+    <Card paddingType="small" flex="1">
+        <Column alignItems="flex-start" flex="1" gap={spacings.lg}>
+            <Icon name="percent" variant="tertiary" />
 
-    return (
-        <Card paddingType="small">
-            <Column alignItems="flex-start">
-                <Icon name="percent" color={theme.iconSubdued} />
-
-                <CardBottomContent>
-                    <AccentP>{`${apy}%`}</AccentP>
-                    <GreyP>
-                        <Translation id="TR_STAKE_APY" />
-                    </GreyP>
-                </CardBottomContent>
+            <Column alignItems="normal" margin={{ top: 'auto' }}>
+                <Paragraph typographyStyle="titleMedium">{`${apy}%`}</Paragraph>
+                <Paragraph typographyStyle="hint" variant="tertiary">
+                    <Translation id="TR_STAKE_APY" />
+                </Paragraph>
             </Column>
-        </Card>
-    );
-};
+        </Column>
+    </Card>
+);

@@ -1773,7 +1773,7 @@
   "TR_STAKE_STAKING_PROCESS": "ステークの手順",
   "TR_STAKE_START_STAKING": "ステーキングを開始",
   "TR_STAKE_TIME_TO_CLAIM": "請求の時期",
-  "TR_STAKE_TOTAL_PENDING": "保留中のステーク合計:",
+  "TR_STAKE_TOTAL_PENDING": "保留中のステーク合計",
   "TR_STAKE_TREZOR_NO_LIABILITY": "ステーキングの際、お客様の資金の安全に対する責任は、お客様のTrezorからEverstakeに移行します。",
   "TR_STAKE_UNSTAKE": "ステーク解除",
   "TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM": "ステークが解除され、請求の準備ができています",

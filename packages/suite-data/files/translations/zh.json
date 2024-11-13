@@ -1773,7 +1773,7 @@
   "TR_STAKE_STAKING_PROCESS": "质押过程",
   "TR_STAKE_START_STAKING": "开始质押",
   "TR_STAKE_TIME_TO_CLAIM": "认领奖励时间",
-  "TR_STAKE_TOTAL_PENDING": "总共待处理的质押: ",
+  "TR_STAKE_TOTAL_PENDING": "总共待处理的质押",
   "TR_STAKE_TREZOR_NO_LIABILITY": "在质押时、您的资金安全责任将从您的 Trezor 设备转移到 Everstake。",
   "TR_STAKE_UNSTAKE": "解除质押",
   "TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM": "解除质押、随时可认领",

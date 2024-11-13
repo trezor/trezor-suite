@@ -351,7 +351,6 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
                                 })}
                                 onChange={onPassphraseChange}
                                 value={displayValue}
-                                hasBottomPadding={false}
                                 innerRef={ref}
                                 bottomText={
                                     isTooLong ? (

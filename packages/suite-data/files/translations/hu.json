@@ -1747,7 +1747,7 @@
   "TR_STAKE_STAKING_PROCESS": "Stake-elési folyamat",
   "TR_STAKE_START_STAKING": "Stake-elés megkezdése",
   "TR_STAKE_TIME_TO_CLAIM": "Idő az igénylésre",
-  "TR_STAKE_TOTAL_PENDING": "Teljes stake függőben:",
+  "TR_STAKE_TOTAL_PENDING": "Teljes stake függőben",
   "TR_STAKE_TREZOR_NO_LIABILITY": "A Trezor nem vállal felelősséget az <t>Everstake biztonsági garanciáiért. A Trezor nem kezeli a stake-elt pénzed biztonságát.</t>",
   "TR_STAKE_UNSTAKE": "Stake feloldása",
   "TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM": "Stake feloldva és készen áll az igénylésre",

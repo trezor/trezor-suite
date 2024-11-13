@@ -2,8 +2,18 @@ import styled from 'styled-components';
 
 import { ExclusiveColorOrVariant, Icon, IconName, IconSize, getIconSize } from '../Icon/Icon';
 import { TransientProps } from '../../utils/transientProps';
-import { IconCircleExclusiveColorOrVariant, IconCircleVariant, IconCircleColors } from './types';
-import { mapVariantToIconBackground, mapVariantToIconBorderColor } from './utils';
+import {
+    IconCircleExclusiveColorOrVariant,
+    IconCircleVariant,
+    IconCircleColors,
+    IconCirclePaddingType,
+} from './types';
+import {
+    mapVariantToIconBackground,
+    mapVariantToIconBorderColor,
+    mapPaddingTypeToPadding,
+    mapPaddingTypeToBorderWidth,
+} from './utils';
 import {
     FrameProps,
     FramePropsKeys,
@@ -19,16 +29,18 @@ type IconCircleWrapperProps = TransientProps<
 > & {
     $size: number;
     $hasBorder: boolean;
+    $paddingType: IconCirclePaddingType;
 };
 
 const IconCircleWrapper = styled.div<IconCircleWrapperProps>`
     width: ${({ $size }) => $size}px;
     background: ${mapVariantToIconBackground};
-    padding: ${({ $size }) => $size * 0.75}px;
+    padding: ${mapPaddingTypeToPadding};
     border-radius: 50%;
-    box-shadow: inset 0 0 0 ${({ $hasBorder, $size }) => ($hasBorder ? $size / 4 : 0)}px
-        ${mapVariantToIconBorderColor};
+    box-shadow: inset 0 0 0 ${mapPaddingTypeToBorderWidth} ${mapVariantToIconBorderColor};
     box-sizing: content-box;
+
+    ${({ $hasBorder }) => !$hasBorder && 'box-shadow: none;'}
 
     ${withFrameProps}
 `;
@@ -36,6 +48,7 @@ const IconCircleWrapper = styled.div<IconCircleWrapperProps>`
 export type IconCircleProps = {
     name: IconName;
     size: IconSize | number;
+    paddingType?: IconCirclePaddingType;
     hasBorder?: boolean;
 } & IconCircleExclusiveColorOrVariant &
     AllowedFrameProps;
@@ -44,6 +57,7 @@ export const IconCircle = ({
     name,
     size,
     hasBorder = true,
+    paddingType = 'large',
     iconColor,
     variant,
     ...rest
@@ -62,6 +76,7 @@ export const IconCircle = ({
     return (
         <IconCircleWrapper
             $size={iconSize}
+            $paddingType={paddingType}
             $hasBorder={hasBorder}
             {...wrapperColorOrVariant}
             {...frameProps}

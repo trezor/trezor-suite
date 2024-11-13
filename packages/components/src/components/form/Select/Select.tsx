@@ -15,8 +15,8 @@ import {
     nextElevation,
 } from '@trezor/theme';
 
-import { INPUT_HEIGHTS, LABEL_TRANSFORM, Label, baseInputStyle } from '../InputStyles';
-import { InputSize } from '../inputTypes';
+import { INPUT_HEIGHTS, LABEL_TRANSFORM, Label, baseInputStyle } from '../styles';
+import { InputSize } from '../types';
 import {
     FormCell,
     FormCellProps,
@@ -280,7 +280,6 @@ export type SelectProps = KeyPressScrollProps &
         isClean?: boolean;
         label?: ReactNode;
         size?: InputSize;
-        hasBottomPadding?: boolean;
         minValueWidth?: string;
         isMenuOpen?: boolean;
         isLoading?: boolean;
@@ -292,7 +291,6 @@ export const Select = ({
     isClean = false,
     label,
     size = 'large',
-    hasBottomPadding = true,
     useKeyPressScroll,
     isSearchable = false,
     minValueWidth = 'initial',
@@ -300,18 +298,17 @@ export const Select = ({
     components,
     onChange,
     placeholder,
-    isDisabled = false,
     isLoading = false,
     'data-testid': dataTest,
-    ...props
+    ...rest
 }: SelectProps) => {
     const selectRef = useRef<SelectInstance<Option, boolean>>(null);
     const { elevation } = useElevation();
     const theme = useTheme();
     const onKeyDown = useOnKeyDown(selectRef, useKeyPressScroll);
     const menuPortalTarget = useDetectPortalTarget(selectRef);
-    const formCellProps = pickFormCellProps(props);
-
+    const formCellProps = pickFormCellProps(rest);
+    const { isDisabled } = formCellProps;
     const isRenderedInModal = menuPortalTarget !== null;
 
     const handleOnChange = useCallback<Required<ReactSelectProps>['onChange']>(
@@ -349,7 +346,7 @@ export const Select = ({
     );
 
     return (
-        <FormCell {...formCellProps} isDisabled={isDisabled}>
+        <FormCell {...formCellProps}>
             <SelectWrapper
                 $isClean={isClean}
                 $elevation={elevation}
@@ -374,10 +371,10 @@ export const Select = ({
                     onChange={handleOnChange}
                     isSearchable={isSearchable}
                     menuIsOpen={isMenuOpen}
-                    isDisabled={isDisabled}
+                    isDisabled={isDisabled ?? false}
                     menuPlacement="auto"
                     placeholder={placeholder || ''}
-                    {...props}
+                    {...rest}
                     components={memoizedComponents}
                 />
 

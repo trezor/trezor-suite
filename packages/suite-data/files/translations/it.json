@@ -1773,7 +1773,7 @@
   "TR_STAKE_STAKING_PROCESS": "Processo di staking",
   "TR_STAKE_START_STAKING": "Inizia a fare staking",
   "TR_STAKE_TIME_TO_CLAIM": "Tempo per la richiesta",
-  "TR_STAKE_TOTAL_PENDING": "Totale staking in sospeso:",
+  "TR_STAKE_TOTAL_PENDING": "Totale staking in sospeso",
   "TR_STAKE_TREZOR_NO_LIABILITY": "Quando si effettua lo staking, la responsabilità della sicurezza delle transazioni relative ai fondi passa da Trezor a Everstake.",
   "TR_STAKE_UNSTAKE": "Esegui unstaking",
   "TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM": "Non più in staking e richiedibili",

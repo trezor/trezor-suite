@@ -108,7 +108,6 @@ export const TorSnowflake = () => {
                         placeholder=""
                         inputState={error ? 'error' : undefined}
                         onChange={handleChange}
-                        hasBottomPadding={false}
                         size="small"
                     />
                     <Button

@@ -1,25 +1,17 @@
 import { useMemo } from 'react';
 
-import styled from 'styled-components';
-
-import { variables } from '@trezor/components';
+import { Paragraph, Column } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 
 import { ProgressLabelData } from '../components/ProgressLabels/types';
 
-const DaysToAddToPool = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    line-height: 12px;
-`;
-
-interface UseProgressLabelsData {
+type UseProgressLabelsData = {
     daysToAddToPool?: number;
     isDaysToAddToPoolShown: boolean;
     isStakeConfirming: boolean;
     isStakePending: boolean;
-}
+};
 
 export const useProgressLabelsData = ({
     daysToAddToPool,
@@ -51,10 +43,10 @@ export const useProgressLabelsData = ({
                     return 'stale';
                 })(),
                 children: (
-                    <div>
+                    <Column alignItems="normal">
                         <Translation id="TR_STAKE_ADDING_TO_POOL" />
                         {isDaysToAddToPoolShown && (
-                            <DaysToAddToPool>
+                            <Paragraph typographyStyle="label" variant="tertiary">
                                 ~
                                 <Translation
                                     id="TR_STAKE_DAYS"
@@ -62,9 +54,9 @@ export const useProgressLabelsData = ({
                                         count: daysToAddToPool,
                                     }}
                                 />
-                            </DaysToAddToPool>
+                            </Paragraph>
                         )}
-                    </div>
+                    </Column>
                 ),
             },
             {

@@ -6,14 +6,8 @@ import styled from 'styled-components';
 import { spacingsPx, spacings, typography } from '@trezor/theme';
 
 import { Icon } from '../../Icon/Icon';
-import {
-    baseInputStyle,
-    INPUT_HEIGHTS,
-    BaseInputProps,
-    Label,
-    LABEL_TRANSFORM,
-} from '../InputStyles';
-import { InputSize } from '../inputTypes';
+import { baseInputStyle, INPUT_HEIGHTS, BaseInputProps, Label, LABEL_TRANSFORM } from '../styles';
+import { InputSize } from '../types';
 import {
     FormCell,
     FormCellProps,
@@ -77,7 +71,7 @@ const InputWrapper = styled.div`
 const getInputAddonPadding = (size: InputSize) =>
     size === 'small' ? spacingsPx.sm : spacingsPx.md;
 
-const InputAddon = styled.div<{ $align: innerAddonAlignment; $size: InputSize }>`
+const InputAddon = styled.div<{ $align: InnerAddonAlignment; $size: InputSize }>`
     position: absolute;
     inset: 0 ${({ $align, $size }) => ($align === 'right' ? getInputAddonPadding($size) : 'auto')} 0
         ${({ $align, $size }) => ($align === 'left' ? getInputAddonPadding($size) : 'auto')};
@@ -94,9 +88,11 @@ const InputLabel = styled(Label)`
     }
 `;
 
-type innerAddonAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
+type InnerAddonAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
 
-export type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> &
+type InputHTMLProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>;
+
+export type InputProps = InputHTMLProps &
     AllowedFrameProps &
     AllowedTextProps &
     Omit<FormCellProps, 'children'> & {
@@ -106,8 +102,7 @@ export type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> &
         innerAddon?: ReactElement;
         size?: InputSize;
         'data-testid'?: string;
-        innerAddonAlign?: innerAddonAlignment;
-        hasBottomPadding?: boolean;
+        innerAddonAlign?: InnerAddonAlignment;
         /**
          * @description the clear button replaces the addon on the right side
          */
@@ -118,7 +113,6 @@ export type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> &
 const Input = ({
     value,
     innerRef,
-    inputState,
     label,
     innerAddon,
     innerAddonAlign = 'right',
@@ -126,15 +120,21 @@ const Input = ({
     'data-testid': dataTest,
     showClearButton,
     placeholder,
-    isDisabled,
     onClear,
-    hasBottomPadding = true,
     ...rest
 }: InputProps) => {
     const [isHovered, setIsHovered] = useState(false);
     const { elevation } = useElevation();
     const textProps = pickAndPrepareTextProps(rest, allowedInputTextProps);
     const formCellProps = pickFormCellProps(rest);
+    const { isDisabled, inputState } = formCellProps;
+    const inputProps = Object.entries(rest).reduce((props, [propKey, propValue]) => {
+        if (!(propKey in formCellProps) && !(propKey in textProps)) {
+            props[propKey as keyof InputHTMLProps] = propValue;
+        }
+
+        return props;
+    }, {} as InputHTMLProps);
 
     const hasShowClearButton =
         (showClearButton === 'always' || (showClearButton === 'hover' && isHovered)) &&
@@ -145,7 +145,7 @@ const Input = ({
     const [measureRightAddon, { width: rightAddonWidth }] = useMeasure<HTMLDivElement>();
 
     return (
-        <FormCell {...formCellProps} isDisabled={isDisabled} inputState={inputState}>
+        <FormCell {...formCellProps}>
             <InputWrapper
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
@@ -174,7 +174,7 @@ const Input = ({
                     autoCapitalize="off"
                     spellCheck={false}
                     $inputState={inputState}
-                    disabled={isDisabled}
+                    disabled={isDisabled ?? false}
                     $size={size}
                     ref={innerRef}
                     data-lpignore="true"
@@ -184,7 +184,7 @@ const Input = ({
                     placeholder={placeholder || ''} // needed for uncontrolled inputs
                     data-testid={dataTest}
                     {...textProps}
-                    {...rest}
+                    {...inputProps}
                 />
 
                 {label && (

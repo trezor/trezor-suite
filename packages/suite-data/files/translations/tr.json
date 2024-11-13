@@ -1773,7 +1773,7 @@
   "TR_STAKE_STAKING_PROCESS": "Stake etme süreci",
   "TR_STAKE_START_STAKING": "Stake etmeye başla",
   "TR_STAKE_TIME_TO_CLAIM": "Talep etme zamanı",
-  "TR_STAKE_TOTAL_PENDING": "Toplam stake beklemede:",
+  "TR_STAKE_TOTAL_PENDING": "Toplam stake beklemede",
   "TR_STAKE_TREZOR_NO_LIABILITY": "Stake işlemi sırasında, fonlarınızın güvenliğine ilişkin sorumluluk Trezor'unuzdan Everstake'e geçer.",
   "TR_STAKE_UNSTAKE": "Unstake et",
   "TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM": "Unstake edildi ve talep etmeye hazır",

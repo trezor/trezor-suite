@@ -1,17 +1,9 @@
 import { useCallback, useState } from 'react';
 
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
-import {
-    Input,
-    Button,
-    IconButton,
-    getInputStateTextColor,
-    Icon,
-    Link,
-    Row,
-} from '@trezor/components';
+import { Input, Button, IconButton, Icon, Link, Row } from '@trezor/components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 import * as URLS from '@trezor/urls';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -97,7 +89,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const options = getDefaultValue('options', []);
     const broadcastEnabled = options.includes('broadcast');
     const isOnline = useSelector(state => state.suite.online);
-    const theme = useTheme();
     const getInputErrorState = () => {
         if (hasAddressChecksummed) {
             return 'primary';
@@ -325,7 +316,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     const getBottomTextIconComponent = () => {
         if (hasAddressChecksummed) {
-            return <Icon name="check" size="medium" color={theme.iconDisabled} />;
+            return <Icon name="check" size="medium" variant="disabled" />;
         }
 
         if (isAddressWithLabel) {
@@ -333,13 +324,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         }
 
         if (addressError) {
-            return (
-                <Icon
-                    name="warningCircle"
-                    size="medium"
-                    color={getInputStateTextColor('error', theme)}
-                />
-            );
+            return <Icon name="warningCircle" size="medium" variant="destructive" />;
         }
 
         return undefined;

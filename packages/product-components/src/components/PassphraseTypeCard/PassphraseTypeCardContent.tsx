@@ -150,7 +150,6 @@ export const PassphraseTypeCardContent = ({
                                     })}
                                     onChange={onPassphraseChange}
                                     value={displayValue}
-                                    hasBottomPadding={false}
                                     innerRef={innerRef}
                                     bottomText={
                                         isPassphraseTooLong ? (

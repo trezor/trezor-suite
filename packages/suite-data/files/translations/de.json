@@ -1773,7 +1773,7 @@
   "TR_STAKE_STAKING_PROCESS": "Staking-Prozess",
   "TR_STAKE_START_STAKING": "Staking beginnen",
   "TR_STAKE_TIME_TO_CLAIM": "Zeit für einen Anspruch",
-  "TR_STAKE_TOTAL_PENDING": "Ausstehendes Staking insgesamt:",
+  "TR_STAKE_TOTAL_PENDING": "Ausstehendes Staking insgesamt",
   "TR_STAKE_TREZOR_NO_LIABILITY": "Beim Staking wird die Verantwortung für die Sicherheit deiner Assets von Trezor auf Everstake übertragen.",
   "TR_STAKE_UNSTAKE": "Unstaking",
   "TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM": "Anspruchsberechtigung bei Unstaking",

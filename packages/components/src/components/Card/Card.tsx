@@ -25,6 +25,7 @@ export const allowedCardFrameProps = [
     'minHeight',
     'maxHeight',
     'overflow',
+    'flex',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedCardFrameProps)[number]>;
 

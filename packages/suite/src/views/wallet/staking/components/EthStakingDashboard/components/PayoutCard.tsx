@@ -1,17 +1,14 @@
 import { useMemo } from 'react';
 
-import { useTheme } from 'styled-components';
-
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { Card, Column, Icon } from '@trezor/components';
+import { Card, Column, Icon, Paragraph } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { BACKUP_REWARD_PAYOUT_DAYS } from '@suite-common/wallet-constants';
 import { getAccountAutocompoundBalance } from '@suite-common/wallet-utils';
 
 import { Translation } from 'src/components/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useSelector } from 'src/hooks/suite';
-
-import { AccentP, CardBottomContent, GreyP } from './styled';
 
 interface PayoutCardProps {
     nextRewardPayout?: number | null;
@@ -24,7 +21,6 @@ export const PayoutCard = ({
     daysToAddToPool,
     validatorWithdrawTime,
 }: PayoutCardProps) => {
-    const theme = useTheme();
     const selectedAccount = useSelector(selectSelectedAccount);
 
     const autocompoundBalance = getAccountAutocompoundBalance(selectedAccount);
@@ -41,12 +37,12 @@ export const PayoutCard = ({
     }, [autocompoundBalance, daysToAddToPool, nextRewardPayout, validatorWithdrawTime]);
 
     return (
-        <Card paddingType="small">
-            <Column alignItems="flex-start">
-                <Icon name="calendar" color={theme.iconSubdued} />
+        <Card paddingType="small" flex="1">
+            <Column alignItems="flex-start" flex="1" gap={spacings.lg}>
+                <Icon name="calendar" variant="tertiary" />
 
-                <CardBottomContent>
-                    <AccentP>
+                <Column alignItems="normal" margin={{ top: 'auto' }}>
+                    <Paragraph typographyStyle="titleMedium">
                         {payout === undefined ? (
                             <Translation
                                 id="TR_STAKE_MAX_REWARD_DAYS"
@@ -55,11 +51,11 @@ export const PayoutCard = ({
                         ) : (
                             <Translation id="TR_STAKE_DAYS" values={{ count: payout }} />
                         )}
-                    </AccentP>
-                    <GreyP>
+                    </Paragraph>
+                    <Paragraph typographyStyle="hint" variant="tertiary">
                         <Translation id="TR_STAKE_NEXT_PAYOUT" />
-                    </GreyP>
-                </CardBottomContent>
+                    </Paragraph>
+                </Column>
             </Column>
         </Card>
     );

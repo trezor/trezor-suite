@@ -129,7 +129,6 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
             rules={cryptoInputRules}
             maxLength={formInputsMaxLength.amount}
             bottomText={cryptoInputError?.message || null}
-            hasBottomPadding={false}
             innerAddon={
                 <>
                     {coinmarketGetAccountLabel(

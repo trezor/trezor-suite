@@ -104,7 +104,6 @@ export const CoinmarketFormInputFiat = <TFieldValues extends CoinmarketAllFormPr
             maxLength={formInputsMaxLength.amount}
             bottomText={fiatInputError?.message ?? cryptoInputError?.message ?? null}
             innerAddon={<CoinmarketFormInputCurrency width={100} />}
-            hasBottomPadding={false}
             data-testid="@coinmarket/form/fiat-input"
         />
     );

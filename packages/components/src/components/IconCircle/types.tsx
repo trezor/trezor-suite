@@ -1,6 +1,6 @@
 import { CSSColor } from '@trezor/theme';
 
-import { UIVariant } from '../../config/types';
+import { UIVariant, UISize } from '../../config/types';
 
 export const iconCircleVariants = [
     'primary',
@@ -17,3 +17,6 @@ export type IconCircleColors = { foreground: CSSColor; background: CSSColor };
 export type IconCircleExclusiveColorOrVariant =
     | { variant?: IconCircleVariant; iconColor?: undefined }
     | { variant?: undefined; iconColor?: IconCircleColors };
+
+export const iconCirclePaddingTypes = ['small', 'medium', 'large'] as const;
+export type IconCirclePaddingType = Extract<UISize, (typeof iconCirclePaddingTypes)[number]>;

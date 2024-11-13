@@ -85,10 +85,5 @@ export const Textarea: StoryObj<TextareaProps> = {
             },
         },
         inputState: { control: 'select', options: ['error', 'warning', 'primary'] },
-        hasBottomPadding: {
-            control: {
-                type: 'boolean',
-            },
-        },
     },
 };

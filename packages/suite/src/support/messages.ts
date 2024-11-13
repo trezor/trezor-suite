@@ -8911,7 +8911,7 @@ const messages = defineMessagesWithTypeCheck({
     },
     TR_STAKE_TOTAL_PENDING: {
         id: 'TR_STAKE_TOTAL_PENDING',
-        defaultMessage: 'Total stake pending:',
+        defaultMessage: 'Total stake pending',
     },
     TR_STAKE_UNSTAKING: {
         id: 'TR_STAKE_UNSTAKING',

@@ -1,84 +1,78 @@
-import styled, { useTheme } from 'styled-components';
-
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { Badge, Button, Card, Icon, Row, Tooltip, variables } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import {
+    Badge,
+    Button,
+    Card,
+    Icon,
+    Row,
+    Grid,
+    Column,
+    Tooltip,
+    InfoRow,
+    Paragraph,
+    IconName,
+    useMediaQuery,
+    variables,
+} from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { selectAccountStakeTransactions } from '@suite-common/wallet-core';
 import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
 
-import { FiatValue, Translation } from 'src/components/suite';
+import { FiatValue, Translation, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
-import { InfoBox, ProgressBar } from './styled';
+import { ProgressBar } from './styled';
 import { ProgressLabels } from './ProgressLabels/ProgressLabels';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
-import { TrimmedCryptoAmount } from './TrimmedCryptoAmount';
 
-const AmountsWrapper = styled.div<{ $isStakeOrUnstakePending: boolean }>`
-    display: flex;
-    gap: ${spacingsPx.sm} ${spacingsPx.xs};
-    flex-wrap: wrap;
-    justify-content: ${({ $isStakeOrUnstakePending }) =>
-        $isStakeOrUnstakePending ? 'space-between' : 'flex-start'};
+type ItemProps = {
+    label: React.ReactNode;
+    iconName: IconName;
+    symbol: string;
+    cryptoAmount: string;
+    fiatAmount: string;
+    isReward?: boolean;
+    'data-testid': string;
+};
 
-    & > div {
-        margin-right: ${({ $isStakeOrUnstakePending }) =>
-            $isStakeOrUnstakePending ? '0' : 'auto'};
-    }
-`;
+const Item = ({
+    label,
+    symbol,
+    cryptoAmount,
+    fiatAmount,
+    iconName,
+    isReward = false,
+    'data-testid': dataTestId,
+}: ItemProps) => (
+    <InfoRow label={label} iconName={iconName}>
+        <Paragraph typographyStyle="titleSmall" variant={isReward ? 'primary' : 'default'}>
+            <FormattedCryptoAmount data-testid={dataTestId} value={cryptoAmount} symbol={symbol} />
+        </Paragraph>
+        <Paragraph typographyStyle="hint" variant="tertiary">
+            <FiatValue amount={fiatAmount} symbol={symbol} showApproximationIndicator>
+                {({ value }) => (value ? <span>{value}</span> : null)}
+            </FiatValue>
+        </Paragraph>
+    </InfoRow>
+);
 
-const AmountHeading = styled.div`
-    display: flex;
-    gap: ${spacingsPx.xxs};
-    align-items: center;
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-const StyledFiatValue = styled(FiatValue)`
-    display: block;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-const ProgressBarWrapper = styled.div`
-    margin-top: ${spacingsPx.xxxl};
-`;
-
-const ButtonsWrapper = styled.div`
-    margin-top: 66px;
-    display: flex;
-    gap: ${spacingsPx.xs};
-    flex-wrap: wrap;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button).attrs(props => ({
-    ...props,
-    variant: 'tertiary',
-    type: 'button',
-}))`
-    padding: 9px 22px;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-`;
-
-interface StakingCardProps {
+type StakingCardProps = {
     isValidatorsQueueLoading?: boolean;
     daysToAddToPool?: number;
     daysToUnstake?: number;
-}
+};
 
 export const StakingCard = ({
     isValidatorsQueueLoading,
     daysToAddToPool,
     daysToUnstake,
 }: StakingCardProps) => {
-    const theme = useTheme();
     const selectedAccount = useSelector(selectSelectedAccount);
+    const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
 
     const {
         isStakingDisabled,
@@ -140,134 +134,92 @@ export const StakingCard = ({
 
     return (
         <Card>
-            {(isStakeConfirming || isTxStatusShown) && (
-                <InfoBox>
+            <Column flex="1" alignItems="normal" gap={spacings.xxxxl}>
+                {(isStakeConfirming || isTxStatusShown) && (
                     <ProgressLabels labels={progressLabelsData} />
-                </InfoBox>
-            )}
-
-            <AmountsWrapper $isStakeOrUnstakePending={isPendingUnstakeShown || isStakePending}>
-                {isStakePending && (
-                    <div>
-                        <AmountHeading>
-                            <Icon name="spinner" size={16} />
-                            <Translation id="TR_STAKE_TOTAL_PENDING" />
-                        </AmountHeading>
-
-                        <TrimmedCryptoAmount
-                            data-testid="@account/staking/pending"
-                            value={totalPendingStakeBalance}
-                            symbol={selectedAccount?.symbol}
-                        />
-
-                        <StyledFiatValue
-                            amount={totalPendingStakeBalance}
-                            symbol={selectedAccount?.symbol}
-                            showApproximationIndicator
-                        >
-                            {({ value }) => (value ? <span>{value}</span> : null)}
-                        </StyledFiatValue>
-                    </div>
                 )}
 
-                <div>
-                    <AmountHeading>
-                        <Icon name="lock" size={16} />
-                        <Translation id="TR_STAKE_STAKE" />
-                    </AmountHeading>
+                <Grid columns={isBelowLaptop ? 1 : 2} gap={spacings.xxl}>
+                    {isStakePending && (
+                        <Item
+                            label={<Translation id="TR_STAKE_TOTAL_PENDING" />}
+                            iconName="spinnerGap"
+                            symbol={selectedAccount?.symbol}
+                            cryptoAmount={totalPendingStakeBalance}
+                            fiatAmount={totalPendingStakeBalance}
+                            data-testid="@account/staking/pending"
+                        />
+                    )}
 
-                    <TrimmedCryptoAmount
+                    <Item
+                        label={<Translation id="TR_STAKE_STAKE" />}
+                        iconName="lock"
+                        symbol={selectedAccount?.symbol}
+                        cryptoAmount={depositedBalance}
+                        fiatAmount={depositedBalance}
                         data-testid="@account/staking/staked"
-                        value={depositedBalance}
-                        symbol={selectedAccount?.symbol}
                     />
 
-                    <StyledFiatValue
-                        amount={depositedBalance}
-                        symbol={selectedAccount?.symbol}
-                        showApproximationIndicator
-                    >
-                        {({ value }) => (value ? <span>{value}</span> : null)}
-                    </StyledFiatValue>
-                </div>
-
-                <div>
-                    <AmountHeading>
-                        <Icon name="plusCircle" size={16} />
-                        <Translation id="TR_STAKE_REWARDS" />
-                        <Tooltip
-                            maxWidth={250}
-                            content={
-                                <Translation
-                                    id="TR_STAKE_ETH_REWARDS_EARN_APY"
-                                    values={{ symbol: selectedAccount?.symbol?.toUpperCase() }}
-                                />
-                            }
-                        >
-                            <Badge variant="primary" size="small">
-                                <Row gap={spacings.xxs} alignItems="center">
-                                    <Translation id="TR_STAKE_RESTAKED_BADGE" />
-                                    <Icon name="info" size={spacings.sm} variant="primary" />
-                                </Row>
-                            </Badge>
-                        </Tooltip>
-                    </AmountHeading>
-
-                    <TrimmedCryptoAmount
-                        data-testid="@account/staking/rewards"
-                        value={restakedReward}
-                        symbol={selectedAccount?.symbol}
-                        isRewards
-                    />
-
-                    <StyledFiatValue
-                        amount={restakedReward}
-                        symbol={selectedAccount?.symbol}
-                        showApproximationIndicator
-                    >
-                        {({ value }) => (value ? <span>{value}</span> : null)}
-                    </StyledFiatValue>
-                </div>
-
-                {isPendingUnstakeShown && (
-                    <div>
-                        <AmountHeading>
-                            <Icon name="spinner" size={18} color={theme.iconSubdued} />
-                            <span>
-                                <Translation id="TR_STAKE_UNSTAKING" />{' '}
-                                {isDaysToUnstakeShown && (
-                                    <>
-                                        (~
+                    <Item
+                        label={
+                            <Row gap={spacings.xs}>
+                                <Translation id="TR_STAKE_REWARDS" />
+                                <Tooltip
+                                    maxWidth={250}
+                                    content={
                                         <Translation
-                                            id="TR_STAKE_DAYS"
+                                            id="TR_STAKE_ETH_REWARDS_EARN_APY"
                                             values={{
-                                                count: daysToUnstake,
+                                                symbol: selectedAccount?.symbol?.toUpperCase(),
                                             }}
                                         />
-                                        )
-                                    </>
-                                )}
-                            </span>
-                        </AmountHeading>
+                                    }
+                                >
+                                    <Badge variant="primary" size="small">
+                                        <Row gap={spacings.xxs} alignItems="center">
+                                            <Translation id="TR_STAKE_RESTAKED_BADGE" />
+                                            <Icon name="info" size="small" variant="primary" />
+                                        </Row>
+                                    </Badge>
+                                </Tooltip>
+                            </Row>
+                        }
+                        iconName="plusCircle"
+                        isReward
+                        cryptoAmount={restakedReward}
+                        fiatAmount={restakedReward}
+                        data-testid="@account/staking/rewards"
+                        symbol={selectedAccount?.symbol}
+                    />
 
-                        <TrimmedCryptoAmount
+                    {isPendingUnstakeShown && (
+                        <Item
+                            label={
+                                <>
+                                    <Translation id="TR_STAKE_UNSTAKING" />{' '}
+                                    {isDaysToUnstakeShown && (
+                                        <>
+                                            (~
+                                            <Translation
+                                                id="TR_STAKE_DAYS"
+                                                values={{
+                                                    count: daysToUnstake,
+                                                }}
+                                            />
+                                            )
+                                        </>
+                                    )}
+                                </>
+                            }
+                            iconName="spinnerGap"
+                            symbol={selectedAccount?.symbol}
+                            cryptoAmount={withdrawTotalAmount}
+                            fiatAmount={withdrawTotalAmount}
                             data-testid="@account/staking/unstaking"
-                            value={withdrawTotalAmount}
-                            symbol={selectedAccount?.symbol}
                         />
+                    )}
+                </Grid>
 
-                        <StyledFiatValue
-                            amount={withdrawTotalAmount}
-                            symbol={selectedAccount?.symbol}
-                            showApproximationIndicator
-                        >
-                            {({ value }) => (value ? <span>{value}</span> : null)}
-                        </StyledFiatValue>
-                    </div>
-                )}
-            </AmountsWrapper>
-
-            <ProgressBarWrapper>
                 <ProgressBar
                     $rewards={Number(restakedReward)}
                     $unstaking={Number(withdrawTotalAmount)}
@@ -278,28 +230,30 @@ export const StakingCard = ({
                     }
                     $isPendingUnstakeShown={isPendingUnstakeShown}
                 />
-            </ProgressBarWrapper>
 
-            <ButtonsWrapper>
-                <Tooltip content={stakingMessageContent}>
-                    <StyledButton
-                        onClick={openStakeModal}
-                        isDisabled={isStakingDisabled}
-                        icon={isStakingDisabled ? 'info' : undefined}
-                    >
-                        <Translation id="TR_STAKE_STAKE_MORE" />
-                    </StyledButton>
-                </Tooltip>
-                <Tooltip content={unstakingMessageContent}>
-                    <StyledButton
-                        isDisabled={!canUnstake || isUnstakingDisabled}
-                        onClick={openUnstakeModal}
-                        icon={isUnstakingDisabled ? 'info' : undefined}
-                    >
-                        <Translation id="TR_STAKE_UNSTAKE_TO_CLAIM" />
-                    </StyledButton>
-                </Tooltip>
-            </ButtonsWrapper>
+                <Row margin={{ top: 'auto' }} gap={spacings.xs}>
+                    <Tooltip content={stakingMessageContent}>
+                        <Button
+                            onClick={openStakeModal}
+                            isDisabled={isStakingDisabled}
+                            icon={isStakingDisabled ? 'info' : undefined}
+                            variant="tertiary"
+                        >
+                            <Translation id="TR_STAKE_STAKE_MORE" />
+                        </Button>
+                    </Tooltip>
+                    <Tooltip content={unstakingMessageContent}>
+                        <Button
+                            isDisabled={!canUnstake || isUnstakingDisabled}
+                            onClick={openUnstakeModal}
+                            icon={isUnstakingDisabled ? 'info' : undefined}
+                            variant="tertiary"
+                        >
+                            <Translation id="TR_STAKE_UNSTAKE_TO_CLAIM" />
+                        </Button>
+                    </Tooltip>
+                </Row>
+            </Column>
         </Card>
     );
 };

@@ -134,7 +134,6 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                 bottomText={error || null}
                 inputState={getInputState()}
                 onChange={onChange}
-                hasBottomPadding={false}
             />
         </Modal>
     );

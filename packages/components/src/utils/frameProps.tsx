@@ -3,6 +3,7 @@ import { css } from 'styled-components';
 import { SpacingValues } from '@trezor/theme';
 
 import { makePropsTransient, TransientProps } from './transientProps';
+import type { Flex } from '../components/Flex/Flex';
 
 type Margin = {
     top?: SpacingValues | 'auto';
@@ -41,6 +42,7 @@ export type FrameProps = {
     maxHeight?: string | number;
     overflow?: Overflow;
     pointerEvents?: PointerEvent;
+    flex?: Flex;
 };
 export type FramePropsKeys = keyof FrameProps;
 
@@ -67,6 +69,7 @@ export const withFrameProps = ({
     $maxHeight,
     $overflow,
     $pointerEvents,
+    $flex,
 }: TransientFrameProps) => {
     return css`
         ${$margin &&
@@ -109,6 +112,10 @@ export const withFrameProps = ({
         css`
             pointer-events: ${$pointerEvents};
         `};
+        ${$flex &&
+        css`
+            flex: ${$flex};
+        `};
     `;
 };
 
@@ -124,6 +131,7 @@ const getStorybookType = (key: FramePropsKeys) => {
         case 'height':
         case 'maxWidth':
         case 'maxHeight':
+        case 'flex':
             return {
                 control: {
                     type: 'text',
@@ -185,6 +193,7 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
             ...(allowedFrameProps.includes('maxWidth') ? { maxWidth: undefined } : {}),
             ...(allowedFrameProps.includes('maxHeight') ? { maxHeight: undefined } : {}),
             ...(allowedFrameProps.includes('overflow') ? { overflow: undefined } : {}),
+            ...(allowedFrameProps.includes('overflow') ? { flex: undefined } : {}),
             ...(allowedFrameProps.includes('pointerEvents') ? { pointerEvents: undefined } : {}),
         },
         argTypes,

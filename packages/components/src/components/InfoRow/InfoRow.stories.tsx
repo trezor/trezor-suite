@@ -10,6 +10,7 @@ import {
 import { flexDirection } from '../Flex/Flex';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { getTextPropsStory } from '../typography/utils';
+import { variables } from '../../config';
 
 const meta: Meta = {
     title: 'InfoRow',
@@ -38,6 +39,16 @@ export const InfoRow: StoryObj = {
         label: {
             control: {
                 type: 'text',
+            },
+        },
+        iconName: {
+            options: ['none', ...variables.ICONS],
+            mapping: {
+                ...variables.ICONS,
+                none: undefined,
+            },
+            control: {
+                type: 'select',
             },
         },
         ...getFramePropsStory(allowedInfoRowFrameProps).argTypes,

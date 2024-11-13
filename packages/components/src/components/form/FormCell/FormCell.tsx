@@ -11,7 +11,7 @@ import {
     withFrameProps,
 } from '../../../utils/frameProps';
 import { Column } from '../../Flex/Flex';
-import { InputState } from '../inputTypes';
+import { InputState } from '../types';
 import { TopAddons } from '../TopAddons';
 import { BottomText } from '../BottomText';
 import { IconName } from '../../Icon/Icon';

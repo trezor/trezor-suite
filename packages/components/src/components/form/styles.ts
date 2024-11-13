@@ -9,7 +9,7 @@ import {
 } from '@trezor/theme';
 
 import { FONT_WEIGHT, FONT_SIZE } from '../../config/variables';
-import { InputState, InputSize } from './inputTypes';
+import { InputState, InputSize } from './types';
 import { motionEasingStrings } from '../../config/motion';
 
 export const INPUT_HEIGHTS: Record<InputSize, number> = {
@@ -18,17 +18,6 @@ export const INPUT_HEIGHTS: Record<InputSize, number> = {
 };
 
 export const INPUT_BORDER_WIDTH = Number.parseFloat(borders.widths.large);
-
-export const getInputStateTextColor = (state: InputState | undefined, theme: DefaultTheme) => {
-    switch (state) {
-        case 'warning':
-            return theme.textAlertYellow;
-        case 'error':
-            return theme.textAlertRed;
-        default:
-            return theme.textSubdued;
-    }
-};
 
 export const getInputStateBorderColor = (state: InputState | undefined, theme: DefaultTheme) => {
     switch (state) {

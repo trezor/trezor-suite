@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { spacingsPx, Elevation } from '@trezor/theme';
 
-import { InputState } from '../inputTypes';
+import { InputState } from '../types';
 import {
     baseInputStyle,
     InputWrapper,
@@ -12,7 +12,7 @@ import {
     getInputStateBgColor,
     INPUT_PADDING_TOP,
     LABEL_TRANSFORM,
-} from '../InputStyles';
+} from '../styles';
 import { FormCell, FormCellProps, pickFormCellProps } from '../FormCell/FormCell';
 import { CharacterCount, CharacterCountProps } from './CharacterCount';
 import { useElevation } from '../../ElevationContext/ElevationContext';
@@ -65,12 +65,13 @@ const TextareaLabel = styled(Label)`
     }
 `;
 
-export type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> &
+type TextareaHTMLProps = TextareaHTMLAttributes<HTMLTextAreaElement>;
+
+export type TextareaProps = TextareaHTMLProps &
     Omit<FormCellProps, 'children'> & {
         isDisabled?: boolean;
         label?: ReactNode;
         innerRef?: Ref<HTMLTextAreaElement>;
-        hasBottomPadding?: boolean;
         value?: string;
         characterCount?: CharacterCountProps['characterCount'];
         'data-testid'?: string;
@@ -79,21 +80,27 @@ export type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> &
 export const Textarea = ({
     value,
     maxLength,
-    isDisabled = false,
     innerRef,
     label,
     placeholder,
     rows = 5,
-    inputState,
     characterCount,
     'data-testid': dataTest,
     ...rest
 }: TextareaProps) => {
     const { elevation } = useElevation();
     const formCellProps = pickFormCellProps(rest);
+    const { isDisabled, inputState } = formCellProps;
+    const textareaProps = Object.entries(rest).reduce((props, [propKey, propValue]) => {
+        if (!(propKey in formCellProps)) {
+            props[propKey as keyof TextareaHTMLProps] = propValue;
+        }
+
+        return props;
+    }, {} as TextareaHTMLProps);
 
     return (
-        <FormCell {...formCellProps} inputState={inputState} isDisabled={isDisabled}>
+        <FormCell {...formCellProps}>
             <TextareaWrapper $inputState={inputState} disabled={isDisabled} $elevation={elevation}>
                 <StyledTextarea
                     $elevation={elevation}
@@ -101,14 +108,14 @@ export const Textarea = ({
                     autoCorrect="off"
                     autoCapitalize="off"
                     maxLength={maxLength}
-                    disabled={isDisabled}
+                    disabled={isDisabled ?? false}
                     $inputState={inputState}
                     rows={rows}
                     data-testid={dataTest}
                     placeholder={placeholder || ''} // needed for uncontrolled inputs
                     ref={innerRef}
                     value={value}
-                    {...rest}
+                    {...textareaProps}
                 />
 
                 <CharacterCount
