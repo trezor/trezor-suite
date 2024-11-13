@@ -2217,6 +2217,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@craftzdog/react-native-buffer@npm:^6.0.5":
+  version: 6.0.5
+  resolution: "@craftzdog/react-native-buffer@npm:6.0.5"
+  dependencies:
+    ieee754: "npm:^1.2.1"
+    react-native-quick-base64: "npm:^2.0.5"
+  checksum: 10/9963b430d0cd2af030605a7e81b3982dfec36603406d4f14d520e28936d24a79d69ca4e8a3b650734f6e45b12d87f1bd1ce86f0db11379103e7b1c024a2510d5
+  languageName: node
+  linkType: hard
+
 "@crowdin/cli@npm:^4.0.0":
   version: 4.0.0
   resolution: "@crowdin/cli@npm:4.0.0"
@@ -9323,7 +9333,6 @@ __metadata:
     expo-build-properties: "npm:0.12.5"
     expo-camera: "npm:15.0.15"
     expo-clipboard: "npm:6.0.3"
-    expo-crypto: "npm:13.0.2"
     expo-dev-client: "npm:4.0.25"
     expo-haptics: "npm:13.0.1"
     expo-image: "npm:1.12.15"
@@ -9347,6 +9356,7 @@ __metadata:
     react-native-gesture-handler: "npm:2.18.1"
     react-native-keyboard-aware-scroll-view: "npm:0.9.5"
     react-native-mmkv: "npm:2.12.2"
+    react-native-quick-crypto: "npm:0.7.6"
     react-native-reanimated: "npm:3.16.1"
     react-native-restart: "npm:0.0.27"
     react-native-safe-area-context: "npm:4.10.9"
@@ -9998,6 +10008,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
+    "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
@@ -35028,6 +35039,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-quick-base64@npm:^2.0.5":
+  version: 2.1.2
+  resolution: "react-native-quick-base64@npm:2.1.2"
+  dependencies:
+    base64-js: "npm:^1.5.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/20b205612417a6c39452ad3ebd205d74fcfaa244832ec9e717b87ee075bf28076bf2445e8f690aad8cf0be6f3da89b4148eb8379d0b71d1c953bd06f66cc7c56
+  languageName: node
+  linkType: hard
+
+"react-native-quick-crypto@npm:0.7.6":
+  version: 0.7.6
+  resolution: "react-native-quick-crypto@npm:0.7.6"
+  dependencies:
+    "@craftzdog/react-native-buffer": "npm:^6.0.5"
+    events: "npm:^3.3.0"
+    readable-stream: "npm:^4.5.2"
+    string_decoder: "npm:^1.3.0"
+    util: "npm:^0.12.5"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/6edec8579d7328e236a87bc7e9093900decf38293337e9313efb619778fbfda3e789ae2cd65562d851581f68f0d12d1ef1ae9edb6b03e40a7c7c6e99d432df17
+  languageName: node
+  linkType: hard
+
 "react-native-reanimated@npm:3.16.1":
   version: 3.16.1
   resolution: "react-native-reanimated@npm:3.16.1"
@@ -35568,7 +35607,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^4.0.0":
+"readable-stream@npm:^4.0.0, readable-stream@npm:^4.5.2":
   version: 4.5.2
   resolution: "readable-stream@npm:4.5.2"
   dependencies:

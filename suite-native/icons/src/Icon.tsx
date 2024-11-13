@@ -17,7 +17,7 @@ export const icons = codepoints;
 
 /**
  * @description If you need to add a new icon, please follow these steps:
- * 1. Add the icon name to the file `generateIconFonts.ts`.
+ * 1. Add the icon name to the file `generateIconFont.ts`.
  * 2. Run `yarn generate-icons` to generate the new icon font.
  */
 export type IconName = keyof typeof codepoints;

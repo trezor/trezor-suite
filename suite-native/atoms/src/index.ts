@@ -48,6 +48,7 @@ export * from './RoundedIcon';
 export * from './TrezorSuiteLiteHeader';
 export * from './Skeleton/BoxSkeleton';
 export * from './Skeleton/ListItemSkeleton';
+export * from './IconListItem';
 export * from './BulletListItem';
 export * from './SelectableItem';
 export * from './constants';

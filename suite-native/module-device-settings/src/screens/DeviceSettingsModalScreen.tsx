@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import {
     selectDevice,
     selectDeviceModel,
@@ -22,6 +23,7 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 
+import { DeviceAuthenticityCard } from '../components/DeviceAuthenticityCard';
 import { DeviceFirmwareCard } from '../components/DeviceFirmwareCard';
 import { DevicePinProtectionCard } from '../components/DevicePinProtectionCard';
 import { HowToUpdateBottomSheet } from '../components/HowToUpdateBottomSheet';
@@ -76,6 +78,7 @@ export const DeviceSettingsModalScreen = () => {
             <VStack spacing="sp24">
                 <DeviceFirmwareCard />
                 <DevicePinProtectionCard />
+                {SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel] && <DeviceAuthenticityCard />}
                 {isUpgradable && (
                     <Button colorScheme="primary" onPress={handleUpdateClick}>
                         <Translation id="moduleDeviceSettings.updateHowTo.title" />

@@ -13,6 +13,7 @@ import {
     TREZOR_SUPPORT_IS_MY_DEVICE_SAFE,
     TREZOR_URL,
 } from '@trezor/urls';
+import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
@@ -20,7 +21,6 @@ import { Translation, TrezorLink } from 'src/components/suite';
 import { Hologram, OnboardingButtonSkip } from 'src/components/onboarding';
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
 import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
-import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from 'src/constants/suite/device';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';

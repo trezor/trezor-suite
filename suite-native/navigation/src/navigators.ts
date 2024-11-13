@@ -27,6 +27,7 @@ import {
     SendStackRoutes,
     DeviceStackRoutes,
     DevicePinProtectionStackRoutes,
+    DeviceAuthenticityStackRoutes,
 } from './routes';
 import { NavigateParameters } from './types';
 
@@ -148,6 +149,7 @@ export type AddCoinAccountStackParamList = {
 export type DeviceSettingsStackParamList = {
     [DeviceStackRoutes.DeviceSettings]: undefined;
     [DeviceStackRoutes.DevicePinProtection]: undefined;
+    [DeviceStackRoutes.DeviceAuthenticity]: undefined;
 };
 
 export type DevicePinProtectionStackParamList = {
@@ -155,6 +157,13 @@ export type DevicePinProtectionStackParamList = {
     [DevicePinProtectionStackRoutes.EnterCurrentPin]: undefined;
     [DevicePinProtectionStackRoutes.EnterNewPin]: undefined;
     [DevicePinProtectionStackRoutes.ConfirmNewPin]: undefined;
+};
+
+export type DeviceAuthenticityStackParamList = {
+    [DeviceAuthenticityStackRoutes.AuthenticityCheck]: undefined;
+    [DeviceAuthenticityStackRoutes.AuthenticitySummary]: {
+        checkResult: 'successful' | 'compromised';
+    };
 };
 
 export type AuthorizeDeviceStackParamList = {
@@ -190,7 +199,7 @@ export type RootStackParamList = {
     [RootStackRoutes.DevUtilsStack]: undefined;
     [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
-    [RootStackRoutes.DeviceSettingsStack]: undefined;
+    [RootStackRoutes.DeviceSettingsStack]: NavigatorScreenParams<DeviceSettingsStackParamList>;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
     [RootStackRoutes.SendStack]: NavigatorScreenParams<SendStackParamList>;
     [RootStackRoutes.CoinEnablingInit]: undefined;

@@ -405,6 +405,33 @@ export const en = {
                 pinMismatch: 'The PINs you’ve entered do not match.',
             },
         },
+        authenticity: {
+            title: 'Device authenticity',
+            content: 'Check the integrity of the device & authenticity of the chip.',
+            checkButton: 'Check authenticity',
+            info: {
+                title: 'Check device authenticity',
+                item1: 'This check is essential to ensure your device’s reliability and security.',
+                item2: 'This confirms that the chip inside your hardware wallet is genuine and from Trezor.',
+                item3: 'Once your device has been given a clean bill of health, you’re all set to Trezor with confidence.',
+                letsDoItButton: 'Let’s do it',
+            },
+            summary: {
+                successful: {
+                    title: 'Device check successful',
+                    subtitle: 'You can now be sure that your device is genuine & safe to use.',
+                },
+                compromised: {
+                    title: 'Your device may have been compromised',
+                    subtitle:
+                        'Contact our support to learn what’s going on with your device and what to do next.',
+                    item1: 'Disconnect your device from your laptop or computer.',
+                    item2: 'Avoid using this device or sending any funds to it.',
+                    item3: 'Continue to Trezor support and use the Chat option.',
+                    contactSupportButton: 'Contact Trezor Support',
+                },
+            },
+        },
         updateHowTo: {
             title: 'How to update firmware',
             subtitle: 'Follow these steps:',

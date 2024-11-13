@@ -15,7 +15,7 @@ import { Translation } from '@suite-native/intl';
 import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { DeviceSettingsCard } from './DeviceSettingsCard';
+import { DeviceSettingsCardLayout } from './DeviceSettingsCardLayout';
 
 const firmwareInfoStyle = prepareNativeStyle(() => ({
     flexGrow: 1,
@@ -79,7 +79,7 @@ export const DeviceFirmwareCard = () => {
     })();
 
     return (
-        <DeviceSettingsCard
+        <DeviceSettingsCardLayout
             icon={deviceModelToIconName(deviceModel)}
             title={<Translation id="moduleDeviceSettings.firmware.title" />}
             alertBoxProps={firmwareUpdateProps}
@@ -94,6 +94,6 @@ export const DeviceFirmwareCard = () => {
                     value={<Translation id={firmwareTypeTranslationId} />}
                 />
             </HStack>
-        </DeviceSettingsCard>
+        </DeviceSettingsCardLayout>
     );
 };

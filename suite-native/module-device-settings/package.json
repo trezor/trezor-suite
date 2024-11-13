@@ -13,6 +13,7 @@
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "6.1.18",
         "@react-navigation/native-stack": "6.11.0",
+        "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/alerts": "workspace:*",

@@ -54,6 +54,7 @@ lottie-react-native
 react-native-gesture-handler
 react-native-keyboard-aware-scroll-view
 react-native-mmkv
+react-native-quick-crypto
 react-native-restart
 react-native-safe-area-context
 react-native-screens

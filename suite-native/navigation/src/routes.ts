@@ -41,6 +41,7 @@ export enum AccountsImportStackRoutes {
 export enum DeviceStackRoutes {
     DeviceSettings = 'DeviceSettings',
     DevicePinProtection = 'DevicePinProtection',
+    DeviceAuthenticity = 'DeviceAuthenticity',
 }
 
 export enum DevicePinProtectionStackRoutes {
@@ -48,6 +49,11 @@ export enum DevicePinProtectionStackRoutes {
     EnterCurrentPin = 'EnterCurrentPin',
     EnterNewPin = 'EnterNewPin',
     ConfirmNewPin = 'ConfirmNewPin',
+}
+
+export enum DeviceAuthenticityStackRoutes {
+    AuthenticityCheck = 'AuthenticityCheck',
+    AuthenticitySummary = 'AuthenticitySummary',
 }
 
 export enum AuthorizeDeviceStackRoutes {

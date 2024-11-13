@@ -1,6 +1,7 @@
 import { isDeviceRemembered, isDeviceWithButtons } from '@suite-common/suite-utils';
 import type { TransportInfo } from '@trezor/connect';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';
+import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 
 import { DeviceBanner, SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
@@ -32,7 +33,6 @@ import { HapticFeedback } from './HapticFeedback';
 import { Brightness } from './Brightness';
 import { DefaultWalletLoading } from './DefaultWalletLoading';
 import { FirmwareRevisionCheck } from './FirmwareRevisionCheck';
-import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '../../../constants/suite/device';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
     const noTransportAvailable = transport && !transport.type;

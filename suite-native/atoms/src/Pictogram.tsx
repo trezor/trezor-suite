@@ -45,7 +45,7 @@ const sizeToDimensionsMap = {
         innerRingSize: 64,
     },
     large: {
-        outerRingSize: 114,
+        outerRingSize: 104,
         innerRingSize: 80,
     },
 } as const satisfies Record<PictogramSize, PictogramSizeProps>;

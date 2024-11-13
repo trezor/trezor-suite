@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/suite-constants"
+        },
+        {
             "path": "../../suite-common/suite-utils"
         },
         {

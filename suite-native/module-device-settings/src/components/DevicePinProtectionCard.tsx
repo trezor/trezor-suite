@@ -5,7 +5,7 @@ import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { DevicePinActionButton } from './DevicePinActionButton';
-import { DeviceSettingsCard } from './DeviceSettingsCard';
+import { DeviceSettingsCardLayout } from './DeviceSettingsCardLayout';
 
 export const DevicePinProtectionCard = () => {
     const device = useSelector(selectDevice);
@@ -16,7 +16,7 @@ export const DevicePinProtectionCard = () => {
     }
 
     return (
-        <DeviceSettingsCard
+        <DeviceSettingsCardLayout
             icon="password"
             title={<Translation id="moduleDeviceSettings.pinProtection.title" />}
         >
@@ -41,6 +41,6 @@ export const DevicePinProtectionCard = () => {
                     </HStack>
                 )}
             </VStack>
-        </DeviceSettingsCard>
+        </DeviceSettingsCardLayout>
     );
 };

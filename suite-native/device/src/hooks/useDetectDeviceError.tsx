@@ -18,7 +18,7 @@ import {
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
-import { useOpenLink } from '@suite-native/link';
+import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import {
     StackToStackCompositeNavigationProps,
     HomeStackParamList,
@@ -35,7 +35,6 @@ import { BootloaderModalAppendix } from '../components/BootloaderModalAppendix';
 import { UnacquiredDeviceModalAppendix } from '../components/UnacquiredDeviceModalAppendix';
 
 export const SUITE_WEB_URL = 'https://suite.trezor.io/web/';
-export const SUITE_LITE_SUPPORT_URL = 'https://trezor.io/learn/c/trezor-suite-lite#open-chat';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     HomeStackParamList,
