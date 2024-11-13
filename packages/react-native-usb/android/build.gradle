@@ -22,7 +22,7 @@ buildscript {
     if (ext.has("kotlinVersion")) {
       ext.kotlinVersion()
     } else {
-      ext.safeExtGet("kotlinVersion", "1.8.10")
+      ext.safeExtGet("kotlinVersion", "1.9.24")
     }
   }
 
@@ -51,7 +51,7 @@ afterEvaluate {
 }
 
 android {
-  compileSdkVersion safeExtGet("compileSdkVersion", 33)
+  compileSdkVersion safeExtGet("compileSdkVersion", 35)
 
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_17
@@ -65,7 +65,7 @@ android {
   namespace "io.trezor.rnusb"
   defaultConfig {
     minSdkVersion safeExtGet("minSdkVersion", 21)
-    targetSdkVersion safeExtGet("targetSdkVersion", 33)
+    targetSdkVersion safeExtGet("targetSdkVersion", 34)
     versionCode 1
     versionName "0.1.0"
   }

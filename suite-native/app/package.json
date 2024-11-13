@@ -101,7 +101,7 @@
         "expo-splash-screen": "^0.29.7",
         "expo-status-bar": "^2.0.0",
         "expo-system-ui": "^4.0.2",
-        "expo-updates": "0.26.5",
+        "expo-updates": "0.26.6",
         "lottie-react-native": "^7.1.0",
         "node-libs-browser": "^2.2.1",
         "react": "18.2.0",

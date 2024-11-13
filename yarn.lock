@@ -9110,7 +9110,7 @@ __metadata:
     expo-splash-screen: "npm:^0.29.7"
     expo-status-bar: "npm:^2.0.0"
     expo-system-ui: "npm:^4.0.2"
-    expo-updates: "npm:0.26.5"
+    expo-updates: "npm:0.26.6"
     jest: "npm:^29.7.0"
     lottie-react-native: "npm:^7.1.0"
     metro: "npm:0.81.0"
@@ -22033,9 +22033,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-updates@npm:0.26.5":
-  version: 0.26.5
-  resolution: "expo-updates@npm:0.26.5"
+"expo-updates@npm:0.26.6":
+  version: 0.26.6
+  resolution: "expo-updates@npm:0.26.6"
   dependencies:
     "@expo/code-signing-certificates": "npm:0.0.5"
     "@expo/config": "npm:~10.0.0"
@@ -22056,7 +22056,7 @@ __metadata:
     react: "*"
   bin:
     expo-updates: bin/cli.js
-  checksum: 10/7fb8d181287d479ff4f39e0e76a97dbd19521de4959dc469e87bb31ad602ec7b367a1d3642d0ed55ecebe785ed46c1eabe7c912f45c10adeada4ab9a5760b7ea
+  checksum: 10/48bba9bc2a6d0855f3a33e1379bb941d9cdbd44bee28fa693975819d78140e2a141dcfd3bacc5b6b5c7866725b93de35ed40b0031df5e6789ebef3af8875d9cf
   languageName: node
   linkType: hard
 

@@ -100,6 +100,8 @@ const getPlugins = (): ExpoPlugins => {
             {
                 android: {
                     minSdkVersion: 28,
+                    // this fixes expo-updates build error
+                    kotlinVersion: '1.9.24',
                 },
                 ios: {
                     deploymentTarget: '15.1',
