@@ -82,6 +82,7 @@ runs:
       shell: bash
       env:
         NODE_ENV: ${{ inputs.nodeEnv }}
+        ASSET_PREFIX: /${{ inputs.serverPath }}
       run: |
         yarn workspace @trezor/connect-popup build
 
