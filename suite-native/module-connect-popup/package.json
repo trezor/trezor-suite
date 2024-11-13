@@ -10,7 +10,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@react-navigation/native": "^7.0.0",
+        "@react-navigation/native": "6.1.18",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",
@@ -24,7 +24,7 @@
         "@trezor/connect-mobile": "workspace:*",
         "expo-linking": "^7.0.2",
         "react": "18.2.0",
-        "react-native": "^0.76.1",
+        "react-native": "0.76.1",
         "react-redux": "8.0.7"
     }
 }

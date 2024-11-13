@@ -12,9 +12,9 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "^7.0.0",
+        "@react-navigation/native": "6.1.18",
         "@reduxjs/toolkit": "1.9.5",
-        "@sentry/react-native": "^5.35.0",
+        "@sentry/react-native": "6.1.0",
         "@shopify/react-native-skia": "^1.5.3",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/graph": "workspace:*",
@@ -39,7 +39,7 @@
         "expo-haptics": "^14.0.0",
         "jotai": "1.9.1",
         "react": "18.2.0",
-        "react-native": "^0.76.1",
+        "react-native": "0.76.1",
         "react-native-reanimated": "3.16.1",
         "react-redux": "8.0.7",
         "redux-persist": "6.0.0"

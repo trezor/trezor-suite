@@ -11,8 +11,8 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native-stack": "^7.0.0",
-        "@sentry/react-native": "^5.35.0",
+        "@react-navigation/native-stack": "6.11.0",
+        "@sentry/react-native": "6.1.0",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",
@@ -30,7 +30,7 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "18.2.0",
-        "react-native": "^0.76.1",
+        "react-native": "0.76.1",
         "react-redux": "8.0.7"
     }
 }

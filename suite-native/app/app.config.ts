@@ -102,7 +102,7 @@ const getPlugins = (): ExpoPlugins => {
                     minSdkVersion: 28,
                 },
                 ios: {
-                    deploymentTarget: '14.0',
+                    deploymentTarget: '15.1',
                 },
             },
         ],

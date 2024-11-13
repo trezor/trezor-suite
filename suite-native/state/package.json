@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",
-        "@sentry/react-native": "^5.35.0",
+        "@sentry/react-native": "6.1.0",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/logger": "workspace:*",
         "@suite-common/message-system": "workspace:*",
@@ -34,7 +34,7 @@
         "@trezor/utils": "workspace:*",
         "expo-device": "6.0.2",
         "react": "18.2.0",
-        "react-native": "^0.76.1",
+        "react-native": "0.76.1",
         "react-redux": "8.0.7",
         "redux-devtools-expo-dev-plugin": "^0.1.0",
         "redux-persist": "6.0.0"

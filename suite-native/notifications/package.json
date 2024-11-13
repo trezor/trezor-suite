@@ -10,7 +10,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@react-navigation/native": "^7.0.0",
+        "@react-navigation/native": "6.1.18",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -24,7 +24,7 @@
         "@suite-native/transactions": "workspace:*",
         "@trezor/styles": "workspace:*",
         "react": "18.2.0",
-        "react-native": "^0.76.1",
+        "react-native": "0.76.1",
         "react-native-gesture-handler": "^2.20.2",
         "react-native-reanimated": "3.16.1",
         "react-redux": "8.0.7"
