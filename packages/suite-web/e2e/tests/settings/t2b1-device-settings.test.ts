@@ -44,10 +44,8 @@ describe('T2B1 - Device settings', () => {
         // pass through initial run and device auth check
         cy.prefixedVisit('/');
         cy.disableFirmwareHashCheck();
-        cy.getTestElement('@analytics/continue-button', { timeout: 40000 })
-            .click()
-            .getTestElement('@onboarding/exit-app-button')
-            .click();
+        cy.getTestElement('@analytics/continue-button', { timeout: 40000 }).click();
+        cy.getTestElement('@onboarding/exit-app-button').click();
         cy.passThroughAuthenticityCheck();
         cy.getTestElement('@onboarding/viewOnly/enable').click();
         cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 15000 })
@@ -70,7 +68,8 @@ describe('T2B1 - Device settings', () => {
 
         // change device's name
         cy.log(`-> Filling in ${newDeviceName} as new trezor's name.`);
-        cy.getTestElement('@settings/device/label-input').clear().type(newDeviceName);
+        cy.getTestElement('@settings/device/label-input').clear();
+        cy.getTestElement('@settings/device/label-input').type(newDeviceName);
         cy.getTestElement(editNameBtn).should('be.enabled');
         cy.getTestElement(editNameBtn).click();
         cy.getConfirmActionOnDeviceModal();
@@ -101,10 +100,8 @@ describe('T2B1 - Device settings', () => {
         // pass through initial run and device auth check
         cy.prefixedVisit('/');
         cy.disableFirmwareHashCheck();
-        cy.getTestElement('@analytics/continue-button', { timeout: 40000 })
-            .click()
-            .getTestElement('@onboarding/exit-app-button')
-            .click();
+        cy.getTestElement('@analytics/continue-button', { timeout: 40000 }).click();
+        cy.getTestElement('@onboarding/exit-app-button').click();
         cy.passThroughAuthenticityCheck();
         cy.getTestElement('@onboarding/viewOnly/enable').click();
         cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 15000 })
@@ -128,10 +125,8 @@ describe('T2B1 - Device settings', () => {
         // pass through initial run and device auth check
         cy.prefixedVisit('/');
         cy.disableFirmwareHashCheck();
-        cy.getTestElement('@analytics/continue-button', { timeout: 40000 })
-            .click()
-            .getTestElement('@onboarding/exit-app-button')
-            .click();
+        cy.getTestElement('@analytics/continue-button', { timeout: 40000 }).click();
+        cy.getTestElement('@onboarding/exit-app-button').click();
         cy.passThroughAuthenticityCheck();
         cy.getTestElement('@onboarding/viewOnly/enable').click();
         cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 15000 })

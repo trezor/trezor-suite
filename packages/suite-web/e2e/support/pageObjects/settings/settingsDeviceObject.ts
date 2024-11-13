@@ -14,9 +14,10 @@ class SettingsDevicePage {
 
     togglePassphraseSwitch(): void {
         cy.getTestElement('@settings/device/passphrase-switch')
-            .scrollIntoView()
-            .should('be.visible')
-            .click();
+            .as('passphraseSwitch')
+            .scrollIntoView();
+
+        cy.get('@passphraseSwitch').should('be.visible').click();
     }
 }
 

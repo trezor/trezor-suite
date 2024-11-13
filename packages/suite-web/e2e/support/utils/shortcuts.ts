@@ -12,10 +12,8 @@ export const toggleDeviceMenu = () => cy.getTestElement('@menu/switch-device').c
 
 export const passThroughInitialRun = ({ viewOnly = true } = {}) => {
     cy.disableFirmwareHashCheck();
-    cy.getTestElement('@analytics/continue-button', { timeout: 30_000 })
-        .click()
-        .getTestElement('@onboarding/exit-app-button')
-        .click();
+    cy.getTestElement('@analytics/continue-button', { timeout: 30_000 }).click();
+    cy.getTestElement('@onboarding/exit-app-button').click();
     if (viewOnly) {
         cy.getTestElement('@onboarding/viewOnly/enable').click();
     } else {

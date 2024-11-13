@@ -23,10 +23,8 @@ describe('Backup success', () => {
 
     it('Successful backup happy path', () => {
         // Arrange
-        cy.getTestElement('@analytics/continue-button', { timeout: 40000 })
-            .click()
-            .getTestElement('@onboarding/exit-app-button')
-            .click();
+        cy.getTestElement('@analytics/continue-button', { timeout: 40000 }).click();
+        cy.getTestElement('@onboarding/exit-app-button').click();
         cy.passThroughAuthenticityCheck();
         cy.getTestElement('@onboarding/viewOnly/enable').click();
         cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 15000 })

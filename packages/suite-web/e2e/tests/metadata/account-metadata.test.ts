@@ -72,24 +72,27 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click({
             force: true,
         });
-        cy.getTestElement('@metadata/input')
-            .clear()
-            .type('bcash is true bitcoin{esc}', { timeout: 20 });
+        cy.getTestElement('@metadata/input').clear();
+        cy.getTestElement('@metadata/input').type('bcash is true bitcoin{esc}', { timeout: 20 });
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'even cooler');
 
         cy.log('Check that accounts search reflects also metadata');
-        cy.getTestElement('@account-menu/search-input').first().click().type('even cooler');
+        cy.getTestElement('@account-menu/search-input').first().as('searchInput').click();
+        cy.get('@searchInput').type('even cooler');
         cy.getTestElement('@account-menu/btc/normal/0').should('be.visible');
-        cy.getTestElement('@account-menu/search-input').click().type('something retarded');
+        cy.get('@searchInput').click();
+        cy.get('@searchInput').type('something retarded');
         cy.getTestElement('@account-menu/btc/normal/0').should('not.exist');
-        cy.getTestElement('@account-menu/search-input').click().clear();
+        cy.get('@searchInput').click();
+        cy.get('@searchInput').clear();
 
         cy.log('We can also remove metadata by clearing input');
         cy.wait(50);
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click({
             force: true,
         });
-        cy.getTestElement('@metadata/input').clear().type('{enter}');
+        cy.getTestElement('@metadata/input').clear();
+        cy.getTestElement('@metadata/input').type('{enter}');
 
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
 

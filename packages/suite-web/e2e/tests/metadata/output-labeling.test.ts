@@ -74,14 +74,16 @@ describe('Metadata - Output labeling', () => {
 
             // test that buttons work as well - submit button
             cy.getTestElement(`${sentToMyselfEl}/dropdown/edit-label`).click({ force: true });
-            cy.getTestElement('@metadata/input').clear().type('submitted by button');
+            cy.getTestElement('@metadata/input').clear();
+            cy.getTestElement('@metadata/input').type('submitted by button');
             cy.getTestElement('@metadata/submit').click({ force: true });
             cy.getTestElement(`${sentToMyselfEl}`).should('contain', 'submitted by button');
 
             // test that buttons work as well - cancel button
             cy.getTestElement(`${sentToMyselfEl}`).click({ force: true });
             cy.getTestElement(`${sentToMyselfEl}/dropdown/edit-label`).click({ force: true });
-            cy.getTestElement('@metadata/input').clear().type('write something that wont be saved');
+            cy.getTestElement('@metadata/input').clear();
+            cy.getTestElement('@metadata/input').type('write something that wont be saved');
             cy.getTestElement('@metadata/cancel').click({ force: true });
             cy.getTestElement(`${sentToMyselfEl}`).should('contain', 'submitted by button');
 

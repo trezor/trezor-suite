@@ -28,7 +28,9 @@ class SwitchDevice {
     }
 
     typeLabel(label: string) {
-        cy.getTestElement('@metadata/input').clear().type(label).type('{enter}');
+        cy.getTestElement('@metadata/input').as('metadataInput').clear();
+        cy.get('@metadataInput').type(label);
+        cy.get('@metadataInput').type('{enter}');
     }
 
     private hoverOverWallet(index: number) {
