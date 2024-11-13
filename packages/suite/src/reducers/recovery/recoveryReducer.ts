@@ -15,7 +15,7 @@ export interface RecoveryState {
 const initialState: RecoveryState = {
     advancedRecovery: false,
     wordsCount: 12,
-    error: '',
+    error: undefined,
     status: 'initial',
 };
 
