@@ -8,6 +8,7 @@ import {
     prepareDeviceReducer,
     prepareDiscoveryReducer,
     prepareFiatRatesReducer,
+    prepareStakeReducer,
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
 import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/settings';
@@ -46,6 +47,7 @@ const deviceReducer = prepareDeviceReducer(extraDependencies);
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
 const sendFormReducer = sendFormSlice.prepareReducer(extraDependencies);
+const stakeReducer = prepareStakeReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({
@@ -68,6 +70,7 @@ export const prepareRootReducers = async () => {
         discovery: discoveryReducer,
         send: sendFormReducer,
         fees: feesReducer,
+        stake: stakeReducer,
     });
 
     const walletPersistedReducer = await preparePersistReducer({

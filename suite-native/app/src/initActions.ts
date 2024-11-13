@@ -4,6 +4,7 @@ import {
     createImportedDeviceThunk,
     initBlockchainThunk,
     initDevices,
+    initStakeDataThunk,
     periodicFetchFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { initAnalyticsThunk } from '@suite-native/analytics';
@@ -36,6 +37,8 @@ export const applicationInit = createThunk(
             dispatch(initBlockchainThunk());
 
             dispatch(periodicCheckTokenDefinitionsThunk());
+
+            dispatch(initStakeDataThunk());
 
             dispatch(
                 periodicFetchFiatRatesThunk({

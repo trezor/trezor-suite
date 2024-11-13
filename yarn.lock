@@ -10358,6 +10358,7 @@ __metadata:
   resolution: "@suite-native/module-staking-management@workspace:suite-native/module-staking-management"
   dependencies:
     "@react-navigation/native": "npm:6.1.18"
+    "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/formatters": "workspace:*"
