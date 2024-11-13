@@ -12,7 +12,7 @@ import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-ut
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
-    DefinitionType,
+    getSupportedDefinitionTypes,
     getTokenDefinitionThunk,
     periodicCheckTokenDefinitionsThunk,
     selectFilterKnownTokens,
@@ -123,12 +123,16 @@ export const getAccountInfoThunk = createThunk<
 
                 // fetch token definitions for this network in case they are needed
                 if (!tokenDefinitions) {
-                    await dispatch(
-                        getTokenDefinitionThunk({
-                            networkSymbol,
-                            type: DefinitionType.COIN,
-                        }),
-                    );
+                    const definitionTypes = getSupportedDefinitionTypes(networkSymbol);
+
+                    definitionTypes.forEach(async type => {
+                        await dispatch(
+                            getTokenDefinitionThunk({
+                                networkSymbol,
+                                type,
+                            }),
+                        );
+                    });
                 }
                 // fetch fiat rates for all tokens of newly discovered account
                 // Even that there is check in updateFiatRatesThunk, it is better to do it here and do not dispatch thunk at all because it has some overhead and sometimes there could be lot of tokens
