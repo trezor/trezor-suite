@@ -21,6 +21,7 @@ import { RootStackRoutes, AppTabsRoutes, RootStackParamList } from '@suite-nativ
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
+import { selectAccountTokenSymbol, TokensRootState } from '@suite-native/tokens';
 
 import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
 import { cleanupSendFormThunk } from '../sendFormThunks';
@@ -87,6 +88,11 @@ export const OutputsReviewFooter = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+
+    const tokenSymbol = useSelector((state: TokensRootState) =>
+        selectAccountTokenSymbol(state, accountKey, tokenContract),
+    );
+
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
     const formValues = useSelector((state: SendRootState) =>
@@ -129,6 +135,8 @@ export const OutputsReviewFooter = ({
                     type: EventType.SendTransactionDispatched,
                     payload: {
                         symbol: account.symbol,
+                        tokenAddresses: tokenContract ? [tokenContract] : undefined,
+                        tokenSymbols: tokenSymbol ? [tokenSymbol] : undefined,
                         outputsCount: formValues.outputs.length,
                         selectedFee: formValues.selectedFee ?? 'normal',
                         wasAppLeftDuringReview,
