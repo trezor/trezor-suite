@@ -7,23 +7,23 @@ const { withDangerousMod, withPlugins } = require('expo/config-plugins');
 const fs = require('fs');
 const path = require('path');
 
-async function readFile(path) {
-    return fs.promises.readFile(path, 'utf8');
+async function readFile(path2) {
+    return fs.promises.readFile(path2, 'utf8');
 }
 
-async function saveFile(path, content) {
-    return fs.promises.writeFile(path, content, 'utf8');
+async function saveFile(path2, content) {
+    return fs.promises.writeFile(path2, content, 'utf8');
 }
 
 module.exports = config =>
     withPlugins(config, [
-        config =>
-            withDangerousMod(config, [
+        config2 =>
+            withDangerousMod(config2, [
                 'ios',
-                async config => {
-                    const file = path.join(config.modRequest.platformProjectRoot, '.xcode.env');
+                async config3 => {
+                    const file = path.join(config3.modRequest.platformProjectRoot, '.xcode.env');
                     const fileLocal = path.join(
-                        config.modRequest.platformProjectRoot,
+                        config3.modRequest.platformProjectRoot,
                         '.xcode.env.local',
                     );
 
@@ -34,7 +34,7 @@ module.exports = config =>
                      */
                     await saveFile(fileLocal, contents);
 
-                    return config;
+                    return config3;
                 },
             ]),
     ]);

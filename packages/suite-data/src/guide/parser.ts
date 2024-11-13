@@ -211,12 +211,12 @@ export class Parser {
                 // Take all locales except the english one
                 .filter(locale => locale !== 'en')
                 // and merge them together.
-                .reduce((englishIndex, locale) => {
+                .reduce((englishIndex2, locale) => {
                     // Parse the locale's version of the content.
                     const otherIndex = this.parseTree(join(this.source, locale), locale);
 
                     // Merge it into the english index.
-                    return this.zip(englishIndex, otherIndex);
+                    return this.zip(englishIndex2, otherIndex);
                 }, englishIndex)
         );
     }

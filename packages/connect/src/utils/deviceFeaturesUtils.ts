@@ -64,7 +64,7 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
             } else {
                 const occurrences = coins.filter(coin => shortcut == coin.shortcut.toLowerCase());
                 const allUnsupported = occurrences.every(
-                    info => !info.support || info.support[key] === false,
+                    info2 => !info2.support || info2.support[key] === false,
                 );
 
                 if (allUnsupported) {

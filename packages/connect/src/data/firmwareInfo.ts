@@ -35,7 +35,7 @@ export const parseFirmware = (json: any, deviceModel: DeviceModelInternal) => {
 
 export const getReleases = (deviceModel: DeviceModelInternal) => releases[deviceModel] || [];
 
-const getChangelog = (releases: FirmwareRelease[], features: StrictFeatures) => {
+const getChangelog = (releases2: FirmwareRelease[], features: StrictFeatures) => {
     // releases are already filtered, so they can be considered "safe".
     // so lets build changelog! It should include only those firmwares, that are
     // newer than currently installed firmware.
@@ -52,7 +52,7 @@ const getChangelog = (releases: FirmwareRelease[], features: StrictFeatures) => 
         if (features.firmware_present && features.major_version === 2) {
             // little different situation is with model 2, where in bootloader (and with some fw installed)
             // we actually know the firmware version
-            return releases.filter(r =>
+            return releases2.filter(r =>
                 versionUtils.isNewer(r.version, [
                     features.fw_major,
                     features.fw_minor,
@@ -62,13 +62,13 @@ const getChangelog = (releases: FirmwareRelease[], features: StrictFeatures) => 
         }
 
         // for fresh devices, we can assume that all releases are actually "new"
-        return releases;
+        return releases2;
     }
 
     // otherwise we are in firmware mode and because each release in releases list has
     // version higher than the previous one, we can filter out the version that is already
     // installed and show only what's new!
-    return releases.filter(r =>
+    return releases2.filter(r =>
         versionUtils.isNewer(r.version, [
             features.major_version,
             features.minor_version,
@@ -99,7 +99,7 @@ const isEqual = (release: FirmwareRelease, latest: FirmwareRelease) =>
     versionUtils.isEqual(release.version, latest.version);
 
 const getT1BootloaderVersion = (
-    releases: FirmwareRelease[],
+    releases2: FirmwareRelease[],
     features: StrictFeatures,
 ): VersionArray => {
     const { bootloader_mode, major_version, minor_version, patch_version } = features;
@@ -109,7 +109,7 @@ const getT1BootloaderVersion = (
         return versionArray;
     }
 
-    const release = releases.find(({ version }) => versionUtils.isEqual(version, versionArray));
+    const release = releases2.find(({ version }) => versionUtils.isEqual(version, versionArray));
 
     /**
      * FW version 1.6.0 and below don't have bootloader_version listed, so default to 1.0.0,
@@ -124,7 +124,7 @@ const getT1BootloaderVersion = (
  * v3 - bootloader >= 1.12.0
  */
 const getIntermediaryVersion = (
-    releases: FirmwareRelease[],
+    releases2: FirmwareRelease[],
     features: StrictFeatures,
     offerLatest: boolean,
 ): IntermediaryVersion | undefined => {
@@ -133,7 +133,7 @@ const getIntermediaryVersion = (
         return;
     }
 
-    const bootloaderVersion = getT1BootloaderVersion(releases, features);
+    const bootloaderVersion = getT1BootloaderVersion(releases2, features);
 
     if (versionUtils.isNewerOrEqual(bootloaderVersion, [1, 12, 0])) {
         return 3;
@@ -151,6 +151,7 @@ export interface GetInfoProps {
     releases: FirmwareRelease[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-shadow
 const getSafeReleases = ({ features, releases }: GetInfoProps) => {
     const {
         bootloader_mode,
@@ -194,6 +195,7 @@ const getSafeReleases = ({ features, releases }: GetInfoProps) => {
  * @param features
  * @param releases
  */
+// eslint-disable-next-line @typescript-eslint/no-shadow
 export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | null => {
     if (!Array.isArray(releases) || releases.length < 1) {
         // no available releases - should never happen for official firmware, only custom

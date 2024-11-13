@@ -62,9 +62,9 @@ const meta: Meta = {
 export default meta;
 
 export const Grid: StoryObj<GridProps> = {
-    render: args => (
+    render: gridArgs => (
         <Container>
-            <GridComponent {...args} />
+            <GridComponent {...gridArgs} />
         </Container>
     ),
     args,

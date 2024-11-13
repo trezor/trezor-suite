@@ -103,6 +103,7 @@ export const Banner = ({
 
     const isMobile = useMediaQuery(`(max-width: ${SCREEN_SIZE.SM})`);
 
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     const ContentComponent = ({ children }: { children: ReactNode }) => {
         const commonProps = {
             justifyContent: 'space-between' as const,

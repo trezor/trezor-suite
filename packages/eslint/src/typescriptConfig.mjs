@@ -6,6 +6,13 @@ export const typescriptConfig = [
         rules: {
             // Additional rules
             '@typescript-eslint/no-use-before-define': ['error'],
+            '@typescript-eslint/no-shadow': [
+                'error',
+                {
+                    builtinGlobals: false,
+                    allow: ['_', 'error', 'resolve', 'reject', 'fetch'],
+                },
+            ],
             '@typescript-eslint/no-restricted-imports': [
                 'error',
                 {

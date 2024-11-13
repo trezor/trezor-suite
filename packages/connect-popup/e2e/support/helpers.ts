@@ -22,14 +22,14 @@ export const log = (...val: string[]) => {
 
 // Next.js uses client side routing, so we use this to navigate without reloading the page
 export const nextJsGoto = async (page: Page, url: string) => {
-    await page.evaluate(url => {
-        (window as any).router.push(url);
+    await page.evaluate(url2 => {
+        (window as any).router.push(url2);
     }, url);
 };
 
-export const formatUrl = (baseUrl: string, path: string) => {
+export const formatUrl = (baseUrl: string, path2: string) => {
     const [baseUrlWithoutParams, params] = baseUrl.split('?');
-    const [pathWithoutParams, pathParams] = path.split('?');
+    const [pathWithoutParams, pathParams] = path2.split('?');
 
     return `${baseUrlWithoutParams}${pathWithoutParams}?${params ? `${params}&` : ''}${pathParams ?? ''}`;
 };

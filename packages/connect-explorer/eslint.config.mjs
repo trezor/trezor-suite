@@ -32,7 +32,7 @@ export default [
             'import/no-default-export': 'off', // Todo: shall be fixed
             'no-restricted-syntax': 'off', // Todo: shall be fixed
             '@typescript-eslint/no-restricted-imports': 'off',
-            '@typescript-eslint/no-shadow': 'off',
+            '@typescript-eslint/no-shadow': 'off', // Todo: shall be fixed
             'react/jsx-filename-extension': [
                 'error',
                 {

@@ -6,10 +6,10 @@ interface LogWorkerClass extends SharedWorker {
 
 let logWorker: SharedWorker | undefined;
 
-const logWriterFactory = (logWorker: SharedWorker | undefined) => (): LogWriter => ({
+const logWriterFactory = (logWorker2: SharedWorker | undefined) => (): LogWriter => ({
     add: (message: LogMessage) => {
-        if (logWorker) {
-            logWorker.port.postMessage({ type: 'add-log', data: message });
+        if (logWorker2) {
+            logWorker2.port.postMessage({ type: 'add-log', data: message });
         }
     },
 });

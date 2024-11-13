@@ -457,8 +457,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
     setCancelableAction(callback: NonNullable<typeof this.cancelableAction>) {
         this.cancelableAction = (e?: Error) =>
             callback(e)
-                .catch(e => {
-                    _log.debug('cancelableAction error', e);
+                .catch(e2 => {
+                    _log.debug('cancelableAction error', e2);
                 })
                 .finally(() => {
                     this.clearCancelableAction();

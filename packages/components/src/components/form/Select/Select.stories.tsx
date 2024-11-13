@@ -25,7 +25,8 @@ export const Select: StoryObj<SelectProps> = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
         const [{ option }, updateArgs] = useArgs();
-        const setOption = (option: { label: string; value: 'string' }) => updateArgs({ option });
+        const setOption = (option2: { label: string; value: 'string' }) =>
+            updateArgs({ option: option2 });
 
         return <SelectComponent {...args} value={option} onChange={setOption} options={options} />;
     },

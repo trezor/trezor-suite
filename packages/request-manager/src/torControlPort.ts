@@ -177,11 +177,11 @@ export class TorControlPort {
                     /^[0-9]+ (LAUNCHED|BUILT|GUARD_WAIT|EXTENDED|FAILED|CLOSED)/.test(line),
                 )
                 .map(line => {
-                    const [id, status, ...values] = line.split(' ');
+                    const [id, status2, ...values] = line.split(' ');
 
                     return {
                         id,
-                        status,
+                        status: status2,
                         // not used for now, left as example:
                         // buildFlags: getValue('BUILD_FLAGS', values),
                         // purpose: getValue('PURPOSE', values),

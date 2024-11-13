@@ -90,8 +90,8 @@ describe('Account types suite', () => {
                         cy.getTestElement(`@account-menu/${type}/group`)
                             .children()
                             .not(`[data-testid="@account-menu/account-item-skeleton"]`)
-                            .then(specificAccounts => {
-                                const numberOfAccounts2 = specificAccounts.length;
+                            .then(specificAccounts2 => {
+                                const numberOfAccounts2 = specificAccounts2.length;
                                 expect(numberOfAccounts2).to.be.equal(numberOfAccounts1 + 1);
                             });
                     });
