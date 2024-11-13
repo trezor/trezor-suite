@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { RefreshControl } from 'react-native';
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 
@@ -20,6 +20,10 @@ export const StakingDetailScreen = () => {
     const { utils } = useNativeStyles();
 
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(initStakeDataThunk());
+    }, [dispatch]);
 
     const handleRefresh = useCallback(async () => {
         setIsRefreshing(true);
