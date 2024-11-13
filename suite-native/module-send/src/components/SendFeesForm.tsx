@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useWatch } from 'react-hook-form';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { VStack, Text, Box } from '@suite-native/atoms';
+import { VStack, Text } from '@suite-native/atoms';
 import { Form, useForm } from '@suite-native/forms';
 import {
     AccountKey,
-    GeneralPrecomposedLevels,
+    GeneralPrecomposedTransactionFinal,
     PrecomposedTransactionFinal,
     TokenAddress,
 } from '@suite-common/wallet-types';
@@ -16,6 +16,7 @@ import {
     AccountsRootState,
     FeesRootState,
     selectAccountByKey,
+    selectNetworkFeeInfo,
     selectNetworkFeeLevelFeePerUnit,
 } from '@suite-common/wallet-core';
 import {
@@ -27,16 +28,19 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
+import { getNetworkType } from '@suite-common/wallet-config';
+import { BigNumber } from '@trezor/utils';
 
 import { SendFeesFormValues, sendFeesFormValidationSchema } from '../sendFeesFormSchema';
 import { FeesFooter } from './FeesFooter';
 import { FeeOptionsList } from './FeeOptionsList';
 import { RecipientsSummary } from './RecipientsSummary';
+import { CustomFee } from './CustomFee';
+import { selectFeeLevels } from '../sendFormSlice';
 
 type SendFormProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
-    feeLevels: GeneralPrecomposedLevels;
 };
 
 type SendFeesNavigationProps = StackToStackCompositeNavigationProps<
@@ -47,25 +51,63 @@ type SendFeesNavigationProps = StackToStackCompositeNavigationProps<
 
 const DEFAULT_FEE = 'normal';
 
-export const SendFeesForm = ({ accountKey, tokenContract, feeLevels }: SendFormProps) => {
+export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     const navigation = useNavigation<SendFeesNavigationProps>();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const feeLevels = useSelector(selectFeeLevels);
+
+    const networkFeeInfo = useSelector((state: FeesRootState) =>
+        selectNetworkFeeInfo(state, account?.symbol),
+    );
+
+    const normalFeeLevelInfo = networkFeeInfo?.levels.find(l => l.label === 'normal');
+    const networkType = account?.symbol ? getNetworkType(account.symbol) : undefined;
+
+    const minimalFeeLimit =
+        'estimatedFeeLimit' in feeLevels.normal ? feeLevels.normal.estimatedFeeLimit : undefined;
+
     const form = useForm<SendFeesFormValues>({
         validation: sendFeesFormValidationSchema,
         defaultValues: {
             feeLevel: DEFAULT_FEE,
+            customFeePerUnit: normalFeeLevelInfo?.feePerUnit,
+            customFeeLimit: normalFeeLevelInfo?.feeLimit,
+        },
+        context: {
+            networkFeeInfo,
+            networkType,
+            minimalFeeLimit,
         },
     });
     const { handleSubmit, control } = form;
 
     const selectedFeeLevel = useWatch({ control, name: 'feeLevel' });
-    const selectedFeeLevelTransaction = feeLevels[selectedFeeLevel] as PrecomposedTransactionFinal;
+    const selectedFeeLevelTransaction = feeLevels[
+        selectedFeeLevel
+    ] as GeneralPrecomposedTransactionFinal;
 
     const feePerUnit = useSelector((state: FeesRootState) =>
         selectNetworkFeeLevelFeePerUnit(state, account?.symbol, selectedFeeLevel),
+    );
+
+    const normalFee = feeLevels.normal as PrecomposedTransactionFinal; // user is not allowed to enter this screen if normal fee is not final
+    const transactionBytes = normalFee.bytes as number;
+
+    // If trezor-connect was not able to compose the fee level, we have calculate total amount locally.
+    const mockedFee = useMemo(
+        () =>
+            BigNumber(transactionBytes)
+                .times(feePerUnit ?? normalFee.feePerByte)
+                .toString(),
+        [transactionBytes, feePerUnit, normalFee.feePerByte],
+    );
+
+    const mockedTotalAmount = useMemo(
+        () => BigNumber(normalFee.totalSpent).minus(normalFee.fee).plus(mockedFee).toString(),
+        [normalFee, mockedFee],
     );
 
     if (!account) return;
@@ -86,54 +128,56 @@ export const SendFeesForm = ({ accountKey, tokenContract, feeLevels }: SendFormP
                     name: RootStackRoutes.SendStack,
                     params: {
                         screen: SendStackRoutes.SendFees,
-                        params: { accountKey, tokenContract, feeLevels },
+                        params: { accountKey, tokenContract },
                     },
                 },
             },
         });
     });
 
-    const normalFee = feeLevels.normal as PrecomposedTransactionFinal; // user is not allowed to enter this screen if normal fee is not final
-    const transactionBytes = normalFee.bytes as number;
-
-    // If trezor-connect was not able to compose the fee level, we have calculate total amount locally.
-    const mockedFee = transactionBytes * Number(feePerUnit);
-    const mockedTotalAmount = mockedFee + (Number(normalFee.totalSpent) - Number(normalFee.fee));
-    const isSubmittable = selectedFeeLevelTransaction.type === 'final';
+    const isSubmittable = selectedFeeLevelTransaction?.type === 'final';
 
     return (
         <Form form={form}>
-            <RecipientsSummary
-                accountKey={accountKey}
-                tokenContract={tokenContract}
-                selectedFeeLevel={selectedFeeLevelTransaction}
-            />
-            <Box flex={1} justifyContent="space-between">
-                <VStack spacing="sp16">
-                    <VStack spacing="sp4">
-                        <Text variant="titleSmall">
-                            <Translation id="moduleSend.fees.description.title" />
-                        </Text>
-                        <Text>
-                            <Translation id="moduleSend.fees.description.body" />
-                        </Text>
+            <VStack spacing="sp32" flex={1}>
+                <RecipientsSummary
+                    accountKey={accountKey}
+                    tokenContract={tokenContract}
+                    selectedFeeLevel={selectedFeeLevelTransaction}
+                />
+                <VStack flex={1} justifyContent="space-between" spacing="sp24">
+                    <VStack spacing="sp16">
+                        <VStack spacing="sp4">
+                            <Text variant="titleSmall">
+                                <Translation id="moduleSend.fees.description.title" />
+                            </Text>
+                            <Text>
+                                <Translation id="moduleSend.fees.description.body" />
+                            </Text>
+                        </VStack>
+                        <VStack spacing="sp24">
+                            {selectedFeeLevel !== 'custom' && (
+                                <FeeOptionsList
+                                    feeLevels={feeLevels}
+                                    networkSymbol={account.symbol}
+                                    accountKey={accountKey}
+                                    tokenContract={tokenContract}
+                                />
+                            )}
+                            <CustomFee />
+                        </VStack>
                     </VStack>
-                    <FeeOptionsList
-                        feeLevels={feeLevels}
-                        networkSymbol={account.symbol}
+                    <FeesFooter
                         accountKey={accountKey}
+                        isSubmittable={isSubmittable}
+                        onSubmit={handleNavigateToReviewScreen}
+                        totalAmount={selectedFeeLevelTransaction?.totalSpent ?? mockedTotalAmount}
+                        fee={selectedFeeLevelTransaction?.fee ?? mockedFee}
+                        networkSymbol={account.symbol}
+                        tokenContract={tokenContract}
                     />
                 </VStack>
-                <FeesFooter
-                    accountKey={accountKey}
-                    isSubmittable={isSubmittable}
-                    onSubmit={handleNavigateToReviewScreen}
-                    totalAmount={selectedFeeLevelTransaction.totalSpent ?? mockedTotalAmount}
-                    fee={selectedFeeLevelTransaction.fee}
-                    networkSymbol={account.symbol}
-                    tokenContract={tokenContract}
-                />
-            </Box>
+            </VStack>
         </Form>
     );
 };

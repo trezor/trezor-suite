@@ -41,6 +41,7 @@ import { AccountBalanceScreenHeader } from '../components/SendScreenSubHeader';
 import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
 import { constructFormDraft } from '../utils';
 import { FeeLevelsMaxAmount } from '../types';
+import { storeFeeLevels } from '../sendFormSlice';
 
 const buttonWrapperStyle = prepareNativeStyle(utils => ({
     width: '100%',
@@ -193,10 +194,10 @@ export const SendOutputsScreen = ({
         );
 
         if (isFulfilled(response)) {
+            dispatch(storeFeeLevels({ feeLevels: response.payload }));
             navigation.navigate(SendStackRoutes.SendFees, {
                 accountKey,
                 tokenContract,
-                feeLevels: response.payload,
             });
 
             return;

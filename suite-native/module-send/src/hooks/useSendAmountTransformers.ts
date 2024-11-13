@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsAmountInSats, SettingsSliceRootState } from '@suite-native/settings';
 
-const decimalTransformer = (value: string) =>
+export const decimalTransformer = (value: string) =>
     value
         .replace(/,/g, '.') // remove all non-numeric characters
         .replace(/[^\d.]/g, '') // remove all non-numeric characters
@@ -11,7 +11,7 @@ const decimalTransformer = (value: string) =>
         .replace(/(?<=\..*)\./g, '') // keep only first appearance of the '.' symbol
         .replace(/^0+(?=\d)/g, ''); // remove all leading zeros except the first one
 
-const integerTransformer = (value: string) =>
+export const integerTransformer = (value: string) =>
     value
         .replace(/\D/g, '') // remove all non-digit characters
         .replace(/^0+/g, ''); // remove all leading zeros

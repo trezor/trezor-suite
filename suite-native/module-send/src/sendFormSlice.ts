@@ -1,6 +1,6 @@
-import { isAnyOf } from '@reduxjs/toolkit';
+import { isAnyOf, PayloadAction } from '@reduxjs/toolkit';
 
-import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { createSliceWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     SendState as CommonSendState,
     prepareSendFormReducer as prepareCommonSendFormReducer,
@@ -10,9 +10,17 @@ import {
     pushSendFormTransactionThunk,
     SendFormError,
 } from '@suite-common/wallet-core';
+import {
+    GeneralPrecomposedLevels,
+    GeneralPrecomposedTransaction,
+} from '@suite-common/wallet-types';
+import { BigNumber } from '@trezor/utils';
+
+import { NativeSupportedFeeLevel } from './types';
 
 type NativeSendState = CommonSendState & {
     error: null | SendFormError;
+    feeLevels: GeneralPrecomposedLevels;
 };
 
 export type NativeSendRootState = {
@@ -24,12 +32,20 @@ export type NativeSendRootState = {
 export const initialNativeState: NativeSendState = {
     ...commonInitialState,
     error: null,
+    feeLevels: {},
 };
 
 export const sendFormSlice = createSliceWithExtraDeps({
     name: 'send',
     initialState: initialNativeState,
-    reducers: {},
+    reducers: {
+        storeFeeLevels: (
+            state,
+            { payload }: PayloadAction<{ feeLevels: GeneralPrecomposedLevels }>,
+        ) => {
+            state.feeLevels = payload.feeLevels;
+        },
+    },
     extraReducers: (builder, extra) => {
         const commonSendFormReducer = prepareCommonSendFormReducer(extra);
         builder
@@ -59,3 +75,36 @@ export const sendFormSlice = createSliceWithExtraDeps({
             });
     },
 });
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<NativeSendRootState>();
+
+export const selectFeeLevels = (state: NativeSendRootState) => state.wallet.send.feeLevels;
+export const selectCustomFeeLevel = (
+    state: NativeSendRootState,
+): GeneralPrecomposedTransaction | undefined => state.wallet.send.feeLevels.custom;
+
+export const selectFeeLevelTransactionBytes = createMemoizedSelector(
+    [
+        selectFeeLevels,
+        (_state: NativeSendRootState, feeLevelLabel: NativeSupportedFeeLevel) => feeLevelLabel,
+    ],
+    (feeLevels, feeLevelLabel) => {
+        const feeLevel = feeLevels[feeLevelLabel];
+        if (feeLevel && feeLevel.type !== 'error') {
+            const { bytes, fee, feePerByte, feeLimit } = feeLevel;
+            if (bytes !== 0) {
+                return feeLevel.bytes;
+            }
+
+            // Ethereum-based fee level does not have bytes stored as attribute
+            // so we need to calculate it from fee, feePerByte and feeLimit.
+            if (fee && feePerByte && feeLimit) {
+                return BigNumber(fee).div(feePerByte).div(feeLimit).toNumber();
+            }
+        }
+
+        return 0;
+    },
+);
+
+export const { storeFeeLevels } = sendFormSlice.actions;

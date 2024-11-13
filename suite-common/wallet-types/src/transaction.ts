@@ -281,7 +281,7 @@ export type ExcludedUtxos = Record<string, 'low-anonymity' | 'dust' | undefined>
 export type FeeLevelLabel = FeeLevel['label'];
 
 export const isFinalPrecomposedTransaction = (
-    tx: GeneralPrecomposedTransaction,
+    tx?: GeneralPrecomposedTransaction,
 ): tx is PrecomposedTransactionFinal => {
-    return tx.type === 'final';
+    return !!tx && tx.type === 'final';
 };

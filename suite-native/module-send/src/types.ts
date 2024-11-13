@@ -13,8 +13,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export type StatefulReviewOutput = ReviewOutput & { state: ReviewOutputState };
 
-// TODO: add 'custom' in next send flow iteration
-export type NativeSupportedFeeLevel = Exclude<FeeLevelLabel, 'custom' | 'low'>;
+export type NativeSupportedFeeLevel = Exclude<FeeLevelLabel, 'low'>;
 
 export type SendAmountInputProps = {
     recipientIndex: number;

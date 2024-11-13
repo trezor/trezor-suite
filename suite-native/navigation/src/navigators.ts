@@ -4,7 +4,6 @@ import { ParsedURL } from 'expo-linking';
 
 import {
     AccountKey,
-    GeneralPrecomposedLevels,
     GeneralPrecomposedTransactionFinal,
     TokenAddress,
     XpubAddress,
@@ -79,7 +78,6 @@ export type SendStackParamList = {
         tokenContract?: TokenAddress;
     };
     [SendStackRoutes.SendFees]: {
-        feeLevels: GeneralPrecomposedLevels;
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
     };

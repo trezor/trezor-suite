@@ -14,6 +14,7 @@ import {
     GeneralPrecomposedTransaction,
     GeneralPrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
+    TokenAddress,
 } from '@suite-common/wallet-types';
 import { Text, HStack, VStack, Radio, Box } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
@@ -32,14 +33,15 @@ import { analytics, EventType } from '@suite-native/analytics';
 import { SendFeesFormValues } from '../sendFeesFormSchema';
 import { NativeSupportedFeeLevel } from '../types';
 import { FeeOptionErrorMessage } from './FeeOptionErrorMessage';
-import { updateDraftFeeLevelThunk } from '../sendFormThunks';
+import { updateSelectedFeeLevelThunk } from '../sendFormThunks';
 
 type FeeOptionProps = {
-    feeKey: SendFeesFormValues['feeLevel'];
+    feeKey: Exclude<SendFeesFormValues['feeLevel'], 'custom'>;
     feeLevel: GeneralPrecomposedTransactionFinal;
     networkSymbol: NetworkSymbol;
     transactionBytes: number;
     accountKey: AccountKey;
+    tokenContract?: TokenAddress;
     isInteractive?: boolean;
 };
 
@@ -47,7 +49,7 @@ const feeLabelsMap = {
     economy: 'moduleSend.fees.levels.low',
     normal: 'moduleSend.fees.levels.normal',
     high: 'moduleSend.fees.levels.high',
-} as const satisfies Record<NativeSupportedFeeLevel, TxKeyPath>;
+} as const satisfies Record<Exclude<NativeSupportedFeeLevel, 'custom'>, TxKeyPath>;
 
 const wrapperStyle = prepareNativeStyle(utils => ({
     overflow: 'hidden',
@@ -89,6 +91,7 @@ export const FeeOption = ({
     networkSymbol,
     transactionBytes,
     accountKey,
+    tokenContract,
     isInteractive = true,
 }: FeeOptionProps) => {
     const { utils, applyStyle } = useNativeStyles();
@@ -104,16 +107,6 @@ export const FeeOption = ({
     );
 
     const areFeeValuesComplete = isFinalPrecomposedTransaction(feeLevel);
-
-    const handleSelectFeeLevel = () => {
-        setValue('feeLevel', feeKey, {
-            shouldValidate: true,
-        });
-
-        analytics.report({ type: EventType.SendFeeLevelChanged, payload: { value: feeKey } });
-
-        dispatch(updateDraftFeeLevelThunk({ accountKey, feeLevel: feeKey }));
-    };
 
     const selectedLevel = watch('feeLevel');
     const isChecked = selectedLevel === feeKey;
@@ -155,6 +148,28 @@ export const FeeOption = ({
     });
 
     const formattedFeePerUnit = `${feePerUnit} ${feeUnits}`;
+
+    const handleSelectFeeLevel = () => {
+        setValue('feeLevel', feeKey, {
+            shouldValidate: true,
+        });
+        analytics.report({ type: EventType.SendFeeLevelChanged, payload: { value: feeKey } });
+        dispatch(
+            updateSelectedFeeLevelThunk({
+                accountKey,
+                tokenContract,
+                feeLevelLabel: feeKey,
+            }),
+        );
+
+        // Update also custom fee form so user can see the current values there.
+        setValue('customFeePerUnit', feePerUnit, {
+            shouldValidate: true,
+        });
+        setValue('customFeeLimit', feeLevel.feeLimit, {
+            shouldValidate: true,
+        });
+    };
 
     return (
         <Pressable onPress={handleSelectFeeLevel} disabled={!isInteractive}>

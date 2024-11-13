@@ -8,7 +8,7 @@ import Animated, {
 import { useSelector } from 'react-redux';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Text, Button, Box, Card, HStack, VStack } from '@suite-native/atoms';
+import { Text, Button, Card, HStack, VStack } from '@suite-native/atoms';
 import {
     CryptoToFiatAmountFormatter,
     CryptoAmountFormatter,
@@ -35,17 +35,10 @@ type FeesFooterProps = {
 };
 
 const CARD_BOTTOM_PADDING = 40;
-const BUTTON_ENTERING_DELAY = 45;
-
-const footerWrapperStyle = prepareNativeStyle(utils => ({
-    marginBottom: utils.spacings.sp16,
-}));
 
 const cardStyle = prepareNativeStyle(utils => ({
-    position: 'absolute',
-    bottom: 0,
     width: '100%',
-    paddingTop: utils.spacings.sp8,
+    paddingHorizontal: utils.spacings.sp8,
     backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
     borderColor: utils.colors.borderElevation0,
     borderWidth: utils.borders.widths.small,
@@ -164,7 +157,7 @@ export const FeesFooter = ({
     );
 
     return (
-        <Box style={applyStyle(footerWrapperStyle)}>
+        <>
             <Card style={applyStyle(cardStyle)}>
                 <Animated.View style={animatedFooterStyle}>
                     {tokenContract ? (
@@ -183,7 +176,7 @@ export const FeesFooter = ({
             {isSubmittable && (
                 <Animated.View
                     style={applyStyle(buttonWrapperStyle)}
-                    entering={FadeInDown.delay(BUTTON_ENTERING_DELAY)}
+                    entering={FadeInDown}
                     exiting={FadeOutDown}
                 >
                     <Button
@@ -197,6 +190,6 @@ export const FeesFooter = ({
                     </Button>
                 </Animated.View>
             )}
-        </Box>
+        </>
     );
 };

@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 
 import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
-import { VStack } from '@suite-native/atoms';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 
 import { SendFeesForm } from '../components/SendFeesForm';
@@ -11,7 +10,7 @@ import { AccountBalanceScreenHeader } from '../components/SendScreenSubHeader';
 export const SendFeesScreen = ({
     route: { params },
 }: StackProps<SendStackParamList, SendStackRoutes.SendFees>) => {
-    const { accountKey, tokenContract, feeLevels } = params;
+    const { accountKey, tokenContract } = params;
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -25,13 +24,7 @@ export const SendFeesScreen = ({
                 <AccountBalanceScreenHeader accountKey={accountKey} tokenContract={tokenContract} />
             }
         >
-            <VStack spacing="sp32" flex={1}>
-                <SendFeesForm
-                    accountKey={accountKey}
-                    tokenContract={tokenContract}
-                    feeLevels={feeLevels}
-                />
-            </VStack>
+            <SendFeesForm accountKey={accountKey} tokenContract={tokenContract} />
         </SendScreen>
     );
 };

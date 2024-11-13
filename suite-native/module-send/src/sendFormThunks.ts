@@ -24,6 +24,7 @@ import {
     FeeLevelLabel,
     FormState,
     GeneralPrecomposedTransactionFinal,
+    isFinalPrecomposedTransaction,
     TokenAddress,
 } from '@suite-common/wallet-types';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -31,6 +32,7 @@ import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 
 import { FeeLevelsMaxAmount } from './types';
+import { storeFeeLevels } from './sendFormSlice';
 
 const SEND_MODULE_PREFIX = '@suite-native/send';
 
@@ -199,14 +201,18 @@ export const calculateFeeLevelsMaxAmountThunk = createThunk<
     },
 );
 
-export const updateDraftFeeLevelThunk = createThunk(
-    `${SEND_MODULE_PREFIX}/updateDraftFeeLevelThunk`,
+export const updateSelectedFeeLevelThunk = createThunk(
+    `${SEND_MODULE_PREFIX}/updateSelectedFeeLevelThunk`,
     (
         {
             accountKey,
             tokenContract,
-            feeLevel,
-        }: { accountKey: AccountKey; tokenContract?: TokenAddress; feeLevel: FeeLevelLabel },
+            feeLevelLabel,
+        }: {
+            accountKey: AccountKey;
+            feeLevelLabel: FeeLevelLabel;
+            tokenContract?: TokenAddress;
+        },
         { dispatch, getState },
     ) => {
         const draft = selectSendFormDraftByKey(getState(), accountKey, tokenContract);
@@ -214,8 +220,66 @@ export const updateDraftFeeLevelThunk = createThunk(
         if (!draft) throw Error('Draft not found.');
         const draftCopy = { ...draft };
 
-        draftCopy.selectedFee = feeLevel;
+        draftCopy.selectedFee = feeLevelLabel;
 
         dispatch(sendFormActions.storeDraft({ accountKey, tokenContract, formState: draftCopy }));
+    },
+);
+
+export const calculateCustomFeeLevelThunk = createThunk(
+    `${SEND_MODULE_PREFIX}/calculateCustomFeeLevelThunk`,
+    async (
+        {
+            accountKey,
+            tokenContract,
+            feePerUnit,
+            feeLimit,
+        }: {
+            accountKey: AccountKey;
+            feePerUnit: string;
+            feeLimit?: string;
+            tokenContract?: TokenAddress;
+        },
+        { dispatch, getState },
+    ) => {
+        const account = selectAccountByKey(getState(), accountKey);
+        const feeInfo = selectNetworkFeeInfo(getState(), account?.symbol);
+
+        const draft = selectSendFormDraftByKey(getState(), accountKey, tokenContract);
+
+        if (!draft || !account || !feeInfo) throw Error('Draft not found.');
+
+        const network = getNetwork(account.symbol);
+
+        const draftCopy = { ...draft };
+
+        draftCopy.selectedFee = 'custom';
+        draftCopy.feePerUnit = feePerUnit;
+        if (feeLimit) {
+            draftCopy.feeLimit = feeLimit;
+        }
+
+        const response = await dispatch(
+            composeSendFormTransactionFeeLevelsThunk({
+                formState: draftCopy,
+                composeContext: {
+                    account,
+                    feeInfo,
+                    network,
+                },
+            }),
+        );
+
+        if (isRejected(response)) {
+            throw Error(response.payload?.message ?? 'Unable to compose fresh fee levels.');
+        }
+
+        const feeLevels = response.payload;
+        dispatch(sendFormActions.storeDraft({ accountKey, tokenContract, formState: draftCopy }));
+        dispatch(storeFeeLevels({ feeLevels }));
+
+        if (!isFinalPrecomposedTransaction(feeLevels.custom)) {
+            throw Error('Unable to compose custom fee level.');
+        }
     },
 );

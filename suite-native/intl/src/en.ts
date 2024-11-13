@@ -19,6 +19,7 @@ export const en = {
             gotIt: 'Got it',
             next: 'Next',
             tryAgain: 'Try again',
+            edit: 'Edit',
         },
         unknownError: 'Something went wrong',
         default: 'Default',
@@ -1015,9 +1016,28 @@ export const en = {
                 normal: 'Normal',
                 high: 'High',
             },
+            custom: {
+                addButton: 'Add custom fee',
+                bottomSheet: {
+                    title: 'Custom fee',
+                    minimumLabel: 'The minimum fee rate is {feePerUnit}',
+                    label: {
+                        feeRate: 'Fee rate',
+                        gasLimit: 'Gas limit',
+                        gasPrice: 'Gas price',
+                    },
+                    total: 'Total fee',
+                    confirmButton: 'Confirm custom fee',
+                },
+                card: {
+                    label: 'Custom',
+                    ethereumValues: 'Limit: {gasLimit} • Price: {gasPrice}',
+                },
+            },
             error: 'You don’t have enough balance to use this fee.',
             totalAmount: 'Total amount',
             submitButton: 'Review and sign',
+            total: 'Total fee',
         },
         review: {
             confirmOnDeviceMessage: 'Go to your Trezor and confirm the amounts & recipients.',
