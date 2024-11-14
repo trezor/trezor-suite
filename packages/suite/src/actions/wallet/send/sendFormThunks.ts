@@ -16,7 +16,7 @@ import {
     selectSendFormDrafts,
     signTransactionThunk,
     sendFormActions,
-    selectSendFormDraftByKey,
+    selectPrecomposedSendForm,
 } from '@suite-common/wallet-core';
 import { isCardanoTx, isRbfTransaction } from '@suite-common/wallet-utils';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
@@ -141,15 +141,14 @@ const applySendFormMetadataLabelsThunk = createThunk(
 
         if (!metadata.enabled) return;
 
-        const formDraft = selectSendFormDraftByKey(getState(), selectedAccount.key);
-
+        const precomposedForm = selectPrecomposedSendForm(getState());
         const outputsPermutation = isCardanoTx(selectedAccount, precomposedTransaction)
             ? precomposedTransaction?.outputs.map((_o, i) => i) // cardano preserves order of outputs
             : precomposedTransaction?.outputsPermutation;
 
         const synchronize = getSynchronize();
 
-        formDraft?.outputs
+        precomposedForm?.outputs
             // create array of metadata objects
             .map((formOutput, index) => {
                 const { label } = formOutput;

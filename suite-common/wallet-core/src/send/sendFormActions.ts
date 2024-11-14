@@ -27,7 +27,10 @@ const removeDraft = createAction(
 
 const storePrecomposedTransaction = createAction(
     `${SEND_MODULE_PREFIX}/store-precomposed-transaction`,
-    (payload: { precomposedTransaction: GeneralPrecomposedTransactionFinal }) => ({
+    (payload: {
+        formState: FormState;
+        precomposedTransaction: GeneralPrecomposedTransactionFinal;
+    }) => ({
         payload,
     }),
 );

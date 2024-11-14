@@ -68,6 +68,7 @@ describe('sendFormReducer', () => {
 
     it('SEND.REQUEST_SIGN_TRANSACTION - save', () => {
         const action: Action = sendFormActions.storePrecomposedTransaction({
+            formState: formStateMock,
             precomposedTransaction: precomposedTxMock,
         });
 
@@ -94,12 +95,14 @@ describe('sendFormReducer', () => {
             {
                 ...initialState,
                 serializedTx: formSignedTxMock,
+                precomposedForm: formStateMock,
                 precomposedTx: precomposedTxMock,
             },
             action,
         );
         expect(state.serializedTx).toBeUndefined();
         expect(state.precomposedTx).toBeUndefined();
+        expect(state.precomposedForm).toBeUndefined();
     });
 
     it('SEND.SEND_RAW', () => {
@@ -120,12 +123,14 @@ describe('sendFormReducer', () => {
                 ...initialState,
                 sendRaw: true,
                 precomposedTx: precomposedTxMock,
+                precomposedForm: formStateMock,
                 serializedTx: formSignedTxMock,
             },
             action,
         );
         expect(state.sendRaw).toBeUndefined();
         expect(state.precomposedTx).toBeUndefined();
+        expect(state.precomposedForm).toBeUndefined();
         expect(state.serializedTx).toBeUndefined();
     });
 });
