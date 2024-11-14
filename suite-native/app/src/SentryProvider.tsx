@@ -2,7 +2,7 @@ import { useEffect, ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import * as Sentry from '@sentry/react-native';
-import { captureConsoleIntegration } from '@sentry/integrations';
+import { captureConsoleIntegration } from '@sentry/core';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { getEnv, isDebugEnv, isDevelopEnv } from '@suite-native/config';

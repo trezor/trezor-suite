@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 import React, { useCallback, useEffect } from 'react';
-import { StyleSheet, Dimensions, TextStyle, DimensionValue } from 'react-native';
+import { StyleSheet, Dimensions, DimensionValue } from 'react-native';
 import Animated, {
     Easing,
     interpolate,
@@ -41,7 +41,6 @@ export const Snowflake: React.FC<{
     shakeDuration?: number;
     fallDelay: number;
     shakeDelay: number;
-    style?: TextStyle;
 }> = props => {
     const size = props.size || 12;
     const amplitude = props.amplitude || 60;
@@ -105,15 +104,11 @@ export const Snowflake: React.FC<{
 
     if (props.glyph === 'btc') {
         return (
-            <Animated.View style={[styles.text, animatedStyle, props.style]}>
+            <Animated.View style={[styles.text, animatedStyle]}>
                 <CryptoIcon symbol="btc" size={13} />
             </Animated.View>
         );
     }
 
-    return (
-        <Animated.Text style={[styles.text, animatedStyle, props.style]}>
-            {props.glyph || '❅'}
-        </Animated.Text>
-    );
+    return <Animated.Text style={[styles.text, animatedStyle]}>{props.glyph || '❅'}</Animated.Text>;
 };

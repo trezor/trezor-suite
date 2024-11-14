@@ -10,12 +10,10 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@testing-library/react-native": "^11.0.0",
+        "@testing-library/react-native": "^12.8.1",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "18.2.0",
-        "react-native-gesture-handler": "^2.20.2",
-        "react-native-reanimated": "3.16.1",
         "react-native-safe-area-context": "^4.14.0"
     }
 }

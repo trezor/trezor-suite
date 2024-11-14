@@ -3,7 +3,7 @@ If you found yourself here, congratulations! You have found an easter egg.
 Merry Christmas and Happy New Year!
 */
 import React, { useCallback, useEffect } from 'react';
-import { AppState, Dimensions, StyleSheet, TextStyle, View } from 'react-native';
+import { AppState, Dimensions, StyleSheet, View } from 'react-native';
 
 import { Snowflake } from './Snowflake';
 
@@ -40,9 +40,7 @@ const isChristmas = () => {
     return month === 11 && day > 22 && day < 26;
 };
 
-export const Snow: React.FC<{
-    snowflakesStyle?: TextStyle;
-}> = ({ snowflakesStyle }) => {
+export const Snow: React.FC = () => {
     const [letItSnow, setLetItSnow] = React.useState(false);
 
     const tryToMakeItSnow = useCallback(() => {
@@ -84,7 +82,6 @@ export const Snow: React.FC<{
                         offset={offset}
                         fallDelay={fallDelay}
                         shakeDelay={shakeDelay}
-                        style={snowflakesStyle}
                     />
                 );
             })}

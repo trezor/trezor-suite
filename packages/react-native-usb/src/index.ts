@@ -1,6 +1,3 @@
-/* eslint-disable no-console */
-import { NativeModulesProxy, EventEmitter, Subscription } from 'expo-modules-core';
-
 import { ReactNativeUsbModule } from './ReactNativeUsbModule';
 import { NativeDevice, OnConnectEvent, WebUSBDevice } from './ReactNativeUsb.types';
 
@@ -8,11 +5,10 @@ const DEBUG_LOGS = false;
 
 const debugLog = (...args: any[]) => {
     if (DEBUG_LOGS) {
+        // eslint-disable-next-line no-console
         console.log(...args);
     }
 };
-
-const emitter = new EventEmitter(ReactNativeUsbModule ?? NativeModulesProxy.ReactNativeUsb);
 
 const open = (deviceName: string) => ReactNativeUsbModule.open(deviceName);
 
@@ -105,53 +101,51 @@ const createWebUSBDevice = (device: NativeDevice): WebUSBDevice => ({
 // and not send onConnect event if device is already connected.
 const connectedDevices = new Map<string, WebUSBDevice>();
 
-export function onDeviceConnected(listener: (event: OnConnectEvent) => void): Subscription {
-    return emitter.addListener<NativeDevice>('onDeviceConnect', event => {
-        if (!event) {
-            console.error('JS: USB onDeviceConnect: event is null');
-            // just for debugging purposes now
-            alert('JS: USB onDeviceConnect: event is null');
+const blankEvent = {
+    bubbles: false,
+    cancelBubble: false,
+    cancelable: false,
+} as Event;
+
+export function onDeviceConnected(listener: (event: OnConnectEvent) => void) {
+    return ReactNativeUsbModule.addListener('onDeviceConnect', (device: NativeDevice | null) => {
+        if (!device) {
+            debugLog('JS: USB onDeviceConnect: device is null');
+            console.error('JS: USB onDeviceConnect: device is null');
+            alert('JS: USB onDeviceConnect: device is null');
 
             return;
         }
 
-        if (connectedDevices.has(event.deviceName)) {
+        if (connectedDevices.has(device.deviceName)) {
+            console.warn('JS: USB onDeviceConnect: device already connected');
             debugLog('JS: USB onDeviceConnect: device already connected');
 
             return;
         }
 
-        const eventPayload = {
-            device: createWebUSBDevice(event as NativeDevice),
-        };
+        const webUSBDevice = createWebUSBDevice(device);
+        connectedDevices.set(device.deviceName, webUSBDevice);
 
-        debugLog('JS: USB onDeviceConnect', eventPayload);
-
-        connectedDevices.set(event.deviceName, eventPayload.device);
-
-        return listener(eventPayload as any);
+        const event = { device: webUSBDevice, ...blankEvent } as OnConnectEvent;
+        listener(event);
     });
 }
 
-export function onDeviceDisconnect(listener: (event: OnConnectEvent) => void): Subscription {
-    return emitter.addListener<NativeDevice>('onDeviceDisconnect', event => {
-        if (!event) {
-            console.error('JS: USB onDeviceConnect: event is null');
-            // just for debugging purposes now
-            alert('JS: USB onDeviceConnect: event is null');
+export function onDeviceDisconnect(listener: (event: OnConnectEvent) => void) {
+    return ReactNativeUsbModule.addListener('onDeviceDisconnect', (device: NativeDevice | null) => {
+        if (!device) {
+            debugLog('JS: USB onDeviceDisconnect: device is null');
+            console.error('JS: USB onDeviceDisconnect: device is null');
+            alert('JS: USB onDeviceDisconnect: device is null');
 
             return;
         }
 
-        const eventPayload = {
-            device: createWebUSBDevice(event as NativeDevice),
-        };
-
-        debugLog('JS: USB onDeviceDisconnect', eventPayload);
-
-        connectedDevices.delete(event.deviceName);
-
-        return listener(eventPayload as any);
+        const webUSBDevice = createWebUSBDevice(device);
+        connectedDevices.delete(device.deviceName);
+        const event = { device: webUSBDevice, ...blankEvent } as OnConnectEvent;
+        listener(event);
     });
 }
 
