@@ -6,7 +6,7 @@ import { controller as TrezorUserEnvLink, env } from './controller';
 import { pathLength, descriptor as expectedDescriptor } from './expect';
 import { assertSuccess } from '../api/utils';
 
-const emulatorStartOpts = { model: 'T2T1', version: '2-main', wipe: true } as const;
+const emulatorStartOpts = { model: 'T2T1', version: '2-latest', wipe: true } as const;
 
 describe('bridge', () => {
     let bridge: BridgeTransport;
