@@ -1,5 +1,4 @@
-const TrezorConnect = require('@trezor/connect').default;
-const { TRANSPORT_EVENT, DEVICE_EVENT } = require('@trezor/connect');
+import TrezorConnect, { TRANSPORT_EVENT, DEVICE_EVENT } from '@trezor/connect';
 
 /**
  * Please note, that this example needs:
@@ -16,16 +15,19 @@ const runExample = async () => {
 
     // this event will be fired when bridge starts or stops or there is no bridge running
     TrezorConnect.on(TRANSPORT_EVENT, event => {
+        // eslint-disable-next-line
         console.log(event);
     });
 
     // this event will be fired when device connects, disconnects or changes
     TrezorConnect.on(DEVICE_EVENT, event => {
+        // eslint-disable-next-line
         console.log(event);
     });
 
     const result = await TrezorConnect.getFeatures();
 
+    // eslint-disable-next-line
     console.log(result);
 
     if (!result.success) {
