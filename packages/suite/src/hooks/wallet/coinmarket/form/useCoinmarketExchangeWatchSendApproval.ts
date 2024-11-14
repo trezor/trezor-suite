@@ -3,9 +3,10 @@ import { useTimeoutFn, useUnmount } from 'react-use';
 
 import { ExchangeTrade } from 'invity-api';
 
-import { useDispatch } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
+import { useDispatch } from 'src/hooks/suite';
+import { saveSelectedQuote } from 'src/actions/wallet/coinmarketExchangeActions';
 
 interface CoinmarketUseExchangeWatchSendApprovalProps {
     selectedQuote?: ExchangeTrade;
@@ -49,19 +50,24 @@ export const useCoinmarketExchangeWatchSendApproval = ({
                 refreshCount,
             );
 
-            if (!selectedQuote.dexTx) return;
-            if (!response.status || response.status === selectedQuote.status) return;
+            if (response.status && response.status !== selectedQuote.status) {
+                const updatedSelectedQuote = {
+                    ...selectedQuote,
+                    status: response.status,
+                    error: response.error,
+                    approvalType: undefined,
+                };
 
-            await confirmTrade(selectedQuote.dexTx.from, undefined, {
-                ...selectedQuote,
-                status: response.status,
-                error: response.error,
-                approvalType: undefined,
-            });
+                dispatch(saveSelectedQuote(updatedSelectedQuote));
+
+                if (selectedQuote.dexTx) {
+                    await confirmTrade(selectedQuote.dexTx.from, undefined, updatedSelectedQuote);
+                }
+            }
 
             resetRefresh();
         };
 
         watchTradeAsync();
-    }, [refreshCount, selectedQuote, cancelRefresh, confirmTrade, resetRefresh, dispatch]);
+    }, [refreshCount, selectedQuote, cancelRefresh, resetRefresh, dispatch, confirmTrade]);
 };

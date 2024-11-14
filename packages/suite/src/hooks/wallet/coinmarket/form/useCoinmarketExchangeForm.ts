@@ -342,86 +342,100 @@ export const useCoinmarketExchangeForm = ({
         }
     };
 
-    const confirmTrade = async (address: string, extraField?: string, trade?: ExchangeTrade) => {
-        analytics.report({
-            type: EventType.CoinmarketConfirmTrade,
-            payload: {
-                type,
-            },
-        });
+    const confirmTrade = useCallback(
+        async (address: string, extraField?: string, trade?: ExchangeTrade) => {
+            analytics.report({
+                type: EventType.CoinmarketConfirmTrade,
+                payload: {
+                    type,
+                },
+            });
 
-        let ok = false;
-        const { address: refundAddress } = getUnusedAddressFromAccount(account);
-        if (!trade) {
-            trade = selectedQuote;
-        }
-        if (!trade || !refundAddress) return false;
+            let ok = false;
+            const { address: refundAddress } = getUnusedAddressFromAccount(account);
+            if (!trade) {
+                trade = selectedQuote;
+            }
+            if (!trade || !refundAddress) return false;
 
-        if (trade.isDex && !trade.fromAddress) {
-            trade = { ...trade, fromAddress: refundAddress };
-        }
+            if (trade.isDex && !trade.fromAddress) {
+                trade = { ...trade, fromAddress: refundAddress };
+            }
 
-        setCallInProgress(true);
-        const response = await invityAPI.doExchangeTrade({
-            trade,
-            receiveAddress: address,
-            refundAddress,
-            extraField,
-        });
+            setCallInProgress(true);
+            const response = await invityAPI.doExchangeTrade({
+                trade,
+                receiveAddress: address,
+                refundAddress,
+                extraField,
+            });
 
-        if (!response) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: 'No response from the server',
-                }),
-            );
-        } else if (
-            response.error ||
-            !response.status ||
-            !response.orderId ||
-            response.status === 'ERROR'
-        ) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: response.error || 'Error response from the server',
-                }),
-            );
-            dispatch(coinmarketExchangeActions.saveSelectedQuote(response));
-        } else if (response.status === 'APPROVAL_REQ' || response.status === 'APPROVAL_PENDING') {
-            dispatch(coinmarketExchangeActions.saveSelectedQuote(response));
-            setExchangeStep('SEND_APPROVAL_TRANSACTION');
-            ok = true;
-        } else if (response.status === 'CONFIRM') {
-            dispatch(coinmarketExchangeActions.saveSelectedQuote(response));
-            if (response.isDex) {
-                if (exchangeStep === 'RECEIVING_ADDRESS' || trade.approvalType === 'ZERO') {
-                    setExchangeStep('SEND_APPROVAL_TRANSACTION');
+            if (!response) {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'error',
+                        error: 'No response from the server',
+                    }),
+                );
+            } else if (
+                response.error ||
+                !response.status ||
+                !response.orderId ||
+                response.status === 'ERROR'
+            ) {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'error',
+                        error: response.error || 'Error response from the server',
+                    }),
+                );
+                dispatch(coinmarketExchangeActions.saveSelectedQuote(response));
+            } else if (
+                response.status === 'APPROVAL_REQ' ||
+                response.status === 'APPROVAL_PENDING'
+            ) {
+                dispatch(coinmarketExchangeActions.saveSelectedQuote(response));
+                setExchangeStep('SEND_APPROVAL_TRANSACTION');
+                ok = true;
+            } else if (response.status === 'CONFIRM') {
+                dispatch(coinmarketExchangeActions.saveSelectedQuote(response));
+                if (response.isDex) {
+                    if (exchangeStep === 'RECEIVING_ADDRESS' || trade.approvalType === 'ZERO') {
+                        setExchangeStep('SEND_APPROVAL_TRANSACTION');
+                    } else {
+                        setExchangeStep('SEND_TRANSACTION');
+                    }
                 } else {
                     setExchangeStep('SEND_TRANSACTION');
                 }
+                ok = true;
             } else {
-                setExchangeStep('SEND_TRANSACTION');
+                // CONFIRMING, SUCCESS
+                dispatch(
+                    coinmarketExchangeActions.saveTrade(
+                        response,
+                        selectedAccount.account,
+                        new Date().toISOString(),
+                    ),
+                );
+                dispatch(coinmarketExchangeActions.saveTransactionId(response.orderId));
+                ok = true;
+                navigateToExchangeDetail();
             }
-            ok = true;
-        } else {
-            // CONFIRMING, SUCCESS
-            dispatch(
-                coinmarketExchangeActions.saveTrade(
-                    response,
-                    selectedAccount.account,
-                    new Date().toISOString(),
-                ),
-            );
-            dispatch(coinmarketExchangeActions.saveTransactionId(response.orderId));
-            ok = true;
-            navigateToExchangeDetail();
-        }
-        setCallInProgress(false);
+            setCallInProgress(false);
 
-        return ok;
-    };
+            return ok;
+        },
+        [
+            account,
+            selectedQuote,
+            exchangeStep,
+            selectedAccount.account,
+            dispatch,
+            setCallInProgress,
+            navigateToExchangeDetail,
+        ],
+    );
 
     const sendDexTransaction = async () => {
         if (
@@ -592,7 +606,7 @@ export const useCoinmarketExchangeForm = ({
         }
 
         checkQuotesTimer(handleChange);
-    });
+    }, [quotesRequest, isNotFormPage, navigateToExchangeForm, checkQuotesTimer, handleChange]);
 
     useEffect(() => {
         return () => {

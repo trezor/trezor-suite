@@ -23,6 +23,9 @@ import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { useCoinmarketExchangeWatchSendApproval } from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeWatchSendApproval';
+import { useDispatch } from 'src/hooks/suite';
+import { saveSelectedQuote } from 'src/actions/wallet/coinmarketExchangeActions';
+import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 // add APPROVED means no approval request is necessary
 type ExtendedDexApprovalType = DexApprovalType | 'APPROVED';
@@ -32,6 +35,7 @@ const BreakableValue = styled.span`
 `;
 
 export const CoinmarketOfferExchangeSendApproval = () => {
+    const dispatch = useDispatch();
     const {
         account,
         callInProgress,
@@ -62,9 +66,10 @@ export const CoinmarketOfferExchangeSendApproval = () => {
         exchangeInfo?.providerInfos[exchange]?.companyName || selectedQuote.exchange;
 
     const isFullApproval = !(Number(selectedQuote.preapprovedStringAmount) > 0);
-    const isToken = selectedQuote.send !== account.symbol.toUpperCase();
 
     if (!selectedQuote.send) return null;
+
+    const isToken = parseCryptoId(selectedQuote.send)?.contractAddress !== undefined;
 
     if (isFullApproval && approvalType === 'ZERO') {
         setApprovalType('MINIMAL');
@@ -79,20 +84,32 @@ export const CoinmarketOfferExchangeSendApproval = () => {
     const selectApprovalValue = async (type: ExtendedDexApprovalType) => {
         setApprovalType(type);
         if (type !== 'APPROVED') {
-            await confirmTrade(dexTx.from, undefined, {
+            const updatedSelectedQuote = {
                 ...selectedQuote,
                 approvalType: type,
-            });
+            };
+
+            dispatch(saveSelectedQuote(updatedSelectedQuote));
+
+            await confirmTrade(dexTx.from, undefined, updatedSelectedQuote);
         }
     };
 
     // if the last step was change in approval, we have to recompute the swap request
     const proceedToSwap = async () => {
         if (selectedQuote.approvalType) {
-            const confirmedTrade = await confirmTrade(dexTx.from, undefined, {
+            const updatedSelectedQuote = {
                 ...selectedQuote,
                 approvalType: undefined,
-            });
+            };
+            dispatch(
+                saveSelectedQuote({
+                    ...selectedQuote,
+                    approvalType: undefined,
+                }),
+            );
+
+            const confirmedTrade = await confirmTrade(dexTx.from, undefined, updatedSelectedQuote);
 
             if (!confirmedTrade) {
                 return;
