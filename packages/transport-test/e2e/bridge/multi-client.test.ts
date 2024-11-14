@@ -28,7 +28,7 @@ const getDescriptor = (descriptor: Partial<Descriptor>): Descriptor => {
     return d;
 };
 
-const emulatorStartOpts = { model: 'T2T1', version: '2-main', wipe: true } as const;
+const emulatorStartOpts = { model: 'T2T1', version: '2-latest', wipe: true } as const;
 
 describe('bridge', () => {
     let bridge1: BridgeTransport;
