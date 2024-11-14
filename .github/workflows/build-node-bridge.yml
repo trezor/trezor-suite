@@ -12,6 +12,7 @@ on:
 
 jobs:
   node-bridge-bin-js:
+    if: github.repository == 'trezor/trezor-suite'
     name: Build node-bridge bin.js file
     runs-on: ubuntu-latest
     steps:
