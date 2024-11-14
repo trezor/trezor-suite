@@ -13,7 +13,11 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 
-import { NUMBER_OF_POINTS, isLocalBalanceHistoryCoin } from './constants';
+import {
+    NUMBER_OF_POINTS,
+    isLocalBalanceHistoryCoin,
+    isIgnoredBalanceHistoryCoin,
+} from './constants';
 import {
     findOldestBalanceMovementTimestamp,
     getTimestampsInTimeFrame,
@@ -153,6 +157,12 @@ const getAccountBalanceHistory = async ({
     }
 
     const getBalanceHistory = async () => {
+        if (isIgnoredBalanceHistoryCoin(coin)) {
+            return {
+                main: [],
+                tokens: {},
+            };
+        }
         if (isLocalBalanceHistoryCoin(coin)) {
             const allTransactions = await dispatch(
                 fetchTransactionsFromNowUntilTimestamp({

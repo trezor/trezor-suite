@@ -10,7 +10,7 @@ import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockch
 import TrezorConnect from '@trezor/connect';
 
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
-import { isLocalBalanceHistoryCoin } from './constants';
+import { isLocalBalanceHistoryCoin, isIgnoredBalanceHistoryCoin } from './constants';
 import {
     AccountHistoryMovementItem,
     AccountItem,
@@ -137,6 +137,9 @@ export const getAccountMovementEvents = async ({
     const tokenAddress = tokensFilter?.[0]; // This is only for graph on detail screen where we have always only one token
 
     const getBalanceHistory = async () => {
+        if (isIgnoredBalanceHistoryCoin(coin)) {
+            return [];
+        }
         if (isLocalBalanceHistoryCoin(coin)) {
             const allTransactions = await dispatch(
                 fetchTransactionsFromNowUntilTimestamp({
