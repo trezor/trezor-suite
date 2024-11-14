@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2024-09-26T00:00:00+00:00",
-    "sequence": 63,
+    "timestamp": "2024-11-14T00:00:00+00:00",
+    "sequence": 64,
     "actions": [
         {
             "conditions": [
@@ -107,7 +107,7 @@
             ],
             "message": {
                 "id": "c8ca8958-7868-467f-9278-f072edc234ac",
-                "priority": 92,
+                "priority": 91,
                 "dismissible": true,
                 "variant": "info",
                 "category": "banner",
@@ -143,6 +143,64 @@
                         "tr": "Daha Fazla Bilgi",
                         "pt": "Saiba Mais",
                         "uk": "Дізнатись більше"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "matic": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "<=24.9.2",
+                        "mobile": "!",
+                        "web": "*"
+                    }
+                }
+            ],
+            "message": {
+                "id": "2b0c9f45-2702-4f8a-a324-84a4e6473037",
+                "priority": 92,
+                "dismissible": true,
+                "variant": "info",
+                "category": "banner",
+                "content": {
+                    "en-GB": "If you encounter any issues syncing your Polygon PoS balance, please update your Trezor Suite to the latest version.",
+                    "en": "If you encounter any issues syncing your Polygon PoS balance, please update your Trezor Suite to the latest version.",
+                    "es": " ",
+                    "cs": "Pokud narazíte na problémy se synchronizací vašeho zůstatku Polygon PoS, aktualizujte svůj Trezor Suite na nejnovější verzi.",
+                    "ru": "Если у вас возникли проблемы с синхронизацией баланса Polygon PoS, обновите Trezor Suite до последней версии.",
+                    "ja": "Polygon PoSの残高の同期に問題がある場合は、Trezor Suiteを最新バージョンに更新してください。",
+                    "hu": "Ha bármilyen problémába ütközik a Polygon PoS egyenlegének szinkronizálásakor, frissítse a Trezor Suite alkalmazást a legújabb verzióra.",
+                    "it": "Se riscontri problemi di sincronizzazione del saldo Polygon PoS, aggiorna la tua Trezor Suite all'ultima versione.",
+                    "fr": "Si vous rencontrez des problèmes de synchronisation de votre solde Polygon PoS, veuillez mettre à jour votre Trezor Suite vers la dernière version.",
+                    "de": "Wenn Sie Probleme beim Synchronisieren Ihres Polygon PoS-Guthabens haben, aktualisieren Sie Ihre Trezor Suite auf die neueste Version.",
+                    "tr": "Polygon PoS bakiyenizi senkronize etme konusunda herhangi bir sorunla karşılaşırsanız, Trezor Suite'inizi en son sürüme güncelleyin.",
+                    "pt": "Se encontrar problemas ao sincronizar o saldo do seu Polygon PoS, atualize o seu Trezor Suite para a versão mais recente.",
+                    "uk": "Якщо у вас виникли проблеми з синхронізацією балансу Polygon PoS, оновіть ваш Trezor Suite до останньої версії."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "settings-index",
+                    "anchor": "@general-settings/version-with-update",
+                    "label": {
+                        "en-GB": "Update Suite",
+                        "en": "Update Suite",
+                        "es": "Actualizar Suite",
+                        "cs": "Aktualizovat Suite",
+                        "ru": "Обновить Suite",
+                        "ja": "Suiteのアップデート",
+                        "hu": "Frissítés Suite",
+                        "it": "Suite di aggiornamento",
+                        "fr": "Mettre à jour Suite",
+                        "de": "Suite aktualisieren",
+                        "tr": "Suite'i Güncelle",
+                        "pt": "Atualizar Suite",
+                        "uk": "Оновити Suite"
                     }
                 }
             }
