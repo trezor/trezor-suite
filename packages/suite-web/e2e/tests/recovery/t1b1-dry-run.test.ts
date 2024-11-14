@@ -1,26 +1,63 @@
 // @group_device-management
 
-describe.skip('Recovery - dry run', () => {
+import { SeedCheckType } from '../../support/enums/seedCheckType';
+import { onCheckSeedPage } from '../../support/pageObjects/checkSeedObject';
+import { onSettingsDevicePage } from '../../support/pageObjects/settings/settingsDeviceObject';
+import { onSettingsMenu } from '../../support/pageObjects/settings/settingsMenuObject';
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+import { onWordInputPage } from '../../support/pageObjects/wordInputObject';
+
+const mnemonic = [
+    'nasty',
+    'answer',
+    'gentle',
+    'inform',
+    'unaware',
+    'abandon',
+    'regret',
+    'supreme',
+    'dragon',
+    'gravity',
+    'behind',
+    'lava',
+    'dose',
+    'pilot',
+    'garden',
+    'into',
+    'dynamic',
+    'outer',
+    'hard',
+    'speed',
+    'luxury',
+    'run',
+    'truly',
+    'armed',
+];
+
+function confirmSuccessOnDevice(): void {
+    cy.task('pressYes');
+}
+
+describe('Recovery T1B1 - dry run', () => {
     beforeEach(() => {
         cy.task('startEmu', { model: 'T1B1', version: '1-latest', wipe: true });
         cy.wait(2000);
-        cy.task('setupEmu', { needs_backup: false });
+        cy.task('setupEmu', { needs_backup: false, mnemonic: mnemonic.join(' ') });
         cy.task('startBridge');
-        cy.viewport(1440, 2560).resetDb();
-        cy.prefixedVisit('/settings/device');
+        cy.viewport('macbook-13').resetDb();
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        onNavBar.openSettings();
+        onSettingsMenu.openDeviceSettings();
     });
 
-    it('Dry run with T1B1', () => {
-        cy.getTestElement('@settings/device/check-seed-button').click();
-        cy.getTestElement('@recovery/user-understands-checkbox').click();
-        cy.getTestElement('@recovery/start-button').click();
+    it('Standard dry run', () => {
+        onSettingsDevicePage.openSeedCheck();
+        onCheckSeedPage.initCheck(SeedCheckType.Standard, 24);
+        onWordInputPage.inputMnemonicT1B1(mnemonic);
 
-        cy.getTestElement('@recover/select-count/24').click();
-        cy.getTestElement('@recover/select-type/advanced').click();
-        cy.task('pressYes');
-        cy.getTestElement('@recovery/word-input-advanced/1');
+        confirmSuccessOnDevice();
 
-        // todo: elaborate more, seems like finally T1B1 tests are stable so it would make finally sense to finish this
+        onCheckSeedPage.verifyCheckSuccessful();
     });
 });

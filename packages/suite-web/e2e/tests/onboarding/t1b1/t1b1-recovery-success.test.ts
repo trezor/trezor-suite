@@ -58,17 +58,7 @@ describe('Onboarding - recover wallet T1B1', () => {
             cy.task('pressYes');
         });
 
-        cy.step('Input mnemonic', () => {
-            for (let i = 0; i < 24; i++) {
-                cy.task('getDebugState').then(state => {
-                    // @ts-expect-error
-                    const position = state.recovery_word_pos - 1;
-                    onWordInputPage.inputWord(mnemonic[position]);
-                });
-
-                cy.wait(500);
-            }
-        });
+        onWordInputPage.inputMnemonicT1B1(mnemonic);
 
         cy.step('Finalize recovery, skip pin and check success', () => {
             onOnboardingPage.continueRecovery();

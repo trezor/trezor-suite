@@ -1,6 +1,10 @@
 /// <reference types="cypress" />
 
 class SettingsDevicePage {
+    openSeedCheck(): void {
+        cy.getTestElement('@settings/device/check-seed-button').click();
+    }
+
     openCreateMultiShareBackup(): void {
         cy.getTestElement('@settings/device/create-multi-share-backup-button')
             .should('be.visible')
