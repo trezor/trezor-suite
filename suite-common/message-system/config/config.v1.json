@@ -171,7 +171,7 @@
                 "content": {
                     "en-GB": "If you encounter any issues syncing your Polygon PoS balance, please update your Trezor Suite to the latest version.",
                     "en": "If you encounter any issues syncing your Polygon PoS balance, please update your Trezor Suite to the latest version.",
-                    "es": " ",
+                    "es": "Si encuentras algún problema al sincronizar tu saldo de Polygon PoS, por favor actualiza tu Trezor Suite a la última versión.",
                     "cs": "Pokud narazíte na problémy se synchronizací vašeho zůstatku Polygon PoS, aktualizujte svůj Trezor Suite na nejnovější verzi.",
                     "ru": "Если у вас возникли проблемы с синхронизацией баланса Polygon PoS, обновите Trezor Suite до последней версии.",
                     "ja": "Polygon PoSの残高の同期に問題がある場合は、Trezor Suiteを最新バージョンに更新してください。",
