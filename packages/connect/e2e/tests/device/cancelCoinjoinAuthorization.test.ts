@@ -12,13 +12,13 @@ describe('TrezorConnect.cancelCoinjoinAuthorization', () => {
 
     beforeEach(async () => {
         // restart connect for each test (working with event listeners)
-        await TrezorConnect.dispose();
+        TrezorConnect.dispose();
         await initTrezorConnect(controller, { debug: false });
     });
 
-    afterAll(async () => {
+    afterAll(() => {
         controller.dispose();
-        await TrezorConnect.dispose();
+        TrezorConnect.dispose();
     });
 
     conditionalTest(['1', '<2.5.4'], 'Cancel authorization works', async () => {

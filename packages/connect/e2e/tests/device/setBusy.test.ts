@@ -15,9 +15,9 @@ describe('TrezorConnect.setBusy', () => {
         await initTrezorConnect(controller);
     });
 
-    afterAll(async () => {
+    afterAll(() => {
         controller.dispose();
-        await TrezorConnect.dispose();
+        TrezorConnect.dispose();
     });
 
     conditionalTest(['1', '<2.5.3'], 'setBusy timeout', async () => {

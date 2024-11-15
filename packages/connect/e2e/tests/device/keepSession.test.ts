@@ -5,7 +5,7 @@ const controller = getController();
 
 describe('keepSession common param', () => {
     beforeAll(async () => {
-        await TrezorConnect.dispose();
+        TrezorConnect.dispose();
         await setup(controller, {
             mnemonic: 'mnemonic_all',
             passphrase_protection: true,
@@ -13,9 +13,9 @@ describe('keepSession common param', () => {
         await initTrezorConnect(controller);
     });
 
-    afterAll(async () => {
+    afterAll(() => {
         controller.dispose();
-        await TrezorConnect.dispose();
+        TrezorConnect.dispose();
     });
 
     conditionalTest(['1', '<2.3.2'], 'keepSession with changing useCardanoDerivation', async () => {

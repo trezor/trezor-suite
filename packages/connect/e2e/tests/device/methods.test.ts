@@ -74,7 +74,7 @@ describe(`TrezorConnect methods`, () => {
     getFixtures().forEach((testCase: TestCase) => {
         describe(`TrezorConnect.${testCase.method}`, () => {
             beforeAll(async () => {
-                await TrezorConnect.dispose();
+                TrezorConnect.dispose();
 
                 try {
                     if (!controller) {

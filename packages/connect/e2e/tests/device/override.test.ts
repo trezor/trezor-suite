@@ -11,9 +11,9 @@ describe('TrezorConnect override param', () => {
         await initTrezorConnect(controller);
     });
 
-    afterAll(async () => {
+    afterAll(() => {
         controller.dispose();
-        await TrezorConnect.dispose();
+        TrezorConnect.dispose();
     });
 
     [1, 10, 100, 300, 500, 1000, 1500].forEach(delay => {

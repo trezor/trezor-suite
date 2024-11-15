@@ -204,7 +204,7 @@ export const init =
 export const onSubmitInit = () => async (dispatch: Dispatch, getState: GetState) => {
     const { connect } = getState();
     // Disposing TrezorConnect to init it again.
-    await TrezorConnect.dispose();
+    TrezorConnect.dispose();
     await TrezorConnectMobile.dispose();
 
     return dispatch(init(connect.options));

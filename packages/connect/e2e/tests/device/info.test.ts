@@ -3,13 +3,13 @@ import { getController, initTrezorConnect } from '../../common.setup';
 
 describe('__info common param', () => {
     beforeAll(async () => {
-        await TrezorConnect.dispose();
+        TrezorConnect.dispose();
 
         await initTrezorConnect(getController());
     });
 
-    afterAll(async () => {
-        await TrezorConnect.dispose();
+    afterAll(() => {
+        TrezorConnect.dispose();
     });
 
     it('common param __info - only method info is returned', async () => {

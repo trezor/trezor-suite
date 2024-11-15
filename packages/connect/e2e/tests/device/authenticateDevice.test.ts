@@ -13,9 +13,9 @@ describe('TrezorConnect.authenticateDevice', () => {
         await initTrezorConnect(controller);
     });
 
-    afterAll(async () => {
+    afterAll(() => {
         controller.dispose();
-        await TrezorConnect.dispose();
+        TrezorConnect.dispose();
     });
 
     // NOTE: emulator uses different provisioning keys than production FW (different than ./data/deviceAuthenticityConfig)

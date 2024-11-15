@@ -24,9 +24,9 @@ describe('TrezorConnect passphrase', () => {
         await initTrezorConnect(controller, { debug: false });
     });
 
-    afterAll(async () => {
+    afterAll(() => {
         controller.dispose();
-        await TrezorConnect.dispose();
+        TrezorConnect.dispose();
     });
 
     it('Using multiple passphrases at the same time', async () => {

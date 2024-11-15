@@ -61,13 +61,13 @@ describe('TrezorConnect.cancel', () => {
         await controller.connect();
     });
 
-    afterAll(async () => {
-        await TrezorConnect.dispose();
+    afterAll(() => {
+        TrezorConnect.dispose();
         controller.dispose();
     });
 
     afterEach(async () => {
-        await TrezorConnect.dispose();
+        TrezorConnect.dispose();
         await controller.stopEmu();
         await controller.stopBridge();
     });

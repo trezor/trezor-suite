@@ -119,8 +119,8 @@ describe('useRbfForm hook', () => {
         });
         jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
     });
-    afterAll(async () => {
-        await TrezorConnect.dispose();
+    afterAll(() => {
+        TrezorConnect.dispose();
     });
     afterEach(() => {
         jest.clearAllMocks();
