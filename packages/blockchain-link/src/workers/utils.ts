@@ -1,3 +1,5 @@
+import { Solana, SolNetwork } from '@everstake/wallet-sdk';
+
 import { parseHostname } from '@trezor/utils';
 
 /**
@@ -20,3 +22,25 @@ export const prioritizeEndpoints = (urls: string[]) =>
         })
         .sort(([, a], [, b]) => b - a)
         .map(([url]) => url);
+
+export const getSolanaStakingAccounts = async (descriptor: string, isTestnet: boolean) => {
+    const networkConfig = {
+        devnet: {
+            network: SolNetwork.Devnet,
+            url: 'https://solana-dev.trezor.io/',
+        },
+        mainnet: {
+            network: SolNetwork.Mainnet,
+            url: 'https://solana1.trezor.io/',
+        },
+    };
+
+    const selectedConfig = isTestnet ? networkConfig.devnet : networkConfig.mainnet;
+
+    const solanaClient = new Solana(selectedConfig.network, selectedConfig.url);
+
+    const delegations = await solanaClient.getDelegations(descriptor);
+    const { result: stakingAccounts } = delegations;
+
+    return stakingAccounts;
+};

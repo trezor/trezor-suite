@@ -59,6 +59,7 @@ import { IntervalId } from '@trezor/type-utils';
 
 import { getBaseFee, getPriorityFee } from './fee';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
+// import { getSolanaStakingAccounts } from '../utils';
 
 export type SolanaAPI = Readonly<{
     clusterUrl: ClusterUrl;
@@ -343,6 +344,9 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     // allTxIds can be empty for non-archive rpc nodes
     const isAccountEmpty = !(allTxIds.length || balance || tokens.length);
 
+    // TODO: uncomment when solana staking accounts are supported
+    // const stakingAccounts = await getSolanaStakingAccounts(payload.descriptor, isTestnet);
+
     const account: AccountInfo = {
         descriptor: payload.descriptor,
         balance: balance.toString(),
@@ -362,6 +366,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
               }
             : undefined,
         tokens,
+        // TODO: remove empty array when staking accounts are supported
+        stakingAccounts: [],
         ...(misc ? { misc } : {}),
     };
 

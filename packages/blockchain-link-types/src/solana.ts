@@ -6,6 +6,7 @@ import type {
     AccountInfoWithJsonData,
     GetTransactionApi,
     Signature,
+    Address,
 } from '@solana/web3.js';
 
 import type {
@@ -69,5 +70,10 @@ export type AccountInfo<
 > = AccountInfoBase & Readonly<{ data: TData }>;
 
 export type { Address } from '@solana/web3.js';
+
+export type SolanaStakingAccount = {
+    account: AccountInfo<ParsedAccountData>;
+    pubkey: Address;
+};
 
 export type TokenDetailByMint = { [mint: string]: { name: string; symbol: string } };
