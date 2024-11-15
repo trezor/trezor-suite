@@ -9829,6 +9829,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-types@workspace:suite-common/wallet-types"
   dependencies:
+    "@solana/web3.js": "npm:^1.95.4"
     "@suite-common/intl-types": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
@@ -9846,6 +9847,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-utils@workspace:suite-common/wallet-utils"
   dependencies:
+    "@everstake/wallet-sdk": "npm:^0.3.66"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@solana-program/compute-budget": "npm:^0.6.1"
     "@solana-program/system": "npm:^0.6.2"

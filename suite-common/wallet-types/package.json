@@ -10,6 +10,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@solana/web3.js": "^1.95.4",
         "@suite-common/intl-types": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/suite-config": "workspace:*",

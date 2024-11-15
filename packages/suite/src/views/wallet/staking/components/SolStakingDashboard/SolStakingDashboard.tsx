@@ -7,5 +7,11 @@ interface SolStakingDashboardProps {
 }
 
 export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProps) => {
-    return <StakingDashboard selectedAccount={selectedAccount} dashboard={<></>} />;
+    return (
+        <StakingDashboard
+            selectedAccount={selectedAccount}
+            // TODO: add solana staking dashboard
+            dashboard={<></>}
+        />
+    );
 };

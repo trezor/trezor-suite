@@ -3,18 +3,9 @@ import { toWei } from 'web3-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    calculateTotal,
-    calculateMax,
-    calculateEthFee,
-    getExternalComposeOutput,
-    formatAmount,
-    isPending,
-    getAccountIdentity,
-} from '@suite-common/wallet-utils';
+import { calculateEthFee, isPending, getAccountIdentity } from '@suite-common/wallet-utils';
 import {
     StakeFormState,
-    PrecomposedLevels,
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
     ExternalOutput,
@@ -38,7 +29,9 @@ import {
     prepareUnstakeEthTx,
 } from 'src/utils/suite/ethereumStaking';
 
-const calculate = (
+import { calculate, composeStakingTransaction } from './stakeFormActions';
+
+const calculateTransaction = (
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
@@ -47,82 +40,21 @@ const calculate = (
 ): PrecomposedTransaction => {
     const feeInWei = calculateEthFee(toWei(feeLevel.feePerUnit, 'gwei'), feeLevel.feeLimit || '0');
 
-    let amount: string;
-    let max: string | undefined;
-
-    if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
-        const minEthBalanceForStakingWei = toWei(MIN_ETH_BALANCE_FOR_STAKING.toString(), 'ether');
-        const minAmountWithFeeWei = new BigNumber(minEthBalanceForStakingWei).plus(feeInWei);
-
-        if (new BigNumber(availableBalance).lt(minAmountWithFeeWei)) {
-            max = toWei(MIN_ETH_AMOUNT_FOR_STAKING.toString(), 'ether');
-        } else {
-            max = new BigNumber(calculateMax(availableBalance, feeInWei))
-                .minus(toWei(MIN_ETH_FOR_WITHDRAWALS.toString(), 'ether'))
-                .toString();
-        }
-
-        amount = max;
-    } else {
-        amount = output.amount;
-    }
-
-    // total ETH spent (amount + fee), in ERC20 only fee
-    const totalSpent = new BigNumber(calculateTotal(amount, feeInWei));
-
-    if (
-        new BigNumber(feeInWei).gt(availableBalance) ||
-        (compareWithAmount && totalSpent.isGreaterThan(availableBalance))
-    ) {
-        const error = 'TR_STAKE_NOT_ENOUGH_FUNDS';
-
-        // errorMessage declared later
-        return {
-            type: 'error',
-            error,
-            errorMessage: { id: error, values: { symbol: symbol.toUpperCase() } },
-        } as const;
-    }
-
-    const payloadData = {
-        type: 'nonfinal' as const,
-        totalSpent: totalSpent.toString(),
-        max,
-        fee: feeInWei,
-        feePerByte: feeLevel.feePerUnit,
-        feeLimit: feeLevel.feeLimit,
-        bytes: 0, // TODO: calculate
-        inputs: [],
+    const stakingParams = {
+        feeInBaseUnits: feeInWei,
+        minBalanceForStakingInBaseUnits: toWei(MIN_ETH_BALANCE_FOR_STAKING.toString(), 'ether'),
+        minAmountForStakingInBaseUnits: toWei(MIN_ETH_AMOUNT_FOR_STAKING.toString(), 'ether'),
+        minAmountForWithdrawalInBaseUnits: toWei(MIN_ETH_FOR_WITHDRAWALS.toString(), 'ether'),
     };
 
-    if (output.type === 'send-max' || output.type === 'payment') {
-        return {
-            ...payloadData,
-            type: 'final',
-            // compatibility with BTC PrecomposedTransaction from @trezor/connect
-            inputs: [],
-            outputsPermutation: [0],
-            outputs: [
-                {
-                    address: output.address,
-                    amount,
-                    script_type: 'PAYTOADDRESS',
-                },
-            ],
-        };
-    }
-
-    return payloadData;
+    return calculate(availableBalance, output, feeLevel, compareWithAmount, symbol, stakingParams);
 };
 
 export const composeTransaction =
     (formValues: StakeFormState, formState: ComposeActionContext) => async () => {
-        const { account, network, feeInfo } = formState;
-        const composeOutputs = getExternalComposeOutput(formValues, account, network);
-        if (!composeOutputs) return; // no valid Output
+        const { account, feeInfo } = formState;
+        if (!account || !feeInfo) return;
 
-        const { output, decimals } = composeOutputs;
-        const { availableBalance } = account;
         const { amount } = formValues.outputs[0];
 
         // gasLimit calculation based on account.descriptor and amount
@@ -156,34 +88,13 @@ export const composeTransaction =
             });
         }
 
-        // wrap response into PrecomposedLevels object where key is a FeeLevel label
-        const wrappedResponse: PrecomposedLevels = {};
-        const compareWithAmount = formValues.ethereumStakeType === 'stake';
-        const response = predefinedLevels.map(level =>
-            calculate(availableBalance, output, level, compareWithAmount, account.symbol),
+        return composeStakingTransaction(
+            formValues,
+            formState,
+            predefinedLevels,
+            calculateTransaction,
+            customFeeLimit,
         );
-        response.forEach((tx, index) => {
-            const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
-            wrappedResponse[feeLabel] = tx;
-        });
-
-        // format max (calculate sends it as satoshi)
-        // update errorMessage values (symbol)
-        Object.keys(wrappedResponse).forEach(key => {
-            const tx = wrappedResponse[key];
-            if (tx.type !== 'error') {
-                tx.max = tx.max ? formatAmount(tx.max, decimals) : undefined;
-                tx.estimatedFeeLimit = customFeeLimit;
-            }
-            if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
-                tx.errorMessage = {
-                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                    values: { symbol: network.symbol.toUpperCase() },
-                };
-            }
-        });
-
-        return wrappedResponse;
     };
 
 export const signTransaction =

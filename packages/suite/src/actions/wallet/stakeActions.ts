@@ -11,6 +11,8 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     formatNetworkAmount,
     isRbfTransaction,
+    isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { StakeFormState, PrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
@@ -19,13 +21,19 @@ import { Dispatch, GetState } from 'src/types/suite';
 
 import * as modalActions from '../suite/modalActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
+import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
 import { openModal } from '../suite/modalActions';
 
 export const composeTransaction =
     (formValues: StakeFormState, formState: ComposeActionContext) => (dispatch: Dispatch) => {
         const { account } = formState;
-        if (account.networkType === 'ethereum') {
+
+        if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
             return dispatch(stakeFormEthereumActions.composeTransaction(formValues, formState));
+        }
+
+        if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
+            return dispatch(stakeFormSolanaActions.composeTransaction(formValues, formState));
         }
 
         return Promise.resolve(undefined);
@@ -171,9 +179,15 @@ export const signTransaction =
 
         // signTransaction by Trezor
         let serializedTx: string | undefined;
-        if (account.networkType === 'ethereum') {
+        if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
             serializedTx = await dispatch(
                 stakeFormEthereumActions.signTransaction(formValues, enhancedTxInfo),
+            );
+        }
+
+        if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
+            serializedTx = await dispatch(
+                stakeFormSolanaActions.signTransaction(formValues, enhancedTxInfo),
             );
         }
 
