@@ -174,11 +174,14 @@ export const getCoinName = (path: number[]) => {
     return network ? network.name : 'Unknown coin';
 };
 
+const BITCOIN_SHORTCUTS = ['BTC', 'TEST', 'REGTEST'];
+
 const parseBitcoinNetworksJson = (json: any) => {
     Object.keys(json).forEach(key => {
         const coin = json[key];
         const shortcut = coin.coin_shortcut;
-        const isBitcoin = shortcut === 'BTC' || shortcut === 'TEST';
+
+        const isBitcoin = BITCOIN_SHORTCUTS.includes(shortcut);
 
         const network = {
             messagePrefix: coin.signed_message_header,
