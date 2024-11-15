@@ -92,5 +92,4 @@ export { default as loadDevice } from './loadDevice';
 // requestLogin
 // resetDevice
 // setProxy
-// tezosSignTransaction
 // wipeDevice
