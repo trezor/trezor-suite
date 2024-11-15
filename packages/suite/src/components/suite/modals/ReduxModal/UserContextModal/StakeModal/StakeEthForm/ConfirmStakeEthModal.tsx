@@ -11,6 +11,12 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { getDaysToAddToPoolInitial } from 'src/utils/suite/ethereumStaking';
 
+const getStakeEnteringMessage = (networkType?: NetworkType) => {
+    if (networkType === 'ethereum') return 'TR_STAKE_ENTERING_POOL_MAY_TAKE';
+
+    return 'TR_STAKE_ACTIVATION_COULD_TAKE';
+};
+
 interface ConfirmStakeEthModalProps {
     isLoading: boolean;
     onConfirm: () => void;
@@ -60,7 +66,7 @@ export const ConfirmStakeEthModal = ({
             <Column gap={spacings.sm} margin={{ top: spacings.xxs, bottom: spacings.lg }}>
                 <Banner icon="clock">
                     <Translation
-                        id="TR_STAKE_ENTERING_POOL_MAY_TAKE"
+                        id={getStakeEnteringMessage(account?.networkType)}
                         values={{
                             count:
                                 daysToAddToPoolInitial === undefined ? 30 : daysToAddToPoolInitial,
