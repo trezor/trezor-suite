@@ -78,7 +78,33 @@ const updateConfigFromJSON = async () => {
 
         console.log('Checking if there were changes.');
         const changes = await exec('git', ['diff', CONFIG_FILE_PATH]);
-        if (changes.stdout !== '') {
+        // Use the content to generate the hash in the branch so it is the same with same content.
+        // If we would use the hash provided by Git it would be different because it contains date as well.
+        const fileContent = await fs.readFile(CONFIG_FILE_PATH, 'utf8');
+        const hash = crypto.createHash('sha256').update(fileContent).digest('hex');
+
+        // Use the hash to create branch name to avoid using a branch that already exists.
+        const branchName = `chore/update-device-authenticity-config-${hash}`;
+
+        // Check if PR with same hash, so no new changes is already open, if so, ignore it, no new changes to add.
+        const prAlreadyOpen = await exec('gh', [
+            'search',
+            'prs',
+            '--repo=trezor/trezor-suite',
+            `--head=${branchName}`,
+            '--state=open',
+        ]);
+
+        console.log('prAlreadyOpen', prAlreadyOpen);
+
+        const isSamePrAlreadyOpen = prAlreadyOpen.stdout !== '';
+        const isChangesFromRemote = changes.stdout !== '';
+
+        if (isSamePrAlreadyOpen) {
+            console.log('There is already a PR open with same changes.');
+        }
+
+        if (!isSamePrAlreadyOpen && isChangesFromRemote) {
             console.log('There were changes in keys.');
 
             // Before creating the new PR with new keys we check if there was already previous one.
@@ -92,7 +118,6 @@ const updateConfigFromJSON = async () => {
                 '--head=chore/update-device-authenticity-config',
                 '--state=open',
             ]);
-
             console.log('prList', prList);
 
             if (prList.stdout !== '') {
@@ -120,17 +145,17 @@ const updateConfigFromJSON = async () => {
                         console.error(`Failed to close PR #${prNumber}:`, error.message);
                     }
                 }
+                try {
+                    console.log(`Deleting branch ${branchName}`);
+                    await exec('gh', ['branch', '-d', branchName, '--repo', 'trezor/trezor-suite']);
+                    console.log(`Deleted branch ${branchName}`);
+                } catch (error) {
+                    console.error(`Failed to delete branch ${branchName}:`, error.message``);
+                }
             } else {
                 console.log(`No open pull requests found.`);
             }
 
-            // Use the content to generate the hash in the branch so it is the same with same content.
-            // If we would use the hash provided by Git it would be different because it contains date as well.
-            const fileContent = await fs.readFile(CONFIG_FILE_PATH, 'utf8');
-            const hash = crypto.createHash('sha256').update(fileContent).digest('hex');
-
-            // Use the hash to create branch name to avoid using a branch that already exists.
-            const branchName = `chore/update-device-authenticity-config-${hash}`;
             const commitMessage = 'chore(connect): update device authenticity config';
             await exec('git', ['checkout', '-b', branchName]);
             commit({
