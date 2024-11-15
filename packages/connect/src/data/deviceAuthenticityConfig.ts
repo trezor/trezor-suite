@@ -108,6 +108,9 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
             '047c32e92dc23894b60b6c182f589a12e4e57f82e48176936f56646c14dd8f0d300fd4737e17501d71deb84127c272c5b797ccf30a7a4531846b9c79866f2892c6',
             '046482d01c4dbdac60327352d150b5e6d5772cd68732616a0abc5649c49111bc3ba0eb28aa424100efa27cdb98675395df4b9097097e92adecc39f5587306a9fac',
             '04f96a9fdecc4247c67e083a69037d1794230441270e4bda6d4151eb2e385d576d046d36734dd262e45c8cf3bbe24bdd11c1dc0e58437107d55cea3942f14b7d61',
+            '042678d71fcf002a5c6781ecbb48ec99a67c797a2a7a0a2aac2a2aa66681ea4c6df180bf2110ce259cb128aa8a8e966ae1138964a0175de597674ae59b74feac87',
+            '0452be582403337ee206509e88713ddc1e1aa7e8265de522988f6af7562c136ee62ea75ce320c713d7d6ed1ceefded828c3284ccdc7c89f1867336aff24566ef3f',
+            '04b3117b4173d5792d75988fc5788cdc79a17a4a2168de1d5fd029c56da6da48fd6c4f557531a4a7af924816fc7a7b8cec451d2920c91be52930333e57a1ff2f03',
         ],
         debug: {
             rootPubKeys: [
@@ -119,11 +122,11 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
         },
     },
     T3W1: {
-        rootPubKeys: ['you shall not pass'], // TODO T3W1
-        caPubKeys: ['you shall not pass'], // TODO T3W1
+        rootPubKeys: ['you shall not pass'],
+        caPubKeys: ['you shall not pass'],
         debug: {
-            rootPubKeys: ['you shall not pass'], // TODO T3W1
-            caPubKeys: ['you shall not pass'], // TODO T3W1
+            rootPubKeys: ['you shall not pass'],
+            caPubKeys: ['you shall not pass'],
         },
     },
 };
