@@ -1,3 +1,5 @@
+import { ETH_NETWORK_ADDRESSES } from '@everstake/wallet-sdk';
+
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type {
     Utxo,
@@ -87,21 +89,15 @@ export const filterTokenTransfers = (
         });
 };
 
-const ethereumStakingAddresses = {
-    poolInstance: [
-        '0xD523794C879D9eC028960a231F866758e405bE34',
-        '0xAFA848357154a6a624686b348303EF9a13F63264',
-    ],
-    withdrawTreasury: [
-        '0x19449f0f696703Aa3b1485DfA2d855F33659397a',
-        '0x66cb3AeD024740164EBcF04e292dB09b5B63A2e1',
-    ],
-};
-
 export const isEthereumStakingInternalTransfer = (from: string, to: string) => {
-    const { poolInstance, withdrawTreasury } = ethereumStakingAddresses;
+    const poolInstances = Object.values(ETH_NETWORK_ADDRESSES).map(
+        network => network.addressContractPool,
+    );
+    const withdrawTreasuries = Object.values(ETH_NETWORK_ADDRESSES).map(
+        network => network.addressContractWithdrawTreasury,
+    );
 
-    return poolInstance.includes(from) && withdrawTreasury.includes(to);
+    return poolInstances.includes(from) && withdrawTreasuries.includes(to);
 };
 
 export const filterEthereumInternalTransfers = (

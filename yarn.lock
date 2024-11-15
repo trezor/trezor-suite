@@ -3374,6 +3374,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@everstake/wallet-sdk@npm:^1.0.5":
+  version: 1.0.5
+  resolution: "@everstake/wallet-sdk@npm:1.0.5"
+  dependencies:
+    "@solana/web3.js": "npm:^1.75.0"
+    bignumber.js: "npm:^9.1.2"
+    superstruct: "npm:^0.16.7"
+    web3: "npm:^4.14.0"
+  checksum: 10/00715f194f44f2c9b2631b0d5e4b3c31be1483b2e750f8a1c9554ca3cc601f2756798ae5e78c7eb4ccc88c2e5c585e6442b654e6081570232489d667d241f4f9
+  languageName: node
+  linkType: hard
+
 "@expo/bunyan@npm:^4.0.0":
   version: 4.0.0
   resolution: "@expo/bunyan@npm:4.0.0"
@@ -8604,6 +8616,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@solana/web3.js@npm:^1.95.4":
+  version: 1.95.8
+  resolution: "@solana/web3.js@npm:1.95.8"
+  dependencies:
+    "@babel/runtime": "npm:^7.25.0"
+    "@noble/curves": "npm:^1.4.2"
+    "@noble/hashes": "npm:^1.4.0"
+    "@solana/buffer-layout": "npm:^4.0.1"
+    agentkeepalive: "npm:^4.5.0"
+    bigint-buffer: "npm:^1.1.5"
+    bn.js: "npm:^5.2.1"
+    borsh: "npm:^0.7.0"
+    bs58: "npm:^4.0.1"
+    buffer: "npm:6.0.3"
+    fast-stable-stringify: "npm:^1.0.0"
+    jayson: "npm:^4.1.1"
+    node-fetch: "npm:^2.7.0"
+    rpc-websockets: "npm:^9.0.2"
+    superstruct: "npm:^2.0.2"
+  checksum: 10/25fb38f46f4ba47019f17f686219a75f821455737bbf1153deb8b3f1141c3996c1ac0dc8603bbac50cd04f61058e472772d866aa38d01aef4e1609e53e442075
+  languageName: node
+  linkType: hard
+
 "@solana/web3.js@npm:^2.0.0":
   version: 2.0.0
   resolution: "@solana/web3.js@npm:2.0.0"
@@ -11598,6 +11633,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
+    "@everstake/wallet-sdk": "npm:^1.0.5"
     "@solana-program/token": "npm:^0.4.1"
     "@solana-program/token-2022": "npm:^0.3.1"
     "@solana/web3.js": "npm:^2.0.0"
@@ -39603,6 +39639,13 @@ __metadata:
   version: 0.12.2
   resolution: "superstruct@npm:0.12.2"
   checksum: 10/7ba374a10cb27fa8aa44be5dde633213c23bf9ad51369aa88a5f7469ddc23e1cd2139033578a7e83094a43e1dd9356002344272b524a0ea0f8a6c5fc66bd68e9
+  languageName: node
+  linkType: hard
+
+"superstruct@npm:^0.16.7":
+  version: 0.16.7
+  resolution: "superstruct@npm:0.16.7"
+  checksum: 10/2f3fb30f8fa3e012fb74fc6f8c850b13b6f6c4b8a412186996b55da8292586205dda8495bcd2e850436a6476dd25f7d0d226905f1ed97162903dcf4cce59d2b8
   languageName: node
   linkType: hard
 

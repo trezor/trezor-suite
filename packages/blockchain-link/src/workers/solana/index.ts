@@ -61,6 +61,7 @@ import { IntervalId } from '@trezor/type-utils';
 
 import { getBaseFee, getPriorityFee } from './fee';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
+// import { getSolanaStakingAccounts } from '../utils';
 
 export type SolanaAPI = Readonly<{
     clusterUrl: ClusterUrl;
@@ -205,7 +206,11 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
     }
 };
 
-const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
+const getAccountInfo = async (
+    request: Request<MessageTypes.GetAccountInfo>,
+    // TODO: uncomment when solana staking accounts are supported
+    // isTestnet: boolean,
+) => {
     const { payload } = request;
     const { details = 'basic' } = payload;
     const api = await request.connect();
@@ -346,9 +351,12 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
             const accountDataBytes = getBase64Encoder().encode(accountDataEncoded);
             const accountDataLength = BigInt(accountDataBytes.byteLength);
             const rent = await api.rpc.getMinimumBalanceForRentExemption(accountDataLength).send();
+            // TODO: uncomment when solana staking accounts are supported
+            // const stakingAccounts = await getSolanaStakingAccounts(payload.descriptor, isTestnet);
             misc = {
                 owner: accountInfo?.owner,
                 rent: Number(rent),
+                solStakingAccounts: [],
             };
         }
     }

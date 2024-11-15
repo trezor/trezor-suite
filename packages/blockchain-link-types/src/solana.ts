@@ -7,6 +7,7 @@ import type {
     GetTransactionApi,
     Signature,
 } from '@solana/web3.js';
+import type { SolDelegation } from '@everstake/wallet-sdk';
 
 import type {
     GetObjectWithKey,
@@ -69,5 +70,7 @@ export type AccountInfo<
 > = AccountInfoBase & Readonly<{ data: TData }>;
 
 export type { Address } from '@solana/web3.js';
+
+export type SolanaStakingAccount = SolDelegation;
 
 export type TokenDetailByMint = { [mint: string]: { name: string; symbol: string } };

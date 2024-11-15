@@ -7,6 +7,7 @@ import type {
     ContractInfo,
     StakingPool,
 } from './blockbook-api';
+import type { SolanaStakingAccount } from './solana';
 
 /* Common types used in both params and responses */
 
@@ -197,6 +198,7 @@ export interface AccountInfo {
     availableBalance: string;
     empty: boolean;
     tokens?: TokenInfo[]; // ethereum and blockfrost tokens
+
     addresses?: AccountAddresses; // bitcoin and blockfrost addresses
     history: {
         total: number; // total transactions (unknown in ripple)
@@ -211,6 +213,7 @@ export interface AccountInfo {
         nonce?: string;
         contractInfo?: ContractInfo;
         stakingPools?: StakingPool[];
+        solStakingAccounts?: SolanaStakingAccount[]; // solana staking accounts
         addressAliases?: { [key: string]: AddressAlias };
         // XRP
         sequence?: number;
