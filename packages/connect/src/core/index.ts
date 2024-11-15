@@ -1276,8 +1276,6 @@ const disableWebUSBTransport = async ({ deviceList, sendCoreMessage }: CoreConte
     }
 
     try {
-        // clean previous device list
-        deviceList.cleanup();
         // TODO possible issue with new init not replacing the old one???
         await deviceList.init({ transports, pendingTransportEvent, transportReconnect });
     } catch (error) {

@@ -136,11 +136,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     private readonly handshakeLock;
     private readonly authPenaltyManager;
 
-    private initTask?: {
-        promise: Promise<void>;
-        abort: AbortController['abort'];
-    };
-
     private transportCommonArgs;
 
     isConnected(): this is DeviceList {
@@ -148,7 +143,34 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     pendingConnection() {
-        return this.initTask?.promise;
+        return this.lock?.[0];
+    }
+
+    private lock?: [Promise<void>, AbortController];
+    private sequence = 0;
+    private abortMessage?: string;
+    private async transportLock<T extends void>(
+        abortMessage: string,
+        action: (signal: AbortSignal) => Promise<T>,
+    ): Promise<T> {
+        this.abortMessage = abortMessage;
+        const sequence = ++this.sequence;
+
+        while (this.lock) {
+            const [promise, abort] = this.lock;
+            abort.abort(new Error(abortMessage));
+            await promise.catch(() => {});
+        }
+
+        if (sequence !== this.sequence) return Promise.reject(new Error(this.abortMessage));
+
+        const abort = new AbortController();
+        const promise = action(abort.signal).finally(() => {
+            this.lock = undefined;
+        });
+        this.lock = [promise, abort];
+
+        return promise;
     }
 
     constructor({
@@ -274,77 +296,57 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     /**
      * Init @trezor/transport and do something with its results
      */
-    async init(initParams: InitParams = {}) {
-        // abort all potentially queued inits
-        while (this.initTask) {
-            this.initTask.abort(new Error('Reinited'));
-            await this.initTask.promise.catch(() => {});
-        }
-
+    init(initParams: InitParams = {}) {
         // throws when unknown transport is requested, in that case nothing is changed
         this.transports = this.createTransports(initParams.transports);
-        this.initTask = this.createInitTask(initParams);
 
-        return this.initTask.promise;
+        return this.transportLock('New init', signal => this.createInitPromise(initParams, signal));
     }
 
-    private async stopActiveTransport() {
-        // if newly set transports don't include active transport, kill it
-        if (this.transport && !this.transports.includes(this.transport)) {
-            // stop cannot be aborted as active devices should be released first
-            await this.stopTransport(this.transport);
-            // @ts-expect-error will be fixed later
-            this.transport = undefined;
+    private async createInitPromise(initParams: InitParams, abortSignal: AbortSignal) {
+        try {
+            const transport = await this.selectTransport(this.transports, abortSignal);
+            if (this.transport !== transport) {
+                if (this.transport) {
+                    await this.stopActiveTransport();
+                }
+
+                try {
+                    await this.initializeTransport(transport, initParams, abortSignal);
+                } catch (error) {
+                    await this.stopTransport(transport);
+                    throw error;
+                }
+
+                transport.on(TRANSPORT.ERROR, error => {
+                    this.emit(TRANSPORT.ERROR, error);
+                    this.transportLock('Transport error', async signal => {
+                        await this.stopActiveTransport();
+                        if (initParams.transportReconnect) {
+                            await this.createReconnectDelay(signal);
+                            await this.createInitPromise(initParams, signal);
+                        }
+                    });
+                });
+                this.transport = transport;
+            }
+            this.emit(TRANSPORT.START, this.getTransportInfo());
+        } catch (error) {
+            this.emit(TRANSPORT.ERROR, error);
+            if (initParams.transportReconnect && !abortSignal.aborted) {
+                this.transportLock('Reconnecting', async signal => {
+                    await this.createReconnectDelay(signal);
+                    await this.createInitPromise(initParams, signal);
+                });
+            }
         }
     }
 
-    private createInitTask(initParams: InitParams) {
-        const abort = new AbortController();
-
-        return {
-            abort: () => abort.abort(),
-            promise: this.stopActiveTransport().then(() =>
-                this.createInitPromise(initParams, abort.signal),
-            ),
-        };
-    }
-
-    private createReconnectTask(initParams: InitParams) {
-        const abort = new AbortController();
-        const { promise, resolve } = abortablePromise(abort.signal);
+    private createReconnectDelay(signal: AbortSignal) {
+        const { promise, resolve } = abortablePromise(signal);
         const timeout = setTimeout(resolve, 1000);
 
-        return {
-            abort: () => abort.abort(),
-            promise: promise
-                .finally(() => clearTimeout(timeout))
-                .then(() => this.createInitPromise(initParams, abort.signal)),
-        };
-    }
-
-    private createInitPromise(initParams: InitParams, signal: AbortSignal) {
-        return this.selectTransport(this.transports, signal)
-            .then(transport => this.initializeTransport(transport, initParams, signal))
-            .then(transport => {
-                transport.on(TRANSPORT.ERROR, error => {
-                    this.cleanup();
-                    this.emit(TRANSPORT.ERROR, error);
-                    if (initParams.transportReconnect) {
-                        this.initTask?.abort(new Error('Transport error'));
-                        this.initTask = this.createReconnectTask(initParams);
-                    }
-                });
-                this.transport = transport;
-                this.emit(TRANSPORT.START, this.getTransportInfo());
-                this.initTask = undefined;
-            })
-            .catch(error => {
-                this.cleanup();
-                this.emit(TRANSPORT.ERROR, error);
-                this.initTask = initParams.transportReconnect
-                    ? this.createReconnectTask(initParams)
-                    : undefined;
-            });
+        return promise.finally(() => clearTimeout(timeout));
     }
 
     private async selectTransport(
@@ -352,6 +354,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         signal: AbortSignal,
     ): Promise<Transport> {
         if (signal.aborted) throw new Error(signal.reason);
+        if (transport === this.transport) return transport;
         const result = await transport.init({ signal });
         if (result.success) return transport;
         else if (rest.length) return this.selectTransport(rest, signal);
@@ -399,8 +402,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         transport.listen();
 
         await waitForDevicesPromise;
-
-        return transport;
     }
 
     /**
@@ -485,12 +486,11 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     dispose() {
         this.removeAllListeners();
-        this.initTask?.abort(new Error('Disposed'));
 
-        return this.cleanup();
+        return this.transportLock('Disposing', () => this.stopActiveTransport());
     }
 
-    async cleanup() {
+    private async stopActiveTransport() {
         const { transport } = this;
         // @ts-expect-error will be fixed later
         this.transport = undefined;
@@ -516,8 +516,10 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         transport?.stop();
     }
 
-    // TODO this is fugly
-    async enumerate(transport = this.transport) {
+    async enumerate() {
+        const { transport } = this;
+        if (!transport) return;
+
         const res = await transport.enumerate();
 
         if (!res.success) {
