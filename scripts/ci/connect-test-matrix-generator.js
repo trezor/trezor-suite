@@ -98,7 +98,7 @@ const inputs = [
     },
     {
         key: 'transport',
-        value: ['Bridge', 'NodeBridge'],
+        value: ['2.0.32', '2.0.33', 'node-bridge'],
     },
     {
         key: 'groups',

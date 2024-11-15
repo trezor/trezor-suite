@@ -70,21 +70,26 @@ jobs:
       dailyMatrix: ${{ steps.set-matrix-daily.outputs.dailyMatrix }}
       otherDevicesMatrix: ${{ steps.set-matrix-other-devices.outputs.otherDevicesMatrix }}
       allFwsMatrix: ${{ steps.set-matrix-all-firmwares.outputs.allFwsMatrix }}
+      allTransportsMatrix: ${{ steps.set-matrix-all-transports.outputs.allTransportsMatrix }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set daily matrix
         id: set-matrix-daily
-        run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=all --groups=api,api-flaky --cache_tx=true --transport=Bridge)" >> $GITHUB_OUTPUT
+        run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=all --groups=api,api-flaky --cache_tx=true --transport=2.0.33)" >> $GITHUB_OUTPUT
 
       - name: Set all firmwares matrix
         id: set-matrix-all-firmwares
-        run: echo "allFwsMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=all --env=all --groups=all --cache_tx=false --transport=Bridge)" >> $GITHUB_OUTPUT
+        run: echo "allFwsMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=all --env=all --groups=all --cache_tx=false --transport=2.0.33)" >> $GITHUB_OUTPUT
 
       - name: Set other devices matrix
         id: set-matrix-other-devices
-        run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=all --firmware=2-main --env=node --groups=api --cache_tx=true --transport=Bridge)" >> $GITHUB_OUTPUT
+        run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=all --firmware=2-main --env=node --groups=api --cache_tx=true --transport=2.0.33)" >> $GITHUB_OUTPUT
+
+      - name: Set all transports matrix
+        id: set-matrix-all-transports
+        run: echo "allTransportsMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=node --groups=api --cache_tx=true --transport=2.0.32,2.0.33)" >> $GITHUB_OUTPUT
 
   PR-check:
     needs: [build, set-matrix]
@@ -158,3 +163,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.otherDevicesMatrix) }}
+
+  all-transports:
+    needs: [build, set-matrix]
+    name: all-transports-api ${{ matrix.key }}
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/template-connect-test-params.yml
+    with:
+      testPattern: ${{ matrix.groups.pattern }}
+      includeFilter: ${{ matrix.groups.includeFilter }}
+      testsFirmware: ${{ matrix.firmware }}
+      testDescription: ${{ matrix.transport }}
+      cache_tx: ${{ matrix.cache_tx }}
+      transport: ${{ matrix.transport }}
+      testEnv: ${{ matrix.env }}
+      testFirmwareModel: ${{ matrix.model }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.set-matrix.outputs.allTransportsMatrix) }}

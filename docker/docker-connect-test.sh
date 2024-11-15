@@ -40,6 +40,7 @@ show_usage() {
   echo "  -u       Firmware url"
   echo "  -m       Firmware model, example: R'"
   echo "  -r       Randomize test order (node only)"
+  echo "  -t       Specify transport / bridge version"
 }
 
 # default options
@@ -53,10 +54,12 @@ USE_WS_CACHE=true
 PATTERN=""
 FIRMWARE_MODEL=""
 RANDOMIZE=false
+TRANSPORT="2.0.33"
 
+# echo $OPTARG
 # user options
 OPTIND=2
-while getopts ":p:i:e:f:u:m:hdcr" opt; do
+while getopts ":p:i:e:f:u:m:t:hdcr" opt; do
   case $opt in
   d)
     DOCKER=false
@@ -85,6 +88,9 @@ while getopts ":p:i:e:f:u:m:hdcr" opt; do
     ;;
   r)
     RANDOMIZE=true
+    ;;
+  t)
+    TRANSPORT=$OPTARG
     ;;
   h) # Script usage
     show_usage
@@ -115,6 +121,7 @@ export TESTS_SCRIPT=$SCRIPT
 export TESTS_FIRMWARE_URL=$FIRMWARE_URL
 export TESTS_FIRMWARE_MODEL=$FIRMWARE_MODEL
 export TESTS_RANDOM=$RANDOMIZE
+export TESTS_TRANSPORT=$TRANSPORT
 
 runDocker() {
   docker compose -f ./docker/docker-compose.connect-test.yml up -d
@@ -132,6 +139,7 @@ run() {
   echo "  TxCache: ${USE_TX_CACHE}"
   echo "  WsCache: ${USE_WS_CACHE}"
   echo "  Random: ${RANDOMIZE}"
+  echo "  Transport: ${TRANSPORT}"
 
   if [ $DOCKER = true ]; then
     runDocker

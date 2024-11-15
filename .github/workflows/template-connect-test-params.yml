@@ -96,4 +96,6 @@ jobs:
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -i ${{ inputs.includeFilter }}" >> "$GITHUB_ENV"
       - if: ${{ inputs.testRandomizedOrder }}
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -r" >> "$GITHUB_ENV"
+      - if: ${{ inputs.transport }}
+        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -t ${{ inputs.transport }}" >> "$GITHUB_ENV"
       - run: './docker/docker-connect-test.sh ${{ inputs.testEnv }} -p "${{ inputs.testPattern }}" -f "${{ inputs.testsFirmware }}" $ADDITIONAL_ARGS'

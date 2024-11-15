@@ -54,6 +54,8 @@ interface ReadAndConfirmShamirMnemonicEmu {
     threshold: number;
 }
 
+type StartBridgeVersion = '2.0.32' | '2.0.33' | 'node-bridge';
+
 export const MNEMONICS = {
     mnemonic_all: 'all all all all all all all all all all all all',
     mnemonic_12: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
@@ -160,7 +162,7 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         return null;
     }
-    async startBridge(version = DEFAULT_BRIDGE_VERSION) {
+    async startBridge(version: StartBridgeVersion = DEFAULT_BRIDGE_VERSION) {
         await this.client.send({ type: 'bridge-start', version });
 
         return null;
