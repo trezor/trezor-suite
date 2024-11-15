@@ -80,7 +80,8 @@ export const en = {
         },
         rememberModeModal: {
             title: 'Enable view-only to check balances after you disconnect your Trezor',
-            description: 'To verify receive addresses, simply reconnect your device.',
+            description:
+                'To verify receive addresses or sign transactions, simply reconnect your device.',
             button: {
                 skip: 'Skip',
                 enable: 'Enable',
@@ -649,7 +650,7 @@ export const en = {
                 subtitle: 'Stay on top of your balances without connecting your Trezor.',
                 contentTitle: 'How it works',
                 content:
-                    '<li>Enable view-only to keep balances visible when your Trezor device is disconnected.</li><li>Your funds remain secure.</li><li>Your data remains private.</li><li>Stay updated on all transactions.</li><li>Create a new receive address.</li><li>To verify your receive address, simply reconnect your device.</li><li>Save time when assets are loading.</li>',
+                    '<li>Enable view-only to keep balances visible when your Trezor device is disconnected.</li><li>Your funds remain secure.</li><li>Your data remains private.</li><li>Stay updated on all transactions.</li><li>Create a new receive address.</li><li>To verify receive addresses or sign transactions, simply reconnect your device.</li><li>Save time when assets are loading.</li>',
             },
             toast: {
                 disabled: 'View-only disabled',
