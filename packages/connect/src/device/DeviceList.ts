@@ -1,6 +1,6 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
 
-import { TypedEmitter, getSynchronize } from '@trezor/utils';
+import { TypedEmitter, createDeferred, getSynchronize } from '@trezor/utils';
 import {
     BridgeTransport,
     WebUsbTransport,
@@ -326,6 +326,14 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return this.selectTransport(this.transports, signal)
             .then(transport => this.initializeTransport(transport, initParams, signal))
             .then(transport => {
+                transport.on(TRANSPORT.ERROR, error => {
+                    this.cleanup();
+                    this.emit(TRANSPORT.ERROR, error);
+                    if (initParams.transportReconnect) {
+                        this.initTask?.abort(new Error('Transport error'));
+                        this.initTask = this.createReconnectTask(initParams);
+                    }
+                });
                 this.transport = transport;
                 this.emit(TRANSPORT.START, this.getTransportInfo());
                 this.initTask = undefined;
@@ -372,16 +380,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
             this.onDeviceRequestRelease(d, transport),
         );
 
-        // just like transport emits updates, it may also start producing errors, for example bridge process crashes.
-        transport.on(TRANSPORT.ERROR, error => {
-            this.cleanup();
-            this.emit(TRANSPORT.ERROR, error);
-            if (initParams.transportReconnect) {
-                this.initTask?.abort(new Error('Transport error'));
-                this.initTask = this.createReconnectTask(initParams);
-            }
-        });
-
         // enumerating for the first time. we intentionally postpone emitting TRANSPORT_START
         // event until we read descriptors for the first time
         const enumerateResult = await transport.enumerate({ signal });
@@ -394,7 +392,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         const waitForDevicesPromise =
             initParams.pendingTransportEvent && descriptors.length
-                ? this.waitForDevices(descriptors.length, 10000, signal)
+                ? this.waitForDevices(transport, descriptors.length, signal)
                 : Promise.resolve();
 
         transport.handleDescriptorsChange(descriptors);
@@ -405,18 +403,31 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return transport;
     }
 
-    private waitForDevices(deviceCount: number, autoResolveMs: number, signal: AbortSignal) {
-        const { promise, resolve } = abortablePromise(signal);
-        let transportStartPending = deviceCount;
+    /**
+     * Returned promise:
+     * - resolves when all the devices visible from given transport were acquired (or at least tried to)
+     * - resolves after 10 secs (in order not to get stuck waiting for devices)
+     * - rejects when aborted (e.g. because of DeviceList reinit)
+     * - rejects when given transport emits an error
+     *
+     * Old note: when TRANSPORT.START_PENDING is emitted, we already know that transport is available
+     * but we wait with emitting TRANSPORT.START event to the implementator until we read from devices
+     * in case something wrong happens and we never finish reading from devices for whatever reason
+     * implementator could get stuck waiting from TRANSPORT.START event forever. To avoid this,
+     * we emit TRANSPORT.START event after autoResolveTransportEventTimeout
+     */
+    private waitForDevices(transport: Transport, deviceCount: number, signal: AbortSignal) {
+        const { promise, reject, resolve } = createDeferred();
 
-        /**
-         * when TRANSPORT.START_PENDING is emitted, we already know that transport is available
-         * but we wait with emitting TRANSPORT.START event to the implementator until we read from devices
-         * in case something wrong happens and we never finish reading from devices for whatever reason
-         * implementator could get stuck waiting from TRANSPORT.START event forever. To avoid this,
-         * we emit TRANSPORT.START event after autoResolveTransportEventTimeout
-         */
-        const autoResolveTransportEventTimeout = setTimeout(resolve, autoResolveMs);
+        const onAbort = () => reject(signal.reason);
+        signal.addEventListener('abort', onAbort);
+
+        const onError = (error: string) => reject(new Error(error));
+        transport.once(TRANSPORT.ERROR, onError);
+
+        const autoResolveTransportEventTimeout = setTimeout(resolve, 10000);
+
+        let transportStartPending = deviceCount;
 
         const onDeviceConnect = () => {
             transportStartPending--;
@@ -430,6 +441,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         this.on(DEVICE.CONNECT_UNACQUIRED, onDeviceConnect);
 
         return promise.finally(() => {
+            transport.off(TRANSPORT.ERROR, onError);
+            signal.removeEventListener('abort', onAbort);
             clearTimeout(autoResolveTransportEventTimeout);
             this.off(DEVICE.CONNECT, onDeviceConnect);
             this.off(DEVICE.CONNECT_UNACQUIRED, onDeviceConnect);
