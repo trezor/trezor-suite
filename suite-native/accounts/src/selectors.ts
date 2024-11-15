@@ -109,7 +109,7 @@ export const getAccountListSections = (
     const canHasTokens = isCoinWithTokens(account.symbol);
     const tokens = filterKnownTokens(tokenDefinitions, account.symbol, account.tokens ?? []);
     const hasAnyKnownTokens = canHasTokens && !!tokens.length;
-    const stakingBalance = getAccountTotalStakingBalance(account);
+    const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
     const hasStaking = stakingBalance !== '0';
 
     if (canHasTokens) {
