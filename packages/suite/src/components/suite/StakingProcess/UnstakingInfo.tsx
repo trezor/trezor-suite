@@ -12,7 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
-import { getDaysToUnstake } from 'src/utils/suite/stake';
+import { getDaysToUnstake } from 'src/utils/suite/ethereumStaking';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 
 import { InfoRow } from './InfoRow';

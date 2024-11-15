@@ -31,7 +31,7 @@ import {
     getInstantStakeType,
     getChangedInternalTx,
     simulateUnstake,
-} from '../stake';
+} from '../ethereumStaking';
 import {
     transformTxFixtures,
     stakeFixture,
@@ -51,7 +51,7 @@ import {
     getInstantStakeTypeFixture,
     getChangedInternalTxFixture,
     simulateUnstakeFixture,
-} from '../__fixtures__/stake';
+} from '../__fixtures__/ethereumStaking';
 
 describe('transformTx', () => {
     transformTxFixtures.forEach(test => {

@@ -33,7 +33,7 @@ import {
     getEthNetworkForWalletSdk,
     getStakeFormsDefaultValues,
     simulateUnstake,
-} from 'src/utils/suite/stake';
+} from 'src/utils/suite/ethereumStaking';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import { useStakeCompose } from './form/useStakeCompose';

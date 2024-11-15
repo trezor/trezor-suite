@@ -16,7 +16,7 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
-import { getDaysToAddToPool, getDaysToUnstake } from 'src/utils/suite/stake';
+import { getDaysToAddToPool, getDaysToUnstake } from 'src/utils/suite/ethereumStaking';
 
 import { StakingCard } from './StakingCard';
 import { ApyCard } from './ApyCard';
