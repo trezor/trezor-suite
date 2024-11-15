@@ -21,11 +21,12 @@ module.exports = {
     },
     npmRebuild: false,
     files: [
-        // defaults are https://www.electron.build/configuration/contents.html#files
+        // defaults are https://www.electron.build/configuration#files
         'build/**/*',
         'dist/**/*.{js,wasm}',
         '!**/{tsconfig}*',
         '!**/*.{md,js.map}',
+        'build/release-notes.md',
         '!**/node_modules/**/*.{js.flow,ts}',
         '!build/static/**/{favicon,icons,bin,browsers}',
         '!node_modules/@sentry/**/esm',
