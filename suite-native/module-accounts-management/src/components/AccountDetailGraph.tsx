@@ -9,8 +9,10 @@ import { VStack } from '@suite-native/atoms';
 import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { selectIsHistoryEnabledAccountByAccountKey } from '@suite-native/graph/src/selectors';
+import { AccountsRootState } from '@suite-common/wallet-core';
 
-import { AccountDetailGraphHeader } from './AccountDetailGraphHeader';
+import { AccountDetailHeader } from './AccountDetailHeader';
 import { referencePointAtom, selectedPointAtom } from '../accountDetailGraphAtoms';
 
 type AccountDetailGraphProps = {
@@ -20,6 +22,9 @@ type AccountDetailGraphProps = {
 
 export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailGraphProps) => {
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const isHistoryEnabledAccount = useSelector((state: AccountsRootState) =>
+        selectIsHistoryEnabledAccountByAccountKey(state, accountKey),
+    );
     const tokensFilter = useMemo(() => (tokenContract ? [tokenContract] : []), [tokenContract]);
     const { graphPoints, graphEvents, error, isLoading, refetch, onSelectTimeFrame, timeframe } =
         useGraphForSingleAccount({
@@ -45,18 +50,25 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
 
     return (
         <VStack spacing="sp24">
-            <AccountDetailGraphHeader accountKey={accountKey} tokenAddress={tokenContract} />
+            <AccountDetailHeader accountKey={accountKey} tokenAddress={tokenContract} />
 
-            <Graph<FiatGraphPointWithCryptoBalance>
-                onPointSelected={setSelectedPoint}
-                onGestureEnd={setInitialSelectedPoints}
-                points={graphPoints}
-                loading={isLoading}
-                error={error}
-                onTryAgain={refetch}
-                events={graphEvents}
-            />
-            <TimeSwitch selectedTimeFrame={timeframe} onSelectTimeFrame={onSelectTimeFrame} />
+            {isHistoryEnabledAccount && (
+                <>
+                    <Graph<FiatGraphPointWithCryptoBalance>
+                        onPointSelected={setSelectedPoint}
+                        onGestureEnd={setInitialSelectedPoints}
+                        points={graphPoints}
+                        loading={isLoading}
+                        error={error}
+                        onTryAgain={refetch}
+                        events={graphEvents}
+                    />
+                    <TimeSwitch
+                        selectedTimeFrame={timeframe}
+                        onSelectTimeFrame={onSelectTimeFrame}
+                    />
+                </>
+            )}
         </VStack>
     );
 };

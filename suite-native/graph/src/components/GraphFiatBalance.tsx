@@ -16,6 +16,7 @@ type GraphFiatBalanceProps = BalanceProps & {
     referencePointAtom: Atom<FiatGraphPoint | null>;
     percentageChangeAtom: Atom<number>;
     hasPriceIncreasedAtom: Atom<boolean>;
+    showChange?: boolean;
 };
 
 const wrapperStyle = prepareNativeStyle(_ => ({
@@ -48,6 +49,7 @@ export const GraphFiatBalance = ({
     referencePointAtom,
     percentageChangeAtom,
     hasPriceIncreasedAtom,
+    showChange = true,
 }: GraphFiatBalanceProps) => {
     const { applyStyle } = useNativeStyles();
     const firstGraphPoint = useAtomValue(referencePointAtom);
@@ -59,16 +61,18 @@ export const GraphFiatBalance = ({
     return (
         <Box style={applyStyle(wrapperStyle)}>
             <Balance selectedPointAtom={selectedPointAtom} />
-            <HStack alignItems="center">
-                <GraphDateFormatter
-                    firstPointDate={firstGraphPoint.date}
-                    selectedPointAtom={selectedPointAtom}
-                />
-                <PriceChangeIndicator
-                    hasPriceIncreasedAtom={hasPriceIncreasedAtom}
-                    percentageChangeAtom={percentageChangeAtom}
-                />
-            </HStack>
+            {showChange && (
+                <HStack alignItems="center">
+                    <GraphDateFormatter
+                        firstPointDate={firstGraphPoint.date}
+                        selectedPointAtom={selectedPointAtom}
+                    />
+                    <PriceChangeIndicator
+                        hasPriceIncreasedAtom={hasPriceIncreasedAtom}
+                        percentageChangeAtom={percentageChangeAtom}
+                    />
+                </HStack>
+            )}
         </Box>
     );
 };

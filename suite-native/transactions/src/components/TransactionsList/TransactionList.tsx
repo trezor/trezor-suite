@@ -13,7 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { groupTransactionsByDate, isPending, MonthKey } from '@suite-common/wallet-utils';
-import { Box, Loader } from '@suite-native/atoms';
+import { Box } from '@suite-native/atoms';
 import {
     TypedTokenTransfer,
     selectAccountOrTokenTransactions,
@@ -27,6 +27,7 @@ import { TransactionsEmptyState } from '../TransactionsEmptyState';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
+import { TransactionsListFooter } from './TransactionsListFooter';
 
 type AccountTransactionProps = {
     areTokensIncluded: boolean;
@@ -152,7 +153,6 @@ export const TransactionList = ({
             areTokensIncluded,
         ),
     );
-    const isLoaderVisible = isLoadingTransactions && transactions.length === 0;
     const isFirstPageAlreadyFetched = useSelector((state: TransactionsRootState) =>
         selectIsPageAlreadyFetched(state, accountKey, 1, TX_PER_PAGE),
     );
@@ -162,7 +162,7 @@ export const TransactionList = ({
 
     useEffect(() => {
         // We need to check manually if the first page was already fetched, because fetchTransactionsPageThunk will
-        // awalys force refetch the first page, but we want to save resources and not do that if it's not necessary.
+        // always force refetch the first page, but we want to save resources and not do that if it's not necessary.
         if (!isFirstPageAlreadyFetched) {
             dispatch(fetchTransactionsPageThunk({ accountKey, page: 1, perPage: TX_PER_PAGE }));
         }
@@ -279,7 +279,13 @@ export const TransactionList = ({
                 contentContainerStyle={applyStyle(sectionListContainerStyle)}
                 ListEmptyComponent={<TransactionsEmptyState accountKey={accountKey} />}
                 ListHeaderComponent={listHeaderComponent}
-                ListFooterComponent={isLoaderVisible ? <Loader /> : null}
+                ListFooterComponent={
+                    <TransactionsListFooter
+                        accountKey={accountKey}
+                        isLoading={isLoadingTransactions}
+                        onButtonPress={handleOnEndReached}
+                    />
+                }
                 refreshControl={
                     <RefreshControl
                         refreshing={isRefreshing}
@@ -289,7 +295,6 @@ export const TransactionList = ({
                 }
                 estimatedItemSize={72}
                 refreshing={isRefreshing}
-                onEndReached={handleOnEndReached}
             />
         </Box>
     );

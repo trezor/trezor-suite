@@ -29,7 +29,7 @@ import { IncludeTokensToggle } from './IncludeTokensToggle';
 import { CoinPriceCard } from './CoinPriceCard';
 import { selectIsNetworkSendFlowEnabled } from '../selectors';
 
-type AccountDetailHeaderProps = {
+type TransactionListHeaderProps = {
     accountKey: AccountKey;
     areTokensIncluded: boolean;
     toggleIncludeTokenTransactions: () => void;
@@ -95,7 +95,7 @@ export const TransactionListHeader = memo(
         areTokensIncluded,
         toggleIncludeTokenTransactions,
         tokenContract,
-    }: AccountDetailHeaderProps) => {
+    }: TransactionListHeaderProps) => {
         const navigation = useNavigation<AccountsNavigationProps>();
         const [isDeviceConnectEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
@@ -149,7 +149,12 @@ export const TransactionListHeader = memo(
                         tokenContract={tokenContract}
                     />
                     {accountHasTransactions && (
-                        <HStack marginVertical="sp16" paddingHorizontal="sp16" flex={1}>
+                        <HStack
+                            marginVertical="sp16"
+                            paddingHorizontal="sp16"
+                            flex={1}
+                            spacing="sp12"
+                        >
                             <Box flex={1}>
                                 <Button
                                     viewLeft="arrowLineDown"

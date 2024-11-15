@@ -9,6 +9,7 @@ import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-type
 import { DiscreetTextTrigger, VStack } from '@suite-native/atoms';
 import { selectAccountTokenSymbol, TokensRootState } from '@suite-native/tokens';
 import { GraphFiatBalance } from '@suite-native/graph';
+import { selectIsHistoryEnabledAccountByAccountKey } from '@suite-native/graph/src/selectors';
 
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import {
@@ -47,12 +48,15 @@ const CryptoBalance = ({
     );
 };
 
-export const AccountDetailGraphHeader = ({ accountKey, tokenAddress }: AccountBalanceProps) => {
+export const AccountDetailHeader = ({ accountKey, tokenAddress }: AccountBalanceProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenAddress),
+    );
+    const isHistoryEnabledAccount = useSelector((state: AccountsRootState) =>
+        selectIsHistoryEnabledAccountByAccountKey(state, accountKey),
     );
     const setPoint = useSetAtom(selectedPointAtom);
 
@@ -73,6 +77,7 @@ export const AccountDetailGraphHeader = ({ accountKey, tokenAddress }: AccountBa
                 referencePointAtom={referencePointAtom}
                 percentageChangeAtom={percentageChangeAtom}
                 hasPriceIncreasedAtom={hasPriceIncreasedAtom}
+                showChange={isHistoryEnabledAccount}
             />
         </VStack>
     );

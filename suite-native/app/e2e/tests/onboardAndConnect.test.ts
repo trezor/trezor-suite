@@ -37,7 +37,7 @@ describe('Go through onboarding and connect Trezor.', () => {
 
             await onBottomSheet.skipViewOnlyMode();
 
-            await detoxExpect(element(by.id('@home/portfolio/graph')));
+            await detoxExpect(element(by.id('@home/portfolio/header')));
         } else {
             await detoxExpect(element(by.text('Hi there!'))).toBeVisible();
             await detoxExpect(element(by.text('Get started'))).toBeVisible();

@@ -3,20 +3,61 @@ import { useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
 
-import { useGraphForAllDeviceAccounts, Graph, TimeSwitch } from '@suite-native/graph';
+import {
+    useGraphForAllDeviceAccounts,
+    Graph,
+    TimeSwitch,
+    selectHasDeviceHistoryEnabledAccounts,
+    selectHasDeviceHistoryIgnoredAccounts,
+} from '@suite-native/graph';
 import { selectFiatCurrencyCode } from '@suite-native/settings';
-import { VStack } from '@suite-native/atoms';
+import { Box, VStack, Text } from '@suite-native/atoms';
 import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
+import { CryptoIcon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { PortfolioGraphHeader } from './PortfolioGraphHeader';
+import { PortfolioHeader } from './PortfolioHeader';
 import { referencePointAtom, selectedPointAtom } from '../portfolioGraphAtoms';
 
 export type PortfolioGraphRef = {
     refetchGraph: () => Promise<void>;
 };
 
+const ignoredNetworksContentStyle = prepareNativeStyle(utils => ({
+    flexDirection: 'row',
+    marginHorizontal: utils.spacings.sp16,
+    paddingHorizontal: utils.spacings.sp16,
+    paddingVertical: utils.spacings.sp12,
+    gap: utils.spacings.sp12,
+    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation0,
+    borderColor: utils.colors.backgroundTertiaryDefaultOnElevationNegative,
+    borderWidth: utils.borders.widths.small,
+    borderRadius: utils.borders.radii.r16,
+    alignItems: 'center',
+}));
+
+const IgnoredNetworksBanner = () => {
+    const { applyStyle } = useNativeStyles();
+    const hasDeviceHistoryIgnoredAccounts = useSelector(selectHasDeviceHistoryIgnoredAccounts);
+
+    if (!hasDeviceHistoryIgnoredAccounts) {
+        return null;
+    }
+
+    return (
+        <Box style={applyStyle(ignoredNetworksContentStyle)}>
+            <CryptoIcon symbol="sol" size="small" />
+            <Text variant="hint">
+                <Translation id="moduleHome.graphIgnoredNetworks.sol" />
+            </Text>
+        </Box>
+    );
+};
+
 export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const hasDeviceHistoryEnabledAccounts = useSelector(selectHasDeviceHistoryEnabledAccounts);
     const loadingTakesLongerThanExpected = useIsDiscoveryDurationTooLong();
 
     const {
@@ -56,17 +97,23 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
 
     return (
         <VStack spacing="sp24" testID="@home/portfolio/graph">
-            {isAnyMainnetAccountPresent ? <PortfolioGraphHeader /> : null}
-            <Graph
-                points={graphPoints}
-                loading={isLoading}
-                loadingTakesLongerThanExpected={loadingTakesLongerThanExpected}
-                onPointSelected={setSelectedPoint}
-                onGestureEnd={setInitialSelectedPoints}
-                onTryAgain={refetch}
-                error={error}
-            />
-            <TimeSwitch selectedTimeFrame={timeframe} onSelectTimeFrame={onSelectTimeFrame} />
+            {isAnyMainnetAccountPresent ? <PortfolioHeader /> : null}
+
+            {hasDeviceHistoryEnabledAccounts && (
+                <Graph
+                    points={graphPoints}
+                    loading={isLoading}
+                    loadingTakesLongerThanExpected={loadingTakesLongerThanExpected}
+                    onPointSelected={setSelectedPoint}
+                    onGestureEnd={setInitialSelectedPoints}
+                    onTryAgain={refetch}
+                    error={error}
+                />
+            )}
+            <IgnoredNetworksBanner />
+            {hasDeviceHistoryEnabledAccounts && (
+                <TimeSwitch selectedTimeFrame={timeframe} onSelectTimeFrame={onSelectTimeFrame} />
+            )}
         </VStack>
     );
 });

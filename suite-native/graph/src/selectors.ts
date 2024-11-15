@@ -1,4 +1,6 @@
+import { A } from '@mobily/ts-belt';
 import { AccountItem } from '@suite-common/graph';
+import { isIgnoredBalanceHistoryCoin } from '@suite-common/graph/src/constants';
 import {
     selectFilterKnownTokens,
     TokenDefinitionsRootState,
@@ -6,6 +8,7 @@ import {
 import {
     AccountsRootState,
     DeviceRootState,
+    selectAccountByKey,
     selectDeviceMainnetAccounts,
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
@@ -30,4 +33,33 @@ export const selectPortfolioGraphAccountItems = (state: GraphCommonRootState): A
             tokensFilter,
         };
     });
+};
+
+export const selectHasDeviceHistoryEnabledAccounts = (
+    state: DeviceRootState & AccountsRootState,
+): boolean => {
+    const accounts = selectDeviceMainnetAccounts(state);
+
+    return A.isNotEmpty(accounts.filter(a => !isIgnoredBalanceHistoryCoin(a.symbol)));
+};
+
+export const selectHasDeviceHistoryIgnoredAccounts = (
+    state: DeviceRootState & AccountsRootState,
+): boolean => {
+    const accounts = selectDeviceMainnetAccounts(state);
+
+    return A.isNotEmpty(accounts.filter(a => isIgnoredBalanceHistoryCoin(a.symbol)));
+};
+
+export const selectIsHistoryEnabledAccountByAccountKey = (
+    state: AccountsRootState,
+    accountKey: string | undefined,
+): boolean => {
+    const account = selectAccountByKey(state, accountKey);
+
+    if (!account) {
+        return false;
+    }
+
+    return !isIgnoredBalanceHistoryCoin(account.symbol);
 };

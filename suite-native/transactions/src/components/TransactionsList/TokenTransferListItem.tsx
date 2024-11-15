@@ -63,7 +63,7 @@ export const TokenTransferListItemValues = ({
         <>
             <TokenToFiatAmountFormatter
                 networkSymbol={transaction.symbol}
-                value={tokenTransfer.amount}
+                value={Number(tokenTransfer.amount)}
                 contract={tokenTransfer.contract}
                 decimals={tokenTransfer.decimals}
                 signValue={isFailedTx ? undefined : getTransactionValueSign(tokenTransfer.type)}
@@ -81,6 +81,8 @@ export const TokenTransferListItemValues = ({
                 numberOfLines={1}
                 ellipsizeMode="tail"
                 isForcedDiscreetMode={isPhishingTransaction}
+                variant="hint"
+                color="textSubdued"
             />
         </>
     );

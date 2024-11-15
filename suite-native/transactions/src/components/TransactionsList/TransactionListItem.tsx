@@ -71,7 +71,7 @@ export const TransactionListItemValues = ({
                         <SignValueFormatter value={getTransactionValueSign(transaction.type)} />
                     )}
                     <CryptoToFiatAmountFormatter
-                        value={transaction.amount}
+                        value={Number(transaction.amount)}
                         network={transaction.symbol}
                         historicRate={historicRate}
                         useHistoricRate
@@ -88,6 +88,8 @@ export const TransactionListItemValues = ({
                 numberOfLines={1}
                 adjustsFontSizeToFit
                 isForcedDiscreetMode={isPhishingTransaction}
+                variant="hint"
+                color="textSubdued"
             />
         </>
     );

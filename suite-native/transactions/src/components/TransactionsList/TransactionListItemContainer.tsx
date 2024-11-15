@@ -197,7 +197,11 @@ export const TransactionListItemContainer = ({
                         {hasIncludedCoins && <Badge label={includedCoinsLabel} size="small" />}
                     </HStack>
 
-                    <DateTextComponent isForcedDiscreetMode={isPhishingTransaction}>
+                    <DateTextComponent
+                        isForcedDiscreetMode={isPhishingTransaction}
+                        variant="hint"
+                        color="textSubdued"
+                    >
                         {DateTimeFormatter.format(transactionBlockTime)}
                     </DateTextComponent>
                 </Box>
