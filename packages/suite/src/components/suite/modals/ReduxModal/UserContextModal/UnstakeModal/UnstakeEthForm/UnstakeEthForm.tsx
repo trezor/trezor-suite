@@ -10,7 +10,7 @@ import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
-import { getUnstakingPeriodInDays } from 'src/utils/suite/stake';
+import { getUnstakingPeriodInDays } from 'src/utils/suite/ethereumStaking';
 import { ApproximateInstantEthAmount } from 'src/views/wallet/staking/components/EthStakingDashboard/components/ApproximateInstantEthAmount';
 
 import { Options } from './Options';

@@ -25,7 +25,7 @@ import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { getInstantStakeType } from 'src/utils/suite/stake';
+import { getInstantStakeType } from 'src/utils/suite/ethereumStaking';
 import { OutlineHighlight } from 'src/components/OutlineHighlight';
 
 import { TransactionTypeIcon } from './TransactionTypeIcon';

@@ -9,7 +9,7 @@ import { Translation, TrezorLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { getDaysToAddToPoolInitial } from 'src/utils/suite/stake';
+import { getDaysToAddToPoolInitial } from 'src/utils/suite/ethereumStaking';
 
 interface ConfirmStakeEthModalProps {
     isLoading: boolean;

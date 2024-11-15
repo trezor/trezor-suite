@@ -36,7 +36,7 @@ import {
     prepareClaimEthTx,
     prepareStakeEthTx,
     prepareUnstakeEthTx,
-} from 'src/utils/suite/stake';
+} from 'src/utils/suite/ethereumStaking';
 
 const calculate = (
     availableBalance: string,

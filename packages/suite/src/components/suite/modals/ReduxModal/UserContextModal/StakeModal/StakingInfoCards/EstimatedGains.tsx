@@ -10,7 +10,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { FiatValue, FormattedCryptoAmount, TrezorLink } from 'src/components/suite';
-import { calculateGains } from 'src/utils/suite/stake';
+import { calculateGains } from 'src/utils/suite/ethereumStaking';
 
 export const EstimatedGains = () => {
     const { account, getValues, formState } = useStakeEthFormContext();

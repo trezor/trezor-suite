@@ -13,6 +13,8 @@ import {
     MIN_ETH_AMOUNT_FOR_STAKING,
     MAX_ETH_AMOUNT_FOR_STAKING,
     UNSTAKE_INTERCHANGES,
+    WALLET_SDK_SOURCE,
+    UNSTAKING_ETH_PERIOD,
 } from '@suite-common/wallet-constants';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { getEthereumEstimateFeeParams, isPending, sanitizeHex } from '@suite-common/wallet-utils';
@@ -23,15 +25,6 @@ import { BlockchainEstimatedFee } from '@trezor/connect/src/types/api/blockchain
 import { PartialRecord } from '@trezor/type-utils';
 
 import { TranslationFunction } from 'src/hooks/suite/useTranslation';
-
-// source is a required parameter for some functions in the Everstake Wallet SDK.
-// This parameter is used for some contract calls.
-// It is a constant which allows the SDK to define which app calls its functions.
-// Each app which integrates the SDK has its own source, e.g. source for Trezor Suite is '1'.
-export const WALLET_SDK_SOURCE = '1';
-
-// Used when Everstake unstaking period is not available from the API.
-export const UNSTAKING_ETH_PERIOD = 3;
 
 const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
 

@@ -12,7 +12,7 @@ import { spacings, spacingsPx } from '@trezor/theme';
 import { Translation, FormattedCryptoAmount } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { getInstantStakeType } from 'src/utils/suite/stake';
+import { getInstantStakeType } from 'src/utils/suite/ethereumStaking';
 
 const Wrapper = styled.div`
     display: flex;

@@ -16,3 +16,6 @@ export const MIN_ETH_BALANCE_FOR_STAKING = MIN_ETH_AMOUNT_FOR_STAKING.plus(MIN_E
 export const UNSTAKE_INTERCHANGES = 5;
 
 export const BACKUP_REWARD_PAYOUT_DAYS = 7;
+
+// Used when Everstake unstaking period is not available from the API.
+export const UNSTAKING_ETH_PERIOD = 3;

@@ -31,7 +31,10 @@ import {
 } from 'src/types/wallet/stakeForms';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { signTransaction } from 'src/actions/wallet/stakeActions';
-import { getEthNetworkForWalletSdk, getStakeFormsDefaultValues } from 'src/utils/suite/stake';
+import {
+    getEthNetworkForWalletSdk,
+    getStakeFormsDefaultValues,
+} from 'src/utils/suite/ethereumStaking';
 import type { CryptoAmountLimitProps } from 'src/utils/suite/validation';
 
 import { useStakeCompose } from './form/useStakeCompose';

@@ -10,7 +10,10 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT, OUTPUT_AMOUNT, UseStakeFormsProps } from 'src/types/wallet/stakeForms';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { signTransaction } from 'src/actions/wallet/stakeActions';
-import { getEthNetworkForWalletSdk, getStakeFormsDefaultValues } from 'src/utils/suite/stake';
+import {
+    getEthNetworkForWalletSdk,
+    getStakeFormsDefaultValues,
+} from 'src/utils/suite/ethereumStaking';
 import { ClaimContextValues, ClaimFormState } from 'src/types/wallet/claimForm';
 
 import { useFees } from './form/useFees';
