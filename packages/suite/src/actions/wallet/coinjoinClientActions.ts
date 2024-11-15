@@ -642,6 +642,7 @@ const signCoinjoinTx =
                         );
 
                         const signTx = await TrezorConnect.signTransaction({
+                            version: 1, // Coinjoin requires the 1, the default is now 2, as most wallets have 2
                             device,
                             useEmptyPassphrase: device?.useEmptyPassphrase,
                             inputs: tx.inputs,

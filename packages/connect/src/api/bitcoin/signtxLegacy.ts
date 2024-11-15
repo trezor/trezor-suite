@@ -160,6 +160,8 @@ export const signTxLegacy = async ({
 }: SignTxHelperParams) => {
     const { message } = await typedCall('SignTx', 'TxRequest', {
         ...options,
+        // nVersion, use 2 as it enables BIP68 + seems to be the most commonly used (= harder to fingerprint the Trezor)
+        version: options.version === undefined && coinInfo.isBitcoin ? 2 : options.version,
         inputs_count: inputs.length,
         outputs_count: outputs.length,
         coin_name: coinInfo.name,

@@ -86,6 +86,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
         };
 
         const params: Parameters<typeof TrezorConnect.signTransaction>[0] = {
+            version: 1, // Coinjoin has to have nVersion =1
             inputs: [
                 {
                     // seed "alcohol woman abuse must during monitor noble actual mixed trade anger aisle"

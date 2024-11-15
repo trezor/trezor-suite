@@ -80,7 +80,7 @@ export const BitcoinNetworkInfo = Type.Intersect([
         xPubMagicSegwit: Type.Optional(Type.Number()),
         taproot: Type.Optional(Type.Boolean()),
         network: Network,
-        isBitcoin: Type.Boolean(),
+        isBitcoin: Type.Boolean(), // = only the Bitcoin, it's testnet and regtest (no BCH and other Bitcoin forks...),
     }),
 ]);
 
