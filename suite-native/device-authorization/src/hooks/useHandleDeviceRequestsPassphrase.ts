@@ -30,14 +30,14 @@ export const useHandleDeviceRequestsPassphrase = () => {
 
     const deviceState = useSelector(selectDeviceState);
     const deviceRequestedPassphrase = useSelector(selectDeviceRequestedPassphrase);
-    const isVefifyingPassphraseOnEmptyWallet = useSelector(
+    const isVerifyingPassphraseOnEmptyWallet = useSelector(
         selectIsVerifyingPassphraseOnEmptyWallet,
     );
     const isCreatingNewWallet = useSelector(selectIsCreatingNewPassphraseWallet);
 
     const handleRequestPassphrase = useCallback(() => {
         // If the passphrase request was while verifying empty passphrase wallet, we handle it separately in the screen
-        if (!isVefifyingPassphraseOnEmptyWallet && !deviceState?.staticSessionId) {
+        if (!isVerifyingPassphraseOnEmptyWallet && !deviceState?.staticSessionId) {
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                 screen: AuthorizeDeviceStackRoutes.PassphraseForm,
             });
@@ -45,7 +45,7 @@ export const useHandleDeviceRequestsPassphrase = () => {
 
         // Feature requests passphrase
         if (
-            !isVefifyingPassphraseOnEmptyWallet &&
+            !isVerifyingPassphraseOnEmptyWallet &&
             !isCreatingNewWallet &&
             deviceState?.staticSessionId
         ) {
@@ -56,7 +56,7 @@ export const useHandleDeviceRequestsPassphrase = () => {
     }, [
         deviceState?.staticSessionId,
         isCreatingNewWallet,
-        isVefifyingPassphraseOnEmptyWallet,
+        isVerifyingPassphraseOnEmptyWallet,
         navigation,
     ]);
 
