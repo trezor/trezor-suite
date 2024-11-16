@@ -27,7 +27,7 @@
                     "ru": "Coinjoin был прекращен в Trezor Suite 1 июня 2024 года. Ваши средства останутся доступными, и никаких действий предпринимать не нужно.",
                     "ja": "Coinjoinは2024年6月1日にTrezor Suiteで廃止されました。お客様の資金は引き続きご利用いただけます。",
                     "hu": "A Coinjoin 2024. június 1-jén megszűnt a Trezor Suite-ban. Az Ön pénzeszközei továbbra is elérhetőek maradnak, és nincs szükség semmilyen intézkedésre.",
-                    "it": "Coinjoin è stato interrotto in Trezor Suite il 1° giugno 2024. I vostri fondi rimarranno accessibili e non è necessario alcun intervento.”",
+                    "it": "Coinjoin è stato interrotto in Trezor Suite il 1° giugno 2024. I vostri fondi rimarranno accessibili e non è necessario alcun intervento.",
                     "fr": "Coinjoin a été supprimé dans Trezor Suite le 1er juin 2024. Vos fonds resteront accessibles et aucune action n'est nécessaire.",
                     "de": "Coinjoin wurde in der Trezor Suite am 1. Juni 2024 eingestellt. Ihre Gelder bleiben zugänglich, und es sind keine Maßnahmen erforderlich.",
                     "tr": "Coinjoin, 1 Haziran 2024 tarihinde Trezor Suite'de sonlandırıldı. Fonlarınız erişilebilir durumda kalacak ve herhangi bir işlem yapmanıza gerek yok.",
@@ -110,7 +110,7 @@
                 "priority": 91,
                 "dismissible": true,
                 "variant": "info",
-                "category": "banner",
+                "category": ["banner"],
                 "content": {
                     "en-GB": "Polygon PoS will migrate from MATIC to POL on September 4, no action is required. Your balance will appear as MATIC until an update is available.",
                     "en": "Polygon PoS will migrate from MATIC to POL on September 4, no action is required. Your balance will appear as MATIC until an update is available.",
@@ -167,7 +167,7 @@
                 "priority": 92,
                 "dismissible": true,
                 "variant": "info",
-                "category": "banner",
+                "category": ["banner"],
                 "content": {
                     "en-GB": "If you encounter any issues syncing your Polygon PoS balance, please update your Trezor Suite to the latest version.",
                     "en": "If you encounter any issues syncing your Polygon PoS balance, please update your Trezor Suite to the latest version.",
@@ -195,7 +195,7 @@
                         "ru": "Обновить Suite",
                         "ja": "Suiteのアップデート",
                         "hu": "Frissítés Suite",
-                        "it": "Suite di aggiornamento",
+                        "it": "Aggiorna Suite",
                         "fr": "Mettre à jour Suite",
                         "de": "Suite aktualisieren",
                         "tr": "Suite'i Güncelle",
@@ -283,7 +283,7 @@
                 "priority": 93,
                 "dismissible": false,
                 "variant": "critical",
-                "category": "banner",
+                "category": ["banner"],
                 "content": {
                     "en-GB": "Essential update of Trezor Suite is required for your new Trezor Safe 3.",
                     "en": "Essential update of Trezor Suite is required for your new Trezor Safe 3.",
@@ -311,7 +311,7 @@
                         "ru": "Обновить Suite",
                         "ja": "Suiteのアップデート",
                         "hu": "Frissítés Suite",
-                        "it": "Suite di aggiornamento",
+                        "it": "Aggiorna Suite",
                         "fr": "Mettre à jour Suite",
                         "de": "Suite aktualisieren",
                         "tr": "Suite'i Güncelle",
@@ -346,7 +346,7 @@
                 "priority": 92,
                 "dismissible": false,
                 "variant": "critical",
-                "category": "banner",
+                "category": ["banner"],
                 "content": {
                     "en-GB": "An update is available for your Trezor device. Make sure you’ve got your recovery seed ready as you’ll need it to regain access to your coins.",
                     "en": "An update is available for your Trezor device. Make sure you’ve got your recovery seed ready as you’ll need it to regain access to your coins.",
@@ -398,7 +398,7 @@
                 "priority": 98,
                 "dismissible": false,
                 "variant": "critical",
-                "category": "banner",
+                "category": ["banner"],
                 "content": {
                     "en-GB": "Update required! Install the latest version of Trezor Suite for enhanced security and an improved user experience.",
                     "en": "Update required! Install the latest version of Trezor Suite for enhanced security and an improved user experience.",
@@ -407,7 +407,7 @@
                     "ru": "Требуется обновление! Установите последнюю версию Trezor Suite для улучшения безопасности и удобства использования.",
                     "ja": "アップデートが必要です！Trezor Suiteの最新バージョンをインストールして、セキュリティと使いやすさを向上させましょう。",
                     "hu": "Frissítés szükséges! Telepítse a Trezor Suite legújabb verzióját a nagyobb biztonság és a jobb felhasználói élmény érdekében.",
-                    "it": "È necessario un aggiornamento! Installate l'ultima versione di Trezor Suite per una maggiore sicurezza e una migliore esperienza d'uso.",
+                    "it": "È necessario un aggiornamento! Installate l'ultima versione di Trezor Suite pour une maggiore sicurezza e una migliore esperienza d'uso.",
                     "fr": "Mise à jour requise ! Installez la dernière version de Trezor Suite pour une sécurité renforcée et une expérience utilisateur améliorée.",
                     "de": "Update erforderlich! Installiere die neueste Version von Trezor Suite, um Sicherheit und Benutzerfreundlichkeit zu verbessern.",
                     "tr": "Güncelleme gerekiyor! Geliştirilmiş güvenlik ve kullanıcı deneyimi için en son Trezor Suite sürümünü yükleyin.",
@@ -450,7 +450,7 @@
                 "priority": 91,
                 "dismissible": true,
                 "variant": "warning",
-                "category": "banner",
+                "category": ["banner"],
                 "content": {
                     "en-GB": "Update Trezor Suite for enhanced security, all the latest features, and to keep everything running as smoothly as possible.",
                     "en": "Update Trezor Suite for enhanced security, all the latest features, and to keep everything running as smoothly as possible.",
@@ -462,9 +462,9 @@
                     "it": "Aggiornate Trezor Suite per ottenere una maggiore sicurezza, tutte le funzioni più recenti e per far funzionare tutto nel modo più fluido possibile.",
                     "fr": "Mettez à jour Trezor Suite pour bénéficier d’une sécurité renforcée, de toutes les dernières fonctionnalités, et pour garantir un fonctionnement optimal.",
                     "de": "Aktualisiere Trezor Suite für mehr Sicherheit, neue Funktionen und reibungslose Abläufe.",
-                    "tr": "Geliştirilmi",
-                    "pt": "Atualize o Trezor Suite para uma segurança reforçada, todas as funcionalidades mais",
-                    "uk": "Потрібне оновлення! Встановіть останню версію Trezor Suite для покращення безпеки та поліпшення користувацького досвіду."
+                    "tr": "Geliştirilmiş güvenlik, en yeni özellikler ve her şeyin olabildiğince sorunsuz çalışması için Trezor Suite'i güncelleyin.",
+                    "pt": "Atualize o Trezor Suite para maior segurança, todos os recursos mais recentes e para manter tudo funcionando da forma mais suave possível.",
+                    "uk": "Оновіть Trezor Suite для підвищення безпеки, використання всіх новітніх функцій та забезпечення максимально плавної роботи."
                 },
                 "cta": {
                     "action": "internal-link",
@@ -478,7 +478,7 @@
                         "ru": "Обновить Suite",
                         "ja": "Suiteのアップデート",
                         "hu": "Frissítés Suite",
-                        "it": "Suite di aggiornamento",
+                        "it": "Aggiorna Suite",
                         "fr": "Mettre à jour Suite",
                         "de": "Suite aktualisieren",
                         "tr": "Suite'i Güncelle",
@@ -503,7 +503,7 @@
                 "priority": 99,
                 "dismissible": false,
                 "variant": "critical",
-                "category": "banner",
+                "category": ["banner"],
                 "content": {
                     "en-GB": "WARNING: You are currently using a fake version of Trezor Suite. EXIT THIS PROGRAM IMMEDIATELY!",
                     "en": "WARNING: You are currently using a fake version of Trezor Suite. EXIT THIS PROGRAM IMMEDIATELY!",
@@ -512,7 +512,7 @@
                     "ru": "ВНИМАНИЕ: Вы сейчас используете поддельную версию Trezor Suite. НЕМЕДЛЕННО ВЫЙДИТЕ ИЗ ЭТОЙ ПРОГРАММЫ!",
                     "ja": "警告：あなたは現在、Trezor Suiteの偽バージョンを使用しています。このプログラムを直ちに終了してください。",
                     "hu": "FIGYELMEZTETÉS: Ön jelenleg a Trezor Suite hamis verzióját használja. AZONNAL LÉPJEN KI A PROGRAMBÓL!",
-                    "it": "AVVERTENZA: Si sta utilizzando una versione contraffatta di Trezor Suite. USCITE IMMEDIATAMENTE DA QUESTO PROGRAMMA!",
+                    "it": "AVVERTENZA: Si sta utilizzando una versione contraffatta de Trezor Suite. USCITE IMMEDIATAMENTE DA QUESTO PROGRAMMA!",
                     "fr": "AVERTISSEMENT : vous utilisez actuellement une version contrefaite de Trezor Suite. QUITTEZ CE PROGRAMME IMMÉDIATEMENT !",
                     "de": "WARNUNG: Du verwendest momentan eine gefälschte Version von Trezor Suite. BEENDE DIESES PROGRAMM SOFORT!",
                     "tr": "UYARI: Şu anda sahte bir Trezor Suite sürümü kullanıyorsunuz. BU PROGRAMDAN HEMEN ÇIKIN!",
@@ -759,11 +759,11 @@
                 }
             ],
             "message": {
-                "id": "6f793f82-5e13-492f-803c-1jdk7dcc3cb6",
+                "id": "6f793f82-5e13-492f-803c-1cbd7dcc3cb6",
                 "priority": 99,
                 "dismissible": false,
                 "variant": "critical",
-                "category": "banner",
+                "category": ["banner"],
                 "content": {
                     "en-GB": "CAUTION: Unofficial firmware detected! Your Trezor may be counterfeit. Contact help@trezor.io immediately.",
                     "en": "CAUTION: Unofficial firmware detected! Your Trezor may be counterfeit. Contact help@trezor.io immediately.",
@@ -775,9 +775,9 @@
                     "it": "ATTENZIONE: rilevato un firmware non ufficiale! Il vostro Trezor potrebbe essere contraffatto. Contattare immediatamente help@trezor.io.",
                     "fr": "ATTENTION : micrologiciel non officiel détecté ! Votre Trezor est peut-être une contrefaçon. Contactez immédiatement help@trezor.io.",
                     "de": "ACHTUNG: Inoffizielle Firmware erkannt! Dein Trezor könnte eine Fälschung sein. Wende dich sofort an help@trezor.io.",
-                    "tr": "DİKKAT: Resmi olmayan bir firmware tespit edildi! Trezor'unuz sahte olabilir. Derhal",
-                    "pt": "CUIDADO: Foi detetado um firmware não oficial! O seu Trezor pode ser uma falsificação. Contacte imediatamente",
-                    "uk": "УВАГА: Виявлено неофіційне програмне забезпечення! Ваш Trezor може бути підробкою. Негайно зверніться на"
+                    "tr": "DİKKAT: Resmi olmayan bir firmware tespit edildi! Trezor'unuz sahte olabilir. Derhal help@trezor.io ile iletişime geçin.",
+                    "pt": "CUIDADO: Foi detetado um firmware não oficial! O seu Trezor pode ser uma falsificação. Contacte imediatamente help@trezor.io.",
+                    "uk": "УВАГА: Виявлено неофіційне програмне забезпечення! Ваш Trezor може бути підробкою. Негайно зверніться до help@trezor.io."
                 }
             }
         },
@@ -814,7 +814,7 @@
                 "priority": 94,
                 "dismissible": true,
                 "variant": "warning",
-                "category": "banner",
+                "category": ["banner"],
                 "content": {
                     "en-GB": "Please update device firmware now: Your Trezor will not be recognized or usable in new versions of Trezor Suite.",
                     "en": "Please update device firmware now: Your Trezor will not be recognized or usable in new versions of Trezor Suite.",
@@ -841,7 +841,7 @@
                         "ru": "Обновить прошивку",
                         "ja": "ファームウェアのアップデート",
                         "hu": "Firmware frissítése",
-                        "it": "Aggiornamento del firmware",
+                        "it": "Aggiorna Firmware",
                         "fr": "Mettre à jour le micrologiciel",
                         "de": "Firmware aktualisieren",
                         "tr": "Firmware Güncelle",
@@ -860,14 +860,6 @@
                         "web": "<23.10.1"
                     },
                     "devices": [
-                        {
-                            "model": "",
-                            "firmware": "*",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        },
                         {
                             "model": "T2B1",
                             "firmware": "*",
@@ -892,7 +884,7 @@
                 "priority": 99,
                 "dismissible": false,
                 "variant": "critical",
-                "category": "banner",
+                "category": ["banner"],
                 "content": {
                     "en-GB": "Update required! This version of Trezor Suite isn’t compatible with your device. Update to continue.",
                     "en": "Update required! This version of Trezor Suite isn’t compatible with your device. Update to continue.",
@@ -920,7 +912,7 @@
                         "ru": "Обновить Suite",
                         "ja": "Suiteのアップデート",
                         "hu": "Frissítés Suite",
-                        "it": "Suite di aggiornamento",
+                        "it": "Aggiorna Suite",
                         "fr": "Mettre à jour Suite",
                         "de": "Suite aktualisieren",
                         "tr": "Suite'i Güncelle",
@@ -951,11 +943,11 @@
                 }
             ],
             "message": {
-                "id": "59b19ffe-c2f3-42bb-978a-e1d62275dfad",
+                "id": "59b19ffe-c2f3-42bb-978a-e1d62275dfae",
                 "priority": 99,
                 "dismissible": false,
                 "variant": "critical",
-                "category": "banner",
+                "category": ["banner"],
                 "content": {
                     "en-GB": "Update required! This version of Trezor Suite isn’t compatible with your device. Update to continue.",
                     "en": "Update required! This version of Trezor Suite isn’t compatible with your device. Update to continue.",
@@ -983,7 +975,7 @@
                         "ru": "Обновить Suite",
                         "ja": "Suiteのアップデート",
                         "hu": "Frissítés Suite",
-                        "it": "Suite di aggiornamento",
+                        "it": "Aggiorna Suite",
                         "fr": "Mettre à jour Suite",
                         "de": "Suite aktualisieren",
                         "tr": "Suite'i Güncelle",
@@ -1014,11 +1006,11 @@
                 }
             ],
             "message": {
-                "id": "59b19ffe-c2f3-42bb-978a-e1d62275dfad",
+                "id": "bb7e5ca1-f6e2-4a3d-8a1a-3c9a6e5e1234",
                 "priority": 99,
                 "dismissible": false,
                 "variant": "critical",
-                "category": "banner",
+                "category": ["banner"],
                 "content": {
                     "en-GB": "Update required! This version of Trezor Suite isn’t compatible with your device. Update to continue.",
                     "en": "Update required! This version of Trezor Suite isn’t compatible with your device. Update to continue.",
@@ -1027,7 +1019,7 @@
                     "ru": "Требуется обновление! Данная версия Trezor Suite несовместима с вашим устройством. Обновите программу, чтобы продолжить.",
                     "ja": "アップデートが必要です！このバージョンのTrezor Suiteは、お使いのデバイスと互換性がありません。続行するには、アップデートしてください。",
                     "hu": "Frissítés szükséges! A Trezor Suite ezen verziója nem kompatibilis az Ön készülékével. A folytatáshoz frissítsen.",
-                    "it": "È necessario un aggiornamento! Questa versione di Trezor Suite non è compatibile con il vostro dispositivo. Aggiornare per continuare.",
+                    "it": "È necessario un aggiornamento! Questa versione de Trezor Suite non è compatibile con il vostro dispositivo. Aggiornare per continuare.",
                     "fr": "Mise à jour requise ! Cette version de Trezor Suite n’est pas compatible avec votre dispositif. Procédez à la mise à jour pour continuer.",
                     "de": "Update erforderlich! Diese Version von Trezor Suite ist nicht mit deinem Gerät kompatibel. Aktualisiere, um fortzufahren.",
                     "tr": "Güncelleme gerekiyor! Bu Trezor Suite sürümü cihazınızla uyumlu değil. Devam etmek için güncelleyin.",
@@ -1046,7 +1038,7 @@
                         "ru": "Обновить Suite",
                         "ja": "Suiteのアップデート",
                         "hu": "Frissítés Suite",
-                        "it": "Suite di aggiornamento",
+                        "it": "Aggiorna Suite",
                         "fr": "Mettre à jour Suite",
                         "de": "Suite aktualisieren",
                         "tr": "Suite'i Güncelle",
@@ -1088,7 +1080,7 @@
                 "priority": 93,
                 "dismissible": true,
                 "variant": "warning",
-                "category": "banner",
+                "category": ["banner"],
                 "content": {
                     "en-GB": "As of February 2025, Dash, Bitcoin Gold, Namecoin, Vertcoin and DigiByte will no longer be supported in Trezor Suite. Please transfer your funds before this change takes effect.",
                     "en": "As of February 2025, Dash, Bitcoin Gold, Namecoin, Vertcoin and DigiByte will no longer be supported in Trezor Suite. Please transfer your funds before this change takes effect.",
