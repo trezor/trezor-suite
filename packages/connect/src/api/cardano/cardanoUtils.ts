@@ -47,6 +47,35 @@ export const prepareCertificates = (certs: CardanoCertificate[]) => {
                 convertedCerts.push({
                     type: cert.type,
                 });
+                break;
+            case PROTO.CardanoCertificateType.VOTE_DELEGATION:
+                if (
+                    cert.dRep?.type === PROTO.CardanoDRepType.ABSTAIN ||
+                    cert.dRep?.type === PROTO.CardanoDRepType.NO_CONFIDENCE
+                ) {
+                    convertedCerts.push({
+                        type: cert.type,
+                        dRep: {
+                            type: cert.dRep!.type,
+                        },
+                    });
+                } else if (cert.dRep?.type === PROTO.CardanoDRepType.KEY_HASH) {
+                    convertedCerts.push({
+                        type: cert.type,
+                        dRep: {
+                            type: cert.dRep!.type,
+                            keyHash: cert.dRep.keyHash!,
+                        },
+                    });
+                } else if (cert.dRep?.type === PROTO.CardanoDRepType.SCRIPT_HASH) {
+                    convertedCerts.push({
+                        type: cert.type,
+                        dRep: {
+                            type: cert.dRep!.type,
+                            scriptHash: cert.dRep!.scriptHash!,
+                        },
+                    });
+                }
                 // TODO conway certificates not supported by coin-selection lib yet
                 break;
             // no default

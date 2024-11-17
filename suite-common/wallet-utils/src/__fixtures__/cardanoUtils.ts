@@ -624,3 +624,73 @@ export const getDelegationCertificates = [
         ],
     },
 ];
+export const getVotingCertificates = [
+    {
+        description: 'delegating votes to keyHash',
+        stakingPath: 'path',
+        dRep: {
+            type: 0, //keyHash
+            keyHash: 'hex',
+        },
+        result: [
+            {
+                type: 9,
+                path: 'path',
+                dRep: {
+                    type: 0,
+                    keyHash: 'hex',
+                },
+            },
+        ],
+    },
+    {
+        description: 'delegating votes to scriptHash',
+        stakingPath: 'path',
+        dRep: {
+            type: 1, // scriptHash
+            keyHash: 'hex',
+        },
+        result: [
+            {
+                type: 9,
+                path: 'path',
+                dRep: {
+                    type: 1,
+                    scriptHash: 'hex',
+                },
+            },
+        ],
+    },
+    {
+        description: 'delegating votes abstain',
+        stakingPath: 'path',
+        dRep: {
+            type: 2, // abstain
+        },
+        result: [
+            {
+                type: 9,
+                path: 'path',
+                dRep: {
+                    type: 2,
+                },
+            },
+        ],
+    },
+    {
+        description: 'delegating votes no confidence',
+        stakingPath: 'path',
+        dRep: {
+            type: 3, // no confidence
+        },
+        result: [
+            {
+                type: 9,
+                path: 'path',
+                dRep: {
+                    type: 3,
+                },
+            },
+        ],
+    },
+];

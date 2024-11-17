@@ -167,6 +167,7 @@ export const signCardanoSendFormTransactionThunk = createThunk<
             inputs: precomposedTransaction.inputs,
             outputs: precomposedTransaction.outputs,
             unsignedTx: precomposedTransaction.unsignedTx,
+            tagCborSets: true,
             testnet: isTestnet(symbol),
             protocolMagic: getProtocolMagic(symbol),
             networkId: getNetworkId(symbol),

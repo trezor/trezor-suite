@@ -133,6 +133,26 @@ export const getDelegationCertificates = (
     return result;
 };
 
+export const getVotingCertificates = (
+    stakingPath: string,
+    dRep: { keyHash?: string; type: PROTO.CardanoDRepType },
+) => {
+    const result: CardanoCertificate[] = [
+        {
+            type: PROTO.CardanoCertificateType.VOTE_DELEGATION,
+            path: stakingPath,
+            dRep: {
+                keyHash: dRep.type === PROTO.CardanoDRepType.KEY_HASH ? dRep.keyHash : undefined,
+                scriptHash:
+                    dRep.type === PROTO.CardanoDRepType.SCRIPT_HASH ? dRep.keyHash : undefined,
+                type: dRep.type,
+            },
+        },
+    ];
+
+    return result;
+};
+
 export const isPoolOverSaturated = (pool: StakePool, additionalStake?: string) =>
     new BigNumber(pool.live_stake)
         .plus(additionalStake ?? '0')

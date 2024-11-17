@@ -145,4 +145,88 @@ export const prepareCertificates = [
             },
         ],
     },
+    {
+        description: 'vote delegation (keyHash)',
+        certificates: [
+            {
+                type: 9,
+                path: "m/1852'/1815'/8'/2/0",
+                dRep: {
+                    type: 0, // keyHash
+                    keyHash: 'hex',
+                },
+            },
+        ],
+        result: [
+            {
+                type: 9,
+                dRep: {
+                    type: 0,
+                    keyHash: 'hex',
+                },
+            },
+        ],
+    },
+    {
+        description: 'vote delegation (scriptHash)',
+        certificates: [
+            {
+                type: 9,
+                path: "m/1852'/1815'/8'/2/0",
+                dRep: {
+                    type: 1, // scriptHash
+                    scriptHash: 'hex',
+                },
+            },
+        ],
+        result: [
+            {
+                type: 9,
+                dRep: {
+                    type: 1,
+                    scriptHash: 'hex',
+                },
+            },
+        ],
+    },
+    {
+        description: 'vote delegation (abstain)',
+        certificates: [
+            {
+                type: 9,
+                path: "m/1852'/1815'/8'/2/0",
+                dRep: {
+                    type: 2, // abstain
+                },
+            },
+        ],
+        result: [
+            {
+                type: 9,
+                dRep: {
+                    type: 2,
+                },
+            },
+        ],
+    },
+    {
+        description: 'vote delegation (no confidence)',
+        certificates: [
+            {
+                type: 9,
+                path: "m/1852'/1815'/8'/2/0",
+                dRep: {
+                    type: 3, // no confidence
+                },
+            },
+        ],
+        result: [
+            {
+                type: 9,
+                dRep: {
+                    type: 3,
+                },
+            },
+        ],
+    },
 ];

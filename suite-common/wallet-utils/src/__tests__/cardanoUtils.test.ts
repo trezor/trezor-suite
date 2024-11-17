@@ -3,6 +3,7 @@ import { CARDANO, PROTO } from '@trezor/connect';
 import {
     getAddressType,
     getDelegationCertificates,
+    getVotingCertificates,
     getNetworkId,
     getProtocolMagic,
     getShortFingerprint,
@@ -125,6 +126,11 @@ describe('cardano utils', () => {
             expect(
                 getDelegationCertificates(f.stakingPath, f.poolHex, f.shouldRegister),
             ).toMatchObject(f.result);
+        });
+    });
+    fixtures.getVotingCertificates.forEach(f => {
+        it(`getVotingCertificates: ${f.description}`, () => {
+            expect(getVotingCertificates(f.stakingPath, f.dRep)).toMatchObject(f.result);
         });
     });
 });
