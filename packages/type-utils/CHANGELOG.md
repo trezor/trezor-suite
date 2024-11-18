@@ -1,3 +1,11 @@
+# 1.1.1
+
+-   npm-prerelease: @trezor/type-utils 1.1.1-beta.2 (9d8523cbd9)
+-   chore(utils): move isArrayMember to utils (0be00e9571)
+-   chore(suite): isArrayMember TS improvement (ff927e1724)
+-   npm-prerelease: @trezor/type-utils 1.1.1-beta.1 (49887bb666)
+-   feat(type-utils): isArrayMember (cc33611be9)
+
 # 1.1.0
 
 -   fix(type-utils): add build:lib command (3fdffb2578)
