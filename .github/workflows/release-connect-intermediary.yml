@@ -1,0 +1,44 @@
+name: "[Release] connect create intermediary release branch"
+
+on:
+  workflow_dispatch:
+    inputs:
+      cherry_pick_commit_sha_from:
+        description: "The first commit SHA to cherry-pick from develop"
+        required: true
+        type: string
+      cherry_pick_commit_sha_to:
+        description: "The last commit SHA to cherry-pick from develop"
+        required: true
+        type: string
+
+jobs:
+  create-intermediary-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Number of commits to fetch. 0 indicates all history for all branches and tags.
+          fetch-depth: 0
+
+      - name: Get current branch name
+        id: get-current-branch
+        run: |
+          # Extract the branch name from github.ref
+          echo "branch_name=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+
+      - name: Create intermediary branch
+        env:
+          BRANCH_NAME: "intermediary-release-branch-of-release/${{ steps.get-current-branch.outputs.branch_name }}"
+        run: |
+          echo ${{ env.BRANCH_NAME }}
+          git checkout -b ${{ env.BRANCH_NAME }}
+
+      - name: Fetch develop branch
+        run: git fetch origin develop
+
+      - name: Cherry-pick commits from develop
+        run: |
+          # Cherry-pick the specified range of commits from the fetched develop branch
+          git cherry-pick -x ${{ github.event.inputs.cherry_pick_commit_sha_from }}^..${{ github.event.inputs.cherry_pick_commit_sha_to }}
