@@ -16,25 +16,27 @@
 
 /packages/components @jvaclavik @adamhavel
 
-/packages/connect @mroz22 @szymonlesisz @martykan
+/packages/connect @mroz22 @szymonlesisz @martykan @marekrjpolak
 
-/packages/connect-common @mroz22 @szymonlesisz @martykan
+/packages/connect-common @mroz22 @martykan
 
-/packages/connect-examples @mroz22 @szymonlesisz @martykan
+/packages/connect-examples @mroz22 @martykan
 
-/packages/connect-explorer @mroz22 @szymonlesisz @martykan
+/packages/connect-explorer @mroz22 @martykan
 
-/packages/connect-iframe @mroz22 @szymonlesisz @martykan
+/packages/connect-iframe @mroz22 @martykan
 
-/packages/connect-plugin-ethereum @mroz22 @szymonlesisz @martykan
+/packages/connect-plugin-ethereum @mroz22 @martykan
 
-/packages/connect-plugin-stellar @mroz22 @szymonlesisz @martykan
+/packages/connect-plugin-stellar @mroz22 @martykan
 
-/packages/connect-popup @mroz22 @szymonlesisz @martykan
+/packages/connect-popup @mroz22 @martykan
 
-/packages/connect-web @mroz22 @szymonlesisz @martykan
+/packages/connect-web @mroz22 @martykan
 
 /packages/connect-webextension @mroz22 @karliatto @martykan
+
+/packages/connect-mobile @mroz22 @karliatto @martykan
 
 /packages/icons @trezor/suite-mobile
 
@@ -58,7 +60,11 @@
 
 /packages/suite-storage @matejkriz
 
-/packages/transport @mroz22
+/packages/transport @mroz22 @szymonlesisz
+
+/packages/transport-bridge @mroz22 @szymonlesisz
+
+/packages/transport-test @mroz22
 
 /packages/transport-native @trezor/suite-mobile @Nodonisko
 
