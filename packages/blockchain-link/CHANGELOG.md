@@ -1,3 +1,30 @@
+# 2.3.2
+
+-   npm-prerelease: @trezor/blockchain-link 2.3.2-beta.2 (eacdfff276)
+-   chore: bump webpack (fc04fea1de)
+-   chore: get rid of '@typescript-eslint/no-unused-vars': 'off', and enforce it everywhere (1ad7b6f9b1)
+-   chore: enable import/order rule for whole codebase - prettier fix (12b6fb18b9)
+-   chore: enable import/order rule for whole codebase (e22b683733)
+-   chore: enforce @typescript-eslint/no-restricted-imports everywhere (5d1104bfeb)
+-   chore: add recommanded checks from eslint-plugin-jest (55d663ca2d)
+-   chore: add 'import/no-duplicates' ESLint rule (8d8beba862)
+-   chore: update solana lib (76519c7c16)
+-   chore: add 'no-case-declarations' ESLint rule (855548f686)
+-   fix(blockchain-link): show better message for solana expired txs (74d5365ff5)
+-   fix(blockchain-link): export socks-prosy-agent for browser (e9973e9117)
+-   feat(blockchain-link): implement ethereum rpc call (2732533db8)
+-   chore(libs): update @types/web 0.0.162 to 0.0.174 (30298f7c52)
+-   chore(blockchain-link): update proxyAgent to new socks-proxy-agent (e54f8d736e)
+-   chore: update socks-proxy-agent from 6.1.1 to 8.0.4 (2d3edbcc89)
+-   npm-prerelease: @trezor/blockchain-link 2.3.2-beta.1 (679a6dbc86)
+-   chore: update backends for bsc and op (458f0fe3d9)
+-   feat(suite): add Optimism (f98f57023f)
+-   fix(blockchain-link): do not fetch solana token account signatures for recipient address (171c7d6a20)
+-   feat(blockchain-link): add user agent to Solana requests from desktop (2109d004e2)
+-   feat(blockchain-link): add user agent to Cardano requests from desktop (8ec6f008bd)
+-   feat(blockchain-link): user agent with Suite version when req Blockbook (9f61f179a4)
+-   feat: change matic to pol symbol in the codebase (66427afab4)
+
 # 2.3.1
 
 -   npm-prerelease: @trezor/blockchain-link 2.3.1-beta.1 (a77b9e96f7)
