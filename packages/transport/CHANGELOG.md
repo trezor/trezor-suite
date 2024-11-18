@@ -1,3 +1,27 @@
+# 1.3.3
+
+-   npm-prerelease: @trezor/transport 1.3.3-beta.2 (de2cfbf343)
+-   chore: get rid of '@typescript-eslint/no-unused-vars': 'off', and enforce it everywhere (1ad7b6f9b1)
+-   chore: enable import/order rule for whole codebase (e22b683733)
+-   chore: add recommanded checks from eslint-plugin-jest (55d663ca2d)
+-   fix(transport-bridge): synchronize was too strict, allow enumerate and call (b7afbd0515)
+-   fix(connect): webusb sessions sync in all deployments (13ec59a53d)
+-   chore: add no-unsafe-optional-chaining as it became part of recommanded settings (e4c191ee7b)
+-   chore: add no-empty as it will became part of recommanded (ef2dd42a5e)
+-   chore: enable 'prefet-const' ESLint rule (ff5fe34e9e)
+-   chore: add 'import/no-duplicates' ESLint rule (8d8beba862)
+-   feat(transport): implement transport.id and descriptor.sessionOwner (ab294cb3ef)
+-   test(connect): adjust tests (934ae43a30)
+-   refactor(connect): device handling improved (d5077c8e06)
+-   refactor(transport): emit update with separate descriptors (8a98804706)
+-   chore(protobuf): remove `MessageType_` prefix from `MessageType` enum (f620e40f2a)
+-   chore(libs): update @types/sharedworker 0.0.124 to 0.0.130 (3ce0e31de7)
+-   fix(transport): udp interface-change event (17bac171ec)
+-   fix(transport): api.dispose on transport.stop (e79130e88e)
+-   npm-prerelease: @trezor/transport 1.3.3-beta.1 (48637b2975)
+-   chore(transport): passing rest params to parent transport class (f3eff3a302)
+-   refactor(transport): background sessions improved (7644107353)
+
 # 1.3.1
 
 -   npm-prerelease: @trezor/transport 1.3.1-beta.1 (71a9c73da1)
