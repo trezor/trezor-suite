@@ -44,8 +44,8 @@ import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
 
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
-import { getAccountTotalStakingBalance } from './ethereumStakingUtils';
 import { isRbfTransaction } from './transactionUtils';
+import { getAccountTotalStakingBalance } from './stakingUtils';
 
 export const isUtxoBased = (account: Account) =>
     account.networkType === 'bitcoin' || account.networkType === 'cardano';
@@ -692,9 +692,9 @@ export const getAssetTokensFiatBalance = (
 };
 
 export const getStakingFiatBalance = (account: Account, rate: number | undefined) => {
-    const balanceInEther = getAccountTotalStakingBalance(account);
+    const balance = getAccountTotalStakingBalance(account) ?? '0';
 
-    return toFiatCurrency(balanceInEther, rate, 2);
+    return toFiatCurrency(balance, rate, 2);
 };
 
 export const getAccountFiatBalance = ({

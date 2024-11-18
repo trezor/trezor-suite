@@ -80,6 +80,7 @@ const composeCreateAccountActionPayload = ({
         discoveryItem.coin,
     ),
     tokens: enhanceTokens(accountInfo.tokens),
+    stakingAccounts: accountInfo.stakingAccounts,
     addresses: enhanceAddresses(accountInfo, discoveryItem),
     utxo: enhanceUtxo(accountInfo.utxo, discoveryItem.networkType, discoveryItem.index),
     history: accountInfo.history,

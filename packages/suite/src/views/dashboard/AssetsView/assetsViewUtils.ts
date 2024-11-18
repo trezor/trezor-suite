@@ -21,7 +21,7 @@ export const handleTokensAndStakingData = (
     currentFiatRates?: RatesByKey,
 ) => {
     const assetStakingBalance = accountsThatStaked.reduce((total, account) => {
-        return total.plus(getAccountTotalStakingBalance(account));
+        return total.plus(getAccountTotalStakingBalance(account) ?? '0');
     }, new BigNumber(0));
     const tokens = getTokens(assetTokens ?? [], symbol, coinDefinitions);
     const tokensWithRates = enhanceTokensWithRates(

@@ -87,7 +87,7 @@ export const AccountItemsGroup = ({
                         account={account}
                         type="staking"
                         isSelected={selected && routeName === 'wallet-staking'}
-                        formattedBalance={stakingBalance}
+                        formattedBalance={stakingBalance ?? '0'}
                         isGroup
                         isGroupSelected={selected}
                         dataTestKey={`${dataTestKey}/staking`}
