@@ -1,3 +1,22 @@
+# 9.2.2
+
+-   npm-prerelease: @trezor/utils 9.2.2-beta.2 (cedfd2710f)
+-   fix: additional fixes after jest/recommanded introduction (17f74166ca)
+-   chore: no-control-regex as it becames recommanded (a8c4a9f34c)
+-   chore: add recommanded checks from eslint-plugin-jest (55d663ca2d)
+-   feat(product-components): add utils to detect non-ASCII chars (b1d9fb0d49)
+-   chore: enable 'prefet-const' ESLint rule (ff5fe34e9e)
+-   test(utils): add test for isArrayMember (67391fce70)
+-   chore(utils): move isArrayMember to utils (0be00e9571)
+-   feat: implement strong randomInt that works in browser without need for polyfill lib (3f4312e834)
+-   npm-prerelease: @trezor/utils 9.2.2-beta.1 (f3fd24f0d6)
+-   chore: allow passing of the source of randomness for arrayShuffle (e1fe4b85d4)
+-   chore: add better naming for random function which is not using strong source of randomness (4f66613553)
+-   chore: code improvement for arrayShuffle (b52bfba948)
+-   feat(utils): implement `getMutex` (1835c1731d)
+-   feat(utils): add `lockId` to `getSynchronize` (ba3580aeeb)
+-   test(utils): use mocked timers everywhere (621eb66acb)
+
 # 9.2.1
 
 -   npm-prerelease: @trezor/utils 9.2.1-beta.1 (dfe200874b)
