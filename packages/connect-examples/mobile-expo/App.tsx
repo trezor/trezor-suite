@@ -60,6 +60,25 @@ export const App = () => {
         }
     };
 
+    const signMessage = async () => {
+        try {
+            const response = await TrezorConnect.signMessage({
+                path: "m/49'/0'/0'/0/0",
+                message: 'Hello from mobile app!',
+            });
+            if (!response.success) {
+                setSuccessData(null);
+                setErrorData({ success: response.success });
+
+                return;
+            }
+            setErrorData(null);
+            setSuccessData(response);
+        } catch (error) {
+            console.error('error', error);
+        }
+    };
+
     useEffect(() => {
         const subscription = Linking.addEventListener('url', event => {
             TrezorConnect.handleDeeplink(event.url);
@@ -73,12 +92,23 @@ export const App = () => {
             <Text>Trezor Connect Native example!</Text>
             <Button onPress={initialize} title="Initialize TrezorConnect" />
             <Button onPress={getAddress} title="Get Address" />
+            <Button onPress={signMessage} title="Sign Message" />
+
             {successData && (
                 <View style={styles.dataContainer}>
                     <Text>Success: {successData.success ? 'Yes' : 'No'}</Text>
-                    <Text>Address: {successData.payload?.address}</Text>
-                    <Text>Path: {successData.payload?.path.join(', ')}</Text>
-                    <Text>Serialized Path: {successData.payload?.serializedPath}</Text>
+                    {successData.payload?.address && (
+                        <Text>Address: {successData.payload?.address}</Text>
+                    )}
+                    {successData.payload?.path && (
+                        <Text>Path: {successData.payload?.path.join(', ')}</Text>
+                    )}
+                    {successData.payload?.serializedPath && (
+                        <Text>Serialized Path: {successData.payload?.serializedPath}</Text>
+                    )}
+                    {successData.payload?.signature && (
+                        <Text>Signature: {successData.payload?.signature}</Text>
+                    )}
                 </View>
             )}
 
