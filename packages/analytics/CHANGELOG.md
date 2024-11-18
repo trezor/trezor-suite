@@ -1,3 +1,8 @@
+# 1.2.2
+
+-   npm-prerelease: @trezor/analytics 1.2.2-beta.1 (13b76de1b3)
+-   chore: enable import/order rule for whole codebase (e22b683733)
+
 # 1.2.1
 
 -   npm-prerelease: @trezor/analytics 1.2.1-beta.1 (cad75cc6e6)
