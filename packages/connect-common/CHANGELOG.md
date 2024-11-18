@@ -1,3 +1,15 @@
+# 0.2.3
+
+-   npm-prerelease: @trezor/connect-common 0.2.3-beta.2 (5038b5bbd4)
+-   chore: get rid of '@typescript-eslint/no-unused-vars': 'off', and enforce it everywhere (1ad7b6f9b1)
+-   chore: enforce @typescript-eslint/no-restricted-imports everywhere (5d1104bfeb)
+-   chore: add 'import/no-duplicates' ESLint rule (8d8beba862)
+-   feat(connect): add t3w1 releases.json (01cdee48f1)
+-   refactor(connect): separate unique and transport device path (0f8d233d56)
+-   npm-prerelease: @trezor/connect-common 0.2.3-beta.1 (412da596f1)
+-   chore: update backends for bsc and op (458f0fe3d9)
+-   feat(connect): add Optimism (c2fb244649)
+
 # 0.2.1
 
 -   npm-prerelease: @trezor/connect-common 0.2.1-beta.1 (4dc0af2640)
