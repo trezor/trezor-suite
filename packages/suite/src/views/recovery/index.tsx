@@ -65,6 +65,14 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const hasFinished = recovery.status === 'finished';
     const hasError = recovery.error !== undefined;
 
+    const handleClose = () => {
+        if (['in-progress', 'waiting-for-confirmation'].includes(recovery.status)) {
+            TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+        } else {
+            onCancel();
+        }
+    };
+
     if (!isDeviceAcquired(device) || !deviceModelInternal) {
         return (
             <NewModal
@@ -240,19 +248,13 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                     )}
                     <NewModal.Button
                         variant={hasFinished ? undefined : 'tertiary'}
-                        onClick={() => onCancel()}
+                        onClick={handleClose}
                     >
                         <Translation id="TR_CLOSE" />
                     </NewModal.Button>
                 </>
             }
-            onCancel={() => {
-                if (['in-progress', 'waiting-for-confirmation'].includes(recovery.status)) {
-                    TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
-                } else {
-                    onCancel();
-                }
-            }}
+            onCancel={handleClose}
             variant={hasFinished && hasError ? 'warning' : 'primary'}
             // eslint-disable-next-line no-nested-ternary
             iconName={hasFinished ? (hasError ? 'warning' : 'check') : undefined}
