@@ -1,3 +1,15 @@
+# 1.2.2
+
+-   npm-prerelease: @trezor/blockchain-link-types 1.2.2-beta.2 (33407a3dcf)
+-   chore: update solana lib (76519c7c16)
+-   feat(blockchain-link): implement ethereum rpc call (2732533db8)
+-   chore(blockchain-link-types): remove socks-proxy-agent dependency (327ed789cf)
+-   chore(blockchain-link-types): keep legacy type SocksProxyAgentOptions (4a4d439aab)
+-   chore: update socks-proxy-agent from 6.1.1 to 8.0.4 (2d3edbcc89)
+-   npm-prerelease: @trezor/blockchain-link-types 1.2.2-beta.1 (552d5487f3)
+-   feat(suite-common): add pol and bnb to graph (013c786250)
+-   chore(blockchain-link): Update Blockbook types (06d54d6aa9)
+
 # 1.2.1
 
 -   chore: remove prettier-eslint dependency, upgrade @typescript-eslint (77576f5bea)
