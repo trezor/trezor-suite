@@ -149,7 +149,7 @@ export const TransactionListItemContainer = ({
 
     const { DateTimeFormatter } = useFormatters();
     const transactionBlockTime = useSelector((state: TransactionsRootState) =>
-        selectTransactionBlockTimeById(state, txid, accountKey),
+        selectTransactionBlockTimeById(state, accountKey, txid),
     );
 
     const isTransactionPending = useSelector((state: TransactionsRootState) =>

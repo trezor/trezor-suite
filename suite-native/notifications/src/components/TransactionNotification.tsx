@@ -88,7 +88,7 @@ export const TransactionNotification = ({
     );
 
     const transactionTargetAddress = useSelector((state: TransactionsRootState) =>
-        selectTransactionFirstTargetAddress(state, txid, accountKey ?? ''),
+        selectTransactionFirstTargetAddress(state, accountKey ?? '', txid),
     );
 
     const handleRemoveNotification = () => dispatch(notificationsActions.close(notificationId));

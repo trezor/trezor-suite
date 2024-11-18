@@ -67,7 +67,7 @@ export const TransactionDetailInputsSheet = ({
     const { translate } = useTranslate();
     const transactionTransfers = useSelector(
         (state: TransactionsRootState & TokenDefinitionsRootState) =>
-            selectTransactionInputAndOutputTransfers(state, txid, accountKey),
+            selectTransactionInputAndOutputTransfers(state, accountKey, txid),
     );
 
     if (G.isNull(transactionTransfers)) return null;

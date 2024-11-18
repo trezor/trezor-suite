@@ -40,7 +40,7 @@ export const TransactionDetailData = ({
     const { applyStyle } = useNativeStyles();
 
     const transactionBlockTime = useSelector((state: TransactionsRootState) =>
-        selectTransactionBlockTimeById(state, transaction.txid, accountKey),
+        selectTransactionBlockTimeById(state, accountKey, transaction.txid),
     );
     const isPhishingTransaction = useSelector(
         (state: TokenDefinitionsRootState & TransactionsRootState) =>
