@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { NavigationItem, SubpageNavigation } from 'src/components/suite/layouts/SuiteLayout';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 export const ACCOUNT_TABS = [
     'wallet-index',
@@ -18,6 +19,8 @@ export const ACCOUNT_TABS = [
 ];
 
 export const AccountNavigation = () => {
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
+
     const account = useSelector(selectSelectedAccount);
     const routerParams = useSelector(state => state.router.params) as WalletParams;
     const dispatch = useDispatch();
@@ -60,7 +63,10 @@ export const AccountNavigation = () => {
                 goToWithAnalytics('wallet-staking', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_STAKING" />,
-            isHidden: !hasNetworkFeatures(account, 'staking'),
+            // TODO: remove 'solana' and debug mode check from the condition when staking will be ready for launch
+            isHidden:
+                !hasNetworkFeatures(account, 'staking') ||
+                (!isDebugModeActive && 'solana' === networkType),
             'data-testid': '@wallet/menu/staking',
         },
         {
