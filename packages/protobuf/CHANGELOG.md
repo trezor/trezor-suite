@@ -1,3 +1,22 @@
+# 1.2.3
+
+-   npm-prerelease: @trezor/protobuf 1.2.3-beta.2 (c965336138)
+-   chore: add recommanded checks from eslint-plugin-jest (55d663ca2d)
+-   chore: add no-empty as it will became part of recommanded (ef2dd42a5e)
+-   feat(protobuf): add t3w1 internal_model (1f8a09066a)
+-   feat(suite): images, logic, videos for T3W1 (9ef409912d)
+-   feat(protobuf): add message for LoadDevice (950a3d04ef)
+-   feat(protobuf): stop skipping LoadDevice (3419d536e4)
+-   chore(protobuf): remove `MessageType_` prefix from `MessageType` enum (f620e40f2a)
+-   chore(protobuf): build types script as module (324ba30921)
+-   fix(protobuf): skip benchmark messages (888774fc19)
+-   fix(protobuf): repo path in build script (5396d67588)
+-   npm-prerelease: @trezor/protobuf 1.2.3-beta.1 (0b4f84fa7d)
+-   chore(protobuf): remove unused definitions (monero, webauthn) (66ae488690)
+-   chore(protobuf): build types scripts and patches `js` > `ts` (326260c73c)
+-   feat(protobuf): build definitions using protobufjs package (000870b9ab)
+-   chore(protobuf): update messages.json (71bbde850b)
+
 # 1.2.1
 
 -   npm-prerelease: @trezor/protobuf 1.2.1-beta.1 (3cfd038db1)
