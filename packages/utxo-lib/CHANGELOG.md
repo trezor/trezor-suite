@@ -1,3 +1,20 @@
+# 2.2.2
+
+-   npm-prerelease: @trezor/utxo-lib 2.2.2-beta.1 (ca494efcb0)
+-   chore: get rid of '@typescript-eslint/no-unused-vars': 'off', and enforce it everywhere (1ad7b6f9b1)
+-   chore: enable import/order rule for whole codebase - prettier fix (12b6fb18b9)
+-   chore: enable import/order rule for whole codebase (e22b683733)
+-   chore: add recommanded checks from eslint-plugin-jest (55d663ca2d)
+-   fix(utxo-lib): add types bn.js and events (7cc53975ba)
+-   chore: rename bnb to branchAndBound to be more explicit & remove conllision with BNB token (2223463b66)
+-   chore: use interface (type) for coinselection algorithymns (5707a4d267)
+-   fix: make reandom mocks work in Karma (ed4c9e02ce)
+-   feat: implement random strategy for utxo sorting (6c3137fdf8)
+-   chore: improve fixture for compose.test (add strict types) (d3a4fe51d3)
+-   feat: add sortingStrategy param to connect, deprecate skipPermitationparam in composeTransaction (283d3f1eae)
+-   chore: default-export code improvement (f64440fe99)
+-   feat: introduce sortingStrategy into utxo-lib so we can have more strategies (bip69, none, and later the random) (3dace574c0)
+
 # 2.2.1
 
 -   npm-prerelease: @trezor/utxo-lib 2.2.1-beta.1 (42a5868328)
