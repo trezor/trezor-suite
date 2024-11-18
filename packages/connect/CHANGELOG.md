@@ -10,7 +10,9 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.4.3-beta.2
+# 9.4.3
+
+This release introduces `@trezor/connect-mobile`, which allows mobile apps to integrate with Trezor Suite mobile using deeplinks. This package is still beta and work in progress.
 
 ## Feature
 
@@ -22,6 +24,7 @@ Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to a
 -   implement random strategy for utxo sorting (6c3137fdf8)
 -   new public method TrezorConnect.blockchainEvmRpcCall (a507d1322a)
 -   make `manifest.appUrl` available as part of `Device.transportSessionOwner` (c98f7f8bf4)
+-   connect-mobile and deeplink (9f8f1c1bd2, d1c2bd7464, 40f3b53a34, fe8499ec1c, 1ff479c545, 1b88b3b72b)
 
 ## Fixes
 
@@ -38,58 +41,47 @@ Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to a
 
 ## Chores and improvements
 
+-   add dynamic connect that allows us to use different connect implementation (96e81fe5bf, 887889288f)
 -   try to reuse initialized (passphrase) session (422476c9c0)
 -   uncouple enableFirmwareHashCheck setting from binFilesBaseUrl (768596bbe5)
 -   add sortingStrategy param to connect, deprecate skipPermutation param in composeTransaction (283d3f1eae)
 -   Eslint improvements (1ad7b6f9b1, 12b6fb18b9, f1bdc399e5, e22b683733, 5d1104bfeb, 4a3cdc7893, 5e33e3abb5)
--   add recommended checks from eslint-plugin-jest (55d
+-   add recommended checks from eslint-plugin-jest
+-   make getBinaryOptional async (e583e84c32)
+-   fw hash check automatically for T1B1 (0fd023dbe8)
+-   cleanup some duplicities in fw download util (53456df94d)
+-   a cosmetic change in Device types (b718af4a2b)
+-   use import from @trezor/connect-analytics (1ee270b1cd)
+-   fix log going to (9dee606f43)
+-   Support matrix (44ed16a45d)
+-   update backends for bsc and op (458f0fe3d9)
+-   mention address can be used in getAccountInfo (722a2b2b7f)
+-   update messages.json (71bbde850b)
+-   add Optimism (c2fb244649)
+-   rename 'getAssetByUrl' to a more apt fn name 'tryLocalAssetRequire' (f5e8f256ae)
+-   background sessions improved (7644107353)
+-   connect error codes typing (57815188d1)
+-   update device authenticity config (063d68379f)
+-   fix header level in connect changelog (ac53d354cc)
+-   add other-error to FirmwareRevisionCheckResult errors (4361aba5b7)
 
 ### Dependencies update
 
--   chore(connect): update @ethereumjs libs (2d6465f, d6bc8c5020)
--   bump electron,electron-builder and webpack (2b80c45c5f, e7a980bcf3, fc04fea1de)
+-   @ethereumjs libs (2d6465f, d6bc8c5020)
+-   electron, electron-builder and webpack (2b80c45c5f, e7a980bcf3, fc04fea1de)
 
-# 9.4.3-beta.1
-
-This release introduces `@trezor/connect-mobile`, which allows mobile apps to integrate with Trezor Suite mobile using deeplinks.
-This package is still beta and work in progress.
-
-### Connect Mobile related changes
-
--   chore(connect-mobile): update package.json for publishing (fb157ef318)
--   feat(connect-explorer): hiding beta-only content (21e0d42c6d)
--   feat(connect-explorer): call deeplinks from method tester (f2a5f7460e)
--   docs(connect): mobile connect popup (9f8f1c1bd2)
--   chore(connect-popup): move deeplink fallback page to versioned url (e86e6aa5b3)
--   chore: rename connect-deeplink to connect-mobile (d1c2bd7464)
--   feat(connect): use separate versioning for deeplink protocol (40f3b53a34)
--   feat(module-connect-popup): add version check to app link parser (fe8499ec1c)
--   chore(connect-examples): change from deeplinkUrl to connectSrc (1ff479c545)
--   feat(connect): take deeplinkUrl from connectSrc (1b88b3b72b)
-
-### Other changes
-
--   refactor(connect-web): use dynamic from connect package (887889288f)
--   refactor(connect): dynamic connect (96e81fe5bf)
--   fix(connect): make getBinaryOptional async (e583e84c32)
--   test(connect-popup): fix log going to (9dee606f43)
--   feat(connect): fw hash check automatically for T1B1 (0fd023dbe8)
--   docs(connect-web): Support matrix (44ed16a45d)
--   chore: update backends for bsc and op (458f0fe3d9)
--   docs(connect-explorer): mention address can be used in getAccountInfo (722a2b2b7f)
--   chore(connect): cleanup some duplicities in fw download util (53456df94d)
--   chore(connect): a cosmetic change in Device types (b718af4a2b)
--   chore(connect): use import from @trezor/connect-analytics (1ee270b1cd)
--   chore(protobuf): update messages.json (71bbde850b)
--   feat(connect): add Optimism (c2fb244649)
--   chore(connect): pol only to pol backend (fe589cf6bc)
--   chore(connect): rename 'getAssetByUrl' to a more apt fn name 'tryLocalAssetRequire' (f5e8f256ae)
--   docs(connect-explorer): remove trailing commas from json excerpts (dc0147900d)
--   refactor(transport): background sessions improved (7644107353)
--   refactor(connect): connect error codes typing (57815188d1)
--   chore(connect): update device authenticity config (063d68379f)
--   docs: fix header level in connect changelog (ac53d354cc)
--   fix(connect): add other-error to FirmwareRevisionCheckResult errors (4361aba5b7)
+-   npm-release: @trezor/blockchain-link 2.3.2
+-   npm-release: @trezor/blockchain-link-utils 1.2.2
+-   npm-release: @trezor/blockchain-link-types 1.2.2
+-   npm-release: @trezor/type-utils 1.1.1
+-   npm-release: @trezor/connect-analytics 1.2.2
+-   npm-release: @trezor/analytics 1.2.2
+-   npm-release: @trezor/connect-common 0.2.3
+-   npm-release: @trezor/transport 1.3.3
+-   npm-release: @trezor/protobuf 1.2.3
+-   npm-release: @trezor/schema-utils 1.2.2
+-   npm-release: @trezor/utxo-lib 2.2.2
+-   npm-release: @trezor/utils 9.2.2
 
 # 9.4.2
 
