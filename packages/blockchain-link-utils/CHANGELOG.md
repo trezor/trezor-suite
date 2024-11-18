@@ -1,3 +1,10 @@
+# 1.2.2
+
+-   npm-prerelease: @trezor/blockchain-link-utils 1.2.2-beta.2 (225a260c34)
+-   chore: update solana lib (76519c7c16)
+-   npm-prerelease: @trezor/blockchain-link-utils 1.2.2-beta.1 (54ab781bf9)
+-   fix(blockchain-link-utils): fix solana self txs info in history (f53d31e47f)
+
 # 1.2.1
 
 -   npm-prerelease: @trezor/blockchain-link-utils 1.2.1-beta.1 (58d60c48c7)
