@@ -475,3 +475,9 @@ export const selectIsDeviceNotEmpty = createMemoizedSelector(
         return isNotEmpty;
     },
 );
+
+export const selectStakingAccounts = createMemoizedSelector([selectAccountByKey], account => {
+    if (!account) return null;
+
+    return account.stakingAccounts ?? null;
+});

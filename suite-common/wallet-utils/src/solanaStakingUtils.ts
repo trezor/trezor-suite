@@ -10,6 +10,7 @@ import {
     supportedSolanaNetworkSymbols,
     SupportedSolanaNetworkSymbols,
 } from '@suite-common/wallet-types';
+import { SOLANA_DEV_NET_URL, SOLANA_MAIN_NET_URL } from '@suite-common/wallet-constants';
 
 export function isSupportedSolStakingNetworkSymbol(
     networkSymbol: NetworkSymbol,
@@ -23,21 +24,25 @@ export const formatSolanaStakingAmount = (amount: string | null) => {
     return new BigNumber(amount).div(LAMPORTS_PER_SOL).toFixed(9);
 };
 
-type SolNetwork = 'devnet' | 'mainnet-beta';
+interface SolNetworkConfig {
+    network: 'devnet' | 'mainnet-beta';
+    url: string;
+}
 
-export const getSolNetworkForWalletSdk = (symbol: NetworkSymbol): SolNetwork => {
-    const solNetworks: { [key in NetworkSymbol]?: SolNetwork } = {
-        dsol: 'devnet',
-        sol: 'mainnet-beta',
+export const getSolNetworkForWalletSdk = (symbol: NetworkSymbol): SolNetworkConfig => {
+    const solNetworks: { [key in NetworkSymbol]?: SolNetworkConfig } = {
+        dsol: { network: 'devnet', url: SOLANA_DEV_NET_URL },
+        sol: { network: 'mainnet-beta', url: SOLANA_MAIN_NET_URL },
     };
 
     return solNetworks[symbol] || solNetworks.sol!;
 };
 
 export const selectSolanaWalletSdkNetwork = (symbol: NetworkSymbol) => {
-    const network = getSolNetworkForWalletSdk(symbol);
-    selectNetwork(network);
+    const { network, url } = getSolNetworkForWalletSdk(symbol);
+    selectNetwork(network, url);
 };
+
 export const calculateTotalSolStakingBalance = (stakingAccounts: SolanaStakingAccount[]) => {
     if (!stakingAccounts?.length) return null;
 

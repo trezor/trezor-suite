@@ -11,3 +11,4 @@ export * from './transaction';
 export * from './ethereumStaking';
 export * from './stakeForm';
 export * from './send';
+export * from './solanaStaking';

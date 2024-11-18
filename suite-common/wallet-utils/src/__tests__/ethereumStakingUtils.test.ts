@@ -2,14 +2,14 @@ import { Account } from '@suite-common/wallet-types';
 
 import {
     getAccountAutocompoundBalance,
-    getAccountTotalStakingBalance,
+    getEthAccountTotalStakingBalance,
     getAccountEverstakeStakingPool,
     getUnstakeAmountByEthereumDataHex,
 } from '../ethereumStakingUtils';
 import {
     getAccountAutocompoundBalanceFixtures,
     getAccountEverstakeStakingPoolFixtures,
-    getAccountTotalStakingBalanceFixtures,
+    getEthAccountTotalStakingBalanceFixtures,
     getUnstakeAmountByEthereumDataHexFixtures,
 } from '../__fixtures__/ethereumStakingUtils';
 
@@ -31,13 +31,15 @@ describe('getAccountAutocompoundBalance', () => {
     });
 });
 
-describe('getAccountTotalStakingBalance', () => {
-    getAccountTotalStakingBalanceFixtures.forEach(({ description, account, expectedBalance }) => {
-        it(description, () => {
-            const result = getAccountTotalStakingBalance(account as unknown as Account);
-            expect(result).toEqual(expectedBalance);
-        });
-    });
+describe('getEthAccountTotalStakingBalance', () => {
+    getEthAccountTotalStakingBalanceFixtures.forEach(
+        ({ description, account, expectedBalance }) => {
+            it(description, () => {
+                const result = getEthAccountTotalStakingBalance(account as unknown as Account);
+                expect(result).toEqual(expectedBalance);
+            });
+        },
+    );
 });
 
 describe('getUnstakeAmountByEthereumDataHex', () => {

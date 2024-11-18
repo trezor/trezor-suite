@@ -51,7 +51,7 @@ export const getAccountAutocompoundBalance = (account?: Account) => {
     return pool?.autocompoundBalance ?? '0';
 };
 
-export const getAccountTotalStakingBalance = (account?: Account) => {
+export const getEthAccountTotalStakingBalance = (account?: Account) => {
     const pool = getAccountEverstakeStakingPool(account);
 
     return new BigNumber(pool?.autocompoundBalance ?? '0')
@@ -62,7 +62,7 @@ export const getAccountTotalStakingBalance = (account?: Account) => {
 };
 
 export const getEthereumCryptoBalanceWithStaking = (account: Account) => {
-    const stakingBalance = getAccountTotalStakingBalance(account);
+    const stakingBalance = getEthAccountTotalStakingBalance(account);
 
     return new BigNumber(account.formattedBalance).plus(stakingBalance).toString();
 };

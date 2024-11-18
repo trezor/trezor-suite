@@ -144,7 +144,7 @@ export const getAccountAutocompoundBalanceFixtures = [
     },
 ];
 
-export const getAccountTotalStakingBalanceFixtures = [
+export const getEthAccountTotalStakingBalanceFixtures = [
     {
         description: 'Ethereum account with valid Everstake pool',
         account: {

@@ -109,6 +109,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
         const accountOutdated = isAccountOutdated(account, basic.payload);
         const accountTransactions = selectTransactions(getState());
         const accountTxs = getAccountTransactions(account.key, accountTransactions);
+
         // stop here if account is not outdated and there are no pending transactions
 
         if (!accountOutdated && !accountTxs.find(isPending)) {
