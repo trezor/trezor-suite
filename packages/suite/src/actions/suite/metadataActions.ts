@@ -3,6 +3,8 @@ import { createAction } from '@reduxjs/toolkit';
 import { selectDevices } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
+import { createZip } from '@trezor/utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -17,6 +19,8 @@ import {
 import * as metadataUtils from 'src/utils/suite/metadata';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
 import type { AbstractMetadataProvider, PasswordManagerState } from 'src/types/suite/metadata';
+
+import { getProviderInstance } from './metadataProviderActions';
 
 export type MetadataAction =
     | { type: typeof METADATA.ENABLE }
@@ -164,4 +168,56 @@ export const encryptAndSaveMetadata = async ({
     );
 
     return providerInstance.setFileContent(fileName, encrypted);
+};
+
+export const exportMetadataToLocalFile = () => async (dispatch: Dispatch, getState: GetState) => {
+    const providerInstance = dispatch(
+        getProviderInstance({
+            clientId: selectSelectedProviderForLabels(getState())!.clientId,
+            dataType: 'labels',
+        }),
+    );
+
+    if (!providerInstance) return;
+
+    const filesListResult = await providerInstance.getFilesList();
+
+    if (!filesListResult.success || !filesListResult.payload?.length) {
+        dispatch(
+            notificationsActions.addToast({ type: 'error', error: 'Exporting labels failed' }),
+        );
+
+        return;
+    }
+
+    const files = filesListResult.payload;
+
+    return Promise.all(
+        files.map(file => {
+            return providerInstance.getFileContent(file).then(result => {
+                if (!result.success) throw new Error(result.error);
+
+                return { name: file, content: result.payload };
+            });
+        }),
+    )
+        .then(filesContent => {
+            const zipBlob = createZip(filesContent);
+            // Trigger download
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(zipBlob);
+            a.download = 'archive.zip';
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+        })
+        .catch(_err => {
+            dispatch(
+                notificationsActions.addToast({ type: 'error', error: 'Exporting labels failed' }),
+            );
+
+            return;
+        });
 };
