@@ -53,7 +53,7 @@ export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmR
     async run() {
         const backend = await initBlockchain(
             this.params.coinInfo,
-            postMessage,
+            this.postMessage,
             this.params.identity,
         );
         const response = await backend.rpcCall(this.params.request);
