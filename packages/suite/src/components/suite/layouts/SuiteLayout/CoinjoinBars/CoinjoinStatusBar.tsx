@@ -31,6 +31,7 @@ const ViewText = styled.div`
 
 const Container = styled.div<{ $isClickable: boolean }>`
     display: flex;
+    align-self: stretch;
     align-items: center;
     height: 28px;
     padding: 0 ${SPACING}px;
