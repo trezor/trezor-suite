@@ -1,12 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
 
 import { Column, Markdown, NewModal, Paragraph } from '@trezor/components';
-import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
-import { download } from 'src/actions/suite/desktopUpdateActions';
 
 import { Changelog } from './changelogComponents';
 
@@ -16,13 +13,6 @@ interface AvailableProps {
 
 export const JustUpdated = ({ onCancel }: AvailableProps) => {
     const [changelog, setChangelog] = useState<string | null>(null);
-
-    const dispatch = useDispatch();
-
-    const downloadUpdate = () => {
-        dispatch(download());
-        desktopApi.downloadUpdate();
-    };
 
     const suiteCurrentVersion = process.env.VERSION || '';
 
@@ -50,7 +40,7 @@ export const JustUpdated = ({ onCancel }: AvailableProps) => {
             onCancel={onCancel}
             bottomContent={
                 <>
-                    <NewModal.Button onClick={downloadUpdate} variant="primary">
+                    <NewModal.Button onClick={onCancel} variant="primary">
                         <Translation id="TR_GOT_IT" />
                     </NewModal.Button>
                 </>
