@@ -6,7 +6,7 @@ import {
     restartDiscoveryThunk as restartDiscovery,
 } from '@suite-common/wallet-core';
 import { getNetwork, NetworkType } from '@suite-common/wallet-config';
-import { Button, H3, IconName, Column, Row, Paragraph, IconCircle } from '@trezor/components';
+import { Button, H3, IconName, Column, Row, IconCircle, Text } from '@trezor/components';
 import { Discovery } from '@suite-common/wallet-types';
 import { spacings } from '@trezor/theme';
 
@@ -43,13 +43,13 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
                 <Translation id={title} />
             </H3>
             {description && (
-                <Paragraph variant="tertiary" typographyStyle="hint">
+                <Text variant="tertiary" typographyStyle="hint">
                     {typeof description === 'string' ? (
                         <Translation id={description} />
                     ) : (
                         description
                     )}
-                </Paragraph>
+                </Text>
             )}
             <Row gap={spacings.sm} margin={{ top: spacings.md }}>
                 {actions.map(a => (
