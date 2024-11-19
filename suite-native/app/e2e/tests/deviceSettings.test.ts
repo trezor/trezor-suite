@@ -5,6 +5,7 @@ import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onBottomSheet } from '../pageObjects/bottomSheetActions';
 import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
 import { onConnectingDevice } from '../pageObjects/connectingDevice';
+import { onDeviceAuthenticitySummary } from '../pageObjects/deviceAuthenticitySummary';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onDeviceSettings } from '../pageObjects/deviceSettingsActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
@@ -74,6 +75,24 @@ conditionalDescribe(device.getPlatform() !== 'android', 'Device settings', () =>
         await TrezorUserEnvLink.pressYes();
         await TrezorUserEnvLink.inputEmu('21');
         await TrezorUserEnvLink.pressYes();
+
+        await onDeviceSettings.waitForScreen();
+    });
+
+    test('Check device authenticity', async () => {
+        await onDeviceSettings.scrollUntilCheckAuthenticityButtonIsVisible();
+        await onDeviceSettings.tapCheckAuthenticityButton();
+
+        await onAlertSheet.tapPrimaryButton();
+        await TrezorUserEnvLink.pressNo();
+
+        await onDeviceSettings.tapCheckAuthenticityButton();
+
+        await onAlertSheet.tapPrimaryButton();
+        await TrezorUserEnvLink.pressYes();
+
+        await onDeviceAuthenticitySummary.waitForScreen();
+        await onDeviceAuthenticitySummary.tapCloseButton();
 
         await onDeviceSettings.waitForScreen();
     });

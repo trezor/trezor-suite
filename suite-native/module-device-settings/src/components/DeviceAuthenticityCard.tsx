@@ -89,7 +89,12 @@ export const DeviceAuthenticityCard = () => {
                 <Text variant="body" color="textSubdued">
                     <Translation id="moduleDeviceSettings.authenticity.content" />
                 </Text>
-                <Button size="small" colorScheme="tertiaryElevation0" onPress={showInfoAlert}>
+                <Button
+                    size="small"
+                    colorScheme="tertiaryElevation0"
+                    onPress={showInfoAlert}
+                    testID="@device-authenticity/check-button"
+                >
                     <Translation id="moduleDeviceSettings.authenticity.checkButton" />
                 </Button>
             </VStack>

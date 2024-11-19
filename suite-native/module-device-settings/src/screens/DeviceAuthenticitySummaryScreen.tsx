@@ -99,7 +99,11 @@ export const DeviceAuthenticitySummaryScreen = ({
                         <Translation id="moduleDeviceSettings.authenticity.summary.compromised.contactSupportButton" />
                     </Button>
                 )}
-                <Button colorScheme={closeColorScheme} onPress={navigateToInitialScreen}>
+                <Button
+                    colorScheme={closeColorScheme}
+                    onPress={navigateToInitialScreen}
+                    testID="@device-authenticity/close-button"
+                >
                     <Translation id="generic.buttons.close" />
                 </Button>
             </VStack>

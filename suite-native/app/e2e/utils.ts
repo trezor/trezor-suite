@@ -97,7 +97,7 @@ export const prepareTrezorEmulator = async (seed: string = MNEMONICS.mnemonic_im
         // Prepare Trezor device for test scenario
         await TrezorUserEnvLink.disconnect();
         await TrezorUserEnvLink.connect();
-        await TrezorUserEnvLink.startEmu({ wipe: true });
+        await TrezorUserEnvLink.startEmu({ model: 'T3T1', wipe: true });
         await TrezorUserEnvLink.setupEmu({
             label: TREZOR_DEVICE_LABEL,
             mnemonic: seed,
