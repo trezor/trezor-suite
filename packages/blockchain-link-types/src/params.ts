@@ -56,4 +56,5 @@ export interface AccountInfoParams {
         ledger: number;
         seq: number;
     };
+    tokenAccountsPubKeys?: string[]; // solana only, token accounts to fetch txids for
 }

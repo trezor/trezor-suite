@@ -80,6 +80,7 @@ function nonNullable<T>(value: T): value is NonNullable<T> {
 const getAllSignatures = async (
     api: SolanaAPI,
     descriptor: MessageTypes.GetAccountInfo['payload']['descriptor'],
+    fullHistory = true,
 ) => {
     let lastSignature: SignatureWithSlot | undefined;
     let keepFetching = true;
@@ -99,7 +100,7 @@ const getAllSignatures = async (
             slot: info.slot,
         }));
         lastSignature = signatures[signatures.length - 1];
-        keepFetching = signatures.length === limit;
+        keepFetching = signatures.length === limit && fullHistory;
         allSignatures = [...allSignatures, ...signatures];
     }
 
@@ -206,14 +207,60 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const publicKey = address(payload.descriptor);
 
-    const { value: accountInfo } = await api.rpc
-        .getAccountInfo(publicKey, { encoding: 'base64' })
-        .send();
+    const getAllTxIds = async (tokenAccountPubkeys: string[]) => {
+        const sortedTokenAccountPubkeys = tokenAccountPubkeys.sort();
+
+        const allAccounts = [payload.descriptor, ...sortedTokenAccountPubkeys];
+
+        const allTxIds =
+            details === 'basic' || details === 'txs' || details === 'txids'
+                ? Array.from(
+                      new Set(
+                          (
+                              await Promise.all(
+                                  allAccounts.map(account =>
+                                      getAllSignatures(api, account, details !== 'basic'),
+                                  ),
+                              )
+                          )
+                              .flat()
+                              .sort((a, b) => Number(b.slot - a.slot))
+                              .map(it => it.signature),
+                      ),
+                  )
+                : [];
+
+        return allTxIds;
+    };
+
+    if (details === 'txids') {
+        const txids = await getAllTxIds(request.payload.tokenAccountsPubKeys || []);
+
+        const account: AccountInfo = {
+            descriptor: payload.descriptor,
+            balance: '0',
+            availableBalance: '0',
+            empty: txids.length === 0,
+            history: {
+                total: txids.length,
+                unconfirmed: 0,
+                txids,
+            },
+        };
+
+        return {
+            type: RESPONSES.GET_ACCOUNT_INFO,
+            payload: account,
+        } as const;
+    }
 
     const getTransactionPage = async (
         txIds: Signature[],
         tokenAccountsInfos: SolanaTokenAccountInfo[],
     ) => {
+        if (txIds.length === 0) {
+            return [];
+        }
         const transactionsPage = await fetchTransactionPage(api, txIds);
 
         const tokenMetadata = await request.getTokenMetadata();
@@ -241,23 +288,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         )
         .send();
 
-    const allAccounts = [payload.descriptor, ...tokenAccounts.value.map(a => a.pubkey)];
-
-    const allTxIds =
-        details === 'basic' || details === 'txs' || details === 'txids'
-            ? Array.from(
-                  new Set(
-                      (
-                          await Promise.all(
-                              allAccounts.map(account => getAllSignatures(api, account)),
-                          )
-                      )
-                          .flat()
-                          .sort((a, b) => Number(b.slot - a.slot))
-                          .map(it => it.signature),
-                  ),
-              )
-            : [];
+    const allTxIds = await getAllTxIds(tokenAccounts.value.map(a => a.pubkey));
 
     const pageNumber = payload.page ? payload.page - 1 : 0;
     // for the first page of txs, payload.page is undefined, for the second page is 2
@@ -287,16 +318,24 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const { value: balance } = await api.rpc.getBalance(publicKey).send();
 
-    // https://solana.stackexchange.com/a/13102
-    let accountDataLength: bigint;
-    if (accountInfo) {
-        const [accountDataEncoded] = accountInfo.data;
-        const accountDataBytes = getBase64Encoder().encode(accountDataEncoded);
-        accountDataLength = BigInt(accountDataBytes.byteLength);
-    } else {
-        accountDataLength = BigInt(0);
+    let misc: AccountInfo['misc'] | undefined;
+    // Not necessary for basic details
+    if (details !== 'basic') {
+        // https://solana.stackexchange.com/a/13102
+        const { value: accountInfo } = await api.rpc
+            .getAccountInfo(publicKey, { encoding: 'base64' })
+            .send();
+        if (accountInfo) {
+            const [accountDataEncoded] = accountInfo.data;
+            const accountDataBytes = getBase64Encoder().encode(accountDataEncoded);
+            const accountDataLength = BigInt(accountDataBytes.byteLength);
+            const rent = await api.rpc.getMinimumBalanceForRentExemption(accountDataLength).send();
+            misc = {
+                owner: accountInfo?.owner,
+                rent: Number(rent),
+            };
+        }
     }
-    const rent = await api.rpc.getMinimumBalanceForRentExemption(accountDataLength).send();
 
     // allTxIds can be empty for non-archive rpc nodes
     const isAccountEmpty = !(allTxIds.length || balance || tokens.length);
@@ -320,14 +359,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
               }
             : undefined,
         tokens,
-        ...(accountInfo != null
-            ? {
-                  misc: {
-                      owner: accountInfo.owner,
-                      rent: Number(rent),
-                  },
-              }
-            : {}),
+        ...(misc ? { misc } : {}),
     };
 
     // Update token accounts of account stored by the worker since new accounts

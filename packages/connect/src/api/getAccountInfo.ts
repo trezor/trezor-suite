@@ -273,6 +273,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     contractFilter: request.contractFilter,
                     gap: request.gap,
                     marker: request.marker,
+                    tokenAccountsPubKeys: request.tokenAccountsPubKeys,
                 });
 
                 if (this.disposed) break;
