@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-native-quick-crypto/android/build.gradle b/node_modules/react-native-quick-crypto/android/build.gradle
+index 8dcc3e9..73e271a 100644
+--- a/node_modules/react-native-quick-crypto/android/build.gradle
++++ b/node_modules/react-native-quick-crypto/android/build.gradle
+@@ -134,6 +134,7 @@ android {
+             "**/libreact_nativemodule_core.so",
+             "**/libturbomodulejsijni.so",
+             "**/MANIFEST.MF",
++            "**/libreactnative.so",
+     ]
+   }
+ 
