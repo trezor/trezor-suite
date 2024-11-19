@@ -38,6 +38,7 @@ import {
 import { useStakeCompose } from './form/useStakeCompose';
 import { useFormDraft } from './useFormDraft';
 import { useFees } from './form/useFees';
+import { BigNumber } from '@trezor/utils';
 
 type UnstakeOptions = 'all' | 'rewards' | 'other';
 
@@ -118,7 +119,11 @@ export const useUnstakeEthForm = ({
     useEffect(() => {
         const { cryptoInput } = values;
 
-        if (!cryptoInput || Object.keys(formState.errors).length) {
+        if (
+            !cryptoInput ||
+            new BigNumber(cryptoInput).lte(0) ||
+            Object.keys(formState.errors).length
+        ) {
             setApproximatedInstantEthAmount(null);
 
             return;
