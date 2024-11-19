@@ -1,5 +1,5 @@
 import { isAnyOf } from '@reduxjs/toolkit';
-import { A, G, pipe } from '@mobily/ts-belt';
+import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import {
     createReducerWithExtraDeps,
@@ -322,6 +322,18 @@ export const selectVisibleNonEmptyDeviceAccountsByNetworkSymbol = createMemoized
             accounts,
             A.filter(account => !account.empty || account.visible),
             returnStableArrayIfEmpty,
+        ),
+);
+
+export const selectAllNetworkSymbolsOfVisibleAccounts = createMemoizedSelector(
+    [selectAccounts],
+    accounts =>
+        pipe(
+            accounts,
+            A.filter(account => account.visible),
+            A.map(account => account.symbol),
+            A.uniq,
+            F.toMutable,
         ),
 );
 

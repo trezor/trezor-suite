@@ -7,6 +7,7 @@ import { SupportedNetworkSymbol } from '@suite-common/wallet-types';
 import { selectEverstakeData } from './stakeSelectors';
 import { EVERSTAKE_ENDPOINT_TYPES, EverstakeEndpointType, ValidatorsQueue } from './stakeTypes';
 import { EVERSTAKE_ENDPOINT_PREFIX } from './stakeConstants';
+import { selectAllNetworkSymbolsOfVisibleAccounts } from '../accounts/accountsReducer';
 
 const STAKE_MODULE = '@common/wallet-core/stake';
 
@@ -60,11 +61,15 @@ export const fetchEverstakeData = createThunk<
 export const initStakeDataThunk = createThunk(
     `${STAKE_MODULE}/initStakeDataThunk`,
     (_, { getState, dispatch, extra }) => {
+        //because fetch only happens every 5 minutes we fetch according all devices in case a device is changed within those 5 minutes
+        const accountsNetworks = selectAllNetworkSymbolsOfVisibleAccounts(getState());
+        //also join with enabled networks in case account was not yet discovered, but network is already enabled
         const enabledNetworks = extra.selectors.selectEnabledNetworks(getState());
+        const networks = [...new Set([...accountsNetworks, ...enabledNetworks])];
 
-        const ethereumBasedNetworksWithStaking = getStakingSymbols(enabledNetworks);
+        const networksWithStaking = getStakingSymbols(networks);
 
-        const promises = ethereumBasedNetworksWithStaking.flatMap(networkSymbol =>
+        const promises = networksWithStaking.flatMap(networkSymbol =>
             Object.values(EverstakeEndpointType).map(endpointType => {
                 const data = selectEverstakeData(getState(), networkSymbol, endpointType);
 
