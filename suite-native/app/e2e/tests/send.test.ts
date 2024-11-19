@@ -10,7 +10,7 @@ import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onSendAddressReview } from '../pageObjects/send/sendAddressReviewActions';
-import { onSendFees } from '../pageObjects/send/sendFeesActions';
+import { FeeValues, onSendFees } from '../pageObjects/send/sendFeesActions';
 import { onSendOutputsForm } from '../pageObjects/send/sendOutputsFormActions';
 import { onSendOutputsReview } from '../pageObjects/send/sendOutputsReviewActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
@@ -35,16 +35,36 @@ const SEND_FORM_ERROR_MESSAGES = {
 
 const INITIAL_ACCOUNT_BALANCE = 3.14;
 
-const prepareTransactionForOnDeviceReview = async (isFormEmpty: boolean = true) => {
+const prepareTransactionForOnDeviceReview = async ({
+    feeValues,
+    isFormEmpty = true,
+    recipientValues = [{ address: 'bcrt1q34up3cga3fkmph47t22mpk5d0xxj3ppghph9da', amount: '0.5' }],
+}: {
+    recipientValues?: { address: string; amount: string }[];
+    feeValues?: FeeValues;
+    isFormEmpty?: boolean;
+}) => {
     if (isFormEmpty) {
-        await onSendOutputsForm.fillForm([
-            { address: 'bcrt1q34up3cga3fkmph47t22mpk5d0xxj3ppghph9da', amount: '0.5' },
-        ]);
+        await onSendOutputsForm.fillForm(recipientValues);
     }
 
     await onSendOutputsForm.submitForm();
 
+    if (feeValues) {
+        await onSendFees.selectFee(feeValues);
+    }
+
     await onSendFees.submitFee();
+};
+
+const signTransactionAndSendIt = async () => {
+    await onSendAddressReview.nextStep();
+    await onSendAddressReview.nextStep();
+    await TrezorUserEnvLink.pressYes();
+
+    await onSendOutputsReview.waitForScreen();
+    await onSendOutputsReview.confirmTransactionOutputs();
+    await onSendOutputsReview.clickSendTransaction();
 };
 
 conditionalDescribe(device.getPlatform() !== 'android', 'Send transaction flow.', () => {
@@ -86,15 +106,17 @@ conditionalDescribe(device.getPlatform() !== 'android', 'Send transaction flow.'
     });
 
     it('Compose and dispatch a regtest transaction.', async () => {
-        await prepareTransactionForOnDeviceReview();
+        await prepareTransactionForOnDeviceReview({ isFormEmpty: true });
 
-        await onSendAddressReview.nextStep();
-        await onSendAddressReview.nextStep();
-        await TrezorUserEnvLink.pressYes();
+        await signTransactionAndSendIt();
+    });
 
-        await onSendOutputsReview.waitForScreen();
-        await onSendOutputsReview.confirmTransactionOutputs();
-        await onSendOutputsReview.clickSendTransaction();
+    it('Compose and dispatch a regtest transaction with a custom fee.', async () => {
+        await prepareTransactionForOnDeviceReview({
+            feeValues: { feeType: 'custom', customFeePerUnit: '100' },
+        });
+
+        await signTransactionAndSendIt();
     });
 
     it('Validate send form input errors.', async () => {
@@ -118,7 +140,7 @@ conditionalDescribe(device.getPlatform() !== 'android', 'Send transaction flow.'
     });
 
     it('Review cancellation and error handling.', async () => {
-        await prepareTransactionForOnDeviceReview();
+        await prepareTransactionForOnDeviceReview({ isFormEmpty: true });
 
         // Cancel button should go back if the on device review was not started yet.
         await element(by.id('@screen/sub-header/icon-left')).tap();
@@ -134,8 +156,7 @@ conditionalDescribe(device.getPlatform() !== 'android', 'Send transaction flow.'
 
         // Disconnecting not remembered device should exit the send flow and display alert.
         await onAccountDetail.openSend();
-        const isFormEmpty = false;
-        await prepareTransactionForOnDeviceReview(isFormEmpty);
+        await prepareTransactionForOnDeviceReview({ isFormEmpty: false });
         await onSendAddressReview.nextStep();
         await onSendAddressReview.nextStep();
 

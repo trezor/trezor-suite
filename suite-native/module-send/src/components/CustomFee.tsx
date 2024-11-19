@@ -47,6 +47,7 @@ export const CustomFee = () => {
                             colorScheme="tertiaryElevation0"
                             size="small"
                             viewLeft={<Icon name="plus" size="mediumLarge" />}
+                            testID="@send/fees-level-custom"
                             onPress={openCustomFeeBottomSheet}
                         >
                             <Translation id="moduleSend.fees.custom.addButton" />

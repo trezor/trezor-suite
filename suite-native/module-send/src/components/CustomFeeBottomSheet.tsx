@@ -62,6 +62,7 @@ export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomShee
             isVisible={isVisible}
             onClose={onClose}
             title={<Translation id="moduleSend.fees.custom.bottomSheet.title" />}
+            testID="@send/custom-fee-bottom-sheet"
         >
             <VStack spacing="sp24" justifyContent="space-between" flex={1}>
                 <CustomFeeInputs networkSymbol={networkSymbol} />
@@ -102,7 +103,10 @@ export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomShee
                 <Animated.View style={animatedButtonContainerStyle}>
                     {isSubmittable && (
                         <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
-                            <Button onPress={handleSetCustomFee}>
+                            <Button
+                                onPress={handleSetCustomFee}
+                                testID="@send/custom-fee-submit-button"
+                            >
                                 <Translation id="moduleSend.fees.custom.bottomSheet.confirmButton" />
                             </Button>
                         </Animated.View>

@@ -50,7 +50,7 @@ export const CustomFeeInputs = ({ networkSymbol }: CustomFeeInputsProps) => {
                         : translate('moduleSend.fees.custom.bottomSheet.label.feeRate')
                 }
                 name={feePerUnitFieldName}
-                testID={feePerUnitFieldName}
+                testID={`@send/${feePerUnitFieldName}-input`}
                 accessibilityLabel="address input"
                 keyboardType="number-pad"
                 rightIcon={<Text color="textSubdued">{feeUnits}</Text>}
