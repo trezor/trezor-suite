@@ -1,0 +1,13 @@
+diff --git a/node_modules/expo-updates/android/src/main/java/expo/modules/updates/UpdatesPackage.kt b/node_modules/expo-updates/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
+index 6385d40..1f03038 100644
+--- a/node_modules/expo-updates/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
++++ b/node_modules/expo-updates/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
+@@ -97,7 +97,7 @@ class UpdatesPackage : Package {
+     val handler = object : ApplicationLifecycleListener {
+       override fun onCreate(application: Application) {
+         super.onCreate(application)
+-        if (isRunningAndroidTest()) {
++        if (!BuildConfig.USE_DEV_CLIENT && isRunningAndroidTest()) {
+           // Preload updates to prevent Detox ANR
+           UpdatesController.initialize(context)
+           UpdatesController.instance.launchAssetFile
