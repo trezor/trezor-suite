@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
-import { Checkbox, NewModal, Column, Banner, Card } from '@trezor/components';
+import { Checkbox, NewModal, Column, Banner, Card, IconName } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -23,12 +22,49 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
         dispatch(openModal({ type: 'stake' }));
     };
 
+    const banners: {
+        icon: IconName;
+        message: JSX.Element;
+    }[] = [
+        {
+            icon: 'fileFilled',
+            message: (
+                <Translation
+                    id={
+                        account?.networkType === 'ethereum'
+                            ? 'TR_STAKE_EVERSTAKE_MANAGES'
+                            : 'TR_STAKE_BY_STAKING_YOU_CAN_EARN_REWARDS'
+                    }
+                    values={{
+                        symbol: account?.symbol.toUpperCase(),
+                        t: text => <strong>{text}</strong>,
+                    }}
+                />
+            ),
+        },
+        {
+            icon: 'shieldWarningFilled',
+            message: (
+                <Translation
+                    id={
+                        account?.networkType === 'ethereum'
+                            ? 'TR_STAKE_TREZOR_NO_LIABILITY'
+                            : 'TR_STAKE_SECURELY_DELEGATE_TO_EVERSTAKE'
+                    }
+                    values={{
+                        symbol: account?.symbol.toUpperCase(),
+                    }}
+                />
+            ),
+        },
+    ];
+
     return (
         <NewModal
             heading={
                 <Translation
                     id="TR_STAKE_NETWORK"
-                    values={{ network: capitalizeFirstLetter(account?.networkType ?? '') }}
+                    values={{ symbol: account?.symbol.toUpperCase() }}
                 />
             }
             description={<Translation id="TR_STAKE_YOUR_FUNDS_MAINTAINED" />}
@@ -46,18 +82,11 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
             }
         >
             <Column gap={spacings.sm} margin={{ top: spacings.xs, bottom: spacings.lg }}>
-                <Banner icon="fileFilled" variant="info">
-                    <Translation
-                        id="TR_STAKE_EVERSTAKE_MANAGES"
-                        values={{
-                            symbol: account?.symbol.toUpperCase(),
-                            t: text => <strong>{text}</strong>,
-                        }}
-                    />
-                </Banner>
-                <Banner icon="shieldWarningFilled" variant="info">
-                    <Translation id="TR_STAKE_TREZOR_NO_LIABILITY" />
-                </Banner>
+                {banners.map(({ icon, message }, index) => (
+                    <Banner icon={icon} variant="info" key={index}>
+                        {message}
+                    </Banner>
+                ))}
             </Column>
             <Card>
                 <Checkbox

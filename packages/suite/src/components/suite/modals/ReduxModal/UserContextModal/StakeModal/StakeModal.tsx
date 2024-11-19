@@ -32,7 +32,7 @@ export const StakeModal = ({ onCancel }: StakeModalModalProps) => {
                 heading={
                     <Translation
                         id="TR_STAKE_NETWORK"
-                        values={{ network: selectedAccount?.network.name }}
+                        values={{ symbol: account.symbol.toUpperCase() }}
                     />
                 }
                 onCancel={onCancel}

@@ -28,7 +28,6 @@ import { DashboardSection } from 'src/components/dashboard';
 import { StakeEthCardFooter } from './StakeEthCardFooter/StakeEthCardFooter';
 
 const bannerSymbol = 'eth';
-const bannerNetwork = 'Ethereum';
 
 export const StakeEthCard = () => {
     const dispatch = useDispatch();
@@ -74,7 +73,7 @@ export const StakeEthCard = () => {
                         id="TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC"
                         values={{
                             apyPercent: ethApy,
-                            network: bannerNetwork,
+                            symbol: bannerSymbol.toUpperCase(),
                             t: text => (
                                 <Tooltip
                                     dashed
@@ -109,7 +108,12 @@ export const StakeEthCard = () => {
     return (
         <>
             <DashboardSection
-                heading={<Translation id="TR_STAKE_NETWORK" values={{ network: bannerNetwork }} />}
+                heading={
+                    <Translation
+                        id="TR_STAKE_NETWORK"
+                        values={{ symbol: bannerSymbol.toUpperCase() }}
+                    />
+                }
             >
                 <Card>
                     <Column>

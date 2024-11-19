@@ -8554,7 +8554,7 @@ export default defineMessages({
     },
     TR_STAKE_NETWORK: {
         id: 'TR_STAKE_NETWORK',
-        defaultMessage: 'Stake {network}',
+        defaultMessage: 'Stake {symbol}',
     },
     TR_STAKE_RESTAKED_BADGE: {
         id: 'TR_STAKE_RESTAKED_BADGE',
@@ -8574,7 +8574,7 @@ export default defineMessages({
     },
     TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC: {
         id: 'TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC',
-        defaultMessage: 'Earn {apyPercent}% <t>APY</t> by staking your {network} with Trezor.',
+        defaultMessage: 'Earn {apyPercent}% <t>APY</t> by staking your {symbol} with Trezor.',
     },
     TR_STAKE_APY_DESC: {
         id: 'TR_STAKE_APY_DESC',
@@ -8620,10 +8620,10 @@ export default defineMessages({
         id: 'TR_STAKE_WHAT_IS_STAKING',
         defaultMessage: 'What is staking?',
     },
-    TR_STAKE_STAKING_IS: {
+    TR_STAKE_NETWORK_STAKING_IS: {
         id: 'TR_STAKE_STAKING_IS',
         defaultMessage:
-            "Staking involves temporarily locking your {network} assets to support the blockchain's operation. In return, you'll earn additional {network} as a reward.",
+            "Staking involves temporarily locking your {symbol} to support the blockchain's operation. In return, you'll earn additional {symbol} as a reward.",
     },
     TR_STAKE_ANY_AMOUNT_ETH: {
         id: 'TR_STAKE_ANY_AMOUNT_ETH',
@@ -8727,6 +8727,10 @@ export default defineMessages({
         id: 'TR_STAKE_ENTERING_POOL_MAY_TAKE',
         defaultMessage:
             'Entering the staking pool may take up to {count, plural, one {# day} other {# days}}',
+    },
+    TR_STAKE_ACTIVATION_COULD_TAKE: {
+        id: 'TR_STAKE_ACTIVATION_COULD_TAKE',
+        defaultMessage: 'Stake activation usually takes 1 epoch (~3 days)',
     },
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',
@@ -8945,6 +8949,16 @@ export default defineMessages({
         id: 'TR_STAKE_TREZOR_NO_LIABILITY',
         defaultMessage:
             "When staking, the responsibility for your funds' security transitions from your Trezor to Everstake.",
+    },
+    TR_STAKE_BY_STAKING_YOU_CAN_EARN_REWARDS: {
+        id: 'TR_STAKE_BY_STAKING_YOU_CAN_EARN_REWARDS',
+        defaultMessage:
+            'By staking your {symbol}, you can earn rewards while contributing to the security and stability of the network.',
+    },
+    TR_STAKE_SECURELY_DELEGATE_TO_EVERSTAKE: {
+        id: 'TR_STAKE_SECURELY_DELEGATE_TO_EVERSTAKE',
+        defaultMessage:
+            'With Trezor Suite, you can effortlessly and securely delegate your {symbol} to Everstake validator node for staking. Enjoy competitive rewards, rely on a trusted validator, and maintain full ownership of your coins.',
     },
     TR_STAKE_CONSENT_TO_STAKING_WITH_EVERSTAKE: {
         id: 'TR_STAKE_CONSENT_TO_STAKING_WITH_EVERSTAKE',

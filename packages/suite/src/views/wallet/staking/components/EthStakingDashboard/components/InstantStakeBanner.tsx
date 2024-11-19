@@ -6,6 +6,7 @@ import { Banner, Column, H3, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { StakeType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { InternalTransfer } from '@trezor/connect';
+
 import { useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { getChangedInternalTx, getInstantStakeType } from 'src/utils/suite/ethereumStaking';

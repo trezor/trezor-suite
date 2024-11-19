@@ -75,7 +75,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                         heading={
                             <Translation
                                 id="TR_STAKE_NETWORK"
-                                values={{ networkSymbol: account?.symbol.toUpperCase() }}
+                                values={{ symbol: account?.symbol.toUpperCase() }}
                             />
                         }
                     >

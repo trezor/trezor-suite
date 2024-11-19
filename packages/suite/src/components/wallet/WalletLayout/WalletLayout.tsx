@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 
 import { SkeletonRectangle, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { PrimitiveType } from '@trezor/type-utils';
 
 import { AppState } from 'src/types/suite';
 import { useTranslation, useLayout } from 'src/hooks/suite';
@@ -30,7 +31,7 @@ const WalletPageHeader = ({ isSubpage }: WalletPageHeaderProps) => {
 
 type WalletLayoutProps = {
     title: TranslationKey;
-    titleValues?: Record<string, any>;
+    titleValues?: Record<string, PrimitiveType>;
     account: AppState['wallet']['selectedAccount'];
     isSubpage?: boolean;
     children?: ReactNode;
