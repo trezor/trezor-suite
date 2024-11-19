@@ -22,7 +22,7 @@ export const StakingDashboard = ({ selectedAccount, dashboard }: StakingDashboar
     return (
         <WalletLayout
             title="TR_STAKE_NETWORK"
-            titleValues={{ network: selectedAccount?.network.name }}
+            titleValues={{ networkSymbol: selectedAccount?.account?.symbol.toUpperCase() }}
             account={selectedAccount}
         >
             {hasStaked ? dashboard : <EmptyStakingCard />}

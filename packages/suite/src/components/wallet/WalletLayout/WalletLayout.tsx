@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { SkeletonRectangle } from '@trezor/components';
+import { PrimitiveType } from '@trezor/type-utils';
 
 import { AppState, ExtendedMessageDescriptor } from 'src/types/suite';
 import { useTranslation, useLayout } from 'src/hooks/suite';
@@ -38,7 +39,7 @@ const WalletPageHeader = ({ isSubpage }: WalletPageHeaderProps) => {
 
 type WalletLayoutProps = {
     title: ExtendedMessageDescriptor['id'];
-    titleValues?: Record<string, any>;
+    titleValues?: Record<string, PrimitiveType>;
     account: AppState['wallet']['selectedAccount'];
     isSubpage?: boolean;
     showEmptyHeaderPlaceholder?: boolean;

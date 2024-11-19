@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Checkbox, NewModal, Column, Banner, Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
+import { NetworkType } from '@suite-common/wallet-config';
 import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
