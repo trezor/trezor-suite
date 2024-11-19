@@ -33,7 +33,8 @@ export const hasHexPrefix = (str: string) => str.slice(0, 2).toLowerCase() === '
 
 export const stripHexPrefix = (str: string) => (hasHexPrefix(str) ? str.slice(2) : str);
 
-export const addHexPrefix = (str: string) => (str && !hasHexPrefix(str) ? `0x${str}` : str);
+export const addHexPrefix = (str: string) =>
+    str !== undefined && !hasHexPrefix(str) ? `0x${str}` : str;
 
 // from (isHexString) https://github.com/ethjs/ethjs-util/blob/master/src/index.js
 const isHexString = (value: string, length?: number) => {
