@@ -16,6 +16,7 @@ import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
 
 import { PortfolioHeader } from './PortfolioHeader';
 import { referencePointAtom, selectedPointAtom } from '../portfolioGraphAtoms';
@@ -58,6 +59,7 @@ const IgnoredNetworksBanner = () => {
 export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
     const hasDeviceHistoryEnabledAccounts = useSelector(selectHasDeviceHistoryEnabledAccounts);
+    const hasDeviceDiscovery = useSelector(selectHasDeviceDiscovery);
     const loadingTakesLongerThanExpected = useIsDiscoveryDurationTooLong();
 
     const {
@@ -95,11 +97,13 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
         [refetch],
     );
 
+    const showGraph = hasDeviceHistoryEnabledAccounts || hasDeviceDiscovery;
+
     return (
         <VStack spacing="sp24" testID="@home/portfolio/graph">
             {isAnyMainnetAccountPresent ? <PortfolioHeader /> : null}
 
-            {hasDeviceHistoryEnabledAccounts && (
+            {showGraph && (
                 <Graph
                     points={graphPoints}
                     loading={isLoading}
@@ -111,7 +115,7 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
                 />
             )}
             <IgnoredNetworksBanner />
-            {hasDeviceHistoryEnabledAccounts && (
+            {showGraph && (
                 <TimeSwitch selectedTimeFrame={timeframe} onSelectTimeFrame={onSelectTimeFrame} />
             )}
         </VStack>
