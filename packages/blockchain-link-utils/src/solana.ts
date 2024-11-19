@@ -415,7 +415,7 @@ export const getAmount = (
         return '0';
     }
 
-    return accountEffect.amount.toString();
+    return accountEffect.amount.abs().toString();
 };
 
 type TokenTransferInstruction = {

@@ -636,6 +636,14 @@ export const fixtures = {
             expectedOutput: '0',
         },
         {
+            description: 'should return positive amount even though effect is negative',
+            input: {
+                accountEffect: effects.negative,
+                txType: 'sent',
+            },
+            expectedOutput: '20',
+        },
+        {
             description: 'should return the amount as a string for other transaction types',
             input: {
                 accountEffect: effects.positive,
@@ -874,7 +882,7 @@ export const fixtures = {
                 type: 'sent',
                 txid: 'txid1',
                 blockTime: 1631753600,
-                amount: '-20',
+                amount: '20',
                 fee: '10',
                 solanaSpecific: {
                     status: 'confirmed',
