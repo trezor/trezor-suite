@@ -5,6 +5,7 @@ import Animated, { SlideInDown } from 'react-native-reanimated';
 import { useAtomValue } from 'jotai';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
+import { G } from '@mobily/ts-belt';
 
 import {
     AccountsRootState,
@@ -139,6 +140,7 @@ export const OutputsReviewFooter = ({
                         tokenSymbols: tokenSymbol ? [tokenSymbol] : undefined,
                         outputsCount: formValues.outputs.length,
                         selectedFee: formValues.selectedFee ?? 'normal',
+                        hasRippleDestinationTag: G.isNotNullable(formValues.rippleDestinationTag),
                         wasAppLeftDuringReview,
                     },
                 });

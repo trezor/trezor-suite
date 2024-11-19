@@ -27,6 +27,7 @@ const hintStyle = prepareNativeStyle(() => ({
 const hintTextStyle = prepareNativeStyle<{ color: Color }>((utils, { color }) => ({
     ...utils.typography.label,
     color: utils.colors[color],
+    flex: 1,
 }));
 
 const hintVariants: Record<HintVariant, { iconName: IconName; color: Color }> = {

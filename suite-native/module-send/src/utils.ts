@@ -9,7 +9,7 @@ export const getOutputFieldName = <TField extends SendOutputFieldName>(
 ): `outputs.${number}.${TField}` => `outputs.${index}.${field}`;
 
 export const constructFormDraft = ({
-    formValues: { outputs, setMaxOutputId },
+    formValues: { outputs, ...restFormValues },
     tokenContract,
     feeLevel = { label: 'normal', feePerUnit: '' },
 }: {
@@ -25,7 +25,6 @@ export const constructFormDraft = ({
         fiat,
         currency: { label: '', value: '' },
     })),
-    setMaxOutputId,
     isCoinControlEnabled: false,
     hasCoinControlBeenOpened: false,
     selectedUtxos: [],
@@ -33,4 +32,5 @@ export const constructFormDraft = ({
     selectedFee: feeLevel.label,
     feePerUnit: feeLevel.feePerUnit,
     feeLimit: feeLevel.feeLimit ?? '',
+    ...restFormValues,
 });

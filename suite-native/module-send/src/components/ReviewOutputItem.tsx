@@ -18,6 +18,7 @@ const outputLabelTranslationMap = {
     address: 'moduleSend.review.outputs.addressLabel',
     regular_legacy: 'moduleSend.review.outputs.addressLabel',
     amount: 'moduleSend.review.outputs.amountLabel',
+    'destination-tag': 'moduleSend.review.outputs.destinationTagLabel',
 } as const satisfies Partial<Record<ReviewOutputType, TxKeyPath>>;
 
 const isTranslationDefined = (

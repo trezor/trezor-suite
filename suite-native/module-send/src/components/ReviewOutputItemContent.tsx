@@ -24,6 +24,10 @@ export const ReviewOutputItemContent = ({
         );
     }
 
+    if (outputType === 'destination-tag') {
+        return <Text variant="hint">{value}</Text>;
+    }
+
     if (outputType === 'address' || outputType === 'regular_legacy') {
         const chunkedAddress = splitAddressToChunks(value).join(' ');
 

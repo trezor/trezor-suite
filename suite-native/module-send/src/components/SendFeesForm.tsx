@@ -38,8 +38,12 @@ import { FeesFooter } from './FeesFooter';
 import { FeeOptionsList } from './FeeOptionsList';
 import { RecipientsSummary } from './RecipientsSummary';
 import { CustomFee } from './CustomFee';
-import { selectFeeLevels } from '../sendFormSlice';
 import { NativeSupportedFeeLevel } from '../types';
+import {
+    NativeSendRootState,
+    selectFeeLevels,
+    selectRippleDestinationTagFromDraft,
+} from '../sendFormSlice';
 
 type SendFormProps = {
     accountKey: AccountKey;
@@ -72,6 +76,10 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
 
     const minimalFeeLimit =
         'estimatedFeeLimit' in feeLevels.normal ? feeLevels.normal.estimatedFeeLimit : undefined;
+
+    const rippleDestinationTag = useSelector((state: NativeSendRootState) =>
+        selectRippleDestinationTagFromDraft(state, accountKey, tokenContract),
+    );
 
     const form = useForm<SendFeesFormValues>({
         validation: sendFeesFormValidationSchema,
@@ -117,11 +125,20 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     if (!account) return;
 
     const handleNavigateToReviewScreen = handleSubmit(() => {
-        navigation.navigate(SendStackRoutes.SendAddressReview, {
-            accountKey,
-            tokenContract,
-            transaction: selectedFeeLevelTransaction,
-        });
+        if (networkType === 'ripple' && rippleDestinationTag) {
+            navigation.navigate(SendStackRoutes.SendDestinationTagReview, {
+                destinationTag: rippleDestinationTag,
+                accountKey,
+                tokenContract,
+                transaction: selectedFeeLevelTransaction,
+            });
+        } else {
+            navigation.navigate(SendStackRoutes.SendAddressReview, {
+                accountKey,
+                tokenContract,
+                transaction: selectedFeeLevelTransaction,
+            });
+        }
 
         // In case that view only device is not connected, show connect screen first.
         navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {

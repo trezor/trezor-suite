@@ -81,6 +81,12 @@ export type SendStackParamList = {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
     };
+    [SendStackRoutes.SendDestinationTagReview]: {
+        destinationTag: string;
+        transaction: GeneralPrecomposedTransactionFinal;
+        accountKey: AccountKey;
+        tokenContract?: TokenAddress;
+    };
     [SendStackRoutes.SendAddressReview]: {
         transaction: GeneralPrecomposedTransactionFinal;
         accountKey: AccountKey;

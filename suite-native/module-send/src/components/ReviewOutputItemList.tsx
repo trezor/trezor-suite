@@ -49,13 +49,11 @@ export const ReviewOutputItemList = ({ accountKey, tokenContract }: ReviewOutput
         const { height } = event.nativeEvent.layout;
         setChildHeights(prevHeights => {
             const newHeights = [...prevHeights];
-            newHeights[index] = height + LIST_VERTICAL_SPACING;
+            newHeights[index] = height + 2 * LIST_VERTICAL_SPACING;
 
             return newHeights;
         });
     };
-
-    const isLayoutReady = childHeights.length === (reviewOutputs?.length ?? 0) + 1;
 
     if (!account) return <ErrorMessage errorMessage="Account not found." />;
 
@@ -81,7 +79,6 @@ export const ReviewOutputItemList = ({ accountKey, tokenContract }: ReviewOutput
             )}
             {!isTransactionAlreadySigned && (
                 <SlidingFooterOverlay
-                    isLayoutReady={isLayoutReady}
                     currentStepIndex={activeStep}
                     stepHeights={childHeights}
                     initialOffset={INITIAL_OFFSET}

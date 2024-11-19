@@ -92,6 +92,7 @@ export enum SendStackRoutes {
     SendAccounts = 'SendAccounts',
     SendOutputs = 'SendOutputs',
     SendFees = 'SendFees',
+    SendDestinationTagReview = 'SendDestinationTagReview',
     SendAddressReview = 'SendAddressReview',
     SendOutputsReview = 'SendOutputsReview',
 }

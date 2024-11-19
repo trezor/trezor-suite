@@ -1,4 +1,4 @@
-import { A, G } from '@mobily/ts-belt';
+import { A, G, pipe } from '@mobily/ts-belt';
 
 import {
     SendRootState,
@@ -65,7 +65,7 @@ export const selectTransactionReviewOutputs = (
     );
 };
 
-export const selectIsOutputsReviewInProgress = (
+export const selectIsTransactionReviewInProgress = (
     state: SendRootState & AccountsRootState & DeviceRootState,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
@@ -75,14 +75,39 @@ export const selectIsOutputsReviewInProgress = (
     return G.isNotNullable(outputs) && A.isNotEmpty(outputs);
 };
 
-export const selectIsFirstTransactionAddressConfirmed = (
+export const selectIsDestinationTagOutputConfirmed = (
+    state: SendRootState & AccountsRootState & DeviceRootState,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+): boolean => {
+    const outputs = selectTransactionReviewOutputs(state, accountKey, tokenContract);
+    if (!outputs) return false;
+
+    return pipe(
+        outputs,
+        A.find(output => output.type === 'destination-tag' && output.state === 'success'),
+        G.isNotNullable,
+    );
+};
+
+export const selectIsReceiveAddressOutputConfirmed = (
     state: SendRootState & AccountsRootState & DeviceRootState,
     accountKey: string,
     tokenContract?: TokenAddress,
 ): boolean => {
     const outputs = selectTransactionReviewOutputs(state, accountKey, tokenContract);
+    if (!outputs) return false;
 
-    return outputs?.[0].state === 'success';
+    return pipe(
+        outputs,
+        A.find(
+            output =>
+                // 'regular_legacy' is address of BTC accounts used in older firmware versions.
+                (output.type === 'address' || output.type === 'regular_legacy') &&
+                output.state === 'success',
+        ),
+        G.isNotNullable,
+    );
 };
 
 export const selectIsTransactionAlreadySigned = (state: SendRootState) => {

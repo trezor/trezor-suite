@@ -6,6 +6,7 @@ import { Keyboard } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
+import { D, pipe } from '@mobily/ts-belt';
 
 import {
     AccountsRootState,
@@ -99,8 +100,11 @@ export const SendOutputsScreen = ({
 
     const form = useForm<SendOutputsFormValues>({
         validation: sendOutputsFormValidationSchema,
+        // If the form is prefilled with the draft values, we want to revalidate the draft on every change.
+        mode: sendFormDraft ? 'onChange' : 'onTouched',
         context: {
             networkFeeInfo,
+            accountDescriptor: account?.descriptor,
             networkSymbol: account?.symbol,
             availableBalance: tokenInfo?.balance ?? account?.availableBalance,
             isTokenFlow: !!tokenContract,
@@ -117,26 +121,70 @@ export const SendOutputsScreen = ({
         getValues,
         setValue,
         trigger,
+        setError,
         formState: { isValid, isSubmitting },
     } = form;
     const watchedFormValues = useWatch({ control });
     const watchedAddress = useWatch({ name: 'outputs.0.address', control });
 
-    const storeFormDraftIfValid = useCallback(() => {
-        const normalFeeLevel = networkFeeInfo?.levels.find(level => level.label === 'normal');
-
-        dispatch(
-            sendFormActions.storeDraft({
-                accountKey,
-                tokenContract,
-                formState: constructFormDraft({
-                    formValues: getValues(),
-                    tokenContract,
-                    feeLevel: normalFeeLevel,
+    const updateFormState = useCallback(async () => {
+        if (account && network && networkFeeInfo) {
+            const response = await dispatch(
+                composeSendFormTransactionFeeLevelsThunk({
+                    formState: constructFormDraft({ formValues: getValues(), tokenContract }),
+                    composeContext: {
+                        account,
+                        network,
+                        feeInfo: networkFeeInfo,
+                    },
                 }),
-            }),
-        );
-    }, [accountKey, dispatch, getValues, tokenContract, networkFeeInfo]);
+            );
+
+            if (isFulfilled(response)) {
+                const isReserveError = pipe(
+                    response.payload,
+                    D.filter(
+                        feeLevel =>
+                            feeLevel.type === 'error' &&
+                            feeLevel.error === 'AMOUNT_IS_LESS_THAN_RESERVE',
+                    ),
+                    D.isNotEmpty,
+                );
+
+                if (isReserveError) {
+                    setError('outputs.0.amount', {
+                        message:
+                            'Recipient account requires minimum reserve of 10 XRP to activate.',
+                    });
+                }
+
+                const normalFeeLevel = networkFeeInfo?.levels.find(
+                    level => level.label === 'normal',
+                );
+
+                dispatch(
+                    sendFormActions.storeDraft({
+                        accountKey,
+                        tokenContract,
+                        formState: constructFormDraft({
+                            formValues: getValues(),
+                            tokenContract,
+                            feeLevel: normalFeeLevel,
+                        }),
+                    }),
+                );
+            }
+        }
+    }, [
+        accountKey,
+        dispatch,
+        getValues,
+        tokenContract,
+        account,
+        network,
+        networkFeeInfo,
+        setError,
+    ]);
 
     const calculateNormalFeeMaxAmount = useCallback(async () => {
         const response = await dispatch(
@@ -154,7 +202,11 @@ export const SendOutputsScreen = ({
     useEffect(() => {
         const prefillValuesFromStoredDraft = async () => {
             if (sendFormDraft?.outputs) {
-                setValue('outputs', sendFormDraft.outputs);
+                // TODO: use reset() instead of setValue()
+                setValue('outputs', sendFormDraft.outputs, { shouldTouch: true });
+                setValue('rippleDestinationTag', sendFormDraft.rippleDestinationTag, {
+                    shouldTouch: true,
+                });
                 await calculateNormalFeeMaxAmount();
                 trigger();
             }
@@ -167,8 +219,8 @@ export const SendOutputsScreen = ({
 
     // Triggered for every change of watchedFormValues.
     useEffect(() => {
-        if (isValid) debounce(storeFormDraftIfValid);
-    }, [storeFormDraftIfValid, watchedFormValues, debounce, isValid]);
+        debounce(updateFormState);
+    }, [updateFormState, watchedFormValues, debounce]);
 
     useEffect(() => {
         // The max amount is equal to the total token balance for tokens. (fee is paid in mainnet currency)

@@ -1,10 +1,11 @@
 import { G } from '@mobily/ts-belt';
 
 import { BigNumber } from '@trezor/utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkType, NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount, isAddressValid, isDecimalsValid } from '@suite-common/wallet-utils';
 import { FeeInfo } from '@suite-common/wallet-types';
 import { yup } from '@suite-common/validators';
+import { U_INT_32 } from '@suite-common/wallet-constants';
 
 import { FeeLevelsMaxAmount } from './types';
 
@@ -16,6 +17,7 @@ export type SendFormFormContext = {
     isTokenFlow?: boolean;
     feeLevelsMaxAmount?: FeeLevelsMaxAmount;
     decimals?: number;
+    accountDescriptor?: string;
 };
 
 const isAmountDust = (amount: string, context?: SendFormFormContext) => {
@@ -76,7 +78,6 @@ const isAmountHigherThanBalance = (
     return !normalMaxAmount || amountBigNumber.gt(normalMaxAmount);
 };
 
-// TODO: change error messages copy when is design ready
 export const sendOutputsFormValidationSchema = yup.object({
     outputs: yup
         .array(
@@ -96,6 +97,18 @@ export const sendOutputsFormValidationSchema = yup.object({
                                 isAddressValid(value, networkSymbol)
                             );
                         },
+                    )
+                    .test(
+                        'ripple-is-sending-to-self',
+                        'Can`t send to myself.',
+                        (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                            const { networkSymbol, accountDescriptor } = context!;
+                            if (!networkSymbol || !accountDescriptor) return true;
+
+                            if (getNetworkType(networkSymbol) !== 'ripple') return true;
+
+                            return value !== accountDescriptor;
+                        },
                     ),
                 amount: yup
                     .string()
@@ -106,6 +119,41 @@ export const sendOutputsFormValidationSchema = yup.object({
                         'The value is lower than the dust limit.',
                         (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
                             return !isAmountDust(value, context);
+                        },
+                    )
+                    .test(
+                        'ripple-higher-than-reserve',
+                        'Amount is above the required unspendable reserve (10 XRP)',
+                        function (
+                            value,
+                            { options: { context } }: yup.TestContext<SendFormFormContext>,
+                        ) {
+                            const { networkSymbol, availableBalance, feeLevelsMaxAmount } =
+                                context!;
+
+                            if (
+                                !availableBalance ||
+                                !networkSymbol ||
+                                getNetworkType(networkSymbol) !== 'ripple'
+                            )
+                                return true;
+
+                            const amountBigNumber = new BigNumber(value);
+
+                            if (
+                                feeLevelsMaxAmount?.normal &&
+                                amountBigNumber.gt(
+                                    formatNetworkAmount(
+                                        // availableBalance = balance - reserve
+                                        availableBalance,
+                                        networkSymbol,
+                                    ),
+                                )
+                            ) {
+                                return false;
+                            }
+
+                            return true;
                         },
                     )
                     .test(
@@ -133,13 +181,36 @@ export const sendOutputsFormValidationSchema = yup.object({
                     ),
                 fiat: yup.string(),
                 token: yup.string().required().nullable(),
-                // TODO: other validations have to be added in the following PRs
-                //       e.g. check if the amount is not higher than XRP reserve
             }),
         )
         .required(),
+    rippleDestinationTag: yup
+        .string()
+        .optional()
+        .matches(/^\d*$/, 'You can only use positive numbers for the destination tag.')
+        .test(
+            'is-destination-tag-in-range',
+            'Destination tag is too high.',
+            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                const { networkSymbol } = context!;
+
+                if (!networkSymbol) return true;
+                if (getNetworkType(networkSymbol) !== 'ripple') return true;
+
+                if (!value) return true;
+
+                const numberValue = Number(value);
+
+                if (numberValue > U_INT_32) {
+                    return false;
+                }
+
+                return true;
+            },
+        ),
     setMaxOutputId: yup.number(),
 });
 
 export type SendOutputsFormValues = yup.InferType<typeof sendOutputsFormValidationSchema>;
 export type SendOutputFieldName = keyof SendOutputsFormValues['outputs'][number];
+export type SendFieldName = keyof SendOutputsFormValues | SendOutputFieldName;

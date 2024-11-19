@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { LayoutChangeEvent, View, AppState } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
-import { isRejected } from '@reduxjs/toolkit';
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 
 import {
@@ -19,19 +18,18 @@ import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common
 import { nativeSpacings } from '@trezor/theme';
 
 import {
-    cleanupSendFormThunk,
-    signTransactionNativeThunk as signTransactionThunk,
-} from '../sendFormThunks';
-import { selectIsFirstTransactionAddressConfirmed } from '../selectors';
+    selectIsReceiveAddressOutputConfirmed,
+    selectIsTransactionReviewInProgress,
+} from '../selectors';
 import { SlidingFooterOverlay } from '../components/SlidingFooterOverlay';
 import { AddressReviewStep } from '../components/AddressReviewStep';
 import { CompareAddressHelpButton } from '../components/CompareAddressHelpButton';
 import { AddressOriginHelpButton } from '../components/AddressOriginHelpButton';
-import { useHandleSendReviewFailure } from '../hooks/useHandleSendReviewFailure';
+import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
 
 const NUMBER_OF_STEPS = 3;
-const OVERLAY_INITIAL_POSITION = 75;
+const OVERLAY_INITIAL_POSITION = 170;
 const LIST_VERTICAL_SPACING = nativeSpacings.sp16;
 
 type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>['route'];
@@ -43,18 +41,17 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const AddressReviewStepList = () => {
     const route = useRoute<RouteProps>();
-    const { accountKey, transaction, tokenContract } = route.params;
+    const { accountKey, tokenContract } = route.params;
     const navigation = useNavigation<NavigationProps>();
-    const dispatch = useDispatch();
 
     const [childHeights, setChildHeights] = useState<number[]>([]);
     const [stepIndex, setStepIndex] = useState(0);
-    const handleSendReviewFailure = useHandleSendReviewFailure({
-        accountKey,
-        transaction,
-        tokenContract,
-    });
+    const handleOnDeviceTransactionReview = useHandleOnDeviceTransactionReview();
     const setWasAppLeftDuringReview = useSetAtom(wasAppLeftDuringReviewAtom);
+    const isTransactionReviewInProgress = useSelector(
+        (state: AccountsRootState & DeviceRootState & SendRootState) =>
+            selectIsTransactionReviewInProgress(state, accountKey, tokenContract),
+    );
 
     useFocusEffect(
         useCallback(() => {
@@ -72,12 +69,11 @@ export const AddressReviewStepList = () => {
         }, [setWasAppLeftDuringReview]),
     );
 
-    const areAllStepsDone = stepIndex === NUMBER_OF_STEPS - 1;
-    const isLayoutReady = childHeights.length === NUMBER_OF_STEPS;
+    const areAllStepsDone = stepIndex === NUMBER_OF_STEPS - 1 || isTransactionReviewInProgress;
 
     const isAddressConfirmed = useSelector(
         (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectIsFirstTransactionAddressConfirmed(state, accountKey, tokenContract),
+            selectIsReceiveAddressOutputConfirmed(state, accountKey, tokenContract),
     );
 
     useEffect(() => {
@@ -96,27 +92,11 @@ export const AddressReviewStepList = () => {
         });
     };
 
-    const restartAddressReview = () => {
-        setStepIndex(0);
-        dispatch(cleanupSendFormThunk({ accountKey, shouldDeleteDraft: false }));
-    };
-
-    const handleNextStep = async () => {
+    const handleNextStep = () => {
         setStepIndex(prevStepIndex => prevStepIndex + 1);
 
         if (stepIndex === NUMBER_OF_STEPS - 2) {
-            const response = await dispatch(
-                signTransactionThunk({
-                    accountKey,
-                    tokenContract,
-                    feeLevel: transaction,
-                }),
-            );
-
-            if (isRejected(response)) {
-                restartAddressReview();
-                handleSendReviewFailure(response);
-            }
+            handleOnDeviceTransactionReview();
         }
     };
 
@@ -145,7 +125,6 @@ export const AddressReviewStepList = () => {
             </View>
             {!areAllStepsDone && (
                 <SlidingFooterOverlay
-                    isLayoutReady={isLayoutReady}
                     currentStepIndex={stepIndex}
                     stepHeights={childHeights}
                     initialOffset={OVERLAY_INITIAL_POSITION}

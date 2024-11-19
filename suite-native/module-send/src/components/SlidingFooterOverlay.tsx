@@ -1,10 +1,5 @@
-import { useRef, useEffect, ReactNode } from 'react';
-import Animated, {
-    SlideOutDown,
-    useAnimatedStyle,
-    useSharedValue,
-    withTiming,
-} from 'react-native-reanimated';
+import { ReactNode } from 'react';
+import Animated, { SlideOutDown, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -17,7 +12,6 @@ type SlidingFooterOverlayProps = {
     stepHeights: number[];
     children?: ReactNode;
     initialOffset?: number;
-    isLayoutReady?: boolean;
 };
 
 const OVERLAY_HEIGHT = 1000;
@@ -47,24 +41,16 @@ export const SlidingFooterOverlay = ({
     currentStepIndex,
     stepHeights,
     initialOffset = 0,
-    isLayoutReady = true,
 }: SlidingFooterOverlayProps) => {
-    const previousStep = useRef<number | null>(null);
     const { applyStyle, utils } = useNativeStyles();
-    const footerTranslateY = useSharedValue(initialOffset);
 
-    useEffect(() => {
-        if (isLayoutReady && previousStep.current !== currentStepIndex) {
-            footerTranslateY.value = withTiming(
-                footerTranslateY.value + stepHeights[currentStepIndex],
-            );
-            previousStep.current = currentStepIndex;
-        }
-    }, [currentStepIndex, footerTranslateY, stepHeights, isLayoutReady]);
+    const footerAnimatedStyle = useAnimatedStyle(() => {
+        const topOffset =
+            initialOffset +
+            stepHeights.slice(0, currentStepIndex).reduce((acc, height) => acc + height, 0);
 
-    const footerAnimatedStyle = useAnimatedStyle(() => ({
-        transform: [{ translateY: footerTranslateY.value }],
-    }));
+        return { transform: [{ translateY: withTiming(topOffset) }] };
+    });
 
     return (
         <Animated.View

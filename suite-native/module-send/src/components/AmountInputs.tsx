@@ -31,7 +31,7 @@ type AmountInputProps = {
     index: number;
 };
 
-type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>['route'];
+type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendOutputs>['route'];
 
 const ANIMATION_DURATION = 300;
 const SCALE_FOCUSED = 1;

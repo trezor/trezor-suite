@@ -13,8 +13,11 @@ import {
 import {
     GeneralPrecomposedLevels,
     GeneralPrecomposedTransaction,
+    AccountKey,
+    TokenAddress,
 } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
+import { getSendFormDraftKey } from '@suite-common/wallet-utils';
 
 import { NativeSupportedFeeLevel } from './types';
 
@@ -106,5 +109,15 @@ export const selectFeeLevelTransactionBytes = createMemoizedSelector(
         return 0;
     },
 );
+
+export const selectRippleDestinationTagFromDraft = (
+    state: NativeSendRootState,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+) => {
+    const draftKey = getSendFormDraftKey(accountKey, tokenContract);
+
+    return state.wallet.send.drafts[draftKey]?.rippleDestinationTag;
+};
 
 export const { storeFeeLevels } = sendFormSlice.actions;

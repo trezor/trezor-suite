@@ -385,6 +385,11 @@ export const selectAccountNetworkType = createMemoizedSelector(
     account => account?.networkType ?? null,
 );
 
+export const selectAccountBalance = createMemoizedSelector(
+    [selectAccountByKey],
+    account => account?.balance ?? null,
+);
+
 export const selectAccountAvailableBalance = createMemoizedSelector(
     [selectAccountByKey],
     account => account?.availableBalance ?? null,

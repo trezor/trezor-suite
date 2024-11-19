@@ -7,14 +7,13 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 
 import {
-    selectIsFirstTransactionAddressConfirmed,
-    selectIsOutputsReviewInProgress,
+    selectIsReceiveAddressOutputConfirmed,
+    selectIsTransactionReviewInProgress,
 } from '../selectors';
 import { AddressReviewStepList } from '../components/AddressReviewStepList';
 import { SendScreen } from '../components/SendScreen';
 import { SendScreenSubHeader } from '../components/SendScreenSubHeader';
 import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
-import { useShowReviewCancellationAlert } from '../hooks/useShowReviewCancellationAlert';
 
 export const SendAddressReviewScreen = ({
     route,
@@ -23,16 +22,14 @@ export const SendAddressReviewScreen = ({
     const { accountKey, tokenContract } = route.params;
     const { translate } = useTranslate();
 
-    const showReviewCancellationAlert = useShowReviewCancellationAlert();
-
     const isAddressConfirmed = useSelector(
         (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectIsFirstTransactionAddressConfirmed(state, accountKey, tokenContract),
+            selectIsReceiveAddressOutputConfirmed(state, accountKey, tokenContract),
     );
 
-    const isReviewInProgress = useSelector(
+    const isTransactionReviewInProgress = useSelector(
         (state: AccountsRootState & DeviceRootState & SendRootState) =>
-            selectIsOutputsReviewInProgress(state, accountKey, tokenContract),
+            selectIsTransactionReviewInProgress(state, accountKey, tokenContract),
     );
 
     useEffect(() => {
@@ -41,32 +38,16 @@ export const SendAddressReviewScreen = ({
         }
     }, [isAddressConfirmed, accountKey, navigation, tokenContract]);
 
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('beforeRemove', e => {
-            // We want to modify only behavior of back button actions.
-            if (e.data.action.type !== 'GO_BACK') return;
-
-            if (isReviewInProgress) {
-                e.preventDefault();
-                showReviewCancellationAlert();
-
-                return;
-            }
-        });
-
-        return unsubscribe;
-    });
-
     return (
         <SendScreen
             screenHeader={
                 <SendScreenSubHeader
                     content={translate('moduleSend.review.outputs.title')}
-                    closeActionType={isReviewInProgress ? 'close' : 'back'}
+                    closeActionType={isTransactionReviewInProgress ? 'close' : 'back'}
                 />
             }
             // TODO: improve the illustration: https://github.com/trezor/trezor-suite/issues/13965
-            footer={isReviewInProgress && <SendConfirmOnDeviceImage />}
+            footer={isTransactionReviewInProgress && <SendConfirmOnDeviceImage />}
         >
             <Box flex={1} justifyContent="space-between" marginTop="sp16">
                 <VStack justifyContent="center" alignItems="center" spacing="sp24">

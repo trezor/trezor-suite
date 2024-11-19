@@ -1003,6 +1003,7 @@ export const en = {
                 addressQrLabel: 'Scan recipient address',
                 amountLabel: 'Amount to be sent',
                 maxButton: 'Send max',
+                destinationTagLabel: 'Destination tag',
             },
         },
         fees: {
@@ -1051,6 +1052,7 @@ export const en = {
                 primaryButton: 'Reconnect Trezor',
             },
             lockedToast: 'Device is locked.',
+            destinationTagTitle: 'Check & confirm XRP destination tag on your Trezor.',
             address: {
                 title: 'Check the address on your Trezor against the original to make sure it’s correct.',
                 step1: 'Go to the app or place where you originally got the address.',
@@ -1084,6 +1086,7 @@ export const en = {
                 title: 'Review with Trezor',
                 addressLabel: 'Recipient address',
                 amountLabel: 'Amount',
+                destinationTagLabel: 'Destination tag',
                 summary: {
                     label: 'Total including fee',
                     totalAmount: 'Total amount',

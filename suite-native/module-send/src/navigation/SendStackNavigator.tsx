@@ -11,6 +11,7 @@ import { SendOutputsScreen } from '../screens/SendOutputsScreen';
 import { SendFeesScreen } from '../screens/SendFeesScreen';
 import { SendAddressReviewScreen } from '../screens/SendAddressReviewScreen';
 import { SendOutputsReviewScreen } from '../screens/SendOutputsReviewScreen';
+import { SendDestinationTagReviewScreen } from '../screens/SendDestinationTagReviewScreen';
 
 const SendStack = createNativeStackNavigator<SendStackParamList>();
 
@@ -27,6 +28,10 @@ export const SendStackNavigator = () => (
                 gestureEnabled: false, // To not interrupt send review by back navigation.
             }}
         >
+            <SendStack.Screen
+                name={SendStackRoutes.SendDestinationTagReview}
+                component={SendDestinationTagReviewScreen}
+            />
             <SendStack.Screen
                 name={SendStackRoutes.SendAddressReview}
                 component={SendAddressReviewScreen}

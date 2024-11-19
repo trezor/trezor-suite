@@ -78,11 +78,11 @@ const getFeePerUnit = ({
         return backendFeePerUnit;
     }
 
-    if (networkType === 'ethereum') {
-        return feeLevel.feePerByte;
+    if (networkType === 'bitcoin') {
+        return String(Math.round(Number(feeLevel.fee) / transactionBytes));
     }
 
-    return String(Math.round(Number(feeLevel.fee) / transactionBytes));
+    return feeLevel.feePerByte;
 };
 
 export const FeeOption = ({

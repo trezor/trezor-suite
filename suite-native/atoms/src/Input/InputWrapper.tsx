@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -52,8 +53,16 @@ export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps
             )}
             <Box>{children}</Box>
             <Box style={applyStyle(hintStyle, { error, hint })}>
-                {!!error && <Hint variant="error">{errorMessage}</Hint>}
-                {!!hint && <Hint>{hint}</Hint>}
+                {!!error && (
+                    <Animated.View entering={FadeIn} exiting={FadeOut}>
+                        <Hint variant="error">{errorMessage}</Hint>
+                    </Animated.View>
+                )}
+                {!!hint && (
+                    <Animated.View entering={FadeIn} exiting={FadeOut}>
+                        <Hint>{hint}</Hint>
+                    </Animated.View>
+                )}
             </Box>
         </Box>
     );

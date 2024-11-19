@@ -5,7 +5,7 @@ import {
     AccountsRootState,
     selectAccountLabel,
     selectAccountNetworkSymbol,
-    selectAccountAvailableBalance,
+    selectAccountBalance,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { VStack, HStack, Text } from '@suite-native/atoms';
@@ -17,6 +17,7 @@ import {
     selectAccountTokenSymbol,
     TokensRootState,
 } from '@suite-native/tokens';
+import { isTestnet } from '@suite-common/wallet-utils';
 
 type AccountBalanceScreenHeaderProps = {
     accountKey: AccountKey;
@@ -39,7 +40,7 @@ export const AccountBalanceScreenHeader = ({
     );
 
     const availableBalance = useSelector((state: AccountsRootState) =>
-        selectAccountAvailableBalance(state, accountKey),
+        selectAccountBalance(state, accountKey),
     );
 
     const tokenSymbol = useSelector((state: TokensRootState) =>
@@ -80,17 +81,21 @@ export const AccountBalanceScreenHeader = ({
                             tokenContract={tokenContract}
                             isBalance={false}
                         />
-                        <Text variant="hint" color="textSubdued">
-                            ≈
-                        </Text>
-                        <CoinToFiatAmountFormatter
-                            variant="hint"
-                            color="textSubdued"
-                            value={tokenBalance ?? availableBalance}
-                            accountKey={accountKey}
-                            decimals={0}
-                            tokenContract={tokenContract}
-                        />
+                        {!isTestnet(networkSymbol) && (
+                            <>
+                                <Text variant="hint" color="textSubdued">
+                                    ≈
+                                </Text>
+                                <CoinToFiatAmountFormatter
+                                    variant="hint"
+                                    color="textSubdued"
+                                    value={tokenBalance ?? availableBalance}
+                                    accountKey={accountKey}
+                                    decimals={0}
+                                    tokenContract={tokenContract}
+                                />
+                            </>
+                        )}
                     </HStack>
                 </VStack>
             }
