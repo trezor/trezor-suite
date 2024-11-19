@@ -1134,5 +1134,13 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
             return walletSettings;
         });
+
+        await updateAll(transaction, 'txs', tx => {
+            if (['sol', 'dsol'].includes(tx.tx.symbol)) {
+                tx.tx.amount = new BigNumber(tx.tx.amount).abs().toString();
+            }
+
+            return tx;
+        });
     }
 };

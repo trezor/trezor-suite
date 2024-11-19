@@ -3,6 +3,7 @@
 ## 49
 
 -   networks now have same order everywhere
+-   solana tx amount is always positive
 
 ## 48
 
