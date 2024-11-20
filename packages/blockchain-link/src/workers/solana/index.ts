@@ -220,11 +220,14 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     // https://solana.stackexchange.com/a/13102
     const rent = await api.getMinimumBalanceForRentExemption(accountInfo?.data.byteLength || 0);
 
+    // allTxIds can be empty for non-archive rpc nodes
+    const isAccountEmpty = !(allTxIds.length || balance || tokens.length);
+
     const account: AccountInfo = {
         descriptor: payload.descriptor,
         balance: balance.toString(),
         availableBalance: balance.toString(),
-        empty: !allTxIds.length,
+        empty: isAccountEmpty,
         history: {
             total: allTxIds.length,
             unconfirmed: 0,
