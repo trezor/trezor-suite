@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import {
     Button,
     Input,
-    InfoRow,
+    InfoItem,
     Column,
     Card,
     Row,
@@ -175,15 +175,15 @@ export const CoinmarketOfferExchangeSendSwap = () => {
 
     return (
         <Column gap={spacings.lg} alignItems="stretch" flex="1">
-            <InfoRow label={<Translation id="TR_EXCHANGE_SEND_FROM" />} typographyStyle="hint">
+            <InfoItem label={<Translation id="TR_EXCHANGE_SEND_FROM" />} typographyStyle="hint">
                 <AccountLabeling account={account} />
-            </InfoRow>
-            <InfoRow
+            </InfoItem>
+            <InfoItem
                 label={<Translation id="TR_EXCHANGE_SWAP_SEND_TO" values={translationValues} />}
                 typographyStyle="hint"
             >
                 {dexTx.to}
-            </InfoRow>
+            </InfoItem>
 
             <Card
                 fillType="default"
@@ -192,7 +192,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
             >
                 <ElevationContext baseElevation={0}>
                     <Column gap={spacings.lg} alignItems="stretch">
-                        <InfoRow
+                        <InfoItem
                             label={
                                 <Tooltip
                                     content={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_INFO" />}
@@ -234,9 +234,9 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                                     <Translation id={customSlippageError?.message} />
                                 </BottomText>
                             ) : null}
-                        </InfoRow>
+                        </InfoItem>
 
-                        <InfoRow
+                        <InfoItem
                             label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED" />}
                             typographyStyle="hint"
                         >
@@ -244,9 +244,9 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                                 value={receiveStringAmount}
                                 symbol={cryptoIdToCoinSymbol(receive)}
                             />
-                        </InfoRow>
+                        </InfoItem>
 
-                        <InfoRow
+                        <InfoItem
                             label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT" />}
                             typographyStyle="hint"
                         >
@@ -256,9 +256,9 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                                 Number(receiveStringAmount),
                                 decimals,
                             )} ${cryptoIdToCoinSymbol(receive)}`}
-                        </InfoRow>
+                        </InfoItem>
 
-                        <InfoRow
+                        <InfoItem
                             label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM" />}
                             typographyStyle="hint"
                         >
@@ -268,14 +268,14 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                                 Number(receiveStringAmount),
                                 decimals,
                             )} ${cryptoIdToCoinSymbol(receive)}`}
-                        </InfoRow>
+                        </InfoItem>
                     </Column>
                 </ElevationContext>
             </Card>
 
-            <InfoRow label={<Translation id="TR_EXCHANGE_SWAP_DATA" />} typographyStyle="hint">
+            <InfoItem label={<Translation id="TR_EXCHANGE_SWAP_DATA" />} typographyStyle="hint">
                 <BreakableValue>{dexTx.data}</BreakableValue>
-            </InfoRow>
+            </InfoItem>
 
             <Column>
                 <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />

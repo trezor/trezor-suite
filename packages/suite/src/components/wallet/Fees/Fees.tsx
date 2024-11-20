@@ -17,7 +17,7 @@ import {
     Column,
     Note,
     motionEasing,
-    InfoRow,
+    InfoItem,
     Row,
     Text,
 } from '@trezor/components';
@@ -34,7 +34,6 @@ import { TranslationKey } from '@suite-common/intl-types';
 
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
-import { ExtendedMessageDescriptor } from 'src/types/suite';
 
 import { CustomFee } from './CustomFee';
 import { FeeDetails } from './FeeDetails';
@@ -64,7 +63,7 @@ export interface FeesProps<TFieldValues extends FormState> {
     changeFeeLevel: (level: FeeLevel['label']) => void;
     changeFeeLimit?: (value: string) => void;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
-    label?: ExtendedMessageDescriptor['id'];
+    label?: TranslationKey;
     rbfForm?: boolean;
     helperText?: React.ReactNode;
     showFeeWhilePending?: boolean;
@@ -101,7 +100,7 @@ export const Fees = <TFieldValues extends FormState>({
 
     return (
         <Column alignItems="stretch" gap={spacings.xs}>
-            <InfoRow
+            <InfoItem
                 direction="row"
                 labelTypographyStyle="body"
                 label={
@@ -135,7 +134,7 @@ export const Fees = <TFieldValues extends FormState>({
                         </Text>
                     </Row>
                 )}
-            </InfoRow>
+            </InfoItem>
 
             {feeOptions.length > 0 && (
                 <>

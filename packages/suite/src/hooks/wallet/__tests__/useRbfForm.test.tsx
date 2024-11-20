@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react';
 
 import TrezorConnect from '@trezor/connect';
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
+import { SelectedAccountLoaded, RbfTransactionParams } from '@suite-common/wallet-types';
 
 import {
     renderWithProviders,
@@ -10,6 +11,7 @@ import {
     findByTestId,
 } from 'src/support/tests/hooksHelper';
 import { ChangeFee } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';
+import { ReplaceTxButton } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ReplaceTxButton';
 
 import * as fixtures from '../__fixtures__/useRbfForm';
 import { useRbfContext } from '../useRbfForm';
@@ -133,6 +135,10 @@ describe('useRbfForm hook', () => {
                 // @ts-expect-error f.tx is not exact
                 <ChangeFee tx={f.tx} chainedTxs={f.chainedTxs} showChained={() => {}}>
                     <Component callback={callback} />
+                    <ReplaceTxButton
+                        rbfParams={f.tx.rbfParams as RbfTransactionParams}
+                        selectedAccount={f.store.selectedAccount as SelectedAccountLoaded}
+                    />
                 </ChangeFee>,
             );
 

@@ -3,31 +3,32 @@ import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 
 import {
-    InfoRow as InfoRowComponent,
-    allowedInfoRowFrameProps,
-    allowedInfoRowTextProps,
-} from './InfoRow';
+    InfoItem as InfoItemComponent,
+    allowedInfoItemFrameProps,
+    allowedInfoItemTextProps,
+    verticalAlignments,
+} from './InfoItem';
 import { flexDirection } from '../Flex/Flex';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { getTextPropsStory } from '../typography/utils';
 import { variables } from '../../config';
 
 const meta: Meta = {
-    title: 'InfoRow',
+    title: 'InfoItem',
 } as Meta;
 export default meta;
 
-export const InfoRow: StoryObj = {
+export const InfoItem: StoryObj = {
     render: props => (
-        <InfoRowComponent label={undefined} {...props}>
+        <InfoItemComponent label={undefined} {...props}>
             Lorem ipsum
-        </InfoRowComponent>
+        </InfoItemComponent>
     ),
     args: {
         direction: 'column',
         label: 'Label',
-        ...getFramePropsStory(allowedInfoRowFrameProps).args,
-        ...getTextPropsStory(allowedInfoRowTextProps).args,
+        ...getFramePropsStory(allowedInfoItemFrameProps).args,
+        ...getTextPropsStory(allowedInfoItemTextProps).args,
     },
     argTypes: {
         direction: {
@@ -51,7 +52,18 @@ export const InfoRow: StoryObj = {
                 type: 'select',
             },
         },
-        ...getFramePropsStory(allowedInfoRowFrameProps).argTypes,
-        ...getTextPropsStory(allowedInfoRowTextProps).argTypes,
+        labelWidth: {
+            control: {
+                type: 'number',
+            },
+        },
+        verticalAlignment: {
+            options: verticalAlignments,
+            control: {
+                type: 'radio',
+            },
+        },
+        ...getFramePropsStory(allowedInfoItemFrameProps).argTypes,
+        ...getTextPropsStory(allowedInfoItemTextProps).argTypes,
     },
 };

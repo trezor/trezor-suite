@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Card, Column, InfoRow, Text } from '@trezor/components';
+import { Card, Column, InfoItem, Text } from '@trezor/components';
 import { formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
 import { spacings } from '@trezor/theme';
 
@@ -31,7 +31,7 @@ export const TotalSent = () => {
         <Container>
             <Card height="min-content" fillType="none">
                 <Column gap={spacings.xxs} alignItems="stretch" margin={{ bottom: spacings.xl }}>
-                    <InfoRow
+                    <InfoItem
                         label={
                             <Text variant="default" typographyStyle="body">
                                 <Translation id="TOTAL_SENT" />
@@ -53,8 +53,8 @@ export const TotalSent = () => {
                                 symbol={tokenInfo ? tokenInfo.symbol : symbol}
                             />
                         )}
-                    </InfoRow>
-                    <InfoRow
+                    </InfoItem>
+                    <InfoItem
                         label={<Translation id={isTokenTransfer ? 'FEE' : 'INCLUDING_FEE'} />}
                         direction="row"
                         typographyStyle="hint"
@@ -73,7 +73,7 @@ export const TotalSent = () => {
                                     symbol={symbol}
                                 />
                             ))}
-                    </InfoRow>
+                    </InfoItem>
                 </Column>
                 <ReviewButton />
             </Card>

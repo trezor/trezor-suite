@@ -1,12 +1,22 @@
-import { ReactElement, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
-import styled, { css, useTheme } from 'styled-components';
+import styled from 'styled-components';
 
-import { spacingsPx, spacings, typography } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatAmount, formatNetworkAmount, isNftTokenTransfer } from '@suite-common/wallet-utils';
 import { AnonymitySet, TokenTransfer } from '@trezor/blockchain-link';
-import { Icon, CollapsibleBox, Divider } from '@trezor/components';
+import {
+    Icon,
+    CollapsibleBox,
+    Divider,
+    Column,
+    Row,
+    Text,
+    Grid,
+    InfoPair,
+    H4,
+} from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
@@ -17,219 +27,140 @@ import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { IOAddress } from '../../IOAddress';
 
-export const blurFix = css`
-    margin-left: -10px;
-    margin-right: -10px;
-    padding-left: 10px;
-    padding-right: 10px;
-`;
-
-const Wrapper = styled.div`
-    text-align: left;
-    overflow: auto;
-    ${blurFix}
-`;
-
-const Grid = styled.div`
-    display: grid;
-    gap: ${spacingsPx.sm} 1%;
-    grid-template-columns: 46% 6% 46%; /* address > address */
-    ${blurFix}
-`;
-
-const RowGrid = styled(Grid)`
-    padding-bottom: ${spacingsPx.xs};
-`;
-
-const GridItem = styled.div<{ $isAccountOwned?: boolean }>`
-    ${typography.label}
-    color: ${({ theme }) => theme.textSubdued};
-    max-width: 290px;
-
-    & + & {
-        margin-top: ${spacingsPx.xs};
-    }
-`;
-
-const IOGridItem = styled(GridItem)`
-    & + & {
-        margin-top: 0;
-    }
-    color: ${({ theme }) => theme.textPrimaryDefault};
-`;
-
-const RowGridItem = styled(GridItem)`
-    padding-bottom: initial;
-
-    & + & {
-        margin-top: 0;
-    }
-`;
-
-const GridGroupHeading = styled.div`
-    ${typography.hint}
-    color: ${({ theme }) => theme.textSubdued};
-    margin-bottom: ${spacingsPx.xs};
-`;
-
-const StyledFormattedCryptoAmount = styled(FormattedCryptoAmount)`
-    color: ${({ theme }) => theme.textSubdued};
-    margin-top: ${spacingsPx.xxs};
-    display: block;
-`;
-
-const StyledFormattedNftAmount = styled(FormattedNftAmount)`
-    color: ${({ theme }) => theme.textSubdued};
-    margin-top: ${spacingsPx.xxs};
-`;
-
-const GridGroup = styled.div`
-    &:not(:last-of-type) {
-        margin-bottom: ${spacingsPx.lg};
-    }
-`;
-
-const AmountRow = styled.div`
-    display: flex;
-    align-items: center;
-    margin-top: ${spacingsPx.xxs};
-    gap: ${spacingsPx.xs};
-
-    ${StyledFormattedCryptoAmount} {
-        margin-top: 0;
-    }
+const GridWrapper = styled.div`
+    position: relative;
 `;
 
 const IconWrapper = styled.div`
-    display: flex;
-    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 `;
 
-interface IOGridRow {
-    anonymitySet?: AnonymitySet;
-    tx: WalletAccountTransaction;
-    vinvout: WalletAccountTransaction['details']['vin'][number];
-    isPhishingTransaction?: boolean;
-}
+type IODetails = WalletAccountTransaction['details']['vin'][number];
 
-const IOGridRow = ({
-    anonymitySet,
-    tx: { symbol },
-    vinvout: { isAccountOwned, addresses, value },
-    isPhishingTransaction,
-}: IOGridRow) => {
+type IOItem = {
+    anonymitySet?: AnonymitySet;
+    symbol?: NetworkSymbol;
+    address?: string;
+    amount?: string | ReactNode;
+    isPhishingTransaction?: boolean;
+};
+
+const IOItem = ({ anonymitySet, address, symbol, amount, isPhishingTransaction }: IOItem) => {
     const network = useSelector(state => state.wallet.selectedAccount.network);
-    const anonymity = addresses?.length && anonymitySet?.[addresses[0]];
+    const anonymity = address && anonymitySet?.[address];
 
     return (
-        <GridItem $isAccountOwned={isAccountOwned}>
+        <Column alignItems="normal">
             <IOAddress
-                txAddress={addresses?.length ? addresses[0] : ''}
+                txAddress={address ?? ''}
                 explorerUrl={network?.explorer.address}
                 explorerUrlQueryString={network?.explorer.queryString}
                 shouldAllowCopy={!isPhishingTransaction}
             />
-            <AmountRow>
-                {anonymity && <UtxoAnonymity anonymity={anonymity} />}
-                {value && (
-                    <StyledFormattedCryptoAmount
-                        value={formatNetworkAmount(value, symbol)}
-                        symbol={symbol}
-                    />
-                )}
-            </AmountRow>
-        </GridItem>
+            <Text as="div" variant="tertiary" typographyStyle="label">
+                <Row gap={spacings.xs}>
+                    {anonymity && <UtxoAnonymity anonymity={anonymity} />}
+                    {amount &&
+                        (typeof amount === 'string' && symbol ? (
+                            <FormattedCryptoAmount
+                                value={formatNetworkAmount(amount, symbol)}
+                                symbol={symbol}
+                            />
+                        ) : (
+                            amount
+                        ))}
+                </Row>
+            </Text>
+        </Column>
     );
 };
 
-interface GridGroupWrapperProps {
-    heading?: ReactNode;
-    inputsLength?: number;
-    outputsLength?: number;
-    children: ReactElement | ReactElement[];
-}
-
-const IOGridGroupWrapper = ({
-    heading,
-    inputsLength,
-    outputsLength,
-    children,
-}: GridGroupWrapperProps) => (
-    <GridGroup>
-        {heading ? <GridGroupHeading>{heading}:</GridGroupHeading> : null}
-        {inputsLength !== undefined && outputsLength !== undefined ? (
-            <RowGrid>
-                <IOGridItem>
-                    <Translation id="TR_INPUTS" />
-                    {inputsLength >= 0 ? ` • ${inputsLength}` : null}
-                </IOGridItem>
-                <IOGridItem />
-                <IOGridItem>
-                    <Translation id="TR_OUTPUTS" />
-                    {outputsLength >= 0 ? ` • ${outputsLength}` : null}
-                </IOGridItem>
-            </RowGrid>
-        ) : null}
-        {children}
-    </GridGroup>
-);
-
-interface GridRowGroupComponentProps {
-    from?: string;
-    to?: string;
-    symbol?: NetworkSymbol;
-    amount?: string | ReactNode;
+type IOGroupProps = {
+    tx: WalletAccountTransaction;
+    inputs: IODetails[];
+    outputs: IODetails[];
     isPhishingTransaction?: boolean;
-}
+};
 
-const GridRowGroupComponent = ({
-    from,
-    to,
-    symbol,
-    amount,
-    isPhishingTransaction,
-}: GridRowGroupComponentProps) => {
-    const theme = useTheme();
-    const network = useSelector(state => state.wallet.selectedAccount.network);
+const IOGroup = ({ tx, inputs, outputs, isPhishingTransaction }: IOGroupProps) => {
+    const { selectedAccount } = useSelector(state => state.wallet);
+
+    const anonymitySet = selectedAccount?.account?.addresses?.anonymitySet;
+    const hasInputs = !!inputs?.length;
+    const hasOutputs = !!outputs?.length;
+
+    if (!hasInputs && !hasOutputs) return null;
 
     return (
-        <RowGrid>
-            <RowGridItem>
-                <IOAddress
-                    txAddress={from}
-                    explorerUrl={network?.explorer.address}
-                    explorerUrlQueryString={network?.explorer.queryString}
-                    shouldAllowCopy={!isPhishingTransaction}
-                />
-                {typeof amount === 'string' ? (
-                    <StyledFormattedCryptoAmount value={amount} symbol={symbol} />
-                ) : (
-                    amount
-                )}
-            </RowGridItem>
+        <GridWrapper>
             <IconWrapper>
-                <Icon name="caretRight" size={17} color={theme.legacy.TYPE_LIGHT_GREY} />
+                <Icon name="arrowRight" size="medium" variant="tertiary" />
             </IconWrapper>
-            <RowGridItem>
-                <IOAddress
-                    txAddress={to}
-                    explorerUrl={network?.explorer.address}
-                    explorerUrlQueryString={network?.explorer.queryString}
-                    shouldAllowCopy={!isPhishingTransaction}
-                />
-            </RowGridItem>
-        </RowGrid>
+            <Grid columns={2} gap={spacings.xxxxl}>
+                {hasInputs && (
+                    <Column alignItems="normal" gap={spacings.xs} margin={{ right: spacings.xl }}>
+                        <InfoPair
+                            leftContent={
+                                <Text typographyStyle="callout" variant="default">
+                                    <Translation id="TR_INPUTS" />
+                                </Text>
+                            }
+                            rightContent={inputs.length}
+                            typographyStyle="hint"
+                            variant="tertiary"
+                        />
+                        {inputs.map(input => (
+                            <IOItem
+                                key={`input-${input.n}`}
+                                anonymitySet={anonymitySet}
+                                symbol={tx.symbol}
+                                address={input.addresses?.[0]}
+                                amount={input.value}
+                                isPhishingTransaction={isPhishingTransaction}
+                            />
+                        ))}
+                    </Column>
+                )}
+                {hasOutputs && (
+                    <Column alignItems="normal" gap={spacings.xs} margin={{ left: spacings.xl }}>
+                        <InfoPair
+                            leftContent={
+                                <Text typographyStyle="callout" variant="default">
+                                    <Translation id="TR_OUTPUTS" />
+                                </Text>
+                            }
+                            rightContent={outputs.length}
+                            typographyStyle="hint"
+                            variant="tertiary"
+                        />
+                        {outputs.map(output => (
+                            <IOItem
+                                key={`output-${output.n}`}
+                                anonymitySet={anonymitySet}
+                                symbol={tx.symbol}
+                                address={output.addresses?.[0]}
+                                amount={output.value}
+                                isPhishingTransaction={isPhishingTransaction}
+                            />
+                        ))}
+                    </Column>
+                )}
+            </Grid>
+        </GridWrapper>
     );
 };
 
-interface TokensByStandard {
+type TokensByStandard = {
     [key: string]: TokenTransfer[];
-}
+};
 
-interface EthereumSpecificBalanceDetailsRowProps {
+type EthereumSpecificBalanceDetailsRowProps = {
     tx: WalletAccountTransaction;
     isPhishingTransaction?: boolean;
-}
+};
 
 const EthereumSpecificBalanceDetailsRow = ({
     tx,
@@ -255,50 +186,48 @@ const EthereumSpecificBalanceDetailsRow = ({
     return (
         <>
             {tx.internalTransfers?.length ? (
-                <GridGroup>
-                    <IOGridGroupWrapper heading={<Translation id="TR_INTERNAL_TRANSACTIONS" />}>
-                        {tx.internalTransfers.map((transfer, index) => (
-                            <GridRowGroupComponent
-                                key={index}
-                                from={transfer.from}
-                                to={transfer.to}
-                                amount={formatNetworkAmount(transfer.amount, tx.symbol)}
-                                symbol={tx.symbol}
-                                isPhishingTransaction={isPhishingTransaction}
-                            />
-                        ))}
-                    </IOGridGroupWrapper>
-                </GridGroup>
+                <Column alignItems="normal" gap={spacings.xs}>
+                    <H4>
+                        <Translation id="TR_INTERNAL_TRANSACTIONS" />
+                    </H4>
+                    {tx.internalTransfers.map(({ from, to, amount }, index) => (
+                        <IOGroup
+                            key={index}
+                            tx={tx}
+                            inputs={[{ addresses: [from], value: amount }] as IODetails[]}
+                            outputs={[{ addresses: [to], value: amount }] as IODetails[]}
+                            isPhishingTransaction={isPhishingTransaction}
+                        />
+                    ))}
+                </Column>
             ) : null}
 
             {Object.entries(tokensByStandard).map(([key, tokens]) => (
-                <GridGroup key={key}>
-                    <IOGridGroupWrapper
-                        heading={
-                            <Translation
-                                id="TR_TOKEN_TRANSFERS"
-                                values={{ standard: key.toUpperCase() }}
-                            />
-                        }
-                    >
-                        {tokens.map((transfer, index) => (
-                            <GridRowGroupComponent
+                <Column key={key} alignItems="normal" gap={spacings.xs}>
+                    <H4>
+                        <Translation
+                            id="TR_TOKEN_TRANSFERS"
+                            values={{ standard: key.toUpperCase() }}
+                        />
+                    </H4>
+                    {tokens.map((transfer, index) => {
+                        const value = isNftTokenTransfer(transfer) ? (
+                            <FormattedNftAmount transfer={transfer} isWithLink />
+                        ) : (
+                            formatAmount(transfer.amount, transfer.decimals)
+                        );
+
+                        return (
+                            <IOGroup
                                 key={index}
-                                from={transfer.from}
-                                to={transfer.to}
-                                amount={
-                                    isNftTokenTransfer(transfer) ? (
-                                        <StyledFormattedNftAmount transfer={transfer} isWithLink />
-                                    ) : (
-                                        formatAmount(transfer.amount, transfer.decimals)
-                                    )
-                                }
-                                symbol={transfer.symbol as NetworkSymbol}
+                                tx={{ ...tx, symbol: transfer.symbol as NetworkSymbol }}
+                                inputs={[{ addresses: [transfer.from], value }] as IODetails[]}
+                                outputs={[{ addresses: [transfer.to], value }] as IODetails[]}
                                 isPhishingTransaction={isPhishingTransaction}
                             />
-                        ))}
-                    </IOGridGroupWrapper>
-                </GridGroup>
+                        );
+                    })}
+                </Column>
             ))}
         </>
     );
@@ -315,105 +244,32 @@ const SolanaSpecificBalanceDetailsRow = ({
 }: SolanaSpecificBalanceDetailsRowProps) => {
     const { tokens } = tx;
 
-    return (
-        <>
-            {tokens.map((transfer, index) => (
-                <GridRowGroupComponent
-                    key={index}
-                    from={transfer.from}
-                    to={transfer.to}
-                    amount={formatAmount(transfer.amount, transfer.decimals)}
-                    symbol={transfer.symbol as NetworkSymbol}
-                    isPhishingTransaction={isPhishingTransaction}
-                />
-            ))}
-        </>
-    );
+    return tokens.map(({ from, to, amount, decimals }, index) => (
+        <IOGroup
+            key={index}
+            tx={tx}
+            inputs={
+                [
+                    {
+                        addresses: [from],
+                        value: formatAmount(amount, decimals),
+                    },
+                ] as IODetails[]
+            }
+            outputs={
+                [
+                    {
+                        addresses: [to],
+                        value: formatAmount(amount, decimals),
+                    },
+                ] as IODetails[]
+            }
+            isPhishingTransaction={isPhishingTransaction}
+        />
+    ));
 };
 
-interface BalanceDetailsRowProps {
-    tx: WalletAccountTransaction;
-    isPhishingTransaction?: boolean;
-}
-
-const BalanceDetailsRow = ({ tx, isPhishingTransaction }: BalanceDetailsRowProps) => {
-    const vout = tx?.details?.vout[0];
-    const vin = tx?.details?.vin[0];
-    const value = formatNetworkAmount(vin.value || vout.value || '', tx.symbol);
-
-    if (!(vout.addresses?.[0] && vin.addresses?.[0])) {
-        return null;
-    }
-
-    return (
-        <GridGroup>
-            <IOGridGroupWrapper inputsLength={-1} outputsLength={-1}>
-                <GridRowGroupComponent
-                    from={vin.addresses[0]}
-                    to={vout.addresses[0]}
-                    amount={value}
-                    symbol={tx.symbol}
-                    isPhishingTransaction={isPhishingTransaction}
-                />
-            </IOGridGroupWrapper>
-        </GridGroup>
-    );
-};
-
-type IOSectionColumnProps = {
-    tx: WalletAccountTransaction;
-    inputs: WalletAccountTransaction['details']['vin'][number][];
-    outputs: WalletAccountTransaction['details']['vin'][number][];
-    isPhishingTransaction?: boolean;
-};
-
-const IOSectionColumn = ({ tx, inputs, outputs, isPhishingTransaction }: IOSectionColumnProps) => {
-    const theme = useTheme();
-
-    const { selectedAccount } = useSelector(state => state.wallet);
-
-    const anonymitySet = selectedAccount?.account?.addresses?.anonymitySet;
-    const hasInputs = !!inputs?.length;
-    const hasOutputs = !!outputs?.length;
-
-    return (
-        <IOGridGroupWrapper inputsLength={inputs?.length} outputsLength={outputs?.length}>
-            <Grid>
-                {hasInputs && (
-                    <div>
-                        {inputs.map(input => (
-                            <IOGridRow
-                                key={`input-${input.n}`}
-                                anonymitySet={anonymitySet}
-                                tx={tx}
-                                vinvout={input}
-                                isPhishingTransaction={isPhishingTransaction}
-                            />
-                        ))}
-                    </div>
-                )}
-                <IconWrapper>
-                    <Icon name="caretRight" size={17} color={theme.legacy.TYPE_LIGHT_GREY} />
-                </IconWrapper>
-                {hasOutputs && (
-                    <div>
-                        {outputs.map(output => (
-                            <IOGridRow
-                                key={`output-${output.n}`}
-                                anonymitySet={anonymitySet}
-                                tx={tx}
-                                vinvout={output}
-                                isPhishingTransaction={isPhishingTransaction}
-                            />
-                        ))}
-                    </div>
-                )}
-            </Grid>
-        </IOGridGroupWrapper>
-    );
-};
-
-type CollapsibleIOSectionProps = IOSectionColumnProps & {
+type CollapsibleIOSectionProps = IOGroupProps & {
     heading?: ReactNode;
     opened?: boolean;
 };
@@ -434,7 +290,7 @@ const CollapsibleIOSection = ({
             fillType="none"
             hasDivider={false}
         >
-            <IOSectionColumn
+            <IOGroup
                 tx={tx}
                 inputs={inputs}
                 outputs={outputs}
@@ -444,73 +300,77 @@ const CollapsibleIOSection = ({
     ) : null;
 };
 
-interface IODetailsProps {
+type IODetailsProps = {
     tx: WalletAccountTransaction;
     isPhishingTransaction: boolean;
-}
+};
 
 // Not ready for Cardano tokens, they will not be visible, probably
 export const IODetails = ({ tx, isPhishingTransaction }: IODetailsProps) => {
     const { selectedAccount } = useSelector(state => state.wallet);
     const { network } = selectedAccount;
 
-    if (network?.networkType === 'ethereum') {
-        return (
-            <Wrapper>
-                <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
-                <BalanceDetailsRow tx={tx} isPhishingTransaction={isPhishingTransaction} />
-                <EthereumSpecificBalanceDetailsRow
-                    tx={tx}
-                    isPhishingTransaction={isPhishingTransaction}
-                />
-            </Wrapper>
-        );
-    }
-
-    if (network?.networkType === 'solana') {
-        return (
-            <Wrapper>
-                <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
-                <IOSectionColumn
-                    tx={tx}
-                    inputs={tx.details.vin}
-                    outputs={tx.details.vout}
-                    isPhishingTransaction={isPhishingTransaction}
-                />
-                <SolanaSpecificBalanceDetailsRow
-                    tx={tx}
-                    isPhishingTransaction={isPhishingTransaction}
-                />
-            </Wrapper>
-        );
-    }
-
-    if (tx.type === 'joint') {
-        return (
-            <Wrapper>
-                <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
-                <CollapsibleIOSection
-                    heading={<Translation id="TR_MY_INPUTS_AND_OUTPUTS" />}
-                    opened
-                    tx={tx}
-                    inputs={tx.details.vin?.filter(vin => vin.isAccountOwned)}
-                    outputs={tx.details.vout?.filter(vout => vout.isAccountOwned)}
-                />
-                <Divider margin={{ top: spacings.xs, bottom: spacings.xxs }} />
-                <CollapsibleIOSection
-                    heading={<Translation id="TR_OTHER_INPUTS_AND_OUTPUTS" />}
-                    tx={tx}
-                    inputs={tx.details.vin?.filter(vin => !vin.isAccountOwned)}
-                    outputs={tx.details.vout?.filter(vout => !vout.isAccountOwned)}
-                />
-            </Wrapper>
-        );
-    }
+    const getContent = () => {
+        if (network?.networkType === 'ethereum') {
+            return (
+                <>
+                    <IOGroup
+                        inputs={tx.details.vin}
+                        outputs={tx.details.vout}
+                        tx={tx}
+                        isPhishingTransaction={isPhishingTransaction}
+                    />
+                    <EthereumSpecificBalanceDetailsRow
+                        tx={tx}
+                        isPhishingTransaction={isPhishingTransaction}
+                    />
+                </>
+            );
+        } else if (network?.networkType === 'solana') {
+            return (
+                <>
+                    <IOGroup
+                        tx={tx}
+                        inputs={tx.details.vin}
+                        outputs={tx.details.vout}
+                        isPhishingTransaction={isPhishingTransaction}
+                    />
+                    <SolanaSpecificBalanceDetailsRow
+                        tx={tx}
+                        isPhishingTransaction={isPhishingTransaction}
+                    />
+                </>
+            );
+        } else if (tx.type === 'joint') {
+            return (
+                <>
+                    <CollapsibleIOSection
+                        heading={<Translation id="TR_MY_INPUTS_AND_OUTPUTS" />}
+                        opened
+                        tx={tx}
+                        inputs={tx.details.vin?.filter(vin => vin.isAccountOwned)}
+                        outputs={tx.details.vout?.filter(vout => vout.isAccountOwned)}
+                    />
+                    <Divider margin={{ top: spacings.xs, bottom: spacings.xxs }} />
+                    <CollapsibleIOSection
+                        heading={<Translation id="TR_OTHER_INPUTS_AND_OUTPUTS" />}
+                        tx={tx}
+                        inputs={tx.details.vin?.filter(vin => !vin.isAccountOwned)}
+                        outputs={tx.details.vout?.filter(vout => !vout.isAccountOwned)}
+                    />
+                </>
+            );
+        } else {
+            return <IOGroup tx={tx} inputs={tx.details.vin} outputs={tx.details.vout} />;
+        }
+    };
 
     return (
-        <Wrapper>
+        <Column alignItems="normal" gap={spacings.xxl}>
             <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
-            <IOSectionColumn tx={tx} inputs={tx.details.vin} outputs={tx.details.vout} />
-        </Wrapper>
+            <Column alignItems="normal" gap={spacings.lg}>
+                {getContent()}
+            </Column>
+        </Column>
     );
 };

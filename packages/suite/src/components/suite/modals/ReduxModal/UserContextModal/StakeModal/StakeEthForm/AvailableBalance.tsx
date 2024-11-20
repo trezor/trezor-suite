@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Row, Text, InfoRow } from '@trezor/components';
+import { Row, Text, InfoItem } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Translation, FormattedCryptoAmount, FiatValue } from 'src/components/suite';
@@ -11,7 +11,7 @@ interface AvailableBalanceProps {
 }
 
 export const AvailableBalance = ({ formattedBalance, symbol }: AvailableBalanceProps) => (
-    <InfoRow label={<Translation id="TR_STAKE_AVAILABLE" />}>
+    <InfoItem label={<Translation id="TR_STAKE_AVAILABLE" />}>
         <Row justifyContent="space-between">
             <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />{' '}
             <FiatValue amount={formattedBalance} symbol={symbol} showApproximationIndicator>
@@ -24,5 +24,5 @@ export const AvailableBalance = ({ formattedBalance, symbol }: AvailableBalanceP
                 }
             </FiatValue>
         </Row>
-    </InfoRow>
+    </InfoItem>
 );

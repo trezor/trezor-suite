@@ -1,8 +1,6 @@
 import { useState, useMemo } from 'react';
 
-import styled from 'styled-components';
-
-import { Button, NewModal } from '@trezor/components';
+import { NewModal, Column, Banner } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import { isPending, findChainedTransactions, getAccountKey } from '@suite-common/wallet-utils';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -12,7 +10,7 @@ import {
     selectAllPendingTransactions,
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
-import { borders, spacingsPx, typography } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { Translation, TrezorLink } from 'src/components/suite';
@@ -21,49 +19,7 @@ import { Account, WalletAccountTransaction } from 'src/types/wallet';
 import { BasicTxDetails } from './BasicTxDetails';
 import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
 import { ChangeFee } from './ChangeFee/ChangeFee';
-
-const PhishingBanner = styled.div`
-    margin-bottom: ${spacingsPx.xs};
-    padding: ${spacingsPx.xs} ${spacingsPx.sm};
-    border-radius: ${borders.radii.xs};
-    background: ${({ theme }) => theme.backgroundAlertRedBold};
-    color: ${({ theme }) => theme.textDefaultInverted};
-    ${typography.hint};
-`;
-
-const HelpLink = styled(TrezorLink)`
-    color: ${({ theme }) => theme.textDefaultInverted};
-    ${typography.hint}
-`;
-
-const SectionActions = styled.div`
-    position: relative;
-    padding: 15px 0 0;
-    display: flex;
-    justify-content: flex-end;
-`;
-
-const SectionTitle = styled.div`
-    color: ${({ theme }) => theme.textSubdued};
-    ${typography.highlight}
-`;
-
-const Col = styled.div`
-    display: flex;
-    flex: 1 1 33%;
-`;
-
-const Middle = styled(Col)`
-    justify-content: center;
-`;
-
-const Right = styled(Col)`
-    justify-content: flex-end;
-
-    > * + * {
-        margin-left: ${spacingsPx.sm};
-    }
-`;
+import { ReplaceTxButton } from './ChangeFee/ReplaceTxButton';
 
 type TxDetailModalProps = {
     tx: WalletAccountTransaction;
@@ -93,6 +49,7 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
         selectTransactionConfirmations(state, tx.txid, accountKey),
     );
     const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const network = getNetwork(account.symbol);
     const networkFeatures = network.accountTypes[account.accountType]?.features ?? network.features;
 
@@ -100,106 +57,101 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
         selectIsPhishingTransaction(state, tx.txid, accountKey),
     );
 
+    const onBackClick = () => {
+        setSection('DETAILS');
+        setTab(undefined);
+    };
+
+    const getBottomContent = () => {
+        if (
+            networkFeatures?.includes('rbf') &&
+            tx.rbfParams &&
+            !tx.deadline &&
+            selectedAccount.status === 'loaded'
+        ) {
+            if (section === 'CHANGE_FEE') {
+                return (
+                    <ReplaceTxButton rbfParams={tx.rbfParams} selectedAccount={selectedAccount} />
+                );
+            } else {
+                return (
+                    <NewModal.Button
+                        variant="tertiary"
+                        onClick={() => {
+                            setSection('CHANGE_FEE');
+                            setTab(undefined);
+                        }}
+                    >
+                        <Translation id="TR_BUMP_FEE" />
+                    </NewModal.Button>
+                );
+            }
+        }
+    };
+
     return (
         <NewModal
             onCancel={onCancel}
-            heading={<Translation id="TR_TRANSACTION_DETAILS" />}
+            heading={
+                section === 'CHANGE_FEE' ? (
+                    <Translation id="TR_BUMP_FEE" />
+                ) : (
+                    <Translation id="TR_TRANSACTION_DETAILS" />
+                )
+            }
             size="large"
+            bottomContent={getBottomContent()}
+            onBackClick={section === 'CHANGE_FEE' ? onBackClick : undefined}
         >
-            {isPhishingTransaction && (
-                <PhishingBanner>
-                    <Translation
-                        id="TR_ZERO_PHISHING_BANNER"
-                        values={{
-                            a: chunks => (
-                                <HelpLink
-                                    type="hint"
-                                    href={HELP_CENTER_ZERO_VALUE_ATTACKS}
-                                    variant="underline"
-                                >
-                                    {chunks}
-                                </HelpLink>
-                            ),
+            <Column alignItems="normal" gap={spacings.lg}>
+                <BasicTxDetails
+                    explorerUrl={blockchain.explorer.tx}
+                    explorerUrlQueryString={blockchain.explorer.queryString}
+                    tx={tx}
+                    network={network}
+                    confirmations={confirmations}
+                />
+
+                {isPhishingTransaction && (
+                    <Banner icon>
+                        <Translation
+                            id="TR_ZERO_PHISHING_BANNER"
+                            values={{
+                                a: chunks => (
+                                    <TrezorLink
+                                        type="hint"
+                                        href={HELP_CENTER_ZERO_VALUE_ATTACKS}
+                                        variant="underline"
+                                    >
+                                        {chunks}
+                                    </TrezorLink>
+                                ),
+                            }}
+                        />
+                    </Banner>
+                )}
+
+                {section === 'CHANGE_FEE' ? (
+                    <ChangeFee
+                        tx={tx}
+                        chainedTxs={chainedTxs}
+                        showChained={() => {
+                            setSection('DETAILS');
+                            setTab('chained');
                         }}
                     />
-                </PhishingBanner>
-            )}
-
-            <BasicTxDetails
-                explorerUrl={blockchain.explorer.tx}
-                explorerUrlQueryString={blockchain.explorer.queryString}
-                tx={tx}
-                network={network}
-                confirmations={confirmations}
-            />
-
-            {networkFeatures?.includes('rbf') && tx.rbfParams && !tx.deadline && (
-                <SectionActions>
-                    <>
-                        {section === 'CHANGE_FEE' && (
-                            // Show back button and section title when bumping fee/finalizing txs
-                            <>
-                                <Col>
-                                    <Button
-                                        variant="tertiary"
-                                        onClick={() => {
-                                            setSection('DETAILS');
-                                            setTab(undefined);
-                                        }}
-                                        icon="caretLeft"
-                                    >
-                                        <Translation id="TR_BACK" />
-                                    </Button>
-                                </Col>
-
-                                <Middle>
-                                    <SectionTitle>
-                                        <Translation id="TR_REPLACE_TX" />
-                                    </SectionTitle>
-                                </Middle>
-                            </>
-                        )}
-
-                        <Right>
-                            {section === 'DETAILS' && (
-                                // change fee tx buttons visible only in details
-                                <>
-                                    <Button
-                                        variant="tertiary"
-                                        onClick={() => {
-                                            setSection('CHANGE_FEE');
-                                            setTab(undefined);
-                                        }}
-                                    >
-                                        <Translation id="TR_BUMP_FEE" />
-                                    </Button>
-                                </>
-                            )}
-                        </Right>
-                    </>
-                </SectionActions>
-            )}
-
-            {section === 'CHANGE_FEE' ? (
-                <ChangeFee
-                    tx={tx}
-                    chainedTxs={chainedTxs}
-                    showChained={() => {
-                        setSection('DETAILS');
-                        setTab('chained');
-                    }}
-                />
-            ) : (
-                <AdvancedTxDetails
-                    explorerUrl={blockchain.explorer.tx}
-                    defaultTab={tab}
-                    network={network}
-                    accountType={account.accountType}
-                    tx={tx}
-                    chainedTxs={chainedTxs}
-                    isPhishingTransaction={isPhishingTransaction}
-                />
-            )}
+                ) : (
+                    <AdvancedTxDetails
+                        explorerUrl={blockchain.explorer.tx}
+                        defaultTab={tab}
+                        network={network}
+                        accountType={account.accountType}
+                        tx={tx}
+                        chainedTxs={chainedTxs}
+                        isPhishingTransaction={isPhishingTransaction}
+                    />
+                )}
+            </Column>
         </NewModal>
     );
 };

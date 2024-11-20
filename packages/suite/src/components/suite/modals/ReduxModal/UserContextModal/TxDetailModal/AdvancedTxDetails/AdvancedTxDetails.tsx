@@ -2,11 +2,11 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { useElevation, variables } from '@trezor/components';
+import { useElevation, Row, Divider, Card } from '@trezor/components';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction, ChainedTransactions } from '@suite-common/wallet-types';
 import { AccountType, Network } from '@suite-common/wallet-config';
-import { Elevation, mapElevationToBorder, spacingsPx } from '@trezor/theme';
+import { Elevation, mapElevationToBorder, spacingsPx, spacings, borders } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 
@@ -15,45 +15,25 @@ import { IODetails } from './IODetails/IODetails';
 import { ChainedTxs } from '../ChainedTxs';
 import { Data } from './Data';
 
-const Wrapper = styled.div`
-    padding: 0 ${spacingsPx.xl} ${spacingsPx.sm};
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        padding-left: ${spacingsPx.sm};
-        padding-right: ${spacingsPx.sm};
-    }
-`;
-
-const TabSelector = styled.div<{ $elevation: Elevation }>`
-    width: 100%;
-    text-align: left;
-    margin-bottom: ${spacingsPx.md};
-    border-bottom: 1px solid ${mapElevationToBorder};
-`;
-
-const TabButton = styled.button<{ $selected: boolean; $elevation: Elevation }>`
+const TabButton = styled.button<{ $isSelected: boolean; $elevation: Elevation }>`
     border: none;
     background-color: inherit;
-    padding-top: ${spacingsPx.sm};
     padding-bottom: ${spacingsPx.sm};
-    margin-right: ${spacingsPx.xxxl};
     cursor: pointer;
-
-    /* change styles if the button is selected */
-    color: ${({ $selected, theme }) =>
-        $selected ? `${theme.textPrimaryDefault}` : `${theme.textSubdued}`};
-    border-bottom: ${({ $selected, theme }) =>
-        $selected ? `2px solid ${theme.borderSecondary}` : 'none'};
+    border-bottom: ${borders.widths.large} solid
+        ${({ $isSelected, theme }) => ($isSelected ? theme.borderSecondary : 'transparent')};
+    color: ${({ $isSelected, theme }) =>
+        $isSelected ? theme.textPrimaryDefault : theme.textSubdued};
 
     &:hover {
-        border-bottom: 2px solid
-            ${({ $selected, ...props }) => !$selected && mapElevationToBorder(props)};
+        border-bottom-color: ${({ $isSelected, ...props }) =>
+            !$isSelected && mapElevationToBorder(props)};
     }
 `;
 
 export type TabID = 'amount' | 'io' | 'chained' | 'data';
 
-interface AdvancedTxDetailsProps {
+type AdvancedTxDetailsProps = {
     defaultTab?: TabID;
     network: Network;
     accountType: AccountType;
@@ -61,7 +41,7 @@ interface AdvancedTxDetailsProps {
     chainedTxs?: ChainedTransactions;
     explorerUrl: string;
     isPhishingTransaction: boolean;
-}
+};
 
 export const AdvancedTxDetails = ({
     defaultTab,
@@ -73,33 +53,38 @@ export const AdvancedTxDetails = ({
     isPhishingTransaction,
 }: AdvancedTxDetailsProps) => {
     const [selectedTab, setSelectedTab] = useState<TabID>(defaultTab ?? 'amount');
-
-    let content: JSX.Element | undefined;
-
-    if (selectedTab === 'amount') {
-        content = <AmountDetails tx={tx} isTestnet={isTestnet(network.symbol)} />;
-    } else if (selectedTab === 'io' && network.networkType !== 'ripple') {
-        content = <IODetails tx={tx} isPhishingTransaction={isPhishingTransaction} />;
-    } else if (selectedTab === 'chained' && chainedTxs) {
-        content = (
-            <ChainedTxs
-                txs={chainedTxs}
-                explorerUrl={explorerUrl}
-                accountType={accountType}
-                network={network}
-            />
-        );
-    } else if (selectedTab === 'data') {
-        content = <Data tx={tx} />;
-    }
     const { elevation } = useElevation();
 
+    const getContent = () => {
+        switch (selectedTab) {
+            case 'amount':
+                return <AmountDetails tx={tx} isTestnet={isTestnet(network.symbol)} />;
+            case 'io':
+                return <IODetails tx={tx} isPhishingTransaction={isPhishingTransaction} />;
+            case 'chained':
+                return (
+                    chainedTxs && (
+                        <ChainedTxs
+                            txs={chainedTxs}
+                            explorerUrl={explorerUrl}
+                            accountType={accountType}
+                            network={network}
+                        />
+                    )
+                );
+            case 'data':
+                return <Data tx={tx} />;
+            default:
+                return null;
+        }
+    };
+
     return (
-        <Wrapper>
-            <TabSelector $elevation={elevation}>
+        <Card fillType="none">
+            <Row gap={spacings.xl}>
                 <TabButton
                     $elevation={elevation}
-                    $selected={selectedTab === 'amount'}
+                    $isSelected={selectedTab === 'amount'}
                     onClick={() => setSelectedTab('amount')}
                 >
                     <Translation id="TR_TX_TAB_AMOUNT" />
@@ -108,7 +93,7 @@ export const AdvancedTxDetails = ({
                 {network.networkType !== 'ripple' && (
                     <TabButton
                         $elevation={elevation}
-                        $selected={selectedTab === 'io'}
+                        $isSelected={selectedTab === 'io'}
                         onClick={() => setSelectedTab('io')}
                     >
                         <Translation id="TR_INPUTS_OUTPUTS" />
@@ -118,7 +103,7 @@ export const AdvancedTxDetails = ({
                 {chainedTxs && (
                     <TabButton
                         $elevation={elevation}
-                        $selected={selectedTab === 'chained'}
+                        $isSelected={selectedTab === 'chained'}
                         onClick={() => setSelectedTab('chained')}
                     >
                         <Translation id="TR_CHAINED_TXS" />
@@ -128,15 +113,15 @@ export const AdvancedTxDetails = ({
                 {network.networkType === 'ethereum' && tx.ethereumSpecific && (
                     <TabButton
                         $elevation={elevation}
-                        $selected={selectedTab === 'data'}
+                        $isSelected={selectedTab === 'data'}
                         onClick={() => setSelectedTab('data')}
                     >
                         <Translation id="TR_DATA" />
                     </TabButton>
                 )}
-            </TabSelector>
-
-            {content}
-        </Wrapper>
+            </Row>
+            <Divider margin={{ top: 0, bottom: spacings.md }} />
+            {getContent()}
+        </Card>
     );
 };

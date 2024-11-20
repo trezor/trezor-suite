@@ -86,11 +86,11 @@ export const TableRow = ({
     onClick,
     onHover,
     isHighlightedOnHover,
-    hasBorderTop = true,
+    hasBorderTop,
 }: TableRowProps) => {
     const { elevation } = useElevation();
     const isHeader = useTableHeader();
-    const { isRowHighlightedOnHover } = useTable();
+    const { isRowHighlightedOnHover, hasBorders } = useTable();
 
     return (
         <Row
@@ -98,7 +98,7 @@ export const TableRow = ({
             $isCollapsed={isCollapsed}
             $isHighlighted={isHighlightedOnHover ?? isRowHighlightedOnHover}
             $isHeader={isHeader}
-            $hasBorderTop={hasBorderTop}
+            $hasBorderTop={hasBorderTop ?? hasBorders}
             onClick={onClick}
             onMouseEnter={() => onHover?.(true)}
             onMouseLeave={() => onHover?.(false)}

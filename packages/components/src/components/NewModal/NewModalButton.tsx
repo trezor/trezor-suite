@@ -7,7 +7,12 @@ export const NewModalButton = ({ children, ...rest }: ButtonProps) => {
 
     return (
         <NewModalContext.Provider value={value}>
-            <Button {...rest} variant={rest.variant ?? variant} size={rest.size ?? 'large'}>
+            <Button
+                {...rest}
+                variant={rest.variant ?? variant}
+                size={rest.size ?? 'large'}
+                minWidth={150}
+            >
                 {children}
             </Button>
         </NewModalContext.Provider>

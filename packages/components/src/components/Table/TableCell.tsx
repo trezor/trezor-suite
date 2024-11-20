@@ -11,6 +11,8 @@ import {
 } from '@trezor/theme';
 
 import { useTableHeader } from './TableHeader';
+import { useTable } from './Table';
+import { Text } from '../typography/Text/Text';
 import { UIHorizontalAlignment } from '../../config/types';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
@@ -19,6 +21,8 @@ type Padding = {
     bottom?: SpacingValues;
     left?: SpacingValues;
     right?: SpacingValues;
+    vertical?: SpacingValues;
+    horizontal?: SpacingValues;
 };
 
 export type TableCellProps = {
@@ -38,7 +42,12 @@ const mapAlignmentToJustifyContent = (align: UIHorizontalAlignment) => {
     return map[align];
 };
 
-const Cell = styled.td<{ $isHeader: boolean; $elevation: Elevation; $padding?: Padding }>`
+const Cell = styled.td<{
+    $isHeader: boolean;
+    $elevation: Elevation;
+    $padding?: Padding;
+    $hasBorder: boolean;
+}>`
     ${({ $isHeader }) => ($isHeader ? typography.hint : typography.body)}
     color: ${({ theme, $isHeader }) => ($isHeader ? theme.textSubdued : theme.textDefault)};
     text-align: left;
@@ -48,8 +57,10 @@ const Cell = styled.td<{ $isHeader: boolean; $elevation: Elevation; $padding?: P
     ${({ $padding }) =>
         $padding &&
         css`
-            padding: ${$padding.top ?? 0}px ${$padding.right ?? 0}px ${$padding.bottom ?? 0}px
-                ${$padding.left ?? 0}px;
+            padding: ${$padding.top ?? $padding.vertical ?? 0}px
+                ${$padding.right ?? $padding.horizontal ?? 0}px
+                ${$padding.bottom ?? $padding.vertical ?? 0}px
+                ${$padding.left ?? $padding.horizontal ?? 0}px;
         `}
 
     &:first-child {
@@ -57,6 +68,12 @@ const Cell = styled.td<{ $isHeader: boolean; $elevation: Elevation; $padding?: P
         left: 0;
         z-index: 2;
         background: linear-gradient(to right, ${mapElevationToBackground} 90%, rgba(0 0 0 / 0%));
+
+        ${({ $hasBorder }) => !$hasBorder && 'padding-left: 0;'}
+    }
+
+    &:last-child {
+        ${({ $hasBorder }) => !$hasBorder && 'padding-right: 0;'}
     }
 `;
 
@@ -65,14 +82,14 @@ const Content = styled.div<{ $align: UIHorizontalAlignment }>`
     justify-content: ${({ $align }) => mapAlignmentToJustifyContent($align)};
 `;
 
-export const TableCell = ({
-    children,
-    colSpan = 1,
-    align = 'left',
-    padding = { top: spacings.sm, right: spacings.lg, bottom: spacings.sm, left: spacings.lg },
-}: TableCellProps) => {
+export const TableCell = ({ children, colSpan = 1, align = 'left', padding }: TableCellProps) => {
     const isHeader = useTableHeader();
+    const { hasBorders, typographyStyle } = useTable();
     const { parentElevation } = useElevation();
+    const defaultPadding = {
+        vertical: hasBorders ? spacings.sm : spacings.xs,
+        horizontal: spacings.lg,
+    };
 
     return (
         <Cell
@@ -80,9 +97,12 @@ export const TableCell = ({
             colSpan={colSpan}
             $isHeader={isHeader}
             $elevation={parentElevation}
-            $padding={padding}
+            $padding={padding ?? defaultPadding}
+            $hasBorder={hasBorders}
         >
-            <Content $align={align}>{children}</Content>
+            <Text as="div" typographyStyle={typographyStyle}>
+                <Content $align={align}>{children}</Content>
+            </Text>
         </Cell>
     );
 };

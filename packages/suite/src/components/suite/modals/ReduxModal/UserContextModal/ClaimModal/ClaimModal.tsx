@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { Paragraph, Tooltip, Banner, Card, Column, InfoRow, NewModal } from '@trezor/components';
+import { Paragraph, Tooltip, Banner, Card, Column, InfoItem, NewModal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -87,7 +87,7 @@ export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
         >
             <form onSubmit={handleSubmit(signTx)}>
                 <Column alignItems="normal" gap={spacings.lg}>
-                    <InfoRow direction="column" label={<Translation id="AMOUNT" />}>
+                    <InfoItem direction="column" label={<Translation id="AMOUNT" />}>
                         <Paragraph typographyStyle="titleSmall">
                             <FormattedCryptoAmount
                                 value={claimableAmount}
@@ -101,14 +101,14 @@ export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
                                 symbol={account.symbol}
                             />
                         </Paragraph>
-                    </InfoRow>
+                    </InfoItem>
 
-                    <InfoRow
+                    <InfoItem
                         direction="column"
                         label={<Translation id="TR_STAKE_CLAIMING_PERIOD" />}
                     >
                         <Translation id="TR_STAKE_CLAIM_IN_NEXT_BLOCK" />
-                    </InfoRow>
+                    </InfoItem>
 
                     <Card paddingType="small" margin={{ vertical: spacings.xs }}>
                         <Fees

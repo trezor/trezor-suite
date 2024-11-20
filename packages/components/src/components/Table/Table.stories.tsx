@@ -47,6 +47,7 @@ export const Table: StoryObj = {
         ...getFramePropsStory(allowedTableFrameProps).args,
         colWidths: 'none',
         isRowHighlightedOnHover: true,
+        hasBorders: true,
     },
     argTypes: {
         ...getFramePropsStory(allowedTableFrameProps).argTypes,
@@ -65,6 +66,11 @@ export const Table: StoryObj = {
             },
         },
         isRowHighlightedOnHover: {
+            control: {
+                type: 'boolean',
+            },
+        },
+        hasBorders: {
             control: {
                 type: 'boolean',
             },

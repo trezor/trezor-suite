@@ -1,6 +1,4 @@
-import styled from 'styled-components';
-
-import { variables } from '@trezor/components';
+import { Table, Text } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     formatAmount,
@@ -27,37 +25,10 @@ import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { Translation, FormattedCryptoAmount, FiatValue, FormattedDate } from 'src/components/suite';
 
-import { AmountRow } from './AmountRow';
-
-const MainContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
-const AmountWrapper = styled.div`
-    display: grid;
-    grid-gap: 5px;
-
-    /* columns: 1. title, 2. crypto amount, 3. fiat amount old, 4. fiat amount now */
-    grid-template-columns: 140px minmax(110px, auto) minmax(100px, auto) minmax(100px, auto);
-
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    align-items: center;
-    overflow: visible;
-    word-break: break-all;
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        /* decrease the width of the first (title) column on small screen */
-        grid-template-columns: 90px minmax(110px, auto) minmax(100px, auto) minmax(100px, auto);
-        overflow-x: auto;
-    }
-`;
-
-interface AmountDetailsProps {
+type AmountDetailsProps = {
     tx: WalletAccountTransaction;
     isTestnet: boolean;
-}
+};
 
 // TODO: Do not show FEE for sent but not mine transactions
 export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
@@ -80,18 +51,16 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     const isStakeTypeTxNoAmount = isStakeTypeTx(txSignature) && amount.eq(0);
 
     return (
-        <MainContainer>
-            <AmountWrapper>
-                {/* ROW CONTAINING DATES FOR FIAT VALUES */}
-                {!isTestnet && (
-                    <AmountRow
-                        // keep the first two columns empty for the first row
-                        thirdColumn={
-                            tx.blockTime && (
+        <Table hasBorders={false} typographyStyle="hint">
+            {!isTestnet && (
+                <Table.Header>
+                    <Table.Row>
+                        <Table.Cell colSpan={3} align="right">
+                            {tx.blockTime && (
                                 <FormattedDate value={new Date(tx.blockTime * 1000)} date />
-                            )
-                        }
-                        fourthColumn={
+                            )}
+                        </Table.Cell>
+                        <Table.Cell align="right">
                             <Translation
                                 id="TR_TODAY_DATE"
                                 values={{
@@ -110,185 +79,206 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                     ),
                                 }}
                             />
-                        }
-                    />
-                )}
-                {/* AMOUNT */}
-                {!isStakeTypeTxNoAmount && (tx.targets.length || tx.type === 'joint') && (
-                    <AmountRow
-                        firstColumn={<Translation id="AMOUNT" />}
-                        secondColumn={
-                            <FormattedCryptoAmount
-                                value={amount.abs().toString()}
-                                symbol={tx.symbol}
-                                signValue={
-                                    getTxOperation(tx.type, true) ||
-                                    (amount.isLessThan(0) ? 'negative' : 'positive')
-                                }
-                            />
-                        }
-                        thirdColumn={
-                            <FiatValue
-                                amount={amount.abs().toString()}
-                                symbol={tx.symbol}
-                                historicRate={historicRate}
-                                useHistoricRate
-                            />
-                        }
-                        fourthColumn={
-                            <FiatValue amount={amount.abs().toString()} symbol={tx.symbol} />
-                        }
-                    />
-                )}
-                {cardanoWithdrawal && (
-                    <AmountRow
-                        firstColumn={<Translation id="TR_TX_WITHDRAWAL" />}
-                        secondColumn={
-                            <FormattedCryptoAmount
-                                value={cardanoWithdrawal}
-                                symbol={tx.symbol}
-                                signValue="negative"
-                            />
-                        }
-                        thirdColumn={
-                            <FiatValue
-                                amount={cardanoWithdrawal}
-                                symbol={tx.symbol}
-                                historicRate={historicRate}
-                                useHistoricRate
-                            />
-                        }
-                        fourthColumn={<FiatValue amount={cardanoWithdrawal} symbol={tx.symbol} />}
-                    />
-                )}
-                {cardanoDeposit && (
-                    <AmountRow
-                        firstColumn={<Translation id="TR_TX_DEPOSIT" />}
-                        secondColumn={
-                            <FormattedCryptoAmount
-                                value={cardanoDeposit}
-                                symbol={tx.symbol}
-                                signValue="positive"
-                            />
-                        }
-                        thirdColumn={
-                            <FiatValue
-                                amount={cardanoDeposit}
-                                symbol={tx.symbol}
-                                historicRate={historicRate}
-                                useHistoricRate
-                            />
-                        }
-                        fourthColumn={<FiatValue amount={cardanoDeposit} symbol={tx.symbol} />}
-                    />
-                )}
-                {tx.internalTransfers.map((transfer, i) => (
-                    <AmountRow
-                        key={i}
-                        firstColumn={
-                            i === 0 && (!tx.targets.length || isStakeTypeTxNoAmount) ? (
-                                <Translation id="AMOUNT" />
-                            ) : undefined
-                        }
-                        secondColumn={
-                            <FormattedCryptoAmount
-                                value={formatNetworkAmount(transfer.amount, tx.symbol)}
-                                symbol={tx.symbol}
-                                signValue={getTxOperation(transfer.type, true)}
-                            />
-                        }
-                        thirdColumn={
-                            <FiatValue
-                                amount={formatNetworkAmount(transfer.amount, tx.symbol)}
-                                symbol={tx.symbol}
-                                historicRate={historicRate}
-                                useHistoricRate
-                            />
-                        }
-                        fourthColumn={
-                            <FiatValue
-                                amount={formatNetworkAmount(transfer.amount, tx.symbol)}
-                                symbol={tx.symbol}
-                            />
-                        }
-                    />
-                ))}
-                {tx.tokens.map((transfer, i) => {
-                    const tokenFiatRateKey = getFiatRateKey(
-                        tx.symbol,
-                        fiatCurrencyCode,
-                        transfer.contract as TokenAddress,
-                    );
-                    const roundedTimestamp = roundTimestampToNearestPastHour(
-                        tx.blockTime as Timestamp,
-                    );
-                    const historicTokenRate =
-                        historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
-
-                    return (
-                        <AmountRow
-                            key={i}
-                            firstColumn={
-                                !tx.targets.length && !tx.internalTransfers.length && i === 0 ? (
-                                    <Translation id="AMOUNT" />
-                                ) : undefined
-                            }
-                            secondColumn={
-                                isNftTokenTransfer(transfer) ? (
-                                    <FormattedNftAmount
-                                        transfer={transfer}
-                                        isWithLink
-                                        signValue={getTxOperation(transfer.type, true)}
-                                    />
-                                ) : (
-                                    <FormattedCryptoAmount
-                                        value={formatAmount(transfer.amount, transfer.decimals)}
-                                        symbol={transfer.symbol as NetworkSymbol}
-                                        signValue={getTxOperation(transfer.type, true)}
-                                    />
-                                )
-                            }
-                            thirdColumn={
-                                <FiatValue
-                                    amount={formatAmount(transfer.amount, transfer.decimals)}
-                                    symbol={transfer.symbol}
-                                    historicRate={historicTokenRate}
-                                    useHistoricRate
-                                />
-                            }
-                            fourthColumn={
-                                <FiatValue
-                                    amount={formatAmount(transfer.amount, transfer.decimals)}
-                                    symbol={selectedAccount.account?.symbol as NetworkSymbol}
-                                    tokenAddress={transfer.contract as TokenAddress}
-                                />
+                        </Table.Cell>
+                    </Table.Row>
+                </Table.Header>
+            )}
+            {/* AMOUNT */}
+            {!isStakeTypeTxNoAmount && (tx.targets.length || tx.type === 'joint') && (
+                <Table.Row>
+                    <Table.Cell>
+                        <Text variant="tertiary">
+                            <Translation id="AMOUNT" />
+                        </Text>
+                    </Table.Cell>
+                    <Table.Cell>
+                        <FormattedCryptoAmount
+                            value={amount.abs().toString()}
+                            symbol={tx.symbol}
+                            signValue={
+                                getTxOperation(tx.type, true) ||
+                                (amount.isLessThan(0) ? 'negative' : 'positive')
                             }
                         />
-                    );
-                })}
-                {/* TX FEE */}
-                {isTxFeePaid(tx) && (
-                    <AmountRow
-                        firstColumn={<Translation id="TR_TX_FEE" />}
-                        secondColumn={
-                            <FormattedCryptoAmount
-                                value={fee}
-                                symbol={tx.symbol}
-                                signValue="negative"
-                            />
-                        }
-                        thirdColumn={
+                    </Table.Cell>
+                    <Table.Cell align="right">
+                        <FiatValue
+                            amount={amount.abs().toString()}
+                            symbol={tx.symbol}
+                            historicRate={historicRate}
+                            useHistoricRate
+                        />
+                    </Table.Cell>
+                    <Table.Cell align="right">
+                        <FiatValue amount={amount.abs().toString()} symbol={tx.symbol} />
+                    </Table.Cell>
+                </Table.Row>
+            )}
+            {tx.internalTransfers.map((transfer, i) => (
+                <Table.Row key={i}>
+                    <Table.Cell>
+                        {i === 0 && (!tx.targets.length || isStakeTypeTxNoAmount) ? (
+                            <Text variant="tertiary">
+                                <Translation id="AMOUNT" />
+                            </Text>
+                        ) : undefined}
+                    </Table.Cell>
+                    <Table.Cell>
+                        <FormattedCryptoAmount
+                            value={formatNetworkAmount(transfer.amount, tx.symbol)}
+                            symbol={tx.symbol}
+                            signValue={getTxOperation(transfer.type, true)}
+                        />
+                    </Table.Cell>
+                    <Table.Cell align="right">
+                        <FiatValue
+                            amount={formatNetworkAmount(transfer.amount, tx.symbol)}
+                            symbol={tx.symbol}
+                            historicRate={historicRate}
+                            useHistoricRate
+                        />
+                    </Table.Cell>
+                    <Table.Cell align="right">
+                        <FiatValue
+                            amount={formatNetworkAmount(transfer.amount, tx.symbol)}
+                            symbol={tx.symbol}
+                        />
+                    </Table.Cell>
+                </Table.Row>
+            ))}
+            {tx.tokens.map((transfer, i) => {
+                const tokenFiatRateKey = getFiatRateKey(
+                    tx.symbol,
+                    fiatCurrencyCode,
+                    transfer.contract as TokenAddress,
+                );
+                const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
+                const historicTokenRate = historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
+
+                return (
+                    <Table.Row key={i}>
+                        <Table.Cell>
+                            {i === 0 && !tx.targets.length && !tx.internalTransfers.length ? (
+                                <Text variant="tertiary">
+                                    <Translation id="AMOUNT" />
+                                </Text>
+                            ) : undefined}
+                        </Table.Cell>
+                        <Table.Cell>
+                            {isNftTokenTransfer(transfer) ? (
+                                <FormattedNftAmount
+                                    transfer={transfer}
+                                    isWithLink
+                                    signValue={getTxOperation(transfer.type, true)}
+                                />
+                            ) : (
+                                <FormattedCryptoAmount
+                                    value={formatAmount(transfer.amount, transfer.decimals)}
+                                    symbol={transfer.symbol as NetworkSymbol}
+                                    signValue={getTxOperation(transfer.type, true)}
+                                />
+                            )}
+                        </Table.Cell>
+                        <Table.Cell align="right">
                             <FiatValue
-                                amount={fee}
-                                symbol={tx.symbol}
-                                historicRate={historicRate}
+                                amount={formatAmount(transfer.amount, transfer.decimals)}
+                                symbol={transfer.symbol}
+                                historicRate={historicTokenRate}
                                 useHistoricRate
                             />
-                        }
-                        fourthColumn={<FiatValue amount={fee} symbol={tx.symbol} />}
-                    />
-                )}
-            </AmountWrapper>
-        </MainContainer>
+                        </Table.Cell>
+                        <Table.Cell align="right">
+                            <FiatValue
+                                amount={formatAmount(transfer.amount, transfer.decimals)}
+                                symbol={selectedAccount.account?.symbol as NetworkSymbol}
+                                tokenAddress={transfer.contract as TokenAddress}
+                            />
+                        </Table.Cell>
+                    </Table.Row>
+                );
+            })}
+            {cardanoWithdrawal && (
+                <Table.Row>
+                    <Table.Cell>
+                        <Text variant="tertiary">
+                            <Translation id="TR_TX_WITHDRAWAL" />
+                        </Text>
+                    </Table.Cell>
+                    <Table.Cell>
+                        <FormattedCryptoAmount
+                            value={cardanoWithdrawal}
+                            symbol={tx.symbol}
+                            signValue="negative"
+                        />
+                    </Table.Cell>
+                    <Table.Cell align="right">
+                        <FiatValue
+                            amount={cardanoWithdrawal}
+                            symbol={tx.symbol}
+                            historicRate={historicRate}
+                            useHistoricRate
+                        />
+                    </Table.Cell>
+                    <Table.Cell align="right">
+                        <FiatValue amount={cardanoWithdrawal} symbol={tx.symbol} />
+                    </Table.Cell>
+                </Table.Row>
+            )}
+            {cardanoDeposit && (
+                <Table.Row>
+                    <Table.Cell>
+                        <Text variant="tertiary">
+                            <Translation id="TR_TX_DEPOSIT" />
+                        </Text>
+                    </Table.Cell>
+                    <Table.Cell>
+                        <FormattedCryptoAmount
+                            value={cardanoDeposit}
+                            symbol={tx.symbol}
+                            signValue="positive"
+                        />
+                    </Table.Cell>
+                    <Table.Cell align="right">
+                        <FiatValue
+                            amount={cardanoDeposit}
+                            symbol={tx.symbol}
+                            historicRate={historicRate}
+                            useHistoricRate
+                        />
+                    </Table.Cell>
+                    <Table.Cell align="right">
+                        <FiatValue amount={cardanoDeposit} symbol={tx.symbol} />
+                    </Table.Cell>
+                </Table.Row>
+            )}
+            {/* TX FEE */}
+            {isTxFeePaid(tx) && (
+                <Table.Row>
+                    <Table.Cell>
+                        <Text variant="tertiary">
+                            <Translation id="TR_TX_FEE" />
+                        </Text>
+                    </Table.Cell>
+                    <Table.Cell>
+                        <FormattedCryptoAmount
+                            value={fee}
+                            symbol={tx.symbol}
+                            signValue="negative"
+                        />
+                    </Table.Cell>
+                    <Table.Cell align="right">
+                        <FiatValue
+                            amount={fee}
+                            symbol={tx.symbol}
+                            historicRate={historicRate}
+                            useHistoricRate
+                        />
+                    </Table.Cell>
+                    <Table.Cell align="right">
+                        <FiatValue amount={fee} symbol={tx.symbol} />
+                    </Table.Cell>
+                </Table.Row>
+            )}
+        </Table>
     );
 };

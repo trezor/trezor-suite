@@ -8,7 +8,7 @@ import {
     Grid,
     Column,
     Tooltip,
-    InfoRow,
+    InfoItem,
     Paragraph,
     IconName,
     useMediaQuery,
@@ -48,7 +48,7 @@ const Item = ({
     isReward = false,
     'data-testid': dataTestId,
 }: ItemProps) => (
-    <InfoRow label={label} iconName={iconName}>
+    <InfoItem label={label} iconName={iconName}>
         <Paragraph typographyStyle="titleSmall" variant={isReward ? 'primary' : 'default'}>
             <FormattedCryptoAmount data-testid={dataTestId} value={cryptoAmount} symbol={symbol} />
         </Paragraph>
@@ -57,7 +57,7 @@ const Item = ({
                 {({ value }) => (value ? <span>{value}</span> : null)}
             </FiatValue>
         </Paragraph>
-    </InfoRow>
+    </InfoItem>
 );
 
 type StakingCardProps = {

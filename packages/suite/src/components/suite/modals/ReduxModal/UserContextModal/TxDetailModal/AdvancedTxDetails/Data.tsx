@@ -1,54 +1,45 @@
 import styled from 'styled-components';
 
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { Paragraph, Row } from '@trezor/components';
-import { palette, spacingsPx } from '@trezor/theme';
+import { Paragraph, InfoItem, Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
 
 import { Translation } from 'src/components/suite';
-
-const Container = styled.div`
-    display: grid;
-    grid-template-columns: 130px 3fr;
-    gap: ${spacingsPx.md};
-    margin-top: ${spacingsPx.xxl};
-`;
 
 const ParagraphWrapper = styled.div`
     white-space: pre-wrap;
     overflow-wrap: anywhere;
 `;
 
-interface DataRowProps {
+type DataRowProps = {
     translationId: TranslationKey;
     content: string;
-}
+};
 
 const DataRow = ({ translationId, content }: DataRowProps) => (
-    <>
-        <Row alignItems="flex-start">
-            <Paragraph typographyStyle="callout" color={palette.lightGray700}>
-                <Translation id={translationId} />
-            </Paragraph>
-        </Row>
-        <Row>
-            <ParagraphWrapper>
-                <Paragraph typographyStyle="hint">{content}</Paragraph>
-            </ParagraphWrapper>
-        </Row>
-    </>
+    <InfoItem
+        label={<Translation id={translationId} />}
+        direction="row"
+        labelWidth={100}
+        verticalAlignment="top"
+    >
+        <ParagraphWrapper>
+            <Paragraph typographyStyle="label">{content}</Paragraph>
+        </ParagraphWrapper>
+    </InfoItem>
 );
 
-interface DataProps {
+type DataProps = {
     tx: WalletAccountTransaction;
-}
+};
 
 export const Data = ({ tx }: DataProps) => {
     const { data, parsedData } = tx.ethereumSpecific || {};
     const { function: fn, methodId, name, params } = parsedData || {};
 
     return (
-        <Container>
+        <Column alignItems="normal" gap={spacings.lg}>
             {methodId && name && (
                 <DataRow translationId="TR_TX_DATA_METHOD_NAME" content={`${name} (${methodId})`} />
             )}
@@ -61,6 +52,6 @@ export const Data = ({ tx }: DataProps) => {
                 />
             )}
             {data && <DataRow translationId="TR_TX_DATA_INPUT_DATA" content={data} />}
-        </Container>
+        </Column>
     );
 };

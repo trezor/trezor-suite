@@ -11,7 +11,7 @@ import {
     Paragraph,
     Column,
     Divider,
-    InfoRow,
+    InfoItem,
     Text,
     Card,
 } from '@trezor/components';
@@ -104,10 +104,10 @@ export const CoinmarketOfferExchangeSendApproval = () => {
 
     return (
         <Column gap={spacings.lg} alignItems="stretch" flex="1">
-            <InfoRow label={<Translation id="TR_EXCHANGE_SEND_FROM" />} typographyStyle="hint">
+            <InfoItem label={<Translation id="TR_EXCHANGE_SEND_FROM" />} typographyStyle="hint">
                 <AccountLabeling account={account} />
-            </InfoRow>
-            <InfoRow
+            </InfoItem>
+            <InfoItem
                 label={
                     <Translation
                         id={
@@ -121,14 +121,14 @@ export const CoinmarketOfferExchangeSendApproval = () => {
                 typographyStyle="hint"
             >
                 {dexTx.to}
-            </InfoRow>
+            </InfoItem>
             {selectedQuote.approvalSendTxHash && (
-                <InfoRow
+                <InfoItem
                     label={<Translation id="TR_EXCHANGE_APPROVAL_TXID" />}
                     typographyStyle="hint"
                 >
                     {selectedQuote.approvalSendTxHash}
-                </InfoRow>
+                </InfoItem>
             )}
             {selectedQuote.status === 'APPROVAL_PENDING' && (
                 <Column
@@ -255,12 +255,12 @@ export const CoinmarketOfferExchangeSendApproval = () => {
             )}
 
             {dexTx.data && (selectedQuote.status !== 'CONFIRM' || approvalType === 'ZERO') && (
-                <InfoRow
+                <InfoItem
                     label={<Translation id="TR_EXCHANGE_APPROVAL_DATA" />}
                     typographyStyle="hint"
                 >
                     <BreakableValue>{dexTx.data}</BreakableValue>
-                </InfoRow>
+                </InfoItem>
             )}
 
             <Column>

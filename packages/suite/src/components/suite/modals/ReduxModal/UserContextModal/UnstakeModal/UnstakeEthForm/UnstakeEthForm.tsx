@@ -1,4 +1,4 @@
-import { InfoRow, Tooltip, Banner, Column, Card } from '@trezor/components';
+import { InfoItem, Tooltip, Banner, Column, Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
@@ -84,7 +84,7 @@ export const UnstakeEthForm = () => {
                     />
                 </Card>
 
-                <InfoRow
+                <InfoItem
                     label={<Translation id="TR_STAKE_UNSTAKING_PERIOD" />}
                     labelTypographyStyle="body"
                     direction="row"
@@ -95,10 +95,10 @@ export const UnstakeEthForm = () => {
                             count: unstakingPeriod,
                         }}
                     />
-                </InfoRow>
+                </InfoItem>
 
                 {shouldShowInstantUnstakeEthAmount && (
-                    <InfoRow
+                    <InfoItem
                         label={
                             <Tooltip
                                 maxWidth={328}
@@ -122,7 +122,7 @@ export const UnstakeEthForm = () => {
                             value={approximatedInstantEthAmount}
                             symbol={symbol.toUpperCase()}
                         />
-                    </InfoRow>
+                    </InfoItem>
                 )}
             </Column>
         </form>

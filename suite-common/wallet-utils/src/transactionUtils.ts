@@ -487,17 +487,17 @@ export const getNftTokenId = (transfer: TokenTransfer) =>
 export const getTxIcon = (txType: WalletAccountTransaction['type']) => {
     switch (txType) {
         case 'recv':
-            return 'receive';
+            return 'arrowDown';
         case 'sent':
         case 'contract':
         case 'self':
-            return 'send';
+            return 'arrowUp';
         case 'failed':
-            return 'close';
+            return 'x';
         case 'joint':
             return 'shuffle';
         default:
-            return 'question';
+            return 'questionSimple';
     }
 };
 

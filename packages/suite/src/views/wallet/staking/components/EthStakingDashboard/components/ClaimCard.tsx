@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 
-import { Button, Paragraph, Tooltip, Card, Column, InfoRow } from '@trezor/components';
+import { Button, Paragraph, Tooltip, Card, Column, InfoItem } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
 import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
@@ -72,24 +72,24 @@ export const ClaimCard = () => {
 
     return isClaimPending ? (
         <Card>
-            <InfoRow label={<Translation id="TR_STAKE_CLAIM_PENDING" />} iconName="spinnerGap">
+            <InfoItem label={<Translation id="TR_STAKE_CLAIM_PENDING" />} iconName="spinnerGap">
                 {content}
-            </InfoRow>
+            </InfoItem>
         </Card>
     ) : (
         <Card isHiglighted>
             <Column flex="1" alignItems="normal" gap={spacings.xl}>
-                <InfoRow
+                <InfoItem
                     label={<Translation id="TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM" />}
                     iconName="confirmation"
                 >
                     {content}
-                </InfoRow>
-                <InfoRow label={<Translation id="TR_STAKE_TIME_TO_CLAIM" />} iconName="lightning">
+                </InfoItem>
+                <InfoItem label={<Translation id="TR_STAKE_TIME_TO_CLAIM" />} iconName="lightning">
                     <Paragraph typographyStyle="titleSmall">
                         <Translation id="TR_STAKE_INSTANT" />
                     </Paragraph>
-                </InfoRow>
+                </InfoItem>
 
                 <Tooltip content={claimingMessageContent}>
                     <Button

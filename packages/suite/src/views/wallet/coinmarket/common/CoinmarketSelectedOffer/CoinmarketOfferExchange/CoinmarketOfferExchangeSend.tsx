@@ -1,4 +1,4 @@
-import { Button, Column, Divider, InfoRow } from '@trezor/components';
+import { Button, Column, Divider, InfoItem } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
@@ -16,15 +16,15 @@ export const CoinmarketOfferExchangeSend = () => {
 
     return (
         <Column gap={spacings.lg} alignItems="stretch" flex="1">
-            <InfoRow label={<Translation id="TR_EXCHANGE_SEND_FROM" />} typographyStyle="hint">
+            <InfoItem label={<Translation id="TR_EXCHANGE_SEND_FROM" />} typographyStyle="hint">
                 <AccountLabeling account={account} />
-            </InfoRow>
-            <InfoRow
+            </InfoItem>
+            <InfoItem
                 label={<Translation id="TR_EXCHANGE_SEND_TO" values={{ providerName }} />}
                 typographyStyle="hint"
             >
                 {sendAddress}
-            </InfoRow>
+            </InfoItem>
             <Column margin={{ top: 'auto' }}>
                 <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
                 <Button

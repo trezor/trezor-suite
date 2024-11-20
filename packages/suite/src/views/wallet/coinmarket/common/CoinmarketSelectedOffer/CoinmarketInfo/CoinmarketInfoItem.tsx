@@ -1,7 +1,7 @@
 import { CryptoId } from 'invity-api';
 
 import { Account } from '@suite-common/wallet-types';
-import { Column, Row, InfoRow, Text } from '@trezor/components';
+import { Column, Row, InfoItem, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { AccountLabeling, Translation } from 'src/components/suite';
@@ -27,7 +27,7 @@ export const CoinmarketInfoItem = ({
     currency,
     amount,
 }: CoinmarketInfoItemProps) => (
-    <InfoRow label={<Translation id={label} />} direction="row">
+    <InfoItem label={<Translation id={label} />} direction="row">
         {type === 'exchange' || isReceive ? (
             <Column alignItems="flex-end" gap={spacings.xxxs}>
                 <Row gap={spacings.xs}>
@@ -52,5 +52,5 @@ export const CoinmarketInfoItem = ({
                 <CoinmarketFiatAmount amount={amount} currency={currency} />
             </Row>
         )}
-    </InfoRow>
+    </InfoItem>
 );

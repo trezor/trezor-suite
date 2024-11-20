@@ -1,4 +1,4 @@
-import { InfoRow } from '@trezor/components';
+import { InfoItem } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { CoinmarketGetProvidersInfoProps } from 'src/types/coinmarket/coinmarket';
@@ -10,7 +10,7 @@ interface CoinmarketInfoProviderProps {
 }
 
 export const CoinmarketInfoProvider = ({ exchange, providers }: CoinmarketInfoProviderProps) => (
-    <InfoRow label={<Translation id="TR_BUY_PROVIDER" />} direction="row">
+    <InfoItem label={<Translation id="TR_BUY_PROVIDER" />} direction="row">
         <CoinmarketProviderInfo exchange={exchange} providers={providers} />
-    </InfoRow>
+    </InfoItem>
 );

@@ -1,25 +1,21 @@
-import styled from 'styled-components';
-
-import { Button } from '@trezor/components';
+import { NewModal } from '@trezor/components';
+import { SelectedAccountLoaded, RbfTransactionParams } from '@suite-common/wallet-types';
 
 import { Translation } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite';
-import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
+import { useRbf } from 'src/hooks/wallet/useRbfForm';
 
-const Wrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    margin-top: 22px;
-`;
+type ReplaceTxButtonProps = {
+    rbfParams: RbfTransactionParams;
+    selectedAccount: SelectedAccountLoaded;
+};
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    min-width: 30%;
-`;
-
-export const ReplaceTxButton = () => {
+export const ReplaceTxButton = ({ rbfParams, selectedAccount }: ReplaceTxButtonProps) => {
     const { device, isLocked } = useDevice();
-    const { isLoading, signTransaction, getValues, composedLevels } = useRbfContext();
+    const { isLoading, signTransaction, getValues, composedLevels } = useRbf({
+        selectedAccount,
+        rbfParams,
+    });
 
     const values = getValues();
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;
@@ -27,14 +23,12 @@ export const ReplaceTxButton = () => {
         !composedTx || composedTx.type !== 'final' || isLocked() || (device && !device.available);
 
     return (
-        <Wrapper>
-            <StyledButton
-                data-testid="@send/replace-tx-button"
-                isDisabled={isDisabled || isLoading}
-                onClick={signTransaction}
-            >
-                <Translation id="TR_REPLACE_TX" />
-            </StyledButton>
-        </Wrapper>
+        <NewModal.Button
+            data-testid="@send/replace-tx-button"
+            isDisabled={isDisabled || isLoading}
+            onClick={signTransaction}
+        >
+            <Translation id="TR_REPLACE_TX" />
+        </NewModal.Button>
     );
 };

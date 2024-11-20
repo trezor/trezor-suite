@@ -1,19 +1,21 @@
 import { getTxHeaderSymbol, isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { AccountTransaction } from '@trezor/connect';
+import { Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
 
-interface TransactionHeaderProps {
+type TransactionHeaderProps = {
     transaction: WalletAccountTransaction;
     isPending: boolean;
-}
+};
 
-interface GetSelfTransactionMessageByTypeProps {
+type GetSelfTransactionMessageByTypeProps = {
     type?: Required<AccountTransaction>['cardanoSpecific']['subtype'];
     isPending: TransactionHeaderProps['isPending'];
-}
+};
 
 const getSelfTransactionMessageByType = ({
     type,
@@ -64,12 +66,12 @@ const getTransactionMessageId = ({ transaction, isPending }: GetTransactionMessa
 export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderProps) => {
     if (transaction?.ethereumSpecific?.parsedData?.name) {
         return (
-            <>
+            <Row gap={spacings.xxs} overflow="hidden">
                 <span>{transaction.ethereumSpecific.parsedData.name}</span>
                 {isSupportedEthStakingNetworkSymbol(transaction.symbol) && (
                     <UnstakingTxAmount transaction={transaction} />
                 )}
-            </>
+            </Row>
         );
     }
 

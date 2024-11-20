@@ -2,7 +2,7 @@ import { createContext, ReactNode, useContext } from 'react';
 
 import styled from 'styled-components';
 
-import { mapElevationToBackgroundToken } from '@trezor/theme';
+import { mapElevationToBackgroundToken, TypographyStyle } from '@trezor/theme';
 
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
@@ -12,15 +12,25 @@ import { TableRow } from './TableRow';
 import { TableBody } from './TableBody';
 import { useScrollShadow } from '../../utils/useScrollShadow';
 import { useElevation } from '../ElevationContext/ElevationContext';
+import { TextPropsKeys, TextProps } from '../typography/utils';
 
 export const allowedTableFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTableFrameProps)[number]>;
 
+export const allowedTableTextProps = ['typographyStyle'] as const satisfies TextPropsKeys[];
+type AllowedTextProps = Pick<TextProps, (typeof allowedTableTextProps)[number]>;
+
 interface TableContextProps {
     isRowHighlightedOnHover: boolean;
+    hasBorders: boolean;
+    typographyStyle: TypographyStyle;
 }
 
-const TableContext = createContext<TableContextProps>({ isRowHighlightedOnHover: false });
+const TableContext = createContext<TableContextProps>({
+    isRowHighlightedOnHover: false,
+    hasBorders: true,
+    typographyStyle: 'body',
+});
 
 export const useTable = () => useContext(TableContext);
 
@@ -37,27 +47,31 @@ const ScrollContainer = styled.div`
     -webkit-overflow-scrolling: touch;
 `;
 
-export type TableProps = AllowedFrameProps & {
-    children: ReactNode;
-    colWidths?: {
-        minWidth?: string;
-        maxWidth?: string;
-        width?: string;
-    }[];
-    isRowHighlightedOnHover?: boolean;
-};
+export type TableProps = AllowedFrameProps &
+    AllowedTextProps & {
+        children: ReactNode;
+        colWidths?: {
+            minWidth?: string;
+            maxWidth?: string;
+            width?: string;
+        }[];
+        hasBorders?: boolean;
+        isRowHighlightedOnHover?: boolean;
+    };
 
 export const Table = ({
     children,
     margin,
     colWidths,
     isRowHighlightedOnHover = false,
+    hasBorders = true,
+    typographyStyle = 'body',
 }: TableProps) => {
     const { scrollElementRef, onScroll, ShadowContainer, ShadowRight } = useScrollShadow();
     const { parentElevation } = useElevation();
 
     return (
-        <TableContext.Provider value={{ isRowHighlightedOnHover }}>
+        <TableContext.Provider value={{ isRowHighlightedOnHover, hasBorders, typographyStyle }}>
             <ShadowContainer>
                 <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
                     <Container {...makePropsTransient({ margin })}>
