@@ -173,9 +173,9 @@ export const networks = {
         testnet: false,
         features: ['tokens', 'coin-definitions' /*, 'staking' */],
         explorer: {
-            tx: 'https://explorer.solana.com/tx/',
-            account: 'https://explorer.solana.com/address/',
-            address: 'https://explorer.solana.com/address/',
+            tx: 'https://solscan.io/tx/',
+            account: 'https://solscan.io/account/',
+            address: 'https://solscan.io/account/',
         },
         support: {
             [DeviceModelInternal.T2T1]: '2.6.4',
@@ -591,9 +591,9 @@ export const networks = {
         testnet: true,
         features: ['tokens' /* , 'staking' */],
         explorer: {
-            tx: 'https://explorer.solana.com/tx/',
-            account: 'https://explorer.solana.com/address/',
-            address: 'https://explorer.solana.com/address/',
+            tx: 'https://solscan.io/tx/',
+            account: 'https://solscan.io/account/',
+            address: 'https://solscan.io/account/',
             queryString: '?cluster=devnet',
         },
         support: {
