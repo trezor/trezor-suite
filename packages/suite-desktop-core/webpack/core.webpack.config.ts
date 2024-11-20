@@ -74,9 +74,10 @@ const config: webpack.Configuration = {
 
             return '[name].js';
         },
+        module: true,
         path: dist,
         publicPath: './',
-        library: { type: 'umd' },
+        library: { type: 'module' },
     },
     externals: [
         ...dependencies,
@@ -171,7 +172,10 @@ const config: webpack.Configuration = {
     // Unfortunately Cardano Serialization Lib triggers webpack warning:
     // "Critical dependency: the request of a dependency is an expression" due to require in generated wasm module
     // https://github.com/Emurgo/cardano-serialization-lib/issues/119
-    experiments: { asyncWebAssembly: true },
+    experiments: {
+        asyncWebAssembly: true,
+        outputModule: true,
+    },
     ignoreWarnings: [{ module: /cardano-serialization-lib-browser/ }],
 };
 
