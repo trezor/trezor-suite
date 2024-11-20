@@ -53,20 +53,6 @@ jobs:
 
       - run: ./scripts/ci/find_duplicates.sh ./packages/suite-data/files ${{ matrix.extension }}
 
-  install-connect:
-    runs-on: ubuntu-latest
-    if: github.repository == 'trezor/trezor-suite'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-
-      - run: ./packages/connect/e2e/test-npm-install.sh beta
-      - run: ./packages/connect/e2e/test-npm-install.sh latest
-      - run: ./packages/connect/e2e/test-yarn-install.sh beta
-      - run: ./packages/connect/e2e/test-yarn-install.sh latest
-
   test-unit:
     runs-on: ubuntu-latest
     if: github.repository == 'trezor/trezor-suite'
@@ -82,19 +68,3 @@ jobs:
       - run: yarn install --immutable
       - run: yarn message-system-sign-config
       - run: yarn test:unit
-
-  test-protobuf:
-    runs-on: ubuntu-latest
-    if: github.repository == 'trezor/trezor-suite'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-
-      - run: yarn install --immutable
-      - run: yarn workspace @trezor/protobuf update:protobuf
-      - run: yarn workspace @trezor/protobuf update:schema

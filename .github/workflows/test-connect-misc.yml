@@ -1,0 +1,41 @@
+name: "[Test] connect misc"
+
+on:
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET
+    - cron: "0 0 * * *"
+  pull_request:
+    paths:
+      - ".github/workflows/test-connect-misc.yml"
+  workflow_dispatch:
+
+jobs:
+  install-connect:
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - run: ./packages/connect/e2e/test-npm-install.sh beta
+      - run: ./packages/connect/e2e/test-npm-install.sh latest
+      - run: ./packages/connect/e2e/test-yarn-install.sh beta
+      - run: ./packages/connect/e2e/test-yarn-install.sh latest
+
+  test-protobuf:
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - run: yarn install --immutable
+      - run: yarn workspace @trezor/protobuf update:protobuf
+      - run: yarn workspace @trezor/protobuf update:schema
