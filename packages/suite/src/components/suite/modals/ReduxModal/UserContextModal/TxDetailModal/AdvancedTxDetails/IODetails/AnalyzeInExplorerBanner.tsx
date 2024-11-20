@@ -39,8 +39,8 @@ export const AnalyzeInExplorerBanner = ({ txid, symbol }: AnalyzeInExplorerBanne
             variant="info"
             icon="cube"
             button={{
-                href: `${explorer?.tx}${txid}`,
-                children: <Translation id="TR_ANALYZE_IN_BLOCKBOOK_OPEN" />,
+                href: `${explorer?.tx}${txid}${explorer.queryString ?? ''}`,
+                children: <Translation id="TR_ANALYZE_IN_EXPLORER_OPEN" />,
                 icon: 'arrowUpRight',
                 iconAlignment: 'right',
                 size: 'small',
@@ -48,10 +48,10 @@ export const AnalyzeInExplorerBanner = ({ txid, symbol }: AnalyzeInExplorerBanne
         >
             <TextWrapper>
                 <Heading>
-                    <Translation id="TR_ANALYZE_IN_BLOCKBOOK" />
+                    <Translation id="TR_ANALYZE_IN_EXPLORER" />
                 </Heading>
                 <Description>
-                    <Translation id="TR_ANALYZE_IN_BLOCKBOOK_DESC" />
+                    <Translation id="TR_ANALYZE_IN_EXPLORER_DESC" />
                 </Description>
             </TextWrapper>
         </NotificationCard>

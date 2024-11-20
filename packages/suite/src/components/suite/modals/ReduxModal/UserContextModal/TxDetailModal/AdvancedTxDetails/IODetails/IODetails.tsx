@@ -201,7 +201,6 @@ const GridRowGroupComponent = ({
                     explorerUrlQueryString={network?.explorer.queryString}
                     shouldAllowCopy={!isPhishingTransaction}
                 />
-                <br />
                 {typeof amount === 'string' ? (
                     <StyledFormattedCryptoAmount value={amount} symbol={symbol} />
                 ) : (

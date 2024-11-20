@@ -3161,7 +3161,7 @@ const messages = defineMessagesWithTypeCheck({
         id: 'TR_SHOW_DETAILS',
     },
     TR_SHOW_DETAILS_IN_BLOCK_EXPLORER: {
-        defaultMessage: 'Show details in Block Explorer',
+        defaultMessage: 'Show details in blockchain explorer',
         id: 'TR_SHOW_DETAILS_IN_BLOCK_EXPLORER',
     },
     TR_SHOW_UNVERIFIED_ADDRESS: {
@@ -6518,17 +6518,17 @@ const messages = defineMessagesWithTypeCheck({
         id: 'TR_FINGERPRINT_ADDRESS',
         defaultMessage: 'Fingerprint:',
     },
-    TR_ANALYZE_IN_BLOCKBOOK: {
-        id: 'TR_ANALYZE_IN_BLOCKBOOK',
-        defaultMessage: 'Analyze in Trezor Blockbook',
+    TR_ANALYZE_IN_EXPLORER: {
+        id: 'TR_ANALYZE_IN_EXPLORER',
+        defaultMessage: 'Analyze in blockchain explorer',
     },
-    TR_ANALYZE_IN_BLOCKBOOK_DESC: {
-        id: 'TR_ANALYZE_IN_BLOCKBOOK_DESC',
+    TR_ANALYZE_IN_EXPLORER_DESC: {
+        id: 'TR_ANALYZE_IN_EXPLORER_DESC',
         defaultMessage:
-            'See inputs and outputs in Trezor Blockbook as it might be easier to analyze there.',
+            'See inputs and outputs in blockchain explorer as it might be easier to analyze there.',
     },
-    TR_ANALYZE_IN_BLOCKBOOK_OPEN: {
-        id: 'TR_ANALYZE_IN_BLOCKBOOK_OPEN',
+    TR_ANALYZE_IN_EXPLORER_OPEN: {
+        id: 'TR_ANALYZE_IN_EXPLORER_OPEN',
         defaultMessage: 'Open',
     },
     TR_PAGINATION_NEWER: {
