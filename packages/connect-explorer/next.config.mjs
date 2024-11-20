@@ -43,7 +43,10 @@ export default withNextra({
                 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
                 'process.env.BUILD_TARGET': JSON.stringify(process.env.BUILD_TARGET),
                 'process.env.CONNECT_EXPLORER_FULL_URL': JSON.stringify(
-                    process.env.CONNECT_EXPLORER_FULL_URL,
+                    process.env.CONNECT_EXPLORER_FULL_URL?.replace(
+                        'staging-connect.trezor.io',
+                        'connect.trezor.io',
+                    ),
                 ),
             }),
         );
