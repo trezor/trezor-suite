@@ -127,6 +127,7 @@ export default class RippleGetAddress extends AbstractMethod<'rippleGetAddress',
                 // send progress
                 this.postMessage(
                     createUiMessage(UI.BUNDLE_PROGRESS, {
+                        total: this.params.length,
                         progress: i,
                         response,
                     }),

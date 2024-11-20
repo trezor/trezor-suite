@@ -164,6 +164,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
                 // send progress
                 this.postMessage(
                     createUiMessage(UI.BUNDLE_PROGRESS, {
+                        total: this.params.length,
                         progress: i,
                         response,
                     }),

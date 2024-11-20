@@ -144,6 +144,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
             // send progress to UI
             this.postMessage(
                 createUiMessage(UI.BUNDLE_PROGRESS, {
+                    total: this.params.length,
                     progress,
                     response,
                     error,

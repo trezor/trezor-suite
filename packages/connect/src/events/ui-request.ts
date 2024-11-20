@@ -246,6 +246,7 @@ export interface UpdateCustomFee {
 export interface BundleProgress<R> {
     type: typeof UI_REQUEST.BUNDLE_PROGRESS;
     payload: {
+        total: number;
         progress: number;
         response: R;
         error?: string;

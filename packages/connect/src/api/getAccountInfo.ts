@@ -198,6 +198,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             // send progress to UI
             this.postMessage(
                 createUiMessage(UI.BUNDLE_PROGRESS, {
+                    total: this.params.length,
                     progress,
                     response,
                     error,

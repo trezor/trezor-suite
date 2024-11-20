@@ -125,6 +125,7 @@ export default class BinanceGetAddress extends AbstractMethod<'binanceGetAddress
                 // send progress
                 this.postMessage(
                     createUiMessage(UI.BUNDLE_PROGRESS, {
+                        total: this.params.length,
                         progress: i,
                         response,
                     }),

@@ -172,6 +172,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
                 // send progress
                 this.postMessage(
                     createUiMessage(UI.BUNDLE_PROGRESS, {
+                        total: this.params.length,
                         progress: i,
                         response,
                     }),

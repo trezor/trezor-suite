@@ -162,6 +162,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
                 // send progress
                 this.postMessage(
                     createUiMessage(UI.BUNDLE_PROGRESS, {
+                        total: this.params.length,
                         progress: i,
                         response,
                     }),

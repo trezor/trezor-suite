@@ -82,6 +82,13 @@ export const handleUIAffectingMessage = (message: CoreEventMessage) => {
 
             // already implemented in react. return here
             return;
+        case UI_REQUEST.BUNDLE_PROGRESS:
+            reactEventBus.dispatch({
+                type: 'loading',
+                message: 'Loading...\n' + message.payload.progress + '/' + message.payload.total,
+            });
+
+            return;
         default:
         // no default
     }

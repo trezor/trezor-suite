@@ -144,6 +144,7 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
                 // send progress
                 this.postMessage(
                     createUiMessage(UI.BUNDLE_PROGRESS, {
+                        total: this.params.length,
                         progress: i,
                         response,
                     }),

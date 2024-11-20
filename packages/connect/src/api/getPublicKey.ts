@@ -102,6 +102,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
                 // send progress
                 this.postMessage(
                     createUiMessage(UI.BUNDLE_PROGRESS, {
+                        total: this.params.length,
                         progress: i,
                         response,
                     }),

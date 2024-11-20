@@ -74,6 +74,7 @@ export default class EosGetPublicKey extends AbstractMethod<
                 // send progress
                 this.postMessage(
                     createUiMessage(UI.BUNDLE_PROGRESS, {
+                        total: this.params.length,
                         progress: i,
                         response: message,
                     }),

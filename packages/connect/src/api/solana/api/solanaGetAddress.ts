@@ -129,6 +129,7 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
                 // send progress
                 this.postMessage(
                     createUiMessage(UI.BUNDLE_PROGRESS, {
+                        total: this.params.length,
                         progress: i,
                         response: message,
                     }),

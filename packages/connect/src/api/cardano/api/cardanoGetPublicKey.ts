@@ -94,6 +94,7 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
                 // send progress
                 this.postMessage(
                     createUiMessage(UI.BUNDLE_PROGRESS, {
+                        total: this.params.length,
                         progress: i,
                         response: message,
                     }),

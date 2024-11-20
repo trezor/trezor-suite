@@ -81,6 +81,7 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
                 // send progress
                 this.postMessage(
                     createUiMessage(UI.BUNDLE_PROGRESS, {
+                        total: this.params.length,
                         progress: i,
                         response,
                     }),
