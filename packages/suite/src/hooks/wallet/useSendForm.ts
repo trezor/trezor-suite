@@ -37,6 +37,7 @@ import { useFees } from './form/useFees';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { useUtxoSelection } from './form/useUtxoSelection';
 import { useExcludedUtxos } from './form/useExcludedUtxos';
+import { useSendFormChangeHandlers } from './useSendFormChangeHandlers';
 
 export const SendContext = createContext<SendContextValues | null>(null);
 SendContext.displayName = 'SendContext';
@@ -179,6 +180,13 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         updateContext,
         setLoading,
         setAmount: sendFormUtils.setAmount,
+    });
+
+    const changeHandlers = useSendFormChangeHandlers({
+        calculateAmountFromFiat: sendFormUtils.calculateAmountFromFiat,
+        calculateFiatFromAmount: sendFormUtils.calculateFiatFromAmount,
+        composeRequest,
+        setValue,
     });
 
     // declare useSendFormOutputs, sub-hook of useSendForm
@@ -388,6 +396,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         utxoSelection,
         ...sendFormUtils,
         ...sendFormOutputs,
+        ...changeHandlers,
     };
 };
 

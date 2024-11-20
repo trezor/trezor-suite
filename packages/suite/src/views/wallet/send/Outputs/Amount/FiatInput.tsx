@@ -1,8 +1,5 @@
-import { useCallback } from 'react';
 import { Controller } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-
-import styled from 'styled-components';
 
 import {
     Timestamp,
@@ -14,32 +11,22 @@ import {
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Select } from '@trezor/components';
 import {
-    fromFiatCurrency,
     getInputState,
     findToken,
     isLowAnonymityWarning,
-    amountToSmallestUnit,
     formatAmount,
     buildCurrencyOptions,
-    getFiatRateKey,
 } from '@suite-common/wallet-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { selectFiatRatesByFiatRateKey, updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { NumberInput } from 'src/components/suite';
-import { useSelector, useTranslation } from 'src/hooks/suite';
+import { useTranslation } from 'src/hooks/suite';
 import { validateDecimals } from 'src/utils/suite/validation';
-
-const Wrapper = styled.div`
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    justify-content: flex-start;
-`;
 
 type FiatInputProps = {
     output: Partial<Output>;
@@ -60,8 +47,8 @@ export const FiatInput = ({
         account,
         network,
         formState: { errors },
-        clearErrors,
         getDefaultValue,
+        handleFiatChange,
         control,
         setValue,
         composeTransaction,
@@ -77,7 +64,6 @@ export const FiatInput = ({
     const currencyInputName = `outputs.${outputId}.currency` as const;
     const amountInputName = `outputs.${outputId}.amount` as const;
     const tokenInputName = `outputs.${outputId}.token` as const;
-    const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
 
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const error = outputError ? outputError.fiat : undefined;
@@ -87,13 +73,6 @@ export const FiatInput = ({
     const token = findToken(account.tokens, tokenValue);
 
     const currencyValue = watch(currencyInputName);
-
-    const fiatRateKey = getFiatRateKey(
-        account.symbol,
-        currencyValue.value as FiatCurrencyCode,
-        tokenValue as TokenAddress,
-    );
-    const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
     const recalculateFiat = (rate: number) => {
         const formattedAmount = new BigNumber(
@@ -127,55 +106,7 @@ export const FiatInput = ({
     const inputState = isLowAnonymity ? 'warning' : getInputState(errorToDisplay);
     const bottomText = isLowAnonymity ? null : errorToDisplay?.message;
 
-    const handleChange = useCallback(
-        (value: string) => {
-            if (isSetMaxActive) {
-                setValue('setMaxOutputId', undefined);
-            }
-
-            if (error && error.message !== 'AMOUNT_IS_NOT_SET') {
-                // reset Amount field in case of invalid Fiat value
-                if (getDefaultValue(amountInputName, '').length > 0) {
-                    setValue(amountInputName, '');
-                    clearErrors(amountInputName);
-                }
-
-                composeTransaction(amountInputName);
-
-                return;
-            }
-
-            const decimals = token ? token.decimals : network.decimals;
-
-            const amount = fiatRate?.rate ? fromFiatCurrency(value, decimals, fiatRate.rate) : null;
-
-            const formattedAmount = shouldSendInSats
-                ? amountToSmallestUnit(amount || '0', decimals)
-                : amount;
-
-            if (formattedAmount) {
-                // set Amount value and validate if
-                setValue(amountInputName, formattedAmount, {
-                    shouldValidate: true,
-                });
-            }
-
-            composeTransaction(amountInputName);
-        },
-        [
-            isSetMaxActive,
-            error,
-            token,
-            network.decimals,
-            fiatRate,
-            shouldSendInSats,
-            composeTransaction,
-            amountInputName,
-            setValue,
-            getDefaultValue,
-            clearErrors,
-        ],
-    );
+    const handleChange = (value: string) => handleFiatChange({ outputId, value });
 
     const rules = {
         required: translationString('AMOUNT_IS_NOT_SET'),
@@ -236,29 +167,27 @@ export const FiatInput = ({
     );
 
     return (
-        <Wrapper>
-            <NumberInput
-                labelHoverRight={labelHoverRight}
-                labelRight={labelRight}
-                labelLeft={labelLeft}
-                control={control}
-                inputState={inputState}
-                onChange={handleChange}
-                name={fiatInputName}
-                data-testid={fiatInputName}
-                defaultValue={fiatValue}
-                maxLength={formInputsMaxLength.fiat}
-                rules={rules}
-                bottomText={bottomText || null}
-                innerAddon={
-                    <Controller
-                        control={control}
-                        name={currencyInputName}
-                        defaultValue={currencyValue}
-                        render={renderCurrencySelect}
-                    />
-                }
-            />
-        </Wrapper>
+        <NumberInput
+            labelHoverRight={labelHoverRight}
+            labelRight={labelRight}
+            labelLeft={labelLeft}
+            control={control}
+            inputState={inputState}
+            onChange={handleChange}
+            name={fiatInputName}
+            data-testid={fiatInputName}
+            defaultValue={fiatValue}
+            maxLength={formInputsMaxLength.fiat}
+            rules={rules}
+            bottomText={bottomText || null}
+            innerAddon={
+                <Controller
+                    control={control}
+                    name={currencyInputName}
+                    defaultValue={currencyValue}
+                    render={renderCurrencySelect}
+                />
+            }
+        />
     );
 };

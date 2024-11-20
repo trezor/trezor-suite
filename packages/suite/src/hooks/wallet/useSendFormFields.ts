@@ -1,96 +1,165 @@
 import { useCallback } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
-import { formatNetworkAmount, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import {
+    amountToSmallestUnit,
+    formatNetworkAmount,
+    fromFiatCurrency,
+    getFiatRateKey,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
 import { FormState, FormOptions, TokenAddress, Rate } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { TokenInfo } from '@trezor/blockchain-link-types';
 
 import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
 
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { useSelector } from '../suite';
 
-type Props = UseFormReturn<FormState> & {
+export type GetCurrentRateParams = {
+    currencyCode: FiatCurrencyCode;
+    tokenAddress: TokenAddress;
+};
+
+type UseSendFormFieldsParams = UseFormReturn<FormState> & {
     fiatRate?: Rate;
     network: UseSendFormState['network'];
 };
 
 // This hook should be used only as a sub-hook of `useSendForm`
-
 export const useSendFormFields = ({
     getValues,
     setValue,
     clearErrors,
     network,
     formState: { errors },
-}: Props) => {
+}: UseSendFormFieldsParams) => {
     const { shouldSendInSats } = useBitcoinAmountUnit(network.symbol);
     const currentRates = useSelector(selectCurrentFiatRates);
 
-    const calculateFiat = useCallback(
-        (outputIndex: number, amount?: string) => {
-            const outputError = errors.outputs ? errors.outputs[outputIndex] : undefined;
-            const error = outputError ? outputError.amount : undefined;
+    const getCurrentFiatRate = useCallback(
+        ({ currencyCode, tokenAddress }: GetCurrentRateParams) => {
+            const fiatRateKey = getFiatRateKey(network.symbol, currencyCode, tokenAddress);
 
-            if (error) {
-                amount = undefined;
-            }
+            return currentRates?.[fiatRateKey];
+        },
+        [currentRates, network.symbol],
+    );
 
+    type CalculateFiatFromAmountOrViceVersaParams = {
+        outputId: number;
+        target: 'fiat' | 'amount';
+        formatTargetValue: (value: string, fiatRate: number) => string | null;
+        value?: string;
+    };
+
+    const calculateFiatFromAmountOrViceVersa = useCallback(
+        ({
+            formatTargetValue,
+            outputId,
+            target,
+            value,
+        }: CalculateFiatFromAmountOrViceVersaParams) => {
             const { outputs } = getValues();
-            const output = outputs ? outputs[outputIndex] : undefined;
-            if (!output || output.type !== 'payment') return;
-            const { fiat, token, currency } = output;
-            if (typeof fiat !== 'string') return; // fiat input not registered (testnet or fiat not available)
-            const inputName = `outputs.${outputIndex}.fiat` as const;
-            if (!amount) {
-                // reset fiat value (Amount field has error)
-                if (fiat.length > 0) {
-                    setValue(inputName, '');
+            const output = outputs[outputId];
+            if (output.type !== 'payment') {
+                return;
+            }
+            const targetValue = output[target];
+            if (target === 'fiat' && typeof targetValue !== 'string') {
+                return; // fiat input not registered (testnet or fiat not available)
+            }
+            const targetInputName = `outputs.${outputId}.${target}` as const;
+            const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
+            const error = outputError
+                ? outputError[target === 'fiat' ? 'amount' : 'fiat']
+                : undefined;
+            if (error || !value) {
+                if (targetValue.length > 0) {
+                    setValue(targetInputName, '');
+                    clearErrors(targetInputName);
                 }
 
                 return;
             }
-            const fiatRateKey = getFiatRateKey(
-                network.symbol,
-                currency.value as FiatCurrencyCode,
-                token as TokenAddress,
-            );
-            const fiatRate = currentRates?.[fiatRateKey];
-            // calculate Fiat value
-            if (!fiatRate?.rate) return;
 
-            const formattedAmount = shouldSendInSats // toFiatCurrency always works with BTC, not satoshis
-                ? formatNetworkAmount(amount, network.symbol)
-                : amount;
-
-            const fiatValue = toFiatCurrency(formattedAmount, fiatRate.rate, 2);
-            if (fiatValue) {
-                setValue(inputName, fiatValue, { shouldValidate: true });
+            const fiatRate = getCurrentFiatRate({
+                currencyCode: output.currency.value as FiatCurrencyCode,
+                tokenAddress: output.token as TokenAddress,
+            });
+            if (!fiatRate?.rate) {
+                return;
+            }
+            const formattedTargetValue = formatTargetValue(value, fiatRate.rate);
+            if (formattedTargetValue) {
+                setValue(targetInputName, formattedTargetValue, { shouldValidate: true });
             }
         },
-        [getValues, setValue, currentRates, shouldSendInSats, network.symbol, errors],
+        [clearErrors, getCurrentFiatRate, getValues, setValue, errors],
+    );
+
+    const calculateFiatFromAmount = useCallback(
+        (outputId: number, amount: string) => {
+            const calculateFormattedFiatValue = (amount: string, fiatRate: number) => {
+                const formattedAmount = shouldSendInSats // toFiatCurrency always works with BTC, not satoshis
+                    ? formatNetworkAmount(amount, network.symbol)
+                    : amount;
+
+                return toFiatCurrency(formattedAmount, fiatRate, 2);
+            };
+
+            return calculateFiatFromAmountOrViceVersa({
+                formatTargetValue: calculateFormattedFiatValue,
+                outputId,
+                target: 'fiat',
+                value: amount,
+            });
+        },
+        [calculateFiatFromAmountOrViceVersa, shouldSendInSats, network.symbol],
+    );
+
+    const calculateAmountFromFiat = useCallback(
+        (outputId: number, fiat: string, token?: TokenInfo) => {
+            const calculateFormattedAmountValue = (fiat: string, fiatRate: number) => {
+                const decimals = token ? token.decimals : network.decimals;
+                const amount = fromFiatCurrency(fiat, decimals, fiatRate);
+
+                return shouldSendInSats
+                    ? amountToSmallestUnit(amount || '0', network.decimals)
+                    : amount;
+            };
+
+            return calculateFiatFromAmountOrViceVersa({
+                formatTargetValue: calculateFormattedAmountValue,
+                outputId,
+                target: 'amount',
+                value: fiat,
+            });
+        },
+        [calculateFiatFromAmountOrViceVersa, shouldSendInSats, network.decimals],
     );
 
     const setAmount = useCallback(
-        (outputIndex: number, amount: string) => {
-            setValue(`outputs.${outputIndex}.amount`, amount, {
+        (outputId: number, amount: string) => {
+            setValue(`outputs.${outputId}.amount`, amount, {
                 shouldValidate: amount.length > 0,
                 shouldDirty: true,
             });
-            calculateFiat(outputIndex, amount);
+            calculateFiatFromAmount(outputId, amount);
         },
-        [calculateFiat, setValue],
+        [calculateFiatFromAmount, setValue],
     );
 
     const setMax = useCallback(
-        (outputIndex: number, active: boolean) => {
-            clearErrors([`outputs.${outputIndex}.amount`, `outputs.${outputIndex}.fiat`]);
+        (outputId: number, active: boolean) => {
+            clearErrors([`outputs.${outputId}.amount`, `outputs.${outputId}.fiat`]);
             if (!active) {
-                setValue(`outputs.${outputIndex}.amount`, '');
-                setValue(`outputs.${outputIndex}.fiat`, '');
+                setValue(`outputs.${outputId}.amount`, '');
+                setValue(`outputs.${outputId}.fiat`, '');
             }
-            setValue('setMaxOutputId', active ? undefined : outputIndex);
+            setValue('setMaxOutputId', active ? undefined : outputId);
         },
         [clearErrors, setValue],
     );
@@ -139,7 +208,9 @@ export const useSendFormFields = ({
     );
 
     return {
-        calculateFiat,
+        getCurrentFiatRate,
+        calculateAmountFromFiat,
+        calculateFiatFromAmount,
         setAmount,
         resetDefaultValue,
         setMax,

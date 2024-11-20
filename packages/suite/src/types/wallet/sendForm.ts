@@ -13,9 +13,16 @@ import {
     Output,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
+    Rate,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+
+import { GetCurrentRateParams } from 'src/hooks/wallet/useSendFormFields';
+import {
+    HandleAmountChangeParams,
+    HandleFiatChangeParams,
+} from 'src/hooks/wallet/useSendFormChangeHandlers';
 
 export type ExportFileType = 'csv' | 'pdf' | 'json';
 
@@ -70,7 +77,12 @@ export type SendContextValues<TFormValues extends FormState = FormState> =
             loadTransaction: () => Promise<void>;
             signTransaction: () => void;
             // useSendFormFields utils:
-            calculateFiat: (outputIndex: number, amount?: string) => void;
+            getCurrentFiatRate: ({
+                currencyCode,
+                tokenAddress,
+            }: GetCurrentRateParams) => Rate | undefined;
+            handleAmountChange: (params: HandleAmountChangeParams) => void;
+            handleFiatChange: (params: HandleFiatChangeParams) => void;
             setAmount: (outputIndex: number, amount: string) => void;
             changeFeeLevel: (currentLevel: FeeLevel['label']) => void;
             resetDefaultValue: (field: FieldPath<TFormValues>) => void;

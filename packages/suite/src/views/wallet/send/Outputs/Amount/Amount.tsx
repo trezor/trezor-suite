@@ -1,11 +1,8 @@
-import { useCallback } from 'react';
-
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Icon, Banner, Flex, Row, Text, variables, useMediaQuery } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { Output, TokenAddress } from '@suite-common/wallet-types';
 import {
     amountToSmallestUnit,
@@ -14,13 +11,12 @@ import {
     isLowAnonymityWarning,
     getInputState,
     findToken,
-    getFiatRateKey,
 } from '@suite-common/wallet-utils';
 
 import { FiatValue, Translation, NumberInput, HiddenPlaceholder } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useSelector, useTranslation } from 'src/hooks/suite';
+import { useTranslation } from 'src/hooks/suite';
 import {
     validateDecimals,
     validateInteger,
@@ -46,18 +42,17 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         localCurrencyOption,
         control,
         getDefaultValue,
+        handleAmountChange,
         formState: { errors },
-        setValue,
         setMax,
-        calculateFiat,
         composeTransaction,
+        getCurrentFiatRate,
     } = useSendFormContext();
     const { symbol, tokens } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
 
     const amountName = `outputs.${outputId}.amount` as const;
-    const currencyName = `outputs.${outputId}.currency.value` as const;
     const tokenInputName = `outputs.${outputId}.token`;
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
@@ -68,20 +63,13 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const maxSwitchId = `outputs.${outputId}.setMax`;
 
     const amountValue = getDefaultValue(amountName, output.amount || '');
-    const currencyValue = getDefaultValue(currencyName, output.currency?.value || '');
     const tokenValue = getDefaultValue(tokenInputName, output.token);
     const token = findToken(tokens, tokenValue);
 
-    const currentRate = useSelector(state =>
-        selectFiatRatesByFiatRateKey(
-            state,
-            getFiatRateKey(
-                symbol,
-                currencyValue as FiatCurrencyCode,
-                (token?.contract || '') as TokenAddress,
-            ),
-        ),
-    );
+    const currentRate = getCurrentFiatRate({
+        tokenAddress: (token?.contract ?? '') as TokenAddress,
+        currencyCode: (output.currency?.value ?? '') as FiatCurrencyCode,
+    });
 
     const isWithRate = !!currentRate?.rate || !!currentRate?.isLoading;
 
@@ -100,18 +88,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const inputState = isLowAnonymity ? 'warning' : getInputState(error);
     const bottomText = isLowAnonymity ? undefined : error?.message;
 
-    const handleInputChange = useCallback(
-        (value: string) => {
-            if (isSetMaxActive) {
-                setValue('setMaxOutputId', undefined);
-            }
-
-            // calculate or reset Fiat value
-            calculateFiat(outputId, value);
-            composeTransaction(amountName);
-        },
-        [setValue, calculateFiat, composeTransaction, amountName, isSetMaxActive, outputId],
-    );
+    const handleInputChange = (value: string) => handleAmountChange({ outputId, value });
 
     const cryptoAmountRules = {
         required: translationString('AMOUNT_IS_NOT_SET'),
