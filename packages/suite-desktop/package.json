@@ -1,6 +1,7 @@
 {
     "name": "@trezor/suite-desktop",
     "description": "Trezor Suite desktop application",
+    "type": "module",
     "version": "1.0.0",
     "private": true,
     "author": "SatoshiLabs <info@satoshilabs.com>",
@@ -16,7 +17,7 @@
         "build:core": "yarn workspace @trezor/suite-desktop-core run build:core",
         "build:app": "NODE_ENV=production yarn build:core",
         "build:app:dev": "NODE_ENV=development yarn build:core",
-        "build:app:electron": "yarn electron-builder --config electron-builder-config.js",
+        "build:app:electron": "yarn electron-builder --config electron-builder-config.cjs",
         "build:linux": "yarn clean && yarn build:ui && yarn build:app && yarn build:app:electron --publish never --linux --x64 --arm64",
         "build:mac": "yarn clean && yarn build:ui && yarn build:app && yarn build:app:electron --publish never --mac --x64 --arm64",
         "build:win": "yarn clean && yarn build:ui && yarn build:app && yarn build:app:electron --publish never --win --x64"
