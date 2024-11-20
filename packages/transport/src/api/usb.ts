@@ -219,10 +219,7 @@ export class UsbApi extends AbstractApi {
                 return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
             }
 
-            return this.unknownError(err, [
-                ERRORS.ABORTED_BY_SIGNAL,
-                ERRORS.INTERFACE_DATA_TRANSFER,
-            ]);
+            return this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: err.message });
         }
     }
 

@@ -16,6 +16,7 @@ import { Descriptor, PathPublic, Session } from '@trezor/transport/src/types';
 import { validateProtocolMessage } from '@trezor/transport/src/utils/bridgeProtocolMessage';
 import { Log, arrayPartition, Throttler } from '@trezor/utils';
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
+import { UNEXPECTED_ERROR } from '@trezor/transport/src/errors';
 
 import { createCore } from './core';
 
@@ -78,7 +79,7 @@ const validateProtocolMessageBody =
             return next({ ...request, body }, response);
         } catch (error) {
             response.statusCode = 400;
-            response.end(str({ error: error.message }));
+            response.end(str({ error: UNEXPECTED_ERROR, message: error.message }));
         }
     };
 
@@ -250,7 +251,7 @@ export class TrezordNode {
                         if (!result.success) {
                             res.statusCode = 400;
 
-                            return res.end(str({ error: result.error }));
+                            return res.end(str({ error: result.error, message: result.message }));
                         }
                         res.end(str(result.payload.descriptors));
                     });
@@ -289,7 +290,9 @@ export class TrezordNode {
                             if (!result.success) {
                                 res.statusCode = 400;
 
-                                return res.end(str({ error: result.error }));
+                                return res.end(
+                                    str({ error: result.error, message: result.message }),
+                                );
                             }
                             res.end(str({ session: result.payload.session }));
                         });
@@ -308,7 +311,9 @@ export class TrezordNode {
                             if (!result.success) {
                                 res.statusCode = 400;
 
-                                return res.end(str({ error: result.error }));
+                                return res.end(
+                                    str({ error: result.error, message: result.message }),
+                                );
                             }
                             res.end(str({ session: req.params.session }));
                         });
@@ -331,7 +336,9 @@ export class TrezordNode {
                             if (!result.success) {
                                 res.statusCode = 400;
 
-                                return res.end(str({ error: result.error }));
+                                return res.end(
+                                    str({ error: result.error, message: result.message }),
+                                );
                             }
                             res.end(str(result.payload));
                         });
@@ -354,7 +361,9 @@ export class TrezordNode {
                             if (!result.success) {
                                 res.statusCode = 400;
 
-                                return res.end(str({ error: result.error }));
+                                return res.end(
+                                    str({ error: result.error, message: result.message }),
+                                );
                             }
                             res.end(str(result.payload));
                         });
@@ -377,7 +386,9 @@ export class TrezordNode {
                             if (!result.success) {
                                 res.statusCode = 400;
 
-                                return res.end(str({ error: result.error }));
+                                return res.end(
+                                    str({ error: result.error, message: result.message }),
+                                );
                             }
                             res.end(str(result.payload));
                         });

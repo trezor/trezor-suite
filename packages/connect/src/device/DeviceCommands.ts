@@ -320,7 +320,12 @@ export class DeviceCommands {
 
         this.callPromise = undefined;
         if (!res.success) {
-            logger.warn('Received error', res.error);
+            logger.warn(
+                'Received error',
+                res.error,
+                // res.message is not propagated to higher levels, only logged here. webusb/node-bridge may return message with additional information
+                res.message,
+            );
             throw new Error(res.error);
         }
 

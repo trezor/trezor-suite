@@ -320,6 +320,7 @@ describe('http', () => {
             });
             expect(res).toMatchObject({
                 success: false,
+                error: 'unexpected error',
                 message: 'Invalid BridgeProtocolMessage protocol',
             });
 

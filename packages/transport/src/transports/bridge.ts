@@ -364,7 +364,7 @@ export class BridgeTransport extends AbstractTransport {
 
         if (!response.success) {
             if (response.error === ERRORS.UNEXPECTED_ERROR) {
-                return response;
+                return this.unknownError(response.error);
             }
             if (response.error === ERRORS.HTTP_ERROR) {
                 return this.error({ error: response.error });
@@ -380,24 +380,19 @@ export class BridgeTransport extends AbstractTransport {
                         ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
                         ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
                     ]);
-                case '/read':
                 case '/call':
-                    return this.unknownError(response.error, [
-                        ERRORS.SESSION_NOT_FOUND,
-                        ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
-                        ERRORS.OTHER_CALL_IN_PROGRESS,
-                        PROTOCOL_MALFORMED,
-                    ]);
-                case '/enumerate':
-                case '/listen':
-                    return this.unknownError(response.error);
+                case '/read':
                 case '/post':
                     return this.unknownError(response.error, [
                         ERRORS.SESSION_NOT_FOUND,
                         ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
                         ERRORS.OTHER_CALL_IN_PROGRESS,
+                        ERRORS.INTERFACE_DATA_TRANSFER,
                         PROTOCOL_MALFORMED,
                     ]);
+                case '/enumerate':
+                case '/listen':
+                    return this.unknownError(response.error);
                 case '/release':
                     return this.unknownError(response.error, [
                         ERRORS.SESSION_NOT_FOUND,

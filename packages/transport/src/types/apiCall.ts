@@ -9,16 +9,11 @@ export interface Success<T> {
     payload: T;
 }
 
-export type ErrorGeneric<ErrorType> = ErrorType extends AnyError
-    ? {
-          success: false;
-          error: ErrorType;
-      }
-    : {
-          success: false;
-          error: ErrorType;
-          message?: string;
-      };
+export type ErrorGeneric<ErrorType> = {
+    success: false;
+    error: ErrorType;
+    message?: string;
+};
 
 export type ResultWithTypedError<T, E> = Success<T> | ErrorGeneric<E>;
 export type AsyncResultWithTypedError<T, E> = Promise<Success<T> | ErrorGeneric<E>>;

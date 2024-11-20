@@ -82,6 +82,7 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
 
     // if status is not 200. response should be interpreted as error.
     if (!res.ok) {
+        // this block only changes error messages from old bridge to the same messages returned by new bridge / connect usb stack
         const errStr =
             typeof resParsed !== 'string' && 'error' in resParsed
                 ? (resParsed.error as string)
@@ -95,6 +96,20 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
         }
         if (errStr === BRIDGE_MALFORMED_WIRE_FORMAT) {
             return error({ error: PROTOCOL_MALFORMED });
+        }
+
+        if (
+            typeof resParsed !== 'string' &&
+            'error' in resParsed &&
+            typeof resParsed.error === 'string'
+        ) {
+            return error({
+                error: resParsed.error,
+                message:
+                    'message' in resParsed && typeof resParsed.message === 'string'
+                        ? resParsed.message
+                        : undefined,
+            });
         }
 
         return unknownError(new Error(errStr), Object.values(ERRORS));
