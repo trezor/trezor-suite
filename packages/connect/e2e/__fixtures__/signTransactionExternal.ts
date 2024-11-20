@@ -16,6 +16,7 @@ export default {
             skip: ['1', '<2.3.2'],
             params: {
                 coin: 'Testnet',
+                version: 1,
                 inputs: [
                     {
                         amount: '31000000',
@@ -80,6 +81,7 @@ export default {
             skip: ['1', '<2.3.2'],
             params: {
                 coin: 'Testnet',
+                version: 1,
                 inputs: [
                     {
                         amount: '123456789',
@@ -137,6 +139,7 @@ export default {
             skip: ['1', '<2.3.2'],
             params: {
                 coin: 'Testnet',
+                version: 1,
                 inputs: [
                     {
                         address_n: "m/84'/1'/0'/0/0",
@@ -189,6 +192,7 @@ export default {
             skip: ['1', '<2.3.2'],
             params: {
                 coin: 'Testnet',
+                version: 1,
                 inputs: [
                     {
                         address_n: "m/84'/1'/0'/0/0",
@@ -236,6 +240,7 @@ export default {
             skip: ['1', '<2.4.3'],
             params: {
                 coin: 'Testnet',
+                version: 1,
                 inputs: [
                     {
                         address_n: "m/86'/1'/0'/0/1",
@@ -300,6 +305,7 @@ export default {
             skip: ['1', '<2.4.4'], // bug in prev implementation https://github.com/trezor/trezor-firmware/pull/2034
             params: {
                 coin: 'Testnet',
+                version: 1,
                 inputs: [
                     {
                         amount: '100000',
@@ -354,6 +360,7 @@ export default {
             },
             params: {
                 coin: 'Testnet',
+                version: 1,
                 inputs: [
                     {
                         amount: '100892',
