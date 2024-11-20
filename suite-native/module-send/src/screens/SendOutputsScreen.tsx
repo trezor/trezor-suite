@@ -123,14 +123,20 @@ export const SendOutputsScreen = ({
     const watchedAddress = useWatch({ name: 'outputs.0.address', control });
 
     const storeFormDraftIfValid = useCallback(() => {
+        const normalFeeLevel = networkFeeInfo?.levels.find(level => level.label === 'normal');
+
         dispatch(
             sendFormActions.storeDraft({
                 accountKey,
                 tokenContract,
-                formState: constructFormDraft({ formValues: getValues(), tokenContract }),
+                formState: constructFormDraft({
+                    formValues: getValues(),
+                    tokenContract,
+                    feeLevel: normalFeeLevel,
+                }),
             }),
         );
-    }, [accountKey, dispatch, getValues, tokenContract]);
+    }, [accountKey, dispatch, getValues, tokenContract, networkFeeInfo]);
 
     const calculateNormalFeeMaxAmount = useCallback(async () => {
         const response = await dispatch(

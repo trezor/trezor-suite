@@ -18,6 +18,8 @@ import {
     selectAccountByKey,
     selectNetworkFeeInfo,
     selectNetworkFeeLevelFeePerUnit,
+    selectSendFormDraftByKey,
+    SendRootState,
 } from '@suite-common/wallet-core';
 import {
     AuthorizeDeviceStackRoutes,
@@ -37,6 +39,7 @@ import { FeeOptionsList } from './FeeOptionsList';
 import { RecipientsSummary } from './RecipientsSummary';
 import { CustomFee } from './CustomFee';
 import { selectFeeLevels } from '../sendFormSlice';
+import { NativeSupportedFeeLevel } from '../types';
 
 type SendFormProps = {
     accountKey: AccountKey;
@@ -48,8 +51,6 @@ type SendFeesNavigationProps = StackToStackCompositeNavigationProps<
     SendStackRoutes.SendFees,
     RootStackParamList
 >;
-
-const DEFAULT_FEE = 'normal';
 
 export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     const navigation = useNavigation<SendFeesNavigationProps>();
@@ -63,7 +64,10 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
         selectNetworkFeeInfo(state, account?.symbol),
     );
 
-    const normalFeeLevelInfo = networkFeeInfo?.levels.find(l => l.label === 'normal');
+    const formDraft = useSelector((state: SendRootState) =>
+        selectSendFormDraftByKey(state, accountKey, tokenContract),
+    );
+
     const networkType = account?.symbol ? getNetworkType(account.symbol) : undefined;
 
     const minimalFeeLimit =
@@ -72,9 +76,9 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     const form = useForm<SendFeesFormValues>({
         validation: sendFeesFormValidationSchema,
         defaultValues: {
-            feeLevel: DEFAULT_FEE,
-            customFeePerUnit: normalFeeLevelInfo?.feePerUnit,
-            customFeeLimit: normalFeeLevelInfo?.feeLimit,
+            feeLevel: formDraft?.selectedFee as NativeSupportedFeeLevel,
+            customFeePerUnit: formDraft?.feePerUnit,
+            customFeeLimit: formDraft?.feeLimit,
         },
         context: {
             networkFeeInfo,

@@ -21,7 +21,6 @@ import {
 import {
     Account,
     AccountKey,
-    FeeLevelLabel,
     FormState,
     GeneralPrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
@@ -31,7 +30,7 @@ import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 
-import { FeeLevelsMaxAmount } from './types';
+import { FeeLevelsMaxAmount, NativeSupportedFeeLevel } from './types';
 import { storeFeeLevels } from './sendFormSlice';
 
 const SEND_MODULE_PREFIX = '@suite-native/send';
@@ -201,6 +200,18 @@ export const calculateFeeLevelsMaxAmountThunk = createThunk<
     },
 );
 
+type UpdateSelectedFeeLevelThunkParams = {
+    accountKey: AccountKey;
+    tokenContract?: TokenAddress;
+} & (
+    | {
+          feeLevelLabel: Exclude<NativeSupportedFeeLevel, 'custom'>;
+          feePerUnit?: never;
+          feeLimit?: never;
+      }
+    | { feeLevelLabel: 'custom'; feePerUnit: string; feeLimit?: string }
+);
+
 export const updateSelectedFeeLevelThunk = createThunk(
     `${SEND_MODULE_PREFIX}/updateSelectedFeeLevelThunk`,
     (
@@ -208,11 +219,9 @@ export const updateSelectedFeeLevelThunk = createThunk(
             accountKey,
             tokenContract,
             feeLevelLabel,
-        }: {
-            accountKey: AccountKey;
-            feeLevelLabel: FeeLevelLabel;
-            tokenContract?: TokenAddress;
-        },
+            feePerUnit,
+            feeLimit,
+        }: UpdateSelectedFeeLevelThunkParams,
         { dispatch, getState },
     ) => {
         const draft = selectSendFormDraftByKey(getState(), accountKey, tokenContract);
@@ -221,6 +230,12 @@ export const updateSelectedFeeLevelThunk = createThunk(
         const draftCopy = { ...draft };
 
         draftCopy.selectedFee = feeLevelLabel;
+        if (feePerUnit) {
+            draftCopy.feePerUnit = feePerUnit;
+        }
+        if (feeLimit) {
+            draftCopy.feeLimit = feeLimit;
+        }
 
         dispatch(sendFormActions.storeDraft({ accountKey, tokenContract, formState: draftCopy }));
     },
@@ -275,7 +290,6 @@ export const calculateCustomFeeLevelThunk = createThunk(
         }
 
         const feeLevels = response.payload;
-        dispatch(sendFormActions.storeDraft({ accountKey, tokenContract, formState: draftCopy }));
         dispatch(storeFeeLevels({ feeLevels }));
 
         if (!isFinalPrecomposedTransaction(feeLevels.custom)) {

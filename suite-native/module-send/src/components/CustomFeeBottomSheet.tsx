@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Animated, {
     FadeInDown,
     FadeOutDown,
@@ -20,6 +20,7 @@ import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/n
 import { SendFeesFormValues } from '../sendFeesFormSchema';
 import { CustomFeeInputs } from './CustomFeeInputs';
 import { useCustomFee } from '../hooks/useCustomFee';
+import { updateSelectedFeeLevelThunk } from '../sendFormThunks';
 
 type CustomFeeBottomSheetProps = {
     isVisible: boolean;
@@ -30,6 +31,7 @@ type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendAddressRevi
 
 export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomSheetProps) => {
     const route = useRoute<RouteProps>();
+    const dispatch = useDispatch();
     const { accountKey, tokenContract } = route.params;
 
     const { feeValue, isFeeLoading, isSubmittable, isErrorBoxVisible } = useCustomFee({
@@ -41,10 +43,18 @@ export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomShee
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const { setValue, handleSubmit } = useFormContext<SendFeesFormValues>();
+    const { setValue, handleSubmit, getValues } = useFormContext<SendFeesFormValues>();
 
     const handleSetCustomFee = handleSubmit(() => {
         setValue('feeLevel', 'custom');
+        dispatch(
+            updateSelectedFeeLevelThunk({
+                accountKey,
+                feeLevelLabel: 'custom',
+                feePerUnit: getValues('customFeePerUnit'),
+                feeLimit: getValues('customFeeLimit'),
+            }),
+        );
         onClose();
     });
 
