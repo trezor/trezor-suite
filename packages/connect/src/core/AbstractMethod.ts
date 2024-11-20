@@ -16,13 +16,7 @@ import {
 } from '../events';
 import { getHost } from '../utils/urlUtils';
 import type { Device } from '../device/Device';
-import type {
-    FirmwareRange,
-    DeviceState,
-    StaticSessionId,
-    DeviceUniquePath,
-    ConnectSettings,
-} from '../types';
+import type { FirmwareRange, DeviceState, StaticSessionId, ConnectSettings } from '../types';
 import { config } from '../data/config';
 
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };
@@ -93,8 +87,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     // @ts-expect-error: strictPropertyInitialization
     params: Params;
 
-    devicePath?: DeviceUniquePath;
-
     deviceState?: DeviceState;
 
     hasExpectedDeviceState: boolean;
@@ -164,7 +156,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.name = payload.method;
         this.payload = payload;
         this.responseID = message.id || 0;
-        this.devicePath = payload.device?.path;
         this.deviceState = validateDeviceState(payload.device?.state);
         this.hasExpectedDeviceState = payload.device
             ? Object.prototype.hasOwnProperty.call(payload.device, 'state')
@@ -208,7 +199,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     setDevice(device: Device) {
         this.device = device;
-        this.devicePath = device.getUniquePath();
         // NOTE: every method should always send "device" parameter
         const originalFn = this.createUiPromise;
         this.createUiPromise = (t, d) => originalFn(t, d || device);

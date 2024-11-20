@@ -231,7 +231,8 @@ test('when user cancels permissions in popup it closes automatically', async ({
 
     await popup.waitForLoadState('load');
 
-    if (isWebExtension || isCoreInPopup) {
+    // Device is implicitly remembered in webextension, but not in core-in-popup
+    if (isCoreInPopup) {
         await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
         await popup.click('.select-device-list button.list');
     }

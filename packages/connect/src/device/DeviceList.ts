@@ -15,7 +15,12 @@ import { Descriptor, PathPublic } from '@trezor/transport/src/types';
 import { ERRORS } from '../constants';
 import { DEVICE, TransportInfo } from '../events';
 import { Device } from './Device';
-import { ConnectSettings, DeviceUniquePath, Device as DeviceTyped } from '../types';
+import {
+    ConnectSettings,
+    DeviceUniquePath,
+    Device as DeviceTyped,
+    StaticSessionId,
+} from '../types';
 import { getBridgeInfo } from '../data/transportInfo';
 import { initLog } from '../utils/debug';
 import { resolveAfter } from '../utils/promiseUtils';
@@ -368,6 +373,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     getDeviceByPath(path: DeviceUniquePath): Device | undefined {
         return this.getAllDevices().find(d => d.getUniquePath() === path);
+    }
+
+    getDeviceByStaticState(state: StaticSessionId): Device | undefined {
+        const deviceId = state.split('@')[1].split(':')[0];
+
+        return this.getAllDevices().find(d => d.features?.device_id === deviceId);
     }
 
     transportType() {

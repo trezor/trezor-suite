@@ -36,8 +36,8 @@ import { InteractionTimeout } from '../utils/interactionTimeout';
 import type { DeviceEvents, Device } from '../device/Device';
 import type {
     ConnectSettings,
+    DeviceIdentity,
     Device as DeviceTyped,
-    DeviceUniquePath,
     StaticSessionId,
 } from '../types';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
@@ -68,7 +68,7 @@ const startInteractionTimeout = (context: CoreContext) =>
  * @returns {Promise<Device>}
  * @memberof Core
  */
-const initDevice = async (context: CoreContext, devicePath?: DeviceUniquePath) => {
+const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentity) => {
     const { uiPromises, deviceList, sendCoreMessage } = context;
 
     assertDeviceListConnected(deviceList);
@@ -81,22 +81,30 @@ const initDevice = async (context: CoreContext, devicePath?: DeviceUniquePath) =
     const useCoreInPopup = DataManager.getSettings('useCoreInPopup');
     const { preferredDevice } = storage.load().origin[origin] || {};
     const preferredDeviceInList =
-        preferredDevice && deviceList.getDeviceByPath(preferredDevice.path);
+        preferredDevice?.state && deviceList.getDeviceByStaticState(preferredDevice.state);
 
-    // we detected that there is a preferred device (user stored previously) but it's not in the list anymore (disconnected now)
-    // we treat this situation as implicit forget
-    if (preferredDevice && !preferredDeviceInList) {
-        storage.save(store => {
-            store.origin[origin] = { ...store.origin[origin], preferredDevice: undefined };
-
-            return store;
-        });
+    if (methodCallDevice?.state?.staticSessionId) {
+        device = deviceList.getDeviceByStaticState(methodCallDevice.state.staticSessionId);
+    } else if (methodCallDevice?.path) {
+        device = deviceList.getDeviceByPath(methodCallDevice.path);
     }
 
-    if (devicePath) {
-        device = deviceList.getDeviceByPath(devicePath);
-        showDeviceSelection =
-            !device || device.isUnreadable() || (device.isUnacquired() && !!isUsingPopup);
+    if (preferredDevice && !device) {
+        if (preferredDeviceInList) {
+            device = preferredDeviceInList;
+        } else {
+            // we detected that there is a preferred device (user stored previously) but it's not in the list anymore (disconnected now)
+            // we treat this situation as implicit forget
+            storage.save(store => {
+                store.origin[origin] = { ...store.origin[origin], preferredDevice: undefined };
+
+                return store;
+            });
+        }
+    }
+
+    if (device) {
+        showDeviceSelection = device.isUnreadable() || (device.isUnacquired() && !!isUsingPopup);
     } else {
         const onlyDevice = deviceList.getOnlyDevice();
         if (onlyDevice && (!isWebUsb || !isUsingPopup)) {
@@ -462,12 +470,6 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         sendCoreMessage,
     } = context;
     const responseID = message.id;
-    const origin = DataManager.getSettings('origin')!;
-
-    const { preferredDevice } = storage.loadForOrigin(origin) || {};
-    if (preferredDevice && !message.payload.device) {
-        message.payload.device = preferredDevice;
-    }
 
     // find method and parse incoming params
     let method: AbstractMethod<any>;
@@ -556,7 +558,7 @@ const onCallDevice = async (
     let tempDevice: Device | undefined;
     while (!tempDevice) {
         try {
-            tempDevice = await initDevice(context, method.devicePath);
+            tempDevice = await initDevice(context, message.payload.device);
         } catch (error) {
             if (error.code === 'Transport_Missing') {
                 // wait for popup handshake
@@ -587,7 +589,10 @@ const onCallDevice = async (
 
     // find pending calls to this device
     const previousCall = callMethods.filter(
-        call => call && call !== method && call.devicePath === method.devicePath,
+        call =>
+            call &&
+            call !== method &&
+            call.device.getUniquePath() === method.device.getUniquePath(),
     );
     if (previousCall.length > 0 && method.overridePreviousCall) {
         // set flag for each pending method
@@ -1136,7 +1141,7 @@ export class Core extends EventEmitter {
                         context: {
                             deviceList: this.deviceList,
                             postMessage: this.sendCoreMessage.bind(this),
-                            initDevice: path => initDevice(this.getCoreContext(), path),
+                            initDevice: path => initDevice(this.getCoreContext(), { path }),
                             log: _log,
                             abortSignal: this.abortController.signal,
                         },
