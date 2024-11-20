@@ -109,15 +109,16 @@ const config: webpack.Configuration = {
 
             return '[name].js';
         },
+        module: true,
         path: dist,
         publicPath: './',
-        library: { type: 'umd' },
+        chunkFormat: 'module',
+        chunkLoading: 'import',
     },
     externals: [
         ...dependencies,
         'bufferutil', // optional dependency of ws lib
         'memcpy', // optional depencency of bytebuffer lib
-        'utf-8-validate', // optional dependency of ws lib
     ],
     module: {
         rules: [
@@ -149,6 +150,7 @@ const config: webpack.Configuration = {
         alias: {
             '@emurgo/cardano-serialization-lib-nodejs': '@emurgo/cardano-serialization-lib-browser',
             '@trezor/connect$': '@trezor/connect/src/index', // alternative for "module": "src/index" in connect's package.json
+            'utf-8-validate': false, // optional dependency of ws lib that is not used in runtime
         },
     },
     performance: {
@@ -208,7 +210,10 @@ const config: webpack.Configuration = {
     // Unfortunately Cardano Serialization Lib triggers webpack warning:
     // "Critical dependency: the request of a dependency is an expression" due to require in generated wasm module
     // https://github.com/Emurgo/cardano-serialization-lib/issues/119
-    experiments: { asyncWebAssembly: true },
+    experiments: {
+        asyncWebAssembly: true,
+        outputModule: true,
+    },
     ignoreWarnings: [{ module: /cardano-serialization-lib-browser/ }],
 };
 
