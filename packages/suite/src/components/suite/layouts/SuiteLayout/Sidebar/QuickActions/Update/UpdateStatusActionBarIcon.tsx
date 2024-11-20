@@ -166,14 +166,17 @@ export const UpdateStatusActionBarIcon = ({
         return null;
     }
 
-    const suiteOnClick = () => mapSuiteUpdateToClick[updateStatusSuite]?.({ dispatch });
-    const deviceOnClick = () => mapDeviceUpdateToClick[updateStatusDevice]?.({ dispatch });
+    const suiteOnClick = mapSuiteUpdateToClick[updateStatusSuite];
+    const deviceOnClick = mapDeviceUpdateToClick[updateStatusDevice];
+
+    const suiteOnClickHandler = suiteOnClick ? () => suiteOnClick({ dispatch }) : undefined;
+    const deviceOnClickHandler = deviceOnClick ? () => deviceOnClick({ dispatch }) : undefined;
 
     const handleClick = () => {
         if (updateStatusSuite !== 'up-to-date') {
-            suiteOnClick();
+            suiteOnClickHandler?.();
         } else if (updateStatusDevice !== 'up-to-date') {
-            deviceOnClick();
+            deviceOnClickHandler?.();
         }
     };
 
@@ -184,7 +187,9 @@ export const UpdateStatusActionBarIcon = ({
                     !showUpdateBannerNotification && (
                         <UpdateTooltip
                             updateStatusDevice={updateStatusDevice}
+                            onClickSuite={suiteOnClickHandler}
                             updateStatusSuite={updateStatusSuite}
+                            onClickDevice={deviceOnClickHandler}
                         />
                     )
                 }

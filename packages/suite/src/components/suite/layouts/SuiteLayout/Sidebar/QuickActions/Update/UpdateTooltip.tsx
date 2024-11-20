@@ -12,8 +12,8 @@ import {
     mapUpdateStatusToIcon,
     mapUpdateStatusToVariant,
     UpdateStatus,
-    UpdateStatusSuite,
     UpdateStatusDevice,
+    UpdateStatusSuite,
 } from './updateQuickActionTypes';
 import { useDevice, useSelector } from '../../../../../../../hooks/suite';
 import { TooltipRow } from '../TooltipRow';
@@ -113,16 +113,23 @@ const SuiteRow = ({ updateStatus, onClick }: SuiteRowProps) => {
 
 type UpdateTooltipProps = {
     updateStatusDevice: UpdateStatusDevice;
+    onClickDevice?: () => void;
     updateStatusSuite: UpdateStatusSuite;
+    onClickSuite?: () => void;
 };
 
-export const UpdateTooltip = ({ updateStatusDevice, updateStatusSuite }: UpdateTooltipProps) => {
+export const UpdateTooltip = ({
+    updateStatusDevice,
+    onClickDevice,
+    updateStatusSuite,
+    onClickSuite,
+}: UpdateTooltipProps) => {
     const isDesktopSuite = isDesktop();
 
     return (
         <Column gap={spacings.md} alignItems="start">
-            <DeviceRow updateStatus={updateStatusDevice} />
-            {isDesktopSuite && <SuiteRow updateStatus={updateStatusSuite} />}
+            <DeviceRow updateStatus={updateStatusDevice} onClick={onClickDevice} />
+            {isDesktopSuite && <SuiteRow updateStatus={updateStatusSuite} onClick={onClickSuite} />}
         </Column>
     );
 };
