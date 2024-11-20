@@ -5,7 +5,7 @@ import { Button } from '@trezor/components';
 import * as trezorConnectActions from '../actions/trezorConnectActions';
 import { useSelector, useActions } from '../hooks';
 import { getField } from '../components/Method';
-import { isBetaOnly } from '../components/BetaOnly';
+import { useIsBetaOnly } from '../components/BetaOnly';
 
 export const SettingsContent = styled.section`
     flex: 1;
@@ -38,6 +38,7 @@ export const Settings = () => {
         onSubmitInit: trezorConnectActions.onSubmitInit,
         onFieldChange: trezorConnectActions.onConnectOptionChange,
     });
+    const isBetaOnly = useIsBetaOnly();
 
     const submitButton = 'Init Connect';
     const fields = [
