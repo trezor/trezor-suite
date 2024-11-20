@@ -40,7 +40,7 @@ export const importConfig = [
                 },
             ],
             'import/order': [
-                "warn",
+                'warn',
                 {
                     groups: [['builtin', 'external'], 'internal', ['sibling', 'parent']],
                     pathGroups: [

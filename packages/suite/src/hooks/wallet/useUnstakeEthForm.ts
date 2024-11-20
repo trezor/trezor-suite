@@ -19,6 +19,7 @@ import {
     UnstakeContextValues as UnstakeContextValuesBase,
     UnstakeFormState,
 } from '@suite-common/wallet-core';
+import { BigNumber } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
@@ -38,7 +39,6 @@ import {
 import { useStakeCompose } from './form/useStakeCompose';
 import { useFormDraft } from './useFormDraft';
 import { useFees } from './form/useFees';
-import { BigNumber } from '@trezor/utils';
 
 type UnstakeOptions = 'all' | 'rewards' | 'other';
 
