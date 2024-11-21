@@ -4,6 +4,8 @@ on:
   schedule:
     # Runs at midnight UTC every day at 01:00 AM CET
     - cron: "0 0 * * *"
+  push:
+    branches: [release/connect/**]
   pull_request:
     paths:
       - ".github/workflows/test-connect-misc.yml"
