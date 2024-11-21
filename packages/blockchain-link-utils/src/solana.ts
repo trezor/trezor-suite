@@ -517,8 +517,9 @@ export const getTokens = (
             // when sending tokens to associated token account, the instruction does not contain mint
             const mint = parsed.info.mint || instructionTokenInfo?.mint || 'Unknown token contract';
 
-            const decimals =
-                parsed.info.tokenAmount?.decimals || instructionTokenInfo?.decimals || 0;
+            const decimals = Number(
+                parsed.info.tokenAmount?.decimals || instructionTokenInfo?.decimals || 0,
+            );
             const amount = parsed.info.tokenAmount?.amount || parsed.info.amount || '-1';
 
             const source = parsed.info.authority || parsed.info.source;

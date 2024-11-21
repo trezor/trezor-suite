@@ -13,8 +13,10 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@solana/buffer-layout": "^4.0.1",
-        "@solana/web3.js": "^1.95.4",
+        "@solana-program/compute-budget": "^0.6.1",
+        "@solana-program/system": "^0.6.2",
+        "@solana-program/token": "^0.4.1",
+        "@solana/web3.js": "^2.0.0",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
