@@ -3,7 +3,7 @@ import { test as testPlaywright, expect as expectPlaywright } from '@playwright/
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { launchSuite, LEGACY_BRIDGE_VERSION, waitForDataTestSelector } from '../support/common';
-import { onDashboardPage } from '../support/pageActions/dashboardActions';
+import { DashboardActions } from '../support/pageActions/dashboardActions';
 
 testPlaywright.describe.serial('Bridge', () => {
     testPlaywright.beforeEach(async () => {
@@ -69,7 +69,8 @@ testPlaywright.describe.serial('Bridge', () => {
             const suite = await launchSuite();
             await suite.window.title();
             await waitForDataTestSelector(suite.window, '@welcome/title');
-            await onDashboardPage.passThroughInitialRun(suite.window);
+            const onDashboardPage = new DashboardActions(suite.window);
+            await onDashboardPage.passThroughInitialRun();
 
             await TrezorUserEnvLink.stopBridge();
 

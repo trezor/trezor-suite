@@ -1,25 +1,6 @@
-import {
-    test as testPlaywright,
-    ElectronApplication,
-    Page,
-    expect as expectPlaywright,
-} from '@playwright/test';
+import { expect as expectPlaywright } from '@playwright/test';
 
-import { launchSuite } from '../../support/common';
-import { onTopBar } from '../../support/pageActions/topBarActions';
-import { onSettingsPage } from '../../support/pageActions/settingsActions';
-import { onDashboardPage } from '../../support/pageActions/dashboardActions';
-
-let electronApp: ElectronApplication;
-let window: Page;
-
-testPlaywright.beforeAll(async () => {
-    ({ electronApp, window } = await launchSuite());
-});
-
-testPlaywright.afterAll(() => {
-    electronApp.close();
-});
+import { test as testPlaywright } from '../../support/fixtures';
 
 /**
  * Test case:
@@ -30,13 +11,13 @@ testPlaywright.afterAll(() => {
  * 5. Check if there is a button with `Leave` on it
  */
 // TODO: FIX settings cleanup:  eap setting is remembered even after cache cleanup at the beginning of the test. This shouldn't affect gha run but breaks the local one.
-testPlaywright('Join early access button', async () => {
+testPlaywright('Join early access button', async ({ dashboardPage, topBar, settingsPage }) => {
     const buttonText = 'Leave';
 
-    onDashboardPage.optionallyDismissFwHashCheckError(window);
-    await onTopBar.openSettings(window);
-    await onSettingsPage.goToDesiredSettingsPlace(window, 'general');
-    await onSettingsPage.joinEarlyAccessProgram(window);
+    dashboardPage.optionallyDismissFwHashCheckError();
+    await topBar.openSettings();
+    await settingsPage.goToDesiredSettingsPlace('general');
+    await settingsPage.joinEarlyAccessProgram();
 
-    expectPlaywright(await onSettingsPage.getEarlyAccessButtonText(window)).toContain(buttonText);
+    expectPlaywright(await settingsPage.getEarlyAccessButtonText()).toContain(buttonText);
 });

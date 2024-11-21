@@ -4,67 +4,69 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { waitForDataTestSelector } from '../common';
 
-class DashboardActions {
-    optionallyDismissFwHashCheckError(window: Page) {
+export class DashboardActions {
+    private readonly window: Page;
+    constructor(window: Page) {
+        this.window = window;
+    }
+    optionallyDismissFwHashCheckError() {
         // dismiss the error modal only if it appears (handle it async in parallel, not necessary to block the rest of the flow)
-        window
+        this.window
             .$('[data-testid="@device-compromised/back-button"]')
             .then(dismissFwHashCheckButton => dismissFwHashCheckButton?.click());
     }
 
-    async passThroughInitialRun(window: Page) {
-        await waitForDataTestSelector(window, '@welcome/title');
-        this.optionallyDismissFwHashCheckError(window);
-        await window.getByTestId('@analytics/continue-button').click();
-        await window.getByTestId('@onboarding/exit-app-button').click();
+    async passThroughInitialRun() {
+        await waitForDataTestSelector(this.window, '@welcome/title');
+        this.optionallyDismissFwHashCheckError();
+        await this.window.getByTestId('@analytics/continue-button').click();
+        await this.window.getByTestId('@onboarding/exit-app-button').click();
 
-        await window.getByTestId('@onboarding/viewOnly/skip').click();
-        await window.getByTestId('@viewOnlyTooltip/gotIt').click();
+        await this.window.getByTestId('@onboarding/viewOnly/skip').click();
+        await this.window.getByTestId('@viewOnlyTooltip/gotIt').click();
     }
 
-    async discoveryShouldFinish(window: Page) {
+    async discoveryShouldFinish() {
         const discoveryBarSelector = '@wallet/discovery-progress-bar';
-        await waitForDataTestSelector(window, discoveryBarSelector, {
+        await waitForDataTestSelector(this.window, discoveryBarSelector, {
             state: 'attached',
             timeout: 10_000,
         });
-        await waitForDataTestSelector(window, discoveryBarSelector, {
+        await waitForDataTestSelector(this.window, discoveryBarSelector, {
             state: 'detached',
             timeout: 120_000,
         });
-        await waitForDataTestSelector(window, '@dashboard/graph', { timeout: 30000 });
+        await waitForDataTestSelector(this.window, '@dashboard/graph', { timeout: 30000 });
     }
 
-    async openDeviceSwitcher(window: Page) {
-        await window.getByTestId('@menu/switch-device').click();
-        const deviceSwitcherModal = window.getByTestId('@modal');
+    async openDeviceSwitcher() {
+        await this.window.getByTestId('@menu/switch-device').click();
+        const deviceSwitcherModal = this.window.getByTestId('@modal');
         await deviceSwitcherModal.waitFor({ state: 'visible' });
     }
 
-    async ejectWallet(window: Page, walletIndex: number = 0) {
-        const wallet = window.locator(
+    async ejectWallet(walletIndex: number = 0) {
+        const wallet = this.window.locator(
             `[data-testid="@switch-device/wallet-on-index/${walletIndex}"]`,
         );
-        await window
+        await this.window
             .locator('[data-testid="@switch-device/wallet-on-index/0/eject-button"]')
             .click();
-        await window.locator('[data-testid="@switch-device/eject"]').click();
+        await this.window.locator('[data-testid="@switch-device/eject"]').click();
         await wallet.waitFor({ state: 'detached' });
     }
 
-    async addStandardWallet(window: Page) {
-        const addStandardWallet = window.getByTestId('@switch-device/add-wallet-button');
+    async addStandardWallet() {
+        const addStandardWallet = this.window.getByTestId('@switch-device/add-wallet-button');
         await addStandardWallet.click();
-        await window.getByTestId('@modal').waitFor({ state: 'detached' });
-        await this.discoveryShouldFinish(window);
+        await this.window.getByTestId('@modal').waitFor({ state: 'detached' });
+        await this.discoveryShouldFinish();
     }
 
     // asserts
-    async assertHasVisibleBalanceOnFirstAccount(window: Page, network: NetworkSymbol) {
-        const locator = window.getByTestId(`@wallet/coin-balance/value-${network}`).first();
+    async assertHasVisibleBalanceOnFirstAccount(network: NetworkSymbol) {
+        const locator = this.window.getByTestId(`@wallet/coin-balance/value-${network}`).first();
 
         await playwrightExpect(locator).toBeVisible();
     }
 }
-
-export const onDashboardPage = new DashboardActions();

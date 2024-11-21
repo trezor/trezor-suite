@@ -1,12 +1,6 @@
-import { test as testPlaywright, ElectronApplication, Page } from '@playwright/test';
-
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { launchSuite } from '../../support/common';
-import { onDashboardPage } from '../../support/pageActions/dashboardActions';
-
-let electronApp: ElectronApplication;
-let window: Page;
+import { test as testPlaywright } from '../../support/fixtures';
 
 testPlaywright.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
@@ -15,11 +9,6 @@ testPlaywright.beforeAll(async () => {
         needs_backup: true,
         mnemonic: 'mnemonic_all',
     });
-    ({ electronApp, window } = await launchSuite());
-});
-
-testPlaywright.afterAll(() => {
-    electronApp.close();
 });
 
 /**
@@ -27,13 +16,13 @@ testPlaywright.afterAll(() => {
  * 1. Discover a standard wallet
  * 2. Verify discovery by checking a the first btc value under the graph
  */
-testPlaywright('Discover a standard wallet', async () => {
-    await onDashboardPage.passThroughInitialRun(window);
-    await onDashboardPage.discoveryShouldFinish(window);
+testPlaywright('Discover a standard wallet', async ({ dashboardPage }) => {
+    await dashboardPage.passThroughInitialRun();
+    await dashboardPage.discoveryShouldFinish();
 
-    await onDashboardPage.openDeviceSwitcher(window);
-    await onDashboardPage.ejectWallet(window);
-    await onDashboardPage.addStandardWallet(window);
+    await dashboardPage.openDeviceSwitcher();
+    await dashboardPage.ejectWallet();
+    await dashboardPage.addStandardWallet();
 
-    await onDashboardPage.assertHasVisibleBalanceOnFirstAccount(window, 'btc');
+    await dashboardPage.assertHasVisibleBalanceOnFirstAccount('btc');
 });

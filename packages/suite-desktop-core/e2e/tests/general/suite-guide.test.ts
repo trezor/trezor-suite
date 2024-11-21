@@ -1,28 +1,6 @@
-import {
-    test as testPlaywright,
-    expect as expectPlaywright,
-    ElectronApplication,
-    Page,
-} from '@playwright/test';
+import { expect as expectPlaywright } from '@playwright/test';
 
-import { launchSuite } from '../../support/common';
-import { onSuiteGuidePage } from '../../support/pageActions/suiteGuideActions';
-import { onDashboardPage } from '../../support/pageActions/dashboardActions';
-
-let electronApp: ElectronApplication;
-let window: Page;
-
-testPlaywright.beforeAll(async () => {
-    ({ electronApp, window } = await launchSuite());
-});
-
-testPlaywright.afterEach(async () => {
-    await onSuiteGuidePage.closeGuide(window);
-});
-
-testPlaywright.afterAll(() => {
-    electronApp.close();
-});
+import { test as testPlaywright } from '../../support/fixtures';
 
 /**
  * Test case:
@@ -31,18 +9,20 @@ testPlaywright.afterAll(() => {
  * 3. Write into feedback field
  * 4. Submit bug report (reporttext)
  */
-testPlaywright('Send a bug report', async () => {
+testPlaywright('Send a bug report', async ({ dashboardPage, suiteGuidePage }) => {
     const testData = {
         desiredLocation: 'Account',
         reportText: 'Henlo this is testy test writing hangry test user report',
     };
-    onDashboardPage.optionallyDismissFwHashCheckError(window);
 
-    await onSuiteGuidePage.openSidePanel(window);
-    await onSuiteGuidePage.openFeedback(window);
-    await onSuiteGuidePage.sendBugreport(window, testData);
+    dashboardPage.optionallyDismissFwHashCheckError();
 
-    expectPlaywright(await onSuiteGuidePage.getSuccessToast(window)).toBeTruthy();
+    await suiteGuidePage.openSidePanel();
+    await suiteGuidePage.openFeedback();
+    await suiteGuidePage.sendBugreport(testData);
+
+    expectPlaywright(await suiteGuidePage.getSuccessToast()).toBeTruthy();
+    await suiteGuidePage.closeGuide();
 });
 
 /**
@@ -51,11 +31,12 @@ testPlaywright('Send a bug report', async () => {
  * 2. Look up an article
  * 3. Verify that the article is displayed
  */
-testPlaywright('Look up an article', async () => {
+testPlaywright('Look up an article', async ({ suiteGuidePage }) => {
     const article = 'Install firmware';
 
-    await onSuiteGuidePage.openSidePanel(window);
-    await onSuiteGuidePage.lookupArticle(window, article);
+    await suiteGuidePage.openSidePanel();
+    await suiteGuidePage.lookupArticle(article);
 
-    expectPlaywright(onSuiteGuidePage.getArticleHeader(window)).toContainText(article);
+    expectPlaywright(suiteGuidePage.getArticleHeader()).toContainText(article);
+    await suiteGuidePage.closeGuide();
 });
