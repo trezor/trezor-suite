@@ -65,6 +65,10 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
 
     autoUpdater.logger = null;
 
+    if (process.platform === 'linux') {
+        autoUpdater.disableDifferentialDownload = true;
+    }
+
     autoUpdater.setFeedURL(feedURL);
     logger.warn(SERVICE_NAME, [`Feed url: ${feedURL}`]);
 
