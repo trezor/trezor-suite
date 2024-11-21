@@ -592,7 +592,7 @@ const onCallDevice = async (
         call =>
             call &&
             call !== method &&
-            call.device.getUniquePath() === method.device.getUniquePath(),
+            call.device?.getUniquePath() === method.device.getUniquePath(),
     );
     if (previousCall.length > 0 && method.overridePreviousCall) {
         // set flag for each pending method
