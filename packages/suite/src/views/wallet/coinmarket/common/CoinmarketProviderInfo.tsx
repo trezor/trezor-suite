@@ -1,7 +1,9 @@
-import { Row } from '@trezor/components';
+import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { Translation } from 'src/components/suite';
 import invityAPI from 'src/services/suite/invityAPI';
+import { CoinmarketIcon } from 'src/views/wallet/coinmarket/common/CoinmarketIcon';
 
 export interface CoinmarketProviderInfoProps {
     exchange?: string;
@@ -19,19 +21,16 @@ export const CoinmarketProviderInfo = ({ exchange, providers }: CoinmarketProvid
 
     return (
         <Row data-testid="@coinmarket/form/info/provider" gap={spacings.xs}>
-            {!exchange && 'Unknown provider'}
-            {!provider && exchange}
-            {provider && (
+            {!exchange && <Translation id="TR_COINMARKET_UNKNOWN_PROVIDER" />}
+            {provider ? (
                 <>
                     {provider.logo && (
-                        <img
-                            width="16px"
-                            src={invityAPI.getProviderLogoUrl(provider.logo)}
-                            alt=""
-                        />
+                        <CoinmarketIcon iconUrl={invityAPI.getProviderLogoUrl(provider.logo)} />
                     )}
-                    {provider.brandName || provider.companyName}
+                    {provider.brandName ?? provider.companyName}
                 </>
+            ) : (
+                <Text margin={{ left: spacings.xxl }}>{exchange}</Text>
             )}
         </Row>
     );

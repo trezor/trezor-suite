@@ -2,7 +2,6 @@ import { DefaultTheme, useTheme } from 'styled-components';
 import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
 import { Icon, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { getStatusMessage as getBuyStatusMessage } from 'src/utils/wallet/coinmarket/buyUtils';
@@ -131,7 +130,7 @@ export const CoinmarketTransactionStatus = ({ trade }: CoinmarketTransactionStat
     if (!data) return null;
 
     return (
-        <Row margin={{ left: spacings.xxs }}>
+        <Row>
             <Icon color={data.color} size={10} name={data.icon} margin={{ right: 4 }} />
             <Text color={data.color} data-testid="@coinmarket/transaction/status">
                 <Translation id={data.statusMessageId} />

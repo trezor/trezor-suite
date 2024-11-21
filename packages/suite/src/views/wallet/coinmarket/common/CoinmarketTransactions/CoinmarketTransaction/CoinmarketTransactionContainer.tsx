@@ -16,13 +16,9 @@ export const CoinmarketTransactionContainer = ({
     const isMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.SM})`);
 
     return (
-        <Card fillType="none">
+        <Card fillType="none" margin={{ bottom: spacings.lg }}>
             <Row flexWrap={isBelowDesktop ? 'wrap' : undefined}>
-                <Column
-                    alignItems="flex-start"
-                    flex="auto"
-                    width={isBelowDesktop ? 'calc(100% - 180px)' : '100%'}
-                >
+                <Column flex="auto" width={isBelowDesktop ? 'calc(100% - 180px)' : '100%'}>
                     {TradeDetail}
                 </Column>
                 <Column

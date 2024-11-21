@@ -1,4 +1,4 @@
-import { Text } from '@trezor/components';
+import { InfoSegments } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedDate } from 'src/components/suite';
@@ -26,9 +26,10 @@ export const CoinmarketTransactionInfo = ({ trade }: CoinmarketTransactionInfoPr
     const tradeType = translationString(translationKeys[trade.tradeType]).toUpperCase();
 
     return (
-        <Text margin={{ top: spacings.xs }} variant="tertiary" typographyStyle="label" as="div">
-            {tradeType} • <FormattedDate value={date} date time /> •{' '}
+        <InfoSegments variant="tertiary" typographyStyle="label" margin={{ top: spacings.xs }}>
+            {tradeType}
+            <FormattedDate value={date} date time />
             <CoinmarketTransactionStatus trade={trade} />
-        </Text>
+        </InfoSegments>
     );
 };
