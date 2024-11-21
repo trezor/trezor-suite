@@ -22,7 +22,6 @@ type NetworkSymbol =
     | 'dgb'
     | 'doge'
     | 'nmc'
-    | 'vtc'
     | 'zec'
     | 'test'
     | 'regtest'

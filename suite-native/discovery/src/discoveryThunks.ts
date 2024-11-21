@@ -61,7 +61,6 @@ const DISCOVERY_BATCH_SIZE_PER_COIN: Partial<Record<NetworkSymbol, number>> = {
     btg: 1,
     dgb: 1,
     nmc: 1,
-    vtc: 1,
     zec: 1,
     etc: 1,
 };
