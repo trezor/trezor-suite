@@ -1,10 +1,10 @@
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    authorizeDeviceThunk,
     deviceActions,
     selectDevice,
     selectDeviceThunk,
     selectDevices,
+    createDeviceInstanceThunk,
 } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
@@ -85,10 +85,20 @@ export const verifyPassphraseOnEmptyWalletThunk = createThunk<
 
 export const retryPassphraseAuthenticationThunk = createThunk(
     `${PASSPHRASE_MODULE_PREFIX}/retryPassphraseAuthentication`,
-    (_, { dispatch, getState }) => {
+    (_, { dispatch, getState, extra }) => {
         const device = selectDevice(getState());
 
         if (!device) return;
-        dispatch(authorizeDeviceThunk({ shouldIgnoreDeviceState: true }));
+
+        const settings = extra.selectors.selectSuiteSettings(getState());
+
+        // Remove device on which the passphrase flow was restarted
+        dispatch(deviceActions.forgetDevice({ device, settings }));
+
+        const newDevice = selectDevice(getState());
+
+        if (!newDevice) return;
+
+        dispatch(createDeviceInstanceThunk({ device: newDevice, useEmptyPassphrase: false }));
     },
 );
