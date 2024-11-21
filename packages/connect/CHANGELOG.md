@@ -10,6 +10,19 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.4.4-beta.1
+
+## Feature
+
+-   Show bundleprogress in popup. This is helpful when a 3rd party requests a big bundle of addresses which might take long to process (5cf9963)
+
+## Fixes
+
+-   Fixing a bug in ethereum serialization of empty strings as hex that was causing issues when signing. (c2f6521). This was caused by @ethereumjs libs update (2d6465f, d6bc8c5020) in 9.4.3
+-   preferred device handling based on (passphrase) state instead of path (58b854c)
+-   fix "BetaOnly" component that is supposed to hide selected parts of content in beta environments (fdb433a)
+-   blockchainEvmRpcCall postMessage instance not propagated correctly (c98a08e)
+
 # 9.4.3
 
 This release introduces `@trezor/connect-mobile`, which allows mobile apps to integrate with Trezor Suite mobile using deeplinks. This package is still beta and work in progress.
