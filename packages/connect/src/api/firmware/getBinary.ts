@@ -1,6 +1,8 @@
 import { httpRequest } from '../../utils/assets';
 import { FirmwareRelease } from '../../types';
 
+const ALL_SLASHES_AT_THE_END_REGEX = /\/+$/;
+
 interface GetBinaryProps {
     baseUrl: string;
     btcOnly?: boolean;
@@ -9,7 +11,8 @@ interface GetBinaryProps {
 
 export const getBinary = ({ baseUrl, btcOnly, release }: GetBinaryProps) => {
     const fwUrl = release[btcOnly ? 'url_bitcoinonly' : 'url'];
-    const url = `${baseUrl}/${fwUrl}`;
+    const sanitizedBaseUrl = baseUrl.replace(ALL_SLASHES_AT_THE_END_REGEX, '');
+    const url = `${sanitizedBaseUrl}/${fwUrl}`;
 
     return httpRequest(url, 'binary');
 };

@@ -9153,12 +9153,12 @@ __metadata:
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/suite-utils": "workspace:^"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:^"
     "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     redux-mock-store: "npm:^1.5.4"
     redux-thunk: "npm:^2.4.2"
@@ -9385,7 +9385,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/suite-utils@workspace:*, @suite-common/suite-utils@workspace:^, @suite-common/suite-utils@workspace:suite-common/suite-utils":
+"@suite-common/suite-utils@workspace:*, @suite-common/suite-utils@workspace:suite-common/suite-utils":
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-utils@workspace:suite-common/suite-utils"
   dependencies:

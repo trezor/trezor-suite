@@ -7,9 +7,9 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     UI_EVENT,
 } from '@trezor/connect';
+import { DATA_URL } from '@trezor/urls';
 import { createDeferred, getSynchronize } from '@trezor/utils';
 import { deviceConnectThunks, selectDevice } from '@suite-common/wallet-core';
-import { resolveConnectPath } from '@suite-common/suite-utils';
 import { isDesktop, isNative } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { serializeError } from '@trezor/connect/src/constants/errors';
@@ -143,11 +143,9 @@ export const connectInitThunk = createThunk(
             }
         }
 
-        // Duplicates `getBinFilesBaseUrlThunk`, because calling any other thunk would change store.getActions() history,
-        // and it would be impossible to test this thunk in isolation (many unit tests depend on it).
         const binFilesBaseUrl = isDesktop()
             ? extra.selectors.selectDesktopBinDir(getState())
-            : resolveConnectPath('data');
+            : DATA_URL;
 
         try {
             await TrezorConnect.init({
