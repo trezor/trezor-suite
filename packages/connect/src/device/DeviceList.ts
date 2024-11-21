@@ -390,7 +390,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         const waitForDevicesPromise =
             initParams.pendingTransportEvent && descriptors.length
-                ? this.waitForDevices(transport, descriptors.length, signal)
+                ? this.waitForDevices(transport, descriptors, signal)
                 : Promise.resolve();
 
         transport.handleDescriptorsChange(descriptors);
@@ -412,7 +412,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
      * implementator could get stuck waiting from TRANSPORT.START event forever. To avoid this,
      * we emit TRANSPORT.START event after autoResolveTransportEventTimeout
      */
-    private waitForDevices(transport: Transport, deviceCount: number, signal: AbortSignal) {
+    private waitForDevices(transport: Transport, descriptors: Descriptor[], signal: AbortSignal) {
         const { promise, reject, resolve } = createDeferred();
 
         const onAbort = () => reject(signal.reason);
@@ -423,25 +423,28 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         const autoResolveTransportEventTimeout = setTimeout(resolve, 10000);
 
-        let transportStartPending = deviceCount;
+        const remaining = descriptors.slice();
 
-        const onDeviceConnect = () => {
-            transportStartPending--;
-            if (transportStartPending === 0) {
-                resolve();
-            }
+        const onDeviceEvent = (device: Device) => {
+            const index = remaining.findIndex(
+                d => d.path === device.transportPath && transport === device.transport,
+            );
+            if (index >= 0) remaining.splice(index, 1);
+            if (!remaining.length) resolve();
         };
 
         // listen for self emitted events and resolve pending transport event if needed
-        this.on(DEVICE.CONNECT, onDeviceConnect);
-        this.on(DEVICE.CONNECT_UNACQUIRED, onDeviceConnect);
+        this.on(DEVICE.CONNECT, onDeviceEvent);
+        this.on(DEVICE.CONNECT_UNACQUIRED, onDeviceEvent);
+        this.on(DEVICE.DISCONNECT, onDeviceEvent);
 
         return promise.finally(() => {
             transport.off(TRANSPORT.ERROR, onError);
             signal.removeEventListener('abort', onAbort);
             clearTimeout(autoResolveTransportEventTimeout);
-            this.off(DEVICE.CONNECT, onDeviceConnect);
-            this.off(DEVICE.CONNECT_UNACQUIRED, onDeviceConnect);
+            this.off(DEVICE.CONNECT, onDeviceEvent);
+            this.off(DEVICE.CONNECT_UNACQUIRED, onDeviceEvent);
+            this.off(DEVICE.DISCONNECT, onDeviceEvent);
         });
     }
 
