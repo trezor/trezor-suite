@@ -8,7 +8,6 @@ import {
     selectHasExperimentalFeature,
     selectIsSettingsDesktopAppPromoBannerShown,
     selectTorState,
-    selectIsDebugModeActive,
 } from 'src/reducers/suite/suiteReducer';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
@@ -58,7 +57,6 @@ export const SettingsGeneral = () => {
 
     const isMetadataEnabled = metadata.enabled && !metadata.initiating;
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
-    const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
     return (
         <SettingsLayout data-testid="@settings/index">
@@ -104,7 +102,7 @@ export const SettingsGeneral = () => {
                 <EnableViewOnly />
             </SettingsSection>
 
-            {isDesktop() && isDebugModeActive && (
+            {isDesktop() && (
                 <SettingsSection title={<Translation id="TR_TREZOR_CONNECT" />} icon="plugs">
                     <AutoStart />
                     <ShowOnTray />
