@@ -990,21 +990,21 @@ const initDeviceList = (context: CoreContext) => {
 
     deviceList.on(DEVICE.CONNECT, device => {
         handleDeviceSelectionChanges(context);
-        sendCoreMessage(createDeviceMessage(DEVICE.CONNECT, device));
+        sendCoreMessage(createDeviceMessage(DEVICE.CONNECT, device.toMessageObject()));
     });
 
     deviceList.on(DEVICE.CONNECT_UNACQUIRED, device => {
         handleDeviceSelectionChanges(context);
-        sendCoreMessage(createDeviceMessage(DEVICE.CONNECT_UNACQUIRED, device));
+        sendCoreMessage(createDeviceMessage(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject()));
     });
 
     deviceList.on(DEVICE.DISCONNECT, device => {
         handleDeviceSelectionChanges(context);
-        sendCoreMessage(createDeviceMessage(DEVICE.DISCONNECT, device));
+        sendCoreMessage(createDeviceMessage(DEVICE.DISCONNECT, device.toMessageObject()));
     });
 
     deviceList.on(DEVICE.CHANGED, device => {
-        sendCoreMessage(createDeviceMessage(DEVICE.CHANGED, device));
+        sendCoreMessage(createDeviceMessage(DEVICE.CHANGED, device.toMessageObject()));
     });
 
     deviceList.on(TRANSPORT.START, transportType =>

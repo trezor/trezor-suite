@@ -15,12 +15,7 @@ import { Descriptor, PathPublic } from '@trezor/transport/src/types';
 import { ERRORS } from '../constants';
 import { DEVICE, TransportInfo } from '../events';
 import { Device } from './Device';
-import {
-    ConnectSettings,
-    DeviceUniquePath,
-    Device as DeviceTyped,
-    StaticSessionId,
-} from '../types';
+import { ConnectSettings, DeviceUniquePath, StaticSessionId } from '../types';
 import { getBridgeInfo } from '../data/transportInfo';
 import { initLog } from '../utils/debug';
 import { abortablePromise } from '../utils/abortablePromise';
@@ -89,10 +84,10 @@ const createDeviceCollection = () => {
 interface DeviceListEvents {
     [TRANSPORT.START]: TransportInfo;
     [TRANSPORT.ERROR]: string;
-    [DEVICE.CONNECT]: DeviceTyped;
-    [DEVICE.CONNECT_UNACQUIRED]: DeviceTyped;
-    [DEVICE.DISCONNECT]: DeviceTyped;
-    [DEVICE.CHANGED]: DeviceTyped;
+    [DEVICE.CONNECT]: Device;
+    [DEVICE.CONNECT_UNACQUIRED]: Device;
+    [DEVICE.DISCONNECT]: Device;
+    [DEVICE.CHANGED]: Device;
 }
 
 export interface IDeviceList {
@@ -265,7 +260,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
             id: DeviceUniquePath(id),
             transport,
             descriptor,
-            listener: lifecycle => this.emit(lifecycle, device.toMessageObject()),
+            listener: lifecycle => this.emit(lifecycle, device),
         });
         this.devices.add(device);
 
@@ -505,7 +500,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         // disconnect devices
         devices.forEach(device => {
             // device.disconnect();
-            this.emit(DEVICE.DISCONNECT, device.toMessageObject());
+            this.emit(DEVICE.DISCONNECT, device);
         });
 
         // release all devices
