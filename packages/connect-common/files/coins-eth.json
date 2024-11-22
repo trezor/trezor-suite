@@ -83,6 +83,26 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
+                "url": ["https://base1.trezor.io", "https://base2.trezor.io"]
+            },
+            "chain": "base",
+            "chain_id": 8453,
+            "coingecko_id": "base",
+            "is_testnet": false,
+            "name": "Base",
+            "shortcut": "BASE",
+            "slip44": 1,
+            "support": {
+                "T1B1": "1.9.4",
+                "T2B1": "2.6.1",
+                "T2T1": "2.3.5",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1"
+            }
+        },
+        {
+            "blockchain_link": {
+                "type": "blockbook",
                 "url": ["https://op1.trezor.io", "https://op2.trezor.io"]
             },
             "chain": "op",
