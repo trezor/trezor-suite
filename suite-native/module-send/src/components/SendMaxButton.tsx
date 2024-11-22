@@ -9,9 +9,8 @@ import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { Button } from '@suite-native/atoms';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { useFormContext } from '@suite-native/forms';
+import { useField, useFormContext } from '@suite-native/forms';
 import { useDebounce } from '@trezor/react-utils';
-import { isAddressValid } from '@suite-common/wallet-utils';
 import { Translation } from '@suite-native/intl';
 import { selectAccountTokenBalance, TokensRootState } from '@suite-native/tokens';
 
@@ -28,6 +27,7 @@ type SendMaxButtonProps = {
 export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMaxButtonProps) => {
     const dispatch = useDispatch();
     const debounce = useDebounce();
+
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -36,19 +36,21 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
         selectAccountTokenBalance(state, accountKey, tokenContract),
     );
 
+    const { hasError: hasAddressError, isTouched: isAddressTouched } = useField({
+        name: getOutputFieldName(outputIndex, 'address'),
+    });
+
     const [maxAmountValue, setMaxAmountValue] = useState<string | null>();
 
     const converters = useCryptoFiatConverters({ networkSymbol: networkSymbol!, tokenContract });
     const { setValue, watch } = useFormContext<SendOutputsFormValues>();
 
     const formValues = watch();
-    const addressValue = formValues.outputs[outputIndex]?.address;
 
-    const hasOutputValidAddress =
-        addressValue && networkSymbol && isAddressValid(addressValue, networkSymbol);
+    const isAddressValid = isAddressTouched && !hasAddressError;
 
     const isMainnetSendMaxAvailable =
-        !tokenContract && formValues.outputs.length === 1 && hasOutputValidAddress;
+        !tokenContract && formValues.outputs.length === 1 && isAddressValid;
     const isSendMaxAvailable = tokenContract || isMainnetSendMaxAvailable;
 
     const calculateFeeLevelsMaxAmount = useCallback(async () => {
@@ -90,14 +92,10 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
     };
 
     return (
-        isSendMaxAvailable && (
+        isSendMaxAvailable &&
+        maxAmountValue && (
             <Animated.View entering={FadeIn}>
-                <Button
-                    size="small"
-                    colorScheme="tertiaryElevation0"
-                    onPress={setOutputSendMax}
-                    isLoading={!maxAmountValue}
-                >
+                <Button size="small" colorScheme="tertiaryElevation0" onPress={setOutputSendMax}>
                     <Translation id="moduleSend.outputs.recipients.maxButton" />
                 </Button>
             </Animated.View>

@@ -14,6 +14,7 @@ import {
     SendRootState,
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
+    selectDeviceUnavailableCapabilities,
     selectNetworkFeeInfo,
     selectSendFormDraftByKey,
     sendFormActions,
@@ -96,6 +97,8 @@ export const SendOutputsScreen = ({
         selectSendFormDraftByKey(state, accountKey, tokenContract),
     );
 
+    const deviceUnavailableCapabilities = useSelector(selectDeviceUnavailableCapabilities);
+
     const network = account ? getNetwork(account.symbol) : null;
 
     const form = useForm<SendOutputsFormValues>({
@@ -111,6 +114,7 @@ export const SendOutputsScreen = ({
             isValueInSats: isAmountInSats,
             feeLevelsMaxAmount,
             decimals: tokenInfo?.decimals ?? network?.decimals,
+            isTaprootAvailable: !deviceUnavailableCapabilities?.taproot,
         },
         defaultValues: getDefaultValues({ tokenContract }),
     });

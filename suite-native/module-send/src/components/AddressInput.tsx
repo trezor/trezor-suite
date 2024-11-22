@@ -57,7 +57,10 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     // Debug helper to fill opened account address.
     const fillSelfAddress = () => {
         if (freshAccountAddress)
-            setValue(addressFieldName, freshAccountAddress.address, { shouldValidate: true });
+            setValue(addressFieldName, freshAccountAddress.address, {
+                shouldValidate: true,
+                shouldTouch: true,
+            });
     };
 
     return (

@@ -28,7 +28,7 @@ export const useField = ({
 
     const {
         field: { onBlur, onChange, value },
-        fieldState: { error, isDirty },
+        fieldState: { error, isDirty, isTouched },
     } = useController({
         name,
         control,
@@ -47,6 +47,7 @@ export const useField = ({
         errorMessage,
         hasError,
         isDirty,
+        isTouched,
         value: transformedValue,
         onBlur,
         onChange,

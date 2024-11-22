@@ -2,7 +2,14 @@ import { G } from '@mobily/ts-belt';
 
 import { BigNumber } from '@trezor/utils';
 import { getNetworkType, NetworkSymbol } from '@suite-common/wallet-config';
-import { formatNetworkAmount, isAddressValid, isDecimalsValid } from '@suite-common/wallet-utils';
+import {
+    formatNetworkAmount,
+    isAddressDeprecated,
+    isAddressValid,
+    isBech32AddressUppercase,
+    isDecimalsValid,
+    isTaprootAddress,
+} from '@suite-common/wallet-utils';
 import { FeeInfo } from '@suite-common/wallet-types';
 import { yup } from '@suite-common/validators';
 import { U_INT_32 } from '@suite-common/wallet-constants';
@@ -18,6 +25,7 @@ export type SendFormFormContext = {
     feeLevelsMaxAmount?: FeeLevelsMaxAmount;
     decimals?: number;
     accountDescriptor?: string;
+    isTaprootAvailable?: boolean;
 };
 
 const isAmountDust = (amount: string, context?: SendFormFormContext) => {
@@ -89,12 +97,21 @@ export const sendOutputsFormValidationSchema = yup.object({
                         'is-invalid-address',
                         'The address format is incorrect.',
                         (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                            const networkSymbol = context?.networkSymbol;
+                            if (!value || !context) {
+                                return false;
+                            }
+                            const { networkSymbol, isTaprootAvailable } = context;
+
+                            if (!networkSymbol) return false;
+
+                            const isTaprootValid =
+                                isTaprootAvailable || !isTaprootAddress(value, networkSymbol);
 
                             return (
-                                G.isNotNullable(value) &&
-                                G.isNotNullable(networkSymbol) &&
-                                isAddressValid(value, networkSymbol)
+                                isAddressValid(value, networkSymbol) &&
+                                !isAddressDeprecated(value, networkSymbol) &&
+                                !isBech32AddressUppercase(value) && // bech32 addresses are valid as uppercase but are not accepted by Trezor
+                                isTaprootValid // bech32m/Taproot addresses are valid but may not be supported by older FW
                             );
                         },
                     )
