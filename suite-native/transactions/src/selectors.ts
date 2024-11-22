@@ -102,7 +102,7 @@ export const selectTransactionInputAndOutputTransfers = createMemoizedSelector(
             const externalTransfers: TransactionTranfer[] = [
                 {
                     inputs: [{ address: transaction.descriptor }],
-                    outputs: [{ address: transaction.targets?.[0].addresses?.[0] ?? '' }],
+                    outputs: [{ address: transaction.targets?.[0]?.addresses?.[0] ?? '' }],
                     symbol: transaction.symbol,
                 },
             ];
