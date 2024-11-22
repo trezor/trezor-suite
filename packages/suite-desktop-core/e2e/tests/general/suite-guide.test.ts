@@ -1,6 +1,4 @@
-import { expect as expectPlaywright } from '@playwright/test';
-
-import { test as testPlaywright } from '../../support/fixtures';
+import { test, expect } from '../../support/fixtures';
 
 /**
  * Test case:
@@ -9,7 +7,7 @@ import { test as testPlaywright } from '../../support/fixtures';
  * 3. Write into feedback field
  * 4. Submit bug report (reporttext)
  */
-testPlaywright('Send a bug report', async ({ dashboardPage, suiteGuidePage }) => {
+test('Send a bug report', async ({ dashboardPage, suiteGuidePage }) => {
     const testData = {
         desiredLocation: 'Account',
         reportText: 'Henlo this is testy test writing hangry test user report',
@@ -21,7 +19,7 @@ testPlaywright('Send a bug report', async ({ dashboardPage, suiteGuidePage }) =>
     await suiteGuidePage.openFeedback();
     await suiteGuidePage.sendBugreport(testData);
 
-    expectPlaywright(await suiteGuidePage.getSuccessToast()).toBeTruthy();
+    expect(await suiteGuidePage.getSuccessToast()).toBeTruthy();
     await suiteGuidePage.closeGuide();
 });
 
@@ -31,12 +29,12 @@ testPlaywright('Send a bug report', async ({ dashboardPage, suiteGuidePage }) =>
  * 2. Look up an article
  * 3. Verify that the article is displayed
  */
-testPlaywright('Look up an article', async ({ suiteGuidePage }) => {
+test('Look up an article', async ({ suiteGuidePage }) => {
     const article = 'Install firmware';
 
     await suiteGuidePage.openSidePanel();
     await suiteGuidePage.lookupArticle(article);
 
-    expectPlaywright(suiteGuidePage.getArticleHeader()).toContainText(article);
+    expect(suiteGuidePage.getArticleHeader()).toContainText(article);
     await suiteGuidePage.closeGuide();
 });

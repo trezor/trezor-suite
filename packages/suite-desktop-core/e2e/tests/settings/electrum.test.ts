@@ -1,9 +1,8 @@
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { test } from '../../support/fixtures';
 
-import { test as testPlaywright } from '../../support/fixtures';
-
-testPlaywright.describe.serial('Suite works with Electrum server', () => {
-    testPlaywright.beforeAll(async () => {
+test.describe.serial('Suite works with Electrum server', () => {
+    test.beforeAll(async () => {
         await TrezorUserEnvLink.stopBridge();
         await TrezorUserEnvLink.connect();
         await TrezorUserEnvLink.startEmu({ wipe: true });
@@ -13,7 +12,7 @@ testPlaywright.describe.serial('Suite works with Electrum server', () => {
         });
     });
 
-    testPlaywright(
+    test(
         'Electrum completes discovery successfully',
         async ({ dashboardPage, topBar, settingsPage }) => {
             const electrumUrl = '127.0.0.1:50001:t';

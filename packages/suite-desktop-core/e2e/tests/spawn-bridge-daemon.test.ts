@@ -1,19 +1,17 @@
-import { test as testPlaywright, expect as expectPlaywright } from '@playwright/test';
-
+import { test, expect } from '../support/fixtures';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { createTimeoutPromise } from '@trezor/utils';
-
 import { launchSuite, launchSuiteElectronApp, waitForDataTestSelector } from '../support/common';
 
-testPlaywright.describe.serial('Bridge', () => {
-    testPlaywright.beforeAll(async () => {
+test.describe.serial('Bridge', () => {
+    test.beforeAll(async () => {
         // We make sure that bridge from trezor-user-env is stopped.
         // So we properly test the electron app starting node-bridge module.
         await TrezorUserEnvLink.connect();
         await TrezorUserEnvLink.stopBridge();
     });
 
-    testPlaywright('App in daemon mode spawns bridge', async ({ request }) => {
+    test('App in daemon mode spawns bridge', async ({ request }) => {
         const daemonApp = await launchSuiteElectronApp({
             bridgeDaemon: true,
             bridgeLegacyTest: false,
@@ -24,12 +22,12 @@ testPlaywright.describe.serial('Bridge', () => {
 
         // bridge is running
         const bridgeRes1 = await request.get('http://127.0.0.1:21325/status/');
-        await expectPlaywright(bridgeRes1).toBeOK();
+        await expect(bridgeRes1).toBeOK();
 
         // launch UI
         const suite = await launchSuite();
         const title = await suite.window.title();
-        expectPlaywright(title).toContain('Trezor Suite');
+        expect(title).toContain('Trezor Suite');
 
         // We wait for `@welcome/title` or `@dashboard/graph` since
         // one or the other will be display depending on the state of the app
@@ -42,13 +40,13 @@ testPlaywright.describe.serial('Bridge', () => {
 
         // bridge is still running
         const bridgeRes2 = await request.get('http://127.0.0.1:21325/status/');
-        await expectPlaywright(bridgeRes2).toBeOK();
+        await expect(bridgeRes2).toBeOK();
 
         await suite.electronApp.close();
 
         // bridge is still running
         const bridgeRes3 = await request.get('http://127.0.0.1:21325/status/');
-        await expectPlaywright(bridgeRes3).toBeOK();
+        await expect(bridgeRes3).toBeOK();
 
         await daemonApp.close();
 

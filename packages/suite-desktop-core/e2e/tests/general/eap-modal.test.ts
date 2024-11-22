@@ -1,6 +1,4 @@
-import { expect as expectPlaywright } from '@playwright/test';
-
-import { test as testPlaywright } from '../../support/fixtures';
+import { test, expect } from '../../support/fixtures';
 
 /**
  * Test case:
@@ -11,7 +9,7 @@ import { test as testPlaywright } from '../../support/fixtures';
  * 5. Check if there is a button with `Leave` on it
  */
 // TODO: FIX settings cleanup:  eap setting is remembered even after cache cleanup at the beginning of the test. This shouldn't affect gha run but breaks the local one.
-testPlaywright('Join early access button', async ({ dashboardPage, topBar, settingsPage }) => {
+test('Join early access button', async ({ dashboardPage, topBar, settingsPage }) => {
     const buttonText = 'Leave';
 
     dashboardPage.optionallyDismissFwHashCheckError();
@@ -19,5 +17,5 @@ testPlaywright('Join early access button', async ({ dashboardPage, topBar, setti
     await settingsPage.goToDesiredSettingsPlace('general');
     await settingsPage.joinEarlyAccessProgram();
 
-    expectPlaywright(await settingsPage.getEarlyAccessButtonText()).toContain(buttonText);
+    expect(await settingsPage.getEarlyAccessButtonText()).toContain(buttonText);
 });

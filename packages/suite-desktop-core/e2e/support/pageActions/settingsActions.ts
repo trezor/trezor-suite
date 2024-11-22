@@ -1,7 +1,5 @@
 import { Page } from '@playwright/test';
-
 import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
-
 import { waitForDataTestSelector } from '../common';
 
 export class SettingsActions {
@@ -21,6 +19,9 @@ export class SettingsActions {
     }
 
     async goToDesiredSettingsPlace(desiredLocation: 'debug' | 'general' | 'device' | 'wallet') {
+        //TODO: Investigate if this is neccessary. Ideally there should be simple test for navigation
+        //and all other test does not need to verify the navigation, they will check elements on that page instead.
+        // and there should never happen default case as typescript should allow only those 4 values in union.
         let desiredLocationTestid: string;
         switch (desiredLocation) {
             case 'debug':
@@ -62,13 +63,13 @@ export class SettingsActions {
     }
 
     async changeNetworkBackend(desiredNetworkBackend: BackendType, backendUrl: string) {
-        const networkBackendSelector = await this.window.getByTestId(
+        const networkBackendSelector = this.window.getByTestId(
             '@settings/advance/select-type/input',
         );
         await networkBackendSelector.waitFor({ state: 'visible' });
         await networkBackendSelector.click();
         await this.window.getByTestId(`@settings/advance/${desiredNetworkBackend}`).click();
-        const electrumAddressInput = await this.window.getByTestId('@settings/advance/url');
+        const electrumAddressInput = this.window.getByTestId('@settings/advance/url');
         await electrumAddressInput.fill(backendUrl);
         await this.window.getByTestId('@settings/advance/button/save').click();
     }
@@ -84,9 +85,11 @@ export class SettingsActions {
         await eapModal.getByTestId('@settings/early-access-confirm-button').click();
         await eapModal.getByTestId('@settings/early-access-skip-button').click();
     }
+    
     async getEarlyAccessButtonText() {
-        return await this.window.getByTestId('@settings/early-access-join-button').textContent();
+        return this.window.getByTestId('@settings/early-access-join-button').textContent();
     }
+
     async closeSettings() {
         await this.window.getByTestId('@settings/menu/close').click();
         await this.window.getByTestId('@settings/menu/title').waitFor({ state: 'detached' });

@@ -1,8 +1,7 @@
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { test } from '../../support/fixtures';
 
-import { test as testPlaywright } from '../../support/fixtures';
-
-testPlaywright.beforeAll(async () => {
+test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
     await TrezorUserEnvLink.startEmu({ wipe: true });
     await TrezorUserEnvLink.setupEmu({
@@ -16,7 +15,7 @@ testPlaywright.beforeAll(async () => {
  * 1. Discover a standard wallet
  * 2. Verify discovery by checking a the first btc value under the graph
  */
-testPlaywright('Discover a standard wallet', async ({ dashboardPage }) => {
+test('Discover a standard wallet', async ({ dashboardPage }) => {
     await dashboardPage.passThroughInitialRun();
     await dashboardPage.discoveryShouldFinish();
 

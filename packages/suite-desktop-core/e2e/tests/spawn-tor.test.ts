@@ -1,5 +1,5 @@
-import { Page, test as testPlaywright, expect as expectPlaywright } from '@playwright/test';
-
+import { Page } from '@playwright/test';
+import { test, expect } from '../support/fixtures';
 import { launchSuite } from '../support/common';
 import { NetworkAnalyzer } from '../support/networkAnalyzer';
 
@@ -24,16 +24,16 @@ const turnOnTorInSettings = async (window: Page, shouldEnableTor = true) => {
         state: 'detached',
         timeout,
     });
-    await expectPlaywright(
+    await expect(
         window.locator('[data-testid="@settings/general/tor-switch"] > input'),
     ).toBeChecked();
 
     await window.waitForTimeout(1000);
 };
 
-testPlaywright.describe.skip('Tor loading screen', () => {
-    testPlaywright('Tor loading screen: happy path', async () => {
-        testPlaywright.setTimeout(timeout);
+test.describe.skip('Tor loading screen', () => {
+    test('Tor loading screen: happy path', async () => {
+        test.setTimeout(timeout);
 
         let suite = await launchSuite();
 
@@ -52,10 +52,10 @@ testPlaywright.describe.skip('Tor loading screen', () => {
         suite.electronApp.close();
     });
 
-    testPlaywright(
+    test(
         'Tor loading screen: making sure that all the request go throw Tor',
         async () => {
-            testPlaywright.setTimeout(timeout);
+            test.setTimeout(timeout);
 
             const networkAnalyzer = new NetworkAnalyzer();
 
@@ -77,15 +77,15 @@ testPlaywright.describe.skip('Tor loading screen', () => {
             networkAnalyzer.stop();
             const requests = networkAnalyzer.getRequests();
             requests.forEach(request => {
-                expectPlaywright(request).toContain('localhost:');
+                expect(request).toContain('localhost:');
             });
 
             suite.electronApp.close();
         },
     );
 
-    testPlaywright('Tor loading screen: disable tor while loading', async () => {
-        testPlaywright.setTimeout(timeout);
+    test('Tor loading screen: disable tor while loading', async () => {
+        test.setTimeout(timeout);
 
         let suite = await launchSuite();
 
@@ -104,7 +104,7 @@ testPlaywright.describe.skip('Tor loading screen', () => {
         suite.window.locator('text=Disabling Tor');
         await suite.window.click('[data-testid="@suite/menu/settings"]');
 
-        await expectPlaywright(
+        await expect(
             suite.window.locator('[data-testid="@settings/general/tor-switch"] > input'),
         ).not.toBeChecked();
 

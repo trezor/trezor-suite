@@ -1,6 +1,5 @@
-import { Page, expect as expectPlaywright } from '@playwright/test';
-
-import { clickDataTest, waitForDataTestSelector } from '../common';
+import { Page, expect } from '@playwright/test';
+import { waitForDataTestSelector } from '../common';
 
 export class SuiteGuide {
     private readonly window: Page;
@@ -9,12 +8,12 @@ export class SuiteGuide {
     }
 
     async openSidePanel() {
-        await clickDataTest(this.window, '@guide/button-open');
+        await this.window.getByTestId('@guide/button-open').click();
         await waitForDataTestSelector(this.window, '@guide/panel');
     }
 
     async openFeedback() {
-        await clickDataTest(this.window, '@guide/button-feedback');
+        await this.window.getByTestId('@guide/button-feedback').click();
     }
 
     async openDesiredForm(formType: string) {
@@ -27,12 +26,9 @@ export class SuiteGuide {
         const suggestionDropdown = this.window.getByTestId('@guide/feedback/suggestion-dropdown');
         await suggestionDropdown.waitFor({ state: 'visible' });
         await suggestionDropdown.click();
-        await clickDataTest(
-            this.window,
-            `@guide/feedback/suggestion-dropdown/select/option/${desiredLocation.toLowerCase()}`,
-        );
+        await this.window.getByTestId(`@guide/feedback/suggestion-dropdown/select/option/${desiredLocation.toLowerCase()}`).click();
         // assert that select value was changed correctly.
-        expectPlaywright(
+        expect(
             this.window.locator('[data-testid="@guide/feedback/suggestion-dropdown/select/input"]'),
         ).toHaveText(desiredLocation);
     }
@@ -46,7 +42,7 @@ export class SuiteGuide {
 
     async submitForm() {
         const submitButton = await this.window.getByTestId('@guide/feedback/submit-button');
-        await expectPlaywright(submitButton).toBeEnabled({ timeout: 20000 });
+        await expect(submitButton).toBeEnabled({ timeout: 20000 });
         await submitButton.click();
     }
 

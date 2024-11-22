@@ -1,10 +1,7 @@
-import { expect as expectPlaywright } from '@playwright/test';
-
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link/src';
+import { test, expect } from '../../support/fixtures';
 
-import { test as testPlaywright } from '../../support/fixtures';
-
-testPlaywright.beforeAll(async () => {
+test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
     await TrezorUserEnvLink.startEmu({ wipe: true });
     await TrezorUserEnvLink.setupEmu({
@@ -14,7 +11,7 @@ testPlaywright.beforeAll(async () => {
     });
 });
 
-testPlaywright.afterAll(() => {
+test.afterAll(() => {
     TrezorUserEnvLink.stopEmu();
 });
 
@@ -24,7 +21,7 @@ testPlaywright.afterAll(() => {
  * 2. Check that all types of Cardano accounts are discovered
  * 3. Check that Staking section is available
  */
-testPlaywright.skip(
+test.skip(
     'Discover all Cardano account types',
     async ({ dashboardPage, topBar, settingsPage, walletPage }) => {
         await dashboardPage.passThroughInitialRun();
@@ -41,6 +38,6 @@ testPlaywright.skip(
         await walletPage.clickAllAccountArrows();
         await walletPage.enableAllCardanoAccounts();
 
-        expectPlaywright(await walletPage.getAccountsCount('ada')).toEqual(3);
+        expect(await walletPage.getAccountsCount('ada')).toEqual(3);
     },
 );

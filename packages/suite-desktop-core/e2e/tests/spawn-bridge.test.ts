@@ -1,22 +1,20 @@
-import { test as testPlaywright, expect as expectPlaywright } from '@playwright/test';
-
+import { test, expect } from '../support/fixtures';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-
 import { launchSuite, LEGACY_BRIDGE_VERSION, waitForDataTestSelector } from '../support/common';
 import { DashboardActions } from '../support/pageActions/dashboardActions';
 
-testPlaywright.describe.serial('Bridge', () => {
-    testPlaywright.beforeEach(async () => {
+test.describe.serial('Bridge', () => {
+    test.beforeEach(async () => {
         // We make sure that bridge from trezor-user-env is stopped.
         // So we properly test the electron app starting node-bridge module.
         await TrezorUserEnvLink.connect();
         await TrezorUserEnvLink.stopBridge();
     });
 
-    testPlaywright('App spawns bundled bridge and stops it after app quit', async ({ request }) => {
+    test('App spawns bundled bridge and stops it after app quit', async ({ request }) => {
         const suite = await launchSuite();
         const title = await suite.window.title();
-        expectPlaywright(title).toContain('Trezor Suite');
+        expect(title).toContain('Trezor Suite');
 
         // We wait for `@welcome/title` or `@dashboard/graph` since
         // one or the other will be display depending on the state of the app
@@ -29,7 +27,7 @@ testPlaywright.describe.serial('Bridge', () => {
 
         // bridge is running
         const bridgeRes1 = await request.get('http://127.0.0.1:21325/status/');
-        await expectPlaywright(bridgeRes1).toBeOK();
+        await expect(bridgeRes1).toBeOK();
 
         const response = await request.post('http://127.0.0.1:21325/', {
             headers: {
@@ -39,14 +37,14 @@ testPlaywright.describe.serial('Bridge', () => {
 
         const json = await response.json();
         const { version } = json;
-        expectPlaywright(version).toEqual(LEGACY_BRIDGE_VERSION);
+        expect(version).toEqual(LEGACY_BRIDGE_VERSION);
 
         // bridge is running after renderer window is refreshed
         await suite.window.reload();
         await suite.window.title();
         // bridge is running
         const bridgeRes2 = await request.get('http://127.0.0.1:21325/status/');
-        await expectPlaywright(bridgeRes2).toBeOK();
+        await expect(bridgeRes2).toBeOK();
 
         await suite.electronApp.close();
 
@@ -59,7 +57,7 @@ testPlaywright.describe.serial('Bridge', () => {
         }
     });
 
-    testPlaywright(
+    test(
         'App acquired device, EXTERNAL bridge is restarted, app reconnects',
         async () => {
             await TrezorUserEnvLink.startEmu({ wipe: true, version: '2-latest', model: 'T2T1' });

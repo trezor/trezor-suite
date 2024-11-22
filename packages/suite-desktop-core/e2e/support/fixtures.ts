@@ -51,3 +51,4 @@ const test = base.extend<{
 });
 
 export { test };
+export { expect } from '@playwright/test';

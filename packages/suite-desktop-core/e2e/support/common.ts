@@ -81,9 +81,6 @@ export const launchSuite = async (params: LaunchSuiteParams = {}) => {
     return { electronApp, window };
 };
 
+//TODO: Get rid of this as part of Locators refactoring
 export const waitForDataTestSelector = (window: Page, selector: string, options = {}) =>
     window.waitForSelector(`[data-testid="${selector}"]`, options);
-
-export const clickDataTest = async (window: Page, selector: string) => {
-    await window.locator(`[data-testid="${selector}"]`).click();
-};
