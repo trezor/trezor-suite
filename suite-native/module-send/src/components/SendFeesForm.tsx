@@ -185,7 +185,7 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
                                     tokenContract={tokenContract}
                                 />
                             )}
-                            <CustomFee />
+                            <CustomFee networkSymbol={account.symbol} />
                         </VStack>
                     </VStack>
                     <FeesFooter

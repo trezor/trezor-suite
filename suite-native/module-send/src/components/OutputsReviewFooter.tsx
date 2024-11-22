@@ -4,8 +4,8 @@ import Animated, { SlideInDown } from 'react-native-reanimated';
 
 import { useAtomValue } from 'jotai';
 import { CommonActions, useNavigation } from '@react-navigation/native';
-import { isFulfilled } from '@reduxjs/toolkit';
 import { G } from '@mobily/ts-belt';
+import { isFulfilled } from '@reduxjs/toolkit';
 
 import {
     AccountsRootState,
@@ -18,23 +18,37 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Button } from '@suite-native/atoms';
-import { RootStackRoutes, AppTabsRoutes, RootStackParamList } from '@suite-native/navigation';
+import {
+    RootStackRoutes,
+    AppTabsRoutes,
+    RootStackParamList,
+    SendStackRoutes,
+    SendStackParamList,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
 import { selectAccountTokenSymbol, TokensRootState } from '@suite-native/tokens';
+import { useAlert } from '@suite-native/alerts';
 
 import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
 import { cleanupSendFormThunk } from '../sendFormThunks';
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
 import { selectIsTransactionAlreadySigned } from '../selectors';
 
-const navigateToAccountDetail = ({
+type NavigationProps = StackToStackCompositeNavigationProps<
+    SendStackParamList,
+    SendStackRoutes.SendOutputsReview,
+    RootStackParamList
+>;
+
+const navigateToTransactionDetail = ({
     accountKey,
     tokenContract,
     txid,
 }: RootStackParamList[RootStackRoutes.TransactionDetail]) =>
-    // Reset navigation stack to the account detail screen with HomeStack as a previous step, so the user can navigate back there.
+    // Reset navigation stack to the transaction detail screen with HomeStack as a previous step, so the user can navigate back there.
     CommonActions.reset({
         index: 1,
         routes: [
@@ -77,8 +91,9 @@ export const OutputsReviewFooter = ({
 }) => {
     const [txid, setTxid] = useState<string>('');
     const dispatch = useDispatch();
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProps>();
     const { applyStyle } = useNativeStyles();
+    const { showAlert } = useAlert();
     const [isSendInProgress, setIsSendInProgress] = useState(false);
     const wasAppLeftDuringReview = useAtomValue(wasAppLeftDuringReviewAtom);
 
@@ -104,7 +119,7 @@ export const OutputsReviewFooter = ({
         // Navigate to transaction detail screen only at the moment when the transaction was already processed by backend and we have all its data.
         if (isTransactionProcessedByBackend) {
             navigation.dispatch(
-                navigateToAccountDetail({
+                navigateToTransactionDetail({
                     accountKey,
                     tokenContract,
                     txid,
@@ -127,7 +142,6 @@ export const OutputsReviewFooter = ({
                 shouldDiscardTransaction: false,
             }),
         );
-
         if (isFulfilled(sendResponse)) {
             const { txid: sentTxid } = sendResponse.payload.payload;
 
@@ -147,7 +161,24 @@ export const OutputsReviewFooter = ({
             }
 
             setTxid(sentTxid);
+
+            return;
         }
+        showAlert({
+            icon: 'warningCircle',
+            title: <Translation id="moduleSend.review.toasts.sendTxnFailed" />,
+            description: sendResponse.payload?.metadata.payload.error ?? sendResponse.error.message,
+            primaryButtonTitle: <Translation id="generic.buttons.close" />,
+            primaryButtonVariant: 'redBold',
+            onPressPrimaryButton: () => {
+                dispatch(cleanupSendFormThunk({ accountKey, shouldDeleteDraft: true }));
+                navigation.navigate(SendStackRoutes.SendOutputs, {
+                    accountKey,
+                    tokenContract,
+                });
+            },
+        });
+        setIsSendInProgress(false);
     };
 
     return (

@@ -5,13 +5,18 @@ import { Box, Button } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useFormContext } from '@suite-native/forms';
+import { getNetworkType, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { CustomFeeBottomSheet } from './CustomFeeBottomSheet';
 import { SendFeesFormValues } from '../sendFeesFormSchema';
 import { CustomFeeCard } from './CustomFeeCard';
 import { NativeSupportedFeeLevel } from '../types';
 
-export const CustomFee = () => {
+type CustomFeeProps = {
+    networkSymbol: NetworkSymbol;
+};
+
+export const CustomFee = ({ networkSymbol }: CustomFeeProps) => {
     const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
     const [previousSelectedFeeLevelLabel, setPreviousSelectedFeeLevelLabel] =
         useState<NativeSupportedFeeLevel>('normal');
@@ -35,6 +40,11 @@ export const CustomFee = () => {
         setValue('feeLevel', previousSelectedFeeLevelLabel);
         setIsBottomSheetVisible(false);
     };
+
+    // custom fees are not allowed for solana
+    if (getNetworkType(networkSymbol) === 'solana') {
+        return null;
+    }
 
     return (
         <Box flex={1}>

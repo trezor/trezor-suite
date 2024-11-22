@@ -1051,8 +1051,10 @@ export const en = {
                 description: 'Reconnect your Trezor to continue.',
                 primaryButton: 'Reconnect Trezor',
             },
-            lockedToast: 'Device is locked.',
             destinationTagTitle: 'Check & confirm XRP destination tag on your Trezor.',
+            toasts: {
+                sendTxnFailed: 'Failed to send transaction',
+            },
             address: {
                 title: 'Check the address on your Trezor against the original to make sure it’s correct.',
                 step1: 'Go to the app or place where you originally got the address.',
@@ -1087,6 +1089,7 @@ export const en = {
                 addressLabel: 'Recipient address',
                 amountLabel: 'Amount',
                 destinationTagLabel: 'Destination tag',
+                contractLabel: 'Token address',
                 summary: {
                     label: 'Total including fee',
                     totalAmount: 'Total amount',

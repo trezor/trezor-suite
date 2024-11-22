@@ -1,12 +1,13 @@
 import { useSelector } from 'react-redux';
 import { LayoutChangeEvent, View } from 'react-native';
 
-import { getNetworkType, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
+import { isCoinWithTokens } from '@suite-native/tokens';
 
 import { selectReviewSummaryOutput } from '../selectors';
 import { ReviewOutputItemValues } from './ReviewOutputItemValues';
@@ -19,14 +20,14 @@ type ReviewOutputSummaryItemProps = {
     tokenContract?: TokenAddress;
 };
 
-type EthereumValuesProps = {
+type ValuesProps = {
     totalSpent: string;
     fee: string;
     networkSymbol: NetworkSymbol;
     tokenContract?: TokenAddress;
 };
 
-const BitcoinValues = ({ totalSpent, fee, networkSymbol }: EthereumValuesProps) => {
+const BitcoinValues = ({ totalSpent, fee, networkSymbol }: ValuesProps) => {
     return (
         <>
             <ReviewOutputItemValues
@@ -43,7 +44,7 @@ const BitcoinValues = ({ totalSpent, fee, networkSymbol }: EthereumValuesProps) 
     );
 };
 
-const EthereumValues = ({ totalSpent, fee, tokenContract, networkSymbol }: EthereumValuesProps) => {
+const TokenEnabledValues = ({ totalSpent, fee, tokenContract, networkSymbol }: ValuesProps) => {
     const amount = tokenContract ? totalSpent : BigNumber(totalSpent).minus(fee).toString();
 
     return (
@@ -79,7 +80,7 @@ export const ReviewOutputSummaryItem = ({
 
     const { state, totalSpent, fee } = summaryOutput;
 
-    const isEthereumBasedNetwork = getNetworkType(networkSymbol) === 'ethereum';
+    const canHaveTokens = isCoinWithTokens(networkSymbol);
 
     return (
         <View onLayout={onLayout}>
@@ -88,8 +89,8 @@ export const ReviewOutputSummaryItem = ({
                 outputState={state}
             >
                 <VStack spacing="sp16">
-                    {isEthereumBasedNetwork ? (
-                        <EthereumValues
+                    {canHaveTokens ? (
+                        <TokenEnabledValues
                             totalSpent={totalSpent}
                             fee={fee}
                             networkSymbol={networkSymbol}
