@@ -1452,8 +1452,13 @@ var CURRENCIES = [
         validator: ETHValidator,
     },
     {
+        name: 'Base',
+        symbol: 'base', // TODO
+        validator: ETHValidator,
+    },
+    {
         name: 'Optimism',
-        symbol: 'eth',
+        symbol: 'op', // TODO
         validator: ETHValidator,
     },
     {

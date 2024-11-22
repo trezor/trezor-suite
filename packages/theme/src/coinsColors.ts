@@ -6,6 +6,7 @@ export type CoinsColors = Record<NetworkSymbol, CSSColor>;
 
 export const coinsColors: CoinsColors = {
     ada: '#3468d1',
+    base: '#0052ff',
     bch: '#0ac18e',
     bnb: '#f0b90b',
     btc: '#f29937',

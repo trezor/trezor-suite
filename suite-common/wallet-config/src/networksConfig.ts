@@ -135,6 +135,34 @@ export const networks = {
         coingeckoId: 'binance-smart-chain',
         coingeckoNativeId: 'binancecoin',
     },
+    base: {
+        symbol: 'base',
+        name: 'Base',
+        networkType: 'ethereum',
+        chainId: 8453,
+        bip43Path: "m/44'/60'/0'/0/i",
+        decimals: 18,
+        testnet: false,
+        explorer: {
+            tx: 'https://basescan.org/tx/',
+            account: 'https://basescan.org/address/',
+            nft: 'https://basescan.org/nft/',
+            address: 'https://basescan.org/address/',
+        },
+        features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'nft-definitions'],
+        customBackends: ['blockbook'],
+        accountTypes: {
+            ledger: {
+                // ledger (live), #1 acc is same as Trezor, so it is skipped
+                accountType: 'ledger',
+                bip43Path: "m/44'/60'/i'/0/0",
+                isDebugOnlyAccountType: true,
+            },
+        },
+        coingeckoId: 'base',
+        coingeckoNativeId: 'ethereum',
+        isDebugOnlyNetwork: true,
+    },
     op: {
         symbol: 'op',
         name: 'Optimism',
@@ -148,7 +176,6 @@ export const networks = {
             account: 'https://op1.trezor.io/address/',
             nft: 'https://op1.trezor.io/nft/',
             address: 'https://op1.trezor.io/address/',
-            queryString: '',
         },
         features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'nft-definitions'],
         customBackends: ['blockbook'],

@@ -39,6 +39,7 @@ export type Protocol =
     | 'sol'
     | 'pol'
     | 'bnb'
+    | 'base'
     | 'op'
     | 'test'
     | 'regtest'
@@ -66,6 +67,7 @@ export const NETWORK_TO_PROTOCOLS: { [key in NetworkSymbol]: Protocol[] } = {
     sol: ['solana', 'sol'],
     pol: ['polygon', 'matic', 'pol'],
     bnb: ['binance', 'bnb', 'bsc'],
+    base: ['base'],
     op: ['optimism', 'op'],
     test: ['test'],
     regtest: ['regtest'],

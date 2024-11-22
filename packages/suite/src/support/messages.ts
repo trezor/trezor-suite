@@ -2801,6 +2801,10 @@ const messages = defineMessagesWithTypeCheck({
         defaultMessage: 'BNB Smart Chain',
         id: 'TR_NETWORK_BNB',
     },
+    TR_NETWORK_BASE: {
+        defaultMessage: 'Base',
+        id: 'TR_NETWORK_BASE',
+    },
     TR_NETWORK_OP: {
         defaultMessage: 'Optimism',
         id: 'TR_NETWORK_OP',

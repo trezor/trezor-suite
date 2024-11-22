@@ -3,6 +3,7 @@
 
 export const cryptoIcons = {
     ada: require('../cryptoAssets/cryptoIcons/ada.svg'),
+    base: require('../cryptoAssets/cryptoIcons/base.svg'),
     bch: require('../cryptoAssets/cryptoIcons/bch.svg'),
     bnb: require('../cryptoAssets/cryptoIcons/bnb.svg'),
     btc: require('../cryptoAssets/cryptoIcons/btc.svg'),

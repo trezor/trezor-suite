@@ -229,6 +229,7 @@ export type IconName = keyof typeof icons;
 
 export const cryptoIcons = {
     ada: require('../assets/cryptoIcons/ada.svg'),
+    base: require('../assets/cryptoIcons/base.svg'),
     bch: require('../assets/cryptoIcons/bch.svg'),
     bnb: require('../assets/cryptoIcons/bnb.svg'),
     btc: require('../assets/cryptoIcons/btc.svg'),

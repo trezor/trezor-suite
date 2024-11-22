@@ -5,6 +5,7 @@ export type LegacyNetworkSymbol = 'eos' | 'nem' | 'xlm' | 'xtz';
 
 export const COINS: Record<NetworkSymbol | LegacyNetworkSymbol, string> = {
     ada: require('../../images/coins/ada.svg'),
+    base: require('../../images/coins/base.svg'),
     bch: require('../../images/coins/bch.svg'),
     bnb: require('../../images/coins/bnb.svg'),
     btc: require('../../images/coins/btc.svg'),
