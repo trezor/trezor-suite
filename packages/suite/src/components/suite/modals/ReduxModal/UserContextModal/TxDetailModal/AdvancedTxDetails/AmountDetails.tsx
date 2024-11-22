@@ -51,7 +51,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     const isStakeTypeTxNoAmount = isStakeTypeTx(txSignature) && amount.eq(0);
 
     return (
-        <Table hasBorders={false} typographyStyle="hint">
+        <Table hasBorders={false} isRowHighlightedOnHover={false} typographyStyle="hint">
             {!isTestnet && (
                 <Table.Header>
                     <Table.Row>
