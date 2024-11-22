@@ -102,8 +102,8 @@ const SOLANA_FEE_INFO: FeeInfoWithLevels = {
             blocks: -1,
         },
     ],
-    minFee: -1, // unused
-    maxFee: -1, // unused
+    minFee: 5000,
+    maxFee: 1000000000,
     dustLimit: -1, // unknown/unused
 };
 
