@@ -25,6 +25,15 @@ export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethod
 export type MethodPermission = 'read' | 'write' | 'management' | 'push_tx';
 export type DeviceMode = typeof UI.SEEDLESS | typeof UI.BOOTLOADER | typeof UI.INITIALIZE;
 
+export interface MethodInfo {
+    useDevice: boolean;
+    useDeviceState: boolean;
+    name: string;
+    requiredPermissions: MethodPermission[];
+    info: string;
+    confirmation?: UiRequestConfirmation['payload'];
+}
+
 export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
     T1B1: { min: '1.0.0', max: '0' },
     T2T1: { min: '2.0.0', max: '0' },
@@ -326,6 +335,9 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             useDevice: this.useDevice,
             useDeviceState: this.useDeviceState,
             name: this.name,
+            requiredPermissions: this.requiredPermissions,
+            info: this.info,
+            confirmation: this.confirmation,
             // this could be used for more. it could tell clients what are min firmware versions (firmwareRange) and much more
         };
     }
