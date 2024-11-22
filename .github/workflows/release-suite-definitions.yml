@@ -46,11 +46,13 @@ jobs:
           yarn nfts simple polygon-pos jws
           yarn nfts simple binance-smart-chain jws
           yarn nfts simple optimistic-ethereum jws
+          yarn nfts simple base jws
           yarn coins simple ethereum jws
           yarn coins simple ethereum-classic jws
           yarn coins simple polygon-pos jws
           yarn coins simple binance-smart-chain jws
           yarn coins simple optimistic-ethereum jws
+          yarn coins simple base jws
           yarn coins simple cardano jws
           yarn coins simple solana jws
           yarn coins advanced solana json
@@ -67,11 +69,13 @@ jobs:
           yarn nfts simple polygon-pos jws
           yarn nfts simple binance-smart-chain jws
           yarn nfts simple optimistic-ethereum jws
+          yarn nfts simple base jws
           yarn coins simple ethereum jws
           yarn coins simple ethereum-classic jws
           yarn coins simple polygon-pos jws
           yarn coins simple binance-smart-chain jws
           yarn coins simple optimistic-ethereum jws
+          yarn coins simple base jws
           yarn coins simple cardano jws
           yarn coins simple solana jws
           yarn coins advanced solana json
