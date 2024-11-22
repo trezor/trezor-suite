@@ -31,7 +31,6 @@ const TooltipContainerStyled = styled.div<TooltipContainerStyledProps>`
     color: ${({ theme }) => theme.textDefault};
     border-radius: ${TOOLTIP_BORDER_RADIUS};
     text-align: left;
-    border: solid 1.5px ${palette.darkGray100};
     margin: ${spacingsPx.xxxs};
     max-width: ${props => props.$maxWidth}px;
 

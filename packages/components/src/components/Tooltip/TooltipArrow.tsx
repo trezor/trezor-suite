@@ -12,7 +12,7 @@ export const TooltipArrow = ({ ref, context }: ArrowProps) => (
         fill={palette.darkGray300}
         stroke={palette.darkGray100}
         staticOffset={TOOLTIP_BORDER_RADIUS}
-        strokeWidth={1}
+        strokeWidth={0}
         tipRadius={1}
         style={{
             transform: 'translateY(-2px)',
