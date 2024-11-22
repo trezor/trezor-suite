@@ -11,8 +11,6 @@ import {
     typographyStylesBase,
     zIndices,
     Elevation,
-    mapElevationToBackground,
-    nextElevation,
 } from '@trezor/theme';
 
 import { INPUT_HEIGHTS, LABEL_TRANSFORM, Label, baseInputStyle } from '../styles';
@@ -45,7 +43,6 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectFrameProps)[numbe
 
 const createSelectStyle = (
     theme: DefaultTheme,
-    elevation: Elevation,
     isRenderedInModal: boolean,
 ): StylesConfig<Option, boolean> => ({
     menuPortal: base => ({
@@ -94,9 +91,7 @@ const createSelectStyle = (
         ...base,
         padding: `${spacingsPx.xs} ${spacingsPx.sm}`,
         borderRadius: borders.radii.xxs,
-        background: isFocused
-            ? mapElevationToBackground({ theme, $elevation: nextElevation[elevation] })
-            : 'transparent',
+        background: isFocused ? theme.backgroundSurfaceElevation2 : 'transparent',
 
         color: theme.textDefault,
         ...{
@@ -367,7 +362,7 @@ export const Select = ({
                     closeMenuOnScroll={closeMenuOnScroll}
                     menuPosition="fixed" // Required for closeMenuOnScroll to work properly when near page bottom
                     menuPortalTarget={menuPortalTarget}
-                    styles={createSelectStyle(theme, elevation, isRenderedInModal)}
+                    styles={createSelectStyle(theme, isRenderedInModal)}
                     onChange={handleOnChange}
                     isSearchable={isSearchable}
                     menuIsOpen={isMenuOpen}
