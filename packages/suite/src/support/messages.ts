@@ -9150,7 +9150,7 @@ const messages = defineMessagesWithTypeCheck({
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM1: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM1',
-        defaultMessage: "It's important to first learn how a passphrase works",
+        defaultMessage: "It's important to first <a>learn how a passphrase works</a>.",
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM2: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM2',

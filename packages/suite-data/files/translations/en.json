@@ -1420,7 +1420,7 @@
   "TR_PAGINATION_NEWER": "Newer",
   "TR_PAGINATION_OLDER": "Older",
   "TR_PASSPHRASE_CASE_SENSITIVE": "Note: Passphrase is case-sensitive.",
-  "TR_PASSPHRASE_DESCRIPTION_ITEM1": "It's important to first learn how a passphrase works",
+  "TR_PASSPHRASE_DESCRIPTION_ITEM1": "It's important to first <a>learn how a passphrase works</a>.",
   "TR_PASSPHRASE_DESCRIPTION_ITEM2": "A passphrase opens a wallet secured by that phrase",
   "TR_PASSPHRASE_DESCRIPTION_ITEM3": "No one can recover it, not even Trezor Support",
   "TR_PASSPHRASE_HIDDEN_WALLET": "Passphrase wallet",

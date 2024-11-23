@@ -132,6 +132,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
                                             <TrezorLink
                                                 target="_blank"
                                                 variant="underline"
+                                                type="hint"
                                                 href={HELP_CENTER_PASSPHRASE_URL}
                                             >
                                                 {chunks}
