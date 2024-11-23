@@ -34,9 +34,7 @@ describe('solana utils', () => {
                     input.decimals,
                 );
 
-                const keys = txix.keys.map(key => ({ ...key, pubkey: key.pubkey.toString() }));
-
-                expect(keys).toEqual(expectedOutput.keys);
+                expect(txix.accounts).toEqual(expectedOutput.accounts);
                 expect(txix.data).toEqual(expectedOutput.data);
             });
         });
@@ -52,10 +50,8 @@ describe('solana utils', () => {
                         input.tokenMintAddress,
                     );
 
-                    const keys = txix.keys.map(key => ({ ...key, pubkey: key.pubkey.toString() }));
-
-                    expect(pubkey.toString()).toEqual(expectedOutput.pubkey);
-                    expect(keys).toEqual(expectedOutput.keys);
+                    expect(pubkey).toEqual(expectedOutput.pubkey);
+                    expect(txix.accounts).toEqual(expectedOutput.accounts);
                     expect(txix.data).toEqual(expectedOutput.data);
                 });
             },
@@ -78,7 +74,7 @@ describe('solana utils', () => {
                     input.lastValidBlockHeight,
                     input.priorityFees,
                 );
-                const message = tx.transaction.compileMessage().serialize().toString('hex');
+                const message = tx.transaction.serializeMessage();
 
                 expect(message).toEqual(expectedOutput);
             });

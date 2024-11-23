@@ -1,3 +1,5 @@
+import { AccountRole } from '@solana/web3.js';
+
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import {
     TOKEN_PROGRAM_PUBLIC_KEY,
@@ -96,34 +98,33 @@ export const fixtures = {
                 from: 'CR6QfobBidQTSYdR6jihKTfMnHkRUtw8cLDCxENDVYmd',
                 to: 'GrwHUG2U6Nmr2CHjQ2kesKzbjMwvCNytcMAbhQxq1Jyd',
                 owner: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
-                amount: new BigNumber('0.1'),
+                amount: new BigNumber('1'),
                 mint: '6YuhWADZyAAxAaVKPm1G5N51RvDBXsnWo4SfsJ47wSoK',
                 decimals: 9,
             },
             expectedOutput: {
-                keys: [
+                accounts: [
                     {
-                        pubkey: 'CR6QfobBidQTSYdR6jihKTfMnHkRUtw8cLDCxENDVYmd',
-                        isSigner: false,
-                        isWritable: true,
+                        address: 'CR6QfobBidQTSYdR6jihKTfMnHkRUtw8cLDCxENDVYmd',
+                        role: AccountRole.WRITABLE,
                     },
                     {
-                        pubkey: '6YuhWADZyAAxAaVKPm1G5N51RvDBXsnWo4SfsJ47wSoK',
-                        isSigner: false,
-                        isWritable: false,
+                        address: '6YuhWADZyAAxAaVKPm1G5N51RvDBXsnWo4SfsJ47wSoK',
+                        role: AccountRole.READONLY,
                     },
                     {
-                        pubkey: 'GrwHUG2U6Nmr2CHjQ2kesKzbjMwvCNytcMAbhQxq1Jyd',
-                        isSigner: false,
-                        isWritable: true,
+                        address: 'GrwHUG2U6Nmr2CHjQ2kesKzbjMwvCNytcMAbhQxq1Jyd',
+                        role: AccountRole.WRITABLE,
                     },
-                    {
-                        pubkey: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
-                        isSigner: true,
-                        isWritable: false,
-                    },
+                    expect.objectContaining({
+                        address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        role: AccountRole.READONLY_SIGNER,
+                        signer: expect.objectContaining({
+                            address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        }),
+                    }),
                 ],
-                data: Buffer.from([12, 0, 0, 0, 0, 0, 0, 0, 0, 9]),
+                data: new Uint8Array([12, 1, 0, 0, 0, 0, 0, 0, 0, 9]),
             },
         },
     ],
@@ -137,39 +138,36 @@ export const fixtures = {
             },
             expectedOutput: {
                 pubkey: 'GrwHUG2U6Nmr2CHjQ2kesKzbjMwvCNytcMAbhQxq1Jyd',
-                keys: [
+                accounts: [
+                    expect.objectContaining({
+                        address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        role: AccountRole.WRITABLE_SIGNER,
+                        signer: expect.objectContaining({
+                            address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        }),
+                    }),
                     {
-                        pubkey: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
-                        isSigner: true,
-                        isWritable: true,
+                        address: 'GrwHUG2U6Nmr2CHjQ2kesKzbjMwvCNytcMAbhQxq1Jyd',
+                        role: AccountRole.WRITABLE,
                     },
                     {
-                        pubkey: 'GrwHUG2U6Nmr2CHjQ2kesKzbjMwvCNytcMAbhQxq1Jyd',
-                        isSigner: false,
-                        isWritable: true,
+                        address: 'FAeNERRWGL8xtnwtM5dWBUs9Z1y5fenSJcawu55NQSWk',
+                        role: AccountRole.READONLY,
                     },
                     {
-                        pubkey: 'FAeNERRWGL8xtnwtM5dWBUs9Z1y5fenSJcawu55NQSWk',
-                        isSigner: false,
-                        isWritable: false,
+                        address: '6YuhWADZyAAxAaVKPm1G5N51RvDBXsnWo4SfsJ47wSoK',
+                        role: AccountRole.READONLY,
                     },
                     {
-                        pubkey: '6YuhWADZyAAxAaVKPm1G5N51RvDBXsnWo4SfsJ47wSoK',
-                        isSigner: false,
-                        isWritable: false,
+                        address: SYSTEM_PROGRAM_PUBLIC_KEY,
+                        role: AccountRole.READONLY,
                     },
                     {
-                        pubkey: SYSTEM_PROGRAM_PUBLIC_KEY,
-                        isSigner: false,
-                        isWritable: false,
-                    },
-                    {
-                        pubkey: TOKEN_PROGRAM_PUBLIC_KEY,
-                        isSigner: false,
-                        isWritable: false,
+                        address: TOKEN_PROGRAM_PUBLIC_KEY,
+                        role: AccountRole.READONLY,
                     },
                 ],
-                data: Buffer.from([]),
+                data: new Uint8Array([0]),
             },
         },
     ],
@@ -198,7 +196,7 @@ export const fixtures = {
                 },
             },
             expectedOutput:
-                '01000609c80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c6a99c9c4d0c7def9dd60a3a40dc5266faf41996310aa62ad6cbd9b64e1e2cca78ebaa24826cef9644c1ecf0dfcf955775b8438528e97820efc2b20ed46be1dc580000000000000000000000000000000000000000000000000000000000000000527706a12f3f7c3c852582f0f79b515c03c6ffbe6e3100044ba7c982eb5cf9f28c97258f4e2489f1bb3d1029148e0d830b5a1399daff1084048e7bd8dbe9f8590306466fe5211732ffecadba72c39be7bc8ce5bbc5f7126b2c439b3a40000000d27c181cb023db6239e22e49e4b67f7dd9ed13f3d7ed319f9e91b3bc64cec0a906ddf6e1d765a193d9cbe146ceeb79ac1cb485ed5f5b37913a8cf5857eff00a96772b7d36a2e66e52c817f385d7e94d3d4b6d47d7171c9f2dd86c6f1be1a93eb040600050250c3000006000903a0860100000000000506000207040308000804010402000a0c00e1f5050000000009',
+                '01000609c80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c6a99c9c4d0c7def9dd60a3a40dc5266faf41996310aa62ad6cbd9b64e1e2cca78ebaa24826cef9644c1ecf0dfcf955775b8438528e97820efc2b20ed46be1dc580000000000000000000000000000000000000000000000000000000000000000527706a12f3f7c3c852582f0f79b515c03c6ffbe6e3100044ba7c982eb5cf9f28c97258f4e2489f1bb3d1029148e0d830b5a1399daff1084048e7bd8dbe9f8590306466fe5211732ffecadba72c39be7bc8ce5bbc5f7126b2c439b3a40000000d27c181cb023db6239e22e49e4b67f7dd9ed13f3d7ed319f9e91b3bc64cec0a906ddf6e1d765a193d9cbe146ceeb79ac1cb485ed5f5b37913a8cf5857eff00a96772b7d36a2e66e52c817f385d7e94d3d4b6d47d7171c9f2dd86c6f1be1a93eb040600050250c3000006000903a086010000000000050600020704030801000804010402000a0c00e1f5050000000009',
         },
         {
             description:
