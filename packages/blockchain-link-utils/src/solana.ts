@@ -5,21 +5,24 @@ import { Target, TokenTransfer, Transaction } from '@trezor/blockchain-link-type
 import { arrayPartition } from '@trezor/utils';
 import type {
     AccountInfo,
+    Address,
     ParsedAccountData,
     ParsedInstruction,
     ParsedTransactionWithMeta,
-    SolanaValidParsedTxWithMeta,
-    SolanaTokenAccountInfo,
     PartiallyDecodedInstruction,
+    SolanaTokenAccountInfo,
+    SolanaValidParsedTxWithMeta,
     TokenDetailByMint,
-    PublicKey,
 } from '@trezor/blockchain-link-types/src/solana';
 import type { TokenInfo } from '@trezor/blockchain-link-types/src';
 import { isCodesignBuild } from '@trezor/env-utils';
 
 import { formatTokenSymbol } from './utils';
 
-export type ApiTokenAccount = { account: AccountInfo<ParsedAccountData>; pubkey: PublicKey };
+export type ApiTokenAccount = {
+    account: AccountInfo<ParsedAccountData>;
+    pubkey: Address;
+};
 
 // Docs regarding solana programs: https://spl.solana.com/
 // Token program docs: https://spl.solana.com/token
@@ -74,12 +77,13 @@ type SplTokenAccountData = {
                 decimals: number;
             };
         };
+        type: string;
     };
     /** Space used by account data */
-    space: number;
+    space: bigint;
 };
 
-type SplTokenAccount = { account: AccountInfo<SplTokenAccountData>; pubkey: PublicKey };
+type SplTokenAccount = { account: AccountInfo<SplTokenAccountData>; pubkey: Address };
 
 const isSplTokenAccount = (tokenAccount: ApiTokenAccount): tokenAccount is SplTokenAccount => {
     const { parsed } = tokenAccount.account.data;
@@ -87,16 +91,21 @@ const isSplTokenAccount = (tokenAccount: ApiTokenAccount): tokenAccount is SplTo
     return (
         tokenAccount.account.data.program === 'spl-token' &&
         'info' in parsed &&
+        !!parsed.info &&
         'mint' in parsed.info &&
         typeof parsed.info.mint === 'string' &&
         'tokenAmount' in parsed.info &&
+        !!parsed.info.tokenAmount &&
+        typeof parsed.info.tokenAmount === 'object' &&
+        'amount' in parsed.info.tokenAmount &&
         typeof parsed.info.tokenAmount.amount === 'string' &&
+        'decimals' in parsed.info.tokenAmount &&
         typeof parsed.info.tokenAmount.decimals === 'number'
     );
 };
 
 export const transformTokenInfo = (
-    tokenAccounts: ApiTokenAccount[],
+    tokenAccounts: readonly ApiTokenAccount[],
     tokenDetailByMint: TokenDetailByMint,
 ) => {
     const tokens: TokenInfo[] = F.toMutable(
@@ -113,7 +122,7 @@ export const transformTokenInfo = (
                     balance: info.tokenAmount.amount,
                     decimals: info.tokenAmount.decimals,
                     ...getTokenNameAndSymbol(info.mint, tokenDetailByMint),
-                    address: tokenAccount.pubkey.toString(),
+                    address: tokenAccount.pubkey,
                 };
             }),
             A.reduce(
@@ -162,7 +171,7 @@ export const extractAccountBalanceDiff = (
     postBalance: BigNumber;
 } | null => {
     const pubKeyIndex = transaction.transaction.message.accountKeys.findIndex(
-        ak => ak.pubkey.toString() === address,
+        ak => ak.pubkey === address,
     );
 
     if (pubKeyIndex === -1) {
@@ -188,16 +197,22 @@ export const extractAccountBalanceDiff = (
     const postBalance = transaction.meta?.postBalances[pubKeyIndex];
 
     return {
-        preBalance: new BigNumber(preBalance ?? 0),
-        postBalance: new BigNumber(postBalance ?? 0),
+        preBalance: new BigNumber(preBalance?.toString(10) ?? 0),
+        postBalance: new BigNumber(postBalance?.toString(10) ?? 0),
     };
 };
 
-const isWSolTransfer = (ixs: (ParsedInstruction | PartiallyDecodedInstruction)[]) =>
-    ixs.find(ix => 'parsed' in ix && ix.parsed.info?.mint === WSOL_MINT);
+const isWSolTransfer = (ixs: readonly (ParsedInstruction | PartiallyDecodedInstruction)[]) =>
+    ixs.find(
+        ix =>
+            'parsed' in ix &&
+            !!ix.parsed.info &&
+            'mint' in ix.parsed.info &&
+            ix.parsed.info.mint === WSOL_MINT,
+    );
 
 type TransactionEffect = {
-    address: string;
+    address: Address;
     amount: BigNumber;
 };
 
@@ -208,15 +223,19 @@ export function getNativeEffects(transaction: ParsedTransactionWithMeta): Transa
 
     return transaction.transaction.message.accountKeys
         .map(ak => {
-            const targetAddress = ak.pubkey.toString();
+            const targetAddress = ak.pubkey;
             const balanceDiff = extractAccountBalanceDiff(transaction, targetAddress);
 
             // WSOL Transfers are counted as SOL transfers in the transaction effects, leading to duplicate
             // entries in the tx history. This serves to filter out the WSOL transfers from the native effects.
             if (wSolTransferInstruction && 'parsed' in wSolTransferInstruction) {
                 if (
-                    wSolTransferInstruction.parsed.info.destination === targetAddress ||
-                    wSolTransferInstruction.parsed.info.source === targetAddress
+                    (!!wSolTransferInstruction.parsed.info &&
+                        'destination' in wSolTransferInstruction.parsed.info &&
+                        wSolTransferInstruction.parsed.info.destination === targetAddress) ||
+                    (!!wSolTransferInstruction.parsed.info &&
+                        'source' in wSolTransferInstruction.parsed.info &&
+                        wSolTransferInstruction.parsed.info.source === targetAddress)
                 ) {
                     return null;
                 }
@@ -296,7 +315,7 @@ const getNativeTransferTxType = (
     if (
         effects.length === 1 &&
         effects[0]?.address === accountAddress &&
-        effects[0]?.amount.abs().isEqualTo(new BigNumber(transaction.meta?.fee || 0))
+        effects[0]?.amount.abs().isEqualTo(new BigNumber(transaction.meta?.fee.toString() || 0))
     ) {
         return 'self';
     }
@@ -391,7 +410,10 @@ export const getDetails = (
     }
 
     return {
-        size: transaction.meta?.computeUnitsConsumed || 0,
+        size:
+            transaction.meta?.computeUnitsConsumed != null
+                ? Number(transaction.meta?.computeUnitsConsumed)
+                : 0,
         totalInput: senders
             .reduce((acc, curr) => acc.plus(curr.amount.abs()), new BigNumber(0))
             .toString(),
@@ -420,7 +442,7 @@ export const getAmount = (
 
 type TokenTransferInstruction = {
     program: 'spl-token';
-    programId: PublicKey;
+    programId: Address;
     parsed: {
         type: 'transferChecked' | 'transfer';
         info: {
@@ -464,6 +486,7 @@ const isTokenTransferInstruction = (
         'destination' in parsed.info &&
         typeof parsed.info.destination === 'string' &&
         (('tokenAmount' in parsed.info &&
+            !!parsed.info.tokenAmount &&
             typeof parsed.info.tokenAmount === 'object' &&
             'amount' in parsed.info.tokenAmount &&
             typeof parsed.info.tokenAmount.amount === 'string') ||
@@ -574,8 +597,10 @@ export const transformTransaction = (
     return {
         type,
         txid: tx.transaction.signatures[0].toString(),
-        blockTime: tx.blockTime,
+        blockTime: tx.blockTime == null ? undefined : Number(tx.blockTime),
         amount,
+        // FIXME: It is possible for `meta` to be null for some older transactions.
+        // @ts-expect-error
         fee: tx.meta.fee.toString(),
         targets,
         tokens,
