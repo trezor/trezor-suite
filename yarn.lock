@@ -7697,6 +7697,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@solana-program/compute-budget@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "@solana-program/compute-budget@npm:0.6.1"
+  peerDependencies:
+    "@solana/web3.js": ^2.0.0
+  checksum: 10/bce81b0bb11ca6c6bb689689d27daaf6302a1d5af95fc862e002434ad0b5f122ffe73b15d8e3a688303a2617a6aa82c8cd6c60f2cbaf507cec88d16fc744a611
+  languageName: node
+  linkType: hard
+
+"@solana-program/system@npm:^0.6.2":
+  version: 0.6.2
+  resolution: "@solana-program/system@npm:0.6.2"
+  peerDependencies:
+    "@solana/web3.js": ^2.0.0
+  checksum: 10/aef5fba1b10dd6bf5e69a497d35ac398ca6673af1d6dff7956717217a4475edf0c2ebb208132e4bebd8e039a1914523fecf9816b9a676357af10bfa7fed44b8b
+  languageName: node
+  linkType: hard
+
 "@solana-program/token@npm:^0.4.1":
   version: 0.4.1
   resolution: "@solana-program/token@npm:0.4.1"

@@ -15,7 +15,6 @@ import {
     calculateTotal,
     formatAmount,
     getExternalComposeOutput,
-    getPubKeyFromAddress,
     buildTransferTransaction,
     buildTokenTransferTransaction,
     getAssociatedTokenAccountAddress,
@@ -203,7 +202,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
         // Since all the values don't have to be filled in the form at the time of this function call, we use dummy values
         // for the estimation, since these values don't affect the final fee.
         // The real transaction is constructed in `signTransaction`, this one is used solely for fee estimation and is never submitted.
-        const transactionMessage = (
+        const transferTx =
             tokenTransferTxAndDestinationAddress != null
                 ? tokenTransferTxAndDestinationAddress.transaction
                 : await buildTransferTransaction(
@@ -213,8 +212,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                       blockhash,
                       lastValidBlockHeight,
                       dummyPriorityFeesForFeeEstimation,
-                  )
-        ).compileMessage();
+                  );
 
         const isCreatingAccount =
             tokenInfo &&
@@ -226,7 +224,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             coin: account.symbol,
             request: {
                 specific: {
-                    data: transactionMessage.serialize().toString('hex'),
+                    data: transferTx.serialize(),
                     isCreatingAccount,
                 },
             },
@@ -381,8 +379,6 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                   },
               );
 
-        const serializedTx = tx.serializeMessage().toString('hex');
-
         const response = await TrezorConnect.solanaSignTransaction({
             device: {
                 path: device.path,
@@ -391,7 +387,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             },
             useEmptyPassphrase: device.useEmptyPassphrase,
             path: selectedAccount.path,
-            serializedTx,
+            serializedTx: tx.serializeMessage(),
             additionalInfo:
                 tokenTransferTxAndDestinationAddress &&
                 tokenTransferTxAndDestinationAddress.tokenAccountInfo
@@ -412,11 +408,17 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             });
         }
 
-        const signerPubKey = await getPubKeyFromAddress(selectedAccount.descriptor);
-        tx.addSignature(signerPubKey, Buffer.from(response.payload.signature, 'hex'));
+        try {
+            tx.addSignature(selectedAccount.descriptor, response.payload.signature);
+            const signedSerializedTx = tx.serialize();
 
-        const signedSerializedTx = tx.serialize().toString('hex');
-
-        return { serializedTx: signedSerializedTx };
+            return { serializedTx: signedSerializedTx };
+        } catch (e) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                errorCode: e.code,
+                message: e.error,
+            });
+        }
     },
 );

@@ -1,3 +1,5 @@
+import { AccountRole } from '@solana/web3.js';
+
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import {
     TOKEN_PROGRAM_PUBLIC_KEY,
@@ -96,34 +98,33 @@ export const fixtures = {
                 from: 'CR6QfobBidQTSYdR6jihKTfMnHkRUtw8cLDCxENDVYmd',
                 to: 'GrwHUG2U6Nmr2CHjQ2kesKzbjMwvCNytcMAbhQxq1Jyd',
                 owner: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
-                amount: new BigNumber('0.1'),
+                amount: new BigNumber('1'),
                 mint: '6YuhWADZyAAxAaVKPm1G5N51RvDBXsnWo4SfsJ47wSoK',
                 decimals: 9,
             },
             expectedOutput: {
-                keys: [
+                accounts: [
                     {
-                        pubkey: 'CR6QfobBidQTSYdR6jihKTfMnHkRUtw8cLDCxENDVYmd',
-                        isSigner: false,
-                        isWritable: true,
+                        address: 'CR6QfobBidQTSYdR6jihKTfMnHkRUtw8cLDCxENDVYmd',
+                        role: AccountRole.WRITABLE,
                     },
                     {
-                        pubkey: '6YuhWADZyAAxAaVKPm1G5N51RvDBXsnWo4SfsJ47wSoK',
-                        isSigner: false,
-                        isWritable: false,
+                        address: '6YuhWADZyAAxAaVKPm1G5N51RvDBXsnWo4SfsJ47wSoK',
+                        role: AccountRole.READONLY,
                     },
                     {
-                        pubkey: 'GrwHUG2U6Nmr2CHjQ2kesKzbjMwvCNytcMAbhQxq1Jyd',
-                        isSigner: false,
-                        isWritable: true,
+                        address: 'GrwHUG2U6Nmr2CHjQ2kesKzbjMwvCNytcMAbhQxq1Jyd',
+                        role: AccountRole.WRITABLE,
                     },
-                    {
-                        pubkey: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
-                        isSigner: true,
-                        isWritable: false,
-                    },
+                    expect.objectContaining({
+                        address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        role: AccountRole.READONLY_SIGNER,
+                        signer: expect.objectContaining({
+                            address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        }),
+                    }),
                 ],
-                data: Buffer.from([12, 0, 0, 0, 0, 0, 0, 0, 0, 9]),
+                data: new Uint8Array([12, 1, 0, 0, 0, 0, 0, 0, 0, 9]),
             },
         },
     ],
@@ -137,39 +138,36 @@ export const fixtures = {
             },
             expectedOutput: {
                 pubkey: 'GrwHUG2U6Nmr2CHjQ2kesKzbjMwvCNytcMAbhQxq1Jyd',
-                keys: [
+                accounts: [
+                    expect.objectContaining({
+                        address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        role: AccountRole.WRITABLE_SIGNER,
+                        signer: expect.objectContaining({
+                            address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        }),
+                    }),
                     {
-                        pubkey: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
-                        isSigner: true,
-                        isWritable: true,
+                        address: 'GrwHUG2U6Nmr2CHjQ2kesKzbjMwvCNytcMAbhQxq1Jyd',
+                        role: AccountRole.WRITABLE,
                     },
                     {
-                        pubkey: 'GrwHUG2U6Nmr2CHjQ2kesKzbjMwvCNytcMAbhQxq1Jyd',
-                        isSigner: false,
-                        isWritable: true,
+                        address: 'FAeNERRWGL8xtnwtM5dWBUs9Z1y5fenSJcawu55NQSWk',
+                        role: AccountRole.READONLY,
                     },
                     {
-                        pubkey: 'FAeNERRWGL8xtnwtM5dWBUs9Z1y5fenSJcawu55NQSWk',
-                        isSigner: false,
-                        isWritable: false,
+                        address: '6YuhWADZyAAxAaVKPm1G5N51RvDBXsnWo4SfsJ47wSoK',
+                        role: AccountRole.READONLY,
                     },
                     {
-                        pubkey: '6YuhWADZyAAxAaVKPm1G5N51RvDBXsnWo4SfsJ47wSoK',
-                        isSigner: false,
-                        isWritable: false,
+                        address: SYSTEM_PROGRAM_PUBLIC_KEY,
+                        role: AccountRole.READONLY,
                     },
                     {
-                        pubkey: SYSTEM_PROGRAM_PUBLIC_KEY,
-                        isSigner: false,
-                        isWritable: false,
-                    },
-                    {
-                        pubkey: TOKEN_PROGRAM_PUBLIC_KEY,
-                        isSigner: false,
-                        isWritable: false,
+                        address: TOKEN_PROGRAM_PUBLIC_KEY,
+                        role: AccountRole.READONLY,
                     },
                 ],
-                data: Buffer.from([]),
+                data: new Uint8Array([]),
             },
         },
     ],

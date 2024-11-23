@@ -356,7 +356,7 @@ export const formatAmount = (amount: BigNumberValue, decimals: number) => {
             throw new Error('Amount is not a number');
         }
 
-        return bAmount.div(10 ** decimals).toString(10);
+        return bAmount.div(new BigNumber(10).exponentiatedBy(decimals)).toString(10);
     } catch {
         return '-1'; // TODO: this is definitely not correct return value
     }
