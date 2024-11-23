@@ -7697,6 +7697,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@solana-program/token@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "@solana-program/token@npm:0.4.1"
+  peerDependencies:
+    "@solana/web3.js": ^2.0.0
+  checksum: 10/c85e83bd43019fb6d0b1e5c0105b0e45fc073ff7bbd1bdb472c37c3ed462f96702ef2461942100c6bd94499e8881106fc90f272b9e45f304c601eb8909e90330
+  languageName: node
+  linkType: hard
+
 "@solana/accounts@npm:2.0.0":
   version: 2.0.0
   resolution: "@solana/accounts@npm:2.0.0"
@@ -11155,6 +11164,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
+    "@solana-program/token": "npm:^0.4.1"
     "@solana/web3.js": "npm:^2.0.0"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"

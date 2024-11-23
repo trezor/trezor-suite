@@ -4,7 +4,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 const BALANCE_PARSING_REGEX = /^(\D+)([\d,]+)(?:\.(\d+))?$/u;
 
 export const convertTokenValueToDecimal = (value: string | number, decimals: number) =>
-    BigNumber(value).div(10 ** decimals);
+    BigNumber(value).div(BigNumber(10).exponentiatedBy(decimals));
 
 export const parseBalanceAmount = (value: string) => {
     const regexGroups = value.match(BALANCE_PARSING_REGEX);
