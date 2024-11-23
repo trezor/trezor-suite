@@ -1,4 +1,31 @@
-import { Connection, Message, PublicKey, SendTransactionError } from '@solana/web3.js';
+import { getTokenSize } from '@solana-program/token';
+import {
+    address,
+    assertTransactionIsFullySigned,
+    ClusterUrl,
+    createDefaultRpcTransport,
+    createSolanaRpcFromTransport,
+    createSolanaRpcSubscriptions,
+    decompileTransactionMessage,
+    getBase16Encoder,
+    getBase64Encoder,
+    getCompiledTransactionMessageDecoder,
+    getSignatureFromTransaction,
+    getTransactionDecoder,
+    isDurableNonceTransaction,
+    isSolanaError,
+    mainnet,
+    pipe,
+    RpcMainnet,
+    RpcSubscriptionsMainnet,
+    sendAndConfirmTransactionFactory,
+    Signature,
+    Slot,
+    SOLANA_ERROR__BLOCK_HEIGHT_EXCEEDED,
+    SolanaRpcApiMainnet,
+    SolanaRpcSubscriptionsApi,
+    TransactionWithBlockhashLifetime,
+} from '@solana/web3.js';
 
 import type {
     Response,
@@ -24,12 +51,14 @@ import {
 } from '@trezor/blockchain-link-utils/src/solana';
 import { getSuiteVersion } from '@trezor/env-utils';
 
-import { TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
 import { getBaseFee, getPriorityFee } from './fee';
-import { confirmTransactionWithResubmit } from './transactionConfirmation';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 
-export type SolanaAPI = Connection;
+export type SolanaAPI = Readonly<{
+    clusterUrl: ClusterUrl;
+    rpc: RpcMainnet<SolanaRpcApiMainnet>;
+    rpcSubscriptions: RpcSubscriptionsMainnet<SolanaRpcSubscriptionsApi>;
+}>;
 
 type Context = ContextType<SolanaAPI> & {
     getTokenMetadata: () => Promise<TokenDetailByMint>;
@@ -37,9 +66,13 @@ type Context = ContextType<SolanaAPI> & {
 type Request<T> = T & Context;
 
 type SignatureWithSlot = {
-    signature: string;
-    slot: number;
+    signature: Signature;
+    slot: Slot;
 };
+
+function nonNullable<T>(value: T): value is NonNullable<T> {
+    return value !== null && value !== undefined;
+}
 
 const getAllSignatures = async (
     api: SolanaAPI,
@@ -51,10 +84,12 @@ const getAllSignatures = async (
 
     const limit = 100;
     while (keepFetching) {
-        const signaturesInfos = await api.getSignaturesForAddress(new PublicKey(descriptor), {
-            before: lastSignature?.signature,
-            limit,
-        });
+        const signaturesInfos = await api.rpc
+            .getSignaturesForAddress(address(descriptor), {
+                before: lastSignature?.signature,
+                limit,
+            })
+            .send();
 
         const signatures = signaturesInfos.map(info => ({
             signature: info.signature,
@@ -70,30 +105,21 @@ const getAllSignatures = async (
 
 const fetchTransactionPage = async (
     api: SolanaAPI,
-    signatures: string[],
+    signatures: Signature[],
 ): Promise<ParsedTransactionWithMeta[]> => {
-    // avoid requests that are too big by querying max N signatures at once
-    const perChunk = 50; // items per chunk
-    const confirmedSignatureChunks = signatures.reduce((resultArray, item, index) => {
-        const chunkIndex = Math.floor(index / perChunk);
-        if (!resultArray[chunkIndex]) {
-            resultArray[chunkIndex] = []; // start a new chunk
-        }
-        resultArray[chunkIndex].push(item);
-
-        return resultArray;
-    }, [] as string[][]);
-
-    const confirmedTxsChunks = await Promise.all(
-        confirmedSignatureChunks.map(signatureChunk =>
-            api.getParsedTransactions(signatureChunk, {
-                maxSupportedTransactionVersion: 0,
-                commitment: 'confirmed',
-            }),
-        ),
-    );
-
-    return confirmedTxsChunks.flat().filter((tx): tx is ParsedTransactionWithMeta => !!tx);
+    return (
+        await Promise.all(
+            signatures.map(signature =>
+                api.rpc
+                    .getTransaction(signature, {
+                        encoding: 'jsonParsed',
+                        maxSupportedTransactionVersion: 0,
+                        commitment: 'confirmed',
+                    })
+                    .send(),
+            ),
+        )
+    ).filter(nonNullable);
 };
 
 const isValidTransaction = (tx: ParsedTransactionWithMeta): tx is SolanaValidParsedTxWithMeta =>
@@ -103,32 +129,49 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
     const rawTx = request.payload.startsWith('0x') ? request.payload.slice(2) : request.payload;
     const api = await request.connect();
 
-    const { lastValidBlockHeight } = await api.getLatestBlockhash('finalized');
+    const {
+        value: { lastValidBlockHeight },
+    } = await api.rpc.getLatestBlockhash({ commitment: 'finalized' }).send();
 
-    const txBuffer = Buffer.from(rawTx, 'hex');
+    const txByteArray = getBase16Encoder().encode(rawTx);
+    const transaction = getTransactionDecoder().decode(txByteArray);
+    assertTransactionIsFullySigned(transaction);
+
+    const compiledMessage = getCompiledTransactionMessageDecoder().decode(transaction.messageBytes);
+    const message = decompileTransactionMessage(compiledMessage);
+    if (isDurableNonceTransaction(message)) {
+        // TODO: Handle durable nonce transactions.
+        throw new Error('Unimplemented: Confirming durable nonce transactions');
+    }
+    const transactionWithBlockhashLifetime = transaction as typeof transaction &
+        TransactionWithBlockhashLifetime;
 
     try {
-        await api.sendRawTransaction(txBuffer, {
+        const signature = getSignatureFromTransaction(transaction);
+        const sendAndConfirmTransaction = sendAndConfirmTransactionFactory(api);
+        // FIXME: If possible, it would be preferable to include the last valid block height for
+        // this transaction's blockhash in `MessageTypes.PushTransaction` rather than to fetch a
+        // fresh one above. The one fetched value does not represent the true expiry block height of
+        // the blockhash inside this transaction.
+        const transactionWithReconstitutedLastValidBlockHeight = {
+            ...transactionWithBlockhashLifetime,
+            lifetimeConstraint: {
+                ...transactionWithBlockhashLifetime.lifetimeConstraint,
+                lastValidBlockHeight,
+            },
+        };
+        await sendAndConfirmTransaction(transactionWithReconstitutedLastValidBlockHeight, {
+            commitment: 'confirmed',
+            maxRetries: 0n,
             skipPreflight: true,
-            maxRetries: 0,
         });
-
-        const signature = await api.sendRawTransaction(txBuffer, {
-            skipPreflight: true,
-            maxRetries: 0,
-        });
-
-        await confirmTransactionWithResubmit(api, txBuffer, signature, lastValidBlockHeight);
 
         return {
             type: RESPONSES.PUSH_TRANSACTION,
             payload: signature,
         } as const;
     } catch (error) {
-        if (
-            error instanceof SendTransactionError &&
-            error?.transactionError?.message === 'Internal error'
-        ) {
+        if (isSolanaError(error, SOLANA_ERROR__BLOCK_HEIGHT_EXCEEDED)) {
             throw new Error(
                 'Please make sure that you submit the transaction within 1 minute after signing.',
             );
@@ -142,12 +185,14 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     const { details = 'basic' } = payload;
     const api = await request.connect();
 
-    const publicKey = new PublicKey(payload.descriptor);
+    const publicKey = address(payload.descriptor);
 
-    const accountInfo = await api.getAccountInfo(publicKey);
+    const { value: accountInfo } = await api.rpc
+        .getAccountInfo(publicKey, { encoding: 'base64' })
+        .send();
 
     const getTransactionPage = async (
-        txIds: string[],
+        txIds: Signature[],
         tokenAccountsInfos: SolanaTokenAccountInfo[],
     ) => {
         const transactionsPage = await fetchTransactionPage(api, txIds);
@@ -167,11 +212,17 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
             .filter((tx): tx is Transaction => !!tx);
     };
 
-    const tokenAccounts = await api.getParsedTokenAccountsByOwner(publicKey, {
-        programId: new PublicKey(TOKEN_PROGRAM_PUBLIC_KEY),
-    });
+    const tokenAccounts = await api.rpc
+        .getTokenAccountsByOwner(
+            publicKey,
+            { programId: address(TOKEN_PROGRAM_PUBLIC_KEY) } /* filter */,
+            {
+                encoding: 'jsonParsed',
+            },
+        )
+        .send();
 
-    const allAccounts = [payload.descriptor, ...tokenAccounts.value.map(a => a.pubkey.toString())];
+    const allAccounts = [payload.descriptor, ...tokenAccounts.value.map(a => a.pubkey)];
 
     const allTxIds =
         details === 'basic' || details === 'txs' || details === 'txids'
@@ -183,7 +234,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
                           )
                       )
                           .flat()
-                          .sort((a, b) => b.slot - a.slot)
+                          .sort((a, b) => Number(b.slot - a.slot))
                           .map(it => it.signature),
                   ),
               )
@@ -199,7 +250,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     const txIdPage = allTxIds.slice(pageStartIndex, pageEndIndex);
 
     const tokenAccountsInfos = tokenAccounts.value.map(a => ({
-        address: a.pubkey.toString(),
+        address: a.pubkey,
         mint: a.account.data.parsed?.info?.mint as string | undefined,
         decimals: a.account.data.parsed?.info?.tokenAmount?.decimals as number | undefined,
     }));
@@ -215,10 +266,18 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         tokens = transformTokenInfo(tokenAccounts.value, tokenMetadata);
     }
 
-    const balance = await api.getBalance(publicKey);
+    const balance = await api.rpc.getBalance(publicKey).send();
 
     // https://solana.stackexchange.com/a/13102
-    const rent = await api.getMinimumBalanceForRentExemption(accountInfo?.data.byteLength || 0);
+    let accountDataLength: bigint;
+    if (accountInfo) {
+        const [accountDataEncoded] = accountInfo.data;
+        const accountDataBytes = getBase64Encoder().encode(accountDataEncoded);
+        accountDataLength = BigInt(accountDataBytes.byteLength);
+    } else {
+        accountDataLength = 0n;
+    }
+    const rent = await api.rpc.getMinimumBalanceForRentExemption(accountDataLength).send();
 
     // allTxIds can be empty for non-archive rpc nodes
     const isAccountEmpty = !(allTxIds.length || balance || tokens.length);
@@ -245,8 +304,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         ...(accountInfo != null
             ? {
                   misc: {
-                      owner: accountInfo.owner.toString(),
-                      rent,
+                      owner: accountInfo.owner,
+                      rent: Number(rent),
                   },
               }
             : {}),
@@ -268,19 +327,20 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
 const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
     const api = await request.connect();
-    const { blockhash: blockHash, lastValidBlockHeight: blockHeight } =
-        await api.getLatestBlockhash('finalized');
+    const {
+        value: { blockhash: blockHash, lastValidBlockHeight: blockHeight },
+    } = await api.rpc.getLatestBlockhash({ commitment: 'finalized' }).send();
     const isTestnet =
-        (await api.getGenesisHash()) !== '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
+        (await api.rpc.getGenesisHash().send()) !== '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
     const serverInfo = {
         // genesisHash is reliable identifier of the network, for mainnet the genesis hash is 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d
         testnet: isTestnet,
-        blockHeight,
+        blockHeight: Number(blockHeight),
         blockHash,
         shortcut: isTestnet ? 'dsol' : 'sol',
-        url: api.rpcEndpoint,
+        url: api.clusterUrl,
         name: 'Solana',
-        version: (await api.getVersion())['solana-core'],
+        version: (await api.rpc.getVersion().send())['solana-core'],
         decimals: 9,
     };
 
@@ -300,13 +360,17 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
         throw new Error('Could not estimate fee for transaction.');
     }
 
-    const message = Message.from(Buffer.from(messageHex, 'hex'));
+    const message = pipe(
+        messageHex,
+        getBase16Encoder().encode,
+        getCompiledTransactionMessageDecoder().decode,
+    );
 
-    const baseFee = await getBaseFee(api, message);
-    const priorityFee = await getPriorityFee(api, message);
+    const baseFee = await getBaseFee(api.rpc, message);
+    const priorityFee = await getPriorityFee(api.rpc, message);
     const accountCreationFee = isCreatingAccount
-        ? await api.getMinimumBalanceForRentExemption(TOKEN_ACCOUNT_LAYOUT.span)
-        : 0;
+        ? await api.rpc.getMinimumBalanceForRentExemption(BigInt(getTokenSize())).send()
+        : 0n;
 
     const payload = [
         {
@@ -331,8 +395,9 @@ const subscribeBlock = async ({ state, connect, post }: Context) => {
     // but solana block height is updated so often that it slows down the whole application and overloads the the api
     // so we instead use setInterval to check for new blocks every `BLOCK_SUBSCRIBE_INTERVAL_MS`
     const interval = setInterval(async () => {
-        const { blockhash: blockHash, lastValidBlockHeight: blockHeight } =
-            await api.getLatestBlockhash('finalized');
+        const {
+            value: { blockhash: blockHash, lastValidBlockHeight: blockHeight },
+        } = await api.rpc.getLatestBlockhash({ commitment: 'finalized' }).send();
         if (blockHeight) {
             post({
                 id: -1,
@@ -340,7 +405,7 @@ const subscribeBlock = async ({ state, connect, post }: Context) => {
                 payload: {
                     type: 'block',
                     payload: {
-                        blockHeight,
+                        blockHeight: Number(blockHeight),
                         blockHash,
                     },
                 },
@@ -367,7 +432,7 @@ const extractTokenAccounts = (accounts: SubscriptionAccountInfo[]): Subscription
                 account.tokens?.map(
                     token =>
                         token.accounts?.map(tokenAccount => ({
-                            descriptor: tokenAccount.publicKey.toString(),
+                            descriptor: tokenAccount.publicKey,
                         })) || [],
                 ) || []
             ).flat(),
@@ -380,11 +445,17 @@ const findTokenAccountOwner = (
 ): SubscriptionAccountInfo | undefined =>
     accounts.find(account =>
         account.tokens?.find(token =>
-            token.accounts?.find(
-                tokenAccount => tokenAccount.publicKey.toString() === accountDescriptor,
-            ),
+            token.accounts?.find(tokenAccount => tokenAccount.publicKey === accountDescriptor),
         ),
     );
+
+let NEXT_ACCOUNT_SUBSCRIPTION_ID = 0;
+const ACCOUNT_SUBSCRIPTION_ABORT_CONTROLLERS = new Map<number, AbortController>();
+function abortSubscription(id: number) {
+    const abortController = ACCOUNT_SUBSCRIPTION_ABORT_CONTROLLERS.get(id);
+    ACCOUNT_SUBSCRIPTION_ABORT_CONTROLLERS.delete(id);
+    abortController?.abort();
+}
 
 const subscribeAccounts = async (
     { connect, state, post, getTokenMetadata }: Context,
@@ -400,78 +471,96 @@ const subscribeAccounts = async (
                 subscribedAccount => account.descriptor === subscribedAccount.descriptor,
             ),
     );
-    newAccounts.forEach(a => {
-        const subscriptionId = api.onAccountChange(new PublicKey(a.descriptor), async () => {
-            // get the last transaction signature for the account, since that wha triggered this callback
-            const lastSignature = (
-                await api.getSignaturesForAddress(new PublicKey(a.descriptor), {
-                    before: undefined,
-                    limit: 1,
-                })
-            )[0]?.signature;
-            if (!lastSignature) return;
+    await Promise.all(
+        newAccounts.map(async a => {
+            const abortController = new AbortController();
+            const accountNotifications = await api.rpcSubscriptions
+                .accountNotifications(address(a.descriptor))
+                .subscribe({ abortSignal: abortController.signal });
+            const subscriptionId = NEXT_ACCOUNT_SUBSCRIPTION_ID++;
+            ACCOUNT_SUBSCRIPTION_ABORT_CONTROLLERS.set(subscriptionId, abortController);
+            const account: SubscriptionAccountInfo = {
+                ...a,
+                subscriptionId,
+            };
+            state.addAccounts([account]);
+            (async () => {
+                // TODO: Wrap this for/await loop in a try/catch and write code to recover in the event
+                // that the account subscription going down.
+                for await (const _ of accountNotifications) {
+                    // get the last transaction signature for the account, since that wha triggered this callback
+                    const [lastSignatureResponse] = await api.rpc
+                        .getSignaturesForAddress(address(a.descriptor), {
+                            limit: 1,
+                        })
+                        .send();
+                    const lastSignature = lastSignatureResponse?.signature;
+                    if (!lastSignature) return;
 
-            // get the last transaction
-            const lastTx = (
-                await api.getParsedTransactions([lastSignature], {
-                    maxSupportedTransactionVersion: 0,
-                    commitment: 'finalized',
-                })
-            )[0];
+                    // get the last transaction
+                    const lastTx = await api.rpc
+                        .getTransaction(lastSignature, {
+                            encoding: 'jsonParsed',
+                            maxSupportedTransactionVersion: 0,
+                            commitment: 'finalized',
+                        })
+                        .send();
 
-            if (!lastTx || !isValidTransaction(lastTx)) {
-                return;
-            }
+                    if (!lastTx || !isValidTransaction(lastTx)) {
+                        return;
+                    }
 
-            const tokenMetadata = await getTokenMetadata();
-            const tx = solanaUtils.transformTransaction(lastTx, a.descriptor, [], tokenMetadata);
+                    const tokenMetadata = await getTokenMetadata();
+                    const tx = solanaUtils.transformTransaction(
+                        lastTx,
+                        a.descriptor,
+                        [],
+                        tokenMetadata,
+                    );
 
-            // For token accounts we need to emit an event with the owner account's descriptor
-            // since we don't store token accounts in the user's accounts.
-            const descriptor =
-                findTokenAccountOwner(state.getAccounts(), a.descriptor)?.descriptor ||
-                a.descriptor;
+                    // For token accounts we need to emit an event with the owner account's descriptor
+                    // since we don't store token accounts in the user's accounts.
+                    const descriptor =
+                        findTokenAccountOwner(state.getAccounts(), a.descriptor)?.descriptor ||
+                        a.descriptor;
 
-            post({
-                id: -1,
-                type: RESPONSES.NOTIFICATION,
-                payload: {
-                    type: 'notification',
-                    payload: {
-                        descriptor,
-                        tx,
-                    },
-                },
-            });
-        });
-        state.addAccounts([{ ...a, subscriptionId }]);
-    });
+                    post({
+                        id: -1,
+                        type: RESPONSES.NOTIFICATION,
+                        payload: {
+                            type: 'notification',
+                            payload: {
+                                descriptor,
+                                tx,
+                            },
+                        },
+                    });
+                }
+            })();
+        }),
+    );
 
     return { subscribed: newAccounts.length > 0 };
 };
 
-const unsubscribeAccounts = async (
-    { state, connect }: Context,
+const unsubscribeAccounts = (
+    { state }: Context,
     accounts: SubscriptionAccountInfo[] | undefined = [],
 ) => {
-    const api = await connect();
-
     const subscribedAccounts = state.getAccounts();
 
     accounts.forEach(a => {
-        if (a.subscriptionId) {
-            api.removeAccountChangeListener(a.subscriptionId);
+        if (a.subscriptionId != null) {
+            abortSubscription(a.subscriptionId);
             state.removeAccounts([a]);
         }
 
         // unsubscribe token accounts as well
         a.tokens?.forEach(t => {
             t.accounts?.forEach(ta => {
-                const tokenAccount = subscribedAccounts.find(
-                    sa => sa.descriptor === ta.publicKey.toString(),
-                );
-                if (tokenAccount?.subscriptionId) {
-                    api.removeAccountChangeListener(tokenAccount.subscriptionId);
+                const tokenAccount = subscribedAccounts.find(sa => sa.descriptor === ta.publicKey);
+                if (tokenAccount?.subscriptionId != null) {
+                    abortSubscription(tokenAccount.subscriptionId);
                     state.removeAccounts([tokenAccount]);
                 }
             });
@@ -544,17 +633,24 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
     private lazyTokens = createLazy(() => solanaUtils.getTokenMetadata());
 
     async tryConnect(url: string): Promise<SolanaAPI> {
-        const api = new Connection(url, {
-            wsEndpoint: url.replace('https', 'wss'),
-            httpHeaders: {
-                Origin: 'https://node.trezor.io',
+        const clusterUrl = mainnet(url);
+        const transport = createDefaultRpcTransport({
+            url: clusterUrl,
+            headers: {
+                // @ts-expect-error
+                Origin: 'https://node.trezor.io', // FIXME: 'Origin' is forbidden by `fetch()` API.
                 'User-Agent': `Trezor Suite ${getSuiteVersion()}`,
             },
         });
-        await api.getLatestBlockhash('finalized');
+        const api = {
+            clusterUrl,
+            rpc: createSolanaRpcFromTransport(transport),
+            rpcSubscriptions: createSolanaRpcSubscriptions(mainnet(url.replace('http', 'ws'))),
+        };
+        await api.rpc.getLatestBlockhash({ commitment: 'finalized' }).send();
         this.post({ id: -1, type: RESPONSES.CONNECTED });
 
-        return Promise.resolve(api);
+        return api;
     }
 
     async messageHandler(event: { data: MessageTypes.Message }) {
@@ -582,11 +678,11 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
             return;
         }
 
-        this.state
-            .getAccounts()
-            .forEach(
-                a => a.subscriptionId && this.api?.removeAccountChangeListener(a.subscriptionId),
-            );
+        this.state.getAccounts().forEach(a => {
+            if (a.subscriptionId != null) {
+                abortSubscription(a.subscriptionId);
+            }
+        });
 
         if (this.state.getSubscription('block')) {
             const interval = this.state.getSubscription('block') as ReturnType<typeof setInterval>;
