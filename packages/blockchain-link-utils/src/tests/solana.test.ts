@@ -1,7 +1,8 @@
-import { ParsedTransactionWithMeta } from '@solana/web3.js';
-
 import { TokenTransfer, Transaction } from '@trezor/blockchain-link-types/src';
-import { SolanaValidParsedTxWithMeta } from '@trezor/blockchain-link-types/src/solana';
+import {
+    ParsedTransactionWithMeta,
+    SolanaValidParsedTxWithMeta,
+} from '@trezor/blockchain-link-types/src/solana';
 
 import {
     extractAccountBalanceDiff,
@@ -43,7 +44,10 @@ describe('solana/utils', () => {
     describe('getTransactionEffects', () => {
         fixtures.getTransactionEffects.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
-                const result = getNativeEffects(input.transaction as ParsedTransactionWithMeta);
+                const result = getNativeEffects(
+                    // @ts-expect-error Fixtures don't fully implement this interface.
+                    input.transaction as ParsedTransactionWithMeta,
+                );
                 expect(result).toEqual(expectedOutput);
             });
         });
@@ -53,7 +57,9 @@ describe('solana/utils', () => {
         fixtures.getTxType.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 const result = getTxType(
+                    // @ts-expect-error Fixtures don't fully implement this interface.
                     input.transaction as SolanaValidParsedTxWithMeta,
+                    // @ts-expect-error Fixtures don't fully implement this interface.
                     input.effects,
                     input.accountAddress,
                     input.tokenEffects as TokenTransfer[],
@@ -67,6 +73,7 @@ describe('solana/utils', () => {
         fixtures.getTargets.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 const result = getTargets(
+                    // @ts-expect-error Fixtures don't fully implement this interface.
                     input.effects,
                     input.txType as Transaction['type'],
                     input.accountAddress,
@@ -79,7 +86,12 @@ describe('solana/utils', () => {
     describe('getAmount', () => {
         fixtures.getAmount.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
-                const result = getAmount(input.accountEffect, input.txType as Transaction['type']);
+                const result = getAmount(
+                    // @ts-expect-error Fixtures don't fully implement this interface.
+                    input.accountEffect,
+                    input.txType as Transaction['type'],
+                );
+
                 expect(result).toEqual(expectedOutput);
             });
         });
@@ -89,7 +101,9 @@ describe('solana/utils', () => {
         fixtures.getDetails.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 const result = getDetails(
+                    // @ts-expect-error Fixtures don't fully implement this interface.
                     input.transaction as SolanaValidParsedTxWithMeta,
+                    // @ts-expect-error Fixtures don't fully implement this interface.
                     input.effects,
                     input.accountAddress,
                     input.txType,
@@ -103,6 +117,7 @@ describe('solana/utils', () => {
         fixtures.getTokens.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 const result = getTokens(
+                    // @ts-expect-error Fixtures don't fully implement this interface.
                     input.transaction as ParsedTransactionWithMeta,
                     input.accountAddress,
                     input.map,
@@ -117,6 +132,7 @@ describe('solana/utils', () => {
         fixtures.transformTransaction.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 const result = transformTransaction(
+                    // @ts-expect-error Fixtures don't fully implement this interface.
                     input.transaction as SolanaValidParsedTxWithMeta,
                     input.accountAddress,
                     input.tokenAccountsInfos,

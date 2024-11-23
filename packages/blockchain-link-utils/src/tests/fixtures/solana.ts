@@ -1,9 +1,5 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-const getPublicKey = (address: string) => ({
-    toString: () => address,
-});
-
 const instructions = {
     transfer: {
         parsed: {
@@ -89,31 +85,28 @@ const parsedTransactions = {
     basic: {
         transaction: {
             meta: {
-                computeUnitsConsumed: 100,
-                preBalances: [200, 100],
-                postBalances: [180, 110],
-                fee: 10,
+                computeUnitsConsumed: 100n,
+                preBalances: [200n, 100n],
+                postBalances: [180n, 110n],
+                fee: 10n,
             },
             transaction: {
                 signatures: ['txid1'],
                 message: {
-                    accountKeys: [
-                        { pubkey: { toString: () => 'address1' } },
-                        { pubkey: { toString: () => 'address2' } },
-                    ],
+                    accountKeys: [{ pubkey: 'address1' }, { pubkey: 'address2' }],
                     instructions: [instructions.transfer],
                 },
             },
             version: 'legacy',
             blockTime: 1631753600,
-            slot: 5,
+            slot: 5n,
         },
     },
     withoutMeta: {
         transaction: {
             transaction: {
                 message: {
-                    accountKeys: [{ pubkey: { toString: () => 'address1' } }],
+                    accountKeys: [{ pubkey: 'address1' }],
                 },
             },
         },
@@ -121,15 +114,12 @@ const parsedTransactions = {
     withMeta: {
         transaction: {
             meta: {
-                preBalances: [100, 200],
-                postBalances: [110, 210],
+                preBalances: [100n, 200n],
+                postBalances: [110n, 210n],
             },
             transaction: {
                 message: {
-                    accountKeys: [
-                        { pubkey: { toString: () => 'address1' } },
-                        { pubkey: { toString: () => 'address2' } },
-                    ],
+                    accountKeys: [{ pubkey: 'address1' }, { pubkey: 'address2' }],
                 },
             },
         },
@@ -147,15 +137,12 @@ const parsedTransactions = {
         transaction: {
             transaction: {
                 message: {
-                    accountKeys: [
-                        { pubkey: { toString: () => 'address1' } },
-                        { pubkey: { toString: () => 'address2' } },
-                    ],
+                    accountKeys: [{ pubkey: 'address1' }, { pubkey: 'address2' }],
                 },
             },
             meta: {
-                preBalances: [100, 200],
-                postBalances: [100, 200],
+                preBalances: [100n, 200n],
+                postBalances: [100n, 200n],
             },
         },
     },
@@ -167,7 +154,7 @@ const parsedTransactions = {
                 },
             },
             meta: {
-                fee: 5,
+                fee: 5n,
             },
         },
     },
@@ -177,16 +164,13 @@ const parsedTransactions = {
             transaction: {
                 signatures: ['txid1'],
                 message: {
-                    accountKeys: [
-                        { pubkey: { toString: () => 'address1' } },
-                        { pubkey: { toString: () => 'address2' } },
-                    ],
+                    accountKeys: [{ pubkey: 'address1' }, { pubkey: 'address2' }],
                     instructions: [instructions.tokenTransfer],
                 },
             },
             version: 'legacy',
             blockTime: 1631753600,
-            slot: 5,
+            slot: 5n,
         },
     },
     multiTokenTransfer: {
@@ -195,16 +179,13 @@ const parsedTransactions = {
             transaction: {
                 signatures: ['txid1'],
                 message: {
-                    accountKeys: [
-                        { pubkey: { toString: () => 'address1' } },
-                        { pubkey: { toString: () => 'address2' } },
-                    ],
+                    accountKeys: [{ pubkey: 'address1' }, { pubkey: 'address2' }],
                     instructions: [instructions.tokenTransfer, instructions.secondTokenTransfer],
                 },
             },
             version: 'legacy',
             blockTime: 1631753600,
-            slot: 5,
+            slot: 5n,
         },
     },
     tokenTransferToAssociated: {
@@ -213,16 +194,13 @@ const parsedTransactions = {
             transaction: {
                 signatures: ['txid1'],
                 message: {
-                    accountKeys: [
-                        { pubkey: { toString: () => 'address1' } },
-                        { pubkey: { toString: () => 'address2' } },
-                    ],
+                    accountKeys: [{ pubkey: 'address1' }, { pubkey: 'address2' }],
                     instructions: [instructions.tokenTransferToAssociated],
                 },
             },
             version: 'legacy',
             blockTime: 1631753600,
-            slot: 5,
+            slot: 5n,
         },
     },
 };
@@ -277,14 +255,14 @@ const tokenAccountInfo = [
                     type: 'account',
                 },
                 program: 'spl-token',
-                space: 165,
+                space: 165n,
             },
             executable: false,
-            lamports: 2039280,
-            owner: getPublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
-            rentEpoch: 0,
+            lamports: 2039280n,
+            owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+            rentEpoch: 0n,
         },
-        pubkey: getPublicKey('ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF'),
+        pubkey: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
     },
 ];
 
@@ -308,14 +286,14 @@ const tokenAccountInfoWithDuplicateTokenAccount = [
                     type: 'account',
                 },
                 program: 'spl-token',
-                space: 165,
+                space: 165n,
             },
             executable: false,
-            lamports: 2039280,
-            owner: getPublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
-            rentEpoch: 0,
+            lamports: 2039280n,
+            owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+            rentEpoch: 0n,
         },
-        pubkey: getPublicKey('ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF'),
+        pubkey: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
     },
     {
         account: {
@@ -336,14 +314,14 @@ const tokenAccountInfoWithDuplicateTokenAccount = [
                     type: 'account',
                 },
                 program: 'spl-token',
-                space: 165,
+                space: 165n,
             },
             executable: false,
-            lamports: 2039280,
-            owner: getPublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
-            rentEpoch: 0,
+            lamports: 2039280n,
+            owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+            rentEpoch: 0n,
         },
-        pubkey: getPublicKey('CR6QfobBidQTSYdR6jihKTfMnHkRUtw8cLDCxENDVYmd'),
+        pubkey: 'CR6QfobBidQTSYdR6jihKTfMnHkRUtw8cLDCxENDVYmd',
     },
 ];
 
@@ -662,7 +640,7 @@ export const fixtures = {
                 txType: 'sent' as const,
             },
             expectedOutput: {
-                size: parsedTransactions.basic.transaction.meta.computeUnitsConsumed,
+                size: Number(parsedTransactions.basic.transaction.meta.computeUnitsConsumed),
                 totalInput: effects.negative.amount.abs().toString(),
                 totalOutput: effects.positive.amount.abs().toString(),
                 vin: [
@@ -698,7 +676,7 @@ export const fixtures = {
                 txType: 'recv' as const,
             },
             expectedOutput: {
-                size: parsedTransactions.basic.transaction.meta.computeUnitsConsumed,
+                size: Number(parsedTransactions.basic.transaction.meta.computeUnitsConsumed),
                 totalInput: effects.negative.amount.abs().toString(),
                 totalOutput: effects.positive.amount.abs().toString(),
                 vin: [
@@ -734,7 +712,7 @@ export const fixtures = {
                 txType: 'recv' as const,
             },
             expectedOutput: {
-                size: parsedTransactions.basic.transaction.meta.computeUnitsConsumed,
+                size: Number(parsedTransactions.basic.transaction.meta.computeUnitsConsumed),
                 totalInput: new BigNumber(0).toString(),
                 totalOutput: effects.positive.amount.abs().toString(),
                 vin: [],
