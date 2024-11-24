@@ -1,5 +1,7 @@
 import { Page } from '@playwright/test';
+
 import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+
 import { waitForDataTestSelector } from '../common';
 
 export class SettingsActions {
@@ -85,9 +87,9 @@ export class SettingsActions {
         await eapModal.getByTestId('@settings/early-access-confirm-button').click();
         await eapModal.getByTestId('@settings/early-access-skip-button').click();
     }
-    
+
     async getEarlyAccessButtonText() {
-        return this.window.getByTestId('@settings/early-access-join-button').textContent();
+        return await this.window.getByTestId('@settings/early-access-join-button').textContent();
     }
 
     async closeSettings() {

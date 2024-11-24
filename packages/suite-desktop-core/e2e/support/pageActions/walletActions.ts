@@ -18,6 +18,7 @@ export class WalletActions {
             await arrow.click();
         }
     }
+
     async enableAllCardanoAccounts() {
         const cardanoTypes = ['normal', 'legacy', 'ledger'];
         for (const type of cardanoTypes) {
@@ -26,6 +27,7 @@ export class WalletActions {
             await this.window.getByText('Your stake address').waitFor({ state: 'visible' });
         }
     }
+
     // asserts
     async getAccountsCount(network: string) {
         return await this.window

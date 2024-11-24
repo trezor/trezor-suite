@@ -1,5 +1,6 @@
-import { test, expect } from '../support/fixtures';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+
+import { test, expect } from '../support/fixtures';
 import { launchSuite, LEGACY_BRIDGE_VERSION, waitForDataTestSelector } from '../support/common';
 import { DashboardActions } from '../support/pageActions/dashboardActions';
 
@@ -57,25 +58,22 @@ test.describe.serial('Bridge', () => {
         }
     });
 
-    test(
-        'App acquired device, EXTERNAL bridge is restarted, app reconnects',
-        async () => {
-            await TrezorUserEnvLink.startEmu({ wipe: true, version: '2-latest', model: 'T2T1' });
-            await TrezorUserEnvLink.setupEmu({});
-            await TrezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
+    test('App acquired device, EXTERNAL bridge is restarted, app reconnects', async () => {
+        await TrezorUserEnvLink.startEmu({ wipe: true, version: '2-latest', model: 'T2T1' });
+        await TrezorUserEnvLink.setupEmu({});
+        await TrezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
 
-            const suite = await launchSuite();
-            await suite.window.title();
-            await waitForDataTestSelector(suite.window, '@welcome/title');
-            const onDashboardPage = new DashboardActions(suite.window);
-            await onDashboardPage.passThroughInitialRun();
+        const suite = await launchSuite();
+        await suite.window.title();
+        await waitForDataTestSelector(suite.window, '@welcome/title');
+        const onDashboardPage = new DashboardActions(suite.window);
+        await onDashboardPage.passThroughInitialRun();
 
-            await TrezorUserEnvLink.stopBridge();
+        await TrezorUserEnvLink.stopBridge();
 
-            await waitForDataTestSelector(suite.window, '@connect-device-prompt');
+        await waitForDataTestSelector(suite.window, '@connect-device-prompt');
 
-            await TrezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
-            await waitForDataTestSelector(suite.window, '@dashboard/index');
-        },
-    );
+        await TrezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
+        await waitForDataTestSelector(suite.window, '@dashboard/index');
+    });
 });

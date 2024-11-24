@@ -1,4 +1,5 @@
 import { Page } from '@playwright/test';
+
 import { test, expect } from '../support/fixtures';
 import { launchSuite } from '../support/common';
 import { NetworkAnalyzer } from '../support/networkAnalyzer';
@@ -52,37 +53,34 @@ test.describe.skip('Tor loading screen', () => {
         suite.electronApp.close();
     });
 
-    test(
-        'Tor loading screen: making sure that all the request go throw Tor',
-        async () => {
-            test.setTimeout(timeout);
+    test('Tor loading screen: making sure that all the request go throw Tor', async () => {
+        test.setTimeout(timeout);
 
-            const networkAnalyzer = new NetworkAnalyzer();
+        const networkAnalyzer = new NetworkAnalyzer();
 
-            let suite = await launchSuite();
+        let suite = await launchSuite();
 
-            await turnOnTorInSettings(suite.window);
+        await turnOnTorInSettings(suite.window);
 
-            suite.electronApp.close();
+        suite.electronApp.close();
 
-            suite = await launchSuite();
-            // Start network analyzer after making sure tor is going to be running.
-            networkAnalyzer.start();
+        suite = await launchSuite();
+        // Start network analyzer after making sure tor is going to be running.
+        networkAnalyzer.start();
 
-            await suite.window.waitForSelector('[data-testid="@tor-loading-screen"]', {
-                state: 'visible',
-            });
+        await suite.window.waitForSelector('[data-testid="@tor-loading-screen"]', {
+            state: 'visible',
+        });
 
-            await suite.window.waitForSelector('[data-testid="@welcome/title"]', { timeout });
-            networkAnalyzer.stop();
-            const requests = networkAnalyzer.getRequests();
-            requests.forEach(request => {
-                expect(request).toContain('localhost:');
-            });
+        await suite.window.waitForSelector('[data-testid="@welcome/title"]', { timeout });
+        networkAnalyzer.stop();
+        const requests = networkAnalyzer.getRequests();
+        requests.forEach(request => {
+            expect(request).toContain('localhost:');
+        });
 
-            suite.electronApp.close();
-        },
-    );
+        suite.electronApp.close();
+    });
 
     test('Tor loading screen: disable tor while loading', async () => {
         test.setTimeout(timeout);

@@ -29,3 +29,7 @@ Opens an electron app controlled by the [playwright test runner](https://playwri
 2. **To debug test** add `await window.pause();` to place where you want test to stop. Debugger window will open.
 
 3. **To enable Debug Tools in the browser** press `Ctrl+Shift+I`
+
+### Contribution
+
+Please follow our general [Playwright contribution guide](e2e-playwright-contribution-guide.md)

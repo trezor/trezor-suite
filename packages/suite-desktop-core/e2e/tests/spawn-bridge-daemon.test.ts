@@ -1,6 +1,7 @@
-import { test, expect } from '../support/fixtures';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { createTimeoutPromise } from '@trezor/utils';
+
+import { test, expect } from '../support/fixtures';
 import { launchSuite, launchSuiteElectronApp, waitForDataTestSelector } from '../support/common';
 
 test.describe.serial('Bridge', () => {

@@ -1,4 +1,5 @@
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link/src';
+
 import { test, expect } from '../../support/fixtures';
 
 test.beforeAll(async () => {
@@ -21,23 +22,25 @@ test.afterAll(() => {
  * 2. Check that all types of Cardano accounts are discovered
  * 3. Check that Staking section is available
  */
-test.skip(
-    'Discover all Cardano account types',
-    async ({ dashboardPage, topBar, settingsPage, walletPage }) => {
-        await dashboardPage.passThroughInitialRun();
-        await dashboardPage.discoveryShouldFinish();
+test.skip('Discover all Cardano account types', async ({
+    dashboardPage,
+    topBar,
+    settingsPage,
+    walletPage,
+}) => {
+    await dashboardPage.passThroughInitialRun();
+    await dashboardPage.discoveryShouldFinish();
 
-        await topBar.openSettings();
-        await settingsPage.goToDesiredSettingsPlace('wallet');
-        await settingsPage.enableCoin('ada');
-        await settingsPage.enableCoin('btc');
+    await topBar.openSettings();
+    await settingsPage.goToDesiredSettingsPlace('wallet');
+    await settingsPage.enableCoin('ada');
+    await settingsPage.enableCoin('btc');
 
-        await topBar.openDashboard();
-        await dashboardPage.discoveryShouldFinish();
+    await topBar.openDashboard();
+    await dashboardPage.discoveryShouldFinish();
 
-        await walletPage.clickAllAccountArrows();
-        await walletPage.enableAllCardanoAccounts();
+    await walletPage.clickAllAccountArrows();
+    await walletPage.enableAllCardanoAccounts();
 
-        expect(await walletPage.getAccountsCount('ada')).toEqual(3);
-    },
-);
+    expect(await walletPage.getAccountsCount('ada')).toEqual(3);
+});

@@ -1,5 +1,7 @@
 import { Page, expect } from '@playwright/test';
+
 import { NetworkSymbol } from '@suite-common/wallet-config';
+
 import { waitForDataTestSelector } from '../common';
 
 export class DashboardActions {

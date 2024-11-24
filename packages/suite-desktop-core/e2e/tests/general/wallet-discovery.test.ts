@@ -1,4 +1,5 @@
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+
 import { test } from '../../support/fixtures';
 
 test.beforeAll(async () => {

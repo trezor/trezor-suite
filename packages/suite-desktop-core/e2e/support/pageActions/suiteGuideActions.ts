@@ -1,4 +1,5 @@
 import { Page, expect } from '@playwright/test';
+
 import { waitForDataTestSelector } from '../common';
 
 export class SuiteGuide {
@@ -26,7 +27,11 @@ export class SuiteGuide {
         const suggestionDropdown = this.window.getByTestId('@guide/feedback/suggestion-dropdown');
         await suggestionDropdown.waitFor({ state: 'visible' });
         await suggestionDropdown.click();
-        await this.window.getByTestId(`@guide/feedback/suggestion-dropdown/select/option/${desiredLocation.toLowerCase()}`).click();
+        await this.window
+            .getByTestId(
+                `@guide/feedback/suggestion-dropdown/select/option/${desiredLocation.toLowerCase()}`,
+            )
+            .click();
         // assert that select value was changed correctly.
         expect(
             this.window.locator('[data-testid="@guide/feedback/suggestion-dropdown/select/input"]'),
