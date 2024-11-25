@@ -29,9 +29,10 @@ import { Account, AccountItemType } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
 import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
+
 import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
-import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
 
 const ICON_SIZE = 24;
 
@@ -55,7 +56,6 @@ const Wrapper = styled(NavigationItemBase)<{
 
 export const CollapsedItem = styled(NavigationItemBase)<{ $isSelected: boolean }>`
     background: ${({ theme, $isSelected }) => $isSelected && theme.backgroundSurfaceElevation1};
-    margin: ${spacingsPx.xs} 0;
     line-height: 0;
     z-index: 0;
     position: relative;

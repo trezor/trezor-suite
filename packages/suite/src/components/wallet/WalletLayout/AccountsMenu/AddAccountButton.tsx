@@ -1,4 +1,4 @@
-import { Tooltip, ButtonProps, IconButton, Button,TOOLTIP_DELAY_NORMAL } from '@trezor/components';
+import { Tooltip, ButtonProps, IconButton, Button, TOOLTIP_DELAY_NORMAL } from '@trezor/components';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 import { Translation } from 'src/components/suite';

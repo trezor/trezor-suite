@@ -30,7 +30,7 @@ export const QuickActionButton = ({
     'data-testid': dataTest,
     isOpen,
 }: ActionButtonProps) => (
-    <Tooltip content={tooltip} cursor="pointer" isOpen={isOpen}>
+    <Tooltip placement="right" hasArrow content={tooltip} cursor="pointer" isOpen={isOpen}>
         <Container data-testid={dataTest} onClick={onClick}>
             {children}
         </Container>

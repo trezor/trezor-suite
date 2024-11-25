@@ -1,4 +1,5 @@
 import { useRef, useState, ReactNode, useEffect, useCallback } from 'react';
+
 import styled from 'styled-components';
 
 import {
@@ -22,16 +23,16 @@ import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHi
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { MobileAccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/MobileAccountsMenu';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import {
+    ResponsiveContextProvider,
+    useResponsiveContext,
+} from 'src/support/suite/ResponsiveContext';
 
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
 import { MobileMenu } from './MobileMenu/MobileMenu';
 import { Sidebar } from './Sidebar/Sidebar';
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
 import { useAppShortcuts } from './useAppShortcuts';
-import {
-    ResponsiveContextProvider,
-    useResponsiveContext,
-} from 'src/support/suite/ResponsiveContext';
 
 export const SCROLL_WRAPPER_ID = 'layout-scroll';
 export const Wrapper = styled.div`
@@ -108,9 +109,7 @@ type MainContentProps = {
 };
 
 export const MainContent = ({ children }: MainContentProps) => {
-    const { contentWidth } = useResponsiveContext();
     const ref = useRef<HTMLDivElement>(null);
-    console.log('___!!!', contentWidth);
     const { setContentWidth, sidebarWidth } = useResponsiveContext();
 
     const updateContainerWidth = useCallback(() => {
@@ -121,16 +120,17 @@ export const MainContent = ({ children }: MainContentProps) => {
             setContentWidth(width);
         }
     }, [setContentWidth]);
-
     useEffect(() => {
         updateContainerWidth();
 
         window.addEventListener('resize', updateContainerWidth);
         window.addEventListener('orientationchange', updateContainerWidth);
+        window.addEventListener('load', updateContainerWidth);
 
         return () => {
             window.removeEventListener('resize', updateContainerWidth);
             window.removeEventListener('orientationchange', updateContainerWidth);
+            window.removeEventListener('load', updateContainerWidth);
         };
     }, [ref, setContentWidth, sidebarWidth, updateContainerWidth]);
 
@@ -143,13 +143,13 @@ interface SuiteLayoutProps {
 
 export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     const selectedAccount = useSelector(selectSelectedAccount);
+    const sidebarWidthFromRedux = useSelector(state => state.suite.settings.sidebarWidth);
 
     const [{ title, TopMenu }, setLayoutPayload] = useState<LayoutContextPayload>({});
 
     const { isMobileLayout } = useLayoutSize();
     const wrapperRef = useRef<HTMLDivElement>(null);
     const { scrollRef } = useResetScrollOnUrl();
-
     useClearAnchorHighlightOnClick(wrapperRef);
 
     const isAccountPage = !!selectedAccount;
@@ -160,7 +160,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
         <ElevationContext baseElevation={-1}>
             <Wrapper ref={wrapperRef} data-testid="@suite-layout">
                 <PageWrapper>
-                    <ResponsiveContextProvider>
+                    <ResponsiveContextProvider sidebarWidthFromRedux={sidebarWidthFromRedux}>
                         <NewModal.Provider>
                             <ModalContextProvider>
                                 <Metadata title={title} />
@@ -182,7 +182,8 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                                 </ElevationDown>
                                             )}
                                             <MainContent>
-                                                {!isMobileLayout && <CoinjoinBars />}<SuiteBanners />
+                                                {!isMobileLayout && <CoinjoinBars />}
+                                                <SuiteBanners />
                                                 <AppWrapper
                                                     data-testid="@app"
                                                     ref={scrollRef}

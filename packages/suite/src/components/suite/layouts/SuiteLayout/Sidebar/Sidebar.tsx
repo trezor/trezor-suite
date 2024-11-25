@@ -6,7 +6,7 @@ import { ElevationUp, ResizableBox, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBackground, mapElevationToBorder, zIndices } from '@trezor/theme';
 
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useActions } from 'src/hooks/suite';
 
 import { QuickActions } from './QuickActions/QuickActions';
 import { Navigation } from './Navigation';
@@ -43,8 +43,6 @@ export const Sidebar = () => {
     const { elevation } = useElevation();
     const { updateStatusDevice, updateStatusSuite } = useUpdateStatus();
 
-    const sidebarWidthFromRedux = useSelector(state => state.suite.settings.sidebarWidth);
-
     const actions = useActions({
         setSidebarWidth: (width: number) => setSidebarWidthInRedux({ width }),
     });
@@ -75,7 +73,7 @@ export const Sidebar = () => {
         <Wrapper>
             <ResizableBox
                 directions={['right']}
-                width={sidebarWidth || sidebarWidthFromRedux}
+                width={sidebarWidth}
                 minWidth={84}
                 maxWidth={600}
                 zIndex={zIndices.draggableComponent}

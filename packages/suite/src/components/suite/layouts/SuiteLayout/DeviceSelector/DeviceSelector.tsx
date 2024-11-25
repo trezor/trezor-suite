@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+
 import styled, { css } from 'styled-components';
+
 import { selectDevicesCount, selectDevice } from '@suite-common/wallet-core';
 import type { Timeout } from '@trezor/type-utils';
 import { borders, spacingsPx } from '@trezor/theme';
@@ -13,6 +15,7 @@ import { ViewOnlyTooltip } from 'src/views/view-only/ViewOnlyTooltip';
 
 import { SidebarDeviceStatus } from './SidebarDeviceStatus';
 import { ExpandedSidebarOnly } from '../Sidebar/ExpandedSidebarOnly';
+import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 
 const CaretContainer = styled.div`
     background: transparent;
@@ -21,7 +24,7 @@ const CaretContainer = styled.div`
     transition: background 0.15s;
 `;
 
-const Wrapper = styled.div<{ $isAnimationTriggered?: boolean }>`
+const Wrapper = styled.div<{ $isAnimationTriggered?: boolean; $isSidebarCollapsed?: boolean }>`
     width: 100%;
     padding: ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.md};
     align-items: center;
@@ -29,6 +32,12 @@ const Wrapper = styled.div<{ $isAnimationTriggered?: boolean }>`
     border: 1px solid transparent;
     transition: ${focusStyleTransition};
     white-space: nowrap;
+    ${({ $isSidebarCollapsed }) =>
+        $isSidebarCollapsed &&
+        css`
+            display: flex;
+            justify-content: center;
+        `}
 
     ${getFocusShadowStyle()};
 
@@ -108,8 +117,13 @@ export const DeviceSelector = () => {
             }),
         );
 
+    const { isSidebarCollapsed } = useResponsiveContext();
+
     return (
-        <Wrapper $isAnimationTriggered={isAnimationTriggered}>
+        <Wrapper
+            $isAnimationTriggered={isAnimationTriggered}
+            $isSidebarCollapsed={isSidebarCollapsed}
+        >
             <ViewOnlyTooltip>
                 <InnerContainer
                     onClick={handleSwitchDeviceClick}

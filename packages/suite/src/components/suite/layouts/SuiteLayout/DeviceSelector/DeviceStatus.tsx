@@ -12,8 +12,8 @@ import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/Device
 import { TrezorDevice } from 'src/types/suite';
 import { DeviceDetail } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceDetail';
 import { useSelector } from 'src/hooks/suite';
+
 import { ExpandedSidebarOnly } from '../Sidebar/ExpandedSidebarOnly';
-import { isCollapsedSidebar } from '../Sidebar/consts';
 
 type DeviceStatusProps = {
     deviceModel: DeviceModelInternal;
@@ -22,17 +22,6 @@ type DeviceStatusProps = {
     handleRefreshClick?: MouseEventHandler;
     forceConnectionInfo?: boolean;
 };
-
-// const Container = styled.div`
-//     display: flex;
-//     gap: ${spacingsPx.md};
-//     flex: 1;
-//     align-items: center;
-//
-//     @container ${isCollapsedSidebar} {
-//         justify-content: center;
-//     }
-// `;
 
 const DeviceWrapper = styled.div<{ $isLowerOpacity: boolean }>`
     display: flex;

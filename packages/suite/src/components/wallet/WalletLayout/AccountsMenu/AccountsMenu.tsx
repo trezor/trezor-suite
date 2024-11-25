@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 import { selectDevice } from '@suite-common/wallet-core';
 import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
-import { useScrollShadow, Row,Column } from '@trezor/components';
+import { useScrollShadow, Row, Column } from '@trezor/components';
 
 import { useDiscovery, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
