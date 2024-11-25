@@ -95,6 +95,7 @@ const getPlugins = (): ExpoPlugins => {
                 microphonePermission: false,
             },
         ],
+        ['expo-video'],
         [
             'expo-build-properties',
             {
@@ -160,7 +161,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
-        runtimeVersion: '11',
+        runtimeVersion: '12',
         ...(buildType === 'production'
             ? {}
             : {

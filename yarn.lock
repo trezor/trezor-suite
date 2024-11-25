@@ -9067,7 +9067,6 @@ __metadata:
     detox: "npm:^20.25.6"
     expo: "npm:^52.0.4"
     expo-atlas: "npm:0.3.27"
-    expo-av: "npm:^15.0.1"
     expo-build-properties: "npm:^0.13.1"
     expo-camera: "npm:^16.0.4"
     expo-clipboard: "npm:^7.0.0"
@@ -9084,6 +9083,7 @@ __metadata:
     expo-status-bar: "npm:^2.0.0"
     expo-system-ui: "npm:^4.0.2"
     expo-updates: "npm:0.26.6"
+    expo-video: "npm:^2.0.1"
     jest: "npm:^29.7.0"
     lottie-react-native: "npm:^7.1.0"
     metro: "npm:0.81.0"
@@ -10271,10 +10271,12 @@ __metadata:
   resolution: "@suite-native/video-assets@workspace:suite-native/video-assets"
   dependencies:
     "@trezor/styles": "workspace:*"
-    expo-av: "npm:^15.0.1"
+    expo: "npm:^52.0.4"
+    expo-video: "npm:^2.0.1"
     prettier: "npm:^3.3.2"
     react: "npm:18.2.0"
     react-native: "npm:0.76.1"
+    react-native-reanimated: "npm:3.16.1"
   languageName: unknown
   linkType: soft
 
@@ -21611,21 +21613,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-av@npm:^15.0.1":
-  version: 15.0.1
-  resolution: "expo-av@npm:15.0.1"
-  peerDependencies:
-    expo: "*"
-    react: "*"
-    react-native: "*"
-    react-native-web: "*"
-  peerDependenciesMeta:
-    react-native-web:
-      optional: true
-  checksum: 10/98f8275e9f7ca29739f291fc85f86261aa29d5c54a716c5f847f833ce17369e2b04f11f79b6940eaac63168041f8346590fe4136e3c60f8f698ebd8661f46669
-  languageName: node
-  linkType: hard
-
 "expo-build-properties@npm:^0.13.1":
   version: 0.13.1
   resolution: "expo-build-properties@npm:0.13.1"
@@ -22039,6 +22026,17 @@ __metadata:
   bin:
     expo-updates: bin/cli.js
   checksum: 10/48bba9bc2a6d0855f3a33e1379bb941d9cdbd44bee28fa693975819d78140e2a141dcfd3bacc5b6b5c7866725b93de35ed40b0031df5e6789ebef3af8875d9cf
+  languageName: node
+  linkType: hard
+
+"expo-video@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "expo-video@npm:2.0.1"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+  checksum: 10/5b442463357fc8ff2fcb96c6377bfc4b680f4d42defb0e7e9c60ef12ac58b052a30388c6164d1d7af3feafc57158cefec74433d0cc218e2baf63eafa2d4e764c
   languageName: node
   linkType: hard
 

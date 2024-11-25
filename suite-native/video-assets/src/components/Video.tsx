@@ -1,13 +1,14 @@
-import { useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
-import { Video as ExpoVideo, VideoProps as ExpoVideoProps, ResizeMode } from 'expo-av';
+import { useEvent } from 'expo';
+import { useVideoPlayer, VideoView } from 'expo-video';
 
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 
 import { videos, VideoName } from '../videos';
 
-type VideoProps = ExpoVideoProps & {
+type VideoProps = {
     name: VideoName;
     aspectRatio?: number;
 };
@@ -16,32 +17,34 @@ type VideoStyleProps = {
     aspectRatio: number;
 };
 
-const videoContainer = prepareNativeStyle((_, { aspectRatio }: VideoStyleProps) => ({
+const videoContainer = prepareNativeStyle((utils, { aspectRatio }: VideoStyleProps) => ({
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: utils.borders.radii.r20,
     aspectRatio,
 }));
 
-const videoStyle = prepareNativeStyle((utils, { aspectRatio }: VideoStyleProps) => ({
+const videoStyle = prepareNativeStyle<VideoStyleProps>((_, { aspectRatio }) => ({
     flex: 1,
     aspectRatio,
-    borderRadius: utils.borders.radii.r20,
 }));
 
 const activityIndicatorStyle = prepareNativeStyle(_ => ({
     position: 'absolute',
 }));
 
-export const Video = ({
-    name,
-    shouldPlay = true,
-    isMuted = true,
-    aspectRatio = 1,
-    ...restProps
-}: VideoProps) => {
-    const [isLoading, setIsLoading] = useState(true);
+export const Video = ({ name, aspectRatio = 1 }: VideoProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const videoSource = videos[name];
+
+    const videoPlayer = useVideoPlayer(videoSource, player => {
+        player.play();
+        player.loop = true;
+        player.muted = true;
+    });
+
+    const { status } = useEvent(videoPlayer, 'statusChange', { status: videoPlayer.status });
+    const isLoading = status === 'loading';
 
     return (
         <View style={applyStyle(videoContainer, { aspectRatio })}>
@@ -52,16 +55,16 @@ export const Video = ({
                     style={applyStyle(activityIndicatorStyle)}
                 />
             )}
-            <ExpoVideo
-                style={applyStyle(videoStyle, { aspectRatio })}
-                source={videoSource}
-                shouldPlay
-                isMuted={isMuted}
-                isLooping
-                resizeMode={ResizeMode.CONTAIN}
-                onLoad={() => setIsLoading(false)}
-                {...restProps}
-            />
+            {!isLoading && (
+                <Animated.View entering={FadeIn}>
+                    <VideoView
+                        player={videoPlayer}
+                        style={applyStyle(videoStyle, { aspectRatio })}
+                        contentFit="contain"
+                        nativeControls={false}
+                    />
+                </Animated.View>
+            )}
         </View>
     );
 };

@@ -31,7 +31,7 @@ babel-plugin-transform-inline-environment-variables
 babel-plugin-transform-remove-console
 buffer
 expo-atlas
-expo-av
+expo-video
 expo-camera
 expo-image-picker
 expo-build-properties
