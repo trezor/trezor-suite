@@ -18,6 +18,10 @@
 
     To run the `trezor-user-env` that Playwright tests needs.
 
+4. `cd path/to/trezor-suite-desktop && bash docker/docker-regtest-electrum.sh`
+
+    To run the Regtest server that few Playwright tests need.
+
 ### Running tests locally
 
 `yarn workspace @trezor/suite-desktop-core test:e2e`

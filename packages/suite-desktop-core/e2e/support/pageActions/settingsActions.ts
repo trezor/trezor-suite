@@ -4,6 +4,14 @@ import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { waitForDataTestSelector } from '../common';
 
+const settingSectionsLocators = {
+    debug: '@settings/debug/github',
+    general: '@general-settings/language',
+    device: '@settings/device/backup-recovery-seed',
+    wallet: '@settings/wallet/network/btc',
+} as const;
+type Section = keyof typeof settingSectionsLocators;
+
 export class SettingsActions {
     private readonly window: Page;
     constructor(window: Page) {
@@ -20,33 +28,11 @@ export class SettingsActions {
         await this.window.getByTestId('@settings/menu/debug').waitFor({ state: 'visible' });
     }
 
-    async goToDesiredSettingsPlace(desiredLocation: 'debug' | 'general' | 'device' | 'wallet') {
-        //TODO: Investigate if this is neccessary. Ideally there should be simple test for navigation
-        //and all other test does not need to verify the navigation, they will check elements on that page instead.
-        // and there should never happen default case as typescript should allow only those 4 values in union.
-        let desiredLocationTestid: string;
-        switch (desiredLocation) {
-            case 'debug':
-                desiredLocationTestid = '@settings/debug/github';
-                break;
-            case 'general':
-                desiredLocationTestid = '@general-settings/language';
-                break;
-            case 'device':
-                desiredLocationTestid = '@settings/device/backup-recovery-seed';
-                break;
-            // TODO: later add coverage for edge cases. Test now assumes active btc network
-            case 'wallet':
-                desiredLocationTestid = '@settings/wallet/network/btc';
-                break;
-            default:
-                throw new Error('Unknown location, check your selector.');
-        }
-        await this.window.getByTestId(`@settings/menu/${desiredLocation}`).click();
+    async goToSettingSection(section: Section) {
+        await this.window.getByTestId(`@settings/menu/${section}`).click();
+        //TODO: #15552 Refactor navigation verification to specific tests and remove this method completely
         await this.window
-            .locator(`[data-testid="${desiredLocationTestid}"]`)
-            // TODO: fix data-testid selectors in the app
-            // .getByTestId(desiredLocationTestid)
+            .getByTestId(settingSectionsLocators[section])
             .waitFor({ state: 'visible', timeout: 10_000 });
     }
 

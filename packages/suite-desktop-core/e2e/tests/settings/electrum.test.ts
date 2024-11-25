@@ -18,6 +18,11 @@ test.describe.serial('Suite works with Electrum server', () => {
         topBar,
         settingsPage,
     }) => {
+        test.info().annotations.push({
+            type: 'dependency',
+            description:
+                'This test needs running RegTest docker. Read how to run this dependency in docs/tests/regtest.md',
+        });
         const electrumUrl = '127.0.0.1:50001:t';
 
         await dashboardPage.passThroughInitialRun();
@@ -25,7 +30,7 @@ test.describe.serial('Suite works with Electrum server', () => {
 
         await topBar.openSettings();
         await settingsPage.toggleDebugModeInSettings();
-        await settingsPage.goToDesiredSettingsPlace('wallet');
+        await settingsPage.goToSettingSection('wallet');
         await settingsPage.openNetworkSettings('regtest');
         await settingsPage.changeNetworkBackend('electrum', electrumUrl);
 

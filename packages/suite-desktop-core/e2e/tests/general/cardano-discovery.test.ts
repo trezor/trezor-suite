@@ -32,7 +32,7 @@ test.skip('Discover all Cardano account types', async ({
     await dashboardPage.discoveryShouldFinish();
 
     await topBar.openSettings();
-    await settingsPage.goToDesiredSettingsPlace('wallet');
+    await settingsPage.goToSettingSection('wallet');
     await settingsPage.enableCoin('ada');
     await settingsPage.enableCoin('btc');
 

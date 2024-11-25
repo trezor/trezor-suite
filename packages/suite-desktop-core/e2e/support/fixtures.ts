@@ -9,7 +9,7 @@ import { SuiteGuide } from './pageActions/suiteGuideActions';
 import { TopBarActions } from './pageActions/topBarActions';
 import { WalletActions } from './pageActions/walletActions';
 
-const test = base.extend<{
+type Fixtures = {
     electronApp: ElectronApplication;
     window: Page;
     dashboardPage: DashboardActions;
@@ -17,16 +17,21 @@ const test = base.extend<{
     suiteGuidePage: SuiteGuide;
     topBar: TopBarActions;
     walletPage: WalletActions;
-}>({
+};
+
+const test = base.extend<Fixtures>({
     /* eslint-disable no-empty-pattern */
     electronApp: async ({}, use) => {
         const suite = await launchSuite();
         await use(suite.electronApp);
         await suite.electronApp.close(); // Ensure cleanup after tests
     },
-    window: async ({ electronApp }, use) => {
+    window: async ({ electronApp }, use, testInfo) => {
         const window = await electronApp.firstWindow();
+        await window.context().tracing.start({ screenshots: true, snapshots: true });
         await use(window);
+        const tracePath = `${testInfo.outputDir}/trace.electron.zip`;
+        await window.context().tracing.stop({ path: tracePath });
     },
     dashboardPage: async ({ window }, use) => {
         const dashboardPage = new DashboardActions(window);
