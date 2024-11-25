@@ -57,21 +57,22 @@ export const selectVisibleDeviceAccountsKeysByNetworkSymbol = (
     return accounts.map(account => account.key);
 };
 
-export const selectDeviceNetworksWithAssets = (state: AssetsRootState) => {
-    const accounts = selectVisibleDeviceAccounts(state);
+export const selectDeviceNetworksWithAssets = createMemoizedSelector(
+    [selectVisibleDeviceAccounts],
+    accounts => {
+        return pipe(
+            accounts,
+            A.map(account => account.symbol),
+            A.uniq,
+            A.sort((a, b) => {
+                const aOrder = orderedNetworkSymbols.indexOf(a) ?? Number.MAX_SAFE_INTEGER;
+                const bOrder = orderedNetworkSymbols.indexOf(b) ?? Number.MAX_SAFE_INTEGER;
 
-    return pipe(
-        accounts,
-        A.map(account => account.symbol),
-        A.uniq,
-        A.sort((a, b) => {
-            const aOrder = orderedNetworkSymbols.indexOf(a) ?? Number.MAX_SAFE_INTEGER;
-            const bOrder = orderedNetworkSymbols.indexOf(b) ?? Number.MAX_SAFE_INTEGER;
-
-            return aOrder - bOrder;
-        }),
-    );
-};
+                return aOrder - bOrder;
+            }),
+        );
+    },
+);
 
 export const selectBottomSheetDeviceNetworkItems = createMemoizedSelector(
     [
@@ -154,29 +155,34 @@ export const selectAssetCryptoValue = (state: AssetsRootState, symbol: NetworkSy
     return asset?.assetBalance ?? '0';
 };
 
-export const selectAssetFiatValue = (state: AssetsRootState, symbol: NetworkSymbol) => {
-    const assets = selectDeviceAssetsWithBalances(state);
-    const asset = assets.assets.find(a => a.symbol === symbol);
+export const selectAssetFiatValue = createMemoizedSelector(
+    [selectDeviceAssetsWithBalances, (_state, networkSymbol: NetworkSymbol) => networkSymbol],
+    (assets, networkSymbol) => {
+        const asset = assets.assets.find(a => a.symbol === networkSymbol);
 
-    return asset?.fiatBalance ?? null;
-};
+        return asset?.fiatBalance ?? null;
+    },
+);
 
-const selectAssetsFiatValuePercentage = (state: AssetsRootState) => {
-    const assets = selectDeviceAssetsWithBalances(state);
-    const percentages = calculateAssetsPercentage(assets.assets);
+const selectAssetsFiatValuePercentage = createMemoizedSelector(
+    [selectDeviceAssetsWithBalances],
+    assets => {
+        const percentages = calculateAssetsPercentage(assets.assets);
 
-    return percentages;
-};
+        return percentages;
+    },
+);
 
-export const selectAssetFiatValuePercentage = (state: AssetsRootState, symbol: NetworkSymbol) => {
-    const assetsPercentages = selectAssetsFiatValuePercentage(state);
+export const selectAssetFiatValuePercentage = createMemoizedSelector(
+    [selectAssetsFiatValuePercentage, (_state, networkSymbol: NetworkSymbol) => networkSymbol],
+    (assetsPercentages, networkSymbol) => {
+        const asset = assetsPercentages.find(a => a.symbol === networkSymbol);
 
-    const asset = assetsPercentages.find(a => a.symbol === symbol);
+        const assetPercentage = {
+            fiatPercentage: Math.ceil(asset?.fiatPercentage ?? 0),
+            fiatPercentageOffset: Math.floor(asset?.fiatPercentageOffset ?? 0),
+        };
 
-    const assetPercentage = {
-        fiatPercentage: Math.ceil(asset?.fiatPercentage ?? 0),
-        fiatPercentageOffset: Math.floor(asset?.fiatPercentageOffset ?? 0),
-    };
-
-    return assetPercentage;
-};
+        return assetPercentage;
+    },
+);
