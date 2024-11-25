@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { CryptoId } from 'invity-api';
 
 import addressValidator from '@trezor/address-validator';
-import { Input, Button, Paragraph, Divider, Column, Tooltip, H4 } from '@trezor/components';
+import { Input, Button, Paragraph, Divider, Column, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 
@@ -105,56 +105,53 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
                     values={{ symbol: cryptoIdToCoinSymbol(currency) }}
                 />
             </Paragraph>
-            <Column gap={spacings.xxs} alignItems="flex-start">
-                <Tooltip hasIcon content={<Translation id={accountTooltipTranslationId} />}>
-                    <H4>
+            <CoinmarketVerifyOptions
+                receiveNetwork={currency}
+                selectedAccountOption={selectedAccountOption}
+                selectAccountOptions={selectAccountOptions}
+                isMenuOpen={isMenuOpen}
+                onChangeAccount={onChangeAccount}
+                label={
+                    <Tooltip hasIcon content={<Translation id={accountTooltipTranslationId} />}>
                         <Translation id="TR_BUY_RECEIVING_ACCOUNT" />
-                    </H4>
-                </Tooltip>
-                <CoinmarketVerifyOptions
-                    receiveNetwork={currency}
-                    selectedAccountOption={selectedAccountOption}
-                    selectAccountOptions={selectAccountOptions}
-                    isMenuOpen={isMenuOpen}
-                    onChangeAccount={onChangeAccount}
-                />
-            </Column>
+                    </Tooltip>
+                }
+            />
             <Column gap={spacings.xxs}>
                 {selectedAccountOption?.type === 'SUITE' &&
                     selectedAccountOption?.account?.networkType === 'bitcoin' && (
-                        <>
+                        <CoinmarketAddressOptions
+                            account={selectedAccountOption?.account}
+                            address={address}
+                            control={form.control}
+                            receiveSymbol={currency}
+                            setValue={form.setValue}
+                            label={
+                                <Tooltip
+                                    hasIcon
+                                    content={<Translation id={addressTooltipTranslationId} />}
+                                >
+                                    <Translation id="TR_BUY_RECEIVING_ADDRESS" />
+                                </Tooltip>
+                            }
+                        />
+                    )}
+                {selectedAccountOption?.account?.networkType !== 'bitcoin' && (
+                    <Input
+                        readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
+                        inputState={form.formState.errors.address ? 'error' : undefined}
+                        labelLeft={
                             <Tooltip
                                 hasIcon
                                 content={<Translation id={addressTooltipTranslationId} />}
                             >
-                                <H4>
-                                    <Translation id="TR_BUY_RECEIVING_ADDRESS" />
-                                </H4>
-                            </Tooltip>
-                            <CoinmarketAddressOptions
-                                account={selectedAccountOption?.account}
-                                address={address}
-                                control={form.control}
-                                receiveSymbol={currency}
-                                setValue={form.setValue}
-                            />
-                        </>
-                    )}
-                {selectedAccountOption?.account?.networkType !== 'bitcoin' && (
-                    <>
-                        <Tooltip hasIcon content={<Translation id={addressTooltipTranslationId} />}>
-                            <H4>
                                 <Translation id="TR_EXCHANGE_RECEIVING_ADDRESS" />
-                            </H4>
-                        </Tooltip>
-                        <Input
-                            readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
-                            inputState={form.formState.errors.address ? 'error' : undefined}
-                            bottomText={form.formState.errors.address?.message || null}
-                            innerRef={networkRef}
-                            {...networkField}
-                        />
-                    </>
+                            </Tooltip>
+                        }
+                        bottomText={form.formState.errors.address?.message || null}
+                        innerRef={networkRef}
+                        {...networkField}
+                    />
                 )}
 
                 {device?.connected &&

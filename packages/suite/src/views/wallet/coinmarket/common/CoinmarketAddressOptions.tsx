@@ -1,13 +1,11 @@
-import { useEffect, ReactElement } from 'react';
+import { useEffect, ReactElement, ReactNode } from 'react';
 import { UseFormReturn, Control, Controller } from 'react-hook-form';
 import type { MenuPlacement } from 'react-select';
 
-import styled from 'styled-components';
 import { CryptoId } from 'invity-api';
 
 import type { AccountAddress } from '@trezor/connect';
-import { variables, Select } from '@trezor/components';
-import { spacingsPx, typography } from '@trezor/theme';
+import { Select, InfoSegments, Column } from '@trezor/components';
 import { formatAmount } from '@suite-common/wallet-utils';
 import { networks } from '@suite-common/wallet-config';
 
@@ -22,28 +20,6 @@ import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo
 import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/coinmarket/form';
-
-const AddressWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
-const Amount = styled.div`
-    display: flex;
-    gap: ${spacingsPx.xxs};
-    ${typography.label}
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-const Address = styled.div`
-    display: flex;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const Option = styled.div`
-    display: flex;
-    align-items: center;
-`;
 
 const buildOptions = (addresses: Account['addresses']) => {
     if (!addresses) return undefined;
@@ -77,12 +53,14 @@ interface CoinmarketAddressOptionsProps<TFieldValues extends CoinmarketBuyAddres
     account?: Account;
     address?: string;
     menuPlacement?: MenuPlacement;
+    label: ReactNode;
 }
 
 export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddressOptionsType>({
     receiveSymbol,
     address,
     account,
+    label,
     menuPlacement,
     ...props
 }: CoinmarketAddressOptionsProps<TFieldValues>) => {
@@ -114,6 +92,7 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
                     onChange={({ address }) => onChange(address)}
                     isClearable={false}
                     value={value}
+                    labelLeft={label}
                     options={buildOptions(addresses)}
                     minValueWidth="70px"
                     menuPlacement={menuPlacement}
@@ -133,24 +112,21 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
                             : accountAddress.balance;
 
                         return (
-                            <Option>
-                                <AddressWrapper>
-                                    <Address data-testid="@coinmarket/form/verify/address">
-                                        {accountMetadata.addressLabels[accountAddress.address] ||
-                                            accountAddress.address}
-                                    </Address>
-                                    <Amount>
-                                        <CoinmarketBalance
-                                            balance={balance}
-                                            cryptoSymbolLabel={cryptoIdToCoinSymbol(receiveSymbol)}
-                                            symbol={account.symbol}
-                                            sendCryptoSelect={sendCryptoSelect}
-                                        />
-                                        <span>•</span>
-                                        <span>{accountAddress.path}</span>
-                                    </Amount>
-                                </AddressWrapper>
-                            </Option>
+                            <Column alignItems="normal">
+                                <div data-testid="@coinmarket/form/verify/address">
+                                    {accountMetadata.addressLabels[accountAddress.address] ||
+                                        accountAddress.address}
+                                </div>
+                                <InfoSegments typographyStyle="label" variant="tertiary">
+                                    <CoinmarketBalance
+                                        balance={balance}
+                                        cryptoSymbolLabel={cryptoIdToCoinSymbol(receiveSymbol)}
+                                        symbol={account.symbol}
+                                        sendCryptoSelect={sendCryptoSelect}
+                                    />
+                                    {accountAddress.path}
+                                </InfoSegments>
+                            </Column>
                         );
                     }}
                 />

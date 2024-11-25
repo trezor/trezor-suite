@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 import { CryptoId } from 'invity-api';
@@ -41,7 +42,7 @@ export interface CoinmarketVerifyAccountReturnProps {
     onChangeAccount: (account: CoinmarketVerifyFormAccountOptionProps) => void;
 }
 
-export type CoinmarketVerifyOptionsProps = { receiveNetwork: CryptoId } & Pick<
+export type CoinmarketVerifyOptionsProps = { receiveNetwork: CryptoId; label: ReactNode } & Pick<
     CoinmarketVerifyAccountReturnProps,
     'selectAccountOptions' | 'selectedAccountOption' | 'onChangeAccount' | 'isMenuOpen'
 >;

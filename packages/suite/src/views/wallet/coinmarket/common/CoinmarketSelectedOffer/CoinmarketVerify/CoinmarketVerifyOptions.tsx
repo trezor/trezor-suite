@@ -14,6 +14,7 @@ export const CoinmarketVerifyOptions = ({
     selectAccountOptions,
     selectedAccountOption,
     isMenuOpen,
+    label,
     onChangeAccount,
 }: CoinmarketVerifyOptionsProps) => {
     const { cryptoIdToPlatformName, cryptoIdToCoinName } = useCoinmarketInfo();
@@ -29,6 +30,7 @@ export const CoinmarketVerifyOptions = ({
                 onChangeAccount(selected)
             }
             value={selectedAccountOption}
+            labelLeft={label}
             isClearable={false}
             options={selectAccountOptions}
             minValueWidth="70px"
