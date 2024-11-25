@@ -1,6 +1,7 @@
 import { TranslationKey } from '@suite-common/intl-types';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { EXPERIMENTAL_PASSWORD_MANAGER_KB_URL, TOR_SNOWFLAKE_PROJECT_URL, Url } from '@trezor/urls';
+import { Route } from '@suite-common/suite-types';
 
 import { Dispatch } from '../../types/suite';
 
@@ -10,6 +11,7 @@ export type ExperimentalFeatureConfig = {
     title: TranslationKey;
     description: TranslationKey;
     knowledgeBaseUrl?: Url;
+    routeName?: Route['name'];
     isDisabled?: (context: { isDebug: boolean }) => boolean;
     onToggle?: ({ newValue, dispatch }: { newValue: boolean; dispatch: Dispatch }) => void;
 };
@@ -19,6 +21,7 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         title: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
         description: 'TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION',
         knowledgeBaseUrl: EXPERIMENTAL_PASSWORD_MANAGER_KB_URL,
+        routeName: 'password-manager-index',
     },
     'tor-snowflake': {
         title: 'TR_EXPERIMENTAL_TOR_SNOWFLAKE',

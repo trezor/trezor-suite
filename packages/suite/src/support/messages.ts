@@ -4991,6 +4991,10 @@ const messages = defineMessagesWithTypeCheck({
         defaultMessage:
             'For experienced users only. Use at your own risk. These features are in testing, may be unstable, and might not have long-term support.',
     },
+    TR_GO_TO_EXP_FEATURE: {
+        id: 'TR_GO_TO_EXP_FEATURE',
+        defaultMessage: 'Open',
+    },
     TR_EXPERIMENTAL_PASSWORD_MANAGER: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
         defaultMessage: 'Migrate Dropbox passwords',

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { Checkbox, Switch, Banner } from '@trezor/components';
+import { Checkbox, Switch, Banner, Button } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 
@@ -10,6 +10,7 @@ import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/componen
 import { EXPERIMENTAL_FEATURES, ExperimentalFeature } from 'src/constants/suite/experimental';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { goto } from 'src/actions/suite/routerActions';
 
 const FeatureLineWrapper = styled.div`
     display: flex;
@@ -49,6 +50,10 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
             },
         });
     };
+    const handleClick = () => {
+        if (!config.routeName) return;
+        dispatch(goto(config.routeName));
+    };
 
     return (
         <FeatureLineWrapper>
@@ -59,7 +64,13 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
                 buttonTitle={<Translation id="TR_LEARN_MORE" />}
             />
             <ActionColumn>
-                <Checkbox isChecked={checked} onClick={onChangeFeature} />
+                {config.routeName ? (
+                    <Button variant="tertiary" onClick={handleClick}>
+                        <Translation id="TR_GO_TO_EXP_FEATURE" />
+                    </Button>
+                ) : (
+                    <Checkbox isChecked={checked} onClick={onChangeFeature} />
+                )}
             </ActionColumn>
         </FeatureLineWrapper>
     );
