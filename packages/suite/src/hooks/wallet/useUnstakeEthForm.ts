@@ -85,7 +85,7 @@ export const useUnstakeEthForm = ({
         return {
             ...getStakeFormsDefaultValues({
                 address: poolAddress,
-                ethereumStakeType: 'unstake',
+                stakeType: 'unstake',
                 amount: autocompoundBalance,
             }),
         } as UnstakeFormState;

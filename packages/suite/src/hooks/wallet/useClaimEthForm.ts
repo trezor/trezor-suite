@@ -38,7 +38,7 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
         return {
             ...getStakeFormsDefaultValues({
                 address: accountingAddress,
-                ethereumStakeType: 'claim',
+                stakeType: 'claim',
             }),
         } as ClaimFormState;
     }, [account.symbol]);

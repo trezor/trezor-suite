@@ -8,16 +8,16 @@ import { Translation } from 'src/components/suite';
 
 type TransactionReviewEvmExplanationProps = {
     account: Account;
-    ethereumStakeType: StakeType | null;
+    stakeType: StakeType | null;
 };
 
 export const TransactionReviewEvmExplanation = ({
     account,
-    ethereumStakeType,
+    stakeType,
 }: TransactionReviewEvmExplanationProps) => {
     const network = networks[account.symbol];
 
-    if (network.networkType !== 'ethereum' || ethereumStakeType) {
+    if (network.networkType !== 'ethereum' || stakeType) {
         return null;
     }
 

@@ -99,7 +99,7 @@ export interface TransactionReviewOutputListProps {
     actionText: TranslationKey;
     isSending?: boolean;
     setIsSending?: () => void;
-    ethereumStakeType?: StakeType;
+    stakeType?: StakeType;
 }
 
 export const TransactionReviewOutputList = ({
@@ -115,7 +115,7 @@ export const TransactionReviewOutputList = ({
     actionText,
     isSending,
     setIsSending,
-    ethereumStakeType,
+    stakeType,
 }: TransactionReviewOutputListProps) => {
     const dispatch = useDispatch();
     const { networkType } = account;
@@ -225,7 +225,7 @@ export const TransactionReviewOutputList = ({
                                     symbol={symbol}
                                     account={account}
                                     isRbf={isRbfAction}
-                                    ethereumStakeType={ethereumStakeType}
+                                    stakeType={stakeType}
                                 />
                             );
                         })}
@@ -237,7 +237,7 @@ export const TransactionReviewOutputList = ({
                                 outputs={outputs}
                                 buttonRequestsCount={buttonRequestsCount}
                                 precomposedTx={precomposedTx}
-                                ethereumStakeType={ethereumStakeType}
+                                stakeType={stakeType}
                                 isRbfAction={isRbfAction}
                             />
                         )}

@@ -71,7 +71,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
         return {
             ...getStakeFormsDefaultValues({
                 address: poolAddress,
-                ethereumStakeType: 'stake',
+                stakeType: 'stake',
             }),
             setMaxOutputId: undefined,
         } as StakeFormState;

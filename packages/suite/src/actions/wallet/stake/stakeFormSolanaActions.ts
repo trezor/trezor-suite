@@ -79,10 +79,10 @@ export const signTransaction =
         const addressDisplayType = selectAddressDisplayType(getState());
 
         // TODO: add solana specific stakeType
-        const { ethereumStakeType } = formValues;
+        const { stakeType } = formValues;
 
         let txData;
-        if (ethereumStakeType === 'stake') {
+        if (stakeType === 'stake') {
             txData = await prepareStakeSolTx({
                 from: account.descriptor,
                 path: account.path,
