@@ -1,49 +1,11 @@
-import styled from 'styled-components';
-
 import type { NotificationEntry } from '@suite-common/toast-notifications';
-import { Button, Icon, ButtonProps, Paragraph, IconName } from '@trezor/components';
+import { Button, Icon, ButtonProps, Paragraph, IconName, Row, Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';
 import { getNotificationIcon } from 'src/utils/suite/notification';
 import { useLayoutSize } from 'src/hooks/suite';
 import type { ExtendedMessageDescriptor, ToastNotificationVariant } from 'src/types/suite';
-
-const Opacity = styled.div<{ $seen?: boolean }>`
-    opacity: ${({ $seen }) => ($seen ? 0.7 : 1)};
-`;
-
-const DateP = styled.div`
-    display: flex;
-    flex-direction: column;
-    font-variant-numeric: tabular-nums;
-`;
-
-const Item = styled.div`
-    display: flex;
-    align-items: center;
-    padding: 16px 0;
-
-    & + & {
-        border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-    }
-`;
-
-const Text = styled.div`
-    flex: 1;
-    padding: 0 16px;
-    white-space: break-spaces;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const ActionButton = styled(Button)`
-    min-width: 80px;
-    align-self: center;
-`;
-
-const SeenWrapper = styled.span<{ $seen?: boolean }>`
-    margin-bottom: 4px;
-    opacity: ${({ $seen }) => ($seen ? 0.7 : 1)};
-`;
 
 export interface NotificationViewProps {
     notification: NotificationEntry;
@@ -68,43 +30,33 @@ export const NotificationView = ({
     notification: { seen, id },
 }: NotificationViewProps) => {
     const { isMobileLayout } = useLayoutSize();
-
     const defaultIcon = icon ?? getNotificationIcon(variant);
+    const colorVariant = seen ? 'tertiary' : 'default';
 
     return (
-        <Item>
-            {defaultIcon && (
-                <SeenWrapper $seen={seen}>
-                    {typeof defaultIcon === 'string' ? (
-                        <Icon size={20} name={defaultIcon} />
-                    ) : (
-                        defaultIcon
-                    )}
-                </SeenWrapper>
-            )}
-            <Text>
-                <Opacity $seen={seen}>
-                    <Paragraph typographyStyle={seen ? 'hint' : 'callout'}>
-                        <Translation id={message} values={messageValues} />
-                    </Paragraph>
-                </Opacity>
-                <Opacity $seen={seen}>
-                    <DateP>
-                        <Paragraph typographyStyle="label">
-                            <FormattedDateWithBullet value={id} />
-                        </Paragraph>
-                    </DateP>
-                </Opacity>
-            </Text>
-
+        <Row gap={spacings.sm}>
+            {defaultIcon &&
+                (typeof defaultIcon === 'string' ? (
+                    <Icon size={20} name={defaultIcon} variant={colorVariant} />
+                ) : (
+                    defaultIcon
+                ))}
+            <Column alignItems="normal" gap={spacings.xxs} margin={{ right: 'auto' }}>
+                <Paragraph typographyStyle={seen ? 'hint' : 'callout'} variant={colorVariant}>
+                    <Translation id={message} values={messageValues} />
+                </Paragraph>
+                <Paragraph typographyStyle="label" variant={colorVariant}>
+                    <FormattedDateWithBullet value={id} />
+                </Paragraph>
+            </Column>
             {action?.onClick &&
                 (isMobileLayout ? (
                     <Icon name="caretRight" onClick={action.onClick} size={18} />
                 ) : (
-                    <ActionButton variant="tertiary" size="tiny" onClick={action.onClick}>
+                    <Button variant="tertiary" size="tiny" onClick={action.onClick} minWidth={80}>
                         <Translation id={action.label} />
-                    </ActionButton>
+                    </Button>
                 ))}
-        </Item>
+        </Row>
     );
 };

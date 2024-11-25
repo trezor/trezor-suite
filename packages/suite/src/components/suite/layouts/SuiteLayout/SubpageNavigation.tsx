@@ -1,62 +1,23 @@
 import styled from 'styled-components';
-import { LayoutGroup, motion } from 'framer-motion';
 
 import { spacingsPx, zIndices } from '@trezor/theme';
-import { motionEasing, variables } from '@trezor/components';
+import { Tabs } from '@trezor/components';
 import { Route } from '@suite-common/suite-types';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
-import { selectIsLoggedOut } from 'src/reducers/suite/suiteReducer';
+import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 
-import { HoverAnimation } from '../../HoverAnimation';
 import { AppNavigationTooltip } from '../../AppNavigation/AppNavigationTooltip';
 
-const Container = styled.div<{ $isFullWidth: boolean }>`
+const Container = styled.div`
     position: sticky;
-    top: 64px;
-    display: flex;
-    justify-content: flex-start;
-    gap: ${spacingsPx.sm};
-    min-height: ${SUBPAGE_NAV_HEIGHT};
+    top: ${HEADER_HEIGHT};
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-    padding: ${spacingsPx.xs} 0 ${spacingsPx.sm};
     border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
-    overflow: auto hidden;
     z-index: ${zIndices.pageHeader};
     width: 100%;
-    padding-left: ${spacingsPx.md};
-    padding-right: ${spacingsPx.md};
-`;
-
-const MenuElement = styled.div<{ $isActive: boolean }>`
-    position: relative;
-    display: flex;
-    align-items: center;
-    color: ${({ $isActive, theme }) => !$isActive && theme.textOnTertiary};
-    white-space: nowrap;
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        margin-right: ${spacingsPx.md};
-    }
-`;
-
-const Underline = styled(motion.div)`
-    position: absolute;
-    bottom: -${spacingsPx.sm};
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: ${({ theme }) => theme.iconDefault};
-`;
-
-const StyledNavLink = styled.div<{ $isActive: boolean; $isNavigationDisabled: boolean }>`
-    padding: ${spacingsPx.xs} ${spacingsPx.sm};
-    opacity: ${({ $isActive, $isNavigationDisabled }) =>
-        !$isActive && $isNavigationDisabled && '.5'};
-    cursor: ${({ $isActive, $isNavigationDisabled }) =>
-        $isActive || $isNavigationDisabled ? 'default' : 'pointer'};
+    padding: ${spacingsPx.md} ${spacingsPx.md} 0;
 `;
 
 type TabRoute = Route['name'] | undefined;
@@ -70,62 +31,37 @@ export type NavigationItem = {
     activeRoutes?: TabRoute[];
 };
 
-interface SubpageNavigationProps {
+type SubpageNavigationProps = {
     items: NavigationItem[];
-    className?: string;
-}
+};
 
-export const SubpageNavigation = ({ items, className }: SubpageNavigationProps) => {
+export const SubpageNavigation = ({ items }: SubpageNavigationProps) => {
     const routeName = useSelector(selectRouteName);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const isLoggedOut = useSelector(selectIsLoggedOut);
 
     const isAccountLoading = selectedAccount.status === 'loading';
-
-    const visibleItems = items.filter(item => !item.isHidden);
+    const activeItemdId = items.find(
+        ({ id, activeRoutes }) => activeRoutes?.includes(routeName) || id === routeName,
+    )?.id;
 
     return (
-        <Container $isFullWidth={isLoggedOut} className={className}>
-            <LayoutGroup id={items[0].id}>
-                {visibleItems.map(item => {
-                    const { id, title, activeRoutes } = item;
-
-                    const isActive = activeRoutes
-                        ? activeRoutes.includes(routeName)
-                        : routeName === id;
-                    const isHoverable = !isActive && !isAccountLoading;
-                    const onClick = isAccountLoading ? undefined : item.callback;
-
-                    return (
-                        <MenuElement key={id} $isActive={isActive}>
-                            <HoverAnimation isHoverable={isHoverable}>
-                                <AppNavigationTooltip isActiveTab={isActive}>
-                                    <StyledNavLink
-                                        $isActive={isActive}
-                                        $isNavigationDisabled={isAccountLoading}
-                                        onClick={onClick}
-                                        data-testid={item['data-testid']}
-                                    >
-                                        {title}
-                                    </StyledNavLink>
-                                </AppNavigationTooltip>
-                            </HoverAnimation>
-
-                            {isActive && (
-                                <Underline
-                                    // TODO: get rid of the weird jump when switching tabs on the account page before enabling this
-                                    // layoutId="underline"
-                                    transition={{
-                                        layout: {
-                                            ease: motionEasing.transition,
-                                        },
-                                    }}
-                                />
-                            )}
-                        </MenuElement>
-                    );
-                })}
-            </LayoutGroup>
+        <Container>
+            <AppNavigationTooltip>
+                <Tabs
+                    hasBorder={false}
+                    size="large"
+                    isDisabled={isAccountLoading}
+                    activeItemId={activeItemdId}
+                >
+                    {items
+                        .filter(item => !item.isHidden)
+                        .map(({ id, callback, title, 'data-testid': dataTestId }) => (
+                            <Tabs.Item key={id} id={id} onClick={callback} data-testid={dataTestId}>
+                                {title}
+                            </Tabs.Item>
+                        ))}
+                </Tabs>
+            </AppNavigationTooltip>
         </Container>
     );
 };

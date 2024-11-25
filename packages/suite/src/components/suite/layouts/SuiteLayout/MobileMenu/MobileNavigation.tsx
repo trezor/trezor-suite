@@ -5,7 +5,7 @@ import { variables } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 import { findRouteByName } from 'src/utils/suite/router';
-import { HoverAnimation, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { MAIN_MENU_ITEMS } from 'src/constants/suite/menu';
 import { useAccountSearch, useSelector, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
@@ -93,35 +93,34 @@ export const MobileNavigation = ({ closeMobileNavigation }: MobileNavigationProp
                 const isActive = routeObj ? routeObj.app === activeApp : false;
 
                 return (
-                    <HoverAnimation isHoverable={!isActive} key={route}>
-                        <MenuItem
-                            data-testid={`@suite/menu/${route}`}
-                            onClick={() => {
-                                if (!isDisabled) {
-                                    if (route === 'wallet-index') {
-                                        setCoinFilter(undefined);
-                                        setSearchString(undefined);
-                                    }
-                                    dispatch(goto(route));
-                                    closeMobileNavigation?.();
+                    <MenuItem
+                        key={route}
+                        data-testid={`@suite/menu/${route}`}
+                        onClick={() => {
+                            if (!isDisabled) {
+                                if (route === 'wallet-index') {
+                                    setCoinFilter(undefined);
+                                    setSearchString(undefined);
                                 }
-                            }}
-                            isActive={isActive}
-                            isDisabled={isDisabled}
-                        >
-                            <ItemTitleWrapper>
-                                <ItemTitle isActive={isActive} isDisabled={isDisabled}>
-                                    <Translation id={translationId} />
-                                </ItemTitle>
+                                dispatch(goto(route));
+                                closeMobileNavigation?.();
+                            }
+                        }}
+                        isActive={isActive}
+                        isDisabled={isDisabled}
+                    >
+                        <ItemTitleWrapper>
+                            <ItemTitle isActive={isActive} isDisabled={isDisabled}>
+                                <Translation id={translationId} />
+                            </ItemTitle>
 
-                                {isDisabled && (
-                                    <NewBadge>
-                                        <Translation id="TR_NAV_SOON_BADGE" />
-                                    </NewBadge>
-                                )}
-                            </ItemTitleWrapper>
-                        </MenuItem>
-                    </HoverAnimation>
+                            {isDisabled && (
+                                <NewBadge>
+                                    <Translation id="TR_NAV_SOON_BADGE" />
+                                </NewBadge>
+                            )}
+                        </ItemTitleWrapper>
+                    </MenuItem>
                 );
             })}
         </Container>

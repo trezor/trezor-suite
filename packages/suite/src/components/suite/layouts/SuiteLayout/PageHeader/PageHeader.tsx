@@ -9,11 +9,10 @@ import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
+import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 
 import { HeaderActions } from './HeaderActions';
 import { PageName } from './PageNames/PageName';
-
-const HEADER_HEIGHT = 64;
 
 const Container = styled.div`
     position: sticky;
@@ -21,8 +20,8 @@ const Container = styled.div`
     display: flex;
     justify-content: space-between;
     width: 100%;
-    height: ${HEADER_HEIGHT}px;
-    min-height: ${HEADER_HEIGHT}px;
+    height: ${HEADER_HEIGHT};
+    min-height: ${HEADER_HEIGHT};
     padding: ${spacingsPx.xs} ${spacingsPx.md};
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};

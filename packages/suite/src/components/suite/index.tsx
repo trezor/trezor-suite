@@ -48,7 +48,6 @@ import { NumberInput, NumberInputProps } from './NumberInput';
 import { QrCode } from './QrCode';
 import { CoinBalance } from './CoinBalance';
 import { DeviceAuthenticationExplainer } from './DeviceAuthenticationExplainer';
-import { HoverAnimation } from './HoverAnimation';
 import { Preloader } from './Preloader/Preloader';
 import { PinMatrix } from './PinMatrix/PinMatrix';
 import { UdevDownload } from './UdevDownload';
@@ -104,7 +103,6 @@ export {
     QrCode,
     CoinBalance,
     DeviceAuthenticationExplainer,
-    HoverAnimation,
     Preloader,
     PinMatrix,
     UdevDownload,
