@@ -1,13 +1,9 @@
-import { useEffect } from 'react';
-
 import { deviceActions } from '@suite-common/wallet-core';
 import { Card } from '@trezor/components';
-import { getFirmwareVersion } from '@trezor/device-utils';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
 
 import { WelcomeLayout } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
 import {
     selectFirmwareHashCheckError,
     selectFirmwareRevisionCheckError,
@@ -16,24 +12,9 @@ import {
 import { SecurityCheckFail, SecurityCheckFailProps } from './SecurityCheckFail';
 import { softFailureChecklistItems } from './checklistItems';
 
-const reportCheckFail = (checkType: 'revision' | 'hash', contextData: any) => {
-    withSentryScope(scope => {
-        scope.setLevel('error');
-        scope.setTag('deviceAuthenticityError', `firmware ${checkType} check failed`);
-        captureSentryMessage(
-            `Firmware ${checkType} check failed! ${JSON.stringify(contextData)}`,
-            scope,
-        );
-    });
-};
-
 export const DeviceCompromised = () => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-
-    const revision = device?.features?.revision;
-    const version = getFirmwareVersion(device);
-    const vendor = device?.features?.fw_vendor;
 
     const revisionCheckError = useSelector(selectFirmwareRevisionCheckError);
     const hashCheckError = useSelector(selectFirmwareHashCheckError);
@@ -44,12 +25,6 @@ export const DeviceCompromised = () => {
             dispatch(deviceActions.dismissFirmwareAuthenticityCheck(device.id));
         }
     };
-
-    useEffect(() => {
-        const commonData = { revision, version, vendor };
-        if (revisionCheckError) reportCheckFail('revision', { ...commonData, revisionCheckError });
-        if (hashCheckError) reportCheckFail('hash', { ...commonData, hashCheckError });
-    }, [revisionCheckError, hashCheckError, revision, vendor, version]);
 
     const isSoftFailure = revisionCheckError === null && hashCheckError === 'other-error';
     const softFailureSecurityCheckFailProps: Partial<SecurityCheckFailProps> = isSoftFailure

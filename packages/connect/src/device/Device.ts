@@ -750,7 +750,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     async checkFirmwareHash(): Promise<FirmwareHashCheckResult | null> {
-        const createFailResult = (error: FirmwareHashCheckError) => ({ success: false, error });
+        const createFailResult = (error: FirmwareHashCheckError, errorPayload?: unknown) => ({
+            success: false,
+            error,
+            errorPayload,
+        });
 
         const baseUrl = DataManager.getSettings('binFilesBaseUrl');
         const enabled = DataManager.getSettings('enableFirmwareHashCheck');
@@ -793,22 +797,24 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         // handle rejection of call by a counterfeit device. If unhandled, it crashes device initialization,
         // so device can't be used, but it's preferable to display proper message about counterfeit device
-        const getFirmwareHashOptional = async () => {
-            try {
-                return await this.getCommands().typedCall('GetFirmwareHash', 'FirmwareHash', {
-                    challenge,
-                });
-            } catch {
-                return null;
+        try {
+            const deviceResponse = await this.getCommands().typedCall(
+                'GetFirmwareHash',
+                'FirmwareHash',
+                { challenge },
+            );
+            if (!deviceResponse?.message?.hash) {
+                return createFailResult('other-error', 'Device response is missing hash');
             }
-        };
-        const deviceResponse = await getFirmwareHashOptional();
 
-        if (!deviceResponse?.message?.hash) return createFailResult('other-error');
+            if (deviceResponse.message.hash !== expectedHash) {
+                return createFailResult('hash-mismatch');
+            }
 
-        if (deviceResponse.message.hash !== expectedHash) return createFailResult('hash-mismatch');
-
-        return { success: true };
+            return { success: true };
+        } catch (errorPayload) {
+            return createFailResult('other-error', errorPayload);
+        }
     }
 
     async checkFirmwareRevision() {

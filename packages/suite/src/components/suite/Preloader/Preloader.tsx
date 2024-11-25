@@ -28,6 +28,7 @@ import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { RouterAppWithParams } from '../../../constants/suite/routes';
+import { useReportDeviceCompromised } from '../SecurityCheck/useReportDeviceCompromised';
 
 const ROUTES_TO_SKIP_FIRMWARE_CHECK: RouterAppWithParams['app'][] = [
     'settings',
@@ -61,6 +62,8 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const isFirmwareAuthenticityCheckDismissed = useSelector(
         selectIsFirmwareAuthenticityCheckDismissed,
     );
+    // report firmware authenticity failures even when the UI is disabled
+    useReportDeviceCompromised();
 
     const dispatch = useDispatch();
 
