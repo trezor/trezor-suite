@@ -251,13 +251,12 @@ export const connectPopupCallThunk = createThunk(
 
 export const connectPopupInitThunk = createThunk(
     `${CONNECT_INIT_MODULE}/initPopupThunk`,
-    (_, { dispatch }) => {
-        if (!desktopApi.available) {
-            return;
+    async (_, { dispatch }) => {
+        if (desktopApi.available && (await desktopApi.connectPopupEnabled())) {
+            desktopApi.on('connect-popup/call', params => {
+                dispatch(connectPopupCallThunk(params));
+            });
+            desktopApi.connectPopupReady();
         }
-        desktopApi.on('connect-popup/call', params => {
-            dispatch(connectPopupCallThunk(params));
-        });
-        desktopApi.connectPopupReady();
     },
 );

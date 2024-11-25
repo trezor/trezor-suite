@@ -104,6 +104,7 @@ export interface InvokeChannels {
     'app/auto-start/is-enabled': () => InvokeResult<boolean>;
     'tray/change-settings': (payload: TraySettings) => InvokeResult;
     'tray/get-settings': () => InvokeResult<TraySettings>;
+    'connect-popup/enabled': () => boolean;
     'connect-popup/ready': () => void;
     'connect-popup/response': (response: ConnectPopupResponse) => void;
 }
@@ -169,6 +170,7 @@ export interface DesktopApi {
     changeTraySettings: DesktopApiInvoke<'tray/change-settings'>;
     getTraySettings: DesktopApiInvoke<'tray/get-settings'>;
     // Connect popup
+    connectPopupEnabled: DesktopApiInvoke<'connect-popup/enabled'>;
     connectPopupReady: DesktopApiInvoke<'connect-popup/ready'>;
     connectPopupResponse: DesktopApiInvoke<'connect-popup/response'>;
 }

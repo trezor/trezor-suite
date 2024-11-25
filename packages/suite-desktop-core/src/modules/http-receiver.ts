@@ -54,7 +54,13 @@ export const initBackground: ModuleInitBackground = ({ mainWindowProxy, mainThre
             return receiver.getRouteAddress(pathname);
         });
 
-        if (app.commandLine.hasSwitch('expose-connect-ws') || isDevEnv) {
+        const connectPopupEnabled = app.commandLine.hasSwitch('expose-connect-ws') || isDevEnv;
+        ipcMain.handle('connect-popup/enabled', ipcEvent => {
+            validateIpcMessage(ipcEvent);
+
+            return connectPopupEnabled;
+        });
+        if (connectPopupEnabled) {
             exposeConnectWs({ mainThreadEmitter, httpReceiver: receiver, mainWindowProxy });
         }
 
