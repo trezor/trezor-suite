@@ -122,12 +122,12 @@ const CardButton = ({ href, ...props }: ButtonType) => {
     if (href) {
         return (
             <TrezorLink variant="nostyle" href={href}>
-                <Button {...props} />
+                <Button textWrap={false} {...props} />
             </TrezorLink>
         );
     }
 
-    return <Button {...props} />;
+    return <Button textWrap={false} {...props} />;
 };
 
 export const NotificationCard = ({
