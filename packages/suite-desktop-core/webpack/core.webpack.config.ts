@@ -82,10 +82,10 @@ const config: webpack.Configuration = {
     externals: [
         ...dependencies,
         ...devDependencies,
-        'bufferutil', // optional dependency of ws lib
-        'memcpy', // optional depencency of bytebuffer lib
-        'utf-8-validate', // optional dependency of ws lib
-        'osx-temperature-sensor', // optional dependency of systeminformation lib
+        // 'bufferutil', // optional dependency of ws lib
+        // 'memcpy', // optional depencency of bytebuffer lib
+        // 'utf-8-validate', // optional dependency of ws lib
+        // 'osx-temperature-sensor', // optional dependency of systeminformation lib
     ],
     module: {
         rules: [
@@ -113,6 +113,8 @@ const config: webpack.Configuration = {
         alias: {
             '@emurgo/cardano-serialization-lib-nodejs': '@emurgo/cardano-serialization-lib-browser',
             '@trezor/connect$': '@trezor/connect/src/index', // alternative for "module": "src/index" in connect's package.json
+            // optional dependency of systeminformation lib mocked as undefined (webpack needs it when targetting ES)
+            'osx-temperature-sensor': false,
         },
     },
     performance: {
