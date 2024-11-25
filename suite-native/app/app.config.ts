@@ -80,6 +80,14 @@ const getPlugins = (): ExpoPlugins => {
             },
         ],
         [
+            'expo-splash-screen',
+            {
+                backgroundColor: '#25292E',
+                image: './assets/splash_icon.png',
+                imageWidth: '200',
+            },
+        ],
+        [
             'expo-camera',
             {
                 cameraPermission: 'Allow $(PRODUCT_NAME) to access camera for QR code scanning.',
@@ -161,7 +169,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
-        runtimeVersion: '12',
+        runtimeVersion: '16',
         ...(buildType === 'production'
             ? {}
             : {
@@ -173,11 +181,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                   },
               }),
         orientation: 'portrait',
-        splash: {
-            image: './assets/splash_icon.png',
-            backgroundColor: '#25292E',
-            resizeMode: 'contain',
-        },
         userInterfaceStyle: 'automatic',
         android: {
             package: bundleIdentifier,

@@ -19,7 +19,7 @@
         "bs58": "^6.0.0",
         "expo-crypto": "^14.0.1",
         "expo-secure-store": "^14.0.0",
-        "expo-splash-screen": "^0.29.7",
+        "expo-splash-screen": "^0.29.13",
         "jotai": "1.9.1",
         "react": "18.2.0",
         "react-native": "0.76.1",
