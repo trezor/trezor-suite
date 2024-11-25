@@ -9,15 +9,15 @@ import { useSelector } from './useSelector';
 
 type UseDisplayModeProps = {
     type: ReviewOutput['type'];
-    ethereumStakeType?: StakeType;
+    stakeType?: StakeType;
 };
 
-export const useDisplayMode = ({ type, ethereumStakeType }: UseDisplayModeProps) => {
+export const useDisplayMode = ({ type, stakeType }: UseDisplayModeProps) => {
     const account = useSelector(selectSelectedAccount);
     const unavailableCapabilities = useSelector(selectDeviceUnavailableCapabilities);
     const addressDisplayType = useSelector(selectAddressDisplayType);
 
-    if (ethereumStakeType || ['data', 'opreturn'].includes(type)) {
+    if (stakeType || ['data', 'opreturn'].includes(type)) {
         return DisplayMode.SINGLE_WRAPPED_TEXT;
     }
 

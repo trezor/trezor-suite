@@ -47,7 +47,7 @@ const getLines = (
     symbol: TransactionReviewOutputListProps['account']['symbol'],
     precomposedTx: TransactionReviewOutputListProps['precomposedTx'],
     isRbfAction?: boolean,
-    ethereumStakeType?: StakeType,
+    stakeType?: StakeType,
 ): Array<OutputElementLine> => {
     const isUpdatedSendFlow = getIsUpdatedSendFlow(device);
     const isUpdatedEthereumSendFlow = getIsUpdatedEthereumSendFlow(device, networkType);
@@ -70,7 +70,7 @@ const getLines = (
         .toString();
 
     if (isUpdatedEthereumSendFlow) {
-        const isUnknownStakingClaimValue = isRbfAction && ethereumStakeType === 'claim';
+        const isUnknownStakingClaimValue = isRbfAction && stakeType === 'claim';
         const amountLine = {
             id: 'amount', // In updated ethereum send flow there is no total amount shown, only amount without fee
             label: <Translation id="AMOUNT" />,
@@ -120,15 +120,7 @@ export const TransactionReviewTotalOutput = forwardRef<
     TransactionReviewTotalOutputProps
 >(
     (
-        {
-            account,
-            signedTx,
-            outputs,
-            buttonRequestsCount,
-            precomposedTx,
-            ethereumStakeType,
-            isRbfAction,
-        },
+        { account, signedTx, outputs, buttonRequestsCount, precomposedTx, stakeType, isRbfAction },
         ref,
     ) => {
         const device = useSelector(selectSelectedDevice);
@@ -139,14 +131,7 @@ export const TransactionReviewTotalOutput = forwardRef<
 
         const { symbol, networkType } = account;
 
-        const lines = getLines(
-            device,
-            networkType,
-            symbol,
-            precomposedTx,
-            isRbfAction,
-            ethereumStakeType,
-        );
+        const lines = getLines(device, networkType, symbol, precomposedTx, isRbfAction, stakeType);
 
         return (
             <TransactionReviewOutputElement

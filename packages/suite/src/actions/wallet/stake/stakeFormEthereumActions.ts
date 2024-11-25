@@ -58,9 +58,9 @@ export const composeTransaction =
         const { amount } = formValues.outputs[0];
 
         // gasLimit calculation based on account.descriptor and amount
-        const { ethereumStakeType } = formValues;
+        const { stakeType } = formValues;
         const stakeTxGasLimit = await getStakeTxGasLimit({
-            ethereumStakeType,
+            stakeType,
             from: account.descriptor,
             amount,
             symbol: account.symbol,
@@ -138,9 +138,9 @@ export const signTransaction =
         const identity = getAccountIdentity(account);
 
         // transform to TrezorConnect.ethereumSignTransaction params
-        const { ethereumStakeType } = formValues;
+        const { stakeType } = formValues;
         let txData;
-        if (ethereumStakeType === 'stake') {
+        if (stakeType === 'stake') {
             txData = await prepareStakeEthTx({
                 symbol: account.symbol,
                 from: account.descriptor,
@@ -151,7 +151,7 @@ export const signTransaction =
                 chainId: network.chainId,
             });
         }
-        if (ethereumStakeType === 'unstake') {
+        if (stakeType === 'unstake') {
             txData = await prepareUnstakeEthTx({
                 symbol: account.symbol,
                 from: account.descriptor,
@@ -163,7 +163,7 @@ export const signTransaction =
                 interchanges: UNSTAKE_INTERCHANGES,
             });
         }
-        if (ethereumStakeType === 'claim') {
+        if (stakeType === 'claim') {
             txData = await prepareClaimEthTx({
                 symbol: account.symbol,
                 from: account.descriptor,

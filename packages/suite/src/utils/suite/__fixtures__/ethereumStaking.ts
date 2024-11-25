@@ -404,7 +404,7 @@ export const getStakeFormsDefaultValuesFixture = [
         description: 'should return default values for stake forms',
         args: {
             address: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
-            ethereumStakeType: 'stake',
+            stakeType: 'stake',
             amount: '0.1',
         },
         result: {
@@ -422,7 +422,7 @@ export const getStakeFormsDefaultValuesFixture = [
                 },
             ],
             options: ['broadcast'],
-            ethereumStakeType: 'stake',
+            stakeType: 'stake',
             ethereumNonce: '',
             ethereumDataAscii: '',
             ethereumDataHex: '',
@@ -440,7 +440,7 @@ export const getStakeFormsDefaultValuesFixture = [
             'should return default values for stake forms with empty amount when amount is invalid',
         args: {
             address: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
-            ethereumStakeType: 'stake',
+            stakeType: 'stake',
             amount: undefined,
         },
         result: {
@@ -458,7 +458,7 @@ export const getStakeFormsDefaultValuesFixture = [
                 },
             ],
             options: ['broadcast'],
-            ethereumStakeType: 'stake',
+            stakeType: 'stake',
             ethereumNonce: '',
             ethereumDataAscii: '',
             ethereumDataHex: '',
@@ -477,7 +477,7 @@ export const getStakeTxGasLimitFixture = [
     {
         description: 'should return correct gasLimit',
         args: {
-            ethereumStakeType: 'stake',
+            stakeType: 'stake',
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
             amount: '0.1', // eth
             symbol: 'eth',
@@ -497,7 +497,7 @@ export const getStakeTxGasLimitFixture = [
     {
         description: 'should throw an error when stake type is empty',
         args: {
-            ethereumStakeType: '',
+            stakeType: '',
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
             amount: '0.1', // eth
             symbol: 'eth',

@@ -246,13 +246,13 @@ export const claimWithdrawRequest = async ({ from, symbol, identity }: StakeTxBa
 
 export interface GetStakeFormsDefaultValuesParams {
     address: string;
-    ethereumStakeType: StakeFormState['ethereumStakeType'];
+    stakeType: StakeFormState['stakeType'];
     amount?: string;
 }
 
 export const getStakeFormsDefaultValues = ({
     address,
-    ethereumStakeType,
+    stakeType,
     amount,
 }: GetStakeFormsDefaultValuesParams) => ({
     fiatInput: '',
@@ -266,7 +266,7 @@ export const getStakeFormsDefaultValues = ({
     ],
     options: ['broadcast'],
 
-    ethereumStakeType,
+    stakeType,
     ethereumNonce: '',
     ethereumDataAscii: '',
     ethereumDataHex: '',
@@ -420,7 +420,7 @@ export const prepareClaimEthTx = async ({
 };
 
 export interface GetStakeTxGasLimitParams {
-    ethereumStakeType: StakeType | undefined;
+    stakeType: StakeType | undefined;
     from: string;
     amount: string;
     symbol: NetworkSymbol;
@@ -438,7 +438,7 @@ export type GetStakeTxGasLimitResponse =
       };
 
 export const getStakeTxGasLimit = async ({
-    ethereumStakeType,
+    stakeType,
     from,
     amount,
     symbol,
@@ -452,7 +452,7 @@ export const getStakeTxGasLimit = async ({
         },
     };
 
-    if (!ethereumStakeType) {
+    if (!stakeType) {
         return {
             success: false,
             error: genericError,
@@ -461,10 +461,10 @@ export const getStakeTxGasLimit = async ({
 
     try {
         let txData;
-        if (ethereumStakeType === 'stake') {
+        if (stakeType === 'stake') {
             txData = await stake({ from, amount, symbol, identity });
         }
-        if (ethereumStakeType === 'unstake') {
+        if (stakeType === 'unstake') {
             // Increase allowedInterchangeNum to enable instant unstaking.
             txData = await unstake({
                 from,
@@ -474,7 +474,7 @@ export const getStakeTxGasLimit = async ({
                 identity,
             });
         }
-        if (ethereumStakeType === 'claim') {
+        if (stakeType === 'claim') {
             txData = await claimWithdrawRequest({ from, symbol, identity });
         }
 

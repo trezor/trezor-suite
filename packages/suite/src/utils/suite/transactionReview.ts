@@ -2,17 +2,17 @@ import { TranslationKey } from '@suite-common/intl-types';
 import { StakeFormState } from '@suite-common/wallet-types';
 
 interface getTransactionReviewModalActionTextParams {
-    ethereumStakeType: StakeFormState['ethereumStakeType'] | null;
+    stakeType: StakeFormState['stakeType'] | null;
     isRbfAction: boolean;
     isSending?: boolean;
 }
 
 export const getTransactionReviewModalActionText = ({
-    ethereumStakeType,
+    stakeType,
     isRbfAction,
     isSending,
 }: getTransactionReviewModalActionTextParams): TranslationKey => {
-    switch (ethereumStakeType) {
+    switch (stakeType) {
         case 'stake':
             return 'TR_STAKE_STAKE';
         case 'unstake':

@@ -127,7 +127,7 @@ export const composeStakingTransaction = (
 
     // wrap response into PrecomposedLevels object where key is a FeeLevel label
     const wrappedResponse: PrecomposedLevels = {};
-    const compareWithAmount = formValues.ethereumStakeType === 'stake';
+    const compareWithAmount = formValues.stakeType === 'stake';
     const response = predefinedLevels.map(level =>
         calculateTransaction(availableBalance, output, level, compareWithAmount, account.symbol),
     );

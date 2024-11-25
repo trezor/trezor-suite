@@ -209,7 +209,7 @@ interface TransactionReviewSummaryProps {
     broadcast?: boolean;
     detailsOpen: boolean;
     onDetailsClick: () => void;
-    ethereumStakeType?: StakeType | null;
+    stakeType?: StakeType | null;
     actionText: TranslationKey;
 }
 
@@ -221,7 +221,7 @@ export const TransactionReviewSummary = ({
     broadcast,
     detailsOpen,
     onDetailsClick,
-    ethereumStakeType,
+    stakeType,
     actionText,
 }: TransactionReviewSummaryProps) => {
     const drafts = useSelector(state => state.wallet.send.drafts);
@@ -327,7 +327,7 @@ export const TransactionReviewSummary = ({
                     </LeftDetailsRow>
                 )}
 
-                {!ethereumStakeType && (
+                {!stakeType && (
                     <LeftDetailsRow>
                         <ReviewLeftDetailsLineLeft>
                             <Icon size={12} color={theme.iconSubdued} name="broadcast" />

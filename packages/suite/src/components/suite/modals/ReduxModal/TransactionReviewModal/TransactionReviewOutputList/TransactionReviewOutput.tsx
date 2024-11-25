@@ -54,17 +54,16 @@ export type TransactionReviewOutputProps = {
     symbol: NetworkSymbol;
     account: Account;
     isRbf: boolean;
-    ethereumStakeType?: StakeType;
+    stakeType?: StakeType;
 } & ReviewOutput;
 
 export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionReviewOutputProps>(
     (props, ref) => {
-        const { type, state, label, value, symbol, token, account, ethereumStakeType, isRbf } =
-            props;
+        const { type, state, label, value, symbol, token, account, stakeType, isRbf } = props;
         let outputLabel: ReactNode = label;
         const { networkType } = account;
         const { translationString } = useTranslation();
-        const displayMode = useDisplayMode({ ethereumStakeType, type });
+        const displayMode = useDisplayMode({ stakeType, type });
 
         if (type === 'locktime') {
             const isTimestamp = new BigNumber(value).gte(BTC_LOCKTIME_VALUE);
@@ -157,7 +156,7 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
                     plainValue: true,
                 },
             ];
-        } else if (['data', 'address'].includes(type) && ethereumStakeType) {
+        } else if (['data', 'address'].includes(type) && stakeType) {
             const displayModeStringsMap = getDisplayModeStringsMap();
 
             // prevents double label when bumping stake type txs
@@ -168,13 +167,10 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
             outputLines = [
                 {
                     id: 'data',
-                    label: translationString(
-                        displayModeStringsMap[ethereumStakeType].confirmLabel,
-                        {
-                            symbol: symbol.toUpperCase(),
-                        },
-                    ),
-                    value: translationString(displayModeStringsMap[ethereumStakeType].value, {
+                    label: translationString(displayModeStringsMap[stakeType].confirmLabel, {
+                        symbol: symbol.toUpperCase(),
+                    }),
+                    value: translationString(displayModeStringsMap[stakeType].value, {
                         symbol: symbol.toUpperCase(),
                     }),
                     plainValue: true,

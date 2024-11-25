@@ -50,7 +50,7 @@ const isStakeState = (state: SendState | StakeState): state is StakeState => {
 };
 
 const isStakeForm = (form: FormState | StakeFormState): form is StakeFormState => {
-    return 'ethereumStakeType' in form;
+    return 'stakeType' in form;
 };
 
 interface TransactionReviewModalContentProps {
@@ -108,8 +108,8 @@ export const TransactionReviewModalContent = ({
     });
 
     // for bump fee we have to analyze tx data which are in outputs[0]
-    const ethereumStakeType = isStakeForm(precomposedForm)
-        ? precomposedForm.ethereumStakeType
+    const stakeType = isStakeForm(precomposedForm)
+        ? precomposedForm.stakeType
         : getTxStakeNameByDataHex(outputs[0]?.value);
 
     // get estimate mining time
@@ -153,9 +153,9 @@ export const TransactionReviewModalContent = ({
                 broadcast={precomposedForm.options.includes('broadcast')}
                 detailsOpen={detailsOpen}
                 onDetailsClick={() => setDetailsOpen(!detailsOpen)}
-                ethereumStakeType={ethereumStakeType}
+                stakeType={stakeType}
                 actionText={getTransactionReviewModalActionText({
-                    ethereumStakeType,
+                    stakeType,
                     isRbfAction,
                 })}
             />
@@ -170,18 +170,15 @@ export const TransactionReviewModalContent = ({
                 buttonRequestsCount={buttonRequestsCount}
                 isRbfAction={isRbfAction}
                 actionText={getTransactionReviewModalActionText({
-                    ethereumStakeType,
+                    stakeType,
                     isRbfAction,
                     isSending,
                 })}
                 isSending={isSending}
                 setIsSending={() => setIsSending(true)}
-                ethereumStakeType={ethereumStakeType || undefined}
+                stakeType={stakeType || undefined}
             />
-            <TransactionReviewEvmExplanation
-                account={account}
-                ethereumStakeType={ethereumStakeType}
-            />
+            <TransactionReviewEvmExplanation account={account} stakeType={stakeType} />
         </StyledModal>
     );
 };

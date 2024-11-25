@@ -53,9 +53,9 @@ export const cancelSignTx = (isSuccessTx?: boolean) => (dispatch: Dispatch, getS
     // otherwise just close modal and open stake modal
     dispatch(modalActions.onCancel());
 
-    const { ethereumStakeType } = precomposedForm ?? {};
-    if (ethereumStakeType && !isSuccessTx) {
-        dispatch(openModal({ type: ethereumStakeType }));
+    const { stakeType } = precomposedForm ?? {};
+    if (stakeType && !isSuccessTx) {
+        dispatch(openModal({ type: stakeType }));
     }
 };
 
@@ -195,9 +195,9 @@ export const signTransaction =
             // close modal manually since UI.CLOSE_UI.WINDOW was blocked
             dispatch(modalActions.onCancel());
 
-            const { ethereumStakeType } = formValues;
-            if (ethereumStakeType) {
-                dispatch(openModal({ type: ethereumStakeType }));
+            const { stakeType } = formValues;
+            if (stakeType) {
+                dispatch(openModal({ type: stakeType }));
             }
 
             return;
@@ -217,6 +217,6 @@ export const signTransaction =
         );
         if (decision) {
             // push tx to the network
-            return dispatch(pushTransaction(formValues.ethereumStakeType));
+            return dispatch(pushTransaction(formValues.stakeType));
         }
     };
