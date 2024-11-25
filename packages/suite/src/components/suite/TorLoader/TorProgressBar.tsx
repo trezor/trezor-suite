@@ -138,6 +138,7 @@ export const TorProgressBar = ({
                     <DisableButton
                         data-testid="@tor-loading-screen/disable-button"
                         variant="tertiary"
+                        textWrap={false}
                         onClick={disableTor}
                     >
                         <Translation id="TR_TOR_DISABLE" />
