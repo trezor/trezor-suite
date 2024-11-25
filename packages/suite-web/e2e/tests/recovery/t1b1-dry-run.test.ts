@@ -39,10 +39,11 @@ function confirmSuccessOnDevice(): void {
 }
 
 describe('Recovery T1B1 - dry run', () => {
+    const pin = '1';
     beforeEach(() => {
         cy.task('startEmu', { model: 'T1B1', version: '1-latest', wipe: true });
         cy.wait(2000);
-        cy.task('setupEmu', { needs_backup: false, mnemonic: mnemonic.join(' ') });
+        cy.task('setupEmu', { needs_backup: false, mnemonic: mnemonic.join(' '), pin });
         cy.task('startBridge');
         cy.viewport('macbook-13').resetDb();
         cy.prefixedVisit('/');
@@ -54,6 +55,7 @@ describe('Recovery T1B1 - dry run', () => {
     it('Standard dry run', () => {
         onSettingsDevicePage.openSeedCheck();
         onCheckSeedPage.initCheck(SeedCheckType.Standard, 24);
+        cy.enterPinOnBlindMatrix(pin);
         onWordInputPage.inputMnemonicT1B1(mnemonic);
 
         confirmSuccessOnDevice();
