@@ -4,6 +4,9 @@
 @fivebinaries/coin-selection
 @solana/buffer-layout
 @solana/web3.js
+@solana-program/compute-budget
+@solana-program/system
+@solana-program/token
 web3-utils
 jws
 @metamask/eth-sig-util
