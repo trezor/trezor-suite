@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2024-11-22T00:00:00+00:00",
-    "sequence": 66,
+    "timestamp": "2024-11-25T00:00:00+00:00",
+    "sequence": 67,
     "actions": [
         {
             "conditions": [
@@ -1146,44 +1146,25 @@
                 }
             ],
             "message": {
-                "id": "6b16072f-0a7e-42b7-a56e-eb3cceb9115b",
+                "id": "9023b8f0-3579-4355-a789-cc31cacbdbbb",
                 "priority": 96,
                 "dismissible": true,
                 "variant": "critical",
                 "category": "banner",
                 "content": {
-                    "en-GB": "Updating firmware will delete your wallet backup. Verify your backup now to ensure you can recover your assets.",
-                    "en": "Updating firmware will delete your wallet backup. Verify your backup now to ensure you can recover your assets.",
-                    "es": "La actualización del firmware eliminará tu copia de seguridad de la cartera. Verifica tu copia de seguridad ahora para asegurarte de que puedes recuperar tus activos.",
-                    "cs": "Aktualizace firmware smaže zálohu vaší peněženky. Ověřte svou zálohu nyní, abyste zajistili, že můžete obnovit svá aktiva.",
-                    "ru": "Обновление прошивки удалит резервную копию вашего кошелька. Проверьте свою резервную копию сейчас, чтобы убедиться, что вы сможете восстановить свои активы.",
-                    "ja": "ファームウェアの更新により、ウォレットのバックアップが削除されます。資産を回復できることを確認するために、今すぐバックアップを確認してください。",
-                    "hu": "A firmware frissítése törölni fogja a pénztárcád biztonsági mentését. Ellenőrizze most a biztonsági mentését, hogy biztosítsa, hogy vissza tudja állítani az eszközeit.",
-                    "it": "L'aggiornamento del firmware cancellerà il backup del tuo portafoglio. Verifica subito il tuo backup per assicurarti di poter recuperare i tuoi asset.",
-                    "fr": "La mise à jour du micrologiciel supprimera votre sauvegarde de portefeuille. Vérifiez votre sauvegarde dès maintenant pour vous assurer de pouvoir récupérer vos actifs.",
-                    "de": "Das Aktualisieren der Firmware löscht Ihr Wallet-Backup. Überprüfen Sie jetzt Ihr Backup, um sicherzustellen, dass Sie Ihre Assets wiederherstellen können.",
-                    "tr": "Firmware güncellemesi cüzdan yedeğinizi silecektir. Varlıklarınızı kurtarabileceğinizden emin olmak için yedeğinizi şimdi doğrulayın.",
-                    "pt": "A atualização do firmware apagará o backup da sua carteira. Verifique o seu backup agora para garantir que pode recuperar os seus ativos.",
-                    "uk": "Оновлення прошивки видалить резервну копію вашого гаманця. Перевірте свою резервну копію зараз, щоб переконатися, що зможете відновити свої активи."
-                },
-                "cta": {
-                    "action": "internal-link",
-                    "link": "recovery-index",
-                    "label": {
-                        "en-GB": "Check wallet backup",
-                        "en": "Check wallet backup",
-                        "es": "Verificar copia de seguridad de la cartera",
-                        "cs": "Zkontrolovat zálohu peněženky",
-                        "ru": "Проверить резервную копию кошелька",
-                        "ja": "ウォレットのバックアップを確認",
-                        "hu": "Ellenőrizze a pénztárca biztonsági mentését",
-                        "it": "Verifica il backup del portafoglio",
-                        "fr": "Vérifier la sauvegarde du portefeuille",
-                        "de": "Überprüfen Sie das Wallet-Backup",
-                        "tr": "Cüzdan yedeğini kontrol et",
-                        "pt": "Verificar backup da carteira",
-                        "uk": "Перевірити резервну копію гаманця"
-                    }
+                    "en-GB": "Updating the firmware may wipe your Trezor. Ensure your wallet backup is prepared before proceeding.",
+                    "en": "Updating the firmware may wipe your Trezor. Ensure your wallet backup is prepared before proceeding.",
+                    "es": "La actualización del firmware podría borrar su Trezor. Asegúrese de que su copia de seguridad de la cartera esté preparada antes de proceder.",
+                    "cs": "Aktualizace firmwaru může smazat váš Trezor. Ujistěte se, že máte zálohu peněženky připravenou před pokračováním.",
+                    "ru": "Обновление прошивки может стереть ваш Trezor. Убедитесь, что резервная копия вашего кошелька подготовлена перед продолжением.",
+                    "ja": "ファームウェアの更新により、Trezorが消去される可能性があります。更新を行う前に、ウォレットのバックアップが準備されていることを確認してください。",
+                    "hu": "A firmware frissítése törölheti a Trezorját. Győződjön meg róla, hogy a pénztárca biztonsági mentése készen áll a folytatás előtt.",
+                    "it": "L'aggiornamento del firmware potrebbe cancellare il tuo Trezor. Assicurati che il backup del portafoglio sia pronto prima di procedere.",
+                    "fr": "La mise à jour du micrologiciel peut effacer votre Trezor. Assurez-vous que votre sauvegarde de portefeuille est prête avant de continuer.",
+                    "de": "Ein Firmware-Update kann Ihren Trezor löschen. Stellen Sie sicher, dass Ihr Wallet-Backup vor dem Fortfahren bereit ist.",
+                    "tr": "Firmware güncellemesi Trezor'unuzu silebilir. Devam etmeden önce cüzdan yedeğinizin hazır olduğundan emin olun.",
+                    "pt": "A atualização do firmware pode apagar o seu Trezor. Certifique-se de que o backup da carteira está preparado antes de continuar.",
+                    "uk": "Оновлення прошивки може видалити ваш Trezor. Переконайтеся, що ваша резервна копія гаманця готова перед продовженням."
                 }
             }
         },
