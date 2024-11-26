@@ -39,7 +39,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
                             &nbsp;({feeRate})
                         </>
                     }
-                    labelTypographyStyle="body"
+                    typographyStyle="body"
                 >
                     <Row gap={spacings.md} alignItems="baseline">
                         <FormattedCryptoAmount

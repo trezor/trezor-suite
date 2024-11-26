@@ -121,7 +121,7 @@ export const CoinmarketOfferExchangeSendApproval = () => {
 
     return (
         <Column gap={spacings.lg} flex="1">
-            <InfoItem label={<Translation id="TR_EXCHANGE_SEND_FROM" />} typographyStyle="hint">
+            <InfoItem label={<Translation id="TR_EXCHANGE_SEND_FROM" />}>
                 <AccountLabeling account={account} />
             </InfoItem>
             <InfoItem
@@ -135,15 +135,11 @@ export const CoinmarketOfferExchangeSendApproval = () => {
                         values={translationValues}
                     />
                 }
-                typographyStyle="hint"
             >
                 {dexTx.to}
             </InfoItem>
             {selectedQuote.approvalSendTxHash && (
-                <InfoItem
-                    label={<Translation id="TR_EXCHANGE_APPROVAL_TXID" />}
-                    typographyStyle="hint"
-                >
+                <InfoItem label={<Translation id="TR_EXCHANGE_APPROVAL_TXID" />}>
                     {selectedQuote.approvalSendTxHash}
                 </InfoItem>
             )}
@@ -273,10 +269,7 @@ export const CoinmarketOfferExchangeSendApproval = () => {
             )}
 
             {dexTx.data && (selectedQuote.status !== 'CONFIRM' || approvalType === 'ZERO') && (
-                <InfoItem
-                    label={<Translation id="TR_EXCHANGE_APPROVAL_DATA" />}
-                    typographyStyle="hint"
-                >
+                <InfoItem label={<Translation id="TR_EXCHANGE_APPROVAL_DATA" />}>
                     <BreakableValue>{dexTx.data}</BreakableValue>
                 </InfoItem>
             )}

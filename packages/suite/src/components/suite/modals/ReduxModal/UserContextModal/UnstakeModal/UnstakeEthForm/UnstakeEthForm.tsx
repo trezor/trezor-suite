@@ -86,7 +86,7 @@ export const UnstakeEthForm = () => {
 
                 <InfoItem
                     label={<Translation id="TR_STAKE_UNSTAKING_PERIOD" />}
-                    labelTypographyStyle="body"
+                    typographyStyle="body"
                     direction="row"
                 >
                     <Translation
@@ -115,7 +115,7 @@ export const UnstakeEthForm = () => {
                                 />
                             </Tooltip>
                         }
-                        labelTypographyStyle="body"
+                        typographyStyle="body"
                         direction="row"
                     >
                         <ApproximateInstantEthAmount

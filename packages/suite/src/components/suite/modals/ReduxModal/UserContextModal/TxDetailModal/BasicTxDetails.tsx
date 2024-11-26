@@ -37,13 +37,27 @@ const NestedIconWrapper = styled.div`
     right: -${spacingsPx.xxs};
 `;
 
-interface BasicTxDetailsProps {
+const Item = ({ label, iconName, children }: Partial<InfoItemProps>) => (
+    <InfoItem
+        label={label}
+        iconName={iconName}
+        labelWidth={100}
+        typographyStyle="label"
+        direction="row"
+    >
+        <Text as="div" typographyStyle="label" ellipsisLineCount={1}>
+            {children}
+        </Text>
+    </InfoItem>
+);
+
+type BasicTxDetailsProps = {
     tx: WalletAccountTransaction;
     network: Network;
     confirmations: number;
     explorerUrl: string;
     explorerUrlQueryString?: string;
-}
+};
 
 export const BasicTxDetails = ({
     tx,
@@ -56,13 +70,6 @@ export const BasicTxDetails = ({
     const theme = useTheme();
     // all solana txs which are fetched are already confirmed
     const isConfirmed = confirmations > 0 || tx.solanaSpecific?.status === 'confirmed';
-
-    const InfoItemProps = {
-        typographyStyle: 'label',
-        labelTypographyStyle: 'label',
-        labelWidth: 100,
-        direction: 'row',
-    } as Partial<InfoItemProps>;
 
     return (
         <Card>
@@ -113,7 +120,7 @@ export const BasicTxDetails = ({
 
             <Grid columns={2} gap={spacings.sm}>
                 {/* MINED TIME */}
-                <InfoItem
+                <Item
                     label={
                         isConfirmed ? (
                             <Translation id="TR_MINED_TIME" />
@@ -121,7 +128,6 @@ export const BasicTxDetails = ({
                             <Translation id="TR_FIRST_SEEN" />
                         )
                     }
-                    {...InfoItemProps}
                     iconName="calendar"
                 >
                     {tx.blockTime ? (
@@ -129,75 +135,51 @@ export const BasicTxDetails = ({
                     ) : (
                         <Translation id="TR_UNKNOWN_CONFIRMATION_TIME" />
                     )}
-                </InfoItem>
+                </Item>
 
                 {/* TX ID */}
-                <InfoItem
-                    label={<Translation id="TR_TXID" />}
-                    {...InfoItemProps}
-                    iconName="biometric"
-                >
+                <Item label={<Translation id="TR_TXID" />} iconName="biometric">
                     <IOAddress
                         txAddress={tx.txid}
                         explorerUrl={explorerUrl}
                         explorerUrlQueryString={explorerUrlQueryString}
                     />
-                </InfoItem>
+                </Item>
 
                 {/* Fee level */}
                 {network.networkType === 'bitcoin' && (
-                    <InfoItem
-                        label={<Translation id="TR_FEE_RATE" />}
-                        {...InfoItemProps}
-                        iconName="receipt"
-                    >
+                    <Item label={<Translation id="TR_FEE_RATE" />} iconName="receipt">
                         {/* tx.feeRate was added in @trezor/blockchain-link 2.1.5 meaning that users
                             might have locally saved old transactions without this field. since we
                             cant reliably migrate this data, we are keeping old way of displaying feeRate in place */}
                         {`${tx?.feeRate ? tx.feeRate : getFeeRate(tx)} ${getFeeUnits('bitcoin')}`}
-                    </InfoItem>
+                    </Item>
                 )}
 
                 {/* Ethereum */}
                 {tx.ethereumSpecific && (
                     <>
-                        <InfoItem
-                            label={<Translation id="TR_GAS_LIMIT" />}
-                            {...InfoItemProps}
-                            iconName="receipt"
-                        >
+                        <Item label={<Translation id="TR_GAS_LIMIT" />} iconName="receipt">
                             {tx.ethereumSpecific.gasLimit}
-                        </InfoItem>
+                        </Item>
 
-                        <InfoItem
-                            label={<Translation id="TR_GAS_USED" />}
-                            {...InfoItemProps}
-                            iconName="receipt"
-                        >
+                        <Item label={<Translation id="TR_GAS_USED" />} iconName="receipt">
                             {tx.ethereumSpecific.gasUsed ? (
                                 tx.ethereumSpecific.gasUsed
                             ) : (
                                 <Translation id="TR_BUY_STATUS_PENDING" />
                             )}
-                        </InfoItem>
+                        </Item>
 
-                        <InfoItem
-                            label={<Translation id="TR_GAS_PRICE" />}
-                            {...InfoItemProps}
-                            iconName="receipt"
-                        >
+                        <Item label={<Translation id="TR_GAS_PRICE" />} iconName="receipt">
                             {`${fromWei(tx.ethereumSpecific?.gasPrice ?? '0', 'gwei')} ${getFeeUnits(
                                 'ethereum',
                             )}`}
-                        </InfoItem>
+                        </Item>
 
-                        <InfoItem
-                            label={<Translation id="TR_NONCE" />}
-                            {...InfoItemProps}
-                            iconName="receipt"
-                        >
+                        <Item label={<Translation id="TR_NONCE" />} iconName="receipt">
                             {tx.ethereumSpecific?.nonce}
-                        </InfoItem>
+                        </Item>
                     </>
                 )}
             </Grid>

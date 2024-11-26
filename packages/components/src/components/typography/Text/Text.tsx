@@ -27,7 +27,11 @@ export const allowedTextTextProps = [
 ] as const satisfies TextPropsKeys[];
 type AllowedTextTextProps = Pick<TextPropsCommon, (typeof allowedTextTextProps)[number]>;
 
-export const allowedTextFrameProps = ['margin', 'maxWidth'] as const satisfies FramePropsKeys[];
+export const allowedTextFrameProps = [
+    'margin',
+    'maxWidth',
+    'flex',
+] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTextFrameProps)[number]>;
 
 export const textVariants = [...uiVariants, 'purple'] as const;

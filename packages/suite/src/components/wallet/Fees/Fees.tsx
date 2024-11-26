@@ -102,7 +102,7 @@ export const Fees = <TFieldValues extends FormState>({
         <Column gap={spacings.xs}>
             <InfoItem
                 direction="row"
-                labelTypographyStyle="body"
+                typographyStyle="body"
                 label={
                     networkType === 'ethereum' ? (
                         <Tooltip

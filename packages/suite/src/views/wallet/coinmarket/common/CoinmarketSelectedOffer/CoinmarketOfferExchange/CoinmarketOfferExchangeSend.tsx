@@ -16,13 +16,10 @@ export const CoinmarketOfferExchangeSend = () => {
 
     return (
         <Column gap={spacings.lg} flex="1">
-            <InfoItem label={<Translation id="TR_EXCHANGE_SEND_FROM" />} typographyStyle="hint">
+            <InfoItem label={<Translation id="TR_EXCHANGE_SEND_FROM" />}>
                 <AccountLabeling account={account} />
             </InfoItem>
-            <InfoItem
-                label={<Translation id="TR_EXCHANGE_SEND_TO" values={{ providerName }} />}
-                typographyStyle="hint"
-            >
+            <InfoItem label={<Translation id="TR_EXCHANGE_SEND_TO" values={{ providerName }} />}>
                 {sendAddress}
             </InfoItem>
             <Column margin={{ top: 'auto' }}>
