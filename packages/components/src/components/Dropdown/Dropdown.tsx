@@ -12,9 +12,10 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { useOnClickOutside } from '@trezor/react-utils';
+import { borders } from '@trezor/theme';
 
 import { Menu, MenuProps, DropdownMenuItemProps } from './Menu';
 import { Coords, getAdjustedCoords } from './getAdjustedCoords';
@@ -39,11 +40,12 @@ const Container = styled.div<{ $disabled?: boolean; $hasCustomChildren: boolean 
     ${getFocusShadowStyle()};
     cursor: ${({ $disabled }) => ($disabled ? 'default' : 'pointer')};
 
-    /**
-        This must be here to reduce clickable area to the "circle" of the (...) children.
-        However, if you use custom children its your own responsibility to handle it.
-    */
-    ${({ $hasCustomChildren }) => ($hasCustomChildren ? undefined : '50%;')}
+    ${({ $hasCustomChildren }) =>
+        $hasCustomChildren
+            ? undefined
+            : css`
+                  border-radius: ${borders.radii.full};
+              `}
 `;
 
 const getPlacementData = (
