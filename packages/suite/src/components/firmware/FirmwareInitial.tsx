@@ -10,9 +10,10 @@ import { getFirmwareVersion, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/connect';
 import { selectDevices } from '@suite-common/wallet-core';
 import { spacingsPx } from '@trezor/theme';
+import { useFirmwareInstallation } from '@suite-common/firmware';
 
 import { OnboardingStepBox, OnboardingButtonSkip } from 'src/components/onboarding';
-import { useDevice, useFirmware, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
 import { FirmwareInstallButton, FirmwareOffer } from 'src/components/firmware';
 
 import { PrerequisitesGuide, Translation } from '../suite';
@@ -126,9 +127,10 @@ export const FirmwareInitial = ({
 }: FirmwareInitialProps) => {
     const [bitcoinOnlyOffer, setBitcoinOnlyOffer] = useState(false);
     const { device } = useDevice();
-    const { deviceWillBeWiped, firmwareUpdate, setStatus, targetFirmwareType } = useFirmware({
-        shouldSwitchFirmwareType,
-    });
+    const { deviceWillBeWiped, firmwareUpdate, setStatus, targetFirmwareType } =
+        useFirmwareInstallation({
+            shouldSwitchFirmwareType,
+        });
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const devices = useSelector(selectDevices);
 

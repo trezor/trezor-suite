@@ -1,13 +1,15 @@
 import { useState } from 'react';
 
-import { useDevice, useFirmware } from 'src/hooks/suite';
+import { useFirmwareInstallation } from '@suite-common/firmware';
+
+import { useDevice } from 'src/hooks/suite';
 import { SelectCustomFirmware } from 'src/components/firmware';
 
 import { FirmwareModal } from './FirmwareModal';
 
 export const FirmwareCustom = () => {
     const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
-    const { setStatus, firmwareUpdate } = useFirmware();
+    const { setStatus, firmwareUpdate } = useFirmwareInstallation();
     const { device } = useDevice();
 
     const installCustomFirmware = () => {

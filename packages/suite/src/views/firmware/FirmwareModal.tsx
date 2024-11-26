@@ -8,6 +8,7 @@ import { acquireDevice, selectDevice } from '@suite-common/wallet-core';
 import { variables } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
+import { useFirmwareInstallation } from '@suite-common/firmware';
 
 import { closeModalApp } from 'src/actions/suite/routerActions';
 import {
@@ -18,7 +19,7 @@ import {
 } from 'src/components/firmware';
 import { Translation, Modal, PrerequisitesGuide } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
-import { useDispatch, useFirmware, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import messages from 'src/support/messages';
 
 const Wrapper = styled.div<{ $isWithTopPadding: boolean }>`
@@ -64,7 +65,7 @@ export const FirmwareModal = ({
         uiEvent,
         confirmOnDevice,
         showConfirmationPill,
-    } = useFirmware({ shouldSwitchFirmwareType });
+    } = useFirmwareInstallation({ shouldSwitchFirmwareType });
     const device = useSelector(selectDevice);
     const dispatch = useDispatch();
     const intl = useIntl();

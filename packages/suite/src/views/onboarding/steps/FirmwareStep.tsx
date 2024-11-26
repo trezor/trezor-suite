@@ -1,6 +1,8 @@
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { selectDevice } from '@suite-common/wallet-core';
+import { useFirmwareInstallation } from '@suite-common/firmware';
 
+import { MODAL } from 'src/actions/suite/constants';
 import { OnboardingButtonBack, OnboardingStepBox } from 'src/components/onboarding';
 import { PrerequisitesGuide, Translation } from 'src/components/suite';
 import {
@@ -11,21 +13,15 @@ import {
     FirmwareUpdateHashCheckError,
     Fingerprint,
 } from 'src/components/firmware';
-import { useSelector, useFirmware, useOnboarding } from 'src/hooks/suite';
+import { useSelector, useOnboarding } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 export const FirmwareStep = () => {
     const device = useSelector(selectDevice);
+    const modal = useSelector(state => state.modal);
     const { goToNextStep, updateAnalytics } = useOnboarding();
-    const {
-        status,
-        error,
-        resetReducer,
-        firmwareUpdate,
-        showFingerprintCheck,
-        firmwareHashInvalid,
-        targetType,
-    } = useFirmware();
+    const { status, error, resetReducer, firmwareUpdate, firmwareHashInvalid, targetType } =
+        useFirmwareInstallation();
 
     const install = () => firmwareUpdate({ firmwareType: targetType });
     const goToNextStepAndResetReducer = () => {
@@ -37,6 +33,10 @@ export const FirmwareStep = () => {
     if (device?.id && firmwareHashInvalid.includes(device.id)) {
         return <FirmwareUpdateHashCheckError error={error} />;
     }
+
+    const showFingerprintCheck =
+        modal.context === MODAL.CONTEXT_DEVICE &&
+        modal.windowType === 'ButtonRequest_FirmwareCheck';
 
     if (showFingerprintCheck && device) {
         // Some old firmwares ask for verifying firmware fingerprint by dispatching ButtonRequest_FirmwareCheck

@@ -3,9 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { Icon, ProgressBar, variables } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
-import { FirmwareOperationStatus } from '@suite-common/firmware';
-
-import { useFirmware } from 'src/hooks/suite';
+import { FirmwareOperationStatus, useFirmwareInstallation } from '@suite-common/firmware';
 
 import { Translation } from '../suite';
 
@@ -65,7 +63,7 @@ const mapOperationToTransaltionId: Record<
 
 export const FirmwareProgressBar = () => {
     const theme = useTheme();
-    const { operation, progress } = useFirmware();
+    const { operation, progress } = useFirmwareInstallation();
 
     const isDone = progress === 100;
 

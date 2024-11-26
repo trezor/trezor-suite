@@ -8,7 +8,11 @@ import {
     firmwareActions,
 } from '@suite-common/firmware';
 import { DEVICE, DeviceModelInternal, FirmwareType, UI } from '@trezor/connect';
-import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
+import {
+    getFirmwareVersion,
+    hasBitcoinOnlyFirmware,
+    isBitcoinOnlyDevice,
+} from '@trezor/device-utils';
 import { selectDevice } from '@suite-common/wallet-core';
 
 /*
@@ -17,6 +21,10 @@ There are three firmware update flows, depending on current firmware version:
 - reboot_and_wait: newer devices can reboot to bootloader without manual disconnection, then user confirms installation
 - reboot_and_upgrade: a device with firmware version >= 2.6.3 can reboot and upgrade in one step (not supported for reinstallation and downgrading)
 */
+
+const VERSIONS_GUARANTEED_TO_WIPE_DEVICE_ON_UPDATE: ReturnType<typeof getFirmwareVersion>[] = [
+    '1.6.1',
+];
 
 export type UseFirmwareInstallationParams =
     | {
@@ -63,9 +71,10 @@ export const useFirmwareInstallation = (
     // except T1B1 and T2T1. There may be some false negatives here during custom installation.
     // TODO: Determine this in Connect.
     const deviceWillBeWiped =
-        !!shouldSwitchFirmwareType &&
-        deviceModelInternal !== undefined &&
-        ![DeviceModelInternal.T1B1, DeviceModelInternal.T2T1].includes(deviceModelInternal);
+        (!!shouldSwitchFirmwareType &&
+            deviceModelInternal !== undefined &&
+            ![DeviceModelInternal.T1B1, DeviceModelInternal.T2T1].includes(deviceModelInternal)) ||
+        VERSIONS_GUARANTEED_TO_WIPE_DEVICE_ON_UPDATE.includes(getFirmwareVersion(originalDevice));
 
     const confirmOnDevice =
         // Show the confirmation pill before starting the installation using the "wait" or "manual" method,

@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { Button } from '@trezor/components';
 import { UI } from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
+import { useFirmwareInstallation } from '@suite-common/firmware';
 
 import { Translation, WebUsbButton } from 'src/components/suite';
-import { useFirmware } from 'src/hooks/suite';
 import { FirmwareOffer, FirmwareProgressBar, ReconnectDevicePrompt } from 'src/components/firmware';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { TrezorDevice } from 'src/types/suite';
@@ -40,7 +40,7 @@ export const FirmwareInstallation = ({
     onPromptClose,
     onSuccess,
 }: FirmwareInstallationProps) => {
-    const { status, showReconnectPrompt, uiEvent, targetType } = useFirmware();
+    const { status, showReconnectPrompt, uiEvent, targetType } = useFirmwareInstallation();
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const isWebUsbTransport = useSelector(selectIsWebUsb);
 
