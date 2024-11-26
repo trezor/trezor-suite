@@ -5,6 +5,8 @@ import {
     PixelRatio,
     Platform,
 } from 'react-native';
+import Animated from 'react-native-reanimated';
+import React from 'react';
 
 // @ts-expect-error This is not public RN API but it will make Text noticeable faster https://twitter.com/FernandoTheRojo/status/1707769877493121420
 import { NativeText } from 'react-native/Libraries/Text/TextNativeComponent';
@@ -79,24 +81,35 @@ const textStyle = prepareNativeStyle<TextStyleProps>((utils, { variant, color, t
     textAlign,
 }));
 
-export const Text = ({
-    variant = 'body',
-    color = 'textDefault',
-    textAlign = 'left',
-    style,
-    children,
-    ...otherProps
-}: TextProps) => {
-    const { applyStyle } = useNativeStyles();
-    const maxFontSizeMultiplier = variantToMaxFontSizeMultiplier[variant];
+export const Text = React.forwardRef<RNText, TextProps>(
+    (
+        {
+            variant = 'body',
+            color = 'textDefault',
+            textAlign = 'left',
+            style,
+            children,
+            ...otherProps
+        },
+        ref,
+    ) => {
+        const { applyStyle } = useNativeStyles();
+        const maxFontSizeMultiplier = variantToMaxFontSizeMultiplier[variant];
 
-    return (
-        <DefaultTextComponent
-            style={[applyStyle(textStyle, { variant, color, textAlign }), style]}
-            maxFontSizeMultiplier={maxFontSizeMultiplier}
-            {...otherProps}
-        >
-            {children}
-        </DefaultTextComponent>
-    );
-};
+        return (
+            <DefaultTextComponent
+                style={[applyStyle(textStyle, { variant, color, textAlign }), style]}
+                maxFontSizeMultiplier={maxFontSizeMultiplier}
+                {...otherProps}
+                ref={ref}
+            >
+                {children}
+            </DefaultTextComponent>
+        );
+    },
+);
+
+Text.displayName = 'Text';
+
+export const AnimatedText = Animated.createAnimatedComponent(Text);
+AnimatedText.displayName = 'AnimatedText';

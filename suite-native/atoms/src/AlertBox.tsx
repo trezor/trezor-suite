@@ -83,6 +83,7 @@ export type AlertBoxProps = {
     title: ReactNode;
     borderRadius?: NativeRadius | number;
     contentColor?: Color;
+    rightButton?: ReactNode;
 };
 
 const AlertSpinner = ({ color }: { color: Color }) => {
@@ -98,6 +99,7 @@ export const AlertBox = ({
     variant = 'info',
     borderRadius = 'r16',
     contentColor,
+    rightButton,
 }: AlertBoxProps) => {
     const { applyStyle } = useNativeStyles();
     const {
@@ -124,6 +126,7 @@ export const AlertBox = ({
             <Text color={color} variant="label" style={applyStyle(textStyle)}>
                 {title}
             </Text>
+            {rightButton}
         </Box>
     );
 };

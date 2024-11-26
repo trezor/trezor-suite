@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, forwardRef } from 'react';
 import { View, ViewProps } from 'react-native';
 import Animated, {
     interpolateColor,
@@ -40,7 +40,7 @@ export const useDebugView = () => {
     };
 };
 
-export const DebugView = ({ style, children, ...props }: ViewProps) => {
+export const DebugView = forwardRef<View, ViewProps>(({ style, children, ...props }, ref) => {
     const { utils } = useNativeStyles();
     const { isRerenderCountEnabled } = useDebugView();
     const rerenderCount = useRef(0);
@@ -77,7 +77,7 @@ export const DebugView = ({ style, children, ...props }: ViewProps) => {
     });
 
     return (
-        <Animated.View style={[style, rStyle]} {...props}>
+        <Animated.View ref={ref} style={[style, rStyle]} {...props}>
             {children}
             {isRerenderCountEnabled && (
                 <View
@@ -94,4 +94,6 @@ export const DebugView = ({ style, children, ...props }: ViewProps) => {
             )}
         </Animated.View>
     );
-};
+});
+
+DebugView.displayName = 'DebugView';

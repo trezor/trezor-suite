@@ -1,4 +1,6 @@
 import { View, ViewProps, ViewStyle } from 'react-native';
+import Animated from 'react-native-reanimated';
+import React from 'react';
 
 import { D, pipe } from '@mobily/ts-belt';
 
@@ -52,7 +54,7 @@ const boxStyle = prepareNativeStyle<BoxStyleProps>((_utils, { ...styles }) => ({
     ...styles,
 }));
 
-export const Box = ({ style, ...props }: BoxProps) => {
+export const Box = React.forwardRef<View, BoxProps>(({ style, ...props }, ref) => {
     const { applyStyle, utils } = useNativeStyles();
     const { isFlashOnRerenderEnabled } = useDebugView();
     const ViewComponent = isFlashOnRerenderEnabled ? DebugView : View;
@@ -67,8 +69,14 @@ export const Box = ({ style, ...props }: BoxProps) => {
 
     return (
         <ViewComponent
-            style={[applyStyle(boxStyle, { ...layoutStyles, ...spacingStyles }), style]}
             {...otherProps}
+            style={[applyStyle(boxStyle, { ...layoutStyles, ...spacingStyles }), style]}
+            ref={ref}
         />
     );
-};
+});
+
+Box.displayName = 'Box';
+
+export const AnimatedBox = Animated.createAnimatedComponent(Box);
+AnimatedBox.displayName = 'AnimatedBox';
