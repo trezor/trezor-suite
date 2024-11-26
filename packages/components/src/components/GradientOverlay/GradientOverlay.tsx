@@ -15,6 +15,7 @@ export const Gradient = styled.div<{
 }>`
     position: absolute;
     inset: 0;
+    pointer-events: none;
     background-image: linear-gradient(
         to right,
         rgb(0 0 0 / 0%) 0%,

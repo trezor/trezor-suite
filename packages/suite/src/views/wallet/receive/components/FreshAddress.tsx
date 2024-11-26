@@ -2,71 +2,31 @@ import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
-import { Button, Card, variables, H2, Tooltip, GradientOverlay } from '@trezor/components';
+import {
+    Button,
+    Card,
+    Text,
+    Tooltip,
+    GradientOverlay,
+    Row,
+    InfoItem,
+    H4,
+    Banner,
+    Paragraph,
+} from '@trezor/components';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 import { networks } from '@suite-common/wallet-config';
-import { spacingsPx, typography } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
-import { Translation, QuestionTooltip, ReadMoreLink } from 'src/components/suite';
+import { Translation, ReadMoreLink } from 'src/components/suite';
 import { AppState } from 'src/types/suite';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
-import { EvmExplanationBox } from 'src/components/wallet/EvmExplanationBox';
 import { selectIsFirmwareAuthenticityCheckEnabledAndFailed } from 'src/reducers/suite/suiteReducer';
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledCard = styled(Card)`
-    width: 100%;
-    flex-flow: row wrap;
-    margin-bottom: ${spacingsPx.md};
-    align-items: center;
-    justify-content: space-between;
-    padding: ${spacingsPx.xxl} ${spacingsPx.xxxl};
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: ${spacingsPx.xxl} ${spacingsPx.lg};
-    }
-
-    @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        button {
-            width: 100%;
-            margin-left: auto;
-            margin-top: ${spacingsPx.sm};
-        }
-    }
-`;
-
-const AddressContainer = styled.div`
-    flex: 1;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    min-width: 220px;
-    margin-left: ${spacingsPx.lg};
-`;
-
 const FreshAddressWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
     position: relative;
-    margin-top: ${spacingsPx.xs};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledFreshAddress = styled(H2)`
-    color: ${({ theme }) => theme.textDefault};
-`;
-const AddressLabel = styled.span`
-    color: ${({ theme }) => theme.textSubdued};
-    ${typography.label}
-    text-transform: uppercase;
-    font-variant-numeric: slashed-zero tabular-nums;
-`;
-
-const StyledEvmExplanationBox = styled(EvmExplanationBox)`
-    margin-top: 26px;
 `;
 
 const TooltipLabel = ({
@@ -79,29 +39,33 @@ const TooltipLabel = ({
     accountType: string;
 }) => {
     const addressLabel = (
-        <AddressLabel>
+        <H4 variant="tertiary" typographyStyle="hint">
             <Translation id={multipleAddresses ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS'} />
-        </AddressLabel>
+        </H4>
     );
 
     if (symbol === 'ltc' && accountType === 'segwit') {
         // additional tooltip with LTC addresses explanation
         return (
-            <QuestionTooltip
-                label={addressLabel}
-                tooltip={<ReadMoreLink message="TR_LTC_ADDRESS_INFO" url="LTC_ADDRESS_INFO_URL" />}
-            />
+            <Tooltip
+                hasIcon
+                content={<ReadMoreLink message="TR_LTC_ADDRESS_INFO" url="LTC_ADDRESS_INFO_URL" />}
+            >
+                {addressLabel}
+            </Tooltip>
         );
     }
     if (symbol === 'bch') {
         // additional tooltip with BCH addresses explanation
         return (
-            <QuestionTooltip
-                label={addressLabel}
-                tooltip={
+            <Tooltip
+                hasIcon
+                content={
                     <ReadMoreLink message="TR_BCH_ADDRESS_INFO" url="HELP_CENTER_CASHADDR_URL" />
                 }
-            />
+            >
+                {addressLabel}
+            </Tooltip>
         );
     }
 
@@ -182,52 +146,57 @@ export const FreshAddress = ({
     };
 
     return (
-        <StyledCard>
-            <AddressContainer>
-                <TooltipLabel
-                    multipleAddresses={isAccountUtxoBased}
-                    symbol={account.symbol}
-                    accountType={account.accountType}
-                />
-                <FreshAddressWrapper>
-                    {addressValue && <GradientOverlay hiddenFrom="220px" />}
-                    <StyledFreshAddress>
-                        {addressValue ?? <Translation id="RECEIVE_ADDRESS_UNAVAILABLE" />}
-                    </StyledFreshAddress>
-                </FreshAddressWrapper>
-            </AddressContainer>
-            <Tooltip content={buttonTooltipContent()}>
-                {isDeviceConnected ? (
-                    <StyledButton icon="trezor" {...buttonRevealAddressProps}>
-                        <Translation id="RECEIVE_ADDRESS_REVEAL" />
-                    </StyledButton>
-                ) : (
-                    <StyledButton {...buttonRevealAddressProps} variant="warning">
-                        <Translation id="RECEIVE_UNVERIFIED_ADDRESS_REVEAL" />
-                    </StyledButton>
-                )}
-            </Tooltip>
+        <Card>
+            <Row gap={spacings.lg} flexWrap="wrap">
+                <InfoItem
+                    label={
+                        <TooltipLabel
+                            multipleAddresses={isAccountUtxoBased}
+                            symbol={account.symbol}
+                            accountType={account.accountType}
+                        />
+                    }
+                    flex="1"
+                >
+                    <FreshAddressWrapper>
+                        {addressValue && <GradientOverlay hiddenFrom="220px" />}
+                        <Text typographyStyle="titleMedium">
+                            {addressValue ?? <Translation id="RECEIVE_ADDRESS_UNAVAILABLE" />}
+                        </Text>
+                    </FreshAddressWrapper>
+                </InfoItem>
+                <Tooltip content={buttonTooltipContent()}>
+                    {isDeviceConnected ? (
+                        <Button minWidth={220} icon="trezor" {...buttonRevealAddressProps}>
+                            <Translation id="RECEIVE_ADDRESS_REVEAL" />
+                        </Button>
+                    ) : (
+                        <Button minWidth={220} {...buttonRevealAddressProps} variant="warning">
+                            <Translation id="RECEIVE_UNVERIFIED_ADDRESS_REVEAL" />
+                        </Button>
+                    )}
+                </Tooltip>
+            </Row>
             {account.networkType === 'ethereum' && (
-                <StyledEvmExplanationBox
-                    caret
-                    symbol={account.symbol}
-                    title={
+                <Banner icon variant="info" margin={{ top: spacings.xxl }}>
+                    <H4>
                         <Translation
                             id="TR_EVM_EXPLANATION_TITLE"
                             values={{
                                 network: networks[account.symbol].name,
                             }}
                         />
-                    }
-                >
-                    <Translation
-                        id="TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION"
-                        values={{
-                            network: networks[account.symbol].name,
-                        }}
-                    />
-                </StyledEvmExplanationBox>
+                    </H4>
+                    <Paragraph>
+                        <Translation
+                            id="TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION"
+                            values={{
+                                network: networks[account.symbol].name,
+                            }}
+                        />
+                    </Paragraph>
+                </Banner>
             )}
-        </StyledCard>
+        </Card>
     );
 };
