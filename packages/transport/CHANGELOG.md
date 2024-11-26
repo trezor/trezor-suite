@@ -1,3 +1,7 @@
+# 1.3.4
+
+-   npm-prerelease: @trezor/transport 1.3.4-beta.1 (29c4ff061f)
+
 # 1.3.3
 
 -   npm-prerelease: @trezor/transport 1.3.3-beta.2 (de2cfbf343)
