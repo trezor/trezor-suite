@@ -173,7 +173,7 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
                         d =>
                             d.state && (
                                 <DeviceItem
-                                    key={d.state.staticSessionId}
+                                    key={d.path}
                                     deviceState={d.state}
                                     onPress={() => onSelectDevice(d)}
                                 />

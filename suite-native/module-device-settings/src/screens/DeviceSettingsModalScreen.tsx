@@ -1,58 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
-
-import { useNavigation } from '@react-navigation/native';
 
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import {
     selectDevice,
     selectDeviceModel,
     selectDeviceReleaseInfo,
-    selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { Button, Text, VStack } from '@suite-native/atoms';
 import { DeviceImage } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
-import {
-    AppTabsRoutes,
-    HomeStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    ScreenSubHeader,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import { Screen, ScreenSubHeader } from '@suite-native/navigation';
 
 import { DeviceAuthenticityCard } from '../components/DeviceAuthenticityCard';
 import { DeviceFirmwareCard } from '../components/DeviceFirmwareCard';
 import { DevicePinProtectionCard } from '../components/DevicePinProtectionCard';
 import { HowToUpdateBottomSheet } from '../components/HowToUpdateBottomSheet';
 
-type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.DeviceSettingsStack>;
-
 export const DeviceSettingsModalScreen = () => {
-    const navigation = useNavigation<NavigationProp>();
     const { translate } = useTranslate();
 
     const device = useSelector(selectDevice);
     const deviceModel = useSelector(selectDeviceModel);
-    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
 
     const [isUpdateSheetOpen, setIsUpdateSheetOpen] = useState<boolean>(false);
 
     const isUpgradable = deviceReleaseInfo?.isNewer ?? false;
-
-    useEffect(() => {
-        if (isPortfolioTrackerDevice) {
-            navigation.navigate(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.HomeStack,
-                params: {
-                    screen: HomeStackRoutes.Home,
-                },
-            });
-        }
-    }, [isPortfolioTrackerDevice, navigation]);
 
     if (!device || !deviceModel) {
         return null;

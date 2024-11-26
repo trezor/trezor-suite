@@ -19,6 +19,7 @@ import {
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
 import { useIsConnectPopupOpened } from '@suite-native/module-connect-popup';
+import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 
 const LOADING_TIMEOUT = 2500;
 
@@ -39,6 +40,7 @@ export const useOnDeviceReadyNavigation = () => {
     );
     const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
     const isConnectPopupOpened = useIsConnectPopupOpened();
+    const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
 
     // The connecting screen should be visible for at least 2.5 seconds before redirecting to HomeScreen.
     useEffect(() => {
@@ -54,6 +56,8 @@ export const useOnDeviceReadyNavigation = () => {
     // also redirect to the Home screen otherwise user would be blocked forever.
     // This can happen if user enabled only COIN on device A and then connects device B which does not support COIN.
     useEffect(() => {
+        if (isFirmwareInstallationRunning) return;
+
         if (
             (isDeviceReadyToUseAndAuthorized && isTimeoutFinished) ||
             (deviceEnabledDiscoveryNetworkSymbols.length === 0 && isCoinEnablingInitFinished)
@@ -79,5 +83,6 @@ export const useOnDeviceReadyNavigation = () => {
         deviceEnabledDiscoveryNetworkSymbols,
         isCoinEnablingInitFinished,
         isConnectPopupOpened,
+        isFirmwareInstallationRunning,
     ]);
 };

@@ -6,6 +6,7 @@ import { ConnectorImage, DeviceImage } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { DeviceModelInternal } from '@trezor/connect';
 
 import { DeviceInteractionScreenWrapper } from '../components/DeviceInteractionScreenWrapper';
 
@@ -21,10 +22,6 @@ export const ContinueOnTrezorScreen = () => {
 
     const deviceModel = useSelector(selectDeviceModel);
 
-    if (!deviceModel) {
-        return null;
-    }
-
     return (
         <DeviceInteractionScreenWrapper>
             <Text variant="titleMedium" style={applyStyle(titleStyle)}>
@@ -32,7 +29,7 @@ export const ContinueOnTrezorScreen = () => {
             </Text>
             <Box flex={1} alignItems="center" justifyContent="flex-end">
                 <DeviceImage
-                    deviceModel={deviceModel}
+                    deviceModel={deviceModel || DeviceModelInternal.T3T1}
                     size="large"
                     maxHeight={0.42 * SCREEN_HEIGHT}
                 />

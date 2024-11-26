@@ -13,9 +13,12 @@ import {
     selectAccountsByDeviceState,
     createDeviceInstanceThunk,
     createImportedDeviceThunk,
+    selectIsDeviceForceRemembered,
 } from '@suite-common/wallet-core';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
+
+import { isAnyDeviceEventAction, isDeviceEventAction } from '../utils';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
@@ -34,15 +37,16 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
         return true;
     }
 
-    return Object.values(DEVICE).includes(action.type);
+    return isAnyDeviceEventAction(action);
 };
 
 export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState }) => {
-        if (action.type === DEVICE.DISCONNECT) {
+        const isDeviceForceRemembered = selectIsDeviceForceRemembered(getState());
+
+        if (isDeviceEventAction(action, DEVICE.DISCONNECT) && !isDeviceForceRemembered) {
             dispatch(forgetDisconnectedDevices(action.payload));
         }
-
         /* The `next` function has to be executed here, because the further dispatched actions of this middleware
          expect that the state was already changed by the action stored in the `action` variable. */
         next(action);
@@ -79,7 +83,10 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
                 }
                 break;
             case DEVICE.DISCONNECT:
-                dispatch(handleDeviceDisconnect(action.payload));
+                if (!isDeviceForceRemembered) {
+                    // In case of force remember we don't want to call this thunk because it will change selected device
+                    dispatch(handleDeviceDisconnect(action.payload));
+                }
                 clearAndUnlockDeviceAccessQueue();
                 break;
             default:

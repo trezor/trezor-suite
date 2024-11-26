@@ -2,21 +2,22 @@ import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-    selectIsDeviceAuthorized,
     selectDeviceAuthFailed,
+    selectIsDeviceAuthorized,
     selectIsDeviceUnlocked,
     selectIsDiscoveredDeviceAccountless,
 } from '@suite-common/wallet-core';
+import { Box } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen } from '@suite-native/navigation';
-import { Box } from '@suite-native/atoms';
 
 import { BiometricsBottomSheet } from './components/BiometricsBottomSheet';
 import { EmptyHomeRenderer } from './components/EmptyHomeRenderer';
-import { PortfolioContent } from './components/PortfolioContent';
-import { useHomeRefreshControl } from './useHomeRefreshControl';
 import { EnableViewOnlyBottomSheet } from './components/EnableViewOnlyBottomSheet';
+import { PortfolioContent } from './components/PortfolioContent';
 import { PortfolioGraphRef } from './components/PortfolioGraph';
+import { useHomeRefreshControl } from './useHomeRefreshControl';
+
 export const HomeScreen = () => {
     const isDiscoveredDeviceAccountless = useSelector(selectIsDiscoveredDeviceAccountless);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);

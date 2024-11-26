@@ -1,5 +1,6 @@
 import { configureStore, Middleware, StoreEnhancer } from '@reduxjs/toolkit';
 import devToolsEnhancer from 'redux-devtools-expo-dev-plugin';
+//import { logger } from 'redux-logger';
 
 import { sendFormMiddleware } from '@suite-native/module-send/src/sendFormMiddleware';
 import { prepareFiatRatesMiddleware } from '@suite-common/wallet-core';
@@ -25,6 +26,8 @@ const enhancers: Array<StoreEnhancer<any, any>> = [];
 
 if (__DEV__) {
     enhancers.push(devToolsEnhancer({ maxAge: 150 })!);
+    // logger
+    // middlewares.push(logger);
 }
 
 export const initStore = async () =>

@@ -25,6 +25,7 @@ import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
+import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList | RootStackParamList,
@@ -42,6 +43,7 @@ export const useHandleDeviceConnection = () => {
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
     const isDeviceUsingPassphrase = useSelector(selectIsDeviceUsingPassphrase);
+    const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
 
@@ -53,6 +55,8 @@ export const useHandleDeviceConnection = () => {
     // At the moment when unauthorized physical device is selected,
     // redirect to the Connecting screen where is handled the connection logic.
     useEffect(() => {
+        if (isFirmwareInstallationRunning) return;
+
         if (
             isDeviceConnected &&
             isOnboardingFinished &&
@@ -83,11 +87,14 @@ export const useHandleDeviceConnection = () => {
         navigation,
         isDeviceUsingPassphrase,
         shouldBlockSendReviewRedirect,
+        isFirmwareInstallationRunning,
     ]);
 
     // In case that the physical device is disconnected, redirect to the home screen and
     // set connecting screen to be displayed again on the next device connection.
     useEffect(() => {
+        if (isFirmwareInstallationRunning) return;
+
         if (isNoPhysicalDeviceConnected && isOnboardingFinished) {
             const previousRoute = navigation.getState()?.routes.at(-1)?.name;
 
@@ -109,6 +116,7 @@ export const useHandleDeviceConnection = () => {
         isOnboardingFinished,
         navigation,
         shouldBlockSendReviewRedirect,
+        isFirmwareInstallationRunning,
     ]);
 
     // When trezor gets locked, it is necessary to display a PIN matrix for T1 so that it can be unlocked

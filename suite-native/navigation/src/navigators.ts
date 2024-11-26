@@ -1,32 +1,32 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
-import { RequireAllOrNone } from 'type-fest';
 import { ParsedURL } from 'expo-linking';
+import { RequireAllOrNone } from 'type-fest';
 
+import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountKey,
     GeneralPrecomposedTransactionFinal,
     TokenAddress,
     XpubAddress,
 } from '@suite-common/wallet-types';
-import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo } from '@trezor/connect';
 
 import {
-    AppTabsRoutes,
     AccountsImportStackRoutes,
-    HomeStackRoutes,
-    RootStackRoutes,
-    SettingsStackRoutes,
-    ReceiveStackRoutes,
     AccountsStackRoutes,
-    DevUtilsStackRoutes,
-    OnboardingStackRoutes,
-    AuthorizeDeviceStackRoutes,
     AddCoinAccountStackRoutes,
-    SendStackRoutes,
-    DeviceStackRoutes,
-    DevicePinProtectionStackRoutes,
+    AppTabsRoutes,
+    AuthorizeDeviceStackRoutes,
     DeviceAuthenticityStackRoutes,
+    DevicePinProtectionStackRoutes,
+    DeviceStackRoutes,
+    DevUtilsStackRoutes,
+    HomeStackRoutes,
+    OnboardingStackRoutes,
+    ReceiveStackRoutes,
+    RootStackRoutes,
+    SendStackRoutes,
+    SettingsStackRoutes,
 } from './routes';
 import { NavigateParameters } from './types';
 
@@ -154,6 +154,9 @@ export type DeviceSettingsStackParamList = {
     [DeviceStackRoutes.DeviceSettings]: undefined;
     [DeviceStackRoutes.DevicePinProtection]: undefined;
     [DeviceStackRoutes.DeviceAuthenticity]: undefined;
+    [DeviceStackRoutes.FirmwareUpdate]: undefined;
+    [DeviceStackRoutes.FirmwareUpdateInProgress]: undefined;
+    [DeviceStackRoutes.ContinueOnTrezor]: undefined;
 };
 
 export type DevicePinProtectionStackParamList = {

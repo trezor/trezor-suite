@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
+import { useNavigation } from '@react-navigation/native';
 
 import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import { deviceModelToIconName } from '@suite-native/icons';
@@ -10,10 +11,15 @@ import {
     selectDeviceModel,
     selectDeviceReleaseInfo,
 } from '@suite-common/wallet-core';
-import { HStack, Text, VStack } from '@suite-native/atoms';
+import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import {
+    DeviceStackRoutes,
+    StackNavigationProps,
+    DeviceSettingsStackParamList,
+} from '@suite-native/navigation';
 
 import { DeviceSettingsCardLayout } from './DeviceSettingsCardLayout';
 
@@ -39,10 +45,18 @@ const FirmwareInfo = ({ label, value }: DeviceInfoProps) => {
     );
 };
 
+type NavigationProp = StackNavigationProps<
+    DeviceSettingsStackParamList,
+    DeviceStackRoutes.FirmwareUpdate
+>;
+
+const allowReinstall = true;
+
 export const DeviceFirmwareCard = () => {
     const device = useSelector(selectDevice);
     const deviceModel = useSelector(selectDeviceModel);
     const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
+    const navigation = useNavigation<NavigationProp>();
 
     if (!device || !deviceModel) {
         return null;
@@ -57,7 +71,7 @@ export const DeviceFirmwareCard = () => {
         if (G.isNotNullable(deviceReleaseInfo)) {
             const isUpgradable = deviceReleaseInfo.isNewer ?? false;
 
-            if (isUpgradable) {
+            if (isUpgradable || allowReinstall) {
                 return {
                     title: (
                         <Translation
@@ -66,6 +80,16 @@ export const DeviceFirmwareCard = () => {
                         />
                     ),
                     variant: 'info',
+                    rightButton: (
+                        <Button
+                            colorScheme="blueBold"
+                            onPress={() => {
+                                navigation.navigate(DeviceStackRoutes.FirmwareUpdate);
+                            }}
+                        >
+                            Update
+                        </Button>
+                    ),
                 } as const;
             }
 

@@ -386,6 +386,32 @@ export const en = {
             typeBitcoinOnly: 'Bitcoin-only',
             upToDate: 'You’re all up to date',
             newVersionAvailable: 'New version available ({version})',
+            firmwareUpdateScreen: {
+                updateButton: 'Update firmware',
+                title: 'Firmware update',
+                subtitle: 'New firmware is now available. Update your device now.',
+            },
+            firmwareUpdateProgress: {
+                started: { title: 'Confirm firmware update on your Trezor.' },
+                installing: {
+                    title: 'Updating your firmware',
+                    subtitle: 'Don’t close the app.',
+                },
+                restarting: { title: 'Restarting Trezor.' },
+                validating: { title: 'Validating firmware.' },
+                completed: {
+                    title: 'Firmware update completed.',
+                    subtitle: 'Unlock your device to continue.',
+                },
+
+                error: {
+                    title: 'Update failed',
+                },
+                confirmOnDeviceMessage: 'Go to your device and confirm the firmware update.',
+                retryButton: 'Retry',
+                contactSupportButton: 'Contact support',
+                stuckButton: 'What if it gets stuck?',
+            },
         },
         pinProtection: {
             title: 'PIN protection',

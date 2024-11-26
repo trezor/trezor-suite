@@ -1,0 +1,27 @@
+{
+    "name": "@suite-native/firmware",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@react-navigation/native": "6.1.18",
+        "@reduxjs/toolkit": "1.9.5",
+        "@shopify/react-native-skia": "1.5.3",
+        "@suite-common/firmware": "workspace:*",
+        "@suite-common/icons": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/styles": "workspace:*",
+        "react": "18.2.0",
+        "react-native": "0.76.1",
+        "react-native-reanimated": "3.16.1",
+        "react-native-safe-area-context": "4.14.0",
+        "react-redux": "8.0.7"
+    }
+}

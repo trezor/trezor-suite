@@ -22,10 +22,10 @@ const deviceType = Device.isDevice ? 'device' : 'emulator';
 
 const transportsPerDeviceType = {
     device: Platform.select({
-        ios: ['BridgeTransport', 'UdpTransport'],
+        ios: ['BridgeTransport'],
         android: [NativeUsbTransport],
     }),
-    emulator: ['BridgeTransport', 'UdpTransport'],
+    emulator: ['BridgeTransport'],
 } as const;
 
 const transports = transportsPerDeviceType[deviceType];

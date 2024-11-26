@@ -7683,6 +7683,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@shopify/react-native-skia@npm:1.5.3":
+  version: 1.5.3
+  resolution: "@shopify/react-native-skia@npm:1.5.3"
+  dependencies:
+    canvaskit-wasm: "npm:0.39.1"
+    react-reconciler: "npm:0.27.0"
+  peerDependencies:
+    react: ">=18.0"
+    react-native: ">=0.64"
+    react-native-reanimated: ">=2.0.0"
+  peerDependenciesMeta:
+    react-native:
+      optional: true
+    react-native-reanimated:
+      optional: true
+  bin:
+    setup-skia-web: ./scripts/setup-canvaskit.js
+  checksum: 10/56b577543da6cc7b3630a41c97551376f16e9bb1f813723928c448f6a9e2c7324d783f90dca4b6cf6882ed4d558b5fba8540f813dc35eaf18dc201f280e55021
+  languageName: node
+  linkType: hard
+
 "@shopify/react-native-skia@npm:^1.5.10":
   version: 1.5.10
   resolution: "@shopify/react-native-skia@npm:1.5.10"
@@ -9192,6 +9213,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/firmware@workspace:*, @suite-common/firmware@workspace:suite-common/firmware":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/firmware@workspace:suite-common/firmware"
+  dependencies:
+    "@reduxjs/toolkit": "npm:1.9.5"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/suite-analytics": "workspace:*"
+    react: "npm:18.2.0"
+    react-redux: "npm:8.0.7"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/formatters@workspace:*, @suite-common/formatters@workspace:suite-common/formatters":
   version: 0.0.0-use.local
   resolution: "@suite-common/formatters@workspace:suite-common/formatters"
@@ -10013,6 +10051,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/firmware@workspace:*, @suite-native/firmware@workspace:suite-native/firmware":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/firmware@workspace:suite-native/firmware"
+  dependencies:
+    "@react-navigation/native": "npm:6.1.18"
+    "@reduxjs/toolkit": "npm:1.9.5"
+    "@shopify/react-native-skia": "npm:1.5.3"
+    "@suite-common/firmware": "workspace:*"
+    "@suite-common/icons": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    react: "npm:18.2.0"
+    react-native: "npm:0.76.1"
+    react-native-reanimated: "npm:3.16.1"
+    react-native-safe-area-context: "npm:4.14.0"
+    react-redux: "npm:8.0.7"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/formatters@workspace:*, @suite-native/formatters@workspace:suite-native/formatters":
   version: 0.0.0-use.local
   resolution: "@suite-native/formatters@workspace:suite-native/formatters"
@@ -10353,6 +10410,7 @@ __metadata:
     "@suite-native/config": "workspace:*"
     "@suite-native/discovery": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
+    "@suite-native/firmware": "workspace:*"
     "@suite-native/helpers": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/link": "workspace:*"
@@ -10376,6 +10434,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
+    "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
@@ -10749,6 +10808,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:1.9.5"
     "@sentry/react-native": "npm:6.1.0"
     "@suite-common/analytics": "workspace:*"
+    "@suite-common/firmware": "workspace:*"
     "@suite-common/logger": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -10761,6 +10821,7 @@ __metadata:
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/discovery": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
+    "@suite-native/firmware": "workspace:*"
     "@suite-native/graph": "workspace:*"
     "@suite-native/message-system": "workspace:*"
     "@suite-native/module-send": "workspace:*"
@@ -12227,6 +12288,7 @@ __metadata:
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
+    "@suite-common/firmware": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/intl-types": "workspace:*"
@@ -35260,7 +35322,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-safe-area-context@npm:^4.14.0":
+"react-native-safe-area-context@npm:4.14.0, react-native-safe-area-context@npm:^4.14.0":
   version: 4.14.0
   resolution: "react-native-safe-area-context@npm:4.14.0"
   peerDependencies:

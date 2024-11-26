@@ -1,38 +1,39 @@
 import { useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 
-import { Link } from '@suite-native/link';
 import {
-    Text,
-    Box,
-    Hint,
-    SearchInput,
-    Radio,
-    CheckBox,
-    Switch,
-    IconButton,
-    InputWrapper,
-    Input,
-    VStack,
-    Button,
-    ButtonColorScheme,
-    Divider,
-    Badge,
-    BadgeVariant,
-    HStack,
-    ButtonSize,
-    TextButton,
-    NumPadButton,
-    TextButtonVariant,
     // Card,
     // ListItemSkeleton,
     AlertBox,
+    Badge,
+    BadgeVariant,
+    Box,
+    Button,
+    ButtonColorScheme,
+    ButtonSize,
+    CheckBox,
+    Divider,
+    Hint,
+    HStack,
+    IconButton,
+    Input,
+    InputWrapper,
+    NumPadButton,
+    Radio,
+    SearchInput,
+    Switch,
+    Text,
+    TextButton,
+    TextButtonVariant,
+    VStack,
 } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Screen, ScreenSubHeader } from '@suite-native/navigation';
-import { CryptoIcon, Icon } from '@suite-native/icons';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
+import { CryptoIcon, Icon } from '@suite-native/icons';
+import { Link } from '@suite-native/link';
+import { Screen, ScreenSubHeader } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TypographyStyle } from '@trezor/theme';
+import { UpdateProgressIndicatorDemo } from '@suite-native/firmware';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.r16,
@@ -345,6 +346,7 @@ export const DemoScreen = () => {
                             />
                         </VStack>
                     </Box>
+                    <UpdateProgressIndicatorDemo />
                     {/* For some reason skeleton lags scrolling on iOS, we should investigate */}
                     {/* <VStack marginTop="sp16">
                         <Text variant="titleMedium">Skeleton</Text>

@@ -19,6 +19,7 @@
         "@suite-native/config": "workspace:*",
         "@suite-native/discovery": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
+        "@suite-native/firmware": "workspace:*",
         "@suite-native/helpers": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/link": "workspace:*",

@@ -1,7 +1,8 @@
 import { G } from '@mobily/ts-belt';
+import { AnyAction } from '@reduxjs/toolkit';
 import * as semver from 'semver';
 
-import { DeviceModelInternal, VersionArray } from '@trezor/connect';
+import { Device, DEVICE, DeviceEvent, DeviceModelInternal, VersionArray } from '@trezor/connect';
 
 export const minimalSupportedFirmwareVersion = {
     T1B1: [1, 12, 1] as VersionArray,
@@ -26,4 +27,15 @@ export const isFirmwareVersionSupported = (
     const minimalVersionString = minimalVersion.join('.');
 
     return semver.satisfies(versionString, `>=${minimalVersionString}`);
+};
+
+export const isAnyDeviceEventAction = (action: AnyAction): action is DeviceEvent => {
+    return Object.values(DEVICE).includes(action.type);
+};
+
+export const isDeviceEventAction = <T extends DeviceEvent['type']>(
+    action: AnyAction,
+    actionType: T,
+): action is { type: T; payload: Device } => {
+    return action.type === actionType;
 };

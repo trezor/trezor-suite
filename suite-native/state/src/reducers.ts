@@ -11,6 +11,7 @@ import {
     prepareStakeReducer,
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
+import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/settings';
 import { sendFormSlice } from '@suite-native/module-send';
 import { logsSlice } from '@suite-common/logger';
@@ -33,6 +34,7 @@ import { graphReducer, graphPersistTransform } from '@suite-native/graph';
 import { discoveryConfigPersistWhitelist, discoveryConfigReducer } from '@suite-native/discovery';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
+import { nativeFirmwareReducer } from '@suite-native/firmware';
 
 import { extraDependencies } from './extraDependencies';
 import { appReducer } from './appSlice';
@@ -48,6 +50,7 @@ const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
 const sendFormReducer = sendFormSlice.prepareReducer(extraDependencies);
 const stakeReducer = prepareStakeReducer(extraDependencies);
+const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({
@@ -163,6 +166,8 @@ export const prepareRootReducers = async () => {
             graph: graphReducer,
             device: devicePersistedReducer,
             deviceAuthorization: deviceAuthorizationReducer,
+            firmware: firmwareReducer,
+            nativeFirmware: nativeFirmwareReducer,
             logs: logsSlice.reducer,
             notifications: notificationsReducer,
             discoveryConfig: discoveryConfigPersistedReducer,

@@ -5,6 +5,7 @@
         {
             "path": "../../suite-common/analytics"
         },
+        { "path": "../../suite-common/firmware" },
         { "path": "../../suite-common/logger" },
         {
             "path": "../../suite-common/message-system"
@@ -29,6 +30,7 @@
         { "path": "../device-authorization" },
         { "path": "../discovery" },
         { "path": "../feature-flags" },
+        { "path": "../firmware" },
         { "path": "../graph" },
         { "path": "../message-system" },
         { "path": "../module-send" },

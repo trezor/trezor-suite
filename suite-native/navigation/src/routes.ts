@@ -42,6 +42,9 @@ export enum DeviceStackRoutes {
     DeviceSettings = 'DeviceSettings',
     DevicePinProtection = 'DevicePinProtection',
     DeviceAuthenticity = 'DeviceAuthenticity',
+    FirmwareUpdate = 'FirmwareUpdate',
+    FirmwareUpdateInProgress = 'FirmwareUpdateInProgress',
+    ContinueOnTrezor = 'ContinueOnTrezor',
 }
 
 export enum DevicePinProtectionStackRoutes {

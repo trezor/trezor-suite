@@ -12,10 +12,12 @@ type ConfirmOnTrezorImageProps = {
 
 const imageContainerStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
-    bottom: -utils.spacings.sp4, // Hides a part of the image under bottom screen edge.
+    bottom: utils.spacings.sp4 * -1, // Hides a part of the image under bottom screen edge.
     width: '100%',
     alignItems: 'center',
 }));
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const ConfirmOnTrezorImage = ({ bottomSheetText }: ConfirmOnTrezorImageProps) => {
     const [isBottomSheetOpened, setIsBottomSheetOpened] = useState(false);
@@ -33,15 +35,14 @@ export const ConfirmOnTrezorImage = ({ bottomSheetText }: ConfirmOnTrezorImagePr
 
     return (
         <>
-            <Animated.View
+            <AnimatedPressable
                 entering={SlideInDown}
                 exiting={SlideOutDown}
                 style={applyStyle(imageContainerStyle)}
+                onPress={handleImagePress}
             >
-                <Pressable onPress={handleImagePress}>
-                    <Image source={imageSource} />
-                </Pressable>
-            </Animated.View>
+                <Image source={imageSource} />
+            </AnimatedPressable>
             <ConfirmOnTrezorBottomSheet
                 text={bottomSheetText}
                 isOpened={isBottomSheetOpened}

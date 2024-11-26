@@ -12,6 +12,7 @@
         { "path": "../config" },
         { "path": "../discovery" },
         { "path": "../feature-flags" },
+        { "path": "../firmware" },
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../link" },
