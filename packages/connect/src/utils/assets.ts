@@ -1,47 +1,26 @@
-// https://github.com/trezor/connect/blob/develop/src/js/env/node/networkUtils.js
-
 import fetch from 'cross-fetch';
 import { promises as fs } from 'fs';
 
 import { httpRequest as browserHttpRequest } from './assets-browser';
+import { HttpRequestOptions, HttpRequestReturnType, HttpRequestType } from './assetsTypes';
 import { tryLocalAssetRequire } from './assetUtils';
 
 if (global && typeof global.fetch !== 'function') {
     global.fetch = fetch;
 }
 
-export function httpRequest(
+export function httpRequest<T extends HttpRequestType>(
     url: string,
-    type: 'text',
-    options?: RequestInit,
-    skipLocalForceDownload?: boolean,
-): Promise<string>;
-
-export function httpRequest(
-    url: string,
-    type: 'binary',
-    options?: RequestInit,
-    skipLocalForceDownload?: boolean,
-): Promise<ArrayBuffer>;
-
-export function httpRequest(
-    url: string,
-    type: 'json',
-    options?: RequestInit,
-    skipLocalForceDownload?: boolean,
-): Promise<Record<string, any>>;
-
-export function httpRequest(
-    url: any,
-    type: any,
-    options?: RequestInit,
-    skipLocalForceDownload?: boolean,
-) {
-    const asset = skipLocalForceDownload ? null : tryLocalAssetRequire(url);
+    type: T,
+    options?: HttpRequestOptions,
+): Promise<HttpRequestReturnType<T>> {
+    const asset = options?.skipLocalForceDownload ? null : tryLocalAssetRequire(url);
 
     if (!asset) {
-        return /^https?/.test(url) ? browserHttpRequest(url, type, options) : fs.readFile(url);
+        return /^https?/.test(url)
+            ? browserHttpRequest(url, type, options)
+            : (fs.readFile(url) as Promise<HttpRequestReturnType<T>>);
     }
 
-    return asset;
+    return asset as Promise<HttpRequestReturnType<T>>;
 }

@@ -1,12 +1,12 @@
-// origin https://github.com/trezor/connect/blob/develop/src/js/env/browser/networkUtils.js
-
 import fetch from 'cross-fetch';
 
-export const httpRequest = async (
+import { HttpRequestType, HttpRequestReturnType, HttpRequestOptions } from './assetsTypes';
+
+export const httpRequest = async <T extends HttpRequestType>(
     url: string,
-    type: 'text' | 'binary' | 'json' = 'text',
-    options?: RequestInit,
-) => {
+    type: T = 'text' as T,
+    options?: HttpRequestOptions,
+): Promise<HttpRequestReturnType<T>> => {
     const init: RequestInit = { ...options, credentials: 'same-origin' };
 
     const response = await fetch(url, init);
@@ -14,13 +14,13 @@ export const httpRequest = async (
         if (type === 'json') {
             const txt = await response.text();
 
-            return JSON.parse(txt);
+            return JSON.parse(txt) as HttpRequestReturnType<T>;
         }
         if (type === 'binary') {
-            return response.arrayBuffer();
+            return response.arrayBuffer() as Promise<HttpRequestReturnType<T>>;
         }
 
-        return response.text();
+        return response.text() as Promise<HttpRequestReturnType<T>>;
     }
 
     throw new Error(`httpRequest error: ${url} ${response.statusText}`);
