@@ -1,3 +1,8 @@
+# 1.2.2
+
+-   npm-prerelease: @trezor/protocol 1.2.2-beta.1 (7bfeed7f69)
+-   chore: remove glboal nx/workspace link scripts (it shall be run only globally) + resolve ugly igonores for devDependencies in import/no-extraneous-dependencies (abb41f8033)
+
 # 1.2.1
 
 -   npm-prerelease: @trezor/protocol 1.2.1-beta.1 (52acb3950c)
