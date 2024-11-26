@@ -1,3 +1,8 @@
+# 1.2.1
+
+-   npm-prerelease: @trezor/env-utils 1.2.1-beta.1 (571dd950c6)
+-   chore: remove glboal nx/workspace link scripts (it shall be run only globally) + resolve ugly igonores for devDependencies in import/no-extraneous-dependencies (abb41f8033)
+
 # 1.2.0
 
 -   npm-prerelease: @trezor/env-utils 1.1.1-beta.1 (bbcfc75743)
