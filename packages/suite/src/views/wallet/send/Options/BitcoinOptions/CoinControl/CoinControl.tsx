@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { typography } from '@trezor/theme';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { amountToSmallestUnit, formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Card, Checkbox, Icon, Switch, variables } from '@trezor/components';
+import { Card, Checkbox, Column, Icon, Row, Switch, Text } from '@trezor/components';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -21,38 +21,13 @@ import { filterAndCategorizeUtxos } from 'src/utils/wallet/filterAndCategorizeUt
 import { UtxoSelectionList } from './UtxoSelectionList';
 import { UtxoSearch } from './UtxoSearch';
 
-const Row = styled.div`
-    align-items: center;
-    display: flex;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const SecondRow = styled(Row)`
-    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    margin-top: 20px;
-    padding-bottom: 14px;
-`;
-
-const GreyText = styled.div`
-    ${typography.hint}
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledSwitch = styled(Switch)`
-    margin: 0 14px 0 auto;
-`;
-
-const AmountWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-left: auto;
-    text-align: right;
+const Header = styled.header`
+    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
+    padding-bottom: ${spacingsPx.sm};
 `;
 
 const SearchWrapper = styled.div`
-    margin-top: 20px;
+    margin-top: ${spacingsPx.lg};
 `;
 
 const MissingToInput = styled.div<{ $isVisible: boolean }>`
@@ -61,18 +36,18 @@ const MissingToInput = styled.div<{ $isVisible: boolean }>`
 `;
 
 const Empty = styled.div`
-    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-    margin-bottom: 12px;
-    padding: 14px 0;
+    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
+    margin-bottom: ${spacingsPx.sm};
+    padding: ${spacingsPx.sm} 0;
 `;
 
 const StyledPagination = styled(Pagination)`
-    margin: 20px 0;
+    margin: ${spacingsPx.lg} 0;
 `;
 
-interface CoinControlProps {
+type CoinControlProps = {
     close: () => void;
-}
+};
 
 export const CoinControl = ({ close }: CoinControlProps) => {
     const [currentPage, setSelectedPage] = useState(1);
@@ -197,33 +172,37 @@ export const CoinControl = ({ close }: CoinControlProps) => {
 
     return (
         <Card>
-            <Row>
-                <Translation id="TR_COIN_CONTROL" />
-                <StyledSwitch isChecked={!!isCoinControlEnabled} onChange={toggleCoinControl} />
-                <Icon size={24} name="chevronUp" onClick={close} />
-            </Row>
+            <Header>
+                <Row justifyContent="space-between">
+                    <Translation id="TR_COIN_CONTROL" />
+                    <Row gap={spacings.md}>
+                        <Switch isChecked={!!isCoinControlEnabled} onChange={toggleCoinControl} />
+                        <Icon size={24} name="chevronUp" onClick={close} />
+                    </Row>
+                </Row>
 
-            <SecondRow>
-                <Checkbox
-                    isChecked={allUtxosSelected}
-                    isDisabled={!hasEligibleUtxos}
-                    onClick={handleAllUtxosSelected}
-                >
-                    <GreyText>
-                        <Translation id="TR_SELECTED" values={{ amount: inputs.length }} />
-                    </GreyText>
-                </Checkbox>
+                <Row justifyContent="space-between" margin={{ top: spacings.md }}>
+                    <Checkbox
+                        isChecked={allUtxosSelected}
+                        isDisabled={!hasEligibleUtxos}
+                        onClick={handleAllUtxosSelected}
+                    >
+                        <Text variant="tertiary">
+                            <Translation id="TR_SELECTED" values={{ amount: inputs.length }} />
+                        </Text>
+                    </Checkbox>
 
-                <AmountWrapper>
-                    <GreyText>
-                        <FormattedCryptoAmount value={formattedTotal} symbol={account.symbol} />
-                    </GreyText>
+                    <Column alignItems="end">
+                        <Text variant="tertiary">
+                            <FormattedCryptoAmount value={formattedTotal} symbol={account.symbol} />
+                        </Text>
 
-                    <MissingToInput $isVisible={isMissingVisible}>
-                        <Translation id={missingToInputId} values={missingToInputValues} />
-                    </MissingToInput>
-                </AmountWrapper>
-            </SecondRow>
+                        <MissingToInput $isVisible={isMissingVisible}>
+                            <Translation id={missingToInputId} values={missingToInputValues} />
+                        </MissingToInput>
+                    </Column>
+                </Row>
+            </Header>
             {hasEligibleUtxos && (
                 <SearchWrapper>
                     <UtxoSearch
