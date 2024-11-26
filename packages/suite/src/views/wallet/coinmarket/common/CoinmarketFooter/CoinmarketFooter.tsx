@@ -2,10 +2,10 @@ import { useState, useRef } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { variables, Icon, Link, Image, Row } from '@trezor/components';
+import { Icon, Link, Image, Row } from '@trezor/components';
 import { useOnClickOutside } from '@trezor/react-utils';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
-import { borders, spacings, spacingsPx, zIndices } from '@trezor/theme';
+import { borders, spacings, spacingsPx, typography, zIndices } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { CoinmarketFooterLogoWrapper } from 'src/views/wallet/coinmarket';
@@ -25,8 +25,8 @@ const Left = styled.div`
     display: flex;
     flex: 1;
     align-items: center;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.highlight}
 `;
 
 const Right = styled.div`
@@ -72,17 +72,17 @@ const IconWrapper = styled.div`
 
 const Text = styled.div`
     padding-left: 10px;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.body}
     margin-bottom: 15px;
 `;
 
 const linkStyle = css`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     cursor: pointer;
 
     &:hover {
-        color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+        color: ${({ theme }) => theme.textSubdued};
         text-decoration: underline;
     }
 `;

@@ -47,7 +47,10 @@ export const WordAdvancedModal = ({ count, ...rest }: WordAdvancedModalProps) =>
                 <BottomText>
                     <Paragraph typographyStyle="label">
                         <Translation id="TR_ADVANCED_RECOVERY_NOT_SURE" />{' '}
-                        <TrezorLink type="label" href={HELP_CENTER_ADVANCED_RECOVERY_URL}>
+                        <TrezorLink
+                            typographyStyle="label"
+                            href={HELP_CENTER_ADVANCED_RECOVERY_URL}
+                        >
                             <Translation id="TR_LEARN_MORE" />
                         </TrezorLink>
                     </Paragraph>

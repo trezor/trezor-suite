@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
-import { Button, Link } from '@trezor/components';
+import { Button } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { COINJOIN_NETWORKS } from 'src/services/coinjoin';
@@ -12,11 +13,6 @@ import { reloadApp } from 'src/utils/suite/reload';
 
 const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    margin-left: 8px;
 `;
 
 const CoordinatorVersionContainer = styled.div`
@@ -39,11 +35,15 @@ const CoordinatorVersion = ({ version }: { version: CoordinatorServerProps['vers
     return (
         <CoordinatorVersionContainer>
             Build{' '}
-            <Link href={`https://github.com/zkSNACKs/WalletWasabi/commit/${version.commitHash}`}>
-                <StyledButton variant="tertiary" icon="arrowUpRight" iconAlignment="right">
-                    {version.commitHash}
-                </StyledButton>
-            </Link>
+            <Button
+                variant="tertiary"
+                icon="arrowUpRight"
+                iconAlignment="right"
+                href={`https://github.com/zkSNACKs/WalletWasabi/commit/${version.commitHash}`}
+                margin={{ left: spacings.xxs }}
+            >
+                {version.commitHash}
+            </Button>
         </CoordinatorVersionContainer>
     );
 };

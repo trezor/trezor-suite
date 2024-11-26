@@ -8,7 +8,7 @@ import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { selectBannerMessage } from '@suite-common/message-system';
 import { spacingsPx, zIndices } from '@trezor/theme';
 
-import { TrezorLink, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { OnboardingProgressBar } from 'src/components/onboarding';
 import { useSelector, useOnboarding } from 'src/hooks/suite';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
@@ -156,20 +156,15 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                                     <LogoHeaderRow>
                                         <TrezorLogo type="suite" width="128px" />
 
-                                        <TrezorLink
-                                            type="hint"
-                                            variant="nostyle"
+                                        <Button
+                                            variant="tertiary"
+                                            icon="arrowUpRight"
+                                            iconAlignment="right"
+                                            size="small"
                                             href={TREZOR_SUPPORT_URL}
                                         >
-                                            <Button
-                                                variant="tertiary"
-                                                icon="arrowUpRight"
-                                                iconAlignment="right"
-                                                size="small"
-                                            >
-                                                <Translation id="TR_HELP" />
-                                            </Button>
-                                        </TrezorLink>
+                                            <Translation id="TR_HELP" />
+                                        </Button>
                                     </LogoHeaderRow>
 
                                     <ProgressBarRow>

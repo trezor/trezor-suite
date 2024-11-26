@@ -295,7 +295,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                                     href={HELP_CENTER_EVM_ADDRESS_CHECKSUM}
                                     variant="nostyle"
                                     icon="arrowUpRight"
-                                    type="label"
+                                    typographyStyle="label"
                                 >
                                     {chunks}
                                 </Link>

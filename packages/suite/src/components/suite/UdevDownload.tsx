@@ -3,7 +3,8 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
-import { variables, Button, Select, Link, Spinner } from '@trezor/components';
+import { Button, Select, Spinner } from '@trezor/components';
+import { spacings, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -20,8 +21,7 @@ const Download = styled.div`
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.label}
 
     /* min-height to avoid jumpy behavior in transition loader > select */
     min-height: 40px;
@@ -41,12 +41,6 @@ const Manual = styled(Download)`
     margin-top: 24px;
     padding-top: 24px;
     border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    margin-left: 12px;
-    min-width: 280px;
 `;
 
 interface Installer {
@@ -83,12 +77,9 @@ export const UdevDownload = () => {
                             onChange={setSelectedTarget}
                             options={installers}
                         />
-
-                        <Link variant="nostyle" href={target.value}>
-                            <StyledButton>
-                                <Translation id="TR_DOWNLOAD" />
-                            </StyledButton>
-                        </Link>
+                        <Button href={target.value} margin={{ left: spacings.sm }} minWidth={280}>
+                            <Translation id="TR_DOWNLOAD" />
+                        </Button>
                     </>
                 ) : (
                     <LoaderWrapper>

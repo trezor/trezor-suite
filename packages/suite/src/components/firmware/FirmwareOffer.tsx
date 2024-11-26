@@ -121,7 +121,7 @@ export const FirmwareOffer = ({ customFirmware, targetFirmwareType }: FirmwareOf
                                 />
 
                                 <StyledLink
-                                    type="hint"
+                                    typographyStyle="hint"
                                     variant="nostyle"
                                     icon="arrowUpRight"
                                     href={changelogUrl}

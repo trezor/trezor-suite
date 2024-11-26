@@ -6,7 +6,6 @@ import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 import { CoinLogo } from '@trezor/product-components';
 
 import { Translation } from 'src/components/suite/Translation';
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { onCancel as onCancelModal } from 'src/actions/suite/modalActions';
@@ -49,17 +48,16 @@ export const PassphraseWalletConfirmationStep1 = ({
                         margin={{ top: spacings.xxxs, bottom: spacings.xxs }}
                     >
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT" />
-                        <TrezorLink type="hint" variant="nostyle" href={HELP_CENTER_PASSPHRASE_URL}>
-                            <Button
-                                size="tiny"
-                                variant="info"
-                                iconAlignment="right"
-                                icon="arrowUpRight"
-                                data-testid={dataTest}
-                            >
-                                <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT_LINK" />
-                            </Button>
-                        </TrezorLink>
+                        <Button
+                            size="tiny"
+                            variant="info"
+                            iconAlignment="right"
+                            icon="arrowUpRight"
+                            data-testid={dataTest}
+                            href={HELP_CENTER_PASSPHRASE_URL}
+                        >
+                            <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT_LINK" />
+                        </Button>
                     </Row>
                 }
             >

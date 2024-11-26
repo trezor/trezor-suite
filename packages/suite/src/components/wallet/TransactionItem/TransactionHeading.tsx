@@ -156,7 +156,7 @@ export const TransactionHeading = ({
                                             <HelpLink
                                                 href={HELP_CENTER_ZERO_VALUE_ATTACKS}
                                                 icon="arrowUpRight"
-                                                type="hint"
+                                                typographyStyle="hint"
                                             >
                                                 {chunks}
                                             </HelpLink>

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Button, variables, Link, Image } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { Button, H4, Image } from '@trezor/components';
+import { spacings, typography } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
@@ -16,24 +16,15 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const Title = styled.div`
-    margin-top: 25px;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-`;
-
 const Description = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.body}
     margin: 17px 0 10px;
     max-width: 310px;
     text-align: center;
-`;
-
-const LinkWrapper = styled.div`
-    margin-top: ${spacingsPx.xxl};
 `;
 
 interface PaymentFailedProps {
@@ -58,20 +49,21 @@ export const CoinmarketDetailBuyPaymentFailed = ({ supportUrl, account }: Paymen
     return (
         <Wrapper>
             <Image image="UNI_ERROR" />
-            <Title>
+            <H4 margin={{ top: spacings.xl }}>
                 <Translation id="TR_BUY_DETAIL_ERROR_TITLE" />
-            </Title>
+            </H4>
             <Description>
                 <Translation id="TR_BUY_DETAIL_ERROR_TEXT" />
             </Description>
             {supportUrl && (
-                <LinkWrapper>
-                    <Link href={supportUrl} target="_blank">
-                        <Button variant="tertiary">
-                            <Translation id="TR_BUY_DETAIL_ERROR_SUPPORT" />
-                        </Button>
-                    </Link>
-                </LinkWrapper>
+                <Button
+                    variant="tertiary"
+                    href={supportUrl}
+                    target="_blank"
+                    margin={{ top: spacings.xxl }}
+                >
+                    <Translation id="TR_BUY_DETAIL_ERROR_SUPPORT" />
+                </Button>
             )}
             <Button onClick={goToBuy} margin={{ top: spacings.xxl }}>
                 <Translation id="TR_BUY_DETAIL_ERROR_BUTTON" />

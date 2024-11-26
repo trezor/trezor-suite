@@ -2,17 +2,29 @@ import { ReactNode, MouseEvent } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { TypographyStyle, spacingsPx, typography, typographyStylesBase } from '@trezor/theme';
+import { spacingsPx, typographyStylesBase } from '@trezor/theme';
 
 import { Icon, IconName } from '../../Icon/Icon';
+import {
+    pickAndPrepareTextProps,
+    TextProps as TextPropsCommon,
+    TextPropsKeys,
+    withTextProps,
+} from '../utils';
+import { allowedTextTextProps } from '../Text/Text';
+import { TransientProps } from '../../../utils/transientProps';
 
-type AProps = {
-    $type?: TypographyStyle;
+export const allowedLinkTextProps = [
+    'typographyStyle',
+    'textWrap',
+] as const satisfies TextPropsKeys[];
+type AllowedLinkTextProps = Pick<TextPropsCommon, (typeof allowedLinkTextProps)[number]>;
+
+type AProps = TransientProps<AllowedLinkTextProps> & {
     $variant?: 'default' | 'nostyle' | 'underline';
 };
 
 const A = styled.a<AProps>`
-    ${({ $type }) => ($type ? typography[$type] : typography.body)}
     text-decoration: none;
     cursor: pointer;
     color: ${({ theme }) => theme.textDefault};
@@ -21,6 +33,7 @@ const A = styled.a<AProps>`
     align-items: center;
 
     gap: ${spacingsPx.xxs};
+    ${withTextProps}
 
     &:hover {
         text-decoration: underline;
@@ -47,30 +60,31 @@ const A = styled.a<AProps>`
         `}
 `;
 
-interface LinkProps {
+type LinkProps = AllowedLinkTextProps & {
     href?: string;
     target?: string;
-    type?: TypographyStyle;
     onClick?: (event: MouseEvent<any>) => void;
     children?: ReactNode;
     className?: string;
     variant?: 'default' | 'nostyle' | 'underline'; // Todo: refactor, variant has different meaning in our design system
     icon?: IconName;
     'data-testid'?: string;
-}
+};
 
 const Link = ({
     href,
     target,
     icon,
-    type,
     onClick,
     'data-testid': dataTest,
     children,
     className,
     variant,
+    typographyStyle = 'body',
+    ...rest
 }: LinkProps) => {
-    const iconSize = typographyStylesBase[type || 'body'].fontSize;
+    const textProps = pickAndPrepareTextProps({ ...rest, typographyStyle }, allowedTextTextProps);
+    const iconSize = typographyStylesBase[typographyStyle].fontSize;
 
     return (
         <A
@@ -82,9 +96,9 @@ const Link = ({
                 e.stopPropagation();
                 onClick?.(e);
             }}
-            $type={type}
             $variant={variant}
             className={className}
+            {...textProps}
         >
             {children}
             {icon && <Icon size={iconSize} name={icon} />}

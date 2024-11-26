@@ -23,7 +23,6 @@ import { TrezorLogo } from '@trezor/product-components';
 
 import { Translation } from 'src/components/suite';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useSelector } from 'src/hooks/suite';
 import { MessageSystemBanner } from 'src/components/suite/banners';
 import { GuideButton, GuideRouter } from 'src/components/guide';
@@ -158,25 +157,23 @@ const Left = () => {
 
                                 <LinksContainer>
                                     {isWeb() && (
-                                        <TrezorLink type="hint" variant="nostyle" href={SUITE_URL}>
-                                            <Button
-                                                variant="tertiary"
-                                                icon="arrowUpRight"
-                                                iconAlignment="right"
-                                            >
-                                                <Translation id="TR_ONBOARDING_DOWNLOAD_DESKTOP_APP" />
-                                            </Button>
-                                        </TrezorLink>
-                                    )}
-                                    <TrezorLink type="hint" variant="nostyle" href={TREZOR_URL}>
                                         <Button
                                             variant="tertiary"
                                             icon="arrowUpRight"
                                             iconAlignment="right"
+                                            href={SUITE_URL}
                                         >
-                                            trezor.io
+                                            <Translation id="TR_ONBOARDING_DOWNLOAD_DESKTOP_APP" />
                                         </Button>
-                                    </TrezorLink>
+                                    )}
+                                    <Button
+                                        variant="tertiary"
+                                        icon="arrowUpRight"
+                                        iconAlignment="right"
+                                        href={TREZOR_URL}
+                                    >
+                                        trezor.io
+                                    </Button>
                                 </LinksContainer>
                             </Column>
                         </TrafficLightOffset>

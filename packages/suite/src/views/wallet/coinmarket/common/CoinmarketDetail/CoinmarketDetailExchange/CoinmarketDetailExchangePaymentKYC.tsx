@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { ExchangeProviderInfo } from 'invity-api';
 
-import { Button, variables, Link, Image } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Button, Image, H4 } from '@trezor/components';
+import { spacings, typography } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
@@ -18,26 +18,15 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const Title = styled.div`
-    margin-top: 25px;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-`;
-
 const Description = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.body}
     margin: 17px 0 10px;
     max-width: 310px;
     text-align: center;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const LinkWrapper = styled(Link)`
-    margin-top: ${spacingsPx.xxs};
-    margin-bottom: ${spacingsPx.lg};
 `;
 
 interface PaymentKYCProps {
@@ -69,28 +58,27 @@ export const CoinmarketDetailExchangePaymentKYC = ({
     return (
         <Wrapper>
             <Image image="UNI_WARNING" />
-            <Title>
+            <H4 margin={{ top: spacings.xl }}>
                 <Translation id="TR_EXCHANGE_DETAIL_KYC_TITLE" />
-            </Title>
+            </H4>
             <Description>
                 <Translation id="TR_EXCHANGE_DETAIL_KYC_TEXT" />
             </Description>
             {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
             {supportUrl && (
-                <LinkWrapper>
-                    <Link href={supportUrl} target="_blank">
-                        <Button variant="tertiary">
-                            <Translation id="TR_EXCHANGE_DETAIL_KYC_SUPPORT" />
-                        </Button>
-                    </Link>
-                </LinkWrapper>
+                <Button
+                    variant="tertiary"
+                    href={supportUrl}
+                    target="_blank"
+                    margin={{ top: spacings.xxs, bottom: spacings.lg }}
+                >
+                    <Translation id="TR_EXCHANGE_DETAIL_KYC_SUPPORT" />
+                </Button>
             )}
             {provider?.kycUrl && (
-                <Link href={provider?.kycUrl} target="_blank">
-                    <Button variant="tertiary">
-                        <Translation id="TR_EXCHANGE_DETAIL_KYC_INFO_LINK" />
-                    </Button>
-                </Link>
+                <Button variant="tertiary" href={provider?.kycUrl} target="_blank">
+                    <Translation id="TR_EXCHANGE_DETAIL_KYC_INFO_LINK" />
+                </Button>
             )}
             <Button onClick={goToExchange}>
                 <Translation id="TR_EXCHANGE_DETAIL_KYC_BUTTON" />

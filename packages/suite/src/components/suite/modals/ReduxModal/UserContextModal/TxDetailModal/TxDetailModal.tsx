@@ -119,7 +119,7 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
                             values={{
                                 a: chunks => (
                                     <TrezorLink
-                                        type="hint"
+                                        typographyStyle="hint"
                                         href={HELP_CENTER_ZERO_VALUE_ATTACKS}
                                         variant="underline"
                                     >

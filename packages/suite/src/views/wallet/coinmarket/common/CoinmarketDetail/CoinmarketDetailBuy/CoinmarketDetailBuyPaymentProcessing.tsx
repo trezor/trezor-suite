@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { variables, Spinner, Button, Link } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Spinner, Button, H4 } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 
@@ -13,15 +13,6 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const Title = styled.div`
-    margin-top: 25px;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-`;
-
-const LinkWrapper = styled.div`
-    margin-top: ${spacingsPx.xxxxl};
-`;
-
 interface PaymentProcessingProps {
     supportUrl?: string;
 }
@@ -29,17 +20,18 @@ interface PaymentProcessingProps {
 export const CoinmarketDetailBuyPaymentProcessing = ({ supportUrl }: PaymentProcessingProps) => (
     <Wrapper>
         <Spinner />
-        <Title>
+        <H4 margin={{ top: spacings.xl }}>
             <Translation id="TR_BUY_DETAIL_PENDING_TITLE" />
-        </Title>
+        </H4>
         {supportUrl && (
-            <LinkWrapper>
-                <Link href={supportUrl} target="_blank">
-                    <Button variant="tertiary">
-                        <Translation id="TR_BUY_DETAIL_PENDING_SUPPORT" />
-                    </Button>
-                </Link>
-            </LinkWrapper>
+            <Button
+                variant="tertiary"
+                href={supportUrl}
+                target="_blank"
+                margin={{ top: spacings.xxxxl }}
+            >
+                <Translation id="TR_BUY_DETAIL_PENDING_SUPPORT" />
+            </Button>
         )}
     </Wrapper>
 );

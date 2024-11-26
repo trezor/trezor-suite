@@ -112,7 +112,7 @@ export const TokenAddressRow = ({
                 {tokenExplorerUrl ? (
                     <IconWrapper>
                         <Link
-                            type="label"
+                            typographyStyle="label"
                             variant="nostyle"
                             href={tokenExplorerUrl}
                             target="_blank"

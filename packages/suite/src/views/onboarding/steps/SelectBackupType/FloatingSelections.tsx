@@ -90,7 +90,10 @@ const LegacyWarning = () => (
                 id="TR_THESE_WONT_ALLOW_YOU_UPGRADE"
                 values={{
                     a: chunks => (
-                        <TrezorLink type="callout" href={HELP_CENTER_MULTI_SHARE_BACKUP_URL}>
+                        <TrezorLink
+                            typographyStyle="callout"
+                            href={HELP_CENTER_MULTI_SHARE_BACKUP_URL}
+                        >
                             {chunks}
                         </TrezorLink>
                     ),

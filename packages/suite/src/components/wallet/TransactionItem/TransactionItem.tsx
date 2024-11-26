@@ -216,7 +216,7 @@ export const TransactionItem = memo(
                                         href={HELP_CENTER_REPLACE_BY_FEE}
                                         variant="nostyle"
                                         icon="arrowUpRight"
-                                        type="hint"
+                                        typographyStyle="hint"
                                     >
                                         {chunks}
                                     </Link>
