@@ -1,3 +1,7 @@
+# 1.2.3
+
+-   npm-prerelease: @trezor/schema-utils 1.2.3-beta.1 (9500133ffe)
+
 # 1.2.2
 
 -   npm-prerelease: @trezor/schema-utils 1.2.2-beta.1 (0cd41d78cd)
