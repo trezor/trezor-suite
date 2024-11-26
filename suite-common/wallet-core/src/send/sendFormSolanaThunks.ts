@@ -20,6 +20,7 @@ import {
     buildTokenTransferTransaction,
     getAssociatedTokenAccountAddress,
     dummyPriorityFeesForFeeEstimation,
+    getAccountIdentity,
 } from '@suite-common/wallet-utils';
 
 import { selectBlockchainBlockInfoBySymbol } from '../blockchain/blockchainReducer';
@@ -300,10 +301,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
     { rejectValue: SignTransactionError }
 >(
     `${SEND_MODULE_PREFIX}/signSolanaSendFormTransactionThunk`,
-    async (
-        { formState, precomposedTransaction, selectedAccount, device },
-        { getState, rejectWithValue },
-    ) => {
+    async ({ formState, precomposedTransaction, selectedAccount, device }, { rejectWithValue }) => {
         if (precomposedTransaction.feeLimit == null)
             return rejectWithValue({
                 error: 'sign-transaction-failed',
@@ -317,10 +315,17 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             });
         const { token } = precomposedTransaction;
 
-        const { blockhash, blockHeight: lastValidBlockHeight } = selectBlockchainBlockInfoBySymbol(
-            getState(),
-            selectedAccount.symbol,
-        );
+        const blockchainInfo = await TrezorConnect.blockchainGetInfo({
+            coin: selectedAccount.symbol,
+            identity: getAccountIdentity(selectedAccount),
+        });
+        if (!blockchainInfo.success) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Failed to fetch blockchain info.',
+            });
+        }
+        const { blockHash, blockHeight: lastValidBlockHeight } = blockchainInfo.payload;
 
         const [recipientAccountOwner, recipientTokenAccounts] = token
             ? await fetchAccountOwnerAndTokenInfoForAddress(
@@ -347,7 +352,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                       token.decimals,
                       token.accounts,
                       recipientTokenAccounts,
-                      blockhash,
+                      blockHash,
                       lastValidBlockHeight,
                       {
                           computeUnitPrice: precomposedTransaction.feePerByte,
@@ -368,7 +373,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                   selectedAccount.descriptor,
                   formState.outputs[0].address,
                   formState.outputs[0].amount,
-                  blockhash,
+                  blockHash,
                   lastValidBlockHeight,
                   {
                       computeUnitPrice: precomposedTransaction.feePerByte,
