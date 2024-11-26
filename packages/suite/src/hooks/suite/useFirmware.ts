@@ -10,7 +10,7 @@ import {
 } from '@trezor/device-utils';
 
 import { MODAL } from 'src/actions/suite/constants';
-import { useSelector, useTranslation } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 
 const VERSIONS_GUARANTEED_TO_WIPE_DEVICE_ON_UPDATE: ReturnType<typeof getFirmwareVersion>[] = [
@@ -24,10 +24,9 @@ type UseFirmwareParams =
     | undefined;
 
 export const useFirmware = (params: UseFirmwareParams = {}) => {
-    const { translationString } = useTranslation();
     const transport = useSelector(state => state.suite.transport);
     const modal = useSelector(state => state.modal);
-    const { operation, ...firmwareInstallation } = useFirmwareInstallation(params);
+    const firmwareInstallation = useFirmwareInstallation(params);
 
     const showFingerprintCheck =
         modal.context === MODAL.CONTEXT_DEVICE &&
@@ -84,7 +83,6 @@ export const useFirmware = (params: UseFirmwareParams = {}) => {
 
     return {
         ...firmwareInstallation,
-        operation: operationTranslated,
         isWebUSB: isWebUsb(transport),
         showFingerprintCheck,
     };

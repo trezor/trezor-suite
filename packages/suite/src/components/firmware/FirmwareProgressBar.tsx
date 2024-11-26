@@ -2,8 +2,12 @@ import styled, { useTheme } from 'styled-components';
 
 import { Icon, ProgressBar, variables } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
+import { TranslationKey } from '@suite-common/intl-types';
+import { FirmwareOperationStatus } from '@suite-common/firmware';
 
 import { useFirmware } from 'src/hooks/suite';
+
+import { Translation } from '../suite';
 
 const Wrapper = styled.div`
     display: flex;
@@ -49,6 +53,16 @@ const Percentage = styled.div`
     height: ${spacingsPx.xl};
 `;
 
+const mapOperationToTransaltionId: Record<
+    NonNullable<FirmwareOperationStatus['operation']>,
+    TranslationKey
+> = {
+    installing: 'TR_INSTALLING',
+    validating: 'TR_VALIDATION',
+    restarting: 'TR_WAIT_FOR_REBOOT',
+    completed: 'TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED',
+};
+
 export const FirmwareProgressBar = () => {
     const theme = useTheme();
     const { operation, progress } = useFirmware();
@@ -57,7 +71,11 @@ export const FirmwareProgressBar = () => {
 
     return (
         <Wrapper>
-            <Label>{operation}</Label>
+            {operation && (
+                <Label>
+                    <Translation id={mapOperationToTransaltionId[operation]} />
+                </Label>
+            )}
             <StyledProgressBar value={progress} />
             <Percentage>
                 {isDone ? (
