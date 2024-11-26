@@ -1582,6 +1582,15 @@ export enum DebugPhysicalButton {
 export type EnumDebugPhysicalButton = Static<typeof EnumDebugPhysicalButton>;
 export const EnumDebugPhysicalButton = Type.Enum(DebugPhysicalButton);
 
+export enum DebugWaitType {
+    IMMEDIATE = 0,
+    NEXT_LAYOUT = 1,
+    CURRENT_LAYOUT = 2,
+}
+
+export type EnumDebugWaitType = Static<typeof EnumDebugWaitType>;
+export const EnumDebugWaitType = Type.Enum(DebugWaitType);
+
 export type DebugLinkResetDebugEvents = Static<typeof DebugLinkResetDebugEvents>;
 export const DebugLinkResetDebugEvents = Type.Object({}, { $id: 'DebugLinkResetDebugEvents' });
 
@@ -2181,6 +2190,19 @@ export const EnumEnum_SafetyCheckLevel = Type.Enum(Enum_SafetyCheckLevel);
 export type SafetyCheckLevel = Static<typeof SafetyCheckLevel>;
 export const SafetyCheckLevel = Type.KeyOfEnum(Enum_SafetyCheckLevel, { $id: 'SafetyCheckLevel' });
 
+export enum Enum_DisplayRotation {
+    North = 0,
+    East = 90,
+    South = 180,
+    West = 270,
+}
+
+export type EnumEnum_DisplayRotation = Static<typeof EnumEnum_DisplayRotation>;
+export const EnumEnum_DisplayRotation = Type.Enum(Enum_DisplayRotation);
+
+export type DisplayRotation = Static<typeof DisplayRotation>;
+export const DisplayRotation = Type.KeyOfEnum(Enum_DisplayRotation, { $id: 'DisplayRotation' });
+
 export enum Enum_HomescreenFormat {
     Toif = 1,
     Jpeg = 2,
@@ -2337,7 +2359,7 @@ export const Features = Type.Object(
         passphrase_always_on_device: Type.Union([Type.Boolean(), Type.Null()]),
         safety_checks: Type.Union([SafetyCheckLevel, Type.Null()]),
         auto_lock_delay_ms: Type.Union([Type.Number(), Type.Null()]),
-        display_rotation: Type.Union([Type.Number(), Type.Null()]),
+        display_rotation: Type.Union([DisplayRotation, Type.Null()]),
         experimental_features: Type.Union([Type.Boolean(), Type.Null()]),
         busy: Type.Optional(Type.Boolean()),
         homescreen_format: Type.Optional(HomescreenFormat),
@@ -2380,7 +2402,7 @@ export const ApplySettings = Type.Object(
         homescreen: Type.Optional(Type.String()),
         _passphrase_source: Type.Optional(Type.Number()),
         auto_lock_delay_ms: Type.Optional(Type.Number()),
-        display_rotation: Type.Optional(Type.Number()),
+        display_rotation: Type.Optional(DisplayRotation),
         passphrase_always_on_device: Type.Optional(Type.Boolean()),
         safety_checks: Type.Optional(SafetyCheckLevel),
         experimental_features: Type.Optional(Type.Boolean()),

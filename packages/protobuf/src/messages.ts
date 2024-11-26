@@ -1044,6 +1044,12 @@ export enum DebugPhysicalButton {
     RIGHT_BTN = 2,
 }
 
+export enum DebugWaitType {
+    IMMEDIATE = 0,
+    NEXT_LAYOUT = 1,
+    CURRENT_LAYOUT = 2,
+}
+
 export type DebugLinkResetDebugEvents = {};
 
 export type DebugLinkOptigaSetSecMax = {};
@@ -1418,6 +1424,15 @@ export enum Enum_SafetyCheckLevel {
 
 export type SafetyCheckLevel = keyof typeof Enum_SafetyCheckLevel;
 
+export enum Enum_DisplayRotation {
+    North = 0,
+    East = 90,
+    South = 180,
+    West = 270,
+}
+
+export type DisplayRotation = keyof typeof Enum_DisplayRotation;
+
 export enum Enum_HomescreenFormat {
     Toif = 1,
     Jpeg = 2,
@@ -1538,7 +1553,7 @@ export type Features = {
     passphrase_always_on_device: boolean | null;
     safety_checks: SafetyCheckLevel | null;
     auto_lock_delay_ms: number | null;
-    display_rotation: number | null;
+    display_rotation: DisplayRotation | null;
     experimental_features: boolean | null;
     busy?: boolean;
     homescreen_format?: HomescreenFormat;
@@ -1571,7 +1586,7 @@ export type ApplySettings = {
     homescreen?: string;
     _passphrase_source?: number;
     auto_lock_delay_ms?: number;
-    display_rotation?: number;
+    display_rotation?: DisplayRotation;
     passphrase_always_on_device?: boolean;
     safety_checks?: SafetyCheckLevel;
     experimental_features?: boolean;

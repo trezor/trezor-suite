@@ -2943,8 +2943,20 @@
                     "id": 2
                 },
                 "wait_layout": {
-                    "type": "bool",
-                    "id": 3
+                    "type": "DebugWaitType",
+                    "id": 3,
+                    "options": {
+                        "default": "IMMEDIATE"
+                    }
+                }
+            },
+            "nested": {
+                "DebugWaitType": {
+                    "values": {
+                        "IMMEDIATE": 0,
+                        "NEXT_LAYOUT": 1,
+                        "CURRENT_LAYOUT": 2
+                    }
                 }
             }
         },
@@ -4243,6 +4255,14 @@
                 "PromptTemporarily": 2
             }
         },
+        "DisplayRotation": {
+            "values": {
+                "North": 0,
+                "East": 90,
+                "South": 180,
+                "West": 270
+            }
+        },
         "HomescreenFormat": {
             "values": {
                 "Toif": 1,
@@ -4423,7 +4443,7 @@
                     "id": 38
                 },
                 "display_rotation": {
-                    "type": "uint32",
+                    "type": "DisplayRotation",
                     "id": 39
                 },
                 "experimental_features": {
@@ -4573,7 +4593,7 @@
                     "id": 6
                 },
                 "display_rotation": {
-                    "type": "uint32",
+                    "type": "DisplayRotation",
                     "id": 7
                 },
                 "passphrase_always_on_device": {
