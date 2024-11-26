@@ -4,9 +4,9 @@ import styled, { css } from 'styled-components';
 
 import { SUITE_MOBILE_APP_STORE, SUITE_MOBILE_PLAY_STORE, SUITE_URL } from '@trezor/urls';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { Button, Icon, Image, Tooltip, variables } from '@trezor/components';
+import { Button, Icon, Image, Tooltip, variables, Row } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { Translation, QrCode, TrezorLink } from 'src/components/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
@@ -53,14 +53,10 @@ const DesktopPromoContainer = styled.div`
 const MobilePromoContainer = styled.div`
     ${promoContainerCss}
     justify-content: start;
-    margin: ${spacingsPx.sm} ${spacingsPx.xxxl} auto auto;
-    padding-bottom: ${spacingsPx.sm};
 
     ${variables.SCREEN_QUERY.MOBILE} {
         flex-direction: column;
-        gap: 0;
         padding: 20px 16px;
-        justify-content: space-between;
     }
 `;
 
@@ -89,15 +85,6 @@ const DesktopLinkButton = styled(Button)`
     &:focus {
         background: ${({ theme }) => theme.legacy.STROKE_GREY};
         opacity: 1;
-    }
-`;
-
-const BadgeContainer = styled.div`
-    display: flex;
-    gap: 10px;
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        margin: 0;
     }
 `;
 
@@ -241,27 +228,29 @@ export const PromoBanner = () => {
             )}
 
             <MobilePromoContainer>
-                <Translation
-                    values={{ b: text => <b>{text}</b> }}
-                    id="TR_MOBILE_APP_PROMO_TEXT_FOOTER"
-                />
+                <Row justifyContent="space-between" width="100%">
+                    <Translation
+                        values={{ b: text => <b>{text}</b> }}
+                        id="TR_MOBILE_APP_PROMO_TEXT_FOOTER"
+                    />
 
-                <BadgeContainer>
-                    <StoreBadge
-                        url={SUITE_MOBILE_APP_STORE}
-                        image="APP_STORE"
-                        type="app-store"
-                        analyticsPayload="ios"
-                        shownQRState={shownQRState}
-                    />
-                    <StoreBadge
-                        url={SUITE_MOBILE_PLAY_STORE}
-                        image="PLAY_STORE"
-                        type="play-store"
-                        analyticsPayload="android"
-                        shownQRState={shownQRState}
-                    />
-                </BadgeContainer>
+                    <Row gap={spacings.xxs}>
+                        <StoreBadge
+                            url={SUITE_MOBILE_APP_STORE}
+                            image="APP_STORE"
+                            type="app-store"
+                            analyticsPayload="ios"
+                            shownQRState={shownQRState}
+                        />
+                        <StoreBadge
+                            url={SUITE_MOBILE_PLAY_STORE}
+                            image="PLAY_STORE"
+                            type="play-store"
+                            analyticsPayload="android"
+                            shownQRState={shownQRState}
+                        />
+                    </Row>
+                </Row>
             </MobilePromoContainer>
         </Container>
     );
