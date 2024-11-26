@@ -8,7 +8,10 @@ class NavBar {
     }
 
     openSettings() {
-        cy.getTestElement('@suite/menu/settings', { timeout: 30000 }).should('be.visible').click();
+        cy.getTestElement('@suite/menu/settings', { timeout: 30000 })
+            .as('settingsButton')
+            .should('be.visible');
+        cy.get('@settingsButton').click();
         cy.getTestElement('@settings/menu/general').should('be.visible');
     }
 }
