@@ -1,5 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
-import { firmwareUpdate, firmwareActions } from '@suite-common/wallet-core';
+import { firmwareUpdate, firmwareActions } from '@suite-common/firmware';
 import { UI, DeviceModelInternal, FirmwareType } from '@trezor/connect';
 
 const { getSuiteDevice, getFirmwareRelease } = testMocks;

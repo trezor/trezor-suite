@@ -2,7 +2,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import { A, pipe } from '@mobily/ts-belt';
 
 import * as deviceUtils from '@suite-common/suite-utils';
-import { getDeviceInstances, getStatus } from '@suite-common/suite-utils';
+import { getDeviceInstances, getFwUpdateVersion, getStatus } from '@suite-common/suite-utils';
 import { Device, DeviceState, Features, StaticSessionId, UI } from '@trezor/connect';
 import {
     getFirmwareVersion,
@@ -927,6 +927,11 @@ export const selectIsDeviceRemembered = createMemoizedSelector(
     device => !!device?.remember,
 );
 
+export const selectIsDeviceForceRemembered = createMemoizedSelector(
+    [selectDevice],
+    device => !!device?.forceRemember,
+);
+
 export const selectRememberedStandardWalletsCount = createMemoizedSelector(
     [selectPhysicalDevices],
     devices =>
@@ -1012,3 +1017,9 @@ export const selectIsBitcoinOnlyDevice = createMemoizedSelector([selectDevice], 
 export const selectHasBitcoinOnlyFirmware = createMemoizedSelector([selectDevice], device =>
     hasBitcoinOnlyFirmware(device),
 );
+
+export const selectDeviceUpdateFirmwareVersion = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+
+    return device ? getFwUpdateVersion(device) : null;
+};

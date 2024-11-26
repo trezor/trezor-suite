@@ -4,7 +4,6 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import {
     selectDevices,
     selectDevice,
-    firmwareActions,
     selectDiscoveryByDeviceState,
     discoveryActions,
     accountsActions,
@@ -17,6 +16,7 @@ import {
     selectDeviceByStaticSessionId,
     sendFormActions,
 } from '@suite-common/wallet-core';
+import { firmwareActions } from '@suite-common/firmware';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { messageSystemActions } from '@suite-common/message-system';
 import { findAccountDevice } from '@suite-common/wallet-utils';

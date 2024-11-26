@@ -1,5 +1,5 @@
-import { firmwareActions, selectUseDevkit } from '@suite-common/wallet-core';
 import { Switch } from '@trezor/components';
+import { firmwareActions, selectUseDevkit } from '@suite-common/firmware';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';

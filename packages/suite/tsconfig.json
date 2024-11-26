@@ -25,6 +25,7 @@
         {
             "path": "../../suite-common/fiat-services"
         },
+        { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/formatters"
         },

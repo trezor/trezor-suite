@@ -9,11 +9,13 @@ import {
     selectDevicesCount,
     authorizeDeviceThunk,
     deviceActions,
+} from '@suite-common/wallet-core';
+import {
     firmwareActions,
     handleFwHashError,
     INVALID_HASH_ERROR,
     firmwareUpdate,
-} from '@suite-common/wallet-core';
+} from '@suite-common/firmware';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 import {

@@ -8,9 +8,9 @@ import {
     DeviceButtonRequest,
 } from '@trezor/connect';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { deviceActions } from '@suite-common/wallet-core';
 
 import { firmwareActions } from './firmwareActions';
-import { deviceActions } from '../device/deviceActions';
 
 type FirmwareUpdateCommon = {
     // Device before installation begun. Used to display the original firmware type and version during the installation.

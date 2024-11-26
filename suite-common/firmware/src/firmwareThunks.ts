@@ -50,6 +50,8 @@ const handleFwHashValid = createThunk(
 type FirmwareUpdateProps = {
     firmwareType?: FirmwareType;
     binary?: ArrayBuffer;
+    // used on mobile, we don't have any FWs locally
+    ignoreBaseUrl?: boolean;
 };
 
 type FirmwareUpdateResult = {
@@ -57,6 +59,7 @@ type FirmwareUpdateResult = {
     toFwVersion?: string;
     toBtcOnly?: boolean;
     error?: string;
+    connectResponse?: Awaited<ReturnType<typeof TrezorConnect.firmwareUpdate>>;
 };
 
 export const firmwareUpdate = createThunk<
@@ -66,7 +69,7 @@ export const firmwareUpdate = createThunk<
 >(
     `${FIRMWARE_MODULE_PREFIX}/firmwareUpdate`,
     async (
-        { firmwareType, binary },
+        { firmwareType, binary, ignoreBaseUrl = false },
         { dispatch, getState, extra, fulfillWithValue, rejectWithValue },
     ) => {
         dispatch(firmwareActions.setStatus('started'));
@@ -104,7 +107,9 @@ export const firmwareUpdate = createThunk<
             dispatch(firmwareActions.cacheDevice(device));
         }
 
-        const baseUrl = `${binFilesBaseUrl}${useDevkit ? '/devkit' : ''}`;
+        const baseUrl = ignoreBaseUrl
+            ? undefined
+            : `${binFilesBaseUrl}${useDevkit ? '/devkit' : ''}`;
 
         // update to same variant as is currently installed or to the regular one if device does not have any fw (new/wiped device),
         // unless the user wants to switch firmware type
@@ -126,9 +131,9 @@ export const firmwareUpdate = createThunk<
 
         const firmwareUpdateResponse = await TrezorConnect.firmwareUpdate({
             device,
-            baseUrl,
             btcOnly: toBitcoinOnlyFirmware,
             binary,
+            baseUrl,
             // Firmware language should only be set during the initial firmware installation.
             language: device.firmware === 'none' ? targetTranslationLanguage : undefined,
         });
@@ -146,8 +151,9 @@ export const firmwareUpdate = createThunk<
 
             return rejectWithValue({
                 device,
-                error: firmwareUpdateResponse.payload.error,
                 ...targetProperties,
+                ...firmwareUpdateResponse.payload,
+                connectResponse: firmwareUpdateResponse,
             });
         } else {
             const { check } = firmwareUpdateResponse.payload;
@@ -169,6 +175,7 @@ export const firmwareUpdate = createThunk<
             return fulfillWithValue({
                 device,
                 ...targetProperties,
+                connectResponse: firmwareUpdateResponse,
             });
         }
     },

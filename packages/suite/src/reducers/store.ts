@@ -4,11 +4,11 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
-import { prepareFirmwareReducer } from '@suite-common/wallet-core';
 import { addLog } from '@suite-common/logger';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { mergeDeepObject } from '@trezor/utils';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
+import { prepareFirmwareReducer } from '@suite-common/firmware';
 
 import suiteMiddlewares from 'src/middlewares/suite';
 import walletMiddlewares from 'src/middlewares/wallet';

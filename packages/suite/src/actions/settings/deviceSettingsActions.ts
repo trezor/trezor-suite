@@ -1,9 +1,5 @@
-import {
-    selectDevices,
-    selectDevice,
-    deviceActions,
-    FIRMWARE_MODULE_PREFIX,
-} from '@suite-common/wallet-core';
+import { selectDevices, selectDevice, deviceActions } from '@suite-common/wallet-core';
+import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
 import * as deviceUtils from '@suite-common/suite-utils';
 import TrezorConnect, { ERRORS } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';

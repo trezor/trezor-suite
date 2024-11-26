@@ -6,7 +6,6 @@ import {
     selectDevice,
     selectDevices,
     selectDevicesCount,
-    prepareFirmwareReducer,
     deviceActions,
     acquireDevice,
     authConfirm,
@@ -20,6 +19,7 @@ import {
     createDeviceInstanceThunk,
     ConnectDeviceSettings,
 } from '@suite-common/wallet-core';
+import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { DEVICE } from '@trezor/connect';
 

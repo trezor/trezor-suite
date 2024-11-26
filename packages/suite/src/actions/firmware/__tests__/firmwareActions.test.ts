@@ -1,6 +1,7 @@
 import { testMocks } from '@suite-common/test-utils';
-import { prepareFirmwareReducer, State as DeviceState } from '@suite-common/wallet-core';
+import { State as DeviceState } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/connect';
+import { prepareFirmwareReducer } from '@suite-common/firmware';
 
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
