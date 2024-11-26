@@ -17,7 +17,6 @@ const Container = styled(motion.div)`
     display: flex;
     align-items: center;
     width: 100%;
-    margin-bottom: 40px;
     padding: 12px 20px;
     border-radius: 12px;
     background: ${({ theme }) => theme.legacy.BG_GREEN};
@@ -110,7 +109,7 @@ export const DesktopSuiteBanner = () => {
     };
 
     const animationConfig: HTMLMotionProps<'div'> = {
-        initial: { opacity: 1, transform: 'scale(1)', marginBottom: 40, height: 'auto' },
+        initial: { opacity: 1, transform: 'scale(1)', height: 'auto' },
         exit: { opacity: 0, transform: 'scale(0.7)', marginBottom: -60, height: 60 },
         transition: {
             duration: 0.33,

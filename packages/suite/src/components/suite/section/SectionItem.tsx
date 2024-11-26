@@ -2,43 +2,18 @@ import { forwardRef, HTMLAttributes } from 'react';
 
 import styled from 'styled-components';
 
-import { borders, spacingsPx } from '@trezor/theme';
-import { variables } from '@trezor/components';
+import { Flex, variables, useMediaQuery } from '@trezor/components';
 
 import { anchorOutlineStyles } from 'src/utils/suite/anchor';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 
-const Content = styled.div<{ $shouldHighlight?: boolean }>`
-    display: flex;
-    padding: ${spacingsPx.md};
-    margin: -${spacingsPx.md};
-    border-radius: ${({ $shouldHighlight }) => $shouldHighlight && borders.radii.xs};
-
-    ${anchorOutlineStyles}
-
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-    }
-`;
-
 const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-
-    &:not(:last-child) {
-        &::after {
-            content: '';
-            position: relative;
-            top: ${spacingsPx.md};
-            display: block;
-            width: 100%;
-            height: 1px;
-            border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
-        }
-    }
-
     /* height of secondary panel and a gap between sections */
     scroll-margin-top: calc(${SUBPAGE_NAV_HEIGHT} + 79px);
+`;
+
+const Content = styled.div<{ $shouldHighlight?: boolean }>`
+    ${anchorOutlineStyles}
 `;
 
 interface SectionItemProps extends HTMLAttributes<HTMLDivElement> {
@@ -46,9 +21,20 @@ interface SectionItemProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const SectionItem = forwardRef<HTMLDivElement, SectionItemProps>(
-    ({ children, shouldHighlight, ...rest }, ref) => (
-        <Wrapper ref={ref} {...rest}>
-            <Content $shouldHighlight={shouldHighlight}>{children}</Content>
-        </Wrapper>
-    ),
+    ({ children, shouldHighlight, ...rest }, ref) => {
+        const isBelowMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.SM})`);
+
+        return (
+            <Wrapper ref={ref} {...rest}>
+                <Content $shouldHighlight={shouldHighlight}>
+                    <Flex
+                        direction={isBelowMobile ? 'column' : 'row'}
+                        alignItems={isBelowMobile ? 'normal' : 'center'}
+                    >
+                        {children}
+                    </Flex>
+                </Content>
+            </Wrapper>
+        );
+    },
 );

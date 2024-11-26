@@ -18,7 +18,7 @@ import {
     SettingsSection,
     SettingsSectionItem,
 } from 'src/components/settings';
-import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
+import { CoinGroup, Translation } from 'src/components/suite';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import {
@@ -36,16 +36,6 @@ import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 const DiscoveryButtonWrapper = styled.div`
     margin-top: ${spacingsPx.xl};
     width: fit-content;
-`;
-
-const StyledSettingsSection = styled(SettingsSection)`
-    overflow: hidden;
-`;
-
-const StyledSectionItem = styled(SettingsSectionItem)`
-    > div {
-        flex-direction: column;
-    }
 `;
 
 const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps => ({
@@ -138,20 +128,17 @@ export const SettingsCoins = () => {
 
             {showFirmwareTypeBanner && <FirmwareTypeSuggestion />}
 
-            <StyledSettingsSection title={<Translation id="TR_COINS" />} icon="coin">
-                <StyledSectionItem anchorId={SettingsAnchor.Crypto}>
+            <SettingsSection title={<Translation id="TR_COINS" />} icon="coin">
+                <SettingsSectionItem anchorId={SettingsAnchor.Crypto}>
                     <CoinGroup networks={supportedMainnets} enabledNetworks={enabledNetworks} />
-                </StyledSectionItem>
-            </StyledSettingsSection>
+                </SettingsSectionItem>
+            </SettingsSection>
 
             <SettingsSection
                 title={
-                    <>
+                    <Tooltip content={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />} hasIcon>
                         <Translation id="TR_TESTNET_COINS" />
-                        <TooltipSymbol
-                            content={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
-                        />
-                    </>
+                    </Tooltip>
                 }
                 icon="coin"
             >
@@ -163,12 +150,12 @@ export const SettingsCoins = () => {
             {deviceModel === DeviceModelInternal.T1B1 && !bitcoinOnlyFirmware && (
                 <SettingsSection
                     title={
-                        <>
+                        <Tooltip
+                            content={<Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />}
+                            hasIcon
+                        >
                             <Translation id="TR_UNSUPPORTED_COINS" />
-                            <TooltipSymbol
-                                content={<Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />}
-                            />
-                        </>
+                        </Tooltip>
                     }
                     icon="coin"
                 >
