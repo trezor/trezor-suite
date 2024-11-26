@@ -94,7 +94,7 @@ export const CoinmarketFormInputAccount = <
                         fiatValues && (
                             <CoinmarketBalance
                                 balance={fiatValues.accountBalance}
-                                networkSymbol={fiatValues.networkSymbol}
+                                symbol={fiatValues.symbol}
                                 tokenAddress={fiatValues.tokenAddress}
                                 cryptoSymbolLabel={selectedOption?.label}
                                 sendCryptoSelect={selectedOption}

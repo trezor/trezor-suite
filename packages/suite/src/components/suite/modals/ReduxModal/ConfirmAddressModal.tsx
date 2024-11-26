@@ -11,7 +11,7 @@ import {
 import { useDisplayMode, useSelector } from 'src/hooks/suite';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { selectAccountIncludingChosenInCoinmarket } from 'src/reducers/wallet/selectedAccountReducer';
-import { cryptoIdToNetworkSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { cryptoIdToSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 import { ConfirmActionModal } from './DeviceContextModal/ConfirmActionModal';
 
@@ -39,14 +39,14 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
     const getHeading = () => {
         if (modalCryptoId) {
             const coinSymbol = cryptoIdToCoinSymbol(modalCryptoId)?.toUpperCase();
-            const networkSymbol = cryptoIdToNetworkSymbol(modalCryptoId)?.toUpperCase();
+            const symbol = cryptoIdToSymbol(modalCryptoId)?.toUpperCase();
 
-            if (networkSymbol && coinSymbol !== networkSymbol) {
+            if (symbol && coinSymbol !== symbol) {
                 return (
                     <Translation
                         id="TR_ADDRESS_MODAL_TITLE_EXCHANGE"
                         values={{
-                            networkName: networkSymbol,
+                            networkName: symbol,
                             networkCurrencyName: coinSymbol,
                         }}
                     />

@@ -15,7 +15,7 @@ import {
 interface CoinmarketBalanceProps {
     balance: string | undefined;
     cryptoSymbolLabel: string | undefined;
-    networkSymbol: NetworkSymbol;
+    symbol: NetworkSymbol;
     tokenAddress?: TokenAddress | undefined;
     showOnlyAmount?: boolean;
     amountInCrypto?: boolean;
@@ -25,17 +25,17 @@ interface CoinmarketBalanceProps {
 export const CoinmarketBalance = ({
     balance, // expects a value in full units (BTC not sats)
     cryptoSymbolLabel,
-    networkSymbol,
+    symbol,
     tokenAddress,
     showOnlyAmount,
     amountInCrypto,
     sendCryptoSelect,
 }: CoinmarketBalanceProps) => {
-    const { shouldSendInSats } = useBitcoinAmountUnit(networkSymbol);
+    const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const balanceCurrency = coinmarketGetAccountLabel(cryptoSymbolLabel ?? '', shouldSendInSats);
     const networkDecimals = getCoinmarketNetworkDecimals({
         sendCryptoSelect,
-        network: networks[networkSymbol],
+        network: networks[symbol],
     });
     const stringBalance = !isNaN(Number(balance)) ? balance : '0';
     const formattedBalance =
@@ -45,7 +45,7 @@ export const CoinmarketBalance = ({
 
     const { fiatAmount } = useFiatFromCryptoValue({
         amount: stringBalance || '',
-        symbol: networkSymbol || '',
+        symbol: symbol ?? '',
     });
 
     if (showOnlyAmount) {
@@ -61,10 +61,10 @@ export const CoinmarketBalance = ({
                 ) : (
                     stringBalance &&
                     fiatAmount &&
-                    networkSymbol && (
+                    symbol && (
                         <FiatValue
                             amount={stringBalance}
-                            symbol={networkSymbol}
+                            symbol={symbol}
                             tokenAddress={tokenAddress}
                         />
                     )
@@ -80,15 +80,11 @@ export const CoinmarketBalance = ({
             <HiddenPlaceholder>
                 {formattedBalance} {balanceCurrency}
             </HiddenPlaceholder>
-            {stringBalance && fiatAmount && networkSymbol && stringBalance !== '0' && (
+            {stringBalance && fiatAmount && symbol && stringBalance !== '0' && (
                 <>
                     {' '}
                     (
-                    <FiatValue
-                        amount={stringBalance}
-                        symbol={networkSymbol}
-                        tokenAddress={tokenAddress}
-                    />
+                    <FiatValue amount={stringBalance} symbol={symbol} tokenAddress={tokenAddress} />
                     )
                 </>
             )}

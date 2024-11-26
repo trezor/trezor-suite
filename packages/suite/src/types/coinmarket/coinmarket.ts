@@ -176,10 +176,10 @@ export interface CoinmarketCoinLogoProps {
 }
 
 export interface CoinmarketCryptoSelectItemProps
-    extends Omit<SelectAssetOptionCurrencyProps, 'value' | 'symbol'> {
+    extends Omit<SelectAssetOptionCurrencyProps, 'value' | 'ticker'> {
     value: CryptoId;
     label: string;
-    symbol?: string;
+    ticker?: string;
 }
 export interface CoinmarketCryptoSelectGroupProps extends SelectAssetOptionGroupProps {}
 export type CoinmarketCryptoSelectOptionProps =

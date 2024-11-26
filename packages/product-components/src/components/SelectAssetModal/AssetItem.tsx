@@ -7,6 +7,7 @@ import { getContractAddressForNetwork } from '@suite-common/wallet-utils';
 
 import { CoinLogo } from '../CoinLogo/CoinLogo';
 import { AssetOptionBaseProps } from './SelectAssetModal';
+import { COINS } from '../CoinLogo/coins';
 
 const ClickableContainer = styled.div`
     cursor: pointer;
@@ -33,58 +34,62 @@ interface AssetItemProps extends AssetOptionBaseProps {
 
 export const AssetItem = ({
     cryptoName,
-    symbol,
+    ticker,
     badge,
-    networkSymbol,
+    symbolExtended,
     coingeckoId,
     shouldTryToFetch,
     contractAddress,
     handleClick,
-}: AssetItemProps) => (
-    <ClickableContainer
-        onClick={() =>
-            handleClick({
-                symbol,
-                contractAddress: contractAddress ?? null,
-                networkSymbol,
-                coingeckoId,
-                cryptoName,
-            })
-        }
-    >
-        <Row gap={spacings.sm}>
-            {coingeckoId ? (
-                <AssetLogo
-                    size={24}
-                    coingeckoId={coingeckoId}
-                    contractAddress={
-                        networkSymbol && contractAddress
-                            ? getContractAddressForNetwork(networkSymbol, contractAddress)
-                            : undefined
-                    }
-                    placeholder={symbol.toUpperCase()}
-                    shouldTryToFetch={shouldTryToFetch}
-                />
-            ) : (
-                <CoinLogo size={24} symbol={networkSymbol as NetworkSymbol} />
-            )}
-            <Column flex="1" alignItems="stretch">
-                <Row gap={spacings.xs} alignItems="center">
-                    <TextWrapper>
-                        <Text typographyStyle="body" textWrap="nowrap">
-                            {cryptoName}
-                        </Text>
-                    </TextWrapper>
-                    {badge && (
-                        <BadgeWrapper>
-                            <Badge>{badge}</Badge>
-                        </BadgeWrapper>
-                    )}
-                </Row>
-                <Text typographyStyle="hint" variant="tertiary">
-                    {symbol.toUpperCase()}
-                </Text>
-            </Column>
-        </Row>
-    </ClickableContainer>
-);
+}: AssetItemProps) => {
+    const symbol = symbolExtended in COINS ? (symbolExtended as NetworkSymbol) : undefined;
+
+    return (
+        <ClickableContainer
+            onClick={() =>
+                handleClick({
+                    ticker,
+                    contractAddress: contractAddress ?? null,
+                    symbolExtended,
+                    coingeckoId,
+                    cryptoName,
+                })
+            }
+        >
+            <Row gap={spacings.sm}>
+                {coingeckoId ? (
+                    <AssetLogo
+                        size={24}
+                        coingeckoId={coingeckoId}
+                        contractAddress={
+                            symbolExtended && contractAddress
+                                ? getContractAddressForNetwork(symbolExtended, contractAddress)
+                                : undefined
+                        }
+                        placeholder={ticker.toUpperCase()}
+                        shouldTryToFetch={shouldTryToFetch}
+                    />
+                ) : (
+                    symbol && <CoinLogo size={24} symbol={symbol} />
+                )}
+                <Column flex="1" alignItems="stretch">
+                    <Row gap={spacings.xs} alignItems="center">
+                        <TextWrapper>
+                            <Text typographyStyle="body" textWrap="nowrap">
+                                {cryptoName}
+                            </Text>
+                        </TextWrapper>
+                        {badge && (
+                            <BadgeWrapper>
+                                <Badge>{badge}</Badge>
+                            </BadgeWrapper>
+                        )}
+                    </Row>
+                    <Text typographyStyle="hint" variant="tertiary">
+                        {ticker.toUpperCase()}
+                    </Text>
+                </Column>
+            </Row>
+        </ClickableContainer>
+    );
+};

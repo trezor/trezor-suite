@@ -86,7 +86,7 @@ export const CoinmarketFormInputs = () => {
                             <CoinmarketBalance
                                 balance={outputAmount}
                                 cryptoSymbolLabel={sendCryptoSelect?.value}
-                                networkSymbol={account.symbol}
+                                symbol={account.symbol}
                                 tokenAddress={tokenAddress as TokenAddress}
                                 showOnlyAmount
                                 amountInCrypto={amountInCrypto}
@@ -167,7 +167,7 @@ export const CoinmarketFormInputs = () => {
                             <CoinmarketBalance
                                 balance={outputAmount}
                                 cryptoSymbolLabel={sendCryptoSelect?.value}
-                                networkSymbol={account.symbol}
+                                symbol={account.symbol}
                                 tokenAddress={tokenAddress}
                                 showOnlyAmount
                                 amountInCrypto={amountInCrypto}

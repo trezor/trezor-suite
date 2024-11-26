@@ -6,7 +6,7 @@ import { FormState, Output } from '@suite-common/wallet-types';
 import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import {
     buildFiatOption,
-    cryptoIdToNetworkSymbol,
+    cryptoIdToSymbol,
     getDefaultCountry,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Account } from 'src/types/wallet';
@@ -33,7 +33,7 @@ export const useCoinmarketSellFormDefaultValues = (
             cryptoOptions.find(
                 option =>
                     option.descriptor === account.descriptor &&
-                    account.symbol === cryptoIdToNetworkSymbol(option.value),
+                    account.symbol === cryptoIdToSymbol(option.value),
             ),
         [account.descriptor, account.symbol, cryptoOptions],
     );

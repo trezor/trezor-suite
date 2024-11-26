@@ -75,9 +75,9 @@ const getData = (options: SelectAssetOptionProps[]): AssetProps[] =>
     options
         .filter(item => item.type === 'currency')
         .map(item => ({
-            symbol: item.label ?? item.symbol,
-            networkSymbol: item.networkSymbol,
-            cryptoName: item.cryptoName ?? item.symbol,
+            ticker: item.label ?? item.ticker,
+            symbolExtended: item.symbolExtended,
+            cryptoName: item.cryptoName ?? item.ticker,
             badge: item.badge ?? item.networkName,
             coingeckoId: item.coingeckoId,
             contractAddress: item.contractAddress,
@@ -120,7 +120,7 @@ export const CoinmarketFormInputCryptoSelect = <
                 option.type === 'currency'
                     ? {
                           ...option,
-                          symbol: option.symbol || option.label,
+                          ticker: option.ticker || option.label,
                           networkSymbol:
                               getNetworkByCoingeckoNativeId(parseCryptoId(option.value).networkId)
                                   ?.symbol || parseCryptoId(option.value).networkId,
@@ -183,9 +183,9 @@ export const CoinmarketFormInputCryptoSelect = <
         return (
             searchFor(item.cryptoName) ||
             (typeof item.badge === 'string' && searchFor(item.badge)) ||
-            searchFor(item.symbol) ||
+            searchFor(item.ticker) ||
             searchFor(contractAddress) ||
-            searchFor(item.networkSymbol)
+            searchFor(item.symbolExtended)
         );
     });
 

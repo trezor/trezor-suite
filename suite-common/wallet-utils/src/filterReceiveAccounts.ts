@@ -18,7 +18,7 @@ export const isDebugOnlyAccountType = (
 type FilterReceiveAccountsProps = {
     accounts: Account[];
     deviceState?: StaticSessionId;
-    receiveNetwork?: string;
+    symbol?: NetworkSymbol;
     isDebug: boolean;
     receiveNetworks: Network[];
 };
@@ -26,11 +26,11 @@ type FilterReceiveAccountsProps = {
 export const filterReceiveAccounts = ({
     accounts,
     deviceState,
-    receiveNetwork,
+    symbol,
     isDebug,
 }: FilterReceiveAccountsProps): Account[] => {
     const isSameDevice = (account: Account) => account.deviceState === deviceState;
-    const isSameNetwork = (account: Account) => account.symbol === receiveNetwork;
+    const isSameNetwork = (account: Account) => account.symbol === symbol;
     const shouldDisplayDebugOnly = (account: Account) =>
         isDebug || !isDebugOnlyAccountType(account.accountType, account.symbol);
     const isNotEmptyAccount = (account: Account) => !account.empty;

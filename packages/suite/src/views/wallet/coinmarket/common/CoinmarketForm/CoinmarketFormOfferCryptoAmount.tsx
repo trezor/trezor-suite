@@ -17,9 +17,9 @@ export const CoinmarketFormOfferCryptoAmount = ({
     cryptoId,
 }: CoinmarketCryptoAmountProps) => {
     const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
-    const networkSymbol = cryptoIdToCoinSymbol(cryptoId);
+    const symbol = cryptoIdToCoinSymbol(cryptoId);
 
-    if (!networkSymbol) {
+    if (!symbol) {
         return;
     }
 
@@ -29,7 +29,7 @@ export const CoinmarketFormOfferCryptoAmount = ({
             <Text typographyStyle="titleMedium" ellipsisLineCount={2}>
                 <FormattedCryptoAmount
                     value={amount}
-                    symbol={networkSymbol}
+                    symbol={symbol}
                     isRawString
                     isBalance={false}
                 />

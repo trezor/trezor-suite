@@ -54,7 +54,7 @@ export interface CoinmarketVerifyOptionsItemProps {
 export interface CoinmarketGetSuiteReceiveAccountsProps {
     currency: CryptoId | undefined;
     device: TrezorDevice | undefined;
-    receiveNetwork: NetworkSymbol | undefined;
+    symbol: NetworkSymbol | undefined;
     isDebug: boolean;
     accounts: Account[];
 }

@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { openModal } from 'src/actions/suite/modalActions';
 import {
-    cryptoIdToNetworkSymbol,
+    cryptoIdToSymbol,
     getUnusedAddressFromAccount,
     parseCryptoId,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -67,7 +67,7 @@ const getTranslationIds = (
 const getSuiteReceiveAccounts = ({
     currency,
     device,
-    receiveNetwork,
+    symbol,
     isDebug,
     accounts,
 }: CoinmarketGetSuiteReceiveAccountsProps): Account[] | undefined => {
@@ -77,7 +77,7 @@ const getSuiteReceiveAccounts = ({
         // Is the symbol supported by the suite and the device natively?
         const receiveNetworks = networksCollection.filter(
             (n: Network) =>
-                n.symbol === receiveNetwork &&
+                n.symbol === symbol &&
                 !unavailableCapabilities[n.symbol] &&
                 ((n.isDebugOnlyNetwork && isDebug) || !n.isDebugOnlyNetwork),
         );
@@ -85,7 +85,7 @@ const getSuiteReceiveAccounts = ({
         return filterReceiveAccounts({
             accounts,
             deviceState: device?.state?.staticSessionId,
-            receiveNetwork,
+            symbol,
             isDebug,
             receiveNetworks,
         });
@@ -113,17 +113,17 @@ const useCoinmarketVerifyAccount = ({
     >();
 
     const networkId = currency && parseCryptoId(currency).networkId;
-    const receiveNetwork = currency && cryptoIdToNetworkSymbol(currency);
+    const symbol = currency && cryptoIdToSymbol(currency);
     const suiteReceiveAccounts = useMemo(
         () =>
             getSuiteReceiveAccounts({
                 currency,
                 device,
-                receiveNetwork,
+                symbol,
                 isDebug,
                 accounts,
             }),
-        [accounts, currency, device, isDebug, receiveNetwork],
+        [accounts, currency, device, isDebug, symbol],
     );
 
     const selectAccountOptions = useMemo(
@@ -161,7 +161,7 @@ const useCoinmarketVerifyAccount = ({
                 openModal({
                     type: 'add-account',
                     device,
-                    symbol: receiveNetwork,
+                    symbol,
                     noRedirect: true,
                     isCoinjoinDisabled: true,
                     isBackClickDisabled: true,

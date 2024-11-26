@@ -9,9 +9,9 @@ import { AssetItem } from './AssetItem';
 import { AssetItemNotFound } from './AssetItemNotFound';
 
 export interface AssetProps {
-    symbol: string;
+    ticker: string;
     badge?: ReactNode;
-    networkSymbol: NetworkSymbol | (string & {});
+    symbolExtended: NetworkSymbol | (string & {});
     cryptoName?: string;
     coingeckoId?: string;
     contractAddress: string | null;
@@ -82,20 +82,20 @@ export const SelectAssetModal = ({
                             onScroll={onScroll}
                             renderItem={({
                                 cryptoName,
-                                symbol,
+                                ticker,
                                 coingeckoId,
-                                networkSymbol,
+                                symbolExtended,
                                 badge,
                                 contractAddress,
                                 shouldTryToFetch,
                             }: AssetProps) => (
                                 <AssetItem
-                                    key={`${symbol}-${name}`}
+                                    key={`${symbolExtended}${contractAddress ? `-${contractAddress}` : ''}`}
                                     cryptoName={cryptoName}
-                                    symbol={symbol}
+                                    ticker={ticker}
                                     coingeckoId={coingeckoId}
                                     contractAddress={contractAddress || null}
-                                    networkSymbol={networkSymbol}
+                                    symbolExtended={symbolExtended}
                                     badge={badge}
                                     shouldTryToFetch={shouldTryToFetch}
                                     handleClick={onSelectAsset}

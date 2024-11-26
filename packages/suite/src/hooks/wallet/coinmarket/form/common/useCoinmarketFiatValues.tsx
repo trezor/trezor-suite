@@ -12,7 +12,7 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { CoinmarketAccountOptionsGroupOptionProps } from 'src/types/coinmarket/coinmarket';
 import {
-    cryptoIdToNetworkSymbol,
+    cryptoIdToSymbol,
     mapTestnetSymbol,
     getCoinmarketNetworkDecimals,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -27,7 +27,7 @@ interface CoinmarketBalanceReturnProps {
     fiatRate: Rate | undefined;
     accountBalance: string;
     formattedBalance: string;
-    networkSymbol: NetworkSymbol;
+    symbol: NetworkSymbol;
     networkDecimals: number;
     tokenAddress: TokenAddress | undefined;
     fiatRatesUpdater: (value: FiatCurrencyCode | undefined) => Promise<FiatRatesResult | null>;
@@ -39,13 +39,13 @@ export const useCoinmarketFiatValues = ({
 }: CoinmarketBalanceProps): CoinmarketBalanceReturnProps | null => {
     const dispatch = useDispatch();
     const defaultCryptoSymbol = 'btc';
-    const networkSymbol = sendCryptoSelect
-        ? cryptoIdToNetworkSymbol(sendCryptoSelect.value) ?? defaultCryptoSymbol
+    const symbol = sendCryptoSelect
+        ? cryptoIdToSymbol(sendCryptoSelect.value) ?? defaultCryptoSymbol
         : defaultCryptoSymbol;
     const tokenAddressTyped = (sendCryptoSelect?.contractAddress ?? undefined) as
         | TokenAddress
         | undefined;
-    const symbolForFiat = mapTestnetSymbol(networkSymbol);
+    const symbolForFiat = mapTestnetSymbol(symbol);
     const localCurrency = useSelector(selectLocalCurrency);
     const fiatRateKey = getFiatRateKey(
         symbolForFiat,
@@ -55,8 +55,8 @@ export const useCoinmarketFiatValues = ({
     const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
     const balance = sendCryptoSelect?.balance;
 
-    const network = networks[networkSymbol];
-    const { shouldSendInSats } = useBitcoinAmountUnit(networkSymbol);
+    const network = networks[symbol];
+    const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
 
     const fiatRatesUpdater = useCallback(
         async (value: FiatCurrencyCode | undefined): Promise<FiatRatesResult | null> => {
@@ -66,7 +66,7 @@ export const useCoinmarketFiatValues = ({
                 updateFiatRatesThunk({
                     tickers: [
                         {
-                            symbol: networkSymbol,
+                            symbol,
                             tokenAddress: tokenAddressTyped,
                         },
                     ],
@@ -80,7 +80,7 @@ export const useCoinmarketFiatValues = ({
 
             return updateFiatRatesResult.payload as FiatRatesResult;
         },
-        [dispatch, networkSymbol, tokenAddressTyped],
+        [dispatch, symbol, tokenAddressTyped],
     );
 
     // update rates on mount
@@ -103,7 +103,7 @@ export const useCoinmarketFiatValues = ({
         fiatRate,
         accountBalance: balance,
         formattedBalance,
-        networkSymbol,
+        symbol,
         networkDecimals: decimals,
         tokenAddress: tokenAddressTyped,
         fiatRatesUpdater,

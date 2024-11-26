@@ -1,5 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
-import { Network, networksCollection } from '@suite-common/wallet-config';
+import { Network, networksCollection, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 
 import { isDebugOnlyAccountType, filterReceiveAccounts } from '../filterReceiveAccounts';
@@ -30,14 +30,14 @@ const accountsList: Account[] = [
 
 type RunFilterReceiveAccountsTestParams = {
     isDebug?: boolean;
-    receiveNetwork?: string;
+    symbol?: NetworkSymbol;
     deviceState?: `${string}@${string}:${number}`;
     accounts?: Account[];
 };
 
 const runFilterReceiveAccouns = ({
     isDebug = true,
-    receiveNetwork = 'eth',
+    symbol = 'eth',
     deviceState = '1stTestnetAddress@device_id:0',
     accounts = accountsList,
 }: RunFilterReceiveAccountsTestParams) => {
@@ -51,7 +51,7 @@ const runFilterReceiveAccouns = ({
 
     const receiveNetworks = networksCollection.filter(
         (n: Network) =>
-            n.symbol === receiveNetwork &&
+            n.symbol === symbol &&
             !unavailableCapabilities[n.symbol] &&
             ((n.isDebugOnlyNetwork && isDebug) || !n.isDebugOnlyNetwork),
     );
@@ -59,7 +59,7 @@ const runFilterReceiveAccouns = ({
     return filterReceiveAccounts({
         accounts,
         deviceState: device.state?.staticSessionId,
-        receiveNetwork,
+        symbol,
         isDebug,
         receiveNetworks,
     });
@@ -82,7 +82,7 @@ describe('filter receive accounts', () => {
     });
 
     it('returns no results when given a non-existing network in acccounts list', () => {
-        expect(runFilterReceiveAccouns({ receiveNetwork: 'bnb' })).toEqual([]);
+        expect(runFilterReceiveAccouns({ symbol: 'bnb' })).toEqual([]);
     });
 
     it('returns all accounts when debug mode is on', () => {
@@ -114,7 +114,7 @@ describe('filter receive accounts', () => {
             getWalletAccount({ symbol: 'btc', accountType: 'ledger' }),
         ];
 
-        expect(runFilterReceiveAccouns({ receiveNetwork: 'btc' })).toEqual(filteredAccounts);
+        expect(runFilterReceiveAccouns({ symbol: 'btc' })).toEqual(filteredAccounts);
     });
 
     it('returns account when when its either first normal account (no matter is empty or not visible) or it is not empty and visible', () => {
@@ -123,6 +123,6 @@ describe('filter receive accounts', () => {
             getWalletAccount({ symbol: 'sol', accountType: 'ledger' }),
         ];
 
-        expect(runFilterReceiveAccouns({ receiveNetwork: 'sol' })).toEqual(filteredAccounts);
+        expect(runFilterReceiveAccouns({ symbol: 'sol' })).toEqual(filteredAccounts);
     });
 });

@@ -59,7 +59,7 @@ export const CoinmarketVerifyOptionsItem = ({
                         <CoinmarketBalance
                             balance={formattedBalance}
                             cryptoSymbolLabel={symbol.toLocaleUpperCase()}
-                            networkSymbol={symbol}
+                            symbol={symbol}
                             sendCryptoSelect={
                                 isCoinmarketExchangeContext(context)
                                     ? context.getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT)

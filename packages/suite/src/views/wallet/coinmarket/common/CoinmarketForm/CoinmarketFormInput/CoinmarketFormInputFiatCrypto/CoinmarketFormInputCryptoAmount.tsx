@@ -72,7 +72,7 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
         cryptoInputName === FORM_OUTPUT_AMOUNT
             ? (errors as FieldErrors<CoinmarketSellExchangeFormProps>)?.outputs?.[0]?.amount
             : (errors as FieldErrors<CoinmarketBuyFormProps>).cryptoInput;
-    const networkSymbol = cryptoSelect?.value && cryptoIdToCoinSymbol(cryptoSelect?.value);
+    const symbol = cryptoSelect?.value && cryptoIdToCoinSymbol(cryptoSelect?.value);
     const decimals = getCoinmarketNetworkDecimals({
         sendCryptoSelect: !isCoinmarketBuyContext(context)
             ? context.getValues()[FORM_SEND_CRYPTO_CURRENCY_SELECT]
@@ -132,7 +132,7 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
             innerAddon={
                 <>
                     {coinmarketGetAccountLabel(
-                        cryptoSelect?.value && networkSymbol ? networkSymbol : '',
+                        cryptoSelect?.value && symbol ? symbol : '',
                         shouldSendInSats,
                     )}
                 </>

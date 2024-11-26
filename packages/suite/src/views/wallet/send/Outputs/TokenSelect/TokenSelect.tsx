@@ -59,8 +59,8 @@ const createTokenOption = (
     symbol: Account['symbol'],
     shouldTryToFetch: boolean,
 ) => ({
-    symbol: token.symbol ?? '',
-    networkSymbol: symbol,
+    ticker: token.symbol ?? '',
+    symbolExtended: symbol,
     cryptoName: token.name,
     badge: shouldTryToFetch ? undefined : <Translation id="TR_UNRECOGNIZED" />,
     coingeckoId: getCoingeckoId(symbol) ?? '',
@@ -80,8 +80,8 @@ const buildTokenOptions = (
     if (activeTokenTab === 'tokens') {
         // this represents native currency
         result.push({
-            symbol,
-            networkSymbol: symbol,
+            ticker: symbol,
+            symbolExtended: symbol,
             cryptoName: networks[symbol].name,
             badge: undefined,
             contractAddress: null,
@@ -209,7 +209,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
         const searchFor = (property: string | undefined) =>
             property?.toLocaleLowerCase().includes(search.toLocaleLowerCase());
 
-        return searchFor(item.cryptoName) || searchFor(item.symbol) || searchFor(contractAddress);
+        return searchFor(item.cryptoName) || searchFor(item.ticker) || searchFor(contractAddress);
     });
 
     const selectedToken = account.tokens?.find(token => token.contract === tokenContractAddress);

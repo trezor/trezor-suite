@@ -38,7 +38,7 @@ import {
 } from 'src/types/coinmarket/coinmarketForm';
 import {
     coinmarketGetSortedAccounts,
-    cryptoIdToNetworkSymbol,
+    cryptoIdToSymbol,
     getCoinmarketNetworkDecimals,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { coinmarketGetExchangeReceiveCryptoId } from 'src/utils/wallet/coinmarket/exchangeUtils';
@@ -159,14 +159,14 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
     };
 
     const onCryptoCurrencyChange = async (selected: CoinmarketAccountOptionsGroupOptionProps) => {
-        const networkSymbol = cryptoIdToNetworkSymbol(selected.value);
+        const symbol = cryptoIdToSymbol(selected.value);
         const cryptoSelectedCurrent = getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT);
         const isSameCryptoSelected =
             cryptoSelectedCurrent &&
             cryptoSelectedCurrent.descriptor === selected.descriptor &&
             cryptoSelectedCurrent.value === selected.value;
         const account = accountsSorted.find(
-            item => item.descriptor === selected.descriptor && item.symbol === networkSymbol,
+            item => item.descriptor === selected.descriptor && item.symbol === symbol,
         );
 
         if (!account || isSameCryptoSelected) return;

@@ -143,7 +143,7 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
                                         <CoinmarketBalance
                                             balance={balance}
                                             cryptoSymbolLabel={cryptoIdToCoinSymbol(receiveSymbol)}
-                                            networkSymbol={account.symbol}
+                                            symbol={account.symbol}
                                             sendCryptoSelect={sendCryptoSelect}
                                         />
                                         <span>•</span>

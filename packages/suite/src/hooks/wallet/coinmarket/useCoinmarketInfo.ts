@@ -27,7 +27,7 @@ function toCryptoOption(cryptoId: CryptoId, coinInfo: CoinInfo): CoinmarketCrypt
         cryptoName: coinInfo.name,
         coingeckoId: networkId,
         contractAddress: contractAddress || null,
-        networkSymbol: coinInfo.symbol,
+        symbolExtended: coinInfo.symbol,
     };
 }
 
@@ -162,7 +162,7 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
                 type: 'currency',
                 value: coingeckoId as CryptoId,
                 label: symbol.toUpperCase(),
-                networkSymbol: symbol.toUpperCase(),
+                symbolExtended: symbol.toUpperCase(),
                 cryptoName: name,
                 coingeckoId,
                 contractAddress: null,
