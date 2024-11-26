@@ -915,7 +915,7 @@ This package is now out of beta.
 
 # 9.1.1
 
--   feat(connect-popup): added device model_internal in features
+-   feat(connect-popup): added device internal_model in features
 -   feat(connect): add cancelCoinjoinAuthorization method
 -   feat(connect): added nodeusb transport. TrezorConnect is now capable of communicating with Trezor devices without using TrezorBridge (in node.js environment).
 -   feat(connect-popup): when a call to TrezorConnect returns `success: false` popup remains opened and displays error page instead.
