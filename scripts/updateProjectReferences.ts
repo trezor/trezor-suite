@@ -9,8 +9,6 @@ import chalk from 'chalk';
 import { getWorkspacesList } from './utils/getWorkspacesList';
 import { getPrettierConfig } from './utils/getPrettierConfig';
 
-const rootTsConfigLocation = path.join(__dirname, '..', 'tsconfig.json');
-
 (async () => {
     const { argv } = yargs(hideBin(process.argv))
         .array('read-only')
@@ -22,9 +20,6 @@ const rootTsConfigLocation = path.join(__dirname, '..', 'tsconfig.json');
     const ignoreGlobs: string[] = argv.ignore || [];
     const typingPaths: string[] = argv.typings || [];
     const isTesting = argv.test || false;
-
-    const rootConfig = JSON.parse(fs.readFileSync(rootTsConfigLocation).toString());
-    const nextRootReferences: { path: string }[] = [];
 
     const prettierConfig = await getPrettierConfig();
 
@@ -56,10 +51,6 @@ const rootTsConfigLocation = path.join(__dirname, '..', 'tsconfig.json');
             if (ignoreGlobs.some((path: string) => minimatch(workspace.location, path))) {
                 return;
             }
-
-            nextRootReferences.push({
-                path: workspace.location,
-            });
 
             const workspacePath = path.resolve(process.cwd(), workspace.location);
             const workspaceConfigPath = path.resolve(workspacePath, 'tsconfig.json');
@@ -154,24 +145,4 @@ const rootTsConfigLocation = path.join(__dirname, '..', 'tsconfig.json');
                 }
             }
         });
-
-    if (isTesting) {
-        if (
-            (await serializeConfig(rootConfig.references)) !==
-            (await serializeConfig(nextRootReferences))
-        ) {
-            console.error(
-                `TypeScript project references in root tsconfig.json are inconsistent.`,
-                `Run "yarn update-project-references" to fix them.`,
-            );
-
-            process.exit(1);
-        }
-
-        return;
-    }
-
-    rootConfig.references = nextRootReferences;
-
-    fs.writeFileSync(rootTsConfigLocation, await serializeConfig(rootConfig));
 })();
