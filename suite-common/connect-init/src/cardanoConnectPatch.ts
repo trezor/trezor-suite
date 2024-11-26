@@ -14,6 +14,7 @@ const blacklist: ConnectKey[] = [
     'removeAllListeners',
     'uiResponse',
     'blockchainGetAccountBalanceHistory',
+    'blockchainGetInfo',
     'blockchainGetCurrentFiatRates',
     'blockchainGetFiatRatesForTimestamps',
     'blockchainDisconnect',

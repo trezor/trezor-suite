@@ -64,6 +64,8 @@ export const factory = <
     blockchainGetFiatRatesForTimestamps: params =>
         call({ ...params, method: 'blockchainGetFiatRatesForTimestamps' }),
 
+    blockchainGetInfo: params => call({ ...params, method: 'blockchainGetInfo' }),
+
     blockchainEvmRpcCall: params => call({ ...params, method: 'blockchainEvmRpcCall' }),
 
     blockchainDisconnect: params => call({ ...params, method: 'blockchainDisconnect' }),
