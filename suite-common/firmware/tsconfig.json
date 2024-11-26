@@ -7,9 +7,6 @@
         { "path": "../wallet-core" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/env-utils" },
-        {
-            "path": "../../packages/suite-analytics"
-        }
+        { "path": "../../packages/env-utils" }
     ]
 }

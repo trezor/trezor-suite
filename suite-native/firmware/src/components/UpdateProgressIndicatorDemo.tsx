@@ -5,7 +5,6 @@ import { FirmwareOperationStatus } from '@suite-common/firmware';
 
 import { UpdateProgressIndicator } from './UpdateProgressIndicator';
 
-
 // DEBUG ONLY:This component is useful for testing animation states of UpdateProgressIndicator
 export const UpdateProgressIndicatorDemo = () => {
     const [status, setStatus] = useState<{

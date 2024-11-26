@@ -17,7 +17,6 @@
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
-        "@trezor/suite-analytics": "workspace:*",
         "react": "18.2.0",
         "react-redux": "8.0.7"
     }
