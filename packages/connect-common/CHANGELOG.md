@@ -1,3 +1,8 @@
+# 0.2.4
+
+-   npm-prerelease: @trezor/connect-common 0.2.4-beta.1 (55487acb49)
+-   fix(connect): preferred device handling based on state (58b854cbed)
+
 # 0.2.3
 
 -   npm-prerelease: @trezor/connect-common 0.2.3-beta.2 (5038b5bbd4)
