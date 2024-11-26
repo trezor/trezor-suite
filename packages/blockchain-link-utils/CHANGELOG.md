@@ -1,3 +1,8 @@
+# 1.2.3
+
+-   npm-prerelease: @trezor/blockchain-link-utils 1.2.3-beta.1 (0b0670f5ea)
+-   fix(blockchain-link-utils): solana with negative tx amount (2af67c50f9)
+
 # 1.2.2
 
 -   npm-prerelease: @trezor/blockchain-link-utils 1.2.2-beta.2 (225a260c34)
