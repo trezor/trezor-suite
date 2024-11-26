@@ -10,7 +10,9 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.4.4-beta.1
+# 9.4.4
+
+This release among other improvements fixes a bug in ethereum serialization of empty strings as hex that was causing issues when signing that was caused by @ethereumjs libs update (2d6465f, d6bc8c5020) in 9.4.3.
 
 ## Feature
 
@@ -18,10 +20,26 @@ Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to a
 
 ## Fixes
 
--   Fixing a bug in ethereum serialization of empty strings as hex that was causing issues when signing. (c2f6521). This was caused by @ethereumjs libs update (2d6465f, d6bc8c5020) in 9.4.3
 -   preferred device handling based on (passphrase) state instead of path (58b854c)
 -   fix "BetaOnly" component that is supposed to hide selected parts of content in beta environments (fdb433a)
 -   blockchainEvmRpcCall postMessage instance not propagated correctly (c98a08e)
+
+## Dependencies update
+
+-   npm-release: @trezor/blockchain-link 2.3.3
+-   npm-release: @trezor/blockchain-link-utils 1.2.3
+-   npm-release: @trezor/blockchain-link-types 1.2.3
+-   npm-release: @trezor/type-utils 1.1.2
+-   npm-release: @trezor/connect-analytics 1.2.3
+-   npm-release: @trezor/analytics 1.2.3
+-   npm-release: @trezor/connect-common 0.2.4
+-   npm-release: @trezor/env-utils 1.2.1
+-   npm-release: @trezor/transport 1.3.4
+-   npm-release: @trezor/protobuf 1.2.4
+-   npm-release: @trezor/schema-utils 1.2.3
+-   npm-release: @trezor/protocol 1.2.2
+-   npm-release: @trezor/utxo-lib 2.2.3
+-   npm-release: @trezor/utils 9.2.3
 
 # 9.4.3
 
