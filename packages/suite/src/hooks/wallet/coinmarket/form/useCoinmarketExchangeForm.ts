@@ -27,6 +27,7 @@ import {
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     coinmarketGetExchangeReceiveCryptoId,
+    createQuoteLink,
     getAmountLimits,
     getCexQuotesByRateType,
     getSuccessQuotesOrdered,
@@ -34,7 +35,7 @@ import {
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { CryptoAmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
+import { CryptoAmountLimits, TradeExchange } from 'src/types/wallet/coinmarketCommonTypes';
 import {
     CoinmarketTradeExchangeType,
     UseCoinmarketFormProps,
@@ -75,7 +76,9 @@ export const useCoinmarketExchangeForm = ({
     const {
         exchangeInfo,
         quotesRequest,
+        isFromRedirect,
         quotes,
+        transactionId,
         coinmarketAccount,
         selectedQuote,
         addressVerified,
@@ -93,7 +96,11 @@ export const useCoinmarketExchangeForm = ({
     const { buildDefaultCryptoOption } = useCoinmarketInfo();
 
     const dispatch = useDispatch();
-    const { recomposeAndSign } = useCoinmarketRecomposeAndSign();
+    const {
+        selectedFee: selectedFeeRecomposedAndSigned,
+        composed,
+        recomposeAndSign,
+    } = useCoinmarketRecomposeAndSign();
 
     const [amountLimits, setAmountLimits] = useState<CryptoAmountLimits | undefined>(undefined);
 
@@ -117,6 +124,11 @@ export const useCoinmarketExchangeForm = ({
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const network = networks[account.symbol];
+    const trades = useSelector(state => state.wallet.coinmarket.trades);
+    const trade = trades.find(
+        trade =>
+            trade.tradeType === 'exchange' && transactionId && trade.data.quoteId === transactionId,
+    ) as TradeExchange | undefined;
 
     const { defaultCurrency, defaultValues } = useCoinmarketExchangeFormDefaultValues(account);
     const exchangeDraftKey = 'coinmarket-exchange';
@@ -356,18 +368,28 @@ export const useCoinmarketExchangeForm = ({
             if (!trade) {
                 trade = selectedQuote;
             }
-            if (!trade || !refundAddress) return false;
+            if (!quotesRequest || !trade || !refundAddress || !trade.quoteId) return false;
 
             if (trade.isDex && !trade.fromAddress) {
                 trade = { ...trade, fromAddress: refundAddress };
             }
 
             setCallInProgress(true);
+            dispatch(coinmarketExchangeActions.saveTransactionId(undefined));
+
+            const returnUrl = await createQuoteLink(
+                quotesRequest,
+                account,
+                { selectedFee: selectedFeeRecomposedAndSigned, composed },
+                trade.quoteId!,
+            );
+
             const response = await invityAPI.doExchangeTrade({
                 trade,
                 receiveAddress: address,
                 refundAddress,
                 extraField,
+                returnUrl,
             });
 
             if (!response) {
@@ -419,6 +441,11 @@ export const useCoinmarketExchangeForm = ({
                     ),
                 );
                 dispatch(coinmarketExchangeActions.saveTransactionId(response.orderId));
+                if (response.tradeForm?.form) {
+                    dispatch(coinmarketCommonActions.submitRequestForm(response.tradeForm?.form));
+
+                    return true;
+                }
                 ok = true;
                 navigateToExchangeDetail();
             }
@@ -431,6 +458,9 @@ export const useCoinmarketExchangeForm = ({
             selectedQuote,
             exchangeStep,
             selectedAccount.account,
+            composed,
+            quotesRequest,
+            selectedFeeRecomposedAndSigned,
             dispatch,
             setCallInProgress,
             navigateToExchangeDetail,
@@ -605,8 +635,27 @@ export const useCoinmarketExchangeForm = ({
             return;
         }
 
+        if (isFromRedirect) {
+            if (transactionId && trade) {
+                dispatch(coinmarketExchangeActions.saveSelectedQuote(trade.data));
+                setExchangeStep('SEND_TRANSACTION');
+            }
+
+            dispatch(coinmarketExchangeActions.setIsFromRedirect(false));
+        }
+
         checkQuotesTimer(handleChange);
-    }, [quotesRequest, isNotFormPage, navigateToExchangeForm, checkQuotesTimer, handleChange]);
+    }, [
+        quotesRequest,
+        isFromRedirect,
+        trade,
+        transactionId,
+        isNotFormPage,
+        dispatch,
+        navigateToExchangeForm,
+        checkQuotesTimer,
+        handleChange,
+    ]);
 
     useEffect(() => {
         return () => {
@@ -669,6 +718,7 @@ export const useCoinmarketExchangeForm = ({
         selectedQuote,
         addressVerified,
         shouldSendInSats,
+        trade,
         setReceiveAccount,
         composeRequest,
         changeFeeLevel,

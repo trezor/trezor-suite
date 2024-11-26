@@ -10,6 +10,7 @@ import {
     KYC_DEX,
     KYC_NO_KYC,
     KYC_NO_REFUND,
+    KYC_REQUIRED,
     KYC_YES_REFUND,
 } from 'src/constants/wallet/coinmarket/kyc';
 
@@ -19,6 +20,10 @@ interface CoinmarketUtilsProviderProps {
     isForComparator?: boolean;
 }
 const getKycPolicy = (kycPolicyType: ExchangeKYCType | undefined) => {
+    if (kycPolicyType === KYC_REQUIRED) {
+        return <Translation id="TR_COINMARKET_KYC_REQUIRED" />;
+    }
+
     if (kycPolicyType === KYC_NO_REFUND) {
         return <Translation id="TR_COINMARKET_KYC_NO_REFUND" />;
     }

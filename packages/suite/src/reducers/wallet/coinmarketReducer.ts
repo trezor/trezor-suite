@@ -73,6 +73,7 @@ interface Exchange extends CoinmarketTradeCommonProps {
     addressVerified: string | undefined;
     coinmarketAccount?: Account;
     selectedQuote: ExchangeTrade | undefined;
+    isFromRedirect: boolean;
 }
 
 interface Sell extends CoinmarketTradeCommonProps {
@@ -129,6 +130,7 @@ export const initialState: State = {
         addressVerified: undefined,
         coinmarketAccount: undefined,
         selectedQuote: undefined,
+        isFromRedirect: false,
     },
     sell: {
         sellInfo: undefined,
@@ -222,6 +224,9 @@ export const coinmarketReducer = (
                 break;
             case COINMARKET_EXCHANGE.SAVE_QUOTE:
                 draft.exchange.selectedQuote = action.quote;
+                break;
+            case COINMARKET_EXCHANGE.SET_IS_FROM_REDIRECT:
+                draft.exchange.isFromRedirect = action.isFromRedirect;
                 break;
             case COINMARKET_EXCHANGE.VERIFY_ADDRESS:
                 draft.exchange.addressVerified = action.addressVerified;

@@ -59,9 +59,9 @@ export const CoinmarketSelectedOfferSellTransaction = () => {
         account,
         trade,
     });
-    const t = trade?.data || selectedQuote;
+    const sellTrade = trade?.data || selectedQuote;
 
-    if (!t || !t.exchange) return null;
+    if (!sellTrade || !sellTrade.exchange) return null;
 
     const {
         exchange,
@@ -69,7 +69,7 @@ export const CoinmarketSelectedOfferSellTransaction = () => {
         destinationPaymentExtraId,
         destinationPaymentExtraIdDescription,
         status,
-    } = t;
+    } = sellTrade;
     const providerName = sellInfo?.providerInfos[exchange]?.companyName || exchange;
 
     return (

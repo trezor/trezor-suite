@@ -1,4 +1,9 @@
-import { BuyTradeQuoteRequest, CryptoId, SellFiatTradeQuoteRequest } from 'invity-api';
+import {
+    BuyTradeQuoteRequest,
+    CryptoId,
+    ExchangeTradeQuoteRequest,
+    SellFiatTradeQuoteRequest,
+} from 'invity-api';
 
 import { FeeLevel } from '@trezor/connect';
 
@@ -7,6 +12,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
+import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 
 interface OfferRedirectParams {
@@ -30,6 +36,19 @@ interface SellOfferRedirectParams {
     amount: string;
     country: string;
     orderId?: string;
+    selectedFee?: FeeLevel['label'];
+    feePerByte?: string;
+    feeLimit?: string;
+}
+
+interface ExchangeOfferRedirectParams {
+    symbol: Account['symbol'];
+    index: Account['index'];
+    accountType: Account['accountType'];
+    send: CryptoId;
+    receive: CryptoId;
+    amount: string;
+    orderId: string;
     selectedFee?: FeeLevel['label'];
     feePerByte?: string;
     feeLimit?: string;
@@ -128,6 +147,41 @@ export const useCoinmarketRedirect = () => {
         );
     };
 
+    const redirectToExchangeOffers = (params: ExchangeOfferRedirectParams) => {
+        const {
+            symbol,
+            index,
+            accountType,
+            send,
+            receive,
+            amount,
+            orderId,
+            feeLimit,
+            feePerByte,
+            selectedFee,
+        } = params;
+        const request: ExchangeTradeQuoteRequest = {
+            send,
+            receive,
+            sendStringAmount: amount,
+        };
+
+        dispatch(coinmarketExchangeActions.saveQuoteRequest(request));
+        dispatch(coinmarketExchangeActions.setIsFromRedirect(true));
+        const composed = {
+            feeLimit,
+            feePerByte: feePerByte || '',
+            fee: '', // fee is not passed by redirect, will be recalculated
+        };
+        dispatch(saveComposedTransactionInfo({ selectedFee: selectedFee || 'normal', composed }));
+        dispatch(coinmarketExchangeActions.saveTransactionId(orderId));
+        dispatch(
+            goto('wallet-coinmarket-exchange-confirm', {
+                params: { symbol, accountIndex: index, accountType },
+            }),
+        );
+    };
+
     const redirectToDetail = (params: DetailRedirectParams) => {
         const { transactionId } = params;
 
@@ -147,5 +201,6 @@ export const useCoinmarketRedirect = () => {
         redirectToOffers,
         redirectToDetail,
         redirectToSellOffers,
+        redirectToExchangeOffers,
     };
 };

@@ -80,6 +80,11 @@ const coinmarketWatchTrade = async <T extends CoinmarketTradeType>({
                 error: exchangeResponse.error,
             };
 
+            if (exchangeResponse.sendAddress) {
+                tradeData.sendAddress = exchangeResponse.sendAddress;
+                tradeData.partnerPaymentExtraId = exchangeResponse.partnerPaymentExtraId;
+            }
+
             dispatch(saveExchangeTrade(tradeData, account, newDate));
         }
     }

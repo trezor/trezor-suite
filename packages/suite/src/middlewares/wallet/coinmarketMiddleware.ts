@@ -1,6 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 
 import { UI } from '@trezor/connect';
+import { Route } from '@suite-common/suite-types';
 
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { COINMARKET_COMMON } from 'src/actions/wallet/constants';
@@ -12,6 +13,21 @@ import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
 import { ROUTER, MODAL } from 'src/actions/suite/constants';
+import { CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
+
+const getTradeTypeByRoute = (route: Route | undefined): CoinmarketTradeType | undefined => {
+    if (route?.name.startsWith('wallet-coinmarket-buy')) {
+        return 'buy';
+    }
+
+    if (route?.name.startsWith('wallet-coinmarket-sell')) {
+        return 'sell';
+    }
+
+    if (route?.name.startsWith('wallet-coinmarket-exchange')) {
+        return 'exchange';
+    }
+};
 
 export const coinmarketMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -43,6 +59,11 @@ export const coinmarketMiddleware =
                 const { invityServerEnvironment } = state.suite.settings.debug;
                 if (invityServerEnvironment) {
                     invityAPI.setInvityServersEnvironment(invityServerEnvironment);
+                }
+
+                const tradeType = getTradeTypeByRoute(state.router.route);
+                if (tradeType) {
+                    api.dispatch(coinmarketCommonActions.setActiveSection(tradeType));
                 }
 
                 invityAPI.createInvityAPIKey(account.descriptor);
@@ -95,7 +116,7 @@ export const coinmarketMiddleware =
         const isReceiveModal =
             isCloseUiWindowEvent && isDeviceContext && modal.windowType === 'ButtonRequest_Address';
 
-        /* 
+        /*
           isCloseEvent
             - happens only one time when the whole flow of sending the transaction is closed
             - isCloseUiWindowEvent can not be used, it is called multiple times during flow because of
@@ -121,41 +142,28 @@ export const coinmarketMiddleware =
         const exchangeCoinmarketAccount = newState.wallet.coinmarket.exchange.coinmarketAccount;
 
         if (action.type === ROUTER.LOCATION_CHANGE) {
-            const routeName = newState.router.route?.name;
-            const isBuy = routeName === 'wallet-coinmarket-buy';
-            const isSell = routeName === 'wallet-coinmarket-sell';
-            const isExchange = routeName === 'wallet-coinmarket-exchange';
+            const wasTradeType = getTradeTypeByRoute(state.router.route);
+            const isTradeType = getTradeTypeByRoute(newState.router.route);
+            if (isTradeType) {
+                api.dispatch(coinmarketCommonActions.setActiveSection(isTradeType));
+            }
 
             // clean coinmarketAccount in sell
-            if (isSell && sellCoinmarketAccount) {
+            if (isTradeType === 'sell' && sellCoinmarketAccount) {
                 api.dispatch(coinmarketSellActions.setCoinmarketSellAccount(undefined));
             }
 
             // clean coinmarketAccount in exchange
-            if (isExchange && exchangeCoinmarketAccount) {
+            if (isTradeType === 'exchange' && exchangeCoinmarketAccount) {
                 api.dispatch(coinmarketExchangeActions.setCoinmarketExchangeAccount(undefined));
             }
 
-            if (isBuy) {
-                api.dispatch(coinmarketCommonActions.setActiveSection('buy'));
-            }
-
-            if (isSell) {
-                api.dispatch(coinmarketCommonActions.setActiveSection('sell'));
-            }
-
-            if (isExchange) {
-                api.dispatch(coinmarketCommonActions.setActiveSection('exchange'));
-            }
-
-            const wasBuy = state.router.route?.name === 'wallet-coinmarket-buy';
-            const wasSell = state.router.route?.name === 'wallet-coinmarket-sell';
-            const isBuyToSell = wasBuy && isSell;
-            const isSellToBuy = wasSell && isBuy;
+            const isBuyToSell = wasTradeType === 'buy' && isTradeType === 'sell';
+            const isSellToBuy = wasTradeType === 'sell' && isTradeType === 'buy';
 
             const cleanupPrefilledFromCryptoId =
                 !!newState.wallet.coinmarket.prefilledFromCryptoId &&
-                ((!isSell && !isExchange && !isBuy) || isBuyToSell || isSellToBuy);
+                (!isTradeType || isBuyToSell || isSellToBuy);
 
             if (cleanupPrefilledFromCryptoId) {
                 api.dispatch(coinmarketCommonActions.setCoinmarketPrefilledFromCryptoId(undefined));

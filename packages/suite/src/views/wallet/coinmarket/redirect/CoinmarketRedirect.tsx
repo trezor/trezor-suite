@@ -22,7 +22,8 @@ const Wrapper = styled.div`
 `;
 
 export const CoinmarketRedirect = () => {
-    const { redirectToOffers, redirectToDetail, redirectToSellOffers } = useCoinmarketRedirect();
+    const { redirectToOffers, redirectToDetail, redirectToSellOffers, redirectToExchangeOffers } =
+        useCoinmarketRedirect();
     const router = useSelector(state => state.router);
 
     useEffect(() => {
@@ -31,7 +32,7 @@ export const CoinmarketRedirect = () => {
         if (!params) return;
 
         const redirectCommonParams = {
-            routeType: params[0] as 'detail' | 'offers' | 'sell-offers',
+            routeType: params[0] as 'detail' | 'offers' | 'sell-offers' | 'exchange-offers',
             symbol: params[1] as Account['symbol'],
             accountType: params[2] as Account['accountType'],
             index: parseInt(params[3], 10),
@@ -71,10 +72,30 @@ export const CoinmarketRedirect = () => {
             });
         }
 
+        if (redirectCommonParams.routeType === 'exchange-offers') {
+            const feeIndex = 8;
+            redirectToExchangeOffers({
+                ...redirectCommonParams,
+                send: params[4] as CryptoId,
+                receive: params[5] as CryptoId,
+                amount: params[6],
+                orderId: params[7],
+                selectedFee: params[feeIndex] as FeeLevel['label'],
+                feePerByte: params[feeIndex + 1],
+                feeLimit: params[feeIndex + 2],
+            });
+        }
+
         if (redirectCommonParams.routeType === 'detail') {
             redirectToDetail({ ...redirectCommonParams, transactionId: params[4] });
         }
-    }, [redirectToOffers, redirectToDetail, redirectToSellOffers, router]);
+    }, [
+        redirectToOffers,
+        redirectToDetail,
+        redirectToSellOffers,
+        redirectToExchangeOffers,
+        router,
+    ]);
 
     return (
         <Wrapper>

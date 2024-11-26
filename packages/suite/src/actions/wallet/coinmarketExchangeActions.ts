@@ -27,7 +27,8 @@ export type CoinmarketExchangeAction =
           type: typeof COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST;
           request: ExchangeTradeQuoteRequest;
       }
-    | { type: typeof COINMARKET_EXCHANGE.SAVE_TRANSACTION_ID; transactionId: string }
+    | { type: typeof COINMARKET_EXCHANGE.SAVE_TRANSACTION_ID; transactionId: string | undefined }
+    | { type: typeof COINMARKET_EXCHANGE.SET_IS_FROM_REDIRECT; isFromRedirect: boolean }
     | { type: typeof COINMARKET_EXCHANGE.VERIFY_ADDRESS; addressVerified: string }
     | {
           type: typeof COINMARKET_EXCHANGE.SAVE_QUOTES;
@@ -127,7 +128,7 @@ export const saveQuoteRequest = (request: ExchangeTradeQuoteRequest): Coinmarket
     request,
 });
 
-export const saveTransactionId = (transactionId: string): CoinmarketExchangeAction => ({
+export const saveTransactionId = (transactionId: string | undefined): CoinmarketExchangeAction => ({
     type: COINMARKET_EXCHANGE.SAVE_TRANSACTION_ID,
     transactionId,
 });
@@ -140,6 +141,11 @@ export const saveQuotes = (quotes: ExchangeTrade[]): CoinmarketExchangeAction =>
 export const saveSelectedQuote = (quote: ExchangeTrade | undefined): CoinmarketExchangeAction => ({
     type: COINMARKET_EXCHANGE.SAVE_QUOTE,
     quote,
+});
+
+export const setIsFromRedirect = (isFromRedirect: boolean): CoinmarketExchangeAction => ({
+    type: COINMARKET_EXCHANGE.SET_IS_FROM_REDIRECT,
+    isFromRedirect,
 });
 
 export const verifyAddress = (account: Account, address?: string, path?: string) =>

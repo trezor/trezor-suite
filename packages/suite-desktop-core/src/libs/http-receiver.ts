@@ -18,6 +18,7 @@ interface Events {
     'oauth/error': (message: string) => void;
     'buy/redirect': (url: string) => void;
     'sell/redirect': (url: string) => void;
+    'exchange/redirect': (url: string) => void;
 }
 
 const applyTemplate = (content = 'You may now close this window.', options?: TemplateOptions) => {
@@ -149,6 +150,19 @@ export const createHttpReceiver = () => {
             const { query } = url.parse(request.url, true);
             if (query && query.p) {
                 httpReceiver.emit('sell/redirect', query.p.toString());
+            }
+
+            const template = applyTemplate();
+            response.end(template);
+        },
+    ]);
+
+    httpReceiver.get('/exchange-redirect', [
+        allowReferers(['']), // No referer
+        (request, response) => {
+            const { query } = url.parse(request.url, true);
+            if (query && query.p) {
+                httpReceiver.emit('exchange/redirect', query.p.toString());
             }
 
             const template = applyTemplate();

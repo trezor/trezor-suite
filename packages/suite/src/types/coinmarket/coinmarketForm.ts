@@ -46,6 +46,7 @@ import {
     AmountLimits,
     CryptoAmountLimits,
     Option,
+    TradeExchange,
     TradeSell,
 } from 'src/types/wallet/coinmarketCommonTypes';
 import { SendContextValues } from 'src/types/wallet/sendForm';
@@ -241,7 +242,7 @@ export interface CoinmarketExchangeFormContextProps
     };
 
     selectedQuote?: ExchangeTrade;
-    trade?: TradeSell;
+    trade?: TradeExchange;
     suiteReceiveAccounts?: AccountsState;
     exchangeStep: CoinmarketExchangeStepType;
     feeInfo: FeeInfo;

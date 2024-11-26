@@ -1,4 +1,4 @@
-import { BuyTrade, SellFiatTrade, CryptoId } from 'invity-api';
+import { BuyTrade, SellFiatTrade, CryptoId, ExchangeTrade } from 'invity-api';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -268,7 +268,7 @@ export const filterQuotesAccordingTags = <T extends CoinmarketTradeBuySellType>(
     return allQuotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
 };
 
-// fill orderId for all and paymentId for sell and buy
+// fill orderId for all, paymentId for sell and buy, quoteId for exchange
 export const addIdsToQuotes = <T extends CoinmarketTradeType>(
     allQuotes: CoinmarketTradeDetailMapProps[T][] | undefined,
     type: CoinmarketTradeType,
@@ -282,6 +282,10 @@ export const addIdsToQuotes = <T extends CoinmarketTradeType>(
 
         if (sellBuyQuote && !sellBuyQuote.paymentId) {
             sellBuyQuote.paymentId = uuidv4();
+        }
+
+        if (type === 'exchange' && !q.quoteId) {
+            (q as ExchangeTrade).quoteId = uuidv4();
         }
 
         q.orderId = uuidv4();

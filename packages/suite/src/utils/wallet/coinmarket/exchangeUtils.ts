@@ -1,4 +1,12 @@
-import { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
+import {
+    CryptoId,
+    ExchangeTrade,
+    ExchangeTradeQuoteRequest,
+    ExchangeTradeStatus,
+} from 'invity-api';
+
+import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import { CryptoAmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
@@ -9,6 +17,8 @@ import {
     FORM_RATE_FIXED,
     FORM_RATE_FLOATING,
 } from 'src/constants/wallet/coinmarket/form';
+import { Account } from 'src/types/wallet';
+import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return error message
 export const getAmountLimits = (quotes: ExchangeTrade[]): CryptoAmountLimits | undefined => {
@@ -38,6 +48,37 @@ export const getAmountLimits = (quotes: ExchangeTrade[]): CryptoAmountLimits | u
     if (min || max) {
         return { currency, minCrypto: min, maxCrypto: max };
     }
+};
+
+export const createQuoteLink = async (
+    request: ExchangeTradeQuoteRequest,
+    account: Account,
+    composedInfo: ComposedTransactionInfo,
+    orderId: string,
+) => {
+    const assetPrefix = process.env.ASSET_PREFIX || '';
+    const locationOrigin = getLocationOrigin();
+    let hash = `${request.send}/${request.receive}/${request.sendStringAmount}/${orderId}`;
+
+    if (composedInfo.selectedFee && composedInfo.selectedFee !== 'normal') {
+        hash += `/${composedInfo.selectedFee}`;
+        if (composedInfo.selectedFee === 'custom') {
+            hash += `/${composedInfo.composed?.feePerByte}`;
+            if (composedInfo.composed?.feeLimit) {
+                hash += `/${composedInfo.composed?.feeLimit}`;
+            }
+        }
+    }
+
+    const params = `exchange-offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
+
+    if (isDesktop()) {
+        const url = await desktopApi.getHttpReceiverAddress('/exchange-redirect');
+
+        return `${url}?p=${encodeURIComponent(`/coinmarket-redirect/${params}`)}`;
+    }
+
+    return `${locationOrigin}${assetPrefix}/coinmarket-redirect#${params}`;
 };
 
 export const isQuoteError = (quote: ExchangeTrade): boolean => {
