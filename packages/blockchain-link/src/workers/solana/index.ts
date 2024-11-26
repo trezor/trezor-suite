@@ -266,14 +266,11 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     } as const;
 };
 
-const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
+const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolean) => {
     const api = await request.connect();
     const { blockhash: blockHash, lastValidBlockHeight: blockHeight } =
         await api.getLatestBlockhash('finalized');
-    const isTestnet =
-        (await api.getGenesisHash()) !== '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
     const serverInfo = {
-        // genesisHash is reliable identifier of the network, for mainnet the genesis hash is 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d
         testnet: isTestnet,
         blockHeight,
         blockHash,
@@ -517,12 +514,12 @@ const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
     } as const;
 };
 
-const onRequest = (request: Request<MessageTypes.Message>) => {
+const onRequest = (request: Request<MessageTypes.Message>, isTestnet: boolean) => {
     switch (request.type) {
         case MESSAGES.GET_ACCOUNT_INFO:
             return getAccountInfo(request);
         case MESSAGES.GET_INFO:
-            return getInfo(request);
+            return getInfo(request, isTestnet);
         case MESSAGES.PUSH_TRANSACTION:
             return pushTransaction(request);
         case MESSAGES.ESTIMATE_FEE:
@@ -542,6 +539,7 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
     }
 
     private lazyTokens = createLazy(() => solanaUtils.getTokenMetadata());
+    private isTestnet = false;
 
     async tryConnect(url: string): Promise<SolanaAPI> {
         const api = new Connection(url, {
@@ -551,7 +549,11 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
                 'User-Agent': `Trezor Suite ${getSuiteVersion()}`,
             },
         });
-        await api.getLatestBlockhash('finalized');
+
+        // genesisHash is reliable identifier of the network, for mainnet the genesis hash is 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d
+        this.isTestnet =
+            (await api.getGenesisHash()) !== '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
+
         this.post({ id: -1, type: RESPONSES.CONNECTED });
 
         return Promise.resolve(api);
@@ -570,7 +572,7 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
                 getTokenMetadata: this.lazyTokens.getOrInit,
             };
 
-            const response = await onRequest(request);
+            const response = await onRequest(request, this.isTestnet);
             this.post({ id: event.data.id, ...response });
         } catch (error) {
             this.errorResponse(event.data.id, error);
