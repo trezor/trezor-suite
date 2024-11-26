@@ -27,11 +27,6 @@ interface TransportInterfaceDevice {
     device: USBDevice;
 }
 
-/**
- * Local error. We cast it to "device disconnected during action" from bridge as it means the same
- */
-const INTERFACE_DEVICE_DISCONNECTED = 'The device was disconnected.' as const;
-
 export class UsbApi extends AbstractApi {
     chunkSize = 64;
 
@@ -218,11 +213,8 @@ export class UsbApi extends AbstractApi {
             return this.success(Buffer.from(res.data.buffer));
         } catch (err) {
             this.logger?.error(`usb: device.transferIn error ${err}`);
-            if (err.message === INTERFACE_DEVICE_DISCONNECTED) {
-                return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
-            }
 
-            return this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: err.message });
+            return this.handleReadWriteError(err);
         }
     }
 
@@ -255,12 +247,7 @@ export class UsbApi extends AbstractApi {
 
             return this.success(undefined);
         } catch (err) {
-            this.logger?.error(`usb: device.transferOut error ${err}`);
-            if (err.message === INTERFACE_DEVICE_DISCONNECTED) {
-                return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
-            }
-
-            return this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: err.message });
+            return this.handleReadWriteError(err);
         }
     }
 
@@ -515,6 +502,29 @@ export class UsbApi extends AbstractApi {
         const nonHidDevices = trezorDevices.filter(dev => !this.deviceIsHid(dev));
 
         return [hidDevices, nonHidDevices];
+    }
+
+    // https://github.com/trezor/trezord-go/blob/db03d99230f5b609a354e3586f1dfc0ad6da16f7/usb/libusb.go#L545
+    private handleReadWriteError(err: Error) {
+        if (
+            [
+                // node usb
+                'LIBUSB_TRANSFER_ERROR',
+                'LIBUSB_ERROR_PIPE',
+                'LIBUSB_ERROR_IO',
+                'LIBUSB_ERROR_NO_DEVICE',
+                'LIBUSB_ERROR_OTHER',
+                // web usb
+                ERRORS.INTERFACE_DATA_TRANSFER,
+                'The device was disconnected.',
+            ].some(disconnectedErr => {
+                return err.message.includes(disconnectedErr);
+            })
+        ) {
+            return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
+        }
+
+        return this.unknownError(err);
     }
 
     public dispose() {

@@ -58,7 +58,7 @@ describe('api/usb', () => {
 
         const result = await promise;
         if (result.success) throw new Error('Unexpected success');
-        expect(result.error).toContain('A transfer error has occurred.');
+        expect(result.error).toContain('unexpected error');
         expect(reset).toHaveBeenCalledTimes(1);
     });
 
