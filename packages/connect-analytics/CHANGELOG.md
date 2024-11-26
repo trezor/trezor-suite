@@ -1,3 +1,7 @@
+# 1.2.3
+
+-   npm-prerelease: @trezor/connect-analytics 1.2.3-beta.1 (ce1f777320)
+
 # 1.2.0
 
 -   npm-prerelease: @trezor/connect-analytics 1.1.1-beta.1 (dffb8c9c4d)
