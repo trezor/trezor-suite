@@ -8,6 +8,7 @@ import { spacings, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+import { selectTransport } from 'src/reducers/suite/suiteReducer';
 
 import { LearnMoreButton } from './LearnMoreButton';
 
@@ -50,7 +51,7 @@ interface Installer {
 }
 
 export const UdevDownload = () => {
-    const transport = useSelector(state => state.suite.transport);
+    const transport = useSelector(selectTransport);
 
     const installers: Installer[] =
         transport && transport.udev

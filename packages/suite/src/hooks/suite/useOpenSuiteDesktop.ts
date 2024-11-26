@@ -3,14 +3,14 @@ import type TrezorConnectWeb from '@trezor/connect-web';
 import { useWindowFocus } from '@trezor/react-utils';
 import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
 
-import { isWebUsb } from 'src/utils/suite/transport';
 import { useSelector } from 'src/hooks/suite';
+import { selectIsWebUsb } from 'src/reducers/suite/suiteReducer';
 
 export const useOpenSuiteDesktop = () => {
-    const transport = useSelector(state => state.suite.transport);
+    const isWebUsbTransport = useSelector(selectIsWebUsb);
     const windowFocused = useWindowFocus();
     const handleOpenSuite = () => {
-        if (isWebUsb(transport)) {
+        if (isWebUsbTransport) {
             (TrezorConnect as typeof TrezorConnectWeb).disableWebUSB();
         }
 

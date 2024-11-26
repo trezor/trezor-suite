@@ -6,11 +6,11 @@ import { spacings, spacingsPx } from '@trezor/theme';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
-import { isWebUsb } from 'src/utils/suite/transport';
 import { Translation, WebUsbButton } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 import { WebUsbIconButton } from 'src/components/suite/WebUsbButton';
+import { selectIsWebUsb } from 'src/reducers/suite/suiteReducer';
 
 const Container = styled.div<{ $isFullHeaderVisible: boolean }>`
     display: flex;
@@ -46,8 +46,7 @@ export const DeviceHeader = ({
     icon = 'caretCircleDown',
 }: DeviceHeaderProps) => {
     const selectedDevice = useSelector(selectDevice);
-    const transport = useSelector(state => state.suite.transport);
-    const isWebUsbTransport = isWebUsb(transport);
+    const isWebUsbTransport = useSelector(selectIsWebUsb);
     const isDeviceConnected = selectedDevice?.connected === true;
     const deviceModelInternal = device.features?.internal_model;
 

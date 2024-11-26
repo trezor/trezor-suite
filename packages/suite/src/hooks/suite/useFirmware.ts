@@ -11,7 +11,6 @@ import {
 
 import { MODAL } from 'src/actions/suite/constants';
 import { useSelector } from 'src/hooks/suite';
-import { isWebUsb } from 'src/utils/suite/transport';
 
 const VERSIONS_GUARANTEED_TO_WIPE_DEVICE_ON_UPDATE: ReturnType<typeof getFirmwareVersion>[] = [
     '1.6.1',
@@ -24,7 +23,6 @@ type UseFirmwareParams =
     | undefined;
 
 export const useFirmware = (params: UseFirmwareParams = {}) => {
-    const transport = useSelector(state => state.suite.transport);
     const modal = useSelector(state => state.modal);
     const firmwareInstallation = useFirmwareInstallation(params);
 
@@ -83,7 +81,6 @@ export const useFirmware = (params: UseFirmwareParams = {}) => {
 
     return {
         ...firmwareInstallation,
-        isWebUSB: isWebUsb(transport),
         showFingerprintCheck,
     };
 };

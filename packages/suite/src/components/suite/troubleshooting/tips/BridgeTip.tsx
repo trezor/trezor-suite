@@ -7,6 +7,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
 import { useSelector } from 'src/hooks/suite';
+import { selectTransport } from 'src/reducers/suite/suiteReducer';
 
 export const Wrapper = styled.div`
     a {
@@ -50,7 +51,7 @@ export const BridgeStatus = () => (
 
 export const BridgeToggle = () => {
     const { changeBridgeSettings, bridgeSettings } = useBridgeDesktopApi();
-    const transport = useSelector(state => state.suite.transport);
+    const transport = useSelector(selectTransport);
 
     if (!bridgeSettings) return null;
 

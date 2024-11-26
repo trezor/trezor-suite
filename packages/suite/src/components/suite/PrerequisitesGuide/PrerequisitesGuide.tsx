@@ -8,9 +8,8 @@ import { Button, motionEasing } from '@trezor/components';
 import { selectDevices, selectDevice } from '@suite-common/wallet-core';
 
 import { ConnectDevicePrompt, Translation } from 'src/components/suite';
-import { isWebUsb } from 'src/utils/suite/transport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
+import { selectIsWebUsb, selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 import { goto } from 'src/actions/suite/routerActions';
 
 import { Transport } from './Transport';
@@ -53,10 +52,8 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
     const device = useSelector(selectDevice);
     const devices = useSelector(selectDevices);
     const connectedDevicesCount = devices.filter(d => d.connected === true).length;
-    const transport = useSelector(state => state.suite.transport);
+    const isWebUsbTransport = useSelector(selectIsWebUsb);
     const prerequisite = useSelector(selectPrerequisite);
-
-    const isWebUsbTransport = isWebUsb(transport);
 
     const TipComponent = useMemo(
         () => (): React.JSX.Element => {

@@ -8,6 +8,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
+import { selectTransport } from 'src/reducers/suite/suiteReducer';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
@@ -37,7 +38,7 @@ const DownloadStandalone = ({ target }: { target: string }) => {
 
 // it actually changes to "Install suite desktop"
 export const BridgeUnavailable = () => {
-    const transport = useSelector(state => state.suite.transport);
+    const transport = useSelector(selectTransport);
     const dispatch = useDispatch();
 
     const preferredTarget = transport?.bridge?.packages?.find(i => i.preferred === true);

@@ -9,7 +9,7 @@ import { useFirmware } from 'src/hooks/suite';
 import { FirmwareOffer, FirmwareProgressBar, ReconnectDevicePrompt } from 'src/components/firmware';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { TrezorDevice } from 'src/types/suite';
-import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { selectIsActionAbortable, selectIsWebUsb } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from 'src/hooks/suite/useSelector';
 
 const SelectDevice = styled.div`
@@ -40,12 +40,13 @@ export const FirmwareInstallation = ({
     onPromptClose,
     onSuccess,
 }: FirmwareInstallationProps) => {
-    const { status, isWebUSB, showReconnectPrompt, uiEvent, targetType } = useFirmware();
+    const { status, showReconnectPrompt, uiEvent, targetType } = useFirmware();
     const isActionAbortable = useSelector(selectIsActionAbortable);
+    const isWebUsbTransport = useSelector(selectIsWebUsb);
 
     const getInnerActionComponent = () => {
         if (
-            isWebUSB &&
+            isWebUsbTransport &&
             uiEvent?.type === UI.FIRMWARE_RECONNECT &&
             uiEvent.payload.disconnected &&
             uiEvent.payload.i > 2 && // Add some latency for cases when the device is already paired or is restarting.

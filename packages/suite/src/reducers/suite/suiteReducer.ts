@@ -25,6 +25,7 @@ import {
     isSkippedHashCheckError,
     revisionCheckErrorScenarios,
 } from 'src/constants/suite/firmware';
+import { isWebUsb } from 'src/utils/suite/transport';
 
 import { RouterRootState, selectRouter } from './routerReducer';
 
@@ -397,10 +398,21 @@ export const selectIsRouterLocked = (state: SuiteRootState) =>
 export const selectIsRouterOrUiLocked = (state: SuiteRootState) =>
     !!state.suite.locks[SUITE.LOCK_TYPE.ROUTER] || !!state.suite.locks[SUITE.LOCK_TYPE.UI];
 
-export const selectIsActionAbortable = (state: SuiteRootState) =>
-    state.suite.transport?.type === 'BridgeTransport'
-        ? versionUtils.isNewerOrEqual(state.suite.transport?.version as string, '2.0.31')
+export const selectTransport = (state: SuiteRootState) => state.suite.transport;
+
+export const selectIsWebUsb = (state: SuiteRootState) => {
+    const transport = selectTransport(state);
+
+    return isWebUsb(transport);
+};
+
+export const selectIsActionAbortable = (state: SuiteRootState) => {
+    const transport = selectTransport(state);
+
+    return transport?.type === 'BridgeTransport'
+        ? versionUtils.isNewerOrEqual(transport?.version as string, '2.0.31')
         : true; // WebUSB
+};
 
 export const selectPrerequisite = (state: SuiteRootState & RouterRootState & DeviceRootState) => {
     const { transport } = state.suite;

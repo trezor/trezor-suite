@@ -13,6 +13,7 @@ import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,
+    selectTransport,
 } from 'src/reducers/suite/suiteReducer';
 
 import { MessageSystemBanner } from '../MessageSystemBanner';
@@ -36,7 +37,7 @@ const Container = styled.div<{ $isVisible?: boolean }>`
 `;
 
 export const SuiteBanners = () => {
-    const transport = useSelector(state => state.suite.transport);
+    const transport = useSelector(selectTransport);
     const device = useSelector(selectDevice);
     const isOnline = useSelector(state => state.suite.online);
     const firmwareHashInvalid = useSelector(state => state.firmware.firmwareHashInvalid);

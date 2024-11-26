@@ -4,6 +4,7 @@ import { isDevEnv } from '@suite-common/suite-utils';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+import { selectTransport } from 'src/reducers/suite/suiteReducer';
 
 import { useBridgeDesktopApi } from '../../../hooks/suite/useBridgeDesktopApi';
 
@@ -12,7 +13,7 @@ const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0.01;
 
 export const TransportBackends = () => {
     const allowPrerelease = useSelector(state => state.desktopUpdate.allowPrerelease);
-    const transport = useSelector(state => state.suite.transport);
+    const transport = useSelector(selectTransport);
 
     const { bridgeProcess, bridgeSettings, changeBridgeSettings, bridgeDesktopApiError } =
         useBridgeDesktopApi();

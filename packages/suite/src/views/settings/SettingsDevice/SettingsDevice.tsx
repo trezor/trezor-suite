@@ -8,6 +8,7 @@ import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import type { TrezorDevice } from 'src/types/suite';
 import { isRecoveryInProgress } from 'src/utils/device/isRecoveryInProgress';
+import { selectTransport } from 'src/reducers/suite/suiteReducer';
 
 import { AuthenticateDevice } from './AuthenticateDevice';
 import { AutoLock } from './AutoLock';
@@ -47,7 +48,7 @@ const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<Tr
 
 export const SettingsDevice = () => {
     const { device, isLocked } = useDevice();
-    const transport = useSelector(state => state.suite.transport);
+    const transport = useSelector(selectTransport);
     const deviceUnavailable = !device?.features;
     const isDeviceLocked = isLocked();
     const bootloaderMode = device?.mode === 'bootloader';

@@ -6,7 +6,7 @@ import { ArrayElement } from '@trezor/type-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
-import { DebugModeOptions } from 'src/reducers/suite/suiteReducer';
+import { DebugModeOptions, selectTransport } from 'src/reducers/suite/suiteReducer';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 
 type TransportMenuItem = {
@@ -18,7 +18,7 @@ type TransportMenuItem = {
 
 export const Transport = () => {
     const debug = useSelector(state => state.suite.settings.debug);
-    const transport = useSelector(state => state.suite.transport);
+    const transport = useSelector(selectTransport);
     const dispatch = useDispatch();
 
     // fallback [] to avoid need of migration.

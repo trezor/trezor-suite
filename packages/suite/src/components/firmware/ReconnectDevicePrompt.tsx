@@ -11,6 +11,7 @@ import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
 import { useDevice, useFirmware, useSelector } from 'src/hooks/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { Translation, WebUsbButton } from 'src/components/suite';
+import { selectIsWebUsb } from 'src/reducers/suite/suiteReducer';
 
 const RebootDeviceGraphics = ({
     device,
@@ -62,7 +63,8 @@ interface ReconnectDevicePromptProps {
 
 export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePromptProps) => {
     const deviceLabel = useSelector(selectDeviceLabelOrName);
-    const { showManualReconnectPrompt, isWebUSB, status, uiEvent } = useFirmware();
+    const isWebUsbTransport = useSelector(selectIsWebUsb);
+    const { showManualReconnectPrompt, status, uiEvent } = useFirmware();
     const { device } = useDevice();
 
     const isManualRebootRequired =
@@ -93,7 +95,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
     const deviceModelInternal = device?.features?.internal_model;
     const isAbortable =
         onClose !== undefined && isManualRebootRequired && rebootPhase == 'waiting-for-reboot';
-    const showWebUsbButton = rebootPhase === 'disconnected' && isWebUSB;
+    const showWebUsbButton = rebootPhase === 'disconnected' && isWebUsbTransport;
 
     const toNormal =
         uiEvent?.type === UI.FIRMWARE_RECONNECT &&
