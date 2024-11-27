@@ -7,17 +7,17 @@ import { test, expect } from '../../support/fixtures';
  * 3. Write into feedback field
  * 4. Submit bug report (reporttext)
  */
-test('Send a bug report', async ({ dashboardPage, suiteGuidePage }) => {
+test('Send a bug report', async ({ onboardingPage, suiteGuidePage }) => {
     const testData = {
         desiredLocation: 'Account',
         reportText: 'Henlo this is testy test writing hangry test user report',
     };
 
-    dashboardPage.optionallyDismissFwHashCheckError();
+    onboardingPage.optionallyDismissFwHashCheckError();
 
     await suiteGuidePage.openSidePanel();
     await suiteGuidePage.openFeedback();
-    await suiteGuidePage.sendBugreport(testData);
+    await suiteGuidePage.sendBugReport(testData);
 
     expect(await suiteGuidePage.getSuccessToast()).toBeTruthy();
     await suiteGuidePage.closeGuide();

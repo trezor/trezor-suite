@@ -1,85 +1,98 @@
-import { Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 
 import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 
-import { waitForDataTestSelector } from '../common';
-
-const settingSectionsLocators = {
-    debug: '@settings/debug/github',
-    general: '@general-settings/language',
-    device: '@settings/device/backup-recovery-seed',
-    wallet: '@settings/wallet/network/btc',
-} as const;
-type Section = keyof typeof settingSectionsLocators;
-
 export class SettingsActions {
     private readonly window: Page;
+    private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 5;
+    readonly settingsHeader: Locator;
+    readonly debugTabButton: Locator;
+    readonly applicationTabButton: Locator;
+    readonly deviceTabButton: Locator;
+    readonly coinsTabButton: Locator;
+    readonly earlyAccessJoinButton: Locator;
+    readonly earlyAccessConfirmCheck: Locator;
+    readonly earlyAccessConfirmButton: Locator;
+    readonly earlyAccessSkipButton: Locator;
+    readonly settingsCloseButton: Locator;
+    readonly modal: Locator;
+    //coin Advance settings
+    readonly coinNetworkButton = (coin: NetworkSymbol) =>
+        this.window.getByTestId(`@settings/wallet/network/${coin}`);
+    readonly coinAdvanceSettingsButton = (coin: NetworkSymbol) =>
+        this.window.getByTestId(`@settings/wallet/network/${coin}/advance`);
+    readonly coinBackendSelector: Locator;
+    readonly coinBackendSelectorOption = (backend: BackendType) =>
+        this.window.getByTestId(`@settings/advance/${backend}`);
+    readonly coinAddressInput: Locator;
+    readonly coinAdvanceSettingSaveButton: Locator;
+
     constructor(window: Page) {
         this.window = window;
+        this.settingsHeader = this.window.getByTestId('@settings/menu/title');
+        this.debugTabButton = this.window.getByTestId('@settings/menu/debug');
+        this.applicationTabButton = this.window.getByTestId('@settings/menu/general');
+        this.deviceTabButton = this.window.getByTestId('@settings/menu/device');
+        this.coinsTabButton = this.window.getByTestId('@settings/menu/wallet');
+        this.earlyAccessJoinButton = this.window.getByTestId('@settings/early-access-join-button');
+        this.earlyAccessConfirmCheck = this.window.getByTestId(
+            '@settings/early-access-confirm-check',
+        );
+        this.earlyAccessConfirmButton = this.window.getByTestId(
+            '@settings/early-access-confirm-button',
+        );
+        this.earlyAccessSkipButton = this.window.getByTestId('@settings/early-access-skip-button');
+        this.settingsCloseButton = this.window.getByTestId('@settings/menu/close');
+        this.modal = this.window.getByTestId('@modal');
+        //coin Advance settings
+        this.coinBackendSelector = this.window.getByTestId('@settings/advance/select-type/input');
+        this.coinAddressInput = this.window.getByTestId('@settings/advance/url');
+        this.coinAdvanceSettingSaveButton = this.window.getByTestId(
+            '@settings/advance/button/save',
+        );
     }
 
     async toggleDebugModeInSettings() {
-        const settingsHeader = this.window.getByTestId('@settings/menu/title');
-        await settingsHeader.waitFor({ state: 'visible', timeout: 10_000 });
-        const timesClickToSetDebugMode = 5;
-        for (let i = 0; i < timesClickToSetDebugMode; i++) {
-            await settingsHeader.click();
+        await expect(this.settingsHeader).toBeVisible();
+        for (let i = 0; i < this.TIMES_CLICK_TO_SET_DEBUG_MODE; i++) {
+            await this.settingsHeader.click();
         }
-        await this.window.getByTestId('@settings/menu/debug').waitFor({ state: 'visible' });
+        await expect(this.debugTabButton).toBeVisible();
     }
 
-    async goToSettingSection(section: Section) {
-        await this.window.getByTestId(`@settings/menu/${section}`).click();
-        //TODO: #15552 Refactor navigation verification to specific tests and remove this method completely
-        await this.window
-            .getByTestId(settingSectionsLocators[section])
-            .waitFor({ state: 'visible', timeout: 10_000 });
+    async openCoinAdvanceSettings(coin: NetworkSymbol) {
+        const isCoinActive = await this.coinNetworkButton(coin).getAttribute('data-active');
+        if (isCoinActive === 'false') {
+            await this.enableCoin(coin);
+        }
+        await this.coinNetworkButton(coin).hover();
+        await this.coinAdvanceSettingsButton(coin).click();
+        await expect(this.modal).toBeVisible();
     }
 
-    async openNetworkSettings(desiredNetwork: NetworkSymbol) {
-        await this.window.getByTestId(`@settings/wallet/network/${desiredNetwork}`).click();
-        const networkSettingsButton = this.window.getByTestId(
-            `@settings/wallet/network/${desiredNetwork}/advance`,
-        );
-        await networkSettingsButton.waitFor({ state: 'visible' });
-        await networkSettingsButton.click();
-        await waitForDataTestSelector(this.window, '@modal');
+    async enableCoin(coin: NetworkSymbol) {
+        await this.coinNetworkButton(coin).click();
+        await expect(this.coinNetworkButton(coin)).toHaveAttribute('data-active', 'true');
     }
 
-    async enableCoin(desiredNetwork: NetworkSymbol) {
-        await this.window.getByTestId(`@settings/wallet/network/${desiredNetwork}`).click();
-    }
-
-    async changeNetworkBackend(desiredNetworkBackend: BackendType, backendUrl: string) {
-        const networkBackendSelector = this.window.getByTestId(
-            '@settings/advance/select-type/input',
-        );
-        await networkBackendSelector.waitFor({ state: 'visible' });
-        await networkBackendSelector.click();
-        await this.window.getByTestId(`@settings/advance/${desiredNetworkBackend}`).click();
-        const electrumAddressInput = this.window.getByTestId('@settings/advance/url');
-        await electrumAddressInput.fill(backendUrl);
-        await this.window.getByTestId('@settings/advance/button/save').click();
+    async changeCoinBackend(backend: BackendType, backendUrl: string) {
+        await this.coinBackendSelector.click();
+        await this.coinBackendSelectorOption(backend).click();
+        await this.coinAddressInput.fill(backendUrl);
+        await this.coinAdvanceSettingSaveButton.click();
     }
 
     async joinEarlyAccessProgram() {
-        await this.window
-            .getByTestId('@settings/early-access-join-button')
-            .scrollIntoViewIfNeeded();
-        await this.window.getByTestId('@settings/early-access-join-button').click();
-        const eapModal = this.window.getByTestId('@modal');
-        await eapModal.waitFor({ state: 'visible' });
-        await eapModal.getByTestId('@settings/early-access-confirm-check').click();
-        await eapModal.getByTestId('@settings/early-access-confirm-button').click();
-        await eapModal.getByTestId('@settings/early-access-skip-button').click();
-    }
-
-    async getEarlyAccessButtonText() {
-        return await this.window.getByTestId('@settings/early-access-join-button').textContent();
+        await this.earlyAccessJoinButton.scrollIntoViewIfNeeded();
+        await this.earlyAccessJoinButton.click();
+        await expect(this.modal).toBeVisible();
+        await this.earlyAccessConfirmCheck.click();
+        await this.earlyAccessConfirmButton.click();
+        await this.earlyAccessSkipButton.click();
     }
 
     async closeSettings() {
-        await this.window.getByTestId('@settings/menu/close').click();
-        await this.window.getByTestId('@settings/menu/title').waitFor({ state: 'detached' });
+        await this.settingsCloseButton.click();
+        await this.settingsHeader.waitFor({ state: 'detached' });
     }
 }

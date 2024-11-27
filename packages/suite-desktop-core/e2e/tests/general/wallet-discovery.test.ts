@@ -1,6 +1,6 @@
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { test } from '../../support/fixtures';
+import { test, expect } from '../../support/fixtures';
 
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
@@ -16,13 +16,11 @@ test.beforeAll(async () => {
  * 1. Discover a standard wallet
  * 2. Verify discovery by checking a the first btc value under the graph
  */
-test('Discover a standard wallet', async ({ dashboardPage }) => {
-    await dashboardPage.passThroughInitialRun();
+test('Discover a standard wallet', async ({ onboardingPage, dashboardPage }) => {
+    await onboardingPage.completeOnboarding();
     await dashboardPage.discoveryShouldFinish();
-
     await dashboardPage.openDeviceSwitcher();
     await dashboardPage.ejectWallet();
     await dashboardPage.addStandardWallet();
-
-    await dashboardPage.assertHasVisibleBalanceOnFirstAccount('btc');
+    await expect(dashboardPage.balanceOfNetwork('btc').first()).toBeVisible();
 });

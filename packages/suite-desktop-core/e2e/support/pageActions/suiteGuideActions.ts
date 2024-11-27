@@ -51,7 +51,7 @@ export class SuiteGuide {
         await submitButton.click();
     }
 
-    async sendBugreport({
+    async sendBugReport({
         reportText,
         desiredLocation,
     }: {

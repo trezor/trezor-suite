@@ -2,7 +2,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { test, expect } from '../support/fixtures';
 import { launchSuite, LEGACY_BRIDGE_VERSION, waitForDataTestSelector } from '../support/common';
-import { DashboardActions } from '../support/pageActions/dashboardActions';
+import { OnboardingActions } from '../support/pageActions/onboardingActions';
 
 test.describe.serial('Bridge', () => {
     test.beforeEach(async () => {
@@ -66,8 +66,8 @@ test.describe.serial('Bridge', () => {
         const suite = await launchSuite();
         await suite.window.title();
         await waitForDataTestSelector(suite.window, '@welcome/title');
-        const onDashboardPage = new DashboardActions(suite.window);
-        await onDashboardPage.passThroughInitialRun();
+        const onboardingPage = new OnboardingActions(suite.window);
+        await onboardingPage.completeOnboarding();
 
         await TrezorUserEnvLink.stopBridge();
 

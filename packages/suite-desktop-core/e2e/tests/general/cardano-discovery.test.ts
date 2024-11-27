@@ -23,16 +23,16 @@ test.afterAll(() => {
  * 3. Check that Staking section is available
  */
 test.skip('Discover all Cardano account types', async ({
+    onboardingPage,
     dashboardPage,
     topBar,
     settingsPage,
     walletPage,
 }) => {
-    await dashboardPage.passThroughInitialRun();
+    await onboardingPage.completeOnboarding();
     await dashboardPage.discoveryShouldFinish();
-
     await topBar.openSettings();
-    await settingsPage.goToSettingSection('wallet');
+    await settingsPage.coinsTabButton.click();
     await settingsPage.enableCoin('ada');
     await settingsPage.enableCoin('btc');
 

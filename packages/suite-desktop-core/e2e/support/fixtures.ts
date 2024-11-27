@@ -8,6 +8,7 @@ import { SettingsActions } from './pageActions/settingsActions';
 import { SuiteGuide } from './pageActions/suiteGuideActions';
 import { TopBarActions } from './pageActions/topBarActions';
 import { WalletActions } from './pageActions/walletActions';
+import { OnboardingActions } from './pageActions/onboardingActions';
 
 type Fixtures = {
     electronApp: ElectronApplication;
@@ -17,6 +18,7 @@ type Fixtures = {
     suiteGuidePage: SuiteGuide;
     topBar: TopBarActions;
     walletPage: WalletActions;
+    onboardingPage: OnboardingActions;
 };
 
 const test = base.extend<Fixtures>({
@@ -52,6 +54,10 @@ const test = base.extend<Fixtures>({
     walletPage: async ({ window }, use) => {
         const walletPage = new WalletActions(window);
         await use(walletPage);
+    },
+    onboardingPage: async ({ window }, use) => {
+        const onboardingPage = new OnboardingActions(window);
+        await use(onboardingPage);
     },
 });
 
