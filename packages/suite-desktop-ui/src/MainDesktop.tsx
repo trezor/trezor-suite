@@ -31,6 +31,7 @@ import { useDebugLanguageShortcut, useFormattersConfig } from 'src/hooks/suite';
 import history from 'src/support/history';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { desktopHandshake } from 'src/actions/suite/suiteActions';
+import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 
 import { DesktopUpdater } from './support/DesktopUpdater';
@@ -138,6 +139,9 @@ export const init = async (container: HTMLElement) => {
         // @ts-expect-error key vs union of values endless problem
         TrezorConnect[method] = proxy[method];
     });
+
+    // init bluetooth module
+    await store.dispatch(initBluetoothThunk());
 
     // finally render whole app
     root.render(
