@@ -31,6 +31,7 @@ import { useDebugLanguageShortcut, useFormattersConfig } from 'src/hooks/suite';
 import history from 'src/support/history';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { desktopHandshake } from 'src/actions/suite/suiteActions';
+import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 
 import { DesktopUpdater } from './support/DesktopUpdater';
@@ -127,6 +128,9 @@ export const init = async (container: HTMLElement) => {
     }
 
     store.dispatch(desktopHandshake(loadModules.payload));
+
+    // init bluetooth module
+    await store.dispatch(initBluetoothThunk());
 
     // create ipc-proxy for @trezor/connect
     const proxy = await createIpcProxy<typeof TrezorConnect>('TrezorConnect');

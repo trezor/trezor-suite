@@ -26,6 +26,7 @@ import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceUsedElsewhere } from './DeviceUsedElsewhere';
 import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
 import { Transport } from './Transport';
+import { BluetoothConnect } from '../bluetooth/BluetoothConnect';
 
 const Wrapper = styled.div`
     display: flex;
@@ -106,7 +107,12 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
                 <ElevationContext baseElevation={-1}>
                     {/* Here we need to draw the inner card with elevation -1 (custom design) */}
                     <ElevationDown>
-                        <Flex width={470}>Here will be the Bluetooth connection dialog</Flex>
+                        <Flex width={470}>
+                            <BluetoothConnect
+                                onClose={() => setIsBluetoothConnectOpen(false)}
+                                uiMode="spatial"
+                            />
+                        </Flex>
                     </ElevationDown>
                 </ElevationContext>
             ) : (

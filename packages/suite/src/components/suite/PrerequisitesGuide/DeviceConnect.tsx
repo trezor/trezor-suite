@@ -21,6 +21,9 @@ export const DeviceConnect = ({ onBluetoothClick }: DeviceConnectProps) => {
     const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
 
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
+    const isBluetoothTransport = useSelector(selectHasTransportOfType('BluetoothTransport'));
+
+    const isBluetooth = isBluetoothTransport && isBluetoothEnabled;
 
     const items = isWebUsbTransport
         ? [
@@ -38,7 +41,7 @@ export const DeviceConnect = ({ onBluetoothClick }: DeviceConnectProps) => {
           ];
 
     const CallToActionButton = () => {
-        if (isBluetoothEnabled) {
+        if (isBluetooth) {
             return (
                 <Button
                     variant="tertiary"
