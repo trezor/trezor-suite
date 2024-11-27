@@ -160,7 +160,7 @@ export type FlexProps = AllowedFrameProps & {
 export const Flex = ({
     gap = 0,
     justifyContent = 'flex-start',
-    alignItems = 'center',
+    alignItems = 'normal',
     children,
     direction = 'row',
     flex = 'initial',
@@ -207,4 +207,4 @@ export const Flex = ({
 };
 
 export const Column = (props: FlexProps) => <Flex {...props} direction="column" />;
-export const Row = (props: FlexProps) => <Flex {...props} direction="row" />;
+export const Row = (props: FlexProps) => <Flex alignItems="center" {...props} direction="row" />;

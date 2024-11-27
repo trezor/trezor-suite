@@ -21,7 +21,7 @@ export const StakingInfoCards = () => {
     ];
 
     return (
-        <Column alignItems="stretch" gap={spacings.lg} margin={{ bottom: spacings.lg }}>
+        <Column gap={spacings.lg} margin={{ bottom: spacings.lg }}>
             {cards.map((card, index) => (
                 <CollapsibleBox
                     heading={<H3 typographyStyle="highlight">{card.heading}</H3>}

@@ -38,7 +38,7 @@ export const StakeEthForm = () => {
                 />
             )}
 
-            <Column gap={spacings.xxl} alignItems="stretch" margin={{ bottom: spacings.lg }}>
+            <Column gap={spacings.xxl} margin={{ bottom: spacings.lg }}>
                 <AvailableBalance formattedBalance={formattedBalance} symbol={symbol} />
 
                 <Inputs />

@@ -99,7 +99,7 @@ export const Fees = <TFieldValues extends FormState>({
     const shouldAnimateNormalFee = showNormalFee && !isCustomLevel;
 
     return (
-        <Column alignItems="stretch" gap={spacings.xs}>
+        <Column gap={spacings.xs}>
             <InfoItem
                 direction="row"
                 labelTypographyStyle="body"

@@ -77,7 +77,7 @@ export const Guide = () => {
     return (
         <GuideViewWrapper>
             <GuideHeader label={<Translation id="TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER" />} />
-            <Column justifyContent="space-between" alignItems="stretch" height="100%">
+            <Column justifyContent="space-between" height="100%">
                 <GuideContent>
                     <GuideSearch pageRoot={indexNode} setSearchActive={setSearchActive} />
                     {!searchActive && <GuideCategories node={indexNode} />}

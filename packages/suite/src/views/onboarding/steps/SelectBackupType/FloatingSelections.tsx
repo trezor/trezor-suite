@@ -146,7 +146,7 @@ export const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsP
                                 });
                             }}
                         >
-                            <Column gap={spacings.md} flex="1" alignItems="stretch">
+                            <Column gap={spacings.md} flex="1">
                                 <LegacyWarning />
                                 <div>
                                     <LegacyOptions

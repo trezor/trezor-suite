@@ -41,7 +41,7 @@ export const NotificationView = ({
                 ) : (
                     defaultIcon
                 ))}
-            <Column alignItems="normal" gap={spacings.xxs} margin={{ right: 'auto' }}>
+            <Column gap={spacings.xxs} margin={{ right: 'auto' }}>
                 <Paragraph typographyStyle={seen ? 'hint' : 'callout'} variant={colorVariant}>
                     <Translation id={message} values={messageValues} />
                 </Paragraph>

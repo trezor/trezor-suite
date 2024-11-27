@@ -62,7 +62,7 @@ export const SelectAssetModal = ({
             onCancel={onClose}
             size="small"
         >
-            <Column gap={spacings.md} alignItems="stretch">
+            <Column gap={spacings.md}>
                 {searchInput}
 
                 {filterTabs}

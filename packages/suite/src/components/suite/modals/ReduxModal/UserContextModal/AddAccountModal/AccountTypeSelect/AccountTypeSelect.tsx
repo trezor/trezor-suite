@@ -68,7 +68,7 @@ export const AccountTypeSelect = ({
     const bip43PathToDescribe = selectedAccountType?.bip43Path ?? defaultAccountType.bip43Path;
 
     return (
-        <Column gap={spacings.md}>
+        <Column alignItems="center" gap={spacings.md}>
             <Select
                 data-testid="@add-account-type/select"
                 label={<Translation id="TR_ACCOUNT_TYPE" />}

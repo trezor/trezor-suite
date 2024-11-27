@@ -84,7 +84,7 @@ export const FormCell = ({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <Column alignItems="stretch" gap={spacings.xs}>
+            <Column gap={spacings.xs}>
                 <TopAddons
                     isHovered={isHovered}
                     addonLeft={labelLeft}

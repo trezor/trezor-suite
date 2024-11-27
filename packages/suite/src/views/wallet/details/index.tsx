@@ -87,7 +87,7 @@ const Details = () => {
                 )}
 
                 <Card>
-                    <Column gap={spacings.md} hasDivider>
+                    <Column alignItems="center" gap={spacings.md} hasDivider>
                         <Row>
                             <TextColumn
                                 title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}

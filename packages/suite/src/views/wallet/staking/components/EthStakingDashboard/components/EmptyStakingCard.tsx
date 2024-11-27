@@ -80,7 +80,7 @@ export const EmptyStakingCard = () => {
     return (
         <DashboardSection heading={<Translation id="TR_STAKE_ETH" />}>
             <Card>
-                <Column alignItems="stretch">
+                <Column>
                     <section>
                         <Text typographyStyle="highlight">
                             <Translation id="TR_STAKE_WHAT_IS_STAKING" />

@@ -16,6 +16,7 @@ export const DiscoveryLoader = () => {
             <CardWithDevice device={device} isFullHeaderVisible={false}>
                 <Column
                     justifyContent="center"
+                    alignItems="center"
                     margin={{ top: spacings.xxxl, bottom: spacings.xl }}
                 >
                     <Spinner size={80} isGrey={false} />

@@ -98,7 +98,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
     }, [device?.connected, dispatch]);
 
     return (
-        <Column gap={spacings.xl} alignItems="stretch">
+        <Column gap={spacings.xl}>
             <Paragraph typographyStyle="hint" variant="tertiary">
                 <Translation
                     id="TR_EXCHANGE_RECEIVING_ADDRESS_INFO"
@@ -119,7 +119,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
                     onChangeAccount={onChangeAccount}
                 />
             </Column>
-            <Column gap={spacings.xxs} alignItems="stretch">
+            <Column gap={spacings.xxs}>
                 {selectedAccountOption?.type === 'SUITE' &&
                     selectedAccountOption?.account?.networkType === 'bitcoin' && (
                         <>
@@ -179,7 +179,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
                 )}
             </Column>
             {selectedAccountOption && (
-                <Column>
+                <Column alignItems="center">
                     <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
                     {(!addressVerified || addressVerified !== address) &&
                         selectedAccountOption.account && (

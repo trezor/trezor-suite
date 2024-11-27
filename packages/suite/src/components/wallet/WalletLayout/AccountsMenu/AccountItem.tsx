@@ -140,7 +140,7 @@ export const AccountItem = forwardRef(
             switch (type) {
                 case 'coin':
                     return (
-                        <Column>
+                        <Column alignItems="center">
                             <CoinLogo size={ICON_SIZE} symbol={symbol} />
                         </Column>
                     );
@@ -160,7 +160,7 @@ export const AccountItem = forwardRef(
         const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
 
         const ItemContent = () => (
-            <Column flex="1" alignItems="stretch" overflow="hidden" gap={spacings.xxxs}>
+            <Column flex="1" overflow="hidden" gap={spacings.xxxs}>
                 <Row
                     gap={spacings.md}
                     margin={{ right: spacings.xxs }}
@@ -210,7 +210,7 @@ export const AccountItem = forwardRef(
                     <CoinBalance value={formattedBalance} symbol={symbol} />
                 )}
                 {!isBalanceShown && (
-                    <Column alignItems="stretch" gap={spacings.xs}>
+                    <Column gap={spacings.xs}>
                         <SkeletonRectangle width="100px" height="16px" animate={shouldAnimate} />
 
                         {!isTestnet(account.symbol) && (

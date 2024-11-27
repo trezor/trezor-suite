@@ -79,7 +79,6 @@ export const CoinmarketFormOffersSwitcher = ({
     return (
         <Card paddingType="none">
             <Column
-                alignItems="stretch"
                 margin={{ horizontal: spacings.xxs, vertical: spacings.xxs }}
                 gap={spacings.xxs}
             >

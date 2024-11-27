@@ -63,7 +63,7 @@ export const CoinmarketFormSwitcherExchangeRates = ({
     const floatingRateSelected = rateType === FORM_RATE_FLOATING;
 
     return (
-        <Column alignItems="stretch" gap={spacings.xs}>
+        <Column gap={spacings.xs}>
             <Translation id="TR_COINMARKET_RATE" />
             <Card paddingType="none">
                 <Grid

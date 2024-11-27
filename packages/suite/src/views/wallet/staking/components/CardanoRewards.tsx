@@ -54,7 +54,7 @@ export const CardanoRewards = ({ account, deviceModel }: CardanoRewardsProps) =>
 
     return (
         <Card>
-            <Column gap={spacings.xs}>
+            <Column gap={spacings.xs} alignItems="center">
                 <StyledH2>
                     <Icon name="check" size={25} />
                     <Heading>

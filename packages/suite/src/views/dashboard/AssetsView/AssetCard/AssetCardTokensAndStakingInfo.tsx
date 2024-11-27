@@ -23,7 +23,7 @@ export const AssetCardTokensAndStakingInfo = ({
     shouldRenderTokens,
     accounts,
 }: AssetCardTokensAndStakingInfoProps) => (
-    <Column alignItems="stretch">
+    <Column>
         <Divider strokeWidth={1} margin={{ top: spacings.xs, bottom: spacings.xs }} />
         {shouldRenderStaking && (
             <Row

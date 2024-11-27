@@ -43,7 +43,7 @@ export const useProgressLabelsData = ({
                     return 'stale';
                 })(),
                 children: (
-                    <Column alignItems="normal">
+                    <Column>
                         <Translation id="TR_STAKE_ADDING_TO_POOL" />
                         {isDaysToAddToPoolShown && (
                             <Paragraph typographyStyle="label" variant="tertiary">

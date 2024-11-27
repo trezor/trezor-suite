@@ -166,7 +166,7 @@ export const UsedAddresses = ({
 
     return (
         <Card overflow="hidden" paddingType="none">
-            <Column alignItems="stretch" gap={spacings.md}>
+            <Column gap={spacings.md}>
                 <Table margin={{ top: spacings.xs, bottom: spacings.xs }}>
                     <Table.Header>
                         <Table.Row>

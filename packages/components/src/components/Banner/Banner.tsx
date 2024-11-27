@@ -107,14 +107,13 @@ export const Banner = ({
     const ContentComponent = ({ children }: { children: ReactNode }) => {
         const commonProps = {
             justifyContent: 'space-between' as const,
+            alignItems: 'center' as const,
             gap: spacings.lg,
             flex: '1' as const,
         };
 
         return isMobile ? (
-            <Column {...commonProps} alignItems="stretch">
-                {children}
-            </Column>
+            <Column {...commonProps}>{children}</Column>
         ) : (
             <Row {...commonProps}>{children}</Row>
         );

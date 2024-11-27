@@ -108,7 +108,7 @@ export const StakeEthCard = () => {
         <>
             <DashboardSection heading={<Translation id="TR_STAKE_ETH" />}>
                 <Card>
-                    <Column alignItems="stretch">
+                    <Column>
                         <Column alignItems="flex-start">
                             <H3>
                                 <Translation

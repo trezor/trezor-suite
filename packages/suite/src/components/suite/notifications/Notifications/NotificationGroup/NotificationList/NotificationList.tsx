@@ -11,7 +11,7 @@ interface NotificationListProps {
 }
 
 export const NotificationList = ({ notifications }: NotificationListProps) => (
-    <Column flex="1" alignItems="normal" hasDivider gap={spacings.xl}>
+    <Column flex="1" hasDivider gap={spacings.xl}>
         {notifications.map(n => (
             <NotificationRenderer key={n.id} notification={n} render={NotificationView} />
         ))}

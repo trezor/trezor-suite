@@ -103,7 +103,7 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
             bottomContent={getBottomContent()}
             onBackClick={section === 'CHANGE_FEE' ? onBackClick : undefined}
         >
-            <Column alignItems="normal" gap={spacings.lg}>
+            <Column gap={spacings.lg}>
                 <BasicTxDetails
                     explorerUrl={blockchain.explorer.tx}
                     explorerUrlQueryString={blockchain.explorer.queryString}

@@ -79,7 +79,7 @@ const TabsApp = (props: Partial<TabsProps>) => {
     };
 
     return (
-        <Column alignItems="normal" gap={spacings.md}>
+        <Column gap={spacings.md}>
             <TabsComponent activeItemId={items[selectedTab].id} {...props}>
                 {items.map(item => (
                     <TabsComponent.Item key={item.id} {...item}>

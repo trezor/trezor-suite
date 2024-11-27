@@ -164,7 +164,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                 }
             >
                 {!isRebootDone && (
-                    <Column margin={{ bottom: spacings.md }}>
+                    <Column margin={{ bottom: spacings.md }} alignItems="center">
                         <RebootDeviceGraphics
                             device={uiEvent?.payload.device}
                             isManualRebootRequired={isManualRebootRequired}
@@ -175,7 +175,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                     <Translation id={getHeading()} />
                 </H2>
                 {!isRebootDone && (
-                    <Column alignItems="stretch" gap={spacings.lg}>
+                    <Column gap={spacings.lg}>
                         {isManualRebootRequired ? (
                             <List isOrdered margin={{ top: spacings.md }}>
                                 {/* First step asks for disconnecting a device */}

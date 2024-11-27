@@ -68,7 +68,7 @@ export const PassphraseTypeCardHeading = ({
                     <Icon size={24} name="lock" color={theme.iconSubdued} />
                 )}
             </IconWrapper>
-            <Column justifyContent="center" flex="1">
+            <Column justifyContent="center" flex="1" alignItems="center">
                 <WalletTitle
                     $withMargin={type === 'hidden'}
                     data-testid={type === 'hidden' && '@tooltip/passphrase-tooltip'}

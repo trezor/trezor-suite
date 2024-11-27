@@ -15,7 +15,7 @@ export const CoinmarketOfferExchangeSend = () => {
         exchangeInfo?.providerInfos[exchange]?.companyName || selectedQuote.exchange;
 
     return (
-        <Column gap={spacings.lg} alignItems="stretch" flex="1">
+        <Column gap={spacings.lg} flex="1">
             <InfoItem label={<Translation id="TR_EXCHANGE_SEND_FROM" />} typographyStyle="hint">
                 <AccountLabeling account={account} />
             </InfoItem>

@@ -142,7 +142,7 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
 
     if (filteredAccounts.length > 0) {
         return (
-            <Column gap={spacings.xs} alignItems="stretch" margin={{ bottom: spacings.lg }}>
+            <Column gap={spacings.xs} margin={{ bottom: spacings.lg }}>
                 {buildGroup('coinjoin', coinjoinAccounts)}
                 {buildGroup('normal', normalAccounts, coinjoinAccounts.length === null)}
                 {buildGroup('taproot', taprootAccounts)}

@@ -30,7 +30,7 @@ export const TotalSent = () => {
     return (
         <Container>
             <Card height="min-content" fillType="none">
-                <Column gap={spacings.xxs} alignItems="stretch" margin={{ bottom: spacings.xl }}>
+                <Column gap={spacings.xxs} margin={{ bottom: spacings.xl }}>
                     <InfoItem
                         label={
                             <Text variant="default" typographyStyle="body">

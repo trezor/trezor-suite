@@ -55,7 +55,7 @@ export const CardanoStake = ({ account, deviceModel }: CardanoStakeProps) => {
 
     return (
         <Card>
-            <Column gap={spacings.xs}>
+            <Column gap={spacings.xs} alignItems="center">
                 <StyledH2>
                     <Icon name="close" size={25} />
                     <Heading>

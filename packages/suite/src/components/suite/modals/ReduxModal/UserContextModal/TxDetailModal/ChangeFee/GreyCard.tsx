@@ -15,6 +15,6 @@ const Wrapper = styled(Card)`
 
 export const GreyCard = (props: { children?: ReactNode }) => (
     <Wrapper>
-        <Column>{props.children}</Column>
+        <Column alignItems="center">{props.children}</Column>
     </Wrapper>
 );

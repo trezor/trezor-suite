@@ -120,7 +120,7 @@ export const CoinmarketOfferExchangeSendApproval = () => {
     };
 
     return (
-        <Column gap={spacings.lg} alignItems="stretch" flex="1">
+        <Column gap={spacings.lg} flex="1">
             <InfoItem label={<Translation id="TR_EXCHANGE_SEND_FROM" />} typographyStyle="hint">
                 <AccountLabeling account={account} />
             </InfoItem>
@@ -149,6 +149,7 @@ export const CoinmarketOfferExchangeSendApproval = () => {
             )}
             {selectedQuote.status === 'APPROVAL_PENDING' && (
                 <Column
+                    alignItems="center"
                     justifyContent="center"
                     margin={{ top: spacings.xxxxl, bottom: spacings.md }}
                 >
@@ -280,7 +281,7 @@ export const CoinmarketOfferExchangeSendApproval = () => {
                 </InfoItem>
             )}
 
-            <Column>
+            <Column alignItems="center">
                 <Divider margin={{ top: spacings.xxs, bottom: spacings.lg }} />
                 {(selectedQuote.status === 'APPROVAL_REQ' ||
                     (selectedQuote.status === 'CONFIRM' && approvalType === 'ZERO')) && (

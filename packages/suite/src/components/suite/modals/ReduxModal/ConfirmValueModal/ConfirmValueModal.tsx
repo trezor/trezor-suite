@@ -114,7 +114,7 @@ export const ConfirmValueModal = ({
                 description={showTokensSubheading && <Translation id="TR_INCLUDING_TOKENS" />}
                 onCancel={isCancelable ? onCancel : undefined}
             >
-                <Column alignItems="stretch" gap={spacings.xl}>
+                <Column gap={spacings.xl} alignItems="center">
                     {!device?.connected && (
                         <Banner icon="warningTriangle" variant="warning">
                             <Paragraph typographyStyle="hint">
@@ -129,7 +129,7 @@ export const ConfirmValueModal = ({
                         </Banner>
                     )}
                     <Row gap={spacings.xl} alignItems="stretch">
-                        <Column flex="1 1 50%">
+                        <Column flex="1 1 50%" alignItems="center">
                             <Card>
                                 <QrCode
                                     value={value}
@@ -139,12 +139,7 @@ export const ConfirmValueModal = ({
                                 />
                             </Card>
                         </Column>
-                        <Column
-                            flex="1 1 50%"
-                            justifyContent="space-between"
-                            alignItems="stretch"
-                            gap={spacings.lg}
-                        >
+                        <Column flex="1 1 50%" justifyContent="space-between" gap={spacings.lg}>
                             <TransactionReviewOutputElement
                                 indicator={
                                     <TransactionReviewStepIndicator state={state} size={16} />

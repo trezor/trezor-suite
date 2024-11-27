@@ -53,7 +53,7 @@ const IOItem = ({ anonymitySet, address, symbol, amount, isPhishingTransaction }
     const anonymity = address && anonymitySet?.[address];
 
     return (
-        <Column alignItems="normal">
+        <Column>
             <IOAddress
                 txAddress={address ?? ''}
                 explorerUrl={network?.explorer.address}
@@ -101,7 +101,7 @@ const IOGroup = ({ tx, inputs, outputs, isPhishingTransaction }: IOGroupProps) =
             </IconWrapper>
             <Grid columns={2} gap={spacings.xxxxl}>
                 {hasInputs && (
-                    <Column alignItems="normal" gap={spacings.xs} margin={{ right: spacings.xl }}>
+                    <Column gap={spacings.xs} margin={{ right: spacings.xl }}>
                         <InfoPair
                             leftContent={
                                 <Text typographyStyle="callout" variant="default">
@@ -125,7 +125,7 @@ const IOGroup = ({ tx, inputs, outputs, isPhishingTransaction }: IOGroupProps) =
                     </Column>
                 )}
                 {hasOutputs && (
-                    <Column alignItems="normal" gap={spacings.xs} margin={{ left: spacings.xl }}>
+                    <Column gap={spacings.xs} margin={{ left: spacings.xl }}>
                         <InfoPair
                             leftContent={
                                 <Text typographyStyle="callout" variant="default">
@@ -186,7 +186,7 @@ const EthereumSpecificBalanceDetailsRow = ({
     return (
         <>
             {tx.internalTransfers?.length ? (
-                <Column alignItems="normal" gap={spacings.xs}>
+                <Column gap={spacings.xs}>
                     <H4>
                         <Translation id="TR_INTERNAL_TRANSACTIONS" />
                     </H4>
@@ -203,7 +203,7 @@ const EthereumSpecificBalanceDetailsRow = ({
             ) : null}
 
             {Object.entries(tokensByStandard).map(([key, tokens]) => (
-                <Column key={key} alignItems="normal" gap={spacings.xs}>
+                <Column key={key} gap={spacings.xs}>
                     <H4>
                         <Translation
                             id="TR_TOKEN_TRANSFERS"
@@ -366,11 +366,9 @@ export const IODetails = ({ tx, isPhishingTransaction }: IODetailsProps) => {
     };
 
     return (
-        <Column alignItems="normal" gap={spacings.xxl}>
+        <Column gap={spacings.xxl}>
             <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
-            <Column alignItems="normal" gap={spacings.lg}>
-                {getContent()}
-            </Column>
+            <Column gap={spacings.lg}>{getContent()}</Column>
         </Column>
     );
 };

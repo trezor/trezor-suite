@@ -87,7 +87,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
                     isFullHeaderVisible
                     icon="x"
                 >
-                    <Column gap={spacings.sm} margin={{ top: spacings.xxs }} alignItems="stretch">
+                    <Column gap={spacings.sm} margin={{ top: spacings.xxs }}>
                         <H3>
                             <Translation id="TR_CONFIRM_PASSPHRASE" />
                         </H3>
@@ -119,7 +119,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
                     onBackButtonClick={onEnterPassphraseDialogBack}
                     isFullHeaderVisible
                 >
-                    <Column gap={spacings.sm} margin={{ top: spacings.xxs }} alignItems="stretch">
+                    <Column gap={spacings.sm} margin={{ top: spacings.xxs }}>
                         <H3>
                             <Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />
                         </H3>

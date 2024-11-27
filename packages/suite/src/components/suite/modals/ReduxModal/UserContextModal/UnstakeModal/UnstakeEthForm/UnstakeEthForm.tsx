@@ -49,7 +49,7 @@ export const UnstakeEthForm = () => {
 
     return (
         <form onSubmit={handleSubmit(signTx)}>
-            <Column alignItems="stretch" gap={spacings.xxl} margin={{ bottom: spacings.lg }}>
+            <Column gap={spacings.xxl} margin={{ bottom: spacings.lg }}>
                 {canClaim && (
                     <Banner variant="info">
                         <Translation
@@ -63,7 +63,7 @@ export const UnstakeEthForm = () => {
                     </Banner>
                 )}
 
-                <Column alignItems="stretch" gap={spacings.lg}>
+                <Column gap={spacings.lg}>
                     <Options symbol={symbol} />
                     {showError && <Banner variant="destructive">{inputError?.message}</Banner>}
                 </Column>

@@ -45,7 +45,7 @@ export const UnstakeModal = ({ onCancel }: UnstakeModalModalProps) => {
             >
                 <Grid columns={isBelowTablet ? 1 : 2} gap={spacings.xxl}>
                     <UnstakeEthForm />
-                    <Column alignItems="stretch" gap={spacings.lg}>
+                    <Column gap={spacings.lg}>
                         <CollapsibleBox
                             heading={
                                 <H3 typographyStyle="highlight">

@@ -22,7 +22,7 @@ export const InfoRow = ({ heading, subheading, content, isExpanded = false }: In
     return (
         <List.Item>
             <Row justifyContent="space-between">
-                <Column alignItems="normal">
+                <Column>
                     {heading}
                     <Subheading isExpanded={isExpanded} subheading={subheading} />
                 </Column>

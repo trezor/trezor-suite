@@ -39,11 +39,7 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
                 </>
             }
         >
-            <Column
-                gap={spacings.sm}
-                margin={{ top: spacings.xs, bottom: spacings.lg }}
-                alignItems="stretch"
-            >
+            <Column gap={spacings.sm} margin={{ top: spacings.xs, bottom: spacings.lg }}>
                 <Banner icon="fileFilled" variant="info">
                     <Translation
                         id="TR_STAKE_EVERSTAKE_MANAGES"

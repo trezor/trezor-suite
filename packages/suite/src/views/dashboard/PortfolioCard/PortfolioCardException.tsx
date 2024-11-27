@@ -37,7 +37,7 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
     const actions = Array.isArray(cta) ? cta : [cta];
 
     return (
-        <Column gap={spacings.xxs} data-testid={`@exception/${dataTestBase}`}>
+        <Column gap={spacings.xxs} data-testid={`@exception/${dataTestBase}`} alignItems="center">
             <IconCircle name="warning" size="extraLarge" variant="warning" />
             <H3 margin={{ top: spacings.md }}>
                 <Translation id={title} />

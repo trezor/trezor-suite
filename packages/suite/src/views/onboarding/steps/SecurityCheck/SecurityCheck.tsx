@@ -254,7 +254,7 @@ const SecurityCheckContent = ({
                             isFullWidth
                             size="large"
                         >
-                            <Column>
+                            <Column alignItems="center">
                                 <Translation id={primaryButtonTopText} />
                                 <TimeEstimateWrapper>
                                     <Icon size={12} name="clock" color={theme.iconOnPrimary} />

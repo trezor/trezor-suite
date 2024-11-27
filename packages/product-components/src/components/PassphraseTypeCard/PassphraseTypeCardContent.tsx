@@ -136,7 +136,7 @@ export const PassphraseTypeCardContent = ({
 
     return (
         <Card paddingType="small">
-            <Column gap={spacings.sm} alignItems="stretch">
+            <Column gap={spacings.sm}>
                 {type === 'hidden' && (
                     <>
                         <Row flex="1">

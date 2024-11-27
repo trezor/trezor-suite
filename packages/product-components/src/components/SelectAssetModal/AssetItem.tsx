@@ -72,7 +72,7 @@ export const AssetItem = ({
                 ) : (
                     symbol && <CoinLogo size={24} symbol={symbol} />
                 )}
-                <Column flex="1" alignItems="stretch">
+                <Column flex="1">
                     <Row gap={spacings.xs} alignItems="center">
                         <TextWrapper>
                             <Text typographyStyle="body" textWrap="nowrap">

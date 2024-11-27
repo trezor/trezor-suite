@@ -36,7 +36,7 @@ export const PassphraseWalletConfirmationStep1 = ({
     );
 
     return (
-        <Column gap={spacings.sm} margin={{ top: spacings.xxs }} alignItems="stretch">
+        <Column gap={spacings.sm} margin={{ top: spacings.xxs }}>
             <H3>
                 <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE" />
             </H3>
@@ -61,7 +61,7 @@ export const PassphraseWalletConfirmationStep1 = ({
                     </Row>
                 }
             >
-                <Column gap={spacings.sm}>
+                <Column gap={spacings.sm} alignItems="center">
                     <Paragraph typographyStyle="highlight">
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION" />
                     </Paragraph>

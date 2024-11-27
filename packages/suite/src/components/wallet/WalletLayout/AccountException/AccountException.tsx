@@ -38,11 +38,15 @@ export const AccountException = ({ loader, network }: AccountExceptionProps) => 
     const page = getExceptionPage(loader, network);
 
     if (page) {
-        return <Column height="100%">{page}</Column>;
+        return (
+            <Column alignItems="center" height="100%">
+                {page}
+            </Column>
+        );
     }
 
     return (
-        <Column height="100%">
+        <Column alignItems="center" height="100%">
             <H2 align="center">Exception {loader} not implemented</H2>
         </Column>
     );

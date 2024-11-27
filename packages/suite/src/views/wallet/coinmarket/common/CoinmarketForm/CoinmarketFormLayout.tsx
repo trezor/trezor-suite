@@ -16,7 +16,7 @@ export const CoinmarketFormLayout = () => (
     <>
         <CoinmarketFormLayoutWrapper>
             <Card>
-                <Column alignItems="stretch" gap={spacings.lg}>
+                <Column gap={spacings.lg}>
                     <CoinmarketFormInputs />
                 </Column>
             </Card>

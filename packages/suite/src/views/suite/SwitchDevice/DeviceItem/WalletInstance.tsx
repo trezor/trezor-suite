@@ -116,7 +116,7 @@ export const WalletInstance = ({
             isHiglighted={isSelected}
             {...rest}
         >
-            <Column alignItems="stretch">
+            <Column>
                 <Text
                     as="div"
                     variant={isSelected ? 'default' : 'tertiary'}

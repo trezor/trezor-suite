@@ -133,7 +133,6 @@ export const AccountGroup = ({
 
             <AnimationWrapper opened={isOpen} onUpdate={onUpdate}>
                 <Column
-                    alignItems="stretch"
                     gap={spacings.xxs}
                     margin={{ left: spacings.xs, right: spacings.xs }}
                     data-testid={`@account-menu/${type}/group`}

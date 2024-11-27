@@ -26,7 +26,7 @@ export const SwitchDevice = ({ onCancel }: ForegroundAppProps) => {
 
     return (
         <SwitchDeviceModal isAnimationEnabled onCancel={onCancel}>
-            <Column gap={spacings.xs} alignItems="stretch">
+            <Column gap={spacings.xs}>
                 {sortedDevices.map((device, index) => (
                     <DeviceItem
                         key={`${device.id}-${device.instance}`}

@@ -134,7 +134,7 @@ export const StakingCard = ({
 
     return (
         <Card>
-            <Column flex="1" alignItems="normal" gap={spacings.xxxxl}>
+            <Column flex="1" gap={spacings.xxxxl}>
                 {(isStakeConfirming || isTxStatusShown) && (
                     <ProgressLabels labels={progressLabelsData} />
                 )}

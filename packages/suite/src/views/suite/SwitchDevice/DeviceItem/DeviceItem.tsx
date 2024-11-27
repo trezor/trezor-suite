@@ -72,9 +72,9 @@ export const DeviceItem = ({
             isFullHeaderVisible={isFullHeaderVisible}
         >
             <WalletsWrapper $enabled>
-                <Column gap={spacings.xs} margin={{ top: spacings.xxs }} alignItems="stretch">
+                <Column gap={spacings.xs} margin={{ top: spacings.xxs }}>
                     {instancesWithState.length > 0 && (
-                        <Column gap={spacings.xs} alignItems="stretch">
+                        <Column gap={spacings.xs}>
                             {instancesWithState.map((instance, index) => (
                                 <WalletInstance
                                     key={`${instance.id}-${instance.instance}-${instance.state}`}

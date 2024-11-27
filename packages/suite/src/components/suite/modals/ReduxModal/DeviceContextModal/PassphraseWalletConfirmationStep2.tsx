@@ -14,7 +14,7 @@ type PassphraseWalletConfirmationStep2Props = {
 export const PassphraseWalletConfirmationStep2 = ({
     setContentType,
 }: PassphraseWalletConfirmationStep2Props) => (
-    <Column gap={spacings.sm} margin={{ top: spacings.xxs }} alignItems="stretch">
+    <Column gap={spacings.sm} margin={{ top: spacings.xxs }}>
         <H3>
             <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_TITLE" />
         </H3>

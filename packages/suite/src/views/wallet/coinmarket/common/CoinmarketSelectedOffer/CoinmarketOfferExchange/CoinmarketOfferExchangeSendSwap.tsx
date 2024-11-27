@@ -174,7 +174,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
     };
 
     return (
-        <Column gap={spacings.lg} alignItems="stretch" flex="1">
+        <Column gap={spacings.lg} flex="1">
             <InfoItem label={<Translation id="TR_EXCHANGE_SEND_FROM" />} typographyStyle="hint">
                 <AccountLabeling account={account} />
             </InfoItem>
@@ -191,7 +191,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                 label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE" />}
             >
                 <ElevationContext baseElevation={0}>
-                    <Column gap={spacings.lg} alignItems="stretch">
+                    <Column gap={spacings.lg}>
                         <InfoItem
                             label={
                                 <Tooltip
@@ -277,7 +277,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                 <BreakableValue>{dexTx.data}</BreakableValue>
             </InfoItem>
 
-            <Column>
+            <Column alignItems="center">
                 <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
                 <Button
                     isLoading={callInProgress}

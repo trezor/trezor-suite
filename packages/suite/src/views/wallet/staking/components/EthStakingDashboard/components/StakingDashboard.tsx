@@ -62,9 +62,9 @@ export const StakingDashboard = () => {
     const { canClaim = false } = getAccountEverstakeStakingPool(account) ?? {};
 
     return (
-        <Column alignItems="normal" gap={spacings.xxxxl}>
+        <Column gap={spacings.xxxxl}>
             <DashboardSection heading={<Translation id="TR_STAKE_ETH" />}>
-                <Column alignItems="normal" gap={spacings.sm}>
+                <Column gap={spacings.sm}>
                     <InstantStakeBanner
                         txs={txs}
                         daysToAddToPool={daysToAddToPool}

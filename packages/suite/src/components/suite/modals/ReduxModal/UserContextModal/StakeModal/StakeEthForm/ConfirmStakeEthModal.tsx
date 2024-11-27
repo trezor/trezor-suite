@@ -57,11 +57,7 @@ export const ConfirmStakeEthModal = ({
                 </>
             }
         >
-            <Column
-                gap={spacings.sm}
-                margin={{ top: spacings.xxs, bottom: spacings.lg }}
-                alignItems="stretch"
-            >
+            <Column gap={spacings.sm} margin={{ top: spacings.xxs, bottom: spacings.lg }}>
                 <Banner icon="clock">
                     <Translation
                         id="TR_STAKE_ENTERING_POOL_MAY_TAKE"

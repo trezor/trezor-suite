@@ -65,7 +65,7 @@ export const AccountItemsGroup = ({
 
     return (
         <Section $selected={selected}>
-            <Column alignItems="stretch" gap={spacings.xxs}>
+            <Column gap={spacings.xxs}>
                 <AccountItem
                     type="coin"
                     account={account}

@@ -41,7 +41,7 @@ export const PayoutCard = ({
             <Column alignItems="flex-start" flex="1" gap={spacings.lg}>
                 <Icon name="calendar" variant="tertiary" />
 
-                <Column alignItems="normal" margin={{ top: 'auto' }}>
+                <Column margin={{ top: 'auto' }}>
                     <Paragraph typographyStyle="titleMedium">
                         {payout === undefined ? (
                             <Translation

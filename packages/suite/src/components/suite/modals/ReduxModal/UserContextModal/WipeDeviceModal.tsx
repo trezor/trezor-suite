@@ -50,7 +50,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
                 <Translation id="TR_WIPE_DEVICE_TEXT" />
             </Paragraph>
             <Card margin={{ top: spacings.lg }}>
-                <Column gap={spacings.xs}>
+                <Column gap={spacings.xs} alignItems="center">
                     <CheckItem
                         title={<Translation id="TR_WIPE_DEVICE_CHECKBOX_1_TITLE" />}
                         description={<Translation id="TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION" />}

@@ -47,7 +47,7 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
             <Paragraph variant="tertiary" typographyStyle="hint">
                 <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_3" />
             </Paragraph>
-            <Column gap={spacings.sm} margin={{ top: spacings.xl }}>
+            <Column gap={spacings.sm} margin={{ top: spacings.xl }} alignItems="center">
                 <Banner icon="questionFilled">
                     <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_1" />
                 </Banner>

@@ -54,7 +54,7 @@ export const NoSearchResults = () => {
     return (
         <Card>
             <NoResults>
-                <Column>
+                <Column alignItems="center">
                     <Translation id="TR_NO_SEARCH_RESULTS" />
 
                     <Examples>

@@ -117,7 +117,7 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
                 ))}
             </List>
             <Divider margin={{ top: spacings.xl, bottom: spacings.md }} />
-            <Column alignItems="stretch" gap={spacings.lg}>
+            <Column gap={spacings.lg}>
                 {processes.map(({ heading, badge, content }, index) => (
                     <CollapsibleBox
                         key={index}

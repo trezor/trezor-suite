@@ -39,7 +39,7 @@ export const Data = ({ tx }: DataProps) => {
     const { function: fn, methodId, name, params } = parsedData || {};
 
     return (
-        <Column alignItems="normal" gap={spacings.lg}>
+        <Column gap={spacings.lg}>
             {methodId && name && (
                 <DataRow translationId="TR_TX_DATA_METHOD_NAME" content={`${name} (${methodId})`} />
             )}

@@ -73,8 +73,8 @@ export const Options = ({ symbol }: OptionsProps) => {
     } = getAccountEverstakeStakingPool(selectedAccount) ?? {};
 
     return (
-        <Column alignItems="stretch" gap={spacings.sm}>
-            <Column alignItems="stretch" gap={spacings.md} hasDivider>
+        <Column gap={spacings.sm}>
+            <Column gap={spacings.md} hasDivider>
                 {new BigNumber(restakedReward).gt(0) && (
                     <Radio
                         isChecked={isRewardsSelected}

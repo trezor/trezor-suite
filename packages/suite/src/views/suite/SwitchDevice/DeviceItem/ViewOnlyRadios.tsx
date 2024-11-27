@@ -82,7 +82,7 @@ export const ViewOnlyRadios = ({
     };
 
     return (
-        <Column gap={spacings.xs} alignItems="stretch">
+        <Column gap={spacings.xs}>
             <ViewOnlyRadio
                 title={<Translation id="TR_VIEW_ONLY_RADIOS_ENABLED_TITLE" />}
                 onClick={() => handleConfirm(true)}

@@ -258,7 +258,7 @@ export const ViewOnlyPromoContent = () => {
 
     return (
         <Card paddingType="small" maxWidth={476}>
-            <Column gap={spacings.md} alignItems="stretch">
+            <Column gap={spacings.md}>
                 <ElevationContext baseElevation={elevation}>
                     <Top />
                 </ElevationContext>

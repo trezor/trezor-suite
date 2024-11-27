@@ -42,8 +42,8 @@ export const EstimatedGains = () => {
     ];
 
     return (
-        <Column alignItems="normal" gap={spacings.lg}>
-            <Column alignItems="normal">
+        <Column gap={spacings.lg}>
+            <Column>
                 <Paragraph variant="primary" typographyStyle="titleMedium">
                     {ethApy}%
                 </Paragraph>
@@ -56,7 +56,7 @@ export const EstimatedGains = () => {
                 </Paragraph>
                 <Image image="GAINS_GRAPH" width="100%" />
             </Column>
-            <Column gap={spacings.sm} alignItems="normal" hasDivider>
+            <Column gap={spacings.sm} hasDivider>
                 {gains.map(({ label, value }, index) => (
                     <Grid key={index} columns={3}>
                         <Paragraph variant="tertiary">{label}</Paragraph>

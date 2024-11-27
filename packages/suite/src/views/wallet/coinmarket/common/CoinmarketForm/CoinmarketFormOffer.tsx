@@ -75,8 +75,8 @@ export const CoinmarketFormOffer = () => {
     const network = selectedCrypto?.value ? cryptoIdToPlatformName(networkId) : undefined;
 
     return (
-        <Column alignItems="stretch" gap={spacings.lg}>
-            <Column alignItems="stretch" gap={spacings.xs}>
+        <Column gap={spacings.lg}>
+            <Column gap={spacings.xs}>
                 <Translation id={amountLabels.offerLabel} />
                 {shouldDisplayFiatAmount ? (
                     <CoinmarketFormOfferFiatAmount
@@ -107,7 +107,7 @@ export const CoinmarketFormOffer = () => {
                     </Paragraph>
                 )}
             </Column>
-            <Column alignItems="stretch" gap={spacings.xxs} margin={{ vertical: spacings.md }}>
+            <Column gap={spacings.xxs} margin={{ vertical: spacings.md }}>
                 <Row justifyContent="space-between">
                     <Translation id="TR_COINMARKET_YOUR_BEST_OFFER" />
                     <TextButton

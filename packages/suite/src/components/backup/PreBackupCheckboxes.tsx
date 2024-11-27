@@ -13,7 +13,7 @@ export const PreBackupCheckboxes = () => {
 
     return (
         <Card>
-            <Column alignItems="stretch" gap={spacings.xl}>
+            <Column gap={spacings.xl}>
                 <CheckItem
                     data-testid="@backup/check-item/has-enough-time"
                     onClick={() => dispatch(toggleCheckboxByKey('has-enough-time'))}

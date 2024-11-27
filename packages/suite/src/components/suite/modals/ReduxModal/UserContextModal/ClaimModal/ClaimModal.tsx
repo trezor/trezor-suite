@@ -86,7 +86,7 @@ export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
             }
         >
             <form onSubmit={handleSubmit(signTx)}>
-                <Column alignItems="normal" gap={spacings.lg}>
+                <Column gap={spacings.lg}>
                     <InfoItem direction="column" label={<Translation id="AMOUNT" />}>
                         <Paragraph typographyStyle="titleSmall">
                             <FormattedCryptoAmount

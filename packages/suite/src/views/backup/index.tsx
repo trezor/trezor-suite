@@ -97,7 +97,7 @@ export const Backup = ({ onCancel }: ForegroundAppProps) => {
                 onCancel={onCancel}
                 data-testid="@backup/no-device"
             >
-                <Column>
+                <Column alignItems="center">
                     <Image image="CONNECT_DEVICE" width="360" />
                 </Column>
             </NewModal>

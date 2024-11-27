@@ -161,7 +161,6 @@ export const PortfolioCard = memo(() => {
                 {body && (
                     <Column
                         justifyContent="center"
-                        alignItems="stretch"
                         minHeight={329}
                         flex="1"
                         margin={{ left: spacings.lg, right: spacings.lg }}

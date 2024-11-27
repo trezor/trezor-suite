@@ -139,7 +139,7 @@ export const CustomFee = <TFieldValues extends FormState>({
         feeLimitError?.type === 'feeLimit' ? feeLimitValidationProps : undefined;
 
     return (
-        <Column gap={spacings.xs} alignItems="stretch">
+        <Column gap={spacings.xs}>
             <Banner
                 icon
                 variant="warning"

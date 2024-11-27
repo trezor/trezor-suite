@@ -38,7 +38,7 @@ export const CardanoRedelegate = ({ deviceModel }: CardanoRedelegateProps) => {
 
     return (
         <Card>
-            <Column gap={spacings.xs}>
+            <Column gap={spacings.xs} alignItems="center">
                 <Title>
                     <Icon name="info" size={18} />
                     <Heading>

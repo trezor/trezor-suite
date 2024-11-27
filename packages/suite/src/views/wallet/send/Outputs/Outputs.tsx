@@ -81,7 +81,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                             {output.type === 'opreturn' ? (
                                 <OpReturn outputId={index} />
                             ) : (
-                                <Column gap={spacings.md} alignItems="stretch">
+                                <Column gap={spacings.md}>
                                     <Address
                                         output={outputs[index]}
                                         outputId={index}

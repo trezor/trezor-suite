@@ -12,7 +12,7 @@ export const ApyCard = ({ apy }: ApyCardProps) => (
         <Column alignItems="flex-start" flex="1" gap={spacings.lg}>
             <Icon name="percent" variant="tertiary" />
 
-            <Column alignItems="normal" margin={{ top: 'auto' }}>
+            <Column margin={{ top: 'auto' }}>
                 <Paragraph typographyStyle="titleMedium">{`${apy}%`}</Paragraph>
                 <Paragraph typographyStyle="hint" variant="tertiary">
                     <Translation id="TR_STAKE_APY" />

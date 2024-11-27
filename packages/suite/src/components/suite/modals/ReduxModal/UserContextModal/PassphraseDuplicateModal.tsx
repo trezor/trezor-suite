@@ -25,14 +25,14 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
     return (
         <SwitchDeviceModal>
             <CardWithDevice device={device} isFullHeaderVisible={false}>
-                <Column gap={spacings.xs} margin={{ top: spacings.xxs }} alignItems="stretch">
+                <Column gap={spacings.xs} margin={{ top: spacings.xxs }}>
                     <H3 data-testid="@passphrase-duplicate-header">
                         <Translation id="TR_WALLET_DUPLICATE_TITLE" />
                     </H3>
                     <Text variant="tertiary">
                         <Translation id="TR_WALLET_DUPLICATE_DESC" />
                     </Text>
-                    <Column gap={spacings.xs} margin={{ top: spacings.lg }}>
+                    <Column gap={spacings.xs} margin={{ top: spacings.lg }} alignItems="center">
                         <Button
                             variant="primary"
                             onClick={handleSwitchDevice}

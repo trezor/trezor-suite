@@ -35,7 +35,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
         tokens.unverifiedWithBalance.length + tokens.unverifiedWithoutBalance.length;
 
     return (
-        <Column gap={spacings.xxl} alignItems="stretch">
+        <Column gap={spacings.xxl}>
             {hiddenTokensCount === 0 && unverifiedTokensCount === 0 && (
                 <NoTokens title={<Translation id="TR_HIDDEN_TOKENS_EMPTY" />} />
             )}
@@ -51,7 +51,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
                 />
             )}
             {unverifiedTokensCount > 0 && (
-                <Column alignItems="stretch" gap={spacings.sm}>
+                <Column gap={spacings.sm}>
                     <H3>
                         <Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR" />
                     </H3>
