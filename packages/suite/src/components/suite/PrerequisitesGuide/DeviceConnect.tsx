@@ -1,3 +1,5 @@
+import { Button } from '@trezor/components';
+
 import { Translation, TroubleshootingTips, WebUsbButton } from 'src/components/suite';
 import {
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
@@ -10,9 +12,15 @@ import {
 
 interface DeviceConnectProps {
     isWebUsbTransport: boolean;
+    isBluetooth: boolean;
+    onBluetoothClick: () => void;
 }
 
-export const DeviceConnect = ({ isWebUsbTransport }: DeviceConnectProps) => {
+export const DeviceConnect = ({
+    isWebUsbTransport,
+    onBluetoothClick,
+    isBluetooth,
+}: DeviceConnectProps) => {
     const items = isWebUsbTransport
         ? [
               TROUBLESHOOTING_TIP_UDEV,
@@ -32,7 +40,23 @@ export const DeviceConnect = ({ isWebUsbTransport }: DeviceConnectProps) => {
         <TroubleshootingTips
             label={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
             items={items}
-            cta={isWebUsbTransport ? <WebUsbButton data-testid="@webusb-button" /> : undefined}
+            cta={
+                // eslint-disable-next-line no-nested-ternary
+                isBluetooth ? (
+                    <Button
+                        variant="tertiary"
+                        size="tiny"
+                        onClick={e => {
+                            e.stopPropagation();
+                            onBluetoothClick();
+                        }}
+                    >
+                        Connect Safe 7 via bluetooth
+                    </Button>
+                ) : isWebUsbTransport ? (
+                    <WebUsbButton data-testid="@webusb-button" />
+                ) : undefined
+            }
             data-testid="@connect-device-prompt/no-device-detected"
         />
     );

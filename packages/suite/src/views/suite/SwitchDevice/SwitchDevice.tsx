@@ -1,6 +1,8 @@
+import { useState } from 'react';
+
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Column } from '@trezor/components';
+import { Button, Column, Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -8,8 +10,11 @@ import { ForegroundAppProps } from 'src/types/suite';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceModal } from './SwitchDeviceModal';
+import { BluetoothConnect } from '../../../components/suite/bluetooth/BluetoothConnect';
 
 export const SwitchDevice = ({ onCancel }: ForegroundAppProps) => {
+    const [isBluetoothMode, setIsBluetoothMode] = useState(false);
+
     const selectedDevice = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
 
@@ -26,17 +31,27 @@ export const SwitchDevice = ({ onCancel }: ForegroundAppProps) => {
 
     return (
         <SwitchDeviceModal isAnimationEnabled onCancel={onCancel}>
-            <Column gap={spacings.xs}>
-                {sortedDevices.map((device, index) => (
-                    <DeviceItem
-                        key={`${device.id}-${device.instance}`}
-                        device={device}
-                        instances={deviceUtils.getDeviceInstances(device, devices)}
-                        onCancel={onCancel}
-                        isFullHeaderVisible={index === 0}
-                    />
-                ))}
-            </Column>
+            {isBluetoothMode ? (
+                <BluetoothConnect onClose={() => setIsBluetoothMode(false)} uiMode="card" />
+            ) : (
+                <Column gap={spacings.md}>
+                    {sortedDevices.map((device, index) => (
+                        <DeviceItem
+                            key={`${device.id}-${device.instance}`}
+                            device={device}
+                            instances={deviceUtils.getDeviceInstances(device, devices)}
+                            onCancel={onCancel}
+                            isFullHeaderVisible={index === 0}
+                        />
+                    ))}
+                    <Button variant="tertiary" isFullWidth onClick={() => setIsBluetoothMode(true)}>
+                        <Row justifyContent="center" alignItems="center" gap={spacings.xs}>
+                            <Icon name="bluetooth" size="mediumLarge" />
+                            <Text typographyStyle="body">Pair Trezor Safe 7</Text>
+                        </Row>
+                    </Button>
+                </Column>
+            )}
         </SwitchDeviceModal>
     );
 };

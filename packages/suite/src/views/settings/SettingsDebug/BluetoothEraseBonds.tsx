@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { Button } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 
-import { useSelector } from 'src/hooks/suite';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const BluetoothEraseBonds = () => {
     const device = useSelector(state => state.device.selectedDevice);
