@@ -15,6 +15,7 @@ import {
     getUtxoOutpoint,
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
+import { BITCOIN_ONLY_NETWORKS } from '@suite-common/suite-constants';
 import { BTC_LOCKTIME_SEQUENCE, BTC_RBF_SEQUENCE } from '@suite-common/wallet-constants';
 import {
     Account,
@@ -318,6 +319,11 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
 
         if (selectedAccount.unlockPath) {
             signEnhancement.unlockPath = selectedAccount.unlockPath;
+        }
+
+        if (BITCOIN_ONLY_NETWORKS.includes(selectedAccount.symbol)) {
+            // nVersion, use 2 as it enables BIP68 + seems to be the most commonly used (= harder to fingerprint the Trezor)
+            signEnhancement.version = 2;
         }
 
         const signPayload: Params<SignTransaction> = {
