@@ -9231,7 +9231,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/bluetooth@workspace:suite-common/bluetooth":
+"@suite-common/bluetooth@workspace:*, @suite-common/bluetooth@workspace:suite-common/bluetooth":
   version: 0.0.0-use.local
   resolution: "@suite-common/bluetooth@workspace:suite-common/bluetooth"
   dependencies:
@@ -12495,6 +12495,7 @@ __metadata:
     "@solana/kit": "npm:^2.0.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/assets": "workspace:*"
+    "@suite-common/bluetooth": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"

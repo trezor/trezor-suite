@@ -17,6 +17,9 @@
         },
         { "path": "../../suite-common/assets" },
         {
+            "path": "../../suite-common/bluetooth"
+        },
+        {
             "path": "../../suite-common/connect-init"
         },
         {

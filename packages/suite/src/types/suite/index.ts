@@ -2,6 +2,7 @@ import type { Store as ReduxStore } from 'redux';
 import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
 import { analyticsActions } from '@suite-common/analytics';
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 import { firmwareActions } from '@suite-common/firmware';
 import { addLog } from '@suite-common/logger';
@@ -68,6 +69,7 @@ type DiscoveryAction = ReturnType<(typeof discoveryActions)[keyof typeof discove
 type DeviceAuthenticityAction = ReturnType<
     (typeof deviceAuthenticityActions)[keyof typeof deviceAuthenticityActions]
 >;
+type BluetoothAction = ReturnType<(typeof bluetoothActions)[keyof typeof bluetoothActions]>;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =
@@ -94,7 +96,8 @@ export type Action =
     | DiscoveryAction
     | DeviceAction
     | DeviceAuthenticityAction
-    | ReturnType<typeof addLog>;
+    | ReturnType<typeof addLog>
+    | BluetoothAction;
 
 export type ThunkAction = TAction<any, AppState, any, Action>;
 
