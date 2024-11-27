@@ -1,4 +1,6 @@
-import { NotificationCard, Translation } from 'src/components/suite';
+import { Banner } from '@trezor/components';
+
+import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
@@ -14,17 +16,17 @@ export const TorDisconnected = () => {
     const handleButtonClick = () => dispatch(toggleTor(true));
 
     return (
-        <NotificationCard
+        <Banner
             variant="warning"
-            button={{
-                onClick: handleButtonClick,
-                isLoading: isTorLoading,
-                children: isTorLoading ? (
-                    <Translation id="TR_ENABLING_TOR" />
-                ) : (
-                    <Translation id="TR_TOR_ENABLE" />
-                ),
-            }}
+            rightContent={
+                <Banner.Button onClick={handleButtonClick} isLoading={isTorLoading}>
+                    {isTorLoading ? (
+                        <Translation id="TR_ENABLING_TOR" />
+                    ) : (
+                        <Translation id="TR_TOR_ENABLE" />
+                    )}
+                </Banner.Button>
+            }
         >
             <Translation
                 id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE"
@@ -32,6 +34,6 @@ export const TorDisconnected = () => {
                     b: chunks => <b>{chunks}</b>,
                 }}
             />
-        </NotificationCard>
+        </Banner>
     );
 };

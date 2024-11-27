@@ -1,8 +1,9 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { HELP_CENTER_XRP_URL } from '@trezor/urls';
+import { Banner } from '@trezor/components';
 
-import { NotificationCard, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import type { Account } from 'src/types/wallet/index';
 
 interface XRPReserveProps {
@@ -15,12 +16,13 @@ export const XRPReserve = ({ account }: XRPReserveProps) => {
     const bigReserve = new BigNumber(account.misc.reserve);
 
     return bigBalance.isLessThan(bigReserve) ? (
-        <NotificationCard
+        <Banner
             variant="warning"
-            button={{
-                children: <Translation id="TR_LEARN_MORE" />,
-                href: HELP_CENTER_XRP_URL,
-            }}
+            rightContent={
+                <Banner.Button href={HELP_CENTER_XRP_URL}>
+                    <Translation id="TR_LEARN_MORE" />
+                </Banner.Button>
+            }
         >
             <Translation
                 id="TR_XRP_RESERVE_INFO"
@@ -28,6 +30,6 @@ export const XRPReserve = ({ account }: XRPReserveProps) => {
                     minBalance: formatNetworkAmount(account.misc.reserve, 'xrp'),
                 }}
             />
-        </NotificationCard>
+        </Banner>
     ) : null;
 };

@@ -1,6 +1,8 @@
+import { Banner } from '@trezor/components';
+
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { NotificationCard, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 
 export const DeviceUnavailable = () => {
     const dispatch = useDispatch();
@@ -11,15 +13,15 @@ export const DeviceUnavailable = () => {
     const handleButtonClick = () => dispatch(applySettings({ use_passphrase: true }));
 
     return (
-        <NotificationCard
+        <Banner
             variant="info"
-            button={{
-                children: <Translation id="TR_ACCOUNT_ENABLE_PASSPHRASE" />,
-                isLoading: isLocked(),
-                onClick: handleButtonClick,
-            }}
+            rightContent={
+                <Banner.Button onClick={handleButtonClick} isLoading={isLocked()}>
+                    <Translation id="TR_ACCOUNT_ENABLE_PASSPHRASE" />
+                </Banner.Button>
+            }
         >
             <Translation id="TR_ACCOUNT_PASSPHRASE_DISABLED" />
-        </NotificationCard>
+        </Banner>
     );
 };

@@ -41,6 +41,7 @@ export const Banner: StoryObj<BannerProps> = {
     args: {
         children: 'Insert text here.',
         filled: true,
+        isLoading: false,
         variant: 'warning',
         icon: undefined,
         rightContent: <BannerComponent.Button>Click</BannerComponent.Button>,

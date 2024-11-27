@@ -3,7 +3,6 @@ import { DeviceConfirmImage } from './DeviceConfirmImage';
 import { CheckItem } from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide/PrerequisitesGuide';
 import { WelcomeLayout } from './layouts/WelcomeLayout/WelcomeLayout';
-import { NotificationCard } from './NotificationCard';
 import { WordInput } from './WordInput';
 import { WordInputAdvanced } from './WordInputAdvanced';
 import { Loading } from './Loading';
@@ -60,7 +59,6 @@ export {
     CheckItem,
     PrerequisitesGuide,
     WelcomeLayout,
-    NotificationCard,
     FiatValue,
     Translation,
     WordInput,

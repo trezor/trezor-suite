@@ -1,7 +1,8 @@
 import { tryGetAccountIdentity, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { Banner } from '@trezor/components';
 
-import { NotificationCard, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useBackendReconnection } from 'src/hooks/settings/backends';
 
@@ -21,19 +22,19 @@ const DisconnectedNotification = ({
     );
 
     return (
-        <NotificationCard
+        <Banner
             variant="warning"
-            button={{
-                onClick: reconnect,
-                isLoading: isReconnecting,
-                children: <Translation id="TR_CONNECT" />,
-            }}
+            rightContent={
+                <Banner.Button onClick={reconnect} isLoading={isReconnecting}>
+                    <Translation id="TR_CONNECT" />
+                </Banner.Button>
+            }
         >
             <Translation id="TR_BACKEND_DISCONNECTED" />
             {countdownSeconds ? (
                 <Translation id="TR_BACKEND_RECONNECTING" values={{ time: countdownSeconds }} />
             ) : null}
-        </NotificationCard>
+        </Banner>
     );
 };
 

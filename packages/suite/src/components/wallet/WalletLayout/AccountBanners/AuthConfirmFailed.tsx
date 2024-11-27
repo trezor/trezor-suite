@@ -1,6 +1,7 @@
 import { authConfirm } from '@suite-common/wallet-core';
+import { Banner } from '@trezor/components';
 
-import { NotificationCard, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 export const AuthConfirmFailed = () => {
@@ -12,17 +13,20 @@ export const AuthConfirmFailed = () => {
     const handleClick = () => dispatch(authConfirm());
 
     return (
-        <NotificationCard
+        <Banner
             variant="warning"
-            button={{
-                onClick: handleClick,
-                isLoading: isLocked(),
-                icon: 'refresh',
-                'data-testid': '@passphrase-mismatch/retry-button',
-                children: <Translation id="TR_AUTH_CONFIRM_FAILED_RETRY" />,
-            }}
+            rightContent={
+                <Banner.Button
+                    onClick={handleClick}
+                    isLoading={isLocked()}
+                    icon="refresh"
+                    data-testid="@passphrase-mismatch/retry-button"
+                >
+                    <Translation id="TR_AUTH_CONFIRM_FAILED_RETRY" />
+                </Banner.Button>
+            }
         >
             <Translation id="TR_AUTH_CONFIRM_FAILED_TITLE" />
-        </NotificationCard>
+        </Banner>
     );
 };

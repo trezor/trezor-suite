@@ -28,6 +28,7 @@ import { useMediaQuery } from '../../utils/useMediaQuery';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { Column, Row } from '../Flex/Flex';
 import { variables } from '../../config';
+import { Spinner } from '../loaders/Spinner/Spinner';
 
 export const allowedBannerFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBannerFrameProps)[number]>;
@@ -44,6 +45,7 @@ export type BannerProps = AllowedFrameProps & {
     'data-testid'?: string;
     spacingX?: SpacingX;
     color?: Color;
+    isLoading?: boolean;
 };
 
 type WrapperParams = TransientProps<AllowedFrameProps> & {
@@ -94,6 +96,7 @@ export const Banner = ({
     rightContent,
     spacingX = 'lg',
     'data-testid': dataTest,
+    isLoading = false,
     ...rest
 }: BannerProps) => {
     const theme = useTheme();
@@ -133,7 +136,8 @@ export const Banner = ({
             data-testid={dataTest}
             {...frameProps}
         >
-            {withIcon && (
+            {isLoading && <Spinner size={22} />}
+            {!isLoading && withIcon && (
                 <Icon
                     size={20}
                     name={icon === true ? mapVariantToIcon({ $variant: variant }) : icon}

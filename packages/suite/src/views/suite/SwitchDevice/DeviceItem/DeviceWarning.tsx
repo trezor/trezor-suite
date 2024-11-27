@@ -1,6 +1,7 @@
 import * as deviceUtils from '@suite-common/suite-utils';
+import { Banner } from '@trezor/components';
 
-import { NotificationCard, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
 import { useDevice } from 'src/hooks/suite';
 
@@ -22,17 +23,20 @@ export const DeviceWarning = ({
     return (
         <>
             {needsAttention && (
-                <NotificationCard
+                <Banner
                     variant="warning"
-                    button={{
-                        children: <Translation id="TR_SOLVE_ISSUE" />,
-                        onClick: onSolveIssueClick,
-                        'data-testid': `@switch-device/solve-issue-button`,
-                        isDisabled: isLocked,
-                    }}
+                    rightContent={
+                        <Banner.Button
+                            onClick={onSolveIssueClick}
+                            data-testid="@switch-device/solve-issue-button"
+                            isDisabled={isLocked}
+                        >
+                            <Translation id="TR_SOLVE_ISSUE" />
+                        </Banner.Button>
+                    }
                 >
                     {deviceStatusMessage && <Translation id={deviceStatusMessage} />}
-                </NotificationCard>
+                </Banner>
             )}
         </>
     );
