@@ -58,7 +58,7 @@ export const portfolioTrackerDevice: TrezorDevice = {
         passphrase_always_on_device: false,
         safety_checks: 'Strict',
         auto_lock_delay_ms: 60000,
-        display_rotation: 0,
+        display_rotation: 'North',
         experimental_features: false,
     },
     connected: false,

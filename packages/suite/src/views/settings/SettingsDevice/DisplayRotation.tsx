@@ -1,4 +1,4 @@
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal, type DisplayRotation as DisplayRotationType } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { Icon, SelectBar, Tooltip } from '@trezor/components';
 
@@ -8,8 +8,7 @@ import { useDevice, useDispatch } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
-type RotationValue = 0 | 90 | 180 | 270;
-type Rotation = { label: JSX.Element; value: RotationValue };
+type Rotation = { label: JSX.Element; value: DisplayRotationType };
 
 const DISPLAY_ROTATIONS: Array<Rotation> = [
     {
@@ -18,7 +17,7 @@ const DISPLAY_ROTATIONS: Array<Rotation> = [
                 <Icon name="arrowUp" />
             </Tooltip>
         ),
-        value: 0,
+        value: 'North',
     },
     {
         label: (
@@ -26,7 +25,7 @@ const DISPLAY_ROTATIONS: Array<Rotation> = [
                 <Icon name="arrowLeft" />
             </Tooltip>
         ),
-        value: 90,
+        value: 'East',
     },
     {
         label: (
@@ -34,7 +33,7 @@ const DISPLAY_ROTATIONS: Array<Rotation> = [
                 <Icon name="arrowDown" />
             </Tooltip>
         ),
-        value: 180,
+        value: 'South',
     },
     {
         label: (
@@ -42,7 +41,7 @@ const DISPLAY_ROTATIONS: Array<Rotation> = [
                 <Icon name="arrowRight" />
             </Tooltip>
         ),
-        value: 270,
+        value: 'West',
     },
 ];
 
@@ -76,12 +75,19 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
                     data-testid="@settings/device/rotation-button"
                     selectedOption={currentRotation ?? undefined}
                     options={DISPLAY_ROTATIONS}
-                    onChange={(value: number) => {
+                    onChange={(value: DisplayRotationType) => {
+                        // todo: export enum from connect and possibly use packages/utils/src/enumUtils
+                        const numValueMap = {
+                            North: 0 as const,
+                            East: 90 as const,
+                            South: 180 as const,
+                            West: 270 as const,
+                        };
                         dispatch(applySettings({ display_rotation: value }));
                         analytics.report({
                             type: EventType.SettingsDeviceChangeOrientation,
                             payload: {
-                                value: value as RotationValue,
+                                value: numValueMap[value],
                             },
                         });
                     }}

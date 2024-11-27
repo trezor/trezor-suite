@@ -61,7 +61,7 @@ describe('T2T1 - Device settings', () => {
 
         // change display rotation
         cy.log('change display rotation');
-        cy.getTestElement('select-bar/90').click();
+        cy.getTestElement('select-bar/East').click();
         cy.getConfirmActionOnDeviceModal();
         cy.task('pressYes');
         cy.getConfirmActionOnDeviceModal().should('not.exist');
