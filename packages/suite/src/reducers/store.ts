@@ -15,6 +15,7 @@ import { isCodesignBuild } from '@trezor/env-utils';
 import { mergeDeepObject } from '@trezor/utils';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
+import { prepareBluetoothReducerCreator } from '@suite-common/bluetooth';
 import { accountsActions } from '@suite-common/wallet-core';
 
 import suiteMiddlewares from 'src/middlewares/suite';
@@ -34,9 +35,11 @@ import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 
 import { desktopReducer } from './desktop';
 import { extraDependencies } from '../support/extraDependencies';
+import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
+const bluetoothReducer = prepareBluetoothReducerCreator<BluetoothDevice>()(extraDependencies);
 
 const rootReducer = combineReducers({
     ...suiteReducers,
@@ -47,6 +50,7 @@ const rootReducer = combineReducers({
     backup: backupReducers,
     desktop: desktopReducer,
     tokenDefinitions: tokenDefinitionsReducer,
+    bluetooth: bluetoothReducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;
