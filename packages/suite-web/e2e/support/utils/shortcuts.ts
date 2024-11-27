@@ -19,7 +19,7 @@ export const passThroughInitialRun = ({ viewOnly = true } = {}) => {
     } else {
         cy.getTestElement('@onboarding/viewOnly/skip').click();
     }
-    cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 10_000 }).should('be.visible').click();
+    cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 10_000 }).click();
 };
 
 export const passThroughAuthenticityCheck = () => {
@@ -133,12 +133,9 @@ export const enableRegtestAndGetCoins = ({ payments = [] }) => {
 
 export const createAccountFromMyAccounts = (coin: string, label: string) => {
     cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should('not.exist');
-    cy.getTestElement('@account-menu/add-account').should('be.visible').click();
-    // if (cy.getTestElement('@modal').should('be.visible')) {
-    //     cy.getTestElement('@account-menu/add-account').should('be.visible').click();
-    // }
+    cy.getTestElement('@account-menu/add-account').click();
     cy.getTestElement('@modal').should('be.visible');
-    cy.get(`[data-testid="@settings/wallet/network/${coin}"]`).should('be.visible').click();
+    cy.get(`[data-testid="@settings/wallet/network/${coin}"]`).click();
     cy.getTestElement('@add-account-type/select/input').click();
     cy.get(`[data-testid="@add-account-type/select/option/${label}"]`).click();
     cy.getTestElement('@add-account').click();

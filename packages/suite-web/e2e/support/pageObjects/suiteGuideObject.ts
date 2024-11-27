@@ -2,7 +2,7 @@
 
 class SuiteGuide {
     openSidePanel() {
-        cy.getTestElement('@guide/button-open', { timeout: 20000 }).should('be.visible').click();
+        cy.getTestElement('@guide/button-open', { timeout: 20000 }).click();
         cy.getTestElement('@guide/panel').should('exist');
     }
 

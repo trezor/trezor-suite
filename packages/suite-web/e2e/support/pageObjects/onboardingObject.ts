@@ -54,7 +54,7 @@ class OnboardingPage {
     }
 
     continuePin() {
-        cy.getTestElement('@onboarding/pin/continue-button').should('be.visible').click();
+        cy.getTestElement('@onboarding/pin/continue-button').click();
     }
 
     skipPin() {

@@ -2,11 +2,11 @@
 
 class SettingsMenu {
     openDeviceSettings(): void {
-        cy.getTestElement('@settings/menu/device').should('be.visible').click();
+        cy.getTestElement('@settings/menu/device').click();
     }
 
     openWalletSettings(): void {
-        cy.getTestElement('@settings/menu/wallet').should('be.visible').click();
+        cy.getTestElement('@settings/menu/wallet').click();
     }
 }
 

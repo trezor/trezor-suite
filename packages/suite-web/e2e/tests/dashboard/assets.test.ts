@@ -36,7 +36,7 @@ describe.skip('Assets', () => {
 
         cy.get('[class^="AssetsView__Grid"]').then(grid => {
             cy.wrap(grid).contains('Bitcoin').should('be.visible');
-            cy.wrap(grid).contains('Ethereum').should('be.visible').click();
+            cy.wrap(grid).contains('Ethereum').click();
         });
 
         cy.findAnalyticsEventByType<ExtractByEventType<EventType.SelectWalletType>>(

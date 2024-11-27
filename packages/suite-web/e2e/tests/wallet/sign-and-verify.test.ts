@@ -24,7 +24,7 @@ describe('Sign and verify', () => {
 
         cy.wait(300); // wait until is the dropdown loaded
         cy.getTestElement('@wallet/menu/extra-dropdown').click();
-        cy.getTestElement('@wallet/menu/wallet-sign-verify').should('be.visible').click();
+        cy.getTestElement('@wallet/menu/wallet-sign-verify').click();
     });
 
     /* Test case

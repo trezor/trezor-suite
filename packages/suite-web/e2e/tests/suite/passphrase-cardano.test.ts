@@ -42,7 +42,7 @@ describe('Passphrase with cardano', () => {
             cy.wrap(wallet)
                 .find('[data-testid="@collapsible-box/icon-collapsed"]')
                 .click({ scrollBehavior: 'bottom' });
-            cy.wrap(wallet).find('[data-testid$="/enabled"]').should('be.visible').click();
+            cy.wrap(wallet).find('[data-testid$="/enabled"]').click();
         });
 
         cy.getTestElement('@switch-device/cancel-button').first().click();

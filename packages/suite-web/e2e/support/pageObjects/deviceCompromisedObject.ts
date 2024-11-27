@@ -2,7 +2,7 @@
 
 class DeviceCompromisedModal {
     ignoreDeviceCompromisedWarning() {
-        cy.getTestElement('@device-compromised/back-button').should('be.visible').click();
+        cy.getTestElement('@device-compromised/back-button').click();
     }
 }
 

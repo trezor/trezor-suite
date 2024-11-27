@@ -24,7 +24,7 @@ class AccountsPage {
     activatNewCoin(coinName: NetworkSymbol) {
         this.openAddAccountsModal();
         cy.getTestElement('@modal/account/activate_more_coins').click();
-        cy.getTestElement(`@settings/wallet/network/${coinName}`).should('be.visible').click();
+        cy.getTestElement(`@settings/wallet/network/${coinName}`).click();
         cy.contains('button', 'Find my').click();
         cy.getTestElement('@modal').should('not.exist');
         cy.discoveryShouldFinish();

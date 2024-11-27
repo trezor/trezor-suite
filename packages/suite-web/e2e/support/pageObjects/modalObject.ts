@@ -2,7 +2,7 @@
 
 class Modal {
     close(): void {
-        cy.getTestElement('@modal/close-button').should('be.visible').click();
+        cy.getTestElement('@modal/close-button').click();
     }
 }
 

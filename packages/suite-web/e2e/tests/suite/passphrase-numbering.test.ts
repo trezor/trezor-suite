@@ -39,10 +39,10 @@ describe('Passphrase numbering', () => {
 
         // eject standard and the first hidden wallet
         cy.getTestElement('@switch-device/wallet-on-index/0/eject-button').click();
-        cy.getTestElement('@switch-device/eject').should('be.visible').click();
+        cy.getTestElement('@switch-device/eject').click();
 
         cy.getTestElement('@switch-device/wallet-on-index/0/eject-button').click();
-        cy.getTestElement('@switch-device/eject').should('be.visible').click();
+        cy.getTestElement('@switch-device/eject').click();
 
         // add standard and another hidden wallet
         cy.getTestElement('@switch-device/add-wallet-button').click();

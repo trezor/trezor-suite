@@ -137,7 +137,7 @@ describe('Account types suite', () => {
             ).then(currentAccounts => {
                 const numberOfAccounts1 = currentAccounts.length;
 
-                cy.getTestElement('@account-menu/add-account').should('be.visible').click();
+                cy.getTestElement('@account-menu/add-account').click();
                 cy.getTestElement('@modal').should('be.visible');
                 cy.get(`[data-testid="@settings/wallet/network/${coin}"]`)
                     .should('be.visible')

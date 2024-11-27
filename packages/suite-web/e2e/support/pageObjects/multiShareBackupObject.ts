@@ -9,7 +9,7 @@ class MultiShareBackupModal {
     }
 
     finalizeMultiShareBackup(): void {
-        cy.getTestElement('@multi-share-backup/done/got-it-button').should('be.visible').click();
+        cy.getTestElement('@multi-share-backup/done/got-it-button').click();
     }
 }
 

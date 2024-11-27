@@ -6,14 +6,14 @@ class SettingsDevicePage {
     }
 
     openCreateMultiShareBackup(): void {
-        cy.getTestElement('@settings/device/create-multi-share-backup-button')
-            .should('be.visible')
-            .click();
+        cy.getTestElement('@settings/device/create-multi-share-backup-button').click();
         cy.getTestElement('@multi-share-backup/1st-info/submit-button').should('be.visible');
     }
 
     togglePinSwitch(): void {
-        cy.getTestElement('@settings/device/pin-switch').should('be.visible').wait(500).click();
+        cy.getTestElement('@settings/device/pin-switch').as('pinSwitch').should('be.visible');
+        cy.wait(500);
+        cy.get('@pinSwitch').click();
     }
 
     togglePassphraseSwitch(): void {
@@ -21,7 +21,8 @@ class SettingsDevicePage {
             .as('passphraseSwitch')
             .scrollIntoView();
 
-        cy.get('@passphraseSwitch').should('be.visible').click();
+        cy.get('@passphraseSwitch').should('be.visible');
+        cy.get('@passphraseSwitch').click();
     }
 }
 
