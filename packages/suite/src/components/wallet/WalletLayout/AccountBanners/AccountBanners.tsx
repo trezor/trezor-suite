@@ -1,6 +1,5 @@
-import styled from 'styled-components';
-
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
+import { Column } from '@trezor/components';
 import { Context } from '@suite-common/message-system';
 import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 
@@ -19,13 +18,6 @@ import { StakeEthBanner } from './StakeEthBanner';
 import { EvmExplanationBanner } from './EvmExplanationBanner';
 import { TaprootBanner } from './TaprootBanner';
 
-const BannersWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.xl};
-    margin-bottom: ${spacingsPx.xl};
-`;
-
 type AccountBannersProps = {
     account?: Account;
 };
@@ -34,7 +26,7 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
     const { route } = useSelector(state => state.router);
 
     return (
-        <BannersWrapper>
+        <Column alignItems="normal" gap={spacings.xl}>
             {account?.accountType === 'coinjoin' && <ContextMessage context={Context.coinjoin} />}
             {account?.symbol &&
                 isSupportedEthStakingNetworkSymbol(account.symbol) &&
@@ -49,6 +41,6 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
             <EvmExplanationBanner account={account} />
             <TaprootBanner account={account} />
             {account?.symbol && <StakeEthBanner account={account} />}
-        </BannersWrapper>
+        </Column>
     );
 };

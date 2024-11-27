@@ -1,50 +1,42 @@
 import { useState, ReactNode } from 'react';
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import { Icon, Column } from '@trezor/components';
-import { spacingsPx, spacings, typography } from '@trezor/theme';
+import { Icon, Column, Text, Row } from '@trezor/components';
+import { spacingsPx, spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 
 import { AnimationWrapper } from '../../AnimationWrapper';
 
-const ICON_SIZE = 18;
-
-const IconWrapper = styled.div<{ $isActive: boolean }>`
+const IconWrapper = styled.div<{ $isActive: boolean; $isVisible: boolean }>`
     padding: ${spacingsPx.xs};
     border-radius: 50%;
     transition:
         background 0.2s,
         transform 0.2s ease-in-out;
     transform: ${({ $isActive }) => ($isActive ? 'rotate(0)' : 'rotate(-90deg)')};
+
+    ${({ $isVisible }) =>
+        !$isVisible &&
+        css`
+            pointer-events: none;
+            opacity: 0;
+        `}
 `;
 
 const Header = styled.header<{ $isOpen: boolean; onClick?: () => void }>`
     position: sticky;
     top: 0;
     z-index: 30;
-    display: flex;
-    gap: ${spacings.sm - 1}px;
-    padding: 0 ${spacingsPx.sm};
     cursor: ${props => (props.onClick ? 'pointer' : 'default')};
     background-color: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
-    align-items: center;
-    color: ${({ theme }) => theme.textSubdued};
-    min-height: 40px;
-    ${typography.label}
 
     &:hover {
         ${IconWrapper} {
             background: ${({ theme }) => theme.backgroundSurfaceElevation1};
         }
-    }
-`;
-
-const HeadingWrapper = styled.div`
-    &:only-child {
-        padding-left: ${spacings.sm + spacings.md + ICON_SIZE - 1}px;
     }
 `;
 
@@ -108,26 +100,29 @@ export const AccountGroup = ({
     const heading = getGroupLabel(type, hideLabel);
 
     return (
-        <div>
+        <Column alignItems="normal" gap={spacings.xxxs}>
             {heading !== null && (
                 <Header
                     $isOpen={isOpen}
                     onClick={!keepOpen ? onClick : undefined}
                     data-testid={`@account-menu/${type}`}
                 >
-                    {!keepOpen && (
-                        <IconWrapper $isActive={isOpen}>
+                    <Row
+                        gap={spacings.sm}
+                        margin={{ horizontal: spacings.sm, vertical: spacings.xxs }}
+                    >
+                        <IconWrapper $isActive={isOpen} $isVisible={!keepOpen}>
                             <Icon
                                 data-testid="@account-menu/arrow"
-                                size={ICON_SIZE}
+                                size={17}
                                 variant="tertiary"
                                 name="chevronDown"
                             />
                         </IconWrapper>
-                    )}
-                    <HeadingWrapper>
-                        <Translation id={heading} />
-                    </HeadingWrapper>
+                        <Text variant="tertiary" typographyStyle="label">
+                            <Translation id={heading} />
+                        </Text>
+                    </Row>
                 </Header>
             )}
 
@@ -140,6 +135,6 @@ export const AccountGroup = ({
                     {children}
                 </Column>
             </AnimationWrapper>
-        </div>
+        </Column>
     );
 };
