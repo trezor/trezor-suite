@@ -1,6 +1,11 @@
 import EventEmitter from 'events';
 
-import { DeferredManager, createDeferredManager, cloneObjectCyclic } from '@trezor/utils';
+import {
+    DeferredManager,
+    createDeferredManager,
+    cloneObjectCyclic,
+    cloneObject,
+} from '@trezor/utils';
 
 import * as ERRORS from '../constants/errors';
 import {
@@ -106,7 +111,8 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
     }
 
     // handle message received from Core
-    private onCoreEvent(message: CoreEventMessage) {
+    private onCoreEvent(rawMessage: CoreEventMessage) {
+        const message = cloneObject(rawMessage);
         const { event, type, payload } = message;
 
         if (type === UI.REQUEST_UI_WINDOW) {
@@ -213,7 +219,7 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
                 id: promiseId,
                 payload,
             });
-            const response = await promise;
+            const response = cloneObject(await promise);
 
             return response ?? createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
         } catch (error) {
