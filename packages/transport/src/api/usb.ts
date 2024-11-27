@@ -11,6 +11,7 @@ import {
     T1_HID_VENDOR,
     TREZOR_USB_DESCRIPTORS,
     WEBUSB_BOOTLOADER_PRODUCT,
+    T1_HID_PRODUCT,
 } from '../constants';
 import * as ERRORS from '../errors';
 
@@ -111,6 +112,8 @@ export class UsbApi extends AbstractApi {
         } else {
             if (isBootloader) {
                 return DEVICE_TYPE.TypeT1WebusbBoot;
+            } else if (device.vendorId === T1_HID_VENDOR && device.productId === T1_HID_PRODUCT) {
+                return DEVICE_TYPE.TypeT1Hid;
             } else {
                 return DEVICE_TYPE.TypeT1Webusb;
             }
@@ -440,14 +443,6 @@ export class UsbApi extends AbstractApi {
             };
 
             const [hidDevices, nonHidDevices] = this.filterDevices(devices);
-
-            hidDevices.forEach(device => {
-                // hidDevices that do not support webusb standard. emit them as normal descriptors. higher layers are responsible
-                // for displaying them as unreadable devices
-                this.logger?.error(
-                    `usb: unreadable hid device connected. device: ${this.formatDeviceForLog(device)}`,
-                );
-            });
 
             const loadedDevices = await Promise.all(
                 nonHidDevices.map(async device => {

@@ -6,7 +6,7 @@ export const DEBUGLINK_INTERFACE_ID = 1;
 export const DEBUGLINK_ENDPOINT_ID = 2;
 export const T1_HID_VENDOR = 0x534c;
 
-const T1_HID_PRODUCT = 0x0001;
+export const T1_HID_PRODUCT = 0x0001;
 const WEBUSB_FIRMWARE_PRODUCT = 0x53c1;
 export const WEBUSB_BOOTLOADER_PRODUCT = 0x53c0;
 
