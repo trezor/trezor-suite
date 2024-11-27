@@ -28,7 +28,6 @@ export const findAnchorTransactionPage = (
 
 export const anchorOutlineStyles = css<{ $shouldHighlight?: boolean }>`
     position: relative;
-    z-index: 1;
 
     &::before {
         content: '';
@@ -39,7 +38,7 @@ export const anchorOutlineStyles = css<{ $shouldHighlight?: boolean }>`
         transition: opacity 0.3s;
         transition-delay: 0.3s;
         opacity: 0;
-        z-index: -1;
+        z-index: 0;
         border-radius: ${borders.radii.xs};
 
         ${({ $shouldHighlight }) => $shouldHighlight && 'opacity: 1;'};
