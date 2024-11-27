@@ -30,11 +30,7 @@ export const createCoinjoinAccount = [
             account: { accountType: 'coinjoin' },
         },
         result: {
-            actions: [
-                COINJOIN.CLIENT_ENABLE,
-                COINJOIN.CLIENT_DISABLE,
-                notificationsActions.addToast.type,
-            ],
+            actions: [],
         },
     },
     {
@@ -156,11 +152,7 @@ export const startCoinjoinSession = [
             symbol: 'ltc', // only btc is supported in tests
         },
         result: {
-            actions: [
-                COINJOIN.CLIENT_ENABLE,
-                COINJOIN.CLIENT_DISABLE,
-                notificationsActions.addToast.type,
-            ],
+            actions: [],
         },
     },
     {

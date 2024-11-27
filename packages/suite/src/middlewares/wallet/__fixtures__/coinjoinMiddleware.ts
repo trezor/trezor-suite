@@ -2,7 +2,6 @@ import { accountsActions } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { AnonymitySet } from '@trezor/blockchain-link';
 import { DEVICE, StaticSessionId } from '@trezor/connect';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
@@ -144,7 +143,7 @@ export const fixtures = [
     {
         description: 'stopping coinjoin session when remembered device disconnects',
         state: DEFAULT_STATE,
-        client: 'btc' as NetworkSymbol,
+        client: 'btc' as const,
         action: {
             type: DEVICE.DISCONNECT,
             payload: {
@@ -172,7 +171,7 @@ export const fixtures = [
     {
         description: 'restore all interrupted coinjoin sessions when Tor is enabled',
         state: STATE_WITH_INTERRUPTED_SESSION,
-        client: 'btc' as NetworkSymbol,
+        client: 'btc' as const,
         connect: {
             success: true,
         },
@@ -205,7 +204,7 @@ export const fixtures = [
     {
         description: 'restore all interrupted coinjoin sessions when user leaves send form',
         state: STATE_WITH_INTERRUPTED_SESSION,
-        client: 'btc' as NetworkSymbol,
+        client: 'btc' as const,
         connect: [
             {
                 success: true,
@@ -270,7 +269,7 @@ export const fixtures = [
     {
         description: 'restore related coinjoin session when an account syncs',
         state: STATE_WITH_INTERRUPTED_SESSION,
-        client: 'btc' as NetworkSymbol,
+        client: 'btc' as const,
         connect: [
             {
                 success: true,
@@ -294,7 +293,7 @@ export const fixtures = [
     {
         description: 'restore all interrupted coinjoin sessions when Suite goes online',
         state: STATE_WITH_INTERRUPTED_SESSION,
-        client: 'btc' as NetworkSymbol,
+        client: 'btc' as const,
         connect: [
             {
                 success: true,
@@ -312,7 +311,7 @@ export const fixtures = [
             ...STATE_WITH_INTERRUPTED_SESSION,
             router: { route: { name: 'wallet-send' } } as RouterState,
         },
-        client: 'btc' as NetworkSymbol,
+        client: 'btc' as const,
         connect: [
             {
                 success: true,

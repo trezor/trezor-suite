@@ -8,7 +8,6 @@ import {
 } from '@suite-common/wallet-core';
 import { Button, motionEasing, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
-import { BITCOIN_ONLY_NETWORKS } from '@suite-common/suite-constants';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { spacingsPx } from '@trezor/theme';
 
@@ -29,6 +28,7 @@ import {
     useDiscovery,
 } from 'src/hooks/suite';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
+import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
 import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
@@ -105,11 +105,10 @@ export const SettingsCoins = () => {
     );
 
     const bitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
-    const bitcoinOnlyNetworks = BITCOIN_ONLY_NETWORKS;
 
     const onlyBitcoinNetworksEnabled =
         !!supportedEnabledNetworks.length &&
-        supportedEnabledNetworks.every(network => bitcoinOnlyNetworks.includes(network));
+        supportedEnabledNetworks.every(symbol => isCoinjoinSupportedSymbol(symbol));
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
 
     const showDeviceBanner = device?.connected === false; // device is remembered and disconnected

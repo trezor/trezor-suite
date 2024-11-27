@@ -213,7 +213,7 @@ describe('coinjoinClientActions', () => {
         const cli2 = await store.dispatch(initCoinjoinService('btc'));
         expect(cli1).toEqual(cli2);
         expect(spy.mock.calls[0][0]).toMatchObject({
-            network: 'btc',
+            symbol: 'btc',
             prison: [
                 {
                     accountKey: 'account-A',

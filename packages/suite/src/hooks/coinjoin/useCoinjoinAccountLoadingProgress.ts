@@ -5,7 +5,10 @@ import { ScanProgressInfo } from '@trezor/coinjoin';
 import { CoinjoinService } from 'src/services/coinjoin';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { getAccountProgressHandle } from 'src/utils/wallet/coinjoinUtils';
+import {
+    getAccountProgressHandle,
+    isCoinjoinSupportedSymbol,
+} from 'src/utils/wallet/coinjoinUtils';
 import { TranslationKey } from 'src/components/suite/Translation';
 
 const INIT_THRESHOLD = 0.05;
@@ -74,15 +77,20 @@ export const useCoinjoinAccountLoadingProgress = () => {
         progress: 0,
     });
 
-    const { symbol: network, backendType } = selectedAccount || {};
+    const { symbol, backendType } = selectedAccount || {};
     const progressHandle = selectedAccount && getAccountProgressHandle(selectedAccount);
 
     useEffect(() => {
-        if (!network || !progressHandle || backendType !== 'coinjoin') {
+        if (
+            !symbol ||
+            !progressHandle ||
+            backendType !== 'coinjoin' ||
+            !isCoinjoinSupportedSymbol(symbol)
+        ) {
             return;
         }
 
-        const api = CoinjoinService.getInstance(network);
+        const api = CoinjoinService.getInstance(symbol);
 
         if (!api) {
             return;
@@ -93,7 +101,7 @@ export const useCoinjoinAccountLoadingProgress = () => {
         return () => {
             api.backend.off(`progress-info/${progressHandle}`, dispatchProgressInfo);
         };
-    }, [network, backendType, progressHandle]);
+    }, [symbol, backendType, progressHandle]);
 
     return progressInfo;
 };

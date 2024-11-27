@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { CoinjoinSymbol } from 'src/services/coinjoin';
 
 export const mockCoinjoinService = () => {
     const allowed = ['btc', 'test'];
@@ -63,15 +63,15 @@ export const mockCoinjoinService = () => {
     };
 
     return {
-        // for test purposes enable only btc network
+        // for test purposes enable only btc symbol
         CoinjoinService: {
             getInstance: jest.fn((symbol: string) => clients[symbol]),
             getInstances: jest.fn(() => Object.values(clients)),
-            createInstance: jest.fn(({ network }: { network: NetworkSymbol }) => {
-                if (!allowed.includes(network)) throw new Error('Client not supported');
-                if (clients[network]) return clients[network];
-                const instance = getMockedInstance(network);
-                clients[network] = instance;
+            createInstance: jest.fn(({ symbol }: { symbol: CoinjoinSymbol }) => {
+                if (!allowed.includes(symbol)) throw new Error('Client not supported');
+                if (clients[symbol]) return clients[symbol];
+                const instance = getMockedInstance(symbol);
+                clients[symbol] = instance;
 
                 return instance;
             }),

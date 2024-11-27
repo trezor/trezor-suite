@@ -14,6 +14,7 @@ import {
 import { NetworkSymbol, getNetwork, Network } from '@suite-common/wallet-config';
 import { RatesByKey } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { PartialRecord } from '@trezor/type-utils';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { Account } from 'src/types/wallet';
@@ -90,17 +91,23 @@ export const AssetsView = () => {
         network => !enabledNetworks.includes(network.symbol),
     );
 
-    const assets: { [key: string]: Account[] } = {};
-    accounts.forEach(a => {
-        if (!assets[a.symbol]) {
-            assets[a.symbol] = [];
+    const assets: PartialRecord<NetworkSymbol, Account[]> = {};
+
+    accounts.forEach(account => {
+        let symbolAssets = assets[account.symbol];
+
+        if (!symbolAssets) {
+            symbolAssets = [];
         }
-        assets[a.symbol].push(a);
+
+        symbolAssets.push(account);
+
+        assets[account.symbol] = symbolAssets;
     });
 
-    const assetNetworkSymbols = Object.keys(assets) as NetworkSymbol[];
+    const assetSymbols = Object.keys(assets) as NetworkSymbol[];
 
-    const assetsData: AssetData[] = assetNetworkSymbols
+    const assetsData: AssetData[] = assetSymbols
         .map(symbol => {
             const network = getNetwork(symbol);
             if (!network) {
@@ -109,12 +116,12 @@ export const AssetsView = () => {
                 return null;
             }
 
-            const assetNativeCryptoBalance = assets[symbol].reduce(
+            const assetNativeCryptoBalance = assets[symbol]?.reduce(
                 (total, account) => total.plus(account.formattedBalance),
                 new BigNumber(0),
             );
 
-            const assetTokens = assets[symbol].reduce((allTokens: TokenInfo[], account) => {
+            const assetTokens = assets[symbol]?.reduce((allTokens: TokenInfo[], account) => {
                 if (account.tokens) {
                     allTokens.push(...account.tokens);
                 }
@@ -150,7 +157,7 @@ export const AssetsView = () => {
     const discoveryStatus = getDiscoveryStatus();
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
     const isError =
-        discoveryStatus && discoveryStatus.status === 'exception' && !assetNetworkSymbols.length;
+        discoveryStatus && discoveryStatus.status === 'exception' && !assetSymbols.length;
 
     const goToCoinsSettings = () => dispatch(goto('settings-coins'));
     const setTable = () => dispatch(setFlag('dashboardAssetsGridMode', false));

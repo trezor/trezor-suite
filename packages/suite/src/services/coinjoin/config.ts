@@ -10,12 +10,13 @@ import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import type { CoinjoinServerEnvironment } from 'src/types/wallet/coinjoin';
 
+export type CoinjoinSymbol = Extract<NetworkSymbol, 'btc' | 'test' | 'regtest'>;
 export type CoinjoinNetworksConfig = CoinjoinBackendSettings &
     CoinjoinClientSettings & { blockbookUrls: string[] };
 
 type ServerEnvironment = PartialRecord<CoinjoinServerEnvironment, CoinjoinNetworksConfig>;
 
-export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> = {
+export const COINJOIN_NETWORKS: PartialRecord<CoinjoinSymbol, ServerEnvironment> = {
     btc: {
         /* default, see getCoinjoinConfig */
         public: {
@@ -167,15 +168,15 @@ export const ANONYMITY_GAINS_HINDSIGHT_COUNT = 10;
 export const ANONYMITY_GAINS_HINDSIGHT_DAYS = 30;
 
 export const getCoinjoinConfig = (
-    network: NetworkSymbol,
+    symbol: CoinjoinSymbol,
     environment?: CoinjoinServerEnvironment,
 ): CoinjoinNetworksConfig => {
-    const config = COINJOIN_NETWORKS[network];
+    const config = COINJOIN_NETWORKS[symbol];
     const settings = config
         ? config[environment ?? (Object.keys(config)[0] as CoinjoinServerEnvironment)]
         : undefined;
     if (!settings)
-        throw new Error(`Missing settings for coinjoin network ${network} env ${environment}`);
+        throw new Error(`Missing settings for coinjoin network ${symbol} env ${environment}`);
 
     return { affiliationId: 'trezor', ...settings };
 };

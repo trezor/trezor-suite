@@ -2,9 +2,9 @@ import { CoinjoinBackend, CoinjoinClient, CoinjoinPrisonInmate } from '@trezor/c
 import { createIpcProxy } from '@trezor/ipc-proxy';
 import { PartialRecord } from '@trezor/type-utils';
 import { isDesktop } from '@trezor/env-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { CoinjoinNetworksConfig, getCoinjoinConfig } from './config';
+import type { CoinjoinNetworksConfig, CoinjoinSymbol } from './config';
+import { getCoinjoinConfig } from './config';
 
 const loadInstance = (settings: ReturnType<typeof getCoinjoinConfig>) => {
     if (isDesktop()) {
@@ -24,20 +24,18 @@ export interface CoinjoinServiceInstance {
     client: CoinjoinClient;
 }
 
-export class CoinjoinService {
-    private static instances: PartialRecord<NetworkSymbol, CoinjoinServiceInstance> = {};
+type CoinjoinCreateInstance = {
+    symbol: CoinjoinSymbol;
+    prison?: CoinjoinPrisonInmate[];
+    settings?: CoinjoinNetworksConfig;
+};
 
-    static async createInstance({
-        network,
-        prison,
-        settings,
-    }: {
-        network: NetworkSymbol;
-        prison?: CoinjoinPrisonInmate[];
-        settings?: CoinjoinNetworksConfig;
-    }) {
-        if (this.instances[network]) return this.instances[network] as CoinjoinServiceInstance;
-        const config = settings ?? getCoinjoinConfig(network);
+export class CoinjoinService {
+    private static instances: PartialRecord<CoinjoinSymbol, CoinjoinServiceInstance> = {};
+
+    static async createInstance({ symbol, prison, settings }: CoinjoinCreateInstance) {
+        if (this.instances[symbol]) return this.instances[symbol] as CoinjoinServiceInstance;
+        const config = settings ?? getCoinjoinConfig(symbol);
         const [backend, client] = await loadInstance({ ...config, prison });
         const instance = { backend, client };
         if (!isDesktop()) {
@@ -45,25 +43,25 @@ export class CoinjoinService {
             client.on('log', ({ level, payload }) => console[level](payload));
         }
 
-        this.instances[network] = instance;
+        this.instances[symbol] = instance;
 
         return instance;
     }
 
-    static getInstance(network: NetworkSymbol) {
-        return this.instances[network];
+    static getInstance(symbol: CoinjoinSymbol) {
+        return this.instances[symbol];
     }
 
     static getInstances() {
         return Object.values(this.instances);
     }
 
-    static removeInstance(network: NetworkSymbol) {
-        const instance = this.instances[network];
+    static removeInstance(symbol: CoinjoinSymbol) {
+        const instance = this.instances[symbol];
         if (instance) {
             instance.backend.disable();
             instance.client.disable();
-            delete this.instances[network];
+            delete this.instances[symbol];
         }
     }
 }

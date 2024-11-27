@@ -64,6 +64,14 @@ const Subtitle = styled.div<{ $error?: boolean }>`
     color: ${({ $error, theme }) => ($error ? theme.textAlertRed : theme.legacy.TYPE_LIGHT_GREY)};
 `;
 
+type BackendItemProps = ConnectionStatus & {
+    identity?: string;
+    symbol: NetworkSymbol;
+    url?: string;
+};
+
+type CoinItemProps = { symbol: NetworkSymbol };
+
 const BackendItem = ({
     symbol,
     identity,
@@ -71,7 +79,7 @@ const BackendItem = ({
     connected,
     error,
     reconnectionTime,
-}: { identity?: string; symbol: NetworkSymbol; url?: string } & ConnectionStatus) => {
+}: BackendItemProps) => {
     const { reconnect, isReconnecting, countdownSeconds } = useBackendReconnection(
         symbol,
         identity,
@@ -109,7 +117,7 @@ const BackendItem = ({
     );
 };
 
-const CoinItem = ({ symbol }: { symbol: NetworkSymbol }) => {
+const CoinItem = ({ symbol }: CoinItemProps) => {
     const { url, error, connected, reconnectionTime, identityConnections } = useSelector(state =>
         selectNetworkBlockchainInfo(state, symbol),
     );
