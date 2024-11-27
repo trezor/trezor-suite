@@ -7,7 +7,6 @@ import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 import { Backends } from './Backends';
 import { Bluetooth } from './Bluetooth';
-import { BluetoothEraseBonds } from './BluetoothEraseBonds';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { CoinjoinApi } from './CoinjoinApi';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
@@ -94,7 +93,6 @@ export const SettingsDebug = () => {
             {isDesktop() && (
                 <SettingsSection title={<Translation id="TR_BLUETOOTH" />}>
                     <Bluetooth />
-                    <BluetoothEraseBonds />
                 </SettingsSection>
             )}
         </SettingsLayout>
