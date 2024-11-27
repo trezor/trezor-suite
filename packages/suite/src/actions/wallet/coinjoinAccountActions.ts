@@ -19,7 +19,12 @@ import {
 } from '@suite-common/wallet-utils';
 
 import { CoinjoinService, COORDINATOR_FEE_RATE_MULTIPLIER } from 'src/services/coinjoin';
-import { getAccountProgressHandle, getRegisterAccountParams } from 'src/utils/wallet/coinjoinUtils';
+import type { CoinjoinSymbol } from 'src/services/coinjoin';
+import {
+    getAccountProgressHandle,
+    getRegisterAccountParams,
+    isCoinjoinSupportedSymbol,
+} from 'src/utils/wallet/coinjoinUtils';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
     CoinjoinAccount,
@@ -260,6 +265,7 @@ const getAccountCache = ({ addresses, path }: Extract<Account, { backendType: 'c
 
 export const updateClientAccount =
     (account: Account) => (dispatch: Dispatch, getState: GetState) => {
+        if (!isCoinjoinSupportedSymbol(account.symbol)) return;
         const client = coinjoinClientActions.getCoinjoinClient(account.symbol);
         if (!client) return;
 
@@ -540,12 +546,12 @@ export const fetchAndUpdateAccount =
     };
 
 export const clearCoinjoinInstances =
-    (networkSymbol: NetworkSymbol) => (dispatch: Dispatch, getState: GetState) => {
-        const cjAccount = selectCoinjoinAccounts(getState()).find(a => a.symbol === networkSymbol);
+    (symbol: CoinjoinSymbol) => (dispatch: Dispatch, getState: GetState) => {
+        const cjAccount = selectCoinjoinAccounts(getState()).find(a => a.symbol === symbol);
         // clear CoinjoinClientInstance if there are no related accounts left
         if (!cjAccount) {
-            dispatch(coinjoinClientActions.clientDisable(networkSymbol));
-            CoinjoinService.removeInstance(networkSymbol);
+            dispatch(coinjoinClientActions.clientDisable(symbol));
+            CoinjoinService.removeInstance(symbol);
         }
     };
 
@@ -558,6 +564,10 @@ export const createCoinjoinAccount =
     async (dispatch: Dispatch, getState: GetState) => {
         if (account.accountType !== 'coinjoin') {
             throw new Error('createCoinjoinAccount: invalid account type');
+        }
+
+        if (!isCoinjoinSupportedSymbol(network.symbol)) {
+            return;
         }
 
         // initialize @trezor/coinjoin client
@@ -768,7 +778,7 @@ export const restoreCoinjoinSession =
         const device = selectDevice(getState());
         const account = selectAccountByKey(getState(), accountKey);
 
-        if (!account) {
+        if (!account || !isCoinjoinSupportedSymbol(account.symbol)) {
             return;
         }
 

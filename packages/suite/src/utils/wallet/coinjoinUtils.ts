@@ -12,12 +12,10 @@ import {
     SessionPhase,
     RoundPhase,
 } from '@trezor/coinjoin';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { isArrayMember } from '@trezor/utils';
+import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 
-import {
-    AnonymityGainPerRound,
-    CoinjoinAccount,
-    CoinjoinSessionParameters,
-} from 'src/types/wallet/coinjoin';
 import {
     ANONYMITY_GAINS_HINDSIGHT_COUNT,
     ANONYMITY_GAINS_HINDSIGHT_DAYS,
@@ -25,6 +23,12 @@ import {
     ESTIMATED_MIN_ROUNDS_NEEDED,
     SKIP_ROUNDS_VALUE_WHEN_ENABLED,
 } from 'src/services/coinjoin/config';
+import type { CoinjoinSymbol } from 'src/services/coinjoin/config';
+import {
+    AnonymityGainPerRound,
+    CoinjoinAccount,
+    CoinjoinSessionParameters,
+} from 'src/types/wallet/coinjoin';
 
 export type CoinjoinBalanceBreakdown = {
     notAnonymized: string;
@@ -399,3 +403,6 @@ export const calculateAverageAnonymityGainPerRound = (
         ANONYMITY_GAINS_HINDSIGHT_COUNT
     );
 };
+
+export const isCoinjoinSupportedSymbol = (symbol: NetworkSymbol): symbol is CoinjoinSymbol =>
+    isArrayMember(symbol, BITCOIN_ONLY_SYMBOLS);

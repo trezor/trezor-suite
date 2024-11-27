@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import { BITCOIN_ONLY_NETWORKS } from '@suite-common/suite-constants';
+import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { isArrayMember } from '@trezor/utils';
 
 import { CoinjoinBackend } from '../../src/backend/CoinjoinBackend';
@@ -8,18 +8,18 @@ import type { CoinjoinBackendSettings } from '../../src/types';
 
 const { getCoinjoinConfig } = require('../../../suite/src/services/coinjoin/config');
 
-const supportedNetworks = BITCOIN_ONLY_NETWORKS;
-type SupportedNetwork = (typeof supportedNetworks)[number];
+const supportedSymbols = BITCOIN_ONLY_SYMBOLS;
+type SupportedNetwork = (typeof supportedSymbols)[number];
 
-const isSupportedNetwork = (network: string): network is SupportedNetwork =>
-    isArrayMember(network, supportedNetworks);
+const isSupportedSymbol = (symbol: string): symbol is SupportedNetwork =>
+    isArrayMember(symbol, supportedSymbols);
 
-export const getAccountInfoParams = (network: string, descriptor: string) => {
-    if (!network) throw new Error('network arg missing');
-    if (!isSupportedNetwork(network)) throw new Error('unsupported network');
+export const getAccountInfoParams = (symbol: string, descriptor: string) => {
+    if (!symbol) throw new Error('symbol arg missing');
+    if (!isSupportedSymbol(symbol)) throw new Error('unsupported symbol');
     if (!descriptor) throw new Error('descriptor arg missing');
 
-    const config: CoinjoinBackendSettings = getCoinjoinConfig(network);
+    const config: CoinjoinBackendSettings = getCoinjoinConfig(symbol);
 
     return {
         descriptor,

@@ -212,7 +212,9 @@ export const onCoinjoinRoundChanged = [
         connect: undefined,
         state: {
             devices: [{ ...DEVICE, features: { busy: false } }],
-            accounts: [{ key: 'account-A', deviceState: '1stTestnetAddress@device_id:0' }],
+            accounts: [
+                { key: 'account-A', deviceState: '1stTestnetAddress@device_id:0', symbol: 'btc' },
+            ],
             selectedAccount: { key: 'account-A' },
             coinjoin: {
                 accounts: [

@@ -22,7 +22,9 @@ import {
     prepareCoinjoinTransaction,
     getSessionDeadline,
     getEstimatedTimePerRound,
+    isCoinjoinSupportedSymbol,
 } from 'src/utils/wallet/coinjoinUtils';
+import type { CoinjoinSymbol } from 'src/services/coinjoin';
 import { CoinjoinService, getCoinjoinConfig } from 'src/services/coinjoin';
 import { Dispatch, GetState } from 'src/types/suite';
 import { CoinjoinAccount, EndRoundState, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
@@ -187,15 +189,22 @@ export type CoinjoinClientAction =
     | ReturnType<typeof coinjoinSessionPause>;
 
 // return only active instances
-export const getCoinjoinClient = (symbol: Account['symbol']) =>
+export const getCoinjoinClient = (symbol: CoinjoinSymbol) =>
     CoinjoinService.getInstance(symbol)?.client;
 
 export const unregisterByAccountKey =
     (accountKey: string) => (_dispatch: Dispatch, getState: GetState) => {
         const { accounts } = getState().wallet;
         const realAccount = accounts.find(a => a.key === accountKey);
-        const client = realAccount && getCoinjoinClient(realAccount.symbol);
-        client?.unregisterAccount(accountKey);
+
+        const client =
+            realAccount && isCoinjoinSupportedSymbol(realAccount.symbol)
+                ? getCoinjoinClient(realAccount.symbol)
+                : undefined;
+
+        if (client) {
+            client.unregisterAccount(accountKey);
+        }
     };
 
 export const endCoinjoinSession = (accountKey: string) => (dispatch: Dispatch) => {
@@ -274,7 +283,7 @@ export const pauseCoinjoinSession =
     (accountKey: string) => (dispatch: Dispatch, getState: GetState) => {
         const account = selectAccountByKey(getState(), accountKey);
 
-        if (!account) {
+        if (!account || !isCoinjoinSupportedSymbol(account.symbol)) {
             return;
         }
         // get @trezor/coinjoin client if available
@@ -293,7 +302,7 @@ export const stopCoinjoinSession =
         const state = getState();
         const account = selectAccountByKey(state, accountKey);
 
-        if (!account) {
+        if (!account || !isCoinjoinSupportedSymbol(account.symbol)) {
             return;
         }
 
@@ -556,7 +565,7 @@ interface ClientEmitExceptionOptions {
 export const clientEmitException =
     (reason: string, options: ClientEmitExceptionOptions = {}) =>
     () => {
-        (options.symbol
+        (options.symbol && isCoinjoinSupportedSymbol(options.symbol)
             ? [CoinjoinService.getInstance(options.symbol)]
             : CoinjoinService.getInstances()
         ).forEach(instance => {
@@ -726,6 +735,9 @@ export const initCoinjoinService =
     (symbol: Account['symbol']) => async (dispatch: Dispatch, getState: GetState) => {
         const state = getState();
         const { clients, debug, accounts } = state.wallet.coinjoin;
+
+        if (!isCoinjoinSupportedSymbol(symbol)) return;
+
         const knownClient = clients[symbol];
         if (knownClient?.status === 'loading') return;
 
@@ -790,7 +802,7 @@ export const initCoinjoinService =
         try {
             const config = getCoinjoinConfig(symbol, environment);
             const service = await CoinjoinService.createInstance({
-                network: symbol,
+                symbol,
                 prison,
                 settings: { ...config, ...debug?.coinjoinConfigOverride?.[symbol] },
             });

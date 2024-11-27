@@ -18,7 +18,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import * as discoveryActions from '@suite-common/wallet-core';
 import TrezorConnect, { ERRORS } from '@trezor/connect';
-import { BITCOIN_ONLY_NETWORKS } from '@suite-common/suite-constants';
+import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
@@ -183,7 +183,7 @@ const getInitialState = (device = SUITE_DEVICE) => ({
         accounts: accountsReducer(undefined, { type: 'foo' } as any),
         settings: walletSettingsReducer(undefined, {
             type: walletSettingsActions.changeNetworks.type,
-            payload: BITCOIN_ONLY_NETWORKS,
+            payload: BITCOIN_ONLY_SYMBOLS,
         }),
     },
 });

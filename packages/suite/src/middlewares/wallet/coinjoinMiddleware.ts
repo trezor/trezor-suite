@@ -39,6 +39,7 @@ import {
     selectCoinjoinSessionBlockerByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
 import { selectIsDeviceOrUiLocked, selectTorState } from 'src/reducers/suite/suiteReducer';
+import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 
 export const coinjoinMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -79,8 +80,10 @@ export const coinjoinMiddleware =
                 .filter(({ accountType }) => accountType === 'coinjoin')
                 .map(({ symbol }) => symbol)
                 .filter(arrayDistinct)
-                .forEach(symbol =>
-                    api.dispatch(coinjoinAccountActions.clearCoinjoinInstances(symbol)),
+                .forEach(
+                    symbol =>
+                        isCoinjoinSupportedSymbol(symbol) &&
+                        api.dispatch(coinjoinAccountActions.clearCoinjoinInstances(symbol)),
                 );
         }
 

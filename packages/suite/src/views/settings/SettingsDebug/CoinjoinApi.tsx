@@ -3,13 +3,15 @@ import styled from 'styled-components';
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
-import { COINJOIN_NETWORKS } from 'src/services/coinjoin';
+import { COINJOIN_NETWORKS, CoinjoinSymbol } from 'src/services/coinjoin';
 import { setDebugSettings } from 'src/actions/wallet/coinjoinClientActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { CoinjoinServerEnvironment, CoinjoinClientInstance } from 'src/types/wallet/coinjoin';
 import { reloadApp } from 'src/utils/suite/reload';
+import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 
 const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;
@@ -21,15 +23,17 @@ const CoordinatorVersionContainer = styled.div`
     align-items: center;
 `;
 
-interface CoordinatorServerProps {
+type CoordinatorServerProps = {
     symbol: NetworkSymbol;
     version?: CoinjoinClientInstance['version'];
     environments: CoinjoinServerEnvironment[];
     value?: CoinjoinServerEnvironment;
-    onChange: (network: NetworkSymbol, value: CoinjoinServerEnvironment) => void;
-}
+    onChange: (symbol: CoinjoinSymbol, value: CoinjoinServerEnvironment) => void;
+};
 
-const CoordinatorVersion = ({ version }: { version: CoordinatorServerProps['version'] }) => {
+type CoordinatorVersionProps = { version: CoordinatorServerProps['version'] };
+
+const CoordinatorVersion = ({ version }: CoordinatorVersionProps) => {
     if (!version) return null;
 
     return (
@@ -63,6 +67,8 @@ const CoordinatorServer = ({
     const selectedOption = (value && options.find(option => option.value === value)) ?? options[0];
     const networkName = networks[symbol].name;
 
+    if (!isCoinjoinSupportedSymbol(symbol)) return null;
+
     return (
         <SectionItem data-testid={`@settings/debug/coinjoin/${symbol}`}>
             <TextColumn
@@ -92,11 +98,15 @@ export const CoinjoinApi = () => {
     const clients = useSelector(state => state.wallet.coinjoin.clients);
     const dispatch = useDispatch();
 
-    const handleServerChange: CoordinatorServerProps['onChange'] = (network, value) => {
+    const coinjoinSymbols = BITCOIN_ONLY_SYMBOLS.filter(symbol =>
+        isCoinjoinSupportedSymbol(symbol),
+    );
+
+    const handleServerChange: CoordinatorServerProps['onChange'] = (symbol, value) => {
         dispatch(
             setDebugSettings({
                 coinjoinServerEnvironment: {
-                    [network]: value,
+                    [symbol]: value,
                 },
             }),
         );
@@ -106,7 +116,7 @@ export const CoinjoinApi = () => {
 
     return (
         <>
-            {(Object.keys(COINJOIN_NETWORKS) as NetworkSymbol[]).map(symbol => {
+            {coinjoinSymbols.map(symbol => {
                 const environments = Object.keys(
                     COINJOIN_NETWORKS[symbol] || {},
                 ) as CoinjoinServerEnvironment[];

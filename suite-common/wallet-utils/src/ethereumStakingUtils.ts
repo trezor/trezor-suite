@@ -68,18 +68,18 @@ export const getEthereumCryptoBalanceWithStaking = (account: Account) => {
 };
 
 export function isSupportedEthStakingNetworkSymbol(
-    networkSymbol: NetworkSymbol,
-): networkSymbol is SupportedNetworkSymbol {
-    return isArrayMember(networkSymbol, supportedNetworkSymbols);
+    symbol: NetworkSymbol,
+): symbol is SupportedNetworkSymbol {
+    return isArrayMember(symbol, supportedNetworkSymbols);
 }
 
-export const getStakingSymbols = (networkSymbols: NetworkSymbol[]) =>
-    networkSymbols.reduce((acc, networkSymbol) => {
+export const getStakingSymbols = (symbols: NetworkSymbol[]) =>
+    symbols.reduce((acc, symbol) => {
         if (
-            isSupportedEthStakingNetworkSymbol(networkSymbol) &&
-            getNetworkFeatures(networkSymbol).includes('staking')
+            isSupportedEthStakingNetworkSymbol(symbol) &&
+            getNetworkFeatures(symbol).includes('staking')
         ) {
-            acc.push(networkSymbol);
+            acc.push(symbol);
         }
 
         return acc;
