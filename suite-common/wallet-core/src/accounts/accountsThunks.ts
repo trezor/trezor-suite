@@ -89,12 +89,18 @@ export const fetchAndUpdateAccountThunk = createThunk(
         if (!isTrezorConnectBackendType(account.backendType)) return; // skip unsupported backend type
         // first basic check, traffic optimization
         // basic check returns only small amount of data without full transaction history
+        const tokenAccountsPubKeys =
+            account.networkType === 'solana'
+                ? account.tokens?.flatMap(t => t.accounts ?? []).map(a => a.publicKey)
+                : undefined;
+
         const basic = await TrezorConnect.getAccountInfo({
             coin: account.symbol,
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
-            details: 'basic',
+            details: 'txids',
             suppressBackupWarning: true,
+            tokenAccountsPubKeys,
         });
         if (!basic.success) return;
 

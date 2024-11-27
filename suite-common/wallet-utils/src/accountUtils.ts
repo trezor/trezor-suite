@@ -634,11 +634,13 @@ export const enhanceHistory = ({
     unconfirmed,
     tokens,
     addrTxCount,
+    txids,
 }: AccountInfo['history']): Account['history'] => ({
     total,
     unconfirmed,
     tokens,
     addrTxCount,
+    txids,
 });
 
 export const getAccountTokensFiatBalance = (
@@ -810,6 +812,9 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
                 // changed stake pool
                 freshInfo.misc!.staking?.poolId !== account.misc.staking.poolId
             );
+        case 'solana':
+            // compare last transaction signature since the total number of txs may not be fetched fully
+            return freshInfo.history.txids?.[0] !== account.history.txids?.[0];
         default:
             return false;
     }
