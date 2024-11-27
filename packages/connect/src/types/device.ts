@@ -149,6 +149,8 @@ export type Features = PROTO.Features;
 
 export { DeviceModelInternal } from '@trezor/protobuf';
 
+export type DisplayRotation = PROTO.DisplayRotation;
+
 type FeaturesNarrowing =
     | {
           major_version: 2;

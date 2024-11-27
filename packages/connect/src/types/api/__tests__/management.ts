@@ -23,7 +23,7 @@ export const management = async (api: TrezorConnect) => {
 
     const settings = await api.applySettings({
         homescreen: 'string',
-        display_rotation: 180,
+        display_rotation: 'South',
         use_passphrase: true,
         label: 'My Trezor',
         safety_checks: 'Strict',
