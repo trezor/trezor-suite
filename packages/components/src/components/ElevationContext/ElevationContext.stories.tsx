@@ -27,6 +27,9 @@ const UiBox = styled.div<{ $elevation: Elevation }>`
     padding: ${spacingsPx.sm};
     border-radius: ${borders.radii.sm};
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: ${spacingsPx.sm};
 `;
 
 const meta: Meta = {
@@ -69,14 +72,12 @@ const TextareaExtender = ({ children }: { children: ReactNode }) => {
     );
 };
 
-export const Box = ({ children }: { children?: ReactNode }) => {
+const Box = ({ children }: { children?: ReactNode }) => {
     const { elevation } = useElevation();
 
     return (
         <UiBox $elevation={elevation}>
-            Elevation: {elevation}
-            <br />
-            <br />
+            <div>Elevation: {elevation}</div>
             <ElevationUp>{children}</ElevationUp>
         </UiBox>
     );
