@@ -22,6 +22,9 @@ import {
     Signature,
     Slot,
     SOLANA_ERROR__BLOCK_HEIGHT_EXCEEDED,
+    SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_FAILED_TO_CONNECT,
+    SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_CONNECTION_CLOSED,
+    SOLANA_ERROR__RPC__TRANSPORT_HTTP_ERROR,
     SolanaRpcApiMainnet,
     SolanaRpcSubscriptionsApi,
     TransactionWithBlockhashLifetime,
@@ -176,6 +179,20 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
         if (isSolanaError(error, SOLANA_ERROR__BLOCK_HEIGHT_EXCEEDED)) {
             throw new Error(
                 'Please make sure that you submit the transaction within 1 minute after signing.',
+            );
+        }
+        if (
+            isSolanaError(error, SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_FAILED_TO_CONNECT) ||
+            isSolanaError(error, SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_CONNECTION_CLOSED) ||
+            isSolanaError(error, SOLANA_ERROR__RPC__TRANSPORT_HTTP_ERROR)
+        ) {
+            throw new Error(
+                'Solana backend connection failure. The backend might be inaccessible or the connection is unstable.',
+            );
+        }
+        if (isSolanaError(error)) {
+            throw new Error(
+                `Solana error code: ${error.context.__code}. Please try again or contact support.`,
             );
         }
         throw error;
