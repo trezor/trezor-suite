@@ -1,8 +1,9 @@
-import { BLUETOOTH_PREFIX, selectKnownDevices } from '@suite-common/bluetooth';
+import { BLUETOOTH_PREFIX, bluetoothActions, selectKnownDevices } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils/';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 
+import { remapKnownDevicesForLinux } from './remapKnownDevicesForLinux';
 import { selectSuiteFlags } from '../../reducers/suite/suiteReducer';
 
 export const initBluetoothThunk = createThunk<void, void, void>(
@@ -29,20 +30,29 @@ export const initBluetoothThunk = createThunk<void, void, void>(
 
         bluetoothIpc.on('adapter-event', status => {
             console.warn('adapter-event', status);
-
-            // TO BE DONE
+            dispatch(bluetoothActions.adapterEventAction({ status }));
         });
 
         bluetoothIpc.on('device-list-update', nearbyDevices => {
             console.warn('device-list-update', nearbyDevices);
 
-            // TO BE DONE
+            const knownDevices = selectKnownDevices<BluetoothDevice>(getState());
+
+            const remappedKnownDevices = remapKnownDevicesForLinux({
+                knownDevices,
+                nearbyDevices,
+            });
+
+            dispatch(
+                bluetoothActions.knownDevicesUpdateAction({ knownDevices: remappedKnownDevices }),
+            );
+            dispatch(bluetoothActions.nearbyDevicesUpdateAction({ nearbyDevices }));
         });
 
         bluetoothIpc.on('device-update', (device: BluetoothDevice) => {
             console.warn('device-update', device);
 
-            // TO BE DONE
+            dispatch(bluetoothActions.connectDeviceEventAction({ device }));
         });
     },
 );
