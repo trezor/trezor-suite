@@ -1,4 +1,8 @@
-import { DeviceModelInternal, type DisplayRotation as DisplayRotationType } from '@trezor/connect';
+import {
+    DeviceModelInternal,
+    type DisplayRotation as DisplayRotationType,
+    PROTO,
+} from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { Icon, SelectBar, Tooltip } from '@trezor/components';
 
@@ -76,18 +80,11 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
                     selectedOption={currentRotation ?? undefined}
                     options={DISPLAY_ROTATIONS}
                     onChange={(value: DisplayRotationType) => {
-                        // todo: export enum from connect and possibly use packages/utils/src/enumUtils
-                        const numValueMap = {
-                            North: 0 as const,
-                            East: 90 as const,
-                            South: 180 as const,
-                            West: 270 as const,
-                        };
                         dispatch(applySettings({ display_rotation: value }));
                         analytics.report({
                             type: EventType.SettingsDeviceChangeOrientation,
                             payload: {
-                                value: numValueMap[value],
+                                value: PROTO.Enum_DisplayRotation[value],
                             },
                         });
                     }}
