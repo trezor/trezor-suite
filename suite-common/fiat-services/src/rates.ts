@@ -63,14 +63,17 @@ export const fetchCurrentFiatRates = ({
                         { timeout: CONNECT_FETCH_TIMEOUT },
                     );
 
-                    const rate = success
-                        ? {
-                              rate: payload.rates?.[localCurrency],
-                              lastTickerTimestamp: payload.ts as Timestamp,
-                          }
-                        : null;
+                    if (!success) return null;
 
-                    return rate;
+                    const rate = payload.rates?.[localCurrency];
+
+                    // in case blockbook does not know fiat rate, it returns -1
+                    if (!rate || rate < 0) return null;
+
+                    return {
+                        rate,
+                        lastTickerTimestamp: payload.ts as Timestamp,
+                    };
                 }
 
                 const blockbookResponse = await blockbookService.fetchCurrentFiatRates(
@@ -118,14 +121,17 @@ export const fetchLastWeekFiatRates = ({
                         localCurrency,
                     );
 
-                    const rate = success
-                        ? {
-                              rate: payload.tickers?.[0]?.rates?.[localCurrency],
-                              lastTickerTimestamp: payload.tickers?.[0]?.ts as Timestamp,
-                          }
-                        : null;
+                    if (!success) return null;
 
-                    return rate;
+                    const rate = payload.tickers?.[0]?.rates?.[localCurrency];
+
+                    // in case blockbook does not know fiat rate, it returns -1
+                    if (!rate || rate < 0) return null;
+
+                    return {
+                        rate,
+                        lastTickerTimestamp: payload.tickers?.[0]?.ts as Timestamp,
+                    };
                 }
 
                 const blockbookResponse = await blockbookService.fetchLastWeekRates(
@@ -179,15 +185,18 @@ export const getFiatRatesForTimestamps = (
                         localCurrency,
                     );
 
-                    const rates = success
-                        ? {
-                              ts: new Date().getTime(),
-                              symbol: ticker.symbol,
-                              tickers: payload.tickers,
-                          }
-                        : null;
+                    if (!success) return null;
 
-                    return rates;
+                    // in case blockbook does not know fiat rate, it returns -1
+                    const validTickers = payload.tickers.filter(
+                        tick => tick.rates[localCurrency] && tick.rates[localCurrency] >= 0,
+                    );
+
+                    return {
+                        ts: new Date().getTime(),
+                        symbol: ticker.symbol,
+                        tickers: validTickers,
+                    };
                 }
 
                 const blockbookResponse = await blockbookService.getFiatRatesForTimestamps(
