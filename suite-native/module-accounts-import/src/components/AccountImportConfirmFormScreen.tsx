@@ -136,7 +136,7 @@ export const AccountImportConfirmFormScreen = ({
                     ListHeaderComponent={
                         <>
                             <AccountImportOverview
-                                balance={accountInfo.availableBalance}
+                                balance={accountInfo.balance}
                                 networkSymbol={networkSymbol}
                             />
                             {knownTokens.length > 0 && (

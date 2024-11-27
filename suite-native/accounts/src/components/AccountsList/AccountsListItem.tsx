@@ -125,15 +125,12 @@ export const AccountsListItem = ({
                         value={fiatBalance}
                     />
                 ) : (
-                    <CryptoToFiatAmountFormatter
-                        value={account.availableBalance}
-                        network={account.symbol}
-                    />
+                    <CryptoToFiatAmountFormatter value={account.balance} network={account.symbol} />
                 )
             }
             secondaryValue={
                 <CryptoAmountFormatter
-                    value={account.availableBalance}
+                    value={account.balance}
                     network={account.symbol}
                     isBalance={false}
                     numberOfLines={1}

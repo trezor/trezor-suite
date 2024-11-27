@@ -39,7 +39,7 @@ export const AccountBalanceScreenHeader = ({
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const availableBalance = useSelector((state: AccountsRootState) =>
+    const balance = useSelector((state: AccountsRootState) =>
         selectAccountBalance(state, accountKey),
     );
 
@@ -75,7 +75,7 @@ export const AccountBalanceScreenHeader = ({
                         <CoinAmountFormatter
                             variant="hint"
                             color="textDefault"
-                            value={tokenBalance ?? availableBalance}
+                            value={tokenBalance ?? balance}
                             decimals={0}
                             accountKey={accountKey}
                             tokenContract={tokenContract}
@@ -89,7 +89,7 @@ export const AccountBalanceScreenHeader = ({
                                 <CoinToFiatAmountFormatter
                                     variant="hint"
                                     color="textSubdued"
-                                    value={tokenBalance ?? availableBalance}
+                                    value={tokenBalance ?? balance}
                                     accountKey={accountKey}
                                     decimals={0}
                                     tokenContract={tokenContract}
