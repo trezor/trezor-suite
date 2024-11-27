@@ -70,7 +70,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
     const eventDevice = uiEvent && 'device' in uiEvent.payload ? uiEvent.payload.device : undefined;
 
     const isManualRebootRequired =
-        // Automatic reboot not supported:
+        // Automatic reboot isn't supported:
         showManualReconnectPrompt ||
         // Automatic reboot cancelled or device disconnected:
         status === 'error';
