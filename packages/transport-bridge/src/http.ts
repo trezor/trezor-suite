@@ -425,7 +425,9 @@ export class TrezordNode {
             ]);
 
             app.get('/status-data', [
-                (_req, res) => {
+                async (_req, res) => {
+                    const signal = this.createAbortSignal(res);
+                    await this.core.enumerate({ signal });
                     const props = {
                         intro: `To download full logs go to http://127.0.0.1:${this.port}/logs`,
                         version: this.version,
