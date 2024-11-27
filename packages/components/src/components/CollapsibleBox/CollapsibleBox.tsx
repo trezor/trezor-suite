@@ -12,7 +12,7 @@ import {
     spacings,
 } from '@trezor/theme';
 
-import { Icon } from '../Icon/Icon';
+import { Icon, IconName } from '../Icon/Icon';
 import { Row, Column } from '../Flex/Flex';
 import { Text } from '../typography/Text/Text';
 import { motionEasing } from '../../config/motion';
@@ -77,6 +77,7 @@ export type CollapsibleBoxProps = AllowedFrameProps & {
     fillType?: FillType;
     toggleLabel?: ReactNode;
     toggleComponent?: ReactNode;
+    toggleIconName?: IconName;
     children?: ReactNode;
     hasDivider?: boolean;
     onAnimationComplete?: (isOpen: boolean) => void;
@@ -155,6 +156,7 @@ export const CollapsibleBox = ({
     defaultIsOpen = false,
     toggleLabel,
     toggleComponent,
+    toggleIconName = 'caretCircleDown',
     paddingType = 'normal',
     heading,
     subHeading,
@@ -209,7 +211,7 @@ export const CollapsibleBox = ({
                     <IconWrapper $isCollapsed={!isOpen}>
                         {toggleComponent ?? (
                             <Icon
-                                name="caretCircleDown"
+                                name={toggleIconName}
                                 size={mapSizeToIconSize({ $headingSize: headingSize })}
                                 data-testid={`@collapsible-box/icon-${isOpen ? 'expanded' : 'collapsed'}`}
                                 variant="tertiary"
