@@ -32,9 +32,12 @@ export const RotateDeviceImage = ({
 
     const isDeviceImageRotating =
         deviceModel &&
-        [DeviceModelInternal.T2B1, DeviceModelInternal.T3B1, DeviceModelInternal.T3T1].includes(
-            deviceModel,
-        );
+        [
+            DeviceModelInternal.T2B1,
+            DeviceModelInternal.T3B1,
+            DeviceModelInternal.T3T1,
+            DeviceModelInternal.T3W1,
+        ].includes(deviceModel);
 
     return (
         <>

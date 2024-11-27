@@ -25,6 +25,7 @@ import type { WalletAction } from 'src/types/wallet';
 import type { BackupAction } from 'src/actions/backup/backupActions';
 import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
 import type { GuideAction } from 'src/actions/suite/guideActions';
+import { allBluetoothActions } from 'src/actions/bluetooth/bluetoothActions';
 
 // reexport
 export type { ExtendedMessageDescriptor } from 'src/components/suite/Translation';
@@ -58,6 +59,7 @@ type DiscoveryAction = ReturnType<(typeof discoveryActions)[keyof typeof discove
 type DeviceAuthenticityAction = ReturnType<
     (typeof deviceAuthenticityActions)[keyof typeof deviceAuthenticityActions]
 >;
+type BluetoothAction = ReturnType<(typeof allBluetoothActions)[keyof typeof allBluetoothActions]>;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =
@@ -83,7 +85,8 @@ export type Action =
     | ProtocolAction
     | DiscoveryAction
     | DeviceAction
-    | DeviceAuthenticityAction;
+    | DeviceAuthenticityAction
+    | BluetoothAction;
 
 export type ThunkAction = TAction<any, AppState, any, Action>;
 
@@ -111,6 +114,7 @@ export type ForegroundAppProps = {
 export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error' | 'transparent';
 
 export { TorStatus } from '@trezor/suite-desktop-api/src/enums';
+
 export interface TorBootstrap {
     current: number;
     total: number;

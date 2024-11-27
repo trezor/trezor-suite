@@ -25,7 +25,7 @@ import {
     isSkippedHashCheckError,
     revisionCheckErrorScenarios,
 } from 'src/constants/suite/firmware';
-import { isWebUsb } from 'src/utils/suite/transport';
+import { isWebUsb, isBluetoothTransport } from 'src/utils/suite/transport';
 
 import { RouterRootState, selectRouter } from './routerReducer';
 
@@ -404,6 +404,12 @@ export const selectIsWebUsb = (state: SuiteRootState) => {
     const transport = selectTransport(state);
 
     return isWebUsb(transport);
+};
+
+export const selectIsBluetooth = (state: SuiteRootState) => {
+    const transport = selectTransport(state);
+
+    return isBluetoothTransport(transport);
 };
 
 export const selectIsActionAbortable = (state: SuiteRootState) => {

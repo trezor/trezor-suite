@@ -20,6 +20,7 @@ import walletReducers from 'src/reducers/wallet';
 import onboardingReducers from 'src/reducers/onboarding';
 import recoveryReducers from 'src/reducers/recovery';
 import backupReducers from 'src/reducers/backup';
+import { bluetoothReducer } from 'src/reducers/bluetooth/bluetoothReducer';
 // toastMiddleware can be used only in suite-desktop and suite-web
 // it's not included into `@suite-middlewares` index
 import toastMiddleware from 'src/middlewares/suite/toastMiddleware';
@@ -40,6 +41,7 @@ const rootReducer = combineReducers({
     backup: backupReducers,
     desktop: desktopReducer,
     tokenDefinitions: tokenDefinitionsReducer,
+    bluetooth: bluetoothReducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;
