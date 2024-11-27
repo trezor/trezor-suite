@@ -1,4 +1,11 @@
-const safe3Model = {
+import { DeviceModelInternal } from '@trezor/protobuf';
+
+type ModelConfig = {
+    name: string;
+    colors: Record<string, string>;
+};
+
+const safe3Model: ModelConfig = {
     name: 'Trezor Safe 3',
     colors: {
         '1': 'Cosmic Black',
@@ -9,7 +16,7 @@ const safe3Model = {
     },
 };
 
-export const models = {
+export const models: Record<DeviceModelInternal, ModelConfig> = {
     T1B1: {
         name: 'Trezor Model One',
         colors: {},
