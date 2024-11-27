@@ -15,7 +15,7 @@ import {
 import { useDebounce } from '@trezor/react-utils';
 import { isChanged } from '@suite-common/suite-utils';
 import { findComposeErrors } from '@suite-common/wallet-utils';
-import { FeeLevel } from '@trezor/connect';
+import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 
@@ -343,6 +343,23 @@ export const useSendFormCompose = ({
         updateContext,
         setLoading,
     ]);
+
+    useEffect(() => {
+        // Subscribe to blocks for Solana, since they are not fetched globally
+        if (state.account.networkType === 'solana') {
+            TrezorConnect.blockchainSubscribe({
+                coin: state.account.symbol,
+                blocks: true,
+            });
+
+            return () => {
+                TrezorConnect.blockchainUnsubscribe({
+                    coin: state.account.symbol,
+                    blocks: true,
+                });
+            };
+        }
+    }, [state.account]);
 
     return {
         composeDraft,
