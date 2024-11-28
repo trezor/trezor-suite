@@ -99,3 +99,17 @@ export const TROUBLESHOOTING_TIP_RECONNECT = {
         />
     ),
 };
+
+export const TROUBLESHOOTING_TIP_CLOSE_ALL_TABS = {
+    key: 'device-acquire',
+    heading: <Translation id="TR_TROUBLESHOOTING_CLOSE_TABS" />,
+    description: (
+        <Translation
+            id={
+                isDesktop()
+                    ? 'TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION_DESKTOP'
+                    : 'TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION'
+            }
+        />
+    ),
+};

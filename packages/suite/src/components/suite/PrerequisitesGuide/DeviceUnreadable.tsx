@@ -13,6 +13,7 @@ import {
     TROUBLESHOOTING_TIP_UNREADABLE_HID,
     TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE,
     TROUBLESHOOTING_TIP_RECONNECT,
+    TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
 } from 'src/components/suite/troubleshooting/tips';
 import { useSelector, useDispatch } from 'src/hooks/suite';
 import type { TrezorDevice } from 'src/types/suite';
@@ -143,6 +144,11 @@ export const DeviceUnreadable = ({ device }: DeviceUnreadableProps) => {
         // you might have a very old device which is no longer supported current bridge
         // if on desktop - try toggling between the 2 bridges we have available
         items.push(TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE);
+    } else {
+        // it might also be unreadable because device was acquired on transport layer by another app and never released.
+        // this should be rather exceptional case that happens only when sessions synchronization is broken or other app
+        // is not cooperating with us
+        items.push(TROUBLESHOOTING_TIP_CLOSE_ALL_TABS);
     }
 
     return (

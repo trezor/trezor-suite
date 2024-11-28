@@ -28,6 +28,9 @@ export const getPrerequisiteName = ({ router, device, transport }: GetPrerequisi
         return 'device-disconnect-required';
     }
 
+    if (device.type === 'unacquired' && device?.transportSessionOwner)
+        return 'device-used-elsewhere';
+
     // device features cannot be read, device is probably used in another window
     if (device.type === 'unacquired') return 'device-unacquired';
 

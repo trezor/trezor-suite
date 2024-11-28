@@ -74,8 +74,10 @@ const getMessageId = ({
             return isDesktop() ? 'TR_NO_TRANSPORT_DESKTOP' : 'TR_NO_TRANSPORT';
         case 'device-bootloader':
             return 'TR_DEVICE_CONNECTED_BOOTLOADER';
-        case 'device-unacquired':
+        case 'device-used-elsewhere':
             return 'TR_DEVICE_CONNECTED_UNACQUIRED';
+        case 'device-unacquired':
+            return 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT';
         default: {
             if (connected) {
                 return !showWarning ? 'TR_DEVICE_CONNECTED' : 'TR_DEVICE_CONNECTED_WRONG_STATE';

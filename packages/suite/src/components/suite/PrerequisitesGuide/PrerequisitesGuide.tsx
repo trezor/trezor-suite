@@ -26,6 +26,7 @@ import { DeviceNoFirmware } from './DeviceNoFirmware';
 import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceDisconnectRequired } from './DeviceDisconnectRequired';
 import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
+import { DeviceUsedElsewhere } from './DeviceUsedElsewhere';
 
 const Wrapper = styled.div`
     display: flex;
@@ -68,6 +69,8 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
                     return <DeviceConnect isWebUsbTransport={isWebUsbTransport} />;
                 case 'device-unacquired':
                     return <DeviceAcquire />;
+                case 'device-used-elsewhere':
+                    return <DeviceUsedElsewhere />;
                 case 'device-unreadable':
                     return <DeviceUnreadable device={device} />;
                 case 'device-unknown':
