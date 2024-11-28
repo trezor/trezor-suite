@@ -105,8 +105,9 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
     };
 
     const { defaultUrls, isLoading } = useDefaultUrls(coin);
-    const editable = type !== 'default';
     const { ref: inputRef, ...inputField } = register(name, { validate });
+    const isEditable = type !== 'default';
+    const isSubmitButtonDisabled = isEditable && !!error;
 
     return (
         <>
@@ -136,17 +137,17 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
 
                 <BackendTypeSelect network={network} value={type} onChange={changeType} />
 
-                {(editable ? urls : defaultUrls).map(url => (
+                {(isEditable ? urls : defaultUrls).map(url => (
                     <BackendInput
                         key={url}
                         url={url}
                         isActive={url === blockchain[coin]?.url}
                         isLoading={isLoading}
-                        onRemove={editable ? () => removeUrl(url) : undefined}
+                        onRemove={isEditable ? () => removeUrl(url) : undefined}
                     />
                 ))}
 
-                {editable && (
+                {isEditable && (
                     <Input
                         data-testid={`@settings/advance/${name}`}
                         placeholder={placeholder}
@@ -157,7 +158,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                     />
                 )}
 
-                {editable && (
+                {isEditable && (
                     <AddUrlButton
                         variant="tertiary"
                         icon="plus"
@@ -183,7 +184,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                 <SaveButton
                     variant="primary"
                     onClick={onSaveClick}
-                    isDisabled={!!error}
+                    isDisabled={isSubmitButtonDisabled}
                     data-testid="@settings/advance/button/save"
                 >
                     <Translation id="TR_CONFIRM" />
