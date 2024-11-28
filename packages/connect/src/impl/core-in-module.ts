@@ -1,11 +1,6 @@
 import EventEmitter from 'events';
 
-import {
-    DeferredManager,
-    createDeferredManager,
-    cloneObjectCyclic,
-    cloneObject,
-} from '@trezor/utils';
+import { DeferredManager, createDeferredManager, cloneObject } from '@trezor/utils';
 
 import * as ERRORS from '../constants/errors';
 import {
@@ -213,7 +208,7 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
     public async call(params: CallMethodPayload) {
         try {
             const { promiseId, promise } = this._messagePromises.create();
-            const payload = cloneObjectCyclic<any>(params);
+            const payload = cloneObject<any>(params);
             this.handleCoreMessage({
                 type: IFRAME.CALL,
                 id: promiseId,
