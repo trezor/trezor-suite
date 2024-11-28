@@ -158,6 +158,7 @@ export const TYPE_PATCH = {
     'Features.display_rotation': 'DisplayRotation | null',
     'Features.experimental_features': 'boolean | null',
     'Features.internal_model': DeviceModelInternal,
+    'ApplySettings.display_rotation': 'DisplayRotation | Enum_DisplayRotation',
     'HDNodePathType.node': 'HDNodeType | string',
     'FirmwareUpload.payload': 'Buffer | ArrayBuffer',
     'EthereumGetAddress.encoded_network': 'ArrayBuffer',

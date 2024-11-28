@@ -2402,7 +2402,7 @@ export const ApplySettings = Type.Object(
         homescreen: Type.Optional(Type.String()),
         _passphrase_source: Type.Optional(Type.Number()),
         auto_lock_delay_ms: Type.Optional(Type.Number()),
-        display_rotation: Type.Optional(DisplayRotation),
+        display_rotation: Type.Optional(Type.Union([DisplayRotation, EnumEnum_DisplayRotation])),
         passphrase_always_on_device: Type.Optional(Type.Boolean()),
         safety_checks: Type.Optional(SafetyCheckLevel),
         experimental_features: Type.Optional(Type.Boolean()),

@@ -1586,7 +1586,7 @@ export type ApplySettings = {
     homescreen?: string;
     _passphrase_source?: number;
     auto_lock_delay_ms?: number;
-    display_rotation?: DisplayRotation;
+    display_rotation?: DisplayRotation | Enum_DisplayRotation;
     passphrase_always_on_device?: boolean;
     safety_checks?: SafetyCheckLevel;
     experimental_features?: boolean;
