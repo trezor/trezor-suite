@@ -351,32 +351,33 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 try {
                     await this.run();
                 } catch (error) {
+                    _log.warn(`device.run error.message: ${error.message}, code: ${error.code}`);
+
                     if (
                         error.code === 'Device_NotFound' ||
                         error.message === TRANSPORT_ERROR.DEVICE_NOT_FOUND ||
                         error.message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
-                        error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR ||
                         error.message === TRANSPORT_ERROR.DESCRIPTOR_NOT_FOUND ||
                         error.message === TRANSPORT_ERROR.HTTP_ERROR // bridge died during device initialization
                     ) {
                         // disconnected, do nothing
                     } else if (
+                        // we don't know what really happened
+                        error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR ||
+                        // someone else took the device at the same time
                         error.message === TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS ||
-                        error.code === 'Device_UsedElsewhere' // most common error - someone else took the device at the same time
+                        // device had some session when first seen -> we do not read it so that we don't interrupt somebody else's flow
+                        error.code === 'Device_UsedElsewhere' ||
+                        // TODO: is this needed? can't I just use transport error?
+                        error.code === 'Device_InitializeFailed'
                     ) {
-                        // TODO needed only for TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS
-                        // this.enumerate(transport);
                         this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
                     } else if (
                         // device was claimed by another application on transport api layer (claimInterface in usb nomenclature) but never released (releaseInterface in usb nomenclature)
                         // the only remedy for this is to reconnect device manually
-                        // or possibly there are 2 applications without common sessions background
                         error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE ||
                         // catch one of trezord LIBUSB_ERRORs
-                        error.message?.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0 ||
-                        // we tried to initialize device (either automatically after enumeration or after user click)
-                        // but it did not work out. this device is effectively unreadable and user should do something about it
-                        error.code === 'Device_InitializeFailed'
+                        error.message?.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0
                     ) {
                         this.unreadableError = error?.message;
                         this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
