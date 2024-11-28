@@ -6,8 +6,8 @@ import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import {
-    selectFirmwareHashCheckError,
-    selectFirmwareRevisionCheckError,
+    selectFirmwareHashCheckErrorIfEnabled,
+    selectFirmwareRevisionCheckErrorIfEnabled,
 } from 'src/reducers/suite/suiteReducer';
 import { skippedHashCheckErrors } from 'src/constants/suite/firmware';
 
@@ -29,8 +29,8 @@ const hashCheckMessages: Record<
 };
 
 const useAuthenticityCheckMessage = (): TranslationKey | null => {
-    const firmwareRevisionError = useSelector(selectFirmwareRevisionCheckError);
-    const firmwareHashError = useSelector(selectFirmwareHashCheckError);
+    const firmwareRevisionError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
+    const firmwareHashError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
 
     if (firmwareRevisionError) {
         return revisionCheckMessages[firmwareRevisionError];
@@ -43,7 +43,7 @@ const useAuthenticityCheckMessage = (): TranslationKey | null => {
 };
 
 export const FirmwareRevisionCheckBanner = () => {
-    const firmwareRevisionError = useSelector(selectFirmwareRevisionCheckError);
+    const firmwareRevisionError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
     const wasOffline = firmwareRevisionError === 'cannot-perform-check-offline';
 
     const message = useAuthenticityCheckMessage();

@@ -5,8 +5,8 @@ import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
 import { WelcomeLayout } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import {
-    selectFirmwareHashCheckError,
-    selectFirmwareRevisionCheckError,
+    selectFirmwareHashCheckErrorIfEnabled,
+    selectFirmwareRevisionCheckErrorIfEnabled,
 } from 'src/reducers/suite/suiteReducer';
 
 import { SecurityCheckFail, SecurityCheckFailProps } from './SecurityCheckFail';
@@ -16,8 +16,8 @@ export const DeviceCompromised = () => {
     const dispatch = useDispatch();
     const { device } = useDevice();
 
-    const revisionCheckError = useSelector(selectFirmwareRevisionCheckError);
-    const hashCheckError = useSelector(selectFirmwareHashCheckError);
+    const revisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
+    const hashCheckError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
 
     const goToSuite = () => {
         // Condition to satisfy TypeScript, device.id is always defined at this point.

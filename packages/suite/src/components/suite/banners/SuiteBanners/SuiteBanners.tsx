@@ -11,8 +11,8 @@ import { isTranslationMode } from 'src/utils/suite/l10n';
 import { useSelector } from 'src/hooks/suite';
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import {
-    selectFirmwareHashCheckError,
-    selectFirmwareRevisionCheckError,
+    selectFirmwareHashCheckErrorIfEnabled,
+    selectFirmwareRevisionCheckErrorIfEnabled,
 } from 'src/reducers/suite/suiteReducer';
 
 import { MessageSystemBanner } from '../MessageSystemBanner';
@@ -41,8 +41,8 @@ export const SuiteBanners = () => {
     const isOnline = useSelector(state => state.suite.online);
     const firmwareHashInvalid = useSelector(state => state.firmware.firmwareHashInvalid);
     const bannerMessage = useSelector(selectBannerMessage);
-    const firmwareRevisionError = useSelector(selectFirmwareRevisionCheckError);
-    const firmwareHashError = useSelector(selectFirmwareHashCheckError);
+    const firmwareRevisionError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
+    const firmwareHashError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
 
     // The dismissal doesn't need to outlive the session. Use local state.
     const [safetyChecksDismissed, setSafetyChecksDismissed] = useState(false);

@@ -450,15 +450,21 @@ export const selectHasExperimentalFeature =
 export const selectFirmwareRevisionCheckError = (state: AppState) => {
     const device = selectDevice(state);
     if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
+    const checkResult = device.authenticityChecks.firmwareRevision;
 
+    // null means not performed, then don't consider it failed
+    if (!checkResult || checkResult.success) return null;
+
+    return checkResult.error;
+};
+
+export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AppState) => {
+    const revisionCheckError = selectFirmwareRevisionCheckError(state);
     const { isFirmwareRevisionCheckDisabled } = state.suite.settings;
     const isDisabledByMessage = selectIsFeatureDisabled(state, Feature.firmwareRevisionCheck);
     const isCheckEnabled = !isFirmwareRevisionCheckDisabled && !isDisabledByMessage;
-    const checkResult = device.authenticityChecks.firmwareRevision; // null means not performed, then don't consider it failed
 
-    if (!isCheckEnabled || !checkResult || checkResult.success) return null;
-
-    return checkResult.error;
+    return isCheckEnabled ? revisionCheckError : null;
 };
 
 /**
@@ -466,7 +472,7 @@ export const selectFirmwareRevisionCheckError = (state: AppState) => {
  * If Suite is offline and cannot perform check or there is some unexpected error, a banner is shown but device is accessible.
  */
 const selectIsFirmwareRevisionCheckEnabledAndHardFailed = (state: AppState): boolean => {
-    const error = selectFirmwareRevisionCheckError(state);
+    const error = selectFirmwareRevisionCheckErrorIfEnabled(state);
 
     return error !== null ? !isArrayMember(error, softRevisionCheckErrors) : false;
 };
@@ -477,15 +483,21 @@ const selectIsFirmwareRevisionCheckEnabledAndHardFailed = (state: AppState): boo
 export const selectFirmwareHashCheckError = (state: AppState) => {
     const device = selectDevice(state);
     if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
+    const checkResult = device.authenticityChecks.firmwareHash;
 
+    // null means not performed, then don't consider it failed
+    if (!checkResult || checkResult.success) return null;
+
+    return !isArrayMember(checkResult.error, skippedHashCheckErrors) ? checkResult.error : null;
+};
+
+export const selectFirmwareHashCheckErrorIfEnabled = (state: AppState) => {
+    const hashCheckError = selectFirmwareHashCheckError(state);
     const { isFirmwareHashCheckDisabled } = state.suite.settings;
     const isDisabledByMessage = selectIsFeatureDisabled(state, Feature.firmwareHashCheck);
     const isCheckEnabled = !isFirmwareHashCheckDisabled && !isDisabledByMessage;
-    const checkResult = device.authenticityChecks.firmwareHash; // null means not performed, then don't consider it failed
 
-    if (!isCheckEnabled || !checkResult || checkResult.success) return null;
-
-    return !isArrayMember(checkResult.error, skippedHashCheckErrors) ? checkResult.error : null;
+    return isCheckEnabled ? hashCheckError : null;
 };
 
 /**
@@ -494,7 +506,7 @@ export const selectFirmwareHashCheckError = (state: AppState) => {
  * If check is unsupported by device, a banner is shown but device is accessible.
  */
 const selectIsFirmwareHashCheckEnabledAndHardFailed = (state: AppState): boolean => {
-    const error = selectFirmwareHashCheckError(state);
+    const error = selectFirmwareHashCheckErrorIfEnabled(state);
 
     return error !== null
         ? // broaden the error type, so that `softHashCheckErrors` is assignable as a subset of `error`
