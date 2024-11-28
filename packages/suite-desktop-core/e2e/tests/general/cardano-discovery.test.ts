@@ -22,25 +22,24 @@ test.afterAll(() => {
  * 2. Check that all types of Cardano accounts are discovered
  * 3. Check that Staking section is available
  */
-test.skip('Discover all Cardano account types', async ({
+test('Discover all Cardano account types', async ({
     onboardingPage,
     dashboardPage,
-    topBar,
     settingsPage,
     walletPage,
 }) => {
     await onboardingPage.completeOnboarding();
     await dashboardPage.discoveryShouldFinish();
-    await topBar.openSettings();
+    await settingsPage.navigateTo();
     await settingsPage.coinsTabButton.click();
     await settingsPage.enableCoin('ada');
-    await settingsPage.enableCoin('btc');
+    await settingsPage.disableCoin('btc');
 
-    await topBar.openDashboard();
+    await dashboardPage.navigateTo();
     await dashboardPage.discoveryShouldFinish();
 
-    await walletPage.clickAllAccountArrows();
-    await walletPage.enableAllCardanoAccounts();
+    await walletPage.expandAllAccountsInMenu();
+    await walletPage.checkStakesOfCardanoAccounts();
 
     expect(await walletPage.getAccountsCount('ada')).toEqual(3);
 });

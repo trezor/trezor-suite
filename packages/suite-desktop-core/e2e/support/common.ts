@@ -81,6 +81,6 @@ export const launchSuite = async (params: LaunchSuiteParams = {}) => {
     return { electronApp, window };
 };
 
-//TODO: Get rid of this as part of Locators refactoring
+//TODO: Get rid of this as part of 'spawn-bridge' tests refactoring
 export const waitForDataTestSelector = (window: Page, selector: string, options = {}) =>
     window.waitForSelector(`[data-testid="${selector}"]`, options);

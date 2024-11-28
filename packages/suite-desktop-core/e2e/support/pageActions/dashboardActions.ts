@@ -4,6 +4,8 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export class DashboardActions {
     private readonly window: Page;
+    readonly dashboardMenuButton: Locator;
+    readonly discoveryHeader: Locator;
     readonly discoveryBar: Locator;
     readonly dashboardGraph: Locator;
     readonly deviceSwitchingOpenButton: Locator;
@@ -19,12 +21,19 @@ export class DashboardActions {
 
     constructor(window: Page) {
         this.window = window;
+        this.dashboardMenuButton = this.window.getByTestId('@suite/menu/suite-index');
+        this.discoveryHeader = this.window.getByRole('heading', { name: 'Dashboard' });
         this.discoveryBar = this.window.getByTestId('@wallet/discovery-progress-bar');
         this.dashboardGraph = this.window.getByTestId('@dashboard/graph');
         this.deviceSwitchingOpenButton = this.window.getByTestId('@menu/switch-device');
         this.modal = this.window.getByTestId('@modal');
         this.confirmDeviceEjectButton = this.window.getByTestId('@switch-device/eject');
         this.addStandardWalletButton = this.window.getByTestId('@switch-device/add-wallet-button');
+    }
+
+    async navigateTo() {
+        await this.dashboardMenuButton.click();
+        await expect(this.discoveryHeader).toBeVisible();
     }
 
     async discoveryShouldFinish() {

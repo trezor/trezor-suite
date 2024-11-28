@@ -6,7 +6,6 @@ import { DashboardActions } from './pageActions/dashboardActions';
 import { launchSuite } from './common';
 import { SettingsActions } from './pageActions/settingsActions';
 import { SuiteGuide } from './pageActions/suiteGuideActions';
-import { TopBarActions } from './pageActions/topBarActions';
 import { WalletActions } from './pageActions/walletActions';
 import { OnboardingActions } from './pageActions/onboardingActions';
 
@@ -16,7 +15,6 @@ type Fixtures = {
     dashboardPage: DashboardActions;
     settingsPage: SettingsActions;
     suiteGuidePage: SuiteGuide;
-    topBar: TopBarActions;
     walletPage: WalletActions;
     onboardingPage: OnboardingActions;
 };
@@ -46,10 +44,6 @@ const test = base.extend<Fixtures>({
     suiteGuidePage: async ({ window }, use) => {
         const suiteGuidePage = new SuiteGuide(window);
         await use(suiteGuidePage);
-    },
-    topBar: async ({ window }, use) => {
-        const topBar = new TopBarActions(window);
-        await use(topBar);
     },
     walletPage: async ({ window }, use) => {
         const walletPage = new WalletActions(window);

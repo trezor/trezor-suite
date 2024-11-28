@@ -7,19 +7,14 @@ import { test, expect } from '../../support/fixtures';
  * 3. Write into feedback field
  * 4. Submit bug report (reporttext)
  */
-test('Send a bug report', async ({ onboardingPage, suiteGuidePage }) => {
-    const testData = {
-        desiredLocation: 'Account',
-        reportText: 'Henlo this is testy test writing hangry test user report',
-    };
-
-    onboardingPage.optionallyDismissFwHashCheckError();
-
-    await suiteGuidePage.openSidePanel();
-    await suiteGuidePage.openFeedback();
-    await suiteGuidePage.sendBugReport(testData);
-
-    expect(await suiteGuidePage.getSuccessToast()).toBeTruthy();
+test('Send a bug report', async ({ suiteGuidePage }) => {
+    await suiteGuidePage.openPanel();
+    await suiteGuidePage.supportAndFeedbackButton.click();
+    await suiteGuidePage.sendBugReport({
+        location: 'account',
+        report: 'Henlo this is testy test writing hangry test user report',
+    });
+    await expect(suiteGuidePage.feedbackSuccessToast).toBeVisible();
     await suiteGuidePage.closeGuide();
 });
 
@@ -31,10 +26,8 @@ test('Send a bug report', async ({ onboardingPage, suiteGuidePage }) => {
  */
 test('Look up an article', async ({ suiteGuidePage }) => {
     const article = 'Install firmware';
-
-    await suiteGuidePage.openSidePanel();
+    await suiteGuidePage.openPanel();
     await suiteGuidePage.lookupArticle(article);
-
-    expect(suiteGuidePage.getArticleHeader()).toContainText(article);
+    await expect(suiteGuidePage.articleHeader).toHaveText(article);
     await suiteGuidePage.closeGuide();
 });

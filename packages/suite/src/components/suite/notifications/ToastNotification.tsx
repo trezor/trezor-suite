@@ -100,7 +100,13 @@ const ToastNotification = ({
     );
 
     return (
-        <Wrapper data-testid={dataTestBase} $variant={variant} $isTall={isTall} ref={wrapperRef}>
+        <Wrapper
+            data-testid={dataTestBase}
+            data-testid-alt="@toast"
+            $variant={variant}
+            $isTall={isTall}
+            ref={wrapperRef}
+        >
             {defaultIcon && typeof defaultIcon === 'string' ? (
                 <Icon name={defaultIcon} size={24} color={getVariantColor(variant)} />
             ) : (

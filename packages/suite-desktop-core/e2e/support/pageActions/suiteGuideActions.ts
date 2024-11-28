@@ -1,95 +1,90 @@
-import { Page, expect } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 
-import { waitForDataTestSelector } from '../common';
+import { FeedbackCategory } from '@suite-common/suite-types';
+import { capitalizeFirstLetter } from '@trezor/utils';
+
+const anyTestIdEndingWithClose = '[data-testid$="close"]';
 
 export class SuiteGuide {
     private readonly window: Page;
+    readonly guideButton: Locator;
+    readonly supportAndFeedbackButton: Locator;
+    readonly bugFormButton: Locator;
+    readonly feedbackFormButton: Locator;
+    readonly bugLocationDropdown: Locator;
+    readonly bugLocationDropdownInput: Locator;
+    readonly bugLocationDropdownOption = (location: FeedbackCategory) =>
+        this.window.getByTestId(`@guide/feedback/suggestion-dropdown/select/option/${location}`);
+    readonly bugInputTextField: Locator;
+    readonly submitButton: Locator;
+    readonly closeButton: Locator;
+    readonly guidePanel: Locator;
+    readonly searchInput: Locator;
+    readonly searchResults: Locator;
+    readonly articleWithText = (text: string) =>
+        this.window.locator(`[data-testid^="@guide/node"]`, { hasText: text });
+    readonly toastNotifications: Locator;
+    readonly feedbackSuccessToast: Locator;
+    readonly articleHeader: Locator;
+
     constructor(window: Page) {
         this.window = window;
+        this.guideButton = this.window.getByTestId('@guide/button-open');
+        this.supportAndFeedbackButton = this.window.getByTestId('@guide/button-feedback');
+        this.bugFormButton = this.window.getByTestId('@guide/feedback/bug');
+        this.feedbackFormButton = this.window.getByTestId('@guide/feedback/suggestion');
+        this.bugLocationDropdown = this.window.getByTestId('@guide/feedback/suggestion-dropdown');
+        this.bugLocationDropdownInput = this.window.getByTestId(
+            '@guide/feedback/suggestion-dropdown/select/input',
+        );
+        this.bugInputTextField = this.window.getByTestId('@guide/feedback/suggestion-form');
+        this.submitButton = this.window.getByTestId('@guide/feedback/submit-button');
+        this.closeButton = this.window.getByTestId('@guide/button-close');
+        this.guidePanel = this.window.getByTestId('@guide/panel');
+        this.searchInput = this.window.getByTestId('@guide/search');
+        this.searchResults = this.window.getByTestId('@guide/search/results');
+        this.toastNotifications = this.window.locator('[data-testid-alt="@toast"]');
+        this.feedbackSuccessToast = this.window.getByTestId('@toast/user-feedback-send-success');
+        this.articleHeader = this.window.getByTestId('@guide/article').locator('h1');
     }
 
-    async openSidePanel() {
-        await this.window.getByTestId('@guide/button-open').click();
-        await waitForDataTestSelector(this.window, '@guide/panel');
+    async openPanel() {
+        await this.guideButton.click();
+        await expect(this.guidePanel).toBeVisible();
     }
 
-    async openFeedback() {
-        await this.window.getByTestId('@guide/button-feedback').click();
+    async selectBugLocation(location: FeedbackCategory) {
+        await this.bugLocationDropdown.click();
+        await this.bugLocationDropdownOption(location).click();
+        await expect(this.bugLocationDropdownInput).toHaveText(capitalizeFirstLetter(location));
     }
 
-    async openDesiredForm(formType: string) {
-        const bugDropdown = await this.window.getByTestId(`@guide/feedback/${formType}`);
-        await bugDropdown.waitFor({ state: 'visible' });
-        await bugDropdown.click();
-    }
-
-    async selectLocationInApp(desiredLocation: string) {
-        const suggestionDropdown = this.window.getByTestId('@guide/feedback/suggestion-dropdown');
-        await suggestionDropdown.waitFor({ state: 'visible' });
-        await suggestionDropdown.click();
-        await this.window
-            .getByTestId(
-                `@guide/feedback/suggestion-dropdown/select/option/${desiredLocation.toLowerCase()}`,
-            )
-            .click();
-        // assert that select value was changed correctly.
-        expect(
-            this.window.locator('[data-testid="@guide/feedback/suggestion-dropdown/select/input"]'),
-        ).toHaveText(desiredLocation);
-    }
-
-    async fillInSuggestionForm(reportText: string) {
-        // stability necesity
+    async sendBugReport(args: { location: FeedbackCategory; report: string }) {
+        await this.bugFormButton.click();
+        await this.selectBugLocation(args.location);
+        // stability necessity
         await this.window.waitForTimeout(250);
-        const suggestionForm = await this.window.getByTestId('@guide/feedback/suggestion-form');
-        await suggestionForm.fill(reportText);
+        await this.bugInputTextField.fill(args.report);
+        await this.submitButton.click();
     }
 
-    async submitForm() {
-        const submitButton = await this.window.getByTestId('@guide/feedback/submit-button');
-        await expect(submitButton).toBeEnabled({ timeout: 20000 });
-        await submitButton.click();
-    }
-
-    async sendBugReport({
-        reportText,
-        desiredLocation,
-    }: {
-        desiredLocation: string;
-        reportText: string;
-    }) {
-        await this.openDesiredForm('bug');
-        await this.selectLocationInApp(desiredLocation);
-        await this.fillInSuggestionForm(reportText);
-        await this.submitForm();
+    async closeAllToastNotifications() {
+        for (const toast of await this.toastNotifications.all()) {
+            await toast.locator(anyTestIdEndingWithClose).click();
+            await toast.waitFor({ state: 'detached' });
+        }
     }
 
     async closeGuide() {
-        // since there's a possibility of a notification, we first check for it
-        const suiteNotification = await this.window.locator('[data-testid*="@toast"]').first();
-        if (await suiteNotification.isVisible()) {
-            await suiteNotification.locator('[data-testid$="close"]').click();
-            await suiteNotification.waitFor({ state: 'detached' });
-        }
-        await this.window.getByTestId('@guide/button-close').click();
-        await this.window.getByTestId('@guide/panel').waitFor({ state: 'detached' });
+        //Toasts may obstruct Guide panel close button
+        await this.closeAllToastNotifications();
+        await this.closeButton.click();
+        await this.guidePanel.waitFor({ state: 'detached' });
     }
 
     async lookupArticle(article: string) {
-        await this.window.getByTestId('@guide/search').fill(article);
-        await this.window.getByTestId('@guide/search/results').waitFor({ state: 'visible' });
-        await this.window.locator('[data-testid^="@guide/node"]', { hasText: article }).click();
-    }
-
-    // asserts
-    async getSuccessToast() {
-        return (
-            (await waitForDataTestSelector(this.window, '@toast/user-feedback-send-success')) ??
-            true
-        );
-    }
-
-    getArticleHeader() {
-        return this.window.locator('[class^="GuideContent"]').locator('h1');
+        await this.searchInput.fill(article);
+        await expect(this.searchResults).toBeVisible();
+        await this.articleWithText(article).click();
     }
 }

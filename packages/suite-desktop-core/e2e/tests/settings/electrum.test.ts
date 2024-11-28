@@ -16,7 +16,6 @@ test.describe.serial('Suite works with Electrum server', () => {
     test('Electrum completes discovery successfully', async ({
         onboardingPage,
         dashboardPage,
-        topBar,
         settingsPage,
     }) => {
         test.info().annotations.push({
@@ -28,13 +27,13 @@ test.describe.serial('Suite works with Electrum server', () => {
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
 
-        await topBar.openSettings();
+        await settingsPage.navigateTo();
         await settingsPage.toggleDebugModeInSettings();
         await settingsPage.coinsTabButton.click();
         await settingsPage.openCoinAdvanceSettings('regtest');
         await settingsPage.changeCoinBackend('electrum', electrumUrl);
 
-        await topBar.openDashboard();
+        await dashboardPage.navigateTo();
         await dashboardPage.discoveryShouldFinish();
 
         await expect(dashboardPage.balanceOfNetwork('regtest').first()).toBeVisible();

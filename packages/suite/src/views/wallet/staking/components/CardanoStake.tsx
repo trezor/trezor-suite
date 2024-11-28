@@ -72,7 +72,7 @@ export const CardanoStake = ({ account, deviceModel }: CardanoStakeProps) => {
                                 <Translation id="TR_STAKING_STAKE_ADDRESS" />
                             </Title>
                             <HiddenPlaceholder>
-                                <Value>{address}</Value>
+                                <Value data-testid="@cardano/staking/address">{address}</Value>
                             </HiddenPlaceholder>
                         </CardanoColumn>
                     </Content>

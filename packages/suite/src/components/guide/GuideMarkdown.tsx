@@ -22,7 +22,7 @@ export const GuideMarkdown = ({ markdown }: GuideMarkdownProps) => {
     }, [markdown, ref]);
 
     return (
-        <div ref={ref}>
+        <div ref={ref} data-testid="@guide/article">
             {markdown && (
                 <Markdown
                     components={{

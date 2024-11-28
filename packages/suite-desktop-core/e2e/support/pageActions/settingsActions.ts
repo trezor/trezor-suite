@@ -5,6 +5,7 @@ import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 export class SettingsActions {
     private readonly window: Page;
     private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 5;
+    readonly settingsMenuButton: Locator;
     readonly settingsHeader: Locator;
     readonly debugTabButton: Locator;
     readonly applicationTabButton: Locator;
@@ -29,6 +30,7 @@ export class SettingsActions {
 
     constructor(window: Page) {
         this.window = window;
+        this.settingsMenuButton = this.window.getByTestId('@suite/menu/settings');
         this.settingsHeader = this.window.getByTestId('@settings/menu/title');
         this.debugTabButton = this.window.getByTestId('@settings/menu/debug');
         this.applicationTabButton = this.window.getByTestId('@settings/menu/general');
@@ -52,6 +54,11 @@ export class SettingsActions {
         );
     }
 
+    async navigateTo() {
+        await this.settingsMenuButton.click();
+        await expect(this.settingsHeader).toHaveText('Settings');
+    }
+
     async toggleDebugModeInSettings() {
         await expect(this.settingsHeader).toBeVisible();
         for (let i = 0; i < this.TIMES_CLICK_TO_SET_DEBUG_MODE; i++) {
@@ -73,6 +80,11 @@ export class SettingsActions {
     async enableCoin(coin: NetworkSymbol) {
         await this.coinNetworkButton(coin).click();
         await expect(this.coinNetworkButton(coin)).toHaveAttribute('data-active', 'true');
+    }
+
+    async disableCoin(coin: NetworkSymbol) {
+        await this.coinNetworkButton(coin).click();
+        await expect(this.coinNetworkButton(coin)).toHaveAttribute('data-active', 'false');
     }
 
     async changeCoinBackend(backend: BackendType, backendUrl: string) {

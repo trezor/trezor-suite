@@ -15,9 +15,9 @@ test.beforeAll(async ({ onboardingPage }) => {
     await onboardingPage.completeOnboarding();
 });
 
-test('Join early access button', async ({ topBar, settingsPage }) => {
+test('Join early access button', async ({ settingsPage }) => {
     const buttonText = 'Leave';
-    await topBar.openSettings();
+    await settingsPage.navigateTo();
     await settingsPage.applicationTabButton.click();
     await settingsPage.joinEarlyAccessProgram();
     expect(await settingsPage.earlyAccessJoinButton.textContent()).toContain(buttonText);
