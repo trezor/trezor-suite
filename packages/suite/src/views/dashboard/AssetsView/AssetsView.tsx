@@ -93,13 +93,16 @@ export const AssetsView = () => {
 
     const assets: PartialRecord<NetworkSymbol, Account[]> = {};
 
-    accounts.forEach(a => {
-        let symbolAssets = assets[a.symbol];
+    accounts.forEach(account => {
+        let symbolAssets = assets[account.symbol];
+
         if (!symbolAssets) {
             symbolAssets = [];
         }
 
-        symbolAssets.push(a);
+        symbolAssets.push(account);
+
+        assets[account.symbol] = symbolAssets;
     });
 
     const assetSymbols = Object.keys(assets) as NetworkSymbol[];
