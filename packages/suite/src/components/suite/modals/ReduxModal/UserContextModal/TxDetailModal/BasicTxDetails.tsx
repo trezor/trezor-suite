@@ -8,7 +8,7 @@ import {
     useElevation,
     Card,
     InfoItem,
-    InfoPair,
+    InfoSegments,
     Row,
     InfoItemProps,
     Grid,
@@ -90,23 +90,17 @@ export const BasicTxDetails = ({
 
                 <Row gap={spacings.xxs} margin={{ left: 'auto' }}>
                     {isConfirmed ? (
-                        <InfoPair
-                            typographyStyle="hint"
-                            variant="tertiary"
-                            leftContent={
-                                <Text typographyStyle="callout" variant="primary">
-                                    <Translation id="TR_CONFIRMED_TX" />
-                                </Text>
-                            }
-                            rightContent={
-                                confirmations > 0 ? (
-                                    <Translation
-                                        id="TR_TX_CONFIRMATIONS"
-                                        values={{ confirmationsCount: confirmations }}
-                                    />
-                                ) : undefined
-                            }
-                        />
+                        <InfoSegments typographyStyle="hint" variant="tertiary">
+                            <Text typographyStyle="callout" variant="primary">
+                                <Translation id="TR_CONFIRMED_TX" />
+                            </Text>
+                            {confirmations > 0 ? (
+                                <Translation
+                                    id="TR_TX_CONFIRMATIONS"
+                                    values={{ confirmationsCount: confirmations }}
+                                />
+                            ) : undefined}
+                        </InfoSegments>
                     ) : (
                         <Text typographyStyle="callout" variant="warning">
                             <Translation id="TR_UNCONFIRMED_TX" />

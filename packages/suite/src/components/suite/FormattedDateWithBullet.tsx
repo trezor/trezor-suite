@@ -1,10 +1,10 @@
-import { InfoPair } from '@trezor/components';
+import { InfoSegments } from '@trezor/components';
 
 import { FormattedDate, FormattedDateProps } from './FormattedDate';
 
 export const FormattedDateWithBullet = ({ ...props }: FormattedDateProps) => (
-    <InfoPair
-        leftContent={<FormattedDate date {...props} />}
-        rightContent={<FormattedDate time {...props} />}
-    />
+    <InfoSegments>
+        <FormattedDate date {...props} />
+        <FormattedDate time {...props} />
+    </InfoSegments>
 );

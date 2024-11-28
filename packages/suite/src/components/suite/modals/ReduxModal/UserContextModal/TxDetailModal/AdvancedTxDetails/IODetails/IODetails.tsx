@@ -14,7 +14,7 @@ import {
     Row,
     Text,
     Grid,
-    InfoPair,
+    InfoSegments,
     H4,
 } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -102,16 +102,13 @@ const IOGroup = ({ tx, inputs, outputs, isPhishingTransaction }: IOGroupProps) =
             <Grid columns={2} gap={spacings.xxxxl}>
                 {hasInputs && (
                     <Column gap={spacings.xs} margin={{ right: spacings.xl }}>
-                        <InfoPair
-                            leftContent={
-                                <Text typographyStyle="callout" variant="default">
-                                    <Translation id="TR_INPUTS" />
-                                </Text>
-                            }
-                            rightContent={inputs.length}
-                            typographyStyle="hint"
-                            variant="tertiary"
-                        />
+                        <InfoSegments typographyStyle="hint" variant="tertiary">
+                            <Text typographyStyle="callout" variant="default">
+                                <Translation id="TR_INPUTS" />
+                            </Text>
+                            {inputs.length}
+                        </InfoSegments>
+
                         {inputs.map(input => (
                             <IOItem
                                 key={`input-${input.n}`}
@@ -126,16 +123,12 @@ const IOGroup = ({ tx, inputs, outputs, isPhishingTransaction }: IOGroupProps) =
                 )}
                 {hasOutputs && (
                     <Column gap={spacings.xs} margin={{ left: spacings.xl }}>
-                        <InfoPair
-                            leftContent={
-                                <Text typographyStyle="callout" variant="default">
-                                    <Translation id="TR_OUTPUTS" />
-                                </Text>
-                            }
-                            rightContent={outputs.length}
-                            typographyStyle="hint"
-                            variant="tertiary"
-                        />
+                        <InfoSegments typographyStyle="hint" variant="tertiary">
+                            <Text typographyStyle="callout" variant="default">
+                                <Translation id="TR_OUTPUTS" />
+                            </Text>
+                            {outputs.length}
+                        </InfoSegments>
                         {outputs.map(output => (
                             <IOItem
                                 key={`output-${output.n}`}
