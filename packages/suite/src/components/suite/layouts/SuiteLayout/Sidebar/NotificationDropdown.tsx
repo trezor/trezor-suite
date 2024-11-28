@@ -2,8 +2,8 @@ import { useRef, useCallback } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { breakpointMediaQueries } from '@trezor/styles';
-import { DropdownRef, Dropdown } from '@trezor/components';
+import { DropdownRef, Dropdown, Box, useMediaQuery, variables } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
@@ -11,15 +11,6 @@ import { Notifications } from 'src/components/suite/notifications';
 import { useDispatch } from 'src/hooks/suite';
 
 import { NavigationItem, NavigationItemProps } from './NavigationItem';
-
-const NotificationsWrapper = styled.div`
-    width: 450px;
-    cursor: default;
-
-    ${breakpointMediaQueries.below_lg} {
-        width: 330px;
-    }
-`;
 
 const StyledNavigationItem = styled(NavigationItem)`
     ${({ theme, isActive }) =>
@@ -31,8 +22,8 @@ const StyledNavigationItem = styled(NavigationItem)`
 `;
 
 export const NotificationDropdown = (props: NavigationItemProps) => {
+    const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
     const dropdownRef = useRef<DropdownRef>();
-
     const dispatch = useDispatch();
 
     const handleToggleChange = useCallback(
@@ -59,9 +50,9 @@ export const NotificationDropdown = (props: NavigationItemProps) => {
             alignMenu="right-top"
             offsetY={-12}
             content={
-                <NotificationsWrapper>
+                <Box width={isBelowLaptop ? 330 : 450} margin={spacings.xs}>
                     <Notifications onCancel={() => dropdownRef.current!.close()} />
-                </NotificationsWrapper>
+                </Box>
             }
         >
             {isToggled => <StyledNavigationItem {...props} isActive={isToggled} />}

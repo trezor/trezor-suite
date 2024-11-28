@@ -20,7 +20,7 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
 
     if (unseenCount === 0 && seenCount === 0) {
         return (
-            <Column gap={spacings.xs}>
+            <Column gap={spacings.xxs}>
                 <H4>
                     <Translation id="NOTIFICATIONS_EMPTY_TITLE" />
                 </H4>
@@ -34,7 +34,7 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
     return (
         <Column gap={spacings.xl}>
             {unseenCount > 0 && (
-                <Column gap={spacings.md}>
+                <Column gap={spacings.sm}>
                     <H4>
                         <Translation
                             id="NOTIFICATIONS_UNSEEN_TITLE"
@@ -46,7 +46,7 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
             )}
 
             {seenCount > 0 && (
-                <Column gap={spacings.md}>
+                <Column gap={spacings.sm}>
                     <H4>
                         <Translation id="NOTIFICATIONS_SEEN_TITLE" />
                     </H4>
