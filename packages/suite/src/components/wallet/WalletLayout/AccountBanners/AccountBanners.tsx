@@ -26,7 +26,7 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
     const { route } = useSelector(state => state.router);
 
     return (
-        <Column alignItems="normal" gap={spacings.xl}>
+        <Column gap={spacings.xl}>
             {account?.accountType === 'coinjoin' && <ContextMessage context={Context.coinjoin} />}
             {account?.symbol &&
                 isSupportedEthStakingNetworkSymbol(account.symbol) &&

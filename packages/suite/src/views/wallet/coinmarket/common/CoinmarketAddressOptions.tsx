@@ -112,7 +112,7 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
                             : accountAddress.balance;
 
                         return (
-                            <Column alignItems="normal">
+                            <Column>
                                 <div data-testid="@coinmarket/form/verify/address">
                                     {accountMetadata.addressLabels[accountAddress.address] ||
                                         accountAddress.address}

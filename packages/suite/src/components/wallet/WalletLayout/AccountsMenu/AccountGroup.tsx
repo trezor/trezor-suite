@@ -100,7 +100,7 @@ export const AccountGroup = ({
     const heading = getGroupLabel(type, hideLabel);
 
     return (
-        <Column alignItems="normal" gap={spacings.xxxs}>
+        <Column gap={spacings.xxxs}>
             {heading !== null && (
                 <Header
                     $isOpen={isOpen}

@@ -80,9 +80,7 @@ export const SettingsLayout = ({
     return (
         <div data-testid={dataTest}>
             <SettingsLoading isPresent={isDiscoveryRunning} />
-            <Column alignItems="normal" gap={spacings.xxxxl}>
-                {children}
-            </Column>
+            <Column gap={spacings.xxxxl}>{children}</Column>
         </div>
     );
 };
