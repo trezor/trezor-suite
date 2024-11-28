@@ -4,14 +4,12 @@ import styled from 'styled-components';
 
 import { selectBannerMessage } from '@suite-common/message-system';
 import { selectDevice } from '@suite-common/wallet-core';
-import { isArrayMember } from '@trezor/utils';
 import { isDesktop } from '@trezor/env-utils';
 import { spacingsPx } from '@trezor/theme';
 
 import { isTranslationMode } from 'src/utils/suite/l10n';
 import { useSelector } from 'src/hooks/suite';
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
-import { skippedHashCheckErrors } from 'src/constants/suite/firmware';
 import {
     selectFirmwareHashCheckError,
     selectFirmwareRevisionCheckError,
@@ -72,10 +70,7 @@ export const SuiteBanners = () => {
         priority = 92;
     }
     // the regular firmware hash check, and revision id check, either of them may fail
-    else if (
-        firmwareRevisionError ||
-        (firmwareHashError && !isArrayMember(firmwareHashError, skippedHashCheckErrors))
-    ) {
+    else if (firmwareRevisionError || firmwareHashError) {
         banner = <FirmwareRevisionCheckBanner />;
         priority = 91;
     } else if (device?.features?.unfinished_backup) {

@@ -2,7 +2,6 @@ import { TranslationKey } from '@suite-common/intl-types';
 import { Banner } from '@trezor/components';
 import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
 import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
-import { isArrayMember } from '@trezor/utils';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -36,7 +35,7 @@ const useAuthenticityCheckMessage = (): TranslationKey | null => {
     if (firmwareRevisionError) {
         return revisionCheckMessages[firmwareRevisionError];
     }
-    if (firmwareHashError && !isArrayMember(firmwareHashError, skippedHashCheckErrors)) {
+    if (firmwareHashError) {
         return hashCheckMessages[firmwareHashError];
     }
 
