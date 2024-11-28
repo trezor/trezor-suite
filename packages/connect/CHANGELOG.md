@@ -10,6 +10,30 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.4.5-beta.1
+
+We’ve reverted the default setting for nVersion in Connect back to nVersion=1. Since this might be a breaking change we are going to implement it in Connect 10. (05af037)
+
+## Feature
+
+-   add blockchainGetInfo method (0bd3068)
+-   types - export DisplayRotation type (6744666)
+-   new way of using connect as a module in web (without iframe). This is meant for internal use for suite.trezor.io application.
+
+## Fixes
+
+-   add typesafe map types to models config for device names and variants (4d24e2b)
+    chore(connect): default to nversion=1 again
+
+## Dependencies updated
+
+-   npm-prerelease: @trezor/blockchain-link 2.3.4-beta.1
+-   npm-prerelease: @trezor/connect-common 0.2.5-beta.1
+-   npm-prerelease: @trezor/transport 1.3.5-beta.1
+-   npm-prerelease: @trezor/protobuf 1.2.5-beta.1
+-   npm-prerelease: @trezor/utils 9.2.4-beta.1
+-   npm-release: @trezor/connect 9.4.5-beta.1
+
 # 9.4.4
 
 This release among other improvements fixes a bug in ethereum serialization of empty strings as hex that was causing issues when signing that was caused by @ethereumjs libs update (2d6465f, d6bc8c5020) in 9.4.3.
