@@ -49,4 +49,3 @@ export * from './throttler';
 export * from './extractUrlsFromText';
 export * from './isFullPath';
 export * from './asciiUtils';
-export * from './cloneObjectCyclic';

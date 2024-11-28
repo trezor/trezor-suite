@@ -1,11 +1,37 @@
 // Makes a deep copy of an object.
-export const cloneObject = <T>(obj: T): T => {
-    const jsonString = JSON.stringify(obj);
-    if (jsonString === undefined) {
-        // jsonString === undefined IF and only IF obj === undefined
-        // therefore no need to clone
+export const cloneObject = <T>(obj: T, seen = new WeakMap<object, any>()): T => {
+    if (obj === null || typeof obj !== 'object') {
         return obj;
     }
 
-    return JSON.parse(jsonString);
+    if (seen.has(obj)) {
+        return seen.get(obj);
+    }
+
+    if (obj instanceof ArrayBuffer) {
+        return obj.slice(0) as any;
+    }
+
+    if (ArrayBuffer.isView(obj)) {
+        const TypedArrayConstructor = obj.constructor as new (...args: any[]) => typeof obj;
+
+        return new TypedArrayConstructor(obj) as any;
+    }
+
+    const clone: any = Array.isArray(obj) ? [] : {};
+    seen.set(obj, clone);
+
+    for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            const value = (obj as any)[key];
+
+            if (typeof value === 'function' || typeof value === 'symbol') {
+                continue;
+            }
+
+            (clone as any)[key] = cloneObject(value, seen);
+        }
+    }
+
+    return clone;
 };
