@@ -16,6 +16,7 @@ export * from './components/Icon/Icon';
 export { ComponentWithSubIcon } from './components/ComponentWithSubIcon/ComponentWithSubIcon';
 export * from './components/buttons/PinButton/PinButton';
 export * from './components/buttons/TextButton/TextButton';
+export { Box, type BoxProps } from './components/Box/Box';
 export { Card, type CardProps } from './components/Card/Card';
 export {
     CollapsibleBox,
