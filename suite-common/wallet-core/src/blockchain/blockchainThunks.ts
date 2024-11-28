@@ -1,6 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import {
     getNetworkOptional,
+    isBlockbookBasedNetwork,
     isNetworkSymbol,
     networksCollection,
     NetworkSymbol,
@@ -335,9 +336,14 @@ export const syncAccountsWithBlockchainThunk = createThunk(
         // First clear, to cancel last planned sync
         tryClearTimeout(blockchain[symbol].syncTimeout);
 
+        // non-blockbook networks will not update periodically if not visible in UI (sidebar)
+        const visibleAccounts = findAccountsByNetwork(symbol, accounts).filter(
+            account => isBlockbookBasedNetwork(symbol) || account.visible,
+        );
+
         await Promise.all(
-            findAccountsByNetwork(symbol, accounts).map(a =>
-                dispatch(fetchAndUpdateAccountThunk({ accountKey: a.key })),
+            visibleAccounts.map(account =>
+                dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key })),
             ),
         );
 
