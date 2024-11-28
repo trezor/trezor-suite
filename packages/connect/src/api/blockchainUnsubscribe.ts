@@ -11,6 +11,7 @@ type Params = {
     accounts: Payload<'blockchainUnsubscribe'>['accounts'];
     coinInfo: CoinInfo;
     identity?: string;
+    blocks: boolean;
 };
 
 export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUnsubscribe', Params> {
@@ -23,6 +24,7 @@ export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUns
         // validate incoming parameters
         validateParams(payload, [
             { name: 'accounts', type: 'array', allowEmpty: true },
+            { name: 'blocks', type: 'boolean' },
             { name: 'coin', type: 'string', required: true },
             { name: 'identity', type: 'string' },
         ]);
@@ -44,6 +46,7 @@ export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUns
             accounts: payload.accounts,
             coinInfo,
             identity: payload.identity,
+            blocks: payload.blocks ?? false,
         };
     }
 
@@ -56,6 +59,13 @@ export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUns
 
         const { accounts } = this.params;
 
-        return accounts ? backend.unsubscribeAccounts(accounts) : backend.unsubscribeAll();
+        if (this.params.blocks) {
+            return backend.unsubscribeBlocks();
+        }
+        if (accounts) {
+            return backend.unsubscribeAccounts(accounts);
+        }
+
+        return backend.unsubscribeAll();
     }
 }
