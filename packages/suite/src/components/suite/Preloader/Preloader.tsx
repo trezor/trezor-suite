@@ -15,7 +15,7 @@ import {
     selectPrerequisite,
     selectIsLoggedOut,
     selectSuiteFlags,
-    selectIsFirmwareAuthenticityCheckEnabledAndFailed,
+    selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
 } from 'src/reducers/suite/suiteReducer';
 import { SuiteStart } from 'src/views/start/SuiteStart';
 import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
@@ -58,7 +58,9 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const isLoggedOut = useSelector(selectIsLoggedOut);
     const selectedDevice = useSelector(selectDevice);
     const { initialRun, viewOnlyPromoClosed } = useSelector(selectSuiteFlags);
-    const isFirmwareCheckFailed = useSelector(selectIsFirmwareAuthenticityCheckEnabledAndFailed);
+    const isFirmwareCheckFailed = useSelector(
+        selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
+    );
     const isFirmwareAuthenticityCheckDismissed = useSelector(
         selectIsFirmwareAuthenticityCheckDismissed,
     );

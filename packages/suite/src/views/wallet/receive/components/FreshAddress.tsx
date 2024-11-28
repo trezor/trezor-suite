@@ -23,7 +23,7 @@ import { Translation, ReadMoreLink } from 'src/components/suite';
 import { AppState } from 'src/types/suite';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
-import { selectIsFirmwareAuthenticityCheckEnabledAndFailed } from 'src/reducers/suite/suiteReducer';
+import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/reducers/suite/suiteReducer';
 
 const FreshAddressWrapper = styled.div`
     position: relative;
@@ -93,7 +93,7 @@ export const FreshAddress = ({
         selectIsAccountUtxoBased(state, account?.key ?? ''),
     );
     const isAuthenticityCheckFailed = useSelector(
-        selectIsFirmwareAuthenticityCheckEnabledAndFailed,
+        selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
     );
     const dispatch = useDispatch();
 

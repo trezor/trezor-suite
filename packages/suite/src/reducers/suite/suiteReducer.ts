@@ -20,7 +20,7 @@ import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { Action, AppState, TorBootstrap, TorStatus } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
-import { skippedHashCheckErrors, skippedRevisionCheckErrors } from 'src/constants/suite/firmware';
+import { softHashCheckErrors, softRevisionCheckErrors } from 'src/constants/suite/firmware';
 
 import { RouterRootState, selectRouter } from './routerReducer';
 
@@ -459,10 +459,10 @@ export const selectFirmwareRevisionCheckError = (state: AppState) => {
  * Determine hard failure of firmware revision check - specific error types which are severe.
  * If Suite is offline and cannot perform check or there is some unexpected error, a banner is shown but device is accessible.
  */
-const selectIsFirmwareRevisionCheckEnabledAndFailed = (state: AppState): boolean => {
+const selectIsFirmwareRevisionCheckEnabledAndHardFailed = (state: AppState): boolean => {
     const error = selectFirmwareRevisionCheckError(state);
 
-    return error !== null ? !isArrayMember(error, skippedRevisionCheckErrors) : false;
+    return error !== null ? !isArrayMember(error, softRevisionCheckErrors) : false;
 };
 
 /**
@@ -485,17 +485,17 @@ export const selectFirmwareHashCheckError = (state: AppState) => {
  * If check was skipped, don't consider it failed.
  * If check is unsupported by device, a banner is shown but device is accessible.
  */
-const selectIsFirmwareHashCheckEnabledAndFailed = (state: AppState): boolean => {
+const selectIsFirmwareHashCheckEnabledAndHardFailed = (state: AppState): boolean => {
     const error = selectFirmwareHashCheckError(state);
 
-    return error !== null ? !isArrayMember(error, skippedHashCheckErrors) : false;
+    return error !== null ? !isArrayMember(error, softHashCheckErrors) : false;
 };
 
 /**
  * Determine hard failure of either of firmware authenticity checks to block access to device.
  */
-export const selectIsFirmwareAuthenticityCheckEnabledAndFailed = (state: AppState) =>
-    selectIsFirmwareRevisionCheckEnabledAndFailed(state) ||
-    selectIsFirmwareHashCheckEnabledAndFailed(state);
+export const selectIsFirmwareAuthenticityCheckEnabledAndHardFailed = (state: AppState) =>
+    selectIsFirmwareRevisionCheckEnabledAndHardFailed(state) ||
+    selectIsFirmwareHashCheckEnabledAndHardFailed(state);
 
 export default suiteReducer;

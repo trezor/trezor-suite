@@ -23,7 +23,7 @@ import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
-import { selectIsFirmwareAuthenticityCheckEnabledAndFailed } from 'src/reducers/suite/suiteReducer';
+import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/reducers/suite/suiteReducer';
 
 const AddressActions = styled.div<{ $isVisible?: boolean }>`
     opacity: ${({ $isVisible }) => ($isVisible ? '1' : '0')};
@@ -49,7 +49,7 @@ type ItemProps = {
 
 const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
     const isAuthenticityCheckFailed = useSelector(
-        selectIsFirmwareAuthenticityCheckEnabledAndFailed,
+        selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
     );
     const [isHovered, setIsHovered] = useState(false);
 
