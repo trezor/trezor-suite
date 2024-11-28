@@ -468,16 +468,6 @@ export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AppState) => {
 };
 
 /**
- * Determine hard failure of firmware revision check - specific error types which are severe.
- * If Suite is offline and cannot perform check or there is some unexpected error, a banner is shown but device is accessible.
- */
-const selectIsFirmwareRevisionCheckEnabledAndHardFailed = (state: AppState): boolean => {
-    const error = selectFirmwareRevisionCheckErrorIfEnabled(state);
-
-    return error !== null ? !isArrayMember(error, softRevisionCheckErrors) : false;
-};
-
-/**
  * Get firmware hash check error, or null if check was successful / skipped.
  */
 export const selectFirmwareHashCheckError = (state: AppState) => {
@@ -501,24 +491,21 @@ export const selectFirmwareHashCheckErrorIfEnabled = (state: AppState) => {
 };
 
 /**
- * Determine hard failure of firmware hash check - specific error types which are severe.
- * If check was skipped, don't consider it failed.
- * If check is unsupported by device, a banner is shown but device is accessible.
- */
-const selectIsFirmwareHashCheckEnabledAndHardFailed = (state: AppState): boolean => {
-    const error = selectFirmwareHashCheckErrorIfEnabled(state);
-
-    return error !== null
-        ? // broaden the error type, so that `softHashCheckErrors` is assignable as a subset of `error`
-          !isArrayMember(error as FirmwareHashCheckError, softHashCheckErrors)
-        : false;
-};
-
-/**
  * Determine hard failure of either of firmware authenticity checks to block access to device.
  */
-export const selectIsFirmwareAuthenticityCheckEnabledAndHardFailed = (state: AppState) =>
-    selectIsFirmwareRevisionCheckEnabledAndHardFailed(state) ||
-    selectIsFirmwareHashCheckEnabledAndHardFailed(state);
+export const selectIsFirmwareAuthenticityCheckEnabledAndHardFailed = (state: AppState) => {
+    const revisionError = selectFirmwareRevisionCheckErrorIfEnabled(state);
+    const isRevisionHardError =
+        revisionError !== null ? !isArrayMember(revisionError, softRevisionCheckErrors) : false;
+
+    const hashError = selectFirmwareHashCheckErrorIfEnabled(state);
+    const isHashHardError =
+        hashError !== null
+            ? // broaden the hashError type, so that `softHashCheckErrors` is assignable as a subset of `hashError`
+              !isArrayMember(hashError as FirmwareHashCheckError, softHashCheckErrors)
+            : false;
+
+    return isRevisionHardError || isHashHardError;
+};
 
 export default suiteReducer;
