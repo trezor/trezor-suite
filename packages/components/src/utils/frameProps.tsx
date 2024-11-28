@@ -5,14 +5,18 @@ import { SpacingValues } from '@trezor/theme';
 import { makePropsTransient, TransientProps } from './transientProps';
 import type { Flex } from '../components/Flex/Flex';
 
-type Margin = {
-    top?: SpacingValues | 'auto';
-    bottom?: SpacingValues | 'auto';
-    left?: SpacingValues | 'auto';
-    right?: SpacingValues | 'auto';
-    horizontal?: SpacingValues | 'auto';
-    vertical?: SpacingValues | 'auto';
-};
+type Margin =
+    | {
+          top?: SpacingValues | 'auto';
+          bottom?: SpacingValues | 'auto';
+          left?: SpacingValues | 'auto';
+          right?: SpacingValues | 'auto';
+          horizontal?: SpacingValues | 'auto';
+          vertical?: SpacingValues | 'auto';
+      }
+    | SpacingValues
+    | 'auto';
+
 const overflows = [
     'auto',
     'hidden',
@@ -32,6 +36,20 @@ type Overflow = (typeof overflows)[number];
 const pointerEvents = ['auto', 'none', 'inherit', 'initial', 'unset'] as const;
 type PointerEvent = (typeof pointerEvents)[number];
 
+const positions = ['relative', 'absolute', 'fixed', 'sticky'] as const;
+type PositionType = (typeof positions)[number];
+
+type Position = {
+    type: PositionType;
+    top?: string | number;
+    right?: string | number;
+    bottom?: string | number;
+    left?: string | number;
+};
+
+const cursors = ['pointer', 'help', 'default', 'not-allowed'] as const;
+type Cursor = (typeof cursors)[number];
+
 export type FrameProps = {
     margin?: Margin;
     width?: string | number;
@@ -43,6 +61,8 @@ export type FrameProps = {
     overflow?: Overflow;
     pointerEvents?: PointerEvent;
     flex?: Flex;
+    position?: Position;
+    cursor?: Cursor;
 };
 export type FramePropsKeys = keyof FrameProps;
 
@@ -70,16 +90,21 @@ export const withFrameProps = ({
     $overflow,
     $pointerEvents,
     $flex,
+    $position,
+    $cursor,
 }: TransientFrameProps) => {
     return css`
         ${$margin &&
-        css`
-            margin: ${getValueWithUnit($margin.top ?? $margin.vertical ?? 0)}
-                ${getValueWithUnit($margin.right ?? $margin.horizontal ?? 0)}
-                ${getValueWithUnit($margin.bottom ?? $margin.vertical ?? 0)}
-                ${getValueWithUnit($margin.left ?? $margin.horizontal ?? 0)};
-        `}
-
+        (typeof $margin === 'object'
+            ? css`
+                  margin: ${getValueWithUnit($margin?.top ?? $margin.vertical ?? 0)}
+                      ${getValueWithUnit($margin?.right ?? $margin.horizontal ?? 0)}
+                      ${getValueWithUnit($margin?.bottom ?? $margin.vertical ?? 0)}
+                      ${getValueWithUnit($margin?.left ?? $margin.horizontal ?? 0)};
+              `
+            : css`
+                  margin: ${getValueWithUnit($margin)};
+              `)}
         ${$minWidth &&
         css`
             min-width: ${getValueWithUnit($minWidth)};
@@ -116,6 +141,18 @@ export const withFrameProps = ({
         css`
             flex: ${$flex};
         `};
+        ${$position &&
+        css`
+            position: ${$position.type};
+            ${$position.top && `top: ${getValueWithUnit($position.top)};`}
+            ${$position.right && `right: ${getValueWithUnit($position.right)};`}
+            ${$position.bottom && `bottom: ${getValueWithUnit($position.bottom)};`}
+            ${$position.left && `left: ${getValueWithUnit($position.left)};`}
+        `};
+        ${$cursor &&
+        css`
+            cursor: ${$cursor};
+        `};
     `;
 };
 
@@ -147,6 +184,20 @@ const getStorybookType = (key: FramePropsKeys) => {
         case 'pointerEvents':
             return {
                 options: pointerEvents,
+                control: {
+                    type: 'select',
+                },
+            };
+        case 'position':
+            return {
+                options: positions,
+                control: {
+                    type: 'object',
+                },
+            };
+        case 'cursor':
+            return {
+                options: cursors,
                 control: {
                     type: 'select',
                 },
@@ -188,6 +239,17 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
                       },
                   }
                 : {}),
+            ...(allowedFrameProps.includes('position')
+                ? {
+                      position: {
+                          type: 'static' as PositionType,
+                          top: undefined,
+                          right: undefined,
+                          bottom: undefined,
+                          left: undefined,
+                      },
+                  }
+                : {}),
             ...(allowedFrameProps.includes('width') ? { width: undefined } : {}),
             ...(allowedFrameProps.includes('height') ? { height: undefined } : {}),
             ...(allowedFrameProps.includes('maxWidth') ? { maxWidth: undefined } : {}),
@@ -195,6 +257,7 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
             ...(allowedFrameProps.includes('overflow') ? { overflow: undefined } : {}),
             ...(allowedFrameProps.includes('overflow') ? { flex: undefined } : {}),
             ...(allowedFrameProps.includes('pointerEvents') ? { pointerEvents: undefined } : {}),
+            ...(allowedFrameProps.includes('cursor') ? { cursor: undefined } : {}),
         },
         argTypes,
     };
