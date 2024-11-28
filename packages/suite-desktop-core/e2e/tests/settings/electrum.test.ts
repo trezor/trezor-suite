@@ -1,16 +1,8 @@
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-
 import { test, expect } from '../../support/fixtures';
 
 test.describe.serial('Suite works with Electrum server', () => {
-    test.beforeAll(async () => {
-        await TrezorUserEnvLink.stopBridge();
-        await TrezorUserEnvLink.connect();
-        await TrezorUserEnvLink.startEmu({ wipe: true });
-        await TrezorUserEnvLink.setupEmu({
-            needs_backup: true,
-            mnemonic: 'mnemonic_all',
-        });
+    test.beforeAll(async ({ TrezorUserEnvLink }) => {
+        await TrezorUserEnvLink.setupEmu({ needs_backup: true, mnemonic: 'mnemonic_all' });
     });
 
     test('Electrum completes discovery successfully', async ({

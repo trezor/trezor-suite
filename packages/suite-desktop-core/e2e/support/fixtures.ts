@@ -2,6 +2,8 @@
 
 import { test as base, ElectronApplication, Page } from '@playwright/test';
 
+import { TrezorUserEnvLink, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
+
 import { DashboardActions } from './pageActions/dashboardActions';
 import { launchSuite } from './common';
 import { SettingsActions } from './pageActions/settingsActions';
@@ -10,6 +12,7 @@ import { WalletActions } from './pageActions/walletActions';
 import { OnboardingActions } from './pageActions/onboardingActions';
 
 type Fixtures = {
+    TrezorUserEnvLink: TrezorUserEnvLinkClass;
     electronApp: ElectronApplication;
     window: Page;
     dashboardPage: DashboardActions;
@@ -20,7 +23,14 @@ type Fixtures = {
 };
 
 const test = base.extend<Fixtures>({
-    /* eslint-disable no-empty-pattern */
+    // eslint-disable-next-line no-empty-pattern
+    TrezorUserEnvLink: async ({}, use) => {
+        await TrezorUserEnvLink.stopBridge();
+        await TrezorUserEnvLink.connect();
+        await TrezorUserEnvLink.startEmu({ wipe: true });
+        await use(TrezorUserEnvLink);
+    },
+    // eslint-disable-next-line no-empty-pattern
     electronApp: async ({}, use) => {
         const suite = await launchSuite();
         await use(suite.electronApp);

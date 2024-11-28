@@ -1,19 +1,11 @@
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link/src';
-
 import { test, expect } from '../../support/fixtures';
 
-test.beforeAll(async () => {
-    await TrezorUserEnvLink.connect();
-    await TrezorUserEnvLink.startEmu({ wipe: true });
+test.beforeAll(async ({ TrezorUserEnvLink }) => {
     await TrezorUserEnvLink.setupEmu({
         needs_backup: true,
         mnemonic:
             'cloth trim improve bag pigeon party wave mechanic beyond clean cake maze protect left assist carry guitar bridge nest faith critic excuse tooth dutch',
     });
-});
-
-test.afterAll(() => {
-    TrezorUserEnvLink.stopEmu();
 });
 
 /**
