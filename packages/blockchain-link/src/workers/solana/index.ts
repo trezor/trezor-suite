@@ -47,7 +47,7 @@ import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
-import { createLazy } from '@trezor/utils';
+import { BigNumber, createLazy } from '@trezor/utils';
 import {
     transformTokenInfo,
     TOKEN_PROGRAM_PUBLIC_KEY,
@@ -408,24 +408,23 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     if (messageHex == null) {
         throw new Error('Could not estimate fee for transaction.');
     }
+    const transaction = pipe(messageHex, getBase16Encoder().encode, getTransactionDecoder().decode);
+    const message = pipe(transaction.messageBytes, getCompiledTransactionMessageDecoder().decode);
 
-    const message = pipe(
-        messageHex,
-        getBase16Encoder().encode,
-        getCompiledTransactionMessageDecoder().decode,
-    );
-
+    const priorityFee = await getPriorityFee(api.rpc, message, transaction.signatures);
     const baseFee = await getBaseFee(api.rpc, message);
-    const priorityFee = await getPriorityFee(api.rpc, message);
     const accountCreationFee = isCreatingAccount
         ? await api.rpc.getMinimumBalanceForRentExemption(BigInt(getTokenSize())).send()
         : BigInt(0);
 
     const payload = [
         {
-            feePerTx: `${baseFee + accountCreationFee + priorityFee.fee}`,
-            feePerUnit: `${priorityFee.computeUnitPrice}`,
-            feeLimit: `${priorityFee.computeUnitLimit}`,
+            feePerTx: new BigNumber(baseFee.toString())
+                .plus(priorityFee.fee)
+                .plus(accountCreationFee.toString())
+                .toString(10),
+            feePerUnit: priorityFee.computeUnitPrice,
+            feeLimit: priorityFee.computeUnitLimit,
         },
     ];
 
