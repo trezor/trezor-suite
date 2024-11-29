@@ -5,6 +5,6 @@ export const supportedSolanaNetworkSymbols = ['sol', 'dsol'] as const;
 export type SupportedSolanaNetworkSymbols = (typeof supportedSolanaNetworkSymbols)[number];
 
 export type SolanaStakingAccount = {
-    account: AccountInfo<ParsedAccountData>;
+    account: AccountInfo<Buffer | ParsedAccountData>;
     pubkey: PublicKey;
 };

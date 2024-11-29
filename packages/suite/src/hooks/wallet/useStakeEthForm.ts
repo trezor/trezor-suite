@@ -3,7 +3,6 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import useDebounce from 'react-use/lib/useDebounce';
 import { fromWei } from 'web3-utils';
-import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import {
@@ -32,7 +31,7 @@ import {
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import {
-    getEthNetworkForWalletSdk,
+    getEthNetworkAddresses,
     getStakeFormsDefaultValues,
 } from 'src/utils/suite/ethereumStaking';
 import type { CryptoAmountLimitProps } from 'src/utils/suite/validation';
@@ -44,6 +43,7 @@ import { useFees } from './form/useFees';
 export const StakeEthFormContext = createContext<StakeContextValues | null>(null);
 StakeEthFormContext.displayName = 'StakeEthFormContext';
 
+// TODO: refactor this hook to support both ethereum and solana
 export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeContextValues => {
     const dispatch = useDispatch();
 
@@ -64,13 +64,12 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     };
 
     const defaultValues = useMemo(() => {
-        const { address_pool: poolAddress } = selectNetwork(
-            getEthNetworkForWalletSdk(account.symbol),
-        );
+        // TODO: get the address for solana here
+        const { addressContractPool } = getEthNetworkAddresses(account.symbol);
 
         return {
             ...getStakeFormsDefaultValues({
-                address: poolAddress,
+                address: addressContractPool,
                 stakeType: 'stake',
             }),
             setMaxOutputId: undefined,

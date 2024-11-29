@@ -1,6 +1,5 @@
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
-// @ts-expect-error: Could not find a declaration file for module '@everstake/wallet-sdk/solana'.
-import { getDelegations, selectNetwork } from '@everstake/wallet-sdk/solana';
+import { Solana, SolNetwork } from '@everstake/wallet-sdk';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { BigNumber, isArrayMember } from '@trezor/utils';
@@ -25,14 +24,14 @@ export const formatSolanaStakingAmount = (amount: string | null) => {
 };
 
 interface SolNetworkConfig {
-    network: 'devnet' | 'mainnet-beta';
+    network: SolNetwork;
     url: string;
 }
 
 export const getSolNetworkForWalletSdk = (symbol: NetworkSymbol): SolNetworkConfig => {
     const solNetworks: { [key in NetworkSymbol]?: SolNetworkConfig } = {
-        dsol: { network: 'devnet', url: SOLANA_DEV_NET_URL },
-        sol: { network: 'mainnet-beta', url: SOLANA_MAIN_NET_URL },
+        dsol: { network: SolNetwork.Devnet, url: SOLANA_DEV_NET_URL },
+        sol: { network: SolNetwork.Mainnet, url: SOLANA_MAIN_NET_URL },
     };
 
     return solNetworks[symbol] || solNetworks.sol!;
@@ -40,7 +39,8 @@ export const getSolNetworkForWalletSdk = (symbol: NetworkSymbol): SolNetworkConf
 
 export const selectSolanaWalletSdkNetwork = (symbol: NetworkSymbol) => {
     const { network, url } = getSolNetworkForWalletSdk(symbol);
-    selectNetwork(network, url);
+
+    return new Solana(network, url);
 };
 
 export const calculateTotalSolStakingBalance = (stakingAccounts: SolanaStakingAccount[]) => {
@@ -49,7 +49,11 @@ export const calculateTotalSolStakingBalance = (stakingAccounts: SolanaStakingAc
     const totalAmount = stakingAccounts.reduce((acc, solAccount) => {
         const { account } = solAccount;
 
-        return acc.plus(account?.data.parsed.info.stake.delegation.stake);
+        if ('parsed' in account.data) {
+            return acc.plus(account.data.parsed.info.stake.delegation.stake);
+        }
+
+        return acc;
     }, new BigNumber(0));
 
     return totalAmount.toString();
@@ -64,18 +68,6 @@ export const getSolAccountTotalStakingBalance = (account: Account) => {
     const totalStakingBalance = calculateTotalSolStakingBalance(stakingAccounts);
 
     return formatSolanaStakingAmount(totalStakingBalance);
-};
-
-export const getSolanaStakingAccounts = async (account: Account) => {
-    if (!account) return null;
-
-    selectSolanaWalletSdkNetwork(account.symbol);
-
-    const delegations = await getDelegations(account.descriptor);
-    const { result: stakingAccounts } = delegations;
-    if (!stakingAccounts) return null;
-
-    return stakingAccounts;
 };
 
 export const toLamports = (amount: string | BigNumber | number) => {
