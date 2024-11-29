@@ -26,10 +26,4 @@ export class NodeUsbTransport extends AbstractApiTransport {
             ...rest,
         });
     }
-
-    public listen() {
-        this.api.listen();
-
-        return super.listen();
-    }
 }

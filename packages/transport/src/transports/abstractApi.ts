@@ -54,6 +54,8 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             return this.error({ error: ERRORS.ALREADY_LISTENING });
         }
 
+        this.api.listen();
+
         this.listening = true;
 
         // 1. transport api reports descriptors change

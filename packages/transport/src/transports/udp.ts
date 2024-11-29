@@ -17,12 +17,6 @@ export class UdpTransport extends AbstractApiTransport {
         });
     }
 
-    public listen() {
-        this.api.listen();
-
-        return super.listen();
-    }
-
     public stop() {
         if (this.enumerateTimeout) {
             clearTimeout(this.enumerateTimeout);
