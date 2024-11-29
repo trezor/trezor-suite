@@ -1,7 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Table as TableComponent, allowedTableFrameProps } from './Table';
+import { Table as TableComponent, allowedTableFrameProps, allowedTableTextProps } from './Table';
 import { getFramePropsStory } from '../../utils/frameProps';
+import { getTextPropsStory } from '../typography/utils';
 
 const EXAMPLE_TOKENS = [
     { name: 'USDT', balance: '10', price: '$1,00' },
@@ -45,12 +46,14 @@ export const Table: StoryObj = {
     ),
     args: {
         ...getFramePropsStory(allowedTableFrameProps).args,
+        ...getTextPropsStory(allowedTableTextProps).args,
         colWidths: 'none',
         isRowHighlightedOnHover: true,
         hasBorders: true,
     },
     argTypes: {
         ...getFramePropsStory(allowedTableFrameProps).argTypes,
+        ...getTextPropsStory(allowedTableTextProps).argTypes,
         colWidths: {
             options: ['none', 'secondCol300px'],
             mapping: {

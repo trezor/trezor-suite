@@ -14,7 +14,11 @@ import { useScrollShadow } from '../../utils/useScrollShadow';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { TextPropsKeys, TextProps } from '../typography/utils';
 
-export const allowedTableFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+export const allowedTableFrameProps = [
+    'margin',
+    'maxWidth',
+    'width',
+] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTableFrameProps)[number]>;
 
 export const allowedTableTextProps = ['typographyStyle'] as const satisfies TextPropsKeys[];

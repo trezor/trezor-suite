@@ -1,39 +1,26 @@
 import { ReactNode } from 'react';
 
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
-import {
-    typography,
-    spacings,
-    Elevation,
-    mapElevationToBackground,
-    SpacingValues,
-} from '@trezor/theme';
+import { spacings, Elevation, mapElevationToBackground } from '@trezor/theme';
 
 import { useTableHeader } from './TableHeader';
 import { useTable } from './Table';
 import { Text } from '../typography/Text/Text';
+import { FlexJustifyContent } from '../Flex/Flex';
 import { UIHorizontalAlignment } from '../../config/types';
 import { useElevation } from '../ElevationContext/ElevationContext';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import { TransientProps } from '../../utils/transientProps';
 
-type Padding = {
-    top?: SpacingValues;
-    bottom?: SpacingValues;
-    left?: SpacingValues;
-    right?: SpacingValues;
-    vertical?: SpacingValues;
-    horizontal?: SpacingValues;
-};
+export const allowedTableCellFrameProps = [
+    'padding',
+    'maxWidth',
+] as const satisfies FramePropsKeys[];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedTableCellFrameProps)[number]>;
 
-export type TableCellProps = {
-    children?: ReactNode;
-    colSpan?: number;
-    align?: UIHorizontalAlignment;
-    padding?: Padding;
-};
-
-const mapAlignmentToJustifyContent = (align: UIHorizontalAlignment) => {
-    const map: Record<UIHorizontalAlignment, string> = {
+const mapAlignmentToJustifyContent = (align: UIHorizontalAlignment): FlexJustifyContent => {
+    const map: Record<UIHorizontalAlignment, FlexJustifyContent> = {
         left: 'flex-start',
         center: 'center',
         right: 'flex-end',
@@ -42,26 +29,16 @@ const mapAlignmentToJustifyContent = (align: UIHorizontalAlignment) => {
     return map[align];
 };
 
-const Cell = styled.td<{
-    $isHeader: boolean;
+type CellProps = TransientProps<AllowedFrameProps> & {
     $elevation: Elevation;
-    $padding?: Padding;
     $hasBorder: boolean;
-}>`
-    ${({ $isHeader }) => ($isHeader ? typography.hint : typography.body)}
-    color: ${({ theme, $isHeader }) => ($isHeader ? theme.textSubdued : theme.textDefault)};
+};
+
+const Cell = styled.td<CellProps>`
     text-align: left;
-    max-width: 300px;
     overflow: hidden;
 
-    ${({ $padding }) =>
-        $padding &&
-        css`
-            padding: ${$padding.top ?? $padding.vertical ?? 0}px
-                ${$padding.right ?? $padding.horizontal ?? 0}px
-                ${$padding.bottom ?? $padding.vertical ?? 0}px
-                ${$padding.left ?? $padding.horizontal ?? 0}px;
-        `}
+    ${withFrameProps}
 
     &:first-child {
         position: sticky;
@@ -82,25 +59,44 @@ const Content = styled.div<{ $align: UIHorizontalAlignment }>`
     justify-content: ${({ $align }) => mapAlignmentToJustifyContent($align)};
 `;
 
-export const TableCell = ({ children, colSpan = 1, align = 'left', padding }: TableCellProps) => {
+export type TableCellProps = AllowedFrameProps & {
+    children?: ReactNode;
+    colSpan?: number;
+    align?: UIHorizontalAlignment;
+};
+
+export const TableCell = ({
+    children,
+    colSpan = 1,
+    align = 'left',
+    padding,
+    maxWidth = 300,
+}: TableCellProps) => {
     const isHeader = useTableHeader();
     const { hasBorders, typographyStyle } = useTable();
     const { parentElevation } = useElevation();
+
     const defaultPadding = {
         vertical: hasBorders ? spacings.sm : spacings.xs,
         horizontal: spacings.lg,
     };
 
+    const defaultTypographyStyle = isHeader ? 'hint' : 'body';
+
     return (
         <Cell
             as={isHeader ? 'th' : 'td'}
             colSpan={colSpan}
-            $isHeader={isHeader}
             $elevation={parentElevation}
             $padding={padding ?? defaultPadding}
+            $maxWidth={maxWidth}
             $hasBorder={hasBorders}
         >
-            <Text as="div" typographyStyle={typographyStyle}>
+            <Text
+                as="div"
+                typographyStyle={typographyStyle ?? defaultTypographyStyle}
+                variant={isHeader ? 'tertiary' : 'default'}
+            >
                 <Content $align={align}>{children}</Content>
             </Text>
         </Cell>
