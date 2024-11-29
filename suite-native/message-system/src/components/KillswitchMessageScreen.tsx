@@ -5,8 +5,11 @@ import { A, G } from '@mobily/ts-belt';
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { messageSystemActions, selectActiveFeatureMessages } from '@suite-common/message-system';
+import { Variant } from '@suite-common/suite-types';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+
+import { selectActiveKillswitchMessages } from '../selectors';
 
 const screenStyle = prepareNativeStyle(utils => ({
     flexGrow: 1,
@@ -36,12 +39,11 @@ export const FeatureMessageScreen = () => {
     const dispatch = useDispatch();
     const openLink = useOpenLink();
 
-    const activeFeatureMessages = useSelector(selectActiveFeatureMessages);
-    const firstFeatureMessage = A.head(activeFeatureMessages);
+    const killswitch = A.head(useSelector(selectActiveKillswitchMessages));
 
     const { applyStyle } = useNativeStyles();
 
-    if (!firstFeatureMessage) return null;
+    if (!killswitch) return null;
 
     const {
         id: messageId,
@@ -49,14 +51,9 @@ export const FeatureMessageScreen = () => {
         headline,
         content,
         cta,
-        dismissible: isDismissable,
+        dismissible: isDismissible,
         category,
-        feature,
-    } = firstFeatureMessage;
-
-    const isKillswitch = A.isNotEmpty(
-        feature?.filter(item => item.domain === 'killswitch' && item.flag) ?? [],
-    );
+    } = killswitch;
 
     // TODO: We use only English locale in suite-native so far. When the localization to other
     // languages is implemented, the language selection logic has to be added here.
@@ -77,7 +74,7 @@ export const FeatureMessageScreen = () => {
     const isCtaVisible = ctaLabel && ctaLink;
 
     const handleDismiss = () => {
-        if (!isDismissable) return;
+        if (!isDismissible) return;
 
         const categories = G.isArray(category) ? category : [category];
         categories.forEach(item => {
@@ -90,20 +87,15 @@ export const FeatureMessageScreen = () => {
         });
     };
 
-    const defaultTitle = isKillswitch ? (
-        <Translation id="messageSystem.killswitch.title" />
-    ) : undefined;
-    const defaultContent = isKillswitch ? (
-        <Translation id="messageSystem.killswitch.content" />
-    ) : undefined;
-
     return (
         <Box style={applyStyle(screenStyle)}>
             <Box style={applyStyle(contentStyle)}>
                 <PictogramTitleHeader
                     variant={variant}
-                    title={messageTitle ?? defaultTitle}
-                    subtitle={messageContent ?? defaultContent}
+                    title={messageTitle ?? <Translation id="messageSystem.killswitch.title" />}
+                    subtitle={
+                        messageContent ?? <Translation id="messageSystem.killswitch.content" />
+                    }
                     titleVariant="titleMedium"
                 />
             </Box>
@@ -113,7 +105,7 @@ export const FeatureMessageScreen = () => {
                         {ctaLabel}
                     </Button>
                 )}
-                {isDismissable && (
+                {isDismissible && (
                     <Button size="large" colorScheme="tertiaryElevation0" onPress={handleDismiss}>
                         <Translation id="generic.buttons.dismiss" />
                     </Button>

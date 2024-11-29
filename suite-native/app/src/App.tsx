@@ -10,7 +10,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@suite-native/state';
 import { FormatterProvider } from '@suite-common/formatters';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
-import { FeatureMessageScreen, MessageSystemBannerRenderer } from '@suite-native/message-system';
+import { KillswitchMessageScreen, MessageSystemBannerRenderer } from '@suite-native/message-system';
 import { configureNetInfo, OfflineBanner } from '@suite-native/connection-status';
 import { IntlProvider } from '@suite-native/intl';
 import { isDebugEnv } from '@suite-native/config';
@@ -71,7 +71,7 @@ const AppComponent = () => {
             </BottomSheetModalProvider>
             <ModalsRenderer />
             {/* NOTE: Rendered as last item so that it covers the whole app screen */}
-            <FeatureMessageScreen />
+            <KillswitchMessageScreen />
         </FormatterProvider>
     );
 };

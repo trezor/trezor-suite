@@ -4,7 +4,7 @@ import { Message, Category } from '@suite-common/suite-types';
 import { ContextDomain, FeatureDomain, MessageSystemRootState } from './messageSystemTypes';
 
 // Create app-specific selectors with correct types
-const createMemoizedSelector = createWeakMapSelector.withTypes<MessageSystemRootState>();
+export const createMemoizedSelector = createWeakMapSelector.withTypes<MessageSystemRootState>();
 
 // Basic selectors don't need memoization
 export const selectMessageSystemConfig = (state: MessageSystemRootState) =>
