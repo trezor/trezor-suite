@@ -181,6 +181,15 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 message: 'Token accounts not found.',
             });
 
+        if (formState.setMaxOutputId !== undefined && !formState.outputs[0].amount) {
+            if (tokenInfo?.balance) {
+                formState.outputs[0].amount = tokenInfo.balance;
+            } else {
+                // small amount for purpose of fee estimation
+                formState.outputs[0].amount = '0.000000001';
+            }
+        }
+
         const tokenTransferTxAndDestinationAddress =
             tokenInfo && tokenInfo.accounts
                 ? await buildTokenTransferTransaction(
