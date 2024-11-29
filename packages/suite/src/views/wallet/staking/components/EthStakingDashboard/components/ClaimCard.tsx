@@ -77,7 +77,7 @@ export const ClaimCard = () => {
             </InfoItem>
         </Card>
     ) : (
-        <Card isHiglighted>
+        <Card variant="primary">
             <Column flex="1" gap={spacings.xl}>
                 <InfoItem
                     label={<Translation id="TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM" />}

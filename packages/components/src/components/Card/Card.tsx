@@ -13,8 +13,13 @@ import {
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 import { AccessibilityProps, withAccessibilityProps } from '../../utils/accessibilityProps';
-import { PaddingType, FillType } from './types';
-import { mapPaddingTypeToLabelPadding, mapPaddingTypeToPadding, mapFillTypeToCSS } from './utils';
+import { PaddingType, FillType, CardVariant } from './types';
+import {
+    mapPaddingTypeToLabelPadding,
+    mapPaddingTypeToPadding,
+    mapFillTypeToCSS,
+    mapVariantToColor,
+} from './utils';
 
 export const allowedCardFrameProps = [
     'margin',
@@ -50,7 +55,7 @@ const CardContainer = styled.div<
         $paddingType: PaddingType;
         $fillType: FillType;
         $isClickable: boolean;
-        $isHiglighted: boolean;
+        $variant?: CardVariant;
         $hasLabel: boolean;
     } & TransientProps<AllowedFrameProps>
 >`
@@ -66,8 +71,8 @@ const CardContainer = styled.div<
         border-color 0.2s;
     cursor: ${({ $isClickable }) => ($isClickable ? 'pointer' : 'default')};
 
-    ${({ theme, $isHiglighted, $paddingType }) =>
-        $isHiglighted &&
+    ${({ theme, $variant, $paddingType }) =>
+        $variant &&
         css`
             overflow: hidden;
             padding-left: calc(${spacingsPx.xxs} + ${mapPaddingTypeToPadding({ $paddingType })});
@@ -79,7 +84,7 @@ const CardContainer = styled.div<
                 top: 0;
                 bottom: 0;
                 width: ${spacingsPx.xxs};
-                background: ${theme.backgroundSecondaryDefault};
+                background: ${mapVariantToColor({ theme, $variant })};
             }
         `}
 
@@ -96,7 +101,7 @@ type CommonCardProps = AccessibilityProps & {
     children?: ReactNode;
     className?: string;
     label?: ReactNode;
-    isHiglighted?: boolean;
+    variant?: CardVariant;
     'data-testid'?: string;
 };
 
@@ -115,7 +120,7 @@ const CardComponent = forwardRef<HTMLDivElement, CardPropsWithTransientProps>(
             className,
             tabIndex,
             label,
-            isHiglighted = false,
+            variant,
             'data-testid': dataTest,
             ...rest
         },
@@ -130,7 +135,7 @@ const CardComponent = forwardRef<HTMLDivElement, CardPropsWithTransientProps>(
                 $paddingType={paddingType}
                 $fillType={fillType}
                 $isClickable={Boolean(onClick)}
-                $isHiglighted={isHiglighted}
+                $variant={variant}
                 $hasLabel={Boolean(label)}
                 onClick={onClick}
                 onMouseEnter={onMouseEnter}
@@ -158,8 +163,8 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
             className,
             tabIndex,
             children,
+            variant,
             'data-testid': dataTest,
-            isHiglighted,
             ...rest
         },
         ref,
@@ -174,7 +179,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
             fillType,
             children,
             label,
-            isHiglighted,
+            variant,
             'data-testid': dataTest,
         };
         const frameProps = pickAndPrepareFrameProps(rest, allowedCardFrameProps);

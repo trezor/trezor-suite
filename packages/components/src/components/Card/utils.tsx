@@ -6,9 +6,10 @@ import {
     mapElevationToBackground,
     mapElevationToBorder,
     SpacingPxValues,
+    CSSColor,
 } from '@trezor/theme';
 
-import { PaddingType, FillType } from './types';
+import { PaddingType, FillType, CardVariant } from './types';
 
 type PaddingMapArgs = {
     $paddingType: PaddingType;
@@ -19,6 +20,11 @@ type FillTypeMapArgs = {
     $elevation: Elevation;
     $isClickable: boolean;
     $hasLabel: boolean;
+    theme: DefaultTheme;
+};
+
+type VariantMapArgs = {
+    $variant: CardVariant;
     theme: DefaultTheme;
 };
 
@@ -69,4 +75,13 @@ export const mapFillTypeToCSS = ({
     };
 
     return cssMap[$fillType];
+};
+
+export const mapVariantToColor = ({ $variant, theme }: VariantMapArgs): CSSColor => {
+    const colorMap: Record<CardVariant, CSSColor> = {
+        primary: theme.backgroundSecondaryDefault,
+        warning: theme.backgroundAlertYellowBold,
+    };
+
+    return colorMap[$variant];
 };

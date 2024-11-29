@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { Card as CardComponent, allowedCardFrameProps } from './Card';
-import { paddingTypes, fillTypes } from './types';
+import { paddingTypes, fillTypes, cardVariants } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta = {
@@ -49,9 +49,10 @@ export const Card: StoryObj = {
                 type: 'radio',
             },
         },
-        isHiglighted: {
+        variant: {
+            options: [...cardVariants, undefined],
             control: {
-                type: 'boolean',
+                type: 'select',
             },
         },
         ...getFramePropsStory(allowedCardFrameProps).argTypes,

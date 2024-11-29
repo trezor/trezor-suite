@@ -113,7 +113,7 @@ export const WalletInstance = ({
             onClick={handleClick}
             tabIndex={0}
             data-testid={dataTestBase}
-            isHiglighted={isSelected}
+            variant={isSelected ? 'primary' : undefined}
             {...rest}
         >
             <Column>
