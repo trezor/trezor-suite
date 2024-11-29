@@ -2,13 +2,15 @@ import { useEffect, useMemo } from 'react';
 
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { isArrayMember } from '@trezor/utils';
 
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
+import { selectFirmwareRevisionCheckError } from 'src/reducers/suite/suiteReducer';
 import {
-    selectFirmwareHashCheckError,
-    selectFirmwareRevisionCheckError,
-} from 'src/reducers/suite/suiteReducer';
+    skippedButReportedHashCheckErrors,
+    skippedHashCheckErrors,
+} from 'src/constants/suite/firmware';
 
 const reportCheckFail = (checkType: 'revision' | 'hash', contextData: any) =>
     withSentryScope(scope => {
@@ -44,14 +46,22 @@ const useReportHashCheck = () => {
     const { device } = useDevice();
     const commonData = useCommonData();
 
-    const hashCheckError = useSelector(selectFirmwareHashCheckError);
+    // `errorPayload` must also be extracted, which is why `selectFirmwareHashCheckError` would be impractical
     const hashCheck = isDeviceAcquired(device) ? device.authenticityChecks?.firmwareHash : null;
-    const hashCheckErrorPayload = hashCheck?.success === false ? hashCheck.errorPayload : null;
+    const isHashCheckError = hashCheck && !hashCheck.success;
+    const hashCheckError = isHashCheckError ? hashCheck.error : null;
+    const hashCheckErrorPayload = isHashCheckError ? hashCheck.errorPayload : null;
 
     useEffect(() => {
-        if (hashCheckError !== null) {
-            reportCheckFail('hash', { ...commonData, hashCheckError, hashCheckErrorPayload });
+        if (!hashCheckError) return;
+        if (
+            isArrayMember(hashCheckError, skippedHashCheckErrors) &&
+            !isArrayMember(hashCheckError, skippedButReportedHashCheckErrors)
+        ) {
+            return;
         }
+
+        reportCheckFail('hash', { ...commonData, hashCheckError, hashCheckErrorPayload });
     }, [commonData, hashCheckError, hashCheckErrorPayload]);
 };
 

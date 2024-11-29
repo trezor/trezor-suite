@@ -16,5 +16,6 @@ export const skippedHashCheckErrors = [
     'unknown-release',
 ] satisfies FirmwareHashCheckError[];
 
-// These errors will be treated softly, with only a warning displayed instead of modal
-export const softHashCheckErrors = [...skippedHashCheckErrors];
+// Of those skipped errors, these ones should nevertheless be reported to Sentry
+type SkippedHashCheckErrors = typeof skippedHashCheckErrors;
+export const skippedButReportedHashCheckErrors = [] satisfies SkippedHashCheckErrors;

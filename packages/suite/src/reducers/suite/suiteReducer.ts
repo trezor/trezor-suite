@@ -6,7 +6,7 @@ import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { discoveryActions, DeviceRootState, selectDevice } from '@suite-common/wallet-core';
 import { isArrayMember, versionUtils } from '@trezor/utils';
 import { isWeb } from '@trezor/env-utils';
-import { TRANSPORT, TransportInfo, ConnectSettings, FirmwareHashCheckError } from '@trezor/connect';
+import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
@@ -20,11 +20,7 @@ import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { Action, AppState, TorBootstrap, TorStatus } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
-import {
-    skippedHashCheckErrors,
-    softHashCheckErrors,
-    softRevisionCheckErrors,
-} from 'src/constants/suite/firmware';
+import { skippedHashCheckErrors, softRevisionCheckErrors } from 'src/constants/suite/firmware';
 
 import { RouterRootState, selectRouter } from './routerReducer';
 
@@ -499,11 +495,7 @@ export const selectIsFirmwareAuthenticityCheckEnabledAndHardFailed = (state: App
         revisionError !== null ? !isArrayMember(revisionError, softRevisionCheckErrors) : false;
 
     const hashError = selectFirmwareHashCheckErrorIfEnabled(state);
-    const isHashHardError =
-        hashError !== null
-            ? // broaden the hashError type, so that `softHashCheckErrors` is assignable as a subset of `hashError`
-              !isArrayMember(hashError as FirmwareHashCheckError, softHashCheckErrors)
-            : false;
+    const isHashHardError = hashError !== null;
 
     return isRevisionHardError || isHashHardError;
 };
