@@ -1,4 +1,4 @@
-import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
+import { Ethereum, ETH_NETWORK_ADDRESSES } from '@everstake/wallet-sdk';
 import { fromWei, numberToHex, toWei } from 'web3-utils';
 
 import {
@@ -70,9 +70,11 @@ export const stake = async ({
 
     try {
         const ethNetwork = getEthNetworkForWalletSdk(symbol);
-        const { contract_pool: contractPool } = selectNetwork(ethNetwork);
-        const contractPoolAddress = contractPool.options.address;
-        const data = contractPool.methods.stake(WALLET_SDK_SOURCE).encodeABI();
+        const ethereumClient = new Ethereum(ethNetwork);
+        const { addressContractPool } = ETH_NETWORK_ADDRESSES[ethNetwork];
+
+        const contractPoolAddress = ethereumClient.contractPool.options.address;
+        const data = ethereumClient.contractPool.methods.stake(WALLET_SDK_SOURCE).encodeABI();
 
         // gasLimit calculation based on address, amount and data size
         // amount is essential for a proper calculation of gasLimit (via blockbook/geth)
@@ -83,7 +85,7 @@ export const stake = async ({
                 blocks: [2],
                 specific: {
                     from,
-                    ...getEthereumEstimateFeeParams(contractPoolAddress, amount, undefined, data),
+                    ...getEthereumEstimateFeeParams(addressContractPool, amount, undefined, data),
                 },
             },
         });
@@ -144,9 +146,10 @@ export const unstake = async ({
 
         const amountWei = toWei(amount, 'ether');
         const ethNetwork = getEthNetworkForWalletSdk(symbol);
-        const { contract_pool: contractPool } = selectNetwork(ethNetwork);
-        const contractPoolAddress = contractPool.options.address;
-        const data = contractPool.methods
+        const ethereumClient = new Ethereum(ethNetwork);
+        const { addressContractPool } = ETH_NETWORK_ADDRESSES[ethNetwork];
+        const contractPoolAddress = ethereumClient.contractPool.options.address;
+        const data = ethereumClient.contractPool.methods
             .unstake(amountWei, interchanges, WALLET_SDK_SOURCE)
             .encodeABI();
 
@@ -159,7 +162,7 @@ export const unstake = async ({
                 blocks: [2],
                 specific: {
                     from,
-                    ...getEthereumEstimateFeeParams(contractPoolAddress, '0', undefined, data),
+                    ...getEthereumEstimateFeeParams(addressContractPool, '0', undefined, data),
                 },
             },
         });
@@ -206,9 +209,11 @@ export const claimWithdrawRequest = async ({ from, symbol, identity }: StakeTxBa
         if (!readyForClaim.eq(requested)) throw new Error('Unstake request not filled yet');
 
         const ethNetwork = getEthNetworkForWalletSdk(symbol);
-        const { contract_accounting: contractAccounting } = selectNetwork(ethNetwork);
-        const contractAccountingAddress = contractAccounting.options.address;
-        const data = contractAccounting.methods.claimWithdrawRequest().encodeABI();
+        const ethereumClient = new Ethereum(ethNetwork);
+        const { addressContractAccounting } = ETH_NETWORK_ADDRESSES[ethNetwork];
+
+        const contractAccountingAddress = ethereumClient.contractAccounting.options.address;
+        const data = ethereumClient.contractAccounting.methods.claimWithdrawRequest().encodeABI();
 
         // gasLimit calculation based on address, amount and data size
         // amount is essential for a proper calculation of gasLimit (via blockbook/geth)
@@ -220,7 +225,7 @@ export const claimWithdrawRequest = async ({ from, symbol, identity }: StakeTxBa
                 specific: {
                     from,
                     ...getEthereumEstimateFeeParams(
-                        contractAccountingAddress,
+                        addressContractAccounting,
                         '0',
                         undefined,
                         data,
@@ -572,18 +577,18 @@ export const getInstantStakeType = (
     if (!address || !symbol) return null;
     const { from, to } = internalTransfer;
     const ethNetwork = getEthNetworkForWalletSdk(symbol);
-    const { address_pool: poolAddress, address_withdraw_treasury: withdrawTreasuryAddress } =
-        selectNetwork(ethNetwork);
+    const { addressContractPool, addressContractWithdrawTreasury } =
+        ETH_NETWORK_ADDRESSES[ethNetwork];
 
-    if (from === poolAddress && to === withdrawTreasuryAddress) {
+    if (from === addressContractPool && to === addressContractWithdrawTreasury) {
         return 'stake';
     }
 
-    if (from === poolAddress && to === address) {
+    if (from === addressContractPool && to === address) {
         return 'unstake';
     }
 
-    if (from === withdrawTreasuryAddress && to === address) {
+    if (from === addressContractWithdrawTreasury && to === address) {
         return 'claim';
     }
 
@@ -638,13 +643,14 @@ export const simulateUnstake = async ({
     symbol,
 }: StakeTxBaseArgs & { amount: string }) => {
     const ethNetwork = getEthNetworkForWalletSdk(symbol);
-    const { address_pool: poolAddress, contract_pool: contractPool } = selectNetwork(ethNetwork);
+    const ethereumClient = new Ethereum(ethNetwork);
+    const { addressContractPool } = ETH_NETWORK_ADDRESSES[ethNetwork];
 
     if (!amount || !from || !symbol) return null;
 
     const amountWei = toWei(amount, 'ether');
 
-    const data = contractPool.methods
+    const data = ethereumClient.contractPool.methods
         .unstake(amountWei, UNSTAKE_INTERCHANGES, WALLET_SDK_SOURCE)
         .encodeABI();
     if (!data) return null;
@@ -652,7 +658,7 @@ export const simulateUnstake = async ({
     const ethereumData = await TrezorConnect.blockchainEvmRpcCall({
         coin: symbol,
         from,
-        to: poolAddress,
+        to: addressContractPool,
         data,
     });
 

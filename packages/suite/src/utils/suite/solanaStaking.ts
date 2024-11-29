@@ -1,9 +1,7 @@
-// @ts-expect-error: Could not find a declaration file for module '@everstake/wallet-sdk/solana'.
-import { stake } from '@everstake/wallet-sdk/solana';
 import { LAMPORTS_PER_SOL, VersionedTransaction } from '@solana/web3.js';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { WALLET_SDK_SOURCE, WALLET_SDK_TOKEN } from '@suite-common/wallet-constants';
+import { WALLET_SDK_SOURCE } from '@suite-common/wallet-constants';
 import { selectSolanaWalletSdkNetwork } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 import type { SolanaSignTransaction } from '@trezor/connect';
@@ -58,10 +56,10 @@ export const prepareStakeSolTx = async ({
     symbol,
 }: PrepareStakeSolTxParams): Promise<PrepareStakeSolTxResponse> => {
     try {
-        selectSolanaWalletSdkNetwork(symbol);
+        const solanaClient = selectSolanaWalletSdkNetwork(symbol);
 
         const lamports = new BigNumber(LAMPORTS_PER_SOL).multipliedBy(amount).toNumber(); // stake method expects lamports as a number
-        const tx = await stake(WALLET_SDK_TOKEN, from, lamports, WALLET_SDK_SOURCE);
+        const tx = await solanaClient.stake(from, lamports, WALLET_SDK_SOURCE);
         const transformedTx = transformTx(tx.result, path);
 
         return {

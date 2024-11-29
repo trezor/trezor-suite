@@ -3,7 +3,7 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import useDebounce from 'react-use/lib/useDebounce';
 import { fromWei } from 'web3-utils';
-import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
+import { ETH_NETWORK_ADDRESSES } from '@everstake/wallet-sdk';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import {
@@ -64,13 +64,12 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     };
 
     const defaultValues = useMemo(() => {
-        const { address_pool: poolAddress } = selectNetwork(
-            getEthNetworkForWalletSdk(account.symbol),
-        );
+        const { addressContractPool } =
+            ETH_NETWORK_ADDRESSES[getEthNetworkForWalletSdk(account.symbol)];
 
         return {
             ...getStakeFormsDefaultValues({
-                address: poolAddress,
+                address: addressContractPool,
                 stakeType: 'stake',
             }),
             setMaxOutputId: undefined,
