@@ -41,6 +41,5 @@ module.exports = {
         '<rootDir>/../../node_modules/react-native-gesture-handler/jestSetup.js',
         '<rootDir>/../../suite-native/test-utils/src/atomsMock.js',
         '<rootDir>/../../suite-native/test-utils/src/expoMock.js',
-        '<rootDir>/../../suite-native/test-utils/src/walletSdkMock.js',
     ],
 };
