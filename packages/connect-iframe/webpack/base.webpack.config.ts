@@ -111,10 +111,11 @@ export const config: webpack.Configuration = {
         }),
         // provide fallback for global objects.
         // resolve.fallback will not work since those objects are not imported as modules.
+        // process/browser needs explicit .js extension
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
             Promise: ['es6-promise', 'Promise'],
-            process: 'process/browser',
+            process: 'process/browser.js',
         }),
         // resolve @trezor/connect modules as "browser"
         new webpack.NormalModuleReplacementPlugin(/\/workers\/workers$/, resource => {
