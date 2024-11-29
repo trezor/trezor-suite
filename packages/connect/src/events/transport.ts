@@ -3,6 +3,7 @@ import { TRANSPORT } from '@trezor/transport/src/constants';
 
 import { serializeError } from '../constants/errors';
 import type { MessageFactoryFn } from '../types/utils';
+import { ConnectSettings } from '../exports';
 
 export { TRANSPORT } from '@trezor/transport/src/constants';
 
@@ -39,6 +40,11 @@ export interface TransportInfo {
     udev?: UdevInfo;
 }
 
+export type TransportTypeState =
+    | { type: Transport['apiType']; status: 'stopped'; name?: undefined; error?: undefined }
+    | { type: Transport['apiType']; status: 'running'; name: Transport['name']; error?: undefined }
+    | { type: Transport['apiType']; status: 'error'; name?: undefined; error: string };
+
 export type TransportEvent =
     | {
           type: typeof TRANSPORT.START;
@@ -52,7 +58,16 @@ export type TransportEvent =
               bridge?: BridgeInfo;
               udev?: UdevInfo;
           };
+      }
+    | {
+          type: typeof TRANSPORT.CHANGED;
+          payload: TransportTypeState;
       };
+
+export interface TransportSetTransports {
+    type: typeof TRANSPORT.SET_TRANSPORTS;
+    payload: Pick<ConnectSettings, 'transports'>;
+}
 
 export interface TransportDisableWebUSB {
     type: typeof TRANSPORT.DISABLE_WEBUSB;

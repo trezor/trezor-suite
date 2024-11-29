@@ -39,6 +39,11 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
         };
     }
 
+    public setTransports() {
+        // TODO: implement
+        throw new Error('Unsupported right now');
+    }
+
     public init(settings: InitFullSettings<ConnectSettingsMobile>) {
         if (!settings.deeplinkOpen) {
             throw new Error('TrezorConnect native requires "deeplinkOpen" setting.');
@@ -192,6 +197,7 @@ const TrezorConnect = factory<
         eventEmitter: impl.eventEmitter,
         init: impl.init.bind(impl),
         call: impl.call.bind(impl),
+        setTransports: impl.setTransports.bind(impl),
         manifest: impl.manifest.bind(impl),
         requestLogin: impl.requestLogin.bind(impl),
         uiResponse: impl.uiResponse.bind(impl),

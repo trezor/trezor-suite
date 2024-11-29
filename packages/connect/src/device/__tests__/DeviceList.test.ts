@@ -64,22 +64,22 @@ describe('DeviceList', () => {
         list.dispose();
     });
 
-    it('.init() throws error on unknown transport (string)', () => {
-        expect(() =>
+    it('.init() throws error on unknown transport (string)', async () => {
+        await expect(() =>
             list.init({
                 // @ts-expect-error
                 transports: ['FooBarTransport'],
             }),
-        ).toThrow('unexpected type: FooBarTransport');
+        ).rejects.toThrow('unexpected type: FooBarTransport');
     });
 
-    it('.init() throws error on unknown transport (class)', () => {
-        expect(() =>
+    it('.init() throws error on unknown transport (class)', async () => {
+        await expect(() =>
             list.init({
                 // @ts-expect-error
                 transports: [{}, () => {}, [], String, 1, 'meow-non-existent'],
             }),
-        ).toThrow('DeviceList.init: transports[] of unexpected type');
+        ).rejects.toThrow('DeviceList.init: transports[] of unexpected type');
     });
 
     it('.init() accepts transports in form of transport class', async () => {

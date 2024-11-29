@@ -10,6 +10,7 @@ export interface ConnectFactoryDependencies<SettingsType extends Record<string, 
     call: CallMethod;
     eventEmitter: EventEmitter;
     manifest: TrezorConnect['manifest'];
+    setTransports: TrezorConnect['setTransports'];
     requestLogin: TrezorConnect['requestLogin'];
     uiResponse: TrezorConnect['uiResponse'];
     cancel: TrezorConnect['cancel'];
@@ -25,6 +26,7 @@ export const factory = <
         manifest,
         init,
         call,
+        setTransports,
         requestLogin,
         uiResponse,
         cancel,
@@ -34,6 +36,7 @@ export const factory = <
 ): Omit<TrezorConnect, 'init'> & { init: InitType<SettingsType> } & ExtraMethodsType => ({
     manifest,
     init,
+    setTransports,
 
     on: <T extends string, P extends (...args: any[]) => any>(type: T, fn: P) => {
         eventEmitter.on(type, fn);

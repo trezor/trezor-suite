@@ -114,6 +114,11 @@ export class TrezorConnectDynamic<
         }
     }
 
+    public setTransports() {
+        // TODO: implement
+        throw new Error('Unsupported right now');
+    }
+
     public async call(params: CallMethodPayload) {
         const response = await this.getTarget().call(params);
         if (!response.success) {

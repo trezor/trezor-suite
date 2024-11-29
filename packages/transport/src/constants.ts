@@ -29,6 +29,8 @@ export const TRANSPORT = {
     /* events */
     START: 'transport-start',
     ERROR: 'transport-error',
+    CHANGED: 'transport-changed',
+
     DEVICE_CONNECTED: 'transport-device_connected',
     DEVICE_DISCONNECTED: 'transport-device_disconnected',
     DEVICE_SESSION_CHANGED: 'transport-device_session_changed',
@@ -37,4 +39,5 @@ export const TRANSPORT = {
     DISABLE_WEBUSB: 'transport-disable_webusb',
     REQUEST_DEVICE: 'transport-request_device',
     GET_INFO: 'transport-get_info',
+    SET_TRANSPORTS: 'transport-set_transports',
 } as const;

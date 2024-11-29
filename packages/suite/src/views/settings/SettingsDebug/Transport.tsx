@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import TrezorConnect from '@trezor/connect';
 import { Checkbox } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { ArrayElement } from '@trezor/type-utils';
@@ -80,6 +81,7 @@ export const Transport = () => {
                                     : [...debugTransports, transport.name];
 
                                 dispatch(setDebugMode({ transports: nextTransports }));
+                                TrezorConnect.setTransports({ transports: nextTransports });
                             }}
                         />
                     </ActionColumn>

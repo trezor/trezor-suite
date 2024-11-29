@@ -189,6 +189,11 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
         this._log.enabled = !!this._settings.debug;
     }
 
+    public setTransports() {
+        // TODO: implement
+        throw new Error('Unsupported right now');
+    }
+
     private initSettings = (settings: Partial<ConnectSettings> = {}) => {
         this._settings = parseConnectSettings({
             ...this._settings,
@@ -287,6 +292,7 @@ export const TrezorConnect = factory({
     manifest: impl.manifest.bind(impl),
     init: impl.init.bind(impl),
     call: impl.call.bind(impl),
+    setTransports: impl.setTransports.bind(impl),
     requestLogin: impl.requestLogin.bind(impl),
     uiResponse: impl.uiResponse.bind(impl),
     cancel: impl.cancel.bind(impl),

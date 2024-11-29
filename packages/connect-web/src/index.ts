@@ -84,6 +84,7 @@ const TrezorConnect = factory<ConnectSettingsWeb, ConnectWebExtraMethods>(
         eventEmitter: impl.eventEmitter,
         init: impl.init.bind(impl),
         call: impl.call.bind(impl),
+        setTransports: impl.setTransports.bind(impl),
         manifest: impl.manifest.bind(impl),
         requestLogin: impl.requestLogin.bind(impl),
         uiResponse: impl.uiResponse.bind(impl),

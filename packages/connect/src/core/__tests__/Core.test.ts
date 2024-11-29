@@ -57,7 +57,7 @@ describe('Core', () => {
         expect(eventsSpy).toHaveBeenCalledTimes(0);
         await new Promise(resolve => setTimeout(resolve, 1));
         // device + transport events emitted in next tick
-        expect(eventsSpy).toHaveBeenCalledTimes(4);
+        expect(eventsSpy).toHaveBeenCalledTimes(5);
 
         coreManager.dispose();
     });

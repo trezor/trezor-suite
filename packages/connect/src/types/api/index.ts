@@ -69,6 +69,7 @@ import { rippleSignTransaction } from './rippleSignTransaction';
 import { setBrightness } from './setBrightness';
 import { setBusy } from './setBusy';
 import { setProxy } from './setProxy';
+import { setTransports } from './setTransports';
 import { showDeviceTutorial } from './showDeviceTutorial';
 import { signMessage } from './signMessage';
 import { signTransaction } from './signTransaction';
@@ -301,6 +302,9 @@ export interface TrezorConnect {
 
     // todo: link docs
     setProxy: typeof setProxy;
+
+    // todo: link docs
+    setTransports: typeof setTransports;
 
     // https://connect.trezor.io/9/methods/bitcoin/signMessage/
     signMessage: typeof signMessage;

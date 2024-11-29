@@ -20,6 +20,7 @@ import {
     UI,
     UiResponseEvent,
     CallMethod,
+    TRANSPORT,
 } from './events';
 import { ERRORS } from './constants';
 import type { ConnectSettings, Manifest } from './types';
@@ -149,6 +150,14 @@ const call: CallMethod = async params => {
     }
 };
 
+const setTransports = (payload: Pick<ConnectSettings, 'transports'>) => {
+    const core = coreManager.get();
+    if (!core) {
+        throw ERRORS.TypedError('Init_NotInitialized');
+    }
+    core.handleMessage({ type: TRANSPORT.SET_TRANSPORTS, payload });
+};
+
 const uiResponse = (response: UiResponseEvent) => {
     const core = coreManager.get();
     if (!core) {
@@ -214,6 +223,7 @@ const TrezorConnect = factory(
         manifest,
         init,
         call,
+        setTransports,
         requestLogin,
         uiResponse,
         cancel,

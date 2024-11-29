@@ -212,6 +212,11 @@ export class CoreInIframe implements ConnectFactoryDependencies<ConnectSettingsW
         }
     }
 
+    public setTransports() {
+        // TODO: implement
+        throw new Error('Unsupported right now');
+    }
+
     public async call(params: CallMethodPayload) {
         if (!iframe.instance && !iframe.timeout) {
             // init popup with lazy loading before iframe initialization
@@ -364,6 +369,7 @@ export const TrezorConnect = factory(
         eventEmitter: impl.eventEmitter,
         init: impl.init.bind(impl),
         call: impl.call.bind(impl),
+        setTransports: impl.setTransports.bind(impl),
         manifest: impl.manifest.bind(impl),
         requestLogin: impl.requestLogin.bind(impl),
         uiResponse: impl.uiResponse.bind(impl),
