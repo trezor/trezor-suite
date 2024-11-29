@@ -393,7 +393,7 @@ export const getDetails = (
 
     const getVin = ({ address, amount }: { address: string; amount?: BigNumber }, i: number) => ({
         txid: transaction.transaction.signatures[0].toString(),
-        version: transaction.version,
+        version: transaction.version?.toString(),
         isAddress: true,
         isAccountOwned: address === accountAddress,
         n: i,
