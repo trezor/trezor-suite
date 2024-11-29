@@ -109,7 +109,7 @@ export const AccountGroup = ({
                             {!keepOpen && (
                                 <IconWrapper $isActive={isOpen}>
                                     <Icon
-                                        data-testid="@account-menu/chevron"
+                                        data-testid="@account-menu/arrow"
                                         size={16}
                                         variant="tertiary"
                                         name="chevronDown"

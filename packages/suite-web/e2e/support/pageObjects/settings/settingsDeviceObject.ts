@@ -11,7 +11,9 @@ class SettingsDevicePage {
     }
 
     togglePinSwitch(): void {
-        cy.getTestElement('@settings/device/pin-switch').as('pinSwitch').should('be.visible');
+        cy.getTestElement('@settings/device/pin-switch').as('pinSwitch').scrollIntoView();
+
+        cy.get('@pinSwitch').should('be.visible');
         cy.wait(500);
         cy.get('@pinSwitch').click();
     }
