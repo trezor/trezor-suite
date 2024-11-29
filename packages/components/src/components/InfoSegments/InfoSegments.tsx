@@ -1,4 +1,4 @@
-import { ReactNode, Children } from 'react';
+import { ReactNode, Children, useId, Fragment } from 'react';
 
 import { spacings } from '@trezor/theme';
 
@@ -20,15 +20,16 @@ export type InfoSegmentsProps = AllowedFrameProps &
 
 export const InfoSegments = ({ children, typographyStyle, variant, margin }: InfoSegmentsProps) => {
     const validChildren = Children.toArray(children).filter(child => Boolean(child));
+    const id = useId();
 
     return (
         <Text as="div" typographyStyle={typographyStyle} margin={margin} variant={variant}>
             <Row gap={spacings.xxs}>
                 {validChildren.map((child, index) => (
-                    <>
+                    <Fragment key={`${id}-${index}`}>
                         {child}
                         {index < validChildren.length - 1 && <span>&bull;</span>}
-                    </>
+                    </Fragment>
                 ))}
             </Row>
         </Text>
