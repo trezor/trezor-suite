@@ -12,6 +12,10 @@ import { WalletActions } from './pageActions/walletActions';
 import { OnboardingActions } from './pageActions/onboardingActions';
 
 type Fixtures = {
+    emulatorConf: {
+        needs_backup: boolean;
+        mnemonic: string;
+    };
     TrezorUserEnvLink: TrezorUserEnvLinkClass;
     electronApp: ElectronApplication;
     window: Page;
@@ -23,11 +27,16 @@ type Fixtures = {
 };
 
 const test = base.extend<Fixtures>({
-    // eslint-disable-next-line no-empty-pattern
-    TrezorUserEnvLink: async ({}, use) => {
+    emulatorConf: {
+        needs_backup: true,
+        mnemonic: 'mnemonic_all',
+    },
+     
+    TrezorUserEnvLink: async ({ emulatorConf }, use) => {
         await TrezorUserEnvLink.stopBridge();
         await TrezorUserEnvLink.connect();
         await TrezorUserEnvLink.startEmu({ wipe: true });
+        await TrezorUserEnvLink.setupEmu(emulatorConf);
         await use(TrezorUserEnvLink);
     },
     // eslint-disable-next-line no-empty-pattern

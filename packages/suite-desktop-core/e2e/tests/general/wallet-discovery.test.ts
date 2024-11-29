@@ -1,17 +1,15 @@
 import { test, expect } from '../../support/fixtures';
 
-test.beforeAll(async ({ TrezorUserEnvLink }) => {
-    await TrezorUserEnvLink.setupEmu({ needs_backup: true, mnemonic: 'mnemonic_all' });
+test.beforeEach(async ({ TrezorUserEnvLink, onboardingPage, dashboardPage }) => {
+    await onboardingPage.completeOnboarding();
+    await dashboardPage.discoveryShouldFinish();
 });
-
 /**
  * Test case:
  * 1. Discover a standard wallet
  * 2. Verify discovery by checking a the first btc value under the graph
  */
-test('Discover a standard wallet', async ({ onboardingPage, dashboardPage }) => {
-    await onboardingPage.completeOnboarding();
-    await dashboardPage.discoveryShouldFinish();
+test('Discover a standard wallet', async ({ dashboardPage }) => {
     await dashboardPage.openDeviceSwitcher();
     await dashboardPage.ejectWallet();
     await dashboardPage.addStandardWallet();

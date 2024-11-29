@@ -1,11 +1,16 @@
 import { test, expect } from '../../support/fixtures';
 
-test.beforeAll(async ({ TrezorUserEnvLink }) => {
-    await TrezorUserEnvLink.setupEmu({
+test.use({
+    emulatorConf: {
         needs_backup: true,
         mnemonic:
             'cloth trim improve bag pigeon party wave mechanic beyond clean cake maze protect left assist carry guitar bridge nest faith critic excuse tooth dutch',
-    });
+    },
+});
+
+test.beforeEach(async ({ TrezorUserEnvLink, onboardingPage, dashboardPage }) => {
+    await onboardingPage.completeOnboarding();
+    await dashboardPage.discoveryShouldFinish();
 });
 
 /**
@@ -14,14 +19,7 @@ test.beforeAll(async ({ TrezorUserEnvLink }) => {
  * 2. Check that all types of Cardano accounts are discovered
  * 3. Check that Staking section is available
  */
-test('Discover all Cardano account types', async ({
-    onboardingPage,
-    dashboardPage,
-    settingsPage,
-    walletPage,
-}) => {
-    await onboardingPage.completeOnboarding();
-    await dashboardPage.discoveryShouldFinish();
+test('Discover all Cardano account types', async ({ dashboardPage, settingsPage, walletPage }) => {
     await settingsPage.navigateTo();
     await settingsPage.coinsTabButton.click();
     await settingsPage.enableCoin('ada');

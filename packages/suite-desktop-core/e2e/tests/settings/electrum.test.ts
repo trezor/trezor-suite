@@ -1,23 +1,18 @@
 import { test, expect } from '../../support/fixtures';
 
 test.describe.serial('Suite works with Electrum server', () => {
-    test.beforeAll(async ({ TrezorUserEnvLink }) => {
-        await TrezorUserEnvLink.setupEmu({ needs_backup: true, mnemonic: 'mnemonic_all' });
+    test.beforeEach(async ({ TrezorUserEnvLink, onboardingPage, dashboardPage }) => {
+        await onboardingPage.completeOnboarding();
+        await dashboardPage.discoveryShouldFinish();
     });
 
-    test('Electrum completes discovery successfully', async ({
-        onboardingPage,
-        dashboardPage,
-        settingsPage,
-    }) => {
+    test('Electrum completes discovery successfully', async ({ dashboardPage, settingsPage }) => {
         test.info().annotations.push({
             type: 'dependency',
             description:
                 'This test needs running RegTest docker. Read how to run this dependency in docs/tests/regtest.md',
         });
         const electrumUrl = '127.0.0.1:50001:t';
-        await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
 
         await settingsPage.navigateTo();
         await settingsPage.toggleDebugModeInSettings();
