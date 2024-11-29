@@ -6,7 +6,7 @@ import {
     waitForAppToBeInitialized,
 } from '../support/bridge';
 
-test.describe.serial('Bridge', () => {
+test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
     test.beforeAll(async ({ trezorUserEnvLink }) => {
         // Ensure bridge is stopped so we properly test the electron app starting node-bridge module.
         await trezorUserEnvLink.connect();

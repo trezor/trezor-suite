@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import { test as base, ElectronApplication, Page } from '@playwright/test';
+import { test as base, BrowserContext, ElectronApplication, Page } from '@playwright/test';
 
 import { TrezorUserEnvLink, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
@@ -10,6 +10,7 @@ import { SettingsActions } from './pageActions/settingsActions';
 import { SuiteGuide } from './pageActions/suiteGuideActions';
 import { WalletActions } from './pageActions/walletActions';
 import { OnboardingActions } from './pageActions/onboardingActions';
+import { PlaywrightProjects } from '../playwright.config';
 
 type Fixtures = {
     startEmulator: boolean;
@@ -18,7 +19,7 @@ type Fixtures = {
         mnemonic: string;
     };
     trezorUserEnvLink: TrezorUserEnvLinkClass;
-    electronApp: ElectronApplication;
+    appContext: ElectronApplication | BrowserContext;
     window: Page;
     dashboardPage: DashboardActions;
     settingsPage: SettingsActions;
@@ -37,24 +38,45 @@ const test = base.extend<Fixtures>({
     trezorUserEnvLink: async ({}, use) => {
         await use(TrezorUserEnvLink);
     },
-    electronApp: async ({ trezorUserEnvLink, startEmulator, emulatorConf }, use) => {
+    appContext: async (
+        { browser, baseURL, trezorUserEnvLink, startEmulator, emulatorConf },
+        use,
+        testInfo,
+    ) => {
         // We need to ensure emulator is running before launching the suite
         if (startEmulator) {
             await trezorUserEnvLink.stopBridge();
+            await trezorUserEnvLink.stopEmu();
             await trezorUserEnvLink.connect();
             await trezorUserEnvLink.startEmu({ wipe: true });
             await trezorUserEnvLink.setupEmu(emulatorConf);
         }
-        const suite = await launchSuite();
-        await use(suite.electronApp);
-        await suite.electronApp.close(); // Ensure cleanup after tests
+
+        if (testInfo.project.name === PlaywrightProjects.Desktop) {
+            const suite = await launchSuite();
+            await use(suite.electronApp);
+            await suite.electronApp.close(); // Ensure cleanup after tests
+        } else {
+            if (startEmulator) {
+                await trezorUserEnvLink.startBridge();
+            }
+            const appContext = await browser.newContext({ baseURL });
+            await use(appContext);
+        }
     },
-    window: async ({ electronApp }, use, testInfo) => {
-        const window = await electronApp.firstWindow();
-        await window.context().tracing.start({ screenshots: true, snapshots: true });
-        await use(window);
-        const tracePath = `${testInfo.outputDir}/trace.electron.zip`;
-        await window.context().tracing.stop({ path: tracePath });
+    window: async ({ appContext }, use, testInfo) => {
+        if ('firstWindow' in appContext) {
+            const window = await appContext.firstWindow();
+
+            await window.context().tracing.start({ screenshots: true, snapshots: true });
+            await use(window);
+            const tracePath = `${testInfo.outputDir}/trace.electron.zip`;
+            await window.context().tracing.stop({ path: tracePath });
+        } else {
+            const window = await appContext.newPage();
+            await window.goto('/');
+            await use(window);
+        }
     },
     dashboardPage: async ({ window }, use) => {
         const dashboardPage = new DashboardActions(window);

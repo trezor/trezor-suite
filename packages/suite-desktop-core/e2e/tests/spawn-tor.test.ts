@@ -32,7 +32,7 @@ const turnOnTorInSettings = async (window: Page, shouldEnableTor = true) => {
     await window.waitForTimeout(1000);
 };
 
-test.describe.skip('Tor loading screen', () => {
+test.describe.skip('Tor loading screen', { tag: ['@group=suite', '@desktopOnly'] }, () => {
     test('Tor loading screen: happy path', async () => {
         test.setTimeout(timeout);
 
