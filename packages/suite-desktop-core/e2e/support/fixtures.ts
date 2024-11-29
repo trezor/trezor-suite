@@ -33,7 +33,8 @@ const test = base.extend<Fixtures>({
         needs_backup: true,
         mnemonic: 'mnemonic_all',
     },
-    trezorUserEnvLink: async (_, use) => {
+    /* eslint-disable-next-line no-empty-pattern */
+    trezorUserEnvLink: async ({}, use) => {
         await use(TrezorUserEnvLink);
     },
     electronApp: async ({ trezorUserEnvLink, startEmulator, emulatorConf }, use) => {
