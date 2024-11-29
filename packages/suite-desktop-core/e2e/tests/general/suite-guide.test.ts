@@ -1,5 +1,6 @@
 import { test, expect } from '../../support/fixtures';
 
+test.use({ startEmulator: false });
 /**
  * Test case:
  * 1. Go to Bug section in Suite Guide

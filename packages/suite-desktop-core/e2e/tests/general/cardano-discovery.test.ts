@@ -8,7 +8,7 @@ test.use({
     },
 });
 
-test.beforeEach(async ({ TrezorUserEnvLink, onboardingPage, dashboardPage }) => {
+test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
     await onboardingPage.completeOnboarding();
     await dashboardPage.discoveryShouldFinish();
 });

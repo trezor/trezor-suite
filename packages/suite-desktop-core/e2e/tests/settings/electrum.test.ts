@@ -1,7 +1,7 @@
 import { test, expect } from '../../support/fixtures';
 
 test.describe.serial('Suite works with Electrum server', () => {
-    test.beforeEach(async ({ TrezorUserEnvLink, onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
     });

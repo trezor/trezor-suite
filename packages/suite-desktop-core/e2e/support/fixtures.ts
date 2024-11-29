@@ -12,11 +12,12 @@ import { WalletActions } from './pageActions/walletActions';
 import { OnboardingActions } from './pageActions/onboardingActions';
 
 type Fixtures = {
+    startEmulator: boolean;
     emulatorConf: {
         needs_backup: boolean;
         mnemonic: string;
     };
-    TrezorUserEnvLink: TrezorUserEnvLinkClass;
+    trezorUserEnvLink: TrezorUserEnvLinkClass;
     electronApp: ElectronApplication;
     window: Page;
     dashboardPage: DashboardActions;
@@ -27,20 +28,22 @@ type Fixtures = {
 };
 
 const test = base.extend<Fixtures>({
+    startEmulator: true,
     emulatorConf: {
         needs_backup: true,
         mnemonic: 'mnemonic_all',
     },
-     
-    TrezorUserEnvLink: async ({ emulatorConf }, use) => {
-        await TrezorUserEnvLink.stopBridge();
-        await TrezorUserEnvLink.connect();
-        await TrezorUserEnvLink.startEmu({ wipe: true });
-        await TrezorUserEnvLink.setupEmu(emulatorConf);
+    trezorUserEnvLink: async (_, use) => {
         await use(TrezorUserEnvLink);
     },
-    // eslint-disable-next-line no-empty-pattern
-    electronApp: async ({}, use) => {
+    electronApp: async ({ trezorUserEnvLink, startEmulator, emulatorConf }, use) => {
+        // We need to ensure emulator is running before launching the suite
+        if (startEmulator) {
+            await trezorUserEnvLink.stopBridge();
+            await trezorUserEnvLink.connect();
+            await trezorUserEnvLink.startEmu({ wipe: true });
+            await trezorUserEnvLink.setupEmu(emulatorConf);
+        }
         const suite = await launchSuite();
         await use(suite.electronApp);
         await suite.electronApp.close(); // Ensure cleanup after tests
