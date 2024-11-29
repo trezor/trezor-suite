@@ -10,6 +10,7 @@ import { TransientProps } from '../../utils/transientProps';
 
 export const allowedBoxFrameProps = [
     'margin',
+    'padding',
     'width',
     'overflow',
     'minWidth',
@@ -19,6 +20,8 @@ export const allowedBoxFrameProps = [
     'maxHeight',
     'flex',
     'position',
+    'cursor',
+    'zIndex',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBoxFrameProps)[number]>;
 

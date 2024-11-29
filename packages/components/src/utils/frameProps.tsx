@@ -17,6 +17,17 @@ type Margin =
     | SpacingValues
     | 'auto';
 
+type Padding =
+    | {
+          top?: SpacingValues;
+          bottom?: SpacingValues;
+          left?: SpacingValues;
+          right?: SpacingValues;
+          horizontal?: SpacingValues;
+          vertical?: SpacingValues;
+      }
+    | SpacingValues;
+
 const overflows = [
     'auto',
     'hidden',
@@ -36,9 +47,7 @@ type Overflow = (typeof overflows)[number];
 const pointerEvents = ['auto', 'none', 'inherit', 'initial', 'unset'] as const;
 type PointerEvent = (typeof pointerEvents)[number];
 
-const positions = ['relative', 'absolute', 'fixed', 'sticky'] as const;
-type PositionType = (typeof positions)[number];
-
+type PositionType = 'relative' | 'absolute' | 'fixed' | 'sticky';
 type Position = {
     type: PositionType;
     top?: string | number;
@@ -52,6 +61,7 @@ type Cursor = (typeof cursors)[number];
 
 export type FrameProps = {
     margin?: Margin;
+    padding?: Padding;
     width?: string | number;
     minWidth?: string | number;
     maxWidth?: string | number;
@@ -63,6 +73,7 @@ export type FrameProps = {
     flex?: Flex;
     position?: Position;
     cursor?: Cursor;
+    zIndex?: number;
 };
 export type FramePropsKeys = keyof FrameProps;
 
@@ -81,6 +92,7 @@ export const pickAndPrepareFrameProps = (
 
 export const withFrameProps = ({
     $margin,
+    $padding,
     $minWidth,
     $maxWidth,
     $height,
@@ -92,6 +104,7 @@ export const withFrameProps = ({
     $flex,
     $position,
     $cursor,
+    $zIndex,
 }: TransientFrameProps) => {
     return css`
         ${$margin &&
@@ -104,6 +117,17 @@ export const withFrameProps = ({
               `
             : css`
                   margin: ${getValueWithUnit($margin)};
+              `)}
+        ${$padding &&
+        (typeof $padding === 'object'
+            ? css`
+                  padding: ${getValueWithUnit($padding?.top ?? $padding.vertical ?? 0)}
+                      ${getValueWithUnit($padding?.right ?? $padding.horizontal ?? 0)}
+                      ${getValueWithUnit($padding?.bottom ?? $padding.vertical ?? 0)}
+                      ${getValueWithUnit($padding?.left ?? $padding.horizontal ?? 0)};
+              `
+            : css`
+                  padding: ${getValueWithUnit($padding)};
               `)}
         ${$minWidth &&
         css`
@@ -144,21 +168,29 @@ export const withFrameProps = ({
         ${$position &&
         css`
             position: ${$position.type};
-            ${$position.top && `top: ${getValueWithUnit($position.top)};`}
-            ${$position.right && `right: ${getValueWithUnit($position.right)};`}
-            ${$position.bottom && `bottom: ${getValueWithUnit($position.bottom)};`}
-            ${$position.left && `left: ${getValueWithUnit($position.left)};`}
+            ${typeof $position.top !== 'undefined' && `top: ${getValueWithUnit($position.top)};`}
+            ${typeof $position.right !== 'undefined' &&
+            `right: ${getValueWithUnit($position.right)};`}
+            ${typeof $position.bottom !== 'undefined' &&
+            `bottom: ${getValueWithUnit($position.bottom)};`}
+            ${typeof $position.left !== 'undefined' && `left: ${getValueWithUnit($position.left)};`}
         `};
         ${$cursor &&
         css`
             cursor: ${$cursor};
         `};
+        ${$zIndex &&
+        css`
+            z-index: ${$zIndex};
+        `}
     `;
 };
 
 const getStorybookType = (key: FramePropsKeys) => {
     switch (key) {
         case 'margin':
+        case 'padding':
+        case 'position':
             return {
                 control: {
                     type: 'object',
@@ -188,18 +220,17 @@ const getStorybookType = (key: FramePropsKeys) => {
                     type: 'select',
                 },
             };
-        case 'position':
-            return {
-                options: positions,
-                control: {
-                    type: 'object',
-                },
-            };
         case 'cursor':
             return {
                 options: cursors,
                 control: {
                     type: 'select',
+                },
+            };
+        case 'zIndex':
+            return {
+                control: {
+                    type: 'number',
                 },
             };
         default:
@@ -239,6 +270,18 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
                       },
                   }
                 : {}),
+            ...(allowedFrameProps.includes('padding')
+                ? {
+                      padding: {
+                          top: undefined,
+                          right: undefined,
+                          bottom: undefined,
+                          left: undefined,
+                          horizontal: undefined,
+                          vertical: undefined,
+                      },
+                  }
+                : {}),
             ...(allowedFrameProps.includes('position')
                 ? {
                       position: {
@@ -258,6 +301,7 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
             ...(allowedFrameProps.includes('overflow') ? { flex: undefined } : {}),
             ...(allowedFrameProps.includes('pointerEvents') ? { pointerEvents: undefined } : {}),
             ...(allowedFrameProps.includes('cursor') ? { cursor: undefined } : {}),
+            ...(allowedFrameProps.includes('zIndex') ? { zIndex: undefined } : {}),
         },
         argTypes,
     };

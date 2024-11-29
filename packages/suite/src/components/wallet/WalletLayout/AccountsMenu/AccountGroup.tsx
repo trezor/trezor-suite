@@ -1,8 +1,8 @@
 import { useState, ReactNode } from 'react';
 
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
-import { Icon, Column, Text, Row } from '@trezor/components';
+import { Icon, Column, Text, Row, Box } from '@trezor/components';
 import { spacingsPx, spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -10,27 +10,16 @@ import { Account } from 'src/types/wallet';
 
 import { AnimationWrapper } from '../../AnimationWrapper';
 
-const IconWrapper = styled.div<{ $isActive: boolean; $isVisible: boolean }>`
+const IconWrapper = styled.div<{ $isActive: boolean }>`
     padding: ${spacingsPx.xs};
     border-radius: 50%;
     transition:
         background 0.2s,
         transform 0.2s ease-in-out;
     transform: ${({ $isActive }) => ($isActive ? 'rotate(0)' : 'rotate(-90deg)')};
-
-    ${({ $isVisible }) =>
-        !$isVisible &&
-        css`
-            pointer-events: none;
-            opacity: 0;
-        `}
 `;
 
-const Header = styled.header<{ $isOpen: boolean; onClick?: () => void }>`
-    position: sticky;
-    top: 0;
-    z-index: 30;
-    cursor: ${props => (props.onClick ? 'pointer' : 'default')};
+const Header = styled.header`
     background-color: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
 
     &:hover {
@@ -102,28 +91,43 @@ export const AccountGroup = ({
     return (
         <Column gap={spacings.xxxs}>
             {heading !== null && (
-                <Header
-                    $isOpen={isOpen}
-                    onClick={!keepOpen ? onClick : undefined}
-                    data-testid={`@account-menu/${type}`}
+                <Box
+                    position={{ type: 'sticky', top: 0 }}
+                    zIndex={30}
+                    cursor={!keepOpen ? 'pointer' : 'default'}
                 >
-                    <Row
-                        gap={spacings.sm}
-                        margin={{ horizontal: spacings.sm, vertical: spacings.xxs }}
+                    <Header
+                        onClick={!keepOpen ? onClick : undefined}
+                        data-testid={`@account-menu/${type}`}
                     >
-                        <IconWrapper $isActive={isOpen} $isVisible={!keepOpen}>
-                            <Icon
-                                data-testid="@account-menu/arrow"
-                                size={17}
+                        <Row
+                            gap={spacings.sm}
+                            margin={{ horizontal: spacings.sm }}
+                            padding={{ left: keepOpen ? spacings.xxl : undefined }}
+                            minHeight={spacings.xxxl}
+                        >
+                            {!keepOpen && (
+                                <IconWrapper $isActive={isOpen}>
+                                    <Icon
+                                        data-testid="@account-menu/chevron"
+                                        size={16}
+                                        variant="tertiary"
+                                        name="chevronDown"
+                                    />
+                                </IconWrapper>
+                            )}
+                            <Text
                                 variant="tertiary"
-                                name="chevronDown"
-                            />
-                        </IconWrapper>
-                        <Text variant="tertiary" typographyStyle="label">
-                            <Translation id={heading} />
-                        </Text>
-                    </Row>
-                </Header>
+                                typographyStyle="label"
+                                margin={{ left: keepOpen ? spacings.sm : undefined }}
+                                // Optical fix
+                                position={{ type: 'relative', left: 1 }}
+                            >
+                                <Translation id={heading} />
+                            </Text>
+                        </Row>
+                    </Header>
+                </Box>
             )}
 
             <AnimationWrapper opened={isOpen} onUpdate={onUpdate}>

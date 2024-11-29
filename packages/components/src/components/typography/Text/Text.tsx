@@ -31,6 +31,8 @@ export const allowedTextFrameProps = [
     'margin',
     'maxWidth',
     'flex',
+    'position',
+    'zIndex',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTextFrameProps)[number]>;
 

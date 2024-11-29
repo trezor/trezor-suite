@@ -15,6 +15,7 @@ import { useElevation } from '../ElevationContext/ElevationContext';
 
 export const allowedFlexFrameProps = [
     'margin',
+    'padding',
     'width',
     'height',
     'minHeight',
