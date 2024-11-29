@@ -33,7 +33,7 @@ export const mapTypographyStyleToIconSize = (
     return iconSizeMap[typographyStyle];
 };
 
-export const mapTypographyStyleToGap = (typographyStyle: TypographyStyle): SpacingValues => {
+export const mapTypographyStyleToIconGap = (typographyStyle: TypographyStyle): SpacingValues => {
     const gapMap: Record<TypographyStyle, SpacingValues> = {
         titleLarge: spacings.lg,
         titleMedium: spacings.md,
@@ -43,6 +43,21 @@ export const mapTypographyStyleToGap = (typographyStyle: TypographyStyle): Spaci
         callout: spacings.xs,
         hint: spacings.xs,
         label: spacings.xxs,
+    };
+
+    return gapMap[typographyStyle];
+};
+
+export const mapTypographyStyleToLabelGap = (typographyStyle: TypographyStyle): SpacingValues => {
+    const gapMap: Record<TypographyStyle, SpacingValues> = {
+        titleLarge: spacings.lg,
+        titleMedium: spacings.md,
+        titleSmall: spacings.sm,
+        highlight: spacings.xxs,
+        body: spacings.xxs,
+        callout: spacings.xxs,
+        hint: spacings.xxxs,
+        label: spacings.xxxs,
     };
 
     return gapMap[typographyStyle];

@@ -19,7 +19,8 @@ import { InfoItemVerticalAlignment, InfoItemVariant } from './types';
 import {
     mapVerticalAlignmentToAlignItems,
     mapTypographyStyleToIconSize,
-    mapTypographyStyleToGap,
+    mapTypographyStyleToIconGap,
+    mapTypographyStyleToLabelGap,
 } from './utils';
 
 export const allowedInfoItemTextProps = ['typographyStyle'] as const satisfies TextPropsKeys[];
@@ -66,10 +67,10 @@ export const InfoItem = ({
             <Flex
                 direction={direction}
                 alignItems={isRow ? mapVerticalAlignmentToAlignItems(verticalAlignment) : 'normal'}
-                gap={isRow ? spacings.md : spacings.xxxs}
+                gap={isRow ? spacings.md : mapTypographyStyleToLabelGap(typographyStyle)}
             >
                 <Row
-                    gap={mapTypographyStyleToGap(typographyStyle)}
+                    gap={mapTypographyStyleToIconGap(typographyStyle)}
                     width={labelWidth}
                     flex={labelWidth ? '0 0 auto' : '1 0 auto'}
                 >
