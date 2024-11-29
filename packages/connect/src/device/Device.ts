@@ -7,6 +7,7 @@ import {
     Deferred,
     TypedEmitter,
     createTimeoutPromise,
+    isArrayMember,
 } from '@trezor/utils';
 import { Session } from '@trezor/transport';
 import { TransportProtocol, v1 as v1Protocol } from '@trezor/protocol';
@@ -587,22 +588,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
             }
         }
 
-        if (this.authenticityChecks.firmwareHash === null) {
-            this.authenticityChecks.firmwareHash = await this.checkFirmwareHash();
-        }
-
-        if (
-            // The check was not yet performed
-            this.authenticityChecks.firmwareRevision === null ||
-            // The check was performed, but outcome cannot be surely determined (Suite is offline or there was an unexpected error)
-            // -> recheck on every getFeatures() until the result is known
-            (this.authenticityChecks.firmwareRevision.success === false &&
-                ['cannot-perform-check-offline', 'other-error'].includes(
-                    this.authenticityChecks.firmwareRevision.error,
-                ))
-        ) {
-            await this.checkFirmwareRevision();
-        }
+        await this.checkFirmwareHashWithRetries();
+        await this.checkFirmwareRevisionWithRetries();
 
         if (
             this.features?.language &&
@@ -754,6 +741,31 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this._updateFeatures(message);
     }
 
+    private async checkFirmwareHashWithRetries() {
+        const lastResult = this.authenticityChecks.firmwareHash;
+        const notDoneYet = lastResult === null;
+        const attemptsDone = lastResult?.attemptCount ?? 0;
+        if (attemptsDone >= FIRMWARE.HASH_CHECK_MAX_ATTEMPTS) return;
+
+        const wasError = lastResult !== null && !lastResult.success;
+        const wasErrorRetriable =
+            wasError && isArrayMember(lastResult.error, FIRMWARE.HASH_CHECK_RETRIABLE_ERRORS);
+        const lastErrorPayload = wasError ? lastResult?.errorPayload : null;
+
+        if (notDoneYet || wasErrorRetriable) {
+            const result = await this.checkFirmwareHash();
+            this.authenticityChecks.firmwareHash = result;
+
+            if (result === null) return;
+            result.attemptCount = attemptsDone + 1;
+
+            // if it suceeeded only after a retry, and there was an `errorPayload` previously, we want to pass that information to suite
+            if (result.success && lastErrorPayload) {
+                result.warningPayload = { lastErrorPayload, successOnAttempt: result.attemptCount };
+            }
+        }
+    }
+
     private async checkFirmwareHash(): Promise<FirmwareHashCheckResult | null> {
         const createFailResult = (error: FirmwareHashCheckError, errorPayload?: unknown) => ({
             success: false,
@@ -819,6 +831,19 @@ export class Device extends TypedEmitter<DeviceEvents> {
             return { success: true };
         } catch (errorPayload) {
             return createFailResult('other-error', errorPayload);
+        }
+    }
+
+    private async checkFirmwareRevisionWithRetries() {
+        const lastResult = this.authenticityChecks.firmwareRevision;
+        const notDoneYet = lastResult === null;
+
+        const wasError = lastResult !== null && !lastResult.success;
+        const wasErrorRetriable =
+            wasError && isArrayMember(lastResult.error, FIRMWARE.REVISION_CHECK_RETRIABLE_ERRORS);
+
+        if (notDoneYet || wasErrorRetriable) {
+            await this.checkFirmwareRevision();
         }
     }
 

@@ -65,8 +65,13 @@ export type FirmwareHashCheckError =
     | 'unknown-release'
     | 'other-error';
 export type FirmwareHashCheckResult =
-    | { success: true }
-    | { success: false; error: FirmwareHashCheckError; errorPayload?: unknown };
+    | { success: true; attemptCount?: number; warningPayload?: unknown }
+    | {
+          success: false;
+          error: FirmwareHashCheckError;
+          attemptCount?: number;
+          errorPayload?: unknown;
+      };
 
 export type DeviceUniquePath = string & { __type: 'DeviceUniquePath' };
 export const DeviceUniquePath = (id: string) => id as DeviceUniquePath;

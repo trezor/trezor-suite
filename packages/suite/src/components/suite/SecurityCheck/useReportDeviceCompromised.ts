@@ -18,6 +18,16 @@ const reportCheckFail = (checkType: 'revision' | 'hash', contextData: any) =>
         );
     });
 
+const reportCheckWarning = (checkType: 'revision' | 'hash', contextData: any) =>
+    withSentryScope(scope => {
+        scope.setLevel('warning');
+        scope.setTag('deviceAuthenticityError', `firmware ${checkType} check warning`);
+        captureSentryMessage(
+            `Firmware ${checkType} check warning! ${JSON.stringify(contextData)}`,
+            scope,
+        );
+    });
+
 const useCommonData = () => {
     const { device } = useDevice();
     const revision = device?.features?.revision;
@@ -53,6 +63,15 @@ const useReportHashCheck = () => {
             reportCheckFail('hash', { ...commonData, hashCheckError, hashCheckErrorPayload });
         }
     }, [commonData, hashCheckError, hashCheckErrorPayload]);
+
+    // success bears warning if it needed retries, so we report the previous error payload, see Device.ts in connect
+    const isHashCheckSuccess = hashCheck && hashCheck.success;
+    const hashCheckWarning = isHashCheckSuccess ? hashCheck.warningPayload : null;
+    useEffect(() => {
+        if (hashCheckWarning) {
+            reportCheckWarning('hash', { ...commonData, hashCheckWarning });
+        }
+    }, [commonData, hashCheckWarning]);
 };
 
 export const useReportDeviceCompromised = () => {
