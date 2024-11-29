@@ -16,18 +16,3 @@ export const hardFailureChecklistItems: SecurityChecklistItem[] = [
         content: <Translation id="TR_USE_CHAT" values={{ b: chunks => <b>{chunks}</b> }} />,
     },
 ];
-
-export const softFailureChecklistItems: SecurityChecklistItem[] = [
-    {
-        icon: 'plugs',
-        content: <Translation id="TR_RECONNECT_YOUR_DEVICE" />,
-    },
-    {
-        icon: 'eye',
-        content: <Translation id="TR_SEE_IF_ISSUE_PERSISTS" />,
-    },
-    {
-        icon: 'chat',
-        content: <Translation id="TR_USE_CHAT" values={{ b: chunks => <b>{chunks}</b> }} />,
-    },
-];

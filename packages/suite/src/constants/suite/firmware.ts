@@ -14,8 +14,10 @@ export const skippedHashCheckErrors = [
     'check-unsupported',
     // this could be serious, but it's also caught by revision check, which handles edge-cases better, so it's skipped here
     'unknown-release',
+    // TODO fix unreliability & reenable
+    'other-error',
 ] satisfies FirmwareHashCheckError[];
 
 // Of those skipped errors, these ones should nevertheless be reported to Sentry
 type SkippedHashCheckErrors = typeof skippedHashCheckErrors;
-export const skippedButReportedHashCheckErrors = [] satisfies SkippedHashCheckErrors;
+export const skippedButReportedHashCheckErrors = ['other-error'] satisfies SkippedHashCheckErrors;
