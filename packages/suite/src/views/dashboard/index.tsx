@@ -25,7 +25,7 @@ const Wrapper = styled.div`
 `;
 
 export const Dashboard = () => {
-    useLayout('Home', PageHeader);
+    useLayout('Home', <PageHeader />);
 
     return (
         <Wrapper data-testid="@dashboard/index">

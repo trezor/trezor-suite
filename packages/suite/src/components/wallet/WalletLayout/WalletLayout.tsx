@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from 'react';
+import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
@@ -22,6 +22,20 @@ const EmptyHeaderPlaceholder = styled.div`
     height: 44px;
 `;
 
+type WalletPageHeaderProps = {
+    isSubpage?: boolean;
+};
+
+const WalletPageHeader = ({ isSubpage }: WalletPageHeaderProps) => {
+    return (
+        <>
+            <PageHeader />
+            {!isSubpage && <AccountTopPanel />}
+            {!isSubpage && <AccountNavigation />}
+        </>
+    );
+};
+
 type WalletLayoutProps = {
     title: ExtendedMessageDescriptor['id'];
     account: AppState['wallet']['selectedAccount'];
@@ -42,18 +56,7 @@ export const WalletLayout = ({
     const { translationString } = useTranslation();
     const l10nTitle = translationString(title);
 
-    const WalletPageHeader = useCallback(
-        () => (
-            <>
-                <PageHeader />
-                {!isSubpage && <AccountTopPanel />}
-                {!isSubpage && <AccountNavigation />}
-            </>
-        ),
-        [isSubpage],
-    );
-
-    useLayout(l10nTitle, WalletPageHeader);
+    useLayout(l10nTitle, <WalletPageHeader isSubpage={isSubpage} />);
 
     const { status, account: selectedAccount, loader, network } = account;
 

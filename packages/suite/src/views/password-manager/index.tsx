@@ -5,11 +5,12 @@ import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/P
 import { PasswordManager } from './PasswordManager/PasswordManager';
 
 const PasswordManagerView = () => {
-    useLayout('Password manager', () => (
+    useLayout(
+        'Password manager',
         <PageHeader>
             <BasicName nameId="TR_PASSWORD_MANAGER" />
-        </PageHeader>
-    ));
+        </PageHeader>,
+    );
 
     return <PasswordManager />;
 };

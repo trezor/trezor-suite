@@ -1,4 +1,4 @@
-import { createContext, ComponentType } from 'react';
+import React, { createContext } from 'react';
 
 export type SideMenuProps = {
     isMenuInline?: boolean;
@@ -6,7 +6,7 @@ export type SideMenuProps = {
 
 export type LayoutContextPayload = {
     title?: string;
-    TopMenu?: ComponentType;
+    layoutHeader?: React.ReactNode;
 };
 
 export const LayoutContext = createContext<(payload: LayoutContextPayload) => void>(() => {});

@@ -145,7 +145,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     const selectedAccount = useSelector(selectSelectedAccount);
     const sidebarWidthFromRedux = useSelector(state => state.suite.settings.sidebarWidth);
 
-    const [{ title, TopMenu }, setLayoutPayload] = useState<LayoutContextPayload>({});
+    const [{ title, layoutHeader }, setLayoutPayload] = useState<LayoutContextPayload>({});
 
     const { isMobileLayout } = useLayoutSize();
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -193,7 +193,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                                         {isMobileLayout && isAccountPage && (
                                                             <MobileAccountsMenu />
                                                         )}
-                                                        {TopMenu && <TopMenu />}
+                                                        {layoutHeader}
 
                                                         <ContentWrapper>{children}</ContentWrapper>
                                                     </ElevationUp>

@@ -26,7 +26,7 @@ interface LoggedOutLayout {
 }
 
 export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
-    const [{ title, TopMenu }, setLayoutPayload] = useState<LayoutContextPayload>({});
+    const [{ title, layoutHeader }, setLayoutPayload] = useState<LayoutContextPayload>({});
 
     const { scrollRef } = useResetScrollOnUrl();
     const { isMobileLayout } = useLayoutSize();
@@ -51,7 +51,7 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
                                             ref={scrollRef}
                                             id="layout-scroll"
                                         >
-                                            {TopMenu && <TopMenu />}
+                                            {layoutHeader}
                                             <ElevationUp>
                                                 <ContentWrapper>{children}</ContentWrapper>
                                             </ElevationUp>

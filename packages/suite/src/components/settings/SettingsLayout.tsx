@@ -70,7 +70,7 @@ export const SettingsLayout = ({
     children,
     'data-testid': dataTest,
 }: SettingsLayoutProps) => {
-    useLayout(title || 'Settings', SettingsHeader);
+    useLayout(title || 'Settings', <SettingsHeader />);
 
     const { isDiscoveryRunning } = useDiscovery();
 
