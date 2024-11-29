@@ -2,15 +2,11 @@ import { useEffect, useMemo } from 'react';
 
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { isArrayMember } from '@trezor/utils';
 
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
 import { selectFirmwareRevisionCheckError } from 'src/reducers/suite/suiteReducer';
-import {
-    skippedButReportedHashCheckErrors,
-    skippedHashCheckErrors,
-} from 'src/constants/suite/firmware';
+import { hashCheckErrorScenarios } from 'src/constants/suite/firmware';
 
 const reportCheckFail = (checkType: 'revision' | 'hash', contextData: any) =>
     withSentryScope(scope => {
@@ -53,15 +49,9 @@ const useReportHashCheck = () => {
     const hashCheckErrorPayload = isHashCheckError ? hashCheck.errorPayload : null;
 
     useEffect(() => {
-        if (!hashCheckError) return;
-        if (
-            isArrayMember(hashCheckError, skippedHashCheckErrors) &&
-            !isArrayMember(hashCheckError, skippedButReportedHashCheckErrors)
-        ) {
-            return;
+        if (hashCheckError && hashCheckErrorScenarios[hashCheckError].shouldReport) {
+            reportCheckFail('hash', { ...commonData, hashCheckError, hashCheckErrorPayload });
         }
-
-        reportCheckFail('hash', { ...commonData, hashCheckError, hashCheckErrorPayload });
     }, [commonData, hashCheckError, hashCheckErrorPayload]);
 };
 

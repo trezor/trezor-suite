@@ -4,7 +4,7 @@ import type { InvityServerEnvironment } from '@suite-common/invity';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { discoveryActions, DeviceRootState, selectDevice } from '@suite-common/wallet-core';
-import { isArrayMember, versionUtils } from '@trezor/utils';
+import { versionUtils } from '@trezor/utils';
 import { isWeb } from '@trezor/env-utils';
 import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -20,7 +20,11 @@ import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { Action, AppState, TorBootstrap, TorStatus } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
-import { skippedHashCheckErrors, softRevisionCheckErrors } from 'src/constants/suite/firmware';
+import {
+    hashCheckErrorScenarios,
+    isSkippedHashCheckError,
+    revisionCheckErrorScenarios,
+} from 'src/constants/suite/firmware';
 
 import { RouterRootState, selectRouter } from './routerReducer';
 
@@ -474,7 +478,9 @@ export const selectFirmwareHashCheckError = (state: AppState) => {
     // null means not performed, then don't consider it failed
     if (!checkResult || checkResult.success) return null;
 
-    return !isArrayMember(checkResult.error, skippedHashCheckErrors) ? checkResult.error : null;
+    if (isSkippedHashCheckError(checkResult.error)) return null;
+
+    return checkResult.error;
 };
 
 export const selectFirmwareHashCheckErrorIfEnabled = (state: AppState) => {
@@ -492,10 +498,11 @@ export const selectFirmwareHashCheckErrorIfEnabled = (state: AppState) => {
 export const selectIsFirmwareAuthenticityCheckEnabledAndHardFailed = (state: AppState) => {
     const revisionError = selectFirmwareRevisionCheckErrorIfEnabled(state);
     const isRevisionHardError =
-        revisionError !== null ? !isArrayMember(revisionError, softRevisionCheckErrors) : false;
+        revisionError !== null && revisionCheckErrorScenarios[revisionError].type === 'hardModal';
 
     const hashError = selectFirmwareHashCheckErrorIfEnabled(state);
-    const isHashHardError = hashError !== null;
+    const isHashHardError =
+        hashError !== null && hashCheckErrorScenarios[hashError].type === 'hardModal';
 
     return isRevisionHardError || isHashHardError;
 };

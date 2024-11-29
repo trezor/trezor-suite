@@ -72,6 +72,11 @@ export type GetObjectWithoutKey<U, K extends PropertyKey> = U extends object
 
 export type ObjectsOnly<T> = T extends Record<string, unknown> ? T : never;
 
+// map object `T` to a narrowed type with only those entries that match given `ValueFilter` type
+export type FilterPropertiesByType<T, ValueFilter> = {
+    [Key in keyof T as T[Key] extends ValueFilter ? Key : never]: T[Key];
+};
+
 export type OverloadImplementations<T, U extends keyof T> = Overloads<T[U]>;
 export type Overloads<T> = Overloads24<T>;
 type Overloads24<T> = T extends {
