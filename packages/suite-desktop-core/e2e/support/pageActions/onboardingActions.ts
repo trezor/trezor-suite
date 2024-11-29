@@ -7,6 +7,7 @@ export class OnboardingActions {
     readonly onboardingContinueButton: Locator;
     readonly onboardingViewOnlySkipButton: Locator;
     readonly viewOnlyTooltipGotItButton: Locator;
+    readonly connectDevicePrompt: Locator;
 
     constructor(window: Page) {
         this.window = window;
@@ -15,6 +16,7 @@ export class OnboardingActions {
         this.onboardingContinueButton = this.window.getByTestId('@onboarding/exit-app-button');
         this.onboardingViewOnlySkipButton = this.window.getByTestId('@onboarding/viewOnly/skip');
         this.viewOnlyTooltipGotItButton = this.window.getByTestId('@viewOnlyTooltip/gotIt');
+        this.connectDevicePrompt = this.window.getByTestId('@connect-device-prompt');
     }
 
     optionallyDismissFwHashCheckError() {

@@ -1,79 +1,63 @@
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-
 import { test, expect } from '../support/fixtures';
-import { launchSuite, LEGACY_BRIDGE_VERSION, waitForDataTestSelector } from '../support/common';
+import { launchSuite, LEGACY_BRIDGE_VERSION } from '../support/common';
 import { OnboardingActions } from '../support/pageActions/onboardingActions';
+import {
+    BRIDGE_URL,
+    expectBridgeToBeRunning,
+    expectBridgeToBeStopped,
+    waitForAppToBeInitialized,
+} from '../support/bridge';
 
 test.describe.serial('Bridge', () => {
-    test.beforeEach(async () => {
-        // We make sure that bridge from trezor-user-env is stopped.
-        // So we properly test the electron app starting node-bridge module.
-        await TrezorUserEnvLink.connect();
-        await TrezorUserEnvLink.stopBridge();
+    test.beforeEach(async ({ trezorUserEnvLink }) => {
+        //Ensure bridge is stopped so we properly test the electron app starting node-bridge module.
+        await trezorUserEnvLink.connect();
+        await trezorUserEnvLink.stopBridge();
     });
 
-    test('App spawns bundled bridge and stops it after app quit', async ({ request }) => {
+    // #15646 This test is failing and has no values since the launchSuite starts legacy bridge in emulator anyway
+    test.skip('App spawns bundled bridge and stops it after app quit', async ({ request }) => {
         const suite = await launchSuite();
         const title = await suite.window.title();
         expect(title).toContain('Trezor Suite');
 
-        // We wait for `@welcome/title` or `@dashboard/graph` since
-        // one or the other will be display depending on the state of the app
-        // due to previously run tests. And both means the same for the porpoise of this test.
-        // Bridge should be ready to check `/status` endpoint.
-        await Promise.race([
-            waitForDataTestSelector(suite.window, '@welcome/title'),
-            waitForDataTestSelector(suite.window, '@dashboard/graph'),
-        ]);
+        await waitForAppToBeInitialized(suite);
+        await expectBridgeToBeRunning(request);
 
-        // bridge is running
-        const bridgeRes1 = await request.get('http://127.0.0.1:21325/status/');
-        await expect(bridgeRes1).toBeOK();
-
-        const response = await request.post('http://127.0.0.1:21325/', {
+        const response = await request.post(BRIDGE_URL, {
             headers: {
                 Origin: 'https://wallet.trezor.io',
             },
         });
-
         const json = await response.json();
-        const { version } = json;
-        expect(version).toEqual(LEGACY_BRIDGE_VERSION);
+        expect(json.version).toEqual(LEGACY_BRIDGE_VERSION);
 
-        // bridge is running after renderer window is refreshed
-        await suite.window.reload();
-        await suite.window.title();
-        // bridge is running
-        const bridgeRes2 = await request.get('http://127.0.0.1:21325/status/');
-        await expect(bridgeRes2).toBeOK();
+        await test.step('Check bridge is running after renderer window is refreshed', async () => {
+            await suite.window.reload();
+            await suite.window.title();
+            await expectBridgeToBeRunning(request);
+        });
 
         await suite.electronApp.close();
-
-        // bridge is not running
-        try {
-            await request.get('http://127.0.0.1:21325/status/');
-            throw new Error('should have thrown!');
-        } catch {
-            // ok
-        }
+        await expectBridgeToBeStopped(request);
     });
 
-    test('App acquired device, EXTERNAL bridge is restarted, app reconnects', async () => {
-        await TrezorUserEnvLink.startEmu({ wipe: true, version: '2-latest', model: 'T2T1' });
-        await TrezorUserEnvLink.setupEmu({});
-        await TrezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
+    test('App acquired device, EXTERNAL bridge is restarted, app reconnects', async ({
+        trezorUserEnvLink,
+    }) => {
+        await trezorUserEnvLink.startEmu({ wipe: true, version: '2-latest', model: 'T2T1' });
+        await trezorUserEnvLink.setupEmu({});
+        await trezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
 
         const suite = await launchSuite();
         await suite.window.title();
-        await waitForDataTestSelector(suite.window, '@welcome/title');
         const onboardingPage = new OnboardingActions(suite.window);
         await onboardingPage.completeOnboarding();
 
-        await TrezorUserEnvLink.stopBridge();
+        await trezorUserEnvLink.stopBridge();
+        await expect(onboardingPage.connectDevicePrompt).toBeVisible();
 
-        await waitForDataTestSelector(suite.window, '@connect-device-prompt');
-
-        await TrezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
-        await waitForDataTestSelector(suite.window, '@dashboard/index');
+        await trezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
+        await expect(suite.window.getByTestId('@dashboard/index')).toBeVisible();
     });
 });

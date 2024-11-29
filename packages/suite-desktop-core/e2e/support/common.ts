@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import { Page, _electron as electron } from '@playwright/test';
+import { _electron as electron } from '@playwright/test';
 import path from 'path';
 import fse from 'fs-extra';
 
@@ -26,7 +26,7 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams = {}) => 
     const appDir = path.join(__dirname, '../../../suite-desktop');
     const desiredLogLevel = process.env.LOGLEVEL ?? 'error';
     if (!options.bridgeDaemon) {
-        // TODO: Find out why currently pw fails to see node-bridge so we default to legacy bridge.
+        // TODO: #15646 Find out why currently pw fails to see node-bridge so we default to legacy bridge.
         await TrezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
     }
     const electronApp = await electron.launch({
@@ -80,7 +80,3 @@ export const launchSuite = async (params: LaunchSuiteParams = {}) => {
 
     return { electronApp, window };
 };
-
-//TODO: Get rid of this as part of 'spawn-bridge' tests refactoring
-export const waitForDataTestSelector = (window: Page, selector: string, options = {}) =>
-    window.waitForSelector(`[data-testid="${selector}"]`, options);
