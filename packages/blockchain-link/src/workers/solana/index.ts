@@ -171,8 +171,7 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
         const sendAndConfirmTransaction = sendAndConfirmTransactionFactory(api);
         await sendAndConfirmTransaction(transactionWithBlockhashLifetime, {
             commitment: 'confirmed',
-            maxRetries: BigInt(0),
-            skipPreflight: true,
+            skipPreflight: false,
         });
 
         return {
