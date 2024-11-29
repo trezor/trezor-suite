@@ -26,11 +26,10 @@ import {
     useSVG,
 } from '@shopify/react-native-skia';
 
-import { FirmwareOperationStatus } from '@suite-common/firmware';
 import { useNativeStyles } from '@trezor/styles';
 
 const CANVAS_SIZE = 160;
-const CIRCLE_RADIUS = 128;
+const CIRCLE_DIAMETER = 128;
 const CIRCLE_CENTER = CANVAS_SIZE / 2;
 
 const PROGRESS_STROKE_WIDTH = 5;
@@ -41,13 +40,13 @@ const CHECKMARK_SCALE = 1; // Adjust size
 const LONG_LEG_RATIO = 0.25; // Reduce from 0.33 (1/3) to make long leg shorter
 
 const checkmarkPath = Skia.Path.MakeFromSVGString(
-    `M${CIRCLE_CENTER - CIRCLE_RADIUS / 4 + CHECKMARK_OFFSET_X},${CIRCLE_CENTER + CHECKMARK_OFFSET_Y}` +
-        `l${(CIRCLE_RADIUS / 8) * CHECKMARK_SCALE},${(CIRCLE_RADIUS / 8) * CHECKMARK_SCALE}` +
-        `l${CIRCLE_RADIUS * LONG_LEG_RATIO * CHECKMARK_SCALE},-${CIRCLE_RADIUS * LONG_LEG_RATIO * CHECKMARK_SCALE}`,
+    `M${CIRCLE_CENTER - CIRCLE_DIAMETER / 4 + CHECKMARK_OFFSET_X},${CIRCLE_CENTER + CHECKMARK_OFFSET_Y}` +
+        `l${(CIRCLE_DIAMETER / 8) * CHECKMARK_SCALE},${(CIRCLE_DIAMETER / 8) * CHECKMARK_SCALE}` +
+        `l${CIRCLE_DIAMETER * LONG_LEG_RATIO * CHECKMARK_SCALE},-${CIRCLE_DIAMETER * LONG_LEG_RATIO * CHECKMARK_SCALE}`,
 )!;
 
 const progressCirclePath = Skia.Path.MakeFromSVGString(
-    `M ${CIRCLE_CENTER},${CIRCLE_CENTER - (CIRCLE_RADIUS - PROGRESS_STROKE_WIDTH) / 2} A ${(CIRCLE_RADIUS - PROGRESS_STROKE_WIDTH) / 2},${(CIRCLE_RADIUS - PROGRESS_STROKE_WIDTH) / 2} 0 1,1 ${CIRCLE_CENTER},${CIRCLE_CENTER + (CIRCLE_RADIUS - PROGRESS_STROKE_WIDTH) / 2} A ${(CIRCLE_RADIUS - PROGRESS_STROKE_WIDTH) / 2},${(CIRCLE_RADIUS - PROGRESS_STROKE_WIDTH) / 2} 0 1,1 ${CIRCLE_CENTER},${CIRCLE_CENTER - (CIRCLE_RADIUS - PROGRESS_STROKE_WIDTH) / 2}`,
+    `M ${CIRCLE_CENTER},${CIRCLE_CENTER - (CIRCLE_DIAMETER - PROGRESS_STROKE_WIDTH) / 2} A ${(CIRCLE_DIAMETER - PROGRESS_STROKE_WIDTH) / 2},${(CIRCLE_DIAMETER - PROGRESS_STROKE_WIDTH) / 2} 0 1,1 ${CIRCLE_CENTER},${CIRCLE_CENTER + (CIRCLE_DIAMETER - PROGRESS_STROKE_WIDTH) / 2} A ${(CIRCLE_DIAMETER - PROGRESS_STROKE_WIDTH) / 2},${(CIRCLE_DIAMETER - PROGRESS_STROKE_WIDTH) / 2} 0 1,1 ${CIRCLE_CENTER},${CIRCLE_CENTER - (CIRCLE_DIAMETER - PROGRESS_STROKE_WIDTH) / 2}`,
 )!;
 
 const fontStyle = {
@@ -104,17 +103,19 @@ const AnimatedOpacity = ({
     );
 };
 
+export type UpdateProgressIndicatorStatus = 'starting' | 'success' | 'error' | 'inProgress';
+export type UpdateProgressIndicatorProps = {
+    progress: number;
+    status: UpdateProgressIndicatorStatus;
+};
+
 // If you want to test animation states, use UpdateProgressIndicatorDemo, it will help you a lot.
 export const UpdateProgressIndicator = ({
     progress,
-    isError,
-    operation,
-    isStarting,
+    status,
 }: {
     progress: number;
-    isError: boolean;
-    operation: FirmwareOperationStatus['operation'];
-    isStarting: boolean;
+    status: UpdateProgressIndicatorStatus;
 }) => {
     const checkmarkAnimationProgress = useSharedValue(0);
     const { utils } = useNativeStyles();
@@ -126,9 +127,11 @@ export const UpdateProgressIndicator = ({
     const trezorLogoOpacity = useSharedValue(1);
     const errorSvgOpacity = useSharedValue(0);
     const paragraphOpacity = useSharedValue(0);
-    const isSuccess = operation === 'completed';
-    const isInProgress = !isStarting && !isSuccess && !isError;
-    const isDone = isSuccess || isError;
+
+    const isStarting = status === 'starting';
+    const isSuccess = status === 'success';
+    const isError = status === 'error';
+    const isInProgress = status === 'inProgress';
 
     useEffect(() => {
         if (isStarting) {
@@ -154,7 +157,7 @@ export const UpdateProgressIndicator = ({
             paragraphOpacity.value = withTiming(1, { duration: 600 });
         }
         if (isSuccess) {
-            animatedBackgroundRadius.value = withSpring(CIRCLE_RADIUS / 2);
+            animatedBackgroundRadius.value = withSpring(CIRCLE_DIAMETER / 2);
             backgroundColorFinished.value = utils.colors.textPrimaryDefault;
 
             checkmarkAnimationProgress.value = withDelay(300, withSpring(1));
@@ -165,7 +168,7 @@ export const UpdateProgressIndicator = ({
             paragraphOpacity.value = 0;
         }
         if (isError) {
-            animatedBackgroundRadius.value = withSpring(CIRCLE_RADIUS / 2);
+            animatedBackgroundRadius.value = withSpring(CIRCLE_DIAMETER / 2);
             backgroundColorFinished.value = utils.colors.backgroundAlertRedBold;
 
             checkmarkAnimationProgress.value = 0;
@@ -203,12 +206,14 @@ export const UpdateProgressIndicator = ({
             .build();
     }, [progress, utils.colors.textPrimaryDefault, isInProgress]);
 
+    const isDone = isSuccess || isError;
+
     return (
         <Canvas style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}>
             <Circle
                 cx={CIRCLE_CENTER}
                 cy={CIRCLE_CENTER}
-                r={CIRCLE_RADIUS / 2}
+                r={CIRCLE_DIAMETER / 2}
                 color={utils.colors.backgroundSurfaceElevation1}
             ></Circle>
 
@@ -226,11 +231,11 @@ export const UpdateProgressIndicator = ({
             <AnimatedOpacity opacity={trezorLogoOpacity}>
                 <ImageSVG
                     svg={trezorLogoSvg}
-                    x={CIRCLE_CENTER - CIRCLE_RADIUS / 4}
-                    y={CIRCLE_CENTER - CIRCLE_RADIUS / 4}
+                    x={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
+                    y={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
                     color={utils.colors.textPrimaryDefault}
-                    width={CIRCLE_RADIUS / 2}
-                    height={CIRCLE_RADIUS / 2}
+                    width={CIRCLE_DIAMETER / 2}
+                    height={CIRCLE_DIAMETER / 2}
                     opacity={trezorLogoOpacity}
                 />
             </AnimatedOpacity>
@@ -271,11 +276,11 @@ export const UpdateProgressIndicator = ({
                 <AnimatedOpacity opacity={errorSvgOpacity}>
                     <ImageSVG
                         svg={crossSvg}
-                        x={CIRCLE_CENTER - CIRCLE_RADIUS / 4}
-                        y={CIRCLE_CENTER - CIRCLE_RADIUS / 4}
+                        x={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
+                        y={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
                         color={utils.colors.backgroundAlertRedBold}
-                        width={CIRCLE_RADIUS / 2}
-                        height={CIRCLE_RADIUS / 2}
+                        width={CIRCLE_DIAMETER / 2}
+                        height={CIRCLE_DIAMETER / 2}
                     />
                 </AnimatedOpacity>
             )}

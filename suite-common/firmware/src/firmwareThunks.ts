@@ -54,7 +54,7 @@ type FirmwareUpdateProps = {
     ignoreBaseUrl?: boolean;
 };
 
-type FirmwareUpdateResult = {
+export type FirmwareUpdateResult = {
     device?: TrezorDevice;
     toFwVersion?: string;
     toBtcOnly?: boolean;

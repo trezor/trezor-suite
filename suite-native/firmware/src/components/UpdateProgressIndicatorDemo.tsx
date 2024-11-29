@@ -1,21 +1,16 @@
 import { useState } from 'react';
 
 import { VStack, Button, HStack } from '@suite-native/atoms';
-import { FirmwareOperationStatus } from '@suite-common/firmware';
 
-import { UpdateProgressIndicator } from './UpdateProgressIndicator';
+import { UpdateProgressIndicator, UpdateProgressIndicatorStatus } from './UpdateProgressIndicator';
 
 // DEBUG ONLY:This component is useful for testing animation states of UpdateProgressIndicator
 export const UpdateProgressIndicatorDemo = () => {
     const [status, setStatus] = useState<{
-        isStarting: boolean;
-        isError: boolean;
-        operation: FirmwareOperationStatus['operation'] | null;
+        status: UpdateProgressIndicatorStatus;
         progress: number;
     }>({
-        isStarting: true,
-        isError: false,
-        operation: null,
+        status: 'starting',
         progress: 0,
     });
 
@@ -34,9 +29,7 @@ export const UpdateProgressIndicatorDemo = () => {
                 <Button
                     onPress={() =>
                         setStatus({
-                            isStarting: true,
-                            isError: false,
-                            operation: null,
+                            status: 'starting',
                             progress: 0,
                         })
                     }
@@ -46,9 +39,7 @@ export const UpdateProgressIndicatorDemo = () => {
                 <Button
                     onPress={() =>
                         setStatus({
-                            isStarting: false,
-                            isError: false,
-                            operation: 'installing',
+                            status: 'inProgress',
                             progress: 10,
                         })
                     }
@@ -58,9 +49,7 @@ export const UpdateProgressIndicatorDemo = () => {
                 <Button
                     onPress={() =>
                         setStatus({
-                            isStarting: false,
-                            isError: true,
-                            operation: 'installing',
+                            status: 'error',
                             progress: 10,
                         })
                     }
@@ -70,9 +59,7 @@ export const UpdateProgressIndicatorDemo = () => {
                 <Button
                     onPress={() =>
                         setStatus({
-                            isStarting: false,
-                            isError: false,
-                            operation: 'completed',
+                            status: 'success',
                             progress: 10,
                         })
                     }

@@ -25,6 +25,7 @@ export const eslint = [
             '**/node_modules/*',
             '**/public/*',
             '**/ci/',
+            '**/.expo/*',
             'eslint-local-rules/*',
         ],
     },

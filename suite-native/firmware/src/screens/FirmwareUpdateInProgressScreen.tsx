@@ -1,6 +1,10 @@
-import { useCallback, useEffect } from 'react';
-import { Linking } from 'react-native';
-import Animated, { FadeInDown, FadeOutDown, LinearTransition } from 'react-native-reanimated';
+import { useCallback, useEffect, useMemo } from 'react';
+import Animated, {
+    FadeInDown,
+    FadeInUp,
+    FadeOutDown,
+    LinearTransition,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 
@@ -19,8 +23,12 @@ import {
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { useOpenLink, SUITE_LITE_SUPPORT_URL } from '@suite-native/link';
 
-import { UpdateProgressIndicator } from '../components/UpdateProgressIndicator';
+import {
+    UpdateProgressIndicator,
+    UpdateProgressIndicatorStatus,
+} from '../components/UpdateProgressIndicator';
 import { useFirmware } from '../hooks/useFirmware';
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
@@ -50,6 +58,7 @@ export const FirmwareUpdateInProgressScreen = () => {
         translatedText,
         mayBeStucked,
     } = useFirmware({});
+    const openLink = useOpenLink();
 
     useEffect(() => {
         // This will prevent device from being forgotten after firmware update, so discovery will not run again
@@ -87,6 +96,8 @@ export const FirmwareUpdateInProgressScreen = () => {
 
             return;
         }
+
+        // wait few seconds to animation to finish and let user orientate little bit
         setTimeout(() => {
             // setting this to false will trigger standart device connection flow
             setIsFirmwareInstallationRunning(false);
@@ -110,11 +121,11 @@ export const FirmwareUpdateInProgressScreen = () => {
     }, []);
 
     const handleContactSupport = useCallback(() => {
-        Linking.openURL('https://trezor.io/support');
-    }, []);
+        openLink(SUITE_LITE_SUPPORT_URL);
+    }, [openLink]);
 
     useEffect(() => {
-        // Small delay to let screen animation finish
+        // Small delay to let initial screen animation finish
         const timeout = setTimeout(() => {
             startFirmwareUpdate();
         }, 2000);
@@ -123,7 +134,19 @@ export const FirmwareUpdateInProgressScreen = () => {
     }, [startFirmwareUpdate]);
 
     const isError = status === 'error';
-    const isStarting = (status === 'started' && operation === null) || status === 'initial';
+
+    const indicatorStatus: UpdateProgressIndicatorStatus = useMemo(() => {
+        const isStarting = (status === 'started' && operation === null) || status === 'initial';
+        const isSuccess = operation === 'completed';
+
+        if (isError) return 'error';
+        if (isStarting) return 'starting';
+        if (isSuccess) return 'success';
+        if (!isStarting && !isSuccess && !isError) return 'inProgress';
+
+        // shouldn't happen, but just to be safe
+        return 'starting';
+    }, [status, operation, isError]);
 
     const showConfirmOnDevice = confirmOnDevice && !isError;
     const bottomButtonOffset = showConfirmOnDevice ? 180 : bottomSafeAreaInset + 12;
@@ -131,13 +154,8 @@ export const FirmwareUpdateInProgressScreen = () => {
     return (
         <Screen>
             <VStack justifyContent="center" alignItems="center" flex={1}>
-                <UpdateProgressIndicator
-                    progress={progress}
-                    isError={isError}
-                    operation={operation}
-                    isStarting={isStarting}
-                />
-                <Animated.View entering={FadeInDown} key={translatedText.title}>
+                <UpdateProgressIndicator progress={progress} status={indicatorStatus} />
+                <Animated.View entering={FadeInUp} exiting={FadeOutDown} key={translatedText.title}>
                     <Box marginTop="sp12" alignItems="center">
                         <Text variant="titleMedium" textAlign="center">
                             {translatedText.title}

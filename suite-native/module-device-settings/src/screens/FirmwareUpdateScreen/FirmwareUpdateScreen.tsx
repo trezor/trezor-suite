@@ -1,3 +1,5 @@
+import { useSelector } from 'react-redux';
+
 import { useNavigation } from '@react-navigation/native';
 
 import { Box, Button, Text } from '@suite-native/atoms';
@@ -10,6 +12,12 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import {
+    DeviceRootState,
+    selectIsDiscoveryActiveByDeviceState,
+    DiscoveryRootState,
+    selectDeviceState,
+} from '@suite-common/wallet-core';
 
 import { FirmwareUpdateVersionCard } from './FirmwareVersionCard';
 
@@ -25,6 +33,11 @@ type NavigationProp = StackNavigationProps<
 export const FirmwareUpdateScreen = () => {
     const { applyStyle } = useNativeStyles();
 
+    const deviceState = useSelector(selectDeviceState);
+    const isDiscoveryRunning = useSelector((state: DiscoveryRootState & DeviceRootState) =>
+        selectIsDiscoveryActiveByDeviceState(state, deviceState),
+    );
+
     const navigation = useNavigation<NavigationProp>();
     const handleUpdateFirmware = () => {
         navigation.navigate(DeviceStackRoutes.FirmwareUpdateInProgress);
@@ -37,6 +50,8 @@ export const FirmwareUpdateScreen = () => {
                 <Button
                     onPress={handleUpdateFirmware}
                     style={applyStyle(firmwareUpdateButtonStyle)}
+                    isDisabled={isDiscoveryRunning}
+                    isLoading={isDiscoveryRunning}
                 >
                     <Translation id="moduleDeviceSettings.firmware.firmwareUpdateScreen.updateButton" />
                 </Button>

@@ -1,7 +1,11 @@
 import { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { useFirmwareInstallation, UseFirmwareInstallationParams } from '@suite-common/firmware';
+import {
+    FirmwareUpdateResult,
+    useFirmwareInstallation,
+    UseFirmwareInstallationParams,
+} from '@suite-common/firmware';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
 
 import { nativeFirmwareActions } from '../nativeFirmwareSlice';
@@ -58,6 +62,13 @@ export const useFirmware = (params: UseFirmwareInstallationParams) => {
     const firmwareUpdate = useCallback(async () => {
         const result = await firmwareUpdateCommon({ ignoreBaseUrl: true })
             .unwrap()
+            .catch(error => {
+                if ((error as FirmwareUpdateResult)?.connectResponse?.success !== undefined) {
+                    // This is a firmware update error that is handled by us and we expect promise not to be rejected (for example user cancelled the action on device)
+                    return error as FirmwareUpdateResult;
+                }
+                throw error;
+            })
             .then(({ connectResponse }) => {
                 return connectResponse;
             })
@@ -76,16 +87,22 @@ export const useFirmware = (params: UseFirmwareInstallationParams) => {
 
     const translatedText = useMemo(() => {
         let text: { title: TxKeyPath; subtitle?: TxKeyPath } = {
-            title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.started.title',
+            title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.initializing.title',
         };
+
+        const isInitialState = (status === 'started' && operation === null) || status === 'initial';
 
         if (status === 'error') {
             text = {
                 title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.error.title',
             };
-        } else if ((status === 'started' && operation === null) || status === 'initial') {
+        } else if (isInitialState && !confirmOnDevice) {
             text = {
-                title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.started.title',
+                title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.initializing.title',
+            };
+        } else if (isInitialState) {
+            text = {
+                title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.confirming.title',
             };
         } else if (operation === 'validating') {
             text = {
@@ -112,7 +129,7 @@ export const useFirmware = (params: UseFirmwareInstallationParams) => {
             title: translate(text.title),
             subtitle: text.subtitle ? translate(text.subtitle) : error,
         };
-    }, [operation, status, error, translate]);
+    }, [operation, status, error, confirmOnDevice, translate]);
 
     return {
         ...firmwareInstallation,

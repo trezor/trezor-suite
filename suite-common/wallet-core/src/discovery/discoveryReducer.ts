@@ -83,7 +83,7 @@ export const selectDiscovery = (state: DiscoveryRootState) => state.wallet.disco
 // Get discovery process for deviceState.
 export const selectDiscoveryByDeviceState = (
     state: DiscoveryRootState,
-    deviceState: DeviceState | StaticSessionId | undefined,
+    deviceState: DeviceState | StaticSessionId | undefined | null,
 ) =>
     deviceState
         ? state.wallet.discovery.find(d =>
@@ -101,7 +101,7 @@ export const selectDeviceDiscovery = (state: DiscoveryRootState & DeviceRootStat
 
 export const selectIsDiscoveryActiveByDeviceState = (
     state: DiscoveryRootState & DeviceRootState,
-    deviceState: DeviceState | StaticSessionId | undefined,
+    deviceState: DeviceState | StaticSessionId | undefined | null,
 ) => {
     const discovery = selectDiscoveryByDeviceState(state, deviceState);
 

@@ -7683,27 +7683,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/react-native-skia@npm:1.5.3":
-  version: 1.5.3
-  resolution: "@shopify/react-native-skia@npm:1.5.3"
-  dependencies:
-    canvaskit-wasm: "npm:0.39.1"
-    react-reconciler: "npm:0.27.0"
-  peerDependencies:
-    react: ">=18.0"
-    react-native: ">=0.64"
-    react-native-reanimated: ">=2.0.0"
-  peerDependenciesMeta:
-    react-native:
-      optional: true
-    react-native-reanimated:
-      optional: true
-  bin:
-    setup-skia-web: ./scripts/setup-canvaskit.js
-  checksum: 10/56b577543da6cc7b3630a41c97551376f16e9bb1f813723928c448f6a9e2c7324d783f90dca4b6cf6882ed4d558b5fba8540f813dc35eaf18dc201f280e55021
-  languageName: node
-  linkType: hard
-
 "@shopify/react-native-skia@npm:^1.5.10":
   version: 1.5.10
   resolution: "@shopify/react-native-skia@npm:1.5.10"
@@ -10056,9 +10035,10 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:6.1.18"
     "@reduxjs/toolkit": "npm:1.9.5"
-    "@shopify/react-native-skia": "npm:1.5.3"
+    "@shopify/react-native-skia": "npm:^1.5.10"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/icons": "workspace:*"
+    "@suite-native/link": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
     react: "npm:18.2.0"
@@ -10439,6 +10419,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/icons": "workspace:*"
@@ -10828,11 +10809,13 @@ __metadata:
     "@suite-native/storage": "workspace:*"
     "@trezor/transport-native": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@types/redux-logger": "npm:^3.0.11"
     expo-device: "npm:6.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.76.1"
     react-redux: "npm:8.0.7"
     redux-devtools-expo-dev-plugin: "npm:^0.1.0"
+    redux-logger: "npm:^3.0.6"
     redux-persist: "npm:6.0.0"
   languageName: unknown
   linkType: soft

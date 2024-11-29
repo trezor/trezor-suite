@@ -4,6 +4,7 @@
     "references": [
         { "path": "../../suite-common/firmware" },
         { "path": "../../suite-common/icons" },
+        { "path": "../link" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" }
     ]

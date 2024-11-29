@@ -11,6 +11,7 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-mutex" },
         { "path": "../icons" },

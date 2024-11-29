@@ -13,9 +13,10 @@
     "dependencies": {
         "@react-navigation/native": "6.1.18",
         "@reduxjs/toolkit": "1.9.5",
-        "@shopify/react-native-skia": "1.5.3",
+        "@shopify/react-native-skia": "^1.5.10",
         "@suite-common/firmware": "workspace:*",
         "@suite-common/icons": "workspace:*",
+        "@suite-native/link": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
         "react": "18.2.0",
