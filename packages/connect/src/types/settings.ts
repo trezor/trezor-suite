@@ -9,13 +9,16 @@ export interface Manifest {
 
 export type Proxy = BlockchainSettings['proxy'];
 
+// omit transports which are not implemented in @trezor/connect
+type KnownTransport = Exclude<Transport['name'], 'NativeUsbTransport' | 'BluetoothTransport'>;
+
 export interface ConnectSettingsPublic {
     manifest?: Manifest;
     connectSrc?: string;
     debug?: boolean;
     popup?: boolean;
     transportReconnect?: boolean;
-    transports?: (Transport['name'] | Transport | (new (...args: any[]) => Transport))[];
+    transports?: (KnownTransport | Transport | (new (...args: any[]) => Transport))[];
     pendingTransportEvent?: boolean;
     lazyLoad?: boolean;
     interactionTimeout?: number;

@@ -92,7 +92,9 @@ export abstract class AbstractTransport extends TransportEmitter {
         | 'BridgeTransport'
         | 'NodeUsbTransport'
         | 'WebUsbTransport'
-        | 'UdpTransport';
+        | 'UdpTransport'
+        | 'NativeUsbTransport' // implementation in @trezor/transport-native
+        | 'BluetoothTransport'; // implementation in @trezor/transport-bluetooth
 
     public abstract readonly apiType: TransportApiType;
     /**

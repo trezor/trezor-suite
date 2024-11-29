@@ -19,6 +19,18 @@ export const init = async (api: TrezorConnect) => {
     // @ts-expect-error
     api.manifest({ email: 1 });
 
+    api.init({
+        manifest,
+        // @ts-expect-error
+        transports: ['BluetoothTransport'],
+    });
+
+    api.init({
+        manifest,
+        // @ts-expect-error
+        transports: ['NativeUsbTransport'],
+    });
+
     const settings = await api.getSettings();
     if (settings.success) {
         const { payload } = settings;
