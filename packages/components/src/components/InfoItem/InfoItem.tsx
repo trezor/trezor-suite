@@ -13,9 +13,9 @@ import {
 import { TextPropsKeys, TextProps } from '../typography/utils';
 import { TransientProps } from '../../utils/transientProps';
 import { FlexDirection, Flex, Row } from '../Flex/Flex';
-import { IconName, Icon, IconVariant } from '../Icon/Icon';
+import { IconName, Icon } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
-import { InfoItemVerticalAlignment } from './types';
+import { InfoItemVerticalAlignment, InfoItemVariant } from './types';
 import {
     mapVerticalAlignmentToAlignItems,
     mapTypographyStyleToIconSize,
@@ -42,7 +42,7 @@ export type InfoItemProps = AllowedFrameProps &
         direction?: FlexDirection;
         iconName?: IconName;
         label: ReactNode;
-        variant?: IconVariant;
+        variant?: InfoItemVariant;
         labelWidth?: string | number;
         verticalAlignment?: InfoItemVerticalAlignment;
     };

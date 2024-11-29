@@ -7,12 +7,11 @@ import {
     allowedInfoItemFrameProps,
     allowedInfoItemTextProps,
 } from './InfoItem';
-import { infoItemVerticalAlignments } from './types';
+import { infoItemVerticalAlignments, infoItemVariants } from './types';
 import { flexDirection } from '../Flex/Flex';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { getTextPropsStory } from '../typography/utils';
 import { variables } from '../../config';
-import { iconVariants } from '../Icon/Icon';
 
 const meta: Meta = {
     title: 'InfoItem',
@@ -26,10 +25,12 @@ export const InfoItem: StoryObj = {
         </InfoItemComponent>
     ),
     args: {
-        direction: 'column',
-        label: 'Label',
         ...getTextPropsStory(allowedInfoItemTextProps).args,
         ...getFramePropsStory(allowedInfoItemFrameProps).args,
+        direction: 'column',
+        label: 'Label',
+        variant: 'tertiary',
+        typographyStyle: 'hint',
     },
     argTypes: {
         direction: {
@@ -59,7 +60,7 @@ export const InfoItem: StoryObj = {
             },
         },
         variant: {
-            options: iconVariants,
+            options: infoItemVariants,
             control: {
                 type: 'select',
             },
