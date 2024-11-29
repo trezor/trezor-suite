@@ -17,6 +17,7 @@ import {
 import { spacings } from '@trezor/theme';
 import { selectAccountStakeTransactions } from '@suite-common/wallet-core';
 import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { FiatValue, Translation, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -32,7 +33,7 @@ import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 type ItemProps = {
     label: React.ReactNode;
     iconName: IconName;
-    symbol: string;
+    symbol: NetworkSymbol;
     cryptoAmount: string;
     fiatAmount: string;
     isReward?: boolean;
@@ -144,7 +145,7 @@ export const StakingCard = ({
                         <Item
                             label={<Translation id="TR_STAKE_TOTAL_PENDING" />}
                             iconName="spinnerGap"
-                            symbol={selectedAccount?.symbol}
+                            symbol={selectedAccount.symbol}
                             cryptoAmount={totalPendingStakeBalance}
                             fiatAmount={totalPendingStakeBalance}
                             data-testid="@account/staking/pending"
@@ -154,7 +155,7 @@ export const StakingCard = ({
                     <Item
                         label={<Translation id="TR_STAKE_STAKE" />}
                         iconName="lock"
-                        symbol={selectedAccount?.symbol}
+                        symbol={selectedAccount.symbol}
                         cryptoAmount={depositedBalance}
                         fiatAmount={depositedBalance}
                         data-testid="@account/staking/staked"
@@ -170,7 +171,7 @@ export const StakingCard = ({
                                         <Translation
                                             id="TR_STAKE_ETH_REWARDS_EARN_APY"
                                             values={{
-                                                symbol: selectedAccount?.symbol?.toUpperCase(),
+                                                symbol: selectedAccount.symbol.toUpperCase(),
                                             }}
                                         />
                                     }
@@ -189,7 +190,7 @@ export const StakingCard = ({
                         cryptoAmount={restakedReward}
                         fiatAmount={restakedReward}
                         data-testid="@account/staking/rewards"
-                        symbol={selectedAccount?.symbol}
+                        symbol={selectedAccount.symbol}
                     />
 
                     {isPendingUnstakeShown && (
@@ -212,7 +213,7 @@ export const StakingCard = ({
                                 </>
                             }
                             iconName="spinnerGap"
-                            symbol={selectedAccount?.symbol}
+                            symbol={selectedAccount.symbol}
                             cryptoAmount={withdrawTotalAmount}
                             fiatAmount={withdrawTotalAmount}
                             data-testid="@account/staking/unstaking"

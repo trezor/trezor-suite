@@ -178,7 +178,7 @@ export const AssetRow = memo(
                 {shouldRenderTokenRow && (
                     <AssetTokenRow
                         tokenIconSetWrapper={
-                            <TokenIconSetWrapper accounts={accounts} network={network.symbol} />
+                            <TokenIconSetWrapper accounts={accounts} symbol={network.symbol} />
                         }
                         network={network}
                         tokensDisplayFiatBalance={tokensFiatBalance.toFixed()}

@@ -16,21 +16,21 @@ import {
 
 type TokenIconSetWrapperProps = {
     accounts: Account[];
-    network: NetworkSymbol;
+    symbol: NetworkSymbol;
 };
 
-export const TokenIconSetWrapper = ({ accounts, network }: TokenIconSetWrapperProps) => {
+export const TokenIconSetWrapper = ({ accounts, symbol }: TokenIconSetWrapperProps) => {
     const localCurrency = useSelector(selectLocalCurrency);
     const fiatRates = useSelector(selectCurrentFiatRates);
-    const coinDefinitions = useSelector(state => selectCoinDefinitions(state, network));
+    const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
 
     const allTokensWithRates = accounts.flatMap(account =>
-        enhanceTokensWithRates(account.tokens, localCurrency, network, fiatRates),
+        enhanceTokensWithRates(account.tokens, localCurrency, symbol, fiatRates),
     );
 
     if (!allTokensWithRates.length) return null;
 
-    const tokens = getTokens(allTokensWithRates, network, coinDefinitions)
+    const tokens = getTokens(allTokensWithRates, symbol, coinDefinitions)
         .shownWithBalance as TokensWithRates[];
 
     const aggregatedTokens = Object.values(
@@ -57,5 +57,5 @@ export const TokenIconSetWrapper = ({ accounts, network }: TokenIconSetWrapperPr
 
     const sortedAggregatedTokens = aggregatedTokens.sort(sortTokensWithRates);
 
-    return <TokenIconSet network={network} tokens={sortedAggregatedTokens} />;
+    return <TokenIconSet symbol={symbol} tokens={sortedAggregatedTokens} />;
 };

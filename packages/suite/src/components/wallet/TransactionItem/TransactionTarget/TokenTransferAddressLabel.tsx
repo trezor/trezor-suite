@@ -1,5 +1,5 @@
 import { ArrayElement } from '@trezor/type-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Translation, AddressLabeling } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
@@ -7,14 +7,14 @@ import { WalletAccountTransaction } from 'src/types/wallet';
 import { BlurWrapper } from '../TransactionItemBlurWrapper';
 
 interface TokenTransferAddressLabelProps {
-    networkSymbol: NetworkSymbol;
+    symbol: NetworkSymbol;
     transfer: ArrayElement<WalletAccountTransaction['tokens']>;
     type: WalletAccountTransaction['type'];
     isPhishingTransaction: boolean;
 }
 
 export const TokenTransferAddressLabel = ({
-    networkSymbol,
+    symbol,
     transfer,
     type,
     isPhishingTransaction,
@@ -25,7 +25,7 @@ export const TokenTransferAddressLabel = ({
     if (type === 'sent') {
         return (
             <BlurWrapper $isBlurred={isPhishingTransaction}>
-                <AddressLabeling address={transfer.to} networkSymbol={networkSymbol} />
+                <AddressLabeling address={transfer.to} symbol={symbol} />
             </BlurWrapper>
         );
     }

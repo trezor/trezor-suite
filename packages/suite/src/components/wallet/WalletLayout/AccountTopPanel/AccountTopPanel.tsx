@@ -11,7 +11,6 @@ import { FormattedCryptoAmount, AmountUnitSwitchWrapper } from 'src/components/s
 import { useSelector } from 'src/hooks/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 
 export const ACCOUNT_INFO_HEIGHT = 80;
 
@@ -59,12 +58,6 @@ export const AccountTopPanel = forwardRef<HTMLDivElement>((_, ref) => {
     const { account, loader, status } = useSelector(state => state.wallet.selectedAccount);
     const localCurrency = useSelector(selectLocalCurrency);
 
-    // TODO: move this to FiatHeader
-    const { fiatAmount } = useFiatFromCryptoValue({
-        amount: account?.formattedBalance || '',
-        symbol: account?.symbol || '',
-    });
-
     if (status !== 'loaded' || !account) {
         return (
             <AccountTopPanelSkeleton
@@ -89,9 +82,10 @@ export const AccountTopPanel = forwardRef<HTMLDivElement>((_, ref) => {
                     </AmountUnitSwitchWrapper>
 
                     <FiatHeader
+                        symbol={account.symbol}
+                        amount={account.formattedBalance}
                         size="large"
                         localCurrency={localCurrency}
-                        fiatAmount={fiatAmount ?? '0'}
                     />
                 </div>
             </AmountsWrapper>

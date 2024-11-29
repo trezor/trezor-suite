@@ -165,8 +165,8 @@ export const WalletInstance = ({
 
                 <HiddenPlaceholder>
                     <FiatHeader
+                        amount={instanceBalance.toString()}
                         size="medium"
-                        fiatAmount={instanceBalance.toString() ?? '0'}
                         localCurrency={localCurrency}
                     />
                 </HiddenPlaceholder>

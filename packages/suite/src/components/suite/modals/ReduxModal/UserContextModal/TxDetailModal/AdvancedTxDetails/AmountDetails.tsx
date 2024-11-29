@@ -1,5 +1,4 @@
 import { Table, Text } from '@trezor/components';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     formatAmount,
     formatCardanoDeposit,
@@ -174,25 +173,30 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             ) : (
                                 <FormattedCryptoAmount
                                     value={formatAmount(transfer.amount, transfer.decimals)}
-                                    symbol={transfer.symbol as NetworkSymbol}
+                                    symbol={transfer.symbol}
                                     signValue={getTxOperation(transfer.type, true)}
                                 />
                             )}
                         </Table.Cell>
                         <Table.Cell align="right">
-                            <FiatValue
-                                amount={formatAmount(transfer.amount, transfer.decimals)}
-                                symbol={transfer.symbol}
-                                historicRate={historicTokenRate}
-                                useHistoricRate
-                            />
+                            {selectedAccount.account && (
+                                <FiatValue
+                                    amount={formatAmount(transfer.amount, transfer.decimals)}
+                                    symbol={selectedAccount.account.symbol}
+                                    tokenAddress={transfer.contract as TokenAddress}
+                                    historicRate={historicTokenRate}
+                                    useHistoricRate
+                                />
+                            )}
                         </Table.Cell>
                         <Table.Cell align="right">
-                            <FiatValue
-                                amount={formatAmount(transfer.amount, transfer.decimals)}
-                                symbol={selectedAccount.account?.symbol as NetworkSymbol}
-                                tokenAddress={transfer.contract as TokenAddress}
-                            />
+                            {selectedAccount.account && (
+                                <FiatValue
+                                    amount={formatAmount(transfer.amount, transfer.decimals)}
+                                    symbol={selectedAccount.account.symbol}
+                                    tokenAddress={transfer.contract as TokenAddress}
+                                />
+                            )}
                         </Table.Cell>
                     </Table.Row>
                 );

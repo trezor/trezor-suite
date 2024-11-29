@@ -6,14 +6,11 @@ import type { FormatNumberOptions } from '@formatjs/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { SkeletonRectangle } from '@trezor/components';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
-import {
-    useFiatFromCryptoValue,
-    useFiatFromCryptoValueParams,
-} from 'src/hooks/suite/useFiatFromCryptoValue';
+import type { UseFiatFromCryptoValueParams } from 'src/hooks/suite/useFiatFromCryptoValue';
+import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { HiddenPlaceholder } from 'src/components/suite';
 
 import { HiddenPlaceholderProps } from './HiddenPlaceholder';
@@ -35,7 +32,7 @@ interface Params {
     timestamp: number | null;
 }
 
-type FiatValueProps = useFiatFromCryptoValueParams & {
+type FiatValueProps = UseFiatFromCryptoValueParams & {
     children?: (props: Params) => ReactElement | null;
     showApproximationIndicator?: boolean;
     disableHiddenPlaceholder?: boolean;
@@ -51,6 +48,8 @@ type FiatValueProps = useFiatFromCryptoValueParams & {
  * If used without children prop it returns a value of an crypto assets in fiat currency.
  * If prop `fiatCurrency` is not specified, the currency is read from suite settings.
  * null is returned if there was some problem with conversion (eg. missing rates)
+ *
+ * If `symbol` is not NetworkSymbol (necessary to type forcing), it will handle that case as well.
  *
  * Advanced usage is with passing a function as a children prop.
  * The function will be called (and rendered) with 1 object param: {fiatValue, fiatRateValue, fiatRateTimestamp}.
@@ -90,11 +89,7 @@ export const FiatValue = ({
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : StyledHiddenPlaceholder;
 
     const isTokenKnown = useSelector(state =>
-        selectIsSpecificCoinDefinitionKnown(
-            state,
-            symbol as NetworkSymbol,
-            tokenAddress || ('' as TokenAddress),
-        ),
+        selectIsSpecificCoinDefinitionKnown(state, symbol, tokenAddress || ('' as TokenAddress)),
     );
 
     if (

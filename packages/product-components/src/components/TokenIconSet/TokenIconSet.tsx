@@ -7,7 +7,7 @@ import { getContractAddressForNetwork } from '@suite-common/wallet-utils';
 import { borders, Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 export type TokenIconSetProps = {
-    network: NetworkSymbol;
+    symbol: NetworkSymbol;
     tokens: TokenInfo[];
 };
 
@@ -37,7 +37,7 @@ const TokenIconPlaceholder = styled.div<{ $elevation: Elevation }>`
 /**
  * @param tokens - provide already sorted tokens (for example by fiat value).
  */
-export const TokenIconSet = ({ network, tokens }: TokenIconSetProps) => {
+export const TokenIconSet = ({ symbol, tokens }: TokenIconSetProps) => {
     const { elevation } = useElevation();
     const { length } = tokens;
 
@@ -47,7 +47,7 @@ export const TokenIconSet = ({ network, tokens }: TokenIconSetProps) => {
 
     const visibleTokens = tokens.slice(0, 3).reverse();
 
-    const coingeckoId = getCoingeckoId(network);
+    const coingeckoId = getCoingeckoId(symbol);
 
     return (
         <IconContainer $length={length}>
@@ -57,10 +57,9 @@ export const TokenIconSet = ({ network, tokens }: TokenIconSetProps) => {
                     key={token.contract}
                     size={20}
                     coingeckoId={coingeckoId ?? ''}
-                    contractAddress={getContractAddressForNetwork(network, token.contract)}
+                    contractAddress={getContractAddressForNetwork(symbol, token.contract)}
                     placeholder={token.symbol?.toUpperCase() ?? ''}
                     placeholderWithTooltip={false}
-                    // TODO: shouldFetch?
                 />
             ))}
         </IconContainer>

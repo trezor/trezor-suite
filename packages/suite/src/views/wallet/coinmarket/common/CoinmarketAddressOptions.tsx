@@ -9,7 +9,7 @@ import type { AccountAddress } from '@trezor/connect';
 import { variables, Select } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { formatAmount } from '@suite-common/wallet-utils';
-import { networks } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import type { Account } from 'src/types/wallet';
@@ -126,7 +126,7 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
 
                         const networkDecimals = getCoinmarketNetworkDecimals({
                             sendCryptoSelect,
-                            network: networks[account.symbol],
+                            network: getNetwork(account.symbol),
                         });
                         const balance = accountAddress.balance
                             ? formatAmount(accountAddress.balance, networkDecimals)

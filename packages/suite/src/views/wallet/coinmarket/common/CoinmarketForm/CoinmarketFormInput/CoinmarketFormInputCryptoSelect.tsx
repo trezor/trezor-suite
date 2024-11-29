@@ -17,6 +17,7 @@ import {
     NetworkSymbol,
     getNetworkByCoingeckoNativeId,
     getNetworkByCoingeckoId,
+    getNetwork,
 } from '@suite-common/wallet-config';
 import { spacings } from '@trezor/theme';
 
@@ -116,17 +117,19 @@ export const CoinmarketFormInputCryptoSelect = <
 
     const modalOptions: SelectAssetOptionProps[] = useMemo(
         () =>
-            formOptions.map(option =>
-                option.type === 'currency'
-                    ? {
-                          ...option,
-                          ticker: option.ticker || option.label,
-                          networkSymbol:
-                              getNetworkByCoingeckoNativeId(parseCryptoId(option.value).networkId)
-                                  ?.symbol || parseCryptoId(option.value).networkId,
-                          contractAddress: option.contractAddress ?? null,
-                      }
-                    : option,
+            formOptions.map(
+                (option): SelectAssetOptionProps =>
+                    option.type === 'currency'
+                        ? {
+                              ...option,
+                              ticker: option.ticker || option.label,
+                              symbolExtended:
+                                  getNetworkByCoingeckoNativeId(
+                                      parseCryptoId(option.value).networkId,
+                                  )?.symbol || parseCryptoId(option.value).networkId,
+                              contractAddress: option.contractAddress ?? null,
+                          }
+                        : option,
             ),
         [formOptions],
     );
@@ -155,12 +158,16 @@ export const CoinmarketFormInputCryptoSelect = <
         const networksToSelect: NetworkSymbol[] = ['eth', 'sol', 'pol', 'bnb'];
         const networkAllKeys = Object.keys(networks) as NetworkSymbol[];
         const networkKeys = networkAllKeys.filter(item => networksToSelect.includes(item));
-        const networksSelected: NetworkFilterCategory[] = networkKeys.map(networkKey => ({
-            name: networks[networkKey].name,
-            symbol: networks[networkKey].symbol,
-            coingeckoId: networks[networkKey].coingeckoId,
-            coingeckoNativeId: networks[networkKey].coingeckoNativeId,
-        }));
+        const networksSelected: NetworkFilterCategory[] = networkKeys.map(networkKey => {
+            const network = getNetwork(networkKey);
+
+            return {
+                name: network.name,
+                symbol: network.symbol,
+                coingeckoId: network.coingeckoId,
+                coingeckoNativeId: network.coingeckoNativeId,
+            };
+        });
 
         return networksSelected;
     };

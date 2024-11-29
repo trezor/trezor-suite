@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Button, Card, variables, H2, Tooltip, GradientOverlay } from '@trezor/components';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
-import { networks } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { spacingsPx, typography } from '@trezor/theme';
 
 import { Translation, QuestionTooltip, ReadMoreLink } from 'src/components/suite';
@@ -215,7 +215,7 @@ export const FreshAddress = ({
                         <Translation
                             id="TR_EVM_EXPLANATION_TITLE"
                             values={{
-                                network: networks[account.symbol].name,
+                                network: getNetwork(account.symbol).name,
                             }}
                         />
                     }
@@ -223,7 +223,7 @@ export const FreshAddress = ({
                     <Translation
                         id="TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION"
                         values={{
-                            network: networks[account.symbol].name,
+                            network: getNetwork(account.symbol).name,
                         }}
                     />
                 </StyledEvmExplanationBox>

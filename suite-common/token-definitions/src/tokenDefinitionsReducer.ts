@@ -63,10 +63,10 @@ export const prepareTokenDefinitionsReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(tokenDefinitionsActions.setTokenStatus, (state, action) => {
-                const { networkSymbol, type, contractAddress, status } = action.payload;
+                const { symbol, type, contractAddress, status } = action.payload;
 
-                if (!state[networkSymbol]) {
-                    state[networkSymbol] = {
+                if (!state[symbol]) {
+                    state[symbol] = {
                         coin: {
                             error: false,
                             data: undefined,
@@ -84,7 +84,7 @@ export const prepareTokenDefinitionsReducer = createReducerWithExtraDeps(
                     };
                 }
 
-                const definitions = state[networkSymbol];
+                const definitions = state[symbol];
 
                 if (definitions) {
                     let hide = definitions[type]?.hide ?? [];

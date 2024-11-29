@@ -5,10 +5,12 @@ import styled from 'styled-components';
 import { useFormatters } from '@suite-common/formatters';
 import { typography } from '@trezor/theme';
 import { useShouldRedactNumbers } from '@suite-common/wallet-utils';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { HiddenPlaceholder, RedactNumericalValue } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 
 const ValueWrapper = styled.div`
     display: flex;
@@ -30,21 +32,39 @@ const DecimalValue = styled.div<{ $size: 'large' | 'medium' }>`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
+type UseFiatAmountProps = { amount: string; symbol?: NetworkSymbol };
+
 type FiatHeaderProps = {
     size: 'large' | 'medium';
-    fiatAmount: string;
     localCurrency: string;
-};
+} & UseFiatAmountProps;
 
 // redacted value placeholder doesn't have to be displayed twice, display it only for whole value
 const HideRedactedValue = ({ children }: PropsWithChildren) =>
     useShouldRedactNumbers() ? null : children;
 
-export const FiatHeader = ({ size, fiatAmount, localCurrency }: FiatHeaderProps) => {
+const useFiatAmount = ({ amount, symbol }: UseFiatAmountProps) => {
+    const { fiatAmount } = useFiatFromCryptoValue({
+        amount,
+        symbol: symbol ?? 'btc',
+    });
+
+    if (!symbol) {
+        return amount;
+    }
+
+    return fiatAmount;
+};
+
+/**
+ * If `symbol` is not provided, `amount` is returned as is, otherwise it is converted to fiat currency.
+ */
+export const FiatHeader = ({ amount, symbol, size, localCurrency }: FiatHeaderProps) => {
     const language = useSelector(selectLanguage);
+    const fiatAmount = useFiatAmount({ amount, symbol });
     const { FiatAmountFormatter } = useFormatters();
     const formattedAmount = FiatAmountFormatter({
-        value: fiatAmount,
+        value: fiatAmount ?? '0',
         currency: localCurrency,
     });
 

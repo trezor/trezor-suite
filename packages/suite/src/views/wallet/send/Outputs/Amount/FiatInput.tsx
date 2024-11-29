@@ -18,7 +18,6 @@ import {
     buildCurrencyOptions,
 } from '@suite-common/wallet-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 
@@ -145,7 +144,7 @@ export const FiatInput = ({
                     updateFiatRatesThunk({
                         tickers: [
                             {
-                                symbol: account.symbol as NetworkSymbol,
+                                symbol: account.symbol,
                                 tokenAddress: token?.contract as TokenAddress,
                             },
                         ],

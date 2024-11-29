@@ -2,19 +2,18 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { TokenTransfer } from '@trezor/blockchain-link-types';
 
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { useSelector } from 'src/hooks/suite';
 
 interface CommonOwnProps {
     amount: string;
-    symbol: NetworkSymbol | TokenTransfer['symbol'];
+    symbol: NetworkSymbol;
     tokenAddress?: TokenAddress;
     fiatCurrency?: string;
 }
 
-export interface useFiatFromCryptoValueParams extends CommonOwnProps {
+export interface UseFiatFromCryptoValueParams extends CommonOwnProps {
     historicRate?: number;
     useHistoricRate?: boolean;
 }
@@ -25,9 +24,9 @@ export const useFiatFromCryptoValue = ({
     tokenAddress,
     historicRate,
     useHistoricRate,
-}: useFiatFromCryptoValueParams) => {
+}: UseFiatFromCryptoValueParams) => {
     const localCurrency = useSelector(selectLocalCurrency);
-    const fiatRateKey = getFiatRateKey(symbol as NetworkSymbol, localCurrency, tokenAddress);
+    const fiatRateKey = getFiatRateKey(symbol, localCurrency, tokenAddress);
 
     const currentRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 

@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
 import { typography } from '@trezor/theme';
-import { TokenAddress } from '@suite-common/wallet-types';
+import type { TokenAddress } from '@suite-common/wallet-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { FiatValue } from 'src/components/suite';
 
@@ -21,7 +22,7 @@ const Empty = styled.div`
 `;
 
 interface PriceTickerProps {
-    symbol: string;
+    symbol: NetworkSymbol;
     contractAddress?: TokenAddress;
     noEmptyStateTooltip?: boolean;
     showLoadingSkeleton?: boolean;

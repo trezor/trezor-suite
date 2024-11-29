@@ -9,7 +9,7 @@ export const TOKEN_DEFINITIONS_PREFIX = '@common/token-definitions';
 const setTokenStatus = createAction(
     `${TOKEN_DEFINITIONS_PREFIX}/setTokenStatus`,
     (payload: {
-        networkSymbol: NetworkSymbol;
+        symbol: NetworkSymbol;
         type: DefinitionType;
         status: TokenManagementAction;
         contractAddress: string;
