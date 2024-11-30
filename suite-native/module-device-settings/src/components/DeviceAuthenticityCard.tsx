@@ -51,7 +51,7 @@ export const DeviceAuthenticityCard = () => {
             navigation.navigate(DeviceAuthenticityStackRoutes.AuthenticitySummary, {
                 checkResult: payload.valid ? 'successful' : 'compromised',
             });
-        } else {
+        } else if (payload.code === 'Failure_ActionCancelled') {
             navigation.goBack();
         }
     }, [navigation, device]);

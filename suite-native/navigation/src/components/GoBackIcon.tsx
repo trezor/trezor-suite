@@ -16,9 +16,7 @@ export const GoBackIcon = ({ closeActionType = 'back', closeAction }: GoBackIcon
         if (navigation.canGoBack()) {
             navigation.goBack();
         }
-        if (closeAction) {
-            closeAction();
-        }
+        closeAction?.();
     };
 
     return (
