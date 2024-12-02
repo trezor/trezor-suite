@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { analytics, DeviceAuthenticityCheckResult, EventType } from '@suite-native/analytics';
 import { selectDevice } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useAlert } from '@suite-native/alerts';
@@ -31,6 +32,15 @@ export const DeviceAuthenticityCard = () => {
 
     const device = useSelector(selectDevice);
 
+    const reportCheckResult = useCallback(
+        (result: DeviceAuthenticityCheckResult) =>
+            analytics.report({
+                type: EventType.DeviceSettingsAuthenticityCheck,
+                payload: { result },
+            }),
+        [],
+    );
+
     const checkAuthenticity = useCallback(async () => {
         navigation.navigate(DeviceStackRoutes.DeviceAuthenticity);
 
@@ -48,13 +58,25 @@ export const DeviceAuthenticityCard = () => {
 
         const { success, payload } = result.payload;
         if (success) {
-            navigation.navigate(DeviceAuthenticityStackRoutes.AuthenticitySummary, {
-                checkResult: payload.valid ? 'successful' : 'compromised',
-            });
-        } else if (payload.code === 'Failure_ActionCancelled') {
-            navigation.goBack();
+            const checkResult = payload.valid ? 'successful' : 'compromised';
+            navigation.navigate(DeviceAuthenticityStackRoutes.AuthenticitySummary, { checkResult });
+            reportCheckResult(checkResult);
+        } else {
+            const errorCode = payload.code;
+            if (errorCode === 'Failure_ActionCancelled' || errorCode === 'Failure_PinCancelled') {
+                navigation.goBack();
+                reportCheckResult('cancelled');
+            } else if (errorCode === 'Method_Interrupted') {
+                // navigation.goBack() already called via the X button
+                reportCheckResult('cancelled');
+            } else {
+                navigation.navigate(DeviceAuthenticityStackRoutes.AuthenticitySummary, {
+                    checkResult: 'compromised',
+                });
+                reportCheckResult('failed');
+            }
         }
-    }, [navigation, device]);
+    }, [device, navigation, reportCheckResult]);
 
     const showInfoAlert = useCallback(() => {
         showAlert({

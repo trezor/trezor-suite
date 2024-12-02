@@ -4,3 +4,5 @@ export type AnalyticsSendFlowStep =
     | 'address_review'
     | 'outputs_review'
     | 'destination_tag_review';
+
+export type DeviceAuthenticityCheckResult = 'successful' | 'compromised' | 'cancelled' | 'failed';

@@ -5,7 +5,7 @@ import { FeeLevelLabel, TokenAddress, TokenSymbol } from '@suite-common/wallet-t
 import { DeviceModelInternal, VersionArray } from '@trezor/connect';
 
 import { EventType } from './constants';
-import { AnalyticsSendFlowStep } from './types';
+import { AnalyticsSendFlowStep, DeviceAuthenticityCheckResult } from './types';
 
 export type SuiteNativeAnalyticsEvent =
     | {
@@ -309,5 +309,11 @@ export type SuiteNativeAnalyticsEvent =
           type: EventType.DeviceSettingsPinProtectionChange;
           payload: {
               action: 'enable' | 'change' | 'disable';
+          };
+      }
+    | {
+          type: EventType.DeviceSettingsAuthenticityCheck;
+          payload: {
+              result: DeviceAuthenticityCheckResult;
           };
       };
