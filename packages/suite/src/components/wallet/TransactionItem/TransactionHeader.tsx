@@ -3,9 +3,10 @@ import { AccountTransaction } from '@trezor/connect';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
+import { useTranslation } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
+import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 type TransactionHeaderProps = {
     transaction: WalletAccountTransaction;
@@ -64,6 +65,8 @@ const getTransactionMessageId = ({ transaction, isPending }: GetTransactionMessa
 };
 
 export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderProps) => {
+    const { translationString } = useTranslation();
+
     if (transaction?.ethereumSpecific?.parsedData?.name) {
         return (
             <Row gap={spacings.xxs} overflow="hidden">
@@ -79,9 +82,11 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
     const symbol = getTxHeaderSymbol(transaction)?.toUpperCase();
 
     return (
-        <Translation
-            id={getTransactionMessageId({ transaction, isPending })}
-            values={{ symbol, multiple: isMultiTokenTransaction }}
+        <BlurUrls
+            text={translationString(getTransactionMessageId({ transaction, isPending }), {
+                symbol,
+                multiple: isMultiTokenTransaction,
+            })}
         />
     );
 };
