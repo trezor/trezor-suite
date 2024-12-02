@@ -3,7 +3,8 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import { TooltipProps } from 'recharts';
 
-import { variables } from '@trezor/components';
+import { variables, Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { Translation, FormattedDate } from 'src/components/suite';
 import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
@@ -78,15 +79,6 @@ const Col = styled.div`
     flex-direction: column;
 `;
 
-const Row = styled.div<{ $noBottomMargin?: boolean }>`
-    display: flex;
-    white-space: nowrap;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 8px;
-    margin-bottom: ${({ $noBottomMargin }) => ($noBottomMargin ? '0px' : '4px')};
-`;
-
 const Title = styled.span`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin-right: 20px;
@@ -113,12 +105,6 @@ const HighlightedAreaLeft = styled(HighlightedArea)`
 const HighlightedAreaRight = styled(HighlightedArea)`
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-`;
-
-const Sign = styled.span<{ $color: string }>`
-    color: ${({ $color }) => $color};
-    width: 1ch;
-    margin-right: 4px;
 `;
 
 const formatDate = (date: Date, dateFormat: 'day' | 'month') => {
@@ -167,14 +153,16 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
             $boxWidth={props.viewBox!.width!}
             data-testid="@dashboard/customtooltip"
         >
-            <Row>
+            <Row margin={{ bottom: spacings.xxs, left: spacings.xs, right: spacings.xs }}>
                 <Title>{date && formatDate(date, dateFormat)}</Title>
             </Row>
 
             <ColsWrapper>
                 <Col>
                     {props.balance && (
-                        <Row>
+                        <Row
+                            margin={{ bottom: spacings.xxs, left: spacings.xs, right: spacings.xs }}
+                        >
                             <Title>
                                 <Translation id="TR_BALANCE" />
                             </Title>
@@ -182,13 +170,15 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
                     )}
 
                     <HighlightedAreaLeft>
-                        <Row>
+                        <Row
+                            margin={{ bottom: spacings.xxs, left: spacings.xs, right: spacings.xs }}
+                        >
                             <Title>
                                 <Translation id="TR_RECEIVED" />
                             </Title>
                         </Row>
 
-                        <Row $noBottomMargin>
+                        <Row margin={{ left: spacings.xs, right: spacings.xs }}>
                             <Title>
                                 <Translation id="TR_SENT" />
                             </Title>
@@ -198,20 +188,25 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
 
                 <Col>
                     {props.balance && (
-                        <Row>
+                        <Row
+                            margin={{ bottom: spacings.xxs, left: spacings.xs, right: spacings.xs }}
+                        >
                             <Value>
-                                <Sign $color="transparent">+</Sign>
-                                {props.balance}
+                                <Row margin={{ left: spacings.xs, right: spacings.xs }}>
+                                    {props.balance}
+                                </Row>
                             </Value>
                         </Row>
                     )}
 
                     <HighlightedAreaRight>
-                        <Row>
+                        <Row
+                            margin={{ bottom: spacings.xxs, left: spacings.xs, right: spacings.xs }}
+                        >
                             <Value>{props.receivedAmount}</Value>
                         </Row>
 
-                        <Row $noBottomMargin>
+                        <Row margin={{ left: spacings.xs, right: spacings.xs }}>
                             <Value>{props.sentAmount}</Value>
                         </Row>
                     </HighlightedAreaRight>

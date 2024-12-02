@@ -8,6 +8,8 @@ import {
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
 import { isSignValuePositive } from '@suite-common/formatters';
+import { Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useSelector } from 'src/hooks/suite';
@@ -16,10 +18,6 @@ import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 import { RedactNumericalValue } from './RedactNumericalValue';
-
-const Container = styled.span`
-    max-width: 100%;
-`;
 
 const Value = styled.span`
     font-variant-numeric: tabular-nums;
@@ -45,8 +43,8 @@ export const FormattedCryptoAmount = ({
     signValue,
     disableHiddenPlaceholder,
     isRawString,
-    'data-testid': dataTest,
     className,
+    'data-testid': dataTest,
 }: FormattedCryptoAmountProps) => {
     const locale = useSelector(selectLanguage);
 
@@ -97,23 +95,25 @@ export const FormattedCryptoAmount = ({
     }
 
     const content = (
-        <Container className={className}>
-            {!!signValue && <Sign value={signValue} />}
-            <Value data-testid={dataTest}>
-                <RedactNumericalValue value={formattedValue} />
-            </Value>
+        <Row width="100%" gap={spacings.xxs} className={className}>
+            <Row>
+                {!!signValue && <Sign value={signValue} />}
+                <Value data-testid={dataTest}>
+                    <RedactNumericalValue value={formattedValue} />
+                </Value>
+            </Row>
             {formattedSymbol && (
                 <>
                     {' '}
                     <BlurUrls text={formattedSymbol} />
                 </>
             )}
-        </Container>
+        </Row>
     );
 
     if (disableHiddenPlaceholder) {
         return content;
     }
 
-    return <HiddenPlaceholder className={className}>{content}</HiddenPlaceholder>;
+    return <HiddenPlaceholder>{content}</HiddenPlaceholder>;
 };

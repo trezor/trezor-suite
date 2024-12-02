@@ -1,52 +1,24 @@
-import styled from 'styled-components';
+import { useTheme } from 'styled-components';
 
 import { SignValue } from '@suite-common/suite-types';
-import { getNftTokenId } from '@suite-common/wallet-utils';
+import { isNftMultitokenTransfer } from '@suite-common/wallet-utils';
 import { TokenTransfer } from '@trezor/connect';
-import { variables } from '@trezor/components';
+import { Box, Column, Row, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { HiddenPlaceholder, Sign } from 'src/components/suite';
+import { HiddenPlaceholder, Sign, Translation } from 'src/components/suite';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useSelector } from 'src/hooks/suite/useSelector';
-
-const Container = styled.div`
-    max-width: 100%;
-    display: flex;
-`;
-
-const Symbol = styled.div`
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 120px;
-`;
-
-const StyledTrezorLink = styled(TrezorLink)`
-    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
-    text-decoration: underline;
-    display: flex;
-    font-size: ${variables.FONT_SIZE.TINY};
-    line-height: initial;
-    align-items: center;
-`;
-
-const NoLink = styled.div`
-    display: flex;
-`;
-
-const Id = styled.div`
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 145px;
-`;
+import { useTranslation } from 'src/hooks/suite';
+import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 export interface FormattedNftAmountProps {
     transfer: TokenTransfer;
     signValue?: SignValue;
     className?: string;
     isWithLink?: boolean;
+    alignMultitoken?: 'flex-end' | 'flex-start';
 }
 
 export const FormattedNftAmount = ({
@@ -54,36 +26,103 @@ export const FormattedNftAmount = ({
     signValue,
     className,
     isWithLink,
+    alignMultitoken = 'flex-end',
 }: FormattedNftAmountProps) => {
-    const id = getNftTokenId(transfer);
-
+    const theme = useTheme();
+    const { translationString } = useTranslation();
     const { selectedAccount } = useSelector(state => state.wallet);
     const { network } = selectedAccount;
-    const explorerUrl =
-        network?.networkType === 'ethereum'
-            ? `${network?.explorer.nft}/${transfer.contract}/${id}`
-            : undefined;
 
-    const idComponent = <Id>{id}</Id>;
-    const symbolComponent = transfer.symbol ? <Symbol>&nbsp;{transfer.symbol}</Symbol> : null;
+    const symbolComponent = transfer.symbol ? (
+        <Text maxWidth={120} ellipsisLineCount={1}>
+            {transfer.symbol}
+        </Text>
+    ) : null;
+
+    const isMultitoken = isNftMultitokenTransfer(transfer);
+
+    if (isMultitoken) {
+        const tokens = transfer.multiTokenValues;
+
+        return (
+            <HiddenPlaceholder>
+                <Column alignItems={alignMultitoken}>
+                    {tokens?.map((token, index) => (
+                        <Row key={`${token.id}-${index}`} gap={spacings.xxs}>
+                            <Row>
+                                {signValue ? <Sign value={signValue} /> : null}
+                                {transfer.name ? (
+                                    <BlurUrls
+                                        text={translationString('TR_COLLECTION_NAME_OF_TOKEN_ID', {
+                                            tokenValue: token.value,
+                                            collectionName: transfer.name,
+                                        })}
+                                    />
+                                ) : (
+                                    <Row gap={spacings.xxs}>
+                                        <Row>{token.value}x</Row>
+                                        <Translation id="TR_TOKEN_ID" />
+                                    </Row>
+                                )}
+                            </Row>
+                            {isWithLink && network?.networkType === 'ethereum' ? (
+                                <TrezorLink
+                                    href={`${network?.explorer.nft}/${transfer.contract}/${token.id}`}
+                                    color={theme.textSecondaryHighlight}
+                                    variant="underline"
+                                    typographyStyle="label"
+                                >
+                                    <Text maxWidth={145} ellipsisLineCount={1}>
+                                        {token.id}
+                                    </Text>
+                                </TrezorLink>
+                            ) : (
+                                <Text maxWidth={145} ellipsisLineCount={1}>
+                                    {token.id}
+                                </Text>
+                            )}
+                        </Row>
+                    ))}
+                </Column>
+            </HiddenPlaceholder>
+        );
+    }
 
     return (
         <HiddenPlaceholder>
-            <Container className={className}>
+            <Row className={className}>
                 {signValue ? <Sign value={signValue} /> : null}
-                ID:&nbsp;
+                <Box margin={{ right: spacings.xxs }}>
+                    <Translation id="TR_TOKEN_ID" />
+                </Box>
                 {isWithLink ? (
-                    <StyledTrezorLink href={explorerUrl}>
-                        {idComponent}
-                        {symbolComponent}
-                    </StyledTrezorLink>
+                    <TrezorLink
+                        href={
+                            network?.networkType === 'ethereum'
+                                ? `${network?.explorer.nft}/${transfer.contract}/${transfer.amount}`
+                                : undefined
+                        }
+                        color={theme.textSecondaryHighlight}
+                        variant="underline"
+                        typographyStyle="label"
+                    >
+                        <Row gap={spacings.zero}>
+                            <Text maxWidth={145} ellipsisLineCount={1}>
+                                {transfer.amount}
+                            </Text>
+                            &nbsp;
+                            {symbolComponent}
+                        </Row>
+                    </TrezorLink>
                 ) : (
-                    <NoLink>
-                        {idComponent}
+                    <Row gap={spacings.xxs}>
+                        <Text maxWidth={145} ellipsisLineCount={1}>
+                            {transfer.amount}
+                        </Text>
                         {symbolComponent}
-                    </NoLink>
+                    </Row>
                 )}
-            </Container>
+            </Row>
         </HiddenPlaceholder>
     );
 };

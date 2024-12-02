@@ -22,12 +22,13 @@ type AllowedLinkTextProps = Pick<TextPropsCommon, (typeof allowedLinkTextProps)[
 
 type AProps = TransientProps<AllowedLinkTextProps> & {
     $variant?: 'default' | 'nostyle' | 'underline';
+    $color?: string;
 };
 
 const A = styled.a<AProps>`
     text-decoration: none;
     cursor: pointer;
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ $color, theme }) => $color || theme.textDefault};
     font-weight: 500;
     display: inline-flex;
     align-items: center;
@@ -68,6 +69,7 @@ type LinkProps = AllowedLinkTextProps & {
     className?: string;
     variant?: 'default' | 'nostyle' | 'underline'; // Todo: refactor, variant has different meaning in our design system
     icon?: IconName;
+    color?: string;
     'data-testid'?: string;
 };
 
@@ -78,6 +80,7 @@ const Link = ({
     onClick,
     'data-testid': dataTest,
     children,
+    color,
     className,
     variant,
     typographyStyle = 'body',
@@ -99,6 +102,7 @@ const Link = ({
             $variant={variant}
             className={className}
             {...textProps}
+            $color={color}
         >
             {children}
             {icon && <Icon size={iconSize} name={icon} />}

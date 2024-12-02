@@ -10,8 +10,8 @@ import {
     sumTransactionsFiat,
 } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
-import { CollapsibleBox } from '@trezor/components';
-import { borders } from '@trezor/theme';
+import { Box, CollapsibleBox, Row } from '@trezor/components';
+import { borders, spacings } from '@trezor/theme';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
 import { Timestamp } from '@suite-common/wallet-types';
@@ -19,22 +19,14 @@ import { Timestamp } from '@suite-common/wallet-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { WalletAccountTransaction } from 'src/types/wallet/index';
-import { HiddenPlaceholder, Translation } from 'src/components/suite';
+import { HiddenPlaceholder, Translation, FormattedCryptoAmount } from 'src/components/suite';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 
 import { TransactionTypeIcon } from './TransactionTypeIcon';
 import { TransactionTargetLayout } from './TransactionTargetLayout';
-import {
-    Content,
-    Description,
-    NextRow,
-    StyledFormattedCryptoAmount,
-    TargetsWrapper,
-    TimestampWrapper,
-    TxTypeIconWrapper,
-} from './CommonComponents';
+import { Content, Description, TimestampWrapper, TxTypeIconWrapper } from './CommonComponents';
 
-const CryptoAmount = styled(StyledFormattedCryptoAmount)`
+const CryptoAmount = styled(FormattedCryptoAmount)`
     width: unset;
 `;
 
@@ -141,11 +133,11 @@ export const CoinjoinBatchItem = ({
                                 signValue={amount}
                             />
                         </Description>
-                        <NextRow>
+                        <Row flex="1" alignItems="flex-start" margin={{ bottom: spacings.xxs }}>
                             <TimestampWrapper>
                                 <TransactionTimestamp transaction={lastTx} />
                             </TimestampWrapper>
-                            <TargetsWrapper>
+                            <Box flex="1" overflow="hidden">
                                 <TransactionTargetLayout
                                     addressLabel={
                                         <Translation
@@ -167,8 +159,8 @@ export const CoinjoinBatchItem = ({
                                     isFirst
                                     isLast
                                 />
-                            </TargetsWrapper>
-                        </NextRow>
+                            </Box>
+                        </Row>
                     </Content>
                 </>
             }

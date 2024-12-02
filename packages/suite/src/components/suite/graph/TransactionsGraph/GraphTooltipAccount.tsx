@@ -1,19 +1,16 @@
-import styled from 'styled-components';
 import { TooltipProps } from 'recharts';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Formatters, useFormatters } from '@suite-common/formatters';
 import { SignOperator } from '@suite-common/suite-types';
+import { Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
 
 import type { CryptoGraphProps } from './TransactionsGraph';
 import { GraphTooltipBase } from './GraphTooltipBase';
-
-const StyledCryptoAmount = styled(FormattedCryptoAmount)`
-    margin-right: 2px;
-`;
 
 const formatAmount = (
     amount: string | undefined,
@@ -26,14 +23,16 @@ const formatAmount = (
     const { FiatAmountFormatter } = formatters;
 
     return (
-        <>
+        <Row>
             {amount && (
-                <StyledCryptoAmount
-                    value={amount}
-                    symbol={symbol}
-                    signValue={sign}
-                    disableHiddenPlaceholder
-                />
+                <Row margin={{ right: spacings.xxs }}>
+                    <FormattedCryptoAmount
+                        value={amount}
+                        symbol={symbol}
+                        signValue={sign}
+                        disableHiddenPlaceholder
+                    />
+                </Row>
             )}
 
             {fiatAmount && localCurrency && (
@@ -42,7 +41,7 @@ const formatAmount = (
                     <FiatAmountFormatter currency={localCurrency} value={fiatAmount} />)
                 </>
             )}
-        </>
+        </Row>
     );
 };
 

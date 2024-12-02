@@ -5,7 +5,6 @@ import {
     isTestnet,
     formatAmount,
     formatNetworkAmount,
-    isNftTokenTransfer,
     getFiatRateKey,
 } from '@suite-common/wallet-utils';
 import { copyToClipboard } from '@trezor/dom-utils';
@@ -13,7 +12,13 @@ import { ArrayElement } from '@trezor/type-utils';
 import { selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 
-import { FiatValue, Translation, MetadataLabeling, AddressLabeling } from 'src/components/suite';
+import {
+    FiatValue,
+    Translation,
+    MetadataLabeling,
+    AddressLabeling,
+    FormattedCryptoAmount,
+} from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { AccountLabels } from 'src/types/suite/metadata';
@@ -22,7 +27,7 @@ import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
 import { TargetAddressLabel } from './TargetAddressLabel';
 import { TransactionTargetLayout } from '../TransactionTargetLayout';
-import { StyledFormattedCryptoAmount, StyledFormattedNftAmount } from '../CommonComponents';
+import { AmountComponent } from '../../AmountComponent';
 
 interface BaseTransfer {
     singleRowLayout?: boolean;
@@ -53,9 +58,6 @@ export const TokenTransfer = ({
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
     );
 
-    const operation = getTxOperation(transfer.type);
-    const isNft = isNftTokenTransfer(transfer);
-
     return (
         <TransactionTargetLayout
             {...baseLayoutProps}
@@ -68,15 +70,12 @@ export const TokenTransfer = ({
                 />
             }
             amount={
-                isNft ? (
-                    <StyledFormattedNftAmount transfer={transfer} signValue={operation} />
-                ) : (
-                    <StyledFormattedCryptoAmount
-                        value={formatAmount(transfer.amount, transfer.decimals)}
-                        symbol={transfer.symbol}
-                        signValue={operation}
-                    />
-                )
+                <AmountComponent
+                    transfer={transfer}
+                    withLink={false}
+                    withSign={true}
+                    alignMultitoken="flex-end"
+                />
             }
             fiatAmount={
                 !isTestnet(transaction.symbol) && transfer.amount ? (
@@ -117,7 +116,7 @@ export const InternalTransfer = ({
             addressLabel={<AddressLabeling address={transfer.to} symbol={transaction.symbol} />}
             amount={
                 !baseLayoutProps.singleRowLayout && (
-                    <StyledFormattedCryptoAmount
+                    <FormattedCryptoAmount
                         value={amount}
                         symbol={transaction.symbol}
                         signValue={operation}
@@ -221,7 +220,7 @@ export const TransactionTarget = ({
             }
             amount={
                 targetAmount && !baseLayoutProps.singleRowLayout ? (
-                    <StyledFormattedCryptoAmount
+                    <FormattedCryptoAmount
                         value={targetAmount}
                         symbol={transaction.symbol}
                         signValue={operation}

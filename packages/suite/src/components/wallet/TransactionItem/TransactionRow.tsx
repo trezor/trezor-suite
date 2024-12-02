@@ -9,14 +9,13 @@ import { SignOperator } from '@suite-common/suite-types';
 import { Timestamp } from '@suite-common/wallet-types';
 import { selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
 
-import { FiatValue, Translation } from 'src/components/suite';
+import { FiatValue, Translation, FormattedCryptoAmount } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 import { TransactionTargetLayout } from './TransactionTargetLayout';
-import { StyledFormattedCryptoAmount } from './CommonComponents';
 
 export const CustomRow = ({
     transaction,
@@ -46,7 +45,7 @@ export const CustomRow = ({
             {...baseLayoutProps}
             addressLabel={<Translation id={title} />}
             amount={
-                <StyledFormattedCryptoAmount
+                <FormattedCryptoAmount
                     value={amount}
                     symbol={transaction.symbol}
                     signValue={sign}

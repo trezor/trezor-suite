@@ -19,10 +19,9 @@ import {
 } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { FormattedCryptoAmount, FormattedNftAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { UtxoAnonymity } from 'src/components/wallet';
-import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 import { IOAddress } from 'src/components/suite/copy/IOAddress';
 
 import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
@@ -205,7 +204,11 @@ const EthereumSpecificBalanceDetailsRow = ({
                     </H4>
                     {tokens.map((transfer, index) => {
                         const value = isNftTokenTransfer(transfer) ? (
-                            <FormattedNftAmount transfer={transfer} isWithLink />
+                            <FormattedNftAmount
+                                transfer={transfer}
+                                isWithLink
+                                alignMultitoken="flex-start"
+                            />
                         ) : (
                             formatAmount(transfer.amount, transfer.decimals)
                         );

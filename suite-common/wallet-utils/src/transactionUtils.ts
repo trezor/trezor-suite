@@ -479,6 +479,9 @@ export const getTxOperation = (
 export const isNftTokenTransfer = (transfer: TokenTransfer) =>
     ['ERC1155', 'ERC721'].includes(transfer.standard || '');
 
+export const isNftMultitokenTransfer = (transfer: TokenTransfer) =>
+    !!transfer.multiTokenValues && transfer.multiTokenValues.length > 0;
+
 // TODO: TokenInfo should use TokenStandard type
 export const isNftToken = (token: TokenInfo) => ['ERC1155', 'ERC721'].includes(token.type || '');
 

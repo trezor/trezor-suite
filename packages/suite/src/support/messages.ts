@@ -3300,6 +3300,10 @@ export default defineMessagesWithTypeCheck({
         defaultMessage: 'Details',
         id: 'TR_TRANSACTION_DETAILS',
     },
+    TR_TOKEN_ID: {
+        defaultMessage: 'Token ID:',
+        id: 'TR_TOKEN_ID',
+    },
     TR_NO_TRANSPORT: {
         defaultMessage: "Your browser can't communicate with your device",
         description: '',
@@ -5681,6 +5685,10 @@ export default defineMessagesWithTypeCheck({
         id: 'TR_SELECTED',
         defaultMessage: '{amount} selected',
         description: 'Number of list items selected',
+    },
+    TR_COLLECTION_NAME_OF_TOKEN_ID: {
+        id: 'TR_COLLECTION_NAME_OF_TOKEN_ID',
+        defaultMessage: '{tokenValue}x {collectionName} of Token ID:',
     },
     TR_NOT_ENOUGH_SELECTED: {
         id: 'TR_NOT_ENOUGH_SELECTED',

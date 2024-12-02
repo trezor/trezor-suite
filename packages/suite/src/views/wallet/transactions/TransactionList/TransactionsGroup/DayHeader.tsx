@@ -4,6 +4,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { useFormatters } from '@suite-common/formatters';
 import { isTestnet, parseTransactionDateKey } from '@suite-common/wallet-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { Row } from '@trezor/components';
 
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 
@@ -50,8 +51,10 @@ export const DayHeader = ({
                 )}
             </ColDate>
             <ColAmount $isVisible={isHovered}>
-                {totalAmount.gt(0) && <span>+</span>}
-                <FormattedCryptoAmount value={totalAmount.toFixed()} symbol={symbol} />
+                <Row>
+                    {totalAmount.gt(0) && <span>+</span>}
+                    <FormattedCryptoAmount value={totalAmount.toFixed()} symbol={symbol} />
+                </Row>
             </ColAmount>
             {showFiatValue && !isMissingFiatRates && (
                 <ColFiat>
