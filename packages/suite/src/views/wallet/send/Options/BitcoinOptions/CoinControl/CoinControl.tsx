@@ -18,7 +18,7 @@ import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReduce
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { filterAndCategorizeUtxos } from 'src/utils/wallet/filterAndCategorizeUtxosUtils';
 
-import { UtxoSelectionList } from './UtxoSelectionList';
+import { UtxoSelectionList } from './UtxoSelectionList/UtxoSelectionList';
 import { UtxoSearch } from './UtxoSearch';
 
 const Header = styled.header`
