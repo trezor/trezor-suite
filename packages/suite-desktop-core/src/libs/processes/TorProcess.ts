@@ -31,11 +31,15 @@ export class TorProcess extends BaseProcess {
         });
     }
 
-    setTorConfig(torConfig: Pick<TorConnectionOptions, 'snowflakeBinaryPath'>) {
+    public setTorConfig(torConfig: Pick<TorConnectionOptions, 'snowflakeBinaryPath'>) {
         this.snowflakeBinaryPath = torConfig.snowflakeBinaryPath;
     }
 
-    async status(): Promise<TorProcessStatus> {
+    public getPort() {
+        return this.port;
+    }
+
+    public async status(): Promise<TorProcessStatus> {
         const torControllerStatus = await this.torController.getStatus();
 
         return {
@@ -45,7 +49,7 @@ export class TorProcess extends BaseProcess {
         };
     }
 
-    async start(): Promise<void> {
+    public async start(): Promise<void> {
         const electronProcessId = process.pid;
         const torConfiguration = await this.torController.getTorConfiguration(
             electronProcessId,
