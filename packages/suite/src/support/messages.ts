@@ -5010,6 +5010,15 @@ export default defineMessages({
         defaultMessage:
             'Access censored websites and apps using Tor Snowflake, a system designed to bypass restrictions.',
     },
+    TR_EXPERIMENTAL_TOR_EXTERNAL: {
+        id: 'TR_EXPERIMENTAL_TOR_EXTERNAL',
+        defaultMessage: 'Tor external',
+    },
+    TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION',
+        defaultMessage:
+            'Allows you to use Tor daemon running in a external process on port 9050 instead of the one bundled with Trezor Suite.',
+    },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
         defaultMessage: 'Early Access Program',

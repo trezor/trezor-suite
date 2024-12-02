@@ -5,7 +5,7 @@ import { Route } from '@suite-common/suite-types';
 
 import { Dispatch } from '../../types/suite';
 
-export type ExperimentalFeature = 'password-manager' | 'tor-snowflake';
+export type ExperimentalFeature = 'password-manager' | 'tor-snowflake' | 'tor-external';
 
 export type ExperimentalFeatureConfig = {
     title: TranslationKey;
@@ -36,6 +36,21 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
                         snowflakeBinaryPath: '',
                     });
                 }
+            }
+        },
+    },
+    'tor-external': {
+        title: 'TR_EXPERIMENTAL_TOR_EXTERNAL',
+        description: 'TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION',
+        // TODO: create knowledge base page for this!
+        // knowledgeBaseUrl: TOR_EXTERNAL_KNOWLEDGE_BASE,
+        onToggle: async ({ newValue }) => {
+            const result = await desktopApi.getTorSettings();
+            if (result.success && result.payload.useExternalTor !== newValue) {
+                await desktopApi.changeTorSettings({
+                    ...result.payload,
+                    useExternalTor: newValue,
+                });
             }
         },
     },
