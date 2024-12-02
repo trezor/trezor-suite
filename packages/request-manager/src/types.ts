@@ -6,6 +6,11 @@ export interface TorConnectionOptions {
     snowflakeBinaryPath: string;
 }
 
+export interface TorExternalConnectionOptions {
+    host: string;
+    port: number;
+}
+
 export type TorCommandResponse =
     | {
           success: true;
@@ -72,5 +77,6 @@ export const TOR_CONTROLLER_STATUS = {
     Bootstrapping: 'Bootstrapping',
     Stopped: 'Stopped',
     CircuitEstablished: 'CircuitEstablished',
+    ExternalTorRunning: 'ExternalTorRunning',
 } as const;
 export type TorControllerStatus = keyof typeof TOR_CONTROLLER_STATUS;
