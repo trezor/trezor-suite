@@ -11,7 +11,7 @@ import { extraDependencies } from 'src/support/extraDependencies';
 import router from './routerReducer';
 import suite from './suiteReducer';
 import modal from './modalReducer';
-import resize from './resizeReducer';
+import window from './windowReducer';
 import metadata from './metadataReducer';
 import desktopUpdate from './desktopUpdateReducer';
 import guide from './guideReducer';
@@ -29,7 +29,7 @@ export default {
     device,
     logs: logsSlice.reducer,
     notifications: notificationsReducer,
-    resize,
+    window,
     analytics,
     metadata,
     desktopUpdate,

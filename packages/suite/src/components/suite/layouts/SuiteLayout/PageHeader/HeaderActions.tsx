@@ -13,6 +13,7 @@ import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavi
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
+import { selectWindowSize } from 'src/reducers/suite/windowReducer';
 
 const Container = styled.div`
     display: flex;
@@ -36,7 +37,7 @@ export const HeaderActions = () => {
 
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const layoutSize = useSelector(state => state.resize.size);
+    const layoutSize = useSelector(selectWindowSize);
     const showCoinmarketButtons = layoutSize === 'XLARGE';
 
     const accountType = account?.accountType || routerParams?.accountType || '';

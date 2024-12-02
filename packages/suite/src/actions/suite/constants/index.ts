@@ -2,7 +2,7 @@ import * as STORAGE from './storageConstants';
 import * as SUITE from './suiteConstants';
 import * as MODAL from './modalConstants';
 import * as ROUTER from './routerConstants';
-import * as RESIZE from './resizeConstants';
+import * as WINDOW from './windowConstants';
 import * as METADATA from './metadataConstants';
 import * as METADATA_LABELING from './metadataLabelingConstants';
 import * as METADATA_PROVIDER from './metadataProviderConstants';
@@ -16,7 +16,7 @@ export {
     SUITE,
     MODAL,
     ROUTER,
-    RESIZE,
+    WINDOW,
     METADATA,
     METADATA_LABELING,
     METADATA_PROVIDER,

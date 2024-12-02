@@ -18,7 +18,6 @@ import type { RouterAction } from 'src/actions/suite/routerActions';
 import type { AppState } from 'src/reducers/store';
 import type { StorageAction } from 'src/actions/suite/storageActions';
 import type { SuiteAction } from 'src/actions/suite/suiteActions';
-import type { ResizeAction } from 'src/actions/suite/resizeActions';
 import type { ModalAction } from 'src/actions/suite/modalActions';
 import type { MetadataAction } from 'src/actions/suite/metadataActions';
 import type { ProtocolAction } from 'src/actions/suite/protocolActions';
@@ -67,7 +66,6 @@ type DeviceAuthenticityAction = ReturnType<
 export type Action =
     | TrezorConnectEvents // Todo: This should not be here, actions shall be defined independently from Connect Events (and they shall be mapped onto them)
     | RouterAction
-    | ResizeAction
     | StorageAction
     | SuiteAction
     | TransactionAction

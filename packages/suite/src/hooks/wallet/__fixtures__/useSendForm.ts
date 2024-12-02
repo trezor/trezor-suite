@@ -321,7 +321,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
             },
             () => ({}),
         ),
-        resize: createReducer({}, () => ({})),
+        window: createReducer({}, () => ({})),
         guide: createReducer({}, () => ({})),
         metadata: createReducer(
             { enabled: false, providers: [], selectedProvider: {} },

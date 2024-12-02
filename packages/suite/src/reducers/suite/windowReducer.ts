@@ -3,7 +3,7 @@ import produce from 'immer';
 import * as variables from '@trezor/components/src/config/variables'; // can't import from index cause it would import all UI components
 import { getNumberFromPixelString } from '@trezor/utils';
 
-import { RESIZE } from 'src/actions/suite/constants';
+import { WINDOW } from 'src/actions/suite/constants';
 import { Action } from 'src/types/suite';
 
 const sizes = {
@@ -52,16 +52,20 @@ export interface State {
     screenHeight: number | null;
 }
 
+interface WindowRootState {
+    window: State;
+}
+
 export const initialState: State = {
     size: 'NORMAL',
     screenWidth: null,
     screenHeight: null,
 };
 
-const resizeReducer = (state: State = initialState, action: Action): State =>
+const windowReducer = (state: State = initialState, action: Action): State =>
     produce(state, draft => {
         switch (action.type) {
-            case RESIZE.UPDATE_WINDOW_SIZE:
+            case WINDOW.UPDATE_WINDOW_SIZE:
                 draft.size = getSize(action.screenWidth);
                 draft.screenWidth = action.screenWidth;
                 draft.screenHeight = action.screenHeight;
@@ -70,4 +74,6 @@ const resizeReducer = (state: State = initialState, action: Action): State =>
         }
     });
 
-export default resizeReducer;
+export default windowReducer;
+
+export const selectWindowSize = (state: WindowRootState) => state.window.size;

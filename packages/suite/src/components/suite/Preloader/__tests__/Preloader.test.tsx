@@ -68,7 +68,7 @@ const getInitialState = ({ suite, router, device }: any = {}) => ({
         devices: [],
         ...device,
     },
-    resize: {
+    window: {
         size: 'LARGE',
     },
     guide: {},

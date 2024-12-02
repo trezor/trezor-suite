@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { useDispatch } from 'src/hooks/suite';
-import { updateWindowSize } from 'src/actions/suite/resizeActions';
+import { updateWindowSize } from 'src/actions/suite/windowActions';
 
 /**
  * Window resize handler
