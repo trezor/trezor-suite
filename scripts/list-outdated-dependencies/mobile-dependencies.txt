@@ -72,3 +72,6 @@ jest-expo
 intl-pluralrules
 @gorhom/bottom-sheet
 fantasticon
+@whatwg-node/events
+abortcontroller-polyfill
+event-target-shim
