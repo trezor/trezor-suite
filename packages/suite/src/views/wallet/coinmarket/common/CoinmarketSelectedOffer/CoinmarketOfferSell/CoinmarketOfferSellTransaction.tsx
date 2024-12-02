@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Button, Spinner } from '@trezor/components';
-import { fontWeights, spacingsPx, typography } from '@trezor/theme';
+import { Button, Column, Spinner, Text } from '@trezor/components';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { Translation, AccountLabeling } from 'src/components/suite';
 import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
@@ -12,14 +12,6 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     margin-top: ${spacingsPx.sm};
-`;
-
-const WaitingWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 60px ${spacingsPx.lg};
-    flex-direction: column;
 `;
 
 const LabelText = styled.div`
@@ -46,11 +38,6 @@ const Row = styled.div`
 `;
 
 const Address = styled.div``;
-
-const Title = styled.div`
-    margin-top: ${spacingsPx.xl};
-    font-weight: ${fontWeights.semiBold};
-`;
 
 export const CoinmarketSelectedOfferSellTransaction = () => {
     const { account, callInProgress, selectedQuote, sellInfo, sendTransaction, trade } =
@@ -120,21 +107,25 @@ export const CoinmarketSelectedOfferSellTransaction = () => {
                     </ButtonWrapper>
                 </>
             ) : (
-                <WaitingWrapper>
-                    <Spinner />
-                    <Title>
+                <Column
+                    alignItems="center"
+                    justifyContent="center"
+                    margin={{ horizontal: spacings.lg, vertical: spacings.xxxxl }}
+                >
+                    <Spinner margin={{ bottom: spacings.xl }} />
+                    <Text>
                         <Translation
                             id="TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO"
                             values={{ providerName }}
                         />
-                    </Title>
-                    <Value>
+                    </Text>
+                    <Text variant="tertiary">
                         <Translation
                             id="TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO_INFO"
                             values={{ providerName }}
                         />
-                    </Value>
-                </WaitingWrapper>
+                    </Text>
+                </Column>
             )}
         </Wrapper>
     );
