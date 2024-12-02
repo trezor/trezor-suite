@@ -13,6 +13,15 @@ type LaunchSuiteParams = {
     rmUserData?: boolean;
     bridgeLegacyTest?: boolean;
     bridgeDaemon?: boolean;
+    locale?: string;
+    colorScheme?: 'light' | 'dark' | 'no-preference' | null | undefined;
+};
+
+const formatErrorLogMessage = (data: string) => {
+    const red = '\x1b[31m';
+    const reset = '\x1b[0m';
+
+    return `${red}${data}${reset}`;
 };
 
 export const launchSuiteElectronApp = async (params: LaunchSuiteParams = {}) => {
@@ -37,6 +46,8 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams = {}) => 
             ...(options.bridgeLegacyTest ? ['--bridge-legacy', '--bridge-test'] : []),
             ...(options.bridgeDaemon ? ['--bridge-daemon', '--skip-new-bridge-rollout'] : []),
         ],
+        colorScheme: params.colorScheme,
+        locale: params.locale,
         // when testing electron, video needs to be setup like this. it works locally but not in docker
         // recordVideo: { dir: 'test-results' },
     });
@@ -57,8 +68,13 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams = {}) => 
         });
     }
 
-    electronApp.process().stdout?.on('data', data => console.log(data.toString()));
-    electronApp.process().stderr?.on('data', data => console.error(data.toString()));
+    // #15670 Bug in desktop app that loglevel is ignored
+    if (process.env.LOGLEVEL || process.env.GITHUB_ACTION) {
+        electronApp.process().stdout?.on('data', data => console.log(data.toString()));
+    }
+    electronApp
+        .process()
+        .stderr?.on('data', data => console.error(formatErrorLogMessage(data.toString())));
 
     await electronApp.evaluate(
         (_, [resourcesPath]) => {

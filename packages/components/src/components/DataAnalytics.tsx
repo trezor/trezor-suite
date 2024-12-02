@@ -132,7 +132,7 @@ export const DataAnalytics = ({
         >
             <Wrapper>
                 <ContentWrapper>
-                    <Heading>
+                    <Heading data-testid="@analytics/consent/heading">
                         <FormattedMessage
                             id="TR_ONBOARDING_DATA_COLLECTION_HEADING"
                             defaultMessage="Anonymous data collection"

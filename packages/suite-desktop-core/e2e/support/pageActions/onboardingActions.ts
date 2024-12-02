@@ -1,17 +1,17 @@
 import { Locator, Page, expect } from '@playwright/test';
 
 export class OnboardingActions {
-    private readonly window: Page;
     readonly welcomeTitle: Locator;
+    readonly analyticsHeading: Locator;
     readonly analyticsContinueButton: Locator;
     readonly onboardingContinueButton: Locator;
     readonly onboardingViewOnlySkipButton: Locator;
     readonly viewOnlyTooltipGotItButton: Locator;
     readonly connectDevicePrompt: Locator;
 
-    constructor(window: Page) {
-        this.window = window;
+    constructor(public window: Page) {
         this.welcomeTitle = this.window.getByTestId('@welcome/title');
+        this.analyticsHeading = this.window.getByTestId('@analytics/consent/heading');
         this.analyticsContinueButton = this.window.getByTestId('@analytics/continue-button');
         this.onboardingContinueButton = this.window.getByTestId('@onboarding/exit-app-button');
         this.onboardingViewOnlySkipButton = this.window.getByTestId('@onboarding/viewOnly/skip');
@@ -19,7 +19,8 @@ export class OnboardingActions {
         this.connectDevicePrompt = this.window.getByTestId('@connect-device-prompt');
     }
 
-    optionallyDismissFwHashCheckError() {
+    async optionallyDismissFwHashCheckError() {
+        await expect(this.welcomeTitle).toBeVisible();
         // dismisses the error modal only if it appears (handle it async in parallel, not necessary to block the rest of the flow)
         this.window
             .$('[data-testid="@device-compromised/back-button"]')
@@ -27,8 +28,7 @@ export class OnboardingActions {
     }
 
     async completeOnboarding() {
-        await expect(this.welcomeTitle).toBeVisible();
-        this.optionallyDismissFwHashCheckError();
+        await this.optionallyDismissFwHashCheckError();
         await this.analyticsContinueButton.click();
         await this.onboardingContinueButton.click();
         await this.onboardingViewOnlySkipButton.click();

@@ -4,7 +4,7 @@ import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 
 export class SettingsActions {
     private readonly window: Page;
-    private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 5;
+    private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 7;
     readonly settingsMenuButton: Locator;
     readonly settingsHeader: Locator;
     readonly debugTabButton: Locator;
