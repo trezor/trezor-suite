@@ -37,13 +37,15 @@ import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions
 import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
 import { selectNetworkFeeInfo } from '../fees/feesReducer';
 
-const DEFAULT_ACCOUNT_SYNC_INTERVAL = 60 * 1000;
+export const DEFAULT_ACCOUNT_SYNC_INTERVAL = 60 * 1000; // 1 minute
 
 // using fast and cheap blockchains, it looks suspicious when tx is not almost instantly confirmed
 const CUSTOM_ACCOUNT_SYNC_INTERVALS: Partial<Record<NetworkSymbol, number>> = {
     pol: 20 * 1000,
     bnb: 20 * 1000,
     op: 20 * 1000,
+    sol: DEFAULT_ACCOUNT_SYNC_INTERVAL * 5,
+    ada: DEFAULT_ACCOUNT_SYNC_INTERVAL * 5,
 };
 
 const getAccountSyncInterval = (symbol: NetworkSymbol) =>
