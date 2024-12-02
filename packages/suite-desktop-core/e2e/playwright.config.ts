@@ -32,7 +32,7 @@ const config: PlaywrightTestConfig = {
     },
     reportSlowTests: null,
     reporter: process.env.GITHUB_ACTION ? [['list'], ['@currents/playwright']] : [['list']],
-    timeout: 1000 * 60 * 30,
+    timeout: 1000 * 60 * 5,
     outputDir: path.join(__dirname, 'test-results'),
 };
 

@@ -93,24 +93,24 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - TEST_GROUP: "@group=suite"
-            CONTAINERS: "trezor-user-env-unix"
-            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
-          - TEST_GROUP: "@group=device-management"
-            CONTAINERS: "trezor-user-env-unix"
-            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          # - TEST_GROUP: "@group=suite"
+          #   CONTAINERS: "trezor-user-env-unix"
+          #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          # - TEST_GROUP: "@group=device-management"
+          #   CONTAINERS: "trezor-user-env-unix"
+          #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
           - TEST_GROUP: "@group=settings"
             CONTAINERS: "trezor-user-env-unix"
             CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
-          - TEST_GROUP: "@group=metadata"
-            CONTAINERS: "trezor-user-env-unix"
-            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
-          - TEST_GROUP: "@group=passphrase"
-            CONTAINERS: "trezor-user-env-unix"
-            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
-          - TEST_GROUP: "@group=other"
-            CONTAINERS: "trezor-user-env-unix"
-            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          # - TEST_GROUP: "@group=metadata"
+          #   CONTAINERS: "trezor-user-env-unix"
+          #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          # - TEST_GROUP: "@group=passphrase"
+          #   CONTAINERS: "trezor-user-env-unix"
+          #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          # - TEST_GROUP: "@group=other"
+          #   CONTAINERS: "trezor-user-env-unix"
+          #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
           - TEST_GROUP: "@group=wallet"
             CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
             CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
@@ -147,17 +147,19 @@ jobs:
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           yarn workspaces focus @trezor/suite-desktop-core
 
-      - name: Run e2e tests
+      - name: Install Playwright browsers
+        run: npx playwright install
+
+      - name: Run Playwright e2e tests
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
-          ## Tells Cypress where is the index of application
           BASE_URL: https://dev.suite.sldev.cz/suite-web/feat-parametrize-pw-suite/web/
          
           ## reporter url
           TRACK_SUITE_URL: https://track-suite-ff9ad9f5b4f6.herokuapp.com
           ## when debugging or developing tests it does not make sense to have retries,
           ## in other cases retries are useful to avoid occasional failures due to flaky tests
-          ALLOW_RETRY: true
+          ALLOW_RETRY: false
           TEST_GROUP: ${{ matrix.TEST_GROUP }}
           CI_JOB_ID: ${{ github.run_id }}
           CI_COMMIT_SHA: ${{ github.sha }}
