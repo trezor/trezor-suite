@@ -83,7 +83,7 @@ const tests = [
             fw_vendor: expect.any(String),
             safety_checks: expect.any(String),
             auto_lock_delay_ms: expect.any(Number),
-            display_rotation: expect.any(Number),
+            display_rotation: 'North',
             experimental_features: expect.any(Boolean),
         },
         legacyResults: [
@@ -167,7 +167,7 @@ const tests = [
             fw_vendor: expect.any(String),
             safety_checks: expect.any(String),
             auto_lock_delay_ms: expect.any(Number),
-            display_rotation: expect.any(Number),
+            display_rotation: 'North',
             experimental_features: expect.any(Boolean),
             backup_type: 'Bip39',
         },
