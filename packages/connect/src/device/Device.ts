@@ -583,6 +583,37 @@ export class Device extends TypedEmitter<DeviceEvents> {
             }
         }
 
+        if (this.authenticityChecks.firmwareHash === null) {
+            this.authenticityChecks.firmwareHash = await this.checkFirmwareHash();
+        }
+
+        if (
+            // The check was not yet performed
+            this.authenticityChecks.firmwareRevision === null ||
+            // The check was performed, but outcome cannot be surely determined (Suite is offline or there was an unexpected error)
+            // -> recheck on every getFeatures() until the result is known
+            (this.authenticityChecks.firmwareRevision.success === false &&
+                ['cannot-perform-check-offline', 'other-error'].includes(
+                    this.authenticityChecks.firmwareRevision.error,
+                ))
+        ) {
+            await this.checkFirmwareRevision();
+        }
+
+        if (
+            this.features?.language &&
+            !this.features.language_version_matches &&
+            this.atLeast('2.7.0')
+        ) {
+            _log.info('language version mismatch. silently updating...');
+
+            try {
+                await this.changeLanguage({ language: this.features.language });
+            } catch (err) {
+                _log.error('change language failed silently', err);
+            }
+        }
+
         // if keepSession is set do not release device
         // until method with keepSession: false will be called
         if (options.keepSession) {
@@ -714,39 +745,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     async getFeatures() {
+        // Please keep the method simple - don't add any async logic
         const { message } = await this.getCommands().typedCall('GetFeatures', 'Features', {});
         this._updateFeatures(message);
-
-        if (this.authenticityChecks.firmwareHash === null) {
-            this.authenticityChecks.firmwareHash = await this.checkFirmwareHash();
-        }
-
-        if (
-            // The check was not yet performed
-            this.authenticityChecks.firmwareRevision === null ||
-            // The check was performed, but outcome cannot be surely determined (Suite is offline or there was an unexpected error)
-            // -> recheck on every getFeatures() until the result is known
-            (this.authenticityChecks.firmwareRevision.success === false &&
-                ['cannot-perform-check-offline', 'other-error'].includes(
-                    this.authenticityChecks.firmwareRevision.error,
-                ))
-        ) {
-            await this.checkFirmwareRevision();
-        }
-
-        if (
-            !this.features.language_version_matches &&
-            this.features.language &&
-            this.atLeast('2.7.0')
-        ) {
-            _log.info('language version mismatch. silently updating...');
-
-            try {
-                await this.changeLanguage({ language: this.features.language });
-            } catch (err) {
-                _log.error('change language failed silently', err);
-            }
-        }
     }
 
     async checkFirmwareHash(): Promise<FirmwareHashCheckResult | null> {
