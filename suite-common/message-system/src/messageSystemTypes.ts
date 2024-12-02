@@ -24,6 +24,7 @@ export const Feature = {
     ethClaim: 'eth.staking.claim',
     firmwareRevisionCheck: 'security.firmware.check',
     firmwareHashCheck: 'security.firmware.hashCheck',
+    solanaMobile: 'mobile.solana',
 } as const;
 
 export type FeatureDomain = (typeof Feature)[keyof typeof Feature];

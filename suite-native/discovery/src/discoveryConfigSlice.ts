@@ -2,6 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { A, F, pipe } from '@mobily/ts-belt';
 
 import {
+    Feature,
+    MessageSystemRootState,
+    selectIsFeatureEnabled,
+} from '@suite-common/message-system';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import {
     AccountsRootState,
     DeviceRootState,
     filterUnavailableNetworks,
@@ -17,7 +23,6 @@ import {
 } from '@suite-native/config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    createSelectIsFeatureFlagEnabled,
     FeatureFlag,
     FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
@@ -26,7 +31,6 @@ import {
     selectNetworkSymbolsOfAccountsWithTokensAllowed,
     TokensRootState,
 } from '@suite-native/tokens';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 
 type DiscoveryInfo = {
     startTimestamp: number;
@@ -97,10 +101,21 @@ export const selectDiscoveryInfo = (state: DiscoveryConfigSliceRootState) =>
     state.discoveryConfig.discoveryInfo;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
-    DeviceRootState & DiscoveryConfigSliceRootState & FeatureFlagsRootState
+    DeviceRootState & DiscoveryConfigSliceRootState & FeatureFlagsRootState & MessageSystemRootState
 >();
 
-const selectIsSolanaEnabled = createSelectIsFeatureFlagEnabled(FeatureFlag.IsSolanaEnabled);
+//delete once we finally release Solana
+export const selectIsSolanaMessageFeatureEnabled = (state: MessageSystemRootState) =>
+    selectIsFeatureEnabled(state, Feature.solanaMobile, false);
+
+const selectIsSolanaEnabled = createMemoizedSelector(
+    [
+        selectIsSolanaMessageFeatureEnabled,
+        state => selectIsFeatureFlagEnabled(state, FeatureFlag.IsSolanaEnabled),
+    ],
+    (isSolanaMessageFeatureEnabled, isSolanaFeatureFlagEnabled) =>
+        isSolanaMessageFeatureEnabled || isSolanaFeatureFlagEnabled,
+);
 
 export const selectFeatureFlagEnabledNetworkSymbols = createMemoizedSelector(
     [selectIsSolanaEnabled, selectAreTestnetsEnabled],

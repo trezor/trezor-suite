@@ -1,15 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { A, G } from '@mobily/ts-belt';
+import { G } from '@mobily/ts-belt';
 
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { messageSystemActions, selectActiveFeatureMessages } from '@suite-common/message-system';
-import { Variant } from '@suite-common/suite-types';
+import { messageSystemActions } from '@suite-common/message-system';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 
-import { selectActiveKillswitchMessages } from '../selectors';
+import { selectActiveKillswitchMessage } from '../messageSystemSelectors';
 
 const screenStyle = prepareNativeStyle(utils => ({
     flexGrow: 1,
@@ -35,13 +34,12 @@ const buttonsWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',
 }));
 
-export const FeatureMessageScreen = () => {
+export const KillswitchMessageScreen = () => {
     const dispatch = useDispatch();
     const openLink = useOpenLink();
-
-    const killswitch = A.head(useSelector(selectActiveKillswitchMessages));
-
     const { applyStyle } = useNativeStyles();
+
+    const killswitch = useSelector(selectActiveKillswitchMessage);
 
     if (!killswitch) return null;
 

@@ -27,6 +27,7 @@ import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { isFirmwareVersionSupported } from '@suite-native/device';
 import { FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { StaticSessionId } from '@trezor/connect';
+import { MessageSystemRootState } from '@suite-common/message-system';
 
 import {
     DiscoveryConfigSliceRootState,
@@ -106,7 +107,8 @@ export const selectNetworksWithUnfinishedDiscovery = (
     state: DeviceRootState &
         AccountsRootState &
         FeatureFlagsRootState &
-        DiscoveryConfigSliceRootState,
+        DiscoveryConfigSliceRootState &
+        MessageSystemRootState,
     forcedAreTestnetsEnabled?: boolean,
     availableCardanoDerivations?: AccountType[],
 ) => {
@@ -132,7 +134,8 @@ export const selectShouldRunDiscoveryForDevice = (
     state: DeviceRootState &
         AccountsRootState &
         FeatureFlagsRootState &
-        DiscoveryConfigSliceRootState,
+        DiscoveryConfigSliceRootState &
+        MessageSystemRootState,
 ) => {
     // no discovery for PortfolioTracker ever
     const isPortfolioTrackerDevice = selectIsPortfolioTrackerDevice(state);
