@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Input, Button, H3, CollapsibleBox } from '@trezor/components';
+import { Input, Button, H3, CollapsibleBox, Column } from '@trezor/components';
 import { Network } from '@suite-common/wallet-config';
 import { spacings } from '@trezor/theme';
 
@@ -17,20 +17,9 @@ import { BackendInput } from './BackendInput';
 import { BackendTypeSelect } from './BackendTypeSelect';
 import { TorModal, TorResult } from './TorModal';
 
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-
-    > * + * {
-        margin-top: 8px;
-    }
-`;
-
 // eslint-disable-next-line local-rules/no-override-ds-component
 const AddUrlButton = styled(Button)`
     align-self: end;
-    margin-top: 0;
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
@@ -39,11 +28,6 @@ const Heading = styled(H3)`
     align-items: center;
     color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     margin-bottom: 6px;
-`;
-
-const TooltipContent = styled.div`
-    display: flex;
-    flex-direction: column;
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
@@ -111,12 +95,12 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
 
     return (
         <>
-            <Wrapper>
+            <Column gap={spacings.sm}>
                 <Heading>
                     <Translation id="TR_BACKENDS" />
                     <TooltipSymbol
                         content={
-                            <TooltipContent>
+                            <Column>
                                 <Translation
                                     id={
                                         network?.networkType === 'cardano'
@@ -130,7 +114,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                                         value: defaultUrls.join(', ') ?? '',
                                     }}
                                 />
-                            </TooltipContent>
+                            </Column>
                         }
                     />
                 </Heading>
@@ -189,7 +173,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                 >
                     <Translation id="TR_CONFIRM" />
                 </SaveButton>
-            </Wrapper>
+            </Column>
 
             {torModalOpen && <TorModal onResult={onTorResult} />}
         </>
