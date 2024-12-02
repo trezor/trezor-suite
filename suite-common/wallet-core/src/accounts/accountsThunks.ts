@@ -86,6 +86,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account) return;
+
         if (!isTrezorConnectBackendType(account.backendType)) return; // skip unsupported backend type
         // first basic check, traffic optimization
         // basic check returns only small amount of data without full transaction history
@@ -102,13 +103,19 @@ export const fetchAndUpdateAccountThunk = createThunk(
             suppressBackupWarning: true,
             tokenAccountsPubKeys,
         });
+
         if (!basic.success) return;
 
         const accountOutdated = isAccountOutdated(account, basic.payload);
         const accountTransactions = selectTransactions(getState());
         const accountTxs = getAccountTransactions(account.key, accountTransactions);
         // stop here if account is not outdated and there are no pending transactions
-        if (!accountOutdated && !accountTxs.find(isPending)) return;
+
+        if (!accountOutdated && !accountTxs.find(isPending)) {
+            dispatch(accountsActions.updateAccountRefreshTimestamp(account));
+
+            return;
+        }
 
         // we need to fetch at least the number of unconfirmed txs
         const pageSize =
@@ -184,6 +191,8 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 customTokens.length > 0
             ) {
                 dispatch(accountsActions.updateAccount(account, payload));
+            } else {
+                dispatch(accountsActions.updateAccountRefreshTimestamp(account));
             }
         }
     },

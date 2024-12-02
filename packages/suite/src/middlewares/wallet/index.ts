@@ -2,6 +2,7 @@ import {
     prepareFiatRatesMiddleware,
     prepareBlockchainMiddleware,
     prepareStakeMiddleware,
+    prepareAccountsMiddleware,
 } from '@suite-common/wallet-core';
 import { prepareTokenDefinitionsMiddleware } from '@suite-common/token-definitions';
 
@@ -16,6 +17,7 @@ import { coinjoinMiddleware } from './coinjoinMiddleware';
 
 export default [
     prepareBlockchainMiddleware(extraDependencies),
+    prepareAccountsMiddleware(extraDependencies),
     walletMiddleware,
     prepareDiscoveryMiddleware(extraDependencies),
     prepareFiatRatesMiddleware(extraDependencies),
