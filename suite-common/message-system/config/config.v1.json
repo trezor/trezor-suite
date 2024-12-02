@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2024-11-29T00:00:00+00:00",
-    "sequence": 68,
+    "timestamp": "2024-12-10T00:00:00+00:00",
+    "sequence": 69,
     "actions": [
         {
             "conditions": [
@@ -1112,6 +1112,45 @@
                     {
                         "domain": "security.firmware.hashCheck",
                         "flag": false
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "!",
+                        "mobile": ">=24.12.1",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "12344296-7f58-1234-1234-123466c4d701",
+                "priority": 2,
+                "dismissible": false,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Empty placeholder",
+                    "en": "Empty placeholder",
+                    "es": "Empty placeholder",
+                    "cs": "Empty placeholder",
+                    "de": "Empty placeholder",
+                    "fr": "Empty placeholder",
+                    "it": "Empty placeholder",
+                    "pt": "Empty placeholder",
+                    "tr": "Empty placeholder",
+                    "ru": "Empty placeholder",
+                    "ja": "Empty placeholder",
+                    "uk": "Empty placeholder",
+                    "hu": "Empty placeholder"
+                },
+                "feature": [
+                    {
+                        "domain": "mobile.solana",
+                        "flag": true
                     }
                 ]
             }
