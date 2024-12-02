@@ -1,3 +1,7 @@
+# 0.2.5
+
+-   npm-prerelease: @trezor/connect-common 0.2.5-beta.1 (6314de0dad)
+
 # 0.2.4
 
 -   npm-prerelease: @trezor/connect-common 0.2.4-beta.1 (55487acb49)
