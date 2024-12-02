@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { Icon, Link, Paragraph } from '@trezor/components';
+import { Icon, Link, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
@@ -97,7 +97,7 @@ export const IOAddress = ({
 
     // HiddenPlaceholder disableKeepingWidth: it isn't needed (no numbers to redact), but inline-block disrupts overflow behavior
     return (
-        <Paragraph typographyStyle="label" variant="default">
+        <Text typographyStyle="label" variant="default">
             <HiddenPlaceholder disableKeepingWidth>
                 <TextOverflowContainer
                     onMouseLeave={() => setIsClicked(false)}
@@ -135,6 +135,6 @@ export const IOAddress = ({
                     ) : null}
                 </TextOverflowContainer>
             </HiddenPlaceholder>
-        </Paragraph>
+        </Text>
     );
 };

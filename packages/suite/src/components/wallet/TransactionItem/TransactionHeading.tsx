@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { variables, Icon } from '@trezor/components';
+import { variables, Icon, Row } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import {
     formatNetworkAmount,
@@ -12,7 +12,7 @@ import {
     isSupportedEthStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import {
     FormattedCryptoAmount,
@@ -72,11 +72,6 @@ const HelpLink = styled(TrezorLink)`
     path {
         fill: ${({ theme }) => theme.legacy.TYPE_ORANGE};
     }
-`;
-
-const HeaderWrapper = styled.div`
-    display: flex;
-    gap: ${spacingsPx.xxs};
 `;
 
 interface TransactionHeadingProps {
@@ -168,12 +163,12 @@ export const TransactionHeading = ({
                         />
                     )}
                     <BlurWrapper $isBlurred={isPhishingTransaction}>
-                        <HeaderWrapper>
+                        <Row gap={spacings.xxs}>
                             <TransactionHeader transaction={transaction} isPending={isPending} />
                             {isSupportedEthStakingNetworkSymbol(transaction.symbol) && (
                                 <InstantStakeBadge transaction={transaction} symbol={symbol} />
                             )}
-                        </HeaderWrapper>
+                        </Row>
                     </BlurWrapper>
                 </HeadingWrapper>
 

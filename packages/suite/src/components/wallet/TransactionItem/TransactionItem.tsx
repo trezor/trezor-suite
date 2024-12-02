@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
 
 import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
-import { Button, Card, Link, Tooltip, Row } from '@trezor/components';
+import { Button, Card, Link, Tooltip, Row, Column } from '@trezor/components';
 import {
     formatNetworkAmount,
     isTestnet,
@@ -13,6 +13,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { AccountType, Network } from '@suite-common/wallet-config';
 import { HELP_CENTER_REPLACE_BY_FEE } from '@trezor/urls';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -35,14 +36,7 @@ import {
     InternalTransfer,
 } from './TransactionTarget/TransactionTarget';
 import { FeeRow, WithdrawalRow, DepositRow, CoinjoinRow } from './TransactionRow';
-import {
-    Content,
-    Description,
-    NextRow,
-    TargetsWrapper,
-    TimestampWrapper,
-    TxTypeIconWrapper,
-} from './CommonComponents';
+import { Content, TimestampWrapper, TxTypeIconWrapper } from './CommonComponents';
 import { BlurWrapper } from './TransactionItemBlurWrapper';
 
 const Wrapper = styled.div<{
@@ -236,7 +230,7 @@ export const TransactionItem = memo(
                             </TxTypeIconWrapper>
 
                             <Content>
-                                <Description>
+                                <Row justifyContent="space-between" overflow="hidden">
                                     <TransactionHeading
                                         transaction={transaction}
                                         isPending={isPending}
@@ -247,8 +241,12 @@ export const TransactionItem = memo(
                                         isPhishingTransaction={isPhishingTransaction}
                                         dataTestBase={dataTestBase}
                                     />
-                                </Description>
-                                <NextRow>
+                                </Row>
+                                <Row
+                                    flex="1"
+                                    alignItems="flex-start"
+                                    margin={{ bottom: spacings.xxs }}
+                                >
                                     <TimestampWrapper
                                         onMouseEnter={() => setNestedItemIsHovered(true)}
                                         onMouseLeave={() => setNestedItemIsHovered(false)}
@@ -256,7 +254,7 @@ export const TransactionItem = memo(
                                     >
                                         <TransactionTimestamp transaction={transaction} />
                                     </TimestampWrapper>
-                                    <TargetsWrapper>
+                                    <Column flex="1" overflow="hidden">
                                         {!isUnknown &&
                                         type !== 'failed' &&
                                         previewTargets.length ? (
@@ -461,19 +459,23 @@ export const TransactionItem = memo(
                                                 />
                                             </ExpandButton>
                                         )}
-                                    </TargetsWrapper>
-                                </NextRow>
+                                    </Column>
+                                </Row>
                                 {!isActionDisabled &&
                                     transaction.rbfParams &&
                                     networkFeatures?.includes('rbf') &&
                                     !transaction?.deadline && (
-                                        <NextRow>
+                                        <Row
+                                            flex="1"
+                                            alignItems="flex-start"
+                                            margin={{ bottom: spacings.xxs }}
+                                        >
                                             {disableBumpFee ? (
                                                 <DisabledBumpFeeButtonWithTooltip />
                                             ) : (
                                                 <BumpFeeButton isDisabled={false} />
                                             )}
-                                        </NextRow>
+                                        </Row>
                                     )}
                             </Content>
                         </Row>

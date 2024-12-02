@@ -1,8 +1,9 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
-import { FormattedCryptoAmount, FormattedNftAmount, HiddenPlaceholder } from 'src/components/suite';
+import { HiddenPlaceholder } from 'src/components/suite';
 
 import { MIN_ROW_HEIGHT } from './TransactionTargetLayout';
 
@@ -40,44 +41,11 @@ export const Content = styled.div`
 `;
 
 export const Description = styled(HiddenPlaceholder)`
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.body};
     line-height: 1.5;
     display: flex;
     justify-content: space-between;
     overflow: hidden;
     white-space: nowrap;
-`;
-
-export const NextRow = styled.div`
-    display: flex;
-    flex: 1;
-    align-items: flex-start;
-    margin-bottom: 6px;
-`;
-
-export const TargetsWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    overflow: hidden;
-    padding-right: 10px;
-    margin-right: -10px;
-`;
-
-const amountStyle = css`
-    width: 100%;
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    white-space: nowrap;
-`;
-
-export const StyledFormattedCryptoAmount = styled(FormattedCryptoAmount)`
-    ${amountStyle}
-`;
-
-export const StyledFormattedNftAmount = styled(FormattedNftAmount)`
-    ${amountStyle}
 `;
