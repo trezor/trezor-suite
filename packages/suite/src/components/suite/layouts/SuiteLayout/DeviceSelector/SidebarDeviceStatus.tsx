@@ -7,6 +7,7 @@ import { TrezorDevice } from 'src/types/suite';
 
 import { useDispatch, useSelector } from '../../../../../hooks/suite';
 import { DeviceStatus } from './DeviceStatus';
+import { useIsSidebarCollapsed } from '../Sidebar/utils';
 
 const needsRefresh = (device?: TrezorDevice) => {
     if (!device) return false;
@@ -24,6 +25,7 @@ export const SidebarDeviceStatus = () => {
     const selectedDevice = useSelector(selectDevice);
     const devices = useSelector(selectDevices);
     const dispatch = useDispatch();
+    const isSidebarCollapsed = useIsSidebarCollapsed();
 
     const deviceNeedsRefresh = needsRefresh(selectedDevice);
 
@@ -52,6 +54,7 @@ export const SidebarDeviceStatus = () => {
             device={selectedDevice}
             handleRefreshClick={handleRefreshClick}
             forceConnectionInfo={isConnectionShown}
+            isDeviceDetailVisible={!isSidebarCollapsed}
         />
     );
 };

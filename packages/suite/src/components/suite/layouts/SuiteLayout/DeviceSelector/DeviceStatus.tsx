@@ -13,14 +13,13 @@ import { TrezorDevice } from 'src/types/suite';
 import { DeviceDetail } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceDetail';
 import { useSelector } from 'src/hooks/suite';
 
-import { ExpandedSidebarOnly } from '../Sidebar/ExpandedSidebarOnly';
-
 type DeviceStatusProps = {
     deviceModel: DeviceModelInternal;
     deviceNeedsRefresh?: boolean;
     device?: TrezorDevice;
     handleRefreshClick?: MouseEventHandler;
     forceConnectionInfo?: boolean;
+    isDeviceDetailVisible?: boolean;
 };
 
 const DeviceWrapper = styled.div<{ $isLowerOpacity: boolean }>`
@@ -35,6 +34,7 @@ export const DeviceStatus = ({
     device,
     handleRefreshClick,
     forceConnectionInfo = false,
+    isDeviceDetailVisible = true,
 }: DeviceStatusProps) => {
     const deviceLabel = useSelector(state => selectDeviceLabelOrNameById(state, device?.id));
 
@@ -49,17 +49,15 @@ export const DeviceStatus = ({
                 />
             </DeviceWrapper>
 
-            <ExpandedSidebarOnly>
-                {device && (
-                    <DeviceDetail label={deviceLabel}>
-                        <DeviceStatusText
-                            onRefreshClick={handleRefreshClick}
-                            device={device}
-                            forceConnectionInfo={forceConnectionInfo}
-                        />
-                    </DeviceDetail>
-                )}
-            </ExpandedSidebarOnly>
+            {isDeviceDetailVisible && device && (
+                <DeviceDetail label={deviceLabel}>
+                    <DeviceStatusText
+                        onRefreshClick={handleRefreshClick}
+                        device={device}
+                        forceConnectionInfo={forceConnectionInfo}
+                    />
+                </DeviceDetail>
+            )}
         </Row>
     );
 };
