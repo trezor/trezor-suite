@@ -12,13 +12,14 @@ import {
     ElevationDown,
     ElevationContext,
     Column,
+    Row,
 } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
 import { selectBannerMessage } from '@suite-common/message-system';
 import { isWeb } from '@trezor/env-utils';
 import { TREZOR_URL, SUITE_URL } from '@trezor/urls';
 import { resolveStaticPath } from '@suite-common/suite-utils';
-import { Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
+import { Elevation, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
 import { TrezorLogo } from '@trezor/product-components';
 
 import { Translation } from 'src/components/suite';
@@ -32,23 +33,6 @@ import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { NavSettings } from './NavSettings';
 import { TrafficLightOffset } from '../../TrafficLightOffset';
 
-const MessageContainer = styled.div`
-    margin: ${spacingsPx.xxs} ${spacingsPx.xs} ${spacingsPx.xs};
-`;
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-`;
-
-const Body = styled.div`
-    display: flex;
-    width: 100%;
-    height: 100%;
-`;
-
 const Expander = styled.div`
     display: flex;
     flex-direction: column;
@@ -60,6 +44,7 @@ const Expander = styled.div`
 
 const WelcomeWrapper = styled.div<{ $elevation: Elevation }>`
     background-color: ${mapElevationToBackground};
+    height: 100%;
 
     @media (max-width: ${variables.SCREEN_SIZE.MD}) {
         display: none;
@@ -208,14 +193,12 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
     return (
         <ElevationContext baseElevation={-1}>
             <TrafficLightOffset isVisible={Boolean(bannerMessage)}>
-                <Wrapper>
+                <Column height="100%" width="100%">
                     {bannerMessage && (
-                        <MessageContainer>
-                            <MessageSystemBanner message={bannerMessage} />
-                        </MessageContainer>
+                        <MessageSystemBanner message={bannerMessage} margin={spacings.xs} />
                     )}
 
-                    <Body data-testid="@welcome-layout/body">
+                    <Row height="100%" width="100%" data-testid="@welcome-layout/body">
                         <ElevationDown>
                             <Left />
                         </ElevationDown>
@@ -224,8 +207,8 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
 
                         <GuideButton />
                         <GuideRouter />
-                    </Body>
-                </Wrapper>
+                    </Row>
+                </Column>
             </TrafficLightOffset>
         </ElevationContext>
     );

@@ -6,7 +6,7 @@ import { Button, variables } from '@trezor/components';
 import { TrezorLogo } from '@trezor/product-components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { selectBannerMessage } from '@suite-common/message-system';
-import { spacingsPx, zIndices } from '@trezor/theme';
+import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { OnboardingProgressBar } from 'src/components/onboarding';
@@ -146,7 +146,9 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
     return (
         <TrafficLightOffset>
             <Wrapper>
-                {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
+                {bannerMessage && (
+                    <MessageSystemBanner message={bannerMessage} margin={spacings.xs} />
+                )}
 
                 <Body data-testid="@onboarding-layout/body">
                     <ScrollingWrapper>

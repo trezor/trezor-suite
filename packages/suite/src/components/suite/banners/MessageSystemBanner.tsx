@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { messageSystemActions } from '@suite-common/message-system';
 import { Message } from '@suite-common/suite-types';
-import { Row, Banner as WarningComponent, Banner } from '@trezor/components';
+import { Row, Banner as WarningComponent, Banner, BannerProps } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -11,9 +11,10 @@ import { selectLanguage, selectTorState } from 'src/reducers/suite/suiteReducer'
 
 type MessageSystemBannerProps = {
     message: Message;
+    margin?: BannerProps['margin'];
 };
 
-export const MessageSystemBanner = ({ message }: MessageSystemBannerProps) => {
+export const MessageSystemBanner = ({ message, margin }: MessageSystemBannerProps) => {
     const { cta, variant, id, content, dismissible } = message;
 
     const { isTorEnabled } = useSelector(selectTorState);
@@ -79,6 +80,7 @@ export const MessageSystemBanner = ({ message }: MessageSystemBannerProps) => {
                     )}
                 </Row>
             }
+            margin={margin}
         >
             {content[language] || content.en}
         </Banner>
