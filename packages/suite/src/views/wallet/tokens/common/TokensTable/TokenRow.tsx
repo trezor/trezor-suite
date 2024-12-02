@@ -132,7 +132,8 @@ export const TokenRow = ({
 
     const isReceiveButtonDisabled = isDeviceLocked || !!device.authConfirm;
 
-    const tokenCryptoId = toTokenCryptoId(account.symbol, token.contract.toLowerCase());
+    const contractAddress = getContractAddressForNetwork(account.symbol, token.contract);
+    const tokenCryptoId = toTokenCryptoId(account.symbol, contractAddress);
     const tokenTradingOptions = coins?.[tokenCryptoId]?.services;
 
     const canBuyToken = !!tokenTradingOptions && tokenTradingOptions.buy;
