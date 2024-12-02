@@ -127,6 +127,8 @@ buck-out/
 !**/suite-native/app/.env.production
 !**/suite-native/app/.env.staging
 
+suite-native/atoms/src/Spinner/refresh-spinner-*.json
+
 # ios
 **/ios/*.xcarchive
 **/ios/builds/*
