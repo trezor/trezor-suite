@@ -92,3 +92,7 @@ export const ABORTED_BY_SIGNAL = 'Aborted by signal' as const;
  * see scheduleAction
  */
 export const ABORTED_BY_TIMEOUT = 'Aborted by timeout' as const;
+/**
+ * missing udev rules on linux
+ */
+export const LIBUSB_ERROR_ACCESS = 'LIBUSB_ERROR_ACCESS' as const;

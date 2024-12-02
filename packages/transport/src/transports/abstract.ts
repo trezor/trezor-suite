@@ -205,6 +205,7 @@ export abstract class AbstractTransport extends TransportEmitter {
         | typeof ERRORS.ABORTED_BY_TIMEOUT
         | typeof ERRORS.ABORTED_BY_SIGNAL
         | typeof ERRORS.WRONG_ENVIRONMENT
+        | typeof ERRORS.LIBUSB_ERROR_ACCESS
     >;
 
     /**

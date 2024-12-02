@@ -380,6 +380,7 @@ export class BridgeTransport extends AbstractTransport {
                         ERRORS.DEVICE_NOT_FOUND,
                         ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
                         ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
+                        ERRORS.LIBUSB_ERROR_ACCESS,
                     ]);
                 case '/call':
                 case '/read':

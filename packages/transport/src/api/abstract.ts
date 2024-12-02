@@ -113,6 +113,7 @@ export abstract class AbstractApi extends TypedEmitter<{
         | typeof ERRORS.UNEXPECTED_ERROR
         | typeof ERRORS.ABORTED_BY_TIMEOUT
         | typeof ERRORS.ABORTED_BY_SIGNAL
+        | typeof ERRORS.LIBUSB_ERROR_ACCESS
     >;
 
     /**

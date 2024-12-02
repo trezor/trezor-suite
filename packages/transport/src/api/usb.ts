@@ -283,6 +283,9 @@ export class UsbApi extends AbstractApi {
             this.logger?.debug(`usb: device.open done. device: ${this.formatDeviceForLog(device)}`);
         } catch (err) {
             this.logger?.error(`usb: device.open error ${err}`);
+            if (err.message.includes('LIBUSB_ERROR_ACCESS')) {
+                return this.error({ error: ERRORS.LIBUSB_ERROR_ACCESS });
+            }
 
             return this.error({
                 error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
