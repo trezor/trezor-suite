@@ -1,3 +1,8 @@
+# 1.2.5
+
+-   npm-prerelease: @trezor/protobuf 1.2.5-beta.1 (a3f1b9247e)
+-   chore(protobuf): update protobuf definitions (display type enum added) (3818a30d06)
+
 # 1.2.4
 
 -   npm-prerelease: @trezor/protobuf 1.2.4-beta.1 (cf18864248)
