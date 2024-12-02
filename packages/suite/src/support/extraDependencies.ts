@@ -33,6 +33,7 @@ import * as walletSettingsActions from 'src/actions/settings/walletSettingsActio
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { addWalletThunk, openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
+import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 
 import * as suiteActions from '../actions/suite/suiteActions';
 import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
@@ -91,6 +92,7 @@ export const extraDependencies: ExtraDependencies = {
         selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
         selectSuiteSettings,
+        selectIsWindowVisible,
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,

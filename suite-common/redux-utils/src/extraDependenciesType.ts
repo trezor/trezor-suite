@@ -78,6 +78,7 @@ export type ExtraDependencies = {
         selectDesktopBinDir: SuiteCompatibleSelector<string | undefined>;
         selectDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
         selectLanguage: SuiteCompatibleSelector<string>;
+        selectIsWindowVisible: SuiteCompatibleSelector<boolean>;
         selectRouterApp: SuiteCompatibleSelector<string>;
         selectRoute: SuiteCompatibleSelector<Route | undefined>;
         selectMetadata: SuiteCompatibleSelector<any>;

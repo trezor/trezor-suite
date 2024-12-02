@@ -335,26 +335,37 @@ const tryClearTimeout = (timeout?: Timeout) => {
 
 export const syncAccountsWithBlockchainThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/syncAccountsThunk`,
-    async (symbol: NetworkSymbol, { getState, dispatch }) => {
+    async (symbol: NetworkSymbol, { getState, dispatch, extra }) => {
         const accounts = selectAccounts(getState());
         const blockchain = selectBlockchainState(getState());
+        const {
+            selectors: { selectIsWindowVisible },
+        } = extra;
+        const isWindowVisible = selectIsWindowVisible(getState());
+
         // First clear, to cancel last planned sync
         tryClearTimeout(blockchain[symbol].syncTimeout);
 
-        // non-blockbook networks will not update periodically if not visible in UI (sidebar)
-        const visibleAccounts = findAccountsByNetwork(symbol, accounts).filter(
-            account => isBlockbookBasedNetwork(symbol) || account.visible,
-        );
+        // non-blockbook networks will not be updated when app window is not active
+        const shouldSync = isWindowVisible || isBlockbookBasedNetwork(symbol);
 
-        await Promise.all(
-            visibleAccounts.map(account =>
-                dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key })),
-            ),
-        );
+        if (shouldSync) {
+            // non-blockbook networks will not update periodically if not visible in UI (sidebar)
+            const visibleAccounts = findAccountsByNetwork(symbol, accounts).filter(
+                account => isBlockbookBasedNetwork(symbol) || account.visible,
+            );
+
+            await Promise.all(
+                visibleAccounts.map(account =>
+                    dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key })),
+                ),
+            );
+        }
 
         const blockchainInfo = selectNetworkBlockchainInfo(getState(), symbol);
         // Second clear, just to be sure that no other sync was planned while executing this one
         tryClearTimeout(blockchainInfo.syncTimeout);
+
         const timeout = setTimeout(
             () => dispatch(syncAccountsWithBlockchainThunk(symbol)),
             getAccountSyncInterval(symbol),

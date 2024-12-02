@@ -102,6 +102,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectSuiteSettings: mockSelector('selectSuiteSettings', {
             defaultWalletLoading: 'standard',
         }),
+        selectIsWindowVisible: mockSelector('selectIsWindowVisible', true),
     },
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
