@@ -1,5 +1,6 @@
 import { isNftTokenTransfer, formatAmount, getTxOperation } from '@suite-common/wallet-utils';
 import { TokenTransfer } from '@trezor/connect';
+import { TypographyStyle } from '@trezor/theme';
 
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
@@ -9,6 +10,7 @@ type AmountComponentProps = {
     withLink?: boolean;
     withSign?: boolean;
     alignMultitoken?: 'flex-end' | 'flex-start';
+    linkTypographyStyle?: TypographyStyle;
 };
 
 export const AmountComponent = ({
@@ -16,6 +18,7 @@ export const AmountComponent = ({
     withLink = false,
     withSign = false,
     alignMultitoken,
+    linkTypographyStyle,
 }: AmountComponentProps): React.ReactNode => {
     const operation = getTxOperation(transfer.type);
 
@@ -26,6 +29,7 @@ export const AmountComponent = ({
                 isWithLink={withLink}
                 signValue={withSign ? operation : null}
                 alignMultitoken={alignMultitoken}
+                linkTypographyStyle={linkTypographyStyle}
             />
         );
     }

@@ -185,6 +185,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                         withLink={true}
                                         withSign={true}
                                         alignMultitoken="flex-start"
+                                        linkTypographyStyle="hint"
                                     />
                                 </Text>
                             </Table.Cell>

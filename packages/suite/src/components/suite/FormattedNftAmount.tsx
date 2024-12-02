@@ -4,7 +4,7 @@ import { SignValue } from '@suite-common/suite-types';
 import { isNftMultitokenTransfer } from '@suite-common/wallet-utils';
 import { TokenTransfer } from '@trezor/connect';
 import { Box, Column, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { spacings, TypographyStyle } from '@trezor/theme';
 
 import { HiddenPlaceholder, Sign, Translation } from 'src/components/suite';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
@@ -19,6 +19,7 @@ export interface FormattedNftAmountProps {
     className?: string;
     isWithLink?: boolean;
     alignMultitoken?: 'flex-end' | 'flex-start';
+    linkTypographyStyle?: TypographyStyle;
 }
 
 export const FormattedNftAmount = ({
@@ -27,6 +28,7 @@ export const FormattedNftAmount = ({
     className,
     isWithLink,
     alignMultitoken = 'flex-end',
+    linkTypographyStyle,
 }: FormattedNftAmountProps) => {
     const theme = useTheme();
     const { translationString } = useTranslation();
@@ -34,8 +36,8 @@ export const FormattedNftAmount = ({
     const { network } = selectedAccount;
 
     const symbolComponent = transfer.symbol ? (
-        <Text maxWidth={120} ellipsisLineCount={1}>
-            {transfer.symbol}
+        <Text ellipsisLineCount={1}>
+            <BlurUrls text={transfer.symbol} />
         </Text>
     ) : null;
 
@@ -70,7 +72,7 @@ export const FormattedNftAmount = ({
                                     href={`${network?.explorer.nft}/${transfer.contract}/${token.id}`}
                                     color={theme.textSecondaryHighlight}
                                     variant="underline"
-                                    typographyStyle="label"
+                                    typographyStyle={linkTypographyStyle}
                                 >
                                     <Text maxWidth={145} ellipsisLineCount={1}>
                                         {token.id}
@@ -104,7 +106,7 @@ export const FormattedNftAmount = ({
                         }
                         color={theme.textSecondaryHighlight}
                         variant="underline"
-                        typographyStyle="label"
+                        typographyStyle={linkTypographyStyle}
                     >
                         <Row gap={spacings.zero}>
                             <Text maxWidth={145} ellipsisLineCount={1}>

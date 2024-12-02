@@ -208,6 +208,7 @@ const EthereumSpecificBalanceDetailsRow = ({
                                 transfer={transfer}
                                 isWithLink
                                 alignMultitoken="flex-start"
+                                linkTypographyStyle="label"
                             />
                         ) : (
                             formatAmount(transfer.amount, transfer.decimals)
