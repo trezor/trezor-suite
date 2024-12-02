@@ -76,7 +76,7 @@ export const QrScannerModal = ({ decision, onCancel }: QrScannerModalProps) => {
 
     return (
         <NewModal onCancel={onCancel} heading={<Translation id="TR_SCAN_QR_CODE" />}>
-            <Column gap={spacings.md} alignItems="center">
+            <Column gap={spacings.md}>
                 <ContentWrapper>
                     {error && (
                         <Card height="100%">
