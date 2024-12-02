@@ -6,6 +6,14 @@ import { FirmwareRelease, VersionArray } from '../types';
 import { FirmwareRevisionCheckError, FirmwareRevisionCheckResult } from '../types/device';
 import { calculateRevisionForDevice } from './calculateRevisionForDevice';
 
+/*
+ * error names that signify unavailable internet connection, see https://github.com/node-fetch/node-fetch/blob/main/docs/ERROR-HANDLING.md
+ * Only works in Suite Desktop, where `cross-fetch` uses `node-fetch` (nodeJS environment)
+ * In Suite Web, the errors are unfortunately indistinguishable from other errors, because they are all lumped as CORS errors
+ * (even a request that had no response is CORS error, since a non-existent response does not have CORS headers)
+ */
+const NODE_FETCH_OFFLINE_ERROR_NAMES = ['FetchError', 'AbortError'] as const;
+
 type GetOnlineReleaseMetadataParams = {
     firmwareVersion: VersionArray;
     internalModel: string;
@@ -87,7 +95,7 @@ export const checkFirmwareRevision = async ({
 
             return { success: true };
         } catch (e) {
-            if (e.name === 'FetchError' && e.code === 'ENOTFOUND') {
+            if (NODE_FETCH_OFFLINE_ERROR_NAMES.includes(e.name)) {
                 return failFirmwareRevisionCheck('cannot-perform-check-offline');
             }
 
