@@ -1,3 +1,8 @@
+# 9.2.4
+
+-   npm-prerelease: @trezor/utils 9.2.4-beta.1 (75412b5b8c)
+-   feat(utils): cloneCyclcicObject new util (a65cc86086)
+
 # 9.2.3
 
 -   npm-prerelease: @trezor/utils 9.2.3-beta.1 (a70e059c89)
