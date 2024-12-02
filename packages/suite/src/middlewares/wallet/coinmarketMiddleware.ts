@@ -142,28 +142,41 @@ export const coinmarketMiddleware =
         const exchangeCoinmarketAccount = newState.wallet.coinmarket.exchange.coinmarketAccount;
 
         if (action.type === ROUTER.LOCATION_CHANGE) {
-            const wasTradeType = getTradeTypeByRoute(state.router.route);
-            const isTradeType = getTradeTypeByRoute(newState.router.route);
-            if (isTradeType) {
-                api.dispatch(coinmarketCommonActions.setActiveSection(isTradeType));
-            }
+            const routeName = newState.router.route?.name;
+            const isBuy = routeName === 'wallet-coinmarket-buy';
+            const isSell = routeName === 'wallet-coinmarket-sell';
+            const isExchange = routeName === 'wallet-coinmarket-exchange';
 
             // clean coinmarketAccount in sell
-            if (isTradeType === 'sell' && sellCoinmarketAccount) {
+            if (isSell && sellCoinmarketAccount) {
                 api.dispatch(coinmarketSellActions.setCoinmarketSellAccount(undefined));
             }
 
             // clean coinmarketAccount in exchange
-            if (isTradeType === 'exchange' && exchangeCoinmarketAccount) {
+            if (isExchange && exchangeCoinmarketAccount) {
                 api.dispatch(coinmarketExchangeActions.setCoinmarketExchangeAccount(undefined));
             }
 
-            const isBuyToSell = wasTradeType === 'buy' && isTradeType === 'sell';
-            const isSellToBuy = wasTradeType === 'sell' && isTradeType === 'buy';
+            if (isBuy) {
+                api.dispatch(coinmarketCommonActions.setActiveSection('buy'));
+            }
+
+            if (isSell) {
+                api.dispatch(coinmarketCommonActions.setActiveSection('sell'));
+            }
+
+            if (isExchange) {
+                api.dispatch(coinmarketCommonActions.setActiveSection('exchange'));
+            }
+
+            const wasBuy = state.router.route?.name === 'wallet-coinmarket-buy';
+            const wasSell = state.router.route?.name === 'wallet-coinmarket-sell';
+            const isBuyToSell = wasBuy && isSell;
+            const isSellToBuy = wasSell && isBuy;
 
             const cleanupPrefilledFromCryptoId =
                 !!newState.wallet.coinmarket.prefilledFromCryptoId &&
-                (!isTradeType || isBuyToSell || isSellToBuy);
+                ((!isSell && !isExchange && !isBuy) || isBuyToSell || isSellToBuy);
 
             if (cleanupPrefilledFromCryptoId) {
                 api.dispatch(coinmarketCommonActions.setCoinmarketPrefilledFromCryptoId(undefined));
