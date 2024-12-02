@@ -118,11 +118,11 @@ export class SessionsBackground
             if (result && result.success && result.payload) {
                 if ('descriptors' in result.payload) {
                     const { descriptors } = result.payload;
-                    setTimeout(() => this.emit('descriptors', Object.values(descriptors)), 0);
+                    this.emit('descriptors', Object.values(descriptors));
                 }
                 if ('releaseRequest' in result.payload && result.payload.releaseRequest) {
                     const { releaseRequest } = result.payload;
-                    setTimeout(() => this.emit('releaseRequest', releaseRequest));
+                    this.emit('releaseRequest', releaseRequest);
                 }
             }
         }
