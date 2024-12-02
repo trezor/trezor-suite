@@ -4645,7 +4645,7 @@ export default defineMessagesWithTypeCheck({
     TR_FIRMWARE_SWITCH_WARNING_1: {
         id: 'TR_FIRMWARE_SWITCH_WARNING_1',
         defaultMessage:
-            'Switching firmware <b>wipes all your device data</b>, including wallets, keys, and accounts.',
+            'This action will <b>wipe all your device data</b>, including wallets, keys, and accounts.',
     },
     TR_FIRMWARE_SWITCH_WARNING_2: {
         id: 'TR_FIRMWARE_SWITCH_WARNING_2',

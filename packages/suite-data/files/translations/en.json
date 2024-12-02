@@ -1044,7 +1044,7 @@
   "TR_FIRMWARE_SUBHEADING_NONE_BITCOIN_ONLY_DEVICE": "Your device is ready for the latest firmware in order to be used safely. For Bitcoin enthusiasts, a Bitcoin-only firmware is available.",
   "TR_FIRMWARE_SUBHEADING_UNKNOWN": "Your Trezor is shipped without firmware. Install the latest firmware in order to use your device safely. For Bitcoin-only users, we recommend installing <button>{bitcoinOnly} firmware</button>.",
   "TR_FIRMWARE_SUBHEADING_UNKNOWN_BITCOIN_ONLY_DEVICE": "A lightweight firmware supporting Bitcoin-only operations.",
-  "TR_FIRMWARE_SWITCH_WARNING_1": "Switching firmware <b>wipes all your device data</b>, including wallets, keys, and accounts.",
+  "TR_FIRMWARE_SWITCH_WARNING_1": "This action will <b>wipe all your device data</b>, including wallets, keys, and accounts.",
   "TR_FIRMWARE_SWITCH_WARNING_2": "To regain access to your coins, you must <b>recover your wallet using your wallet backup</b>. Ensure your wallet backup is accessible and legible.",
   "TR_FIRMWARE_SWITCH_WARNING_3": "If you don't have your wallet backup, there's no way to recover your coins!",
   "TR_FIRMWARE_TYPE": "Type",
