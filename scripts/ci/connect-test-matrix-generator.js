@@ -12,13 +12,13 @@ const groups = {
     api: {
         name: 'api',
         pattern:
-            'init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy checkFirmwareAuthenticity keepSession cancel.test info.test',
+            'authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy checkFirmwareAuthenticity keepSession cancel.test info.test',
         includeFilter: '',
     },
     // temporarily created group for flaky test - to spend less time on reruns and to make test result in CI more readable without investigating long logs
     apiFlaky: {
         name: 'api-flaky',
-        pattern: 'override',
+        pattern: 'override init',
     },
     management: {
         name: 'management',
