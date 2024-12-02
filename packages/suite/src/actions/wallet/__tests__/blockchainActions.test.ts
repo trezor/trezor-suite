@@ -63,6 +63,9 @@ const getInitialState = (
     suite: {
         device: { state: '1stTestnetAddress@device_id:0' }, // device is needed for notification/event
     },
+    window: {
+        isVisible: true,
+    },
 });
 
 type State = ReturnType<typeof getInitialState>;

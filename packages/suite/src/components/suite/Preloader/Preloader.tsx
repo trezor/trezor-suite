@@ -19,6 +19,7 @@ import {
 } from 'src/reducers/suite/suiteReducer';
 import { SuiteStart } from 'src/views/start/SuiteStart';
 import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
+import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
 
 import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
 import { InitialLoading } from './InitialLoading';
@@ -64,6 +65,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const isFirmwareAuthenticityCheckDismissed = useSelector(
         selectIsFirmwareAuthenticityCheckDismissed,
     );
+
     // report firmware authenticity failures even when the UI is disabled
     useReportDeviceCompromised();
 
@@ -75,6 +77,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
 
     // Register keyboard handlers for opening/closing Guide using keyboard
     useGuideKeyboard();
+    useWindowVisibility();
 
     if (lifecycle.status === 'error') {
         throw new Error(lifecycle.error);

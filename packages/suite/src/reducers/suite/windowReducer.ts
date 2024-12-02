@@ -50,6 +50,7 @@ export interface State {
     size: 'UNAVAILABLE' | 'TINY' | 'SMALL' | 'NORMAL' | 'LARGE' | 'XLARGE';
     screenWidth: number | null;
     screenHeight: number | null;
+    isVisible: boolean;
 }
 
 interface WindowRootState {
@@ -60,15 +61,19 @@ export const initialState: State = {
     size: 'NORMAL',
     screenWidth: null,
     screenHeight: null,
+    isVisible: true,
 };
 
 const windowReducer = (state: State = initialState, action: Action): State =>
     produce(state, draft => {
         switch (action.type) {
             case WINDOW.UPDATE_WINDOW_SIZE:
-                draft.size = getSize(action.screenWidth);
-                draft.screenWidth = action.screenWidth;
-                draft.screenHeight = action.screenHeight;
+                draft.size = getSize(action.payload.screenWidth);
+                draft.screenWidth = action.payload.screenWidth;
+                draft.screenHeight = action.payload.screenHeight;
+                break;
+            case WINDOW.UPDATE_WINDOW_VISIBILITY:
+                draft.isVisible = action.payload.isVisible;
                 break;
             // no default
         }
@@ -77,3 +82,5 @@ const windowReducer = (state: State = initialState, action: Action): State =>
 export default windowReducer;
 
 export const selectWindowSize = (state: WindowRootState) => state.window.size;
+
+export const selectIsWindowVisible = (state: WindowRootState) => state.window.isVisible;

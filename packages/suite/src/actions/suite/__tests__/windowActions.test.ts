@@ -36,6 +36,7 @@ describe('Window Actions', () => {
             size: 'UNAVAILABLE',
             screenWidth: 259,
             screenHeight: 100,
+            isVisible: true,
         });
 
         store.dispatch(windowActions.updateWindowSize(576, 100));
@@ -43,6 +44,7 @@ describe('Window Actions', () => {
             size: 'TINY',
             screenWidth: 576,
             screenHeight: 100,
+            isVisible: true,
         });
 
         store.dispatch(windowActions.updateWindowSize(768, 100));
@@ -50,6 +52,7 @@ describe('Window Actions', () => {
             size: 'SMALL',
             screenWidth: 768,
             screenHeight: 100,
+            isVisible: true,
         });
 
         store.dispatch(windowActions.updateWindowSize(992, 100));
@@ -57,6 +60,7 @@ describe('Window Actions', () => {
             size: 'NORMAL',
             screenWidth: 992,
             screenHeight: 100,
+            isVisible: true,
         });
 
         store.dispatch(windowActions.updateWindowSize(1200, 100));
@@ -64,6 +68,7 @@ describe('Window Actions', () => {
             size: 'LARGE',
             screenWidth: 1200,
             screenHeight: 100,
+            isVisible: true,
         });
 
         store.dispatch(windowActions.updateWindowSize(1201, 100));
@@ -71,6 +76,7 @@ describe('Window Actions', () => {
             size: 'XLARGE',
             screenWidth: 1201,
             screenHeight: 100,
+            isVisible: true,
         });
     });
 });
