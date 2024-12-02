@@ -274,10 +274,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     // Required for the correct functionality of bottom text in the input.
     const addressLabelComponent = (
-        <AddressLabeling address={addressValue} knownOnly networkSymbol={symbol} />
+        <AddressLabeling address={addressValue} knownOnly symbol={symbol} />
     );
     const isAddressWithLabel = !!addressLabelComponent.type({
-        networkSymbol: symbol,
+        symbol,
         address: addressValue,
         knownOnly: true,
     });

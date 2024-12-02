@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
-import { networks } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 
 import { PriceTicker, Translation, TrendTicker } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
@@ -46,7 +46,7 @@ interface TradeBoxPricesProps {
 }
 
 export const TradeBoxPrices = ({ account }: TradeBoxPricesProps) => {
-    const isTestnet = networks[account.symbol].testnet;
+    const isTestnet = getNetwork(account.symbol).testnet;
 
     return (
         <Wrapper>

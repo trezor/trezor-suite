@@ -302,7 +302,7 @@ export const TokenRow = ({
                                             onClick: () =>
                                                 dispatch(
                                                     tokenDefinitionsActions.setTokenStatus({
-                                                        networkSymbol: network.symbol,
+                                                        symbol: network.symbol,
                                                         contractAddress: token.contract,
                                                         status: tokenStatusType,
                                                         type: DefinitionType.COIN,
@@ -462,7 +462,7 @@ export const TokenRow = ({
                                           )
                                         : dispatch(
                                               tokenDefinitionsActions.setTokenStatus({
-                                                  networkSymbol: network.symbol,
+                                                  symbol: network.symbol,
                                                   contractAddress: token.contract,
                                                   status: TokenManagementAction.SHOW,
                                                   type: DefinitionType.COIN,

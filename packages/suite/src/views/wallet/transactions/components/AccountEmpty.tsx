@@ -12,14 +12,13 @@ interface AccountEmptyProps {
 
 export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const dispatch = useDispatch();
-    const networkSymbol = account.symbol.toUpperCase();
 
     const handleNavigateToReceivePage = () => {
         dispatch(goto('wallet-receive', { preserveParams: true }));
         analytics.report({
             type: EventType.AccountsEmptyAccountReceive,
             payload: {
-                symbol: networkSymbol.toLowerCase(),
+                symbol: account.symbol,
             },
         });
     };
@@ -29,7 +28,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
         analytics.report({
             type: EventType.AccountsEmptyAccountBuy,
             payload: {
-                symbol: networkSymbol.toLowerCase(),
+                symbol: account.symbol,
             },
         });
     };
@@ -40,7 +39,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
             description={
                 <Translation
                     id="TR_ACCOUNT_IS_EMPTY_DESCRIPTION"
-                    values={{ network: networkSymbol }}
+                    values={{ network: account.symbol.toUpperCase() }}
                 />
             }
             iconName="arrowsLeftRight"
@@ -51,7 +50,10 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                     key: '1',
                     onClick: handleNavigateToReceivePage,
                     children: (
-                        <Translation id="TR_RECEIVE_NETWORK" values={{ network: networkSymbol }} />
+                        <Translation
+                            id="TR_RECEIVE_NETWORK"
+                            values={{ network: account.symbol.toUpperCase() }}
+                        />
                     ),
                 },
                 {
@@ -59,7 +61,10 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                     key: '2',
                     onClick: handleNavigateToBuyPage,
                     children: (
-                        <Translation id="TR_BUY_NETWORK" values={{ network: networkSymbol }} />
+                        <Translation
+                            id="TR_BUY_NETWORK"
+                            values={{ network: account.symbol.toUpperCase() }}
+                        />
                     ),
                 },
             ]}

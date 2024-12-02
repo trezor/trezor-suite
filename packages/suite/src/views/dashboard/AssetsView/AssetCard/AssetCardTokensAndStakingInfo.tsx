@@ -1,5 +1,5 @@
 import { Row, Column, Icon, Divider, Text } from '@trezor/components';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { spacings } from '@trezor/theme';
 import { Account } from '@suite-common/wallet-types';
 
@@ -57,7 +57,7 @@ export const AssetCardTokensAndStakingInfo = ({
                 margin={{ left: spacings.xs, right: spacings.xs, bottom: spacings.xs }}
             >
                 <Row gap={spacings.xs}>
-                    <TokenIconSetWrapper accounts={accounts} network={symbol} />
+                    <TokenIconSetWrapper accounts={accounts} symbol={symbol} />
                     <Text typographyStyle="body" variant="tertiary">
                         <Translation id="TR_NAV_TOKENS" />
                     </Text>

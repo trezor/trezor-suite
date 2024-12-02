@@ -21,7 +21,7 @@ export default meta;
 export const TokenIconSet: StoryObj<TokenIconSetProps> = {
     render: (props: TokenIconSetProps) => <TokenIconSetComponent {...props} />,
     args: {
-        network: 'eth',
+        symbol: 'eth',
         tokens: [TOKEN_1, TOKEN_2, TOKEN_3, TOKEN_4],
     },
     argTypes: {

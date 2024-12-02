@@ -1,4 +1,4 @@
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork, NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
@@ -35,7 +35,7 @@ export const CoinmarketBalance = ({
     const balanceCurrency = coinmarketGetAccountLabel(cryptoSymbolLabel ?? '', shouldSendInSats);
     const networkDecimals = getCoinmarketNetworkDecimals({
         sendCryptoSelect,
-        network: networks[symbol],
+        network: getNetwork(symbol),
     });
     const stringBalance = !isNaN(Number(balance)) ? balance : '0';
     const formattedBalance =
@@ -45,7 +45,7 @@ export const CoinmarketBalance = ({
 
     const { fiatAmount } = useFiatFromCryptoValue({
         amount: stringBalance || '',
-        symbol: symbol ?? '',
+        symbol,
     });
 
     if (showOnlyAmount) {

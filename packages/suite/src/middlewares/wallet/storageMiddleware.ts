@@ -183,14 +183,14 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             if (tokenDefinitionsActions.setTokenStatus.match(action)) {
                 api.dispatch(
                     storageActions.saveTokenManagement(
-                        action.payload.networkSymbol,
+                        action.payload.symbol,
                         action.payload.type,
                         TokenManagementAction.HIDE,
                     ),
                 );
                 api.dispatch(
                     storageActions.saveTokenManagement(
-                        action.payload.networkSymbol,
+                        action.payload.symbol,
                         action.payload.type,
                         TokenManagementAction.SHOW,
                     ),

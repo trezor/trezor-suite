@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { NetworkSymbol, networks } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
@@ -65,7 +65,7 @@ const CoordinatorServer = ({
     }));
 
     const selectedOption = (value && options.find(option => option.value === value)) ?? options[0];
-    const networkName = networks[symbol].name;
+    const networkName = getNetwork(symbol).name;
 
     if (!isCoinjoinSupportedSymbol(symbol)) return null;
 

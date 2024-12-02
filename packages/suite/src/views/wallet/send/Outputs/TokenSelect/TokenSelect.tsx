@@ -27,7 +27,7 @@ import {
     selectIsSpecificCoinDefinitionKnown,
     TokenDefinitions,
 } from '@suite-common/token-definitions';
-import { getCoingeckoId, networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { getCoingeckoId, getNetwork } from '@suite-common/wallet-config';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 
@@ -82,7 +82,7 @@ const buildTokenOptions = (
         result.push({
             ticker: symbol,
             symbolExtended: symbol,
-            cryptoName: networks[symbol].name,
+            cryptoName: getNetwork(symbol).name,
             badge: undefined,
             contractAddress: null,
             height: ITEM_HEIGHT,
@@ -229,7 +229,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
             updateFiatRatesThunk({
                 tickers: [
                     {
-                        symbol: account.symbol as NetworkSymbol,
+                        symbol: account.symbol,
                         tokenAddress: (newlySelectedToken?.contract || '') as TokenAddress,
                     },
                 ],
@@ -323,7 +323,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">
                                 <Text variant="default" typographyStyle="body">
-                                    {selectedToken?.name || networks[account.symbol].name}
+                                    {selectedToken?.name || getNetwork(account.symbol).name}
                                 </Text>
                             </Row>
                             <Row>
@@ -359,7 +359,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                                 tokenContractAddress={networkTokenContractAddress}
                                                 shouldAllowCopy={true}
                                                 tokenExplorerUrl={getTokenExplorerUrl(
-                                                    networks[account.symbol],
+                                                    getNetwork(account.symbol),
                                                     selectedToken,
                                                 )}
                                                 onCopy={() =>

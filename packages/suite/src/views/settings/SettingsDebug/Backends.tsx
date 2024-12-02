@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { ConnectionStatus } from '@suite-common/wallet-types';
 import { Button } from '@trezor/components';
@@ -139,7 +139,7 @@ const CoinItem = ({ symbol }: CoinItemProps) => {
                 <div>
                     <CoinCell>
                         <CoinLogo symbol={symbol} />
-                        <Title>{networks[symbol].name}</Title>
+                        <Title>{getNetwork(symbol).name}</Title>
                     </CoinCell>
                     <Button size="tiny" variant="tertiary" onClick={onSettings}>
                         <Translation id="TR_SETTINGS" />

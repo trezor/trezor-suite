@@ -33,7 +33,7 @@ export const UnhideTokenModal = ({ address, onCancel }: UnhideTokenModalProps) =
         }
         dispatch(
             tokenDefinitionsActions.setTokenStatus({
-                networkSymbol: account.symbol,
+                symbol: account.symbol,
                 contractAddress: address,
                 status: TokenManagementAction.SHOW,
                 type: DefinitionType.COIN,

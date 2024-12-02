@@ -16,8 +16,8 @@ import {
 } from '@trezor/components';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
-import { networks } from '@suite-common/wallet-config';
 import { spacings } from '@trezor/theme';
+import { getNetwork } from '@suite-common/wallet-config';
 
 import { Translation, ReadMoreLink } from 'src/components/suite';
 import { AppState } from 'src/types/suite';
@@ -183,7 +183,7 @@ export const FreshAddress = ({
                         <Translation
                             id="TR_EVM_EXPLANATION_TITLE"
                             values={{
-                                network: networks[account.symbol].name,
+                                network: getNetwork(account.symbol).name,
                             }}
                         />
                     </H4>
@@ -191,7 +191,7 @@ export const FreshAddress = ({
                         <Translation
                             id="TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION"
                             values={{
-                                network: networks[account.symbol].name,
+                                network: getNetwork(account.symbol).name,
                             }}
                         />
                     </Paragraph>

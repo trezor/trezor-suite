@@ -33,7 +33,6 @@ import {
 import { useAccountSearch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 
 import { ArrowIcon, styledHoverOnParentOfArrowIcon } from '../ArrowIcon';
 import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
@@ -133,7 +132,6 @@ export const AssetCard = ({
 
     const stakingAccountsForAsset = stakingAccounts.filter(account => account.symbol === symbol);
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
-    const { fiatAmount } = useFiatFromCryptoValue({ amount: cryptoValue, symbol });
     const accountsThatStaked = useSelector(state =>
         selectAssetAccountsThatStaked(state, stakingAccountsForAsset),
     );
@@ -173,8 +171,9 @@ export const AssetCard = ({
                     <Column alignItems="flex-start">
                         <FiatAmount>
                             <FiatHeader
+                                symbol={symbol}
+                                amount={cryptoValue}
                                 size="medium"
-                                fiatAmount={fiatAmount ?? '0'}
                                 localCurrency={localCurrency}
                             />
                         </FiatAmount>

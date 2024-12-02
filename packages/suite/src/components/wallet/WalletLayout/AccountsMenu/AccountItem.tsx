@@ -147,7 +147,7 @@ export const AccountItem = forwardRef(
                 case 'staking':
                     return <Icon name="piggyBankFilled" variant="tertiary" />;
                 case 'tokens':
-                    return <TokenIconSetWrapper accounts={[account]} network={account.symbol} />;
+                    return <TokenIconSetWrapper accounts={[account]} symbol={account.symbol} />;
             }
         };
 

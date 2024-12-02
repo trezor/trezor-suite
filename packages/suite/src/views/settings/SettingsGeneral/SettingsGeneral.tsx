@@ -1,5 +1,5 @@
 import { isDesktop, isWeb } from '@trezor/env-utils';
-import { networks, NetworkFeature } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 
 import { SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
@@ -50,7 +50,7 @@ export const SettingsGeneral = () => {
     );
 
     const hasBitcoinNetworks = enabledNetworks.some(symbol => {
-        const networkFeatures: NetworkFeature[] = networks[symbol].features;
+        const networkFeatures = getNetwork(symbol).features;
 
         return networkFeatures.includes('amount-unit');
     });
