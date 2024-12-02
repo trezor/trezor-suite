@@ -32,6 +32,7 @@ describe('solana utils', () => {
                     input.amount,
                     input.mint,
                     input.decimals,
+                    input.tokenProgramName,
                 );
 
                 expect(txix.accounts).toEqual(expectedOutput.accounts);
@@ -48,6 +49,7 @@ describe('solana utils', () => {
                         input.funderAddress,
                         input.newOwnerAddress,
                         input.tokenMintAddress,
+                        input.tokenProgramName,
                     );
 
                     expect(pubkey).toEqual(expectedOutput.pubkey);
@@ -73,6 +75,7 @@ describe('solana utils', () => {
                     input.blockhash,
                     input.lastValidBlockHeight,
                     input.priorityFees,
+                    input.tokenProgramName,
                 );
                 const message = tx.transaction.serializeMessage();
 

@@ -14,7 +14,7 @@ import type {
     SolanaValidParsedTxWithMeta,
     TokenDetailByMint,
 } from '@trezor/blockchain-link-types/src/solana';
-import type { TokenInfo } from '@trezor/blockchain-link-types/src';
+import type { TokenInfo, TokenStandard } from '@trezor/blockchain-link-types/src';
 import { isCodesignBuild } from '@trezor/env-utils';
 
 import { formatTokenSymbol } from './utils';
@@ -27,6 +27,8 @@ export type ApiTokenAccount = {
 // Docs regarding solana programs: https://spl.solana.com/
 // Token program docs: https://spl.solana.com/token
 export const TOKEN_PROGRAM_PUBLIC_KEY = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+// Token 2022 program docs: https://spl.solana.com/token-2022
+export const TOKEN_2022_PROGRAM_PUBLIC_KEY = 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
 // Associated token program docs: https://spl.solana.com/associated-token-account
 export const ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
 // System program docs: https://docs.solana.com/developing/runtime-facilities/programs#system-program
@@ -34,6 +36,20 @@ export const SYSTEM_PROGRAM_PUBLIC_KEY = '11111111111111111111111111111111';
 // WSOL transfers are denoted as transfers of SOL as well as WSOL, so we use this to filter out SOL values
 // when parsing tx effects.
 export const WSOL_MINT = 'So11111111111111111111111111111111111111112';
+
+const tokenProgramNames = ['spl-token', 'spl-token-2022'] as const;
+export type TokenProgramName = (typeof tokenProgramNames)[number];
+
+export const tokenProgramsInfo = {
+    'spl-token': {
+        publicKey: TOKEN_PROGRAM_PUBLIC_KEY,
+        tokenStandard: 'SPL',
+    },
+    'spl-token-2022': {
+        publicKey: TOKEN_2022_PROGRAM_PUBLIC_KEY,
+        tokenStandard: 'SPL-2022',
+    },
+} as const satisfies Record<TokenProgramName, { publicKey: string; tokenStandard: TokenStandard }>;
 
 export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
     const env = isCodesignBuild() ? 'stable' : 'develop';
@@ -65,9 +81,22 @@ export const getTokenNameAndSymbol = (mint: string, tokenDetailByMint: TokenDeta
           };
 };
 
+const isTokenProgramName = (programName: string): programName is TokenProgramName =>
+    tokenProgramNames.some(name => name === programName);
+
+export const tokenStandardToTokenProgramName = (standard: string): TokenProgramName => {
+    const tokenProgram = Object.entries(tokenProgramsInfo).find(
+        ([_, programInfo]) => programInfo.tokenStandard === standard,
+    );
+    if (!tokenProgram)
+        throw new Error(`Cannot convert token standard ${standard} to Solana token program name`);
+
+    return tokenProgram[0] as TokenProgramName;
+};
+
 type SplTokenAccountData = {
     /** Name of the program that owns this account */
-    program: 'spl-token';
+    program: TokenProgramName;
     /** Parsed account data */
     parsed: {
         info: {
@@ -89,7 +118,7 @@ const isSplTokenAccount = (tokenAccount: ApiTokenAccount): tokenAccount is SplTo
     const { parsed } = tokenAccount.account.data;
 
     return (
-        tokenAccount.account.data.program === 'spl-token' &&
+        isTokenProgramName(tokenAccount.account.data.program) &&
         'info' in parsed &&
         !!parsed.info &&
         'mint' in parsed.info &&
@@ -114,10 +143,13 @@ export const transformTokenInfo = (
             // since ApiTokenAccount type is not precise enough, we type-guard the account to make sure they contain all the necessary data
             A.filter(isSplTokenAccount),
             A.map(tokenAccount => {
-                const { info } = tokenAccount.account.data.parsed;
+                const {
+                    parsed: { info },
+                    program,
+                } = tokenAccount.account.data;
 
                 return {
-                    type: 'SPL', // Designation for Solana tokens
+                    type: tokenProgramsInfo[program].tokenStandard,
                     contract: info.mint,
                     balance: info.tokenAmount.amount,
                     decimals: info.tokenAmount.decimals,
@@ -441,7 +473,7 @@ export const getAmount = (
 };
 
 type TokenTransferInstruction = {
-    program: 'spl-token';
+    program: TokenProgramName;
     programId: Address;
     parsed: {
         type: 'transferChecked' | 'transfer';
@@ -472,7 +504,7 @@ const isTokenTransferInstruction = (
     return (
         'program' in ix &&
         typeof ix.program === 'string' &&
-        ix.program === 'spl-token' &&
+        isTokenProgramName(ix.program) &&
         'type' in parsed &&
         typeof parsed.type === 'string' &&
         (parsed.type === 'transferChecked' || parsed.type === 'transfer') &&
@@ -529,7 +561,7 @@ export const getTokens = (
     const effects = tx.transaction.message.instructions
         .filter(isTokenTransferInstruction)
         .map<TokenTransfer>((ix): TokenTransfer => {
-            const { parsed } = ix;
+            const { parsed, program } = ix;
 
             // some data, like `mint` and `decimals` may not be present in the instruction, but can be found in the token account info
             // so we try to find the token account info that matches the instruction and use it's data
@@ -558,7 +590,7 @@ export const getTokens = (
 
             return {
                 type: getUiType(ix),
-                standard: 'SPL',
+                standard: tokenProgramsInfo[program].tokenStandard,
                 from,
                 to,
                 contract: mint,

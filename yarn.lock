@@ -8074,6 +8074,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@solana-program/token-2022@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "@solana-program/token-2022@npm:0.3.1"
+  peerDependencies:
+    "@solana/web3.js": ^2.0.0
+  checksum: 10/1d18bb7d5f160134a08b59aa651de102f0c11798b1a7c99af89928b27a00cb4021afc98cfb27dc666d3a384d7f180160d0e428e9d7cede5f959bf7e651c13707
+  languageName: node
+  linkType: hard
+
 "@solana-program/token@npm:^0.4.1":
   version: 0.4.1
   resolution: "@solana-program/token@npm:0.4.1"
@@ -9807,6 +9816,7 @@ __metadata:
     "@solana-program/compute-budget": "npm:^0.6.1"
     "@solana-program/system": "npm:^0.6.2"
     "@solana-program/token": "npm:^0.4.1"
+    "@solana-program/token-2022": "npm:^0.3.1"
     "@solana/web3.js": "npm:^2.0.0"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
@@ -11590,6 +11600,7 @@ __metadata:
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
     "@solana-program/token": "npm:^0.4.1"
+    "@solana-program/token-2022": "npm:^0.3.1"
     "@solana/web3.js": "npm:^2.0.0"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"

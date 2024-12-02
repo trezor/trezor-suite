@@ -32,6 +32,7 @@ export interface EstimateFeeParams {
         data?: string; // eth tx data, sol tx message
         value?: string; // eth tx amount
         isCreatingAccount?: boolean; // sol account creation
+        newTokenAccountProgramName?: 'spl-token' | 'spl-token-2022'; // program name of the Solana Token account that is being created, ignored if isCreatingAccount is false, default: 'spl-token'
     };
 }
 

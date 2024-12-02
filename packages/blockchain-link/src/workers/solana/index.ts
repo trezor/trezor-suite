@@ -1,4 +1,5 @@
-import { getTokenSize } from '@solana-program/token';
+import { getTokenSize as _getTokenSize } from '@solana-program/token';
+import { getTokenSize as _getToken2022Size } from '@solana-program/token-2022';
 import {
     address,
     assertTransactionIsFullySigned,
@@ -52,7 +53,8 @@ import { solanaUtils } from '@trezor/blockchain-link-utils';
 import { BigNumber, createLazy } from '@trezor/utils';
 import {
     transformTokenInfo,
-    TOKEN_PROGRAM_PUBLIC_KEY,
+    tokenProgramsInfo,
+    type TokenProgramName,
 } from '@trezor/blockchain-link-utils/src/solana';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { IntervalId } from '@trezor/type-utils';
@@ -281,17 +283,28 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
             .filter((tx): tx is Transaction => !!tx);
     };
 
-    const tokenAccounts = await api.rpc
-        .getTokenAccountsByOwner(
-            publicKey,
-            { programId: address(TOKEN_PROGRAM_PUBLIC_KEY) } /* filter */,
-            {
-                encoding: 'jsonParsed',
-            },
-        )
-        .send();
+    const getTokenAccountsForProgram = (programPublicKey: string) =>
+        api.rpc
+            .getTokenAccountsByOwner(
+                publicKey,
+                { programId: address(programPublicKey) } /* filter */,
+                {
+                    encoding: 'jsonParsed',
+                },
+            )
+            .send();
 
-    const allTxIds = await getAllTxIds(tokenAccounts.value.map(a => a.pubkey));
+    const tokenAccounts = (
+        await Promise.all(
+            Object.values(tokenProgramsInfo).map(programInfo =>
+                getTokenAccountsForProgram(programInfo.publicKey),
+            ),
+        )
+    )
+        .map(res => res.value)
+        .flat();
+
+    const allTxIds = await getAllTxIds(tokenAccounts.map(a => a.pubkey));
 
     const pageNumber = payload.page ? payload.page - 1 : 0;
     // for the first page of txs, payload.page is undefined, for the second page is 2
@@ -302,7 +315,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const txIdPage = allTxIds.slice(pageStartIndex, pageEndIndex);
 
-    const tokenAccountsInfos = tokenAccounts.value.map(a => ({
+    const tokenAccountsInfos = tokenAccounts.map(a => ({
         address: a.pubkey,
         mint: a.account.data.parsed?.info?.mint as string | undefined,
         decimals: a.account.data.parsed?.info?.tokenAmount?.decimals as number | undefined,
@@ -313,10 +326,10 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     // Fetch token info only if the account owns tokens
     let tokens: TokenInfo[] = [];
-    if (tokenAccounts.value.length > 0) {
+    if (tokenAccounts.length > 0) {
         const tokenMetadata = await request.getTokenMetadata();
 
-        tokens = transformTokenInfo(tokenAccounts.value, tokenMetadata);
+        tokens = transformTokenInfo(tokenAccounts, tokenMetadata);
     }
 
     const { value: balance } = await api.rpc.getBalance(publicKey).send();
@@ -402,11 +415,17 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolea
     } as const;
 };
 
+const getTokenSize = (programName: TokenProgramName) =>
+    ({ 'spl-token': _getTokenSize(), 'spl-token-2022': _getToken2022Size() })[programName];
+
 const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     const api = await request.connect();
 
-    const messageHex = request.payload.specific?.data;
-    const isCreatingAccount = request.payload.specific?.isCreatingAccount;
+    const {
+        data: messageHex,
+        isCreatingAccount,
+        newTokenAccountProgramName = 'spl-token',
+    } = request.payload.specific ?? {};
 
     if (messageHex == null) {
         throw new Error('Could not estimate fee for transaction.');
@@ -417,7 +436,9 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     const priorityFee = await getPriorityFee(api.rpc, message, transaction.signatures);
     const baseFee = await getBaseFee(api.rpc, message);
     const accountCreationFee = isCreatingAccount
-        ? await api.rpc.getMinimumBalanceForRentExemption(BigInt(getTokenSize())).send()
+        ? await api.rpc
+              .getMinimumBalanceForRentExemption(BigInt(getTokenSize(newTokenAccountProgramName)))
+              .send()
         : BigInt(0);
 
     const payload = [

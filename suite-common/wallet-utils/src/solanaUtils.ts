@@ -9,10 +9,11 @@ import {
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type { TokenAccount } from '@trezor/blockchain-link-types';
 import { solanaUtils as SolanaBlockchainLinkUtils } from '@trezor/blockchain-link-utils';
+import type { TokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
 
 import { getLamportsFromSol } from './sendFormUtils';
 
-const { TOKEN_PROGRAM_PUBLIC_KEY, SYSTEM_PROGRAM_PUBLIC_KEY } = SolanaBlockchainLinkUtils;
+const { SYSTEM_PROGRAM_PUBLIC_KEY, tokenProgramsInfo } = SolanaBlockchainLinkUtils;
 
 const loadSolanaLib = async () => {
     return await import('@solana/web3.js');
@@ -23,8 +24,16 @@ const loadSolanaComputeBudgetProgramLib = async () => {
 const loadSolanaSystemProgramLib = async () => {
     return await import('@solana-program/system');
 };
-const loadSolanaTokenProgramLib = async () => {
-    return await import('@solana-program/token');
+
+const loadSolanaTokenProgramLib = async (tokenProgramName: TokenProgramName) => {
+    switch (tokenProgramName) {
+        case 'spl-token':
+            return await import('@solana-program/token');
+        case 'spl-token-2022':
+            return await import('@solana-program/token-2022');
+        default:
+            throw new Error(`Unsupported token program: ${tokenProgramName}`);
+    }
 };
 
 type PriorityFees = { computeUnitPrice: string; computeUnitLimit: string };
@@ -148,13 +157,14 @@ export const buildTokenTransferInstruction = async (
     amount: BigNumber,
     mint: string,
     decimals: number,
+    tokenProgramName: TokenProgramName,
 ) => {
     const [
         // @solana/web3.js
         { address, createNoopSigner },
-        // @solana-program/token
+        // @solana-program/token or @solana-program/token-2022
         { getTransferCheckedInstruction },
-    ] = await Promise.all([loadSolanaLib(), loadSolanaTokenProgramLib()]);
+    ] = await Promise.all([loadSolanaLib(), loadSolanaTokenProgramLib(tokenProgramName)]);
 
     return getTransferCheckedInstruction({
         amount: BigInt(amount.toString()),
@@ -169,18 +179,19 @@ export const buildTokenTransferInstruction = async (
 export const getAssociatedTokenAccountAddress = async (
     baseAddress: string,
     tokenMintAddress: string,
+    tokenProgramName: TokenProgramName,
 ) => {
     const [
         // @solana/web3.js
         { address },
-        // @solana-program/token
-        { findAssociatedTokenPda, TOKEN_PROGRAM_ADDRESS },
-    ] = await Promise.all([loadSolanaLib(), loadSolanaTokenProgramLib()]);
+        // @solana-program/token or @solana-program/token-2022
+        { findAssociatedTokenPda },
+    ] = await Promise.all([loadSolanaLib(), loadSolanaTokenProgramLib(tokenProgramName)]);
 
     const [pdaAddress] = await findAssociatedTokenPda({
         mint: address(tokenMintAddress),
         owner: address(baseAddress),
-        tokenProgram: TOKEN_PROGRAM_ADDRESS,
+        tokenProgram: address(tokenProgramsInfo[tokenProgramName].publicKey),
     });
 
     return pdaAddress;
@@ -191,17 +202,19 @@ export const buildCreateAssociatedTokenAccountInstruction = async (
     funderAddress: string,
     newOwnerAddress: string,
     tokenMintAddress: string,
+    tokenProgramName: TokenProgramName,
 ) => {
     const [
         // @solana/web3.js
         { address, createNoopSigner },
-        // @solana-program/token
+        // @solana-program/token or @solana-program/token-2022
         { getCreateAssociatedTokenInstruction },
-    ] = await Promise.all([loadSolanaLib(), loadSolanaTokenProgramLib()]);
+    ] = await Promise.all([loadSolanaLib(), loadSolanaTokenProgramLib(tokenProgramName)]);
 
     const associatedTokenAccountAddress = await getAssociatedTokenAccountAddress(
         newOwnerAddress,
         tokenMintAddress,
+        tokenProgramName,
     );
 
     const txInstruction = getCreateAssociatedTokenInstruction({
@@ -266,6 +279,7 @@ export const buildTokenTransferTransaction = async (
     blockhash: string,
     lastValidBlockHeight: number,
     priorityFees: PriorityFees,
+    tokenProgramName: TokenProgramName,
 ): Promise<TokenTransferTxWithDestinationAddress> => {
     const {
         address,
@@ -319,6 +333,7 @@ export const buildTokenTransferTransaction = async (
                     fromAddress,
                     toAddress,
                     tokenMint,
+                    tokenProgramName,
                 );
 
             // Add the account creation instruction to the transaction and use the newly created associated token account as the receiver
@@ -339,6 +354,7 @@ export const buildTokenTransferTransaction = async (
             transferAmount,
             tokenMint,
             tokenDecimals,
+            tokenProgramName,
         );
 
         remainingAmount = remainingAmount.minus(transferAmount);
@@ -356,7 +372,7 @@ export const buildTokenTransferTransaction = async (
         tokenAccountInfo: isReceiverAddressSystemAccount
             ? {
                   baseAddress: toAddress,
-                  tokenProgram: TOKEN_PROGRAM_PUBLIC_KEY,
+                  tokenProgram: tokenProgramsInfo[tokenProgramName].publicKey,
                   tokenMint,
                   tokenAccount: finalReceiverAddress,
               }

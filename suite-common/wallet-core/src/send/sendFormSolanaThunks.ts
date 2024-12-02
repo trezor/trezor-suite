@@ -1,7 +1,11 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import type { TokenInfo, TokenAccount } from '@trezor/blockchain-link-types';
-import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/src/solana';
+import {
+    SYSTEM_PROGRAM_PUBLIC_KEY,
+    TokenProgramName,
+    tokenStandardToTokenProgramName,
+} from '@trezor/blockchain-link-utils/src/solana';
 import {
     ExternalOutput,
     PrecomposedTransaction,
@@ -113,6 +117,7 @@ const fetchAccountOwnerAndTokenInfoForAddress = async (
     address: string,
     symbol: string,
     mint: string,
+    tokenProgram: TokenProgramName,
 ) => {
     // Fetch data about recipient account owner if this is a token transfer
     // We need this in order to validate the address and ensure transfers go through
@@ -126,7 +131,11 @@ const fetchAccountOwnerAndTokenInfoForAddress = async (
     });
 
     if (accountInfoResponse.success) {
-        const associatedTokenAccount = await getAssociatedTokenAccountAddress(address, mint);
+        const associatedTokenAccount = await getAssociatedTokenAccountAddress(
+            address,
+            mint,
+            tokenProgram,
+        );
 
         accountOwner = accountInfoResponse.payload?.misc?.owner;
         tokenInfo = accountInfoResponse.payload?.tokens
@@ -171,6 +180,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                   formState.outputs[0].address,
                   account.symbol,
                   tokenInfo.contract,
+                  tokenStandardToTokenProgramName(tokenInfo.type),
               )
             : [undefined, undefined];
 
@@ -204,6 +214,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                       blockhash,
                       lastValidBlockHeight,
                       dummyPriorityFeesForFeeEstimation,
+                      tokenStandardToTokenProgramName(tokenInfo.type),
                   )
                 : undefined;
 
@@ -228,6 +239,9 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             recipientTokenAccount === undefined &&
             // if the recipient account has no owner, it means it's a new account and needs the token account to be created
             (recipientAccountOwner === SYSTEM_PROGRAM_PUBLIC_KEY || recipientAccountOwner == null);
+        const newTokenAccountProgramName = isCreatingAccount
+            ? tokenStandardToTokenProgramName(tokenInfo.type)
+            : undefined;
 
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
             coin: account.symbol,
@@ -235,6 +249,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 specific: {
                     data: transferTx.serialize(),
                     isCreatingAccount,
+                    newTokenAccountProgramName,
                 },
             },
         });
@@ -340,6 +355,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                   formState.outputs[0].address,
                   selectedAccount.symbol,
                   token.contract,
+                  tokenStandardToTokenProgramName(token.type),
               )
             : [undefined, undefined];
 
@@ -366,6 +382,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                           computeUnitPrice: precomposedTransaction.feePerByte,
                           computeUnitLimit: precomposedTransaction.feeLimit,
                       },
+                      tokenStandardToTokenProgramName(token.type),
                   )
                 : undefined;
 
