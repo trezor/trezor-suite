@@ -10,7 +10,7 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.4.5-beta.1
+# 9.4.5
 
 We’ve reverted the default setting for nVersion in Connect back to nVersion=1. Since this might be a breaking change we are going to implement it in Connect 10. (05af037)
 
@@ -27,12 +27,14 @@ We’ve reverted the default setting for nVersion in Connect back to nVersion=1.
 
 ## Dependencies updated
 
--   npm-prerelease: @trezor/blockchain-link 2.3.4-beta.1
--   npm-prerelease: @trezor/connect-common 0.2.5-beta.1
--   npm-prerelease: @trezor/transport 1.3.5-beta.1
--   npm-prerelease: @trezor/protobuf 1.2.5-beta.1
--   npm-prerelease: @trezor/utils 9.2.4-beta.1
--   npm-release: @trezor/connect 9.4.5-beta.1
+-   npm-release: @trezor/blockchain-link 2.3.4
+-   npm-release: @trezor/blockchain-link-utils 1.2.4
+-   npm-release: @trezor/analytics 1.2.4
+-   npm-release: @trezor/connect-common 0.2.5
+-   npm-release: @trezor/transport 1.3.5
+-   npm-release: @trezor/protobuf 1.2.5
+-   npm-release: @trezor/utxo-lib 2.2.4
+-   npm-release: @trezor/utils 9.2.4
 
 # 9.4.4
 
