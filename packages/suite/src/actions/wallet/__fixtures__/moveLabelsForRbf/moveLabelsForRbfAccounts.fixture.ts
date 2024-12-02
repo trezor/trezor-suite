@@ -272,6 +272,7 @@ export const accountSpendingCoins: Account = {
     },
     networkType: 'bitcoin',
     page: { index: 1, size: 25, total: 1 },
+    ts: 0,
 };
 
 export const accountReceivingCoins: Account = {
@@ -562,6 +563,7 @@ export const accountReceivingCoins: Account = {
     },
     networkType: 'bitcoin',
     page: { index: 1, size: 25, total: 1 },
+    ts: 0,
 };
 
 export const moveLabelsForRbfAccountsFixture: AccountsRootState['wallet']['accounts'] = [

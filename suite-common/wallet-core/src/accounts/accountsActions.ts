@@ -86,6 +86,7 @@ const composeCreateAccountActionPayload = ({
     metadata: {
         key: accountInfo.legacyXpub || accountInfo.descriptor,
     },
+    ts: Date.now(),
     ...getAccountSpecific(accountInfo, discoveryItem.networkType),
 });
 

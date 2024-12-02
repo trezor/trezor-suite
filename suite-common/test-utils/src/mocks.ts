@@ -57,6 +57,7 @@ const getWalletAccount = (account?: Partial<Account>): Account => ({
     marker: undefined,
     addresses: undefined,
     metadata: { key: 'xpub' },
+    ts: 0,
     ...account,
 });
 

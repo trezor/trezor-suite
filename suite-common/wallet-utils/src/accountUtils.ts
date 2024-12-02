@@ -910,6 +910,7 @@ export const getFailedAccounts = (discovery: Discovery): Account[] =>
             metadata: {
                 key: descriptor,
             },
+            ts: 0,
             ...getAccountSpecific({}, network.networkType),
         };
     });

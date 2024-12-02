@@ -44,6 +44,7 @@ export const ACCOUNT: Account = {
     page: undefined,
     misc: undefined,
     marker: undefined,
+    ts: 0,
 };
 
 export const DEFAULT_STORE = {

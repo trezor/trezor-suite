@@ -80,6 +80,7 @@ export const accounts: CommonAccount[] = [
         },
         misc: undefined,
         marker: undefined,
+        ts: 0,
     },
     {
         deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@C906E19794613145E3DF45F4:0',
@@ -152,6 +153,7 @@ export const accounts: CommonAccount[] = [
         },
         misc: undefined,
         marker: undefined,
+        ts: 0,
     },
 ];
 
