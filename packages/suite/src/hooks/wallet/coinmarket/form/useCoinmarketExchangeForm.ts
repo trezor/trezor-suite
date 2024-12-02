@@ -368,10 +368,14 @@ export const useCoinmarketExchangeForm = ({
             if (!trade) {
                 trade = selectedQuote;
             }
-            if (!quotesRequest || !trade || !refundAddress || !trade.quoteId) return false;
+            if (!quotesRequest || !trade || !refundAddress) return false;
 
             if (trade.isDex && !trade.fromAddress) {
                 trade = { ...trade, fromAddress: refundAddress };
+            }
+
+            if (!trade.quoteId) {
+                return false;
             }
 
             setCallInProgress(true);
@@ -381,7 +385,7 @@ export const useCoinmarketExchangeForm = ({
                 quotesRequest,
                 account,
                 { selectedFee: selectedFeeRecomposedAndSigned, composed },
-                trade.quoteId!,
+                trade.quoteId,
             );
 
             const response = await invityAPI.doExchangeTrade({
