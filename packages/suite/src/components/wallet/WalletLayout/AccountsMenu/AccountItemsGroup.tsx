@@ -13,9 +13,10 @@ import { useSelector } from 'src/hooks/suite';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
-import { AccountItem } from './AccountItem';
+import { AccountItem } from './AccountItem/AccountItem';
+import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
 
-const Section = styled.div<{ $selected?: boolean }>`
+const Section = styled.div<{ $selected?: boolean; $isSidebarCollapsed?: boolean }>`
     display: flex;
     flex-direction: column;
     position: relative;
@@ -31,7 +32,7 @@ const Section = styled.div<{ $selected?: boolean }>`
         position: absolute;
         top: 24px;
         bottom: 28px;
-        left: 24px;
+        left: ${({ $isSidebarCollapsed }) => ($isSidebarCollapsed ? '50%' : '24px')};
         border-left: 2px dotted ${({ theme }) => theme.borderDashed};
     }
 `;
@@ -53,6 +54,7 @@ export const AccountItemsGroup = ({
     tokens,
     dataTestKey,
 }: AccountItemsGroupProps) => {
+    const isSidebarCollapsed = useIsSidebarCollapsed();
     const stakingBalance = getAccountTotalStakingBalance(account);
 
     const routeName = useSelector(selectRouteName);
@@ -64,7 +66,7 @@ export const AccountItemsGroup = ({
     const tokensRoutes = ['wallet-tokens', 'wallet-tokens-hidden'];
 
     return (
-        <Section $selected={selected}>
+        <Section $selected={selected} $isSidebarCollapsed={isSidebarCollapsed}>
             <Column gap={spacings.xxs}>
                 <AccountItem
                     type="coin"

@@ -6,7 +6,7 @@ import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { useSelector } from 'src/hooks/suite';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
 
-import { AccountItem } from './AccountItem';
+import { AccountItem } from './AccountItem/AccountItem';
 import { AccountItemsGroup } from './AccountItemsGroup';
 
 interface AccountSectionProps {

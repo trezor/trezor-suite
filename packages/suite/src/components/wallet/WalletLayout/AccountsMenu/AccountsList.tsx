@@ -3,6 +3,7 @@ import { Account } from '@suite-common/wallet-types';
 import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
 import { spacings } from '@trezor/theme';
 import { Column } from '@trezor/components';
+import { AccountType } from '@suite-common/wallet-config';
 
 import {
     useAccountSearch,
@@ -23,6 +24,52 @@ import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar
 interface AccountListProps {
     onItemClick?: () => void;
 }
+
+type AccountsProps = {
+    accounts: Account[];
+    onItemClick?: () => void;
+    coinjoinIsPreloading?: boolean;
+    discoveryInProgress?: boolean;
+    type: AccountType;
+};
+
+const Accounts = ({
+    accounts,
+    onItemClick,
+    coinjoinIsPreloading,
+    discoveryInProgress,
+    type,
+}: AccountsProps) => {
+    const accountLabels = useSelector(selectAccountLabels);
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const { params } = selectedAccount;
+    const isSkeletonShown = discoveryInProgress || (type === 'coinjoin' && coinjoinIsPreloading);
+
+    return (
+        <>
+            {accounts.map(account => {
+                const isSelected = (account: Account) =>
+                    params &&
+                    account.symbol === params.symbol &&
+                    account.accountType === params.accountType &&
+                    account.index === params.accountIndex;
+
+                const selected = !!isSelected(account);
+
+                return (
+                    <AccountSection
+                        key={account.key}
+                        account={account}
+                        selected={selected}
+                        accountLabel={accountLabels[account.key]}
+                        onItemClick={onItemClick}
+                    />
+                );
+            })}
+            {isSkeletonShown && <AccountItemSkeleton />}
+        </>
+    );
+};
 
 export const AccountsList = ({ onItemClick }: AccountListProps) => {
     const device = useSelector(selectDevice);
@@ -80,12 +127,6 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
         (!!searchString && searchString.length > 0) || // filter by search string is active
         type === 'normal'; // always keep normal accounts open
 
-    const isSelected = (account: Account) =>
-        params &&
-        account.symbol === params.symbol &&
-        account.accountType === params.accountType &&
-        account.index === params.accountIndex;
-
     const buildGroup = (type: Account['accountType'], accounts: Account[], hideLabel?: boolean) => {
         const groupHasBalance = accounts.some(account => account.availableBalance !== '0');
 
@@ -98,27 +139,13 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
             return;
         }
 
-        const isSkeletonShown =
-            discoveryInProgress || (type === 'coinjoin' && coinjoinIsPreloading);
-
-        const Accounts = () => (
-            <>
-                {accounts.map(account => {
-                    const selected = !!isSelected(account);
-
-                    return (
-                        <AccountSection
-                            key={account.key}
-                            account={account}
-                            selected={selected}
-                            accountLabel={accountLabels[account.key]}
-                            onItemClick={onItemClick}
-                        />
-                    );
-                })}
-                {isSkeletonShown && <AccountItemSkeleton />}
-            </>
-        );
+        const accountProps = {
+            accounts,
+            onItemClick,
+            coinjoinIsPreloading,
+            discoveryInProgress,
+            type,
+        };
 
         return (
             <>
@@ -130,11 +157,11 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
                         hasBalance={groupHasBalance}
                         keepOpen={keepOpen(type)}
                     >
-                        <Accounts />
+                        <Accounts {...accountProps} />
                     </AccountGroup>
                 </ExpandedSidebarOnly>
                 <CollapsedSidebarOnly>
-                    <Accounts />
+                    <Accounts {...accountProps} />
                 </CollapsedSidebarOnly>
             </>
         );

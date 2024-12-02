@@ -90,21 +90,30 @@ export interface NavigationItemProps {
     typographyStyle?: TypographyStyle;
 }
 
-export const NavigationItem = ({
-    nameId,
-    icon,
-    routes,
-    goToRoute,
-    isActive,
-    'data-testid': dataTest,
-    className,
-    values,
-    preserveParams,
-    iconSize = 'large',
-    itemsCount,
-    isRounded = false,
-    typographyStyle = 'body',
-}: NavigationItemProps) => {
+type TitleProps = {
+    nameId: TranslationKey;
+    values?: ExtendedMessageDescriptor['values'];
+};
+
+const Title = ({ nameId, values }: TitleProps) => <Translation id={nameId} values={values} />;
+
+const NavItem = (props: NavigationItemProps) => {
+    const {
+        nameId,
+        icon,
+        routes,
+        goToRoute,
+        isActive,
+        'data-testid': dataTest,
+        className,
+        values,
+        preserveParams,
+        iconSize = 'large',
+        itemsCount,
+        isRounded = false,
+        typographyStyle = 'body',
+    } = props;
+
     const activeRoute = useSelector(selectRouteName);
     const { elevation } = useElevation();
     const dispatch = useDispatch();
@@ -119,8 +128,7 @@ export const NavigationItem = ({
     const theme = useTheme();
     const isActiveRoute = routes?.some(route => route === activeRoute);
 
-    const Title = () => <Translation id={nameId} values={values} />;
-    const NavItem = () => (
+    return (
         <Container
             $isActive={isActive || isActiveRoute}
             onClick={handleClick}
@@ -145,16 +153,24 @@ export const NavigationItem = ({
             </ExpandedSidebarOnly>
         </Container>
     );
+};
+
+export const NavigationItem = (props: NavigationItemProps) => {
+    const { nameId, values } = props;
 
     return (
         <>
             <CollapsedSidebarOnly>
-                <Tooltip content={<Title />} placement="right" hasArrow>
-                    <NavItem />
+                <Tooltip
+                    content={<Title nameId={nameId} values={values} />}
+                    placement="right"
+                    hasArrow
+                >
+                    <NavItem {...props} />
                 </Tooltip>
             </CollapsedSidebarOnly>
             <ExpandedSidebarOnly>
-                <NavItem />
+                <NavItem {...props} />
             </ExpandedSidebarOnly>
         </>
     );
