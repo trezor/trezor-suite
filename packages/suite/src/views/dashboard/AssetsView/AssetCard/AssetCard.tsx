@@ -159,7 +159,7 @@ export const AssetCard = ({
                     right: spacings.xs,
                 }}
             >
-                <Row justifyContent="space-between">
+                <Row justifyContent="space-between" width="100%">
                     <AssetCardInfo
                         network={network}
                         assetsFiatBalances={assetsFiatBalances}
