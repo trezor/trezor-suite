@@ -3,13 +3,20 @@ import { runCLI, getVersion as getJestVersion } from 'jest';
 import webpack from 'webpack';
 import karma from 'karma';
 
-import { TrezorUserEnvLink, Firmwares, Model } from '@trezor/trezor-user-env-link';
+import {
+    TrezorUserEnvLink,
+    Firmwares,
+    Model,
+    EmuStartOptsType,
+} from '@trezor/trezor-user-env-link';
 
 import argv from './jest.config';
 
 const firmwareArg = process.env.TESTS_FIRMWARE;
 const firmwareUrl = process.env.TESTS_FIRMWARE_URL;
 const firmwareModel = process.env.TESTS_FIRMWARE_MODEL;
+const firmwareBranch = process.env.TESTS_FIRMWARE_BRANCH;
+const firmwareBtcOnly = process.env.TESTS_FIRMWARE_BTC_ONLY === 'true';
 
 /**
  * Translate test command arguments into trezor-user-env options.
@@ -30,25 +37,36 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
         throw new Error('could not translate n-latest into specific firmware version');
     }
 
-    const emulatorStartOpts = {
-        type: 'emulator-start',
-        wipe: true,
-        version: firmwareArg,
-        model,
-    };
+    let emulatorStartOpts: EmuStartOptsType;
 
-    if (firmwareArg?.endsWith('-latest')) {
-        Object.assign(emulatorStartOpts, { version: latest });
-    }
-    // no firmwareArg and not loading from url at the same time - provide fallback
-    if (!firmwareArg && !firmwareUrl) {
-        Object.assign(emulatorStartOpts, { version: latest });
-    }
     if (firmwareUrl) {
-        Object.assign(emulatorStartOpts, {
+        emulatorStartOpts = {
             type: 'emulator-start-from-url',
             url: firmwareUrl,
-        });
+            wipe: true,
+            model,
+        };
+    } else if (firmwareBranch) {
+        emulatorStartOpts = {
+            type: 'emulator-start-from-branch',
+            branch: firmwareBranch,
+            btcOnly: firmwareBtcOnly,
+            wipe: true,
+            model,
+        };
+    } else {
+        let version;
+        if (firmwareArg) {
+            version = firmwareArg.endsWith('-latest') ? latest : firmwareArg;
+        } else {
+            version = latest;
+        }
+        emulatorStartOpts = {
+            type: 'emulator-start',
+            wipe: true,
+            version,
+            model,
+        };
     }
 
     return emulatorStartOpts;
@@ -67,7 +85,6 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
 
     argv.globals = {
         emulatorStartOpts,
-        firmware: emulatorStartOpts.version,
     };
 
     // @ts-expect-error there is some mismatch between jest implementation and definitely typed package.
@@ -109,8 +126,6 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
                 // @ts-expect-error
                 karmaConfig.webpack.plugins.push(
                     new webpack.DefinePlugin({
-                        // @ts-expect-error
-                        'process.env.firmware': JSON.stringify(argv.globals.firmware),
                         'process.env.emulatorStartOpts': JSON.stringify(
                             // @ts-expect-error
                             argv.globals.emulatorStartOpts,

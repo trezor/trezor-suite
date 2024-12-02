@@ -22,9 +22,35 @@ export interface StartEmu {
     model?: Model;
 }
 
-interface StartEmuFromUrl extends Omit<StartEmu, 'version'> {
-    url: string;
+interface StartEmuType {
+    type: 'emulator-start';
+    version?: string;
+    wipe: boolean;
+    model: Model;
 }
+
+interface StartEmuFromUrl {
+    url: string;
+    model: Model;
+    wipe: boolean;
+}
+
+interface StartEmuFromUrlType extends StartEmuFromUrl {
+    type: 'emulator-start-from-url';
+}
+
+interface StartEmuFromBranch {
+    branch: string;
+    btcOnly: boolean;
+    model: Model;
+    wipe: boolean;
+}
+
+interface StartEmuFromBranchType extends StartEmuFromBranch {
+    type: 'emulator-start-from-branch';
+}
+
+export type EmuStartOptsType = StartEmuType | StartEmuFromUrlType | StartEmuFromBranchType;
 
 interface ClickEmu {
     x: number;
@@ -189,13 +215,26 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         return null;
     }
-    startEmuFromUrl({ url, model, wipe }: StartEmuFromUrl) {
-        return this.client.send({
+    async startEmuFromUrl({ url, model, wipe }: StartEmuFromUrl) {
+        await this.client.send({
             type: 'emulator-start-from-url',
             url,
             model,
             wipe,
         });
+
+        return null;
+    }
+    async startEmuFromBranch({ branch, btcOnly = false, model, wipe }: StartEmuFromBranch) {
+        await this.client.send({
+            type: 'emulator-start-from-branch',
+            branch,
+            btc_only: btcOnly,
+            model,
+            wipe,
+        });
+
+        return null;
     }
 
     async stopEmu() {

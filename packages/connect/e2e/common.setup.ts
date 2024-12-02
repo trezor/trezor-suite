@@ -2,7 +2,7 @@ import { versionUtils } from '@trezor/utils';
 import {
     TrezorUserEnvLink,
     type TrezorUserEnvLinkClass,
-    StartEmu,
+    EmuStartOptsType,
     MNEMONICS,
 } from '@trezor/trezor-user-env-link';
 import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
@@ -10,14 +10,37 @@ import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
 import { UI } from '../src/events';
 import TrezorConnect from '../src';
 
-const emulatorStartOpts =
-    (process.env.emulatorStartOpts as StartEmu) || global.emulatorStartOpts || {};
+const emulatorStartOpts: EmuStartOptsType =
+    (process.env.emulatorStartOpts as any) || global.emulatorStartOpts || {};
 
-const firmware = emulatorStartOpts.version;
+const emuStartType = emulatorStartOpts.type;
+const firmware: string | null =
+    'version' in emulatorStartOpts ? emulatorStartOpts.version || null : null;
 const deviceModel = emulatorStartOpts.model;
 
-if (!firmware || !deviceModel) {
-    throw new Error('Firmware and device model must be provided');
+if (!deviceModel) {
+    throw new Error('Device model must be provided');
+}
+
+switch (emuStartType) {
+    case 'emulator-start':
+    case undefined:
+        if (!firmware) {
+            throw new Error('Firmware version must be provided');
+        }
+        break;
+    case 'emulator-start-from-url':
+        if (!emulatorStartOpts.url) {
+            throw new Error('URL must be provided');
+        }
+        break;
+    case 'emulator-start-from-branch':
+        if (!emulatorStartOpts.branch) {
+            throw new Error('Branch must be provided');
+        }
+        break;
+    default:
+        throw new Error('Unknown emulator start type');
 }
 
 export const getController = () => {
@@ -55,7 +78,20 @@ export const setup = async (
 
     if (!options?.mnemonic && !options.wiped) return true; // skip setup if test is not using the device (composeTransaction)
 
-    await TrezorUserEnvLink.startEmu(emulatorStartOpts);
+    switch (emuStartType) {
+        case 'emulator-start':
+        case undefined:
+            await TrezorUserEnvLink.startEmu(emulatorStartOpts);
+            break;
+        case 'emulator-start-from-url':
+            await TrezorUserEnvLink.startEmuFromUrl(emulatorStartOpts);
+            break;
+        case 'emulator-start-from-branch':
+            await TrezorUserEnvLink.startEmuFromBranch(emulatorStartOpts);
+            break;
+        default:
+            throw new Error('Unknown emulator start type');
+    }
 
     if (!options.wiped) {
         const mnemonic = options.mnemonic || MNEMONICS.mnemonic_all;
@@ -152,6 +188,7 @@ export const initTrezorConnect = async (
 // "!T3T1" - skip for specific device model
 export const skipTest = (rules: string[]) => {
     if (!rules || !Array.isArray(rules)) return;
+    if (!firmware) return;
     const fwModel = firmware.substring(0, 1);
     const fwMaster = firmware.includes('-main');
     const deviceRule = rules.find(skip => skip === '!' + deviceModel);
