@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { DeviceModelInternal } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
-import { Row } from '@trezor/components';
+import { Row, Tooltip } from '@trezor/components';
 import { RotateDeviceImage } from '@trezor/product-components';
 import { selectDeviceLabelOrNameById } from '@suite-common/wallet-core';
 
@@ -38,25 +38,38 @@ export const DeviceStatus = ({
 }: DeviceStatusProps) => {
     const deviceLabel = useSelector(state => selectDeviceLabelOrNameById(state, device?.id));
 
+    const image = (
+        <DeviceWrapper $isLowerOpacity={deviceNeedsRefresh}>
+            <RotateDeviceImage
+                deviceModel={deviceModel}
+                deviceColor={device?.features?.unit_color}
+                animationHeight="34px"
+                animationWidth="24px"
+            />
+        </DeviceWrapper>
+    );
+
+    const content = device && (
+        <DeviceDetail label={deviceLabel}>
+            <DeviceStatusText
+                onRefreshClick={handleRefreshClick}
+                device={device}
+                forceConnectionInfo={forceConnectionInfo}
+            />
+        </DeviceDetail>
+    );
+
     return (
         <Row flex="1" gap={spacings.md}>
-            <DeviceWrapper $isLowerOpacity={deviceNeedsRefresh}>
-                <RotateDeviceImage
-                    deviceModel={deviceModel}
-                    deviceColor={device?.features?.unit_color}
-                    animationHeight="34px"
-                    animationWidth="24px"
-                />
-            </DeviceWrapper>
-
-            {isDeviceDetailVisible && device && (
-                <DeviceDetail label={deviceLabel}>
-                    <DeviceStatusText
-                        onRefreshClick={handleRefreshClick}
-                        device={device}
-                        forceConnectionInfo={forceConnectionInfo}
-                    />
-                </DeviceDetail>
+            {isDeviceDetailVisible ? (
+                <>
+                    {image}
+                    {content}
+                </>
+            ) : (
+                <Tooltip hasArrow cursor="pointer" placement="right" content={content}>
+                    {image}
+                </Tooltip>
             )}
         </Row>
     );
