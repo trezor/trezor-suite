@@ -18,16 +18,13 @@ import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReduce
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { filterAndCategorizeUtxos } from 'src/utils/wallet/filterAndCategorizeUtxosUtils';
 
+import { UtxoSortingSelect } from './UtxoSortingSelect';
 import { UtxoSelectionList } from './UtxoSelectionList/UtxoSelectionList';
 import { UtxoSearch } from './UtxoSearch';
 
 const Header = styled.header`
     border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
     padding-bottom: ${spacingsPx.sm};
-`;
-
-const SearchWrapper = styled.div`
-    margin-top: ${spacingsPx.lg};
 `;
 
 const MissingToInput = styled.div<{ $isVisible: boolean }>`
@@ -204,13 +201,14 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                 </Row>
             </Header>
             {hasEligibleUtxos && (
-                <SearchWrapper>
+                <Row gap={spacings.sm} margin={{ top: spacings.lg }}>
                     <UtxoSearch
                         searchQuery={searchQuery}
                         setSearch={setSearchQuery}
                         setSelectedPage={setSelectedPage}
                     />
-                </SearchWrapper>
+                    <UtxoSortingSelect />
+                </Row>
             )}
             {!!spendableUtxosOnPage.length && (
                 <UtxoSelectionList

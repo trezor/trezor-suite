@@ -10,6 +10,8 @@ export type FormOptions =
     | 'ethereumNonce' // TODO
     | 'rippleDestinationTag';
 
+export type UtxoSorting = 'newestFirst' | 'oldestFirst' | 'smallestFirst' | 'largestFirst';
+
 export interface FormState {
     outputs: Output[]; // output arrays, each element is corresponding with single Output item
     setMaxOutputId?: number;
@@ -31,4 +33,5 @@ export interface FormState {
     hasCoinControlBeenOpened: boolean;
     anonymityWarningChecked?: boolean;
     selectedUtxos: AccountUtxo[];
+    utxoSorting?: UtxoSorting;
 }

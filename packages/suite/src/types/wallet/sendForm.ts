@@ -14,6 +14,7 @@ import {
     PrecomposedLevels,
     PrecomposedLevelsCardano,
     Rate,
+    UtxoSorting,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
@@ -50,6 +51,8 @@ export interface UtxoSelectionContext {
     coinjoinRegisteredUtxos: AccountUtxo[];
     isLowAnonymityUtxoSelected: boolean;
     anonymityWarningChecked: boolean;
+    utxoSorting?: UtxoSorting;
+    selectUtxoSorting: (ordering: UtxoSorting) => void;
     toggleAnonymityWarning: () => void;
     toggleCheckAllUtxos: () => void;
     toggleCoinControl: () => void;

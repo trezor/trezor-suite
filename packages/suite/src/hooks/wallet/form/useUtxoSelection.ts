@@ -1,9 +1,13 @@
 import { useEffect, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import { ExcludedUtxos, FormState } from '@suite-common/wallet-types';
+import { ExcludedUtxos, FormState, UtxoSorting } from '@suite-common/wallet-types';
 import type { AccountUtxo, PROTO } from '@trezor/connect';
 import { getUtxoOutpoint, isSameUtxo } from '@suite-common/wallet-utils';
+import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
+
+import { useSelector } from 'src/hooks/suite';
+import { sortUtxos } from 'src/utils/wallet/utxoSortingUtils';
 
 import { useCoinjoinRegisteredUtxos } from './useCoinjoinRegisteredUtxos';
 import {
@@ -28,19 +32,26 @@ export const useUtxoSelection = ({
     setValue,
     watch,
 }: UtxoSelectionContextProps): UtxoSelectionContext => {
+    const accountTransactions = useSelector(state =>
+        selectAccountTransactionsWithNulls(state, account.key),
+    );
+
     // register custom form field (without HTMLElement)
     useEffect(() => {
         register('isCoinControlEnabled');
         register('selectedUtxos');
         register('anonymityWarningChecked');
+        register('utxoSorting');
     }, [register]);
 
     const coinjoinRegisteredUtxos = useCoinjoinRegisteredUtxos({ account });
 
-    // has coin control been enabled manually?
-    const isCoinControlEnabled = watch('isCoinControlEnabled');
-    // fee level
-    const selectedFee = watch('selectedFee');
+    const [isCoinControlEnabled, options, selectedFee, utxoSorting] = watch([
+        'isCoinControlEnabled',
+        'options',
+        'selectedFee',
+        'utxoSorting',
+    ]);
     // confirmation of spending low-anonymity UTXOs - only relevant for coinjoin account
     const anonymityWarningChecked = !!watch('anonymityWarningChecked');
     // manually selected UTXOs
@@ -79,20 +90,29 @@ export const useUtxoSelection = ({
     const spendableUtxos: AccountUtxo[] = [];
     const lowAnonymityUtxos: AccountUtxo[] = [];
     const dustUtxos: AccountUtxo[] = [];
-    account?.utxo?.forEach(utxo => {
-        switch (excludedUtxos[getUtxoOutpoint(utxo)]) {
-            case 'low-anonymity':
-                lowAnonymityUtxos.push(utxo);
 
-                return;
-            case 'dust':
-                dustUtxos.push(utxo);
+    // Skip sorting and categorizing UTXOs if coin control is not enabled.
+    const utxos =
+        options?.includes('utxoSelection') && account?.utxo
+            ? sortUtxos(account?.utxo, utxoSorting, accountTransactions)
+            : account?.utxo;
 
-                return;
-            default:
-                spendableUtxos.push(utxo);
-        }
-    });
+    if (utxos?.length) {
+        utxos?.forEach(utxo => {
+            switch (excludedUtxos[getUtxoOutpoint(utxo)]) {
+                case 'low-anonymity':
+                    lowAnonymityUtxos.push(utxo);
+
+                    return;
+                case 'dust':
+                    dustUtxos.push(utxo);
+
+                    return;
+                default:
+                    spendableUtxos.push(utxo);
+            }
+        });
+    }
 
     // category displayed on top and controlled by the check-all checkbox
     const topCategory =
@@ -138,6 +158,8 @@ export const useUtxoSelection = ({
     if (!isLowAnonymityUtxoSelected && anonymityWarningChecked) {
         setValue('anonymityWarningChecked', false);
     }
+
+    const selectUtxoSorting = (sorting: UtxoSorting) => setValue('utxoSorting', sorting);
 
     const toggleAnonymityWarning = () =>
         setValue('anonymityWarningChecked', !anonymityWarningChecked);
@@ -204,6 +226,8 @@ export const useUtxoSelection = ({
         selectedUtxos,
         spendableUtxos,
         coinjoinRegisteredUtxos,
+        utxoSorting,
+        selectUtxoSorting,
         toggleAnonymityWarning,
         toggleCheckAllUtxos,
         toggleCoinControl,
