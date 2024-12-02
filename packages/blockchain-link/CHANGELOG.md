@@ -1,3 +1,8 @@
+# 2.3.4
+
+-   npm-prerelease: @trezor/blockchain-link 2.3.4-beta.1 (b6f0602c75)
+-   fix(blockchain-link): solana fetch isTestnet only once (fb0a013bd8)
+
 # 2.3.3
 
 -   npm-prerelease: @trezor/blockchain-link 2.3.3-beta.1 (bb519376e8)
