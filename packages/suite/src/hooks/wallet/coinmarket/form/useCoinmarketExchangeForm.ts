@@ -530,20 +530,25 @@ export const useCoinmarketExchangeForm = ({
 
             return;
         }
+
+        // sendAddress may be set by useCoinmarketWatchTrade hook to the trade object
+        const sendAddress = selectedQuote?.sendAddress || trade?.data?.sendAddress;
         if (
             selectedQuote &&
             selectedQuote.orderId &&
-            selectedQuote.sendAddress &&
+            sendAddress &&
             selectedQuote.sendStringAmount
         ) {
             const sendStringAmount = shouldSendInSats
                 ? amountToSmallestUnit(selectedQuote.sendStringAmount, decimals)
                 : selectedQuote.sendStringAmount;
+            const sendPaymentExtraId =
+                selectedQuote.partnerPaymentExtraId || trade?.data?.partnerPaymentExtraId;
             const result = await recomposeAndSign({
                 account,
-                address: selectedQuote.sendAddress,
+                address: sendAddress,
                 amount: sendStringAmount,
-                destinationTag: selectedQuote.partnerPaymentExtraId,
+                destinationTag: sendPaymentExtraId,
                 setMaxOutputId: values.setMaxOutputId,
             });
             // in case of not success, recomposeAndSign shows notification
