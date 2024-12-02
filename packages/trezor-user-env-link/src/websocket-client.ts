@@ -35,6 +35,14 @@ export type WebsocketClientEvents = {
     disconnected: () => void;
 };
 
+interface WebsocketRequest {
+    type: string;
+}
+
+interface WebsocketResponse {
+    response: any;
+}
+
 export class WebsocketClient extends TypedEmitter<WebsocketClientEvents> {
     private messageID: number;
     private options: Options;
@@ -111,8 +119,7 @@ export class WebsocketClient extends TypedEmitter<WebsocketClientEvents> {
         this.dispose();
     }
 
-    // todo: typesafe interface
-    async send(params: any) {
+    async send<T extends WebsocketRequest>(params: T): Promise<WebsocketResponse> {
         // probably after update to node 18 it started to disconnect after certain
         // period of inactivity.
         await this.connect();
@@ -134,7 +141,6 @@ export class WebsocketClient extends TypedEmitter<WebsocketClientEvents> {
 
         ws.send(JSON.stringify(req));
 
-        // todo: proper return type
         return dfd.promise;
     }
 
