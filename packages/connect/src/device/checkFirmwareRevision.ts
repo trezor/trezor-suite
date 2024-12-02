@@ -11,13 +11,21 @@ type GetOnlineReleaseMetadataParams = {
     internalModel: string;
 };
 
+const OFFLINE_ERROR = 'OFFLINE_ERROR';
+
 const getOnlineReleaseMetadata = async ({
     firmwareVersion,
     internalModel,
 }: GetOnlineReleaseMetadataParams): Promise<FirmwareRelease | undefined> => {
-    const onlineReleases = await downloadReleasesMetadata({ internal_model: internalModel });
+    try {
+        const onlineReleases = await downloadReleasesMetadata({ internal_model: internalModel });
 
-    return onlineReleases.find(onlineRelease => isEqual(onlineRelease.version, firmwareVersion));
+        return onlineReleases.find(onlineRelease =>
+            isEqual(onlineRelease.version, firmwareVersion),
+        );
+    } catch {
+        throw OFFLINE_ERROR;
+    }
 };
 
 const failFirmwareRevisionCheck = (
@@ -87,7 +95,7 @@ export const checkFirmwareRevision = async ({
 
             return { success: true };
         } catch (e) {
-            if (e.name === 'FetchError' && e.code === 'ENOTFOUND') {
+            if (e === OFFLINE_ERROR) {
                 return failFirmwareRevisionCheck('cannot-perform-check-offline');
             }
 
