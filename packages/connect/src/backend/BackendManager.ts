@@ -1,3 +1,5 @@
+import { TimerId } from '@trezor/type-utils';
+
 import { DataManager } from '../data/DataManager';
 import { ERRORS } from '../constants';
 import { Blockchain, BlockchainOptions } from './Blockchain';
@@ -7,7 +9,7 @@ import type { CoinInfo, BlockchainLink } from '../types';
 type CoinShortcut = CoinInfo['shortcut'];
 type Identity = string;
 type CoinShortcutIdentity = `${CoinShortcut}/${Identity}`;
-type Reconnect = { attempts: number; handle: ReturnType<typeof setTimeout> };
+type Reconnect = { attempts: number; handle: TimerId };
 type BackendParams = Pick<BlockchainOptions, 'coinInfo' | 'postMessage' | 'identity'>;
 
 const DEFAULT_IDENTITY = 'default';

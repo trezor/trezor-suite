@@ -55,6 +55,7 @@ import {
     TOKEN_PROGRAM_PUBLIC_KEY,
 } from '@trezor/blockchain-link-utils/src/solana';
 import { getSuiteVersion } from '@trezor/env-utils';
+import { IntervalId } from '@trezor/type-utils';
 
 import { getBaseFee, getPriorityFee } from './fee';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
@@ -474,7 +475,7 @@ const subscribeBlock = async ({ state, connect, post }: Context) => {
 
 const unsubscribeBlock = ({ state }: Context) => {
     if (!state.getSubscription('block')) return;
-    const interval = state.getSubscription('block') as ReturnType<typeof setInterval>;
+    const interval = state.getSubscription('block') as IntervalId;
     clearInterval(interval);
     state.removeSubscription('block');
 };
@@ -769,7 +770,7 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
         });
 
         if (this.state.getSubscription('block')) {
-            const interval = this.state.getSubscription('block') as ReturnType<typeof setInterval>;
+            const interval = this.state.getSubscription('block') as IntervalId;
             clearInterval(interval);
             this.state.removeSubscription('block');
         }

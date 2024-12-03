@@ -1,5 +1,6 @@
 import { Network, networks } from '@trezor/utxo-lib';
 import { ElectrumAPI, BlockHeader, Version } from '@trezor/blockchain-link-types/src/electrum';
+import { IntervalId } from '@trezor/type-utils';
 
 import { JsonRpcClientOptions } from './json-rpc';
 import { BatchingJsonRpcClient } from './batching';
@@ -91,7 +92,8 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
         return super.request(method, ...params);
     }
 
-    private keepAliveHandle?: ReturnType<typeof setInterval>;
+    private keepAliveHandle?: IntervalId;
+
     private keepAlive() {
         if (!this.socket) return;
         this.keepAliveHandle = setInterval(async () => {

@@ -12,6 +12,7 @@ import {
     GroupedBalanceMovementEventPayload,
 } from '@suite-common/graph';
 import { Translation } from '@suite-native/intl';
+import { TimerId } from '@trezor/type-utils';
 
 import { getExtremaFromGraphPoints } from '../utils';
 import { AxisLabel } from './AxisLabel';
@@ -91,7 +92,7 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
     useEffect(() => {
         // We need to delay the loading a bit, because when switching between cached timeframes, it will break the
         // path interpolation animation.
-        let timeout: ReturnType<typeof setTimeout>;
+        let timeout: TimerId;
         if (loading) {
             timeout = setTimeout(() => {
                 setDelayedLoading(true);

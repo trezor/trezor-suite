@@ -10,6 +10,7 @@
  */
 
 import { createDeferred, Deferred, TypedEmitter } from '@trezor/utils';
+import { TimerId } from '@trezor/type-utils';
 
 import type {
     EnumerateDoneRequest,
@@ -53,8 +54,8 @@ export class SessionsBackground
     private pathInternalPathPublicMap: Record<PathInternal, PathPublic> = {};
 
     // if lock is set, somebody is doing something with device. we have to wait
-    private locksQueue: { id: ReturnType<typeof setTimeout>; dfd: Deferred<void> }[] = [];
-    private locksTimeoutQueue: ReturnType<typeof setTimeout>[] = [];
+    private locksQueue: { id: TimerId; dfd: Deferred<void> }[] = [];
+    private locksTimeoutQueue: TimerId[] = [];
     private lastSessionId = 0;
     private lastPathId = 0;
 

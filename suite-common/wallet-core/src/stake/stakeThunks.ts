@@ -1,6 +1,6 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { createThunk } from '@suite-common/redux-utils';
-import { Timeout } from '@trezor/type-utils';
+import { TimerId } from '@trezor/type-utils';
 import { getStakingSymbols } from '@suite-common/wallet-utils';
 import { SupportedNetworkSymbol } from '@suite-common/wallet-types';
 
@@ -92,7 +92,7 @@ export const initStakeDataThunk = createThunk(
     },
 );
 
-let stakeDataTimeout: Timeout | null = null;
+let stakeDataTimeout: TimerId | null = null;
 
 export const periodicCheckStakeDataThunk = createThunk(
     `${STAKE_MODULE}/periodicCheckStakeDataThunk`,

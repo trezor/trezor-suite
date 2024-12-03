@@ -1,3 +1,5 @@
+import { TimerId } from '@trezor/type-utils';
+
 export type ScheduledAction<T> = (signal?: AbortSignal) => Promise<T>;
 
 type AttemptParams = {
@@ -28,7 +30,7 @@ const resolveAfterMs = (ms: number | undefined, clear: AbortSignal) =>
         if (clear.aborted) return reject();
         if (ms === undefined) return resolve();
         // eslint-disable-next-line prefer-const
-        let timeout: ReturnType<typeof setTimeout>;
+        let timeout: TimerId;
         const onClear = () => {
             clearTimeout(timeout);
             clear.removeEventListener('abort', onClear);
@@ -45,7 +47,7 @@ const rejectAfterMs = (ms: number, reason: () => Error, clear: AbortSignal) =>
     new Promise<never>((_, reject) => {
         if (clear.aborted) return reject();
         // eslint-disable-next-line prefer-const
-        let timeout: ReturnType<typeof setTimeout> | undefined;
+        let timeout: TimerId | undefined;
         const onClear = () => {
             clearTimeout(timeout);
             clear.removeEventListener('abort', onClear);

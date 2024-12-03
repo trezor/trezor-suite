@@ -3,12 +3,13 @@ import React, { useState, useEffect, useCallback, forwardRef, useRef } from 'rea
 import styled from 'styled-components';
 
 import { isChanged } from '@suite-common/suite-utils';
+import { TimerId } from '@trezor/type-utils';
 
 function debounce<T extends (...args: unknown[]) => void>(
     func: T,
     wait: number,
 ): (...args: Parameters<T>) => void {
-    let timeout: ReturnType<typeof setTimeout> | null = null;
+    let timeout: TimerId | null = null;
 
     return (...args: Parameters<T>) => {
         if (timeout !== null) {

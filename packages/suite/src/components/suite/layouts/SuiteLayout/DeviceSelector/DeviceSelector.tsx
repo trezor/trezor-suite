@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 
 import { selectDevicesCount, selectDevice } from '@suite-common/wallet-core';
-import type { Timeout } from '@trezor/type-utils';
+import type { TimerId } from '@trezor/type-utils';
 import { borders, spacingsPx } from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { Icon } from '@trezor/components';
@@ -78,8 +78,8 @@ export const DeviceSelector = () => {
     const [isAnimationTriggered, setIsAnimationTriggered] = useState(false);
 
     const countChanged = localCount && localCount !== deviceCount;
-    const shakeAnimationTimerRef = useRef<Timeout | undefined>(undefined);
-    const stateAnimationTimerRef = useRef<Timeout | undefined>(undefined);
+    const shakeAnimationTimerRef = useRef<TimerId | undefined>(undefined);
+    const stateAnimationTimerRef = useRef<TimerId | undefined>(undefined);
 
     useEffect(
         () =>

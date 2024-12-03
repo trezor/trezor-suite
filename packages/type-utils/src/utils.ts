@@ -1,4 +1,5 @@
 // make key required
+
 export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
 
 // object values types
@@ -46,8 +47,6 @@ export type DeepPartial<T> = T extends () => any
       : T;
 
 export type PrimitiveType = string | number | boolean | Date | null | undefined;
-
-export type Timeout = ReturnType<typeof setTimeout>;
 
 // Record<K, T> with optional key and required value.
 // example of using partial union as keys:

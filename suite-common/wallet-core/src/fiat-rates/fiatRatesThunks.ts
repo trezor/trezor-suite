@@ -17,6 +17,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { getNetworkFeatures, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
+import { TimerId } from '@trezor/type-utils';
 
 import { FIAT_RATES_MODULE_PREFIX, REFETCH_INTERVAL } from './fiatRatesConstants';
 import { selectTickersToBeUpdated, selectTransactionsWithMissingRates } from './fiatRatesSelectors';
@@ -191,7 +192,7 @@ export const fetchFiatRatesThunk = createThunk(
     },
 );
 
-const ratesTimeouts: Record<RateTypeWithoutHistoric, ReturnType<typeof setTimeout> | null> = {
+const ratesTimeouts: Record<RateTypeWithoutHistoric, TimerId | null> = {
     current: null,
     lastWeek: null,
 };

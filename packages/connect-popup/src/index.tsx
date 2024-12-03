@@ -28,6 +28,7 @@ import { analytics, EventType } from '@trezor/connect-analytics';
 import { getSystemInfo } from '@trezor/connect-common';
 import { initLog, setLogWriter, LogWriter } from '@trezor/connect/src/utils/debug';
 import { DEFAULT_DOMAIN } from '@trezor/connect/src/data/version';
+import { TimerId } from '@trezor/type-utils';
 
 import * as view from './view';
 import {
@@ -46,7 +47,7 @@ const INTERVAL_HANDSHAKE_TIMEOUT_MS = 90 * 1000;
 const log = initLog('@trezor/connect-popup');
 const proxyLogger = initLog('@trezor/connect-webextension');
 
-let handshakeTimeout: ReturnType<typeof setTimeout>;
+let handshakeTimeout: TimerId;
 let renderConnectUIPromise: Promise<void> | undefined;
 
 // browser built-in functionality to quickly and safely escape the string

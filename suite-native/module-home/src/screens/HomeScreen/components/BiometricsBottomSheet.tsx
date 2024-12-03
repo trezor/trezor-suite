@@ -17,6 +17,7 @@ import {
 } from '@suite-native/biometrics';
 import { Translation } from '@suite-native/intl';
 import { selectIsCoinEnablingInitFinished } from '@suite-native/discovery';
+import { TimerId } from '@trezor/type-utils';
 
 const SHOW_TIMEOUT = 1500;
 
@@ -53,7 +54,7 @@ export const BiometricsBottomSheet = () => {
 
     useEffect(() => {
         let isMounted = true;
-        let timerId: ReturnType<typeof setTimeout>;
+        let timerId: TimerId;
         const checkBiometrics = async () => {
             const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
 

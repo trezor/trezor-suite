@@ -2,6 +2,7 @@ import WebSocket from 'ws';
 
 import { createDeferred, createDeferredManager, TypedEmitter } from '@trezor/utils';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
+import { TimerId } from '@trezor/type-utils';
 
 interface Subscription<T> {
     id: string;
@@ -38,7 +39,7 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
     private readonly emitter: TypedEmitter<WsEvents> = this;
 
     private ws?: WebSocket;
-    private pingTimeout?: ReturnType<typeof setTimeout>;
+    private pingTimeout?: TimerId;
     private connectPromise?: Promise<void>;
 
     protected abstract ping(): Promise<unknown>;

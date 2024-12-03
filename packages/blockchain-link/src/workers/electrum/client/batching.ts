@@ -1,3 +1,5 @@
+import { TimerId } from '@trezor/type-utils';
+
 import { JsonRpcClient } from './json-rpc';
 
 type Options = {
@@ -11,7 +13,7 @@ const MAX_QUEUE_LENGTH = 15;
 // TODO batching should in theory improve performance
 export class BatchingJsonRpcClient extends JsonRpcClient {
     private queue: string[] = [];
-    private batchTimer?: ReturnType<typeof setTimeout>;
+    private batchTimer?: TimerId;
 
     private timeoutMs: number;
     private maxQueueLength: number;

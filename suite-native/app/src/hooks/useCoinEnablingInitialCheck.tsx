@@ -18,6 +18,7 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
+import { TimerId } from '@trezor/type-utils';
 
 export const useCoinEnablingInitialCheck = () => {
     const dispatch = useDispatch();
@@ -38,7 +39,7 @@ export const useCoinEnablingInitialCheck = () => {
 
     useEffect(() => {
         if (shouldShowCoinEnablingInitFlow && canShowCoinEnablingInitFlow) {
-            let timeoutId: ReturnType<typeof setTimeout>;
+            let timeoutId: TimerId;
             //if btc only device, just run discovery for btc and do not show the UI
             if (hasBitcoinOnlyFirmware) {
                 dispatch(setEnabledDiscoveryNetworkSymbols(['btc']));

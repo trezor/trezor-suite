@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { IntervalId } from '@trezor/type-utils';
 
 import { selectDiscoveryInfo } from './discoveryConfigSlice';
 
@@ -15,7 +16,7 @@ export const useIsDiscoveryDurationTooLong = () => {
     const [loadingTakesLongerThanExpected, setLoadingTakesLongerThanExpected] = useState(false);
 
     useEffect(() => {
-        let interval: ReturnType<typeof setInterval>;
+        let interval: IntervalId;
         if (hasDiscovery && discoveryInfo?.startTimestamp) {
             interval = setInterval(() => {
                 if (

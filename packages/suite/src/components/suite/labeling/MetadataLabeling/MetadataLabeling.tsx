@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 import { Button, DropdownMenuItemProps, Row } from '@trezor/components';
-import type { Timeout } from '@trezor/type-utils';
+import type { TimerId } from '@trezor/type-utils';
 import { StaticSessionId } from '@trezor/connect';
 
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
@@ -293,7 +293,7 @@ export const MetadataLabeling = ({
     const dataTestBase = `@metadata/${payload.type}/${payload.defaultValue}`;
     const actionButtonsDisabled = isDiscoveryRunning || pending;
     const isSubscribedToSubmitResult = useRef(payload.defaultValue);
-    let timeout: Timeout | undefined;
+    let timeout: TimerId | undefined;
     useEffect(() => {
         setPending(false);
         setShowSuccess(false);

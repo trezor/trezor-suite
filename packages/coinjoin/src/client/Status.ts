@@ -1,4 +1,5 @@
 import { TypedEmitter } from '@trezor/utils';
+import { TimerId } from '@trezor/type-utils';
 
 import * as coordinator from './coordinator';
 import { transformStatus } from '../utils/roundUtils';
@@ -38,7 +39,7 @@ export class Status extends TypedEmitter<StatusEvents> {
     mode: StatusMode = 'idle';
     private settings: CoinjoinClientSettings;
     private abortController: AbortController;
-    private statusTimeout?: ReturnType<typeof setTimeout>;
+    private statusTimeout?: TimerId;
     private identities: string[]; // registered identities
     private runningAffiliateServer = false;
 

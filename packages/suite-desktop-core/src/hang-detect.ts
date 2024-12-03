@@ -2,6 +2,7 @@ import { BrowserWindow, dialog } from 'electron';
 
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { ElectronIpcMainInvokeEvent } from '@trezor/ipc-proxy/src/proxy-handler';
+import { TimerId } from '@trezor/type-utils';
 
 import { ipcMain } from './typed-electron';
 import { APP_SRC } from './libs/constants';
@@ -27,7 +28,7 @@ export const hangDetect = (mainWindow: BrowserWindow, statePatch?: Record<string
 
         return Promise.resolve({});
     };
-    let timeout: ReturnType<typeof setTimeout>;
+    let timeout: TimerId;
 
     const handshake = new Promise<HandshakeResult>(resolve => {
         const timeoutCallback = async () => {

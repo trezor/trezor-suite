@@ -1,5 +1,5 @@
 import { Explorer, NetworkSymbol, BackendType } from '@suite-common/wallet-config';
-import { Timeout } from '@trezor/type-utils';
+import { TimerId } from '@trezor/type-utils';
 
 /**
  * @deprecated
@@ -35,7 +35,7 @@ export interface Blockchain extends ConnectionStatus {
     blockHash: string;
     blockHeight: number;
     version: string;
-    syncTimeout?: Timeout;
+    syncTimeout?: TimerId;
     backends: BackendSettings;
     identityConnections?: {
         [identity: string]: ConnectionStatus;

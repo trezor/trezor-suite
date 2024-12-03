@@ -9,6 +9,7 @@ import { InfoPanel } from '@trezor/connect-ui/src/components/InfoPanel';
 import { View } from '@trezor/connect-ui/src/components/View';
 import { Button, Paragraph, intermediaryTheme } from '@trezor/components';
 import { LogMessage } from '@trezor/connect/src/utils/debug';
+import { TimerId } from '@trezor/type-utils';
 
 interface ReactWrapperProps {
     children: React.ReactNode;
@@ -79,7 +80,7 @@ const DownloadButton = ({ array, filename }: { array: any[]; filename: string })
 };
 
 let logDebounceCache: any[] = [];
-let logDebounceTimeout: ReturnType<typeof setTimeout> | undefined;
+let logDebounceTimeout: TimerId | undefined;
 
 const logInConsole = (logs: any[]) => {
     // Logs in console are debounced in order to try to make sure that

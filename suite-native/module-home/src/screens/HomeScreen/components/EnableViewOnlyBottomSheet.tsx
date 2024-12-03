@@ -22,6 +22,7 @@ import {
     setViewOnlyCancelationTimestamp,
 } from '@suite-native/settings';
 import { useToast } from '@suite-native/toasts';
+import { TimerId } from '@trezor/type-utils';
 
 import { DisconnectedTrezorSvg } from '../../../assets/DisconnectedTrezorSvg';
 
@@ -79,7 +80,7 @@ export const EnableViewOnlyBottomSheet = () => {
 
     useEffect(() => {
         let isMounted = true;
-        let timerId: ReturnType<typeof setTimeout>;
+        let timerId: TimerId;
 
         //show after a delay
         if (canBeShowed) {

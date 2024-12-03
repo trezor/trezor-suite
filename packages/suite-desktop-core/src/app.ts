@@ -6,6 +6,7 @@ import type { HandshakeClient } from '@trezor/suite-desktop-api';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { createDeferred, createTimeoutPromise } from '@trezor/utils';
 import { isMacOs } from '@trezor/env-utils';
+import { TimerId } from '@trezor/type-utils';
 
 import { ipcMain } from './typed-electron';
 import { APP_NAME } from './libs/constants';
@@ -51,7 +52,7 @@ const createMainWindow = (winBounds: WinBounds) => {
         icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),
     });
 
-    let resizeDebounce: ReturnType<typeof setTimeout> | null = null;
+    let resizeDebounce: TimerId | null = null;
 
     mainWindow.on('resize', () => {
         if (resizeDebounce) return;

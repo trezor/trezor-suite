@@ -1,4 +1,5 @@
 import { TypedEmitter } from '@trezor/utils';
+import { ImmediateId, TimerId } from '@trezor/type-utils';
 
 import { CoinjoinPrisonInmate, CoinjoinPrisonEvents } from '../types/client';
 import { WabiSabiProtocolErrorCode } from '../enums';
@@ -28,10 +29,7 @@ export interface DetainOptions {
 
 export class CoinjoinPrison extends TypedEmitter<CoinjoinPrisonEvents> {
     inmates: CoinjoinPrisonInmate[] = [];
-    private changeEventThrottle:
-        | ReturnType<typeof setImmediate>
-        | ReturnType<typeof setTimeout>
-        | undefined;
+    private changeEventThrottle: ImmediateId | TimerId | undefined;
 
     constructor(initialState: CoinjoinPrisonInmate[] = []) {
         super();

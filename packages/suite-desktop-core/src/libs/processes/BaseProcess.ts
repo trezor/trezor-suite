@@ -2,6 +2,8 @@ import { app } from 'electron';
 import path from 'path';
 import { spawn, ChildProcess } from 'child_process';
 
+import { TimerId } from '@trezor/type-utils';
+
 import { b2t } from '../utils';
 
 export type Status = {
@@ -31,7 +33,7 @@ export abstract class BaseProcess {
     resourceName: string;
     processName: string;
     options: Options;
-    startupThrottle: ReturnType<typeof setTimeout> | null;
+    startupThrottle: TimerId | null;
     supportedSystems = ['linux-arm64', 'linux-x64', 'mac-arm64', 'mac-x64', 'win-x64'];
     stopped = false;
     logger: ILogger;
@@ -158,7 +160,7 @@ export abstract class BaseProcess {
             // that started the process, so if it fails an error is thrown to let the module knows something
             // went wrong.
             // eslint-disable-next-line prefer-const
-            let resolveTimeout: ReturnType<typeof setTimeout> | undefined;
+            let resolveTimeout: TimerId | undefined;
             const spawnErrorHandler = (message: any) => {
                 // This error handler will be triggered if there is an error during spawn of the process,
                 // it will reject with an error so the user can be notified that something went wrong.

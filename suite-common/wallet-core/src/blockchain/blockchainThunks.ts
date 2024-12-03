@@ -28,7 +28,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 import type { Account, CustomBackend, NetworksFees } from '@suite-common/wallet-types';
-import type { Timeout } from '@trezor/type-utils';
+import type { TimerId } from '@trezor/type-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { selectAccounts } from '../accounts/accountsReducer';
@@ -327,7 +327,7 @@ export const unsubscribeBlockchainThunk = createThunk(
     },
 );
 
-const tryClearTimeout = (timeout?: Timeout) => {
+const tryClearTimeout = (timeout?: TimerId) => {
     if (timeout) clearTimeout(timeout);
 };
 

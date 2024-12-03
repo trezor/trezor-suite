@@ -12,6 +12,7 @@ import {
     AbstractMessageChannel,
     Message,
 } from '@trezor/connect-common/src/messageChannel/abstract';
+import { IntervalId, TimerId } from '@trezor/type-utils';
 
 import { showPopupRequest } from './showPopupRequest';
 import { ServiceWorkerWindowChannel } from '../channels/serviceworker-window';
@@ -59,11 +60,11 @@ export class PopupManager extends EventEmitter {
 
     popupPromise: Deferred<void> | undefined;
 
-    requestTimeout: ReturnType<typeof setTimeout> | undefined;
+    requestTimeout: TimerId | undefined;
 
-    openTimeout: ReturnType<typeof setTimeout> | undefined;
+    openTimeout: TimerId | undefined;
 
-    closeInterval: ReturnType<typeof setInterval> | undefined;
+    closeInterval: IntervalId | undefined;
 
     extensionTabId = 0;
 

@@ -7,6 +7,7 @@ import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants
 import * as utils from '@trezor/blockchain-link-utils/src/ripple';
 import type { Response, SubscriptionAccountInfo, AccountInfo } from '@trezor/blockchain-link-types';
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
+import { TimerId } from '@trezor/type-utils';
 
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
 
@@ -420,7 +421,7 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
 };
 
 class RippleWorker extends BaseWorker<RippleAPI> {
-    pingTimeout?: ReturnType<typeof setTimeout>;
+    pingTimeout?: TimerId;
 
     cleanup() {
         if (this.pingTimeout) {

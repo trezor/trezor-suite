@@ -1,4 +1,5 @@
 import { Status } from '@trezor/blockchain-link-types/src/electrum';
+import { IntervalId } from '@trezor/type-utils';
 
 import { ElectrumClient } from './electrum';
 
@@ -15,7 +16,7 @@ export class CachingElectrumClient extends ElectrumClient {
     private readonly statuses: Statuses = {};
     private cached = 0;
     private total = 0;
-    private logTimer: ReturnType<typeof setInterval>;
+    private logTimer: IntervalId;
 
     constructor() {
         super();

@@ -1,6 +1,8 @@
+import { IntervalId } from '@trezor/type-utils';
+
 export class Throttler {
     private readonly delay: number;
-    private readonly intervals: { [id: string]: ReturnType<typeof setInterval> };
+    private readonly intervals: { [id: string]: IntervalId };
     private readonly callbacks: { [id: string]: () => void };
 
     constructor(delay: number) {

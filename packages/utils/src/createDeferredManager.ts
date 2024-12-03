@@ -1,3 +1,5 @@
+import { TimerId } from '@trezor/type-utils';
+
 import { createDeferred, Deferred } from './createDeferred';
 
 type ManagedDeferred<T> = Deferred<T, number> & { deadline: number };
@@ -42,7 +44,7 @@ export const createDeferredManager = <T = any>(
     const promises: ManagedDeferred<T>[] = [];
 
     let ID = initialId;
-    let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+    let timeoutHandle: TimerId | undefined;
 
     const length = () => promises.length;
 

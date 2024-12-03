@@ -4,7 +4,7 @@ import { D, G } from '@mobily/ts-belt';
 import { getJWSPublicKey, isCodesignBuild } from '@trezor/env-utils';
 import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
-import { Timeout } from '@trezor/type-utils';
+import { TimerId } from '@trezor/type-utils';
 
 import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
 import {
@@ -117,7 +117,7 @@ export const initTokenDefinitionsThunk = createThunk(
     },
 );
 
-let tokenDefinitionsTimeout: Timeout | null = null;
+let tokenDefinitionsTimeout: TimerId | null = null;
 
 export const periodicCheckTokenDefinitionsThunk = createThunk(
     `${TOKEN_DEFINITIONS_MODULE}/periodicCheckTokenDefinitionsThunk`,

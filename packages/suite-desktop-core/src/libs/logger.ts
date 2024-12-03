@@ -6,6 +6,7 @@ import { app } from 'electron';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import { ensureDirectoryExists } from '@trezor/node-utils';
+import { TimerId } from '@trezor/type-utils';
 
 import { getBuildInfo, getComputerInfo } from './info';
 
@@ -130,7 +131,7 @@ export class Logger implements ILogger {
     }
 
     private dedupeMessage?: RepeatedLogMessage;
-    private dedupeTimeout?: ReturnType<typeof setTimeout>;
+    private dedupeTimeout?: TimerId;
 
     private handleMessage(message: LogMessage) {
         if (!this.options.dedupeTimeout) {

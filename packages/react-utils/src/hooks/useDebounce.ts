@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 
 import { createDeferred } from '@trezor/utils';
-import type { Timeout } from '@trezor/type-utils';
+import type { TimerId } from '@trezor/type-utils';
 
 type AsyncFunction = (...args: any) => Promise<any>;
 type SyncFunction = (...args: any) => any;
@@ -10,7 +10,7 @@ type SyncFunction = (...args: any) => any;
 // `timeout` prevents from calling '@trezor/connect' method to many times (inputs mad-clicking)
 // TODO: maybe it should be converted to regular module, could be useful elsewhere
 export const useDebounce = () => {
-    const timeout = useRef<Timeout | null>(null);
+    const timeout = useRef<TimerId | null>(null);
 
     const debounce = useCallback(
         async <F extends AsyncFunction | SyncFunction>(fn: F): Promise<ReturnType<F>> => {
