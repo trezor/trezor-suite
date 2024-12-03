@@ -1,11 +1,11 @@
-import { getContractAddressForNetworkFixtures } from '../__fixtures__/tokenUtils';
-import { getContractAddressForNetwork } from '../tokenUtils';
+import { getContractAddressForNetworkSymbolFixtures } from '../__fixtures__/tokenUtils';
+import { getContractAddressForNetworkSymbol } from '../tokenUtils';
 
-describe('getContractAddressForNetwork', () => {
-    getContractAddressForNetworkFixtures.forEach(
+describe('getContractAddressForNetworkSymbol', () => {
+    getContractAddressForNetworkSymbolFixtures.forEach(
         ({ testName, networkSymbol, contractAddress, expected }) => {
             test(testName, () => {
-                const result = getContractAddressForNetwork(networkSymbol, contractAddress);
+                const result = getContractAddressForNetworkSymbol(networkSymbol, contractAddress);
                 expect(result).toBe(expected);
             });
         },

@@ -2,7 +2,7 @@ import { differenceInMonths } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { resetTime } from '@suite-common/suite-utils';
-import { networks, type NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork, type NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -25,7 +25,7 @@ export const ensureHistoryRates = async (
     fiatCurrency: FiatCurrencyCode,
     isElectrumBackend: boolean,
 ): Promise<BlockchainAccountBalanceHistory[]> => {
-    if (!networks[symbol].coingeckoId) return data;
+    if (!getNetwork(symbol).coingeckoId) return data;
 
     const missingRates = data
         .filter(({ rates }) => !Object.keys(rates || {}).length)

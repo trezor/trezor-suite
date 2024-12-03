@@ -5,16 +5,16 @@ import {
     Network,
     NetworkSymbol,
     getCoingeckoId,
+    getNetwork,
     getNetworkByCoingeckoId,
     getNetworkByCoingeckoNativeId,
     getNetworkFeatures,
     getNetworkType,
-    networks,
 } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
 import {
-    getContractAddressForNetwork,
+    getContractAddressForNetworkSymbol,
     substituteBip43Path,
     sortByCoin,
 } from '@suite-common/wallet-utils';
@@ -75,7 +75,7 @@ export function testnetToProdCryptoId(cryptoId: CryptoId): CryptoId {
 }
 
 export const getNetworkName = (symbol: NetworkSymbol) => {
-    return networks[symbol].name;
+    return getNetwork(symbol).name;
 };
 
 interface CoinmarketGetDecimalsProps {
@@ -353,7 +353,7 @@ export const coinmarketBuildAccountOptions = ({
             accountType,
         } = account;
 
-        if (!networks[accountSymbol].coingeckoNativeId) {
+        if (!getNetwork(accountSymbol).coingeckoNativeId) {
             return;
         }
 
@@ -365,10 +365,10 @@ export const coinmarketBuildAccountOptions = ({
                 index,
             });
 
-        const accountDecimals = networks[accountSymbol].decimals;
+        const accountDecimals = getNetwork(accountSymbol).decimals;
         const options: CoinmarketAccountOptionsGroupOptionProps[] = [
             {
-                value: networks[accountSymbol].coingeckoNativeId as CryptoId,
+                value: getNetwork(accountSymbol).coingeckoNativeId as CryptoId,
                 label: accountSymbol.toUpperCase(),
                 cryptoName: getNetworkName(accountSymbol),
                 descriptor,
@@ -391,7 +391,7 @@ export const coinmarketBuildAccountOptions = ({
                     return;
                 }
 
-                const contractAddress = getContractAddressForNetwork(accountSymbol, contract);
+                const contractAddress = getContractAddressForNetworkSymbol(accountSymbol, contract);
 
                 const tokenCryptoId = toTokenCryptoId(accountSymbol, contractAddress);
                 if (supportedCryptoIds && !supportedCryptoIds.has(tokenCryptoId)) {
@@ -510,8 +510,8 @@ export const getAddressAndTokenFromAccountOptionsGroupProps = (
         return { address: '', token: null };
     }
 
-    const networkSymbol = cryptoIdToSymbol(selected.value);
-    const networkType = networkSymbol ? getNetworkType(networkSymbol) : null;
+    const symbol = cryptoIdToSymbol(selected.value);
+    const networkType = symbol ? getNetworkType(symbol) : null;
 
     // set token address for ERC20 transaction to estimate the fees more precisely
     if (networkType === 'ethereum') {

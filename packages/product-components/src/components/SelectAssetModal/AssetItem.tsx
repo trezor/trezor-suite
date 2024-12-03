@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { AssetLogo, Badge, Column, Row, Text } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { getContractAddressForNetwork } from '@suite-common/wallet-utils';
+import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 
 import { CoinLogo } from '../CoinLogo/CoinLogo';
 import { AssetOptionBaseProps } from './SelectAssetModal';
@@ -63,7 +63,10 @@ export const AssetItem = ({
                         coingeckoId={coingeckoId}
                         contractAddress={
                             symbolExtended && contractAddress
-                                ? getContractAddressForNetwork(symbolExtended, contractAddress)
+                                ? getContractAddressForNetworkSymbol(
+                                      symbolExtended,
+                                      contractAddress,
+                                  )
                                 : undefined
                         }
                         placeholder={ticker.toUpperCase()}

@@ -2,11 +2,11 @@ import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 
-export const getContractAddressForNetwork = (
-    networkSymbol: NetworkSymbol | (string & {}), // unknown symbols will result to lowerCase
+export const getContractAddressForNetworkSymbol = (
+    symbol: NetworkSymbol | (string & {}), // unknown symbols will result to lowerCase
     contractAddress: string,
 ) => {
-    switch (networkSymbol) {
+    switch (symbol) {
         case 'eth':
             // Specifying most common network as first case improves performance little bit
             return contractAddress.toLowerCase();

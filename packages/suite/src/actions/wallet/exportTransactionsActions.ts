@@ -70,7 +70,7 @@ export const exportTransactionsThunk = createThunk(
         // Prepare data in right format
         const data = await formatData(
             {
-                coin: account.symbol,
+                symbol: account.symbol,
                 accountName,
                 type,
                 transactions: filteredTransaction,

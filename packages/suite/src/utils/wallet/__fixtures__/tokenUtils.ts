@@ -1,5 +1,4 @@
 import { EnhancedTokenInfo, TokenDefinition } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export const getTokensFixtures = [
     {
@@ -8,7 +7,7 @@ export const getTokensFixtures = [
             { contract: '0x1', balance: '100' } as EnhancedTokenInfo,
             { contract: '0x2', balance: '200' } as EnhancedTokenInfo,
         ],
-        symbol: 'eth' as NetworkSymbol,
+        symbol: 'eth' as const,
         coinDefinitions: {
             error: false,
             isLoading: false,
@@ -36,7 +35,7 @@ export const getTokensFixtures = [
             { contract: '0x2', balance: '200' } as EnhancedTokenInfo,
             { contract: '0x3', balance: '0' } as EnhancedTokenInfo,
         ],
-        symbol: 'eth' as NetworkSymbol,
+        symbol: 'eth' as const,
         coinDefinitions: {
             error: false,
             isLoading: false,
@@ -61,7 +60,7 @@ export const getTokensFixtures = [
             { contract: '0x2', balance: '200' } as EnhancedTokenInfo,
             { contract: '0x3', balance: '0' } as EnhancedTokenInfo,
         ],
-        symbol: 'eth' as NetworkSymbol,
+        symbol: 'eth' as const,
         coinDefinitions: {
             error: false,
             isLoading: false,
@@ -88,7 +87,7 @@ export const getTokensFixtures = [
             { contract: '0x4', balance: '0' } as EnhancedTokenInfo,
             { contract: '0x5', balance: '0' } as EnhancedTokenInfo,
         ],
-        symbol: 'eth' as NetworkSymbol,
+        symbol: 'eth' as const,
         coinDefinitions: {
             error: false,
             isLoading: false,
@@ -119,7 +118,7 @@ export const getTokensFixtures = [
             { contract: '0x2', balance: '200', symbol: 'DEF' } as EnhancedTokenInfo,
             { contract: '0x3', balance: '0', symbol: 'GHI' } as EnhancedTokenInfo,
         ],
-        symbol: 'eth' as NetworkSymbol,
+        symbol: 'eth' as const,
         coinDefinitions: {
             error: false,
             isLoading: false,

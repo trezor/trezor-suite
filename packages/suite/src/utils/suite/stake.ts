@@ -37,13 +37,16 @@ const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
 
 type EthNetwork = 'holesky' | 'mainnet';
 
-export const getEthNetworkForWalletSdk = (symbol: NetworkSymbol): EthNetwork => {
+export const getEthNetworkForWalletSdk = (
+    symbol: NetworkSymbol | 'unknown' | undefined,
+): EthNetwork => {
     const ethNetworks: PartialRecord<NetworkSymbol, EthNetwork> = {
         thol: 'holesky',
         eth: 'mainnet',
     };
+    const network = symbol && symbol !== 'unknown' ? ethNetworks[symbol] : ethNetworks.eth;
 
-    return ethNetworks[symbol] || ethNetworks.eth!;
+    return network!;
 };
 
 export const getAdjustedGasLimitConsumption = (estimatedFee: Success<BlockchainEstimatedFee>) =>

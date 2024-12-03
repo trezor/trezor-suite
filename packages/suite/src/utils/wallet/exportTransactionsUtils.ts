@@ -30,7 +30,7 @@ type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & 
 };
 
 type Data = {
-    coin: NetworkSymbol;
+    symbol: NetworkSymbol;
     accountName: string;
     type: ExportFileType;
     transactions: AccountTransactionForExports[];
@@ -149,10 +149,10 @@ const prepareContent = (
     tokenDefinitions: TokenDefinitions,
     historicFiatRates?: RatesByTimestamps,
 ): Fields[] => {
-    const { transactions, coin, localCurrency } = data;
+    const { transactions, symbol, localCurrency } = data;
 
     return transactions
-        .map(formatAmounts(coin))
+        .map(formatAmounts(symbol))
         .flatMap(t => {
             if (getIsPhishingTransaction(t, tokenDefinitions)) {
                 return null;
@@ -186,11 +186,11 @@ const prepareContent = (
                     const targetData = {
                         ...sharedData,
                         fee: !hasFeeBeenAlreadyUsed ? t.fee : '', // fee only once per tx
-                        feeSymbol: !hasFeeBeenAlreadyUsed ? coin.toUpperCase() : '',
+                        feeSymbol: !hasFeeBeenAlreadyUsed ? symbol.toUpperCase() : '',
                         address: target.isAddress ? target.addresses[0] : '', // SENT - it is destination address, RECV - it is MY address
                         label: target.isAddress && target.metadataLabel ? target.metadataLabel : '',
                         amount: target.isAddress ? target.amount : '',
-                        symbol: target.isAddress ? coin.toUpperCase() : '',
+                        symbol: target.isAddress ? symbol.toUpperCase() : '',
                         fiat:
                             target.isAddress && target.amount && historicRate
                                 ? localizeNumber(
@@ -227,7 +227,7 @@ const prepareContent = (
                     const tokenData = {
                         ...sharedData,
                         fee: !hasFeeBeenAlreadyUsed ? t.fee : '', // fee only once per tx
-                        feeSymbol: !hasFeeBeenAlreadyUsed ? coin.toUpperCase() : '',
+                        feeSymbol: !hasFeeBeenAlreadyUsed ? symbol.toUpperCase() : '',
                         address: token.to || '', // SENT - it is destination address, RECV - it is MY address
                         label: '', // token transactions do not have labels
                         amount: token.amount, // TODO: what to show if token.decimals missing so amount is not formatted correctly?
@@ -256,11 +256,11 @@ const prepareContent = (
                     const internalTransferData = {
                         ...sharedData,
                         fee: !hasFeeBeenAlreadyUsed ? t.fee : '', // fee only once per tx
-                        feeSymbol: !hasFeeBeenAlreadyUsed ? coin.toUpperCase() : '',
+                        feeSymbol: !hasFeeBeenAlreadyUsed ? symbol.toUpperCase() : '',
                         address: internal.to || '', // SENT - it is destination address, RECV - it is MY address
                         label: '', // internal transactions do not have labels
                         amount: internal.amount,
-                        symbol: coin.toUpperCase(), // if symbol not available, use contract address
+                        symbol: symbol.toUpperCase(), // if symbol not available, use contract address
                         fiat:
                             internal.amount && historicRate
                                 ? localizeNumber(
@@ -402,7 +402,7 @@ const preparePdf = (
             {
                 columns: [
                     {
-                        text: `${data.accountName} (${data.coin.toUpperCase()})`,
+                        text: `${data.accountName} (${data.symbol.toUpperCase()})`,
                         fontSize: 18,
                         bold: true,
                         alignment: 'left',
@@ -443,7 +443,7 @@ export const formatData = async (
     tokenDefinitions: TokenDefinitions,
     historicFiatRates?: RatesByTimestamps,
 ) => {
-    const { coin, type, transactions } = data;
+    const { symbol, type, transactions } = data;
 
     switch (type) {
         case 'csv': {
@@ -461,8 +461,8 @@ export const formatData = async (
         case 'json': {
             const json = JSON.stringify(
                 {
-                    coin,
-                    transactions: transactions.map(formatAmounts(coin)),
+                    coin: symbol,
+                    transactions: transactions.map(formatAmounts(symbol)),
                 },
                 null,
                 2,

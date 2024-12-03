@@ -1,5 +1,5 @@
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
-import { getContractAddressForNetwork } from '@suite-common/wallet-utils';
+import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { TokenInfo } from '@trezor/connect';
 
 import {
@@ -14,7 +14,7 @@ import {
 const tokenDefinitionsMap = new WeakMap<SimpleTokenStructure, Set<string>>();
 export const isTokenDefinitionKnown = (
     tokenDefinitions: SimpleTokenStructure | undefined,
-    networkSymbol: NetworkSymbol,
+    symbol: NetworkSymbol,
     contractAddress: string,
 ) => {
     if (!tokenDefinitions) return false;
@@ -23,24 +23,22 @@ export const isTokenDefinitionKnown = (
         tokenDefinitionsMap.set(tokenDefinitions, new Set(tokenDefinitions));
     }
 
-    const contractAddressForNetwork = getContractAddressForNetwork(networkSymbol, contractAddress);
+    const contractAddressForNetwork = getContractAddressForNetworkSymbol(symbol, contractAddress);
 
     return tokenDefinitionsMap.get(tokenDefinitions)?.has(contractAddressForNetwork);
 };
 
 export const filterKnownTokens = (
     tokenDefinitions: SimpleTokenStructure | undefined,
-    networkSymbol: NetworkSymbol,
+    symbol: NetworkSymbol,
     tokens: TokenInfo[],
 ) => {
-    return tokens.filter(token =>
-        isTokenDefinitionKnown(tokenDefinitions, networkSymbol, token.contract),
-    );
+    return tokens.filter(token => isTokenDefinitionKnown(tokenDefinitions, symbol, token.contract));
 };
 
-export const getSupportedDefinitionTypes = (networkSymbol: NetworkSymbol) => {
-    const isCoinDefinitionsEnabled = getNetworkFeatures(networkSymbol).includes('coin-definitions');
-    const isNftDefinitionsEnabled = getNetworkFeatures(networkSymbol).includes('nft-definitions');
+export const getSupportedDefinitionTypes = (symbol: NetworkSymbol) => {
+    const isCoinDefinitionsEnabled = getNetworkFeatures(symbol).includes('coin-definitions');
+    const isNftDefinitionsEnabled = getNetworkFeatures(symbol).includes('nft-definitions');
 
     return [
         ...(isCoinDefinitionsEnabled ? [DefinitionType.COIN] : []),
@@ -54,21 +52,24 @@ export const buildTokenDefinitionsFromStorage = (
     const tokenDefinitions: TokenDefinitionsState = {};
 
     for (const definition of storageTokenDefinitions) {
-        const [network, type, action] = definition.key.split('-');
-        const networkTokenDefinition = tokenDefinitions[network as NetworkSymbol];
+        const [symbol, type, action] = definition.key.split('-') as [
+            NetworkSymbol,
+            DefinitionType,
+            TokenManagementAction,
+        ];
+        const networkTokenDefinition = tokenDefinitions[symbol];
 
         if (!networkTokenDefinition) {
-            tokenDefinitions[network as NetworkSymbol] = {
+            tokenDefinitions[symbol] = {
                 coin: { error: false, data: undefined, isLoading: false, hide: [], show: [] },
                 nft: { error: false, data: undefined, isLoading: false, hide: [], show: [] },
             };
         }
 
-        const networkTokenDefinitionType =
-            tokenDefinitions[network as NetworkSymbol]?.[type as DefinitionType];
+        const networkTokenDefinitionType = tokenDefinitions[symbol]?.[type];
 
         if (networkTokenDefinitionType) {
-            networkTokenDefinitionType[action as TokenManagementAction] = definition.value;
+            networkTokenDefinitionType[action] = definition.value;
         }
     }
 

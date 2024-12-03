@@ -11,7 +11,6 @@ import {
 } from '@trezor/connect/src/types/api/blockchainEstimateFee';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { ValidatorsQueue } from '@suite-common/wallet-core';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import {
     transformTx,
@@ -226,7 +225,7 @@ describe('getAdjustedGasLimitConsumption', () => {
 describe('getEthNetworkForWalletSdk', () => {
     getEthNetworkForWalletSdkFixture.forEach(test => {
         it(test.description, async () => {
-            const result = await getEthNetworkForWalletSdk(test.args.symbol as NetworkSymbol);
+            const result = await getEthNetworkForWalletSdk(test.args.symbol);
             expect(result).toEqual(test.result);
         });
     });
@@ -238,7 +237,7 @@ describe('getInstantStakeType', () => {
             const result = await getInstantStakeType(
                 test.args.internalTransfer as InternalTransfer,
                 test.args.address,
-                test.args.symbol as NetworkSymbol,
+                test.args.symbol,
             );
             expect(result).toEqual(test.result);
         });
@@ -252,7 +251,7 @@ describe('getChangedInternalTx', () => {
                 test.args.prevTxs as WalletAccountTransaction[],
                 test.args.currentTxs as WalletAccountTransaction[],
                 test.args.selectedAccountAddress,
-                test.args.symbol as NetworkSymbol,
+                test.args.symbol,
             );
             expect(result).toEqual(test.result);
         });

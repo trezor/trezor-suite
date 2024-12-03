@@ -49,7 +49,7 @@ export type Protocol =
     | 'tada'
     | 'dsol';
 
-export const NETWORK_TO_PROTOCOLS: { [key in NetworkSymbol]: Protocol[] } = {
+export const NETWORK_TO_PROTOCOLS: Record<NetworkSymbol, Protocol[]> = {
     btc: ['bitcoin', 'btc'],
     ltc: ['litecoin', 'ltc'],
     bch: ['bitcoincash', 'bch'],

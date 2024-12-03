@@ -25,7 +25,10 @@ import {
 } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { getContractAddressForNetwork, getTokenExplorerUrl } from '@suite-common/wallet-utils';
+import {
+    getContractAddressForNetworkSymbol,
+    getTokenExplorerUrl,
+} from '@suite-common/wallet-utils';
 
 import {
     FiatValue,
@@ -105,7 +108,10 @@ export const TokenRow = ({
     );
     const { coins } = useSelector(state => state.wallet.coinmarket.info);
     const isDeviceLocked = isLocked(true);
-    const networkContractAddress = getContractAddressForNetwork(account.symbol, token.contract);
+    const networkContractAddress = getContractAddressForNetworkSymbol(
+        account.symbol,
+        token.contract,
+    );
     const coingeckoId = getCoingeckoId(account.symbol);
 
     if (!unusedAddress || !device) return null;
@@ -132,7 +138,7 @@ export const TokenRow = ({
 
     const isReceiveButtonDisabled = isDeviceLocked || !!device.authConfirm;
 
-    const contractAddress = getContractAddressForNetwork(account.symbol, token.contract);
+    const contractAddress = getContractAddressForNetworkSymbol(account.symbol, token.contract);
     const tokenCryptoId = toTokenCryptoId(account.symbol, contractAddress);
     const tokenTradingOptions = coins?.[tokenCryptoId]?.services;
 

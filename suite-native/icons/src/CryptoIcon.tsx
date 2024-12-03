@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 
 import { cryptoIcons, genericTokenIcon, CryptoIconName } from '@suite-common/icons';
 import { getCoingeckoId, NetworkSymbol } from '@suite-common/wallet-config';
-import { getContractAddressForNetwork } from '@suite-common/wallet-utils';
+import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -39,7 +39,7 @@ export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIc
         const coingeckoId = getCoingeckoId(symbol);
         let url = cryptoIcons[symbol.toLowerCase() as CryptoIconName];
         if (coingeckoId && contractAddress) {
-            const formattedAddress = getContractAddressForNetwork(symbol, contractAddress);
+            const formattedAddress = getContractAddressForNetworkSymbol(symbol, contractAddress);
             url = getAssetLogoUrl({
                 coingeckoId,
                 contractAddress: formattedAddress,

@@ -16,7 +16,7 @@ import {
     AssetOptionBaseProps,
 } from '@trezor/product-components';
 import {
-    getContractAddressForNetwork,
+    getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
     hasNetworkFeatures,
     isNftToken,
@@ -255,7 +255,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
         : undefined;
 
     const networkTokenContractAddress =
-        selectedToken && getContractAddressForNetwork(account.symbol, selectedToken.contract);
+        selectedToken && getContractAddressForNetworkSymbol(account.symbol, selectedToken.contract);
 
     return (
         <>
