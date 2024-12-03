@@ -2788,7 +2788,12 @@
         {
             "blockchain_link": {
                 "type": "ripple",
-                "url": ["wss://s1.ripple.com", "wss://s-east.ripple.com", "wss://s-west.ripple.com"]
+                "url": [
+                    "wss://xrplcluster.com",
+                    "wss://xrpl.ws",
+                    "wss://s1.ripple.com",
+                    "wss://s2.ripple.com"
+                ]
             },
             "curve": "secp256k1",
             "decimals": 6,
