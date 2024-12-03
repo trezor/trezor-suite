@@ -170,7 +170,7 @@ export type SelectBarProps<V extends ValueTypes> = {
 } & AllowedFrameProps;
 
 // Generic type V is determined by selectedOption/options values
-export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.Element = ({
+export const SelectBar = <V extends ValueTypes>({
     label,
     options,
     selectedOption,
@@ -180,7 +180,7 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
     className,
     'data-testid': dataTest,
     ...rest
-}) => {
+}: SelectBarProps<V>) => {
     const [selectedOptionIn, setSelected] = useState<ValueTypes | undefined>(selectedOption);
     const { elevation } = useElevation();
     const frameProps = pickAndPrepareFrameProps(rest, allowedSelectBarFrameProps);
@@ -192,14 +192,14 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
     }, [selectedOption, setSelected]);
 
     const handleOptionClick = useCallback(
-        (option: Option<ValueTypes>) => () => {
+        (option: Option<V>) => () => {
             if (isDisabled || option.value === selectedOptionIn) {
                 return;
             }
 
             setSelected(option.value);
 
-            onChange?.(option?.value as any);
+            onChange?.(option?.value);
         },
         [isDisabled, selectedOptionIn, onChange],
     );
