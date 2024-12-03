@@ -67,7 +67,7 @@ export const useCoinmarketRecomposeAndSign = () => {
                         token: ethereumDataHex ? null : composed.token?.contract || null, // if we pass ethereumDataHex, do not use the token, the details are in the ethereumDataHex
                     },
                 ],
-                setMaxOutputId,
+                setMaxOutputId: !composed.token?.contract ? setMaxOutputId : undefined,
                 selectedFee,
                 feePerUnit: composed.feePerByte,
                 feeLimit: composed.feeLimit || '',
