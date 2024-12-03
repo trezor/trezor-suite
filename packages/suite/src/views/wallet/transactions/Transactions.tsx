@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import {
-    selectAccountTransactions,
+    selectAccountTransactionsWithNulls,
     selectIsLoadingAccountTransactions,
 } from '@suite-common/wallet-core';
 import { spacingsPx } from '@trezor/theme';
@@ -48,7 +48,7 @@ export const Transactions = () => {
         selectIsLoadingAccountTransactions(state, selectedAccount.account?.key || null),
     );
     const accountTransactions = useSelector(state =>
-        selectAccountTransactions(state, selectedAccount.account?.key || ''),
+        selectAccountTransactionsWithNulls(state, selectedAccount.account?.key || ''),
     );
 
     if (selectedAccount.status !== 'loaded') {
