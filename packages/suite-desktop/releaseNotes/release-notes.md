@@ -1,13 +1,10 @@
-### 🚀 New features
-
--   Opt in to auto-updates to automatically download and install the latest updates, with a one-click restart to apply.
--   BNB Smart Chain is now supported.
-
 ### 🎨 Improvements
 
--   Buy/Sell and Swap are now accessible directly from the main dashboard for quicker access.
--   Removed BIP-69 sorting to shuffle inputs and reduce fingerprinting, enhancing privacy.
+-   Transactions now use nVersion=2, reducing fingerprinting for enhanced privacy.
+-   Improved token selection for more control when sending.
+-   Optimized main menu resizing for seamless navigation across all screen sizes.
+-   Manual UTXO sorting added to Coin Control, offering improved flexibility.
 
 ### 🔧 Bug fixes
 
--   Minor fixes, usability enhancements, and performance improvements.
+-   Resolved minor bugs, enhanced usability, and optimized performance.
