@@ -14,7 +14,7 @@ let
   # ATTENTION: this does not match the actual required version defined in packages/suite-desktop/package.json
   # (the required version is not yet in NixOS repository)
   electron = electron_31;
-  nodejs = nodejs_20;
+  nodejs = nodejs_22;
   # use older gcc. 10.2.0 with glibc 2.32 for node_modules bindings.
   # electron-builder is packing the app with glibc 2.32, bindings should not be compiled with newer version.
   gccPkgs = import (builtins.fetchTarball {

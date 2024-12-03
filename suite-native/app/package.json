@@ -130,7 +130,7 @@
         "@suite-common/test-utils": "workspace:^",
         "@trezor/connect-mobile": "workspace:^",
         "@types/jest": "^29.5.12",
-        "@types/node": "^20.11.24",
+        "@types/node": "22.10.1",
         "babel-plugin-transform-inline-environment-variables": "^0.4.4",
         "babel-plugin-transform-remove-console": "^6.9.4",
         "detox": "^20.25.6",
