@@ -11,12 +11,12 @@ export const downloadReleasesMetadata = async ({
 }: DownloadReleasesMetadataParams): Promise<FirmwareRelease[]> => {
     const url = `https://data.trezor.io/firmware/${internal_model.toLowerCase()}/releases.json`;
 
-    const response = (await httpRequest(
+    const response = await httpRequest(
         url,
         'json',
         { signal: AbortSignal.timeout(10000) },
         true, // skipLocalForceDownload=true
-    )) as any;
+    );
 
     if (isValidReleases(response)) {
         return response;
