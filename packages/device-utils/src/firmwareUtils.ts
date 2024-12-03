@@ -1,7 +1,7 @@
 import { FirmwareType, VersionArray } from '@trezor/connect';
 
 import { isDeviceInBootloaderMode } from './modeUtils';
-import { PartialDevice } from './types';
+import { FirmwareVersionString, PartialDevice } from './types';
 
 export const getFirmwareRevision = (device?: PartialDevice) => device?.features?.revision || '';
 
@@ -20,9 +20,7 @@ export const getFirmwareVersionArray = (device?: PartialDevice): VersionArray | 
     return [features.major_version, features.minor_version, features.patch_version];
 };
 
-export const getFirmwareVersion = (
-    device?: PartialDevice,
-): '' | `${number}.${number}.${number}` => {
+export const getFirmwareVersion = (device?: PartialDevice): '' | FirmwareVersionString => {
     if (!device?.features) {
         return '';
     }

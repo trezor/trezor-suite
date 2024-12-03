@@ -1,11 +1,12 @@
 import { DeviceModelInternal } from '@trezor/connect';
+import { FirmwareVersionString } from '@trezor/device-utils/src/types';
 
 import * as STEP from 'src/constants/onboarding/steps';
 import { PrerequisiteType } from 'src/utils/suite/prerequisites';
 
 type ModelWithFirmwareVersion = {
     model: DeviceModelInternal;
-    minFwVersion: `${number}.${number}.${number}`;
+    minFwVersion: FirmwareVersionString;
 };
 
 export type Step = {
