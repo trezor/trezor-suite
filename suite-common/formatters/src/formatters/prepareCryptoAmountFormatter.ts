@@ -49,9 +49,10 @@ const convertToUnit = (
     const { bitcoinAmountUnit } = config;
     const decimals = getNetworkOptional(symbol)?.decimals ?? 0;
 
-    const areAmountUnitsSupported = symbol
-        ? A.includes(networks[symbol]?.features, 'amount-unit')
-        : undefined;
+    const areAmountUnitsSupported =
+        symbol && isNetworkSymbol(symbol)
+            ? A.includes(networks[symbol]?.features, 'amount-unit')
+            : undefined;
 
     if (isBalance && areAmountUnitsSupported && bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI) {
         return amountToSmallestUnit(value, decimals);
