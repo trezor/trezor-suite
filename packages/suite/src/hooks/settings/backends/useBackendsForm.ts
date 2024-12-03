@@ -28,6 +28,8 @@ const validateUrl = (type: BackendOption, value: string) => {
             return isElectrumUrl(value);
         case 'solana':
             return isUrl(value);
+        case 'ripple':
+            return isUrl(value);
         default:
             return false;
     }

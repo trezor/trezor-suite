@@ -296,7 +296,7 @@ export const networks = {
             address: 'https://xrpscan.com/account/',
         },
         features: [],
-        customBackends: [],
+        customBackends: ['ripple'],
         accountTypes: {},
         coingeckoId: 'ripple',
         coingeckoNativeId: 'ripple',
