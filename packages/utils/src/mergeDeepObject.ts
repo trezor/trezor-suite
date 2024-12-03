@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 // code shamelessly stolen from https://github.com/voodoocreation/ts-deepmerge
 
-type TAllKeys<T> = T extends any ? keyof T : never;
+import { Keys } from '@trezor/type-utils';
 
 type TIndexValue<T, K extends PropertyKey, D = never> = T extends any
     ? K extends keyof T
@@ -22,7 +22,7 @@ type TMerged<T> = [T] extends [Array<any>]
     : [T] extends [TPrimitives]
       ? T
       : [T] extends [object]
-        ? TPartialKeys<{ [K in TAllKeys<T>]: TMerged<TIndexValue<T, K>> }, never>
+        ? TPartialKeys<{ [K in Keys<T>]: TMerged<TIndexValue<T, K>> }, never>
         : T;
 
 // istanbul ignore next
