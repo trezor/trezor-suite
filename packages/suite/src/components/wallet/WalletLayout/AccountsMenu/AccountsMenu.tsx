@@ -18,6 +18,7 @@ import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { RefreshAfterDiscoveryNeeded } from './RefreshAfterDiscoveryNeeded';
 import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
+import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -45,8 +46,11 @@ export const AccountsMenu = () => {
     const { discovery } = useDiscovery();
     const { scrollElementRef, onScroll, ShadowTop, ShadowBottom, ShadowContainer } =
         useScrollShadow();
+    const isSidebarCollapsed = useIsSidebarCollapsed();
 
     if (!device || !discovery) {
+        if (isSidebarCollapsed) return <Wrapper />;
+
         return (
             <Wrapper>
                 <AccountsMenuNotice>
