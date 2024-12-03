@@ -106,6 +106,7 @@
         { "path": "../suite-desktop-api" },
         { "path": "../suite-storage" },
         { "path": "../theme" },
+        { "path": "../transport-bluetooth" },
         { "path": "../type-utils" },
         { "path": "../urls" },
         { "path": "../utils" },
