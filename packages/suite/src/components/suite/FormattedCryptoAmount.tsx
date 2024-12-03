@@ -96,9 +96,9 @@ export const FormattedCryptoAmount = ({
 
     const content = (
         <Row width="100%" gap={spacings.xxs} className={className}>
-            <Row>
+            <Row data-testid={dataTest}>
                 {!!signValue && <Sign value={signValue} />}
-                <Value data-testid={dataTest}>
+                <Value>
                     <RedactNumericalValue value={formattedValue} />
                 </Value>
             </Row>
