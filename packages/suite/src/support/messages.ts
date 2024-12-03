@@ -1,6 +1,8 @@
+import { defineMessages } from 'react-intl';
+
 import { defineMessagesWithTypeCheck } from './defineMessagesWithTypeCheck';
 
-export default defineMessagesWithTypeCheck({
+const messages = defineMessagesWithTypeCheck({
     TR_404_DESCRIPTION: {
         defaultMessage: 'Looks like a wrong URL or broken link.',
         id: 'TR_404_DESCRIPTION',
@@ -9265,3 +9267,5 @@ export default defineMessagesWithTypeCheck({
         defaultMessage: 'Trezor Connect',
     },
 });
+
+export default defineMessages(messages);

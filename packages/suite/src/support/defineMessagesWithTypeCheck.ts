@@ -1,5 +1,3 @@
-import { defineMessages } from 'react-intl';
-
 type MessageDescriptor<K extends string> = {
     // Must correspond to the property name.
     id: K;
@@ -16,4 +14,4 @@ Checks whether id corresponds to the property name. Otherwise, text is not trans
  */
 export const defineMessagesWithTypeCheck = <Key extends string>(messages: {
     [K in Key]: MessageDescriptor<K>;
-}) => defineMessages(messages);
+}) => messages;
