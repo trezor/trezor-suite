@@ -3,7 +3,12 @@ export default [
         blockchain: {
             name: 'Ripple',
             worker: 'js/ripple-worker.js',
-            server: ['wss://s1.ripple.com', 'wss://s-east.ripple.com', 'wss://s-west.ripple.com'],
+            server: [
+                'wss://xrplcluster.com',
+                'wss://xrpl.ws',
+                'wss://s1.ripple.com',
+                'wss://s2.ripple.com',
+            ],
             debug: true,
         },
         data: {
