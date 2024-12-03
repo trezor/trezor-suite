@@ -10,6 +10,23 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.4.6-beta.1
+
+This release brings improvements and optimizations in Solana `getAccountInfo`. It moves security checks outside `getFeatures` that fixes some of the issues with device loading and communication in general.
+
+## Feature
+
+-   add apiType to transports (f057f33)
+-   add blocks to blockchainUnsubscribe (de01c1f)
+
+## Fixes
+
+-   move security checks outside getFeatures (e67810d)
+-   use new improved cloneObject function (ee85d6d)
+-   update device authenticity config (3689022)
+-   add missing transport names (ef9f731)
+-   solana optimized getAccountInfo (88b9c6d)
+
 # 9.4.5
 
 We’ve reverted the default setting for nVersion in Connect back to nVersion=1. Since this might be a breaking change we are going to implement it in Connect 10. (05af037)
