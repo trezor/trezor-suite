@@ -15,7 +15,7 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "react": "18.2.0",
-        "react-hook-form": "^7.53.1",
+        "react-hook-form": "^7.53.2",
         "react-native": "0.76.1",
         "yup": "^1.4.0"
     }

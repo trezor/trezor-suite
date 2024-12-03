@@ -9512,7 +9512,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
-    react-hook-form: "npm:^7.53.1"
+    react-hook-form: "npm:^7.53.2"
     web3-utils: "npm:^4.3.1"
   languageName: unknown
   linkType: soft
@@ -9560,7 +9560,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
     react: "npm:18.2.0"
-    react-hook-form: "npm:^7.53.1"
+    react-hook-form: "npm:^7.53.2"
     web3-utils: "npm:^4.3.1"
   languageName: unknown
   linkType: soft
@@ -10085,7 +10085,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     react: "npm:18.2.0"
-    react-hook-form: "npm:^7.53.1"
+    react-hook-form: "npm:^7.53.2"
     react-native: "npm:0.76.1"
     yup: "npm:^1.4.0"
   languageName: unknown
@@ -10287,7 +10287,7 @@ __metadata:
     date-fns: "npm:^2.30.0"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
-    react-hook-form: "npm:^7.53.1"
+    react-hook-form: "npm:^7.53.2"
     react-native: "npm:0.76.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -10557,7 +10557,7 @@ __metadata:
     expo-linear-gradient: "npm:^14.0.1"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
-    react-hook-form: "npm:^7.53.1"
+    react-hook-form: "npm:^7.53.2"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:3.16.1"
     react-native-svg: "npm:^15.9.0"
@@ -12359,7 +12359,7 @@ __metadata:
     react-dom: "npm:18.2.0"
     react-focus-lock: "npm:^2.9.7"
     react-helmet-async: "npm:^2.0.4"
-    react-hook-form: "npm:^7.53.1"
+    react-hook-form: "npm:^7.53.2"
     react-intl: "npm:^6.6.8"
     react-qr-reader: "npm:^2.2.1"
     react-redux: "npm:8.0.7"
@@ -35111,12 +35111,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.53.1":
-  version: 7.53.1
-  resolution: "react-hook-form@npm:7.53.1"
+"react-hook-form@npm:^7.53.2":
+  version: 7.53.2
+  resolution: "react-hook-form@npm:7.53.2"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 10/41ac7140add546b90f75b0aef343b67b795d26a60da7bfeac1ded7716ec01234c6050f5c00a4487c28a73c24f9c9347cda741173a8083d7f4b02b588203e7544
+  checksum: 10/172589ac5871bd41717e8c6bc4c825d149db88eb02e356a8fef4115615a56b21bf66ad16954575b1d6302ed265b8780f1975a2730d5aa10a53e412b56d9f72ca
   languageName: node
   linkType: hard
 
