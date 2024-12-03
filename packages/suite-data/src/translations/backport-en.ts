@@ -38,11 +38,7 @@ fs.writeFileSync(
     `
 import { defineMessages } from 'react-intl';
 
-import { defineMessagesWithTypeCheck } from './defineMessagesWithTypeCheck';
-
-const messages = defineMessagesWithTypeCheck(${JSON.stringify(messages, null, 2).replace(/"([^"]+)":/g, '$1:')})
-
-export default defineMessages(messages);
+export default defineMessages(${JSON.stringify(messages, null, 2).replace(/"([^"]+)":/g, '$1:')})
 
 `,
 );
