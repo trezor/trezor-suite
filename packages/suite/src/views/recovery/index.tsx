@@ -179,11 +179,13 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                     return <Loading />;
                 }
 
-                return device.features.capabilities.includes('Capability_PassphraseEntry') ? (
-                    <EnterOnDeviceStep />
-                ) : (
-                    <T1B1InputStep />
-                );
+                // Do not rely on Capability_PassphraseEntry feature. For ancient firmwares it's not there,
+                // and we want to allow devices that have unsupported FW to be able to check the seed.
+                if (device.features.internal_model === DeviceModelInternal.T1B1) {
+                    return <T1B1InputStep />;
+                }
+
+                return <EnterOnDeviceStep />;
 
             case 'finished':
                 return !hasError ? (
