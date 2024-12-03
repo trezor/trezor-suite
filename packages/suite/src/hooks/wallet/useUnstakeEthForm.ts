@@ -14,7 +14,6 @@ import {
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { isChanged } from '@suite-common/suite-utils';
 import {
-    AmountLimitsString,
     selectFiatRatesByFiatRateKey,
     UnstakeContextValues as UnstakeContextValuesBase,
     UnstakeFormState,
@@ -35,6 +34,7 @@ import {
     getStakeFormsDefaultValues,
     simulateUnstake,
 } from 'src/utils/suite/stake';
+import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import { useStakeCompose } from './form/useStakeCompose';
 import { useFormDraft } from './useFormDraft';
@@ -43,7 +43,7 @@ import { useFees } from './form/useFees';
 type UnstakeOptions = 'all' | 'rewards' | 'other';
 
 type UnstakeContextValues = UnstakeContextValuesBase & {
-    amountLimits: AmountLimitsString;
+    amountLimits: AmountLimitProps;
     approximatedInstantEthAmount?: string | null;
     unstakeOption: UnstakeOptions;
     setUnstakeOption: (option: UnstakeOptions) => void;
@@ -72,7 +72,7 @@ export const useUnstakeEthForm = ({
     );
 
     const autocompoundBalance = getAccountAutocompoundBalance(account);
-    const amountLimits: AmountLimitsString = {
+    const amountLimits: AmountLimitProps = {
         currency: symbol,
         maxCrypto: autocompoundBalance,
     };

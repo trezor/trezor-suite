@@ -14,11 +14,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { isChanged } from '@suite-common/suite-utils';
 import { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
-import {
-    AmountLimitsString,
-    StakeContextValues,
-    selectFiatRatesByFiatRateKey,
-} from '@suite-common/wallet-core';
+import { StakeContextValues, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import {
     MIN_ETH_AMOUNT_FOR_STAKING,
     MIN_ETH_BALANCE_FOR_STAKING,
@@ -36,6 +32,7 @@ import {
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { getEthNetworkForWalletSdk, getStakeFormsDefaultValues } from 'src/utils/suite/stake';
+import type { CryptoAmountLimitProps } from 'src/utils/suite/validation';
 
 import { useStakeCompose } from './form/useStakeCompose';
 import { useFormDraft } from './useFormDraft';
@@ -57,7 +54,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
         selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'current'),
     );
 
-    const amountLimits: AmountLimitsString = {
+    const amountLimits: CryptoAmountLimitProps = {
         currency: symbol,
         minCrypto: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
         maxCrypto: account.formattedBalance,

@@ -8,7 +8,7 @@ import { NumberInput } from 'src/components/suite';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { validateDecimals, validateLimitsBigNum, validateMin } from 'src/utils/suite/validation';
+import { validateDecimals, validateCryptoLimits, validateMin } from 'src/utils/suite/validation';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 
 export const Inputs = () => {
@@ -42,7 +42,7 @@ export const Inputs = () => {
         validate: {
             min: validateMin(translationString),
             decimals: validateDecimals(translationString, { decimals: network.decimals }),
-            limits: validateLimitsBigNum(translationString, {
+            limits: validateCryptoLimits(translationString, {
                 amountLimits,
                 formatter: CryptoAmountFormatter,
             }),

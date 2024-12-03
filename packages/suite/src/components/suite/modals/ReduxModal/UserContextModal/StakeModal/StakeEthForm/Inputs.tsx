@@ -10,7 +10,7 @@ import { useTranslation } from 'src/hooks/suite';
 import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 import {
     validateDecimals,
-    validateLimitsBigNum,
+    validateCryptoLimits,
     validateMin,
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
@@ -61,7 +61,7 @@ export const Inputs = () => {
             reserveOrBalance: validateReserveOrBalance(translationString, {
                 account,
             }),
-            limits: validateLimitsBigNum(translationString, {
+            limits: validateCryptoLimits(translationString, {
                 amountLimits,
                 formatter: CryptoAmountFormatter,
             }),

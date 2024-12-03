@@ -4,14 +4,21 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { isDesktop, getLocationOrigin } from '@trezor/env-utils';
 
 import { Account } from 'src/types/wallet';
-import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
+import type { AmountLimitProps } from 'src/utils/suite/validation';
+
+type GetAmountLimitsProps = {
+    request: SellFiatTradeQuoteRequest;
+    quotes: SellFiatTrade[];
+    currency: string;
+};
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return the limits
-export function getAmountLimits(
-    request: SellFiatTradeQuoteRequest,
-    quotes: SellFiatTrade[],
-): AmountLimits | undefined {
+export function getAmountLimits({
+    request,
+    quotes,
+    currency,
+}: GetAmountLimitsProps): AmountLimitProps | undefined {
     let minAmount: number | undefined;
     let maxAmount: number | undefined;
 
@@ -22,18 +29,19 @@ export function getAmountLimits(
         }
         if (request.amountInCrypto) {
             const amount = Number(quote.cryptoStringAmount);
-            if (quote.minCrypto && amount < quote.minCrypto) {
+
+            if (amount && quote.minCrypto && amount < quote.minCrypto) {
                 minAmount = Math.min(minAmount || 1e28, quote.minCrypto);
             }
-            if (quote.maxCrypto && amount > quote.maxCrypto) {
+            if (amount && quote.maxCrypto && amount > quote.maxCrypto) {
                 maxAmount = Math.max(maxAmount || 0, quote.maxCrypto);
             }
         } else {
             const amount = Number(quote.fiatStringAmount);
-            if (quote.minFiat && amount < quote.minFiat) {
+            if (amount && quote.minFiat && amount < quote.minFiat) {
                 minAmount = Math.min(minAmount || 1e28, quote.minFiat);
             }
-            if (quote.maxFiat && amount > quote.maxFiat) {
+            if (amount && quote.maxFiat && amount > quote.maxFiat) {
                 maxAmount = Math.max(maxAmount || 0, quote.maxFiat);
             }
         }
@@ -41,13 +49,13 @@ export function getAmountLimits(
     if (minAmount) {
         if (!maxAmount) {
             return request.amountInCrypto
-                ? { currency: request.cryptoCurrency, minCrypto: minAmount }
-                : { currency: request.fiatCurrency, minFiat: minAmount };
+                ? { currency, minCrypto: minAmount.toString() }
+                : { currency: request.fiatCurrency, minFiat: minAmount.toString() };
         }
     } else if (maxAmount) {
         return request.amountInCrypto
-            ? { currency: request.cryptoCurrency, maxCrypto: maxAmount }
-            : { currency: request.fiatCurrency, maxFiat: maxAmount };
+            ? { currency, maxCrypto: maxAmount.toString() }
+            : { currency: request.fiatCurrency, maxFiat: maxAmount.toString() };
     }
 }
 

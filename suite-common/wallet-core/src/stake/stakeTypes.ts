@@ -1,6 +1,6 @@
 import { UseFormReturn, FormState as ReactHookFormState } from 'react-hook-form';
 
-import { Network } from '@suite-common/wallet-config';
+import type { Network } from '@suite-common/wallet-config';
 import {
     Account,
     Rate,
@@ -37,8 +37,6 @@ export interface AmountLimitsString {
     currency: string;
     minCrypto?: string;
     maxCrypto?: string;
-    minFiat?: string;
-    maxFiat?: string;
 }
 
 export interface BaseStakeContextValues {

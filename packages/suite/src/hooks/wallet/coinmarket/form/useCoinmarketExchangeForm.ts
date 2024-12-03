@@ -35,7 +35,7 @@ import {
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { CryptoAmountLimits, TradeExchange } from 'src/types/wallet/coinmarketCommonTypes';
+import { TradeExchange } from 'src/types/wallet/coinmarketCommonTypes';
 import {
     CoinmarketTradeExchangeType,
     UseCoinmarketFormProps,
@@ -64,6 +64,7 @@ import { useCoinmarketModalCrypto } from 'src/hooks/wallet/coinmarket/form/commo
 import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketAccount';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { useCoinmarketFiatValues } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketFiatValues';
+import type { CryptoAmountLimitProps } from 'src/utils/suite/validation';
 
 import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
 
@@ -102,7 +103,7 @@ export const useCoinmarketExchangeForm = ({
         recomposeAndSign,
     } = useCoinmarketRecomposeAndSign();
 
-    const [amountLimits, setAmountLimits] = useState<CryptoAmountLimits | undefined>(undefined);
+    const [amountLimits, setAmountLimits] = useState<CryptoAmountLimitProps | undefined>(undefined);
 
     const [innerQuotes, setInnerQuotes] = useState<ExchangeTrade[] | undefined>(
         coinmarketGetSuccessQuotes<CoinmarketTradeExchangeType>(quotes),
@@ -274,11 +275,8 @@ export const useCoinmarketExchangeForm = ({
             const allQuotes = await getQuotesRequest(quotesRequest);
 
             if (Array.isArray(allQuotes)) {
-                const limits = getAmountLimits(allQuotes);
-                if (limits) {
-                    limits.currency =
-                        cryptoIdToCoinSymbol(limits.currency as CryptoId) ?? limits.currency;
-                }
+                const currency = cryptoIdToCoinSymbol(quotesRequest.send) ?? quotesRequest.send;
+                const limits = getAmountLimits({ quotes: allQuotes, currency });
 
                 const successQuotes = addIdsToQuotes<CoinmarketTradeExchangeType>(
                     getSuccessQuotesOrdered(allQuotes),

@@ -4,13 +4,20 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { isDesktop, getLocationOrigin } from '@trezor/env-utils';
 
 import { Account } from 'src/types/wallet';
-import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
+import { AmountLimitProps } from 'src/utils/suite/validation';
+
+type GetAmountLimitsProps = {
+    request: BuyTradeQuoteRequest;
+    quotes: BuyTrade[];
+    currency: string;
+};
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return the limits
-export function getAmountLimits(
-    request: BuyTradeQuoteRequest,
-    quotes: BuyTrade[],
-): AmountLimits | undefined {
+export function getAmountLimits({
+    request,
+    quotes,
+    currency,
+}: GetAmountLimitsProps): AmountLimitProps | undefined {
     let minAmount: number | undefined;
     let maxAmount: number | undefined;
 
@@ -21,32 +28,33 @@ export function getAmountLimits(
         }
         if (request.wantCrypto) {
             const amount = Number(quote.receiveStringAmount);
-            if (quote.minCrypto && amount < quote.minCrypto) {
+            if (amount && quote.minCrypto && amount < quote.minCrypto) {
                 minAmount = Math.min(minAmount || 1e28, quote.minCrypto);
             }
-            if (quote.maxCrypto && amount > quote.maxCrypto) {
+            if (amount && quote.maxCrypto && amount > quote.maxCrypto) {
                 maxAmount = Math.max(maxAmount || 0, quote.maxCrypto);
             }
         } else {
             const amount = Number(quote.fiatStringAmount);
-            if (quote.minFiat && amount < quote.minFiat) {
+            if (amount && quote.minFiat && amount < quote.minFiat) {
                 minAmount = Math.min(minAmount || 1e28, quote.minFiat);
             }
-            if (quote.maxFiat && amount > quote.maxFiat) {
+            if (amount && quote.maxFiat && amount > quote.maxFiat) {
                 maxAmount = Math.max(maxAmount || 0, quote.maxFiat);
             }
         }
     }
+
     if (minAmount) {
         if (!maxAmount) {
             return request.wantCrypto
-                ? { currency: request.receiveCurrency, minCrypto: minAmount }
-                : { currency: request.fiatCurrency, minFiat: minAmount };
+                ? { currency, minCrypto: minAmount.toString() }
+                : { currency: request.fiatCurrency, minFiat: minAmount.toString() };
         }
     } else if (maxAmount) {
         return request.wantCrypto
-            ? { currency: request.receiveCurrency, maxCrypto: maxAmount }
-            : { currency: request.fiatCurrency, maxFiat: maxAmount };
+            ? { currency, maxCrypto: maxAmount.toString() }
+            : { currency: request.fiatCurrency, maxFiat: maxAmount.toString() };
     }
 }
 

@@ -23,7 +23,7 @@ import { createQuoteLink, getAmountLimits } from 'src/utils/wallet/coinmarket/se
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { AmountLimits, TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
+import { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import {
     CoinmarketAccountOptionsGroupOptionProps,
@@ -54,6 +54,7 @@ import { useCoinmarketComposeTransaction } from 'src/hooks/wallet/coinmarket/for
 import { useCoinmarketCurrencySwitcher } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketCurrencySwitcher';
 import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketAccount';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
 
@@ -102,7 +103,7 @@ export const useCoinmarketSellForm = ({
         trade => trade.tradeType === 'sell' && trade.key === transactionId,
     ) as TradeSell | undefined;
 
-    const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
+    const [amountLimits, setAmountLimits] = useState<AmountLimitProps | undefined>(undefined);
     const [sellStep, setSellStep] = useState<CoinmarketSellStepType>('BANK_ACCOUNT');
     const [innerQuotes, setInnerQuotes] = useState<SellFiatTrade[] | undefined>(
         coinmarketGetSuccessQuotes<CoinmarketTradeSellType>(quotes),
@@ -254,11 +255,14 @@ export const useCoinmarketSellForm = ({
             const allQuotes = await getQuotesRequest(quoteRequest);
 
             if (Array.isArray(allQuotes)) {
-                const limits = getAmountLimits(quoteRequest, allQuotes);
-                if (limits && quoteRequest.amountInCrypto) {
-                    limits.currency =
-                        cryptoIdToCoinSymbol(quoteRequest.cryptoCurrency) ?? limits.currency;
-                }
+                const currency =
+                    cryptoIdToCoinSymbol(quoteRequest.cryptoCurrency) ??
+                    quoteRequest.cryptoCurrency;
+                const limits = getAmountLimits({
+                    request: quoteRequest,
+                    quotes: allQuotes,
+                    currency,
+                });
 
                 const quotesDefault = filterQuotesAccordingTags<CoinmarketTradeSellType>(
                     addIdsToQuotes<CoinmarketTradeSellType>(allQuotes, 'sell'),

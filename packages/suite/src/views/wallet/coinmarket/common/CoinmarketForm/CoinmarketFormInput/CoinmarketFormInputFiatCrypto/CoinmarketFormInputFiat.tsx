@@ -3,6 +3,7 @@ import { FieldErrors, UseControllerProps } from 'react-hook-form';
 import { getInputState } from '@suite-common/wallet-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { useDidUpdate } from '@trezor/react-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { useTranslation } from 'src/hooks/suite';
 import { NumberInput } from 'src/components/suite';
@@ -60,7 +61,9 @@ export const CoinmarketFormInputFiat = <TFieldValues extends CoinmarketAllFormPr
                           if (
                               value &&
                               context.amountLimits?.minFiat &&
-                              Number(value) < context.amountLimits.minFiat
+                              new BigNumber(value).isLessThan(
+                                  new BigNumber(context.amountLimits.minFiat),
+                              )
                           ) {
                               return translationString('TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT', {
                                   minimum: context.amountLimits.minFiat,
@@ -72,7 +75,9 @@ export const CoinmarketFormInputFiat = <TFieldValues extends CoinmarketAllFormPr
                           if (
                               value &&
                               context.amountLimits?.maxFiat &&
-                              Number(value) > context.amountLimits.maxFiat
+                              new BigNumber(value).isGreaterThan(
+                                  new BigNumber(context.amountLimits.maxFiat),
+                              )
                           ) {
                               return translationString('TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT', {
                                   maximum: context.amountLimits.maxFiat,

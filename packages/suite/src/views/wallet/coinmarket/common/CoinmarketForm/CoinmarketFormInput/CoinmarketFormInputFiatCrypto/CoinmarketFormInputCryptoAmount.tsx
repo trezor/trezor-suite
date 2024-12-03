@@ -11,7 +11,7 @@ import { NumberInput } from 'src/components/suite';
 import {
     validateDecimals,
     validateInteger,
-    validateLimits,
+    validateCryptoLimits,
     validateMin,
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
@@ -85,7 +85,7 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
             min: validateMin(translationString),
             integer: validateInteger(translationString, { except: !shouldSendInSats }),
             decimals: validateDecimals(translationString, { decimals }),
-            limits: validateLimits(translationString, {
+            limits: validateCryptoLimits(translationString, {
                 amountLimits,
                 areSatsUsed: !!shouldSendInSats,
                 formatter: CryptoAmountFormatter,

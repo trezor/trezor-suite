@@ -1,5 +1,6 @@
 import { CryptoId } from 'invity-api';
 
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import * as fixtures from 'src/utils/wallet/coinmarket/__fixtures__/exchangeUtils';
 import {
     coinmarketGetExchangeReceiveCryptoId,
@@ -9,17 +10,39 @@ import {
     isQuoteError,
 } from 'src/utils/wallet/coinmarket/exchangeUtils';
 
+jest.mock('src/hooks/wallet/coinmarket/useCoinmarketInfo', () => ({
+    ...jest.requireActual('src/hooks/wallet/coinmarket/useCoinmarketInfo'),
+    useCoinmarketInfo: jest.fn(),
+}));
+
 const { MIN_MAX_QUOTES_OK, MIN_MAX_QUOTES_LOW, MIN_MAX_QUOTES_CANNOT_TRADE } = fixtures;
 
 describe('coinmarket/exchange utils', () => {
+    const cryptoIdToCoinSymbol = (useCoinmarketInfo as jest.Mock).mockImplementation(() => 'LTC');
+
     it('getAmountLimits', () => {
-        expect(getAmountLimits(MIN_MAX_QUOTES_OK)).toBe(undefined);
-        expect(getAmountLimits(MIN_MAX_QUOTES_LOW)).toStrictEqual({
-            currency: 'litecoin',
+        expect(
+            getAmountLimits({
+                quotes: MIN_MAX_QUOTES_OK,
+                currency: cryptoIdToCoinSymbol().toLowerCase(),
+            }),
+        ).toBe(undefined);
+        expect(
+            getAmountLimits({
+                quotes: MIN_MAX_QUOTES_LOW,
+                currency: cryptoIdToCoinSymbol().toLowerCase(),
+            }),
+        ).toStrictEqual({
+            currency: 'ltc',
             maxCrypto: undefined,
-            minCrypto: 0.35121471511608626,
+            minCrypto: '0.35121471511608626',
         });
-        expect(getAmountLimits(MIN_MAX_QUOTES_CANNOT_TRADE)).toBe(undefined);
+        expect(
+            getAmountLimits({
+                quotes: MIN_MAX_QUOTES_CANNOT_TRADE,
+                currency: cryptoIdToCoinSymbol().toLowerCase(),
+            }),
+        ).toBe(undefined);
     });
 
     it('isQuoteError', () => {

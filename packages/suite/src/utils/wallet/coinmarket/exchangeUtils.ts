@@ -9,7 +9,6 @@ import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
-import { CryptoAmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { RateType } from 'src/types/coinmarket/coinmarketForm';
 import {
     FORM_DEFAULT_CRYPTO_CURRENCY,
@@ -19,21 +18,29 @@ import {
 } from 'src/constants/wallet/coinmarket/form';
 import { Account } from 'src/types/wallet';
 import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
+import { CryptoAmountLimitProps } from 'src/utils/suite/validation';
+
+type GetAmountLimitsProps = {
+    quotes: ExchangeTrade[];
+    currency: string;
+};
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return error message
-export const getAmountLimits = (quotes: ExchangeTrade[]): CryptoAmountLimits | undefined => {
+export const getAmountLimits = ({
+    quotes,
+    currency,
+}: GetAmountLimitsProps): CryptoAmountLimitProps | undefined => {
     let min: number | undefined;
     let max: number | undefined;
-    let currency = '';
 
     for (const quote of quotes) {
         let noError = true;
         const amount = Number(quote.sendStringAmount);
-        if (quote.min && amount < quote.min) {
+        if (amount && quote.min && amount < quote.min) {
             min = Math.min(min || 1e28, quote.min);
             noError = false;
         }
-        if (quote.max && quote.max !== 'NONE' && amount > quote.max) {
+        if (amount && quote.max && quote.max !== 'NONE' && amount > quote.max) {
             max = Math.max(max || 0, quote.max);
             noError = false;
         }
@@ -41,12 +48,10 @@ export const getAmountLimits = (quotes: ExchangeTrade[]): CryptoAmountLimits | u
         if (!quote.error && noError) {
             return;
         }
-        if (!currency && quote.send) {
-            currency = quote.send;
-        }
     }
+
     if (min || max) {
-        return { currency, minCrypto: min, maxCrypto: max };
+        return { currency, minCrypto: min?.toString(), maxCrypto: max?.toString() };
     }
 };
 

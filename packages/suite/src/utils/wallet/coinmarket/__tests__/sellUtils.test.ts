@@ -7,6 +7,7 @@ import {
 import { Account } from 'src/types/wallet';
 import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
 import * as fixtures from 'src/utils/wallet/coinmarket/__fixtures__/sellUtils';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
 const {
     QUOTE_REQUEST_FIAT,
@@ -16,27 +17,70 @@ const {
     MIN_MAX_QUOTES_LOW,
 } = fixtures;
 
+jest.mock('src/hooks/wallet/coinmarket/useCoinmarketInfo', () => ({
+    ...jest.requireActual('src/hooks/wallet/coinmarket/useCoinmarketInfo'),
+    useCoinmarketInfo: jest.fn(),
+}));
+
 describe('coinmarket/sell utils', () => {
+    const cryptoIdToCoinSymbol = (useCoinmarketInfo as jest.Mock).mockImplementation(() => 'BTC');
+
     it('getAmountLimits', () => {
-        expect(getAmountLimits({ ...QUOTE_REQUEST_FIAT }, MIN_MAX_QUOTES_OK)).toBe(undefined);
-        expect(getAmountLimits({ ...QUOTE_REQUEST_CRYPTO }, MIN_MAX_QUOTES_OK)).toBe(undefined);
+        expect(
+            getAmountLimits({
+                request: QUOTE_REQUEST_FIAT,
+                quotes: MIN_MAX_QUOTES_OK,
+                currency: cryptoIdToCoinSymbol().toLowerCase(),
+            }),
+        ).toBe(undefined);
+        expect(
+            getAmountLimits({
+                request: QUOTE_REQUEST_CRYPTO,
+                quotes: MIN_MAX_QUOTES_OK,
+                currency: cryptoIdToCoinSymbol().toLowerCase(),
+            }),
+        ).toBe(undefined);
 
-        expect(getAmountLimits(QUOTE_REQUEST_FIAT, MIN_MAX_QUOTES_LOW)).toStrictEqual({
+        expect(
+            getAmountLimits({
+                request: QUOTE_REQUEST_FIAT,
+                quotes: MIN_MAX_QUOTES_LOW,
+                currency: cryptoIdToCoinSymbol().toLowerCase(),
+            }),
+        ).toStrictEqual({
             currency: 'EUR',
-            minFiat: 20,
+            minFiat: '20',
         });
-        expect(getAmountLimits(QUOTE_REQUEST_CRYPTO, MIN_MAX_QUOTES_LOW)).toStrictEqual({
-            currency: 'bitcoin',
-            minCrypto: 0.002,
+        expect(
+            getAmountLimits({
+                request: QUOTE_REQUEST_CRYPTO,
+                quotes: MIN_MAX_QUOTES_LOW,
+                currency: cryptoIdToCoinSymbol().toLowerCase(),
+            }),
+        ).toStrictEqual({
+            currency: 'btc',
+            minCrypto: '0.002',
         });
 
-        expect(getAmountLimits(QUOTE_REQUEST_FIAT, MIN_MAX_QUOTES_HIGH)).toStrictEqual({
+        expect(
+            getAmountLimits({
+                request: QUOTE_REQUEST_FIAT,
+                quotes: MIN_MAX_QUOTES_HIGH,
+                currency: cryptoIdToCoinSymbol().toLowerCase(),
+            }),
+        ).toStrictEqual({
             currency: 'EUR',
-            maxFiat: 17045.0,
+            maxFiat: '17045',
         });
-        expect(getAmountLimits(QUOTE_REQUEST_CRYPTO, MIN_MAX_QUOTES_HIGH)).toStrictEqual({
-            currency: 'bitcoin',
-            maxCrypto: 1.67212968,
+        expect(
+            getAmountLimits({
+                request: QUOTE_REQUEST_CRYPTO,
+                quotes: MIN_MAX_QUOTES_HIGH,
+                currency: cryptoIdToCoinSymbol().toLowerCase(),
+            }),
+        ).toStrictEqual({
+            currency: 'btc',
+            maxCrypto: '1.67212968',
         });
     });
 

@@ -42,13 +42,7 @@ import type { Account } from 'src/types/wallet';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import { AppState } from 'src/reducers/store';
 import { Dispatch, GetState } from 'src/types/suite';
-import {
-    AmountLimits,
-    CryptoAmountLimits,
-    Option,
-    TradeExchange,
-    TradeSell,
-} from 'src/types/wallet/coinmarketCommonTypes';
+import { Option, TradeExchange, TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { SendContextValues } from 'src/types/wallet/sendForm';
 import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
@@ -69,6 +63,7 @@ import {
     FORM_RATE_TYPE,
 } from 'src/constants/wallet/coinmarket/form';
 import type { TranslationKey } from 'src/components/suite/Translation';
+import { AmountLimitProps, CryptoAmountLimitProps } from 'src/utils/suite/validation';
 
 export interface CoinmarketBuyFormProps {
     fiatInput?: string;
@@ -165,7 +160,7 @@ interface CoinmarketCommonFormBuySellProps {
     defaultCurrency: Option;
     defaultPaymentMethod: CoinmarketPaymentMethodListProps;
     paymentMethods: CoinmarketPaymentMethodListProps[];
-    amountLimits?: AmountLimits;
+    amountLimits?: AmountLimitProps;
 }
 
 type CoinmarketVerifyAccountProps = (
@@ -194,7 +189,7 @@ export interface CoinmarketBuyFormContextProps
     confirmTrade: (address: string) => void;
     verifyAddress: CoinmarketVerifyAccountProps;
     removeDraft: (key: string) => void;
-    setAmountLimits: (limits?: AmountLimits) => void;
+    setAmountLimits: (limits?: AmountLimitProps) => void;
 }
 
 export interface CoinmarketSellFormContextProps
@@ -221,7 +216,7 @@ export interface CoinmarketSellFormContextProps
     shouldSendInSats: boolean | undefined;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     composeRequest: SendContextValues<CoinmarketSellExchangeFormProps>['composeTransaction'];
-    setAmountLimits: (limits?: AmountLimits) => void;
+    setAmountLimits: (limits?: AmountLimitProps) => void;
 
     setSellStep: (step: CoinmarketSellStepType) => void;
     addBankAccount: () => void;
@@ -249,7 +244,7 @@ export interface CoinmarketExchangeFormContextProps
 
     exchangeInfo?: ExchangeInfo;
     defaultCurrency: Option;
-    amountLimits?: CryptoAmountLimits;
+    amountLimits?: CryptoAmountLimitProps;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     allQuotes: ExchangeTrade[] | undefined;
     quotes: ExchangeTrade[] | undefined;
@@ -259,7 +254,7 @@ export interface CoinmarketExchangeFormContextProps
     addressVerified: string | undefined;
     shouldSendInSats: boolean | undefined;
     setReceiveAccount: (account?: Account) => void;
-    setAmountLimits: (limits?: CryptoAmountLimits) => void;
+    setAmountLimits: (limits?: CryptoAmountLimitProps) => void;
     composeRequest: SendContextValues<CoinmarketSellExchangeFormProps>['composeTransaction'];
     changeFeeLevel: (level: FeeLevel['label']) => void;
     removeDraft: (key: string) => void;
@@ -339,7 +334,7 @@ export interface CoinmarketUseFormActionsProps<T extends CoinmarketSellExchangeF
     draftUpdated: CoinmarketSellExchangeFormProps | null;
     type: CoinmarketTradeSellExchangeType;
     handleChange: (offLoading?: boolean) => Promise<void>;
-    setAmountLimits: (limits?: AmountLimits) => void;
+    setAmountLimits: (limits?: AmountLimitProps) => void;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     composeRequest: SendContextValues<CoinmarketSellExchangeFormProps>['composeTransaction'];
     setAccountOnChange: (account: Account) => void;

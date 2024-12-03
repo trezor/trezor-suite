@@ -27,14 +27,3 @@ export type FiatCurrencyOption = {
     value: FiatCurrencyCode;
     label: string;
 };
-
-export interface CryptoAmountLimits {
-    currency: string;
-    minCrypto?: number;
-    maxCrypto?: number;
-}
-
-export interface AmountLimits extends CryptoAmountLimits {
-    minFiat?: number;
-    maxFiat?: number;
-}

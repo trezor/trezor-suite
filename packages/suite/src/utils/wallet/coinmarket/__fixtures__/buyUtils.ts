@@ -222,3 +222,38 @@ export const ALTERNATIVE_QUOTES: BuyTrade[] = [
         paymentMethod: 'creditCard',
     },
 ];
+
+export const EMPTY_AMOUNT_QUOTES: BuyTrade[] = [
+    {
+        fiatStringAmount: '18',
+        fiatCurrency: 'EUR',
+        receiveCurrency: bitcoin,
+        receiveStringAmount: '',
+        rate: 10014.834297738,
+        quoteId: 'd369ba9e-7370-4a6e-87dc-aefd3851c735',
+        exchange: 'mercuryo',
+        minFiat: 20.03,
+        maxFiat: 2000.05,
+        minCrypto: 0.000001,
+        maxCrypto: 0.0001,
+        paymentMethod: 'creditCard',
+        error: 'Transaction amount too high. Please enter a value of 0.001 BTC or less.',
+        tags: ['alternativeCurrency'],
+    },
+    {
+        fiatStringAmount: '18',
+        fiatCurrency: 'EUR',
+        receiveCurrency: bitcoin,
+        receiveStringAmount: '0.1',
+        rate: 10014.834297738,
+        quoteId: 'd369ba9e-7370-4a6e-87dc-aefd3851c735',
+        exchange: 'mercuryo',
+        minFiat: 20.03,
+        maxFiat: 2000.05,
+        minCrypto: 0.000001,
+        maxCrypto: 0.0001,
+        paymentMethod: 'creditCard',
+        error: 'Transaction amount too high. Please enter a value of 0.001 BTC or less.',
+        tags: ['alternativeCurrency'],
+    },
+];

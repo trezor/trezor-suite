@@ -14,12 +14,13 @@ import {
     MAX_ETH_AMOUNT_FOR_STAKING,
     UNSTAKE_INTERCHANGES,
 } from '@suite-common/wallet-constants';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { getEthereumEstimateFeeParams, isPending, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, { EthereumTransaction, Success, InternalTransfer } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { ValidatorsQueue } from '@suite-common/wallet-core';
 import { BlockchainEstimatedFee } from '@trezor/connect/src/types/api/blockchainEstimateFee';
+import { PartialRecord } from '@trezor/type-utils';
 
 import { TranslationFunction } from 'src/hooks/suite/useTranslation';
 
@@ -37,7 +38,7 @@ const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
 type EthNetwork = 'holesky' | 'mainnet';
 
 export const getEthNetworkForWalletSdk = (symbol: NetworkSymbol): EthNetwork => {
-    const ethNetworks: { [key in NetworkSymbol]?: EthNetwork } = {
+    const ethNetworks: PartialRecord<NetworkSymbol, EthNetwork> = {
         thol: 'holesky',
         eth: 'mainnet',
     };

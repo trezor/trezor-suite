@@ -19,7 +19,6 @@ import {
     getAmountLimits,
 } from 'src/utils/wallet/coinmarket/buyUtils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
-import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { CoinmarketTradeBuyType, UseCoinmarketFormProps } from 'src/types/coinmarket/coinmarket';
 import {
     addIdsToQuotes,
@@ -50,6 +49,7 @@ import { useCoinmarketCurrencySwitcher } from 'src/hooks/wallet/coinmarket/form/
 import { useCoinmarketModalCrypto } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketModalCrypto';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { useCoinmarketBuyFormDefaultValues } from 'src/hooks/wallet/coinmarket/form/useCoinmarketBuyFormDefaultValues';
+import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
 
@@ -71,7 +71,7 @@ export const useCoinmarketBuyForm = ({
         useCoinmarketNavigation(account);
 
     // states
-    const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
+    const [amountLimits, setAmountLimits] = useState<AmountLimitProps | undefined>(undefined);
     const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(
         isNotFormPage ? quotes : undefined,
     );
@@ -233,11 +233,13 @@ export const useCoinmarketBuyForm = ({
             const isSelectedPaymentMethodAvailable =
                 paymentMethodsFromQuotes.find(item => item.value === paymentMethodSelected) !==
                 undefined;
-            const limits = getAmountLimits(quoteRequest, quotesDefault); // from all quotes except alternative
-            if (limits && quoteRequest.wantCrypto) {
-                limits.currency =
-                    cryptoIdToCoinSymbol(quoteRequest.receiveCurrency) ?? limits.currency;
-            }
+            const symbol =
+                cryptoIdToCoinSymbol(quoteRequest.receiveCurrency) ?? quoteRequest.receiveCurrency;
+            const limits = getAmountLimits({
+                request: quoteRequest,
+                quotes: quotesDefault,
+                currency: symbol,
+            }); // from all quotes except alternative
 
             setInnerQuotes(quotesSuccess);
             dispatch(coinmarketBuyActions.saveQuotes(quotesSuccess));

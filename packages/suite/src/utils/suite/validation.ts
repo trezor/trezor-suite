@@ -1,6 +1,5 @@
 import { Formatter } from '@suite-common/formatters';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AmountLimitsString } from '@suite-common/wallet-core';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
     findToken,
@@ -12,7 +11,6 @@ import {
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { TranslationFunction } from 'src/hooks/suite/useTranslation';
-import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 
 interface ValidateDecimalsOptions {
     decimals: number;
@@ -43,96 +41,65 @@ export const validateInteger =
         }
     };
 
+export type AmountLimitProps = {
+    currency: string;
+    minCrypto?: string;
+    maxCrypto?: string;
+
+    minFiat?: string;
+    maxFiat?: string;
+};
+
+export type CryptoAmountLimitProps = Pick<AmountLimitProps, 'currency' | 'minCrypto' | 'maxCrypto'>;
+
 interface ValidateLimitsOptions {
-    amountLimits?: AmountLimits;
+    amountLimits?: CryptoAmountLimitProps;
     areSatsUsed?: boolean;
     formatter: Formatter<string, string>;
 }
 
-export const validateLimits =
+export const validateCryptoLimits =
     (
         translationString: TranslationFunction,
         { amountLimits, areSatsUsed, formatter }: ValidateLimitsOptions,
     ) =>
     (value: string) => {
         if (value && amountLimits) {
-            const symbol = amountLimits.currency.toLowerCase() as NetworkSymbol;
-            let minCrypto = 0;
-            if (amountLimits.minCrypto) {
-                minCrypto = areSatsUsed
-                    ? Number(networkAmountToSmallestUnit(amountLimits.minCrypto.toString(), symbol))
-                    : amountLimits.minCrypto;
-            }
-            if (amountLimits.minCrypto && Number(value) < minCrypto) {
-                return translationString('TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO', {
-                    minimum: formatter.format(amountLimits.minCrypto.toString(), {
-                        isBalance: true,
-                        symbol,
-                    }),
-                });
-            }
-
-            let maxCrypto = 0;
-            if (amountLimits.maxCrypto) {
-                maxCrypto = areSatsUsed
-                    ? Number(networkAmountToSmallestUnit(amountLimits.maxCrypto.toString(), symbol))
-                    : amountLimits.maxCrypto;
-            }
-            if (amountLimits.maxCrypto && Number(value) > maxCrypto) {
-                return translationString('TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO', {
-                    maximum: formatter.format(amountLimits.maxCrypto.toString(), {
-                        isBalance: true,
-                        symbol,
-                    }),
-                });
-            }
-        }
-    };
-
-interface ValidateLimitsOptionsBigNum {
-    amountLimits?: AmountLimitsString;
-    areSatsUsed?: boolean;
-    formatter: Formatter<string, string>;
-}
-
-export const validateLimitsBigNum =
-    (
-        translationString: TranslationFunction,
-        { amountLimits, areSatsUsed, formatter }: ValidateLimitsOptionsBigNum,
-    ) =>
-    (value: string) => {
-        if (value && amountLimits) {
-            const symbol = amountLimits.currency.toLowerCase() as NetworkSymbol;
+            const currency = amountLimits.currency.toLowerCase();
             let minCrypto = new BigNumber(0);
+            let maxCrypto = new BigNumber(0);
+
             if (amountLimits.minCrypto) {
-                minCrypto = areSatsUsed
-                    ? new BigNumber(
-                          networkAmountToSmallestUnit(amountLimits.minCrypto.toString(), symbol),
-                      )
-                    : new BigNumber(amountLimits.minCrypto);
+                minCrypto =
+                    areSatsUsed && isNetworkSymbol(currency)
+                        ? new BigNumber(
+                              networkAmountToSmallestUnit(amountLimits.minCrypto, currency),
+                          )
+                        : new BigNumber(amountLimits.minCrypto);
             }
             if (amountLimits.minCrypto && new BigNumber(value).lt(minCrypto)) {
                 return translationString('TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO', {
-                    minimum: formatter.format(amountLimits.minCrypto.toString(), {
+                    minimum: formatter.format(amountLimits.minCrypto, {
                         isBalance: true,
-                        symbol,
+                        currency,
                     }),
                 });
             }
 
-            let maxCrypto = new BigNumber(0);
             if (amountLimits.maxCrypto) {
-                maxCrypto = areSatsUsed
-                    ? new BigNumber(
-                          networkAmountToSmallestUnit(amountLimits.maxCrypto.toString(), symbol),
-                      )
-                    : new BigNumber(amountLimits.maxCrypto);
+                maxCrypto =
+                    areSatsUsed && isNetworkSymbol(currency)
+                        ? new BigNumber(
+                              networkAmountToSmallestUnit(amountLimits.maxCrypto, currency),
+                          )
+                        : new BigNumber(amountLimits.maxCrypto);
             }
+
             if (amountLimits.maxCrypto && new BigNumber(value).gt(maxCrypto)) {
                 return translationString('TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO', {
-                    maximum: formatter.format(amountLimits.maxCrypto.toString(), {
+                    maximum: formatter.format(amountLimits.maxCrypto, {
                         isBalance: true,
-                        symbol,
+                        currency,
                     }),
                 });
             }
