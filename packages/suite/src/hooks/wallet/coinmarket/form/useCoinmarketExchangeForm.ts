@@ -450,6 +450,12 @@ export const useCoinmarketExchangeForm = ({
 
                     return true;
                 }
+                if (response.status === 'LOADING') {
+                    setCallInProgress(false);
+                    setExchangeStep('SEND_TRANSACTION');
+
+                    return true;
+                }
                 ok = true;
                 navigateToExchangeDetail();
             }
