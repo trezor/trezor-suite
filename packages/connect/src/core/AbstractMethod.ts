@@ -64,6 +64,7 @@ function validateStaticSessionId(input: unknown): StaticSessionId {
         'DeviceState: invalid staticSessionId: ' + input,
     );
 }
+
 // validate expected state from method parameter.
 // it could be undefined
 function validateDeviceState(input: unknown): DeviceState | undefined {
@@ -306,8 +307,10 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         if (!version) return;
 
         if (
-            device.firmwareStatus === 'required' ||
-            !versionUtils.isNewerOrEqual(version, range.min)
+            this.name !== 'backupDevice' &&
+            this.name !== 'recoveryDevice' &&
+            (device.firmwareStatus === 'required' ||
+                !versionUtils.isNewerOrEqual(version, range.min))
         ) {
             return UI.FIRMWARE_OLD;
         }
