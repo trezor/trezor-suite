@@ -19,7 +19,7 @@
     },
     "scripts": {
         "_______ Hooks _______": "Yarn hooks.",
-        "postinstall": "yarn run patch-package",
+        "postinstall": "yarn run patch-package && husky",
         "_______ Library Scripts #####": "Some libraries have their own build scripts.",
         "build:libs": "yarn nx run-many --skip-nx-cache --target=build:lib",
         "suite:build:web": "yarn workspace @trezor/suite-web build",
@@ -32,9 +32,9 @@
         "type-check:force": "rimraf -rf -- **/libDev && yarn type-check",
         "test:unit": "yarn nx run-many --target=test:unit",
         "lint:js": "eslint . --cache --cache-strategy content --flag unstable_config_lookup_from_file --max-warnings 0",
+        "lint:js:fix-files": "eslint --cache --cache-strategy content --flag unstable_config_lookup_from_file --max-warnings 0 --fix",
         "lint:styles": "yarn nx run-many --target=lint:styles",
         "lint": "yarn lint:styles && yarn lint:js",
-        "lint-staged": "npx lint-staged",
         "lint:shellcheck": "./scripts/shellcheck.sh",
         "_______ Global Scripts _______": "Shared scripts for running in all workspaces",
         "g:eslint": "cd $INIT_CWD && eslint . --cache --cache-strategy content --flag unstable_config_lookup_from_file --max-warnings 0",
@@ -86,16 +86,6 @@
         "ports": "yarn native:reverse-ports",
         "s": "yarn native:start"
     },
-    "lint-staged": {
-        "packages/**/*.{ts,tsx}": [
-            "eslint --fix",
-            "git add"
-        ],
-        "packages/{suite,suite-web,suite-desktop-ui,connect-explorer,connect-popup,connect-ui,components,product-components}/**/*.{ts,tsx}": [
-            "stylelint --fix",
-            "git add"
-        ]
-    },
     "resolutions": {
         "typescript": "5.5.4",
         "react-native": "0.76.1",
@@ -132,6 +122,7 @@
         "depcheck": "^1.4.7",
         "eslint": "^9.16.0",
         "globals": "^15.11.0",
+        "husky": "^9.1.7",
         "jest": "29.7.0",
         "jest-environment-jsdom": "29.7.0",
         "jest-expo": "^52.0.1",

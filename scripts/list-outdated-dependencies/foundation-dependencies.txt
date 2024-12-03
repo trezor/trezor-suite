@@ -58,3 +58,4 @@ eslint-plugin-local-rules
 eslint-plugin-mdx
 eslint-plugin-react-hooks
 eslint-plugin-react
+husky
