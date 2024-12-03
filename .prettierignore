@@ -128,6 +128,10 @@ buck-out/
 !**/suite-native/app/.env.staging
 
 suite-native/atoms/src/Spinner/refresh-spinner-*.json
+suite-native/module-authorize-device/src/assets/passphrase/confirm-on-trezor-lottie.json
+suite-native/module-home/src/assets/view-only-lottie.json
+suite-native/module-send/assets/send-arrows-lottie.json
+suite-native/module-settings/src/assets/connect-trezor-lottie.json
 
 # ios
 **/ios/*.xcarchive

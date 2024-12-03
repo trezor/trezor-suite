@@ -1,12 +1,11 @@
-import { useSelector } from 'react-redux';
-import Animated, { SlideInDown } from 'react-native-reanimated';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
-import { Text, VStack } from '@suite-native/atoms';
+import { LottieAnimation, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useScrollView } from '@suite-native/navigation';
 
-import { ReviewSuccessSvg } from '../../assets/ReviewSuccessSvg';
+import sendArrowsLottie from '../../assets/send-arrows-lottie.json';
 import { selectIsTransactionAlreadySigned } from '../selectors';
 
 export const SignSuccessMessage = () => {
@@ -24,13 +23,17 @@ export const SignSuccessMessage = () => {
     if (!isTransactionAlreadySigned) return null;
 
     return (
-        <Animated.View entering={SlideInDown}>
-            <VStack paddingHorizontal="sp24" alignItems="center" paddingBottom="sp24">
-                <ReviewSuccessSvg />
-                <Text variant="highlight" textAlign="center">
-                    <Translation id="moduleSend.review.outputs.successMessage" />
-                </Text>
-            </VStack>
-        </Animated.View>
+        <VStack
+            paddingTop="sp8"
+            paddingHorizontal="sp24"
+            paddingBottom="sp32"
+            alignItems="center"
+            spacing="sp24"
+        >
+            <LottieAnimation source={sendArrowsLottie} size="small" />
+            <Text variant="highlight" textAlign="center">
+                <Translation id="moduleSend.review.outputs.successMessage" />
+            </Text>
+        </VStack>
     );
 };

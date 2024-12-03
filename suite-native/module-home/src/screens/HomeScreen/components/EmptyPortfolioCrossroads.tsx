@@ -21,8 +21,8 @@ import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';
 const cardStyle = prepareNativeStyle<{ flex: 1 | 2 }>((utils, { flex }) => ({
     flex,
     justifyContent: 'center',
-    paddingTop: utils.spacings.sp32,
-    paddingBottom: utils.spacings.sp24,
+    paddingTop: utils.spacings.sp40,
+    paddingBottom: utils.spacings.sp32,
     paddingHorizontal: utils.spacings.sp24,
 }));
 
@@ -61,18 +61,16 @@ export const EmptyPortfolioCrossroads = () => {
         <VStack spacing="sp16" flex={1}>
             <Card style={applyStyle(cardStyle, { flex: 2 })}>
                 <VStack spacing="sp24" justifyContent="center" alignItems="center">
-                    <VStack alignItems="center" spacing="sp24">
-                        <ConnectTrezorSvg />
-                        <VStack alignItems="center">
-                            <Box>
-                                <Text variant="titleSmall" textAlign="center">
-                                    <Translation id="moduleHome.emptyState.connectOrImportCrossroads.gotMyTrezor.title" />
-                                </Text>
-                            </Box>
-                            <Text color="textSubdued" textAlign="center">
-                                <Translation id="moduleHome.emptyState.connectOrImportCrossroads.gotMyTrezor.description" />
+                    <ConnectTrezorSvg />
+                    <VStack alignItems="center">
+                        <Box>
+                            <Text variant="titleSmall" textAlign="center">
+                                <Translation id="moduleHome.emptyState.connectOrImportCrossroads.gotMyTrezor.title" />
                             </Text>
-                        </VStack>
+                        </Box>
+                        <Text color="textSubdued" textAlign="center">
+                            <Translation id="moduleHome.emptyState.connectOrImportCrossroads.gotMyTrezor.description" />
+                        </Text>
                     </VStack>
                     <View style={applyStyle(buttonWrapperStyle)}>
                         <Button onPress={handleConnectDevice} size="large">
@@ -83,7 +81,7 @@ export const EmptyPortfolioCrossroads = () => {
             </Card>
             <Card style={applyStyle(cardStyle, { flex: 1 })}>
                 <VStack spacing="sp24" justifyContent="center" alignItems="center">
-                    <VStack spacing="sp8" alignItems="center">
+                    <VStack alignItems="center">
                         <Text variant="titleSmall" textAlign="center">
                             <Translation id="moduleHome.emptyState.connectOrImportCrossroads.syncCoins.title" />
                         </Text>

@@ -15,7 +15,6 @@ type ReviewOutputCardProps = {
 const cardStyle = prepareNativeStyle<{ isConfirmed: boolean }>((utils, { isConfirmed }) => ({
     borderWidth: utils.borders.widths.small,
     borderColor: utils.colors.borderElevation1,
-    marginHorizontal: utils.spacings.sp8,
     paddingHorizontal: utils.spacings.sp16,
     paddingVertical: utils.spacings.sp12,
     borderRadius: utils.borders.radii.r12,

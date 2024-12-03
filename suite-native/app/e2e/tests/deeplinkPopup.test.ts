@@ -5,6 +5,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import TrezorConnect from '@trezor/connect-mobile';
 import { conditionalDescribe } from '@suite-common/test-utils';
 
+import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onConnectingDevice } from '../pageObjects/connectingDevice';
 import {
     appIsFullyLoaded,
@@ -16,7 +17,6 @@ import {
 import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
 import { onHome } from '../pageObjects/homeActions';
-import { onBottomSheet } from '../pageObjects/bottomSheetActions';
 
 const SERVER_PORT = 8080;
 const SERVER_URL = `http://localhost:${SERVER_PORT}`;
@@ -66,7 +66,7 @@ conditionalDescribe(device.getPlatform() !== 'android', 'Deeplink connect popup.
         await onCoinEnablingInit.enableNetwork('regtest');
         await onCoinEnablingInit.clickOnConfirmButton();
 
-        await onBottomSheet.skipViewOnlyMode();
+        await onAlertSheet.skipViewOnlyMode();
 
         // This `TrezorConnect` instance here is pretending to be the integrator or @trezor/connect-mobile
         await TrezorConnect.init({

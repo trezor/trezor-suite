@@ -17,7 +17,7 @@ import {
     TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { Button } from '@suite-native/atoms';
+import { Button, Card } from '@suite-native/atoms';
 import {
     RootStackRoutes,
     AppTabsRoutes,
@@ -27,15 +27,15 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
 import { selectAccountTokenSymbol, TokensRootState } from '@suite-native/tokens';
 import { useAlert } from '@suite-native/alerts';
 
-import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
+import { SendConfirmOnDeviceImage } from './SendConfirmOnDeviceImage';
 import { cleanupSendFormThunk } from '../sendFormThunks';
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
 import { selectIsTransactionAlreadySigned } from '../selectors';
+import { SignSuccessMessage } from './SignSuccessMessage';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackParamList,
@@ -77,11 +77,6 @@ const navigateToTransactionDetail = ({
         ],
     });
 
-const footerStyle = prepareNativeStyle(utils => ({
-    width: '100%',
-    paddingHorizontal: utils.spacings.sp16,
-}));
-
 export const OutputsReviewFooter = ({
     accountKey,
     tokenContract,
@@ -92,7 +87,6 @@ export const OutputsReviewFooter = ({
     const [txid, setTxid] = useState<string>('');
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const { applyStyle } = useNativeStyles();
     const { showAlert } = useAlert();
     const [isSendInProgress, setIsSendInProgress] = useState(false);
     const wasAppLeftDuringReview = useAtomValue(wasAppLeftDuringReviewAtom);
@@ -182,16 +176,19 @@ export const OutputsReviewFooter = ({
     };
 
     return (
-        <Animated.View style={applyStyle(footerStyle)} entering={SlideInDown}>
-            <Button
-                isLoading={isSendInProgress}
-                accessibilityRole="button"
-                accessibilityLabel="validate send form"
-                testID="@send/send-transaction-button"
-                onPress={handleSendTransaction}
-            >
-                <Translation id="moduleSend.review.outputs.submitButton" />
-            </Button>
+        <Animated.View entering={SlideInDown}>
+            <Card>
+                <SignSuccessMessage />
+                <Button
+                    isLoading={isSendInProgress}
+                    accessibilityRole="button"
+                    accessibilityLabel="validate send form"
+                    testID="@send/send-transaction-button"
+                    onPress={handleSendTransaction}
+                >
+                    <Translation id="moduleSend.review.outputs.submitButton" />
+                </Button>
+            </Card>
         </Animated.View>
     );
 };

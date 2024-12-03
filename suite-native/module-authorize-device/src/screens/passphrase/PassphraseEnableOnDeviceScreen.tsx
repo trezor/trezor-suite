@@ -8,7 +8,7 @@ import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 import { resetError, selectPassphraseError } from '@suite-native/device-authorization';
 
-import { DeviceT3T1Svg } from '../../assets/passphrase/DeviceT3T1Svg';
+import { ConfirmOnTrezorAnimation } from '../../components/passphrase/ConfirmOnTrezorAnimation';
 
 export const PassphraseEnableOnDeviceScreen = () => {
     const passphraseError = useSelector(selectPassphraseError);
@@ -52,8 +52,8 @@ export const PassphraseEnableOnDeviceScreen = () => {
                 </ScreenHeaderWrapper>
             }
         >
-            <VStack flex={1} justifyContent="center" alignItems="center" spacing="sp16">
-                <DeviceT3T1Svg />
+            <VStack flex={1} justifyContent="center" alignItems="center" spacing="sp24">
+                <ConfirmOnTrezorAnimation />
                 <CenteredTitleHeader
                     title={<Translation id="modulePassphrase.enablePassphrase.title" />}
                     subtitle={<Translation id="modulePassphrase.enablePassphrase.subtitle" />}

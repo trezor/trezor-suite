@@ -42,5 +42,6 @@
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
-    ]
+    ],
+    "include": [".", "**/*.json"]
 }

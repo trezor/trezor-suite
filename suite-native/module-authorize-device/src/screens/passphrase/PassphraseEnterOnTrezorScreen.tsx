@@ -23,8 +23,8 @@ import TrezorConnect from '@trezor/connect';
 import { EventType, analytics } from '@suite-native/analytics';
 
 import { useRedirectOnPassphraseCompletion } from '../../useRedirectOnPassphraseCompletion';
-import { DeviceT3T1Svg } from '../../assets/passphrase/DeviceT3T1Svg';
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
+import { ConfirmOnTrezorAnimation } from '../../components/passphrase/ConfirmOnTrezorAnimation';
 
 const buttonWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',
@@ -91,8 +91,8 @@ export const PassphraseEnterOnTrezorScreen = () => {
         >
             <Card style={applyStyle(cardStyle)}>
                 <VStack spacing={28}>
-                    <VStack justifyContent="center" alignItems="center">
-                        <DeviceT3T1Svg />
+                    <VStack justifyContent="center" alignItems="center" spacing="sp24">
+                        <ConfirmOnTrezorAnimation />
                         <CenteredTitleHeader
                             title={
                                 <Translation id="modulePassphrase.enterPassphraseOnTrezor.title" />

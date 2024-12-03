@@ -39,6 +39,7 @@ export * from './ScreenHeaderWrapper';
 export * from './ErrorMessage';
 export * from './Table';
 export * from './Loader';
+export * from './LottieAnimation';
 export * from './Toggle';
 export * from './Pictogram';
 export * from './TitleHeader/PictogramTitleHeader';
@@ -52,6 +53,7 @@ export * from './IconListItem';
 export * from './BulletListItem';
 export * from './SelectableItem';
 export * from './constants';
+export * from './useIllustrationColors';
 export * from './utils';
 
 export { useDebugView } from './DebugView';

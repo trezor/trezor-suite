@@ -1,4 +1,3 @@
-import { DimensionValue } from 'react-native';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -19,25 +18,12 @@ import { EventType, analytics } from '@suite-native/analytics';
 
 import { EmptyWalletInfoSheet } from '../../components/passphrase/EmptyWalletInfoSheet';
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
-import { QuestionMarks } from '../../assets/passphrase/QuestionMarks';
+import { EmptyWalletSvg } from '../../assets/passphrase/EmptyWalletSvg';
 
 const cardStyle = prepareNativeStyle(utils => ({
     borderColor: utils.colors.borderElevation0,
     borderWidth: utils.borders.widths.small,
-    gap: utils.spacings.sp12,
-}));
-
-const cardContentStyle = prepareNativeStyle(() => ({
-    paddingVertical: 54,
-    width: '100%',
-}));
-
-const retryButtonWrapperStyle = prepareNativeStyle(() => ({
-    width: '100%',
-}));
-
-const textStyle = prepareNativeStyle<{ widthPercentage: number }>((_, { widthPercentage }) => ({
-    width: `${widthPercentage}%` as DimensionValue,
+    gap: utils.spacings.sp16,
 }));
 
 type NavigationProp = StackToTabCompositeProps<
@@ -78,8 +64,8 @@ export const PassphraseEmptyWalletScreen = () => {
             title={<Translation id="modulePassphrase.emptyPassphraseWallet.title" />}
         >
             <Card style={applyStyle(cardStyle)}>
-                <VStack alignItems="center" spacing="sp16" style={applyStyle(cardContentStyle)}>
-                    <QuestionMarks />
+                <VStack alignItems="center" spacing={0}>
+                    <EmptyWalletSvg />
                     <Text variant="highlight" textAlign="center">
                         <Translation id="modulePassphrase.emptyPassphraseWallet.confirmCard.description" />
                     </Text>
@@ -93,25 +79,16 @@ export const PassphraseEmptyWalletScreen = () => {
                 lineColor="borderElevation0"
                 textColor="textSubdued"
             />
-            <VStack spacing="sp20">
+            <VStack marginHorizontal="sp16" spacing="sp16">
                 <VStack alignItems="center" spacing="sp4">
-                    <Text
-                        textAlign="center"
-                        variant="highlight"
-                        style={applyStyle(textStyle, { widthPercentage: 80 })}
-                    >
+                    <Text textAlign="center" variant="highlight">
                         <Translation id="modulePassphrase.emptyPassphraseWallet.expectingPassphraseWallet.title" />
                     </Text>
-                    <Text
-                        variant="hint"
-                        color="textSubdued"
-                        textAlign="center"
-                        style={applyStyle(textStyle, { widthPercentage: 70 })}
-                    >
+                    <Text textAlign="center" color="textSubdued">
                         <Translation id="modulePassphrase.emptyPassphraseWallet.expectingPassphraseWallet.description" />
                     </Text>
                 </VStack>
-                <Box style={applyStyle(retryButtonWrapperStyle)}>
+                <Box>
                     <Button colorScheme="tertiaryElevation0" onPress={handleTryAgain}>
                         <Translation id="modulePassphrase.emptyPassphraseWallet.expectingPassphraseWallet.button" />
                     </Button>

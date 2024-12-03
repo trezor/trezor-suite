@@ -9830,6 +9830,7 @@ __metadata:
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.76.1"
+    react-native-svg: "npm:15.9.0"
   languageName: unknown
   linkType: soft
 
@@ -9863,7 +9864,6 @@ __metadata:
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@suite-native/theme": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -10343,7 +10343,6 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/module-connect-popup": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@suite-native/theme": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -10469,7 +10468,7 @@ __metadata:
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.76.1"
-    react-native-svg: "npm:^15.9.0"
+    react-native-svg: "npm:15.9.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -10607,7 +10606,6 @@ __metadata:
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.76.1"
-    react-native-svg: "npm:^15.9.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -10938,6 +10936,7 @@ __metadata:
     react-native: "npm:0.76.1"
     react-native-gesture-handler: "npm:^2.21.0"
     react-native-reanimated: "npm:3.16.1"
+    react-native-svg: "npm:15.9.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -35353,7 +35352,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-svg@npm:^15.9.0":
+"react-native-svg@npm:15.9.0, react-native-svg@npm:^15.9.0":
   version: 15.9.0
   resolution: "react-native-svg@npm:15.9.0"
   dependencies:

@@ -1,7 +1,7 @@
 // `expect` keyword is already used by jest.
 import { expect as detoxExpect } from 'detox';
 
-import { onBottomSheet } from '../pageObjects/bottomSheetActions';
+import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { disconnectTrezorUserEnv, openApp, prepareTrezorEmulator } from '../utils';
 import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
@@ -35,7 +35,7 @@ describe('Go through onboarding and connect Trezor.', () => {
 
             await onCoinEnablingInit.clickOnConfirmButton();
 
-            await onBottomSheet.skipViewOnlyMode();
+            await onAlertSheet.skipViewOnlyMode();
 
             await detoxExpect(element(by.id('@home/portfolio/header')));
         } else {

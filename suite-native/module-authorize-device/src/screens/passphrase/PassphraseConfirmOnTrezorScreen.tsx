@@ -19,7 +19,7 @@ import {
 } from '@suite-common/wallet-core';
 import { useHandlePassphraseMismatch } from '@suite-native/device-authorization';
 
-import { DeviceT3T1Svg } from '../../assets/passphrase/DeviceT3T1Svg';
+import { ConfirmOnTrezorAnimation } from '../../components/passphrase/ConfirmOnTrezorAnimation';
 import { PassphraseScreenWrapper } from '../../components/passphrase/PassphraseScreenWrapper';
 import { useRedirectOnPassphraseCompletion } from '../../useRedirectOnPassphraseCompletion';
 
@@ -65,7 +65,7 @@ export const PassphraseConfirmOnTrezorScreen = () => {
                 flex={1}
                 padding="sp8"
             >
-                <DeviceT3T1Svg />
+                <ConfirmOnTrezorAnimation />
                 <CenteredTitleHeader
                     title={<Translation id="modulePassphrase.confirmOnDevice.title" />}
                     subtitle={<Translation id="modulePassphrase.confirmOnDevice.description" />}

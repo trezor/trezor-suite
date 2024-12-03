@@ -2,7 +2,6 @@ import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
-import { onBottomSheet } from '../pageObjects/bottomSheetActions';
 import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
 import { onConnectingDevice } from '../pageObjects/connectingDevice';
 import { onDeviceAuthenticitySummary } from '../pageObjects/deviceAuthenticitySummary';
@@ -28,7 +27,7 @@ conditionalDescribe(device.getPlatform() !== 'android', 'Device settings', () =>
         await onCoinEnablingInit.enableNetwork('btc');
         await onCoinEnablingInit.clickOnConfirmButton();
 
-        await onBottomSheet.skipViewOnlyMode();
+        await onAlertSheet.skipViewOnlyMode();
     });
 
     beforeEach(async () => {

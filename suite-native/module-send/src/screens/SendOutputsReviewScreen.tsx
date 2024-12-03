@@ -16,7 +16,6 @@ import { useTranslate } from '@suite-native/intl';
 
 import { ReviewOutputItemList } from '../components/ReviewOutputItemList';
 import { OutputsReviewFooter } from '../components/OutputsReviewFooter';
-import { SignSuccessMessage } from '../components/SignSuccessMessage';
 import { SendScreen } from '../components/SendScreen';
 import { SendScreenSubHeader } from '../components/SendScreenSubHeader';
 import { useShowReviewCancellationAlert } from '../hooks/useShowReviewCancellationAlert';
@@ -67,11 +66,10 @@ export const SendOutputsReviewScreen = ({
                     closeActionType="close"
                 />
             }
-            footer={<OutputsReviewFooter accountKey={accountKey} tokenContract={tokenContract} />}
         >
-            <VStack flex={1} spacing="sp32" justifyContent="space-between">
+            <VStack flex={1} spacing="sp16" justifyContent="space-between">
                 <ReviewOutputItemList accountKey={accountKey} tokenContract={tokenContract} />
-                <SignSuccessMessage />
+                <OutputsReviewFooter accountKey={accountKey} tokenContract={tokenContract} />
             </VStack>
         </SendScreen>
     );

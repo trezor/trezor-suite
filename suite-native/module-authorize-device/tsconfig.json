@@ -21,10 +21,10 @@
         { "path": "../link" },
         { "path": "../module-connect-popup" },
         { "path": "../navigation" },
-        { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" }
-    ]
+    ],
+    "include": [".", "**/*.json"]
 }

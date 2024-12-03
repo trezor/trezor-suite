@@ -22,5 +22,6 @@
         { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../../packages/styles" }
-    ]
+    ],
+    "include": [".", "**/*.json"]
 }

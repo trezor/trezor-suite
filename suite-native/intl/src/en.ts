@@ -957,7 +957,7 @@ export const en = {
             subtitle: 'This might take up to a minute.',
         },
         confirmOnDevice: {
-            title: 'Confirm passphrase\non your Trezor.',
+            title: 'Confirm passphrase\non your Trezor',
             description: 'Go to your device and confirm the passphrase you’ve entered.',
             warningSheet: {
                 title: 'Are you sure you would like to cancel opening a passphrase wallet?',

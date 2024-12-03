@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -11,13 +11,12 @@ import { Box } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen } from '@suite-native/navigation';
 
-import { BiometricsBottomSheet } from './components/BiometricsBottomSheet';
+import { useShowBiometricsAlert } from './useShowBiometricsAlert';
 import { EmptyHomeRenderer } from './components/EmptyHomeRenderer';
-import { EnableViewOnlyBottomSheet } from './components/EnableViewOnlyBottomSheet';
 import { PortfolioContent } from './components/PortfolioContent';
-import { PortfolioGraphRef } from './components/PortfolioGraph';
 import { useHomeRefreshControl } from './useHomeRefreshControl';
-
+import { PortfolioGraphRef } from './components/PortfolioGraph';
+import { useShowViewOnlyAlert } from './useShowViewOnlyAlert';
 export const HomeScreen = () => {
     const isDiscoveredDeviceAccountless = useSelector(selectIsDiscoveredDeviceAccountless);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
@@ -35,6 +34,9 @@ export const HomeScreen = () => {
         portfolioContentRef,
     });
 
+    useShowBiometricsAlert();
+    useShowViewOnlyAlert();
+
     return (
         <Screen
             screenHeader={<DeviceManagerScreenHeader hasBottomPadding />}
@@ -48,8 +50,6 @@ export const HomeScreen = () => {
             ) : (
                 <PortfolioContent ref={portfolioContentRef} />
             )}
-            <BiometricsBottomSheet />
-            <EnableViewOnlyBottomSheet />
         </Screen>
     );
 };
