@@ -753,7 +753,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this._updateFeatures(message);
     }
 
-    async checkFirmwareHash(): Promise<FirmwareHashCheckResult | null> {
+    private async checkFirmwareHash(): Promise<FirmwareHashCheckResult | null> {
         const createFailResult = (error: FirmwareHashCheckError, errorPayload?: unknown) => ({
             success: false,
             error,
@@ -821,7 +821,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
     }
 
-    async checkFirmwareRevision() {
+    private async checkFirmwareRevision() {
         const firmwareVersion = this.getVersion();
 
         if (!firmwareVersion || !this.features) {
