@@ -80,6 +80,11 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     );
 };
 
+const setTransports = () => {
+    // TODO: implement
+    throw new Error('Unsupported right now');
+};
+
 const call: CallMethod = async (params: any) => {
     try {
         const response = await _channel.postMessage({
@@ -113,6 +118,7 @@ const TrezorConnect = factory({
     manifest,
     init,
     call,
+    setTransports,
     requestLogin,
     uiResponse,
     cancel,

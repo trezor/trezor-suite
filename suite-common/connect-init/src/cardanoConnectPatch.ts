@@ -8,6 +8,7 @@ type ConnectKey = keyof typeof TrezorConnect;
 const blacklist: ConnectKey[] = [
     'manifest',
     'init',
+    'setTransports',
     'getSettings',
     'on',
     'off',

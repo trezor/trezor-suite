@@ -55,6 +55,7 @@ const TrezorConnect = factory({
     eventEmitter: methods.eventEmitter,
     init: methods.init.bind(methods),
     call: methods.call.bind(methods),
+    setTransports: methods.setTransports.bind(methods),
     manifest: methods.manifest.bind(methods),
     requestLogin: methods.requestLogin.bind(methods),
     uiResponse: methods.uiResponse.bind(methods),

@@ -3,6 +3,7 @@ import { TRANSPORT } from '@trezor/transport/src/constants';
 
 import { serializeError } from '../constants/errors';
 import type { MessageFactoryFn } from '../types/utils';
+import { ConnectSettings } from '../exports';
 
 export { TRANSPORT } from '@trezor/transport/src/constants';
 
@@ -53,6 +54,11 @@ export type TransportEvent =
               udev?: UdevInfo;
           };
       };
+
+export interface TransportSetTransports {
+    type: typeof TRANSPORT.SET_TRANSPORTS;
+    payload: Pick<ConnectSettings, 'transports'>;
+}
 
 export interface TransportDisableWebUSB {
     type: typeof TRANSPORT.DISABLE_WEBUSB;

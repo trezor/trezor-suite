@@ -119,6 +119,11 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         return await this.handshake();
     }
 
+    public setTransports() {
+        // TODO: implement
+        throw new Error('Unsupported right now');
+    }
+
     /**
      * 1. opens popup
      * 2. sends request to popup where the request is handled by core
@@ -183,6 +188,7 @@ export const TrezorConnect = factory({
     eventEmitter: impl.eventEmitter,
     init: impl.init.bind(impl),
     call: impl.call.bind(impl),
+    setTransports: impl.setTransports.bind(impl),
     manifest: impl.manifest.bind(impl),
     requestLogin: impl.requestLogin.bind(impl),
     uiResponse: impl.uiResponse.bind(impl),

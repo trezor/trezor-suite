@@ -15,6 +15,7 @@ const TrezorConnect = factory({
     } as any,
     manifest: fallback,
     init: fallback,
+    setTransports: fallback,
     call: fallback,
     requestLogin: fallback,
     uiResponse: fallback,

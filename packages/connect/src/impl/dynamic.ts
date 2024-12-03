@@ -6,6 +6,7 @@ import { CallMethodPayload } from '../events';
 import { ERRORS } from '../constants';
 import { ProxyEventEmitter } from '../utils/proxy-event-emitter';
 import { InitFullSettings } from '../types/api/init';
+import type { SetTransports } from '../types/api/setTransports';
 
 type TrezorConnectDynamicParams<
     ImplType,
@@ -83,11 +84,7 @@ export class TrezorConnectDynamic<
     }
 
     public manifest(manifest: Manifest) {
-        // @ts-expect-error hell knows why this is not working
-        this.lastSettings = {
-            ...this.lastSettings,
-            manifest,
-        };
+        this.lastSettings = { ...this.lastSettings, manifest } as typeof this.lastSettings;
 
         this.getTarget().manifest(manifest);
     }
@@ -112,6 +109,11 @@ export class TrezorConnectDynamic<
 
             throw error;
         }
+    }
+
+    public setTransports({ transports }: SetTransports) {
+        this.lastSettings = { ...this.lastSettings, transports } as typeof this.lastSettings;
+        this.getTarget().setTransports({ transports });
     }
 
     public async call(params: CallMethodPayload) {

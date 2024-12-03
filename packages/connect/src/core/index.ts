@@ -1096,8 +1096,20 @@ export class Core extends EventEmitter {
                 );
                 break;
 
-            case TRANSPORT.DISABLE_WEBUSB:
-                disableWebUSBTransport(this.getCoreContext());
+            case TRANSPORT.DISABLE_WEBUSB: {
+                const settings = DataManager.getSettings();
+                const transports = settings.transports?.filter(t => t !== 'WebUsbTransport');
+                if (transports && !transports.includes('BridgeTransport')) {
+                    transports.unshift('BridgeTransport');
+                }
+                settings.transports = transports;
+
+                resetTransports(this.getCoreContext());
+                break;
+            }
+            case TRANSPORT.SET_TRANSPORTS:
+                DataManager.getSettings().transports = message.payload.transports;
+                resetTransports(this.getCoreContext());
                 break;
 
             case TRANSPORT.REQUEST_DEVICE:
@@ -1259,24 +1271,10 @@ export class Core extends EventEmitter {
     }
 }
 
-const disableWebUSBTransport = async ({ deviceList, sendCoreMessage }: CoreContext) => {
-    if (!deviceList.isConnected()) return;
-    if (deviceList.transportType() !== 'WebUsbTransport') return;
-    // override settings
+const resetTransports = async ({ deviceList, sendCoreMessage }: CoreContext) => {
     const { transports, pendingTransportEvent, transportReconnect } = DataManager.getSettings();
 
-    if (transports) {
-        const transportStr = transports?.filter(transport => typeof transport !== 'object');
-        if (transportStr.includes('WebUsbTransport')) {
-            transports.splice(transports.indexOf('WebUsbTransport'), 1);
-        }
-        if (!transportStr.includes('BridgeTransport')) {
-            transports!.unshift('BridgeTransport');
-        }
-    }
-
     try {
-        // TODO possible issue with new init not replacing the old one???
         await deviceList.init({ transports, pendingTransportEvent, transportReconnect });
     } catch (error) {
         // do nothing

@@ -7,6 +7,7 @@ import {
     POPUP,
     IFRAME,
     UI,
+    TRANSPORT,
     UI_EVENT,
     DEVICE_EVENT,
     RESPONSE_EVENT,
@@ -20,6 +21,7 @@ import {
     CoreRequestMessage,
 } from '../events';
 import type { ConnectSettings, ConnectSettingsPublic, DeviceIdentity, Manifest } from '../types';
+import type { SetTransports } from '../types/api/setTransports';
 import { ConnectFactoryDependencies, factory } from '../factory';
 import { Log, initLog } from '../utils/debug';
 import { parseConnectSettings } from '../data/connectSettings';
@@ -189,6 +191,14 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
         this._log.enabled = !!this._settings.debug;
     }
 
+    public setTransports({ transports }: SetTransports) {
+        this._settings = parseConnectSettings({ ...this._settings, transports });
+        this.handleCoreMessage({
+            type: TRANSPORT.SET_TRANSPORTS,
+            payload: { transports },
+        });
+    }
+
     private initSettings = (settings: Partial<ConnectSettings> = {}) => {
         this._settings = parseConnectSettings({
             ...this._settings,
@@ -287,6 +297,7 @@ export const TrezorConnect = factory({
     manifest: impl.manifest.bind(impl),
     init: impl.init.bind(impl),
     call: impl.call.bind(impl),
+    setTransports: impl.setTransports.bind(impl),
     requestLogin: impl.requestLogin.bind(impl),
     uiResponse: impl.uiResponse.bind(impl),
     cancel: impl.cancel.bind(impl),
