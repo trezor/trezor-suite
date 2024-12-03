@@ -81,6 +81,7 @@ const Content = styled.div<{ $elevation: Elevation }>`
     background-size: 570px 570px;
     align-items: center;
     overflow-y: auto;
+    height: 100%;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: ${spacingsPx.sm};
