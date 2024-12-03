@@ -36,11 +36,9 @@ Object.entries(source).forEach(([key, value]) => {
 fs.writeFileSync(
     targetPath,
     `
-import { defineMessages } from 'react-intl';
-
 import { defineMessagesWithTypeCheck } from './utils';
 
-const messages = defineMessagesWithTypeCheck(${JSON.stringify(messages, null, 2).replace(/"([^"]+)":/g, '$1:')})
+export default defineMessagesWithTypeCheck(${JSON.stringify(messages, null, 2).replace(/"([^"]+)":/g, '$1:')})
 
 `,
 );
