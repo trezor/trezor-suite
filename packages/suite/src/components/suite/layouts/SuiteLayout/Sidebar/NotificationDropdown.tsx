@@ -11,6 +11,7 @@ import { Notifications } from 'src/components/suite/notifications';
 import { useDispatch } from 'src/hooks/suite';
 
 import { NavigationItem, NavigationItemProps } from './NavigationItem';
+import { useIsSidebarCollapsed } from './utils';
 
 const StyledNavigationItem = styled(NavigationItem)`
     ${({ theme, isActive }) =>
@@ -25,6 +26,7 @@ export const NotificationDropdown = (props: NavigationItemProps) => {
     const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
     const dropdownRef = useRef<DropdownRef>();
     const dispatch = useDispatch();
+    const isSidebarCollapsed = useIsSidebarCollapsed();
 
     const handleToggleChange = useCallback(
         (isToggled: boolean) => {
@@ -54,7 +56,7 @@ export const NotificationDropdown = (props: NavigationItemProps) => {
                     <Notifications onCancel={() => dropdownRef.current!.close()} />
                 </Box>
             }
-            width="100%"
+            width={isSidebarCollapsed ? undefined : '100%'}
         >
             {isToggled => <StyledNavigationItem {...props} isActive={isToggled} />}
         </Dropdown>
