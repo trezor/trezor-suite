@@ -2,6 +2,7 @@ import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors'
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
 import type { Response } from '@trezor/blockchain-link-types';
 import { Message } from '@trezor/blockchain-link-types/src/messages';
+import { Without } from '@trezor/type-utils';
 
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
 import * as M from './methods';
@@ -13,9 +14,6 @@ import type { ElectrumClient } from './client/electrum';
 type BlockListener = ReturnType<typeof L.blockListener>;
 type TxListener = ReturnType<typeof L.txListener>;
 
-// reason:
-// https://stackoverflow.com/questions/57103834/typescript-omit-a-property-from-all-interfaces-in-a-union-but-keep-the-union-s#answer-57103940
-type Without<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
 type Request<T> = T extends any
     ? T & ContextType<ElectrumClient> & { blockListener: BlockListener; txListener: TxListener }
     : never;
