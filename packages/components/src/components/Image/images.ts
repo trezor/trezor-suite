@@ -25,7 +25,6 @@ export const SVG_IMAGES = {
     COINMARKET_WAITING: 'coinmarket-waiting.svg',
     WARNING: 'warning.svg',
     USER_FOCUS: 'user-focus.svg',
-    ONBOARDING_WELCOME_BG: 'onboarding-welcome-bg.svg',
     HOURGLASS: 'hourglass.svg',
     WATCH: 'watch.svg',
     TREZOR_PATTERN: 'trezor-pattern.svg',

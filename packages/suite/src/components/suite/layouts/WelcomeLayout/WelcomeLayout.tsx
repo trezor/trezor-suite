@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
     Button,
     variables,
-    SVG_IMAGES,
     useElevation,
     ElevationUp,
     ElevationDown,
@@ -18,7 +17,6 @@ import { useOnce } from '@trezor/react-utils';
 import { selectBannerMessage } from '@suite-common/message-system';
 import { isWeb } from '@trezor/env-utils';
 import { TREZOR_URL, SUITE_URL } from '@trezor/urls';
-import { resolveStaticPath } from '@suite-common/suite-utils';
 import { Elevation, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
 import { TrezorLogo } from '@trezor/product-components';
 
@@ -73,12 +71,6 @@ const Content = styled.div<{ $elevation: Elevation }>`
     flex-direction: column;
     flex: 3;
     padding: ${spacingsPx.lg};
-    background-color: ${mapElevationToBackground};
-    background-image: url(${resolveStaticPath(`images/svg/${SVG_IMAGES.ONBOARDING_WELCOME_BG}`)});
-    background-repeat: no-repeat;
-    background-position: center;
-    background-attachment: local;
-    background-size: 570px 570px;
     align-items: center;
     overflow-y: auto;
 
