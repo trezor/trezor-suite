@@ -89,7 +89,7 @@ jobs:
 
       - name: Set all transports matrix
         id: set-matrix-all-transports
-        run: echo "allTransportsMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=node --groups=api --cache_tx=true --transport=2.0.32,2.0.33)" >> $GITHUB_OUTPUT
+        run: echo "allTransportsMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=node --groups=api --cache_tx=true --transport=all)" >> $GITHUB_OUTPUT
 
   PR-check:
     needs: [build, set-matrix]
