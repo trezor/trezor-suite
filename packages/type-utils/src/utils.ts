@@ -1,20 +1,55 @@
-// make key required
-
+/**
+ * Make property of the object required.
+ *
+ * Example:
+ *  ```
+ *  type T = { a?: number };
+ *  const t: RequiredKey<T, 'a'> = { a: 0 }; // 'a' is mandatory
+ *  ```
+ */
 export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
 
-// object values types
+/**
+ * Get type of the object values.
+ *
+ * Example:
+ *  ```
+ *  type T = { a: number; b: string };
+ *  type V: ObjectValues<T>; // number | string
+ *  ```
+ */
 export type ObjectValues<T extends { [key: string]: any }> = T[keyof T];
 
-// all keys of types in an union
+/**
+ * All keys of types in a union.
+ *
+ * Example:
+ *  ```
+ *  type T = { a: number; b: string };
+ *  type K: Keys<T>; // 'a' | 'b'
+ *  ```
+ */
 export type Keys<T> = T extends any ? keyof T : never;
 
-// remove the keys while keeping the union
+/**
+ * Distributes the Omit across a union. using distributive conditional types to achieve this:
+ * @see: https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types
+ * @source: https://stackoverflow.com/questions/57103834/typescript-omit-a-property-from-all-interfaces-in-a-union-but-keep-the-union-s#answer-57103940
+ *
+ * Example:
+ *  ```
+ *  type T = { remove: string; keep1: number } | { remove: string; keep2: boolean };
+ *  type W = Without<T, 'remove'>;
+ *  const w: W = { keep1: 1, keep2: true };
+ *  ```
+ */
 export type Without<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
 
-// array element type
-export type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
-
-// const with optional types
+/**
+ * Const with optional types.
+ * Todo: add example and better explanation.
+ *       It has exactly 1 usage so maybe this shall even be here in the utils package
+ */
 export type ConstWithOptionalFields<
     Const extends { [key: string]: any },
     Fields extends string | number | symbol,
@@ -30,49 +65,46 @@ export type ConstWithOptionalFields<
     };
 };
 
-// Extract item from union
-export type ItemExtractor<M> = Extract<M, { type: M }>;
-
-// Unwrap type from Promise
-export type Await<T> = T extends {
-    then(onfulfilled?: (value: infer U) => unknown): unknown;
-}
-    ? U
-    : T;
-
+/**
+ * Recursively makes all properties of the object optional. If the nested property is an object,
+ * it will make its properties optional as well.
+ *
+ * Example:
+ *  ```
+ *  type T = { a: number; b: { c: string; d: number } };
+ *  type P = DeepPartial<T>;
+ *  const p: P = { b: { d: 1 } }; // As everything is deeply optional
+ *  ```
+ */
 export type DeepPartial<T> = T extends () => any
     ? T
     : T extends { [key: string]: any }
       ? { [P in keyof T]?: DeepPartial<T[P]> }
       : T;
 
+/**
+ * Type containing all primitive types in TypeScript.
+ */
 export type PrimitiveType = string | number | boolean | Date | null | undefined;
 
-// Record<K, T> with optional key and required value.
-// example of using partial union as keys:
-// const p: PartialRecord<'a' | 'b' | 'c', string>; = { b: 'value' };
-export type PartialRecord<K extends keyof any, T> = {
-    [P in K]?: T;
-};
+/**
+ * Record<K, T> with optional key and required value.
+ *
+ * Example:
+ *  ```
+ *  const p: PartialRecord<'a' | 'b' | 'c', string>; = { b: 'value' };
+ *  ```
+ */
+export type PartialRecord<K extends keyof any, T> = { [P in K]?: T };
 
-// distributive conditional types to the rescue! This way we can infer union literal type from ReturnType but exclude undefined
+/**
+ * This infers the union literal type from ReturnType but exclude undefined
+ */
 export type DefinedUnionMember<T> = T extends string ? T : never;
 
-export type GetObjectWithKey<U, K extends PropertyKey> = U extends object
-    ? K extends keyof U
-        ? U
-        : never
-    : never;
-export type GetObjectWithoutKey<U, K extends PropertyKey> = U extends object
-    ? K extends keyof U
-        ? never
-        : U
-    : never;
-
-export type ObjectsOnly<T> = T extends Record<string, unknown> ? T : never;
-
-// map object `T` to a narrowed type with only those entries that match given `ValueFilter` type
+/**
+ * Map object `T` to a narrowed type with only those entries that match given `ValueFilter` type
+ */
 export type FilterPropertiesByType<T, ValueFilter> = {
     [Key in keyof T as T[Key] extends ValueFilter ? Key : never]: T[Key];
 };
-
