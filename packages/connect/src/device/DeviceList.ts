@@ -268,9 +268,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         const { promise, reject } = resolveAfter(1000, initParams);
         this.rejectPending = reject;
 
-        return promise.then(this.createInitPromise.bind(this)).finally(() => {
-            this.rejectPending = undefined;
-        });
+        return promise
+            .then(this.createInitPromise.bind(this))
+            .catch(() => {})
+            .finally(() => {
+                this.rejectPending = undefined;
+            });
     }
 
     private async selectTransport([transport, ...rest]: Transport[]): Promise<Transport> {
