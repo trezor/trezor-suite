@@ -17,7 +17,12 @@ export const typescriptConfig = [
                 'error',
                 {
                     paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
-                    patterns: ['@trezor/*/lib', '@trezor/*/lib/**'],
+                    patterns: [
+                        '@trezor/*/lib',
+                        '@trezor/*/lib/**',
+                        '@trezor/*/libDev',
+                        '@trezor/*/libDev/**',
+                    ],
                 },
             ],
 
