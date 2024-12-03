@@ -3,7 +3,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Dropdown as DropdownComponent, DropdownProps } from './Dropdown';
+import {
+    allowedDropdownFrameProps,
+    Dropdown as DropdownComponent,
+    DropdownProps,
+} from './Dropdown';
+import { getFramePropsStory } from '../../utils/frameProps';
 
 const Center = styled.div`
     display: flex;
@@ -125,6 +130,7 @@ export const Dropdown: StoryObj<DropdownProps> = {
                 ],
             },
         ],
+        ...getFramePropsStory(allowedDropdownFrameProps).args,
     },
     argTypes: {
         addon: { control: { disable: true } },
@@ -147,5 +153,6 @@ export const Dropdown: StoryObj<DropdownProps> = {
         content: { control: { disable: true } },
         className: { control: { disable: true } },
         coords: { control: { disable: true } },
+        ...getFramePropsStory(allowedDropdownFrameProps).argTypes,
     },
 };

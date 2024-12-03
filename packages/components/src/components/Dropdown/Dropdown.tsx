@@ -21,6 +21,16 @@ import { Menu, MenuProps, DropdownMenuItemProps } from './Menu';
 import { Coords, getAdjustedCoords } from './getAdjustedCoords';
 import { IconButton } from '../buttons/IconButton/IconButton';
 import { focusStyleTransition, getFocusShadowStyle } from '../../utils/utils';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../utils/frameProps';
+import { TransientProps } from '../../utils/transientProps';
+
+export const allowedDropdownFrameProps = ['width'] as const satisfies FramePropsKeys[];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedDropdownFrameProps)[number]>;
 
 const MoreIcon = styled(IconButton)<{ $isToggled: boolean }>`
     background: ${({ isDisabled, $isToggled, theme }) =>
@@ -31,7 +41,9 @@ const MoreIcon = styled(IconButton)<{ $isToggled: boolean }>`
     }
 `;
 
-const Container = styled.div<{ $disabled?: boolean; $hasCustomChildren: boolean }>`
+const Container = styled.div<
+    { $disabled?: boolean; $hasCustomChildren: boolean } & TransientProps<AllowedFrameProps>
+>`
     all: unset;
     width: fit-content;
     height: fit-content;
@@ -39,6 +51,8 @@ const Container = styled.div<{ $disabled?: boolean; $hasCustomChildren: boolean 
     border: 1px solid transparent;
     ${getFocusShadowStyle()};
     cursor: ${({ $disabled }) => ($disabled ? 'default' : 'pointer')};
+
+    ${withFrameProps}
 
     ${({ $hasCustomChildren }) =>
         $hasCustomChildren
@@ -75,14 +89,15 @@ const getPlacementData = (
     return { coordsToUse, toggleDimensions };
 };
 
-export type DropdownProps = Omit<MenuProps, 'setToggled'> & {
-    isDisabled?: boolean;
-    renderOnClickPosition?: boolean;
-    onToggle?: (isToggled: boolean) => void;
-    className?: string;
-    'data-testid'?: string;
-    children?: ((isToggled: boolean) => ReactElement<any>) | ReactElement<any>;
-};
+export type DropdownProps = Omit<MenuProps, 'setToggled'> &
+    AllowedFrameProps & {
+        isDisabled?: boolean;
+        renderOnClickPosition?: boolean;
+        onToggle?: (isToggled: boolean) => void;
+        className?: string;
+        'data-testid'?: string;
+        children?: ((isToggled: boolean) => ReactElement<any>) | ReactElement<any>;
+    };
 
 export interface DropdownRef {
     close: () => void;
@@ -106,6 +121,7 @@ export const Dropdown = forwardRef(
             className,
             children,
             'data-testid': dataTest,
+            ...rest
         }: DropdownProps,
         ref,
     ) => {
@@ -230,6 +246,8 @@ export const Dropdown = forwardRef(
             document.body,
         );
 
+        const frameProps = pickAndPrepareFrameProps(rest, allowedDropdownFrameProps);
+
         return (
             <Container
                 ref={toggleRef}
@@ -240,6 +258,7 @@ export const Dropdown = forwardRef(
                 onFocus={() => !isDisabled && !renderOnClickPosition && setToggled(true)}
                 onBlur={e => !menuRef.current?.contains(e.relatedTarget) && setToggled(false)}
                 $hasCustomChildren={hasCustomChildren}
+                {...frameProps}
             >
                 {ToggleComponent}
                 {isToggled && PortalMenu}

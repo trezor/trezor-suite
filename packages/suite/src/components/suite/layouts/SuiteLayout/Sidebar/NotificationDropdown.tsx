@@ -54,6 +54,7 @@ export const NotificationDropdown = (props: NavigationItemProps) => {
                     <Notifications onCancel={() => dropdownRef.current!.close()} />
                 </Box>
             }
+            width="100%"
         >
             {isToggled => <StyledNavigationItem {...props} isActive={isToggled} />}
         </Dropdown>
