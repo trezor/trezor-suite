@@ -4,14 +4,16 @@ import styled, { css } from 'styled-components';
 
 import { SUITE_MOBILE_APP_STORE, SUITE_MOBILE_PLAY_STORE, SUITE_URL } from '@trezor/urls';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { Button, Icon, Image, Tooltip, variables, Row } from '@trezor/components';
+import { Button, Icon, Image, Tooltip, variables, Row, Column } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 
 import { Translation, QrCode, TrezorLink } from 'src/components/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { HORIZONTAL_LAYOUT_PADDINGS } from 'src/constants/suite/layout';
+import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
+
+import { useResponsiveContext } from '../../support/suite/ResponsiveContext';
 
 const Container = styled.div`
     position: absolute;
@@ -89,16 +91,6 @@ const DesktopLinkButton = styled(Button)`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const StyledTooltip = styled(Tooltip)`
-    display: flex;
-
-    > div {
-        display: flex;
-        align-items: center;
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
 const Badge = styled(Image)<{ $isHighlighted: boolean }>`
     max-width: unset;
     opacity: ${({ $isHighlighted }) => ($isHighlighted ? 1 : 0.6)};
@@ -110,11 +102,6 @@ const Badge = styled(Image)<{ $isHighlighted: boolean }>`
 const StoreTitle = styled(Image)<{ $isDark: boolean }>`
     display: block;
     margin: 2px auto 6px;
-    ${({ $isDark }) =>
-        $isDark &&
-        `
-            filter: invert(1);
-    `}
 `;
 
 const QR = styled(QrCode)`
@@ -147,18 +134,18 @@ const StoreBadge = ({
     const currentTheme = useSelector(state => state.suite.settings.theme.variant);
 
     return (
-        <StyledTooltip
+        <Tooltip
             isOpen={isTooltipOpen}
             disabled={isMobileLayout}
             content={
-                <div>
+                <Column alignItems="center">
                     <StoreTitle
                         $isDark={currentTheme === 'dark'}
                         image={`${image}_TITLE`}
                         height={26}
                     />
                     <QR value={url} />
-                </div>
+                </Column>
             }
         >
             <span
@@ -186,14 +173,14 @@ const StoreBadge = ({
                     <Badge image={`${image}_BADGE`} height={35} $isHighlighted={showQR === type} />
                 </TrezorLink>
             </span>
-        </StyledTooltip>
+        </Tooltip>
     );
 };
 
 export const PromoBanner = () => {
     const shownQRState = useState<QrType>();
-
     const { isMobileLayout } = useLayoutSize();
+    const { contentWidth } = useResponsiveContext();
 
     return (
         <Container>
@@ -228,7 +215,17 @@ export const PromoBanner = () => {
             )}
 
             <MobilePromoContainer>
-                <Row justifyContent="space-between" width="100%">
+                <Row
+                    justifyContent="space-between"
+                    width="100%"
+                    margin={{
+                        right:
+                            contentWidth &&
+                            contentWidth < MAX_CONTENT_WIDTH_NUMERIC + spacings.xxxxxl
+                                ? spacings.xxxxxl
+                                : 0,
+                    }}
+                >
                     <Translation
                         values={{ b: text => <b>{text}</b> }}
                         id="TR_MOBILE_APP_PROMO_TEXT_FOOTER"
