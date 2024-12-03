@@ -556,6 +556,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     ]);
                 }
             } catch (error) {
+                _log.warn('Device._runInner error: ', error.message);
                 if (
                     !this.inconsistent &&
                     (error.message === 'GetFeatures timeout' || error.message === 'Unknown message')
