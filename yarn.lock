@@ -11806,7 +11806,7 @@ __metadata:
   resolution: "@trezor/e2e-utils@workspace:packages/e2e-utils"
   dependencies:
     express: "npm:^4.21.1"
-    uuid: "npm:^11.0.2"
+    uuid: "npm:^11.0.3"
     ws: "npm:^8.18.0"
   languageName: unknown
   linkType: soft
@@ -12381,7 +12381,7 @@ __metadata:
     stylelint: "npm:^16.2.1"
     stylelint-config-standard: "npm:^36.0.0"
     typescript-styled-plugin: "npm:^0.18.3"
-    uuid: "npm:^11.0.2"
+    uuid: "npm:^11.0.3"
     web3-utils: "npm:^4.3.1"
     zxcvbn: "npm:^4.4.2"
   languageName: unknown
@@ -41119,12 +41119,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^11.0.2":
-  version: 11.0.2
-  resolution: "uuid@npm:11.0.2"
+"uuid@npm:^11.0.3":
+  version: 11.0.3
+  resolution: "uuid@npm:11.0.3"
   bin:
     uuid: dist/esm/bin/uuid
-  checksum: 10/b98082f398fa2ece8cacc2264402f739256ca70def4bb82e3a14ec70777d189c01ce1054764c3b59b8fc098b62b135a15d1b24914712904c988822e2ac9b4f44
+  checksum: 10/251385563195709eb0697c74a834764eef28e1656d61174e35edbd129288acb4d95a43f4ce8a77b8c2fc128e2b55924296a0945f964b05b9173469d045625ff2
   languageName: node
   linkType: hard
 

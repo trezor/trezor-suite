@@ -113,7 +113,7 @@
         "redux-thunk": "^2.4.2",
         "semver": "^7.6.3",
         "styled-components": "^6.1.8",
-        "uuid": "^11.0.2",
+        "uuid": "^11.0.3",
         "web3-utils": "^4.3.1",
         "zxcvbn": "^4.4.2"
     },
