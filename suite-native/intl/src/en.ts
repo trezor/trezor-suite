@@ -27,6 +27,12 @@ export const en = {
         offline: "You're offline.",
         tokens: '+ Tokens',
     },
+    tabBar: {
+        home: 'Home',
+        accounts: 'Accounts',
+        receive: 'Receive',
+        settings: 'Settings',
+    },
     messageSystem: {
         killswitch: {
             title: 'Update required',

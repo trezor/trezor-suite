@@ -21,6 +21,7 @@
         "reverse-ports": "adb reverse tcp:8081 tcp:8081 && adb reverse tcp:21325 tcp:21325 && adb reverse tcp:19121 tcp:19121"
     },
     "dependencies": {
+        "@bottom-tabs/react-navigation": "^0.7.6",
         "@gorhom/bottom-sheet": "5.0.5",
         "@mobily/ts-belt": "^3.13.1",
         "@react-native-community/netinfo": "^11.4.1",
@@ -36,6 +37,7 @@
         "@suite-common/analytics": "workspace:*",
         "@suite-common/connect-init": "workspace:*",
         "@suite-common/formatters": "workspace:*",
+        "@suite-common/icons": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
@@ -110,6 +112,7 @@
         "react": "18.2.0",
         "react-intl": "^6.6.8",
         "react-native": "0.76.1",
+        "react-native-bottom-tabs": "^0.7.6",
         "react-native-gesture-handler": "^2.21.0",
         "react-native-keyboard-aware-scroll-view": "0.9.5",
         "react-native-mmkv": "2.12.2",
