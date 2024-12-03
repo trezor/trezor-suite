@@ -20,7 +20,7 @@ export class OnboardingActions {
     }
 
     async optionallyDismissFwHashCheckError() {
-        await expect(this.welcomeTitle).toBeVisible();
+        await expect(this.welcomeTitle).toBeVisible({ timeout: 10000 });
         // dismisses the error modal only if it appears (handle it async in parallel, not necessary to block the rest of the flow)
         this.window
             .$('[data-testid="@device-compromised/back-button"]')

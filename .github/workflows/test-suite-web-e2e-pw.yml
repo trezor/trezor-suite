@@ -69,20 +69,20 @@ jobs:
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           yarn workspaces focus @trezor/suite-web @trezor/connect-iframe @trezor/connect-web @trezor/suite-data @trezor/suite-build
 
-      # - name: Build suite-web
-      #   env:
-      #     ASSET_PREFIX: /suite-web/${{ steps.extract_branch.outputs.branch }}/web
-      #     DESKTOP_APP_NAME: "Trezor-Suite"
-      #   run: |
-      #     yarn message-system-sign-config
-      #     yarn workspace @trezor/suite-data build:lib
-      #     yarn workspace @trezor/suite-web build
-      # # this step should upload build result to s3 bucket dev.suite.sldev.cz using awscli
-      # - name: Upload suite-web to dev.suite.sldev.cz
-      #   env:
-      #     DEPLOY_PATH: s3://dev.suite.sldev.cz/suite-web/${{ steps.extract_branch.outputs.branch }}
-      #   run: |
-      #     aws s3 sync --delete ./packages/suite-web/build ${DEPLOY_PATH}/web
+      - name: Build suite-web
+        env:
+          ASSET_PREFIX: /suite-web/${{ steps.extract_branch.outputs.branch }}/web
+          DESKTOP_APP_NAME: "Trezor-Suite"
+        run: |
+          yarn message-system-sign-config
+          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @trezor/suite-web build
+      # this step should upload build result to s3 bucket dev.suite.sldev.cz using awscli
+      - name: Upload suite-web to dev.suite.sldev.cz
+        env:
+          DEPLOY_PATH: s3://dev.suite.sldev.cz/suite-web/${{ steps.extract_branch.outputs.branch }}
+        run: |
+          aws s3 sync --delete ./packages/suite-web/build ${DEPLOY_PATH}/web
 
   e2e-test-suite-web:
     if: github.repository == 'trezor/trezor-suite'
@@ -95,25 +95,18 @@ jobs:
         include:
           # - TEST_GROUP: "@group=suite"
           #   CONTAINERS: "trezor-user-env-unix"
-          #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
           # - TEST_GROUP: "@group=device-management"
           #   CONTAINERS: "trezor-user-env-unix"
-          #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
           - TEST_GROUP: "@group=settings"
             CONTAINERS: "trezor-user-env-unix"
-            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
           # - TEST_GROUP: "@group=metadata"
           #   CONTAINERS: "trezor-user-env-unix"
-          #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
           # - TEST_GROUP: "@group=passphrase"
           #   CONTAINERS: "trezor-user-env-unix"
-          #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
           # - TEST_GROUP: "@group=other"
           #   CONTAINERS: "trezor-user-env-unix"
-          #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
           - TEST_GROUP: "@group=wallet"
             CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
-            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -141,56 +134,53 @@ jobs:
             echo "message=$(git log --no-merges -1 --pretty=format:"%s")" >> $GITHUB_OUTPUT
           fi
 
-      - name: Install dependencies
+      - name: Install dependencies and pull docker images
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-ci-pw.yml
         run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           yarn workspaces focus @trezor/suite-desktop-core
-
-      - name: Install Playwright browsers
-        run: npx playwright install
+          npx playwright install --with-deps chromium
+          docker compose pull ${{ matrix.CONTAINERS }}
 
       - name: Run Playwright e2e tests
         env:
-          COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
-          BASE_URL: https://dev.suite.sldev.cz/suite-web/feat-parametrize-pw-suite/web/
-         
-          ## reporter url
-          TRACK_SUITE_URL: https://track-suite-ff9ad9f5b4f6.herokuapp.com
-          ## when debugging or developing tests it does not make sense to have retries,
-          ## in other cases retries are useful to avoid occasional failures due to flaky tests
-          ALLOW_RETRY: false
+          COMPOSE_FILE: ./docker/docker-compose.suite-ci-pw.yml
+          BASE_URL: https://dev.suite.sldev.cz/suite-web/${{ steps.extract_branch.outputs.branch }}/web/
+          ## Keep retries enabled once stabilized
+          ALLOW_RETRY: true
           TEST_GROUP: ${{ matrix.TEST_GROUP }}
-          CI_JOB_ID: ${{ github.run_id }}
-          CI_COMMIT_SHA: ${{ github.sha }}
-          CI_JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          CI_COMMIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-          CI_COMMIT_MESSAGE: ${{ steps.extract_commit_message.outputs.message }}
+          GITHUB_ACTION: true
           CURRENTS_PROJECT_ID: Og0NOQ
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
           CURRENTS_CI_BUILD_ID: pr-run-${{github.run_id}}
         run: |
-          docker compose pull
           docker compose up -d ${{ matrix.CONTAINERS }}
-          echo "group ${TEST_GROUP}"
+          echo "Starting Playwright Web test group ${TEST_GROUP}"
           yarn workspace @trezor/suite-desktop-core test:e2e:web --grep=${TEST_GROUP}
-      # - name: Upload logs
-      #   run: |
-      #     docker cp docker_trezor-user-env-unix_1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log || true
-      #     docker cp docker_trezor-user-env-unix_1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log || true
-      #     docker cp docker_trezor-user-env-unix_1:/trezor-user-env/docker/version.txt trezor-user-env-version.txt || true
 
-      # - name: Upload artifacts
-      #   # this will run the upload artifacts even if the previous steps failed (e.g. tests failed). It wont run if the workflow was cancelled.
-      #   if: ${{ ! cancelled() }}
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: test-artifacts-${{ matrix.TEST_GROUP }}
-      #     path: |
-      #       ./packages/suite-web/e2e/snapshots
-      #       ./packages/suite-web/e2e/screenshots
-      #       ./packages/suite-web/e2e/videos
-      #       download-snapshots.sh
-      #       trezor-user-env-debugging.log
-      #       tenv-emulator-bridge-debugging.log
-      #       trezor-user-env-version.txt
+      - name: Extract Trezor-user-env logs
+        if: ${{ ! cancelled() }}
+        run: |
+          docker cp docker-trezor-user-env-unix-1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log || true
+          docker cp docker-trezor-user-env-unix-1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log || true
+          docker cp docker-trezor-user-env-unix-1:/trezor-user-env/docker/version.txt trezor-user-env-version.txt || true
+
+      - name: Upload Trezor-user-env logs
+        if: ${{ ! cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: emulator-logs-${{ matrix.TEST_GROUP }}
+          path: |
+            trezor-user-env-debugging.log
+            tenv-emulator-bridge-debugging.log
+            trezor-user-env-version.txt
+
+      - name: Upload Playwright report
+        if: ${{ ! cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.TEST_GROUP }}
+          path: ./packages/suite-desktop-core/playwright-report/
+          retention-days: 30

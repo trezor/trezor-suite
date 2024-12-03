@@ -31,7 +31,9 @@ const config: PlaywrightTestConfig = {
         testIdAttribute: 'data-testid',
     },
     reportSlowTests: null,
-    reporter: process.env.GITHUB_ACTION ? [['list'], ['@currents/playwright']] : [['list']],
+    reporter: process.env.GITHUB_ACTION
+        ? [['list'], ['@currents/playwright'], ['html', { open: 'never' }]]
+        : [['list'], ['html', { open: 'never' }]],
     timeout: 1000 * 60 * 5,
     outputDir: path.join(__dirname, 'test-results'),
 };

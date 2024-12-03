@@ -19,17 +19,21 @@ test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
  * 2. Check that all types of Cardano accounts are discovered
  * 3. Check that Staking section is available
  */
-test('Discover all Cardano account types', async ({ dashboardPage, settingsPage, walletPage }) => {
-    await settingsPage.navigateTo();
-    await settingsPage.coinsTabButton.click();
-    await settingsPage.enableCoin('ada');
-    await settingsPage.disableCoin('btc');
+test(
+    'Discover all Cardano account types',
+    { tag: ['@group=wallet'] },
+    async ({ dashboardPage, settingsPage, walletPage }) => {
+        await settingsPage.navigateTo();
+        await settingsPage.coinsTabButton.click();
+        await settingsPage.enableCoin('ada');
+        await settingsPage.disableCoin('btc');
 
-    await dashboardPage.navigateTo();
-    await dashboardPage.discoveryShouldFinish();
+        await dashboardPage.navigateTo();
+        await dashboardPage.discoveryShouldFinish();
 
-    await walletPage.expandAllAccountsInMenu();
-    await walletPage.checkStakesOfCardanoAccounts();
+        await walletPage.expandAllAccountsInMenu();
+        await walletPage.checkStakesOfCardanoAccounts();
 
-    expect(await walletPage.getAccountsCount('ada')).toEqual(3);
-});
+        expect(await walletPage.getAccountsCount('ada')).toEqual(3);
+    },
+);

@@ -44,6 +44,7 @@ __pycache__/
 # test outputs
 screenshots
 test-results
+playwright-report
 
 # build outputs
 lib

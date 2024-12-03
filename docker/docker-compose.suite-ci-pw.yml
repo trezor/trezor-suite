@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  trezor-user-env-unix:
+    image: ghcr.io/trezor/trezor-user-env:c637c2f58e799284f6019481fa0de30457bd6b60
+    environment:
+      - SDL_VIDEODRIVER=dummy
+      - XDG_RUNTIME_DIR=/var/tmp
+    network_mode: host
+  bitcoin-regtest:
+    image: ghcr.io/trezor/trezor-user-env-regtest # this is a special image that runs regtest and blockbook
+    depends_on:
+      - trezor-user-env-unix
+    network_mode: service:trezor-user-env-unix

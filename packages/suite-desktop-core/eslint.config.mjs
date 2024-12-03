@@ -17,4 +17,7 @@ export default [
             ],
         },
     },
+    {
+        ignores: ['**/playwright-report/'],
+    },
 ];

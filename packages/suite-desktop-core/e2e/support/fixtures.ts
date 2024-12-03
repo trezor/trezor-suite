@@ -66,13 +66,12 @@ const test = base.extend<Fixtures>({
     window: async ({ appContext, page }, use, testInfo) => {
         if (appContext) {
             const window = await appContext.firstWindow();
-
             await window.context().tracing.start({ screenshots: true, snapshots: true });
             await use(window);
             const tracePath = `${testInfo.outputDir}/trace.electron.zip`;
             await window.context().tracing.stop({ path: tracePath });
         } else {
-            await page.goto('/');
+            await page.goto('./');
             await use(page);
         }
     },
