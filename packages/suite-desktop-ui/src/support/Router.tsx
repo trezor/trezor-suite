@@ -33,6 +33,7 @@ import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
 import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
 import { SettingsDevice } from 'src/views/settings/SettingsDevice/SettingsDevice';
 import { Tokens } from 'src/views/wallet/tokens';
+import { Nfts } from 'src/views/wallet/nfts';
 import PasswordManager from 'src/views/password-manager';
 
 const components: { [key: string]: ComponentType<any> } = {
@@ -47,6 +48,7 @@ const components: { [key: string]: ComponentType<any> } = {
     'wallet-sign-verify': WalletSignVerify,
     'wallet-anonymize': WalletAnonymize,
     'wallet-tokens': Tokens,
+    'wallet-nfts': Nfts,
     'wallet-coinmarket-buy': CoinmarketBuyForm,
     'wallet-coinmarket-buy-detail': CoinmarketBuyDetail,
     'wallet-coinmarket-buy-offers': CoinmarketBuyOffers,

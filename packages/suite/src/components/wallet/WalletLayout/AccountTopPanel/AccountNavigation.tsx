@@ -14,6 +14,8 @@ export const ACCOUNT_TABS = [
     'wallet-index',
     'wallet-details',
     'wallet-tokens',
+    'wallet-nfts',
+    'wallet-nfts-hidden',
     'wallet-tokens-hidden',
     'wallet-staking',
 ];
@@ -56,6 +58,16 @@ export const AccountNavigation = () => {
             isHidden: !['cardano', 'ethereum', 'solana'].includes(networkType),
             activeRoutes: ['wallet-tokens', 'wallet-tokens-hidden'],
             'data-testid': '@wallet/menu/wallet-tokens',
+        },
+        {
+            id: 'wallet-nfts',
+            callback: () => {
+                goToWithAnalytics('wallet-nfts', { preserveParams: true });
+            },
+            title: <Translation id="TR_NAV_NFTS" />,
+            isHidden: !hasNetworkFeatures(account, 'nfts'),
+            activeRoutes: ['wallet-nfts', 'wallet-nfts-hidden'],
+            'data-testid': '@wallet/menu/wallet-nfts',
         },
         {
             id: 'wallet-staking',

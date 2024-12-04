@@ -277,6 +277,20 @@ export const routes = [
         isNestedRoute: true,
     },
     {
+        name: 'wallet-nfts',
+        pattern: '/accounts/nfts',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
+        name: 'wallet-nfts-hidden',
+        pattern: '/accounts/nfts/hidden',
+        app: 'wallet',
+        params: walletParams,
+        isNestedRoute: true,
+    },
+
+    {
         name: 'wallet-anonymize',
         pattern: '/accounts/anonymize',
         app: 'wallet',
