@@ -19,6 +19,7 @@ describe('Backup success', () => {
 
         cy.viewport('macbook-15').resetDb();
         cy.prefixedVisit('/');
+        cy.disableFirmwareHashCheck();
     });
 
     it('Successful backup happy path', () => {

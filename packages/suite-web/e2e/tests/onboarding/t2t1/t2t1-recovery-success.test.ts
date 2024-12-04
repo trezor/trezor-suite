@@ -10,6 +10,7 @@ describe('Onboarding - recover wallet T2T1', () => {
         cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2.5.3' });
         cy.viewport('macbook-13').resetDb();
         cy.prefixedVisit('/');
+        cy.disableFirmwareHashCheck();
 
         cy.step('Go through analytics', () => {
             onAnalyticsPage.continue();

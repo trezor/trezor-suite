@@ -53,6 +53,7 @@ describe('Onboarding - T2T1 in recovery mode', () => {
         cy.resetDb();
         cy.viewport('macbook-13');
         cy.prefixedVisit('/');
+        cy.disableFirmwareHashCheck();
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@analytics/continue-button').click();
 
@@ -83,6 +84,7 @@ describe('Onboarding - T2T1 in recovery mode', () => {
 
         // now suite has reloaded. database is wiped.
         cy.task('startEmu', { wipe: false, model: 'T2T1', version: '2.5.3' });
+        cy.disableFirmwareHashCheck(); // need to disable again after reset
         // analytics opt-out again
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@analytics/continue-button').click();
