@@ -126,6 +126,7 @@
         "@babel/core": "^7.20.0",
         "@babel/plugin-transform-export-namespace-from": "^7.23.4",
         "@config-plugins/detox": "^8.0.0",
+        "@react-native-community/cli": "^15.1.2",
         "@react-native/babel-preset": "^0.75.2",
         "@suite-common/test-utils": "workspace:^",
         "@trezor/connect-mobile": "workspace:^",

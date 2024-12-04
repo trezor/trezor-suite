@@ -22,6 +22,7 @@ detox
 @react-navigation/core
 @react-navigation/native
 @react-navigation/native-stack
+@react-native-community/cli
 @sentry/react-native
 @shopify/flash-list
 @testing-library/react-native

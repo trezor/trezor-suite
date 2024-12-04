@@ -1,4 +1,8 @@
 name: "[Test] suite-native Android E2E"
+
+permissions:
+  id-token: write # for fetching the OIDC token (needed for aws s3 actions)
+
 on:
   schedule:
     - cron: "0 0 * * *"
@@ -18,7 +22,7 @@ env:
   NODE_ENV: "test"
 
 jobs:
-  build_android_test_app:
+  prepare_android_test_app:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     steps:
@@ -62,17 +66,100 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Sign message system config
-        working-directory: ./suite-common/message-system
-        run: yarn sign-config
-
       - name: Prebuild native expo project
         working-directory: ./suite-native/app
         run: yarn prebuild --platform android --clean
 
-      - name: Build Detox test .apk
-        run: ../../node_modules/.bin/detox build -PreactNativeArchitectures=x86_64 --configuration android.emu.release
+      - name: Sign message system config
+        working-directory: ./suite-common/message-system
+        run: yarn sign-config
+
+      - name: get Expo app fingerprint
+        id: expo-fingerprint
         working-directory: ./suite-native/app
+        run: npx @expo/fingerprint ./ > expo-fingerprint.json && node -e "console.log('HASH=' + require('./expo-fingerprint.json').hash)" >> $GITHUB_OUTPUT
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          aws-region: eu-central-1
+
+      - name: Check if native build exists in AWS bucket
+        id: s3_build_cache
+        run: |
+          if aws s3 ls s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }} --summarize;
+           then
+             echo "hit=true"  >> $GITHUB_OUTPUT;
+           else
+             echo "hit=false"  >> $GITHUB_OUTPUT;
+          fi
+
+      ################ CACHE HIT - REPLACE JS BUNDLE ONLY ##############
+
+      - name: Setup Android SDK
+        if: steps.s3_build_cache.outputs.hit == 'true'
+        uses: android-actions/setup-android@v3
+
+      - name: Download Apktool
+        if: steps.s3_build_cache.outputs.hit == 'true'
+        run: |
+          wget https://github.com/iBotPeaches/Apktool/releases/download/v2.8.1/apktool_2.8.1.jar -O apktool.jar
+          wget https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/linux/apktool -O apktool
+          chmod +x apktool
+          sudo mv apktool.jar /usr/local/bin/apktool.jar
+          sudo mv apktool /usr/local/bin/apktool
+
+      - name: Download build from aws bucket
+        if: steps.s3_build_cache.outputs.hit == 'true'
+        working-directory: ./suite-native/app
+        run: aws s3 cp s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }}/ ./android/app/build/outputs --recursive
+
+      - name: decompile .apk build
+        if: steps.s3_build_cache.outputs.hit == 'true'
+        working-directory: ./suite-native/app/android/app/build/outputs/apk/release
+        run: apktool d app-release.apk -o unpacked
+
+      - name: replace JS bundle
+        if: steps.s3_build_cache.outputs.hit == 'true'
+        working-directory: "./suite-native/app"
+        env:
+          JS_BUNDLE_PATH: ./android/app/build/outputs/apk/release/unpacked/assets/index.android.bundle
+          ASSETS_DEST_PATH: ./android/app/build/outputs/apk/release/unpacked/res/
+          ENTRY_FILE_PATH: ./suite-native/app/index.js
+          EXPO_PUBLIC_IS_DETOX_BUILD: true
+          EXPO_PUBLIC_ENVIRONMENT: debug
+        run: npx react-native bundle --platform android --dev false --entry-file $ENTRY_FILE_PATH --bundle-output $JS_BUNDLE_PATH --assets-dest $ASSETS_DEST_PATH
+
+      - name: fix native library bundling (extractNativeLibs=true)
+        if: steps.s3_build_cache.outputs.hit == 'true'
+        working-directory: "./suite-native/app/android/app/build/outputs/apk/release/unpacked"
+        run: sed -i 's/android:extractNativeLibs=\"false\"/android:extractNativeLibs=\"true\"/g' AndroidManifest.xml
+
+      - name: compile .apk back
+        if: steps.s3_build_cache.outputs.hit == 'true'
+        working-directory: ./suite-native/app/android/app/build/outputs/apk/release
+        run: apktool b unpacked -o app-release.apk
+
+      - name: sign re-bundled .apk
+        if: steps.s3_build_cache.outputs.hit == 'true'
+        working-directory: ./suite-native/app/android/app/build/outputs/apk/release
+        env:
+          KEYSTORE_PATH: ../../../../debug.keystore
+          KEYSTORE_PASSWORD: pass:android
+        run: $ANDROID_HOME/build-tools/35.0.0/apksigner sign --ks $KEYSTORE_PATH --ks-pass $KEYSTORE_PASSWORD --out app-release.apk app-release.apk
+
+      ############# CACHE MISS - COMPILE A FRESH .APK FILE #############
+
+      - name: Build a new Detox test .apk
+        if: steps.s3_build_cache.outputs.hit == 'false'
+        working-directory: ./suite-native/app
+        run: ../../node_modules/.bin/detox build -PreactNativeArchitectures=x86_64 --configuration android.emu.release
+
+      - name: save .apk to the aws s3 bucket
+        if: steps.s3_build_cache.outputs.hit == 'false'
+        working-directory: ./suite-native/app/android/app/build/outputs
+        run: aws s3 cp . s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }}/ --recursive
 
       - name: Save build to cache
         uses: actions/cache/save@v4
@@ -81,10 +168,12 @@ jobs:
             suite-native/app/android/app/build/
           key: android_test_build/${{ github.ref }}/${{github.run_id}}
 
+      ###################################################################
+
   run_android_e2e_tests:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
-    needs: build_android_test_app
+    needs: prepare_android_test_app
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
