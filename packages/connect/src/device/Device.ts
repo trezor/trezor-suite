@@ -133,6 +133,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transportPath;
     private readonly transportSessionOwner;
     private readonly transportDescriptorType;
+    private readonly bluetoothProps;
     private session;
     private lastAcquiredHere;
 
@@ -221,6 +222,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.transportPath = descriptor.path;
         this.transportSessionOwner = descriptor.sessionOwner;
         this.transportDescriptorType = descriptor.type;
+        this.bluetoothProps = descriptor.uuid ? { uuid: descriptor.uuid } : undefined;
 
         this.session = descriptor.session;
         this.lastAcquiredHere = false;
@@ -1183,6 +1185,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 label: 'Unacquired device',
                 name: this.name,
                 transportSessionOwner: this.transportSessionOwner,
+                bluetoothProps: this.bluetoothProps,
             };
         }
         const defaultLabel = 'My Trezor';
@@ -1208,6 +1211,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             unavailableCapabilities: this.unavailableCapabilities,
             availableTranslations: this.availableTranslations,
             authenticityChecks: this.authenticityChecks,
+            bluetoothProps: this.bluetoothProps,
         };
     }
 }
