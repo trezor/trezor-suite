@@ -9,11 +9,8 @@ import { getBinFilesBaseUrlThunk } from './getBinFilesBaseUrlThunk';
 
 export const handleFwHashError = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/handleFwHashError`,
-    ({ device, errorMessage }: { device: TrezorDevice; errorMessage: string }, { dispatch }) => {
-        // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
-        if (device.id) {
-            dispatch(firmwareActions.setHashInvalid(device.id));
-        }
+    ({ errorMessage }: { errorMessage: string }, { dispatch }) => {
+        // TODO dispatch `setHashInvalid` once again when we are sure it works correctly.
         dispatch(
             firmwareActions.setFirmwareUpdateError(
                 `${errorMessage}. Unable to validate firmware hash. If you want to check authenticity of newly installed firmware please proceed to device settings and reinstall firmware.`,
@@ -27,7 +24,7 @@ export const INVALID_HASH_ERROR = 'Invalid hash';
 const handleFwHashMismatch = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/handleFwHashMismatch`,
     (device: TrezorDevice, { dispatch }) => {
-        // see `handleFwHashError`
+        // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
         if (device.id) {
             dispatch(firmwareActions.setHashInvalid(device.id));
         }
@@ -38,7 +35,7 @@ const handleFwHashMismatch = createThunk(
 const handleFwHashValid = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/handleFwHashValid`,
     (device: TrezorDevice, { dispatch }) => {
-        // see `handleFwHashError`
+        // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
         if (device.id) {
             dispatch(firmwareActions.clearInvalidHash(device.id));
         }
@@ -164,7 +161,6 @@ export const firmwareUpdate = createThunk<
                 // device failed to respond to the hash check, consider the firmware counterfeit
                 dispatch(
                     handleFwHashError({
-                        device,
                         errorMessage: firmwareUpdateResponse.payload.checkError,
                     }),
                 );
