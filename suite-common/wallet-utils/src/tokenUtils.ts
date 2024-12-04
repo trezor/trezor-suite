@@ -35,3 +35,19 @@ export const getTokenExplorerUrl = (
 
     return `${explorerUrl}${contractAddress}${queryString}`;
 };
+
+export const getNftExplorerUrl = (network: Network, nft: TokenInfo, id: string) => {
+    const explorerUrl = network.explorer.nft;
+    const contractAddressWithId = nft.contract + `/${id}`;
+    const queryString = network.explorer.queryString ?? ''; // queryString is used for solana only.
+
+    return `${explorerUrl}${contractAddressWithId}${queryString}`;
+};
+
+export const getNftContractExplorerUrl = (network: Network, nft: TokenInfo) => {
+    const explorerUrl = network.explorer.account;
+    const contractAddress = nft.contract;
+    const queryString = network.explorer.queryString ?? '';
+
+    return `${explorerUrl}${contractAddress}${queryString}`;
+};
