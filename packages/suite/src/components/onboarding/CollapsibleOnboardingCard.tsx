@@ -9,7 +9,7 @@ import {
     H2,
     Icon,
     Image,
-    ImageType,
+    ImageKey,
     Text,
     motionEasing,
     useElevation,
@@ -169,7 +169,7 @@ const IconWrapper = styled.div`
 `;
 
 export interface CollapsibleOnboardingCardProps extends HTMLAttributes<HTMLDivElement> {
-    image?: ImageType;
+    image?: ImageKey;
     variant?: 'small' | 'large';
     expandable?: boolean;
     expanded?: boolean;

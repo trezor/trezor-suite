@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { H3, Image, ImageType, Paragraph, variables } from '@trezor/components';
+import { H3, Image, ImageKey, Paragraph, variables } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 
@@ -96,7 +96,7 @@ const Container = styled.div`
 
 export interface CoinjoinProcessStepProps {
     number: number;
-    image: ImageType;
+    image: ImageKey;
     title: ReactNode;
     description: ReactNode;
 }
