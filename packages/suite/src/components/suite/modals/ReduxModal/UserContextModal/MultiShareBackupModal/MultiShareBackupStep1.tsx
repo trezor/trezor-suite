@@ -1,18 +1,9 @@
 import { Dispatch, SetStateAction } from 'react';
 
-import styled from 'styled-components';
-
-import { Checkbox, Image, Paragraph } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Checkbox, Paragraph, Card, Column, H4 } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-
-import { Body, Section } from './multiShareModalLayout';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledImage = styled(Image)`
-    margin-bottom: ${spacingsPx.md};
-`;
 
 type MultiShareBackupStep1Props = {
     isChecked1: boolean;
@@ -22,7 +13,7 @@ type MultiShareBackupStep1Props = {
     setIsChecked2: Dispatch<SetStateAction<boolean>>;
 };
 
-export const MultiShareBackupStep1FirstInfo = ({
+export const MultiShareBackupStep1 = ({
     isChecked1,
     isChecked2,
     isSubmitted,
@@ -39,25 +30,25 @@ export const MultiShareBackupStep1FirstInfo = ({
     const toggleCheckbox2 = () => setIsChecked2(prev => !prev);
 
     return (
-        <>
-            <StyledImage image="CREATE_SHAMIR_GROUP" />
-            <Body>
-                <Section>
-                    <Paragraph typographyStyle="callout">
-                        <Translation id="TR_MULTI_SHARE_BACKUP_CALLOUT_1" />
-                    </Paragraph>
+        <Column gap={spacings.lg}>
+            <Column>
+                <H4>
+                    <Translation id="TR_MULTI_SHARE_BACKUP_CALLOUT_1" />
+                </H4>
+                <Paragraph variant="tertiary">
                     <Translation id="TR_MULTI_SHARE_BACKUP_EXPLANATION_1" />
-                </Section>
-                <Section>
-                    <Paragraph typographyStyle="callout">
-                        <Translation id="TR_MULTI_SHARE_BACKUP_CALLOUT_2" />
-                    </Paragraph>
+                </Paragraph>
+            </Column>
+            <Column>
+                <H4>
+                    <Translation id="TR_MULTI_SHARE_BACKUP_CALLOUT_2" />
+                </H4>
+                <Paragraph variant="tertiary">
                     <Translation id="TR_MULTI_SHARE_BACKUP_EXPLANATION_2" />
-                </Section>
-                <Section>
-                    <Paragraph typographyStyle="callout">
-                        <Translation id="TR_MULTI_SHARE_BACKUP_CALLOUT_3" />
-                    </Paragraph>
+                </Paragraph>
+            </Column>
+            <Card margin={{ top: spacings.xs }}>
+                <Column gap={spacings.sm}>
                     <Checkbox
                         isChecked={isChecked1}
                         onClick={toggleCheckbox1}
@@ -74,8 +65,8 @@ export const MultiShareBackupStep1FirstInfo = ({
                     >
                         <Translation id="TR_MULTI_SHARE_BACKUP_CHECKBOX_2" />
                     </Checkbox>
-                </Section>
-            </Body>
-        </>
+                </Column>
+            </Card>
+        </Column>
     );
 };

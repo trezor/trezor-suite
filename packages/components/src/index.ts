@@ -17,7 +17,11 @@ export { ComponentWithSubIcon } from './components/ComponentWithSubIcon/Componen
 export * from './components/buttons/PinButton/PinButton';
 export * from './components/buttons/TextButton/TextButton';
 export { Box, type BoxProps } from './components/Box/Box';
-export { BulletList, type BulletListProps } from './components/BulletList/BulletList';
+export {
+    BulletList,
+    type BulletListProps,
+    type BulletListItemState,
+} from './components/BulletList/BulletList';
 export { Card, type CardProps } from './components/Card/Card';
 export {
     CollapsibleBox,

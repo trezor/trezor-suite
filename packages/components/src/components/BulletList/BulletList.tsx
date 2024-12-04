@@ -14,6 +14,8 @@ import { TransientProps } from '../../utils/transientProps';
 import { BulletListItem } from './BulletListItem';
 import { BulletSize } from './types';
 
+export type { BulletListItemState } from './types';
+
 export const allowedBulletListFrameProps = [
     'margin',
     'width',
