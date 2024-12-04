@@ -55,6 +55,7 @@ export type BackendType = TrezorConnectBackendType | NonStandardBackendType;
 
 export type NetworkFeature =
     | 'rbf'
+    | 'nfts'
     | 'sign-verify'
     | 'amount-unit'
     | 'tokens'

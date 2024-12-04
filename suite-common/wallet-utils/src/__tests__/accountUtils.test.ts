@@ -238,6 +238,7 @@ describe('account utils', () => {
             'rbf',
             'sign-verify',
             'tokens',
+            'nfts',
             'coin-definitions',
             'nft-definitions',
             'staking',
