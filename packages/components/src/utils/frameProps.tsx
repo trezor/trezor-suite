@@ -5,7 +5,7 @@ import { SpacingValues } from '@trezor/theme';
 import { makePropsTransient, TransientProps } from './transientProps';
 import type { Flex } from '../components/Flex/Flex';
 
-type Margin =
+export type Margin =
     | {
           top?: SpacingValues | 'auto';
           bottom?: SpacingValues | 'auto';

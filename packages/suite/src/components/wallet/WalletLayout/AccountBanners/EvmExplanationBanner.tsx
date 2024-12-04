@@ -1,4 +1,5 @@
 import { networks } from '@suite-common/wallet-config';
+import { spacings } from '@trezor/theme';
 
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
@@ -52,6 +53,7 @@ export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => 
                 />
             }
             hasIcon={points.length === 1}
+            margin={{ bottom: spacings.sm }}
         >
             <BannerPoints points={points} />
         </CloseableBanner>
