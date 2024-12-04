@@ -1,5 +1,10 @@
 import { testMocks } from '@suite-common/test-utils';
-import { Bip43Path, Bip43PathTemplate } from '@suite-common/wallet-config';
+import type {
+    Bip43Path,
+    Bip43PathTemplate,
+    NetworkSymbolExtended,
+} from '@suite-common/wallet-config';
+import { TranslationKey } from '@suite-common/intl-types';
 
 import { ACCOUNTS } from './accounts';
 
@@ -44,7 +49,10 @@ export const getDiscoveryProcess = [
     },
 ];
 
-export const accountTitleFixture = [
+export const accountTitleFixture: Array<{
+    symbol: NetworkSymbolExtended;
+    title: TranslationKey;
+}> = [
     { symbol: 'btc', title: 'TR_NETWORK_BITCOIN' },
     { symbol: 'test', title: 'TR_NETWORK_BITCOIN_TESTNET' },
     { symbol: 'bch', title: 'TR_NETWORK_BITCOIN_CASH' },
@@ -74,7 +82,10 @@ export const accountTitleFixture = [
     { symbol: 'c', title: 'TR_NETWORK_UNKNOWN' },
 ];
 
-export const accountTitleCoinjoinFixture = [
+export const accountTitleCoinjoinFixture: Array<{
+    symbol: NetworkSymbolExtended;
+    title: TranslationKey;
+}> = [
     { symbol: 'btc', title: 'TR_NETWORK_COINJOIN_BITCOIN' },
     { symbol: 'test', title: 'TR_NETWORK_COINJOIN_BITCOIN_TESTNET' },
     { symbol: 'regtest', title: 'TR_NETWORK_COINJOIN_BITCOIN_REGTEST' },

@@ -12,7 +12,6 @@ import {
     selectIsDiscoveryAuthConfirmationRequired,
 } from '@suite-common/wallet-core';
 import { ArrayElement } from '@trezor/type-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
@@ -220,9 +219,7 @@ describe('Discovery Actions', () => {
             setTrezorConnectFixtures(f);
             const store = initStore(getInitialState(f.device));
             if (f.enabledNetworks) {
-                store.dispatch(
-                    walletSettingsActions.changeNetworks(f.enabledNetworks as NetworkSymbol[]),
-                );
+                store.dispatch(walletSettingsActions.changeNetworks(f.enabledNetworks));
             }
 
             store.dispatch(
@@ -313,11 +310,7 @@ describe('Discovery Actions', () => {
                     // call "updateNetworkSettings" if added account is a trigger from fixtures
                     const trigger = f.trigger.find(t => a.payload.path.indexOf(t.path) >= 0);
                     if (trigger) {
-                        store.dispatch(
-                            walletSettingsActions.changeNetworks(
-                                trigger.networks as NetworkSymbol[],
-                            ),
-                        );
+                        store.dispatch(walletSettingsActions.changeNetworks(trigger.networks));
                         store.dispatch(updateNetworkSettingsThunk());
                     }
                 }
@@ -358,7 +351,7 @@ describe('Discovery Actions', () => {
                     device: f.device || SUITE_DEVICE,
                 }),
             );
-            store.dispatch(walletSettingsActions.changeNetworks(f.networks as NetworkSymbol[]));
+            store.dispatch(walletSettingsActions.changeNetworks(f.networks));
             store.dispatch(updateNetworkSettingsThunk());
 
             const discovery = store.getState().wallet.discovery[0];

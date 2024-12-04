@@ -7,7 +7,7 @@ import { selectHistoricRatesByTransactions, getFormDraftKey } from '@suite-commo
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectDevices, deviceActions } from '@suite-common/wallet-core';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
 import { MetadataState } from '@suite-common/metadata-types';
 import { DefinitionType, TokenManagementAction } from '@suite-common/token-definitions';
@@ -319,12 +319,12 @@ export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: Ge
 };
 
 export const saveBackend =
-    (coin: NetworkSymbol) => async (_dispatch: Dispatch, getState: GetState) => {
+    (symbol: NetworkSymbol) => async (_dispatch: Dispatch, getState: GetState) => {
         if (!(await db.isAccessible())) return;
         await db.addItem(
             'backendSettings',
-            getState().wallet.blockchain[coin].backends,
-            coin,
+            getState().wallet.blockchain[symbol].backends,
+            symbol,
             true,
         );
     };
@@ -349,14 +349,14 @@ export const saveSuiteSettings = () => async (_dispatch: Dispatch, getState: Get
 };
 
 export const saveTokenManagement =
-    (networkSymbol: NetworkSymbol, type: DefinitionType, status: TokenManagementAction) =>
+    (symbol: NetworkSymbol, type: DefinitionType, status: TokenManagementAction) =>
     async (_dispatch: Dispatch, getState: GetState) => {
         if (!(await db.isAccessible())) return;
         const { tokenDefinitions } = getState();
-        const tokenDefinitionsType = tokenDefinitions[networkSymbol]?.[type];
+        const tokenDefinitionsType = tokenDefinitions[symbol]?.[type];
         const data = tokenDefinitionsType?.[status];
 
-        const key = `${networkSymbol}-${type}-${status}`;
+        const key = `${symbol}-${type}-${status}`;
 
         await db.removeItemByPK('tokenManagement', key);
 

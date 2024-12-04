@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { getNetworkOptional, NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkOptional, type NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { SignValue } from '@suite-common/suite-types';
 import {
     formatCoinBalance,
@@ -27,7 +27,7 @@ const Value = styled.span`
 
 export interface FormattedCryptoAmountProps {
     value?: string | number;
-    symbol?: string;
+    symbol?: NetworkSymbolExtended;
     isBalance?: boolean;
     signValue?: SignValue;
     disableHiddenPlaceholder?: boolean;
@@ -55,8 +55,11 @@ export const FormattedCryptoAmount = ({
     }
 
     const lowerCaseSymbol = symbol?.toLowerCase();
-    const { features: networkFeatures, testnet: isTestnet } =
-        getNetworkOptional(lowerCaseSymbol) ?? {};
+    const {
+        features: networkFeatures,
+        testnet: isTestnet,
+        symbol: networkSymbol,
+    } = getNetworkOptional(lowerCaseSymbol) ?? {};
 
     const areSatsSupported = !!networkFeatures?.includes('amount-unit');
 
@@ -66,13 +69,10 @@ export const FormattedCryptoAmount = ({
     const isSatoshis = areSatsSupported && areSatsDisplayed;
 
     // convert to satoshis if needed
-    if (isSatoshis) {
-        formattedValue = networkAmountToSmallestUnit(
-            String(value),
-            lowerCaseSymbol as NetworkSymbol,
-        );
+    if (isSatoshis && networkSymbol) {
+        formattedValue = networkAmountToSmallestUnit(String(value), networkSymbol);
 
-        formattedSymbol = isTestnet ? `sat ${symbol?.toUpperCase()}` : 'sat';
+        formattedSymbol = isTestnet ? `sat ${formattedSymbol}` : 'sat';
     }
 
     // format truncation + locale (used for balances) or just locale

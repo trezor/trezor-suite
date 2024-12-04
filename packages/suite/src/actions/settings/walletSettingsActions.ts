@@ -62,9 +62,9 @@ export const changeCoinVisibility =
     (symbol: NetworkSymbol, shouldBeVisible: boolean) =>
     (dispatch: Dispatch, getState: GetState) => {
         let { enabledNetworks } = getState().wallet.settings;
-        const isAlreadyHidden = enabledNetworks.find(coin => coin === symbol);
+        const isAlreadyHidden = enabledNetworks.find(enabledSymbol => enabledSymbol === symbol);
         if (!shouldBeVisible) {
-            enabledNetworks = enabledNetworks.filter(coin => coin !== symbol);
+            enabledNetworks = enabledNetworks.filter(enabledSymbol => enabledSymbol !== symbol);
         } else if (!isAlreadyHidden) {
             enabledNetworks = [...enabledNetworks, symbol];
         }

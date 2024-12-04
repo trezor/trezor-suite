@@ -2,7 +2,11 @@ import { toWei } from 'web3-utils';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { isDesktop } from '@trezor/env-utils';
-import { NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
+import {
+    isNetworkSymbol,
+    type NetworkSymbol,
+    networkSymbolCollection,
+} from '@suite-common/wallet-config';
 import type { BackendSettings } from '@suite-common/wallet-types';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
 import {
@@ -12,6 +16,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
+import { PartialRecord } from '@trezor/type-utils';
 
 import type { CustomBackend, BlockbookUrl } from 'src/types/wallet/backend';
 import type { State } from 'src/reducers/wallet/settingsReducer';
@@ -20,9 +25,7 @@ import { updateAll } from './utils';
 import type { DBWalletAccountTransaction, SuiteDBSchema } from '../definitions';
 
 type WalletWithBackends = {
-    backends?: Partial<{
-        [coin in NetworkSymbol]: Omit<CustomBackend, 'coin'>;
-    }>;
+    backends?: PartialRecord<NetworkSymbol, Omit<CustomBackend, 'coin'>>;
 };
 
 type DBWalletAccountTransactionCompatible = {
@@ -292,14 +295,17 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             'walletSettings',
             settings => {
                 const { backends = {}, ...rest } = settings;
-                Object.entries(backends).forEach(([coin, { type, urls }]) => {
+                Object.entries(backends).forEach(([symbol, { type, urls }]) => {
                     const settings: BackendSettings = {
                         selected: type,
                         urls: {
                             [type]: urls,
                         },
                     };
-                    backendSettings.add(settings, coin as NetworkSymbol);
+
+                    if (isNetworkSymbol(symbol)) {
+                        backendSettings.add(settings, symbol);
+                    }
                 });
 
                 return rest;

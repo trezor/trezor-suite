@@ -159,8 +159,8 @@ export const TransactionReviewTotalOutput = forwardRef<
                     />
                 }
                 lines={lines}
-                cryptoSymbol={symbol}
-                fiatSymbol={symbol}
+                displaySymbol={symbol}
+                symbol={symbol}
                 fiatVisible={!isTestnet(symbol)}
                 ref={ref}
                 token={precomposedTx?.token}

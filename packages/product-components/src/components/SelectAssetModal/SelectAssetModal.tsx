@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl';
 
 import { Column, NewModal, useScrollShadow, VirtualizedList } from '@trezor/components';
 import { mapElevationToBackgroundToken, spacings } from '@trezor/theme';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbolExtended } from '@suite-common/wallet-config';
 
 import { AssetItem } from './AssetItem';
 import { AssetItemNotFound } from './AssetItemNotFound';
@@ -11,7 +11,7 @@ import { AssetItemNotFound } from './AssetItemNotFound';
 export interface AssetProps {
     ticker: string;
     badge?: ReactNode;
-    symbolExtended: NetworkSymbol | (string & {});
+    symbol: NetworkSymbolExtended;
     cryptoName?: string;
     coingeckoId?: string;
     contractAddress: string | null;
@@ -84,18 +84,18 @@ export const SelectAssetModal = ({
                                 cryptoName,
                                 ticker,
                                 coingeckoId,
-                                symbolExtended,
+                                symbol,
                                 badge,
                                 contractAddress,
                                 shouldTryToFetch,
                             }: AssetProps) => (
                                 <AssetItem
-                                    key={`${symbolExtended}${contractAddress ? `-${contractAddress}` : ''}`}
+                                    key={`${symbol}${contractAddress ? `-${contractAddress}` : ''}`}
                                     cryptoName={cryptoName}
                                     ticker={ticker}
                                     coingeckoId={coingeckoId}
                                     contractAddress={contractAddress || null}
-                                    symbolExtended={symbolExtended}
+                                    symbol={symbol}
                                     badge={badge}
                                     shouldTryToFetch={shouldTryToFetch}
                                     handleClick={onSelectAsset}

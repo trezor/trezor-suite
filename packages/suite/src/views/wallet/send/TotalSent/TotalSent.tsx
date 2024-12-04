@@ -48,7 +48,7 @@ export const TotalSent = () => {
                                           )
                                         : formatNetworkAmount(transactionInfo.totalSpent, symbol)
                                 }
-                                symbol={tokenInfo ? tokenInfo.symbol : symbol}
+                                symbol={tokenInfo?.symbol ?? symbol}
                             />
                         )}
                     </InfoItem>

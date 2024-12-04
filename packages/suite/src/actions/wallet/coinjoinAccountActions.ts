@@ -3,7 +3,7 @@ import TrezorConnect from '@trezor/connect';
 import { promiseAllSequence } from '@trezor/utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { NetworkAccount, Network, NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkAccount, Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
     accountsActions,
@@ -930,7 +930,7 @@ export const restoreCoinjoinAccounts = () => (dispatch: Dispatch, getState: GetS
     const { coinjoin } = getState().wallet;
 
     // find all networks to restore
-    const coinjoinNetworks = coinjoin.accounts.reduce<NetworkSymbol[]>((res, account) => {
+    const coinjoinSymbols = coinjoin.accounts.reduce<NetworkSymbol[]>((res, account) => {
         if (!res.includes(account.symbol)) {
             return res.concat(account.symbol);
         }
@@ -940,7 +940,7 @@ export const restoreCoinjoinAccounts = () => (dispatch: Dispatch, getState: GetS
 
     // async actions in sequence, initialize CoinjoinCService for each network
     return promiseAllSequence(
-        coinjoinNetworks.map(
+        coinjoinSymbols.map(
             symbol => () => dispatch(coinjoinClientActions.initCoinjoinService(symbol)),
         ),
     );

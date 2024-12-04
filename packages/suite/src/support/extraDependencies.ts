@@ -12,7 +12,7 @@ import {
     deviceActions,
     FiatRatesState,
 } from '@suite-common/wallet-core';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { PROTO, StaticSessionId } from '@trezor/connect';
 import {
@@ -142,9 +142,10 @@ export const extraDependencies: ExtraDependencies = {
         ) => {
             if (payload.tokenManagement) {
                 const tokenDefinitions = buildTokenDefinitionsFromStorage(payload.tokenManagement);
-                Object.keys(tokenDefinitions).forEach(networkSymbol => {
-                    const symbol = networkSymbol as NetworkSymbol;
-                    state[symbol] = tokenDefinitions[symbol];
+                Object.keys(tokenDefinitions).forEach(symbol => {
+                    if (isNetworkSymbol(symbol)) {
+                        state[symbol] = tokenDefinitions[symbol];
+                    }
                 });
             }
         },

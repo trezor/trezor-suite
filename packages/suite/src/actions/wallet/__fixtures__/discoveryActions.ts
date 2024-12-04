@@ -1,4 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { ERRORS } from '@trezor/connect';
 
 const { getSuiteDevice } = testMocks;
@@ -167,7 +168,7 @@ export const fixtures = [
             connected: true,
             unavailableCapabilities: { xrp: 'no-capability' },
         }),
-        enabledNetworks: ['xrp'],
+        enabledNetworks: ['xrp'] satisfies NetworkSymbol[],
         result: {
             failed: [],
         },
@@ -182,7 +183,7 @@ export const fixtures = [
             connected: true,
             unavailableCapabilities: { xrp: 'no-capability' },
         }),
-        enabledNetworks: ['btc', 'xrp'],
+        enabledNetworks: ['btc', 'xrp'] satisfies NetworkSymbol[],
         result: {
             failed: [],
         },
@@ -252,7 +253,7 @@ export const changeNetworksFixtures = [
         trigger: [
             {
                 path: "m/84'/0'/0'",
-                networks: ['btc', 'ltc', 'test'],
+                networks: ['btc', 'ltc', 'test'] satisfies NetworkSymbol[],
             },
         ],
     },
@@ -265,7 +266,7 @@ export const changeNetworksFixtures = [
         trigger: [
             {
                 path: "m/84'/0'/0'",
-                networks: ['btc'],
+                networks: ['btc'] satisfies NetworkSymbol[],
             },
         ],
     },
@@ -278,7 +279,7 @@ export const changeNetworksFixtures = [
         trigger: [
             {
                 path: "m/84'/0'/2'",
-                networks: ['btc', 'ltc', 'test'],
+                networks: ['btc', 'ltc', 'test'] satisfies NetworkSymbol[],
             },
         ],
     },
@@ -291,7 +292,7 @@ export const changeNetworksFixtures = [
         trigger: [
             {
                 path: "m/84'/0'/2'",
-                networks: ['btc', 'ltc'],
+                networks: ['btc', 'ltc'] satisfies NetworkSymbol[],
             },
         ],
     },
@@ -305,8 +306,8 @@ export const unavailableCapabilities = [
             connected: true,
             unavailableCapabilities: { xrp: 'no-capability', taproot: 'no-support' },
         }),
-        networks: ['btc', 'xrp'],
-        discoveryNetworks: ['btc'],
+        networks: ['btc', 'xrp'] satisfies NetworkSymbol[],
+        discoveryNetworks: ['btc'] satisfies NetworkSymbol[],
         discoveryMaxTotal: 30,
     },
     {
@@ -316,8 +317,8 @@ export const unavailableCapabilities = [
             connected: true,
             unavailableCapabilities: { ltc: 'no-capability' },
         }),
-        networks: ['ltc'],
-        discoveryNetworks: [],
+        networks: ['ltc'] satisfies NetworkSymbol[],
+        discoveryNetworks: [] satisfies NetworkSymbol[],
         discoveryMaxTotal: 0,
     },
     {
@@ -326,8 +327,8 @@ export const unavailableCapabilities = [
         device: getSuiteDevice({
             type: 'unacquired',
         }),
-        networks: ['xrp'],
-        discoveryNetworks: ['xrp'],
+        networks: ['xrp'] satisfies NetworkSymbol[],
+        discoveryNetworks: ['xrp'] satisfies NetworkSymbol[],
         discoveryMaxTotal: 10,
     },
 ];

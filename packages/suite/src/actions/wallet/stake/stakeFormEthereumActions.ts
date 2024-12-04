@@ -27,7 +27,7 @@ import {
     UNSTAKE_INTERCHANGES,
 } from '@suite-common/wallet-constants';
 import { selectDevice, ComposeActionContext } from '@suite-common/wallet-core';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Dispatch, GetState } from 'src/types/suite';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';

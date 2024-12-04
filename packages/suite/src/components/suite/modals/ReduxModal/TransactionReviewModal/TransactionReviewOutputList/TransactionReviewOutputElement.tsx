@@ -3,7 +3,7 @@ import { forwardRef, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol, NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { TokenInfo } from '@trezor/connect';
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
 import { zIndices } from '@trezor/theme';
@@ -144,8 +144,8 @@ export type OutputElementLine = {
 export type TransactionReviewOutputElementProps = {
     indicator?: JSX.Element;
     lines: OutputElementLine[];
-    cryptoSymbol?: NetworkSymbol;
-    fiatSymbol?: NetworkSymbol;
+    symbol?: NetworkSymbol;
+    displaySymbol?: NetworkSymbolExtended;
     fiatVisible?: boolean;
     token?: TokenInfo;
     account?: Account;
@@ -162,8 +162,8 @@ export const TransactionReviewOutputElement = forwardRef<
             indicator,
             lines,
             token,
-            cryptoSymbol,
-            fiatSymbol,
+            symbol,
+            displaySymbol,
             fiatVisible = false,
             account,
             state,
@@ -213,14 +213,14 @@ export const TransactionReviewOutputElement = forwardRef<
                                                     // TX fee is so far always paid in network native coin
                                                     line.id !== 'fee' && token
                                                         ? token.symbol
-                                                        : cryptoSymbol
+                                                        : displaySymbol
                                                 }
                                             />
                                         )}
                                     </OutputValueWrapper>
                                 )}
                                 {/* temporary solution until fiat value for ERC20 tokens will be fixed  */}
-                                {fiatSymbol && fiatVisible && !(line.id !== 'fee' && token) && (
+                                {symbol && fiatVisible && !(line.id !== 'fee' && token) && (
                                     <>
                                         <DotSeparatorWrapper>
                                             <DotSeparator />
@@ -229,7 +229,7 @@ export const TransactionReviewOutputElement = forwardRef<
                                             <FiatValue
                                                 disableHiddenPlaceholder
                                                 amount={line.value}
-                                                symbol={fiatSymbol}
+                                                symbol={symbol}
                                             />
                                         </OutputValueWrapper>
                                     </>

@@ -64,7 +64,7 @@ describe('account utils', () => {
     });
 
     describe('get title for network', () => {
-        fixtures.accountTitleFixture.forEach((fixture: any) => {
+        fixtures.accountTitleFixture.forEach(fixture => {
             it(fixture.symbol, () => {
                 expect(getTitleForNetwork(fixture.symbol)).toBe(fixture.title);
             });
@@ -72,7 +72,7 @@ describe('account utils', () => {
     });
 
     describe('get title for coinjoin accounts', () => {
-        fixtures.accountTitleCoinjoinFixture.forEach((fixture: any) => {
+        fixtures.accountTitleCoinjoinFixture.forEach(fixture => {
             it(fixture.symbol, () => {
                 expect(getTitleForCoinjoinAccount(fixture.symbol)).toBe(fixture.title);
             });

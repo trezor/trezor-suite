@@ -1,9 +1,10 @@
-import { Account } from 'src/types/wallet';
+import type { NetworkSymbolExtended } from '@suite-common/wallet-config';
+
 import { FormattedCryptoAmount } from 'src/components/suite';
 
 interface CoinBalanceProps {
     value: string;
-    symbol: Account['symbol'] | (string & {});
+    symbol: NetworkSymbolExtended;
 }
 
 export const CoinBalance = ({ value, symbol }: CoinBalanceProps) => (

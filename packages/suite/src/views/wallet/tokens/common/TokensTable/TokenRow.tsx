@@ -174,7 +174,7 @@ export const TokenRow = ({
                     <Text variant="tertiary" typographyStyle="hint">
                         <FormattedCryptoAmount
                             value={token.balance}
-                            symbol={formatTokenSymbol(token.symbol || '')}
+                            symbol={formatTokenSymbol(token.symbol ?? '')}
                         />
                     </Text>
                 </Column>

@@ -27,7 +27,7 @@ import {
     selectIsSpecificCoinDefinitionKnown,
     TokenDefinitions,
 } from '@suite-common/token-definitions';
-import { getCoingeckoId, getNetwork } from '@suite-common/wallet-config';
+import { getCoingeckoId, getNetwork, type NetworkSymbol } from '@suite-common/wallet-config';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 
@@ -54,13 +54,9 @@ export const IconCursorWrapper = styled.div`
     cursor: pointer;
 `;
 
-const createTokenOption = (
-    token: TokenInfo,
-    symbol: Account['symbol'],
-    shouldTryToFetch: boolean,
-) => ({
+const createTokenOption = (token: TokenInfo, symbol: NetworkSymbol, shouldTryToFetch: boolean) => ({
     ticker: token.symbol ?? '',
-    symbolExtended: symbol,
+    symbol,
     cryptoName: token.name,
     badge: shouldTryToFetch ? undefined : <Translation id="TR_UNRECOGNIZED" />,
     coingeckoId: getCoingeckoId(symbol) ?? '',
@@ -71,7 +67,7 @@ const createTokenOption = (
 
 const buildTokenOptions = (
     accountTokens: Account['tokens'],
-    symbol: Account['symbol'],
+    symbol: NetworkSymbol,
     coinDefinitions: TokenDefinitions['coin'],
     activeTokenTab: TokenTab['tab'],
 ) => {
@@ -81,7 +77,7 @@ const buildTokenOptions = (
         // this represents native currency
         result.push({
             ticker: symbol,
-            symbolExtended: symbol,
+            symbol,
             cryptoName: getNetwork(symbol).name,
             badge: undefined,
             contractAddress: null,
@@ -333,7 +329,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                             value={
                                                 selectedToken?.balance || account.formattedBalance
                                             }
-                                            symbol={selectedToken?.symbol || account.symbol}
+                                            symbol={selectedToken?.symbol ?? account.symbol}
                                         />
                                     </HiddenPlaceholder>{' '}
                                     <FiatValue

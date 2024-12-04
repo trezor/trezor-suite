@@ -32,7 +32,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'bitcoin',
         contractAddress: null,
         ticker: 'BTC',
-        symbolExtended: 'btc',
+        symbol: 'btc',
     },
     {
         type: 'currency',
@@ -42,7 +42,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'litecoin',
         contractAddress: null,
         ticker: 'LTC',
-        symbolExtended: 'ltc',
+        symbol: 'ltc',
     },
     {
         type: 'currency',
@@ -52,7 +52,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'cardano',
         contractAddress: null,
         ticker: 'ADA',
-        symbolExtended: 'ada',
+        symbol: 'ada',
     },
     {
         type: 'currency',
@@ -62,7 +62,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'solana',
         contractAddress: null,
         ticker: 'SOL',
-        symbolExtended: 'sol',
+        symbol: 'sol',
     },
     {
         type: 'currency',
@@ -72,7 +72,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'bitcoin-gold',
         contractAddress: null,
         ticker: 'BTG',
-        symbolExtended: 'btg',
+        symbol: 'btg',
     },
     {
         type: 'currency',
@@ -82,7 +82,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'zcash',
         contractAddress: null,
         ticker: 'ZEC',
-        symbolExtended: 'zec',
+        symbol: 'zec',
     },
     {
         type: 'currency',
@@ -92,7 +92,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'ethereum-classic',
         contractAddress: null,
         ticker: 'ETC',
-        symbolExtended: 'etc',
+        symbol: 'etc',
     },
     {
         type: 'currency',
@@ -102,7 +102,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'bitcoin-cash',
         contractAddress: null,
         ticker: 'BCH',
-        symbolExtended: 'bch',
+        symbol: 'bch',
     },
     {
         type: 'currency',
@@ -112,7 +112,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'dash',
         contractAddress: null,
         ticker: 'DASH',
-        symbolExtended: 'dash',
+        symbol: 'dash',
     },
     {
         type: 'currency',
@@ -122,7 +122,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'ripple',
         contractAddress: null,
         ticker: 'XRP',
-        symbolExtended: 'xrp',
+        symbol: 'xrp',
     },
     {
         type: 'currency',
@@ -132,7 +132,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'digibyte',
         contractAddress: null,
         ticker: 'DGB',
-        symbolExtended: 'dgb',
+        symbol: 'dgb',
     },
     {
         type: 'currency',
@@ -142,7 +142,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'dogecoin',
         contractAddress: null,
         ticker: 'DOGE',
-        symbolExtended: 'doge',
+        symbol: 'doge',
     },
     {
         type: 'currency',
@@ -152,7 +152,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'polygon-ecosystem-token',
         contractAddress: null,
         ticker: 'POL',
-        symbolExtended: 'pol',
+        symbol: 'pol',
     },
     {
         type: 'currency',
@@ -162,7 +162,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'binancecoin',
         contractAddress: null,
         ticker: 'BNB',
-        symbolExtended: 'bnb',
+        symbol: 'bnb',
     },
     {
         type: 'group',
@@ -176,7 +176,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'monero',
         contractAddress: null,
         ticker: 'XMR',
-        symbolExtended: 'monero',
+        symbol: 'monero',
     },
     {
         type: 'currency',
@@ -186,7 +186,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'verge',
         contractAddress: null,
         ticker: 'XVG',
-        symbolExtended: 'verge',
+        symbol: 'verge',
     },
     {
         type: 'currency',
@@ -196,7 +196,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'qtum',
         contractAddress: null,
         ticker: 'QTUM',
-        symbolExtended: 'qtum',
+        symbol: 'qtum',
     },
     {
         type: 'currency',
@@ -206,7 +206,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'stellar',
         contractAddress: null,
         ticker: 'XLM',
-        symbolExtended: 'stellar',
+        symbol: 'stellar',
     },
     {
         type: 'currency',
@@ -216,7 +216,7 @@ export const selectAssetModalOptions: (
         coingeckoId: 'nem',
         contractAddress: null,
         ticker: 'XEM',
-        symbolExtended: 'nem',
+        symbol: 'nem',
     },
     {
         type: 'group',
@@ -233,7 +233,7 @@ export const selectAssetModalOptions: (
         contractAddress: '0xd26114cd6ee289accf82350c8d8487fedb8a0c07',
         networkName: 'Ethereum',
         ticker: 'OMG',
-        symbolExtended: 'eth',
+        symbol: 'eth',
     },
     {
         type: 'currency',
@@ -244,7 +244,7 @@ export const selectAssetModalOptions: (
         contractAddress: '0x595832f8fc6bf59c85c527fec3740a1b7a361269',
         networkName: 'Ethereum',
         ticker: 'POWR',
-        symbolExtended: 'eth',
+        symbol: 'eth',
     },
     {
         type: 'currency',
@@ -255,7 +255,7 @@ export const selectAssetModalOptions: (
         contractAddress: '0x41e5560054824ea6b0732e656e3ad64e20e94e45',
         networkName: 'Ethereum',
         ticker: 'CVC',
-        symbolExtended: 'eth',
+        symbol: 'eth',
     },
     {
         type: 'currency',
@@ -266,7 +266,7 @@ export const selectAssetModalOptions: (
         contractAddress: '0xb64ef51c888972c908cfacf59b47c1afbc0ab8ac',
         networkName: 'Ethereum',
         ticker: 'STORJ',
-        symbolExtended: 'eth',
+        symbol: 'eth',
     },
     {
         type: 'currency',
@@ -277,7 +277,7 @@ export const selectAssetModalOptions: (
         contractAddress: '0x744d70fdbe2ba4cf95131626614a1763df805b9e',
         networkName: 'Ethereum',
         ticker: 'SNT',
-        symbolExtended: 'eth',
+        symbol: 'eth',
     },
     {
         type: 'currency',
@@ -288,7 +288,7 @@ export const selectAssetModalOptions: (
         contractAddress: '0xe41d2489571d322189246dafa5ebde1f4699f498',
         networkName: 'Ethereum',
         ticker: 'ZRX',
-        symbolExtended: 'eth',
+        symbol: 'eth',
     },
     {
         type: 'currency',
@@ -299,7 +299,7 @@ export const selectAssetModalOptions: (
         contractAddress: '0xbbbbca6a901c926f240b89eacb641d8aec7aeafd',
         networkName: 'Ethereum',
         ticker: 'LRC',
-        symbolExtended: 'eth',
+        symbol: 'eth',
     },
     {
         type: 'currency',
@@ -310,7 +310,7 @@ export const selectAssetModalOptions: (
         contractAddress: '0xade00c28244d5ce17d72e40330b1c318cd12b7c3',
         networkName: 'Ethereum',
         ticker: 'ADX',
-        symbolExtended: 'eth',
+        symbol: 'eth',
     },
     {
         type: 'currency',
@@ -321,7 +321,7 @@ export const selectAssetModalOptions: (
         contractAddress: '0x1f573d6fb3f13d689ff844b4ce37794d79a7ff1c',
         networkName: 'Ethereum',
         ticker: 'BNT',
-        symbolExtended: 'eth',
+        symbol: 'eth',
     },
     {
         type: 'group',
@@ -338,7 +338,7 @@ export const selectAssetModalOptions: (
         contractAddress: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
         networkName: 'Solana',
         ticker: 'USDT',
-        symbolExtended: 'sol',
+        symbol: 'sol',
     },
     {
         type: 'currency',
@@ -349,7 +349,7 @@ export const selectAssetModalOptions: (
         contractAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
         networkName: 'Solana',
         ticker: 'USDC',
-        symbolExtended: 'sol',
+        symbol: 'sol',
     },
     {
         type: 'currency',
@@ -360,7 +360,7 @@ export const selectAssetModalOptions: (
         contractAddress: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
         networkName: 'Solana',
         ticker: 'RAY',
-        symbolExtended: 'sol',
+        symbol: 'sol',
     },
     {
         type: 'currency',
@@ -371,7 +371,7 @@ export const selectAssetModalOptions: (
         contractAddress: '7i5KKsX2weiTkry7jA4ZwSuXGhs5eJBEjY8vVxR4pfRx',
         networkName: 'Solana',
         ticker: 'GMT',
-        symbolExtended: 'sol',
+        symbol: 'sol',
     },
     {
         type: 'group',
@@ -388,7 +388,7 @@ export const selectAssetModalOptions: (
         contractAddress: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
         networkName: 'BNB Smart Chain',
         ticker: 'CAKE',
-        symbolExtended: 'binance-smart-chain',
+        symbol: 'binance-smart-chain',
     },
     {
         type: 'currency',
@@ -399,7 +399,7 @@ export const selectAssetModalOptions: (
         contractAddress: '0xe02df9e3e622debdd69fb838bb799e3f168902c5',
         networkName: 'BNB Smart Chain',
         ticker: 'BAKE',
-        symbolExtended: 'binance-smart-chain',
+        symbol: 'binance-smart-chain',
     },
     {
         type: 'currency',
@@ -410,7 +410,7 @@ export const selectAssetModalOptions: (
         contractAddress: '0xfd7b3a77848f1c2d67e05e54d78d174a0c850335',
         networkName: 'BNB Smart Chain',
         ticker: 'ONT',
-        symbolExtended: 'binance-smart-chain',
+        symbol: 'binance-smart-chain',
     },
     {
         type: 'currency',
@@ -421,7 +421,7 @@ export const selectAssetModalOptions: (
         contractAddress: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
         networkName: 'BNB Smart Chain',
         ticker: 'BUSD',
-        symbolExtended: 'binance-smart-chain',
+        symbol: 'binance-smart-chain',
     },
     {
         type: 'group',
@@ -438,7 +438,7 @@ export const selectAssetModalOptions: (
         contractAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
         networkName: 'Base',
         ticker: 'USDC',
-        symbolExtended: 'base',
+        symbol: 'base',
     },
     {
         type: 'currency',
@@ -449,7 +449,7 @@ export const selectAssetModalOptions: (
         contractAddress: '0x532f27101965dd16442e59d40670faf5ebb142e4',
         networkName: 'Base',
         ticker: 'BRETT',
-        symbolExtended: 'base',
+        symbol: 'base',
     },
 ];
 

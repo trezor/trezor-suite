@@ -1,9 +1,10 @@
 import { networks } from './networksConfig';
-import {
+import type {
     AccountType,
     Network,
     NetworkFeature,
     NetworkSymbol,
+    NetworkSymbolExtended,
     NormalizedNetworkAccount,
 } from './types';
 
@@ -57,7 +58,7 @@ export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol].coinge
 
 export const getCoingeckoNativeId = (symbol: NetworkSymbol) => networks[symbol].coingeckoNativeId;
 
-export const isNetworkSymbol = (symbol: NetworkSymbol | string): symbol is NetworkSymbol =>
+export const isNetworkSymbol = (symbol: NetworkSymbolExtended): symbol is NetworkSymbol =>
     Object.prototype.hasOwnProperty.call(networks, symbol);
 
 /**
@@ -67,6 +68,10 @@ export const isNetworkSymbol = (symbol: NetworkSymbol | string): symbol is Netwo
  */
 export const getNetwork = (symbol: NetworkSymbol): Network => networks[symbol];
 
+/**
+ * Use instead of getNetwork, if there is not a guarantee that the symbol is a valid network symbol.
+ * @param symbol
+ */
 export const getNetworkOptional = (symbol?: string) =>
     symbol && isNetworkSymbol(symbol) ? getNetwork(symbol) : undefined;
 

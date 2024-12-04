@@ -36,13 +36,14 @@ export const AssetItem = ({
     cryptoName,
     ticker,
     badge,
-    symbolExtended,
+    symbol,
     coingeckoId,
     shouldTryToFetch,
     contractAddress,
     handleClick,
 }: AssetItemProps) => {
-    const symbol = symbolExtended in COINS ? (symbolExtended as NetworkSymbol) : undefined;
+    // TODO: use isCoinSymbol - prepared in chore(suite): update network symbol naming 7
+    const symbolHelper = symbol in COINS ? (symbol as NetworkSymbol) : undefined;
 
     return (
         <ClickableContainer
@@ -50,7 +51,7 @@ export const AssetItem = ({
                 handleClick({
                     ticker,
                     contractAddress: contractAddress ?? null,
-                    symbolExtended,
+                    symbol,
                     coingeckoId,
                     cryptoName,
                 })
@@ -62,18 +63,15 @@ export const AssetItem = ({
                         size={24}
                         coingeckoId={coingeckoId}
                         contractAddress={
-                            symbolExtended && contractAddress
-                                ? getContractAddressForNetworkSymbol(
-                                      symbolExtended,
-                                      contractAddress,
-                                  )
+                            symbol && contractAddress
+                                ? getContractAddressForNetworkSymbol(symbol, contractAddress)
                                 : undefined
                         }
                         placeholder={ticker.toUpperCase()}
                         shouldTryToFetch={shouldTryToFetch}
                     />
                 ) : (
-                    symbol && <CoinLogo size={24} symbol={symbol} />
+                    symbolHelper && <CoinLogo size={24} symbol={symbolHelper} />
                 )}
                 <Column flex="1">
                     <Row gap={spacings.xs} alignItems="center">

@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { CoinInfo, CryptoId } from 'invity-api';
 
-import { getNetworkByCoingeckoNativeId, networks } from '@suite-common/wallet-config';
+import { getNetwork, getNetworkByCoingeckoNativeId } from '@suite-common/wallet-config';
 import addressValidator from '@trezor/address-validator';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -27,7 +27,7 @@ function toCryptoOption(cryptoId: CryptoId, coinInfo: CoinInfo): CoinmarketCrypt
         cryptoName: coinInfo.name,
         coingeckoId: networkId,
         contractAddress: contractAddress || null,
-        symbolExtended: coinInfo.symbol,
+        symbol: coinInfo.symbol,
     };
 }
 
@@ -157,12 +157,12 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
                 return toCryptoOption(cryptoId, coinInfo);
             }
 
-            const { coingeckoId, name, symbol } = networks.btc;
+            const { coingeckoId, name, symbol } = getNetwork('btc');
             const item: CoinmarketCryptoSelectItemProps = {
                 type: 'currency',
                 value: coingeckoId as CryptoId,
                 label: symbol.toUpperCase(),
-                symbolExtended: symbol.toUpperCase(),
+                symbol,
                 cryptoName: name,
                 coingeckoId,
                 contractAddress: null,

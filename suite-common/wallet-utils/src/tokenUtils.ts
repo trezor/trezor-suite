@@ -1,9 +1,9 @@
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import type { Network, NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 
 export const getContractAddressForNetworkSymbol = (
-    symbol: NetworkSymbol | (string & {}), // unknown symbols will result to lowerCase
+    symbol: NetworkSymbolExtended, // unknown symbols will result to lowerCase
     contractAddress: string,
 ) => {
     switch (symbol) {

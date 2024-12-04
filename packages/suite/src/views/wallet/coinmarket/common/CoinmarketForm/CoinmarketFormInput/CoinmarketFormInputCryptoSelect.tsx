@@ -13,11 +13,11 @@ import {
     AssetOptionBaseProps,
 } from '@trezor/product-components';
 import {
-    networks,
-    NetworkSymbol,
+    type NetworkSymbol,
     getNetworkByCoingeckoNativeId,
     getNetworkByCoingeckoId,
     getNetwork,
+    networkSymbolCollection,
 } from '@suite-common/wallet-config';
 import { spacings } from '@trezor/theme';
 
@@ -77,7 +77,7 @@ const getData = (options: SelectAssetOptionProps[]): AssetProps[] =>
         .filter(item => item.type === 'currency')
         .map(item => ({
             ticker: item.label ?? item.ticker,
-            symbolExtended: item.symbolExtended,
+            symbol: item.symbol,
             cryptoName: item.cryptoName ?? item.ticker,
             badge: item.badge ?? item.networkName,
             coingeckoId: item.coingeckoId,
@@ -123,7 +123,7 @@ export const CoinmarketFormInputCryptoSelect = <
                         ? {
                               ...option,
                               ticker: option.ticker || option.label,
-                              symbolExtended:
+                              symbol:
                                   getNetworkByCoingeckoNativeId(
                                       parseCryptoId(option.value).networkId,
                                   )?.symbol || parseCryptoId(option.value).networkId,
@@ -156,8 +156,7 @@ export const CoinmarketFormInputCryptoSelect = <
 
     const getNetworks = () => {
         const networksToSelect: NetworkSymbol[] = ['eth', 'sol', 'pol', 'bnb'];
-        const networkAllKeys = Object.keys(networks) as NetworkSymbol[];
-        const networkKeys = networkAllKeys.filter(item => networksToSelect.includes(item));
+        const networkKeys = networkSymbolCollection.filter(item => networksToSelect.includes(item));
         const networksSelected: NetworkFilterCategory[] = networkKeys.map(networkKey => {
             const network = getNetwork(networkKey);
 
@@ -192,7 +191,7 @@ export const CoinmarketFormInputCryptoSelect = <
             (typeof item.badge === 'string' && searchFor(item.badge)) ||
             searchFor(item.ticker) ||
             searchFor(contractAddress) ||
-            searchFor(item.symbolExtended)
+            searchFor(item.symbol)
         );
     });
 

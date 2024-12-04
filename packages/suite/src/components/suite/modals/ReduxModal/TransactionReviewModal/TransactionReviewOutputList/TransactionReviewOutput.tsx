@@ -3,7 +3,7 @@ import { ReactNode, forwardRef } from 'react';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { formatNetworkAmount, formatAmount, isTestnet } from '@suite-common/wallet-utils';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import { TranslationKey } from '@suite-common/intl-types';
 
@@ -96,17 +96,17 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
         }
 
         let outputValue = value;
-        let outputSymbol;
+        let symbolExtended: NetworkSymbolExtended | undefined;
         let fiatVisible = false;
         if (token) {
             outputValue = formatAmount(value, token.decimals);
-            outputSymbol = token.symbol as NetworkSymbol;
+            symbolExtended = token.symbol;
         } else if (type === 'fee' || type === 'amount') {
             outputValue = formatNetworkAmount(value, symbol);
-            outputSymbol = symbol;
+            symbolExtended = symbol;
             fiatVisible = !isTestnet(symbol);
         } else if (type === 'gas') {
-            outputSymbol = symbol;
+            symbolExtended = symbol;
             fiatVisible = !isTestnet(symbol);
         }
 
@@ -125,7 +125,7 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
                     value: formatNetworkAmount(props.value2, symbol),
                 },
             ];
-            outputSymbol = symbol;
+            symbolExtended = symbol;
             fiatVisible = !isTestnet(symbol);
         } else if (type === 'reduce-output') {
             outputLines = [
@@ -146,7 +146,7 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
                     value: formatNetworkAmount(props.value2, symbol),
                 },
             ];
-            outputSymbol = symbol;
+            symbolExtended = symbol;
             fiatVisible = !isTestnet(symbol);
         } else if (type === 'txid') {
             outputLines = [
@@ -245,8 +245,8 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
                 lines={outputLines}
                 token={token}
                 state={state}
-                cryptoSymbol={outputSymbol as NetworkSymbol}
-                fiatSymbol={symbol}
+                symbol={symbol}
+                displaySymbol={symbolExtended}
                 fiatVisible={fiatVisible}
                 displayMode={displayMode}
             />

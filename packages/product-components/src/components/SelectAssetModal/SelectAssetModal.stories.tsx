@@ -36,7 +36,7 @@ const getData = (options: typeof selectAssetModalOptions): AssetProps[] =>
         .filter(item => item.type === 'currency')
         .map(item => ({
             ticker: item.label ?? item.ticker,
-            symbolExtended: item.symbolExtended,
+            symbol: item.symbol,
             cryptoName: item.cryptoName ?? item.ticker,
             badge: item.badge ?? item.networkName,
             coingeckoId: item.coingeckoId,

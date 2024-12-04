@@ -13,14 +13,15 @@ import {
 } from '@trezor/connect';
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import {
-    NetworkFeature,
-    NetworkSymbol,
-    NetworkType,
+    type NetworkFeature,
+    type NetworkSymbol,
+    type NetworkType,
     networks,
-    AccountType,
-    Bip43Path,
-    Bip43PathTemplate,
+    type AccountType,
+    type Bip43Path,
+    type Bip43PathTemplate,
     getNetwork,
+    type NetworkSymbolExtended,
 } from '@suite-common/wallet-config';
 import {
     Account,
@@ -114,8 +115,8 @@ export const getFiatValue = (amount: string, rate: string, fixedTo = 2) => {
     return fiatValue;
 };
 
-export const getTitleForCoinjoinAccount = (symbol: NetworkSymbol) => {
-    switch (symbol.toLowerCase()) {
+export const getTitleForCoinjoinAccount = (symbol: NetworkSymbolExtended) => {
+    switch (symbol) {
         case 'btc':
             return 'TR_NETWORK_COINJOIN_BITCOIN';
         case 'test':
@@ -127,8 +128,8 @@ export const getTitleForCoinjoinAccount = (symbol: NetworkSymbol) => {
     }
 };
 
-export const getTitleForNetwork = (symbol: NetworkSymbol) => {
-    switch (symbol.toLowerCase()) {
+export const getTitleForNetwork = (symbol: NetworkSymbolExtended) => {
+    switch (symbol) {
         case 'btc':
             return 'TR_NETWORK_BITCOIN';
         case 'test':

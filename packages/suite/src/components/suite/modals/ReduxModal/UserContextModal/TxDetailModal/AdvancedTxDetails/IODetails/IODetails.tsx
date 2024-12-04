@@ -17,7 +17,7 @@ import {
     InfoSegments,
     H4,
 } from '@trezor/components';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { isNetworkSymbol, type NetworkSymbolExtended } from '@suite-common/wallet-config';
 
 import { FormattedCryptoAmount, FormattedNftAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -41,7 +41,7 @@ type IODetails = WalletAccountTransaction['details']['vin'][number];
 
 type IOItem = {
     anonymitySet?: AnonymitySet;
-    symbol?: NetworkSymbol;
+    symbol?: NetworkSymbolExtended;
     address?: string;
     amount?: string | ReactNode;
     isPhishingTransaction?: boolean;
@@ -65,7 +65,11 @@ const IOItem = ({ anonymitySet, address, symbol, amount, isPhishingTransaction }
                     {amount &&
                         (typeof amount === 'string' && symbol ? (
                             <FormattedCryptoAmount
-                                value={formatNetworkAmount(amount, symbol)}
+                                value={
+                                    isNetworkSymbol(symbol)
+                                        ? formatNetworkAmount(amount, symbol)
+                                        : amount
+                                }
                                 symbol={symbol}
                             />
                         ) : (
@@ -78,7 +82,10 @@ const IOItem = ({ anonymitySet, address, symbol, amount, isPhishingTransaction }
 };
 
 type IOGroupProps = {
-    tx: WalletAccountTransaction;
+    /**
+     * Transaction details can be passed also token's details so NetworkSymbolExtended is necessary
+     */
+    tx: Omit<WalletAccountTransaction, 'symbol'> & { symbol: NetworkSymbolExtended };
     inputs: IODetails[];
     outputs: IODetails[];
     isPhishingTransaction?: boolean;
@@ -228,10 +235,12 @@ const EthereumSpecificBalanceDetailsRow = ({
                             formatAmount(transfer.amount, transfer.decimals)
                         );
 
+                        if (!transfer.symbol) return null;
+
                         return (
                             <IOGroup
                                 key={index}
-                                tx={{ ...tx, symbol: transfer.symbol as NetworkSymbol }}
+                                tx={{ ...tx, symbol: transfer.symbol }}
                                 inputs={[{ addresses: [transfer.from], value }] as IODetails[]}
                                 outputs={[{ addresses: [transfer.to] }] as IODetails[]}
                                 isPhishingTransaction={isPhishingTransaction}
@@ -366,6 +375,8 @@ export const IODetails = ({ tx, isPhishingTransaction }: IODetailsProps) => {
             );
         }
     };
+
+    console.log(tx);
 
     return (
         <Column gap={spacings.xxl}>

@@ -28,6 +28,11 @@ export type NetworkSymbol =
     | 'txrp'
     | 'tada'
     | 'dsol';
+/**
+ * Used for some edge cases where extension of NetworkSymbol is necessary.
+ * Autocomplete is working as expected but can be passed any string.
+ */
+export type NetworkSymbolExtended = NetworkSymbol | (string & {});
 
 export type NetworkType = 'bitcoin' | 'ethereum' | 'ripple' | 'cardano' | 'solana';
 

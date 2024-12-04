@@ -11,7 +11,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { Output, Timestamp, FiatRatesResult, Rate, FiatRates } from '@suite-common/wallet-types';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useDispatch } from 'src/hooks/suite';
@@ -57,7 +56,7 @@ export const useSendFormImport = ({
                     updateFiatRatesThunk({
                         tickers: [
                             {
-                                symbol: network.symbol as NetworkSymbol,
+                                symbol: network.symbol,
                             },
                         ],
                         localCurrency: currency as FiatCurrencyCode,

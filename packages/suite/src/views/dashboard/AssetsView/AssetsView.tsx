@@ -11,7 +11,12 @@ import {
     toFiatCurrency,
     isSupportedEthStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import { NetworkSymbol, getNetwork, Network } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    getNetwork,
+    type Network,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
 import { RatesByKey } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { PartialRecord } from '@trezor/type-utils';
@@ -105,16 +110,11 @@ export const AssetsView = () => {
         assets[account.symbol] = symbolAssets;
     });
 
-    const assetSymbols = Object.keys(assets) as NetworkSymbol[];
+    const assetSymbols = Object.keys(assets).filter(symbol => isNetworkSymbol(symbol));
 
     const assetsData: AssetData[] = assetSymbols
         .map(symbol => {
             const network = getNetwork(symbol);
-            if (!network) {
-                console.error('unknown network');
-
-                return null;
-            }
 
             const assetNativeCryptoBalance = assets[symbol]?.reduce(
                 (total, account) => total.plus(account.formattedBalance),
