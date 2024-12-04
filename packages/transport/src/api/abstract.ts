@@ -23,6 +23,7 @@ export enum DEVICE_TYPE {
     TypeT2 = 3,
     TypeT2Boot = 4,
     TypeEmulator = 5,
+    TypeBluetooth = 6,
 }
 
 type AccessLock = {
