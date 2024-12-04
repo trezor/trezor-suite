@@ -44,9 +44,9 @@ export const getEthNetworkForWalletSdk = (
         thol: 'holesky',
         eth: 'mainnet',
     };
-    const network = symbol && symbol !== 'unknown' ? ethNetworks[symbol] : ethNetworks.eth;
+    const network = symbol && symbol !== 'unknown' ? ethNetworks[symbol] : null;
 
-    return network!;
+    return network ?? 'mainnet';
 };
 
 export const getAdjustedGasLimitConsumption = (estimatedFee: Success<BlockchainEstimatedFee>) =>
