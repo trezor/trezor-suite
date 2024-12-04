@@ -25,9 +25,7 @@ import { DataManager } from '@trezor/connect/src/data/DataManager';
 import { config } from '@trezor/connect/src/data/config';
 import { initLog, LogWriter } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
-import { suggestBridgeInstaller } from '@trezor/connect/src/data/transportInfo';
-import { suggestUdevInstaller } from '@trezor/connect/src/data/udevInfo';
-import { storage, getSystemInfo, getInstallerPackage } from '@trezor/connect-common';
+import { storage, getSystemInfo } from '@trezor/connect-common';
 import { analytics, EventType } from '@trezor/connect-analytics';
 
 import { parseConnectSettings, isOriginWhitelisted } from './connectSettings';
@@ -231,13 +229,6 @@ const postMessage = (message: CoreEventMessage) => {
     // check if permissions to read from device is granted
     if (!trustedHost && message.event === DEVICE_EVENT && !filterDeviceEvent(message)) {
         return;
-    }
-
-    if (message.event === TRANSPORT_EVENT) {
-        // add preferred bridge installer
-        const platform = getInstallerPackage();
-        message.payload.bridge = suggestBridgeInstaller(platform);
-        message.payload.udev = suggestUdevInstaller(platform);
     }
 
     if (usingPopup && _popupMessagePort) {
