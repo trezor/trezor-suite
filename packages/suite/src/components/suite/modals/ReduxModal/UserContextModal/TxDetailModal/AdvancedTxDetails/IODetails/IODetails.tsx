@@ -82,9 +82,18 @@ type IOGroupProps = {
     inputs: IODetails[];
     outputs: IODetails[];
     isPhishingTransaction?: boolean;
+    hasHeadings?: boolean;
+    isUtxoBased?: boolean;
 };
 
-const IOGroup = ({ tx, inputs, outputs, isPhishingTransaction }: IOGroupProps) => {
+const IOGroup = ({
+    tx,
+    inputs,
+    outputs,
+    isPhishingTransaction,
+    hasHeadings = true,
+    isUtxoBased = false,
+}: IOGroupProps) => {
     const { selectedAccount } = useSelector(state => state.wallet);
 
     const anonymitySet = selectedAccount?.account?.addresses?.anonymitySet;
@@ -101,12 +110,14 @@ const IOGroup = ({ tx, inputs, outputs, isPhishingTransaction }: IOGroupProps) =
             <Grid columns={2} gap={spacings.xxxxl}>
                 {hasInputs && (
                     <Column gap={spacings.xs} margin={{ right: spacings.xl }}>
-                        <InfoSegments typographyStyle="hint" variant="tertiary">
-                            <Text typographyStyle="callout" variant="default">
-                                <Translation id="TR_INPUTS" />
-                            </Text>
-                            {inputs.length}
-                        </InfoSegments>
+                        {hasHeadings && (
+                            <InfoSegments typographyStyle="hint" variant="tertiary">
+                                <Text typographyStyle="callout" variant="default">
+                                    <Translation id="TR_INPUTS" />
+                                </Text>
+                                {isUtxoBased && inputs.length}
+                            </InfoSegments>
+                        )}
 
                         {inputs.map(input => (
                             <IOItem
@@ -122,12 +133,14 @@ const IOGroup = ({ tx, inputs, outputs, isPhishingTransaction }: IOGroupProps) =
                 )}
                 {hasOutputs && (
                     <Column gap={spacings.xs} margin={{ left: spacings.xl }}>
-                        <InfoSegments typographyStyle="hint" variant="tertiary">
-                            <Text typographyStyle="callout" variant="default">
-                                <Translation id="TR_OUTPUTS" />
-                            </Text>
-                            {outputs.length}
-                        </InfoSegments>
+                        {hasHeadings && (
+                            <InfoSegments typographyStyle="hint" variant="tertiary">
+                                <Text typographyStyle="callout" variant="default">
+                                    <Translation id="TR_OUTPUTS" />
+                                </Text>
+                                {isUtxoBased && outputs.length}
+                            </InfoSegments>
+                        )}
                         {outputs.map(output => (
                             <IOItem
                                 key={`output-${output.n}`}
@@ -187,8 +200,9 @@ const EthereumSpecificBalanceDetailsRow = ({
                             key={index}
                             tx={tx}
                             inputs={[{ addresses: [from], value: amount }] as IODetails[]}
-                            outputs={[{ addresses: [to], value: amount }] as IODetails[]}
+                            outputs={[{ addresses: [to] }] as IODetails[]}
                             isPhishingTransaction={isPhishingTransaction}
+                            hasHeadings={false}
                         />
                     ))}
                 </Column>
@@ -219,8 +233,9 @@ const EthereumSpecificBalanceDetailsRow = ({
                                 key={index}
                                 tx={{ ...tx, symbol: transfer.symbol as NetworkSymbol }}
                                 inputs={[{ addresses: [transfer.from], value }] as IODetails[]}
-                                outputs={[{ addresses: [transfer.to], value }] as IODetails[]}
+                                outputs={[{ addresses: [transfer.to] }] as IODetails[]}
                                 isPhishingTransaction={isPhishingTransaction}
+                                hasHeadings={false}
                             />
                         );
                     })}
@@ -245,23 +260,10 @@ const SolanaSpecificBalanceDetailsRow = ({
         <IOGroup
             key={index}
             tx={tx}
-            inputs={
-                [
-                    {
-                        addresses: [from],
-                        value: formatAmount(amount, decimals),
-                    },
-                ] as IODetails[]
-            }
-            outputs={
-                [
-                    {
-                        addresses: [to],
-                        value: formatAmount(amount, decimals),
-                    },
-                ] as IODetails[]
-            }
+            inputs={[{ addresses: [from], value: formatAmount(amount, decimals) }] as IODetails[]}
+            outputs={[{ addresses: [to] }] as IODetails[]}
             isPhishingTransaction={isPhishingTransaction}
+            hasHeadings={false}
         />
     ));
 };
@@ -292,6 +294,7 @@ const CollapsibleIOSection = ({
                 inputs={inputs}
                 outputs={outputs}
                 isPhishingTransaction={isPhishingTransaction}
+                isUtxoBased
             />
         </CollapsibleBox>
     ) : null;
@@ -358,7 +361,9 @@ export const IODetails = ({ tx, isPhishingTransaction }: IODetailsProps) => {
                 </>
             );
         } else {
-            return <IOGroup tx={tx} inputs={tx.details.vin} outputs={tx.details.vout} />;
+            return (
+                <IOGroup tx={tx} inputs={tx.details.vin} outputs={tx.details.vout} isUtxoBased />
+            );
         }
     };
 

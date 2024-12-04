@@ -28,7 +28,7 @@ export const AnalyzeInExplorerBanner = ({ txid, symbol }: AnalyzeInExplorerBanne
                 </Banner.Button>
             }
         >
-            <Column alignItems="center">
+            <Column>
                 <H4>
                     <Translation id="TR_ANALYZE_IN_EXPLORER" />
                 </H4>
