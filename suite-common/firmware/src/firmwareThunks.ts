@@ -158,7 +158,7 @@ export const firmwareUpdate = createThunk<
                 // hash check was performed, and it does not match, so consider firmware counterfeit
                 dispatch(handleFwHashMismatch(device));
             } else if (check === 'other-error') {
-                // device failed to respond to the hash check, consider the firmware counterfeit
+                // device failed to respond, so display a warning in the modal
                 dispatch(
                     handleFwHashError({
                         errorMessage: firmwareUpdateResponse.payload.checkError,

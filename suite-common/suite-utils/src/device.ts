@@ -1,4 +1,4 @@
-import { Device, UnavailableCapability, DeviceModelInternal } from '@trezor/connect';
+import { Device, UnavailableCapability, DeviceModelInternal, KnownDevice } from '@trezor/connect';
 import { TrezorDevice, AcquiredDevice } from '@suite-common/suite-types';
 import * as URLS from '@trezor/urls';
 
@@ -118,6 +118,10 @@ export const isDeviceAccessible = (device?: TrezorDevice) => {
 
     return device.mode === 'normal' && device.firmware !== 'required';
 };
+
+// useful for working with `Device` type straight from connect, which is missing `ExtendedDevice` properties (required on `TrezorDevice`)
+export const isDeviceKnown = (device?: Device): device is KnownDevice =>
+    device?.type === 'acquired';
 
 export const isDeviceAcquired = (device?: TrezorDevice): device is AcquiredDevice =>
     !!device?.features;

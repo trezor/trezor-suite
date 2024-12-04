@@ -9,6 +9,7 @@ import {
 } from '@trezor/connect';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { deviceActions } from '@suite-common/wallet-core';
+import { isDeviceKnown } from '@suite-common/suite-utils';
 
 import { firmwareActions } from './firmwareActions';
 
@@ -86,6 +87,18 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
             state.cachedDevice = payload;
         })
         .addCase(deviceActions.addButtonRequest, extra.reducers.addButtonRequestFirmware)
+        .addCase(deviceActions.connectDevice, (state, { payload: { device } }) => {
+            if (!isDeviceKnown(device)) return;
+
+            // use the automatic hash check to clear device if it hasn't passed hash check done after firmware update
+            // otherwise it'd be stuck in "error" state until next firmware update
+            // in `storageMiddleware` this is persisted into storage (on the same action type)
+            if (device.authenticityChecks?.firmwareHash?.success) {
+                state.firmwareHashInvalid = state.firmwareHashInvalid.filter(
+                    deviceId => deviceId !== device.id,
+                );
+            }
+        })
         .addMatcher(
             action => action.type === extra.actionTypes.storageLoad,
             extra.reducers.storageLoadFirmware,
