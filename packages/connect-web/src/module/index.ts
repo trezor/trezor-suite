@@ -19,7 +19,15 @@ const impl = new TrezorConnectDynamic<
     implementations: [
         {
             type: 'core-in-module',
-            impl: new CoreInModule(),
+            impl: new CoreInModule((message: CoreEventMessage) => {
+                if (message.event === TRANSPORT_EVENT) {
+                    const platform = getInstallerPackage();
+                    message.payload.bridge = suggestBridgeInstaller(platform);
+                    message.payload.udev = suggestUdevInstaller(platform);
+                }
+
+                return message;
+            }),
         },
     ],
     getInitTarget: () => 'core-in-module',
