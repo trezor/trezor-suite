@@ -39,6 +39,7 @@ const Content = styled.div`
 export const Sidebar = () => {
     const [closedNotificationDevice, setClosedNotificationDevice] = useState(false);
     const [closedNotificationSuite, setClosedNotificationSuite] = useState(false);
+    const { isSidebarCollapsed } = useResponsiveContext();
 
     const { elevation } = useElevation();
     const { updateStatusDevice, updateStatusSuite } = useUpdateStatus();
@@ -90,7 +91,7 @@ export const Sidebar = () => {
                                 <Navigation />
                                 <AccountsMenu />
 
-                                {showUpdateBannerNotification && (
+                                {showUpdateBannerNotification && !isSidebarCollapsed && (
                                     <UpdateNotificationBanner
                                         updateStatusDevice={updateStatusDevice}
                                         updateStatusSuite={updateStatusSuite}
