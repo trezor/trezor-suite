@@ -81,6 +81,10 @@ type BaseDevice = {
     name: string;
 };
 
+export type BluetoothDeviceProps = {
+    uuid: string;
+};
+
 export type KnownDevice = BaseDevice & {
     type: 'acquired';
     id: string | null;
@@ -105,6 +109,7 @@ export type KnownDevice = BaseDevice & {
     };
     transportSessionOwner?: undefined;
     transportDescriptorType?: typeof undefined;
+    bluetoothProps?: BluetoothDeviceProps;
 };
 
 export type UnknownDevice = BaseDevice & {
@@ -126,6 +131,7 @@ export type UnknownDevice = BaseDevice & {
     availableTranslations?: typeof undefined;
     transportSessionOwner?: string;
     transportDescriptorType?: typeof undefined;
+    bluetoothProps?: BluetoothDeviceProps;
 };
 
 export type UnreadableDevice = BaseDevice & {
@@ -147,6 +153,7 @@ export type UnreadableDevice = BaseDevice & {
     availableTranslations?: typeof undefined;
     transportSessionOwner?: undefined;
     transportDescriptorType: Descriptor['type'];
+    bluetoothProps?: BluetoothDeviceProps;
 };
 
 export type Device = KnownDevice | UnknownDevice | UnreadableDevice;
