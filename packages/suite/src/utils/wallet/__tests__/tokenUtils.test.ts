@@ -5,9 +5,14 @@ describe('getTokens', () => {
     getTokensFixtures.forEach(
         ({ testName, tokens, symbol, coinDefinitions, searchQuery, result }) => {
             test(testName, () => {
-                expect(getTokens(tokens, symbol, coinDefinitions, searchQuery)).toStrictEqual(
-                    result,
-                );
+                expect(
+                    getTokens({
+                        tokens,
+                        symbol,
+                        tokenDefinitions: coinDefinitions,
+                        searchQuery,
+                    }),
+                ).toStrictEqual(result);
             });
         },
     );

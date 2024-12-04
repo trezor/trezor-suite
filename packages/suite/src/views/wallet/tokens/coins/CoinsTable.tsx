@@ -36,7 +36,12 @@ export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) =>
     );
     const sortedTokens = tokensWithRates.sort(sortTokensWithRates);
 
-    const tokens = getTokens(sortedTokens, account.symbol, coinDefinitions, searchQuery);
+    const tokens = getTokens({
+        tokens: sortedTokens,
+        symbol: account.symbol,
+        tokenDefinitions: coinDefinitions,
+        searchQuery,
+    });
     const hiddenTokensCount =
         tokens.unverifiedWithBalance.length +
         tokens.hiddenWithBalance.length +

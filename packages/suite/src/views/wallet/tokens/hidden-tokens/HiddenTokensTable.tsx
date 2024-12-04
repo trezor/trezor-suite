@@ -27,8 +27,17 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
           )
         : [];
 
-    const filteredTokens = getTokens(sortedTokens, account.symbol, coinDefinitions, searchQuery);
-    const tokens = getTokens(sortedTokens, account.symbol, coinDefinitions);
+    const filteredTokens = getTokens({
+        tokens: sortedTokens,
+        symbol: account.symbol,
+        tokenDefinitions: coinDefinitions,
+        searchQuery,
+    });
+    const tokens = getTokens({
+        tokens: sortedTokens,
+        symbol: account.symbol,
+        tokenDefinitions: coinDefinitions,
+    });
 
     const hiddenTokensCount = tokens.hiddenWithBalance.length + tokens.hiddenWithoutBalance.length;
     const unverifiedTokensCount =

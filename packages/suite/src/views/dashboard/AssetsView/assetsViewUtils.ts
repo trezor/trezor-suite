@@ -23,7 +23,11 @@ export const handleTokensAndStakingData = (
     const assetStakingBalance = accountsThatStaked.reduce((total, account) => {
         return total.plus(getAccountTotalStakingBalance(account) ?? '0');
     }, new BigNumber(0));
-    const tokens = getTokens(assetTokens ?? [], symbol, coinDefinitions);
+    const tokens = getTokens({
+        tokens: assetTokens ?? [],
+        symbol,
+        tokenDefinitions: coinDefinitions,
+    });
     const tokensWithRates = enhanceTokensWithRates(
         tokens.shownWithBalance ?? [],
         localCurrency,

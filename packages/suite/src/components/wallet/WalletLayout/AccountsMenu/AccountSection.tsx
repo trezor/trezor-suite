@@ -46,7 +46,11 @@ export const AccountSection = ({
 
     const showGroup = ['ethereum', 'solana', 'cardano'].includes(networkType);
 
-    const tokens = getTokens(accountTokens, account.symbol, coinDefinitions);
+    const tokens = getTokens({
+        tokens: accountTokens,
+        symbol: account.symbol,
+        tokenDefinitions: coinDefinitions,
+    });
 
     const dataTestKey = `@account-menu/${symbol}/${accountType}/${index}`;
 

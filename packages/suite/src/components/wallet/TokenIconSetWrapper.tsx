@@ -30,8 +30,11 @@ export const TokenIconSetWrapper = ({ accounts, symbol }: TokenIconSetWrapperPro
 
     if (!allTokensWithRates.length) return null;
 
-    const tokens = getTokens(allTokensWithRates, symbol, coinDefinitions)
-        .shownWithBalance as TokensWithRates[];
+    const tokens = getTokens({
+        tokens: allTokensWithRates,
+        symbol,
+        tokenDefinitions: coinDefinitions,
+    })?.shownWithBalance as TokensWithRates[];
 
     const aggregatedTokens = Object.values(
         tokens.reduce((acc: Record<string, TokensWithRates>, token) => {

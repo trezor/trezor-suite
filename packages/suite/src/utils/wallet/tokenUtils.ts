@@ -1,7 +1,12 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Account, Rate, TokenAddress, RatesByKey } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/connect';
-import { getFiatRateKey, isNftToken, isTokenMatchesSearch } from '@suite-common/wallet-utils';
+import {
+    getFiatRateKey,
+    isNftMatchesSearch,
+    isNftToken,
+    isTokenMatchesSearch,
+} from '@suite-common/wallet-utils';
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
@@ -65,16 +70,37 @@ export const formatTokenSymbol = (symbol: string) => {
     return isTokenSymbolLong ? `${upperCasedSymbol.slice(0, 7)}...` : upperCasedSymbol;
 };
 
-export const getTokens = (
-    tokens: EnhancedTokenInfo[] | TokenInfo[],
-    symbol: NetworkSymbol,
-    coinDefinitions?: TokenDefinition,
-    searchQuery?: string,
-) => {
-    // filter out NFT tokens until we implement them
-    const tokensWithoutNFTs = tokens.filter(token => !isNftToken(token));
+type GetTokens = {
+    tokens: EnhancedTokenInfo[] | TokenInfo[];
+    symbol: NetworkSymbol;
+    tokenDefinitions?: TokenDefinition;
+    searchQuery?: string;
+    isNft?: boolean;
+};
 
-    const hasCoinDefinitions = getNetworkFeatures(symbol).includes('coin-definitions');
+export type GetTokensOutputType = {
+    shownWithBalance: EnhancedTokenInfo[];
+    shownWithoutBalance: EnhancedTokenInfo[];
+    hiddenWithBalance: EnhancedTokenInfo[];
+    hiddenWithoutBalance: EnhancedTokenInfo[];
+    unverifiedWithBalance: EnhancedTokenInfo[];
+    unverifiedWithoutBalance: EnhancedTokenInfo[];
+};
+
+export const getTokens = ({
+    tokens = [],
+    symbol,
+    tokenDefinitions,
+    searchQuery,
+    isNft = false,
+}: GetTokens): GetTokensOutputType => {
+    const filteredTokens = isNft
+        ? tokens.filter(token => isNftToken(token))
+        : tokens.filter(token => !isNftToken(token));
+
+    const hasDefinitions = getNetworkFeatures(symbol).includes(
+        isNft ? 'nft-definitions' : 'coin-definitions',
+    );
 
     const shownWithBalance: EnhancedTokenInfo[] = [];
     const shownWithoutBalance: EnhancedTokenInfo[] = [];
@@ -83,16 +109,22 @@ export const getTokens = (
     const unverifiedWithBalance: EnhancedTokenInfo[] = [];
     const unverifiedWithoutBalance: EnhancedTokenInfo[] = [];
 
-    tokensWithoutNFTs.forEach(token => {
-        const isKnown = isTokenDefinitionKnown(coinDefinitions?.data, symbol, token.contract);
-        const isHidden = coinDefinitions?.hide.includes(token.contract);
-        const isShown = coinDefinitions?.show.includes(token.contract);
+    filteredTokens.forEach(token => {
+        const isKnown = isTokenDefinitionKnown(tokenDefinitions?.data, symbol, token.contract);
+        const isHidden = tokenDefinitions?.hide.includes(token.contract);
+        const isShown = tokenDefinitions?.show.includes(token.contract);
 
         const query = searchQuery ? searchQuery.trim().toLowerCase() : '';
 
-        if (searchQuery && !isTokenMatchesSearch(token, query)) return;
+        if (
+            searchQuery &&
+            !(isNft ? isNftMatchesSearch(token, query) : isTokenMatchesSearch(token, query))
+        )
+            return;
 
-        const hasBalance = new BigNumber(token?.balance || '0').gt(0);
+        const hasBalance =
+            new BigNumber(token?.balance || '0').gt(0) ||
+            (isNft && (token?.multiTokenValues?.length || token?.ids?.length || 0) > 0);
 
         const pushToArray = (
             arrayWithBalance: EnhancedTokenInfo[],
@@ -107,7 +139,7 @@ export const getTokens = (
 
         if (isShown) {
             pushToArray(shownWithBalance, shownWithoutBalance);
-        } else if (hasCoinDefinitions && !isKnown) {
+        } else if (hasDefinitions && !isKnown) {
             pushToArray(unverifiedWithBalance, unverifiedWithoutBalance);
         } else if (isHidden) {
             pushToArray(hiddenWithBalance, hiddenWithoutBalance);
