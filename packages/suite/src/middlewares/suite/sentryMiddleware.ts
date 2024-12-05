@@ -97,7 +97,10 @@ const sentryMiddleware =
 
         switch (action.type) {
             case SUITE.READY:
-                setSentryContext('suite-ready', getSuiteReadyPayload(state));
+                // done async because ipcMain is queried for system info, if available
+                getSuiteReadyPayload(state).then(payload =>
+                    setSentryContext('suite-ready', payload),
+                );
                 break;
             case DEVICE.CONNECT: {
                 const { features, mode } = action.payload.device;
