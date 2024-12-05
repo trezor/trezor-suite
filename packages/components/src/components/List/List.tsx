@@ -55,7 +55,6 @@ export type ListProps = AllowedFrameProps &
     AllowedTextProps & {
         gap?: SpacingValues;
         children: React.ReactNode;
-        isOrdered?: boolean;
         bulletComponent?: React.ReactNode;
         bulletGap?: SpacingValues;
         bulletAlignment?: BulletVerticalAlignment;
@@ -65,19 +64,16 @@ type ListContextValue = {
     bulletGap: SpacingValues;
     bulletAlignment: BulletVerticalAlignment;
     bulletComponent: React.ReactNode;
-    isOrdered: boolean;
 };
 
 const ListContext = createContext<ListContextValue>({
     bulletGap: spacings.md,
     bulletAlignment: 'center',
     bulletComponent: null as React.ReactNode,
-    isOrdered: false,
 });
 
 export const List = ({
     gap = spacings.xs,
-    isOrdered = false,
     bulletGap = spacings.md,
     bulletAlignment = 'center',
     bulletComponent,
@@ -86,16 +82,10 @@ export const List = ({
 }: ListProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedListFrameProps);
     const textProps = pickAndPrepareTextProps(rest, allowedListTextProps);
-    const elemType = isOrdered ? 'ol' : 'ul';
 
     return (
-        <ListContext.Provider value={{ bulletGap, bulletAlignment, bulletComponent, isOrdered }}>
-            <Container
-                as={elemType}
-                {...makePropsTransient({ gap })}
-                {...frameProps}
-                {...textProps}
-            >
+        <ListContext.Provider value={{ bulletGap, bulletAlignment, bulletComponent }}>
+            <Container {...makePropsTransient({ gap })} {...frameProps} {...textProps}>
                 {children}
             </Container>
         </ListContext.Provider>
