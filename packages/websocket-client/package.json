@@ -1,0 +1,56 @@
+{
+    "name": "@trezor/websocket-client",
+    "version": "1.0.0",
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/websocket",
+    "description": "Shared websocket client implementation",
+    "npmPublishAccess": "public",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "sideEffects": false,
+    "main": "src/index",
+    "browser": {
+        "ws": "./src/ws-browser"
+    },
+    "react-native": {
+        "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
+        "ws": "@trezor/websocket-client/src/ws-native.ts"
+    },
+    "publishConfig": {
+        "main": "./lib/index.js",
+        "types": "lib/index.d.ts",
+        "typings": "lib/index.d.ts",
+        "browser": {
+            "ws": "./lib/ws-browser.js"
+        },
+        "react-native": {
+            "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
+            "ws": "@trezor/websocket-client/lib/ws-native.js"
+        }
+    },
+    "files": [
+        "lib/",
+        "!**/*.map"
+    ],
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "test:unit": "jest -c ../../jest.config.base.js",
+        "type-check": "yarn g:tsc --build",
+        "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/prepublish.js"
+    },
+    "dependencies": {
+        "@trezor/utils": "workspace:*",
+        "ws": "^8.18.0"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
+    }
+}

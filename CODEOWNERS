@@ -93,3 +93,5 @@
 /packages/schema-utils @martykan
 
 /packages/connect-explorer-theme @martykan
+
+/packages/websocket-client @mroz22 @marekrjpolak

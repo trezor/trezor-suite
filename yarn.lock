@@ -12953,6 +12953,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/websocket-client@workspace:packages/websocket-client":
+  version: 0.0.0-use.local
+  resolution: "@trezor/websocket-client@workspace:packages/websocket-client"
+  dependencies:
+    "@trezor/utils": "workspace:*"
+    ws: "npm:^8.18.0"
+  peerDependencies:
+    tslib: ^2.6.2
+  languageName: unknown
+  linkType: soft
+
 "@trysound/sax@npm:0.2.0":
   version: 0.2.0
   resolution: "@trysound/sax@npm:0.2.0"
