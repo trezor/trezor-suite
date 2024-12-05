@@ -4,13 +4,12 @@ import { IconName } from '@suite-native/icons';
 import { TypographyStyle } from '@trezor/theme';
 
 import { VStack } from '../Stack';
-import { PictogramVariant, PictogramSize, Pictogram } from '../Pictogram';
+import { PictogramVariant, Pictogram } from '../Pictogram';
 import { CenteredTitleHeader } from './CenteredTitleHeader';
 
 type PictogramTitleHeaderProps = {
     variant: PictogramVariant;
-    icon: IconName;
-    size?: PictogramSize;
+    icon?: IconName;
     title?: ReactNode;
     titleVariant?: TypographyStyle;
     subtitle?: ReactNode;
@@ -22,11 +21,10 @@ export const PictogramTitleHeader = ({
     title,
     subtitle,
     titleVariant = 'titleSmall',
-    size = 'large',
 }: PictogramTitleHeaderProps) => {
     return (
         <VStack alignItems="center" spacing="sp24">
-            <Pictogram variant={variant} icon={icon} size={size} />
+            <Pictogram variant={variant} icon={icon} />
             <CenteredTitleHeader title={title} subtitle={subtitle} titleVariant={titleVariant} />
         </VStack>
     );

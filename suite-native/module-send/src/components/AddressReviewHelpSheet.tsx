@@ -20,7 +20,7 @@ export const AddressReviewHelpSheet = ({ body, title, subtitle }: AddressReviewH
             description: subtitle,
             appendix: body,
             textAlign: 'left',
-            pictogramVariant: 'red',
+            pictogramVariant: 'critical',
             primaryButtonTitle: <Translation id="generic.buttons.gotIt" />,
             titleSpacing: 'sp4',
         });

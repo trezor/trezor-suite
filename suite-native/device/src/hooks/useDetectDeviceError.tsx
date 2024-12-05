@@ -83,8 +83,7 @@ export const useDetectDeviceError = () => {
             showAlert({
                 title: <Translation id="moduleDevice.unacquiredDeviceModal.title" />,
                 description: <Translation id="moduleDevice.unacquiredDeviceModal.description" />,
-                icon: 'warningCircle',
-                pictogramVariant: 'red',
+                pictogramVariant: 'critical',
                 primaryButtonTitle: <Translation id="moduleDevice.unacquiredDeviceModal.button" />,
                 appendix: <UnacquiredDeviceModalAppendix />,
                 onPressPrimaryButton: () => dispatch(acquireDevice()),
@@ -100,8 +99,7 @@ export const useDetectDeviceError = () => {
             showAlert({
                 title: <Translation id="moduleDevice.unsupportedFirmwareModal.title" />,
                 description: <Translation id="moduleDevice.unsupportedFirmwareModal.description" />,
-                icon: 'warningCircle',
-                pictogramVariant: 'red',
+                pictogramVariant: 'critical',
                 primaryButtonTitle: <Translation id="generic.buttons.eject" />,
                 primaryButtonVariant: 'tertiaryElevation1',
                 appendix: <IncompatibleFirmwareModalAppendix />,
@@ -134,8 +132,7 @@ export const useDetectDeviceError = () => {
             if (hasDeviceFirmwareInstalled) {
                 showAlert({
                     title: <Translation id="moduleDevice.noSeedWithFWModal.title" />,
-                    icon: 'checkCircle',
-                    pictogramVariant: 'green',
+                    pictogramVariant: 'success',
                     description: <Translation id="moduleDevice.noSeedWithFWModal.description" />,
                     primaryButtonTitle: (
                         <Translation id="moduleDevice.noSeedWithFWModal.primaryButton" />
@@ -189,8 +186,7 @@ export const useDetectDeviceError = () => {
             showAlert({
                 title: <Translation id="moduleDevice.bootloaderModal.title" />,
                 description: <Translation id="moduleDevice.bootloaderModal.description" />,
-                icon: 'warningCircle',
-                pictogramVariant: 'red',
+                pictogramVariant: 'critical',
                 primaryButtonVariant: 'tertiaryElevation1',
                 primaryButtonTitle: <Translation id="generic.buttons.eject" />,
                 appendix: <BootloaderModalAppendix />,
@@ -219,8 +215,7 @@ export const useDetectDeviceError = () => {
             showAlert({
                 title: <Translation id="moduleDevice.genericErrorModal.title" />,
                 description: <Translation id="moduleDevice.genericErrorModal.description" />,
-                icon: 'warningCircle',
-                pictogramVariant: 'red',
+                pictogramVariant: 'critical',
                 primaryButtonVariant: 'redBold',
                 primaryButtonTitle: (
                     <Translation id="moduleDevice.genericErrorModal.buttons.reconnect" />

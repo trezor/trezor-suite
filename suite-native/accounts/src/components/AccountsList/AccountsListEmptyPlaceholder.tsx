@@ -55,7 +55,7 @@ export const AccountsListEmptyPlaceholder = ({
     return (
         <Box style={applyStyle(titleVariant)}>
             <PictogramTitleHeader
-                variant="yellow"
+                variant="info"
                 icon={getIcon()}
                 title={<Translation id="moduleAccounts.emptyState.title" />}
                 subtitle={<Translation id={getSubtitle()} />}

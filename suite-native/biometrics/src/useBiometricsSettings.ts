@@ -29,8 +29,7 @@ export const useBiometricsSettings = () => {
                     'No security features on your device. Make sure you have biometrics setup on your phone and try again.',
                 primaryButtonTitle: 'Cancel',
                 onPressPrimaryButton: () => null,
-                icon: 'warningCircle',
-                pictogramVariant: 'yellow',
+                pictogramVariant: 'warning',
             });
 
             return 'notAvailable';

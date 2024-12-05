@@ -33,12 +33,7 @@ export const AccountImportSummaryScreen = ({
         >
             <VStack spacing="sp32" flex={1}>
                 <Box flex={1} alignItems="center" justifyContent="center">
-                    <PictogramTitleHeader
-                        title={title}
-                        subtitle={subtitle}
-                        variant="green"
-                        icon="coinVerticalCheck"
-                    />
+                    <PictogramTitleHeader variant="success" title={title} subtitle={subtitle} />
                 </Box>
                 <Box flex={1} justifyContent="flex-end" testID={testID}>
                     {children}

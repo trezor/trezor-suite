@@ -71,8 +71,7 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
             description: (
                 <Translation id="moduleConnectDevice.pinScreen.wrongPinAlert.description" />
             ),
-            icon: 'warningCircle',
-            pictogramVariant: 'red',
+            pictogramVariant: 'critical',
             primaryButtonTitle: (
                 <Translation id="moduleConnectDevice.pinScreen.wrongPinAlert.button.tryAgain" />
             ),

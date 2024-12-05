@@ -7,7 +7,6 @@ import {
     PictogramVariant,
     VStack,
 } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import {
     DeviceAuthenticityStackParamList,
@@ -22,7 +21,6 @@ import {
 type CheckResult = 'successful' | 'compromised';
 type SummaryConfig = {
     pictogramVariant: PictogramVariant;
-    pictogramIcon: IconName;
     title: TxKeyPath;
     subtitle: TxKeyPath;
     closeColorScheme: ButtonColorScheme;
@@ -30,15 +28,13 @@ type SummaryConfig = {
 
 const summaryConfigMap = {
     successful: {
-        pictogramVariant: 'green',
-        pictogramIcon: 'check',
+        pictogramVariant: 'success',
         title: 'moduleDeviceSettings.authenticity.summary.successful.title',
         subtitle: 'moduleDeviceSettings.authenticity.summary.successful.subtitle',
         closeColorScheme: 'primary',
     },
     compromised: {
-        pictogramVariant: 'red',
-        pictogramIcon: 'warningCircle',
+        pictogramVariant: 'critical',
         title: 'moduleDeviceSettings.authenticity.summary.compromised.title',
         subtitle: 'moduleDeviceSettings.authenticity.summary.compromised.subtitle',
         closeColorScheme: 'redElevation0',
@@ -57,8 +53,7 @@ export const DeviceAuthenticitySummaryScreen = ({
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const openLink = useOpenLink();
 
-    const { pictogramVariant, pictogramIcon, title, subtitle, closeColorScheme } =
-        summaryConfigMap[checkResult];
+    const { pictogramVariant, title, subtitle, closeColorScheme } = summaryConfigMap[checkResult];
 
     return (
         <Screen
@@ -74,7 +69,6 @@ export const DeviceAuthenticitySummaryScreen = ({
             <VStack flex={1} spacing="sp40" justifyContent="center">
                 <PictogramTitleHeader
                     variant={pictogramVariant}
-                    icon={pictogramIcon}
                     title={<Translation id={title} />}
                     titleVariant="titleMedium"
                     subtitle={<Translation id={subtitle} />}

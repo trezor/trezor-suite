@@ -101,7 +101,7 @@ export const useHandleOnDeviceTransactionReview = () => {
             ) {
                 showAlert({
                     title: <Translation id="modulePassphrase.featureAuthorizationError" />,
-                    pictogramVariant: 'red',
+                    pictogramVariant: 'critical',
                     primaryButtonTitle: <Translation id="generic.buttons.close" />,
                     primaryButtonVariant: 'redBold',
                 });

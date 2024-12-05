@@ -55,8 +55,7 @@ export const ConnectDeviceScreenHeader = ({
                 description: (
                     <Translation id="moduleConnectDevice.pinCanceledDuringDiscovery.subtitle" />
                 ),
-                icon: 'warningCircle',
-                pictogramVariant: 'red',
+                pictogramVariant: 'critical',
                 primaryButtonTitle: (
                     <Translation id="moduleConnectDevice.pinCanceledDuringDiscovery.button" />
                 ),

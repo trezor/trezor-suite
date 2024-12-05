@@ -40,9 +40,7 @@ export const EmptyConnectedDeviceState = () => {
         <Card style={applyStyle(cardStyle)}>
             <VStack spacing="sp24" style={applyStyle(contentStyle)}>
                 <PictogramTitleHeader
-                    variant="green"
-                    size="large"
-                    icon="info"
+                    variant="info"
                     title={<Translation id="moduleHome.emptyState.device.title" />}
                     subtitle={<Translation id="moduleHome.emptyState.device.subtitle" />}
                 />

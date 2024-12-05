@@ -86,7 +86,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
             ) {
                 showAlert({
                     title: <Translation id="modulePassphrase.featureAuthorizationError" />,
-                    pictogramVariant: 'red',
+                    pictogramVariant: 'critical',
                     primaryButtonTitle: <Translation id="generic.buttons.close" />,
                     onPressPrimaryButton: handleCancel,
                     primaryButtonVariant: 'redBold',
@@ -108,8 +108,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 showAlert({
                     title: response.payload.payload.code,
                     description: response.payload.payload.error,
-                    icon: 'warningCircle',
-                    pictogramVariant: 'red',
+                    pictogramVariant: 'critical',
                     primaryButtonTitle: <Translation id="generic.buttons.cancel" />,
                     onPressPrimaryButton: () => {
                         handleCancel();

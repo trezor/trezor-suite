@@ -13,8 +13,7 @@ export const XpubOverlayWarning = () => {
     return (
         <Box style={applyStyle(overlayStyle)}>
             <PictogramTitleHeader
-                variant="yellow"
-                icon="warningCircle"
+                variant="warning"
                 title="Handle your public key (XPUB) with caution"
                 subtitle="Sharing your public key (XPUB) with a third party gives them the ability to
                         view your transaction history."

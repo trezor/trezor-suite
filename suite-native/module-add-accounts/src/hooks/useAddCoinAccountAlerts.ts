@@ -11,8 +11,7 @@ export const useAddCoinAccountAlerts = () => {
         showAlert({
             title: translate('moduleAddAccounts.alerts.tooManyAccounts.title'),
             description: translate('moduleAddAccounts.alerts.tooManyAccounts.description'),
-            icon: 'warning',
-            pictogramVariant: 'red',
+            pictogramVariant: 'critical',
             primaryButtonTitle: translate('moduleAddAccounts.alerts.tooManyAccounts.actionPrimary'),
             onPressPrimaryButton: hideAlert,
         });
@@ -21,8 +20,7 @@ export const useAddCoinAccountAlerts = () => {
         showAlert({
             title: translate('moduleAddAccounts.alerts.anotherEmptyAccount.title'),
             description: translate('moduleAddAccounts.alerts.anotherEmptyAccount.description'),
-            icon: 'warning',
-            pictogramVariant: 'red',
+            pictogramVariant: 'critical',
             primaryButtonTitle: translate(
                 'moduleAddAccounts.alerts.anotherEmptyAccount.actionPrimary',
             ),
@@ -42,15 +40,14 @@ export const useAddCoinAccountAlerts = () => {
         showAlert({
             title: translate('moduleAddAccounts.alerts.generalError.title'),
             description: translate('moduleAddAccounts.alerts.generalError.description'),
-            icon: 'warning',
-            pictogramVariant: 'red',
+            pictogramVariant: 'critical',
             primaryButtonTitle: translate('moduleAddAccounts.alerts.generalError.actionPrimary'),
             onPressPrimaryButton: hideAlert,
         });
     const showPassphraseAuthAlert = () =>
         showAlert({
             title: translate('modulePassphrase.featureAuthorizationError'),
-            pictogramVariant: 'red',
+            pictogramVariant: 'critical',
             primaryButtonTitle: translate('generic.buttons.close'),
             primaryButtonVariant: 'redBold',
         });

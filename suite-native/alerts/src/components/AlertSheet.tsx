@@ -100,7 +100,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                     >
                         <Card style={applyStyle(alertSheetContainerStyle)}>
                             <VStack style={applyStyle(alertSheetContentStyle)}>
-                                {icon && pictogramVariant && (
+                                {pictogramVariant && (
                                     <Box alignItems="center">
                                         <Pictogram variant={pictogramVariant} icon={icon} />
                                     </Box>

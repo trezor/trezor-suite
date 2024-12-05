@@ -1,58 +1,51 @@
-import { IconName, Icon } from '@suite-native/icons';
-import { Color } from '@trezor/theme';
+import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Color } from '@trezor/theme';
 
 import { Box } from './Box';
 
-export type PictogramVariant = 'green' | 'red' | 'yellow';
-export type PictogramSize = 'small' | 'large';
-
-const ICON_SIZE = 40;
+export type PictogramVariant = 'success' | 'info' | 'warning' | 'critical';
 
 type PictogramProps = {
     variant: PictogramVariant;
-    icon: IconName;
-    size?: PictogramSize;
+    icon?: IconName;
 };
 
 type PictogramStyle = {
     outerBackgroundColor: Color;
     innerBackgroundColor: Color;
+    iconName: IconName;
     iconColor: Color;
 };
+
 const pictogramVariantsMap = {
-    green: {
+    success: {
         outerBackgroundColor: 'backgroundPrimarySubtleOnElevation0',
         innerBackgroundColor: 'backgroundPrimarySubtleOnElevation1',
+        iconName: 'checkCircle',
         iconColor: 'iconPrimaryDefault',
     },
-    red: {
-        outerBackgroundColor: 'backgroundAlertRedSubtleOnElevation0',
-        innerBackgroundColor: 'backgroundAlertRedSubtleOnElevation1',
-        iconColor: 'iconAlertRed',
+    info: {
+        outerBackgroundColor: 'backgroundAlertBlueSubtleOnElevation0',
+        innerBackgroundColor: 'backgroundAlertBlueSubtleOnElevation1',
+        iconName: 'info',
+        iconColor: 'iconAlertBlue',
     },
-    yellow: {
+    warning: {
         outerBackgroundColor: 'backgroundAlertYellowSubtleOnElevation0',
         innerBackgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
+        iconName: 'warning',
         iconColor: 'iconAlertYellow',
+    },
+    critical: {
+        outerBackgroundColor: 'backgroundAlertRedSubtleOnElevation0',
+        innerBackgroundColor: 'backgroundAlertRedSubtleOnElevation1',
+        iconName: 'warning',
+        iconColor: 'iconAlertRed',
     },
 } as const satisfies Record<PictogramVariant, PictogramStyle>;
 
-type PictogramSizeProps = { outerRingSize: number; innerRingSize: number };
-const sizeToDimensionsMap = {
-    small: {
-        outerRingSize: 88,
-        innerRingSize: 64,
-    },
-    large: {
-        outerRingSize: 104,
-        innerRingSize: 80,
-    },
-} as const satisfies Record<PictogramSize, PictogramSizeProps>;
-
-type CircleStyleProps = { backgroundColorName: Color; size: number };
-
-const circleContainerStyle = prepareNativeStyle<CircleStyleProps>(
+const circleContainerStyle = prepareNativeStyle<{ backgroundColorName: Color; size: number }>(
     (utils, { backgroundColorName, size }) => ({
         alignItems: 'center',
         justifyContent: 'center',
@@ -63,25 +56,25 @@ const circleContainerStyle = prepareNativeStyle<CircleStyleProps>(
     }),
 );
 
-export const Pictogram = ({ variant, icon, size = 'large' }: PictogramProps) => {
+export const Pictogram = ({ variant, icon }: PictogramProps) => {
     const { applyStyle } = useNativeStyles();
-    const { outerBackgroundColor, innerBackgroundColor, iconColor } = pictogramVariantsMap[variant];
-    const { outerRingSize, innerRingSize } = sizeToDimensionsMap[size];
+    const { outerBackgroundColor, innerBackgroundColor, iconName, iconColor } =
+        pictogramVariantsMap[variant];
 
     return (
         <Box
             style={applyStyle(circleContainerStyle, {
                 backgroundColorName: outerBackgroundColor,
-                size: outerRingSize,
+                size: 104,
             })}
         >
             <Box
                 style={applyStyle(circleContainerStyle, {
                     backgroundColorName: innerBackgroundColor,
-                    size: innerRingSize,
+                    size: 80,
                 })}
             >
-                <Icon name={icon} color={iconColor} size={ICON_SIZE} />
+                <Icon name={icon ?? iconName} color={iconColor} size={40} />
             </Box>
         </Box>
     );

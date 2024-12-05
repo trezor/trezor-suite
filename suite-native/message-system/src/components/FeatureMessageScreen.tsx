@@ -2,10 +2,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { A, G } from '@mobily/ts-belt';
 
-import { IconName } from '@suite-native/icons';
-import { Box, Button, PictogramTitleHeader, PictogramVariant, VStack } from '@suite-native/atoms';
+import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Variant } from '@suite-common/suite-types';
 import { messageSystemActions, selectActiveFeatureMessages } from '@suite-common/message-system';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -33,18 +31,6 @@ const contentStyle = prepareNativeStyle(_ => ({
 const buttonsWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',
 }));
-
-const variantMap = {
-    info: 'green',
-    warning: 'yellow',
-    critical: 'red',
-} as const satisfies Record<Variant, PictogramVariant>;
-
-const iconVariantMap = {
-    info: 'info',
-    warning: 'warning',
-    critical: 'warning',
-} as const satisfies Record<Variant, IconName>;
 
 export const FeatureMessageScreen = () => {
     const dispatch = useDispatch();
@@ -115,14 +101,12 @@ export const FeatureMessageScreen = () => {
         <Box style={applyStyle(screenStyle)}>
             <Box style={applyStyle(contentStyle)}>
                 <PictogramTitleHeader
+                    variant={variant}
                     title={messageTitle ?? defaultTitle}
-                    variant={variantMap[variant]}
                     subtitle={messageContent ?? defaultContent}
-                    icon={iconVariantMap[variant]}
                     titleVariant="titleMedium"
                 />
             </Box>
-
             <VStack spacing="sp16" style={applyStyle(buttonsWrapperStyle)}>
                 {isCtaVisible && (
                     <Button size="large" colorScheme="primary" onPress={handleCtaPress}>

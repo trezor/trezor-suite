@@ -10,40 +10,34 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { IconName } from '@suite-native/icons';
-import { PictogramVariant } from '@suite-native/atoms';
 
 type AlertError = 'invalidXpub' | 'invalidReceiveAddress' | 'networkError' | 'unknownError';
 type AlertErrorOptions = {
     title: string;
     description: string;
-    icon: IconName;
+    icon?: IconName;
 };
 
 const alertErrorMap: Record<AlertError, AlertErrorOptions> = {
     invalidXpub: {
         title: 'Invalid Public address (XPUB)',
         description: 'Check and correct the public address (XPUB).',
-        icon: 'warning',
     },
     invalidReceiveAddress: {
         title: 'Receive address invalid',
         description: 'Check and correct the receive address.',
-        icon: 'warning',
     },
     networkError: {
         title: 'Network error',
-        icon: 'wifiX',
         description:
             'We were unable to retrieve the data from the blockchain due to a network error.',
+        icon: 'wifiX',
     },
     unknownError: {
         title: 'Something went wrong',
-        icon: 'warning',
         description: 'We are unable to gather the data right now. Please try again.',
     },
 };
-
-const pictogramVariant: PictogramVariant = 'red';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AccountsImportStackParamList,
@@ -88,7 +82,7 @@ export const useShowImportError = (networkSymbol: NetworkSymbol, navigation: Nav
                     title,
                     description,
                     icon,
-                    pictogramVariant,
+                    pictogramVariant: 'critical',
                     primaryButtonTitle: 'Try Again',
                     onPressPrimaryButton: onRetry,
                     secondaryButtonTitle: 'Go back',
@@ -99,7 +93,7 @@ export const useShowImportError = (networkSymbol: NetworkSymbol, navigation: Nav
                     title,
                     description,
                     icon,
-                    pictogramVariant,
+                    pictogramVariant: 'critical',
                     primaryButtonTitle: 'Go back',
                     onPressPrimaryButton: handleGoBack,
                     testID: `@alert-sheet/error/${alertError}`,

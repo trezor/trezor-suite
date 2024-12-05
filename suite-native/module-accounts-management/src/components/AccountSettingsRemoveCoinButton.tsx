@@ -45,8 +45,7 @@ export const AccountSettingsRemoveCoinButton = ({
 
     const handleShowAlert = () => {
         showAlert({
-            icon: 'shieldWarning',
-            pictogramVariant: 'red',
+            pictogramVariant: 'critical',
             title: (
                 <>
                     Do you really want to remove this coin from <TrezorSuiteLiteHeader />?
@@ -55,9 +54,10 @@ export const AccountSettingsRemoveCoinButton = ({
             description:
                 'Your coins remain intact and safe. Import this coin again using your public key (XPUB) or receive address at any time.',
             primaryButtonTitle: 'Remove coin',
-            primaryButtonVariant: 'redElevation0',
+            primaryButtonVariant: 'redBold',
             onPressPrimaryButton: handleRemoveAccount,
             secondaryButtonTitle: 'Cancel',
+            secondaryButtonVariant: 'redElevation0',
             onPressSecondaryButton: () => hideAlert(),
         });
     };

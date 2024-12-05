@@ -24,7 +24,7 @@ export const SupportCard = () => {
                         <Translation id="moduleSettings.faq.supportCard.contact" />
                     </Button>
                 </VStack>
-                <PictogramTitleHeader variant="green" size="small" icon="lifebuoy" />
+                <PictogramTitleHeader variant="success" icon="lifebuoy" />
             </HStack>
         </Card>
     );
