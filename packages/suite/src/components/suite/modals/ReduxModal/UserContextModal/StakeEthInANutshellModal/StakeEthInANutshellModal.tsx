@@ -131,9 +131,7 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
                         paddingType="none"
                         hasDivider={false}
                     >
-                        <List isOrdered bulletGap={spacings.sm} gap={spacings.md}>
-                            {content}
-                        </List>
+                        {content}
                     </CollapsibleBox>
                 ))}
             </Column>

@@ -1,7 +1,7 @@
 import * as semver from 'semver';
 
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { H2, DeviceAnimation, NewModal, Paragraph, List, Column } from '@trezor/components';
+import { H2, DeviceAnimation, NewModal, Paragraph, BulletList, Column } from '@trezor/components';
 import { DEVICE, Device, DeviceModelInternal, UI } from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { TranslationKey } from '@suite-common/intl-types';
@@ -180,29 +180,27 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                 {!isRebootDone && (
                     <Column gap={spacings.lg}>
                         {isManualRebootRequired ? (
-                            <List isOrdered margin={{ top: spacings.md }}>
+                            <BulletList
+                                isOrdered
+                                margin={{ top: spacings.md }}
+                                gap={spacings.xl}
+                                titleGap={spacings.xxxs}
+                                bulletGap={spacings.md}
+                            >
                                 {/* First step asks for disconnecting a device */}
-                                <List.Item data-testid="@firmware/disconnect-message">
-                                    <Paragraph
-                                        variant={
-                                            rebootPhase !== 'disconnected' ? 'primary' : 'default'
-                                        }
-                                    >
-                                        <Translation id="TR_DISCONNECT_YOUR_DEVICE" />
-                                    </Paragraph>
-                                </List.Item>
+                                <BulletList.Item
+                                    title={<Translation id="TR_DISCONNECT_YOUR_DEVICE" />}
+                                    data-testid="@firmware/disconnect-message"
+                                    state={rebootPhase === 'disconnected' ? 'done' : 'default'}
+                                />
 
                                 {/* Second step reconnect in bootloader */}
-                                <List.Item data-testid="@firmware/connect-in-bootloader-message">
-                                    <Paragraph
-                                        variant={
-                                            rebootPhase === 'disconnected' ? 'primary' : 'default'
-                                        }
-                                    >
-                                        <Translation id={getSecondStep()} />
-                                    </Paragraph>
-                                </List.Item>
-                            </List>
+                                <BulletList.Item
+                                    title={<Translation id={getSecondStep()} />}
+                                    data-testid="@firmware/connect-in-bootloader-message"
+                                    state={rebootPhase === 'disconnected' ? 'default' : 'pending'}
+                                />
+                            </BulletList>
                         ) : (
                             <Paragraph
                                 typographyStyle="hint"

@@ -3,7 +3,6 @@ import {
     Column,
     Grid,
     H3,
-    List,
     NewModal,
     useMediaQuery,
     variables,
@@ -55,9 +54,7 @@ export const UnstakeModal = ({ onCancel }: UnstakeModalModalProps) => {
                             hasDivider={false}
                             defaultIsOpen
                         >
-                            <List isOrdered bulletGap={spacings.sm} gap={spacings.md}>
-                                <UnstakingInfo isExpanded />
-                            </List>
+                            <UnstakingInfo isExpanded />
                         </CollapsibleBox>
                     </Column>
                 </Grid>

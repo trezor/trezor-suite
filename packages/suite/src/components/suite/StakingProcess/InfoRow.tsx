@@ -1,33 +1,35 @@
-import { Badge, Column, List, Paragraph, Row } from '@trezor/components';
-
-import { Subheading } from './Subheading';
-import { RowContent, RowSubheading } from './types';
+import { Badge, BulletList, Paragraph, Row } from '@trezor/components';
 
 interface InfoRowProps {
     heading: React.ReactNode;
-    subheading: RowSubheading;
-    content: RowContent;
+    subheading?: React.ReactNode;
+    content?: {
+        text: React.ReactNode;
+        isBadge?: boolean;
+    };
     isExpanded?: boolean;
 }
 
-export const InfoRow = ({ heading, subheading, content, isExpanded = false }: InfoRowProps) => {
-    const displayContent = content.isBadge ? (
-        <Badge size="tiny">{content.text}</Badge>
-    ) : (
-        <Paragraph variant="tertiary" typographyStyle="hint">
-            {content.text}
-        </Paragraph>
-    );
-
-    return (
-        <List.Item>
+export const InfoRow = ({ heading, subheading, content, isExpanded = false }: InfoRowProps) => (
+    <BulletList.Item
+        title={
             <Row justifyContent="space-between">
-                <Column>
-                    {heading}
-                    <Subheading isExpanded={isExpanded} subheading={subheading} />
-                </Column>
-                {displayContent}
+                {heading}
+                {content &&
+                    (content.isBadge ? (
+                        <Badge size="tiny">{content.text}</Badge>
+                    ) : (
+                        <Paragraph variant="tertiary" typographyStyle="hint">
+                            {content.text}
+                        </Paragraph>
+                    ))}
             </Row>
-        </List.Item>
-    );
-};
+        }
+    >
+        {subheading && isExpanded && (
+            <Paragraph variant="tertiary" typographyStyle="hint">
+                {subheading}
+            </Paragraph>
+        )}
+    </BulletList.Item>
+);

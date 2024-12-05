@@ -1,6 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { BulletList } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import {
     selectAccountStakeTransactions,
     selectValidatorsQueue,
@@ -41,19 +43,16 @@ export const StakingInfo = ({ isExpanded }: StakingInfoProps) => {
     const infoRows = [
         {
             heading: <Translation id="TR_STAKE_SIGN_TRANSACTION" />,
-            subheading: { isCurrentStep: true },
             content: { text: <Translation id="TR_COINMARKET_NETWORK_FEE" />, isBadge: true },
         },
         {
             heading: <Translation id="TR_STAKE_ENTER_THE_STAKING_POOL" />,
-            subheading: {
-                text: (
-                    <Translation
-                        id="TR_STAKING_GETTING_READY"
-                        values={{ symbol: account.symbol.toUpperCase() }}
-                    />
-                ),
-            },
+            subheading: (
+                <Translation
+                    id="TR_STAKING_GETTING_READY"
+                    values={{ symbol: account.symbol.toUpperCase() }}
+                />
+            ),
             content: {
                 text: (
                     <>
@@ -64,16 +63,21 @@ export const StakingInfo = ({ isExpanded }: StakingInfoProps) => {
         },
         {
             heading: <Translation id="TR_STAKE_EARN_REWARDS_WEEKLY" />,
-            subheading: { text: <Translation id="TR_STAKING_REWARDS_ARE_RESTAKED" /> },
+            subheading: <Translation id="TR_STAKING_REWARDS_ARE_RESTAKED" />,
             content: { text: `~${ethApy}% p.a.` },
         },
     ];
 
     return (
-        <>
+        <BulletList
+            bulletGap={spacings.sm}
+            gap={spacings.md}
+            bulletSize="small"
+            titleGap={spacings.xxxs}
+        >
             {infoRows.map(({ heading, content, subheading }, index) => (
                 <InfoRow key={index} {...{ heading, subheading, content, isExpanded }} />
             ))}
-        </>
+        </BulletList>
     );
 };

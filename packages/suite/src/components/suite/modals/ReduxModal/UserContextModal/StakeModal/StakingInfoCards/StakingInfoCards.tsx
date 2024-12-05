@@ -1,4 +1,4 @@
-import { CollapsibleBox, Column, H3, List } from '@trezor/components';
+import { CollapsibleBox, Column, H3 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -29,9 +29,7 @@ export const StakingInfoCards = () => {
                     hasDivider={false}
                     defaultIsOpen={card.defaultIsOpen}
                 >
-                    <List isOrdered bulletGap={spacings.sm} gap={spacings.md}>
-                        {card.content}
-                    </List>
+                    {card.content}
                 </CollapsibleBox>
             ))}
         </Column>

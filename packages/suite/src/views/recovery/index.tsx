@@ -7,7 +7,7 @@ import {
     isDeviceAcquired,
     isDeviceWithButtons,
 } from '@suite-common/suite-utils';
-import { Card, H2, H3, Image, List, NewModal, Paragraph } from '@trezor/components';
+import { Card, H2, H3, Image, BulletList, NewModal, Paragraph } from '@trezor/components';
 import { pickByDeviceModel } from '@trezor/device-utils';
 import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
@@ -98,13 +98,20 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
 
                 return (
                     <>
-                        <List isOrdered gap={spacings.xxl}>
-                            <List.Item>
-                                <Paragraph typographyStyle="hint">
-                                    <Translation
-                                        id={`TR_CHECK_RECOVERY_SEED_DESC_${descriptionSuffix}`}
-                                    />
-                                </Paragraph>
+                        <BulletList
+                            gap={spacings.xl}
+                            titleGap={spacings.xxxs}
+                            bulletGap={spacings.lg}
+                        >
+                            <BulletList.Item
+                                title={
+                                    <Paragraph typographyStyle="hint" textWrap="pretty">
+                                        <Translation
+                                            id={`TR_CHECK_RECOVERY_SEED_DESC_${descriptionSuffix}`}
+                                        />
+                                    </Paragraph>
+                                }
+                            >
                                 <Paragraph
                                     typographyStyle="label"
                                     variant="tertiary"
@@ -118,30 +125,33 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                                         }
                                     />
                                 </Paragraph>
-                            </List.Item>
-                            <List.Item>
-                                <Paragraph typographyStyle="hint">
-                                    <Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />
-                                </Paragraph>
+                            </BulletList.Item>
+                            <BulletList.Item
+                                title={
+                                    <Paragraph typographyStyle="hint" textWrap="pretty">
+                                        <Translation
+                                            id={pickByDeviceModel(deviceModelInternal, {
+                                                default: 'TR_SEED_WORDS_ENTER_TOUCHSCREEN',
+                                                [DeviceModelInternal.T1B1]:
+                                                    'TR_SEED_WORDS_ENTER_COMPUTER',
+                                                [DeviceModelInternal.T2B1]:
+                                                    'TR_SEED_WORDS_ENTER_BUTTONS',
+                                                [DeviceModelInternal.T3B1]:
+                                                    'TR_SEED_WORDS_ENTER_BUTTONS',
+                                            })}
+                                        />
+                                    </Paragraph>
+                                }
+                            >
                                 <Paragraph
                                     typographyStyle="label"
                                     variant="tertiary"
                                     margin={{ top: spacings.xxs }}
                                 >
-                                    <Translation
-                                        id={pickByDeviceModel(deviceModelInternal, {
-                                            default: 'TR_SEED_WORDS_ENTER_TOUCHSCREEN',
-                                            [DeviceModelInternal.T1B1]:
-                                                'TR_SEED_WORDS_ENTER_COMPUTER',
-                                            [DeviceModelInternal.T2B1]:
-                                                'TR_SEED_WORDS_ENTER_BUTTONS',
-                                            [DeviceModelInternal.T3B1]:
-                                                'TR_SEED_WORDS_ENTER_BUTTONS',
-                                        })}
-                                    />
+                                    <Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />
                                 </Paragraph>
-                            </List.Item>
-                        </List>
+                            </BulletList.Item>
+                        </BulletList>
                         <Card margin={{ top: spacings.xxl }}>
                             <CheckItem
                                 data-testid="@recovery/user-understands-checkbox"
