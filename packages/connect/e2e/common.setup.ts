@@ -112,6 +112,11 @@ export const initTrezorConnect = async (
         });
     });
 
+    TrezorConnect.on('transport-start', event => {
+        // eslint-disable-next-line no-console
+        console.log('Transport started: ', event.version);
+    });
+
     TrezorConnect.on(UI.REQUEST_CONFIRMATION, () => {
         TrezorConnect.uiResponse({
             type: UI.RECEIVE_CONFIRMATION,
