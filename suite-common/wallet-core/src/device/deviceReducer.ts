@@ -757,9 +757,11 @@ export const selectDeviceInternalModel = createMemoizedSelector(
 
 // Selectors with parameters should use WeakMap memoization
 export const selectDeviceByState = createMemoizedSelector(
-    [selectDevices, (_state, deviceState: DeviceState) => deviceState],
+    [selectDevices, (_state, deviceState: DeviceState | undefined) => deviceState],
     (devices, deviceState) =>
-        devices.find(d => d.state?.staticSessionId === deviceState.staticSessionId),
+        deviceState
+            ? devices.find(d => d.state?.staticSessionId === deviceState.staticSessionId)
+            : undefined,
 );
 
 export const selectDeviceByStaticSessionId = createMemoizedSelector(

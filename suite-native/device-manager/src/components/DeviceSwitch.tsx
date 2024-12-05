@@ -1,10 +1,11 @@
 import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { Box, HStack } from '@suite-native/atoms';
+import { Box, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { selectDeviceState, selectNumberOfDeviceInstances } from '@suite-common/wallet-core';
+import { Translation } from '@suite-native/intl';
 
 import { SCREEN_HEADER_HEIGHT } from '../constants';
 import { useDeviceManager } from '../hooks/useDeviceManager';
@@ -57,13 +58,17 @@ export const DeviceSwitch = () => {
         >
             <HStack justifyContent="space-between" alignItems="center" spacing="sp16">
                 <Box style={applyStyle(switchStyle, { isDeviceManagerVisible })}>
-                    {deviceState && (
+                    {deviceState ? (
                         <DeviceItemContent
                             deviceState={deviceState}
                             headerTextVariant="highlight"
                             variant={numberOfDevices > 1 ? 'walletDetail' : 'simple'}
                             isSubHeaderForceHidden={true}
                         />
+                    ) : (
+                        <Text variant="highlight">
+                            <Translation id="deviceManager.defaultHeader" />
+                        </Text>
                     )}
                     <Icon name="caretUpDown" color="iconDefault" />
                 </Box>

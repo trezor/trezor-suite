@@ -15,7 +15,7 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import { ConnectionDot } from './ConnectionDot';
 
 export type SimpleDeviceItemContentProps = {
-    deviceState: NonNullable<TrezorDevice['state']>;
+    deviceState: TrezorDevice['state'] | undefined;
     headerTextVariant?: TypographyStyle;
     header: ReactNode;
     isPortfolioTrackerDevice: boolean;
@@ -38,12 +38,12 @@ export const SimpleDeviceItemContent = React.memo(
         const { applyStyle } = useNativeStyles();
         const deviceIsConnected = useSelector(
             // selecting only connected device property prevents unnecessary rerenders
-            (state: DeviceRootState) => selectDeviceByState(state, deviceState)?.connected ?? null,
+            (state: DeviceRootState) => selectDeviceByState(state, deviceState)?.connected,
         );
         const hasOnlyEmptyPortfolioTracker = useSelector(selectHasOnlyEmptyPortfolioTracker);
 
         // device not found, should not happen
-        if (deviceIsConnected === null) {
+        if (deviceIsConnected === undefined) {
             return null;
         }
 

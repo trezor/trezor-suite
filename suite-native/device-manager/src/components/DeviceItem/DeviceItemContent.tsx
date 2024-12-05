@@ -24,7 +24,7 @@ export type DeviceItemContentVariant = 'simple' | 'walletDetail';
 export type DeviceItemContentMode = 'compact' | 'header';
 
 export type DeviceItemContentProps = {
-    deviceState: NonNullable<TrezorDevice['state']>;
+    deviceState: TrezorDevice['state'] | undefined;
     headerTextVariant?: TypographyStyle;
     variant?: DeviceItemContentVariant;
     isCompact?: boolean;

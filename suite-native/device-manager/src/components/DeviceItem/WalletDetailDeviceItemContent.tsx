@@ -11,7 +11,7 @@ import { TrezorDevice } from '@suite-common/suite-types/src/device';
 import { ConnectionDot } from './ConnectionDot';
 
 export type WalletDetailDeviceItemContentProps = {
-    deviceState: NonNullable<TrezorDevice['state']>;
+    deviceState: TrezorDevice['state'] | undefined;
     headerTextVariant?: TypographyStyle;
     header: ReactNode;
     subHeader?: ReactNode;
