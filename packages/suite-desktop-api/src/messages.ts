@@ -140,3 +140,9 @@ export type ConnectPopupResponse = {
     success: boolean;
     payload: any;
 };
+
+export type GetSystemInformationResponse = {
+    osVersion: string;
+    osName: string;
+    osArchitecture: string;
+};

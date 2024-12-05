@@ -34,6 +34,7 @@ import * as fileProtocol from './file-protocol';
 import * as autoStart from './auto-start';
 import * as tray from './tray';
 import * as bridge from './bridge';
+import * as systemInformation from './system-information';
 import { MainWindowProxy } from '../libs/main-window-proxy';
 
 // General modules (both dev & prod)
@@ -63,6 +64,7 @@ const MODULES: Module[] = [
     coinjoin,
     autoStart,
     bridge,
+    systemInformation,
     // Modules used only in dev/prod mode
     ...(isDevEnv ? [] : [csp, fileProtocol]),
 ];

@@ -18,6 +18,7 @@ import {
     TraySettings,
     ConnectPopupResponse,
     ConnectPopupCall,
+    GetSystemInformationResponse,
 } from './messages';
 
 // Event messages from renderer to main process
@@ -107,6 +108,7 @@ export interface InvokeChannels {
     'connect-popup/enabled': () => boolean;
     'connect-popup/ready': () => void;
     'connect-popup/response': (response: ConnectPopupResponse) => void;
+    'system/get-system-information': () => InvokeResult<GetSystemInformationResponse>;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -173,4 +175,6 @@ export interface DesktopApi {
     connectPopupEnabled: DesktopApiInvoke<'connect-popup/enabled'>;
     connectPopupReady: DesktopApiInvoke<'connect-popup/ready'>;
     connectPopupResponse: DesktopApiInvoke<'connect-popup/response'>;
+    //system
+    getSystemInformation: DesktopApiInvoke<'system/get-system-information'>;
 }
