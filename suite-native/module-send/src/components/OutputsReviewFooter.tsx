@@ -43,39 +43,49 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-const navigateToTransactionDetail = ({
+const navigateOutOfSendFlowAction = ({
     accountKey,
     tokenContract,
     txid,
-}: RootStackParamList[RootStackRoutes.TransactionDetail]) =>
+}: {
+    accountKey: AccountKey;
+    tokenContract?: TokenAddress;
+    txid?: string;
+}) => {
+    const routes: any[] = [
+        {
+            name: RootStackRoutes.AppTabs,
+            params: {
+                screen: AppTabsRoutes.HomeStack,
+            },
+        },
+        {
+            name: RootStackRoutes.AccountDetail,
+            params: {
+                accountKey,
+                tokenContract,
+            },
+        },
+    ];
+
+    if (txid) {
+        routes.push({
+            name: RootStackRoutes.TransactionDetail,
+            params: {
+                accountKey,
+                tokenContract,
+                txid,
+                closeActionType: 'close',
+            },
+        });
+    }
+
     // Reset navigation stack to the transaction detail screen with HomeStack as a previous step, so the user can navigate back there.
-    CommonActions.reset({
+    return CommonActions.reset({
         index: 1,
-        routes: [
-            {
-                name: RootStackRoutes.AppTabs,
-                params: {
-                    screen: AppTabsRoutes.HomeStack,
-                },
-            },
-            {
-                name: RootStackRoutes.AccountDetail,
-                params: {
-                    accountKey,
-                    tokenContract,
-                },
-            },
-            {
-                name: RootStackRoutes.TransactionDetail,
-                params: {
-                    accountKey,
-                    tokenContract,
-                    txid,
-                    closeActionType: 'close',
-                },
-            },
-        ],
+        routes,
     });
+};
 
 export const OutputsReviewFooter = ({
     accountKey,
@@ -113,7 +123,7 @@ export const OutputsReviewFooter = ({
         // Navigate to transaction detail screen only at the moment when the transaction was already processed by backend and we have all its data.
         if (isTransactionProcessedByBackend) {
             navigation.dispatch(
-                navigateToTransactionDetail({
+                navigateOutOfSendFlowAction({
                     accountKey,
                     tokenContract,
                     txid,
@@ -126,6 +136,8 @@ export const OutputsReviewFooter = ({
 
     /* TODO: improve the illustration: https://github.com/trezor/trezor-suite/issues/13965 */
     if (!isTransactionAlreadySigned || !account) return <SendConfirmOnDeviceImage />;
+
+    const isSolanaAccount = account.networkType === 'solana';
 
     const handleSendTransaction = async () => {
         setIsSendInProgress(true);
@@ -158,19 +170,49 @@ export const OutputsReviewFooter = ({
 
             return;
         }
+
         showAlert({
             icon: 'warningCircle',
-            title: <Translation id="moduleSend.review.toasts.sendTxnFailed" />,
-            description: sendResponse.payload?.metadata.payload.error ?? sendResponse.error.message,
-            primaryButtonTitle: <Translation id="generic.buttons.close" />,
+            title: (
+                <Translation
+                    id={
+                        isSolanaAccount
+                            ? 'moduleSend.review.outputs.errorAlert.solana.title'
+                            : 'moduleSend.review.outputs.errorAlert.generic.title'
+                    }
+                />
+            ),
+            description: (
+                <Translation
+                    id={
+                        isSolanaAccount
+                            ? 'moduleSend.review.outputs.errorAlert.solana.description'
+                            : 'moduleSend.review.outputs.errorAlert.generic.description'
+                    }
+                />
+            ),
+            primaryButtonTitle: <Translation id="generic.buttons.tryAgain" />,
             primaryButtonVariant: 'redBold',
             onPressPrimaryButton: () => {
-                dispatch(cleanupSendFormThunk({ accountKey, shouldDeleteDraft: true }));
+                dispatch(cleanupSendFormThunk({ accountKey, shouldDeleteDraft: false }));
                 navigation.navigate(SendStackRoutes.SendOutputs, {
                     accountKey,
                     tokenContract,
                 });
             },
+            secondaryButtonTitle: (
+                <Translation id="moduleSend.review.outputs.errorAlert.secondaryButtonTitle" />
+            ),
+            onPressSecondaryButton: () => {
+                dispatch(cleanupSendFormThunk({ accountKey, shouldDeleteDraft: true }));
+                navigation.dispatch(
+                    navigateOutOfSendFlowAction({
+                        accountKey,
+                        tokenContract,
+                    }),
+                );
+            },
+            secondaryButtonVariant: 'redElevation1',
         });
         setIsSendInProgress(false);
     };

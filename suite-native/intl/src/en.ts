@@ -1144,6 +1144,19 @@ export const en = {
                 },
                 successMessage: 'Everything is ready, you can send the transaction now.',
                 submitButton: 'Send transaction',
+                errorAlert: {
+                    secondaryButtonTitle: 'I’ll do it later',
+                    generic: {
+                        title: 'Transaction failed',
+                        description:
+                            'There has been an unexpected error, please try sending your transaction again.',
+                    },
+                    solana: {
+                        title: 'Transaction failed due to timeout',
+                        description:
+                            'Make sure you send the transaction within 1 minute from signing.',
+                    },
+                },
             },
         },
     },
