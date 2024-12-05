@@ -2,6 +2,8 @@ import React from 'react';
 
 import { Meta, StoryObj } from '@storybook/react';
 
+import { spacings } from '@trezor/theme';
+
 import {
     InfoItem as InfoItemComponent,
     allowedInfoItemFrameProps,
@@ -69,6 +71,12 @@ export const InfoItem: StoryObj = {
             options: infoItemVerticalAlignments,
             control: {
                 type: 'radio',
+            },
+        },
+        gap: {
+            options: Object.values(spacings),
+            control: {
+                type: 'select',
             },
         },
         ...getTextPropsStory(allowedInfoItemTextProps).argTypes,

@@ -1,89 +1,127 @@
-import styled from 'styled-components';
-
-import { spacings, spacingsPx, typography } from '@trezor/theme';
-import { Card, Row, variables } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+import {
+    Card,
+    Row,
+    variables,
+    Column,
+    Flex,
+    H3,
+    Text,
+    InfoItem,
+    Button,
+    useMediaQuery,
+} from '@trezor/components';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { CoinLogo } from '@trezor/product-components';
+import { getNetwork } from '@suite-common/wallet-config';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { Account } from 'src/types/wallet';
-import { Translation } from 'src/components/suite';
+import { Translation, PriceTicker, TrendTicker } from 'src/components/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 
-import { TradeBoxMenu } from './TradeBoxMenu';
-import { TradeBoxPrices } from './TradeBoxPrices';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledCard = styled(Card)`
-    flex-flow: row wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: ${spacingsPx.lg};
-
-    ${variables.SCREEN_QUERY.BELOW_TABLET} {
-        flex-direction: column;
-        align-items: normal;
-    }
-`;
-
-const Title = styled.div`
-    ${typography.titleSmall}
-    margin-bottom: ${spacingsPx.md};
-`;
-
-const Left = styled.div`
-    display: flex;
-    gap: ${spacingsPx.lg};
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        flex-direction: column;
-        align-items: normal;
-    }
-`;
-
-const Right = styled.div`
-    display: flex;
-`;
-
-const Coin = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
-const CoinName = styled.div`
-    ${typography.highlight}
-    margin-left: ${spacingsPx.xxxs};
-`;
-
-const CoinSymbol = styled.div`
-    ${typography.hint}
-    color: ${({ theme }) => theme.textSubdued};
-    margin-left: ${spacingsPx.xxxs};
-`;
-
-interface TradeBoxProps {
+type TradeBoxProps = {
     account: Account;
-}
+};
 
-export const TradeBox = ({ account }: TradeBoxProps) => (
-    <div>
-        <Title>
-            <Translation id="TR_NAV_TRADE" />
-        </Title>
-        <StyledCard>
-            <Left>
-                <Row gap={spacings.xs} alignItems="center">
-                    <CoinLogo size={24} symbol={account.symbol} />
-                    <Coin>
-                        <CoinName>
-                            <Translation id={getTitleForNetwork(account.symbol)} />
-                        </CoinName>
-                        <CoinSymbol>{account.symbol.toUpperCase()}</CoinSymbol>
-                    </Coin>
-                </Row>
-                <TradeBoxPrices account={account} />
-            </Left>
-            <Right>
-                <TradeBoxMenu account={account} />
-            </Right>
-        </StyledCard>
-    </div>
-);
+export const TradeBox = ({ account }: TradeBoxProps) => {
+    const isBelowTablet = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
+    const isBelowMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.SM})`);
+    const dispatch = useDispatch();
+    const { device } = useDevice();
+    const isTestnet = getNetwork(account.symbol).testnet;
+
+    const ActionButton = ({
+        type,
+        children,
+        isDisabled = false,
+    }: {
+        type: 'buy' | 'exchange' | 'sell';
+        children: React.ReactNode;
+        isDisabled?: boolean;
+    }) => (
+        <Button
+            variant="tertiary"
+            size="small"
+            onClick={() => {
+                analytics.report({
+                    type: EventType.AccountsTradeboxButton,
+                    payload: {
+                        symbol: account.symbol,
+                        type,
+                    },
+                });
+                dispatch(goto(`wallet-coinmarket-${type}`, { preserveParams: true }));
+            }}
+            data-testid={`@coinmarket/menu/wallet-coinmarket-${type}`}
+            isDisabled={isDisabled}
+        >
+            {children}
+        </Button>
+    );
+
+    return (
+        <Column gap={spacings.md}>
+            <H3>
+                <Translation id="TR_NAV_TRADE" />
+            </H3>
+            <Card>
+                <Flex
+                    direction={isBelowTablet ? 'column' : 'row'}
+                    flexWrap="wrap"
+                    justifyContent={isBelowTablet ? 'flex-start' : 'space-between'}
+                    gap={spacings.lg}
+                >
+                    <Flex
+                        direction={isBelowMobile ? 'column' : 'row'}
+                        gap={isBelowMobile ? spacings.md : spacings.xxxl}
+                    >
+                        <Row gap={spacings.sm}>
+                            <CoinLogo size={24} symbol={account.symbol} />
+                            <InfoItem
+                                label={<Translation id={getTitleForNetwork(account.symbol)} />}
+                                typographyStyle="highlight"
+                                variant="default"
+                                gap={0}
+                                width="fit-content"
+                            >
+                                <Text variant="tertiary" typographyStyle="hint">
+                                    {account.symbol.toUpperCase()}
+                                </Text>
+                            </InfoItem>
+                        </Row>
+                        <InfoItem label={<Translation id="TR_EXCHANGE_RATE" />} width="fit-content">
+                            <PriceTicker
+                                symbol={account.symbol}
+                                noEmptyStateTooltip={isTestnet}
+                                showLoadingSkeleton={!isTestnet}
+                            />
+                        </InfoItem>
+                        <InfoItem label={<Translation id="TR_7D_CHANGE" />} width="fit-content">
+                            <TrendTicker
+                                symbol={account.symbol}
+                                noEmptyStateTooltip={isTestnet}
+                                showLoadingSkeleton={!isTestnet}
+                            />
+                        </InfoItem>
+                    </Flex>
+                    <Row gap={spacings.sm}>
+                        <ActionButton type="buy">
+                            <Translation id="TR_NAV_BUY" />
+                        </ActionButton>
+                        <ActionButton type="sell" isDisabled={account.empty}>
+                            <Translation id="TR_NAV_SELL" />
+                        </ActionButton>
+                        {!hasBitcoinOnlyFirmware(device) && (
+                            <ActionButton type="exchange" isDisabled={account.empty}>
+                                <Translation id="TR_COINMARKET_SWAP" />
+                            </ActionButton>
+                        )}
+                    </Row>
+                </Flex>
+            </Card>
+        </Column>
+    );
+};

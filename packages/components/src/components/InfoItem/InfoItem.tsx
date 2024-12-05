@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { spacings } from '@trezor/theme';
+import { spacings, SpacingValues } from '@trezor/theme';
 
 import {
     FrameProps,
@@ -26,7 +26,12 @@ import {
 export const allowedInfoItemTextProps = ['typographyStyle'] as const satisfies TextPropsKeys[];
 type AllowedTextProps = Pick<TextProps, (typeof allowedInfoItemTextProps)[number]>;
 
-export const allowedInfoItemFrameProps = ['margin', 'flex'] as const satisfies FramePropsKeys[];
+export const allowedInfoItemFrameProps = [
+    'margin',
+    'flex',
+    'width',
+    'maxWidth',
+] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedInfoItemFrameProps)[number]>;
 
 type ContainerProps = TransientProps<AllowedFrameProps & AllowedTextProps>;
@@ -46,6 +51,7 @@ export type InfoItemProps = AllowedFrameProps &
         variant?: InfoItemVariant;
         labelWidth?: string | number;
         verticalAlignment?: InfoItemVerticalAlignment;
+        gap?: SpacingValues;
     };
 
 export const InfoItem = ({
@@ -55,6 +61,7 @@ export const InfoItem = ({
     iconName,
     typographyStyle = 'hint',
     variant = 'tertiary',
+    gap,
     labelWidth,
     verticalAlignment = 'center',
     ...rest
@@ -67,7 +74,7 @@ export const InfoItem = ({
             <Flex
                 direction={direction}
                 alignItems={isRow ? mapVerticalAlignmentToAlignItems(verticalAlignment) : 'normal'}
-                gap={isRow ? spacings.md : mapTypographyStyleToLabelGap(typographyStyle)}
+                gap={gap ?? (isRow ? spacings.md : mapTypographyStyleToLabelGap(typographyStyle))}
             >
                 <Row
                     gap={mapTypographyStyleToIconGap(typographyStyle)}
