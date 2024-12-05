@@ -32,6 +32,7 @@
         "@trezor/protocol": "workspace:*",
         "@trezor/transport": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "@trezor/websocket-client": "workspace:*",
         "ws": "^8.18.0"
     },
     "devDependencies": {

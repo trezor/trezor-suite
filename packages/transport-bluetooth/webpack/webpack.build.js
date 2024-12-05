@@ -69,11 +69,6 @@ module.exports = {
             Buffer: ['buffer', 'Buffer'],
             process: 'process/browser',
         }),
-        // TODO:
-        new webpack.NormalModuleReplacementPlugin(
-            /^ws$/,
-            path.join(PACKAGE_ROOT, '../blockchain-link/src/utils/ws'),
-        ),
         new HtmlWebpackPlugin({
             template: `${SRC}ui/index.html`,
             filename: 'index.html',

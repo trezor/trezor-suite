@@ -32,7 +32,7 @@ pub enum WsRequestMethod {
 
 #[derive(serde::Deserialize, Debug)]
 pub struct WsRequest {
-    pub id: u8,
+    pub id: String,
     pub method: WsRequestMethod,
 }
 
@@ -53,14 +53,14 @@ pub enum WsResponsePayload {
 
 #[derive(serde::Serialize, Clone, Debug)]
 pub struct WsResponse {
-    pub id: u8,
+    pub id: String,
     pub method: WsRequestMethod,
     pub payload: WsResponsePayload,
 }
 
 #[derive(serde::Serialize, Clone, Debug)]
 pub struct WsError {
-    pub id: u8,
+    pub id: String,
     pub method: WsRequestMethod,
     pub error: String,
 }

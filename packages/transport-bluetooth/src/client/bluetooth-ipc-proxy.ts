@@ -76,7 +76,7 @@ export class BluetoothApiImpl extends TypedEmitter<BluetoothApiEvents> implement
         });
 
         try {
-            const result = await this.api.sendMessage('connect_device', uuid);
+            const result = await this.api.send('connect_device', uuid);
             console.warn('Connect result', result);
         } catch (error) {
             return { success: false, error: error.message };
@@ -93,7 +93,7 @@ export class BluetoothApiImpl extends TypedEmitter<BluetoothApiEvents> implement
         }
 
         const result = await this.api
-            .sendMessage('forget_device', id)
+            .send('forget_device', id)
             .then(() => ({ success: true }) as const)
             .catch(error => ({ success: false, error: error.message }));
         console.warn('Forget result', result);
@@ -125,9 +125,9 @@ export class BluetoothApiImpl extends TypedEmitter<BluetoothApiEvents> implement
         const emitAdapterState = ({ powered }: { powered: boolean }) => {
             this.emit('adapter-event', powered);
             if (!powered) {
-                // api.sendMessage('stop_scan');
+                // api.send('stop_scan');
             } else {
-                this.api.sendMessage('start_scan').catch(error => {
+                this.api.send('start_scan').catch(error => {
                     console.warn('Start scan error', error);
                 });
             }
@@ -140,13 +140,13 @@ export class BluetoothApiImpl extends TypedEmitter<BluetoothApiEvents> implement
         this.api.on('adapter_state_changed', emitAdapterState);
 
         try {
-            const info = await this.api.sendMessage('get_info');
+            const info = await this.api.send('get_info');
             // emit adapter event
             if (!info.powered) {
                 this.emit('adapter-event', false);
             }
 
-            const devices = await this.api.sendMessage('start_scan');
+            const devices = await this.api.send('start_scan');
             emitSelect({ devices: connectableDevices(devices) });
         } catch (error) {
             return { success: false, error: error.message };
@@ -158,7 +158,7 @@ export class BluetoothApiImpl extends TypedEmitter<BluetoothApiEvents> implement
     async stopScan() {
         try {
             await this.api.connect();
-            await this.api.sendMessage('stop_scan');
+            await this.api.send('stop_scan');
 
             return { success: true } as const;
         } catch (error) {

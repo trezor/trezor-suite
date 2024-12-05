@@ -22,7 +22,7 @@ export class BluetoothApi extends AbstractApi {
         return devices
             .filter(d => d.connected && d.paired)
             .map(d => ({
-                path: d.uuid as PathInternal,
+                path: d.uuid as string as PathInternal,
                 type: DEVICE_TYPE.TypeBluetooth,
                 uuid: d.uuid,
             }));
@@ -57,7 +57,7 @@ export class BluetoothApi extends AbstractApi {
         });
 
         // TODO: sanc and use DeviceDiscovered only if there are known devices
-        // await api.sendMessage('start_scan');
+        // await api.send('start_scan');
 
         return this.success(true);
     }
@@ -110,7 +110,7 @@ export class BluetoothApi extends AbstractApi {
 
     async write(path: string, buffer: Buffer) {
         console.warn('Device write', buffer);
-        const result = await this.api.sendMessage('write', [path, Array.from(buffer)]);
+        const result = await this.api.send('write', [path, Array.from(buffer)]);
         console.warn('Device write', result);
 
         return this.success(undefined);
@@ -118,7 +118,7 @@ export class BluetoothApi extends AbstractApi {
 
     async openDevice(path: string) {
         this.readDataBuffer[path] = [];
-        const result = await this.api.sendMessage('open_device', path);
+        const result = await this.api.send('open_device', path);
         console.warn('Device opened', result);
 
         return this.success(undefined);
@@ -127,7 +127,7 @@ export class BluetoothApi extends AbstractApi {
     async closeDevice(path: string) {
         delete this.readDataBuffer[path];
         delete this.recentChunk[path];
-        const result = await this.api.sendMessage('close_device', path);
+        const result = await this.api.send('close_device', path);
         console.warn('Device closed', result);
 
         return this.success(undefined);

@@ -55,7 +55,7 @@ pub async fn handle_message(
             info!("Process response ok {:?}", payload);
             // let json = serde_json::to_string(&payload);
             let json = serde_json::to_string(&WsResponse {
-                id: request.id.clone(),
+                id: request.id.to_string(),
                 method: request.method,
                 payload: payload,
             });
@@ -67,7 +67,7 @@ pub async fn handle_message(
         Err(err) => {
             info!("Process response error {}", err);
             let json = serde_json::to_string(&WsError {
-                id: request.id.clone(),
+                id: request.id.to_string(),
                 method: request.method,
                 error: err.to_string(),
             });
