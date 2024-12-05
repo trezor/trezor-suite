@@ -106,12 +106,6 @@ module.exports = config => {
                     path.join(__dirname, '../../connect-web/build/trezor-connect.js'),
                 ),
 
-                // replace ws module used in ./tests/websocket-client.js
-                new webpack.NormalModuleReplacementPlugin(
-                    /ws$/,
-                    '@trezor/blockchain-link/src/utils/ws',
-                ),
-
                 new webpack.DefinePlugin({
                     // set custom connect endpoint to build directory
                     'process.env.TREZOR_CONNECT_SRC': JSON.stringify(

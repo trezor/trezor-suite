@@ -23,6 +23,9 @@
             "path": "../utxo-lib"
         },
         {
+            "path": "../websocket-client"
+        },
+        {
             "path": "../e2e-utils"
         },
         {
