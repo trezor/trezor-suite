@@ -537,6 +537,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 if (fn) {
                     await this.initialize(!!options.useCardanoDerivation);
                 } else {
+                    await this.commands?.typedCall('Cancel', 'Success').catch(() => {});
+
                     const getFeaturesTimeout =
                         DataManager.getSettings('env') === 'react-native'
                             ? GET_FEATURES_TIMEOUT_REACT_NATIVE
