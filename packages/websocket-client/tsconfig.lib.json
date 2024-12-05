@@ -1,0 +1,14 @@
+{
+    "extends": "../../tsconfig.lib.json",
+    "compilerOptions": {
+        "outDir": "./lib",
+        "lib": ["webworker"],
+        "types": ["jest", "node", "web"]
+    },
+    "include": ["./src"],
+    "references": [
+        {
+            "path": "../utils"
+        }
+    ]
+}
