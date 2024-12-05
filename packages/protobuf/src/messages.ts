@@ -141,6 +141,11 @@ export enum AmountUnit {
     SATOSHI = 3,
 }
 
+export enum MultisigPubkeysOrder {
+    PRESERVED = 0,
+    LEXICOGRAPHIC = 1,
+}
+
 export type HDNodeType = {
     depth: number;
     fingerprint: number;
@@ -161,6 +166,7 @@ export type MultisigRedeemScriptType = {
     m: number;
     nodes?: HDNodeType[];
     address_n?: number[];
+    pubkeys_order?: MultisigPubkeysOrder;
 };
 
 export type GetPublicKey = {
@@ -1687,6 +1693,7 @@ export type ResetDevice = {
     skip_backup?: boolean;
     no_backup?: boolean;
     backup_type?: Enum_BackupType;
+    entropy_check?: boolean;
 };
 
 export type Slip39Group = {
@@ -1699,10 +1706,19 @@ export type BackupDevice = {
     groups?: Slip39Group[];
 };
 
-export type EntropyRequest = {};
+export type EntropyRequest = {
+    entropy_commitment?: string;
+    prev_entropy?: string;
+};
 
 export type EntropyAck = {
     entropy: string;
+};
+
+export type EntropyCheckReady = {};
+
+export type EntropyCheckContinue = {
+    finish?: boolean;
 };
 
 export enum Enum_WordRequestType {
@@ -2469,6 +2485,8 @@ export type MessageType = {
     BackupDevice: BackupDevice;
     EntropyRequest: EntropyRequest;
     EntropyAck: EntropyAck;
+    EntropyCheckReady: EntropyCheckReady;
+    EntropyCheckContinue: EntropyCheckContinue;
     WordRequest: WordRequest;
     WordAck: WordAck;
     SetU2FCounter: SetU2FCounter;

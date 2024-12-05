@@ -206,6 +206,14 @@ export enum AmountUnit {
 export type EnumAmountUnit = Static<typeof EnumAmountUnit>;
 export const EnumAmountUnit = Type.Enum(AmountUnit);
 
+export enum MultisigPubkeysOrder {
+    PRESERVED = 0,
+    LEXICOGRAPHIC = 1,
+}
+
+export type EnumMultisigPubkeysOrder = Static<typeof EnumMultisigPubkeysOrder>;
+export const EnumMultisigPubkeysOrder = Type.Enum(MultisigPubkeysOrder);
+
 export type HDNodeType = Static<typeof HDNodeType>;
 export const HDNodeType = Type.Object(
     {
@@ -236,6 +244,7 @@ export const MultisigRedeemScriptType = Type.Object(
         m: Type.Number(),
         nodes: Type.Optional(Type.Array(HDNodeType)),
         address_n: Type.Optional(Type.Array(Type.Number())),
+        pubkeys_order: Type.Optional(EnumMultisigPubkeysOrder),
     },
     { $id: 'MultisigRedeemScriptType' },
 );
@@ -2572,6 +2581,7 @@ export const ResetDevice = Type.Object(
         skip_backup: Type.Optional(Type.Boolean()),
         no_backup: Type.Optional(Type.Boolean()),
         backup_type: Type.Optional(EnumEnum_BackupType),
+        entropy_check: Type.Optional(Type.Boolean()),
     },
     { $id: 'ResetDevice' },
 );
@@ -2595,7 +2605,13 @@ export const BackupDevice = Type.Object(
 );
 
 export type EntropyRequest = Static<typeof EntropyRequest>;
-export const EntropyRequest = Type.Object({}, { $id: 'EntropyRequest' });
+export const EntropyRequest = Type.Object(
+    {
+        entropy_commitment: Type.Optional(Type.String()),
+        prev_entropy: Type.Optional(Type.String()),
+    },
+    { $id: 'EntropyRequest' },
+);
 
 export type EntropyAck = Static<typeof EntropyAck>;
 export const EntropyAck = Type.Object(
@@ -2603,6 +2619,17 @@ export const EntropyAck = Type.Object(
         entropy: Type.String(),
     },
     { $id: 'EntropyAck' },
+);
+
+export type EntropyCheckReady = Static<typeof EntropyCheckReady>;
+export const EntropyCheckReady = Type.Object({}, { $id: 'EntropyCheckReady' });
+
+export type EntropyCheckContinue = Static<typeof EntropyCheckContinue>;
+export const EntropyCheckContinue = Type.Object(
+    {
+        finish: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'EntropyCheckContinue' },
 );
 
 export enum Enum_WordRequestType {
@@ -3707,6 +3734,8 @@ export const MessageType = Type.Object(
         BackupDevice,
         EntropyRequest,
         EntropyAck,
+        EntropyCheckReady,
+        EntropyCheckContinue,
         WordRequest,
         WordAck,
         SetU2FCounter,

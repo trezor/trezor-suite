@@ -280,6 +280,12 @@
                 "SATOSHI": 3
             }
         },
+        "MultisigPubkeysOrder": {
+            "values": {
+                "PRESERVED": 0,
+                "LEXICOGRAPHIC": 1
+            }
+        },
         "MultisigRedeemScriptType": {
             "fields": {
                 "pubkeys": {
@@ -308,6 +314,13 @@
                     "id": 5,
                     "options": {
                         "packed": false
+                    }
+                },
+                "pubkeys_order": {
+                    "type": "MultisigPubkeysOrder",
+                    "id": 6,
+                    "options": {
+                        "default": "PRESERVED"
                     }
                 }
             },
@@ -4860,6 +4873,10 @@
                     "options": {
                         "default": "Bip39"
                     }
+                },
+                "entropy_check": {
+                    "type": "bool",
+                    "id": 11
                 }
             }
         },
@@ -4893,7 +4910,16 @@
             }
         },
         "EntropyRequest": {
-            "fields": {}
+            "fields": {
+                "entropy_commitment": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "prev_entropy": {
+                    "type": "bytes",
+                    "id": 2
+                }
+            }
         },
         "EntropyAck": {
             "fields": {
@@ -4901,6 +4927,20 @@
                     "rule": "required",
                     "type": "bytes",
                     "id": 1
+                }
+            }
+        },
+        "EntropyCheckReady": {
+            "fields": {}
+        },
+        "EntropyCheckContinue": {
+            "fields": {
+                "finish": {
+                    "type": "bool",
+                    "id": 1,
+                    "options": {
+                        "default": false
+                    }
                 }
             }
         },
@@ -6713,6 +6753,8 @@
                 "BackupDevice": 34,
                 "EntropyRequest": 35,
                 "EntropyAck": 36,
+                "EntropyCheckReady": 994,
+                "EntropyCheckContinue": 995,
                 "PassphraseRequest": 41,
                 "PassphraseAck": 42,
                 "RecoveryDevice": 45,
