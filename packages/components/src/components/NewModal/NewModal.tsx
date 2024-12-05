@@ -202,7 +202,7 @@ const InnerNewModalBase = ({
                             >
                                 {iconComponent ??
                                     (iconName && (
-                                        <IconCircle name={iconName} size={40} variant={variant} />
+                                        <IconCircle name={iconName} size={110} variant={variant} />
                                     ))}
                             </Row>
                         )}

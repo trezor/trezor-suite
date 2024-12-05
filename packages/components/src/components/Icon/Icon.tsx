@@ -86,9 +86,15 @@ export const getColorForIconVariant = ({
 type SvgWrapperProps = TransientProps<Pick<IconProps, 'color' | 'variant'>> & {
     $cursorPointer?: boolean;
     $hoverColor?: string;
+    $size: number;
 };
 
 const SvgWrapper = styled.div<SvgWrapperProps & TransientProps<AllowedFrameProps>>`
+    ${({ $size }) => css`
+        width: ${$size}px;
+        height: ${$size}px;
+    `}
+
     ${({ $cursorPointer }) =>
         $cursorPointer &&
         css`
@@ -100,6 +106,8 @@ const SvgWrapper = styled.div<SvgWrapperProps & TransientProps<AllowedFrameProps
         transition: fill 0.14s;
     }
 
+    flex-shrink: 0;
+
     &:hover {
         path {
             fill: ${({ $hoverColor }) => $hoverColor};
@@ -110,13 +118,13 @@ const SvgWrapper = styled.div<SvgWrapperProps & TransientProps<AllowedFrameProps
 `;
 
 const SVG = styled(ReactSVG)`
+    width: 100%;
+    height: 100%;
     display: flex;
-    align-items: center;
     justify-content: center;
 
     div {
         display: flex;
-        align-items: center;
         justify-content: center;
     }
 
@@ -169,8 +177,8 @@ export const Icon = forwardRef(
         };
 
         const handleInjection = (svg: SVGSVGElement) => {
-            svg.setAttribute('width', `${iconSize}px`);
-            svg.setAttribute('height', `${iconSize}px`);
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '100%');
         };
 
         const handleClick = (e: MouseEvent<any>) => {
@@ -188,6 +196,7 @@ export const Icon = forwardRef(
                 $cursorPointer={!!onClick || cursorPointer}
                 $hoverColor={hoverColor}
                 $color={color}
+                $size={iconSize}
                 $variant={variant}
                 data-testid={dataTest}
                 onClick={onClick ? handleClick : undefined}

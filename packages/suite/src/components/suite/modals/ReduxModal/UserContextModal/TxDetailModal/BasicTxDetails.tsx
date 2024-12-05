@@ -78,7 +78,7 @@ export const BasicTxDetails = ({
                     <CoinLogo symbol={tx.symbol} size={48} />
                     <NestedIconWrapper>
                         <IconCircle
-                            size={12}
+                            size={18}
                             paddingType="small"
                             hasBorder={false}
                             iconColor={{

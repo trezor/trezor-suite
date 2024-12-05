@@ -139,7 +139,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         <>
             <Flex
                 direction={isBelowLaptop ? 'column' : 'row'}
-                alignItems="normal"
+                alignItems={isBelowLaptop ? 'center' : 'normal'}
                 gap={spacings.sm}
             >
                 <NumberInput

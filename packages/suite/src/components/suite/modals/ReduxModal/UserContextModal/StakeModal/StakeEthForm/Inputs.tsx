@@ -72,7 +72,7 @@ export const Inputs = () => {
         isLessAmountForWithdrawalWarningShown || isAmountForWithdrawalWarningShown;
 
     return (
-        <Column gap={spacings.sm}>
+        <Column gap={spacings.sm} alignItems="center">
             <NumberInput
                 name={CRYPTO_INPUT}
                 labelLeft={

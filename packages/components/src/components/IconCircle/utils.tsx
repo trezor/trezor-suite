@@ -68,22 +68,12 @@ export const mapVariantToIconBackground = ({
     return theme[($hasBorder ? borderColorMap : noBorderColorMap)[$variant]];
 };
 
-export const mapPaddingTypeToPadding = ({ $paddingType, $size }: PaddingTypeMap): string => {
-    const paddingCoefficientMap: Record<IconCirclePaddingType, number> = {
-        small: 0.25,
-        medium: 0.5,
-        large: 0.75,
+export const mapPaddingTypeToDimensions = ({ $paddingType }: PaddingTypeMap): string => {
+    const dimensionsMap: Record<IconCirclePaddingType, string> = {
+        small: '70%',
+        medium: '60%',
+        large: '50%',
     };
 
-    return $size * paddingCoefficientMap[$paddingType] + 'px';
-};
-
-export const mapPaddingTypeToBorderWidth = ({ $paddingType, $size }: PaddingTypeMap): string => {
-    const borderCoefficientMap: Record<IconCirclePaddingType, number> = {
-        small: 0.1,
-        medium: 0.175,
-        large: 0.25,
-    };
-
-    return $size * borderCoefficientMap[$paddingType] + 'px';
+    return dimensionsMap[$paddingType];
 };

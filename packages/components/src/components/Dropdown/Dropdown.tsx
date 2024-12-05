@@ -224,7 +224,7 @@ export const Dropdown = forwardRef(
             <MoreIcon
                 size="small"
                 variant="tertiary"
-                icon="more"
+                icon="dotsThree"
                 tabIndex={-1}
                 onClick={e => e.stopPropagation()}
                 $isToggled={isToggled}

@@ -23,7 +23,7 @@ export const IconCircle: StoryObj = {
         variant: 'primary',
         name: 'butterfly',
         paddingType: 'large',
-        size: 40,
+        size: 60,
         hasBorder: true,
         ...getFramePropsStory(allowedIconCircleFrameProps).args,
     },

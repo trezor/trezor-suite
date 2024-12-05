@@ -1,6 +1,14 @@
 import { CryptoId } from 'invity-api';
 
-import { Column, IconCircle, Paragraph, NewModal, List, H4 } from '@trezor/components';
+import {
+    Column,
+    IconCircle,
+    IconCircleProps,
+    Paragraph,
+    NewModal,
+    List,
+    H4,
+} from '@trezor/components';
 import type { Deferred } from '@trezor/utils';
 import { spacings } from '@trezor/theme';
 
@@ -31,7 +39,12 @@ export const CoinmarketTermsModal = ({
     const lowercaseType = type.toLowerCase();
     const { device } = useDevice();
     const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
-    const iconProps = { variant: 'primary' as const, size: 'large' as const, hasBorder: false };
+    const iconProps = {
+        variant: 'primary',
+        size: 50,
+        paddingType: 'medium',
+        hasBorder: false,
+    } as Partial<IconCircleProps>;
 
     if (!device?.features) {
         return null;

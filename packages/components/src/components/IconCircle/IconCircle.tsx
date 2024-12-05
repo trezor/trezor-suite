@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { ExclusiveColorOrVariant, Icon, IconName, IconSize, getIconSize } from '../Icon/Icon';
 import { TransientProps } from '../../utils/transientProps';
@@ -11,8 +11,7 @@ import {
 import {
     mapVariantToIconBackground,
     mapVariantToIconBorderColor,
-    mapPaddingTypeToPadding,
-    mapPaddingTypeToBorderWidth,
+    mapPaddingTypeToDimensions,
 } from './utils';
 import {
     FrameProps,
@@ -33,21 +32,30 @@ type IconCircleWrapperProps = TransientProps<
 };
 
 const IconCircleWrapper = styled.div<IconCircleWrapperProps>`
-    width: ${({ $size }) => $size}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: ${mapVariantToIconBackground};
-    padding: ${mapPaddingTypeToPadding};
     border-radius: 50%;
-    box-shadow: inset 0 0 0 ${mapPaddingTypeToBorderWidth} ${mapVariantToIconBorderColor};
-    box-sizing: content-box;
+    box-shadow: inset 0 0 0 ${({ $size }) => $size * 0.1}px ${mapVariantToIconBorderColor};
 
     ${({ $hasBorder }) => !$hasBorder && 'box-shadow: none;'}
+    ${({ $size }) => css`
+        width: ${$size}px;
+        height: ${$size}px;
+    `}
 
     ${withFrameProps}
+
+    > * {
+        width: ${mapPaddingTypeToDimensions};
+        height: ${mapPaddingTypeToDimensions};
+    }
 `;
 
 export type IconCircleProps = {
     name: IconName;
-    size: IconSize | number;
+    size?: IconSize | number;
     paddingType?: IconCirclePaddingType;
     hasBorder?: boolean;
 } & IconCircleExclusiveColorOrVariant &
@@ -55,7 +63,7 @@ export type IconCircleProps = {
 
 export const IconCircle = ({
     name,
-    size,
+    size = 60,
     hasBorder = true,
     paddingType = 'large',
     iconColor,
@@ -81,7 +89,7 @@ export const IconCircle = ({
             {...wrapperColorOrVariant}
             {...frameProps}
         >
-            <Icon name={name} size={size} {...iconColorOrVariant} />
+            <Icon name={name} {...iconColorOrVariant} />
         </IconCircleWrapper>
     );
 };

@@ -43,7 +43,7 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
     };
 
     const eapIconComponent = (
-        <IconCircle name="eap" iconColor={purpleModalColorBranding} size={40} />
+        <IconCircle name="eap" iconColor={purpleModalColorBranding} size={110} />
     );
 
     return enabled ? (

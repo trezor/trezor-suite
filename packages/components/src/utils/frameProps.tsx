@@ -298,7 +298,7 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
             ...(allowedFrameProps.includes('maxWidth') ? { maxWidth: undefined } : {}),
             ...(allowedFrameProps.includes('maxHeight') ? { maxHeight: undefined } : {}),
             ...(allowedFrameProps.includes('overflow') ? { overflow: undefined } : {}),
-            ...(allowedFrameProps.includes('overflow') ? { flex: undefined } : {}),
+            ...(allowedFrameProps.includes('flex') ? { flex: undefined } : {}),
             ...(allowedFrameProps.includes('pointerEvents') ? { pointerEvents: undefined } : {}),
             ...(allowedFrameProps.includes('cursor') ? { cursor: undefined } : {}),
             ...(allowedFrameProps.includes('zIndex') ? { zIndex: undefined } : {}),

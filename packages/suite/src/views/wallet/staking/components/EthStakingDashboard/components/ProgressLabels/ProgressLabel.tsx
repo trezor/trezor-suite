@@ -3,8 +3,8 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import styled, { DefaultTheme } from 'styled-components';
 
 import { IconCircle, Text, Row } from '@trezor/components';
-import { borders, spacings, spacingsPx } from '@trezor/theme';
 import { IconCirclePaddingType } from '@trezor/components/src/components/IconCircle/types';
+import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { ProgressLabelState } from './types';
 
@@ -30,7 +30,7 @@ const mapProgressStateToBackground = ({
 const getProgressStateIcon = (progressState: ProgressLabelState) => {
     const props = {
         paddingType: 'small' as IconCirclePaddingType,
-        size: 18,
+        size: 28,
         hasBorder: false,
     };
 

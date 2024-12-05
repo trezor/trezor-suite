@@ -21,7 +21,7 @@ export const EmptyWallet = () => {
 
     return (
         <Column gap={spacings.xxs} data-testid="@dashboard/wallet-ready" alignItems="center">
-            <IconCircle name="check" size="extraLarge" variant="primary" />
+            <IconCircle name="check" size={90} variant="primary" />
             <H3 margin={{ top: spacings.md }}>
                 <Translation id="TR_YOUR_WALLET_IS_READY_WHAT" />
             </H3>

@@ -30,7 +30,7 @@ export const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
                 <IconCircle
                     name={props.iconName}
                     variant={props.iconVariant}
-                    size="extraLarge"
+                    size={90}
                     margin={{ top: spacings.xxl, bottom: spacings.xl }}
                 />
             )}
