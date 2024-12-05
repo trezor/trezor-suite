@@ -23,8 +23,8 @@ import { NoBackup } from './NoBackupBanner';
 import { FailedBackup } from './FailedBackupBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
 import { TranslationMode } from './TranslationModeBanner';
-import { FirmwareHashMismatch } from './FirmwareHashMismatchBanner';
-import { FirmwareRevisionCheckBanner } from './FirmwareRevisionCheckBanner';
+import { FirmwareHashMismatchOnLastUpdateBanner } from './FirmwareHashMismatchOnLastUpdateBanner';
+import { FirmwareAuthenticityCheckBanner } from './FirmwareAuthenticityCheckBanner';
 
 const Container = styled.div<{ $isVisible?: boolean }>`
     width: 100%;
@@ -67,12 +67,12 @@ export const SuiteBanners = () => {
     let priority = 0;
     // this handles firmware hash being invalid after a firmware update, not the regular firmware hash check
     if (device?.id && firmwareHashInvalid.includes(device.id)) {
-        banner = <FirmwareHashMismatch />;
+        banner = <FirmwareHashMismatchOnLastUpdateBanner />;
         priority = 92;
     }
     // the regular firmware hash check, and revision id check, either of them may fail
     else if (firmwareRevisionError || firmwareHashError) {
-        banner = <FirmwareRevisionCheckBanner />;
+        banner = <FirmwareAuthenticityCheckBanner />;
         priority = 91;
     } else if (device?.features?.unfinished_backup) {
         banner = <FailedBackup />;

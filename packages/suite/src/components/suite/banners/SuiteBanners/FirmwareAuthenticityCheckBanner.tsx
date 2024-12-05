@@ -39,7 +39,7 @@ const useAuthenticityCheckMessage = (): TranslationKey | null => {
     return null;
 };
 
-export const FirmwareRevisionCheckBanner = () => {
+export const FirmwareAuthenticityCheckBanner = () => {
     const firmwareRevisionError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
     const wasOffline = firmwareRevisionError === 'cannot-perform-check-offline';
 
