@@ -1,5 +1,3 @@
-import WebSocket from 'ws';
-
 import type {
     AddressNotification,
     BlockNotification,
@@ -48,9 +46,8 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
             url += suffix;
         }
 
-        // initialize connection,
-        // options are not used in web builds (see ./src/utils/ws)
-        return new WebSocket(url, {
+        return this.initWebsocket({
+            url,
             agent: this.options.agent,
             headers: {
                 Origin: 'https://node.trezor.io',

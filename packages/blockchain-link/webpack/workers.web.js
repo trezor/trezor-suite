@@ -1,5 +1,3 @@
-const webpack = require('webpack');
-
 const { SRC, BUILD } = require('./constants');
 
 module.exports = {
@@ -54,5 +52,4 @@ module.exports = {
     optimization: {
         minimize: false,
     },
-    plugins: [new webpack.NormalModuleReplacementPlugin(/^ws$/, `${SRC}/utils/ws`)],
 };

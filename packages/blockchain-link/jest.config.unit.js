@@ -13,7 +13,6 @@ module.exports = {
         ...testPathIgnorePatterns,
         'src/types',
         'src/ui',
-        'src/utils/ws.ts',
         'fixtures',
         'unit/worker/index.ts',
     ],

@@ -26,12 +26,10 @@
     ],
     "main": "src/index.ts",
     "browser": {
-        "socks-proxy-agent": "./src/utils/socks-proxy-agent.ts",
-        "ws": "./src/utils/ws.ts"
+        "socks-proxy-agent": "./src/utils/socks-proxy-agent.ts"
     },
     "react-native": {
         "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
-        "ws": "@trezor/blockchain-link/src/utils/ws-native.ts",
         "socks-proxy-agent": "@trezor/blockchain-link/src/utils/socks-proxy-agent.ts"
     },
     "publishConfig": {
@@ -39,12 +37,10 @@
         "types": "lib/index.d.ts",
         "typings": "lib/index.d.ts",
         "browser": {
-            "socks-proxy-agent": "./lib/utils/socks-proxy-agent.js",
-            "ws": "./lib/utils/ws.js"
+            "socks-proxy-agent": "./lib/utils/socks-proxy-agent.js"
         },
         "react-native": {
             "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
-            "ws": "@trezor/blockchain-link/lib/utils/ws-native.js",
             "socks-proxy-agent": "@trezor/blockchain-link/lib/utils/socks-proxy-agent.js"
         }
     },
@@ -85,11 +81,11 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
+        "@trezor/websocket-client": "workspace:*",
         "@types/web": "^0.0.197",
         "events": "^3.3.0",
         "ripple-lib": "^1.10.1",
-        "socks-proxy-agent": "8.0.4",
-        "ws": "^8.18.0"
+        "socks-proxy-agent": "8.0.4"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
