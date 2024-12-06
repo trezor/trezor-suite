@@ -10,6 +10,7 @@ import {
     allowedListFrameProps,
     allowedListTextProps,
     bulletVerticalAlignments,
+    listVariants,
 } from './List';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { getTextPropsStory } from '../typography/utils';
@@ -71,6 +72,12 @@ export const List: StoryObj = {
         },
         bulletAlignment: {
             options: Object.values(bulletVerticalAlignments),
+            control: {
+                type: 'select',
+            },
+        },
+        variant: {
+            options: listVariants,
             control: {
                 type: 'select',
             },

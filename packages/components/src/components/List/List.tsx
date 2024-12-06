@@ -19,6 +19,7 @@ import {
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 import { uiVerticalAlignments } from '../../config/types';
 import { ListItem } from './ListItem';
+import { Text, textVariants } from '../typography/Text/Text';
 
 export const allowedListFrameProps = [
     'margin',
@@ -32,6 +33,9 @@ export const allowedListTextProps = [
     'textWrap',
 ] as const satisfies TextPropsKeys[];
 type AllowedTextProps = Pick<TextProps, (typeof allowedListTextProps)[number]>;
+
+export const listVariants = textVariants;
+export type ListVariant = (typeof listVariants)[number];
 
 export const bulletVerticalAlignments = uiVerticalAlignments;
 export type BulletVerticalAlignment = (typeof uiVerticalAlignments)[number];
@@ -58,6 +62,7 @@ export type ListProps = AllowedFrameProps &
         bulletComponent?: React.ReactNode;
         bulletGap?: SpacingValues;
         bulletAlignment?: BulletVerticalAlignment;
+        variant?: ListVariant;
     };
 
 type ListContextValue = {
@@ -77,6 +82,7 @@ export const List = ({
     bulletGap = spacings.md,
     bulletAlignment = 'center',
     bulletComponent,
+    variant,
     children,
     ...rest
 }: ListProps) => {
@@ -85,9 +91,11 @@ export const List = ({
 
     return (
         <ListContext.Provider value={{ bulletGap, bulletAlignment, bulletComponent }}>
-            <Container {...makePropsTransient({ gap })} {...frameProps} {...textProps}>
-                {children}
-            </Container>
+            <Text as="div" variant={variant}>
+                <Container {...makePropsTransient({ gap })} {...frameProps} {...textProps}>
+                    {children}
+                </Container>
+            </Text>
         </ListContext.Provider>
     );
 };
