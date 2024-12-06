@@ -73,6 +73,7 @@ const formatCryptoAmountAsAmount = (amount: number, baseAmount: number, decimals
 
 export const CoinmarketOfferExchangeSendSwap = () => {
     const {
+        device,
         account,
         callInProgress,
         selectedQuote,
@@ -270,7 +271,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                 <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
                 <Button
                     isLoading={callInProgress}
-                    isDisabled={callInProgress}
+                    isDisabled={!device?.connected}
                     onClick={sendTransaction}
                 >
                     <Translation id="TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND" />

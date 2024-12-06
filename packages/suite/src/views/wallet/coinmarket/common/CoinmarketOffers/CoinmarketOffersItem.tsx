@@ -95,7 +95,7 @@ export interface CoinmarketOffersItemProps {
 export const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
     const theme = useTheme();
     const context = useCoinmarketFormContext();
-    const { callInProgress } = context;
+    const { device, callInProgress } = context;
     const providers = getProvidersInfoProps(context);
     const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
     const { exchange } = quote;
@@ -149,7 +149,7 @@ export const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                                 <Button
                                     isFullWidth
                                     isLoading={callInProgress}
-                                    isDisabled={!!quote.error || callInProgress}
+                                    isDisabled={!!quote.error || !device?.connected}
                                     onClick={() => selectQuote(quote)}
                                     data-testid="@coinmarket/offers/get-this-deal-button"
                                 >

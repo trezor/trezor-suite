@@ -37,6 +37,7 @@ const BreakableValue = styled.span`
 export const CoinmarketOfferExchangeSendApproval = () => {
     const dispatch = useDispatch();
     const {
+        device,
         account,
         callInProgress,
         selectedQuote,
@@ -280,7 +281,7 @@ export const CoinmarketOfferExchangeSendApproval = () => {
                     (selectedQuote.status === 'CONFIRM' && approvalType === 'ZERO')) && (
                     <Button
                         isLoading={callInProgress}
-                        isDisabled={callInProgress}
+                        isDisabled={!device?.connected}
                         onClick={sendTransaction}
                     >
                         <Translation id="TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND" />

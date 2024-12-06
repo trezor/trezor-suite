@@ -19,7 +19,10 @@ import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo
 import { useDispatch } from 'src/hooks/suite';
 import { COINMARKET_BUY } from 'src/actions/wallet/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
-import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import {
+    isCoinmarketBuyContext,
+    isCoinmarketExchangeContext,
+} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 
 interface CoinmarketVerifyProps {
     coinmarketVerifyAccount: CoinmarketVerifyAccountReturnProps;
@@ -183,7 +186,10 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
                             <Button
                                 data-testid="@coinmarket/offer/confirm-on-trezor-button"
                                 isLoading={callInProgress}
-                                isDisabled={callInProgress}
+                                isDisabled={
+                                    callInProgress ||
+                                    (!device?.connected && !isCoinmarketBuyContext(context))
+                                }
                                 onClick={() => {
                                     if (selectedAccountOption.account && accountAddress) {
                                         dispatch(
@@ -198,7 +204,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
                             >
                                 <Translation
                                     id={
-                                        device?.connected
+                                        device?.connected || !isCoinmarketBuyContext(context)
                                             ? 'TR_CONFIRM_ON_TREZOR'
                                             : 'TR_CONFIRM_ADDRESS'
                                     }

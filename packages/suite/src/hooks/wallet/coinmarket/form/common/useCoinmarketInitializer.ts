@@ -11,15 +11,12 @@ import {
 } from 'src/types/coinmarket/coinmarket';
 
 export const useCoinmarketInitializer = ({
-    type,
     selectedAccount,
 }: UseCoinmarketCommonProps): UseCoinmarketCommonReturnProps => {
     const timer = useTimer();
     const { account } = selectedAccount;
-    const { isLocked, device } = useDevice();
-    const [callInProgress, setCallInProgress] = useState<boolean>(
-        type !== 'buy' ? isLocked() : false,
-    );
+    const { device } = useDevice();
+    const [callInProgress, setCallInProgress] = useState<boolean>(false);
 
     const checkQuotesTimer = (callback: () => Promise<void>) => {
         if (!timer.isLoading && !timer.isStopped) {

@@ -10,7 +10,7 @@ import { AccountLabeling, Translation } from 'src/components/suite';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 
 export const CoinmarketOfferExchangeSend = () => {
-    const { account, callInProgress, selectedQuote, exchangeInfo, sendTransaction, trade } =
+    const { device, account, callInProgress, selectedQuote, exchangeInfo, sendTransaction, trade } =
         useCoinmarketFormContext<CoinmarketTradeExchangeType>();
     useCoinmarketWatchTrade({
         account,
@@ -50,6 +50,7 @@ export const CoinmarketOfferExchangeSend = () => {
                         <Button
                             data-testid="@coinmarket/offer/exchange/confirm-on-trezor-and-send"
                             isLoading={callInProgress}
+                            isDisabled={!device?.connected}
                             onClick={sendTransaction}
                         >
                             <Translation id="TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND" />

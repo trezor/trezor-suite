@@ -40,7 +40,7 @@ const Row = styled.div`
 const Address = styled.div``;
 
 export const CoinmarketSelectedOfferSellTransaction = () => {
-    const { account, callInProgress, selectedQuote, sellInfo, sendTransaction, trade } =
+    const { device, account, callInProgress, selectedQuote, sellInfo, sendTransaction, trade } =
         useCoinmarketFormContext<CoinmarketTradeSellType>();
     useCoinmarketWatchTrade({
         account,
@@ -101,7 +101,12 @@ export const CoinmarketSelectedOfferSellTransaction = () => {
                     )}
 
                     <ButtonWrapper>
-                        <Button minWidth={200} isLoading={callInProgress} onClick={sendTransaction}>
+                        <Button
+                            minWidth={200}
+                            isLoading={callInProgress}
+                            isDisabled={!device?.connected}
+                            onClick={sendTransaction}
+                        >
                             <Translation id="TR_SELL_CONFIRM_ON_TREZOR_SEND" />
                         </Button>
                     </ButtonWrapper>
