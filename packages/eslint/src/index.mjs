@@ -27,6 +27,7 @@ export const eslint = [
             '**/ci/',
             '**/.expo/*',
             'eslint-local-rules/*',
+            '**/.cache/*',
         ],
     },
     { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
