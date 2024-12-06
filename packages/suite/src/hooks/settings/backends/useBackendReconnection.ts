@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 
 import { reconnectBlockchainThunk } from '@suite-common/wallet-core';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { useDispatch } from 'src/hooks/suite';
 
 export const useBackendReconnection = (
-    coin: NetworkSymbol,
+    symbol: NetworkSymbol,
     identity?: string,
     resolveTime?: number,
 ) => {
@@ -29,7 +29,7 @@ export const useBackendReconnection = (
 
     const reconnect = async () => {
         setProgress(true);
-        const r: any = await dispatch(reconnectBlockchainThunk({ coin, identity }));
+        const r: any = await dispatch(reconnectBlockchainThunk({ coin: symbol, identity }));
         if (!r.success) {
             setProgress(false);
         }

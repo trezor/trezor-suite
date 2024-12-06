@@ -34,7 +34,7 @@ import { selectPortfolioGraphAccountItems } from './selectors';
 
 const useWatchTimeframeChangeForAnalytics = (
     timeframeHours: TimeframeHoursValue,
-    networkSymbol?: NetworkSymbol,
+    symbol?: NetworkSymbol,
 ) => {
     const isFirstRender = useRef(true);
 
@@ -51,12 +51,12 @@ const useWatchTimeframeChangeForAnalytics = (
         )?.label;
 
         if (timeframeLabel) {
-            if (networkSymbol) {
+            if (symbol) {
                 // TODO: Report tokenSymbol and tokenAddress if displaying ERC20 token account graph.
                 // related to issue: https://github.com/trezor/trezor-suite/issues/7839
                 analytics.report({
                     type: EventType.AssetDetailTimeframeChange,
-                    payload: { timeframe: timeframeLabel, assetSymbol: networkSymbol },
+                    payload: { timeframe: timeframeLabel, assetSymbol: symbol },
                 });
             } else {
                 analytics.report({
@@ -65,7 +65,7 @@ const useWatchTimeframeChangeForAnalytics = (
                 });
             }
         }
-    }, [timeframeHours, networkSymbol, isFirstRender]);
+    }, [timeframeHours, symbol, isFirstRender]);
 };
 
 const checkAndReportGraphError = (error: string | null) => {

@@ -1,6 +1,7 @@
 import { Deferred } from '@trezor/utils';
 import { Account, AddressType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { TrezorDevice } from './device';
 
@@ -110,7 +111,7 @@ export type UserContextPayload =
       }
     | {
           type: 'advanced-coin-settings';
-          coin: Account['symbol'];
+          symbol: NetworkSymbol;
       }
     | {
           type: 'add-token';

@@ -13,24 +13,24 @@ import { BlockchainRootState, selectIsElectrumBackendSelected } from '@suite-com
 const UNIX_DAY = 24 * 60 * 60;
 const REFRESH_INTERVAL = 30_000;
 
-export const useDayCoinPriceChange = (networkSymbol?: NetworkSymbol | null) => {
+export const useDayCoinPriceChange = (symbol?: NetworkSymbol | null) => {
     const [currentValue, setCurrentValue] = useState<number | null>(null);
     const [yesterdayValue, setYesterdayValue] = useState<number | null>(null);
     const [valuePercentageChange, setValuePercentageChange] = useState<number | null>(null);
 
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
-        selectIsElectrumBackendSelected(state, networkSymbol ?? 'btc'),
+        selectIsElectrumBackendSelected(state, symbol ?? 'btc'),
     );
 
     useEffect(() => {
         const getPrices = async () => {
-            if (!networkSymbol) return;
+            if (!symbol) return;
             const currentTimestamp = getUnixTime(Date.now());
             const yesterdayTimestamp = currentTimestamp - UNIX_DAY;
 
             const timestampedFiatRates = await getFiatRatesForTimestamps(
-                { symbol: networkSymbol },
+                { symbol },
                 [yesterdayTimestamp, currentTimestamp],
                 fiatCurrencyCode,
                 isElectrumBackend,
@@ -47,7 +47,7 @@ export const useDayCoinPriceChange = (networkSymbol?: NetworkSymbol | null) => {
         const refreshInterval = setInterval(getPrices, REFRESH_INTERVAL);
 
         return () => clearInterval(refreshInterval);
-    }, [networkSymbol, fiatCurrencyCode, isElectrumBackend]);
+    }, [symbol, fiatCurrencyCode, isElectrumBackend]);
 
     useEffect(() => {
         if (G.isNotNullable(currentValue) && G.isNotNullable(yesterdayValue)) {

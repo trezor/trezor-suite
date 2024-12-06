@@ -32,7 +32,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
 
     const { showAlert } = useAlert();
 
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
     const freshAddress = useSelector((state: NativeAccountsRootState & TransactionsRootState) =>
@@ -127,10 +127,10 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
 
     const handleShowAddress = useCallback(async () => {
         if (isPortfolioTrackerDevice) {
-            if (networkSymbol) {
+            if (symbol) {
                 analytics.report({
                     type: EventType.CreateReceiveAddressShowAddress,
-                    payload: { assetSymbol: networkSymbol },
+                    payload: { assetSymbol: symbol },
                 });
                 setIsReceiveApproved(true);
             }
@@ -150,7 +150,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 setIsUnverifiedAddressRevealed(false);
             }
         }
-    }, [isDeviceInViewOnlyMode, isPortfolioTrackerDevice, networkSymbol, verifyAddressOnDevice]);
+    }, [isDeviceInViewOnlyMode, isPortfolioTrackerDevice, symbol, verifyAddressOnDevice]);
 
     return {
         address: freshAddress?.address,

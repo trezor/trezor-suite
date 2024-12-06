@@ -7,8 +7,8 @@ class OnCoinEnablingInit {
             .withTimeout(10000);
     }
 
-    async enableNetwork(networkSymbol: string) {
-        const networkIdMatcher = by.id(`@coin-enabling/toggle-${networkSymbol}`);
+    async enableNetwork(symbol: string) {
+        const networkIdMatcher = by.id(`@coin-enabling/toggle-${symbol}`);
         await scrollUntilVisible(networkIdMatcher);
         await element(networkIdMatcher).tap();
     }

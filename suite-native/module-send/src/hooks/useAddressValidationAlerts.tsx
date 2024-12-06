@@ -38,18 +38,17 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const networkType = networkSymbol ? getNetworkType(networkSymbol) : null;
+    const networkType = symbol ? getNetworkType(symbol) : null;
 
     const { watch, setValue } = useFormContext();
 
     const addressFieldName = getOutputFieldName(inputIndex, 'address');
     const addressValue = watch(addressFieldName);
 
-    const isFilledValidAddress =
-        addressValue && networkSymbol && isAddressValid(addressValue, networkSymbol);
+    const isFilledValidAddress = addressValue && symbol && isAddressValid(addressValue, symbol);
 
     const convertAddressToChecksum = useCallback(() => {
         setValue(addressFieldName, toChecksumAddress(addressValue), {
@@ -62,7 +61,7 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
         if (isFilledValidAddress && !checkAddressCheckSum(addressValue)) {
             const params = {
                 descriptor: addressValue,
-                coin: networkSymbol,
+                coin: symbol,
             };
 
             const addressInfo = await TrezorConnect.getAccountInfo(params);
@@ -100,7 +99,7 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
                 onPressPrimaryButton: convertAddressToChecksum,
             });
         }
-    }, [addressValue, isFilledValidAddress, networkSymbol, showAlert, convertAddressToChecksum]);
+    }, [addressValue, isFilledValidAddress, symbol, showAlert, convertAddressToChecksum]);
 
     useEffect(() => {
         const shouldShowTokenAlert =

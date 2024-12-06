@@ -29,13 +29,13 @@ type TransactionDetailValuesSheetProps = {
 
 type TodayHeaderCellProps = {
     cryptoValue: string;
-    network: NetworkSymbol;
+    symbol: NetworkSymbol;
     historicRate?: number;
 };
 
-const TodayHeaderCell = ({ cryptoValue, network, historicRate }: TodayHeaderCellProps) => {
+const TodayHeaderCell = ({ cryptoValue, symbol, historicRate }: TodayHeaderCellProps) => {
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
-    const fiatRateKey = getFiatRateKey(network, fiatCurrencyCode);
+    const fiatRateKey = getFiatRateKey(symbol, fiatCurrencyCode);
     const currentRates = useSelector((state: FiatRatesRootState) =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey),
     );
@@ -45,7 +45,7 @@ const TodayHeaderCell = ({ cryptoValue, network, historicRate }: TodayHeaderCell
     const fiatTotalHistoryNumeric = pipe(
         convertCryptoToFiatAmount({
             amount: cryptoValue,
-            symbol: network,
+            symbol,
             rate: historicRate,
         }) ?? 0,
         Number,
@@ -53,7 +53,7 @@ const TodayHeaderCell = ({ cryptoValue, network, historicRate }: TodayHeaderCell
     const fiatTotalActualNumeric = pipe(
         convertCryptoToFiatAmount({
             amount: cryptoValue,
-            symbol: network,
+            symbol,
             rate: currentRates?.rate,
         }),
         Number,
@@ -108,7 +108,7 @@ export const TransactionDetailValuesSheet = ({
                                 <TodayHeaderCell
                                     cryptoValue={transaction.amount}
                                     historicRate={historicRate}
-                                    network={transaction.symbol}
+                                    symbol={transaction.symbol}
                                 />
                             </Th>
                         </Tr>

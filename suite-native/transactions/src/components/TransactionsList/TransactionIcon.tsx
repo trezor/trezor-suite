@@ -9,7 +9,7 @@ import { TransactionIconSpinner } from './TransactionIconSpinner';
 
 type TransactionIconProps = {
     transactionType: TransactionType;
-    networkSymbol?: NetworkSymbol;
+    symbol?: NetworkSymbol;
     contractAddress?: TokenAddress;
     isAnimated?: boolean;
     iconColor?: Color;
@@ -42,7 +42,7 @@ const cryptoIconStyle = prepareNativeStyle(utils => ({
 }));
 
 export const TransactionIcon = ({
-    networkSymbol,
+    symbol,
     contractAddress,
     transactionType,
     backgroundColor,
@@ -71,10 +71,10 @@ export const TransactionIcon = ({
                     width={spinnerWidth}
                 />
             )}
-            {networkSymbol && (
+            {symbol && (
                 <Box style={applyStyle(cryptoIconStyle)}>
                     <CryptoIcon
-                        symbol={networkSymbol}
+                        symbol={symbol}
                         contractAddress={contractAddress}
                         size="extraSmall"
                     />

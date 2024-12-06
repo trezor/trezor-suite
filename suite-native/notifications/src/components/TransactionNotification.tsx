@@ -123,7 +123,7 @@ export const TransactionNotification = ({
             iconLeft={
                 <TransactionIcon
                     transactionType={transactionType}
-                    networkSymbol={notification.symbol}
+                    symbol={notification.symbol}
                     isAnimated={isIconAnimated}
                     iconColor={isIconAnimated ? 'iconAlertYellow' : 'iconSubdued'}
                 />

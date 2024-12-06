@@ -35,7 +35,7 @@ export const AccountBalanceScreenHeader = ({
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
     );
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
@@ -51,7 +51,7 @@ export const AccountBalanceScreenHeader = ({
         selectAccountTokenBalance(state, accountKey, tokenContract),
     );
 
-    if (!networkSymbol) {
+    if (!symbol) {
         return;
     }
 
@@ -62,9 +62,9 @@ export const AccountBalanceScreenHeader = ({
             content={
                 <VStack spacing="sp4" alignItems="center">
                     <HStack spacing="sp8" alignItems="center">
-                        {networkSymbol && (
+                        {symbol && (
                             <CryptoIcon
-                                symbol={networkSymbol}
+                                symbol={symbol}
                                 contractAddress={tokenContract}
                                 size="extraSmall"
                             />
@@ -81,7 +81,7 @@ export const AccountBalanceScreenHeader = ({
                             tokenContract={tokenContract}
                             isBalance={false}
                         />
-                        {!isTestnet(networkSymbol) && (
+                        {!isTestnet(symbol) && (
                             <>
                                 <Text variant="hint" color="textSubdued">
                                     ≈

@@ -97,14 +97,14 @@ export const TokenTransferListItem = ({
     isFirst,
     isLast,
 }: TokenTransferListItemProps) => {
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
     const isFailedTxn = transaction.type === 'failed';
 
     return (
         <TransactionListItemContainer
-            networkSymbol={networkSymbol ?? undefined}
+            symbol={symbol ?? undefined}
             tokenTransfer={tokenTransfer}
             transactionType={isFailedTxn ? 'failed' : tokenTransfer.type}
             txid={txid}

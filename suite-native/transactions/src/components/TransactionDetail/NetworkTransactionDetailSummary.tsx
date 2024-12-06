@@ -85,7 +85,7 @@ export const NetworkTransactionDetailSummary = ({
                     addressesType="inputs"
                     addresses={transactionInputAddresses}
                     onShowMore={onShowMore}
-                    networkSymbol={transaction.symbol}
+                    symbol={transaction.symbol}
                 />
             )}
             {A.isNotEmpty(transactionOutputAddresses) && (

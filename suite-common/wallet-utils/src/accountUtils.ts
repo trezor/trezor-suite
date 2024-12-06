@@ -923,12 +923,12 @@ export const getAccountIdentifier = (account: Account) => ({
 export const accountSearchFn = (
     account: Account,
     rawSearchString?: string,
-    coinFilter?: NetworkSymbol,
+    symbolFilter?: NetworkSymbol,
     metadataAccountLabel?: string,
 ) => {
     // if coin filter is active and account symbol doesn't match return false and don't continue the search
-    const coinFilterMatch = coinFilter ? account.symbol === coinFilter : true;
-    if (!coinFilterMatch) return false;
+    const symbolFilterMatch = symbolFilter ? account.symbol === symbolFilter : true;
+    if (!symbolFilterMatch) return false;
 
     const searchString = rawSearchString?.trim().toLowerCase();
     if (!searchString) return true; // no search string

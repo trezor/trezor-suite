@@ -119,7 +119,7 @@ export const TransactionListItem = ({
 
     return (
         <TransactionListItemContainer
-            networkSymbol={transaction.symbol}
+            symbol={transaction.symbol}
             txid={transaction.txid}
             transactionType={transaction.type}
             accountKey={accountKey}

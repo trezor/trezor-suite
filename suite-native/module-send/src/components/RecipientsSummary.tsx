@@ -47,11 +47,11 @@ export const RecipientsSummary = ({
     const draftOutputs = useSelector((state: SendRootState) =>
         selectSendFormDraftOutputsByAccountKey(state, accountKey),
     );
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
     const isAmountInSats = useSelector((state: SettingsSliceRootState) =>
-        selectIsAmountInSats(state, networkSymbol),
+        selectIsAmountInSats(state, symbol),
     );
 
     // If the fee level was not successfully created (there is not enough balance for it), use the draft outputs instead.
@@ -60,7 +60,7 @@ export const RecipientsSummary = ({
         : draftOutputs;
     const addressTargetingOutputs = outputs?.filter(output => 'address' in output) as Output[];
 
-    if (!addressTargetingOutputs || !networkSymbol) return null;
+    if (!addressTargetingOutputs || !symbol) return null;
 
     // Successfully composed outputs values are always in "balance" format.
     const isBalance = !isAmountInSats && !isFinalPrecomposedTransaction(selectedFeeLevel);

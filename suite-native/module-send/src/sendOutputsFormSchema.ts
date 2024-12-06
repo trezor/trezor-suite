@@ -1,7 +1,7 @@
 import { G } from '@mobily/ts-belt';
 
 import { BigNumber } from '@trezor/utils';
-import { getNetworkType, NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkType, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     formatNetworkAmount,
     isAddressDeprecated,
@@ -17,7 +17,7 @@ import { U_INT_32 } from '@suite-common/wallet-constants';
 import { FeeLevelsMaxAmount } from './types';
 
 export type SendFormFormContext = {
-    networkSymbol?: NetworkSymbol;
+    symbol?: NetworkSymbol;
     availableBalance?: string;
     networkFeeInfo?: FeeInfo;
     isValueInSats?: boolean;
@@ -33,9 +33,9 @@ const isAmountDust = (amount: string, context?: SendFormFormContext) => {
         return false;
     }
 
-    const { networkSymbol, networkFeeInfo, isValueInSats } = context;
+    const { symbol, networkFeeInfo, isValueInSats } = context;
 
-    if (!networkSymbol || !networkFeeInfo) {
+    if (!symbol || !networkFeeInfo) {
         return false;
     }
 
@@ -43,7 +43,7 @@ const isAmountDust = (amount: string, context?: SendFormFormContext) => {
     const rawDust = networkFeeInfo.dustLimit?.toString();
 
     const dustThreshold =
-        rawDust && (isValueInSats ? rawDust : formatNetworkAmount(rawDust, networkSymbol));
+        rawDust && (isValueInSats ? rawDust : formatNetworkAmount(rawDust, symbol));
 
     if (!dustThreshold) {
         return false;
@@ -61,10 +61,9 @@ const isAmountHigherThanBalance = (
         return false;
     }
 
-    const { networkSymbol, networkFeeInfo, availableBalance, feeLevelsMaxAmount, isTokenFlow } =
-        context;
+    const { symbol, networkFeeInfo, availableBalance, feeLevelsMaxAmount, isTokenFlow } = context;
 
-    if (!networkSymbol || !networkFeeInfo || !availableBalance) {
+    if (!symbol || !networkFeeInfo || !availableBalance) {
         return false;
     }
 
@@ -100,16 +99,16 @@ export const sendOutputsFormValidationSchema = yup.object({
                             if (!value || !context) {
                                 return false;
                             }
-                            const { networkSymbol, isTaprootAvailable } = context;
+                            const { symbol, isTaprootAvailable } = context;
 
-                            if (!networkSymbol) return false;
+                            if (!symbol) return false;
 
                             const isTaprootValid =
-                                isTaprootAvailable || !isTaprootAddress(value, networkSymbol);
+                                isTaprootAvailable || !isTaprootAddress(value, symbol);
 
                             return (
-                                isAddressValid(value, networkSymbol) &&
-                                !isAddressDeprecated(value, networkSymbol) &&
+                                isAddressValid(value, symbol) &&
+                                !isAddressDeprecated(value, symbol) &&
                                 !isBech32AddressUppercase(value) && // bech32 addresses are valid as uppercase but are not accepted by Trezor
                                 isTaprootValid // bech32m/Taproot addresses are valid but may not be supported by older FW
                             );
@@ -119,10 +118,10 @@ export const sendOutputsFormValidationSchema = yup.object({
                         'ripple-is-sending-to-self',
                         'Can`t send to myself.',
                         (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                            const { networkSymbol, accountDescriptor } = context!;
-                            if (!networkSymbol || !accountDescriptor) return true;
+                            const { symbol, accountDescriptor } = context!;
+                            if (!symbol || !accountDescriptor) return true;
 
-                            if (getNetworkType(networkSymbol) !== 'ripple') return true;
+                            if (getNetworkType(symbol) !== 'ripple') return true;
 
                             return value !== accountDescriptor;
                         },
@@ -145,14 +144,9 @@ export const sendOutputsFormValidationSchema = yup.object({
                             value,
                             { options: { context } }: yup.TestContext<SendFormFormContext>,
                         ) {
-                            const { networkSymbol, availableBalance, feeLevelsMaxAmount } =
-                                context!;
+                            const { symbol, availableBalance, feeLevelsMaxAmount } = context!;
 
-                            if (
-                                !availableBalance ||
-                                !networkSymbol ||
-                                getNetworkType(networkSymbol) !== 'ripple'
-                            )
+                            if (!availableBalance || !symbol || getNetworkType(symbol) !== 'ripple')
                                 return true;
 
                             const amountBigNumber = new BigNumber(value);
@@ -163,7 +157,7 @@ export const sendOutputsFormValidationSchema = yup.object({
                                     formatNetworkAmount(
                                         // availableBalance = balance - reserve
                                         availableBalance,
-                                        networkSymbol,
+                                        symbol,
                                     ),
                                 )
                             ) {
@@ -209,10 +203,10 @@ export const sendOutputsFormValidationSchema = yup.object({
             'is-destination-tag-in-range',
             'Destination tag is too high.',
             (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                const { networkSymbol } = context!;
+                const { symbol } = context!;
 
-                if (!networkSymbol) return true;
-                if (getNetworkType(networkSymbol) !== 'ripple') return true;
+                if (!symbol) return true;
+                if (getNetworkType(symbol) !== 'ripple') return true;
 
                 if (!value) return true;
 

@@ -66,10 +66,10 @@ export const selectEthereumAPYByAccountKey = (
     state: StakeRootState & AccountsRootState,
     accountKey: string,
 ) => {
-    const networkSymbol = selectAccountNetworkSymbol(state, accountKey);
-    if (!networkSymbol) return null;
+    const symbol = selectAccountNetworkSymbol(state, accountKey);
+    if (!symbol) return null;
 
-    return selectPoolStatsApyData(state, networkSymbol);
+    return selectPoolStatsApyData(state, symbol);
 };
 
 export const selectEthereumStakedBalanceByAccountKey = (

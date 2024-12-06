@@ -6,7 +6,7 @@ import { Button, H3, Paragraph, variables } from '@trezor/components';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { blockchainActions } from '@suite-common/wallet-core';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { CoinLogo } from '@trezor/product-components';
 
 import { Modal, Translation } from 'src/components/suite';
@@ -52,17 +52,17 @@ const CoinUrls = styled.span`
 `;
 
 interface BackendRowProps {
-    coin: NetworkSymbol;
+    symbol: NetworkSymbol;
     urls: string[];
     onSettings: () => void;
 }
 
-const BackendRow = ({ coin, urls, onSettings }: BackendRowProps) => (
+const BackendRow = ({ symbol, urls, onSettings }: BackendRowProps) => (
     <BackendRowWrapper>
-        <CoinLogo symbol={coin} />
+        <CoinLogo symbol={symbol} />
         <CoinDescription>
             <CoinTitle>
-                <Translation id={getTitleForNetwork(coin)} />
+                <Translation id={getTitleForNetwork(symbol)} />
             </CoinTitle>
             <CoinUrls>{urls.join(', ')}</CoinUrls>
         </CoinDescription>
@@ -90,7 +90,7 @@ type DisableTorModalProps = Omit<Extract<UserContextPayload, { type: 'disable-to
 
 export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) => {
     const dispatch = useDispatch();
-    const [coin, setCoin] = useState<NetworkSymbol>();
+    const [symbol, setSymbol] = useState<NetworkSymbol>();
     const onionBackends = useCustomBackends().filter(({ urls }) => urls.every(isOnionUrl));
 
     const onDisableTor = () => {
@@ -145,9 +145,9 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                         {onionBackends.map(({ coin, urls }) => (
                             <BackendRow
                                 key={coin}
-                                coin={coin}
+                                symbol={coin}
                                 urls={urls}
-                                onSettings={() => setCoin(coin)}
+                                onSettings={() => setSymbol(coin)}
                             />
                         ))}
                     </>
@@ -162,7 +162,9 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                     </>
                 )}
             </Modal>
-            {coin && <AdvancedCoinSettingsModal coin={coin} onCancel={() => setCoin(undefined)} />}
+            {symbol && (
+                <AdvancedCoinSettingsModal symbol={symbol} onCancel={() => setSymbol(undefined)} />
+            )}
         </>
     );
 };

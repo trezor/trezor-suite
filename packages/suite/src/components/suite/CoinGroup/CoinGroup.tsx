@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import type { Network, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { useDispatch } from 'src/hooks/suite';
 import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
@@ -35,7 +35,7 @@ export const CoinGroup = ({ networks, enabledNetworks }: CoinGroupProps) => {
         dispatch(
             openModal({
                 type: 'advanced-coin-settings',
-                coin: symbol,
+                symbol,
             }),
         );
     };

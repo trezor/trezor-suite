@@ -19,7 +19,7 @@ export const TokenTransactionDetailSummary = ({
     tokenTransfer: TypedTokenTransfer;
     onShowMore: () => void;
 }) => {
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
     // Token transfer has always only one address, so we need to wrap it to an array.
@@ -35,7 +35,7 @@ export const TokenTransactionDetailSummary = ({
             <TransactionDetailAddressesSection
                 addressesType="inputs"
                 addresses={inputAddresses}
-                networkSymbol={networkSymbol ?? undefined}
+                symbol={symbol ?? undefined}
                 contractAddress={tokenTransfer.contract}
                 onShowMore={onShowMore}
             />

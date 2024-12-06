@@ -1,6 +1,6 @@
 import { D, pipe } from '@mobily/ts-belt';
 
-import { NetworkSymbol, getNetworkType, networks } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType, networks } from '@suite-common/wallet-config';
 import {
     FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
@@ -15,12 +15,12 @@ const PRODUCTION_SEND_COINS_WHITELIST = pipe(
 
 export const selectIsNetworkSendFlowEnabled = (
     state: FeatureFlagsRootState,
-    networkSymbol?: NetworkSymbol,
+    symbol?: NetworkSymbol,
 ) => {
-    if (!networkSymbol) return false;
-    const networkType = getNetworkType(networkSymbol);
+    if (!symbol) return false;
+    const networkType = getNetworkType(symbol);
 
-    if (PRODUCTION_SEND_COINS_WHITELIST.includes(networkSymbol)) return true;
+    if (PRODUCTION_SEND_COINS_WHITELIST.includes(symbol)) return true;
 
     const isRippleSendEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsRippleSendEnabled);
 

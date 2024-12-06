@@ -11,20 +11,20 @@ import {
 
 describe('isTokenDefinitionKnown', () => {
     isTokenDefinitionKnownFixtures.forEach(
-        ({ testName, tokenDefinitions, networkSymbol, contractAddress, result }) => {
+        ({ testName, tokenDefinitions, symbol, contractAddress, result }) => {
             test(testName, () => {
-                expect(
-                    isTokenDefinitionKnown(tokenDefinitions, networkSymbol, contractAddress),
-                ).toBe(result);
+                expect(isTokenDefinitionKnown(tokenDefinitions, symbol, contractAddress)).toBe(
+                    result,
+                );
             });
         },
     );
 });
 
 describe('getSupportedDefinitionTypes', () => {
-    getSupportedDefinitionTypesFixtures.forEach(({ testName, networkSymbol, result }) => {
+    getSupportedDefinitionTypesFixtures.forEach(({ testName, symbol, result }) => {
         test(testName, () => {
-            expect(getSupportedDefinitionTypes(networkSymbol)).toEqual(result);
+            expect(getSupportedDefinitionTypes(symbol)).toEqual(result);
         });
     });
 });

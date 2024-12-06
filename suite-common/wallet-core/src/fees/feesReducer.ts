@@ -48,12 +48,12 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<FeesRootState>();
 const selectFees = (state: FeesRootState) => state.wallet.fees;
 
 export const selectNetworkFeeInfo = createMemoizedSelector(
-    [selectFees, (_state: FeesRootState, networkSymbol?: NetworkSymbol) => networkSymbol],
-    (fees, networkSymbol): FeeInfo | null => {
-        if (!networkSymbol) return null;
+    [selectFees, (_state: FeesRootState, symbol?: NetworkSymbol) => symbol],
+    (fees, symbol): FeeInfo | null => {
+        if (!symbol) return null;
 
-        const networkType = getNetworkType(networkSymbol);
-        const networkFeeInfo = fees[networkSymbol];
+        const networkType = getNetworkType(symbol);
+        const networkFeeInfo = fees[symbol];
         const levels = returnStableArrayIfEmpty(getFeeLevels(networkType, networkFeeInfo));
 
         return { ...networkFeeInfo, levels };
@@ -63,7 +63,7 @@ export const selectNetworkFeeInfo = createMemoizedSelector(
 export const selectNetworkFeeLevel = createMemoizedSelector(
     [
         selectNetworkFeeInfo,
-        (_state: FeesRootState, _networkSymbol?: NetworkSymbol, level?: FeeLevelLabel) => level,
+        (_state: FeesRootState, _symbol?: NetworkSymbol, level?: FeeLevelLabel) => level,
     ],
     (networkFeeInfo, level): FeeLevel | null => {
         if (!networkFeeInfo) return null;

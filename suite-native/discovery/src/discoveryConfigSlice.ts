@@ -15,7 +15,7 @@ import {
     portfolioTrackerTestnets,
     sortNetworks,
 } from '@suite-native/config';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     createSelectIsFeatureFlagEnabled,
     FeatureFlag,
@@ -70,15 +70,15 @@ export const discoveryConfigSlice = createSlice({
             state.discoveryInfo = payload;
         },
         toggleEnabledDiscoveryNetworkSymbol: (state, { payload }: PayloadAction<NetworkSymbol>) => {
-            const networkSymbol = payload;
-            const index = state.enabledDiscoveryNetworkSymbols.indexOf(networkSymbol);
+            const symbol = payload;
+            const index = state.enabledDiscoveryNetworkSymbols.indexOf(symbol);
 
             if (index !== -1) {
                 // If the network is already in the list, remove it
                 state.enabledDiscoveryNetworkSymbols.splice(index, 1);
             } else {
                 // If the network is not in the list, add it
-                state.enabledDiscoveryNetworkSymbols.push(networkSymbol);
+                state.enabledDiscoveryNetworkSymbols.push(symbol);
             }
         },
         setEnabledDiscoveryNetworkSymbols: (state, { payload }: PayloadAction<NetworkSymbol[]>) => {

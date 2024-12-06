@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Paragraph } from '@trezor/components';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite/Translation';
@@ -14,13 +14,13 @@ const Wrapper = styled(Paragraph)`
 `;
 
 interface ConnectionInfoProps {
-    coin: NetworkSymbol;
+    symbol: NetworkSymbol;
 }
 
-const ConnectionInfo = ({ coin }: ConnectionInfoProps) => {
+const ConnectionInfo = ({ symbol }: ConnectionInfoProps) => {
     const blockchain = useSelector(state => state.wallet.blockchain);
 
-    const { connected, url, blockHash: hash, blockHeight: height, version } = blockchain[coin];
+    const { connected, url, blockHash: hash, blockHeight: height, version } = blockchain[symbol];
 
     return (
         <Wrapper typographyStyle="hint">

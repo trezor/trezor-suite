@@ -20,11 +20,11 @@ const Row = styled.span`
 
 const getIcon = (symbol?: NetworkSymbol) => symbol && <CoinLogo symbol={symbol} size={24} />;
 
-const useActionAllowed = (path: string, network?: NetworkSymbol) => {
+const useActionAllowed = (path: string, symbol?: NetworkSymbol) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const pathMatch = useRouteMatch(`${process.env.ASSET_PREFIX || ''}${path}`);
 
-    return !!pathMatch && selectedAccount?.network?.symbol === network;
+    return !!pathMatch && selectedAccount?.network?.symbol === symbol;
 };
 
 export const CoinProtocolRenderer = ({

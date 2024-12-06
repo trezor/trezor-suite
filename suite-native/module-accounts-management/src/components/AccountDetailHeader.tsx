@@ -26,11 +26,11 @@ type AccountBalanceProps = {
 };
 
 const CryptoBalance = ({
-    accountSymbol,
+    symbol,
     tokenSymbol,
     tokenAddress,
 }: {
-    accountSymbol: NetworkSymbol;
+    symbol: NetworkSymbol;
     tokenSymbol?: TokenSymbol | null;
     tokenAddress?: TokenAddress;
 }) => {
@@ -39,7 +39,7 @@ const CryptoBalance = ({
     return (
         <DiscreetTextTrigger>
             <AccountDetailCryptoValue
-                symbol={accountSymbol}
+                symbol={symbol}
                 tokenSymbol={tokenSymbol}
                 tokenAddress={tokenAddress}
                 value={selectedPoint.cryptoBalance}
@@ -68,7 +68,7 @@ export const AccountDetailHeader = ({ accountKey, tokenAddress }: AccountBalance
     return (
         <VStack spacing="sp4" alignItems="center">
             <CryptoBalance
-                accountSymbol={account.symbol}
+                symbol={account.symbol}
                 tokenSymbol={tokenSymbol}
                 tokenAddress={tokenAddress}
             />

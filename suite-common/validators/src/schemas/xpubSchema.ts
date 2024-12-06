@@ -1,6 +1,6 @@
 import { G } from '@mobily/ts-belt';
 
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { isAddressValid, isAddressBasedNetwork } from '@suite-common/wallet-utils';
 
 import { yup } from '../config';
@@ -15,17 +15,17 @@ export const xpubFormValidationSchema = yup.object({
             'is-invalid-address',
             'Address is not valid',
             (value, { options: { context } }: yup.TestContext<XpubFormContext>) => {
-                const networkSymbol = context?.networkSymbol;
+                const symbol = context?.networkSymbol;
 
-                if (!networkSymbol) return false;
+                if (!symbol) return false;
 
-                const networkType = getNetworkType(networkSymbol);
+                const networkType = getNetworkType(symbol);
                 if (!isAddressBasedNetwork(networkType)) return true;
 
                 return (
                     G.isNotNullable(value) &&
-                    G.isNotNullable(networkSymbol) &&
-                    isAddressValid(value, networkSymbol)
+                    G.isNotNullable(symbol) &&
+                    isAddressValid(value, symbol)
                 );
             },
         ),

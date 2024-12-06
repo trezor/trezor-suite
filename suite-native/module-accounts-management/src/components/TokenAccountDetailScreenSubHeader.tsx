@@ -30,7 +30,7 @@ export const TokenAccountDetailScreenSubHeader = ({
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
     );
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     )!;
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
@@ -44,7 +44,7 @@ export const TokenAccountDetailScreenSubHeader = ({
                         {tokenName}
                     </Text>
                     <HStack spacing="sp4" alignItems="center">
-                        <CryptoIcon symbol={networkSymbol} size="extraSmall" />
+                        <CryptoIcon symbol={symbol} size="extraSmall" />
                         <Text
                             variant="label"
                             color="textSubdued"

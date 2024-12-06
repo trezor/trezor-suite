@@ -216,22 +216,19 @@ export const selectVisibleDeviceAccounts = createMemoizedSelector(
 export const selectDeviceAccountsForNetworkSymbolAndAccountType = createMemoizedSelector(
     [
         selectDeviceAccounts,
-        (_state: AccountsRootState & DeviceRootState, networkSymbol?: NetworkSymbol) =>
-            networkSymbol,
+        (_state: AccountsRootState & DeviceRootState, symbol?: NetworkSymbol) => symbol,
         (
             _state: AccountsRootState & DeviceRootState,
-            _networkSymbol?: NetworkSymbol,
+            _symbol?: NetworkSymbol,
             accountType?: AccountType,
         ) => accountType,
     ],
-    (accounts, networkSymbol, accountType) => {
-        if (!networkSymbol || !accountType) return EMPTY_STABLE_ACCOUNTS_ARRAY;
+    (accounts, symbol, accountType) => {
+        if (!symbol || !accountType) return EMPTY_STABLE_ACCOUNTS_ARRAY;
 
         return pipe(
             accounts,
-            A.filter(
-                account => account.symbol === networkSymbol && account.accountType === accountType,
-            ),
+            A.filter(account => account.symbol === symbol && account.accountType === accountType),
             returnStableArrayIfEmpty,
         );
     },
@@ -242,7 +239,7 @@ export const selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex = cre
         selectDeviceAccountsForNetworkSymbolAndAccountType,
         (
             _state: AccountsRootState & DeviceRootState,
-            _networkSymbol?: NetworkSymbol,
+            _symbol?: NetworkSymbol,
             _accountType?: AccountType,
             accountIndex?: number,
         ) => accountIndex,
@@ -417,16 +414,15 @@ export const selectDeviceAccountByDescriptorAndNetworkSymbol = createMemoizedSel
         (
             _state: AccountsRootState & DeviceRootState,
             _accountDescriptor?: string,
-            networkSymbol?: NetworkSymbol,
-        ) => networkSymbol,
+            symbol?: NetworkSymbol,
+        ) => symbol,
     ],
-    (accounts, accountDescriptor, networkSymbol) => {
-        if (!accountDescriptor || !networkSymbol) return null;
+    (accounts, accountDescriptor, symbol) => {
+        if (!accountDescriptor || !symbol) return null;
 
         return (
             accounts.find(
-                account =>
-                    account.descriptor === accountDescriptor && account.symbol === networkSymbol,
+                account => account.descriptor === accountDescriptor && account.symbol === symbol,
             ) ?? null
         );
     },

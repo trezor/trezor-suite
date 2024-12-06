@@ -112,7 +112,7 @@ export const NavBackends = ({ customBackends, children }: NavBackendsProps) => {
                     dispatch(
                         openModal({
                             type: 'advanced-coin-settings',
-                            coin: backend.coin,
+                            symbol: backend.coin,
                         }),
                     ),
             })),

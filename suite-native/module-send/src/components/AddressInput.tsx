@@ -30,7 +30,7 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     const addressFieldName = getOutputFieldName(index, 'address');
     const { setValue } = useFormContext<SendOutputsFormValues>();
 
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
@@ -43,13 +43,13 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
 
     const handleScanAddressQRCode = (qrCodeData: string) => {
         setValue(addressFieldName, qrCodeData, { shouldValidate: true });
-        if (networkSymbol && isAddressValid(qrCodeData, networkSymbol)) {
+        if (symbol && isAddressValid(qrCodeData, symbol)) {
             analytics.report({ type: EventType.SendAddressFilled, payload: { method: 'qr' } });
         }
     };
 
     const handleChangeValue = (newValue: string) => {
-        if (networkSymbol && isAddressValid(newValue, networkSymbol)) {
+        if (symbol && isAddressValid(newValue, symbol)) {
             analytics.report({ type: EventType.SendAddressFilled, payload: { method: 'manual' } });
         }
     };

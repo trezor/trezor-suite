@@ -49,20 +49,20 @@ export const TokenOfNetworkAlertBody = ({
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    if (!tokenContract || !networkSymbol) return null;
+    if (!tokenContract || !symbol) return null;
 
-    const networkName = getNetwork(networkSymbol).name;
+    const networkName = getNetwork(symbol).name;
 
     return (
         <VStack spacing="sp24">
             <Box style={applyStyle(iconWrapperStyle)}>
-                <CryptoIcon symbol={networkSymbol} contractAddress={tokenContract} size={80} />
+                <CryptoIcon symbol={symbol} contractAddress={tokenContract} size={80} />
                 <Box style={applyStyle(networkIconWrapperStyle)}>
-                    <CryptoIcon symbol={networkSymbol} size={32} />
+                    <CryptoIcon symbol={symbol} size={32} />
                 </Box>
             </Box>
             <Text variant="titleSmall">

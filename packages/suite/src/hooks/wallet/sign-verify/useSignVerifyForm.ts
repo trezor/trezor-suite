@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { yup } from '@suite-common/validators';
 import { isAddressValid } from '@suite-common/wallet-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import type { Account } from 'src/types/wallet';
 
@@ -14,7 +14,7 @@ export const MAX_LENGTH_SIGNATURE = 255;
 
 type SignVerifyContext = {
     isSignPage: boolean;
-    accountNetwork: NetworkSymbol;
+    symbol: NetworkSymbol;
 };
 
 const signVerifySchema = yup.object({
@@ -33,9 +33,7 @@ const signVerifySchema = yup.object({
             'isAddressValid',
             'TR_ADD_TOKEN_ADDRESS_NOT_VALID',
             (value, { options }) =>
-                value &&
-                options.context?.accountNetwork &&
-                isAddressValid(value, options.context?.accountNetwork),
+                value && options.context?.symbol && isAddressValid(value, options.context?.symbol),
         )
         .required(),
     path: yup.string().when('$isSignPage', {
@@ -78,7 +76,7 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
         resolver: yupResolver(signVerifySchema),
         context: {
             isSignPage,
-            accountNetwork: account?.symbol,
+            symbol: account?.symbol,
         },
         defaultValues: DEFAULT_VALUES,
     });

@@ -18,7 +18,7 @@ type TransactionDetailAddressesSectionProps = {
     addresses: VinVoutAddress[];
     addressesType: 'inputs' | 'outputs';
     onShowMore: () => void;
-    networkSymbol?: NetworkSymbol;
+    symbol?: NetworkSymbol;
     contractAddress?: TokenAddress;
 };
 
@@ -79,7 +79,7 @@ export const TransactionDetailAddressesSection = ({
     addressesType,
     addresses,
     onShowMore,
-    networkSymbol,
+    symbol,
     contractAddress,
 }: TransactionDetailAddressesSectionProps) => {
     const { applyStyle } = useNativeStyles();
@@ -115,10 +115,10 @@ export const TransactionDetailAddressesSection = ({
                         ))}
                     </Box>
 
-                    {networkSymbol && (
+                    {symbol && (
                         <Box style={applyStyle(coinIconWrapperStyle)}>
                             <CryptoIcon
-                                symbol={networkSymbol}
+                                symbol={symbol}
                                 contractAddress={contractAddress}
                                 size="extraSmall"
                             />

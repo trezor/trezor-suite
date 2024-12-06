@@ -78,20 +78,20 @@ export const selectAccountCryptoBalanceWithStaking = (
 
 export const selectAccountHasStaking = (state: NativeStakingRootState, accountKey: AccountKey) => {
     const account = selectAccountByKey(state, accountKey);
-    const accountSymbol = account?.symbol;
+    const symbol = account?.symbol;
 
-    if (!accountSymbol || !doesCoinSupportStaking(accountSymbol)) {
+    if (!symbol || !doesCoinSupportStaking(symbol)) {
         return false;
     }
 
-    switch (accountSymbol) {
+    switch (symbol) {
         case 'eth':
         case 'thol':
         case 'tsep':
             return selectEthereumAccountHasStaking(state, accountKey);
         default:
-            // This throws error if any networkSymbol is not handled.
-            accountSymbol satisfies never;
+            // This throws error if any symbol is not handled.
+            symbol satisfies never;
 
             return false;
     }
@@ -102,19 +102,19 @@ export const selectIsStakePendingByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    const accountSymbol = account?.symbol;
-    if (!accountSymbol || !doesCoinSupportStaking(accountSymbol)) {
+    const symbol = account?.symbol;
+    if (!symbol || !doesCoinSupportStaking(symbol)) {
         return false;
     }
 
-    switch (accountSymbol) {
+    switch (symbol) {
         case 'eth':
         case 'thol':
         case 'tsep':
             return selectEthereumIsStakePendingByAccountKey(state, accountKey);
         default:
-            // This throws error if any networkSymbol is not handled.
-            accountSymbol satisfies never;
+            // This throws error if any symbol is not handled.
+            symbol satisfies never;
 
             return false;
     }
@@ -125,19 +125,19 @@ export const selectIsStakeConfirmingByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    const accountSymbol = account?.symbol;
-    if (!accountSymbol || !doesCoinSupportStaking(accountSymbol)) {
+    const symbol = account?.symbol;
+    if (!symbol || !doesCoinSupportStaking(symbol)) {
         return false;
     }
 
-    switch (accountSymbol) {
+    switch (symbol) {
         case 'eth':
         case 'thol':
         case 'tsep':
             return selectEthereumIsStakeConfirmingByAccountKey(state, accountKey);
         default:
-            // This throws error if any networkSymbol is not handled.
-            accountSymbol satisfies never;
+            // This throws error if any symbol is not handled.
+            symbol satisfies never;
 
             return false;
     }
@@ -145,19 +145,19 @@ export const selectIsStakeConfirmingByAccountKey = (
 
 export const selectAPYByAccountKey = (state: NativeStakingRootState, accountKey: AccountKey) => {
     const account = selectAccountByKey(state, accountKey);
-    const accountSymbol = account?.symbol;
-    if (!accountSymbol || !doesCoinSupportStaking(accountSymbol)) {
+    const symbol = account?.symbol;
+    if (!symbol || !doesCoinSupportStaking(symbol)) {
         return null;
     }
 
-    switch (accountSymbol) {
+    switch (symbol) {
         case 'eth':
         case 'thol':
         case 'tsep':
             return selectEthereumAPYByAccountKey(state, accountKey);
         default:
-            // This throws error if any networkSymbol is not handled.
-            accountSymbol satisfies never;
+            // This throws error if any symbol is not handled.
+            symbol satisfies never;
 
             return null;
     }
@@ -168,19 +168,19 @@ export const selectStakedBalanceByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    const accountSymbol = account?.symbol;
-    if (!accountSymbol || !doesCoinSupportStaking(accountSymbol)) {
+    const symbol = account?.symbol;
+    if (!symbol || !doesCoinSupportStaking(symbol)) {
         return '0';
     }
 
-    switch (accountSymbol) {
+    switch (symbol) {
         case 'eth':
         case 'thol':
         case 'tsep':
             return selectEthereumStakedBalanceByAccountKey(state, accountKey);
         default:
-            // This throws error if any networkSymbol is not handled.
-            accountSymbol satisfies never;
+            // This throws error if any symbol is not handled.
+            symbol satisfies never;
 
             return '0';
     }
@@ -191,19 +191,19 @@ export const selectRewardsBalanceByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    const accountSymbol = account?.symbol;
-    if (!accountSymbol || !doesCoinSupportStaking(accountSymbol)) {
+    const symbol = account?.symbol;
+    if (!symbol || !doesCoinSupportStaking(symbol)) {
         return '0';
     }
 
-    switch (accountSymbol) {
+    switch (symbol) {
         case 'eth':
         case 'thol':
         case 'tsep':
             return selectEthereumRewardsBalanceByAccountKey(state, accountKey);
         default:
-            // This throws error if any networkSymbol is not handled.
-            accountSymbol satisfies never;
+            // This throws error if any symbol is not handled.
+            symbol satisfies never;
 
             return '0';
     }
@@ -214,19 +214,19 @@ export const selectTotalStakePendingByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
-    const accountSymbol = account?.symbol;
-    if (!accountSymbol || !doesCoinSupportStaking(accountSymbol)) {
+    const symbol = account?.symbol;
+    if (!symbol || !doesCoinSupportStaking(symbol)) {
         return '0';
     }
 
-    switch (accountSymbol) {
+    switch (symbol) {
         case 'eth':
         case 'thol':
         case 'tsep':
             return selectEthereumTotalStakePendingByAccountKey(state, accountKey);
         default:
-            // This throws error if any networkSymbol is not handled.
-            accountSymbol satisfies never;
+            // This throws error if any symbol is not handled.
+            symbol satisfies never;
 
             return '0';
     }

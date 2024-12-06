@@ -11,7 +11,7 @@ import {
 import { cloneObject } from '@trezor/utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import { NetworkSymbol, networks } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { DeviceModelInternal } from '@trezor/connect';
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
 
@@ -138,12 +138,12 @@ export const selectSendFormDraftOutputsByAccountKey = (
 
 export const selectSendFormReviewButtonRequestsCount = (
     state: DeviceRootState,
-    networkSymbol?: NetworkSymbol,
+    symbol?: NetworkSymbol,
     decreaseOutputId?: number,
 ) => {
     const buttonRequestCodes = selectDeviceButtonRequestsCodes(state);
     const deviceModel = selectDeviceModel(state);
-    const { networkType } = networks[networkSymbol ?? 'btc'];
+    const networkType = getNetworkType(symbol ?? 'btc');
 
     const isCardano = networkType === 'cardano';
     const isEthereum = networkType === 'ethereum';

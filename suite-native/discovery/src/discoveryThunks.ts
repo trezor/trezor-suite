@@ -33,7 +33,6 @@ import {
     type AccountType,
     type Network,
     type NetworkSymbol,
-    getNetwork,
     getNetworkType,
     type NetworkAccount,
     normalizeNetworkAccounts,
@@ -74,9 +73,9 @@ export const discoveryErrors = {
     accountLimitReached: 'discovery-account-limit',
 };
 
-const getBatchSizeByCoin = (coin: NetworkSymbol): number => {
-    if (coin in DISCOVERY_BATCH_SIZE_PER_COIN) {
-        return DISCOVERY_BATCH_SIZE_PER_COIN[coin]!;
+const getBatchSizeByCoin = (symbol: NetworkSymbol): number => {
+    if (DISCOVERY_BATCH_SIZE_PER_COIN[symbol] !== undefined) {
+        return DISCOVERY_BATCH_SIZE_PER_COIN[symbol];
     }
 
     return DISCOVERY_DEFAULT_BATCH_SIZE;
@@ -184,8 +183,8 @@ const finishNetworkTypeDiscoveryThunk = createThunk(
     },
 );
 
-const getAccountInfoDetailsLevel = (coin: NetworkSymbol) => {
-    const networkType = getNetworkType(coin);
+const getAccountInfoDetailsLevel = (symbol: NetworkSymbol) => {
+    const networkType = getNetworkType(symbol);
     // For Cardano we need to fetch at least one tx otherwise it will not generate correctly new receive addresses (xpub instead of address)
     if (networkType === 'cardano') return { details: 'txs', pageSize: 1 } as const;
 
@@ -644,11 +643,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         const enabledNetworks = selectDeviceEnabledDiscoveryNetworkSymbols(getState());
 
         let availableCardanoDerivations: ('normal' | 'legacy' | 'ledger')[] = [];
-        if (
-            enabledNetworks.some(
-                networkSymbol => getNetwork(networkSymbol).networkType === 'cardano',
-            )
-        ) {
+        if (enabledNetworks.some(symbol => getNetworkType(symbol) === 'cardano')) {
             availableCardanoDerivations =
                 (await dispatch(
                     getCardanoSupportedAccountTypesThunk({
@@ -743,11 +738,8 @@ export const applyDiscoveryChangesThunk = createThunk(
         // in such case the first normal account can be invisible. We need to make it visible.
         const enabledDiscoveryNetworkSymbols =
             selectDeviceEnabledDiscoveryNetworkSymbols(getState());
-        enabledDiscoveryNetworkSymbols.forEach(networkSymbol => {
-            const firstNormalAccount = selectFirstNormalAccountForNetworkSymbol(
-                getState(),
-                networkSymbol,
-            );
+        enabledDiscoveryNetworkSymbols.forEach(symbol => {
+            const firstNormalAccount = selectFirstNormalAccountForNetworkSymbol(getState(), symbol);
 
             if (firstNormalAccount && !firstNormalAccount.visible) {
                 dispatch(accountsActions.changeAccountVisibility(firstNormalAccount, true));

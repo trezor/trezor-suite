@@ -128,7 +128,7 @@ const CoinItem = ({ symbol }: CoinItemProps) => {
         dispatch(
             openModal({
                 type: 'advanced-coin-settings',
-                coin: symbol,
+                symbol,
             }),
         );
     };

@@ -48,7 +48,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
     const dispatch = useDispatch();
     const [torModalOpen, setTorModalOpen] = useState(false);
 
-    const { symbol: coin } = network;
+    const { symbol } = network;
 
     const {
         type,
@@ -59,7 +59,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
         removeUrl,
         save,
         hasOnlyOnions,
-    } = useBackendsForm(coin);
+    } = useBackendsForm(symbol);
 
     const onSaveClick = () => {
         if (!isTorEnabled && hasOnlyOnions()) {
@@ -88,7 +88,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
         }
     };
 
-    const { defaultUrls, isLoading } = useDefaultUrls(coin);
+    const { defaultUrls, isLoading } = useDefaultUrls(symbol);
     const { ref: inputRef, ...inputField } = register(name, { validate });
     const isEditable = type !== 'default';
     const isSubmitButtonDisabled = isEditable && !!error;
@@ -125,7 +125,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                     <BackendInput
                         key={url}
                         url={url}
-                        isActive={url === blockchain[coin]?.url}
+                        isActive={url === blockchain[symbol]?.url}
                         isLoading={isLoading}
                         onRemove={isEditable ? () => removeUrl(url) : undefined}
                     />
@@ -162,7 +162,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                     heading={<Translation id="SETTINGS_ADV_COIN_CONN_INFO_TITLE" />}
                     margin={{ top: spacings.md }}
                 >
-                    <ConnectionInfo coin={coin} />
+                    <ConnectionInfo symbol={symbol} />
                 </CollapsibleBox>
 
                 <SaveButton

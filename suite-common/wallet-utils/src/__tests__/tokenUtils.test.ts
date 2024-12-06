@@ -3,9 +3,9 @@ import { getContractAddressForNetworkSymbol } from '../tokenUtils';
 
 describe('getContractAddressForNetworkSymbol', () => {
     getContractAddressForNetworkSymbolFixtures.forEach(
-        ({ testName, networkSymbol, contractAddress, expected }) => {
+        ({ testName, symbol, contractAddress, expected }) => {
             test(testName, () => {
-                const result = getContractAddressForNetworkSymbol(networkSymbol, contractAddress);
+                const result = getContractAddressForNetworkSymbol(symbol, contractAddress);
                 expect(result).toBe(expected);
             });
         },

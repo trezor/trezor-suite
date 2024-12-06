@@ -200,12 +200,15 @@ export const selectNumberOfAccountTokensWithFiatRates = (
     return tokens.length;
 };
 
-export const selectHasDeviceAnyTokensForNetwork = (state: TokensRootState, coin: NetworkSymbol) => {
-    if (!isCoinWithTokens(coin)) {
+export const selectHasDeviceAnyTokensForNetwork = (
+    state: TokensRootState,
+    symbol: NetworkSymbol,
+) => {
+    if (!isCoinWithTokens(symbol)) {
         return false;
     }
 
-    const accounts = selectVisibleDeviceAccountsByNetworkSymbol(state, coin);
+    const accounts = selectVisibleDeviceAccountsByNetworkSymbol(state, symbol);
 
     return A.any(accounts, account => {
         const result = selectAnyOfTokensIsKnown(state, account.key);

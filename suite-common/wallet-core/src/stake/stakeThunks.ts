@@ -69,9 +69,9 @@ export const initStakeDataThunk = createThunk(
 
         const networksWithStaking = getStakingSymbols(networks);
 
-        const promises = networksWithStaking.flatMap(networkSymbol =>
+        const promises = networksWithStaking.flatMap(symbol =>
             Object.values(EverstakeEndpointType).map(endpointType => {
-                const data = selectEverstakeData(getState(), networkSymbol, endpointType);
+                const data = selectEverstakeData(getState(), symbol, endpointType);
 
                 const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
 
@@ -81,7 +81,7 @@ export const initStakeDataThunk = createThunk(
                     data?.lastSuccessfulFetchTimestamp <= fiveMinutesAgo;
 
                 if (shouldRefetch) {
-                    return dispatch(fetchEverstakeData({ networkSymbol, endpointType }));
+                    return dispatch(fetchEverstakeData({ networkSymbol: symbol, endpointType }));
                 }
 
                 return null;

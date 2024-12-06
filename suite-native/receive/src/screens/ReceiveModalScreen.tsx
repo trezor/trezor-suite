@@ -67,7 +67,7 @@ const ReceiveModalScreenSubHeader = ({ accountKey, tokenContract }: ScreenSubHea
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
     );
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
     const tokenSymbol = useSelector((state: TokensRootState) =>
@@ -91,11 +91,11 @@ const ReceiveModalScreenSubHeader = ({ accountKey, tokenContract }: ScreenSubHea
                     <Text variant="highlight">
                         <Translation
                             id="moduleReceive.screenTitle"
-                            values={{ coinSymbol: networkSymbol?.toUpperCase() }}
+                            values={{ coinSymbol: symbol?.toUpperCase() }}
                         />
                     </Text>
                     <HStack spacing="sp8" alignItems="center">
-                        {networkSymbol && <CryptoIcon symbol={networkSymbol} size="extraSmall" />}
+                        {symbol && <CryptoIcon symbol={symbol} size="extraSmall" />}
                         {accountLabel && (
                             <Text variant="highlight">
                                 {accountLabel}

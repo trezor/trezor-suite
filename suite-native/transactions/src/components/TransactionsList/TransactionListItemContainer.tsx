@@ -36,7 +36,7 @@ type TransactionListItemContainerProps = {
     includedCoinsCount: number;
     isFirst?: boolean;
     isLast?: boolean;
-    networkSymbol?: NetworkSymbol | undefined;
+    symbol?: NetworkSymbol | undefined;
     tokenTransfer?: TypedTokenTransfer;
     transactionType: TransactionType;
 };
@@ -104,7 +104,7 @@ export const TransactionListItemContainer = ({
     isLast = false,
     includedCoinsCount,
     transactionType,
-    networkSymbol,
+    symbol,
     tokenTransfer,
 }: TransactionListItemContainerProps) => {
     const { applyStyle } = useNativeStyles();
@@ -140,7 +140,7 @@ export const TransactionListItemContainer = ({
     );
 
     const iconColor: Color = isTransactionPending ? 'backgroundAlertYellowBold' : 'iconSubdued';
-    const coinSymbol = isPhishingTransaction ? undefined : networkSymbol;
+    const coinSymbol = isPhishingTransaction ? undefined : symbol;
     const contractAddress = isPhishingTransaction ? undefined : tokenTransfer?.contract;
 
     const DateTextComponent = isPhishingTransaction ? DiscreetText : Text;
@@ -152,7 +152,7 @@ export const TransactionListItemContainer = ({
         >
             <Box style={applyStyle(descriptionBoxStyle)}>
                 <TransactionIcon
-                    networkSymbol={coinSymbol}
+                    symbol={coinSymbol}
                     contractAddress={contractAddress}
                     transactionType={transactionType}
                     isAnimated={isTransactionPending}

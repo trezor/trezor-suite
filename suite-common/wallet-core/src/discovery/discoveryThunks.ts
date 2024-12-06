@@ -12,12 +12,12 @@ import {
 import { Discovery, DiscoveryItem, PartialDiscovery } from '@suite-common/wallet-types';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
-    NetworkAccount,
-    NetworkSymbol,
+    type NetworkAccount,
+    type NetworkSymbol,
     Network,
     networksCollection,
     normalizeNetworkAccounts,
-    NormalizedNetworkAccount,
+    type NormalizedNetworkAccount,
 } from '@suite-common/wallet-config';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
@@ -271,21 +271,18 @@ export const getBundleThunk = createThunk(
             configNetwork: Network,
             { bip43Path, accountType }: NetworkAccount,
         ) => {
-            const { networkType, symbol: networkSymbol } = configNetwork;
+            const { networkType, symbol } = configNetwork;
 
             // find all existed accounts
             const prevAccounts = accountsByDeviceState
-                .filter(
-                    account =>
-                        account.accountType === accountType && account.symbol === networkSymbol,
-                )
+                .filter(account => account.accountType === accountType && account.symbol === symbol)
                 .sort((a, b) => b.index - a.index);
 
             // check if requested coin already have an empty account
             const hasEmptyAccount = prevAccounts.find(a => a.empty && !a.visible);
             // check if requested coin not failed before
             const failed = discovery.failed.find(
-                account => account.symbol === networkSymbol && account.accountType === accountType,
+                account => account.symbol === symbol && account.accountType === accountType,
             );
 
             // skip legacy/ledger accounts if availableCardanoDerivations doesn't include their respective derivation
@@ -303,7 +300,7 @@ export const getBundleThunk = createThunk(
 
                 bundle.push({
                     path: substituteBip43Path(bip43Path, pathIndex),
-                    coin: networkSymbol,
+                    coin: symbol,
                     identity: tryGetAccountIdentity({
                         networkType,
                         deviceState: discovery.deviceState,

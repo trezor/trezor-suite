@@ -11,7 +11,7 @@ import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wal
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
-import { networks, NetworkType } from '@suite-common/wallet-config';
+import { getNetworkType, type NetworkType } from '@suite-common/wallet-config';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 
 import { SendFeesFormValues } from '../sendFeesFormSchema';
@@ -70,15 +70,15 @@ export const CustomFeeCard = ({ onEdit, onCancel }: CustomFeeCardProps) => {
 
     const customFeeTransaction = feeLevels.custom;
 
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    if (!isFinalPrecomposedTransaction(customFeeTransaction) || !networkSymbol) {
+    if (!isFinalPrecomposedTransaction(customFeeTransaction) || !symbol) {
         return null;
     }
 
-    const { networkType } = networks[networkSymbol];
+    const networkType = getNetworkType(symbol);
 
     return (
         <Animated.View entering={FadeInLeft.delay(300)} exiting={FadeOutLeft}>
@@ -90,12 +90,12 @@ export const CustomFeeCard = ({ onEdit, onCancel }: CustomFeeCardProps) => {
                             <VStack alignItems="flex-end" spacing={0}>
                                 <CryptoToFiatAmountFormatter
                                     value={customFeeTransaction.fee}
-                                    symbol={networkSymbol}
+                                    symbol={symbol}
                                     variant="body"
                                 />
                                 <CryptoAmountFormatter
                                     value={customFeeTransaction?.fee}
-                                    symbol={networkSymbol}
+                                    symbol={symbol}
                                     isBalance={false}
                                     variant="hint"
                                     numberOfLines={1}
