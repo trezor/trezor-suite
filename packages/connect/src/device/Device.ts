@@ -512,7 +512,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
     }
 
-    async _runInner<X>(fn: (() => Promise<X>) | undefined, options: RunOptions): Promise<void> {
+    private async _runInner<X>(
+        fn: (() => Promise<X>) | undefined,
+        options: RunOptions,
+    ): Promise<void> {
         // typically when using cancel/override, device might be releasing
         // note: I am tempted to do this check at the beginning of device.acquire but on the other hand I would like
         // to have methods as atomic as possible and shift responsibility for deciding when to call them on the caller
@@ -1151,7 +1154,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
     }
 
-    getMode() {
+    private getMode() {
         if (this.features.bootloader_mode) return 'bootloader';
         if (!this.features.initialized) return 'initialize';
         if (this.features.no_backup) return 'seedless';
