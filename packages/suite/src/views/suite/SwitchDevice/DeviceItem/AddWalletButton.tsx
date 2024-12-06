@@ -33,7 +33,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
 
     return (
         <Tooltip
-            content={!isLocked && <Translation id="TR_TO_ACCESS_OTHER_WALLETS" />}
+            content={isLocked && <Translation id="TR_TO_ACCESS_OTHER_WALLETS" />}
             cursor="pointer"
             placement="bottom"
         >
