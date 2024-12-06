@@ -1,6 +1,9 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 
 import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+
+import { expect } from '../customMatchers';
+
 
 export class SettingsActions {
     private readonly window: Page;
@@ -79,12 +82,12 @@ export class SettingsActions {
 
     async enableCoin(coin: NetworkSymbol) {
         await this.coinNetworkButton(coin).click();
-        await expect(this.coinNetworkButton(coin)).toHaveAttribute('data-active', 'true');
+        await expect(this.coinNetworkButton(coin)).toBeEnabledCoin();
     }
 
     async disableCoin(coin: NetworkSymbol) {
         await this.coinNetworkButton(coin).click();
-        await expect(this.coinNetworkButton(coin)).toHaveAttribute('data-active', 'false');
+        await expect(this.coinNetworkButton(coin)).toBeDisabledCoin();
     }
 
     async changeCoinBackend(backend: BackendType, backendUrl: string) {

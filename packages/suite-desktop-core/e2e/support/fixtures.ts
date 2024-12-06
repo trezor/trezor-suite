@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-
 import { test as base, ElectronApplication, Page } from '@playwright/test';
 
 import {
@@ -115,4 +114,4 @@ const test = base.extend<Fixtures>({
 });
 
 export { test };
-export { expect } from '@playwright/test';
+export { expect } from './customMatchers';

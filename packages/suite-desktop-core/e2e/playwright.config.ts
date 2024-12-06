@@ -34,7 +34,7 @@ const config: PlaywrightTestConfig = {
     reporter: process.env.GITHUB_ACTION
         ? [['list'], ['@currents/playwright'], ['html', { open: 'never' }]]
         : [['list'], ['html', { open: 'never' }]],
-    timeout: 1000 * 60 * 5,
+    timeout: 1000 * 60 * 1,
     outputDir: path.join(__dirname, 'test-results'),
 };
 
