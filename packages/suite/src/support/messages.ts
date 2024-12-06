@@ -3209,6 +3209,11 @@ export default defineMessages({
         defaultMessage: 'Skip Update',
         id: 'TR_SKIP_UPDATE',
     },
+    TR_SKIP_UPDATE_DESCRIPTION: {
+        defaultMessage:
+            'It only takes a moment to stay protected. Keep your Trezor secure and future-ready by installing the latest firmware.',
+        id: 'TR_SKIP_UPDATE_DESCRIPTION',
+    },
     TR_SOLVE_ISSUE: {
         defaultMessage: 'Refresh',
         id: 'TR_SOLVE_ISSUE',

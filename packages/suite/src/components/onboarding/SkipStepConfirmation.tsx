@@ -20,6 +20,12 @@ type SkipModalContent = {
 
 const getModalContent = (activeStepId: AnyStepId): SkipModalContent => {
     switch (activeStepId) {
+        case STEP.ID_FIRMWARE_STEP:
+            return {
+                heading: <Translation id="TR_SKIP_UPDATE" />,
+                secondaryButtonText: <Translation id="TR_SKIP_UPDATE" />,
+                body: <Translation id="TR_SKIP_UPDATE_DESCRIPTION" />,
+            };
         case STEP.ID_SECURITY_STEP:
         case STEP.ID_BACKUP_STEP:
             return {
