@@ -1,6 +1,8 @@
 // @group_device-management
 // @retry=2
 
+import { onOnboardingPage } from '../../../support/pageObjects/onboardingObject';
+
 const shareOneOfThree = [
     'gesture',
     'necklace',
@@ -57,7 +59,7 @@ describe('Onboarding - T2T1 in recovery mode', () => {
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@analytics/continue-button').click();
 
-        cy.getTestElement('@firmware/skip-button').click();
+        onOnboardingPage.skipFirmware();
 
         cy.getTestElement('@onboarding/path-recovery-button').click();
     });

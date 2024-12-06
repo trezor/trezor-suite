@@ -47,6 +47,7 @@ class OnboardingPage {
 
     skipFirmware() {
         cy.getTestElement('@firmware/skip-button').click();
+        cy.getTestElement('@onboarding/skip-button-confirm').click();
     }
 
     setPin() {
