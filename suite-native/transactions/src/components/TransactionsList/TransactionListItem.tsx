@@ -71,7 +71,7 @@ export const TransactionListItemValues = ({
                     )}
                     <CryptoToFiatAmountFormatter
                         value={Number(transaction.amount)}
-                        network={transaction.symbol}
+                        symbol={transaction.symbol}
                         historicRate={historicRate}
                         useHistoricRate
                         isForcedDiscreetMode={isPhishingTransaction}

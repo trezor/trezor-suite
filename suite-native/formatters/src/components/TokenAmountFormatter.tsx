@@ -7,7 +7,7 @@ import { AmountText } from './AmountText';
 import { convertTokenValueToDecimal } from '../utils';
 
 type TokenAmountFormatterProps = {
-    symbol: TokenSymbol | null;
+    tokenSymbol: TokenSymbol | null;
     isDiscreetText?: boolean;
     decimals?: number;
     isForcedDiscreetMode?: boolean;
@@ -16,7 +16,7 @@ type TokenAmountFormatterProps = {
 
 export const TokenAmountFormatter = ({
     value,
-    symbol,
+    tokenSymbol,
     isDiscreetText = true,
     decimals = 0,
     variant = 'hint',
@@ -25,7 +25,7 @@ export const TokenAmountFormatter = ({
 }: TokenAmountFormatterProps) => {
     const decimalValue = convertTokenValueToDecimal(value, decimals);
 
-    const formattedValue = `${localizeNumber(decimalValue)} ${symbol}`;
+    const formattedValue = `${localizeNumber(decimalValue)} ${tokenSymbol}`;
 
     return (
         <AmountText

@@ -200,7 +200,7 @@ export const FeeOption = ({
                                 variant="body"
                                 color="textDefault"
                                 value={fee}
-                                network={networkSymbol}
+                                symbol={networkSymbol}
                             />
                             <CryptoAmountFormatter
                                 variant="hint"

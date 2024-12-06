@@ -65,7 +65,7 @@ export const TransactionDetailListItem = ({
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="sp16">
                     <RoundedIcon
-                        networkSymbol={transaction.symbol}
+                        symbol={transaction.symbol}
                         contractAddress={tokenTransfer?.contract}
                     />
                 </Box>

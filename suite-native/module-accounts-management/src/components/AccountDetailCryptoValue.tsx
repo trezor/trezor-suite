@@ -26,7 +26,11 @@ export const AccountDetailCryptoValue = memo(
             <CryptoIcon symbol={networkSymbol} contractAddress={tokenAddress} size="extraSmall" />
 
             {tokenSymbol ? (
-                <TokenAmountFormatter value={value} symbol={tokenSymbol} adjustsFontSizeToFit />
+                <TokenAmountFormatter
+                    value={value}
+                    tokenSymbol={tokenSymbol}
+                    adjustsFontSizeToFit
+                />
             ) : (
                 <CryptoAmountFormatter
                     value={value}

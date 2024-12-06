@@ -10,7 +10,7 @@ import { Box, BoxProps } from './Box';
 
 export type RoundedIconProps = {
     name?: IconName;
-    networkSymbol?: NetworkSymbol;
+    symbol?: NetworkSymbol;
     contractAddress?: TokenAddress;
     color?: Color;
     iconSize?: IconSize;
@@ -40,7 +40,7 @@ const iconContainerStyle = prepareNativeStyle<{ backgroundColor?: Color; contain
 
 export const RoundedIcon = ({
     name,
-    networkSymbol,
+    symbol,
     contractAddress,
     color,
     iconSize,
@@ -59,9 +59,7 @@ export const RoundedIcon = ({
             {name && name in icons ? (
                 <Icon name={name as IconName} color={color} size={iconSize} />
             ) : (
-                networkSymbol && (
-                    <CryptoIcon symbol={networkSymbol} contractAddress={contractAddress} />
-                )
+                symbol && <CryptoIcon symbol={symbol} contractAddress={contractAddress} />
             )}
         </Box>
     );

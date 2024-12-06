@@ -21,13 +21,13 @@ export const getTokenDefinitionThunk = createThunk(
     `${TOKEN_DEFINITIONS_MODULE}/getNftTokenDefinition`,
     async (
         params: {
-            networkSymbol: NetworkSymbol;
+            symbol: NetworkSymbol;
             type: DefinitionType;
         },
         { fulfillWithValue, rejectWithValue },
     ) => {
-        const { networkSymbol, type } = params;
-        const coingeckoId = getCoingeckoId(networkSymbol);
+        const { symbol, type } = params;
+        const coingeckoId = getCoingeckoId(symbol);
 
         try {
             if (!coingeckoId) {
@@ -86,10 +86,10 @@ export const initTokenDefinitionsThunk = createThunk(
         const enabledNetworks = extra.selectors.selectTokenDefinitionsEnabledNetworks(getState());
 
         const promises = enabledNetworks
-            .map((networkSymbol: NetworkSymbol) => {
-                let definitionTypes = getSupportedDefinitionTypes(networkSymbol);
+            .map(symbol => {
+                let definitionTypes = getSupportedDefinitionTypes(symbol);
 
-                const tokenDefinitions = selectNetworkTokenDefinitions(getState(), networkSymbol);
+                const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
 
                 if (tokenDefinitions) {
                     // Filter out definition types that have data or are in a loading state
@@ -105,7 +105,7 @@ export const initTokenDefinitionsThunk = createThunk(
                 return definitionTypes.map(type =>
                     dispatch(
                         getTokenDefinitionThunk({
-                            networkSymbol,
+                            symbol,
                             type,
                         }),
                     ),

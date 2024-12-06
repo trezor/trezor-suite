@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { Box, Text, Card, RoundedIcon, Badge, BoxSkeleton } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { networks } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { FiatAmountFormatter } from '@suite-native/formatters';
 import { AccountKey } from '@suite-common/wallet-types';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
@@ -75,20 +75,20 @@ const PriceChangeIndicator = ({ valuePercentageChange }: PriceChangeIndicatorPro
 export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const { currentValue, valuePercentageChange } = useDayCoinPriceChange(networkSymbol);
+    const { currentValue, valuePercentageChange } = useDayCoinPriceChange(symbol);
 
-    if (!networkSymbol) return null;
+    if (!symbol) return null;
 
-    const coinName = networks[networkSymbol].name;
+    const coinName = getNetwork(symbol).name;
 
     return (
         <Card style={applyStyle(cardStyle)}>
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="sp16">
-                    <RoundedIcon networkSymbol={networkSymbol} />
+                    <RoundedIcon symbol={symbol} />
                 </Box>
                 <Box style={applyStyle(cardContentStyle)}>
                     <Text variant="label" color="textSubdued">
@@ -96,7 +96,7 @@ export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
                     </Text>
                     {currentValue && (
                         <FiatAmountFormatter
-                            network={networkSymbol}
+                            symbol={symbol}
                             value={`${currentValue}`}
                             variant="titleSmall"
                             isDiscreetText={false}

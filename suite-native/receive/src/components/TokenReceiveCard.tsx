@@ -9,12 +9,7 @@ import {
     selectAccountLabel,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import {
-    getTokenName,
-    selectAccountTokenInfo,
-    selectAccountTokenSymbol,
-    TokensRootState,
-} from '@suite-native/tokens';
+import { getTokenName, selectAccountTokenInfo, TokensRootState } from '@suite-native/tokens';
 import { Translation } from '@suite-native/intl';
 
 type TokenReceiveCardProps = {
@@ -39,22 +34,14 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
     );
-    const accountNetworkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
-    )!;
+    );
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, contract),
     );
 
-    const tokenSymbol = useSelector((state: TokensRootState) =>
-        selectAccountTokenSymbol(state, accountKey, contract),
-    );
-
-    const network = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
-    );
-
-    if (!token || !network) {
+    if (!token || !symbol) {
         return (
             <ErrorMessage errorMessage={<Translation id="moduleReceive.tokens.errorMessage" />} />
         );
@@ -67,7 +54,7 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
             <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                 <Box flex={1} flexDirection="row" alignItems="center">
                     <Box marginRight="sp16">
-                        <RoundedIcon networkSymbol={network} contractAddress={contract} />
+                        <RoundedIcon symbol={symbol} contractAddress={contract} />
                     </Box>
                     <Box style={applyStyle(tokenDescriptionStyle)}>
                         <Text>{tokenName}</Text>
@@ -78,7 +65,7 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                                     values={{ accountLabel }}
                                 />
                             }
-                            icon={accountNetworkSymbol}
+                            icon={symbol}
                             size="small"
                             iconSize="extraSmall"
                         />
@@ -88,11 +75,11 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                     <TokenToFiatAmountFormatter
                         value={token.balance ?? '0'}
                         contract={contract}
-                        networkSymbol={network}
+                        symbol={symbol}
                     />
                     <TokenAmountFormatter
                         value={token.balance ?? '0'}
-                        symbol={tokenSymbol}
+                        tokenSymbol={token.symbol}
                         numberOfLines={1}
                         ellipsizeMode="tail"
                     />

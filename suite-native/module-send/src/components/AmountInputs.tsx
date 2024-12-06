@@ -61,7 +61,7 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
     );
     const isFiatDisplayed = !isTestnet;
 
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
@@ -119,7 +119,7 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
         );
     };
 
-    if (!networkSymbol) return null;
+    if (!symbol) return null;
 
     return (
         <View ref={amountInputsWrapperRef}>
@@ -147,7 +147,7 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
                         inputRef={cryptoRef}
                         accountKey={accountKey}
                         isDisabled={!isCryptoSelected}
-                        networkSymbol={networkSymbol}
+                        symbol={symbol}
                         onPress={!isCryptoSelected ? handleSwitchInputs : undefined}
                         onFocus={handleInputFocus}
                         tokenContract={tokenContract}
@@ -161,7 +161,7 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
                                 translateValue={fiatTranslateY}
                                 inputRef={fiatRef}
                                 isDisabled={isCryptoSelected}
-                                networkSymbol={networkSymbol}
+                                symbol={symbol}
                                 tokenContract={tokenContract}
                                 onPress={isCryptoSelected ? handleSwitchInputs : undefined}
                                 onFocus={handleInputFocus}

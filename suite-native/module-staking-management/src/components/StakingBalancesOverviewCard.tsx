@@ -50,7 +50,7 @@ export const StakingBalancesOverviewCard = ({
 }: StakingBalancesCardProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
@@ -65,7 +65,7 @@ export const StakingBalancesOverviewCard = ({
         selectRewardsBalanceByAccountKey(state, accountKey),
     );
 
-    if (!networkSymbol) return null;
+    if (!symbol) return null;
 
     return (
         <TouchableOpacity onPress={() => handleToggleBottomSheet(true)}>
@@ -80,7 +80,7 @@ export const StakingBalancesOverviewCard = ({
                         </Box>
                         <CryptoAmountFormatter
                             value={stakedBalance}
-                            network={networkSymbol}
+                            network={symbol}
                             decimals={CRYPTO_BALANCE_DECIMALS}
                             color="textDefault"
                             variant="titleSmall"
@@ -89,7 +89,7 @@ export const StakingBalancesOverviewCard = ({
                             <Text color="textSubdued">≈</Text>
                             <CryptoToFiatAmountFormatter
                                 value={stakedBalance}
-                                network={networkSymbol}
+                                symbol={symbol}
                                 color="textSubdued"
                                 isBalance
                             />
@@ -104,7 +104,7 @@ export const StakingBalancesOverviewCard = ({
                         </Box>
                         <CryptoAmountFormatter
                             value={rewardsBalance}
-                            network={networkSymbol}
+                            network={symbol}
                             decimals={CRYPTO_BALANCE_DECIMALS}
                             color="textSecondaryHighlight"
                             variant="titleSmall"
@@ -113,7 +113,7 @@ export const StakingBalancesOverviewCard = ({
                             <Text color="textSubdued">≈</Text>
                             <CryptoToFiatAmountFormatter
                                 value={rewardsBalance}
-                                network={networkSymbol}
+                                symbol={symbol}
                                 color="textSubdued"
                                 isBalance
                             />

@@ -68,7 +68,7 @@ const MainnetSummary = ({
                     variant="callout"
                     color="textDefault"
                     value={amount}
-                    network={networkSymbol}
+                    symbol={networkSymbol}
                 />
                 <CryptoAmountFormatter
                     variant="hint"
@@ -119,7 +119,7 @@ const TokenSummary = ({
                     color="textDefault"
                     decimals={tokenDecimals ?? undefined}
                     value={tokenAmount}
-                    symbol={tokenSymbol}
+                    tokenSymbol={tokenSymbol}
                 />
                 <CryptoAmountFormatter
                     variant="hint"

@@ -26,7 +26,7 @@ export const CoinToFiatAmountFormatter = ({
     decimals,
     ...restProps
 }: CoinToFiatAmountFormatterProps) => {
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
@@ -34,7 +34,7 @@ export const CoinToFiatAmountFormatter = ({
         selectAccountTokenInfo(state, accountKey, tokenContract),
     );
 
-    if (!networkSymbol) {
+    if (!symbol) {
         return null;
     }
 
@@ -43,12 +43,12 @@ export const CoinToFiatAmountFormatter = ({
             <TokenToFiatAmountFormatter
                 value={value}
                 contract={tokenInfo.contract}
-                networkSymbol={networkSymbol}
+                symbol={symbol}
                 decimals={decimals ?? tokenInfo.decimals}
                 {...restProps}
             />
         );
     }
 
-    return <CryptoToFiatAmountFormatter value={value} network={networkSymbol} {...restProps} />;
+    return <CryptoToFiatAmountFormatter value={value} symbol={symbol} {...restProps} />;
 };

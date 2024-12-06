@@ -58,7 +58,7 @@ export const StakePendingCard = ({
 }: StakePendingCardProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
@@ -78,7 +78,7 @@ export const StakePendingCard = ({
         [isStakeConfirming, isStakePending],
     );
 
-    if (!networkSymbol || !cardAlertProps.alertVariant) return null;
+    if (!symbol || !cardAlertProps.alertVariant) return null;
 
     return (
         <TouchableOpacity onPress={() => handleToggleBottomSheet(true)}>
@@ -92,7 +92,7 @@ export const StakePendingCard = ({
                     <Box style={applyStyle(valuesContainerStyle)}>
                         <CryptoAmountFormatter
                             value={totalStakePending}
-                            network={networkSymbol}
+                            network={symbol}
                             decimals={8}
                             color="textDefault"
                             variant="highlight"
@@ -101,7 +101,7 @@ export const StakePendingCard = ({
                             <Text color="textSubdued">≈</Text>
                             <CryptoToFiatAmountFormatter
                                 value={totalStakePending}
-                                network={networkSymbol}
+                                symbol={symbol}
                                 color="textSubdued"
                                 isBalance
                             />

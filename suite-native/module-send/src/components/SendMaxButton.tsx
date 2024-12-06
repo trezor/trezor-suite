@@ -28,7 +28,7 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
     const dispatch = useDispatch();
     const debounce = useDebounce();
 
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
@@ -42,7 +42,7 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
 
     const [maxAmountValue, setMaxAmountValue] = useState<string | null>();
 
-    const converters = useCryptoFiatConverters({ networkSymbol: networkSymbol!, tokenContract });
+    const converters = useCryptoFiatConverters({ symbol, tokenContract });
     const { setValue, watch } = useFormContext<SendOutputsFormValues>();
 
     const formValues = watch();

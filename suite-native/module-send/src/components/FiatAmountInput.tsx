@@ -19,7 +19,7 @@ export const FiatAmountInput = ({
     scaleValue,
     translateValue,
     inputRef,
-    networkSymbol,
+    symbol,
     tokenContract,
     onPress,
     onFocus,
@@ -28,8 +28,8 @@ export const FiatAmountInput = ({
     const { applyStyle } = useNativeStyles();
     const { setValue } = useFormContext<SendOutputsFormValues>();
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
-    const { fiatAmountTransformer } = useSendAmountTransformers(networkSymbol);
-    const converters = useCryptoFiatConverters({ networkSymbol, tokenContract });
+    const { fiatAmountTransformer } = useSendAmountTransformers(symbol);
+    const converters = useCryptoFiatConverters({ symbol, tokenContract });
 
     const cryptoFieldName = getOutputFieldName(recipientIndex, 'amount');
     const fiatFieldName = getOutputFieldName(recipientIndex, 'fiat');

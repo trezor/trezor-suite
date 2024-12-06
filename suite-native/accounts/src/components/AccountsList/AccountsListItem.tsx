@@ -100,7 +100,7 @@ export const AccountsListItem = ({
             showDivider={showDivider}
             onPress={handleOnPress}
             disabled={disabled}
-            icon={<RoundedIcon networkSymbol={account.symbol} />}
+            icon={<RoundedIcon symbol={account.symbol} />}
             title={
                 shouldShowAccountLabel ? (
                     accountLabel
@@ -125,7 +125,7 @@ export const AccountsListItem = ({
                         value={fiatBalance}
                     />
                 ) : (
-                    <CryptoToFiatAmountFormatter value={account.balance} network={account.symbol} />
+                    <CryptoToFiatAmountFormatter value={account.balance} symbol={account.symbol} />
                 )
             }
             secondaryValue={

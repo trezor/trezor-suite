@@ -102,8 +102,8 @@ export const AccountImportConfirmFormScreen = ({
         ({ item }: { item: TokenInfo }) => (
             <Box marginBottom="sp12">
                 <TokenInfoCard
-                    networkSymbol={networkSymbol}
-                    symbol={item.symbol as TokenSymbol}
+                    symbol={networkSymbol}
+                    tokenSymbol={item.symbol as TokenSymbol}
                     balance={item.balance}
                     decimals={item.decimals}
                     name={item.name}

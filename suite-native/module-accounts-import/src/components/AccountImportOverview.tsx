@@ -18,12 +18,12 @@ type AssetsOverviewProps = {
 export const AccountImportOverview = ({ balance, networkSymbol }: AssetsOverviewProps) => {
     const fiatBalanceValue = useFiatFromCryptoValue({
         cryptoValue: balance,
-        network: networkSymbol,
+        symbol: networkSymbol,
     });
 
     return (
         <AccountImportOverviewCard
-            icon={<RoundedIcon networkSymbol={networkSymbol} iconSize="large" />}
+            icon={<RoundedIcon symbol={networkSymbol} iconSize="large" />}
             coinName={networks[networkSymbol].name}
             cryptoAmount={
                 <CryptoAmountFormatter

@@ -39,7 +39,7 @@ export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomShee
         tokenContract,
     });
 
-    const networkSymbol = useSelector((state: AccountsRootState) =>
+    const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
@@ -65,7 +65,7 @@ export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomShee
         [isSubmittable, isVisible],
     );
 
-    if (!networkSymbol) return null;
+    if (!symbol) return null;
 
     return (
         <BottomSheet
@@ -75,7 +75,7 @@ export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomShee
             testID="@send/custom-fee-bottom-sheet"
         >
             <VStack spacing="sp24" justifyContent="space-between" flex={1}>
-                <CustomFeeInputs networkSymbol={networkSymbol} />
+                <CustomFeeInputs networkSymbol={symbol} />
                 <HStack
                     flex={1}
                     justifyContent="space-between"
@@ -89,11 +89,11 @@ export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomShee
                         <CryptoToFiatAmountFormatter
                             value={feeValue}
                             isLoading={isFeeLoading}
-                            network={networkSymbol}
+                            symbol={symbol}
                         />
                         <CryptoAmountFormatter
                             value={feeValue}
-                            network={networkSymbol}
+                            network={symbol}
                             variant="body"
                             isLoading={isFeeLoading}
                             isBalance={false}

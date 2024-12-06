@@ -83,19 +83,16 @@ export const importAccountThunk = createThunk(
 
 export const getAccountInfoThunk = createThunk<
     AccountInfo,
-    { networkSymbol: NetworkSymbol; fiatCurrency: FiatCurrencyCode; xpubAddress: string },
+    { symbol: NetworkSymbol; fiatCurrency: FiatCurrencyCode; xpubAddress: string },
     { rejectValue: string }
 >(
     `${ACCOUNTS_IMPORT_MODULE_PREFIX}/getAccountInfo`,
-    async (
-        { networkSymbol, fiatCurrency, xpubAddress },
-        { dispatch, rejectWithValue, getState },
-    ) => {
+    async ({ symbol, fiatCurrency, xpubAddress }, { dispatch, rejectWithValue, getState }) => {
         try {
             const [fetchedAccountInfo] = await Promise.all([
                 TrezorConnect.getAccountInfo({
-                    coin: networkSymbol,
-                    identity: shouldUseIdentities(networkSymbol)
+                    coin: symbol,
+                    identity: shouldUseIdentities(symbol)
                         ? getAccountIdentity({
                               deviceState: PORTFOLIO_TRACKER_DEVICE_STATE,
                           })
@@ -108,7 +105,7 @@ export const getAccountInfoThunk = createThunk<
                     updateFiatRatesThunk({
                         tickers: [
                             {
-                                symbol: networkSymbol,
+                                symbol,
                             },
                         ],
                         rateType: 'current',
@@ -119,16 +116,16 @@ export const getAccountInfoThunk = createThunk<
             ]);
 
             if (fetchedAccountInfo?.success) {
-                const tokenDefinitions = selectNetworkTokenDefinitions(getState(), networkSymbol);
+                const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
 
                 // fetch token definitions for this network in case they are needed
                 if (!tokenDefinitions) {
-                    const definitionTypes = getSupportedDefinitionTypes(networkSymbol);
+                    const definitionTypes = getSupportedDefinitionTypes(symbol);
 
                     definitionTypes.forEach(async type => {
                         await dispatch(
                             getTokenDefinitionThunk({
-                                networkSymbol,
+                                symbol,
                                 type,
                             }),
                         );
@@ -138,12 +135,12 @@ export const getAccountInfoThunk = createThunk<
                 // Even that there is check in updateFiatRatesThunk, it is better to do it here and do not dispatch thunk at all because it has some overhead and sometimes there could be lot of tokens
                 const knownTokens = selectFilterKnownTokens(
                     getState(),
-                    networkSymbol,
+                    symbol,
                     fetchedAccountInfo.payload.tokens ?? [],
                 );
 
                 const tickers = knownTokens.map(token => ({
-                    symbol: networkSymbol,
+                    symbol,
                     tokenAddress: token.contract as TokenAddress,
                 }));
 

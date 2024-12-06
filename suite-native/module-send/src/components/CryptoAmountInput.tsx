@@ -43,7 +43,7 @@ export const CryptoAmountInput = ({
     inputRef,
     scaleValue,
     translateValue,
-    networkSymbol,
+    symbol,
     tokenContract,
     accountKey,
     onPress,
@@ -52,7 +52,7 @@ export const CryptoAmountInput = ({
 }: SendAmountInputProps) => {
     const { applyStyle } = useNativeStyles();
     const { setValue, trigger } = useFormContext<SendOutputsFormValues>();
-    const { cryptoAmountTransformer } = useSendAmountTransformers(networkSymbol);
+    const { cryptoAmountTransformer } = useSendAmountTransformers(symbol);
     const { NetworkSymbolFormatter: formatter } = useFormatters();
     const debounce = useDebounce();
 
@@ -68,7 +68,7 @@ export const CryptoAmountInput = ({
         valueTransformer: cryptoAmountTransformer,
     });
 
-    const converters = useCryptoFiatConverters({ networkSymbol, tokenContract });
+    const converters = useCryptoFiatConverters({ symbol, tokenContract });
 
     const cryptoAnimatedStyle = useAnimatedStyle(
         () => ({
@@ -115,7 +115,7 @@ export const CryptoAmountInput = ({
                     hasError={!isDisabled && hasError}
                     rightIcon={
                         <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
-                            {tokenSymbol ?? formatter.format(networkSymbol)}
+                            {tokenSymbol ?? formatter.format(symbol)}
                         </SendAmountCurrencyLabelWrapper>
                     }
                 />

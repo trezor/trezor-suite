@@ -36,11 +36,11 @@ export const AccountsListTokenItem = ({
             isFirst={isFirst}
             isLast={isLast}
             onPress={onSelectAccount}
-            icon={<RoundedIcon networkSymbol={account.symbol} contractAddress={token.contract} />}
+            icon={<RoundedIcon symbol={account.symbol} contractAddress={token.contract} />}
             title={getTokenName(token.name)}
             mainValue={
                 <TokenToFiatAmountFormatter
-                    networkSymbol={account.symbol}
+                    symbol={account.symbol}
                     value={balance}
                     contract={token.contract}
                 />
@@ -48,7 +48,7 @@ export const AccountsListTokenItem = ({
             secondaryValue={
                 <TokenAmountFormatter
                     value={balance}
-                    symbol={tokenSymbol}
+                    tokenSymbol={tokenSymbol}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                 />

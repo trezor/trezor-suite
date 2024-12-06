@@ -9,7 +9,7 @@ import {
     ReviewOutputState,
     TokenAddress,
 } from '@suite-common/wallet-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 export type StatefulReviewOutput = ReviewOutput & { state: ReviewOutputState };
 
@@ -17,7 +17,7 @@ export type NativeSupportedFeeLevel = Exclude<FeeLevelLabel, 'low'>;
 
 export type SendAmountInputProps = {
     recipientIndex: number;
-    networkSymbol: NetworkSymbol;
+    symbol: NetworkSymbol;
     inputRef: RefObject<TextInput>;
     scaleValue: SharedValue<number>;
     translateValue: SharedValue<number>;

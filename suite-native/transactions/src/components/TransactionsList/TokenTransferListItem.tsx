@@ -62,7 +62,7 @@ export const TokenTransferListItemValues = ({
     return (
         <>
             <TokenToFiatAmountFormatter
-                networkSymbol={transaction.symbol}
+                symbol={transaction.symbol}
                 value={Number(tokenTransfer.amount)}
                 contract={tokenTransfer.contract}
                 decimals={tokenTransfer.decimals}
@@ -76,7 +76,7 @@ export const TokenTransferListItemValues = ({
             />
             <TokenAmountFormatter
                 value={tokenTransfer.amount}
-                symbol={tokenTransfer.symbol}
+                tokenSymbol={tokenTransfer.symbol}
                 decimals={tokenTransfer.decimals}
                 numberOfLines={1}
                 ellipsizeMode="tail"

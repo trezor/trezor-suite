@@ -59,10 +59,10 @@ const CryptoAmount = React.memo(({ network }: { network: NetworkSymbol }) => {
     );
 });
 
-const FiatAmount = React.memo(({ network }: { network: NetworkSymbol }) => {
-    const fiatValue = useSelector((state: AssetsRootState) => selectAssetFiatValue(state, network));
+const FiatAmount = React.memo(({ symbol }: { symbol: NetworkSymbol }) => {
+    const fiatValue = useSelector((state: AssetsRootState) => selectAssetFiatValue(state, symbol));
 
-    return <FiatAmountFormatter network={network} value={fiatValue} />;
+    return <FiatAmountFormatter symbol={symbol} value={fiatValue} />;
 });
 
 const PercentageIcon = React.memo(({ network }: { network: NetworkSymbol }) => {
@@ -129,7 +129,7 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetIte
                     )}
                 </>
             }
-            mainValue={<FiatAmount network={cryptoCurrencySymbol} />}
+            mainValue={<FiatAmount symbol={cryptoCurrencySymbol} />}
             secondaryValue={<CryptoAmount network={cryptoCurrencySymbol} />}
         />
     );

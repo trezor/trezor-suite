@@ -11,7 +11,7 @@ import { convertTokenValueToDecimal } from '../utils';
 
 type useFiatFromCryptoValueParams = {
     cryptoValue: string | null;
-    network: NetworkSymbol;
+    symbol: NetworkSymbol;
     tokenAddress?: TokenAddress;
     tokenDecimals?: number;
     historicRate?: number;
@@ -21,7 +21,7 @@ type useFiatFromCryptoValueParams = {
 
 export const useFiatFromCryptoValue = ({
     cryptoValue,
-    network,
+    symbol,
     tokenAddress,
     historicRate,
     useHistoricRate,
@@ -29,14 +29,14 @@ export const useFiatFromCryptoValue = ({
     tokenDecimals = 0,
 }: useFiatFromCryptoValueParams) => {
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
-    const fiatRateKey = getFiatRateKey(network, fiatCurrencyCode, tokenAddress);
+    const fiatRateKey = getFiatRateKey(symbol, fiatCurrencyCode, tokenAddress);
     const currentRate = useSelector((state: FiatRatesRootState) =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey),
     );
 
     const rate = useHistoricRate ? historicRate : currentRate?.rate;
 
-    const isTestnetCoin = isTestnet(network);
+    const isTestnetCoin = isTestnet(symbol);
 
     if (!cryptoValue || !rate || currentRate?.error || isTestnetCoin) return null;
 
@@ -48,7 +48,7 @@ export const useFiatFromCryptoValue = ({
 
     return convertCryptoToFiatAmount({
         amount: cryptoValue,
-        networkSymbol: network,
+        symbol,
         isAmountInSats: !isBalance,
         rate,
     });

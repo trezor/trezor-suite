@@ -99,7 +99,7 @@ export const TransactionDetailData = ({
                                 <Box flexDirection="row">
                                     <CryptoToFiatAmountFormatter
                                         value={transaction.fee}
-                                        network={transaction.symbol}
+                                        symbol={transaction.symbol}
                                         historicRate={historicRate}
                                         useHistoricRate
                                         variant="hint"

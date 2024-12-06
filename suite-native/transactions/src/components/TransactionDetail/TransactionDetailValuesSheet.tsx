@@ -45,7 +45,7 @@ const TodayHeaderCell = ({ cryptoValue, network, historicRate }: TodayHeaderCell
     const fiatTotalHistoryNumeric = pipe(
         convertCryptoToFiatAmount({
             amount: cryptoValue,
-            networkSymbol: network,
+            symbol: network,
             rate: historicRate,
         }) ?? 0,
         Number,
@@ -53,7 +53,7 @@ const TodayHeaderCell = ({ cryptoValue, network, historicRate }: TodayHeaderCell
     const fiatTotalActualNumeric = pipe(
         convertCryptoToFiatAmount({
             amount: cryptoValue,
-            networkSymbol: network,
+            symbol: network,
             rate: currentRates?.rate,
         }),
         Number,
@@ -119,7 +119,7 @@ export const TransactionDetailValuesSheet = ({
                                 <CryptoToFiatAmountFormatter
                                     variant="hint"
                                     value={totalInput}
-                                    network={transaction.symbol}
+                                    symbol={transaction.symbol}
                                     historicRate={historicRate}
                                     useHistoricRate
                                     numberOfLines={1}
@@ -130,7 +130,7 @@ export const TransactionDetailValuesSheet = ({
                                 <CryptoToFiatAmountFormatter
                                     variant="hint"
                                     value={totalInput}
-                                    network={transaction.symbol}
+                                    symbol={transaction.symbol}
                                     numberOfLines={1}
                                     adjustsFontSizeToFit
                                 />
@@ -142,7 +142,7 @@ export const TransactionDetailValuesSheet = ({
                                 <CryptoToFiatAmountFormatter
                                     variant="hint"
                                     value={transaction.fee}
-                                    network={transaction.symbol}
+                                    symbol={transaction.symbol}
                                     historicRate={historicRate}
                                     useHistoricRate
                                     numberOfLines={1}
@@ -153,7 +153,7 @@ export const TransactionDetailValuesSheet = ({
                                 <CryptoToFiatAmountFormatter
                                     variant="hint"
                                     value={transaction.fee}
-                                    network={transaction.symbol}
+                                    symbol={transaction.symbol}
                                     numberOfLines={1}
                                     adjustsFontSizeToFit
                                 />
@@ -165,7 +165,7 @@ export const TransactionDetailValuesSheet = ({
                                 <CryptoToFiatAmountFormatter
                                     variant="hint"
                                     value={transaction.amount}
-                                    network={transaction.symbol}
+                                    symbol={transaction.symbol}
                                     historicRate={historicRate}
                                     useHistoricRate
                                     numberOfLines={1}
@@ -176,7 +176,7 @@ export const TransactionDetailValuesSheet = ({
                                 <CryptoToFiatAmountFormatter
                                     variant="hint"
                                     value={transaction.amount}
-                                    network={transaction.symbol}
+                                    symbol={transaction.symbol}
                                     numberOfLines={1}
                                     adjustsFontSizeToFit
                                 />

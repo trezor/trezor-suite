@@ -12,16 +12,16 @@ export const prepareTokenDefinitionsMiddleware = createMiddlewareWithExtraDeps(
         next(action);
 
         if (action.type === CHANGE_NETWORKS) {
-            action.payload.forEach((networkSymbol: NetworkSymbol) => {
-                const tokenDefinitions = selectNetworkTokenDefinitions(getState(), networkSymbol);
+            action.payload.forEach((symbol: NetworkSymbol) => {
+                const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
 
                 if (!tokenDefinitions) {
-                    const definitionTypes = getSupportedDefinitionTypes(networkSymbol);
+                    const definitionTypes = getSupportedDefinitionTypes(symbol);
 
                     definitionTypes.forEach(type => {
                         dispatch(
                             getTokenDefinitionThunk({
-                                networkSymbol,
+                                symbol,
                                 type,
                             }),
                         );

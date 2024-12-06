@@ -11,10 +11,10 @@ export const prepareTokenDefinitionsReducer = createReducerWithExtraDeps(
     (builder, extra) => {
         builder
             .addCase(getTokenDefinitionThunk.pending, (state, action) => {
-                const { networkSymbol } = action.meta.arg;
+                const { symbol } = action.meta.arg;
 
-                if (!state[networkSymbol]) {
-                    state[networkSymbol] = {
+                if (!state[symbol]) {
+                    state[symbol] = {
                         coin: {
                             error: false,
                             data: undefined,
@@ -33,9 +33,9 @@ export const prepareTokenDefinitionsReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(getTokenDefinitionThunk.fulfilled, (state, action) => {
-                const { networkSymbol, type } = action.meta.arg;
+                const { symbol, type } = action.meta.arg;
 
-                const definitions = state[networkSymbol];
+                const definitions = state[symbol];
 
                 if (definitions) {
                     definitions[type] = {
@@ -48,9 +48,9 @@ export const prepareTokenDefinitionsReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(getTokenDefinitionThunk.rejected, (state, action) => {
-                const { networkSymbol, type } = action.meta.arg;
+                const { symbol, type } = action.meta.arg;
 
-                const definitions = state[networkSymbol];
+                const definitions = state[symbol];
 
                 if (definitions) {
                     definitions[type] = {

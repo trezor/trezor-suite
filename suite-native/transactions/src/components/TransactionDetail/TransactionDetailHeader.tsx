@@ -101,7 +101,7 @@ export const TransactionDetailHeader = ({
                         {tokenTransfer ? (
                             <TokenAmountFormatter
                                 value={tokenTransfer.amount}
-                                symbol={tokenTransfer.symbol}
+                                tokenSymbol={tokenTransfer.symbol}
                                 decimals={tokenTransfer.decimals}
                                 variant="titleMedium"
                                 color="textDefault"
@@ -129,7 +129,7 @@ export const TransactionDetailHeader = ({
                         <Text color="textSubdued">≈ </Text>
                         {tokenTransfer ? (
                             <TokenToFiatAmountFormatter
-                                networkSymbol={transaction.symbol}
+                                symbol={transaction.symbol}
                                 contract={tokenTransfer.contract}
                                 value={tokenTransfer.amount}
                                 decimals={tokenTransfer.decimals}
@@ -141,7 +141,7 @@ export const TransactionDetailHeader = ({
                         ) : (
                             <CryptoToFiatAmountFormatter
                                 value={transaction.amount}
-                                network={transaction.symbol}
+                                symbol={transaction.symbol}
                                 historicRate={historicRate}
                                 color="textSubdued"
                                 useHistoricRate

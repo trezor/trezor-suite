@@ -51,7 +51,7 @@ export const CoinAmountFormatter = ({
             <TokenAmountFormatter
                 decimals={decimals ?? tokenInfo.decimals}
                 value={value}
-                symbol={tokenSymbol}
+                tokenSymbol={tokenSymbol}
                 {...restProps}
             />
         );

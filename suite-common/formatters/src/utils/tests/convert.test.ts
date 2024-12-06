@@ -21,7 +21,7 @@ describe('convertCryptoToFiatAmount', () => {
         expect(
             convertCryptoToFiatAmount({
                 amount,
-                networkSymbol: 'btc',
+                symbol: 'btc',
                 isAmountInSats,
                 rate: 22666,
             }),
@@ -47,7 +47,7 @@ describe('convertFiatToCryptoAmount', () => {
         expect(
             convertFiatToCryptoAmount({
                 amount,
-                networkSymbol: 'btc',
+                symbol: 'btc',
                 isAmountInSats,
                 rate: 22666,
             }),

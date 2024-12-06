@@ -1,4 +1,4 @@
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     amountToSmallestUnit,
     formatNetworkAmount,
@@ -9,14 +9,14 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 type ConvertInput = {
     amount: string | null;
-    networkSymbol: NetworkSymbol;
+    symbol: NetworkSymbol;
     isAmountInSats?: boolean;
     rate?: number;
 };
 
 export const convertCryptoToFiatAmount = ({
     amount,
-    networkSymbol,
+    symbol,
     isAmountInSats = true,
     rate,
 }: ConvertInput): string | null => {
@@ -24,14 +24,14 @@ export const convertCryptoToFiatAmount = ({
         return null;
     }
 
-    const networkAmount = isAmountInSats ? formatNetworkAmount(amount, networkSymbol) : amount;
+    const networkAmount = isAmountInSats ? formatNetworkAmount(amount, symbol) : amount;
 
     return toFiatCurrency(networkAmount, rate);
 };
 
 export const convertFiatToCryptoAmount = ({
     amount,
-    networkSymbol,
+    symbol,
     isAmountInSats = true,
     rate,
 }: ConvertInput): string | null => {
@@ -39,7 +39,7 @@ export const convertFiatToCryptoAmount = ({
         return null;
     }
 
-    const { decimals } = networks[networkSymbol];
+    const { decimals } = getNetwork(symbol);
     const cryptoAmount = fromFiatCurrency(amount, decimals, rate);
 
     if (!cryptoAmount || !isAmountInSats) {

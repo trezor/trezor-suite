@@ -10,7 +10,7 @@ import { SignValueFormatter } from './SignValueFormatter';
 import { useFiatFromCryptoValue } from '../hooks/useFiatFromCryptoValue';
 
 type TokenToFiatAmountFormatterProps = {
-    networkSymbol: NetworkSymbol;
+    symbol: NetworkSymbol;
     contract: TokenAddress;
     isDiscreetText?: boolean;
     decimals?: number;
@@ -22,7 +22,7 @@ type TokenToFiatAmountFormatterProps = {
     TextProps;
 
 export const TokenToFiatAmountFormatter = ({
-    networkSymbol,
+    symbol,
     value,
     contract,
     isDiscreetText = true,
@@ -37,7 +37,7 @@ export const TokenToFiatAmountFormatter = ({
     const { FiatAmountFormatter } = useFormatters();
     const fiatValue = useFiatFromCryptoValue({
         cryptoValue: String(value),
-        network: networkSymbol,
+        symbol,
         tokenAddress: contract,
         tokenDecimals: decimals,
         historicRate,

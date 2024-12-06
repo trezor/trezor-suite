@@ -90,7 +90,7 @@ export const CustomFeeCard = ({ onEdit, onCancel }: CustomFeeCardProps) => {
                             <VStack alignItems="flex-end" spacing={0}>
                                 <CryptoToFiatAmountFormatter
                                     value={customFeeTransaction.fee}
-                                    network={networkSymbol}
+                                    symbol={networkSymbol}
                                     variant="body"
                                 />
                                 <CryptoAmountFormatter

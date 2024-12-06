@@ -47,7 +47,7 @@ const TransactionAddressAmount = ({
             ) : (
                 <TokenAmountFormatter
                     value={amount}
-                    symbol={symbol}
+                    tokenSymbol={symbol}
                     decimals={decimals}
                     variant="label"
                     numberOfLines={1}

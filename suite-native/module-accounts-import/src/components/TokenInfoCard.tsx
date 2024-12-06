@@ -12,8 +12,8 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
 
 type TokenInfoCardProps = {
-    networkSymbol: NetworkSymbol;
-    symbol?: TokenSymbol;
+    symbol: NetworkSymbol;
+    tokenSymbol?: TokenSymbol;
     balance?: string;
     name?: string;
     decimals?: number;
@@ -21,18 +21,18 @@ type TokenInfoCardProps = {
 };
 
 export const TokenInfoCard = ({
-    networkSymbol,
     symbol,
+    tokenSymbol,
     balance,
     name,
     decimals,
     contract,
 }: TokenInfoCardProps) => {
     const isSpecificCoinDefinitionKnown = useSelector((state: TokenDefinitionsRootState) =>
-        selectIsSpecificCoinDefinitionKnown(state, networkSymbol, contract),
+        selectIsSpecificCoinDefinitionKnown(state, symbol, contract),
     );
 
-    if (!symbol || !balance || !name || !isSpecificCoinDefinitionKnown) return null;
+    if (!tokenSymbol || !balance || !name || !isSpecificCoinDefinitionKnown) return null;
 
     return (
         <AccountImportOverviewCard
@@ -40,15 +40,15 @@ export const TokenInfoCard = ({
             cryptoAmount={
                 <TokenAmountFormatter
                     value={balance}
-                    symbol={symbol}
+                    tokenSymbol={tokenSymbol}
                     decimals={decimals}
                     variant="label"
                 />
             }
-            icon={<CryptoIcon symbol={networkSymbol} contractAddress={contract} />}
+            icon={<CryptoIcon symbol={symbol} contractAddress={contract} />}
         >
             <TokenToFiatAmountFormatter
-                networkSymbol={networkSymbol}
+                symbol={symbol}
                 value={balance}
                 contract={contract}
                 decimals={decimals}

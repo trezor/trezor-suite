@@ -27,9 +27,9 @@ export const AccountImportLoadingScreen = ({
     AccountsImportStackRoutes.AccountImportLoading,
     RootStackParamList
 >) => {
-    const { xpubAddress, networkSymbol } = route.params;
+    const { xpubAddress, networkSymbol: symbol } = route.params;
     const dispatch = useDispatch();
-    const showImportError = useShowImportError(networkSymbol, navigation);
+    const showImportError = useShowImportError(symbol, navigation);
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
     const fiatCurrency = useSelector(selectFiatCurrencyCode);
     const [error, setError] = useState<string>();
@@ -39,7 +39,7 @@ export const AccountImportLoadingScreen = ({
     const fetchAccountInfo = useCallback(async () => {
         try {
             const response = await dispatch(
-                getAccountInfoThunk({ networkSymbol, fiatCurrency, xpubAddress }),
+                getAccountInfoThunk({ symbol, fiatCurrency, xpubAddress }),
             ).unwrap();
 
             if (response) {
@@ -50,7 +50,7 @@ export const AccountImportLoadingScreen = ({
             setError(response);
             setAccountInfoFetchResult('error');
         }
-    }, [dispatch, fiatCurrency, networkSymbol, xpubAddress]);
+    }, [dispatch, fiatCurrency, symbol, xpubAddress]);
 
     const safelyShowImportError = useCallback(
         async (onRetry?: () => Promise<void>) => {
@@ -90,7 +90,7 @@ export const AccountImportLoadingScreen = ({
         } else {
             navigation.navigate(AccountsImportStackRoutes.AccountImportSummary, {
                 accountInfo,
-                networkSymbol,
+                networkSymbol: symbol,
             });
         }
     };

@@ -31,7 +31,7 @@ export const AccountsListStakingItem = ({
             mainValue={
                 <CryptoToFiatAmountFormatter
                     value={stakingCryptoBalance}
-                    network={account.symbol}
+                    symbol={account.symbol}
                     isBalance
                 />
             }
