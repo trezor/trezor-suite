@@ -55,7 +55,9 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
 
         // Animations on following devices are transparent.
         const themeSuffix = [
+            DeviceModelInternal.T1B1,
             DeviceModelInternal.T2B1,
+            DeviceModelInternal.T2T1,
             DeviceModelInternal.T3B1,
             DeviceModelInternal.T3T1,
             DeviceModelInternal.T3W1,
