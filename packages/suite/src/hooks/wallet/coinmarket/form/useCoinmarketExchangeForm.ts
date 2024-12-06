@@ -128,7 +128,7 @@ export const useCoinmarketExchangeForm = ({
     const trades = useSelector(state => state.wallet.coinmarket.trades);
     const trade = trades.find(
         trade =>
-            trade.tradeType === 'exchange' && transactionId && trade.data.quoteId === transactionId,
+            trade.tradeType === 'exchange' && transactionId && trade.data.orderId === transactionId,
     ) as TradeExchange | undefined;
 
     const { defaultCurrency, defaultValues } = useCoinmarketExchangeFormDefaultValues(account);
