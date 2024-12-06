@@ -1,4 +1,4 @@
-import { GestureResponderEvent, Modal, Pressable, StatusBar } from 'react-native';
+import { Dimensions, GestureResponderEvent, Modal, Pressable, StatusBar } from 'react-native';
 import { ReactNode } from 'react';
 import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
 import Animated, { FadeIn, SlideInUp } from 'react-native-reanimated';
@@ -20,9 +20,15 @@ type DeviceManagerModalProps = {
 
 export const MANAGER_MODAL_BOTTOM_RADIUS = nativeBorders.radii.r12;
 
+const SCREEN_SIZE = Dimensions.get('screen');
+
 const modalBackgroundOverlayStyle = prepareNativeStyle(utils => ({
     flex: 1,
     backgroundColor: utils.transparentize(0.3, utils.colors.backgroundNeutralBold),
+    // this need to be here so the background does not stretch out when appearing
+    // new RN architecture might fix this, so evaluate later
+    width: SCREEN_SIZE.width,
+    height: SCREEN_SIZE.height,
 }));
 
 const deviceManagerModalWrapperStyle = prepareNativeStyle(utils => ({
