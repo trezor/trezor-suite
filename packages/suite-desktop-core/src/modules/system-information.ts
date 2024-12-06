@@ -13,8 +13,8 @@ export const init: ModuleInit = () => {
         validateIpcMessage(ipcEvent);
 
         try {
-            const osVersion = os.platform();
-            const osName = os.release();
+            const osVersion = os.release();
+            const osName = os.platform();
             const osArchitecture = os.arch();
 
             return { success: true, payload: { osVersion, osName, osArchitecture } };
