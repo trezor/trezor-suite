@@ -157,7 +157,7 @@ export const selectPortfolioTrackerTestnetNetworkSymbols = createMemoizedSelecto
     isRegtestEnabled =>
         returnStableArrayIfEmpty(
             isRegtestEnabled
-                ? [...portfolioTrackerTestnets, 'regtest' as NetworkSymbol]
+                ? [...portfolioTrackerTestnets, 'regtest' as const]
                 : portfolioTrackerTestnets,
         ),
 );

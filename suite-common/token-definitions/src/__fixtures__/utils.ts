@@ -1,40 +1,38 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-
 import { DefinitionType } from '../tokenDefinitionsTypes';
 
 export const isTokenDefinitionKnownFixtures = [
     {
         testName: 'Token definition known, case-insensitive network',
         tokenDefinitions: ['0xa', '0xb'],
-        networkSymbol: 'eth' as NetworkSymbol,
+        networkSymbol: 'eth' as const,
         contractAddress: '0xA',
         result: true,
     },
     {
         testName: 'Token definition unknown, case-sensitive network',
         tokenDefinitions: ['0xa', '0xb'],
-        networkSymbol: 'sol' as NetworkSymbol,
+        networkSymbol: 'sol' as const,
         contractAddress: '0xA',
         result: false,
     },
     {
         testName: 'Token definition known, case-sensitive network',
         tokenDefinitions: ['0xA', '0xb'],
-        networkSymbol: 'sol' as NetworkSymbol,
+        networkSymbol: 'sol' as const,
         contractAddress: '0xA',
         result: true,
     },
     {
         testName: 'Token definition not known',
         tokenDefinitions: ['0xa', '0xb'],
-        networkSymbol: 'eth' as NetworkSymbol,
+        networkSymbol: 'eth' as const,
         contractAddress: '0xC',
         result: false,
     },
     {
         testName: 'Token definitions are undefined',
         tokenDefinitions: undefined,
-        networkSymbol: 'eth' as NetworkSymbol,
+        networkSymbol: 'eth' as const,
         contractAddress: '0xA',
         result: false,
     },
@@ -43,20 +41,20 @@ export const isTokenDefinitionKnownFixtures = [
 export const getSupportedDefinitionTypesFixtures = [
     {
         testName: 'Supports both token and NFT definitions',
-        networkSymbol: 'eth' as NetworkSymbol,
+        networkSymbol: 'eth' as const,
         features: ['coin-definitions', 'nft-definitions'],
         result: [DefinitionType.COIN, DefinitionType.NFT],
     },
     // Temporarily skipped while token definitions are disabled for Cardano.
     // {
     //     testName: 'Supports only token definitions',
-    //     networkSymbol: 'ada' as NetworkSymbol,
+    //     networkSymbol: 'ada' as const,
     //     features: ['coin-definitions'],
     //     result: [DefinitionType.COIN],
     // },
     {
         testName: 'Supports neither token nor NFT definitions',
-        networkSymbol: 'ltc' as NetworkSymbol,
+        networkSymbol: 'ltc' as const,
         features: [],
         result: [],
     },

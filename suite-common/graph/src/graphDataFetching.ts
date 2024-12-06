@@ -456,9 +456,9 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     });
 
     const coins = Array.from(coinsSet).map(coin => {
-        const [coinSymbol, contractId] = coin.split('-');
+        const [symbol, contractId] = coin.split('-') as [NetworkSymbol, TokenAddress | undefined];
 
-        return { coin: coinSymbol as NetworkSymbol, contractId: contractId as TokenAddress };
+        return { coin: symbol, contractId };
     });
 
     const pairs = await Promise.all(

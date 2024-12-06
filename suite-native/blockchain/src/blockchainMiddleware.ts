@@ -5,7 +5,7 @@ import {
     selectAllPendingTransactions,
 } from '@suite-common/wallet-core';
 import { BlockchainEvent, BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS } from '@trezor/connect';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
 
 import {
     onBlockchainConnectThunk,
@@ -32,9 +32,9 @@ export const blockchainMiddleware = createMiddleware(
             case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK: {
                 const networksWithPendingTransactions =
                     selectNetworksWithPendingTransactions(getState());
-                const symbol = action.payload.coin.shortcut.toLowerCase() as NetworkSymbol;
+                const symbol = action.payload.coin.shortcut.toLowerCase();
 
-                if (networksWithPendingTransactions.includes(symbol)) {
+                if (isNetworkSymbol(symbol) && networksWithPendingTransactions.includes(symbol)) {
                     dispatch(syncAccountsWithBlockchainThunk({ symbol }));
                 }
 

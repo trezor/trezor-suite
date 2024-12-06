@@ -39,17 +39,17 @@ import { getNetworksWithUnfinishedDiscovery } from './utils';
 export const selectValidTokensByDeviceStateAndNetworkSymbol = (
     state: TokenDefinitionsRootState & DeviceRootState & AccountsRootState,
     deviceState: StaticSessionId,
-    networkSymbol: NetworkSymbol,
+    symbol: NetworkSymbol,
 ) => {
     const accountsByDeviceStateAndNetworkSymbol = selectAccountsByNetworkAndDeviceState(
         state,
         deviceState,
-        networkSymbol,
+        symbol,
     );
 
     return pipe(
         accountsByDeviceStateAndNetworkSymbol,
-        A.filter(account => account.symbol === networkSymbol),
+        A.filter(account => account.symbol === symbol),
         A.map(account => account.tokens),
         A.flat,
 
@@ -61,7 +61,7 @@ export const selectValidTokensByDeviceStateAndNetworkSymbol = (
             const tokenContract = token.contract as TokenAddress;
             const tokenSymbol = token.symbol as TokenSymbol;
 
-            if (selectIsSpecificCoinDefinitionKnown(state, networkSymbol, tokenContract)) {
+            if (selectIsSpecificCoinDefinitionKnown(state, symbol, tokenContract)) {
                 return O.Some(`${tokenContract}:${tokenSymbol}`);
             }
         }),
@@ -79,13 +79,13 @@ export const selectDiscoveryAccountsAnalytics = (
     pipe(
         selectDeviceAccounts(state),
         A.groupBy(account => account.symbol),
-        D.mapWithKey((networkSymbol, accounts) => {
+        D.mapWithKey((symbol, accounts) => {
             const numberOfAccounts = accounts?.length ?? 0;
 
             const validTokens = selectValidTokensByDeviceStateAndNetworkSymbol(
                 state,
                 deviceState,
-                networkSymbol as NetworkSymbol,
+                symbol,
             );
 
             if (A.isNotEmpty(validTokens)) {

@@ -22,6 +22,7 @@ import {
     type Bip43PathTemplate,
     getNetwork,
     type NetworkSymbolExtended,
+    networkSymbolCollection,
 } from '@suite-common/wallet-config';
 import {
     Account,
@@ -439,13 +440,11 @@ export const formatTokenAmount = (tokenTransfer: TokenTransfer) => {
  * - primary: by network `symbol`
  * - secondary: by `accountType`
  */
-export const sortByCoin = (accounts: Account[]) => {
-    const orderedNetworkSymbols = Object.keys(networks) as NetworkSymbol[];
-
-    return accounts.sort((a, b) => {
+export const sortByCoin = (accounts: Account[]) =>
+    accounts.sort((a, b) => {
         // primary sorting: by order of network keys
-        const aSymbolIndex = orderedNetworkSymbols.indexOf(a.symbol);
-        const bSymbolIndex = orderedNetworkSymbols.indexOf(b.symbol);
+        const aSymbolIndex = networkSymbolCollection.indexOf(a.symbol);
+        const bSymbolIndex = networkSymbolCollection.indexOf(b.symbol);
         if (aSymbolIndex !== bSymbolIndex) return aSymbolIndex - bSymbolIndex;
 
         // when it is sorted by network, sort by order of accountType keys within the same network
@@ -459,7 +458,6 @@ export const sortByCoin = (accounts: Account[]) => {
         // if both are same, keep the original order in `accounts`
         return a.index - b.index;
     });
-};
 
 export const findAccountsByNetwork = (symbol: NetworkSymbol, accounts: Account[]) =>
     accounts.filter(a => a.symbol === symbol);
@@ -655,7 +653,7 @@ export const getAccountTokensFiatBalance = (
     // sum fiat value of all tokens
     tokens?.forEach(t => {
         const tokenFiatRateKey = getFiatRateKey(
-            account.symbol as NetworkSymbol,
+            account.symbol,
             localCurrency as FiatCurrencyCode,
             t.contract as TokenAddress,
         );
@@ -712,7 +710,7 @@ export const getAccountFiatBalance = ({
     shouldIncludeTokens?: boolean;
     shouldIncludeStaking?: boolean;
 }) => {
-    const coinFiatRateKey = getFiatRateKey(account.symbol as NetworkSymbol, localCurrency);
+    const coinFiatRateKey = getFiatRateKey(account.symbol, localCurrency);
     const coinFiatRate = rates?.[coinFiatRateKey];
 
     if (!coinFiatRate?.rate) return null;

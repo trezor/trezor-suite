@@ -10,7 +10,7 @@ import {
     hasBitcoinOnlyFirmware,
     isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
-import { NetworkSymbol, networks } from '@suite-common/wallet-config';
+import { networkSymbolCollection } from '@suite-common/wallet-config';
 import {
     createReducerWithExtraDeps,
     createWeakMapSelector,
@@ -789,24 +789,22 @@ export const selectDeviceStatus = createMemoizedSelector(
 
 export const selectDeviceSupportedNetworks = createMemoizedSelector([selectDevice], device => {
     const firmwareVersion = getFirmwareVersion(device);
-    const result = Object.entries(networks)
-        .filter(([symbol]) => {
-            const unavailableCapability = device?.unavailableCapabilities?.[symbol];
-            // if device does not have fw, do not show coins which are not supported by device in any case
-            if (!firmwareVersion && unavailableCapability === 'no-support') {
-                return false;
-            }
-            // if device has fw, do not show coins which are not supported by current fw
-            if (
-                firmwareVersion &&
-                ['no-support', 'no-capability'].includes(unavailableCapability || '')
-            ) {
-                return false;
-            }
+    const result = networkSymbolCollection.filter(symbol => {
+        const unavailableCapability = device?.unavailableCapabilities?.[symbol];
+        // if device does not have fw, do not show coins which are not supported by device in any case
+        if (!firmwareVersion && unavailableCapability === 'no-support') {
+            return false;
+        }
+        // if device has fw, do not show coins which are not supported by current fw
+        if (
+            firmwareVersion &&
+            ['no-support', 'no-capability'].includes(unavailableCapability || '')
+        ) {
+            return false;
+        }
 
-            return true;
-        })
-        .map(([symbol]) => symbol as NetworkSymbol);
+        return true;
+    });
 
     return returnStableArrayIfEmpty(result);
 });

@@ -1,9 +1,14 @@
 import { A, D, G } from '@mobily/ts-belt';
 
-import { AccountType, getNetwork, networks } from '@suite-common/wallet-config';
+import {
+    AccountType,
+    getNetwork,
+    networks,
+    networkSymbolCollection,
+} from '@suite-common/wallet-config';
 import { formattedAccountTypeMap } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { orderedNetworkSymbols, orderedAccountTypes } from '@suite-native/config';
+import { orderedAccountTypes } from '@suite-native/config';
 
 const accountTypeToSectionHeader: Readonly<Partial<Record<AccountType, string>>> = {
     normal: 'default',
@@ -79,8 +84,8 @@ export const groupAccountsByNetworkAccountType = A.groupBy((account: Account) =>
 
 export const sortAccountsByNetworksAndAccountTypes = (accounts: readonly Account[]) => {
     return A.sort(accounts, (a, b) => {
-        const aOrder = orderedNetworkSymbols.indexOf(a.symbol) ?? Number.MAX_SAFE_INTEGER;
-        const bOrder = orderedNetworkSymbols.indexOf(b.symbol) ?? Number.MAX_SAFE_INTEGER;
+        const aOrder = networkSymbolCollection.indexOf(a.symbol) ?? Number.MAX_SAFE_INTEGER;
+        const bOrder = networkSymbolCollection.indexOf(b.symbol) ?? Number.MAX_SAFE_INTEGER;
 
         if (aOrder === bOrder) {
             const aAccountTypeOrder =

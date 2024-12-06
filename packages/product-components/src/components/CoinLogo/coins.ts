@@ -35,3 +35,8 @@ export const COINS: Record<NetworkSymbol | LegacyNetworkSymbol, string> = {
     xtz: require('../../images/coins/xtz.svg'),
     zec: require('../../images/coins/zec.svg'),
 };
+
+export const isCoinSymbol = (
+    coinSymbol: string,
+): coinSymbol is NetworkSymbol | LegacyNetworkSymbol =>
+    Object.prototype.hasOwnProperty.call(COINS, coinSymbol);

@@ -2,12 +2,11 @@ import styled from 'styled-components';
 
 import { spacings, spacingsPx } from '@trezor/theme';
 import { AssetLogo, Badge, Column, Row, Text } from '@trezor/components';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 
 import { CoinLogo } from '../CoinLogo/CoinLogo';
 import { AssetOptionBaseProps } from './SelectAssetModal';
-import { COINS } from '../CoinLogo/coins';
+import { isCoinSymbol } from '../CoinLogo/coins';
 
 const ClickableContainer = styled.div`
     cursor: pointer;
@@ -42,8 +41,8 @@ export const AssetItem = ({
     contractAddress,
     handleClick,
 }: AssetItemProps) => {
-    // TODO: use isCoinSymbol - prepared in chore(suite): update network symbol naming 7
-    const symbolHelper = symbol in COINS ? (symbol as NetworkSymbol) : undefined;
+    const getCoinLogo = () =>
+        isCoinSymbol(symbol) ? <CoinLogo size={24} symbol={symbol} /> : null;
 
     return (
         <ClickableContainer
@@ -71,7 +70,7 @@ export const AssetItem = ({
                         shouldTryToFetch={shouldTryToFetch}
                     />
                 ) : (
-                    symbolHelper && <CoinLogo size={24} symbol={symbolHelper} />
+                    getCoinLogo()
                 )}
                 <Column flex="1">
                     <Row gap={spacings.xs} alignItems="center">

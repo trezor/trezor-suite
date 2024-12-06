@@ -439,15 +439,13 @@ export const selectDeviceAccountKeyByDescriptorAndNetworkSymbol = createMemoized
     account => account?.key ?? null,
 );
 
-export const selectAccountsSymbols = createMemoizedSelector(
-    [selectAccounts],
-    accounts =>
-        pipe(
-            accounts,
-            A.map(a => a.symbol),
-            A.uniq,
-            returnStableArrayIfEmpty,
-        ) as NetworkSymbol[],
+export const selectAccountsSymbols = createMemoizedSelector([selectAccounts], accounts =>
+    pipe(
+        accounts,
+        A.map(a => a.symbol),
+        A.uniq,
+        returnStableArrayIfEmpty,
+    ),
 );
 
 export const selectIsDeviceAccountless = createMemoizedSelector(

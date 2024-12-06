@@ -37,6 +37,7 @@ import {
     getNetworkType,
     NetworkAccount,
     normalizeNetworkAccounts,
+    isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
@@ -148,15 +149,17 @@ const finishNetworkTypeDiscoveryThunk = createThunk(
 
             // Keboola analytics data backend is unable to parse nested objects, so each network has to be reported separately.
             Object.entries(discoveryAccountsAnalytics).forEach(
-                ([networkSymbol, networkAnalyticsPayload]) => {
-                    analytics.report({
-                        type: EventType.CoinDiscovery,
-                        payload: {
-                            discoveryId,
-                            symbol: networkSymbol as NetworkSymbol,
-                            ...networkAnalyticsPayload,
-                        },
-                    });
+                ([symbol, networkAnalyticsPayload]) => {
+                    if (isNetworkSymbol(symbol)) {
+                        analytics.report({
+                            type: EventType.CoinDiscovery,
+                            payload: {
+                                discoveryId,
+                                symbol,
+                                ...networkAnalyticsPayload,
+                            },
+                        });
+                    }
                 },
             );
 

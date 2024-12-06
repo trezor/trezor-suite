@@ -15,7 +15,7 @@ import {
     groupTokensTransactionsByContractAddress,
     isTestnet,
 } from '@suite-common/wallet-utils';
-import { getNetworkFeatures, NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { TimerId } from '@trezor/type-utils';
 
@@ -61,7 +61,7 @@ export const updateTxsFiatRatesThunk = createThunk(
             if (hasCoinDefinitions) {
                 const isTokenKnown = selectIsSpecificCoinDefinitionKnown(
                     getState(),
-                    account.symbol as NetworkSymbol,
+                    account.symbol,
                     token as TokenAddress,
                 );
 
@@ -75,7 +75,7 @@ export const updateTxsFiatRatesThunk = createThunk(
             ) as Timestamp[];
             await fetchTransactionsRates(
                 {
-                    symbol: account.symbol as NetworkSymbol,
+                    symbol: account.symbol,
                     tokenAddress: token as TokenAddress,
                 },
                 tokenTimestamps,

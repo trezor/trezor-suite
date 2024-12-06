@@ -7,7 +7,7 @@ import {
     selectTokenDefinitions,
     TokenDefinitionsRootState,
 } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -20,7 +20,6 @@ import {
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { getAccountListSections } from '@suite-native/accounts';
 import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
-import { orderedNetworkSymbols } from '@suite-native/config';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
 import { getAccountCryptoBalanceWithStaking, NativeStakingRootState } from '@suite-native/staking';
 
@@ -65,8 +64,8 @@ export const selectDeviceNetworksWithAssets = createMemoizedSelector(
             A.map(account => account.symbol),
             A.uniq,
             A.sort((a, b) => {
-                const aOrder = orderedNetworkSymbols.indexOf(a) ?? Number.MAX_SAFE_INTEGER;
-                const bOrder = orderedNetworkSymbols.indexOf(b) ?? Number.MAX_SAFE_INTEGER;
+                const aOrder = networkSymbolCollection.indexOf(a) ?? Number.MAX_SAFE_INTEGER;
+                const bOrder = networkSymbolCollection.indexOf(b) ?? Number.MAX_SAFE_INTEGER;
 
                 return aOrder - bOrder;
             }),

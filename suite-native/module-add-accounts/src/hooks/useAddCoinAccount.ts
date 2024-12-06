@@ -10,6 +10,7 @@ import {
     NetworkSymbol,
     networks,
     NORMAL_ACCOUNT_TYPE,
+    networkSymbolCollection,
 } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
@@ -102,13 +103,13 @@ export const useAddCoinAccount = () => {
         // first account type for every network is set to normal and represents default type
         const availableTypes: Map<NetworkSymbol, [AccountType, ...AccountType[]]> = new Map();
 
-        Object.keys(networks).forEach(symbol => {
+        networkSymbolCollection.forEach(symbol => {
             // for Cardano and Ethereum only allow latest account type and coinjoin and ledger are not supported
             const types = Object.keys(networks[symbol].accountTypes).filter(
                 t => !['coinjoin', 'imported', 'ledger'].includes(t),
             ) as AccountType[];
 
-            availableTypes.set(symbol as NetworkSymbol, [
+            availableTypes.set(symbol, [
                 NORMAL_ACCOUNT_TYPE,
                 // For Cardano and EVMs allow only normal account type
                 ...(['ada', 'eth', 'pol', 'bnb', 'sol', 'op', 'base'].includes(symbol)

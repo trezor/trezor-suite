@@ -2,12 +2,12 @@ import { A } from '@mobily/ts-belt';
 
 import { isTestnet } from '@suite-common/wallet-utils';
 import {
-    networks,
-    AccountType,
-    Network,
-    NetworkSymbol,
+    type AccountType,
+    type Network,
+    type NetworkSymbol,
     getMainnets,
     getTestnets,
+    networkSymbolCollection,
 } from '@suite-common/wallet-config';
 
 export const orderedAccountTypes: AccountType[] = [
@@ -21,7 +21,7 @@ export const orderedAccountTypes: AccountType[] = [
 const discoveryBlacklist: NetworkSymbol[] = ['sol', 'dsol', 'op', 'base'];
 
 // All supported coins for device discovery
-export const networkSymbolsWhitelistMap = {
+export const networkSymbolsWhitelistMap: Record<'mainnet' | 'testnet', readonly NetworkSymbol[]> = {
     mainnet: [
         'btc',
         'eth',
@@ -39,24 +39,22 @@ export const networkSymbolsWhitelistMap = {
         'nmc',
         'vtc',
         'zec',
-    ] as NetworkSymbol[],
-    testnet: ['test', 'regtest', 'tsep', 'thol', 'tada', 'txrp'] as NetworkSymbol[],
-} as const satisfies Record<string, NetworkSymbol[]>;
+    ],
+    testnet: ['test', 'regtest', 'tsep', 'thol', 'tada', 'txrp'],
+};
 
 // Blacklisting coins that are allowed inside `networkSymbolsWhitelistMap` so that we don't have to configs and just filter these out
-const portfolioTrackerBlacklist = ['btg', 'dash', 'dgb', 'nmc', 'vtc'];
+const portfolioTrackerBlacklist: readonly NetworkSymbol[] = ['btg', 'dash', 'dgb', 'nmc', 'vtc'];
 
 export const discoverySupportedNetworks = [
     ...networkSymbolsWhitelistMap.mainnet,
     ...networkSymbolsWhitelistMap.testnet,
 ];
 
-export const orderedNetworkSymbols = Object.keys(networks) as NetworkSymbol[];
-
 export const sortNetworks = (networksToSort: Network[]) =>
     A.sort(networksToSort, (a, b) => {
-        const aOrder = orderedNetworkSymbols.indexOf(a.symbol);
-        const bOrder = orderedNetworkSymbols.indexOf(b.symbol);
+        const aOrder = networkSymbolCollection.indexOf(a.symbol);
+        const bOrder = networkSymbolCollection.indexOf(b.symbol);
 
         return aOrder - bOrder;
     });
