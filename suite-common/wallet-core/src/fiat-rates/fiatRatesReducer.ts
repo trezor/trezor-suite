@@ -96,6 +96,19 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                     };
                 }
             })
+            .addCase(updateFiatRatesThunk.rejected, (state, action) => {
+                // This case should ideally never happen, but in case something will seriously go wrong
+                // we want to have some error message in the state.
+                const { tickers, localCurrency, rateType } = action.meta.arg;
+
+                const errorMessage = `${action.error?.message}\n${action.error?.stack}`;
+
+                tickers.forEach(ticker => {
+                    const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
+                    state[rateType][fiatRateKey].error = errorMessage;
+                    state[rateType][fiatRateKey].isLoading = false;
+                });
+            })
             .addCase(updateTxsFiatRatesThunk.fulfilled, (state, action) => {
                 if (!action.payload) return;
 
