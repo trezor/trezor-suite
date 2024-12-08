@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, ReactNode } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Animated from 'react-native-reanimated';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 import { ScrollView, PanGestureHandler } from 'react-native-gesture-handler';
 import { GestureResponderEvent, Pressable } from 'react-native';
 
@@ -77,10 +77,6 @@ export const BottomSheet = ({
         }
     }, [isVisible, openSheetAnimated]);
 
-    const handleCloseSheet = () => {
-        closeSheetAnimated();
-    };
-
     const handlePressOutside = (event: GestureResponderEvent) => {
         if (event.target === event.currentTarget) closeSheetAnimated();
     };
@@ -88,7 +84,7 @@ export const BottomSheet = ({
     const insetBottom = Math.max(insets.bottom, DEFAULT_INSET_BOTTOM);
 
     return (
-        <BottomSheetContainer isVisible={isVisible} onClose={handleCloseSheet}>
+        <BottomSheetContainer isVisible={isVisible} onClose={closeSheetAnimated}>
             <Animated.View
                 style={[animatedSheetWithOverlayStyle, applyStyle(sheetWithOverlayStyle)]}
             >
@@ -107,6 +103,7 @@ export const BottomSheet = ({
                                     insetBottom,
                                 }),
                             ]}
+                            layout={LinearTransition}
                         >
                             <BottomSheetHeader
                                 title={title}

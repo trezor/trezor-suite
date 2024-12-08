@@ -1,9 +1,10 @@
 import { useSelector } from 'react-redux';
+import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { Box, Button, Text } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
     DeviceStackRoutes,
@@ -18,6 +19,7 @@ import {
     DiscoveryRootState,
     selectDeviceState,
 } from '@suite-common/wallet-core';
+import { useAlert } from '@suite-native/alerts';
 
 import { FirmwareUpdateVersionCard } from './FirmwareVersionCard';
 
@@ -32,23 +34,37 @@ type NavigationProp = StackNavigationProps<
 
 export const FirmwareUpdateScreen = () => {
     const { applyStyle } = useNativeStyles();
+    const { showAlert } = useAlert();
+    const { translate } = useTranslate();
+    const navigation = useNavigation<NavigationProp>();
 
     const deviceState = useSelector(selectDeviceState);
     const isDiscoveryRunning = useSelector((state: DiscoveryRootState & DeviceRootState) =>
         selectIsDiscoveryActiveByDeviceState(state, deviceState),
     );
 
-    const navigation = useNavigation<NavigationProp>();
-    const handleUpdateFirmware = () => {
-        navigation.navigate(DeviceStackRoutes.FirmwareUpdateInProgress);
-    };
+    const handleShowSeedBottomSheet = useCallback(() => {
+        showAlert({
+            title: translate('moduleDeviceSettings.firmware.seedBottomSheet.title'),
+            description: translate('moduleDeviceSettings.firmware.seedBottomSheet.description'),
+            primaryButtonTitle: translate(
+                'moduleDeviceSettings.firmware.seedBottomSheet.continueButton',
+            ),
+            onPressPrimaryButton: () => {
+                navigation.navigate(DeviceStackRoutes.FirmwareUpdateInProgress);
+            },
+            secondaryButtonTitle: translate(
+                'moduleDeviceSettings.firmware.seedBottomSheet.closeButton',
+            ),
+        });
+    }, [navigation, showAlert, translate]);
 
     return (
         <Screen
             subheader={<ScreenSubHeader closeActionType="close" />}
             footer={
                 <Button
-                    onPress={handleUpdateFirmware}
+                    onPress={handleShowSeedBottomSheet}
                     style={applyStyle(firmwareUpdateButtonStyle)}
                     isDisabled={isDiscoveryRunning}
                     isLoading={isDiscoveryRunning}

@@ -51,6 +51,7 @@ export * from './Skeleton/BoxSkeleton';
 export * from './Skeleton/ListItemSkeleton';
 export * from './IconListItem';
 export * from './BulletListItem';
+export * from './NumberedListItem';
 export * from './SelectableItem';
 export * from './constants';
 export * from './useIllustrationColors';

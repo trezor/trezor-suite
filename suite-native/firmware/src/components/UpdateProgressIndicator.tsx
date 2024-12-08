@@ -1,6 +1,5 @@
 /* eslint-disable no-self-assign */
-import { useEffect, useMemo } from 'react';
-import { Platform } from 'react-native';
+import { useEffect } from 'react';
 import {
     SharedValue,
     useDerivedValue,
@@ -18,21 +17,19 @@ import {
     ImageSVG,
     MatrixColorFilterProps,
     Paint,
-    Paragraph,
     Path,
-    Shadow,
     Skia,
-    TextAlign,
     useSVG,
 } from '@shopify/react-native-skia';
 
 import { useNativeStyles } from '@trezor/styles';
 
-const CANVAS_SIZE = 160;
-const CIRCLE_DIAMETER = 128;
+const CIRCLE_DIAMETER = 144;
+// 1.25 is used to make sure that the circle is not cut off when animating using withSpring
+const CANVAS_SIZE = CIRCLE_DIAMETER * 1.25;
 const CIRCLE_CENTER = CANVAS_SIZE / 2;
 
-const PROGRESS_STROKE_WIDTH = 5;
+const PROGRESS_STROKE_WIDTH = 3;
 
 const CHECKMARK_OFFSET_X = 10; // Adjust left/right position
 const CHECKMARK_OFFSET_Y = 0; // Adjust up/down position
@@ -48,12 +45,6 @@ const checkmarkPath = Skia.Path.MakeFromSVGString(
 const progressCirclePath = Skia.Path.MakeFromSVGString(
     `M ${CIRCLE_CENTER},${CIRCLE_CENTER - (CIRCLE_DIAMETER - PROGRESS_STROKE_WIDTH) / 2} A ${(CIRCLE_DIAMETER - PROGRESS_STROKE_WIDTH) / 2},${(CIRCLE_DIAMETER - PROGRESS_STROKE_WIDTH) / 2} 0 1,1 ${CIRCLE_CENTER},${CIRCLE_CENTER + (CIRCLE_DIAMETER - PROGRESS_STROKE_WIDTH) / 2} A ${(CIRCLE_DIAMETER - PROGRESS_STROKE_WIDTH) / 2},${(CIRCLE_DIAMETER - PROGRESS_STROKE_WIDTH) / 2} 0 1,1 ${CIRCLE_CENTER},${CIRCLE_CENTER - (CIRCLE_DIAMETER - PROGRESS_STROKE_WIDTH) / 2}`,
 )!;
-
-const fontStyle = {
-    fontFamily: Platform.select({ ios: 'Helvetica', default: 'serif' }),
-    fontSize: 34,
-    letterSpacing: -1.4,
-};
 
 // For some reason you can't easily animate opacity of SVG image, so we need to do it manually.
 const AnimatedOpacity = ({
@@ -152,7 +143,7 @@ export const UpdateProgressIndicator = ({
             checkmarkAnimationProgress.value = 0;
             progressEnd.value = withSpring(progress / 100);
 
-            trezorLogoOpacity.value = 0;
+            trezorLogoOpacity.value = withTiming(1, { duration: 600 });
             errorSvgOpacity.value = 0;
             paragraphOpacity.value = withTiming(1, { duration: 600 });
         }
@@ -195,52 +186,17 @@ export const UpdateProgressIndicator = ({
         paragraphOpacity,
     ]);
 
-    const paragraph = useMemo(() => {
-        if (!isInProgress) return null;
-
-        return Skia.ParagraphBuilder.Make({
-            textAlign: TextAlign.Center,
-        })
-            .pushStyle({ ...fontStyle, color: Skia.Color(utils.colors.textPrimaryDefault) })
-            .addText(`${progress}%`)
-            .build();
-    }, [progress, utils.colors.textPrimaryDefault, isInProgress]);
-
-    const isDone = isSuccess || isError;
-
     return (
         <Canvas style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}>
-            <Circle
-                cx={CIRCLE_CENTER}
-                cy={CIRCLE_CENTER}
-                r={CIRCLE_DIAMETER / 2}
-                color={utils.colors.backgroundSurfaceElevation1}
-            ></Circle>
-
-            {isInProgress && (
-                <AnimatedOpacity opacity={paragraphOpacity}>
-                    <Paragraph
-                        paragraph={paragraph}
-                        x={0}
-                        y={CIRCLE_CENTER - fontStyle.fontSize / 2}
-                        width={CANVAS_SIZE}
-                    />
-                </AnimatedOpacity>
-            )}
-
-            <AnimatedOpacity opacity={trezorLogoOpacity}>
-                <ImageSVG
-                    svg={trezorLogoSvg}
-                    x={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
-                    y={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
-                    color={utils.colors.textPrimaryDefault}
-                    width={CIRCLE_DIAMETER / 2}
-                    height={CIRCLE_DIAMETER / 2}
-                    opacity={trezorLogoOpacity}
-                />
-            </AnimatedOpacity>
-
             <Group>
+                <Path
+                    path={progressCirclePath}
+                    color={utils.colors.backgroundPrimarySubtleOnElevationNegative}
+                    strokeCap="round"
+                    strokeJoin="round"
+                    strokeWidth={PROGRESS_STROKE_WIDTH}
+                    style="stroke"
+                />
                 <Path
                     path={progressCirclePath}
                     start={0}
@@ -250,9 +206,7 @@ export const UpdateProgressIndicator = ({
                     strokeJoin="round"
                     strokeWidth={PROGRESS_STROKE_WIDTH}
                     style="stroke"
-                >
-                    {!isDone && <Shadow dx={0} dy={2} blur={4} color="rgba(0,0,0,0.1)" />}
-                </Path>
+                />
             </Group>
             <Circle
                 cx={CIRCLE_CENTER}
@@ -260,6 +214,16 @@ export const UpdateProgressIndicator = ({
                 r={animatedBackgroundRadius}
                 color={backgroundColorFinished}
             />
+            <AnimatedOpacity opacity={trezorLogoOpacity}>
+                <ImageSVG
+                    svg={trezorLogoSvg}
+                    x={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
+                    y={CIRCLE_CENTER - CIRCLE_DIAMETER / 4}
+                    color={utils.colors.textPrimaryDefault}
+                    width={CIRCLE_DIAMETER / 2}
+                    height={CIRCLE_DIAMETER / 2}
+                />
+            </AnimatedOpacity>
             {isSuccess && (
                 <Path
                     path={checkmarkPath}

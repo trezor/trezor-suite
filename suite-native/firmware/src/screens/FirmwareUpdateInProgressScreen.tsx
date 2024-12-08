@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Animated, {
     FadeInDown,
     FadeInUp,
@@ -30,6 +30,8 @@ import {
     UpdateProgressIndicatorStatus,
 } from '../components/UpdateProgressIndicator';
 import { useFirmware } from '../hooks/useFirmware';
+import { MayBeStuckedBottomSheet } from '../components/MayBeStuckedBottomSheet';
+
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
     DeviceStackRoutes.FirmwareUpdateInProgress
@@ -46,6 +48,8 @@ export const FirmwareUpdateInProgressScreen = () => {
     const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
+    const [isMayBeStuckedBottomSheetOpened, setIsMayBeStuckedBottomSheetOpened] =
+        useState<boolean>(false);
     const { bottom: bottomSafeAreaInset } = useSafeAreaInsets();
     const {
         operation,
@@ -116,8 +120,12 @@ export const FirmwareUpdateInProgressScreen = () => {
         startFirmwareUpdate();
     }, [startFirmwareUpdate, resetReducer]);
 
-    const handleMayBeStucked = useCallback(() => {
-        // todo
+    const openMayBeStuckedBottomSheet = useCallback(() => {
+        setIsMayBeStuckedBottomSheetOpened(true);
+    }, []);
+
+    const closeMayBeStuckedBottomSheet = useCallback(() => {
+        setIsMayBeStuckedBottomSheetOpened(false);
     }, []);
 
     const handleContactSupport = useCallback(() => {
@@ -157,7 +165,7 @@ export const FirmwareUpdateInProgressScreen = () => {
                 <UpdateProgressIndicator progress={progress} status={indicatorStatus} />
                 <Animated.View entering={FadeInUp} exiting={FadeOutDown} key={translatedText.title}>
                     <Box marginTop="sp12" alignItems="center">
-                        <Text variant="titleMedium" textAlign="center">
+                        <Text variant="titleSmall" textAlign="center">
                             {translatedText.title}
                         </Text>
                     </Box>
@@ -192,7 +200,7 @@ export const FirmwareUpdateInProgressScreen = () => {
                         bottom: bottomButtonOffset,
                     })}
                 >
-                    <Button onPress={handleMayBeStucked} colorScheme="tertiaryElevation0">
+                    <Button onPress={openMayBeStuckedBottomSheet} colorScheme="tertiaryElevation0">
                         <Translation id="moduleDeviceSettings.firmware.firmwareUpdateProgress.stuckButton" />
                     </Button>
                 </Animated.View>
@@ -204,6 +212,10 @@ export const FirmwareUpdateInProgressScreen = () => {
                     }
                 />
             )}
+            <MayBeStuckedBottomSheet
+                isOpened={isMayBeStuckedBottomSheetOpened}
+                onClose={closeMayBeStuckedBottomSheet}
+            />
         </Screen>
     );
 };

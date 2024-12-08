@@ -99,18 +99,26 @@ export const useFirmware = (params: UseFirmwareInstallationParams) => {
         } else if (isInitialState && !confirmOnDevice) {
             text = {
                 title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.initializing.title',
+                subtitle:
+                    'moduleDeviceSettings.firmware.firmwareUpdateProgress.dontCloseAppMessage',
             };
         } else if (isInitialState) {
             text = {
                 title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.confirming.title',
+                subtitle:
+                    'moduleDeviceSettings.firmware.firmwareUpdateProgress.confirmOnDeviceMessage',
             };
         } else if (operation === 'validating') {
             text = {
                 title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.validating.title',
+                subtitle:
+                    'moduleDeviceSettings.firmware.firmwareUpdateProgress.dontCloseAppMessage',
             };
         } else if (operation === 'restarting') {
             text = {
                 title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.restarting.title',
+                subtitle:
+                    'moduleDeviceSettings.firmware.firmwareUpdateProgress.dontCloseAppMessage',
             };
         } else if (operation === 'completed' || status === 'done') {
             text = {
@@ -121,7 +129,7 @@ export const useFirmware = (params: UseFirmwareInstallationParams) => {
             text = {
                 title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.installing.title',
                 subtitle:
-                    'moduleDeviceSettings.firmware.firmwareUpdateProgress.installing.subtitle',
+                    'moduleDeviceSettings.firmware.firmwareUpdateProgress.dontCloseAppMessage',
             };
         }
 
