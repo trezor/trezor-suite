@@ -1,3 +1,8 @@
+# 9.2.5
+
+-   npm-prerelease: @trezor/utils 9.2.5-beta.1 (c2b275daae)
+-   chore: unify types for setTimeout return type to address the NodeJS types leak issue (3f34981e5d)
+
 # 9.2.4
 
 -   npm-prerelease: @trezor/utils 9.2.4-beta.1 (75412b5b8c)
