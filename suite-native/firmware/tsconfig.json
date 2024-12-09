@@ -6,6 +6,9 @@
         { "path": "../../suite-common/icons" },
         { "path": "../link" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/react-native-usb"
+        },
         { "path": "../../packages/styles" }
     ]
 }

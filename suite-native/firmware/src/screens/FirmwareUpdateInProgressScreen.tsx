@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Animated, {
+    FadeIn,
     FadeInDown,
     FadeInUp,
     FadeOutDown,
@@ -11,7 +12,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { authorizeDeviceThunk } from '@suite-common/wallet-core';
-import { Box, Button, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, Text, VStack, IconButton } from '@suite-native/atoms';
 import { ConfirmOnTrezorImage, setDeviceForceRememberedThunk } from '@suite-native/device';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation } from '@suite-native/intl';
@@ -42,6 +43,12 @@ const bottomButtonsContainerStyle = prepareNativeStyle<{ bottom: number }>((util
     left: utils.spacings.sp16,
     right: utils.spacings.sp16,
     bottom,
+}));
+
+const cancelButtonStyle = prepareNativeStyle(utils => ({
+    position: 'absolute',
+    left: utils.spacings.sp8,
+    top: utils.spacings.sp8,
 }));
 
 export const FirmwareUpdateInProgressScreen = () => {
@@ -80,6 +87,10 @@ export const FirmwareUpdateInProgressScreen = () => {
         });
         navigation.goBack();
     }, [dispatch, navigation]);
+
+    const handleCancel = useCallback(() => {
+        navigation.goBack();
+    }, [navigation]);
 
     const startFirmwareUpdate = useCallback(async () => {
         setIsFirmwareInstallationRunning(true);
@@ -161,6 +172,18 @@ export const FirmwareUpdateInProgressScreen = () => {
 
     return (
         <Screen>
+            {isError && (
+                <Animated.View entering={FadeIn} style={applyStyle(cancelButtonStyle)}>
+                    <IconButton
+                        iconName="x"
+                        size="medium"
+                        colorScheme="tertiaryElevation0"
+                        accessibilityRole="button"
+                        accessibilityLabel="close"
+                        onPress={handleCancel}
+                    />
+                </Animated.View>
+            )}
             <VStack justifyContent="center" alignItems="center" flex={1}>
                 <UpdateProgressIndicator progress={progress} status={indicatorStatus} />
                 <Animated.View entering={FadeInUp} exiting={FadeOutDown} key={translatedText.title}>

@@ -16,6 +16,7 @@ declare class ReactNativeUsbModuleDeclaration extends NativeModule<DeviceEvents>
     selectConfiguration: (deviceName: string, configurationValue: number) => Promise<void>;
     transferIn: (deviceName: string, endpointNumber: number, length: number) => Promise<number[]>;
     transferOut: (deviceName: string, endpointNumber: number, data: string) => Promise<void>;
+    setPriorityMode: (isInPriorityMode: boolean) => void;
 }
 
 // It loads the native module object from the JSI or falls back to

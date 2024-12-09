@@ -7,6 +7,7 @@ import {
     UseFirmwareInstallationParams,
 } from '@suite-common/firmware';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
+import { setPriorityMode } from '@trezor/react-native-usb';
 
 import { nativeFirmwareActions } from '../nativeFirmwareSlice';
 
@@ -60,6 +61,7 @@ export const useFirmware = (params: UseFirmwareInstallationParams) => {
     }, [progress, status, setMayBeStuckedTimeout, resetMayBeStuckedTimeout]);
 
     const firmwareUpdate = useCallback(async () => {
+        setPriorityMode(true);
         const result = await firmwareUpdateCommon({ ignoreBaseUrl: true })
             .unwrap()
             .catch(error => {
@@ -73,6 +75,7 @@ export const useFirmware = (params: UseFirmwareInstallationParams) => {
                 return connectResponse;
             })
             .finally(() => {
+                setPriorityMode(false);
                 resetMayBeStuckedTimeout();
             });
 

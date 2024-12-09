@@ -18,6 +18,7 @@
         "@suite-common/icons": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/react-native-usb": "workspace:*",
         "@trezor/styles": "workspace:*",
         "react": "18.2.0",
         "react-native": "0.76.1",

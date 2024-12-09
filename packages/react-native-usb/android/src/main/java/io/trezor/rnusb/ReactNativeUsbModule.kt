@@ -35,6 +35,8 @@ const val INTERFACE_INDEX = 0
 class ReactNativeUsbModule : Module() {
     private val moduleCoroutineScope = CoroutineScope(Dispatchers.IO)
     private var isAppInForeground = false
+    // We use priority mode to prevent closing device when app is in background for example during firmware update
+    private var isInPriorityMode = false
 
     // List of devices for which permission has already been requested to prevent redundant requests if the user denies permission.
     private var devicesRequestedPermissions = mutableListOf<String>()
@@ -56,6 +58,10 @@ class ReactNativeUsbModule : Module() {
 
         // Defines event names that the module can send to JavaScript.
         Events(ON_DEVICE_CONNECT_EVENT_NAME, ON_DEVICE_DISCONNECT_EVENT_NAME)
+
+        Function("setPriorityMode") { priorityMode: Boolean ->
+            isInPriorityMode = priorityMode
+        }
 
         AsyncFunction("getDevices") {
             return@AsyncFunction getDevices()
@@ -175,8 +181,10 @@ class ReactNativeUsbModule : Module() {
         }
 
         OnActivityEntersBackground {
-            isAppInForeground = false
-            closeAllOpenedDevices()
+            if (!isInPriorityMode) {
+                isAppInForeground = false
+                closeAllOpenedDevices()
+            }
         }
 
         OnDestroy {
