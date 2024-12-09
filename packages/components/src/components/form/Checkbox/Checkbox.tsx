@@ -230,7 +230,7 @@ export const Checkbox = ({
             <CheckContainer tabIndex={0} $variant={variant}>
                 <CheckIcon
                     $isVisible={!!isChecked}
-                    size={24}
+                    size={16}
                     color={theme.iconOnPrimary}
                     name="check"
                 />
