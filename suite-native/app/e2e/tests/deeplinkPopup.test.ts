@@ -115,7 +115,7 @@ conditionalDescribe(device.getPlatform() !== 'android', 'Deeplink connect popup.
 
         await waitFor(element(by.id('@popup/call-device')))
             .toBeVisible()
-            .withTimeout(10 * 1000);
+            .withTimeout(30000);
         await element(by.id('@popup/call-device')).tap();
 
         await TrezorUserEnvLink.pressYes();

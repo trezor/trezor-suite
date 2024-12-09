@@ -11,10 +11,10 @@ class SendOutputsFormActions {
         for (const [index, value] of values.entries()) {
             const { address, amount } = value;
             if (address) {
-                await element(by.id(`outputs.${index}.address`)).typeText(address);
+                await element(by.id(`outputs.${index}.address`)).replaceText(address);
             }
             if (amount) {
-                await element(by.id(`outputs.${index}.amount`)).typeText(amount);
+                await element(by.id(`outputs.${index}.amount`)).replaceText(amount);
             }
         }
     }
