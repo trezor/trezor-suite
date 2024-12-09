@@ -204,7 +204,11 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
     }
 };
 
-const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
+const getAccountInfo = async (
+    request: Request<MessageTypes.GetAccountInfo>,
+    // TODO: uncomment when solana staking accounts are supported
+    // isTestnet: boolean,
+) => {
     const { payload } = request;
     const { details = 'basic' } = payload;
     const api = await request.connect();
@@ -334,18 +338,18 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
             const accountDataBytes = getBase64Encoder().encode(accountDataEncoded);
             const accountDataLength = BigInt(accountDataBytes.byteLength);
             const rent = await api.rpc.getMinimumBalanceForRentExemption(accountDataLength).send();
+            // TODO: uncomment when solana staking accounts are supported
+            // const stakingAccounts = await getSolanaStakingAccounts(payload.descriptor, isTestnet);
             misc = {
                 owner: accountInfo?.owner,
                 rent: Number(rent),
+                solStakingAccounts: [],
             };
         }
     }
 
     // allTxIds can be empty for non-archive rpc nodes
     const isAccountEmpty = !(allTxIds.length || balance || tokens.length);
-
-    // TODO: uncomment when solana staking accounts are supported
-    // const stakingAccounts = await getSolanaStakingAccounts(payload.descriptor, isTestnet);
 
     const account: AccountInfo = {
         descriptor: payload.descriptor,
@@ -366,8 +370,6 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
               }
             : undefined,
         tokens,
-        // TODO: remove empty array when staking accounts are supported
-        stakingAccounts: [],
         ...(misc ? { misc } : {}),
     };
 
