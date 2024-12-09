@@ -10,7 +10,7 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.4.6-beta.1
+# 9.4.6
 
 This release brings improvements and optimizations in Solana `getAccountInfo`. It moves security checks outside `getFeatures` that fixes some of the issues with device loading and communication in general.
 
