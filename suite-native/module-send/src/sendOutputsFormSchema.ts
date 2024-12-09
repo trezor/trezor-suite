@@ -17,7 +17,7 @@ import { U_INT_32 } from '@suite-common/wallet-constants';
 import { FeeLevelsMaxAmount } from './types';
 
 export type SendFormFormContext = {
-    symbol?: NetworkSymbol;
+    networkSymbol?: NetworkSymbol;
     availableBalance?: string;
     networkFeeInfo?: FeeInfo;
     isValueInSats?: boolean;
@@ -33,9 +33,9 @@ const isAmountDust = (amount: string, context?: SendFormFormContext) => {
         return false;
     }
 
-    const { symbol, networkFeeInfo, isValueInSats } = context;
+    const { networkSymbol, networkFeeInfo, isValueInSats } = context;
 
-    if (!symbol || !networkFeeInfo) {
+    if (!networkSymbol || !networkFeeInfo) {
         return false;
     }
 
@@ -43,7 +43,7 @@ const isAmountDust = (amount: string, context?: SendFormFormContext) => {
     const rawDust = networkFeeInfo.dustLimit?.toString();
 
     const dustThreshold =
-        rawDust && (isValueInSats ? rawDust : formatNetworkAmount(rawDust, symbol));
+        rawDust && (isValueInSats ? rawDust : formatNetworkAmount(rawDust, networkSymbol));
 
     if (!dustThreshold) {
         return false;
@@ -61,9 +61,10 @@ const isAmountHigherThanBalance = (
         return false;
     }
 
-    const { symbol, networkFeeInfo, availableBalance, feeLevelsMaxAmount, isTokenFlow } = context;
+    const { networkSymbol, networkFeeInfo, availableBalance, feeLevelsMaxAmount, isTokenFlow } =
+        context;
 
-    if (!symbol || !networkFeeInfo || !availableBalance) {
+    if (!networkSymbol || !networkFeeInfo || !availableBalance) {
         return false;
     }
 
@@ -99,16 +100,16 @@ export const sendOutputsFormValidationSchema = yup.object({
                             if (!value || !context) {
                                 return false;
                             }
-                            const { symbol, isTaprootAvailable } = context;
+                            const { networkSymbol, isTaprootAvailable } = context;
 
-                            if (!symbol) return false;
+                            if (!networkSymbol) return false;
 
                             const isTaprootValid =
-                                isTaprootAvailable || !isTaprootAddress(value, symbol);
+                                isTaprootAvailable || !isTaprootAddress(value, networkSymbol);
 
                             return (
-                                isAddressValid(value, symbol) &&
-                                !isAddressDeprecated(value, symbol) &&
+                                isAddressValid(value, networkSymbol) &&
+                                !isAddressDeprecated(value, networkSymbol) &&
                                 !isBech32AddressUppercase(value) && // bech32 addresses are valid as uppercase but are not accepted by Trezor
                                 isTaprootValid // bech32m/Taproot addresses are valid but may not be supported by older FW
                             );
@@ -118,10 +119,10 @@ export const sendOutputsFormValidationSchema = yup.object({
                         'ripple-is-sending-to-self',
                         'Can`t send to myself.',
                         (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                            const { symbol, accountDescriptor } = context!;
-                            if (!symbol || !accountDescriptor) return true;
+                            const { networkSymbol, accountDescriptor } = context!;
+                            if (!networkSymbol || !accountDescriptor) return true;
 
-                            if (getNetworkType(symbol) !== 'ripple') return true;
+                            if (getNetworkType(networkSymbol) !== 'ripple') return true;
 
                             return value !== accountDescriptor;
                         },
@@ -144,9 +145,14 @@ export const sendOutputsFormValidationSchema = yup.object({
                             value,
                             { options: { context } }: yup.TestContext<SendFormFormContext>,
                         ) {
-                            const { symbol, availableBalance, feeLevelsMaxAmount } = context!;
+                            const { networkSymbol, availableBalance, feeLevelsMaxAmount } =
+                                context!;
 
-                            if (!availableBalance || !symbol || getNetworkType(symbol) !== 'ripple')
+                            if (
+                                !availableBalance ||
+                                !networkSymbol ||
+                                getNetworkType(networkSymbol) !== 'ripple'
+                            )
                                 return true;
 
                             const amountBigNumber = new BigNumber(value);
@@ -157,7 +163,7 @@ export const sendOutputsFormValidationSchema = yup.object({
                                     formatNetworkAmount(
                                         // availableBalance = balance - reserve
                                         availableBalance,
-                                        symbol,
+                                        networkSymbol,
                                     ),
                                 )
                             ) {
@@ -203,10 +209,10 @@ export const sendOutputsFormValidationSchema = yup.object({
             'is-destination-tag-in-range',
             'Destination tag is too high.',
             (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                const { symbol } = context!;
+                const { networkSymbol } = context!;
 
-                if (!symbol) return true;
-                if (getNetworkType(symbol) !== 'ripple') return true;
+                if (!networkSymbol) return true;
+                if (getNetworkType(networkSymbol) !== 'ripple') return true;
 
                 if (!value) return true;
 
