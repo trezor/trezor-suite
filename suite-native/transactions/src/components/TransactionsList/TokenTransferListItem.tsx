@@ -63,7 +63,7 @@ export const TokenTransferListItemValues = ({
         <>
             <TokenToFiatAmountFormatter
                 symbol={transaction.symbol}
-                value={Number(tokenTransfer.amount)}
+                value={tokenTransfer.amount}
                 contract={tokenTransfer.contract}
                 decimals={tokenTransfer.decimals}
                 signValue={isFailedTx ? undefined : getTransactionValueSign(tokenTransfer.type)}

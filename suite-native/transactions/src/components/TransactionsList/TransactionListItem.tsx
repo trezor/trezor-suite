@@ -70,7 +70,7 @@ export const TransactionListItemValues = ({
                         <SignValueFormatter value={getTransactionValueSign(transaction.type)} />
                     )}
                     <CryptoToFiatAmountFormatter
-                        value={Number(transaction.amount)}
+                        value={transaction.amount}
                         symbol={transaction.symbol}
                         historicRate={historicRate}
                         useHistoricRate
