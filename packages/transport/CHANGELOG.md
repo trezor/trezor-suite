@@ -1,3 +1,13 @@
+# 1.3.6
+
+-   npm-prerelease: @trezor/transport 1.3.6-beta.1 (52aae6ddc6)
+-   chore: unify types for setTimeout return type to address the NodeJS types leak issue (3f34981e5d)
+-   chore(transport): reduce verbosity of usb logs by removing device (c4bef18118)
+-   fix(transport): propagate libusb_access_error for correct udev rules component rendering (aced3af557)
+-   chore(transport): get rid of timeout in sessions background (430e877f8d)
+-   fix(transport): narrow error handling of disconnected device to be the same as with trezord-go (2dcaafd766)
+-   fix(transport): match hid devices correctly on usb layer (cdd2a17c74)
+
 # 1.3.5
 
 -   npm-prerelease: @trezor/transport 1.3.5-beta.1 (c8c6a8b5c7)
