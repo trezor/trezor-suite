@@ -248,6 +248,21 @@ jobs:
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -grpc 8554
           script: yarn test:e2e android.emu.release --headless --take-screenshots failing --record-videos failing
+      
+      - name: Upload results to Currents.dev
+        if: ${{ ! cancelled() }}
+        env:
+          CURRENTS_PROJECT_ID: iUe1Y4
+          CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+        working-directory: ./suite-native/app
+        run: |
+          npx currents convert \
+            --input-format=junit \
+            --input-file=./reports/junit-report.xml \
+            --output-dir=./currents \
+            --framework=postman \
+            --framework-version=v11.2.0
+          npx currents upload --project-id=${CURRENTS_PROJECT_ID} --key=${CURRENTS_RECORD_KEY} --report-dir ./currents
 
       - name: "Store failed test screenshot artifacts"
         if: ${{failure()}}
