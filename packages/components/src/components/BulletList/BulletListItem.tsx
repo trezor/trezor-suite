@@ -1,10 +1,9 @@
 import styled, { css, useTheme } from 'styled-components';
 
-import { SpacingValues, Elevation, mapElevationToBorder, borders, typography } from '@trezor/theme';
+import { SpacingValues, borders, typography } from '@trezor/theme';
 
 import { useBulletList } from './BulletList';
 import { Text } from '../typography/Text/Text';
-import { useElevation } from '../ElevationContext/ElevationContext';
 import { IconCircle } from '../IconCircle/IconCircle';
 import { BulletSize, BulletListItemState } from './types';
 import { mapStateToColor, mapSizeToDimension } from './utils';
@@ -23,10 +22,10 @@ const BulletWraper = styled.div`
 `;
 
 const Bullet = styled.div<{
-    $elevation: Elevation;
     $state: BulletListItemState;
     $isOrdered: boolean;
     $size: BulletSize;
+    $isDarkTheme: boolean;
 }>`
     display: flex;
     align-items: center;
@@ -34,12 +33,13 @@ const Bullet = styled.div<{
     width: ${mapSizeToDimension}px;
     height: ${mapSizeToDimension}px;
     border-radius: 50%;
-    background-color: ${mapElevationToBorder};
+    background-color: ${({ theme, $isDarkTheme }) =>
+        theme[$isDarkTheme ? 'textDefaultInverted' : 'backgroundNeutralDisabled']};
     color: ${mapStateToColor};
     ${({ $size }) => ($size === 'small' ? typography.label : typography.hint)}
 
     &::before {
-        ${({ $isOrdered }) =>
+        ${({ $isOrdered, $isDarkTheme }) =>
             $isOrdered
                 ? css`
                       content: counter(item-counter);
@@ -49,8 +49,12 @@ const Bullet = styled.div<{
                       width: 50%;
                       height: 50%;
                       border-radius: 50%;
-                      background: ${({ theme }) => theme.textDefaultInverted};
-                      box-shadow: ${({ theme }) => theme.boxShadowBase};
+                      background-color: ${({ theme }) =>
+                          theme[
+                              $isDarkTheme ? 'backgroundNeutralDisabled' : 'textDefaultInverted'
+                          ]};
+
+                      box-shadow: ${({ theme }) => !$isDarkTheme && theme.boxShadowBase};
                   `}
     }
 `;
@@ -96,8 +100,8 @@ export const BulletListItem = ({
     children,
 }: BulletListItemProps) => {
     const { itemGap, bulletGap, titleGap, bulletSize, isOrdered } = useBulletList();
-    const { elevation } = useElevation();
     const theme = useTheme();
+    const isDarkTheme = theme.variant === 'dark';
 
     return (
         <Item $bulletGap={bulletGap} $size={bulletSize} data-testid={dataTestId}>
@@ -112,9 +116,9 @@ export const BulletListItem = ({
                 ) : (
                     <Bullet
                         $state={state}
-                        $elevation={elevation}
                         $isOrdered={isOrdered}
                         $size={bulletSize}
+                        $isDarkTheme={isDarkTheme}
                     />
                 )}
             </BulletWraper>

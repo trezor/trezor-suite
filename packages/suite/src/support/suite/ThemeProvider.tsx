@@ -16,7 +16,7 @@ export const ThemeProvider = ({ children, themeVariant }: ThemeProviderProps) =>
     const theme = getThemeColors({ variant: themeVariant ?? getOsTheme() });
 
     return (
-        <SCThemeProvider theme={theme}>
+        <SCThemeProvider theme={{ ...theme, variant: themeVariant }}>
             <GlobalStyle theme={theme} />
             {children}
         </SCThemeProvider>

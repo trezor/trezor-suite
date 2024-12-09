@@ -328,5 +328,5 @@ export const colorVariants: Record<ThemeColorVariant, Colors> = {
         textPrimaryPressed: palette.darkPrimaryForest900,
         textSecondaryHighlight: palette.darkSecondaryGreen800,
         textSubdued: palette.darkGray700,
-    },
+    } as Colors,
 } as const;

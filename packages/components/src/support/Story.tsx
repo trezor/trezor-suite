@@ -13,11 +13,11 @@ const Wrapper = styled.div`
 
 export const StoryWrapper = (story: any) => (
     <>
-        <ThemeProvider theme={intermediaryTheme.light}>
+        <ThemeProvider theme={{ ...intermediaryTheme.light, variant: 'light' }}>
             <Wrapper>{story.children}</Wrapper>
         </ThemeProvider>
 
-        <ThemeProvider theme={intermediaryTheme.dark}>
+        <ThemeProvider theme={{ ...intermediaryTheme.dark, variant: 'dark' }}>
             <Wrapper>{story.children}</Wrapper>
         </ThemeProvider>
     </>
