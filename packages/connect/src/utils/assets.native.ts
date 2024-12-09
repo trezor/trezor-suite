@@ -13,6 +13,12 @@ export function httpRequest<T extends HttpRequestType>(
             ...options,
         })
             .then(response => {
+                if (!response.ok) {
+                    console.error('HTTP request failed', response);
+                    throw new Error(
+                        `HTTP request failed with status ${response.status} ${response.statusText}`,
+                    );
+                }
                 if (type === 'binary') {
                     return response.arrayBuffer() as unknown as HttpRequestReturnType<T>;
                 }
@@ -23,7 +29,7 @@ export function httpRequest<T extends HttpRequestType>(
                 return response.text() as unknown as HttpRequestReturnType<T>;
             })
             .catch(error => {
-                console.error('httpRequest native error', error);
+                console.error('HTTP request failed', error);
                 throw error;
             });
     }
