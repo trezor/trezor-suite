@@ -11,8 +11,8 @@ class AccountsPage {
         cy.getTestElement(`@account-menu/btc/normal/${index}`).click();
     }
 
-    applyCoinFilter(coin: NetworkSymbol) {
-        cy.getTestElement(`@account-menu/filter/${coin}`).as('account').click();
+    applyCoinFilter(symbol: NetworkSymbol) {
+        cy.getTestElement(`@account-menu/filter/${symbol}`).as('account').click();
         cy.get('@account').invoke('attr', 'data-test-activated').should('eq', 'true');
     }
 
@@ -21,10 +21,10 @@ class AccountsPage {
         cy.getTestElement('@modal').should('be.visible');
     }
 
-    activatNewCoin(coinName: NetworkSymbol) {
+    activatNewCoin(symbol: NetworkSymbol) {
         this.openAddAccountsModal();
         cy.getTestElement('@modal/account/activate_more_coins').click();
-        cy.getTestElement(`@settings/wallet/network/${coinName}`).click();
+        cy.getTestElement(`@settings/wallet/network/${symbol}`).click();
         cy.contains('button', 'Find my').click();
         cy.getTestElement('@modal').should('not.exist');
         cy.discoveryShouldFinish();
@@ -84,8 +84,8 @@ class AccountsPage {
         cy.getTestElement('@app').scrollTo('bottom');
     }
 
-    clickOnDesiredAccount(coinName: NetworkSymbol) {
-        cy.getTestElement(`@account-menu/${coinName}/normal/0`).click('left');
+    clickOnDesiredAccount(symbol: NetworkSymbol) {
+        cy.getTestElement(`@account-menu/${symbol}/normal/0`).click('left');
     }
 
     exportDesiredTransactionType(typeOfExport: string) {

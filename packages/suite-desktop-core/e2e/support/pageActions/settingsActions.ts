@@ -35,10 +35,10 @@ export class SettingsActions {
     readonly settingsCloseButton: Locator;
     readonly modal: Locator;
     //coin Advance settings
-    readonly coinNetworkButton = (coin: NetworkSymbol) =>
-        this.window.getByTestId(`@settings/wallet/network/${coin}`);
-    readonly coinAdvanceSettingsButton = (coin: NetworkSymbol) =>
-        this.window.getByTestId(`@settings/wallet/network/${coin}/advance`);
+    readonly networkButton = (symbol: NetworkSymbol) =>
+        this.window.getByTestId(`@settings/wallet/network/${symbol}`);
+    readonly networkSymbolAdvanceSettingsButton = (symbol: NetworkSymbol) =>
+        this.window.getByTestId(`@settings/wallet/network/${symbol}/advance`);
     readonly coinBackendSelector: Locator;
     readonly coinBackendSelectorOption = (backend: BackendType) =>
         this.window.getByTestId(`@settings/advance/${backend}`);
@@ -92,24 +92,24 @@ export class SettingsActions {
         await expect(this.debugTabButton).toBeVisible();
     }
 
-    async openCoinAdvanceSettings(coin: NetworkSymbol) {
-        const isCoinActive = await this.coinNetworkButton(coin).getAttribute('data-active');
-        if (isCoinActive === 'false') {
-            await this.enableCoin(coin);
+    async openNetworkAdvanceSettings(symbol: NetworkSymbol) {
+        const isNetworkActive = await this.networkButton(symbol).getAttribute('data-active');
+        if (isNetworkActive === 'false') {
+            await this.enableNetwork(symbol);
         }
-        await this.coinNetworkButton(coin).hover();
-        await this.coinAdvanceSettingsButton(coin).click();
+        await this.networkButton(symbol).hover();
+        await this.networkSymbolAdvanceSettingsButton(symbol).click();
         await expect(this.modal).toBeVisible();
     }
 
-    async enableCoin(coin: NetworkSymbol) {
-        await this.coinNetworkButton(coin).click();
-        await expect(this.coinNetworkButton(coin)).toBeEnabledCoin();
+    async enableNetwork(symbol: NetworkSymbol) {
+        await this.networkButton(symbol).click();
+        await expect(this.networkButton(symbol)).toBeEnabledCoin();
     }
 
-    async disableCoin(coin: NetworkSymbol) {
-        await this.coinNetworkButton(coin).click();
-        await expect(this.coinNetworkButton(coin)).toBeDisabledCoin();
+    async disableNetwork(symbol: NetworkSymbol) {
+        await this.networkButton(symbol).click();
+        await expect(this.networkButton(symbol)).toBeDisabledCoin();
     }
 
     async changeCoinBackend(backend: BackendType, backendUrl: string) {

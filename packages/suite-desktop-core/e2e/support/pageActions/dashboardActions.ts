@@ -16,8 +16,8 @@ export class DashboardActions {
         this.window.getByTestId(`@switch-device/wallet-on-index/${index}/eject-button`);
     readonly confirmDeviceEjectButton: Locator;
     readonly addStandardWalletButton: Locator;
-    readonly balanceOfNetwork = (network: NetworkSymbol) =>
-        this.window.getByTestId(`@wallet/coin-balance/value-${network}`);
+    readonly balanceOfNetwork = (symbol: NetworkSymbol) =>
+        this.window.getByTestId(`@wallet/coin-balance/value-${symbol}`);
 
     constructor(window: Page) {
         this.window = window;

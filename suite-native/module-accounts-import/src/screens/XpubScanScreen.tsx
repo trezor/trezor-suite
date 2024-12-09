@@ -69,7 +69,7 @@ export const XpubScanScreen = ({
 
     const form = useForm<XpubFormValues, XpubFormContext>({
         validation: xpubFormValidationSchema,
-        context: { networkSymbol },
+        context: { symbol: networkSymbol },
     });
     const { handleSubmit, setValue, watch } = form;
     const watchXpubAddress = watch('xpubAddress');

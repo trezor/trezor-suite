@@ -7,7 +7,7 @@ import { onAccountsPage } from '../../support/pageObjects/accountsObject';
 import { onSettingsCryptoPage } from '../../support/pageObjects/settings/settingsCryptoObject';
 
 const downloadsFolder = Cypress.config('downloadsFolder');
-const coins: NetworkSymbol[] = ['btc', 'ltc', 'eth', 'ada'];
+const symbols: NetworkSymbol[] = ['btc', 'ltc', 'eth', 'ada'];
 
 describe('Export transactions', () => {
     beforeEach(() => {
@@ -40,16 +40,16 @@ describe('Export transactions', () => {
      */
     it('Go to account and try to export all possible variants (pdf, csv, json)', () => {
         cy.prefixedVisit('/settings/coins');
-        coins.forEach((coin: NetworkSymbol) => {
-            if (coin !== 'btc') {
-                onSettingsCryptoPage.activateCoin(coin);
+        symbols.forEach((symbol: NetworkSymbol) => {
+            if (symbol !== 'btc') {
+                onSettingsCryptoPage.activateCoin(symbol);
             }
         });
         cy.getTestElement('@suite/menu/suite-index').click();
         cy.discoveryShouldFinish();
 
-        coins.forEach((coin: NetworkSymbol) => {
-            onAccountsPage.clickOnDesiredAccount(coin);
+        symbols.forEach((symbol: NetworkSymbol) => {
+            onAccountsPage.clickOnDesiredAccount(symbol);
             cy.task('rmDir', { dir: downloadsFolder, recursive: true, force: true });
             const typesOfExport: Array<string> = ['pdf', 'csv', 'json'];
 

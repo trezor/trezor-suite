@@ -26,8 +26,8 @@ test(
     async ({ dashboardPage, settingsPage, walletPage }) => {
         await settingsPage.navigateTo();
         await settingsPage.coinsTabButton.click();
-        await settingsPage.enableCoin('ada');
-        await settingsPage.disableCoin('btc');
+        await settingsPage.enableNetwork('ada');
+        await settingsPage.disableNetwork('btc');
 
         await dashboardPage.navigateTo();
         await dashboardPage.discoveryShouldFinish();

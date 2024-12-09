@@ -27,7 +27,7 @@ test.describe.serial(
 
             await settingsPage.navigateTo();
             await settingsPage.coinsTabButton.click();
-            await settingsPage.openCoinAdvanceSettings('regtest');
+            await settingsPage.openNetworkAdvanceSettings('regtest');
             await settingsPage.changeCoinBackend('electrum', electrumUrl);
 
             await dashboardPage.navigateTo();

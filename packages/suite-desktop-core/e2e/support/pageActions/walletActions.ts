@@ -44,9 +44,9 @@ export class WalletActions {
         }
     }
 
-    async getAccountsCount(network: NetworkSymbol) {
+    async getAccountsCount(symbol: NetworkSymbol) {
         return await this.window
-            .locator(`[data-testid*="@account-menu/${network}"][tabindex]`)
+            .locator(`[data-testid*="@account-menu/${symbol}"][tabindex]`)
             .count();
     }
 }

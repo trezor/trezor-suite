@@ -40,12 +40,12 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
             'dsol',
         ];
 
-        await expect(settingsPage.coinNetworkButton('btc')).toBeEnabledCoin();
+        await expect(settingsPage.networkButton('btc')).toBeEnabledCoin();
         for (const network of defaultUnchecked) {
-            await expect(settingsPage.coinNetworkButton(network)).toBeDisabledCoin();
+            await expect(settingsPage.networkButton(network)).toBeDisabledCoin();
         }
 
-        await settingsPage.disableCoin('btc');
+        await settingsPage.disableNetwork('btc');
 
         // check dashboard with all coins disabled
         await dashboardPage.navigateTo();
@@ -57,7 +57,7 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
         await settingsPage.coinsTabButton.click();
         // just do some clicking on switches and check result
         for (const network of ['btc', ...defaultUnchecked] as NetworkSymbol[]) {
-            await settingsPage.enableCoin(network);
+            await settingsPage.enableNetwork(network);
         }
 
         //TODO: #15811 this is just not useful validation. To be refactored

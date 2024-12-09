@@ -1,13 +1,13 @@
 import { Protocol } from '@suite-common/suite-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-type getNetworkSymbolForProtocolFixture = {
+type GetNetworkSymbolForProtocolFixture = {
     description: string;
     scheme: Protocol;
     result: NetworkSymbol | undefined;
 };
 
-export const getNetworkSymbolForProtocol: getNetworkSymbolForProtocolFixture[] = [
+export const getNetworkSymbolForProtocol: GetNetworkSymbolForProtocolFixture[] = [
     {
         description: 'should return network symbol for bitcoin protocol',
         scheme: 'bitcoin',

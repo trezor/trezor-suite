@@ -16,17 +16,17 @@ type SelectableAssetListProps = {
 
 const NetworkItemSection = ({
     title,
-    networks,
+    symbols,
     onSelectItem,
 }: {
     title: ReactNode;
-    networks: NetworkSymbol[];
+    symbols: NetworkSymbol[];
     onSelectItem: SelectableAssetListProps['onSelectItem'];
 }) => {
     return (
         <HeaderedCard title={title}>
             <VStack spacing="sp24">
-                {networks.map(symbol => (
+                {symbols.map(symbol => (
                     <SelectableNetworkItem key={symbol} symbol={symbol} onPress={onSelectItem} />
                 ))}
             </VStack>
@@ -35,19 +35,21 @@ const NetworkItemSection = ({
 };
 
 export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps) => {
-    const portfolioMainnets = useSelector(selectPortfolioTrackerMainnetNetworkSymbols);
-    const portfolioTestnets = useSelector(selectPortfolioTrackerTestnetNetworkSymbols);
+    const portfolioMainnetNetworkSymbols = useSelector(selectPortfolioTrackerMainnetNetworkSymbols);
+    const portfolioTestnetsNetworkSymbols = useSelector(
+        selectPortfolioTrackerTestnetNetworkSymbols,
+    );
 
     return (
         <VStack spacing="sp24">
             <NetworkItemSection
                 title={<Translation id="moduleAccountImport.coinList.mainnets" />}
-                networks={portfolioMainnets}
+                symbols={portfolioMainnetNetworkSymbols}
                 onSelectItem={onSelectItem}
             />
             <NetworkItemSection
                 title={<Translation id="moduleAccountImport.coinList.testnets" />}
-                networks={portfolioTestnets}
+                symbols={portfolioTestnetsNetworkSymbols}
                 onSelectItem={onSelectItem}
             />
         </VStack>

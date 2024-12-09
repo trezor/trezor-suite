@@ -25,7 +25,7 @@ describe('Check coins XPUB', () => {
         cy.task('stopEmu');
     });
 
-    const coins: NetworkSymbol[] = ['btc', 'ltc', 'vtc', 'ada'];
+    const symbols: NetworkSymbol[] = ['btc', 'ltc', 'vtc', 'ada'];
 
     /**
      * 1. Start in Accounts section
@@ -36,17 +36,17 @@ describe('Check coins XPUB', () => {
      * 6. Check that XPUB is present
      * 7. Check XPUB prefix matches coin type
      */
-    coins.forEach(coin => {
-        it(`Check ${coin} XPUB`, () => {
-            if (coin !== 'btc') {
-                onAccountsPage.activatNewCoin(coin);
-                cy.getTestElement(`@account-menu/filter/${coin}`).click();
+    symbols.forEach(symbol => {
+        it(`Check ${symbol} XPUB`, () => {
+            if (symbol !== 'btc') {
+                onAccountsPage.activatNewCoin(symbol);
+                cy.getTestElement(`@account-menu/filter/${symbol}`).click();
             }
 
             cy.getTestElement('@wallet/menu/wallet-details').click();
             cy.getTestElement('@wallets/details/show-xpub-button').click();
             cy.getTestElement('@device-display/paginated-text').should('exist');
-            if (coin !== 'ada') {
+            if (symbol !== 'ada') {
                 cy.getTestElement('@device-display/paginated-text')
                     .should('be.visible')
                     .invoke('text')

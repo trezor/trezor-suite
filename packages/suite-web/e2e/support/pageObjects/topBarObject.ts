@@ -3,8 +3,8 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 class NavBar {
-    openDefaultAcccount(coin: NetworkSymbol = 'btc') {
-        cy.getTestElement(`@account-menu/${coin}/normal/0`).click();
+    openDefaultAcccount(symbol: NetworkSymbol = 'btc') {
+        cy.getTestElement(`@account-menu/${symbol}/normal/0`).click();
     }
 
     openSettings() {

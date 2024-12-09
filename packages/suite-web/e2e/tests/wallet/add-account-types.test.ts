@@ -116,37 +116,37 @@ describe('Account types suite', () => {
         //
         // Test execution
         //
-        const coins: NetworkSymbol[] = ['ada', 'eth'];
+        const symbols: NetworkSymbol[] = ['ada', 'eth'];
 
         // activate the coin
         onNavBar.openSettings();
         cy.getTestElement('@settings/menu/wallet').click();
-        coins.forEach((coin: NetworkSymbol) => {
-            onSettingsCryptoPage.activateCoin(coin);
+        symbols.forEach((symbol: NetworkSymbol) => {
+            onSettingsCryptoPage.activateCoin(symbol);
         });
 
         cy.getTestElement('@suite/menu/suite-index').click();
         onNavBar.openDefaultAcccount();
         cy.discoveryShouldFinish();
         // cardano
-        coins.forEach((coin: NetworkSymbol) => {
-            onAccountsPage.applyCoinFilter(coin);
+        symbols.forEach((symbol: NetworkSymbol) => {
+            onAccountsPage.applyCoinFilter(symbol);
             // get the element containing all accounts
             cy.get(
-                `[data-testid="@account-menu/normal/group"] > [data-testid*="@account-menu/${coin}/normal"]`,
+                `[data-testid="@account-menu/normal/group"] > [data-testid*="@account-menu/${symbol}/normal"]`,
             ).then(currentAccounts => {
                 const numberOfAccounts1 = currentAccounts.length;
 
                 cy.getTestElement('@account-menu/add-account').click();
                 cy.getTestElement('@modal').should('be.visible');
-                cy.get(`[data-testid="@settings/wallet/network/${coin}"]`)
+                cy.get(`[data-testid="@settings/wallet/network/${symbol}"]`)
                     .should('be.visible')
                     .click();
                 cy.getTestElement('@add-account').click();
                 cy.discoveryShouldFinish();
 
                 cy.get(
-                    `[data-testid="@account-menu/normal/group"] > [data-testid*="@account-menu/${coin}/normal"]`,
+                    `[data-testid="@account-menu/normal/group"] > [data-testid*="@account-menu/${symbol}/normal"]`,
                 ).then(newAccounts => {
                     const numberOfAccounts2 = newAccounts.length;
                     expect(numberOfAccounts2).to.be.equal(numberOfAccounts1 + 1);
