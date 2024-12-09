@@ -84,10 +84,17 @@ export const SelectCustomFirmware = ({
                 number="2"
                 title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_UPLOAD" />}
             >
-                <StyledDropZone accept=".bin" icon="binary" onSelect={onFirmwareUpload} />
+                <span data-testid="@firmware-modal/input-area">
+                    <StyledDropZone accept=".bin" icon="binary" onSelect={onFirmwareUpload} />
+                </span>
             </InstructionStep>
 
-            <InstallButton variant="primary" isDisabled={!isUploaded} onClick={install}>
+            <InstallButton
+                data-testid="@firmware-modal/install-button"
+                variant="primary"
+                isDisabled={!isUploaded}
+                onClick={install}
+            >
                 <Translation id="TR_CUSTOM_FIRMWARE_BUTTON_INSTALL" />
             </InstallButton>
         </Container>

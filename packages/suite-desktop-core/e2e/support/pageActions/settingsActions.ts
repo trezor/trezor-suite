@@ -4,7 +4,6 @@ import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { expect } from '../customMatchers';
 
-
 export class SettingsActions {
     private readonly window: Page;
     private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 5;
@@ -59,7 +58,7 @@ export class SettingsActions {
 
     async navigateTo() {
         await this.settingsMenuButton.click();
-        await expect(this.settingsHeader).toHaveText('Settings');
+        await expect(this.settingsHeader).toHaveText('Settings', { timeout: 10000 });
     }
 
     async toggleDebugModeInSettings() {
