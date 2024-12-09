@@ -3,7 +3,6 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import useDebounce from 'react-use/lib/useDebounce';
 import { fromWei } from 'web3-utils';
-import { ETH_NETWORK_ADDRESSES } from '@everstake/wallet-sdk';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import {
@@ -32,7 +31,7 @@ import {
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import {
-    getEthNetworkForWalletSdk,
+    getEthNetworkAddresses,
     getStakeFormsDefaultValues,
 } from 'src/utils/suite/ethereumStaking';
 import type { CryptoAmountLimitProps } from 'src/utils/suite/validation';
@@ -44,6 +43,7 @@ import { useFees } from './form/useFees';
 export const StakeEthFormContext = createContext<StakeContextValues | null>(null);
 StakeEthFormContext.displayName = 'StakeEthFormContext';
 
+// TODO: refactor this hook to support both ethereum and solana 
 export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeContextValues => {
     const dispatch = useDispatch();
 
@@ -64,8 +64,8 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     };
 
     const defaultValues = useMemo(() => {
-        const { addressContractPool } =
-            ETH_NETWORK_ADDRESSES[getEthNetworkForWalletSdk(account.symbol)];
+        // TODO: get the address for solana here
+        const { addressContractPool } = getEthNetworkAddresses(account.symbol);
 
         return {
             ...getStakeFormsDefaultValues({
@@ -355,7 +355,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
-        if (composedTx && composedTx.type === 'final') {
+       if (composedTx && composedTx.type === 'final') {
             setIsLoading(true);
             const result = await dispatch(
                 signTransaction(values, composedTx as PrecomposedTransactionFinal),

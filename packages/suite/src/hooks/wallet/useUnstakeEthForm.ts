@@ -2,7 +2,6 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { useForm, useWatch } from 'react-hook-form';
 
 import useDebounce from 'react-use/lib/useDebounce';
-import { ETH_NETWORK_ADDRESSES } from '@everstake/wallet-sdk';
 
 import {
     fromFiatCurrency,
@@ -30,7 +29,7 @@ import {
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import {
-    getEthNetworkForWalletSdk,
+    getEthNetworkAddresses,
     getStakeFormsDefaultValues,
     simulateUnstake,
 } from 'src/utils/suite/ethereumStaking';
@@ -78,8 +77,7 @@ export const useUnstakeEthForm = ({
     };
 
     const defaultValues = useMemo(() => {
-        const { addressContractPool } =
-            ETH_NETWORK_ADDRESSES[getEthNetworkForWalletSdk(account.symbol)];
+        const { addressContractPool } = getEthNetworkAddresses(account.symbol);
 
         return {
             ...getStakeFormsDefaultValues({

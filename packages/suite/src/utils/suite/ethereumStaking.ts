@@ -1,4 +1,4 @@
-import { Ethereum, ETH_NETWORK_ADDRESSES } from '@everstake/wallet-sdk';
+import { Ethereum, ETH_NETWORK_ADDRESSES, EthNetworkAddresses } from '@everstake/wallet-sdk';
 import { fromWei, numberToHex, toWei } from 'web3-utils';
 
 import {
@@ -42,6 +42,16 @@ export const getEthNetworkForWalletSdk = (
     return network!;
 };
 
+export const getEthNetworkAddresses = (symbol: NetworkSymbol): EthNetworkAddresses => {
+    const defaultAddresses = ETH_NETWORK_ADDRESSES['mainnet'];
+    const ethNetwork = getEthNetworkForWalletSdk(symbol);
+
+    if (!ethNetwork) return defaultAddresses;
+
+    return ETH_NETWORK_ADDRESSES[ethNetwork] ?? defaultAddresses;
+    
+};
+
 export const getAdjustedGasLimitConsumption = (estimatedFee: Success<BlockchainEstimatedFee>) =>
     new BigNumber(estimatedFee.payload.levels[0].feeLimit || '')
         .plus(STAKE_GAS_LIMIT_RESERVE)
@@ -71,7 +81,7 @@ export const stake = async ({
     try {
         const ethNetwork = getEthNetworkForWalletSdk(symbol);
         const ethereumClient = new Ethereum(ethNetwork);
-        const { addressContractPool } = ETH_NETWORK_ADDRESSES[ethNetwork];
+        const { addressContractPool } = getEthNetworkAddresses(symbol);;
 
         const contractPoolAddress = ethereumClient.contractPool.options.address;
         const data = ethereumClient.contractPool.methods.stake(WALLET_SDK_SOURCE).encodeABI();
@@ -147,7 +157,7 @@ export const unstake = async ({
         const amountWei = toWei(amount, 'ether');
         const ethNetwork = getEthNetworkForWalletSdk(symbol);
         const ethereumClient = new Ethereum(ethNetwork);
-        const { addressContractPool } = ETH_NETWORK_ADDRESSES[ethNetwork];
+        const { addressContractPool } = getEthNetworkAddresses(symbol);;
         const contractPoolAddress = ethereumClient.contractPool.options.address;
         const data = ethereumClient.contractPool.methods
             .unstake(amountWei, interchanges, WALLET_SDK_SOURCE)
@@ -210,7 +220,7 @@ export const claimWithdrawRequest = async ({ from, symbol, identity }: StakeTxBa
 
         const ethNetwork = getEthNetworkForWalletSdk(symbol);
         const ethereumClient = new Ethereum(ethNetwork);
-        const { addressContractAccounting } = ETH_NETWORK_ADDRESSES[ethNetwork];
+        const { addressContractAccounting } = getEthNetworkAddresses(symbol);;
 
         const contractAccountingAddress = ethereumClient.contractAccounting.options.address;
         const data = ethereumClient.contractAccounting.methods.claimWithdrawRequest().encodeABI();
@@ -576,9 +586,7 @@ export const getInstantStakeType = (
 ): StakeType | null => {
     if (!address || !symbol) return null;
     const { from, to } = internalTransfer;
-    const ethNetwork = getEthNetworkForWalletSdk(symbol);
-    const { addressContractPool, addressContractWithdrawTreasury } =
-        ETH_NETWORK_ADDRESSES[ethNetwork];
+    const { addressContractPool, addressContractWithdrawTreasury } = getEthNetworkAddresses(symbol);
 
     if (from === addressContractPool && to === addressContractWithdrawTreasury) {
         return 'stake';
@@ -644,7 +652,7 @@ export const simulateUnstake = async ({
 }: StakeTxBaseArgs & { amount: string }) => {
     const ethNetwork = getEthNetworkForWalletSdk(symbol);
     const ethereumClient = new Ethereum(ethNetwork);
-    const { addressContractPool } = ETH_NETWORK_ADDRESSES[ethNetwork];
+    const { addressContractPool } = getEthNetworkAddresses(symbol);
 
     if (!amount || !from || !symbol) return null;
 
