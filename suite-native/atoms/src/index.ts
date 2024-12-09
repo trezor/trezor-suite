@@ -41,7 +41,7 @@ export * from './Table';
 export * from './Loader';
 export * from './LottieAnimation';
 export * from './Toggle';
-export * from './Pictogram';
+export * from './Pictogram/Pictogram';
 export * from './TitleHeader/PictogramTitleHeader';
 export * from './TitleHeader/TitleHeader';
 export * from './TitleHeader/CenteredTitleHeader';

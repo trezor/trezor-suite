@@ -4,7 +4,7 @@ import { IconName } from '@suite-native/icons';
 import { TypographyStyle } from '@trezor/theme';
 
 import { VStack } from '../Stack';
-import { PictogramVariant, Pictogram } from '../Pictogram';
+import { PictogramVariant, Pictogram } from '../Pictogram/Pictogram';
 import { CenteredTitleHeader } from './CenteredTitleHeader';
 
 type PictogramTitleHeaderProps = {

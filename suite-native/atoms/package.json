@@ -30,6 +30,7 @@
         "react-native": "0.76.1",
         "react-native-gesture-handler": "^2.21.0",
         "react-native-reanimated": "3.16.1",
-        "react-native-safe-area-context": "^4.14.0"
+        "react-native-safe-area-context": "^4.14.0",
+        "react-native-svg": "15.9.0"
     }
 }
