@@ -284,7 +284,8 @@ export const pushSendFormTransactionThunk = createThunk<
             });
 
         const pushTxResponse = await TrezorConnect.pushTransaction({
-            ...serializedTx,
+            tx: serializedTx.tx,
+            coin: serializedTx.symbol,
             identity: tryGetAccountIdentity(selectedAccount),
         });
 
@@ -353,10 +354,14 @@ export const pushSendFormTransactionThunk = createThunk<
 export const pushSendFormRawTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/pushSendFormRawTransactionThunk`,
     async (
-        payload: { tx: string; coin: NetworkSymbol; identity?: string },
+        payload: { tx: string; symbol: NetworkSymbol; identity?: string },
         { dispatch, fulfillWithValue, rejectWithValue },
     ) => {
-        const sentTx = await TrezorConnect.pushTransaction(payload);
+        const sentTx = await TrezorConnect.pushTransaction({
+            tx: payload.tx,
+            coin: payload.symbol,
+            identity: payload.identity,
+        });
 
         if (sentTx.success) {
             dispatch(
@@ -365,7 +370,7 @@ export const pushSendFormRawTransactionThunk = createThunk(
                     txid: sentTx.payload.txid,
                 }),
             );
-            dispatch(syncAccountsWithBlockchainThunk(payload.coin));
+            dispatch(syncAccountsWithBlockchainThunk(payload.symbol));
 
             return fulfillWithValue(true);
         }
@@ -483,7 +488,7 @@ export const signTransactionThunk = createThunk<
                 sendFormActions.storeSignedTransaction({
                     serializedTx: {
                         tx: serializedTx,
-                        coin: selectedAccount.symbol,
+                        symbol: selectedAccount.symbol,
                     },
                     signedTx,
                 }),

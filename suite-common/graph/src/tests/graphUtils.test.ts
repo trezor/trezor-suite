@@ -344,7 +344,7 @@ describe('Graph utils', () => {
     it('findOldestBalanceMovementTimestamp', () => {
         const balanceHistory: AccountWithBalanceHistory[] = [
             {
-                coin: 'btc',
+                symbol: 'btc',
                 descriptor: 'awdawd',
                 balanceHistory: [
                     {
@@ -358,7 +358,7 @@ describe('Graph utils', () => {
                 ],
             },
             {
-                coin: 'eth',
+                symbol: 'eth',
                 descriptor: 'awdawd',
                 balanceHistory: [
                     {

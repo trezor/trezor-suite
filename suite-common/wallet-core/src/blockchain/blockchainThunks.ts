@@ -182,15 +182,18 @@ export const updateFeeInfoThunk = createThunk(
 // call TrezorConnect.unsubscribe, it doesn't cost anything and should emit BLOCKCHAIN.CONNECT or BLOCKCHAIN.ERROR event
 export const reconnectBlockchainThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/reconnectBlockchainThunk`,
-    (payload: { coin: NetworkSymbol; identity?: string }) =>
-        TrezorConnect.blockchainUnsubscribeFiatRates(payload),
+    (payload: { symbol: NetworkSymbol; identity?: string }) =>
+        TrezorConnect.blockchainUnsubscribeFiatRates({
+            coin: payload.symbol,
+            identity: payload.identity,
+        }),
 );
 
 const setBackendsToConnect = (backends: CustomBackend[]) =>
     Promise.all(
-        backends.map(({ coin, type, urls }) =>
+        backends.map(({ symbol, type, urls }) =>
             TrezorConnect.blockchainSetCustomBackend({
-                coin,
+                coin: symbol,
                 blockchainLink: {
                     type,
                     url: urls,
@@ -201,9 +204,9 @@ const setBackendsToConnect = (backends: CustomBackend[]) =>
 
 export const setCustomBackendThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/setCustomBackendThunk`,
-    (coin: NetworkSymbol, { getState }) => {
+    (symbol: NetworkSymbol, { getState }) => {
         const blockchain = selectBlockchainState(getState());
-        const backends = [getBackendFromSettings(coin, blockchain[coin].backends)];
+        const backends = [getBackendFromSettings(symbol, blockchain[symbol].backends)];
 
         return setBackendsToConnect(backends);
     },
@@ -225,14 +228,14 @@ export const initBlockchainThunk = createThunk(
             return;
         }
 
-        const coins: NetworkSymbol[] = [];
+        const symbols: NetworkSymbol[] = [];
         accounts.forEach(a => {
-            if (!coins.includes(a.symbol)) {
-                coins.push(a.symbol);
+            if (!symbols.includes(a.symbol)) {
+                symbols.push(a.symbol);
             }
         });
 
-        const promises = coins.map(coin => dispatch(reconnectBlockchainThunk({ coin })));
+        const promises = symbols.map(symbol => dispatch(reconnectBlockchainThunk({ symbol })));
         await Promise.all(promises);
 
         // continue suite initialization
@@ -286,7 +289,7 @@ export const unsubscribeBlockchainThunk = createThunk(
         const symbols = removedAccounts.map(({ symbol }) => symbol).filter(arrayDistinct);
         const allAccounts = selectAccounts(getState());
         const paramsArray = symbols.flatMap<{
-            coin: NetworkSymbol;
+            symbol: NetworkSymbol;
             identity?: string;
             blocks?: boolean;
             accounts: Account[];
@@ -307,24 +310,30 @@ export const unsubscribeBlockchainThunk = createThunk(
                     .map(getAccountIdentity)
                     .filter(arrayDistinct)
                     .map(identity => ({
-                        coin: symbol,
+                        symbol,
                         identity,
                         blocks: false,
                         accounts: accountIdentities[identity] ?? [],
                     }));
             } else {
-                return [{ coin: symbol, accounts: accountsToSubscribe, blocks: true }];
+                return [{ symbol, accounts: accountsToSubscribe, blocks: true }];
             }
         });
 
         return Promise.all(
-            paramsArray.map(({ accounts, ...rest }) =>
-                accounts.length
+            paramsArray.map(({ accounts, symbol, identity, blocks }) => {
+                const params = {
+                    coin: symbol,
+                    identity,
+                    blocks,
+                };
+
+                return accounts.length
                     ? // there are some accounts left, update subscription
-                      TrezorConnect.blockchainSubscribe({ ...rest, accounts })
+                      TrezorConnect.blockchainSubscribe({ ...params, accounts })
                     : // there are no accounts left for this coin, disconnect backend
-                      TrezorConnect.blockchainDisconnect(rest),
-            ),
+                      TrezorConnect.blockchainDisconnect(params);
+            }),
         );
     },
 );

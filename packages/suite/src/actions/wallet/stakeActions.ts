@@ -60,7 +60,8 @@ const pushTransaction =
         if (!serializedTx || !precomposedTx || !account) return;
 
         const sentTx = await TrezorConnect.pushTransaction({
-            ...serializedTx,
+            tx: serializedTx.tx,
+            coin: account.symbol,
             identity: tryGetAccountIdentity(account),
         });
 
@@ -192,7 +193,7 @@ export const signTransaction =
         dispatch(
             stakeActions.requestPushTransaction({
                 tx: serializedTx,
-                coin: account.symbol,
+                symbol: account.symbol,
             }),
         );
 

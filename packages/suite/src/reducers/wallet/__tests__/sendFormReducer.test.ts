@@ -79,13 +79,13 @@ describe('sendFormReducer', () => {
     it('SEND.REQUEST_PUSH_TRANSACTION - save', () => {
         const action: Action = sendFormActions.storeSignedTransaction({
             serializedTx: {
-                coin: 'btc',
+                symbol: 'btc',
                 tx: 'test',
             },
         });
 
         const state = prepareSendFormReducer(extraDependencies)(initialState, action);
-        expect(state.serializedTx).toEqual({ coin: 'btc', tx: 'test' });
+        expect(state.serializedTx).toEqual({ symbol: 'btc', tx: 'test' });
     });
 
     it('SEND.REQUEST_PUSH_TRANSACTION - delete', () => {

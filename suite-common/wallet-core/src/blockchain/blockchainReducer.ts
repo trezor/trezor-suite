@@ -186,16 +186,16 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
                 state[action.payload.symbol].syncTimeout = action.payload.timeout;
             })
             .addCase(blockchainActions.setBackend, (state, action) => {
-                const { coin, type } = action.payload;
+                const { symbol, type } = action.payload;
                 if (type === 'default') {
-                    delete state[coin].backends.selected;
+                    delete state[symbol].backends.selected;
                 } else if (!action.payload.urls.length) {
-                    delete state[coin].backends.selected;
-                    delete state[coin].backends.urls?.[type as BackendType];
+                    delete state[symbol].backends.selected;
+                    delete state[symbol].backends.urls?.[type as BackendType];
                 } else {
-                    state[coin].backends.selected = type as BackendType;
-                    state[coin].backends.urls = {
-                        ...state[coin].backends.urls,
+                    state[symbol].backends.selected = type as BackendType;
+                    state[symbol].backends.urls = {
+                        ...state[symbol].backends.urls,
                         [type as BackendType]: action.payload.urls,
                     };
                 }

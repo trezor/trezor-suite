@@ -307,17 +307,17 @@ export const getAccountHistoryMovementItemETH = ({
 
 export const getAccountHistoryMovementFromTransactions = ({
     transactions,
-    coin,
+    symbol,
     from,
     to,
 }: {
     transactions: WalletAccountTransaction[];
     // We need to revaluate if we want to calculate BTC history from transactions or use blockbook
-    coin: LocalBalanceHistoryCoin | 'btc';
+    symbol: LocalBalanceHistoryCoin | 'btc';
     from?: number;
     to?: number;
 }): AccountHistoryMovement => {
-    switch (coin) {
+    switch (symbol) {
         case 'btc':
             return getAccountHistoryMovementItemBTC({ transactions, from, to });
         case 'xrp':
@@ -328,7 +328,7 @@ export const getAccountHistoryMovementFromTransactions = ({
             return getAccountHistoryMovementItemETH({ transactions, from, to });
 
         default:
-            coin satisfies never;
-            throw new Error(`getAccountHistoryMovementItem: Unsupported network ${coin}`);
+            symbol satisfies never;
+            throw new Error(`getAccountHistoryMovementItem: Unsupported network ${symbol}`);
     }
 };

@@ -10,7 +10,7 @@ import { TokenInfo, Unsuccessful, ERRORS as CONNECT_ERRORS } from '@trezor/conne
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorDevice } from '@suite-common/suite-types';
 
-export type SerializedTx = { tx: string; coin: NetworkSymbol };
+export type SerializedTx = { tx: string; symbol: NetworkSymbol };
 
 // TODO: is this still needed?
 export interface ComposeActionContext {

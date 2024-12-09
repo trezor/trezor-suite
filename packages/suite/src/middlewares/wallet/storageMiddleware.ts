@@ -123,7 +123,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (blockchainActions.setBackend.match(action)) {
-                api.dispatch(storageActions.saveBackend(action.payload.coin));
+                api.dispatch(storageActions.saveBackend(action.payload.symbol));
             }
 
             if (

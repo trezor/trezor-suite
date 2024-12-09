@@ -27,7 +27,7 @@ export const selectPortfolioGraphAccountItems = (state: GraphCommonRootState): A
         const tokensFilter = knownTokens?.map(token => token.contract as TokenAddress);
 
         return {
-            coin: account.symbol,
+            symbol: account.symbol,
             descriptor: account.descriptor,
             identity: tryGetAccountIdentity(account),
             accountKey: account.key,

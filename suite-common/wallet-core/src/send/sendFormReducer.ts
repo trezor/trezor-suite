@@ -143,7 +143,10 @@ export const selectSendFormReviewButtonRequestsCount = (
 ) => {
     const buttonRequestCodes = selectDeviceButtonRequestsCodes(state);
     const deviceModel = selectDeviceModel(state);
-    const networkType = getNetworkType(symbol ?? 'btc');
+
+    if (G.isNullable(symbol)) return 0;
+
+    const networkType = getNetworkType(symbol);
 
     const isCardano = networkType === 'cardano';
     const isEthereum = networkType === 'ethereum';

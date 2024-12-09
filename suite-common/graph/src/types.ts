@@ -13,7 +13,7 @@ export type FiatGraphPointWithCryptoBalance = {
 
 /**
  * Represents an account item in graph
- * @coin - network symbol
+ * @symbol - network symbol
  * @identity - optional identity string for ETH accounts
  * @descriptor - account descriptor
  * @accountKey - account key
@@ -21,7 +21,7 @@ export type FiatGraphPointWithCryptoBalance = {
  * @hideMainAccount - optional flag to hide main account - if you want graph to show only token(s)
  */
 export type AccountItem = {
-    coin: NetworkSymbol;
+    symbol: NetworkSymbol;
     identity?: string;
     descriptor: string;
     accountKey: AccountKey;
@@ -78,7 +78,7 @@ export type AccountHistoryMovement = {
 };
 
 export type AccountWithBalanceHistory = {
-    coin: NetworkSymbol;
+    symbol: NetworkSymbol;
     descriptor: string;
     contractId?: TokenAddress;
 } & { balanceHistory: AccountHistoryBalancePoint[] };

@@ -94,10 +94,10 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
     const onionBackends = useCustomBackends().filter(({ urls }) => urls.every(isOnionUrl));
 
     const onDisableTor = () => {
-        onionBackends.forEach(({ coin, type, urls }) =>
+        onionBackends.forEach(({ symbol, type, urls }) =>
             dispatch(
                 blockchainActions.setBackend({
-                    coin,
+                    symbol,
                     type,
                     urls: urls.filter(url => !isOnionUrl(url)),
                 }),
@@ -142,12 +142,12 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                         <Description>
                             <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_DESCRIPTION" />
                         </Description>
-                        {onionBackends.map(({ coin, urls }) => (
+                        {onionBackends.map(({ symbol, urls }) => (
                             <BackendRow
-                                key={coin}
-                                symbol={coin}
+                                key={symbol}
+                                symbol={symbol}
                                 urls={urls}
-                                onSettings={() => setSymbol(coin)}
+                                onSettings={() => setSymbol(symbol)}
                             />
                         ))}
                     </>

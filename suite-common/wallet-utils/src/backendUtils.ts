@@ -12,11 +12,11 @@ import {
     getNetworkType,
 } from '@suite-common/wallet-config';
 
-export const getDefaultBackendType = (coin: NetworkSymbol) => {
-    if (coin === 'ada' || coin === 'tada') {
+export const getDefaultBackendType = (symbol: NetworkSymbol) => {
+    if (symbol === 'ada' || symbol === 'tada') {
         return 'blockfrost';
     }
-    if (coin === 'sol' || coin === 'dsol') {
+    if (symbol === 'sol' || symbol === 'dsol') {
         return 'solana';
     }
 
@@ -24,14 +24,14 @@ export const getDefaultBackendType = (coin: NetworkSymbol) => {
 };
 
 export const getBackendFromSettings = (
-    coin: NetworkSymbol,
+    symbol: NetworkSymbol,
     settings?: BackendSettings,
 ): CustomBackend => {
-    const type = settings?.selected ?? getDefaultBackendType(coin);
+    const type = settings?.selected ?? getDefaultBackendType(symbol);
     const urls = (settings?.selected && settings?.urls?.[type]) ?? [];
 
     return {
-        coin,
+        symbol,
         type,
         urls,
     };
@@ -42,8 +42,8 @@ const isBackend = (backend: Partial<CustomBackend>): backend is CustomBackend =>
 
 export const getCustomBackends = (blockchains: BlockchainNetworks): CustomBackend[] =>
     Object.entries(blockchains)
-        .map(([coin, { backends }]) => ({
-            coin: coin as NetworkSymbol,
+        .map(([symbol, { backends }]) => ({
+            symbol: symbol as NetworkSymbol,
             type: backends.selected,
             urls: backends.selected && backends.urls?.[backends.selected],
         }))

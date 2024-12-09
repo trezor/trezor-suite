@@ -35,10 +35,10 @@ const validateUrl = (type: BackendOption, value: string) => {
     }
 };
 
-const getUrlPlaceholder = (coin: NetworkSymbol, type: BackendOption) => {
+const getUrlPlaceholder = (symbol: NetworkSymbol, type: BackendOption) => {
     switch (type) {
         case 'blockbook':
-            return `https://${coin}1.trezor.io/`;
+            return `https://${symbol}1.trezor.io/`;
         case 'blockfrost':
             return `wss://blockfrost.io`;
         case 'electrum':
@@ -50,7 +50,7 @@ const getUrlPlaceholder = (coin: NetworkSymbol, type: BackendOption) => {
     }
 };
 
-const useBackendUrlInput = (coin: NetworkSymbol, type: BackendOption, currentUrls: string[]) => {
+const useBackendUrlInput = (symbol: NetworkSymbol, type: BackendOption, currentUrls: string[]) => {
     const {
         register,
         watch,
@@ -75,7 +75,7 @@ const useBackendUrlInput = (coin: NetworkSymbol, type: BackendOption, currentUrl
     };
 
     const placeholder = translationString('SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER', {
-        url: getUrlPlaceholder(coin, type),
+        url: getUrlPlaceholder(symbol, type),
     });
 
     return {
@@ -90,22 +90,22 @@ const useBackendUrlInput = (coin: NetworkSymbol, type: BackendOption, currentUrl
 };
 
 const getStoredState = (
-    coin: NetworkSymbol,
+    symbol: NetworkSymbol,
     type?: BackendOption,
     urls?: BackendSettings['urls'],
 ): BackendsFormData => ({
-    type: type ?? (coin === 'regtest' ? 'blockbook' : 'default'),
+    type: type ?? (symbol === 'regtest' ? 'blockbook' : 'default'),
     urls: (type && type !== 'default' && urls?.[type]) || [],
 });
 
-export const useBackendsForm = (coin: NetworkSymbol) => {
-    const backends = useSelector(state => state.wallet.blockchain[coin].backends);
+export const useBackendsForm = (symbol: NetworkSymbol) => {
+    const backends = useSelector(state => state.wallet.blockchain[symbol].backends);
     const dispatch = useDispatch();
-    const initial = getStoredState(coin, backends.selected, backends.urls);
+    const initial = getStoredState(symbol, backends.selected, backends.urls);
     const [currentValues, setCurrentValues] = useState(initial);
 
     const changeType = (type: BackendOption) => {
-        setCurrentValues(getStoredState(coin, type, backends.urls));
+        setCurrentValues(getStoredState(symbol, type, backends.urls));
     };
 
     const addUrl = (url: string) => {
@@ -122,7 +122,7 @@ export const useBackendsForm = (coin: NetworkSymbol) => {
         }));
     };
 
-    const input = useBackendUrlInput(coin, currentValues.type, currentValues.urls);
+    const input = useBackendUrlInput(symbol, currentValues.type, currentValues.urls);
 
     const getUrls = () => {
         const lastUrl = input.value && !input.error ? [input.value] : [];
@@ -139,13 +139,13 @@ export const useBackendsForm = (coin: NetworkSymbol) => {
     const save = () => {
         const { type } = currentValues;
         const urls = type === 'default' ? [] : getUrls();
-        dispatch(blockchainActions.setBackend({ coin, type, urls }));
+        dispatch(blockchainActions.setBackend({ symbol, type, urls }));
         const totalOnion = urls.filter(isOnionUrl).length;
 
         analytics.report({
             type: EventType.SettingsCoinsBackend,
             payload: {
-                symbol: coin,
+                symbol,
                 type,
                 totalRegular: urls.length - totalOnion,
                 totalOnion,

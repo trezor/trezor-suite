@@ -220,8 +220,8 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
         .length,
     enabledNetworks: state.wallet.settings.enabledNetworks,
     customBackends: getCustomBackends(state.wallet.blockchain)
-        .map(({ coin }) => coin)
-        .filter(coin => state.wallet.settings.enabledNetworks.includes(coin)),
+        .map(({ symbol }) => symbol)
+        .filter(symbol => state.wallet.settings.enabledNetworks.includes(symbol)),
     devices: getPhysicalDeviceUniqueIds(selectDevices(state))
         .map(id => selectDevices(state).find(device => device.id === id) as TrezorDevice) // filter unique devices
         .concat(selectDevices(state).filter(device => device.id === null)) // add devices in bootloader mode

@@ -74,7 +74,7 @@ const walletMiddleware =
 
         // Update custom backends
         if (blockchainActions.setBackend.match(action)) {
-            api.dispatch(setCustomBackendThunk(action.payload.coin));
+            api.dispatch(setCustomBackendThunk(action.payload.symbol));
         }
 
         const prevRouter = prevState.router;

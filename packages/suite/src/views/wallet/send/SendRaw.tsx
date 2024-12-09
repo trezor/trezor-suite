@@ -50,7 +50,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
         const result = await dispatch(
             pushSendFormRawTransactionThunk({
                 tx: inputValue,
-                coin: account.symbol,
+                symbol: account.symbol,
                 identity: tryGetAccountIdentity(account),
             }),
         ).unwrap();

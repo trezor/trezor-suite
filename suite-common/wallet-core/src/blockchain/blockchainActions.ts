@@ -29,7 +29,7 @@ const synced = createAction(
 
 export type SetBackendPayload =
     | CustomBackend
-    | { coin: NetworkSymbol; type: 'default'; urls?: unknown };
+    | { symbol: NetworkSymbol; type: 'default'; urls?: unknown };
 const setBackend = createAction(
     `${BLOCKCHAIN_MODULE_PREFIX}/setBackend`,
     (payload: SetBackendPayload) => ({

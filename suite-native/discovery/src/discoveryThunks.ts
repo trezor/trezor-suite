@@ -56,7 +56,7 @@ import {
 
 const DISCOVERY_DEFAULT_BATCH_SIZE = 2;
 
-const DISCOVERY_BATCH_SIZE_PER_COIN: Partial<Record<NetworkSymbol, number>> = {
+const DISCOVERY_BATCH_SIZE_PER_SYMBOL: Partial<Record<NetworkSymbol, number>> = {
     bch: 1,
     dash: 1,
     btg: 1,
@@ -73,9 +73,9 @@ export const discoveryErrors = {
     accountLimitReached: 'discovery-account-limit',
 };
 
-const getBatchSizeByCoin = (symbol: NetworkSymbol): number => {
-    if (DISCOVERY_BATCH_SIZE_PER_COIN[symbol] !== undefined) {
-        return DISCOVERY_BATCH_SIZE_PER_COIN[symbol];
+const getBatchSizeByNetworkSymbol = (symbol: NetworkSymbol): number => {
+    if (DISCOVERY_BATCH_SIZE_PER_SYMBOL[symbol] !== undefined) {
+        return DISCOVERY_BATCH_SIZE_PER_SYMBOL[symbol];
     }
 
     return DISCOVERY_DEFAULT_BATCH_SIZE;
@@ -444,7 +444,7 @@ const discoverNetworkBatchThunk = createThunk(
         { dispatch, getState },
     ) => {
         const discovery = selectDeviceDiscovery(getState());
-        const batchSize = getBatchSizeByCoin(network.symbol);
+        const batchSize = getBatchSizeByNetworkSymbol(network.symbol);
         // expected to be found, because this thunk is called with accountType taken from the network
         const normalizedNetworkAccount = normalizeNetworkAccounts(network).find(
             a => a.accountType === accountType,

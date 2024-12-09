@@ -1,6 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { Account, StakeFormState, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { StakeFormState, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
 export const STAKE_MODULE_PREFIX = '@common/wallet-core/stake';
 
@@ -11,7 +12,7 @@ type RequestSignTransactionPayload = {
 
 type RequestPushTransactionPayload = {
     tx: string;
-    coin: Account['symbol'];
+    symbol: NetworkSymbol;
 };
 
 const requestSignTransaction = createAction(

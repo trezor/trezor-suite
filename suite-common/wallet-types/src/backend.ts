@@ -11,7 +11,7 @@ export type BlockbookUrl = {
 };
 
 export type CustomBackend = {
-    coin: NetworkSymbol;
+    symbol: NetworkSymbol;
     type: BackendType;
     urls: string[];
 };
@@ -42,6 +42,4 @@ export interface Blockchain extends ConnectionStatus {
     };
 }
 
-export type BlockchainNetworks = {
-    [key in NetworkSymbol]: Blockchain;
-};
+export type BlockchainNetworks = Record<NetworkSymbol, Blockchain>;

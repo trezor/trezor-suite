@@ -6,5 +6,5 @@ export const useEnabledBackends = () => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const customBackends = useCustomBackends();
 
-    return customBackends.filter(backend => enabledNetworks.includes(backend.coin));
+    return customBackends.filter(backend => enabledNetworks.includes(backend.symbol));
 };

@@ -50,17 +50,17 @@ const RowWrapper = styled.div`
 `;
 
 const BackendRow = ({
-    backend: { coin, type },
+    backend: { symbol, type },
     blockchain,
 }: {
     backend: CustomBackend;
     blockchain: BlockchainState;
 }) => {
-    const chain = blockchain[coin];
+    const chain = blockchain[symbol];
 
     return (
         <RowWrapper>
-            <CoinLogo symbol={coin} />
+            <CoinLogo symbol={symbol} />
             <div>
                 {chain?.url ? (
                     <span>{chain.url}</span>
@@ -106,13 +106,13 @@ export const NavBackends = ({ customBackends, children }: NavBackendsProps) => {
             key: 'backends',
             label: <Translation id="TR_BACKENDS" />,
             options: customBackends.map(backend => ({
-                key: backend.coin,
+                key: backend.symbol,
                 label: <BackendRow backend={backend} blockchain={blockchain} />,
                 onClick: () =>
                     dispatch(
                         openModal({
                             type: 'advanced-coin-settings',
-                            symbol: backend.coin,
+                            symbol: backend.symbol,
                         }),
                     ),
             })),

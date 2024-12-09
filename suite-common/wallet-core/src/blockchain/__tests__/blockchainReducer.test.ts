@@ -11,29 +11,29 @@ const urls = ['http://a, http://b, http://c'];
 type BlockchainFixture = [string, BackendSettings, SetBackendPayload, BackendSettings];
 
 const fixtures: BlockchainFixture[] = [
-    ['try to set empty', {}, { coin: 'btc', type: 'electrum', urls: [] }, {}],
+    ['try to set empty', {}, { symbol: 'btc', type: 'electrum', urls: [] }, {}],
     [
         'set custom',
         {},
-        { coin: 'btc', type: 'electrum', urls },
+        { symbol: 'btc', type: 'electrum', urls },
         { selected: 'electrum', urls: { electrum: urls } },
     ],
     [
         'change custom',
         { selected: 'electrum', urls: { electrum: urls } },
-        { coin: 'btc', type: 'blockbook', urls },
+        { symbol: 'btc', type: 'blockbook', urls },
         { selected: 'blockbook', urls: { electrum: urls, blockbook: urls } },
     ],
     [
         'reset with remembering',
         { selected: 'blockbook', urls: { electrum: urls, blockbook: urls } },
-        { coin: 'btc', type: 'default' },
+        { symbol: 'btc', type: 'default' },
         { urls: { electrum: urls, blockbook: urls } },
     ],
     [
         'reset with forgetting',
         { selected: 'electrum', urls: { electrum: urls, blockbook: urls } },
-        { coin: 'btc', type: 'electrum', urls: [] },
+        { symbol: 'btc', type: 'electrum', urls: [] },
         { urls: { blockbook: urls } },
     ],
 ];
@@ -46,10 +46,13 @@ describe('blockchain reducer', () => {
                     blockchainReducer(
                         {
                             ...blockchainInitialState,
-                            [payload.coin]: { ...blockchainInitialState[payload.coin], backends },
+                            [payload.symbol]: {
+                                ...blockchainInitialState[payload.symbol],
+                                backends,
+                            },
                         },
                         { type: blockchainActions.setBackend.type, payload },
-                    )[payload.coin].backends,
+                    )[payload.symbol].backends,
                 ).toEqual(next);
             });
         });

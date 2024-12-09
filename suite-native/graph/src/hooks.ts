@@ -77,7 +77,7 @@ export const useGraphForSingleAccount = ({
     fiatCurrency,
     tokensFilter,
     hideMainAccount = false,
-}: CommonUseGraphParams & Omit<AccountItem, 'coin' | 'descriptor'>) => {
+}: CommonUseGraphParams & Omit<AccountItem, 'symbol' | 'descriptor'>) => {
     const dispatch = useDispatch();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -101,7 +101,7 @@ export const useGraphForSingleAccount = ({
 
         return [
             {
-                coin: account.symbol,
+                symbol: account.symbol,
                 descriptor: account.descriptor,
                 accountKey: account.key,
                 identity,

@@ -13,7 +13,7 @@ describe('Account balance movement history', () => {
     it('should getAccoutBalanceHistory for bitcoin', async () => {
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: btcAccountTransactions,
-            coin: 'btc',
+            symbol: 'btc',
         });
 
         expect(balanceHistory.main).toMatchObject(btcAccountBalanceHistoryResult);
@@ -24,7 +24,7 @@ describe('Account balance movement history', () => {
         const to = 1711445680;
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: btcAccountTransactions,
-            coin: 'btc',
+            symbol: 'btc',
             from,
             to,
         });
@@ -39,7 +39,7 @@ describe('Account balance movement history', () => {
     it('should getAccoutBalanceHistory for ripple', async () => {
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: xrpAccountTransactions,
-            coin: 'xrp',
+            symbol: 'xrp',
         });
 
         expect(balanceHistory.main).toMatchObject(xrpBalanceHistoryResult);
@@ -50,7 +50,7 @@ describe('Account balance movement history', () => {
         const to = 1690884611;
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: xrpAccountTransactions,
-            coin: 'xrp',
+            symbol: 'xrp',
             from,
             to,
         });
@@ -65,7 +65,7 @@ describe('Account balance movement history', () => {
     it('should getAccoutBalanceHistory for ethereum', async () => {
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: ethAccountTransactions,
-            coin: 'eth',
+            symbol: 'eth',
         });
 
         expect(balanceHistory.main).toMatchObject(ethAccountBalanceHistoryResult);
@@ -76,7 +76,7 @@ describe('Account balance movement history', () => {
         const to = 1716201815;
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: ethAccountTransactions,
-            coin: 'eth',
+            symbol: 'eth',
             from,
             to,
         });
@@ -91,7 +91,7 @@ describe('Account balance movement history', () => {
     it('should getAccoutBalanceHistory for ethereum with token', async () => {
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: ethAccountTransactions,
-            coin: 'eth',
+            symbol: 'eth',
         });
 
         expect(balanceHistory.tokens).toMatchObject(ethTokenBalanceHistoryResult);
@@ -102,7 +102,7 @@ describe('Account balance movement history', () => {
         const to = 1716201815;
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: ethAccountTransactions,
-            coin: 'eth',
+            symbol: 'eth',
             from,
             to,
         });

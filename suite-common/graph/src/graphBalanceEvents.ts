@@ -133,14 +133,14 @@ export const getAccountMovementEvents = async ({
     endOfTimeFrameDate: Date;
     dispatch: ReturnType<typeof useDispatch>;
 }) => {
-    const { coin, identity, descriptor, tokensFilter, accountKey } = account;
+    const { symbol, identity, descriptor, tokensFilter, accountKey } = account;
     const tokenAddress = tokensFilter?.[0]; // This is only for graph on detail screen where we have always only one token
 
     const getBalanceHistory = async () => {
-        if (isIgnoredBalanceHistoryCoin(coin)) {
+        if (isIgnoredBalanceHistoryCoin(symbol)) {
             return [];
         }
-        if (isLocalBalanceHistoryCoin(coin)) {
+        if (isLocalBalanceHistoryCoin(symbol)) {
             const allTransactions = await dispatch(
                 fetchTransactionsFromNowUntilTimestamp({
                     accountKey: account.accountKey,
@@ -152,7 +152,7 @@ export const getAccountMovementEvents = async ({
 
             const movements = getAccountHistoryMovementFromTransactions({
                 transactions: allTransactions,
-                coin,
+                symbol,
             });
 
             if (tokenAddress) {
@@ -162,7 +162,7 @@ export const getAccountMovementEvents = async ({
             return movements.main;
         }
         const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
-            coin,
+            coin: symbol,
             identity,
             descriptor,
             from: startOfTimeFrameDate ? getUnixTime(startOfTimeFrameDate) : undefined,
@@ -199,6 +199,6 @@ export const getAccountMovementEvents = async ({
                 balanceMovement.payload.sent !== 0 || balanceMovement.payload.received !== 0,
         ),
         formattedBalances => groupBalanceMovementEvents(formattedBalances, GROUPING_THRESHOLD),
-        groups => mergeGroups({ groups, symbol: coin, tokenAddress, accountKey }),
+        groups => mergeGroups({ groups, symbol, tokenAddress, accountKey }),
     ) as GroupedBalanceMovementEvent[];
 };

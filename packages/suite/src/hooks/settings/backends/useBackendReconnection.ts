@@ -29,7 +29,7 @@ export const useBackendReconnection = (
 
     const reconnect = async () => {
         setProgress(true);
-        const r: any = await dispatch(reconnectBlockchainThunk({ coin: symbol, identity }));
+        const r: any = await dispatch(reconnectBlockchainThunk({ symbol, identity }));
         if (!r.success) {
             setProgress(false);
         }
