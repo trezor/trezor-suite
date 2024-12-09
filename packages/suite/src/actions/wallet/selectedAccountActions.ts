@@ -210,7 +210,6 @@ export const syncSelectedAccount = (action: Action) => (dispatch: Dispatch, getS
             'utxo',
             'status',
             'syncing',
-            'stakingAccounts',
         ],
         discovery: [
             'status',

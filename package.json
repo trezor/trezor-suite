@@ -108,7 +108,8 @@
         "@types/react": "18.2.55",
         "bn.js": "5.2.1",
         "node-gyp": "10.2.0",
-        "reselect": "5.1.1"
+        "reselect": "5.1.1",
+        "@everstake/wallet-sdk/@solana/web3.js": "1.95.8"
     },
     "devDependencies": {
         "@babel/cli": "^7.23.9",

@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getPubKeyFromAddress, toLamports } from '@suite-common/wallet-utils';
+import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
 import {
     StakeFormState,
     PrecomposedTransaction,
@@ -19,7 +19,7 @@ import {
 
 import { Dispatch, GetState } from 'src/types/suite';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
-import { prepareStakeSolTx } from 'src/utils/suite/solanaStaking';
+import { getPubKeyFromAddress, prepareStakeSolTx } from 'src/utils/suite/solanaStaking';
 
 import { calculate, composeStakingTransaction } from './stakeFormActions';
 
@@ -34,9 +34,9 @@ const calculateTransaction = (
 
     const stakingParams = {
         feeInBaseUnits: feeInLamports,
-        minBalanceForStakingInBaseUnits: toLamports(MIN_SOL_BALANCE_FOR_STAKING),
-        minAmountForStakingInBaseUnits: toLamports(MIN_SOL_AMOUNT_FOR_STAKING),
-        minAmountForWithdrawalInBaseUnits: toLamports(MIN_SOL_FOR_WITHDRAWALS),
+        minBalanceForStakingInBaseUnits: networkAmountToSmallestUnit(MIN_SOL_BALANCE_FOR_STAKING.toString(), symbol),
+        minAmountForStakingInBaseUnits: networkAmountToSmallestUnit(MIN_SOL_AMOUNT_FOR_STAKING.toString(), symbol),
+        minAmountForWithdrawalInBaseUnits: networkAmountToSmallestUnit(MIN_SOL_FOR_WITHDRAWALS.toString(), symbol),
     };
 
     return calculate(availableBalance, output, feeLevel, compareWithAmount, symbol, stakingParams);
@@ -62,13 +62,13 @@ export const composeTransaction =
 export const signTransaction =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const { selectedAccount } = getState().wallet;
+        const { selectedAccount, blockchain } = getState().wallet;
 
         const device = selectDevice(getState());
         if (
             selectedAccount.status !== 'loaded' ||
             !device ||
-            !transactionInfo ||
+            !transactionInfo || 
             transactionInfo.type !== 'final'
         )
             return;
@@ -76,9 +76,8 @@ export const signTransaction =
         const { account } = selectedAccount;
         if (account.networkType !== 'solana') return;
 
+        const selectedBlockchain = blockchain[account.symbol];
         const addressDisplayType = selectAddressDisplayType(getState());
-
-        // TODO: add solana specific stakeType
         const { stakeType } = formValues;
 
         let txData;
@@ -88,6 +87,7 @@ export const signTransaction =
                 path: account.path,
                 amount: formValues.outputs[0].amount,
                 symbol: account.symbol,
+                selectedBlockchain, 
             });
         }
 
@@ -138,7 +138,7 @@ export const signTransaction =
             return;
         }
 
-        const signerPubKey = await getPubKeyFromAddress(account.descriptor);
+        const signerPubKey = getPubKeyFromAddress(account.descriptor);
 
         txData.tx.versionedTx.addSignature(
             signerPubKey,

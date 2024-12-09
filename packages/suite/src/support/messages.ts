@@ -8739,7 +8739,7 @@ export default defineMessages({
     },
     TR_STAKE_ACTIVATION_COULD_TAKE: {
         id: 'TR_STAKE_ACTIVATION_COULD_TAKE',
-        defaultMessage: 'Stake activation could take up to 1 epoch (~3 days)',
+        defaultMessage: 'Stake activation usually takes 1 epoch (~3 days)',
     },
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',

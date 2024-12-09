@@ -6,8 +6,7 @@ import {
     ContractInfo,
     StakingPool,
 } from '@trezor/blockchain-link-types/src/blockbook-api';
-
-import { SolanaStakingAccount } from './solanaStaking';
+import { SolanaStakingAccount } from '@trezor/blockchain-link-types/src/solana';
 
 export type MetadataItem = string;
 export type XpubAddress = string;
@@ -63,6 +62,7 @@ type AccountNetworkSpecific =
           networkType: 'solana';
           misc: {
               rent?: number;
+              solStakingAccounts?: SolanaStakingAccount[];
           };
           marker: undefined;
           page: AccountInfo['page'];
@@ -103,7 +103,6 @@ export type Account = {
     utxo: AccountInfo['utxo'];
     history: AccountInfo['history'];
     metadata: AccountEntityKeys;
-    stakingAccounts?: SolanaStakingAccount[];
     /**
      * accountLabel was introduced by mobile app. In early stage of development, it was not possible to connect device and work with
      * metadata/labeling feature which requires device for encryption. local accountLabel field was introduced.

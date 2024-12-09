@@ -8087,30 +8087,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/web3.js@npm:^1.75.0":
-  version: 1.95.4
-  resolution: "@solana/web3.js@npm:1.95.4"
-  dependencies:
-    "@babel/runtime": "npm:^7.25.0"
-    "@noble/curves": "npm:^1.4.2"
-    "@noble/hashes": "npm:^1.4.0"
-    "@solana/buffer-layout": "npm:^4.0.1"
-    agentkeepalive: "npm:^4.5.0"
-    bigint-buffer: "npm:^1.1.5"
-    bn.js: "npm:^5.2.1"
-    borsh: "npm:^0.7.0"
-    bs58: "npm:^4.0.1"
-    buffer: "npm:6.0.3"
-    fast-stable-stringify: "npm:^1.0.0"
-    jayson: "npm:^4.1.1"
-    node-fetch: "npm:^2.7.0"
-    rpc-websockets: "npm:^9.0.2"
-    superstruct: "npm:^2.0.2"
-  checksum: 10/353e04ac1110035ff108f16af4029c7a98f71cce841d45877c9bc4a354cdc58a051681603c92289b81e3dc5ef6b1567c6f866e4ba56a434db145e38a5a41d276
-  languageName: node
-  linkType: hard
-
-"@solana/web3.js@npm:^1.95.4":
+"@solana/web3.js-version1@npm:@solana/web3.js@1.95.8, @solana/web3.js@npm:1.95.8":
   version: 1.95.8
   resolution: "@solana/web3.js@npm:1.95.8"
   dependencies:
@@ -9317,7 +9294,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-types@workspace:suite-common/wallet-types"
   dependencies:
-    "@solana/web3.js": "npm:^1.95.4"
     "@suite-common/intl-types": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
@@ -11090,6 +11066,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-types@workspace:packages/blockchain-link-types"
   dependencies:
+    "@everstake/wallet-sdk": "npm:^1.0.5"
     "@solana/web3.js": "npm:^2.0.0"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
@@ -11103,6 +11080,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils"
   dependencies:
+    "@everstake/wallet-sdk": "npm:^1.0.5"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -12067,6 +12045,7 @@ __metadata:
     "@sentry/core": "npm:^7.100.1"
     "@solana/buffer-layout": "npm:^4.0.1"
     "@solana/web3.js": "npm:^2.0.0"
+    "@solana/web3.js-version1": "npm:@solana/web3.js@1.95.8"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/assets": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
