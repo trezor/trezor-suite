@@ -56,12 +56,7 @@ export const TransactionName = ({ transaction, isPending }: TransactionNameProps
     const ethName = transaction.ethereumSpecific?.parsedData?.name;
 
     // use name of eth txns, but not for recv or sent Transfer
-    if (
-        ethName &&
-        ethName !== 'Transfer' &&
-        transaction.type !== 'recv' &&
-        transaction.type !== 'sent'
-    ) {
+    if (ethName) {
         return ethName;
     }
 
