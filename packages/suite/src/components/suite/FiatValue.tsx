@@ -104,7 +104,7 @@ export const FiatValue = ({
     if (value) {
         const fiatValueComponent = (
             <WrapperComponent className={className}>
-                {showApproximationIndicator && <>≈ </>}
+                {showApproximationIndicator && <>≈&nbsp;</>}
                 <FiatAmountFormatter
                     currency={localCurrency.toUpperCase()}
                     value={value}
