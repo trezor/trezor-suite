@@ -1,3 +1,9 @@
+# 2.3.5
+
+-   npm-prerelease: @trezor/blockchain-link 2.3.5-beta.1 (d7c82a5c70)
+-   chore: unify types for setTimeout return type to address the NodeJS types leak issue (3f34981e5d)
+-   fix(blockchain-link): update ripple default backends (0652732a54)
+
 # 2.3.4
 
 -   npm-prerelease: @trezor/blockchain-link 2.3.4-beta.1 (b6f0602c75)
