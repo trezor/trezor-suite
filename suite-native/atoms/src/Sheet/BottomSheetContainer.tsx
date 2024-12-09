@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { KeyboardAvoidingView, Modal as RNModal, Platform } from 'react-native';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 
+import { getWindowWidth, getWindowHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type SheetProps = {
@@ -11,7 +12,11 @@ type SheetProps = {
     ExtraProvider?: React.ComponentType;
 };
 
-const ContentWrapperStyle = prepareNativeStyle(_ => ({ flex: 1 }));
+const ContentWrapperStyle = prepareNativeStyle(_ => ({
+    flex: 1,
+    width: getWindowWidth(),
+    height: getWindowHeight(),
+}));
 
 /**
  * On Android RNGH does not work by default because modals are not located under React Native Root view in native hierarchy.
