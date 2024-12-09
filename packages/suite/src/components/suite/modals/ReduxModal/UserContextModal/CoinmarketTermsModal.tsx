@@ -11,6 +11,7 @@ import {
 } from '@trezor/components';
 import type { Deferred } from '@trezor/utils';
 import { spacings } from '@trezor/theme';
+import { mapTrezorModelToIconDeprecated } from '@trezor/product-components';
 
 import { Translation } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite';
@@ -90,7 +91,7 @@ export const CoinmarketTermsModal = ({
                 <List.Item
                     bulletComponent={
                         <IconCircle
-                            name={`trezor${device.features.internal_model}`}
+                            name={mapTrezorModelToIconDeprecated[device.features.internal_model]}
                             {...iconProps}
                         />
                     }

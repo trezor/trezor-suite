@@ -12,6 +12,10 @@ const safe3Homescreens = [
 
 // original trezor images has to be first as they are send to device as '0' and the default image from fw is used
 export const getHomescreens = (isBitcoinOnlyFirmware: boolean) => ({
+    [DeviceModelInternal.UNKNOWN]: [
+        isBitcoinOnlyFirmware ? 'orange' : 'green', // just to have something
+        isBitcoinOnlyFirmware ? 'green' : 'orange',
+    ],
     [DeviceModelInternal.T1B1]: [
         'original_t1b1', // note - has to be first
         'blank',

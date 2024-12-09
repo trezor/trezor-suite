@@ -41,6 +41,7 @@ const SHAMIR_TYPES: BackupType[] = ['shamir-single', 'shamir-advanced'];
 export const isShamirBackupType = (type: BackupType) => SHAMIR_TYPES.includes(type);
 
 export const defaultBackupTypeMap: Record<DeviceModelInternal, BackupType> = {
+    [DeviceModelInternal.UNKNOWN]: '12-words', // just to have something
     [DeviceModelInternal.T1B1]: '24-words',
     [DeviceModelInternal.T2T1]: '12-words',
     [DeviceModelInternal.T2B1]: 'shamir-single',

@@ -251,9 +251,9 @@ export const getChangelogUrl = (device: TrezorDevice, revision?: string | null) 
 };
 
 /**
- Returns DeviceModelInternal, but returns T3B1 if T2B1 is provided.
- This is desirable because they both represent the same model (differing internally in the chip) and should behave the same in most situations,
- so we don't need to provide separate assets, translations keys, URLs etc. for both.
+ * Returns DeviceModelInternal, but returns T3B1 if T2B1 is provided.
+ * This is desirable because they both represent the same model (differing internally in the chip) and should behave the same in most situations,
+ * so we don't need to provide separate assets, translations keys, URLs etc. for both.
  */
 export const getNarrowedDeviceModelInternal = <T extends DeviceModelInternal>(
     model: T,
@@ -263,7 +263,7 @@ export const getNarrowedDeviceModelInternal = <T extends DeviceModelInternal>(
 export const getCheckBackupUrl = (device?: TrezorDevice) => {
     const deviceModelInternal = device?.features?.internal_model;
 
-    if (!deviceModelInternal) {
+    if (!deviceModelInternal || deviceModelInternal === DeviceModelInternal.UNKNOWN) {
         return undefined;
     }
 
@@ -273,7 +273,7 @@ export const getCheckBackupUrl = (device?: TrezorDevice) => {
 export const getPackagingUrl = (device?: TrezorDevice) => {
     const deviceModelInternal = device?.features?.internal_model;
 
-    if (!deviceModelInternal) {
+    if (!deviceModelInternal || deviceModelInternal === DeviceModelInternal.UNKNOWN) {
         return '';
     }
 
@@ -283,7 +283,7 @@ export const getPackagingUrl = (device?: TrezorDevice) => {
 export const getFirmwareDowngradeUrl = (device?: TrezorDevice) => {
     const deviceModelInternal = device?.features?.internal_model;
 
-    if (!deviceModelInternal) {
+    if (!deviceModelInternal || deviceModelInternal === DeviceModelInternal.UNKNOWN) {
         return undefined;
     }
 

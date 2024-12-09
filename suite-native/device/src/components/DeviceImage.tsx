@@ -3,6 +3,7 @@ import { DeviceModelInternal } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const deviceImageMap: Record<DeviceModelInternal, string> = {
+    [DeviceModelInternal.UNKNOWN]: require('../assets/unknown.png'),
     [DeviceModelInternal.T1B1]: require('../assets/t1b1.png'),
     [DeviceModelInternal.T2T1]: require('../assets/t2t1.png'),
     [DeviceModelInternal.T2B1]: require('../assets/t3b1.png'),

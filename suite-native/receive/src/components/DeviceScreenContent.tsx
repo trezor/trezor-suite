@@ -49,6 +49,7 @@ const smallTouchscreenStyles = {
 };
 
 const deviceToContentStyles: Record<DeviceModelInternal, DeviceModelLayoutProps> = {
+    [DeviceModelInternal.UNKNOWN]: safe3Styles,
     [DeviceModelInternal.T1B1]: {
         fontSource: require('../../../../packages/theme/fonts/PixelOperatorMono8-Regular.ttf'),
         fontSize: 14,

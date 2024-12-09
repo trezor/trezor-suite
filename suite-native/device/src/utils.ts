@@ -5,6 +5,7 @@ import * as semver from 'semver';
 import { Device, DEVICE, DeviceEvent, DeviceModelInternal, VersionArray } from '@trezor/connect';
 
 export const minimalSupportedFirmwareVersion = {
+    UNKNOWN: [0, 0, 0] as VersionArray,
     T1B1: [1, 12, 1] as VersionArray,
     T2T1: [2, 6, 3] as VersionArray,
     T2B1: [2, 6, 3] as VersionArray,

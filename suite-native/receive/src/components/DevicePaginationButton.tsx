@@ -39,6 +39,7 @@ const touchscreenDeviceStyles = {
 } as const;
 
 const modelToStyles = {
+    [DeviceModelInternal.UNKNOWN]: touchscreenDeviceStyles,
     [DeviceModelInternal.T2T1]: touchscreenDeviceStyles,
     [DeviceModelInternal.T2B1]: safe3Styles,
     [DeviceModelInternal.T3B1]: safe3Styles,

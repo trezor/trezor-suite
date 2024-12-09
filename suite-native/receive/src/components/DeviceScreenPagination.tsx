@@ -41,6 +41,7 @@ const safe3Svg = {
 };
 
 const deviceModelToSvg: Record<PaginationCompatibleDeviceModel, PaginationModelMetrics> = {
+    [DeviceModelInternal.UNKNOWN]: safe3Svg,
     [DeviceModelInternal.T2T1]: {
         paginationPrefixSvg: require('../../assets/addressPaginationPrefixT2T1.svg'),
         paginationSuffixSvg: require('../../assets/addressPaginationSuffixT2T1.svg'),

@@ -8,6 +8,7 @@ type DeviceModelIconProps = {
 };
 
 const icons = {
+    UNKNOWN: 'trezorModelOne', // Just to have something
     T1B1: 'trezorModelOne',
     T2T1: 'trezorModelT',
     T2B1: 'trezorSafe3',

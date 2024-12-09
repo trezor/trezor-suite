@@ -130,6 +130,9 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
 
         const deviceFwVersion = getFirmwareVersion(uiEvent?.payload.device);
         const switchToBootloaderMap: Record<DeviceModelInternal, TranslationKey> = {
+            // just to have something, I assume new models will have touch screen
+            [DeviceModelInternal.UNKNOWN]: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
+
             [DeviceModelInternal.T1B1]:
                 semver.valid(deviceFwVersion) && semver.satisfies(deviceFwVersion, '<1.8.0')
                     ? 'TR_SWITCH_TO_BOOTLOADER_HOLD_BOTH_BUTTONS'

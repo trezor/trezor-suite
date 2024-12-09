@@ -18,6 +18,7 @@ export const deviceModelInformation: Record<
     DeviceModelInternal,
     { width: number; height: number; supports: Array<'png' | 'jpeg'> }
 > = {
+    [DeviceModelInternal.UNKNOWN]: { width: 280, height: 520, supports: ['jpeg'] }, // just to have something
     [DeviceModelInternal.T1B1]: { width: 128, height: 64, supports: ['png', 'jpeg'] },
     [DeviceModelInternal.T2T1]: { width: 240, height: 240, supports: ['jpeg'] },
     [DeviceModelInternal.T2B1]: safe3Information,
