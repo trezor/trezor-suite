@@ -12,6 +12,7 @@ import {
     selectDevice,
     selectDeviceModel,
     selectDeviceReleaseInfo,
+    selectIsDeviceConnected,
     selectIsDiscoveryActiveByDeviceState,
 } from '@suite-common/wallet-core';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
@@ -64,6 +65,7 @@ export const DeviceFirmwareCard = () => {
     const isDiscoveryRunning = useSelector((state: DiscoveryRootState & DeviceRootState) =>
         selectIsDiscoveryActiveByDeviceState(state, device?.state),
     );
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const navigation = useNavigation<NavigationProp>();
 
     if (!device || !deviceModel) {
@@ -95,7 +97,7 @@ export const DeviceFirmwareCard = () => {
                             onPress={() => {
                                 navigation.navigate(DeviceStackRoutes.FirmwareUpdate);
                             }}
-                            isDisabled={isDiscoveryRunning}
+                            isDisabled={isDiscoveryRunning || !isDeviceConnected}
                             isLoading={isDiscoveryRunning}
                         >
                             <Translation id="moduleDeviceSettings.firmware.updateCard.updateButton" />
