@@ -299,3 +299,7 @@ jobs:
           pattern: AUTOUPDATE-TEST-suite-desktop-34*
           merge-multiple: true
           path: /home/github-runner/files/trezor-suite-release/autoupdate-test/
+
+      - name: Fix file permissions
+        run: |
+          chmod -R 775 /home/github-runner/files/trezor-suite-release/autoupdate-test/
