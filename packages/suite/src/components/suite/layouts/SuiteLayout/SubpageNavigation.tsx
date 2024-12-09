@@ -15,7 +15,7 @@ const Container = styled.div`
     top: ${HEADER_HEIGHT};
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
-    z-index: ${zIndices.pageHeader};
+    z-index: ${zIndices.stickyBar};
     width: 100%;
     padding: ${spacingsPx.md} ${spacingsPx.md} 0;
 `;

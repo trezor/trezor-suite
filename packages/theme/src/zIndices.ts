@@ -17,7 +17,8 @@ export const zIndices = {
     navigationBar: 30,
     expandableNavigationHeader: 21, // above EXPANDABLE_NAVIGATION to cover its box-shadow
     expandableNavigation: 20, // above PAGE_HEADER to spread over it
-    pageHeader: 11, // above STICKY_BAR to hide it when the page is on top
+    pageHeader: 12, // above STICKY_BAR to hide it when the page is on top
+    pageSubHeader: 11, // below PAGE_HEADER to be hidden beneath it, but above STICKY_BAR
     stickyBar: 10, // above page content to scroll over it
     secondaryStickyBar: 9, // below STICKY_BAR so that it can hide beneath it when no longer needed
     selectMenu: 3,

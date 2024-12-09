@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 
 import styled from 'styled-components';
 
-import { spacingsPx } from '@trezor/theme';
+import { spacingsPx, zIndices } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { SkeletonCircle, SkeletonRectangle } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
@@ -23,6 +23,7 @@ const Container = styled.div`
     padding-left: ${spacingsPx.md};
     padding-right: ${spacingsPx.md};
     margin-top: ${spacingsPx.lg};
+    z-index: ${zIndices.pageSubHeader};
 `;
 
 const AccountCryptoBalance = styled.div`

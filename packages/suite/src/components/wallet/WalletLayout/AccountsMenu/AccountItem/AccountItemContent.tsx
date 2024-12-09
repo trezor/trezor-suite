@@ -13,16 +13,19 @@ import {
 } from '@trezor/components';
 import { isTestnet } from '@suite-common/wallet-utils';
 
-import { useLoadingSkeleton, useSelector } from '../../../../../hooks/suite';
-import { selectLocalCurrency } from '../../../../../reducers/wallet/settingsReducer';
+import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+import {
+    selectIsDiscreteModeActive,
+    selectLocalCurrency,
+} from 'src/reducers/wallet/settingsReducer';
 import {
     AccountLabel,
     CoinBalance,
     FiatValue,
     HiddenPlaceholder,
     Translation,
-} from '../../../../suite';
-import { AccountItemType } from '../../../../../types/wallet';
+} from 'src/components/suite';
+import { AccountItemType } from 'src/types/wallet';
 
 const AccountLabelContainer = styled.div`
     flex: 1;
@@ -32,6 +35,7 @@ const AccountLabelContainer = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
 `;
+
 type ItemContentProps = {
     customFiatValue?: string;
     account: Account;
@@ -43,6 +47,14 @@ type ItemContentProps = {
     formattedBalance: string;
     dataTestKey?: string;
 };
+
+const FiatValueRenderComponent = ({ value }: { value: JSX.Element | null }) => {
+    const discreetMode = useSelector(selectIsDiscreteModeActive);
+    if (discreetMode || value === null) return value;
+
+    return <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>{value}</TruncateWithTooltip>;
+};
+
 export const AccountItemContent = ({
     customFiatValue,
     account,
@@ -56,12 +68,14 @@ export const AccountItemContent = ({
 }: ItemContentProps) => {
     const { FiatAmountFormatter } = useFormatters();
     const localCurrency = useSelector(selectLocalCurrency);
+    const discreetMode = useSelector(selectIsDiscreteModeActive);
     const { shouldAnimate } = useLoadingSkeleton();
 
     const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
 
     return (
-        <Column flex="1" overflow="hidden" gap={spacings.xxxs}>
+        // content is constant size in discreet mode, so overflow: hidden is unnecessary. Though it would cut off CSS blur effect, so we may turn it off
+        <Column flex="1" overflow={discreetMode ? 'visible' : 'hidden'} gap={spacings.xxxs}>
             <Row gap={spacings.md} margin={{ right: spacings.xxs }} justifyContent="space-between">
                 <AccountLabelContainer data-testid={`${dataTestKey}/label`}>
                     {type === 'coin' && (
@@ -93,13 +107,7 @@ export const AccountItemContent = ({
                             maximumFractionDigits: 0,
                         }}
                     >
-                        {({ value }) =>
-                            value ? (
-                                <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
-                                    {value}
-                                </TruncateWithTooltip>
-                            ) : null
-                        }
+                        {FiatValueRenderComponent}
                     </FiatValue>
                 )}
             </Row>
