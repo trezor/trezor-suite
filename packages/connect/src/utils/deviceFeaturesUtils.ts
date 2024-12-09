@@ -180,7 +180,8 @@ export const ensureInternalModelFeature = (model: Features['model']): DeviceMode
         case 'T':
             return DeviceModelInternal.T2T1;
         case '1':
-        default:
             return DeviceModelInternal.T1B1;
+        default:
+            return DeviceModelInternal.UNKNOWN;
     }
 };

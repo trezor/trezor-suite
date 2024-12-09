@@ -17,6 +17,10 @@ const safe3Model: ModelConfig = {
 };
 
 export const models: Record<DeviceModelInternal, ModelConfig> = {
+    UNKNOWN: {
+        name: 'Unknown',
+        colors: safe3Model.colors, // just in case
+    },
     T1B1: {
         name: 'Trezor Model One',
         colors: {},

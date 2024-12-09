@@ -12,12 +12,12 @@ type ModelPubKeys = Static<typeof ModelPubKeys>;
 
 const ModelsWithKeys = Type.Exclude(
     Type.KeyOfEnum(PROTO.DeviceModelInternal),
-    Type.Union([Type.Literal('T1B1'), Type.Literal('T2T1')]),
+    Type.Union([Type.Literal('T1B1'), Type.Literal('T2T1'), Type.Literal('UNKNOWN')]),
 );
 
 const ModelsWithoutKeys = Type.Extract(
     Type.KeyOfEnum(PROTO.DeviceModelInternal),
-    Type.Union([Type.Literal('T1B1'), Type.Literal('T2T1')]),
+    Type.Union([Type.Literal('T1B1'), Type.Literal('T2T1'), Type.Literal('UNKNOWN')]),
 );
 
 const ModelPubKeys = Type.Intersect([

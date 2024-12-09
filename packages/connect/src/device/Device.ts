@@ -48,6 +48,7 @@ import {
     FirmwareHashCheckResult,
     FirmwareHashCheckError,
     DeviceUniquePath,
+    DeviceModelInternal,
 } from '../types';
 import { models } from '../data/models';
 import { getLanguage } from '../data/getLanguage';
@@ -966,7 +967,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
             feat.model = '1';
         }
         // 2. - old fw does not include internal_model. T1B1 does not report it yet, T2T1 starts in 2.6.0
-        if (!feat.internal_model) {
+        //    - or reported internal_model is not known to connect
+        if (!feat.internal_model || !DeviceModelInternal[feat.internal_model]) {
             feat.internal_model = ensureInternalModelFeature(feat.model);
         }
 

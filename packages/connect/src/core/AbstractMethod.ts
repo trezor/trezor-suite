@@ -35,6 +35,7 @@ export interface MethodInfo {
 }
 
 export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
+    UNKNOWN: { min: '1.0.0', max: '0' },
     T1B1: { min: '1.0.0', max: '0' },
     T2T1: { min: '2.0.0', max: '0' },
     T2B1: { min: '2.6.1', max: '0' },
