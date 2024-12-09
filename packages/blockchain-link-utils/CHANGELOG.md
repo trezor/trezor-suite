@@ -1,3 +1,7 @@
+# 1.2.5
+
+-   npm-prerelease: @trezor/blockchain-link-utils 1.2.5-beta.1 (6af3be92af)
+
 # 1.2.3
 
 -   npm-prerelease: @trezor/blockchain-link-utils 1.2.3-beta.1 (0b0670f5ea)
