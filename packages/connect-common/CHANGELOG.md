@@ -1,3 +1,7 @@
+# 0.2.6
+
+-   fix(connect-common): update ripple default backends (6a3dbf2b77)
+
 # 0.2.5
 
 -   npm-prerelease: @trezor/connect-common 0.2.5-beta.1 (6314de0dad)
