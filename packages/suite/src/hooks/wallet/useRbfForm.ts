@@ -48,7 +48,7 @@ const getEthereumFeeInfo = (info: FeeInfo, gasPrice: string) => {
     const minFeeFromNetwork = new BigNumber(fromWei(info.levels[0].feePerUnit, 'gwei'));
 
     const getFee = () => {
-        if (minFeeFromNetwork.lte(current)) {
+        if (minFeeFromNetwork.lte(current.plus(1))) {
             return current.plus(1);
         }
 
