@@ -1,6 +1,7 @@
 const PREFIX = 'blockchain_link/';
 
 const ERROR: { [key: string]: string | undefined } = {
+    connect: undefined,
     worker_not_found: 'Worker not found',
     worker_invalid: 'Invalid worker object',
     worker_timeout: 'Worker timeout',
@@ -19,23 +20,28 @@ export class CustomError extends Error {
 
     message = '';
 
-    constructor(code: string, message = '') {
+    constructor(codeOrMessage: string, message = '') {
         // test reports that super is not covered, TODO: investigate more
         super(message);
 
         this.message = message;
 
-        if (typeof code === 'string') {
-            const c =
-                code.indexOf(PREFIX) === 0 ? code.substring(PREFIX.length, code.length) : code;
-            this.code = `${PREFIX}${c}`;
-            const msg = ERROR[c];
-            if (typeof msg === 'string') {
-                if (this.message === '') {
-                    this.message = msg;
-                } else if (message.indexOf('+') === 0) {
-                    this.message = `${msg} ${message.substring(1)}`;
+        if (typeof codeOrMessage === 'string') {
+            const isPrefixed = codeOrMessage.indexOf(PREFIX) === 0;
+            const code = isPrefixed ? codeOrMessage.substring(PREFIX.length) : codeOrMessage;
+            const knownCode = Object.keys(ERROR).includes(code);
+            if (isPrefixed || knownCode) {
+                this.code = `${PREFIX}${code}`;
+                const codeMessage = ERROR[code];
+                if (codeMessage) {
+                    if (this.message === '') {
+                        this.message = codeMessage;
+                    } else if (message.indexOf('+') === 0) {
+                        this.message = `${codeMessage} ${message.substring(1)}`;
+                    }
                 }
+            } else if (this.message === '') {
+                this.message = code;
             }
         }
 

@@ -19,16 +19,16 @@ describe('Custom errors', () => {
         expect(error.message).toBe('Worker not found');
     });
 
-    it('Error with custom code and custom message', () => {
+    it('Error with custom prefixed code and custom message', () => {
         const error = new CustomError('blockchain_link/custom', 'Custom message');
         expect(error.code).toBe('blockchain_link/custom');
         expect(error.message).toBe('Custom message');
     });
 
-    it('Error with custom code and without message', () => {
+    it('Error with custom code as message', () => {
         const error = new CustomError('custom');
-        expect(error.code).toBe('blockchain_link/custom');
-        expect(error.message).toBe('Message not set');
+        expect(error.code).toBe(undefined);
+        expect(error.message).toBe('custom');
     });
 
     it('Error without code and with custom message', () => {
