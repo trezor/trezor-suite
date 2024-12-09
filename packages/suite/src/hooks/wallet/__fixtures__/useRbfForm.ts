@@ -1050,4 +1050,4 @@ export const composeAndSign = [
 // TODO: multiple inputs (select one for decrease)
 // TODO: custom fee + set-max (decrease)
 // TODO: mad clicking (composeDebounce)
-// TODO: ethereum cases
+// TODO: ethereum cases (don't forget to test when proposed network fee > previous fee and < previous fee + 1 )
