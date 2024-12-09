@@ -1,3 +1,10 @@
+# 1.2.4
+
+-   npm-prerelease: @trezor/blockchain-link-types 1.2.4-beta.1 (32d2ef7bab)
+-   chore(blockchain-link): solana optimized getAccountInfo (88b9c6de14)
+-   chore: Update the Solana types in `@trezor/blockchain-link-types` (d8fe398c07)
+-   chore: Update `@solana/web3.js` to 2.0.0 (f1eac69733)
+
 # 1.2.3
 
 -   npm-prerelease: @trezor/blockchain-link-types 1.2.3-beta.1 (d7636062ed)
