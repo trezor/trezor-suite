@@ -120,7 +120,11 @@ export const useHandleOnDeviceTransactionReview = () => {
                         tokenContract,
                     });
                 }
-                showDeviceDisconnectedAlert();
+
+                // Timeout needed so the navigation back to home screen of not remembered device is not interrupted by the alert.
+                setTimeout(() => {
+                    showDeviceDisconnectedAlert();
+                }, 1500);
 
                 return;
             }
