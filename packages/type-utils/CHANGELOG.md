@@ -1,3 +1,10 @@
+# 1.1.3
+
+-   npm-prerelease: @trezor/type-utils 1.1.3-beta.1 (3b29f41596)
+-   chore: unify types for setTimeout return type to address the NodeJS types leak issue (3f34981e5d)
+-   chore(suite): organize FW check errors to scenario maps (5de4a6032a)
+-   chore: Update the Solana types in `@trezor/blockchain-link-types` (d8fe398c07)
+
 # 1.1.2
 
 -   npm-prerelease: @trezor/type-utils 1.1.2-beta.1 (5a4c171eaf)
