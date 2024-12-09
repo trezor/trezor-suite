@@ -4,8 +4,6 @@ import styled from 'styled-components';
 
 import { CollapsibleBox } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { selectDeviceModel } from '@suite-common/wallet-core';
-import { DeviceModelInternal } from '@trezor/connect';
 
 import { OnboardingStepBox, OnboardingStepBoxProps } from 'src/components/onboarding';
 import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
@@ -24,8 +22,8 @@ const Separator = styled.hr`
 `;
 
 export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
-    const { supportedMainnets, unsupportedMainnets, supportedTestnets } = useNetworkSupport();
-    const deviceModel = useSelector(selectDeviceModel);
+    const { showUnsupportedCoins, supportedMainnets, unsupportedMainnets, supportedTestnets } =
+        useNetworkSupport();
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const dispatch = useDispatch();
 
@@ -52,7 +50,7 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
             >
                 <CoinGroup networks={supportedTestnets} enabledNetworks={enabledNetworks} />
             </CollapsibleBox>
-            {deviceModel === DeviceModelInternal.T1B1 && (
+            {showUnsupportedCoins && (
                 <CollapsibleBox
                     margin={{ top: spacings.xl }}
                     heading={

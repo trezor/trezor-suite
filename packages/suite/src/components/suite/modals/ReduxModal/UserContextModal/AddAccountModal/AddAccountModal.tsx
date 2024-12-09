@@ -2,13 +2,12 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { accountsActions, selectDeviceModel } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 import { arrayPartition } from '@trezor/utils';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { networks, Network, NetworkSymbol, NetworkAccount } from '@suite-common/wallet-config';
 import { CollapsibleBox, NewModal, Tooltip } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { DeviceModelInternal } from '@trezor/connect';
 
 import { Translation, CoinList } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
@@ -52,11 +51,11 @@ export const AddAccountModal = ({
     const app = useSelector(state => state.router.app);
     const isDebug = useSelector(selectIsDebugModeActive);
     const isCoinjoinPublic = useSelector(selectIsPublic);
-    const deviceModel = useSelector(selectDeviceModel);
     const enabledNetworkSymbols = useSelector(selectEnabledNetworks);
     const dispatch = useDispatch();
 
-    const { supportedMainnets, unsupportedMainnets, supportedTestnets } = useNetworkSupport();
+    const { showUnsupportedCoins, supportedMainnets, unsupportedMainnets, supportedTestnets } =
+        useNetworkSupport();
 
     const supportedNetworks = [...supportedMainnets, ...supportedTestnets];
     const allTestnetNetworksDisabled = !supportedTestnets.some(network =>
@@ -244,7 +243,7 @@ export const AddAccountModal = ({
                                   />
                               </CollapsibleBox>
                           )}
-                          {!isBitcoinOnlyFirmware && deviceModel === DeviceModelInternal.T1B1 && (
+                          {showUnsupportedCoins && (
                               <CollapsibleBox
                                   heading={
                                       <Tooltip

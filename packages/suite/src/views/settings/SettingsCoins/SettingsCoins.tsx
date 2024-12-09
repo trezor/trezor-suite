@@ -1,13 +1,8 @@
 import styled from 'styled-components';
 import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 
-import {
-    startDiscoveryThunk,
-    selectDeviceModel,
-    selectDeviceSupportedNetworks,
-} from '@suite-common/wallet-core';
+import { startDiscoveryThunk, selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 import { Button, motionEasing, Tooltip } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { spacingsPx } from '@trezor/theme';
 
@@ -82,9 +77,9 @@ export const SettingsCoins = () => {
     const { firmwareTypeBannerClosed } = useSelector(selectSuiteFlags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const isDiscoveryButtonVisible = useRediscoveryNeeded();
-    const { supportedMainnets, unsupportedMainnets, supportedTestnets } = useNetworkSupport();
+    const { showUnsupportedCoins, supportedMainnets, unsupportedMainnets, supportedTestnets } =
+        useNetworkSupport();
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
-    const deviceModel = useSelector(selectDeviceModel);
     const { device, isLocked } = useDevice();
     const isDeviceLocked = !!device && isLocked();
     const dispatch = useDispatch();
@@ -102,7 +97,6 @@ export const SettingsCoins = () => {
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
 
     const showDeviceBanner = device?.connected === false; // device is remembered and disconnected
-
     const showFirmwareTypeBanner =
         !firmwareTypeBannerClosed &&
         device &&
@@ -146,7 +140,7 @@ export const SettingsCoins = () => {
                 </SettingsSectionItem>
             </SettingsSection>
 
-            {deviceModel === DeviceModelInternal.T1B1 && !bitcoinOnlyFirmware && (
+            {showUnsupportedCoins && (
                 <SettingsSection
                     title={
                         <Tooltip
