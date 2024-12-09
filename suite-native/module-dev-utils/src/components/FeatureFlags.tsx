@@ -3,7 +3,6 @@ import { FeatureFlag as FeatureFlagEnum, useFeatureFlag } from '@suite-native/fe
 
 const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsDeviceConnectEnabled]: 'Connect device',
-    [FeatureFlagEnum.IsRippleSendEnabled]: 'Ripple send',
     [FeatureFlagEnum.IsCardanoSendEnabled]: 'Cardano send',
     [FeatureFlagEnum.IsSolanaSendEnabled]: 'Solana send',
     [FeatureFlagEnum.IsRegtestEnabled]: 'Regtest',

@@ -9,7 +9,12 @@ import {
 
 const PRODUCTION_SEND_COINS_WHITELIST = pipe(
     networks,
-    D.filter(network => network.networkType === 'bitcoin' || network.networkType === 'ethereum'),
+    D.filter(
+        network =>
+            network.networkType === 'bitcoin' ||
+            network.networkType === 'ethereum' ||
+            network.networkType === 'ripple',
+    ),
     D.keys,
 );
 
@@ -21,10 +26,6 @@ export const selectIsNetworkSendFlowEnabled = (
     const networkType = getNetworkType(symbol);
 
     if (PRODUCTION_SEND_COINS_WHITELIST.includes(symbol)) return true;
-
-    const isRippleSendEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsRippleSendEnabled);
-
-    if (isRippleSendEnabled && networkType === 'ripple') return true;
 
     const isCardanoSendEnabled = selectIsFeatureFlagEnabled(
         state,
