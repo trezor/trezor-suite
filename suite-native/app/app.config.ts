@@ -83,6 +83,9 @@ const getPlugins = (): ExpoPlugins => {
             'expo-splash-screen',
             {
                 backgroundColor: '#25292E',
+                dark: {
+                    backgroundColor: '#25292E',
+                },
                 image: './assets/splash_icon.png',
                 imageWidth: '200',
             },
