@@ -1,0 +1,23 @@
+{
+    "name": "@trezor/connect-nostr",
+    "version": "0.0.0",
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index.ts",
+    "publishConfig": {
+        "main": "lib/index.js"
+    },
+    "files": [
+        "lib/",
+        "!**/*.map"
+    ],
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib"
+    },
+    "dependencies": {
+        "@trezor/utils": "workspace:^",
+        "nostr-tools": "^2.10.4"
+    }
+}
