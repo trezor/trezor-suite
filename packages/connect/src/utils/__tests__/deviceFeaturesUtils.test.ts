@@ -164,6 +164,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 coinjoin: 'update-required',
                 signMessageNoScriptType: 'update-required',
                 chunkify: 'no-support',
+                entropyCheck: 'no-support',
             });
         });
 
@@ -193,6 +194,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 sol: 'no-capability',
                 dsol: 'no-capability',
                 chunkify: 'update-required',
+                entropyCheck: 'update-required',
             });
         });
 
@@ -224,6 +226,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 vtc: 'no-support',
                 xem: 'no-support',
                 chunkify: 'update-required',
+                entropyCheck: 'update-required',
             });
         });
 
@@ -307,6 +310,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 replaceTransaction: 'update-required',
                 signMessageNoScriptType: 'update-required',
                 taproot: 'update-required',
+                entropyCheck: 'update-required',
             });
         });
 
@@ -338,6 +342,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 replaceTransaction: 'update-required',
                 signMessageNoScriptType: 'update-required',
                 taproot: 'update-required',
+                entropyCheck: 'no-support',
             });
         });
 
@@ -370,6 +375,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 replaceTransaction: 'update-required',
                 signMessageNoScriptType: 'update-required',
                 taproot: 'update-required',
+                entropyCheck: 'no-support',
             });
         });
     });

@@ -1,7 +1,5 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js
 
-import { randomBytes } from 'crypto';
-
 import { Transport, Session } from '@trezor/transport';
 import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { createTimeoutPromise, versionUtils } from '@trezor/utils';
@@ -39,17 +37,6 @@ const assertType = (res: DefaultPayloadMessage, resType: MessageKey | MessageKey
         throw ERRORS.TypedError(
             'Runtime',
             `assertType: Response of unexpected type: ${res.type}. Should be ${resType}`,
-        );
-    }
-};
-
-const generateEntropy = (len: number) => {
-    try {
-        return randomBytes(len);
-    } catch {
-        throw ERRORS.TypedError(
-            'Runtime',
-            'generateEntropy: Environment does not support crypto random',
         );
     }
 };
@@ -429,12 +416,6 @@ export class DeviceCommands {
             }
 
             return this._commonCall('ButtonAck', {});
-        }
-
-        if (res.type === 'EntropyRequest') {
-            return this._commonCall('EntropyAck', {
-                entropy: generateEntropy(32).toString('hex'),
-            });
         }
 
         if (res.type === 'PinMatrixRequest') {

@@ -6,6 +6,7 @@
         { "path": "../blockchain-link-types" },
         { "path": "../connect-analytics" },
         { "path": "../connect-common" },
+        { "path": "../crypto-utils" },
         { "path": "../protobuf" },
         { "path": "../protocol" },
         { "path": "../schema-utils" },

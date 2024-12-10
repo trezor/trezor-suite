@@ -52,6 +52,7 @@ export const ERROR_CODES = {
     Failure_PinInvalid: 'PIN invalid',
     Failure_PinMismatch: 'PIN mismatch',
     Failure_WipeCodeMismatch: 'Wipe code mismatch',
+    Failure_EntropyCheck: '', // message from verifyEntropy process
 
     Deeplink_VersionMismatch: 'Not compatible with current version of the app',
 } as const;

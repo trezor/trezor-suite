@@ -20,6 +20,9 @@
             "path": "../connect-common"
         },
         {
+            "path": "../crypto-utils"
+        },
+        {
             "path": "../protobuf"
         },
         {
