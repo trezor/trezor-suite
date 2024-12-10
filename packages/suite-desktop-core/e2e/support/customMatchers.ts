@@ -1,4 +1,4 @@
-import { Locator , expect as baseExpect } from '@playwright/test';
+import { Locator, expect as baseExpect } from '@playwright/test';
 
 export const expect = baseExpect.extend({
     async toBeEnabledCoin(locator: Locator) {
