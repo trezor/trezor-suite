@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import { Icon, Link, Image, Row } from '@trezor/components';
 import { useOnClickOutside } from '@trezor/react-utils';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
-import { borders, spacings, spacingsPx, typography, zIndices } from '@trezor/theme';
+import { borders, spacingsPx, typography, zIndices } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { CoinmarketFooterLogoWrapper } from 'src/views/wallet/coinmarket';
@@ -13,7 +13,6 @@ import { CoinmarketProvidedByInvity } from 'src/views/wallet/coinmarket/common/C
 
 const Wrapper = styled.div`
     margin-top: ${spacingsPx.xxxl};
-    padding: ${spacings.zero} ${spacingsPx.lg};
 `;
 
 const WrapperBorder = styled.div`

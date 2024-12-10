@@ -20,7 +20,6 @@ import { variables } from '@trezor/components/src/config';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketLayout';
 import { CoinmarketContainer } from 'src/views/wallet/coinmarket/common/CoinmarketContainer';
 
 const IconWrapper = styled.div`
@@ -108,53 +107,51 @@ const DCALanding = () => {
     const isLightTheme = currentTheme !== 'dark';
 
     return (
-        <CoinmarketLayout>
-            <Card paddingType="small">
-                <ColumnsWrapper>
-                    <Column1>
-                        <H2>
-                            <Translation id="TR_COINMARKET_DCA_HEADING" />
-                        </H2>
-                        <Column gap={spacings.xxl} alignItems="start">
-                            <FeatureItem icon="shieldCheck" featureNumber={1} />
-                            <FeatureItem icon="arrowDown" featureNumber={2} />
-                            <FeatureItem icon="lightning" featureNumber={3} />
-                            <FeatureItem icon="eye" featureNumber={4} />
-                        </Column>
-                    </Column1>
-                    <Column2>
-                        <Image image="COINMARKET_INVITY_ICON" width={48} height={48} />
-                        <WrappedText>
-                            <Paragraph typographyStyle="highlight">
-                                <Translation id="TR_COINMARKET_DCA_DOWNLOAD" />
-                            </Paragraph>
-                        </WrappedText>
+        <Card paddingType="small">
+            <ColumnsWrapper>
+                <Column1>
+                    <H2>
+                        <Translation id="TR_COINMARKET_DCA_HEADING" />
+                    </H2>
+                    <Column gap={spacings.xxl} alignItems="start">
+                        <FeatureItem icon="shieldCheck" featureNumber={1} />
+                        <FeatureItem icon="arrowDown" featureNumber={2} />
+                        <FeatureItem icon="lightning" featureNumber={3} />
+                        <FeatureItem icon="eye" featureNumber={4} />
+                    </Column>
+                </Column1>
+                <Column2>
+                    <Image image="COINMARKET_INVITY_ICON" width={48} height={48} />
+                    <WrappedText>
+                        <Paragraph typographyStyle="highlight">
+                            <Translation id="TR_COINMARKET_DCA_DOWNLOAD" />
+                        </Paragraph>
+                    </WrappedText>
+                    <TrezorLink href={COINMARKET_DOWNLOAD_INVITY_APP_URL}>
+                        <Image image="COINMARKET_DCA_INVITY_APP_QR" width={170} height={170} />
+                    </TrezorLink>
+                    <Row>
                         <TrezorLink href={COINMARKET_DOWNLOAD_INVITY_APP_URL}>
-                            <Image image="COINMARKET_DCA_INVITY_APP_QR" width={170} height={170} />
+                            <StoreBadge $isLight={isLightTheme}>
+                                <Image image="PLAY_STORE_TITLE" height={26} />
+                            </StoreBadge>
                         </TrezorLink>
-                        <Row>
-                            <TrezorLink href={COINMARKET_DOWNLOAD_INVITY_APP_URL}>
-                                <StoreBadge $isLight={isLightTheme}>
-                                    <Image image="PLAY_STORE_TITLE" height={26} />
-                                </StoreBadge>
-                            </TrezorLink>
-                            <StoreSeparatorWrapper>
-                                <Divider
-                                    orientation="vertical"
-                                    strokeWidth={1}
-                                    margin={{ left: spacings.sm, right: spacings.sm }}
-                                />
-                            </StoreSeparatorWrapper>
-                            <TrezorLink href={COINMARKET_DOWNLOAD_INVITY_APP_URL}>
-                                <StoreBadge $isLight={isLightTheme}>
-                                    <Image image="APP_STORE_TITLE" height={26} />
-                                </StoreBadge>
-                            </TrezorLink>
-                        </Row>
-                    </Column2>
-                </ColumnsWrapper>
-            </Card>
-        </CoinmarketLayout>
+                        <StoreSeparatorWrapper>
+                            <Divider
+                                orientation="vertical"
+                                strokeWidth={1}
+                                margin={{ left: spacings.sm, right: spacings.sm }}
+                            />
+                        </StoreSeparatorWrapper>
+                        <TrezorLink href={COINMARKET_DOWNLOAD_INVITY_APP_URL}>
+                            <StoreBadge $isLight={isLightTheme}>
+                                <Image image="APP_STORE_TITLE" height={26} />
+                            </StoreBadge>
+                        </TrezorLink>
+                    </Row>
+                </Column2>
+            </ColumnsWrapper>
+        </Card>
     );
 };
 

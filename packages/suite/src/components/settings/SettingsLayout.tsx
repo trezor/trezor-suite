@@ -30,28 +30,24 @@ const SettingsHeader = () => {
             {
                 id: 'settings-index',
                 title: <Translation id="TR_GENERAL" />,
-                position: 'primary',
                 'data-testid': '@settings/menu/general',
                 callback: () => dispatch(goto('settings-index', { preserveParams: true })),
             },
             {
                 id: 'settings-device',
                 title: <Translation id="TR_DEVICE" />,
-                position: 'primary',
                 'data-testid': '@settings/menu/device',
                 callback: () => dispatch(goto('settings-device', { preserveParams: true })),
             },
             {
                 id: 'settings-coins',
                 title: <Translation id="TR_COINS" />,
-                position: 'primary',
                 'data-testid': '@settings/menu/wallet',
                 callback: () => dispatch(goto('settings-coins', { preserveParams: true })),
             },
             {
                 id: 'settings-debug',
                 title: <Translation id="TR_DEBUG_SETTINGS" />,
-                position: 'primary',
                 isHidden: !isDebugModeActive,
                 'data-testid': '@settings/menu/debug',
                 callback: () => dispatch(goto('settings-debug', { preserveParams: true })),
