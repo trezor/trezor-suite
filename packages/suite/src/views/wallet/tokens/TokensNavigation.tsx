@@ -3,16 +3,18 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { spacings } from '@trezor/theme';
-import { IconButton, Row } from '@trezor/components';
+import { IconButton, Row, Subtabs } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { Route } from '@suite-common/suite-types';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { NavigationItem } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { SearchAction } from 'src/components/wallet/SearchAction';
 import { openModal } from 'src/actions/suite/modalActions';
+import { Translation } from 'src/components/suite';
+import { goto } from 'src/actions/suite/routerActions';
 
 interface TokensNavigationProps {
     selectedAccount: SelectedAccountLoaded;
@@ -26,11 +28,8 @@ export const TokensNavigation = ({
     setSearchQuery,
 }: TokensNavigationProps) => {
     const { account } = selectedAccount;
-
     const [isExpanded, setExpanded] = useState(false);
-
     const routeName = useSelector(selectRouteName);
-
     const coinDefinitions = useSelector(state =>
         selectCoinDefinitions(state, selectedAccount.account.symbol),
     );
@@ -54,6 +53,10 @@ export const TokensNavigation = ({
         dispatch(openModal({ type: 'add-token' }));
     };
 
+    const goToRoute = (route: Route['name']) => () => {
+        dispatch(goto(route, { preserveParams: true }));
+    };
+
     useEffect(() => {
         setSearchQuery('');
         setExpanded(false);
@@ -61,30 +64,24 @@ export const TokensNavigation = ({
 
     return (
         <Row alignItems="center" justifyContent="space-between" margin={{ bottom: spacings.md }}>
-            <Row alignItems="center" gap={spacings.xxs}>
-                <NavigationItem
-                    nameId="TR_NAV_TOKENS"
-                    isActive={routeName === 'wallet-tokens'}
-                    icon="tokens"
-                    goToRoute="wallet-tokens"
-                    preserveParams
-                    iconSize="mediumLarge"
-                    itemsCount={tokens.shownWithBalance.length || undefined}
-                    isRounded
-                    typographyStyle="hint"
-                />
-                <NavigationItem
-                    nameId="TR_HIDDEN"
-                    isActive={routeName === 'wallet-tokens-hidden'}
-                    icon="hide"
-                    goToRoute="wallet-tokens-hidden"
-                    preserveParams
-                    iconSize="mediumLarge"
-                    itemsCount={tokens.hiddenWithBalance.length || undefined}
-                    isRounded
-                    typographyStyle="hint"
-                />
-            </Row>
+            <Subtabs activeItemId={routeName} size="medium">
+                <Subtabs.Item
+                    id="wallet-tokens"
+                    iconName="tokens"
+                    onClick={goToRoute('wallet-tokens')}
+                    count={tokens.shownWithBalance.length}
+                >
+                    <Translation id="TR_NAV_TOKENS" />
+                </Subtabs.Item>
+                <Subtabs.Item
+                    id="wallet-tokens-hidden"
+                    iconName="hide"
+                    onClick={goToRoute('wallet-tokens-hidden')}
+                    count={tokens.hiddenWithBalance.length}
+                >
+                    <Translation id="TR_HIDDEN" />
+                </Subtabs.Item>
+            </Subtabs>
             <Row>
                 <SearchAction
                     tooltipText="TR_TOKENS_SEARCH_TOOLTIP"
