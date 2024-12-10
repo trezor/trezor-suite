@@ -28,8 +28,8 @@ export const ConnectDeviceScreenView = ({
             screenHeader={
                 <ConnectDeviceScreenHeader shouldDisplayCancelButton={shouldDisplayCancelButton} />
             }
-            customHorizontalPadding={0}
-            customVerticalPadding={0}
+            noHorizontalPadding
+            noBottomPadding
             hasBottomInset={false}
         >
             <Box style={[applyStyle(contentStyle), style]}>{children}</Box>

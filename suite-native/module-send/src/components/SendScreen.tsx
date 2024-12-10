@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 
-import { useNativeStyles } from '@trezor/styles';
 import { Screen } from '@suite-native/navigation';
 
 type SendScreenProps = {
@@ -11,11 +10,8 @@ type SendScreenProps = {
 };
 
 export const SendScreen = ({ children, footer, screenHeader, subheader }: SendScreenProps) => {
-    const { utils } = useNativeStyles();
-
     return (
         <Screen
-            customHorizontalPadding={utils.spacings.sp16}
             screenHeader={screenHeader}
             subheader={subheader}
             footer={footer}

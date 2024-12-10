@@ -24,8 +24,8 @@ export const DevUtilsScreen = ({
     navigation,
 }: StackProps<DevUtilsStackParamList, DevUtilsStackRoutes.DevUtils>) => {
     return (
-        <Screen screenHeader={<ScreenSubHeader content="DEV utils" />}>
-            <VStack>
+        <Screen screenHeader={<ScreenSubHeader content="DEV utils" />} noTopPadding>
+            <VStack spacing="sp16">
                 <Card>
                     <VStack spacing="sp16">
                         <TitleHeader

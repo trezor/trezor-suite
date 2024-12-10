@@ -41,7 +41,6 @@ export const ReceiveAccountsScreen = () => {
 
     return (
         <Screen
-            customHorizontalPadding="sp16"
             screenHeader={<DeviceManagerScreenHeader />}
             subheader={
                 <SearchableAccountsListScreenHeader

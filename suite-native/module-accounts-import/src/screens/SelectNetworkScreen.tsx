@@ -19,7 +19,7 @@ export const SelectNetworkScreen = ({
     };
 
     return (
-        <Screen screenHeader={<AccountImportSubHeader />} customHorizontalPadding="sp16">
+        <Screen screenHeader={<AccountImportSubHeader />}>
             <SelectableNetworkList onSelectItem={handleSelectNetworkSymbol} />
         </Screen>
     );

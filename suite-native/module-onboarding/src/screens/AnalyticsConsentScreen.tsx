@@ -43,16 +43,16 @@ const subtitleStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp24,
 }));
 
-const buttonsWrapperStyle = prepareNativeStyle(() => ({
-    width: '90%',
-    alignSelf: 'center',
-    marginBottom: 28,
+const buttonsWrapperStyle = prepareNativeStyle(utils => ({
+    alignSelf: 'stretch',
+    marginHorizontal: utils.spacings.sp8,
+    marginBottom: utils.spacings.sp8,
 }));
 
 const cardStyle = prepareNativeStyle(utils => ({
-    marginHorizontal: utils.spacings.sp16,
-    marginTop: utils.spacings.sp16,
-    marginBottom: utils.spacings.sp32,
+    marginHorizontal: utils.spacings.sp8,
+    marginTop: utils.spacings.sp8,
+    marginBottom: utils.spacings.sp24,
     paddingHorizontal: utils.spacings.sp16,
     paddingTop: 60,
     paddingBottom: 20,

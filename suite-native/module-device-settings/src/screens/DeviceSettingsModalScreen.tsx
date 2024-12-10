@@ -38,12 +38,10 @@ export const DeviceSettingsModalScreen = () => {
         <Screen
             screenHeader={
                 <ScreenSubHeader
-                    customHorizontalPadding="sp16"
                     content={translate('moduleDeviceSettings.title')}
                     closeActionType="close"
                 />
             }
-            customHorizontalPadding="sp16"
         >
             <VStack marginVertical="sp32" spacing="sp24" alignItems="center">
                 <DeviceImage deviceModel={deviceModel} />

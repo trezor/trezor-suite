@@ -24,14 +24,7 @@ export const DeviceInteractionScreenWrapper = ({
 
     return (
         <Screen
-            screenHeader={
-                <ScreenSubHeader
-                    customHorizontalPadding="sp16"
-                    closeActionType="close"
-                    closeAction={closeAction}
-                />
-            }
-            customHorizontalPadding="sp24"
+            screenHeader={<ScreenSubHeader closeActionType="close" closeAction={closeAction} />}
             hasBottomInset={false}
             isScrollable={false}
         >

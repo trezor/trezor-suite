@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import {
     RootStackParamList,
     RootStackRoutes,
+    ScreenSubHeader,
     SendStackParamList,
     SendStackRoutes,
     StackProps,
@@ -17,7 +18,6 @@ import { useTranslate } from '@suite-native/intl';
 import { ReviewOutputItemList } from '../components/ReviewOutputItemList';
 import { OutputsReviewFooter } from '../components/OutputsReviewFooter';
 import { SendScreen } from '../components/SendScreen';
-import { SendScreenSubHeader } from '../components/SendScreenSubHeader';
 import { useShowReviewCancellationAlert } from '../hooks/useShowReviewCancellationAlert';
 import { cleanupSendFormThunk } from '../sendFormThunks';
 
@@ -61,7 +61,7 @@ export const SendOutputsReviewScreen = ({
     return (
         <SendScreen
             screenHeader={
-                <SendScreenSubHeader
+                <ScreenSubHeader
                     content={translate('moduleSend.review.outputs.title')}
                     closeActionType="close"
                 />

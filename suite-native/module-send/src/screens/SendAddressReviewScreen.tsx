@@ -1,7 +1,12 @@
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
-import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
+import {
+    ScreenSubHeader,
+    SendStackParamList,
+    SendStackRoutes,
+    StackProps,
+} from '@suite-native/navigation';
 import { Box, VStack, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
@@ -12,7 +17,6 @@ import {
 } from '../selectors';
 import { AddressReviewStepList } from '../components/AddressReviewStepList';
 import { SendScreen } from '../components/SendScreen';
-import { SendScreenSubHeader } from '../components/SendScreenSubHeader';
 import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
 
 export const SendAddressReviewScreen = ({
@@ -41,7 +45,7 @@ export const SendAddressReviewScreen = ({
     return (
         <SendScreen
             screenHeader={
-                <SendScreenSubHeader
+                <ScreenSubHeader
                     content={translate('moduleSend.review.outputs.title')}
                     closeActionType={isTransactionReviewInProgress ? 'close' : 'back'}
                 />

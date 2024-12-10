@@ -13,6 +13,7 @@ export const SettingsLocalizationScreen = () => {
             screenHeader={
                 <ScreenSubHeader content={translate('moduleSettings.localizations.title')} />
             }
+            noTopPadding
         >
             <Card>
                 <VStack spacing="sp8">

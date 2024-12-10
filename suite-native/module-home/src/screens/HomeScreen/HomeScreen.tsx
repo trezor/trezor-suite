@@ -39,12 +39,13 @@ export const HomeScreen = () => {
 
     return (
         <Screen
-            screenHeader={<DeviceManagerScreenHeader hasBottomPadding />}
+            screenHeader={<DeviceManagerScreenHeader />}
             refreshControl={refreshControl}
-            customHorizontalPadding={0}
+            noTopPadding
+            noHorizontalPadding
         >
             {isEmptyHomeRendererShown ? (
-                <Box marginHorizontal="sp16" marginBottom="sp8">
+                <Box marginHorizontal="sp16">
                     <EmptyHomeRenderer />
                 </Box>
             ) : (

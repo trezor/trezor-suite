@@ -37,7 +37,6 @@ export const AccountDetailScreenHeader = ({
 
     return (
         <ScreenSubHeader
-            customHorizontalPadding="sp16"
             content={accountLabel}
             rightIcon={
                 <IconButton

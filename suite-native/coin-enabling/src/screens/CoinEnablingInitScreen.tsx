@@ -98,10 +98,9 @@ export const CoinEnablingInitScreen = () => {
 
     return (
         <Screen
-            customHorizontalPadding={utils.spacings.sp16}
             screenHeader={
                 <View style={applyStyle(headerWrapperStyle)}>
-                    <VStack paddingBottom="sp32" paddingHorizontal="sp16">
+                    <VStack paddingBottom="sp16" paddingHorizontal="sp16">
                         <Text variant="titleSmall">
                             <Translation id="moduleSettings.coinEnabling.initialSetup.title" />
                         </Text>

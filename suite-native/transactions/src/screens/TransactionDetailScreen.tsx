@@ -18,7 +18,6 @@ import {
     ScreenSubHeader,
     StackProps,
 } from '@suite-native/navigation';
-import { useNativeStyles } from '@trezor/styles';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
@@ -30,7 +29,6 @@ import { TransactionName } from '../components/TransactionName';
 export const TransactionDetailScreen = ({
     route,
 }: StackProps<RootStackParamList, RootStackRoutes.TransactionDetail>) => {
-    const { utils } = useNativeStyles();
     const { txid, accountKey, tokenContract, closeActionType = 'back' } = route.params;
     const openLink = useOpenLink();
     const transaction = useSelector((state: TransactionsRootState) =>
@@ -68,7 +66,6 @@ export const TransactionDetailScreen = ({
 
     return (
         <Screen
-            customHorizontalPadding={utils.spacings.sp16}
             screenHeader={
                 <ScreenSubHeader
                     closeActionType={closeActionType}

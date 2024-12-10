@@ -23,7 +23,6 @@ export const AccountImportSummaryScreen = ({
 }: AccountImportSummaryScreenProps) => {
     return (
         <Screen
-            customHorizontalPadding="sp16"
             screenHeader={<AccountImportSubHeader />}
             footer={
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

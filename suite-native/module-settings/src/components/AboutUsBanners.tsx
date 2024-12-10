@@ -25,7 +25,7 @@ export const AboutUsBanners = () => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <VStack>
+        <VStack spacing="sp16">
             <Card style={applyStyle(cardStyle, { backgroundColor: 'backgroundNeutralBold' })}>
                 <VStack spacing="sp24" style={applyStyle(stackStyle)}>
                     <Icon color="iconOnPrimary" name="trezorLogo" />

@@ -67,14 +67,13 @@ export const AccountSettingsScreen = ({
 
     return (
         <Screen
-            customHorizontalPadding="sp16"
             screenHeader={
                 <ScreenSubHeader
-                    customHorizontalPadding="sp16"
                     content={accountLabel}
                     rightIcon={<AccountRenameButton accountKey={accountKey} />}
                 />
             }
+            noTopPadding
         >
             <Box flex={1} justifyContent="space-between">
                 <Card>

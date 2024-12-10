@@ -10,9 +10,9 @@ import { useRoute } from '@react-navigation/native';
 
 import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color, NativeSpacing } from '@trezor/theme';
+import { Color } from '@trezor/theme';
 import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
-import { Box, nativeSpacingToNumber } from '@suite-native/atoms';
+import { Box } from '@suite-native/atoms';
 
 import { ScreenContentWrapper } from './ScreenContentWrapper';
 
@@ -24,8 +24,9 @@ type ScreenProps = {
     hasStatusBar?: boolean;
     isScrollable?: boolean;
     backgroundColor?: Color;
-    customVerticalPadding?: NativeSpacing | number;
-    customHorizontalPadding?: NativeSpacing | number;
+    noTopPadding?: boolean;
+    noHorizontalPadding?: boolean;
+    noBottomPadding?: boolean;
     extraKeyboardAvoidingViewHeight?: number;
     hasBottomInset?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
@@ -35,28 +36,30 @@ type ScreenProps = {
 const screenContainerStyle = prepareNativeStyle<{
     backgroundColor: Color;
     insets: EdgeInsets;
-    customVerticalPadding: number;
-    hasPaddingBottom: boolean;
+    topPadding: number;
+    bottomPadding: number;
+    hasBottomPadding: boolean;
     isMessageBannerDisplayed: boolean;
 }>(
     (
         utils,
         {
             backgroundColor,
-            customVerticalPadding,
+            topPadding,
+            bottomPadding,
             insets,
-            hasPaddingBottom,
+            hasBottomPadding,
             isMessageBannerDisplayed,
         },
     ) => ({
         flex: 1,
         backgroundColor: utils.colors[backgroundColor],
-        paddingTop: Math.max(insets.top, customVerticalPadding),
+        paddingTop: Math.max(insets.top, topPadding),
         extend: [
             {
-                condition: hasPaddingBottom,
+                condition: hasBottomPadding,
                 style: {
-                    paddingBottom: Math.max(insets.bottom, customVerticalPadding),
+                    paddingBottom: Math.max(insets.bottom, bottomPadding),
                 },
             },
             {
@@ -73,24 +76,25 @@ const screenContainerStyle = prepareNativeStyle<{
 
 const screenContentBaseStyle = prepareNativeStyle<{
     insets: EdgeInsets;
-    customHorizontalPadding: number;
-    customVerticalPadding: number;
+    topPadding: number;
+    horizontalPadding: number;
+    bottomPadding: number;
     isScrollable: boolean;
-}>((_, { customHorizontalPadding, customVerticalPadding, insets, isScrollable }) => {
+}>((_, { topPadding, horizontalPadding, bottomPadding, insets, isScrollable }) => {
     const { left, right } = insets;
 
     return {
         flexGrow: 1,
-        paddingTop: customVerticalPadding,
-        paddingLeft: Math.max(left, customHorizontalPadding),
-        paddingRight: Math.max(right, customHorizontalPadding),
+        paddingTop: topPadding,
+        paddingLeft: Math.max(left, horizontalPadding),
+        paddingRight: Math.max(right, horizontalPadding),
 
         extend: {
             // Scrollable screen takes the whole height of the screen. This padding is needed to
             // prevent the content being "sticked" to the bottom navbar.
             condition: isScrollable,
             style: {
-                paddingBottom: customVerticalPadding,
+                paddingBottom: bottomPadding,
             },
         },
     };
@@ -106,18 +110,22 @@ export const Screen = ({
     isScrollable = true,
     hasStatusBar = true,
     backgroundColor = 'backgroundSurfaceElevation0',
-    customVerticalPadding = 'sp8',
-    customHorizontalPadding = 'sp8',
+    noTopPadding = false,
+    noHorizontalPadding = false,
+    noBottomPadding = false,
     extraKeyboardAvoidingViewHeight = 0,
     hasBottomInset = true,
 }: ScreenProps) => {
     const {
         applyStyle,
-        utils: { colors, isDarkColor },
+        utils: { colors, isDarkColor, spacings },
     } = useNativeStyles();
 
-    const hasPaddingBottom = !useContext(BottomTabBarHeightContext) && hasBottomInset;
     const insets = useOfflineBannerAwareSafeAreaInsets();
+    const topPadding = noTopPadding ? 0 : spacings.sp16;
+    const horizontalPadding = noHorizontalPadding ? 0 : spacings.sp16;
+    const bottomPadding = noBottomPadding ? 0 : spacings.sp16;
+    const hasBottomPadding = !useContext(BottomTabBarHeightContext) && hasBottomInset;
     const backgroundCSSColor = colors[backgroundColor];
     const barStyle = isDarkColor(backgroundCSSColor) ? 'light-content' : 'dark-content';
 
@@ -139,9 +147,10 @@ export const Screen = ({
         <View
             style={applyStyle(screenContainerStyle, {
                 backgroundColor,
-                customVerticalPadding: nativeSpacingToNumber(customVerticalPadding),
                 insets,
-                hasPaddingBottom,
+                topPadding,
+                bottomPadding,
+                hasBottomPadding,
                 isMessageBannerDisplayed,
             })}
             testID={`@screen/${name}`}
@@ -163,8 +172,9 @@ export const Screen = ({
                 <Box
                     style={applyStyle(screenContentBaseStyle, {
                         insets,
-                        customHorizontalPadding: nativeSpacingToNumber(customHorizontalPadding),
-                        customVerticalPadding: nativeSpacingToNumber(customVerticalPadding),
+                        topPadding,
+                        horizontalPadding,
+                        bottomPadding,
                         isScrollable,
                     })}
                 >

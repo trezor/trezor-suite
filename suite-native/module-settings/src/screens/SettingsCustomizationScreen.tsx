@@ -1,5 +1,5 @@
+import { Card } from '@suite-native/atoms';
 import { Screen, ScreenSubHeader } from '@suite-native/navigation';
-import { Box } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 import { ColorSchemePicker } from '../components/ColorSchemePicker';
@@ -12,10 +12,11 @@ export const SettingsCustomizationScreen = () => {
             screenHeader={
                 <ScreenSubHeader content={translate('moduleSettings.customization.title')} />
             }
+            noTopPadding
         >
-            <Box marginHorizontal="sp16">
+            <Card>
                 <ColorSchemePicker />
-            </Box>
+            </Card>
         </Screen>
     );
 };

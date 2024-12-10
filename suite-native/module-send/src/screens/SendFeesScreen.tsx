@@ -7,7 +7,7 @@ import TrezorConnect from '@trezor/connect';
 
 import { SendFeesForm } from '../components/SendFeesForm';
 import { SendScreen } from '../components/SendScreen';
-import { AccountBalanceScreenHeader } from '../components/SendScreenSubHeader';
+import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
 
 export const SendFeesScreen = ({
     route: { params },

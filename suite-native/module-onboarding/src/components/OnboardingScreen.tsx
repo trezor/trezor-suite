@@ -20,7 +20,7 @@ const contentStyle = prepareNativeStyle(utils => ({
 }));
 
 const cardStyle = prepareNativeStyle(utils => ({
-    marginHorizontal: utils.spacings.sp16,
+    marginHorizontal: utils.spacings.sp8,
     marginTop: utils.spacings.sp16,
     paddingTop: utils.spacings.sp24,
     borderRadius: 20,

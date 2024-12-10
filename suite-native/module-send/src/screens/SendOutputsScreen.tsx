@@ -39,7 +39,7 @@ import { selectAccountTokenInfo, TokensRootState } from '@suite-native/tokens';
 import { SendScreen } from '../components/SendScreen';
 import { SendOutputFields } from '../components/SendOutputFields';
 import { SendOutputsFormValues, sendOutputsFormValidationSchema } from '../sendOutputsFormSchema';
-import { AccountBalanceScreenHeader } from '../components/SendScreenSubHeader';
+import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
 import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
 import { constructFormDraft } from '../utils';
 import { FeeLevelsMaxAmount } from '../types';

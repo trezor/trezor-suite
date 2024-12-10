@@ -7,8 +7,8 @@ import { PreferencesSettings } from '../components/PreferencesSettings';
 import { SupportSettings } from '../components/SupportSettings';
 
 export const SettingsScreen = () => (
-    <Screen screenHeader={<DeviceManagerScreenHeader />}>
-        <VStack marginTop="sp32" spacing="sp32">
+    <Screen screenHeader={<DeviceManagerScreenHeader />} noTopPadding>
+        <VStack marginTop="sp16" spacing="sp32">
             <PreferencesSettings />
             <FeaturesSettings />
             <SupportSettings />

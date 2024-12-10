@@ -116,6 +116,7 @@ export const SettingsPrivacyAndSecurity = () => {
             screenHeader={
                 <ScreenSubHeader content={translate('moduleSettings.privacyAndSecurity.title')} />
             }
+            noTopPadding
         >
             <Card>
                 <BiometricsSwitchRow />

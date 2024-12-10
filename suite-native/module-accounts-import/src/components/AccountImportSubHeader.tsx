@@ -17,7 +17,6 @@ export const AccountImportSubHeader = ({
 
     return (
         <ScreenSubHeader
-            customHorizontalPadding="sp16"
             closeActionType={closeActionType}
             closeAction={closeActionType === 'close' ? navigateToInitialScreen : undefined}
             content={translate('moduleAccountImport.title')}

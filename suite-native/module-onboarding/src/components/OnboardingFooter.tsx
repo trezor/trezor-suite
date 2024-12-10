@@ -9,8 +9,8 @@ import { OnboardingStackRoutes } from '@suite-native/navigation';
 
 const wrapperStyle = prepareNativeStyle(utils => ({
     width: '100%',
-    paddingHorizontal: utils.spacings.sp16,
-    marginBottom: 28,
+    paddingHorizontal: utils.spacings.sp8,
+    marginBottom: utils.spacings.sp8,
 }));
 
 type OnboardingFooterProps = {

@@ -85,7 +85,6 @@ const ReceiveModalScreenSubHeader = ({ accountKey, tokenContract }: ScreenSubHea
 
     return (
         <ScreenSubHeader
-            customHorizontalPadding="sp16"
             content={
                 <>
                     <Text variant="highlight">
@@ -153,7 +152,7 @@ export const ReceiveModalScreen = () => {
 
     return (
         <Screen
-            customHorizontalPadding="sp16"
+            noTopPadding
             hasBottomInset={false}
             screenHeader={
                 <ReceiveModalScreenSubHeader

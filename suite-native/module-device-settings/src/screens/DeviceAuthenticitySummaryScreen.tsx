@@ -58,13 +58,8 @@ export const DeviceAuthenticitySummaryScreen = ({
     return (
         <Screen
             screenHeader={
-                <ScreenSubHeader
-                    customHorizontalPadding="sp16"
-                    closeActionType="close"
-                    closeAction={navigateToInitialScreen}
-                />
+                <ScreenSubHeader closeActionType="close" closeAction={navigateToInitialScreen} />
             }
-            customHorizontalPadding="sp16"
         >
             <VStack flex={1} spacing="sp40" justifyContent="center">
                 <PictogramTitleHeader

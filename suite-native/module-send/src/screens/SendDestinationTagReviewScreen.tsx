@@ -3,7 +3,12 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
+import {
+    ScreenSubHeader,
+    SendStackParamList,
+    SendStackRoutes,
+    StackProps,
+} from '@suite-native/navigation';
 import { VStack, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
@@ -13,7 +18,6 @@ import {
     selectIsDestinationTagOutputConfirmed,
 } from '../selectors';
 import { SendScreen } from '../components/SendScreen';
-import { SendScreenSubHeader } from '../components/SendScreenSubHeader';
 import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
 import { ReviewDestinationTagCard } from '../components/ReviewDestinationTagCard';
 import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
@@ -63,7 +67,7 @@ export const SendDestinationTagReviewScreen = ({
     return (
         <SendScreen
             screenHeader={
-                <SendScreenSubHeader
+                <ScreenSubHeader
                     content={translate('moduleSend.review.outputs.title')}
                     closeActionType={isTransactionReviewInProgress ? 'close' : 'back'}
                 />

@@ -7,8 +7,8 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { AddCoinFlowType, ScreenSubHeader } from '@suite-native/navigation';
 import { Box, IconButton } from '@suite-native/atoms';
+import { AddCoinFlowType, ScreenSubHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountsSearchForm, SEARCH_INPUT_ANIMATION_DURATION } from './AccountsSearchForm';
@@ -21,11 +21,9 @@ type SearchableAccountsListScreenHeaderProps = {
 };
 
 const HEADER_ANIMATION_DURATION = 100;
-export const SEARCH_FORM_CONTAINER_HEIGHT = 56;
 
-const searchFormContainerStyle = prepareNativeStyle(utils => ({
-    height: SEARCH_FORM_CONTAINER_HEIGHT,
-    marginBottom: utils.spacings.sp16,
+const searchFormContainerStyle = prepareNativeStyle(_ => ({
+    height: 48,
 }));
 
 export const SearchableAccountsListScreenHeader = ({
@@ -78,7 +76,6 @@ export const SearchableAccountsListScreenHeader = ({
                     exiting={FadeOut.duration(HEADER_ANIMATION_DURATION)}
                 >
                     <ScreenSubHeader
-                        customHorizontalPadding="sp16"
                         content={title}
                         rightIcon={
                             <AddAccountButton

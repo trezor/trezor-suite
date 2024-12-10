@@ -177,8 +177,6 @@ export const XpubScanScreen = ({
             screenHeader={<AccountImportSubHeader closeActionType="back" />}
             footer={<XpubHint networkType={networkType} handleOpen={handleOpenHint} />}
             extraKeyboardAvoidingViewHeight={EXTRA_KEYBOARD_AVOIDING_VIEW_HEIGHT}
-            customHorizontalPadding="sp16"
-            customVerticalPadding="sp16"
         >
             <Card>
                 <SelectableNetworkItem symbol={networkSymbol} />

@@ -42,7 +42,6 @@ export const AccountsScreen = () => {
 
     return (
         <Screen
-            customHorizontalPadding="sp16"
             screenHeader={<DeviceManagerScreenHeader />}
             subheader={
                 <SearchableAccountsListScreenHeader

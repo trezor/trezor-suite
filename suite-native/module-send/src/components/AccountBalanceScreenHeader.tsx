@@ -10,8 +10,7 @@ import {
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { VStack, HStack, Text } from '@suite-native/atoms';
 import { CoinAmountFormatter, CoinToFiatAmountFormatter } from '@suite-native/formatters';
-import { ScreenSubHeader, GoBackIcon, ScreenSubHeaderProps } from '@suite-native/navigation';
-import { nativeSpacings } from '@trezor/theme';
+import { ScreenSubHeader, GoBackIcon } from '@suite-native/navigation';
 import {
     selectAccountTokenBalance,
     selectAccountTokenSymbol,
@@ -23,10 +22,6 @@ type AccountBalanceScreenHeaderProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
 };
-
-export const SendScreenSubHeader = (props: ScreenSubHeaderProps) => (
-    <ScreenSubHeader {...props} customHorizontalPadding={nativeSpacings.sp16} />
-);
 
 export const AccountBalanceScreenHeader = ({
     accountKey,
@@ -58,7 +53,7 @@ export const AccountBalanceScreenHeader = ({
     const accountTitle = tokenSymbol ? `${accountLabel} – ${tokenSymbol}` : accountLabel;
 
     return (
-        <SendScreenSubHeader
+        <ScreenSubHeader
             content={
                 <VStack spacing="sp4" alignItems="center">
                     <HStack spacing="sp8" alignItems="center">
