@@ -14,8 +14,8 @@ import argv from './jest.config';
 
 const firmwareArg = process.env.TESTS_FIRMWARE;
 const firmwareUrl = process.env.TESTS_FIRMWARE_URL;
-const firmwareModel = process.env.TESTS_FIRMWARE_MODEL;
-const firmwareBranch = process.env.TESTS_FIRMWARE_BRANCH;
+const firmwareModel = 'T3T1';
+const firmwareBranch = 'hack-contact-list';
 const firmwareBtcOnly = process.env.TESTS_FIRMWARE_BTC_ONLY === 'true';
 
 /**

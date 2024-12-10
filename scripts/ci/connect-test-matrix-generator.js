@@ -34,8 +34,7 @@ const groups = {
     btcOthers: {
         name: 'btc-others',
         pattern: 'methods',
-        includeFilter:
-            'getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof',
+        includeFilter: 'getAddress,signMessage',
     },
     stellar: {
         name: 'stellar',

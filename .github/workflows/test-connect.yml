@@ -77,7 +77,7 @@ jobs:
 
       - name: Set daily matrix
         id: set-matrix-daily
-        run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=all --groups=api,api-flaky --cache_tx=true --transport=2.0.33)" >> $GITHUB_OUTPUT
+        run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=node --groups=btc-sign,btc-others --cache_tx=true --transport=2.0.33)" >> $GITHUB_OUTPUT
 
       - name: Set all firmwares matrix
         id: set-matrix-all-firmwares

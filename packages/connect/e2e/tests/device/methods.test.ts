@@ -121,6 +121,9 @@ describe(`TrezorConnect methods`, () => {
                             ? { success: true, payload: t.result }
                             : { success: false };
 
+                        console.log('========result========');
+                        console.log('result', result);
+
                         // find legacy result
                         const { legacyResults } = t;
                         if (legacyResults) {
