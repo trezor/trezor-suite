@@ -31,6 +31,7 @@ export const validateTrezorOutputs = (
             { name: 'label', type: 'string', required: false },
             { name: 'label_sig', type: 'string', required: false },
             { name: 'label_pk', type: 'string', required: false },
+            { name: 'address_pk_sig', type: 'string', required: false },
         ]);
 
         if (
