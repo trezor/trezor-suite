@@ -1149,4 +1149,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             return tx;
         });
     }
+
+    if (oldVersion < 50) {
+        db.createObjectStore('contacts', { keyPath: ['address', 'deviceState'] });
+    }
 };

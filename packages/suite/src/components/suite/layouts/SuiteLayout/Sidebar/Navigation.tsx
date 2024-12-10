@@ -39,6 +39,12 @@ const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationIte
         routes: ['settings-index', 'settings-device', 'settings-coins', 'settings-debug'],
         'data-testid': '@suite/menu/settings',
     },
+    {
+        nameId: 'TR_CONTACTS',
+        icon: 'alien',
+        goToRoute: 'contacts-index',
+        routes: ['contacts-index'],
+    },
 ];
 
 export const Navigation = () => {

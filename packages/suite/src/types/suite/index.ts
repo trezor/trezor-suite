@@ -25,6 +25,7 @@ import type { WalletAction } from 'src/types/wallet';
 import type { BackupAction } from 'src/actions/backup/backupActions';
 import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
 import type { GuideAction } from 'src/actions/suite/guideActions';
+import type { ContactsAction } from 'src/actions/suite/contactsActions';
 
 // reexport
 export type { ExtendedMessageDescriptor } from 'src/components/suite/Translation';
@@ -80,6 +81,7 @@ export type Action =
     | DesktopUpdateAction
     | MessageSystemAction
     | GuideAction
+    | ContactsAction
     | ProtocolAction
     | DiscoveryAction
     | DeviceAction
@@ -127,3 +129,10 @@ export enum DisplayMode {
     PAGINATED_TEXT,
     SINGLE_WRAPPED_TEXT,
 }
+
+export type Contact = {
+    address: string;
+    label: string;
+    signature: string;
+    deviceState: string;
+};

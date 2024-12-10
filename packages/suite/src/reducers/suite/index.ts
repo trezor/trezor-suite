@@ -16,6 +16,7 @@ import metadata from './metadataReducer';
 import desktopUpdate from './desktopUpdateReducer';
 import guide from './guideReducer';
 import protocol from './protocolReducer';
+import contacts from './contactsReducer';
 
 const analytics = prepareAnalyticsReducer(extraDependencies);
 // Type annotation as workaround for type-check error "The inferred type of 'default' cannot be named..."
@@ -36,4 +37,5 @@ export default {
     messageSystem,
     guide,
     protocol,
+    contacts,
 };

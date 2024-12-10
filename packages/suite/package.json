@@ -80,6 +80,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "bitcoinjs-message": "^2.2.0",
         "bs58check": "^4.0.0",
         "date-fns": "^2.30.0",
         "dropbox": "^10.34.0",

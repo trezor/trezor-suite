@@ -34,6 +34,7 @@ import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
 import { SettingsDevice } from 'src/views/settings/SettingsDevice/SettingsDevice';
 import { Tokens } from 'src/views/wallet/tokens';
 import PasswordManager from 'src/views/password-manager';
+import Contacts from 'src/views/contacts';
 
 const components: { [key: string]: ComponentType<any> } = {
     'suite-index': Dashboard,
@@ -64,6 +65,7 @@ const components: { [key: string]: ComponentType<any> } = {
     'wallet-coinmarket-transactions': CoinmarketTransactions,
 
     'password-manager-index': PasswordManager,
+    'contacts-index': Contacts,
 
     'settings-index': SettingsGeneral,
     'settings-coins': SettingsCoins,

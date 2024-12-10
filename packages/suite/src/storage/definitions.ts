@@ -20,6 +20,7 @@ import type { Account, Discovery, WalletAccountTransaction } from 'src/types/wal
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import type { MetadataState } from 'src/types/suite/metadata';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
+import { Contact } from 'src/types/suite';
 
 import { GraphData } from '../types/wallet/graph';
 
@@ -130,6 +131,10 @@ export interface SuiteDBSchema extends DBSchema {
         value: {
             firmwareHashInvalid: string[];
         };
+    };
+    contacts: {
+        key: string[];
+        value: Contact;
     };
 }
 

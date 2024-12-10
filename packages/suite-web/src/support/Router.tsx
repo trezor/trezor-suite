@@ -126,6 +126,8 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
         () => import(/* webpackChunkName: "password-manager" */ 'src/views/password-manager'),
     ),
 
+    'contacts-index': lazy(() => import(/* webpackChunkName: "contacts" */ 'src/views/contacts')),
+
     // settings
     'settings-index': lazy(() =>
         import(

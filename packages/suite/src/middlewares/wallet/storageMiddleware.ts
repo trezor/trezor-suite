@@ -30,7 +30,7 @@ import * as walletSettingsActions from 'src/actions/settings/walletSettingsActio
 import { GRAPH, COINMARKET_COMMON, FORM_DRAFT } from 'src/actions/wallet/constants';
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import * as storageActions from 'src/actions/suite/storageActions';
-import { SUITE, METADATA, STORAGE } from 'src/actions/suite/constants';
+import { SUITE, METADATA, STORAGE, CONTACTS } from 'src/actions/suite/constants';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import { serializeDiscovery } from 'src/utils/suite/storage';
 import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';
@@ -347,6 +347,13 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     });
                     break;
                 }
+
+                case CONTACTS.ADD:
+                    api.dispatch(storageActions.saveContact(action.payload));
+                    break;
+                case CONTACTS.REMOVE:
+                    api.dispatch(storageActions.removeContact(action.payload));
+                    break;
 
                 default:
                     break;

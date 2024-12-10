@@ -18,7 +18,7 @@ import {
     serializeDevice,
     serializeCoinjoinAccount,
 } from 'src/utils/suite/storage';
-import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
+import type { AppState, Contact, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
@@ -461,6 +461,18 @@ export const saveFirmware = () => async (_dispatch: Dispatch, getState: GetState
     const { firmware } = getState();
 
     db.addItem('firmware', { firmwareHashInvalid: firmware.firmwareHashInvalid }, 'firmware', true);
+};
+
+export const saveContact = (contact: Contact) => async () => {
+    if (!(await db.isAccessible())) return;
+
+    db.addItem('contacts', contact, undefined, true);
+};
+
+export const removeContact = (contact: Contact) => async () => {
+    if (!(await db.isAccessible())) return;
+
+    db.removeItemByPK('contacts', [contact.address, contact.deviceState]);
 };
 
 export const removeDatabase = () => async (dispatch: Dispatch, getState: GetState) => {
