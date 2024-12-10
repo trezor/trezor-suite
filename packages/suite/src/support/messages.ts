@@ -2073,7 +2073,7 @@ export default defineMessages({
         id: 'TR_NEEDS_ATTENTION_UNREADABLE',
     },
     TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT: {
-        defaultMessage: 'Failed to communicate with Trezor',
+        defaultMessage: 'Failed to communicate with your Trezor',
         id: 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT',
     },
     TR_UDEV_DOWNLOAD_TITLE: {
@@ -3408,11 +3408,11 @@ export default defineMessages({
         id: 'TR_VALIDATION',
     },
     TR_WALLET_DUPLICATE_DESC: {
-        defaultMessage: 'The Passphrase wallet you are trying to add has been already discovered.',
+        defaultMessage: "The Passphrase wallet you're trying to add has already been discovered.",
         id: 'TR_WALLET_DUPLICATE_DESC',
     },
     TR_WALLET_DUPLICATE_RETRY: {
-        defaultMessage: 'Try different passphrase',
+        defaultMessage: 'Try a different passphrase',
         id: 'TR_WALLET_DUPLICATE_RETRY',
     },
     TR_WALLET_DUPLICATE_SWITCH: {
@@ -4901,7 +4901,7 @@ export default defineMessages({
     TR_THESE_WONT_ALLOW_YOU_UPGRADE: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE',
         defaultMessage:
-            "Generates a single set of 12 or 24 words that can be used to recover your wallet. Legacy backups can't be easily upgraded to a Multi-share Backup. <a>Read more</a>",
+            "Generates a single set of 12 or 24 words that can be used to recover your wallet. Legacy wallet backups can't be easily upgraded to a Multi-share Backup. <a>Read more</a>",
     },
     TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP: {
         id: 'TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP',
@@ -4913,7 +4913,7 @@ export default defineMessages({
     },
     TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES_SHORT: {
         id: 'TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES_SHORT',
-        defaultMessage: 'Legacy backup types',
+        defaultMessage: 'Legacy wallet backup types',
     },
     TR_ONBOARDING_BACKUP_LEGACY_WARNING: {
         id: 'TR_ONBOARDING_BACKUP_LEGACY_WARNING',
@@ -9190,7 +9190,7 @@ export default defineMessages({
     },
     TR_CONNECT_DEVICE_PASSPHRASE_BANNER_DESCRIPTION: {
         id: 'TR_CONNECT_DEVICE_PASSPHRASE_BANNER_DESCRIPTION',
-        defaultMessage: 'Enable the passphrase entry dialog to open when you open Trezor Suite.',
+        defaultMessage: 'Enable the passphrase entry dialog to open when you start Trezor Suite.',
     },
     TR_CONNECT_DEVICE_PASSPHRASE_BANNER_BUTTON: {
         id: 'TR_CONNECT_DEVICE_PASSPHRASE_BANNER_BUTTON',

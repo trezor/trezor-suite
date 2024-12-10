@@ -759,7 +759,6 @@
   "TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_TOUCH": "Csatlakoztasd újra az eszközt anélkül, hogy hozzáérnél a képernyőjéhez.",
   "TR_DEVICE_CONNECTED_UNACQUIRED": "Ez az eszköz használatban van máshol.",
   "TR_DEVICE_CONNECTED_UNACQUIRED_DESCRIPTION": "Valószínűleg a(z) {transportSessionOwner} app használja ezt az eszközt. Át tudod venni az irányítást, ha szükséges.",
-  "TR_DEVICE_CONNECTED_UNACQUIRED_DESCRIPTION_UNKNOWN_APP": "Valószínűleg egy épp másik app használja ezt az eszközt. Át tudod venni az irányítást, ha szükséges.",
   "TR_DEVICE_CONNECTED_WRONG_STATE": "Az eszköz helytelen állapotban észlelhető",
   "TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION": "A Trezorod leválasztódott a biztonsági mentés során. Erősen javasoljuk, hogy használd a gyári alaphelyzetbe állítást a Suite-ben az eszköz törléséhez, majd indítsd újra a tárca biztonsági mentésének folyamatát.",
   "TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH": "A firmware hash-ellenőrzése sikertelen. Lehet, hogy a Trezorod hamisítvány.",
