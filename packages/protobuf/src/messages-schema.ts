@@ -205,6 +205,14 @@ export enum AmountUnit {
 export type EnumAmountUnit = Static<typeof EnumAmountUnit>;
 export const EnumAmountUnit = Type.Enum(AmountUnit);
 
+export enum MultisigPubkeysOrder {
+    PRESERVED = 0,
+    LEXICOGRAPHIC = 1,
+}
+
+export type EnumMultisigPubkeysOrder = Static<typeof EnumMultisigPubkeysOrder>;
+export const EnumMultisigPubkeysOrder = Type.Enum(MultisigPubkeysOrder);
+
 export type HDNodeType = Static<typeof HDNodeType>;
 export const HDNodeType = Type.Object(
     {
@@ -235,6 +243,7 @@ export const MultisigRedeemScriptType = Type.Object(
         m: Type.Number(),
         nodes: Type.Optional(Type.Array(HDNodeType)),
         address_n: Type.Optional(Type.Array(Type.Number())),
+        pubkeys_order: Type.Optional(EnumMultisigPubkeysOrder),
     },
     { $id: 'MultisigRedeemScriptType' },
 );

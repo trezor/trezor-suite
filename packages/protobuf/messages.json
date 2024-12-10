@@ -280,6 +280,12 @@
                 "SATOSHI": 3
             }
         },
+        "MultisigPubkeysOrder": {
+            "values": {
+                "PRESERVED": 0,
+                "LEXICOGRAPHIC": 1
+            }
+        },
         "MultisigRedeemScriptType": {
             "fields": {
                 "pubkeys": {
@@ -308,6 +314,13 @@
                     "id": 5,
                     "options": {
                         "packed": false
+                    }
+                },
+                "pubkeys_order": {
+                    "type": "MultisigPubkeysOrder",
+                    "id": 6,
+                    "options": {
+                        "default": "PRESERVED"
                     }
                 }
             },

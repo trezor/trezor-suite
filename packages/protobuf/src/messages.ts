@@ -140,6 +140,11 @@ export enum AmountUnit {
     SATOSHI = 3,
 }
 
+export enum MultisigPubkeysOrder {
+    PRESERVED = 0,
+    LEXICOGRAPHIC = 1,
+}
+
 export type HDNodeType = {
     depth: number;
     fingerprint: number;
@@ -160,6 +165,7 @@ export type MultisigRedeemScriptType = {
     m: number;
     nodes?: HDNodeType[];
     address_n?: number[];
+    pubkeys_order?: MultisigPubkeysOrder;
 };
 
 export type GetPublicKey = {
