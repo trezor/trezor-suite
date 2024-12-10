@@ -136,7 +136,7 @@ export const initTrezorConnect = async (
         if (!device.features) {
             throw new Error('Device features not available');
         }
-        const { major_version, minor_version, patch_version, internal_model, revision } =
+        const { major_version, minor_version, patch_version, internal_model, revision, fw } =
             device.features;
         // eslint-disable-next-line no-console
         console.log('Device connected: ', {
@@ -145,6 +145,7 @@ export const initTrezorConnect = async (
             patch_version,
             internal_model,
             revision,
+            firmwareType: device.firmwareType,
         });
     });
 
