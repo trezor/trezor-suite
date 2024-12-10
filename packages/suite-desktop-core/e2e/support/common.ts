@@ -1,10 +1,12 @@
 /* eslint-disable no-console */
 
-import { _electron as electron } from '@playwright/test';
+import { _electron as electron, TestInfo } from '@playwright/test';
 import path from 'path';
 import fse from 'fs-extra';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+
+import { PlaywrightProjects } from '../playwright.config';
 
 // specific version of legacy bridge is requested & expected
 export const LEGACY_BRIDGE_VERSION = '2.0.33';
@@ -99,4 +101,15 @@ export const launchSuite = async (params: LaunchSuiteParams = {}) => {
     const window = await electronApp.firstWindow();
 
     return { electronApp, window };
+};
+
+export const getApiUrl = (webBaseUrl: string | undefined, testInfo: TestInfo) => {
+    const electronApiURL = 'file:///';
+    const apiURL =
+        testInfo.project.name === PlaywrightProjects.Desktop ? electronApiURL : webBaseUrl;
+    if (!apiURL) {
+        throw new Error('apiURL is not defined');
+    }
+
+    return apiURL;
 };

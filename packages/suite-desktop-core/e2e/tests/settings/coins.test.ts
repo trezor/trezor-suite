@@ -23,8 +23,9 @@ let requests: Requests;
 
 test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
     test.use({ emulatorStartConf: { wipe: true } });
-    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
+    test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
+        await dashboardPage.discoveryShouldFinish();
         await settingsPage.navigateTo();
         await settingsPage.coinsTabButton.click();
 
@@ -76,10 +77,8 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
 
         // check dashboard with all coins disabled
         await dashboardPage.navigateTo();
-        await page.pause();
-        // check that there is no assets grid
-        await expect(page.getByTestId('@dashboard/wallet-ready')).toContainText(
-            'Your wallet is ready to use!',
+        expect(page.getByTestId('@exception/discovery-empty')).toContainText(
+            'All coins are disabled in Settings.',
         );
 
         await settingsPage.navigateTo();

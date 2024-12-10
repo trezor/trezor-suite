@@ -28,7 +28,7 @@ test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () 
     test('change all possible device settings', async ({
         trezorUserEnvLink,
         window: page,
-        baseURL,
+        apiURL,
     }) => {
         const newDeviceName = 'TREVOR!';
 
@@ -49,7 +49,7 @@ test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () 
         // change background
         // On Web the there is instability, Playwright keeps clicking the button too soon.
         const buttonImageLoad = page.waitForResponse(
-            `${baseURL}static/images/homescreens/BW_64x128/circleweb.png`,
+            `${apiURL}static/images/homescreens/BW_64x128/circleweb.png`,
         );
         await page.getByTestId('@settings/device/homescreen-gallery').click();
         await buttonImageLoad;
