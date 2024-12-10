@@ -113,6 +113,8 @@ describe('Backup Actions', () => {
         });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
+        expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
+        expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
         expect(store.getActions().shift()).toMatchObject({
             type: notificationsActions.addToast.type,
             payload: { type: 'backup-failed' },

@@ -65,6 +65,14 @@ export const backupDevice =
             },
         });
         if (!result.success) {
+            // When backupDevice fails (e.g. user cancels it) features are not updated in connect so we need to update at suite level
+            // in order for suite to know it, and do not allow user to recovery again and fail.
+            await TrezorConnect.getFeatures({
+                device: {
+                    path: device.path,
+                },
+            });
+
             dispatch(notificationsActions.addToast({ type: 'backup-failed' }));
             dispatch({
                 type: BACKUP.SET_ERROR,
