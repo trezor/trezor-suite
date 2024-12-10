@@ -69,6 +69,10 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                 : getNarrowedDeviceModelInternal(deviceModelInternal)
         ).toLowerCase();
 
+        // Key is used to force re-render of the video element. When `src` of the inner <source> tag
+        // changes, the video element does not re-render. This is a workaround.
+        const key = `${deviceModelInFilename}_${type.toLowerCase()}_${deviceUnitColor}_${themeSuffix}`;
+
         return (
             <AnimationWrapper height={height} width={width} shape={shape} {...props}>
                 {['BOOTLOADER', 'SUCCESS'].includes(type) && (
@@ -80,6 +84,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                         height={height}
                         ref={videoRef}
                         onMouseOver={onVideoMouseOver}
+                        key={key}
                     >
                         <source
                             src={resolveStaticPath(
@@ -99,6 +104,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                         width={width}
                         ref={videoRef}
                         onMouseOver={onVideoMouseOver}
+                        key={key}
                     >
                         <source
                             src={resolveStaticPath(
@@ -115,6 +121,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                         muted
                         ref={videoRef}
                         onMouseOver={onVideoMouseOver}
+                        key={key}
                     >
                         <source
                             src={resolveStaticPath(
@@ -133,6 +140,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                         height={height}
                         ref={videoRef}
                         onMouseOver={onVideoMouseOver}
+                        key={key}
                     >
                         <source
                             src={resolveStaticPath(
