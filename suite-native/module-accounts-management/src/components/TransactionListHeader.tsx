@@ -74,11 +74,7 @@ const TransactionListHeaderContent = ({
 
     if (isTestnetAccount) {
         return (
-            <AccountDetailCryptoValue
-                value={account.balance}
-                symbol={account.symbol}
-                isBalance={false}
-            />
+            <AccountDetailCryptoValue value={account.formattedBalance} symbol={account.symbol} />
         );
     }
 

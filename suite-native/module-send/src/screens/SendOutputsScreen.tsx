@@ -109,7 +109,7 @@ export const SendOutputsScreen = ({
             networkFeeInfo,
             accountDescriptor: account?.descriptor,
             networkSymbol: account?.symbol,
-            availableBalance: tokenInfo?.balance ?? account?.availableBalance,
+            availableBalance: tokenInfo?.balance ?? account?.formattedBalance,
             isTokenFlow: !!tokenContract,
             isValueInSats: isAmountInSats,
             feeLevelsMaxAmount,

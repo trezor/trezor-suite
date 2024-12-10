@@ -385,6 +385,11 @@ export const selectAccountBalance = createMemoizedSelector(
     account => account?.balance ?? null,
 );
 
+export const selectAccountFormattedBalance = createMemoizedSelector(
+    [selectAccountByKey],
+    account => account?.formattedBalance ?? null,
+);
+
 export const selectAccountAvailableBalance = createMemoizedSelector(
     [selectAccountByKey],
     account => account?.availableBalance ?? null,

@@ -5,7 +5,7 @@ import {
     AccountsRootState,
     selectAccountLabel,
     selectAccountNetworkSymbol,
-    selectAccountBalance,
+    selectAccountFormattedBalance,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { VStack, HStack, Text } from '@suite-native/atoms';
@@ -39,8 +39,8 @@ export const AccountBalanceScreenHeader = ({
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const balance = useSelector((state: AccountsRootState) =>
-        selectAccountBalance(state, accountKey),
+    const formattedBalance = useSelector((state: AccountsRootState) =>
+        selectAccountFormattedBalance(state, accountKey),
     );
 
     const tokenSymbol = useSelector((state: TokensRootState) =>
@@ -75,11 +75,10 @@ export const AccountBalanceScreenHeader = ({
                         <CoinAmountFormatter
                             variant="hint"
                             color="textDefault"
-                            value={tokenBalance ?? balance}
+                            value={tokenBalance ?? formattedBalance}
                             decimals={0}
                             accountKey={accountKey}
                             tokenContract={tokenContract}
-                            isBalance={false}
                         />
                         {!isTestnet(symbol) && (
                             <>
@@ -89,7 +88,7 @@ export const AccountBalanceScreenHeader = ({
                                 <CoinToFiatAmountFormatter
                                     variant="hint"
                                     color="textSubdued"
-                                    value={tokenBalance ?? balance}
+                                    value={tokenBalance ?? formattedBalance}
                                     accountKey={accountKey}
                                     decimals={0}
                                     tokenContract={tokenContract}
