@@ -85,6 +85,7 @@ export * from './components/typography/TruncateWithTooltip/TruncateWithTooltip';
 export * from './components/Banner/Banner';
 export { Table, type TableProps } from './components/Table/Table';
 export { Tabs, type TabsProps } from './components/Tabs/Tabs';
+export { Subtabs, type SubtabsProps } from './components/Subtabs/Subtabs';
 export { VirtualizedList } from './components/VirtualizedList/VirtualizedList';
 export { List, type ListProps } from './components/List/List';
 export { StoryColumn, StoryWrapper } from './support/Story';
