@@ -15,12 +15,13 @@ import { SuiteGuide } from './pageActions/suiteGuideActions';
 import { WalletActions } from './pageActions/walletActions';
 import { OnboardingActions } from './pageActions/onboardingActions';
 import { PlaywrightProjects } from '../playwright.config';
+import { AnalyticsFixture } from './analytics';
 
 type Fixtures = {
-    apiURL: string;
     startEmulator: boolean;
     emulatorStartConf: StartEmu;
     emulatorSetupConf: SetupEmu;
+    apiURL: string;
     trezorUserEnvLink: TrezorUserEnvLinkClass;
     appContext: ElectronApplication | undefined;
     window: Page;
@@ -29,6 +30,7 @@ type Fixtures = {
     suiteGuidePage: SuiteGuide;
     walletPage: WalletActions;
     onboardingPage: OnboardingActions;
+    analytics: AnalyticsFixture;
 };
 
 const test = base.extend<Fixtures>({
@@ -114,6 +116,10 @@ const test = base.extend<Fixtures>({
             testInfo,
         );
         await use(onboardingPage);
+    },
+    analytics: async ({ window }, use) => {
+        const analytics = new AnalyticsFixture(window);
+        await use(analytics);
     },
 });
 

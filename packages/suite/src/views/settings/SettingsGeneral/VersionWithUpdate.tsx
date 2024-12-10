@@ -39,6 +39,7 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
                     version: (
                         <TrezorLink href={getReleaseUrl(appVersion)} variant="nostyle">
                             <Button
+                                data-testid="@settings/suite-version"
                                 variant="tertiary"
                                 size="tiny"
                                 icon="arrowUpRight"

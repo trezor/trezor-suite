@@ -57,6 +57,8 @@ Steps:
 
 1. **To enable Debug Tools in the browser** press `Ctrl+Shift+I`
 
+1. **To enable Electron verbose logging** add env variable LOGLEVEL=debug or any other level
+
 ## Contribution
 
 Please follow our general [Playwright contribution guide](e2e-playwright-contribution-guide.md)

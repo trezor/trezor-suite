@@ -74,8 +74,8 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams = {}) => 
         });
     }
 
-    // #15670 Bug in desktop app that loglevel is ignored
-    if (process.env.LOGLEVEL || process.env.GITHUB_ACTION) {
+    // #15670 Bug in desktop app that loglevel is ignored so we conditionally don't log to stdout
+    if (process.env.LOGLEVEL) {
         electronApp.process().stdout?.on('data', data => console.log(data.toString()));
     }
     electronApp

@@ -1,43 +1,15 @@
-import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
-import { Requests, EventPayload } from '@trezor/suite-web/e2e/support/types';
-import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { test, expect } from '../../support/fixtures';
 
-//TODO: #15811 To be refactored
-export const findAnalyticsEventByType = <T extends SuiteAnalyticsEvent>(
-    requests: Requests,
-    eventType: T['type'],
-) => {
-    const event = requests.find(req => req.c_type === eventType) as EventPayload<T>;
-
-    if (!event) {
-        throw new Error(`Event with type ${eventType} not found.`);
-    }
-
-    return event;
-};
-
-let requests: Requests;
-
 test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
     test.use({ emulatorStartConf: { wipe: true } });
-    test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
+    test.beforeEach(async ({ analytics, onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
         await settingsPage.navigateTo();
         await settingsPage.coinsTabButton.click();
-
-        requests = [];
-
-        //TODO: #15811 To be refactored
-        await onboardingPage.window.route('**://data.trezor.io/suite/log/**', route => {
-            const url = route.request().url();
-            const params = urlSearchParams(url);
-            requests.push(params);
-            route.continue();
-        });
+        await analytics.interceptAnalytics();
     });
 
     test('go to wallet settings page, check BTC, activate all coins, deactivate all coins, set custom backend', async ({
@@ -89,9 +61,9 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
         }
 
         //TODO: #15811 this is just not useful validation. To be refactored
-        // const settingsCoinsEvent = findAnalyticsEventByType<
+        // const settingsCoinsEvent = analytics.findAnalyticsEventByType<
         //     ExtractByEventType<EventType.SettingsCoins>
-        // >(requests, EventType.SettingsCoins);
+        // >(EventType.SettingsCoins);
         // expect(settingsCoinsEvent.symbol).to.be.oneOf(['btc', ...defaultUnchecked]);
         // expect(settingsCoinsEvent.value).to.be.oneOf(['true', 'false']);
 
@@ -104,7 +76,7 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
         await page.getByTestId('@settings/advance/button/save').click();
 
         //TODO: #15811 this is just not useful validation. To be refactored
-        // const settingsCoinsBackendEvent = findAnalyticsEventByType<ExtractByEventType<EventType.SettingsCoinsBackend>>(requests, EventType.SettingsCoinsBackend)
+        // const settingsCoinsBackendEvent = analytics.findAnalyticsEventByType<ExtractByEventType<EventType.SettingsCoinsBackend>>(EventType.SettingsCoinsBackend)
         // expect(settingsCoinsBackendEvent.type).to.equal('blockbook');
         // expect(settingsCoinsBackendEvent.totalRegular).to.equal('1');
         // expect(settingsCoinsBackendEvent.totalOnion).to.equal('0');
