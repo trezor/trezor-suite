@@ -61,7 +61,10 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
                             id={getUpdateStateMessage(desktopUpdateState.state)}
                             values={{
                                 version: (
-                                    <TrezorLink href={getReleaseUrl(appVersion)} variant="nostyle">
+                                    <TrezorLink
+                                        href={getReleaseUrl(desktopUpdateState.latest.version)}
+                                        variant="nostyle"
+                                    >
                                         <Button
                                             variant="destructive"
                                             size="tiny"
