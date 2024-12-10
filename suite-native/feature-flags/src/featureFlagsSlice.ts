@@ -11,6 +11,7 @@ export const FeatureFlag = {
     IsRegtestEnabled: 'isRegtestEnabled',
     IsSolanaEnabled: 'IsSolanaEnabled',
     IsConnectPopupEnabled: 'IsConnectPopupEnabled',
+    IsFirmwareUpdateEnabled: 'IsFirmwareUpdateEnabled',
 } as const;
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
 
@@ -28,6 +29,7 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsRegtestEnabled]: isDebugEnv() || isDetoxTestBuild(),
     [FeatureFlag.IsSolanaEnabled]: false,
     [FeatureFlag.IsConnectPopupEnabled]: isDevelopOrDebugEnv(),
+    [FeatureFlag.IsFirmwareUpdateEnabled]: isDevelopOrDebugEnv(),
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
@@ -38,6 +40,7 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsRegtestEnabled,
     FeatureFlag.IsSolanaEnabled,
     FeatureFlag.IsConnectPopupEnabled,
+    FeatureFlag.IsFirmwareUpdateEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({
