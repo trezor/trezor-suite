@@ -66,8 +66,8 @@ export const DeviceAuthenticityCard = () => {
             if (errorCode === 'Failure_ActionCancelled' || errorCode === 'Failure_PinCancelled') {
                 navigation.goBack();
                 reportCheckResult('cancelled');
-            } else if (errorCode === 'Method_Interrupted') {
-                // navigation.goBack() already called via the X button
+            } else if (errorCode === 'Method_Interrupted' || errorCode === undefined) {
+                // navigation.goBack() already called via the X button (or the device was disconnected)
                 reportCheckResult('cancelled');
             } else {
                 navigation.navigate(DeviceAuthenticityStackRoutes.AuthenticitySummary, {
