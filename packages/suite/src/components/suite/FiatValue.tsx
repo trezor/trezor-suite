@@ -15,12 +15,6 @@ import { HiddenPlaceholder } from 'src/components/suite';
 
 import { HiddenPlaceholderProps } from './HiddenPlaceholder';
 
-const StyledHiddenPlaceholder = styled((props: HiddenPlaceholderProps) => (
-    <HiddenPlaceholder {...props} />
-))`
-    font-variant-numeric: tabular-nums;
-`;
-
 // Do NOT use any prop from <HiddenPlaceholderProps>, its here just to fix types
 const SameWidthNums = styled.span<HiddenPlaceholderProps>`
     font-variant-numeric: tabular-nums;
@@ -86,7 +80,7 @@ export const FiatValue = ({
     const { FiatAmountFormatter } = useFormatters();
     const value = shouldConvert ? fiatAmount : amount;
 
-    const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : StyledHiddenPlaceholder;
+    const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : HiddenPlaceholder;
 
     const isTokenKnown = useSelector(state =>
         selectIsSpecificCoinDefinitionKnown(state, symbol, tokenAddress || ('' as TokenAddress)),

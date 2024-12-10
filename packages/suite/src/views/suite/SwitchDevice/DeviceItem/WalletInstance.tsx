@@ -11,12 +11,7 @@ import { Card, Icon, Tooltip, Row, Column, Text, Divider } from '@trezor/compone
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
 import { spacings, negativeSpacings } from '@trezor/theme';
 
-import {
-    WalletLabeling,
-    Translation,
-    MetadataLabeling,
-    HiddenPlaceholder,
-} from 'src/components/suite';
+import { WalletLabeling, Translation, MetadataLabeling } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
@@ -163,13 +158,11 @@ export const WalletInstance = ({
                     </Row>
                 </Text>
 
-                <HiddenPlaceholder>
-                    <FiatHeader
-                        amount={instanceBalance.toString()}
-                        size="medium"
-                        localCurrency={localCurrency}
-                    />
-                </HiddenPlaceholder>
+                <FiatHeader
+                    amount={instanceBalance.toString()}
+                    size="medium"
+                    localCurrency={localCurrency}
+                />
             </Column>
 
             {(isViewOnlyRendered ||
