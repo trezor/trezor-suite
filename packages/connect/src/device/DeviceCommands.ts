@@ -235,6 +235,7 @@ export class DeviceCommands {
             path: address_n,
             serializedPath: getSerializedPath(address_n),
             address: response.message.address,
+            signature: response.message.signature,
         };
     }
 

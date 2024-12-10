@@ -28,6 +28,9 @@ export const validateTrezorOutputs = (
             { name: 'amount', type: 'uint' },
             { name: 'op_return_data', type: 'string' },
             { name: 'multisig', type: 'object' },
+            { name: 'label', type: 'string', required: false },
+            { name: 'label_sig', type: 'string', required: false },
+            { name: 'label_pk', type: 'string', required: false },
         ]);
 
         if (
