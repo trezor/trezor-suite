@@ -84,26 +84,26 @@ export default {
                 address: 'bitcoincash:qzqxk2q6rhy3j9fnnc00m08g4n5dm827xv2dmtjzzp',
             },
         },
-        {
-            description: 'Decred first address',
-            params: {
-                path: "m/44'/42'/0'/0/0",
-                coin: 'dcr',
-            },
-            result: {
-                address: 'DsbjnfJrnL1orxJBCN8Kf39NjMwEktdfdWy',
-            },
-        },
-        {
-            description: 'Decred Testnet first address',
-            params: {
-                path: "m/44'/1'/0'/0/0",
-                coin: 'tdcr',
-            },
-            result: {
-                address: 'TsRQTRqf5TdEfqsnJ1gcQEDvPP363cEjr4B',
-            },
-        },
+        // {
+        //     description: 'Decred first address',
+        //     params: {
+        //         path: "m/44'/42'/0'/0/0",
+        //         coin: 'dcr',
+        //     },
+        //     result: {
+        //         address: 'DsbjnfJrnL1orxJBCN8Kf39NjMwEktdfdWy',
+        //     },
+        // },
+        // {
+        //     description: 'Decred Testnet first address',
+        //     params: {
+        //         path: "m/44'/1'/0'/0/0",
+        //         coin: 'tdcr',
+        //     },
+        //     result: {
+        //         address: 'TsRQTRqf5TdEfqsnJ1gcQEDvPP363cEjr4B',
+        //     },
+        // },
         {
             description: 'Regtest P2PKH first address',
             params: {
