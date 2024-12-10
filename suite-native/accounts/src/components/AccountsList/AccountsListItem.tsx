@@ -127,6 +127,7 @@ export const AccountsListItem = ({
                 ) : (
                     <CryptoToFiatAmountFormatter
                         value={account.formattedBalance}
+                        isBalance={true}
                         symbol={account.symbol}
                     />
                 )

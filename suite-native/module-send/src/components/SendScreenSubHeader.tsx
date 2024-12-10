@@ -92,6 +92,7 @@ export const AccountBalanceScreenHeader = ({
                                     accountKey={accountKey}
                                     decimals={0}
                                     tokenContract={tokenContract}
+                                    isBalance={true}
                                 />
                             </>
                         )}
