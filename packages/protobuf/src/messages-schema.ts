@@ -291,6 +291,7 @@ export const Address = Type.Object(
     {
         address: Type.String(),
         mac: Type.Optional(Type.String()),
+        signature: Type.Optional(Type.String()),
     },
     { $id: 'Address' },
 );
@@ -511,6 +512,10 @@ export const TxOutputType = Type.Union(
             orig_hash: Type.Optional(Type.String()),
             orig_index: Type.Optional(Type.Number()),
             payment_req_index: Type.Optional(Type.Number()),
+            label: Type.Optional(Type.String()),
+            label_sig: Type.Optional(Type.String()),
+            label_pk: Type.Optional(Type.String()),
+            address_pk_sig: Type.Optional(Type.String()),
         }),
         Type.Object({
             address: Type.Optional(Type.Undefined()),
