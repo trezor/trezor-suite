@@ -46,7 +46,7 @@ export const DestinationTag = ({ close }: DestinationTagProps) => {
             defaultValue={inputValue}
             maxLength={formInputsMaxLength.xrpDestinationTag}
             label={<Translation id="DESTINATION_TAG" />}
-            labelRight={<Icon size={20} name="close" cursorPointer onClick={close} />}
+            labelRight={<Icon size={20} name="close" onClick={close} />}
             bottomText={error?.message || null}
             innerRef={inputRef}
             {...inputField}

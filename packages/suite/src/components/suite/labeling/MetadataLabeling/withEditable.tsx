@@ -116,7 +116,6 @@ export const withEditable =
                 <IconListWrapper>
                     <IconWrapper $bgColor={theme.legacy.BG_LIGHT_GREEN}>
                         <Icon
-                            cursorPointer
                             size={14}
                             data-testid="@metadata/submit"
                             name="check"
@@ -130,7 +129,6 @@ export const withEditable =
 
                     <IconWrapper $bgColor={theme.legacy.BG_GREY}>
                         <Icon
-                            cursorPointer
                             size={14}
                             data-testid="@metadata/cancel"
                             name="close"

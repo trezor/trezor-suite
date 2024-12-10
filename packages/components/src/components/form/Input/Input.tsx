@@ -160,9 +160,7 @@ const Input = ({
                     <InputAddon $align="right" ref={measureRightAddon} $size={size}>
                         {!hasShowClearButton && innerAddon}
 
-                        {hasShowClearButton && (
-                            <Icon name="xCircle" size={16} onClick={onClear} cursorPointer />
-                        )}
+                        {hasShowClearButton && <Icon name="xCircle" size={16} onClick={onClear} />}
                     </InputAddon>
                 )}
 

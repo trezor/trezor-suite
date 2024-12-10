@@ -40,13 +40,7 @@ export const Notifications = (props: NotificationsProps) => {
                     </Tabs.Item>
                 </Tabs>
                 {props.onCancel && (
-                    <Icon
-                        name="close"
-                        variant="tertiary"
-                        size="medium"
-                        onClick={onCancel}
-                        cursorPointer
-                    />
+                    <Icon name="close" variant="tertiary" size="medium" onClick={onCancel} />
                 )}
             </Row>
             <Divider margin={{ top: 0, bottom: spacings.md }} />
