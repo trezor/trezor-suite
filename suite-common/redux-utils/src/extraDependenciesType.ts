@@ -8,7 +8,6 @@ import {
     Account,
     AccountKey,
     AddressDisplayOptions,
-    Discovery,
     SelectedAccountStatus,
     WalletAccountTransaction,
     WalletType,
@@ -65,7 +64,6 @@ export type ExtraDependencies = {
         addWalletThunk: SuiteCompatibleThunk<{ walletType: WalletType; device: AcquiredDevice }>;
     };
     selectors: {
-        selectDevices: SuiteCompatibleSelector<TrezorDevice[]>;
         selectBitcoinAmountUnit: SuiteCompatibleSelector<PROTO.AmountUnit>;
         selectAreSatsAmountUnit: SuiteCompatibleSelector<boolean>;
         selectEnabledNetworks: SuiteCompatibleSelector<NetworkSymbol[]>;
@@ -76,13 +74,11 @@ export type ExtraDependencies = {
         // but this is exactly what I need to get DebugModeOptions type instead of any
         selectDebugSettings: SuiteCompatibleSelector<any>;
         selectDesktopBinDir: SuiteCompatibleSelector<string | undefined>;
-        selectDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
         selectLanguage: SuiteCompatibleSelector<string>;
         selectIsWindowVisible: SuiteCompatibleSelector<boolean>;
         selectRouterApp: SuiteCompatibleSelector<string>;
         selectRoute: SuiteCompatibleSelector<Route | undefined>;
         selectMetadata: SuiteCompatibleSelector<any>;
-        selectDeviceDiscovery: SuiteCompatibleSelector<Discovery | undefined>;
         selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
         selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
         selectSuiteSettings: SuiteCompatibleSelector<{

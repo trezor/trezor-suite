@@ -23,6 +23,7 @@ import { accountsActions } from './accountsActions';
 import { selectAccountByKey, selectAccounts } from './accountsReducer';
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
+import { selectDevices } from '../device/deviceReducer';
 
 export const disableAccountsThunk = createThunk(
     `${ACCOUNTS_MODULE_PREFIX}/disableAccountsThunk`,
@@ -81,7 +82,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
     `${ACCOUNTS_MODULE_PREFIX}/fetchAndUpdateAccountThunk`,
     async ({ accountKey }: { accountKey: AccountKey }, { dispatch, extra, getState }) => {
         const {
-            selectors: { selectDevices, selectBitcoinAmountUnit },
+            selectors: { selectBitcoinAmountUnit },
         } = extra;
         const account = selectAccountByKey(getState(), accountKey);
 

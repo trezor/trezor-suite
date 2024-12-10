@@ -5,14 +5,17 @@ import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { deviceAuthenticityActions } from '../src/deviceAuthenticityActions';
 import { checkDeviceAuthenticityThunk } from '../src/deviceAuthenticityThunks';
 
-const initStore = (device?: TrezorDevice) =>
-    configureMockStore({
-        extra: {
-            selectors: {
-                selectDevice: () => device,
+const initStore = (mockDevice?: TrezorDevice) => {
+    const store = configureMockStore({
+        preloadedState: {
+            device: {
+                selectedDevice: mockDevice,
             },
         },
     });
+
+    return store;
+};
 
 const getDevice = (isLocked: boolean) => ({
     ...testMocks.getSuiteDevice(undefined, { bootloader_locked: isLocked }),

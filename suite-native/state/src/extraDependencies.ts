@@ -4,7 +4,6 @@ import * as Device from 'expo-device';
 
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils';
-import { selectDevices } from '@suite-common/wallet-core';
 import {
     selectAreSatsAmountUnit,
     selectBitcoinUnits,
@@ -40,7 +39,6 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
         selectBitcoinAmountUnit: selectBitcoinUnits,
         selectAreSatsAmountUnit,
         selectLocalCurrency: selectFiatCurrencyCode,
-        selectDevices,
         selectDebugSettings: () => ({
             transports,
         }),

@@ -1,4 +1,5 @@
-import { configureMockStore } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesMock, testMocks } from '@suite-common/test-utils';
+import { DeviceRootState, prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { notificationsActions } from '../notificationsActions';
 import { notificationsReducer } from '../notificationsReducer';
@@ -7,18 +8,23 @@ import { removeAccountEventsThunk, removeTransactionEventsThunk } from '../notif
 import { NotificationsRootState, NotificationsState } from '../types';
 
 interface InitStoreArgs {
-    preloadedState?: NotificationsRootState;
+    preloadedState?: Partial<NotificationsRootState> & Partial<DeviceRootState>;
 }
+
+const deviceReducer = prepareDeviceReducer(extraDependenciesMock);
 
 const initStore = ({ preloadedState }: InitStoreArgs = {}) => {
     const store = configureMockStore({
-        extra: {
-            selectors: {
-                selectDevice: () => undefined,
+        reducer: { notifications: notificationsReducer, device: deviceReducer as any },
+        preloadedState: {
+            notifications: [],
+            ...preloadedState,
+            device: {
+                devices: [testMocks.getSuiteDevice()],
+                selectedDevice: testMocks.getSuiteDevice(),
+                ...preloadedState?.device,
             },
         },
-        reducer: { notifications: notificationsReducer },
-        preloadedState,
     });
 
     return store;
@@ -64,9 +70,9 @@ describe('Notifications Actions', () => {
                 txid: 'abcd',
             }),
         );
-        expect(store.getState().notifications.length).toEqual(1);
+        expect(selectNotifications(store.getState()).length).toEqual(1);
         store.dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
-        expect(store.getState().notifications.length).toEqual(2);
+        expect(selectNotifications(store.getState()).length).toEqual(2);
     });
 
     it('close notification by id', () => {
@@ -165,9 +171,9 @@ describe('Notifications Actions', () => {
             },
         });
         await store.dispatch(removeTransactionEventsThunk([{ txid: '1' }, { txid: '2' }]));
-        expect(store.getState().notifications.length).toEqual(2);
+        expect(selectNotifications(store.getState()).length).toEqual(2);
         await store.dispatch(removeTransactionEventsThunk([{ txid: '3' }]));
-        expect(store.getState().notifications.length).toEqual(1);
+        expect(selectNotifications(store.getState()).length).toEqual(1);
     });
 
     it('removeAccountEvents', async () => {
@@ -210,6 +216,6 @@ describe('Notifications Actions', () => {
             },
         });
         await store.dispatch(removeAccountEventsThunk('xpub'));
-        expect(store.getState().notifications.length).toEqual(1);
+        expect(selectNotifications(store.getState()).length).toEqual(1);
     });
 });

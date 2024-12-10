@@ -1,6 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { createActionWithExtraDeps } from '@suite-common/redux-utils';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { selectVisibleNotificationsByType } from './notificationsSelectors';
 import { NotificationId, NotificationEntry, NotificationEventPayload, ToastPayload } from './types';
@@ -27,10 +28,10 @@ const remove = createAction(
 
 export const addToast = createActionWithExtraDeps(
     `${ACTION_PREFIX}/addToast`,
-    (payload: ToastPayload, { getState, extra }): NotificationEntry => ({
+    (payload: ToastPayload, { getState }): NotificationEntry => ({
         context: 'toast',
         id: new Date().getTime(),
-        device: extra.selectors.selectDevice(getState()),
+        device: selectDevice(getState()),
         seen: true,
         ...payload,
     }),
@@ -51,10 +52,10 @@ export const addToastOnce = createActionWithExtraDeps(
 
 export const addEvent = createActionWithExtraDeps(
     `${ACTION_PREFIX}/addEvent`,
-    (payload: NotificationEventPayload, { getState, extra }): NotificationEntry => ({
+    (payload: NotificationEventPayload, { getState }): NotificationEntry => ({
         context: 'event',
         id: new Date().getTime(),
-        device: extra.selectors.selectDevice(getState()),
+        device: selectDevice(getState()),
         ...payload,
     }),
 );

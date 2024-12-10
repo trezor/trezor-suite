@@ -1,6 +1,7 @@
 import TrezorConnect, { AuthenticateDeviceResult } from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions, ToastPayload } from '@suite-common/toast-notifications';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { ACTION_PREFIX, deviceAuthenticityActions } from './deviceAuthenticityActions';
 
@@ -14,11 +15,8 @@ export const checkDeviceAuthenticityThunk = createThunk(
             allowDebugKeys: boolean;
             skipSuccessToast?: boolean;
         },
-        { dispatch, getState, extra },
+        { dispatch, getState },
     ) => {
-        const {
-            selectors: { selectDevice },
-        } = extra;
         const device = selectDevice(getState());
         if (!device) {
             throw new Error('device is not connected');

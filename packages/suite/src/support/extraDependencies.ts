@@ -3,12 +3,9 @@ import { PayloadAction } from '@reduxjs/toolkit';
 
 import { getAccountKey, buildHistoricRatesFromStorage } from '@suite-common/wallet-utils';
 import {
-    DeviceRootState,
     selectIsPendingTransportEvent,
     TransactionsState,
     BlockchainState,
-    DiscoveryRootState,
-    selectDiscoveryByDeviceState,
     deviceActions,
     FiatRatesState,
 } from '@suite-common/wallet-core';
@@ -70,7 +67,6 @@ export const extraDependencies: ExtraDependencies = {
         addWalletThunk,
     },
     selectors: {
-        selectDevices: (state: AppState) => state.device.devices,
         selectBitcoinAmountUnit: (state: AppState) => state.wallet.settings.bitcoinAmountUnit,
         selectAreSatsAmountUnit: (state: AppState) =>
             state.wallet.settings.bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI,
@@ -82,11 +78,8 @@ export const extraDependencies: ExtraDependencies = {
         selectDebugSettings: (state: AppState) => state.suite.settings.debug,
         // FW binaries on desktop are stored in "*/static/connect/data/firmware/*/*.bin" (see "connect-common" package)
         selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
-        selectDevice: (state: AppState) => state.device.selectedDevice,
         selectLanguage: (state: AppState) => state.suite.settings.language,
         selectMetadata: (state: AppState) => state.metadata,
-        selectDeviceDiscovery: (state: DiscoveryRootState & DeviceRootState) =>
-            selectDiscoveryByDeviceState(state, state.device.selectedDevice?.state),
         selectRouterApp: (state: AppState) => state.router.app,
         selectRoute: (state: AppState) => state.router.route,
         selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,

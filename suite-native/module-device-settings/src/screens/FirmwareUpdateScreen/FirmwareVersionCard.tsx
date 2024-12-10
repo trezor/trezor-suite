@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import {
     selectDeviceFirmwareVersion,
     selectDeviceUpdateFirmwareVersion,
-    selectIsBitcoinOnlyDevice,
+    selectHasBitcoinOnlyFirmware,
 } from '@suite-common/wallet-core';
 import { Box, BoxProps, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -78,10 +78,10 @@ export const FirmwareUpdateVersionCard = (props: BoxProps) => {
     const { applyStyle } = useNativeStyles();
     const firmwareVersion = useSelector(selectDeviceFirmwareVersion);
     const updateFirmwareVersion = useSelector(selectDeviceUpdateFirmwareVersion);
-    const isBtcOnly = useSelector(selectIsBitcoinOnlyDevice);
+    const isBtcOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const { translate } = useTranslate();
 
-    const firmwareTypeTranslationId = isBtcOnly
+    const firmwareTypeTranslationId = isBtcOnlyFirmware
         ? 'moduleDeviceSettings.firmware.typeBitcoinOnly'
         : 'moduleDeviceSettings.firmware.typeUniversal';
 

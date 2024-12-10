@@ -6,8 +6,6 @@ import { PROTO } from '@trezor/connect';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { Route } from '@suite-common/suite-types';
 
-import { testMocks } from './mocks';
-
 const mockedConsoleAlreadyPrinted: string[] = [];
 
 const mockedConsoleLog = (...args: any) => {
@@ -70,7 +68,6 @@ export const extraDependenciesMock: ExtraDependencies = {
         openSwitchDeviceDialog: mockThunk('openSwitchDeviceDialog'),
     },
     selectors: {
-        selectDevices: mockSelector('selectDevices', []),
         selectBitcoinAmountUnit: mockSelector('selectBitcoinAmountUnit', PROTO.AmountUnit.BITCOIN),
         selectAreSatsAmountUnit: mockSelector('selectAreSatsAmountUnit', false),
         selectEnabledNetworks: mockSelector('selectEnabledNetworks', BITCOIN_ONLY_SYMBOLS),
@@ -89,11 +86,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectRouterApp: mockSelector('selectRouterApp', ''),
         selectRoute: mockSelector('selectRoute', {} as Route),
         selectMetadata: mockSelector('selectMetadata', {}),
-        selectDevice: mockSelector('selectDevice', {
-            ...testMocks.getSuiteDevice(),
-        }),
         selectLanguage: mockSelector('selectLanguage', 'en'),
-        selectDeviceDiscovery: mockSelector('selectDeviceDiscovery', undefined),
         selectAddressDisplayType: mockSelector(
             'selectAddressDisplayType',
             AddressDisplayOptions.CHUNKED,
