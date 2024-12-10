@@ -11,6 +11,7 @@ import {
     isTransportInstance,
 } from '@trezor/transport';
 import { Descriptor, PathPublic } from '@trezor/transport/src/types';
+import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 
 import { ERRORS } from '../constants';
 import { DEVICE, TransportInfo } from '../events';
@@ -23,7 +24,6 @@ import {
 } from '../types';
 import { getBridgeInfo } from '../data/transportInfo';
 import { initLog } from '../utils/debug';
-import { resolveAfter } from '../utils/promiseUtils';
 import { typedObjectKeys } from '../types/utils';
 
 // custom log

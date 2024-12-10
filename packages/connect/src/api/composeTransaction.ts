@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ComposeTransaction.js
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
 
 import { AbstractMethod } from '../core/AbstractMethod';
@@ -9,7 +10,6 @@ import { UI, createUiMessage } from '../events';
 import { Discovery } from './common/Discovery';
 import { validateParams, getFirmwareRange } from './common/paramsValidator';
 import * as pathUtils from '../utils/pathUtils';
-import { resolveAfter } from '../utils/promiseUtils';
 import { formatAmount } from '../utils/formatUtils';
 import { getBitcoinNetwork, fixCoinInfoNetwork } from '../data/coinInfo';
 import { isBackendSupported, initBlockchain } from '../backend/BlockchainLink';

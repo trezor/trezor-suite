@@ -1,11 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
+import { resolveAfter } from '@trezor/utils/src/resolveAfter';
+
 import { AbstractMethod, MethodReturnType, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { Discovery } from './common/Discovery';
 import { validateParams, getFirmwareRange } from './common/paramsValidator';
 import { validatePath, getSerializedPath } from '../utils/pathUtils';
 import { getAccountLabel, isUtxoBased } from '../utils/accountUtils';
-import { resolveAfter } from '../utils/promiseUtils';
 import { getCoinInfo } from '../data/coinInfo';
 import { PROTO, ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
