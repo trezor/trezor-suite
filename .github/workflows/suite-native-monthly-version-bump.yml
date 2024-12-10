@@ -1,0 +1,38 @@
+name: "[Bot] suite-native monthly version bump"
+
+on:
+  schedule:
+    # Runs on the first day of every month at 00:00 UTC
+    - cron: "0 0 1 * *"
+
+jobs:
+  bump_native_version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+
+      - name: Set Version Variable
+        run: |
+          YEAR=$(date +%y)
+          MONTH=$(date +%-m)
+          echo NEW_VERSION="$YEAR.$MONTH.1" >>  $GITHUB_ENV
+
+      - name: Update Version of package.json
+        run: jq --indent 4 --arg version "$NEW_VERSION" '.suiteNativeVersion = $version' suite-native/app/package.json > temp.json && mv temp.json suite-native/app/package.json
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          title: "chore(suite-native): bump version to ${{ env.NEW_VERSION }}"
+          body: |
+            Automated version bump to follow YY.MM.MINOR convention
+
+            - Updates version in package.json to ${{ env.NEW_VERSION }}
+          branch: "chore/native/bump-version-to-${{ env.NEW_VERSION }}"
+          base: "develop"
+          delete-branch: true
+          labels: mobile ci
