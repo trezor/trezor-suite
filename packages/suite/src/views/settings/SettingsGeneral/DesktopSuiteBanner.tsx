@@ -3,14 +3,25 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
 
-import { Button, H2, Icon, Image, Paragraph, motionEasing } from '@trezor/components';
+import {
+    Button,
+    H2,
+    Icon,
+    IconButton,
+    Image,
+    Paragraph,
+    motionEasing,
+    Box,
+} from '@trezor/components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { SUITE_URL } from '@trezor/urls';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { setFlag } from 'src/actions/suite/suiteActions';
-import { Translation, TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
+
+import { useExternalLink } from '../../../hooks/suite';
 
 const Container = styled(motion.div)`
     position: relative;
@@ -23,36 +34,7 @@ const Container = styled(motion.div)`
     overflow: hidden;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const CloseButton = styled(Icon)`
-    position: absolute;
-    right: 16px;
-    top: 16px;
-    width: auto;
-    height: auto;
-    padding: 4px;
-    border-radius: 4px;
-    transition:
-        opacity 0.15s,
-        background 0.15s;
-    cursor: pointer;
-
-    path {
-        fill: ${({ theme }) => theme.legacy.BG_WHITE};
-    }
-
-    &:hover {
-        background: ${({ theme }) => theme.legacy.BG_GREEN_HOVER};
-        opacity: 0.7;
-    }
-
-    &:active {
-        opacity: 0.9;
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledImage = styled(Image)`
+const ImageContainer = styled.div`
     margin-right: 24px;
 
     ${SCREEN_QUERY.BELOW_LAPTOP} {
@@ -74,19 +56,6 @@ const TextContainer = styled.div`
     }
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    background: ${({ theme }) => theme.legacy.BG_WHITE};
-    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
-    transition: opacity 0.2s;
-
-    &:hover,
-    &:focus {
-        background: ${({ theme }) => theme.legacy.BG_WHITE};
-        opacity: 0.8;
-    }
-`;
-
 const OSIcons = styled.div`
     display: flex;
     align-self: center;
@@ -103,7 +72,7 @@ export const DesktopSuiteBanner = () => {
     const [isVisible, setIsVisible] = useState(true);
 
     const dispatch = useDispatch();
-
+    const href = useExternalLink(SUITE_URL);
     const handleClose = () => {
         setIsVisible(false);
     };
@@ -135,14 +104,18 @@ export const DesktopSuiteBanner = () => {
                     }
                     {...animationConfig}
                 >
-                    <CloseButton
-                        size={18}
-                        name="close"
-                        onClick={handleClose}
-                        data-testid="@banner/install-desktop-suite/close-button"
-                    />
+                    <Box position={{ type: 'absolute', top: 16, right: 16 }} cursor="pointer">
+                        <IconButton
+                            icon="close"
+                            onClick={handleClose}
+                            data-testid="@banner/install-desktop-suite/close-button"
+                            size="small"
+                        />
+                    </Box>
 
-                    <StyledImage image="TREZOR_PATTERN" width={140} />
+                    <ImageContainer>
+                        <Image image="TREZOR_PATTERN" width={140} />
+                    </ImageContainer>
 
                     <Content>
                         <TextContainer>
@@ -154,19 +127,17 @@ export const DesktopSuiteBanner = () => {
                             </Paragraph>
                         </TextContainer>
 
-                        <TrezorLink
-                            href={SUITE_URL}
-                            variant="nostyle"
+                        <Button
+                            variant="tertiary"
+                            href={href}
                             onClick={() =>
                                 analytics.report({
                                     type: EventType.GetDesktopApp,
                                 })
                             }
                         >
-                            <StyledButton>
-                                <Translation id="TR_DESKTOP_APP_PROMO_GET" />
-                            </StyledButton>
-                        </TrezorLink>
+                            <Translation id="TR_DESKTOP_APP_PROMO_GET" />
+                        </Button>
 
                         <OSIcons>
                             <Icon name="osMac" />
