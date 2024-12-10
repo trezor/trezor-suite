@@ -3691,9 +3691,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/prebuild-config@npm:^8.0.17":
-  version: 8.0.20
-  resolution: "@expo/prebuild-config@npm:8.0.20"
+"@expo/prebuild-config@npm:^8.0.17, @expo/prebuild-config@npm:^8.0.22":
+  version: 8.0.22
+  resolution: "@expo/prebuild-config@npm:8.0.22"
   dependencies:
     "@expo/config": "npm:~10.0.4"
     "@expo/config-plugins": "npm:~9.0.10"
@@ -3706,7 +3706,7 @@ __metadata:
     resolve-from: "npm:^5.0.0"
     semver: "npm:^7.6.0"
     xml2js: "npm:0.6.0"
-  checksum: 10/4b0c3842c09be147607084e26361a0046e0638f3c8beb67f49d35accaeb6b63878ea408ef0ad29eb5701dd9c902eac254eb2b511bd09044d096b99a514a14acc
+  checksum: 10/28780c041c2c6449ec81166c83f5b1f8e223a37e3445b94acfd69e9cd9cfb746a5178ff88133a1cb2044357c4797f0c1e341788a8947022030ebc8eed06ce966
   languageName: node
   linkType: hard
 
@@ -9996,7 +9996,7 @@ __metadata:
     expo-localization: "npm:^16.0.0"
     expo-navigation-bar: "npm:^4.0.2"
     expo-secure-store: "npm:^14.0.0"
-    expo-splash-screen: "npm:^0.29.13"
+    expo-splash-screen: "npm:0.29.16"
     expo-status-bar: "npm:^2.0.0"
     expo-system-ui: "npm:^4.0.2"
     expo-updates: "npm:0.26.6"
@@ -11102,7 +11102,7 @@ __metadata:
     bs58: "npm:^6.0.0"
     expo-crypto: "npm:^14.0.1"
     expo-secure-store: "npm:^14.0.0"
-    expo-splash-screen: "npm:^0.29.13"
+    expo-splash-screen: "npm:0.29.16"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.76.1"
@@ -23085,14 +23085,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-splash-screen@npm:^0.29.13":
-  version: 0.29.13
-  resolution: "expo-splash-screen@npm:0.29.13"
+"expo-splash-screen@npm:0.29.16":
+  version: 0.29.16
+  resolution: "expo-splash-screen@npm:0.29.16"
   dependencies:
-    "@expo/prebuild-config": "npm:^8.0.17"
+    "@expo/prebuild-config": "npm:^8.0.22"
   peerDependencies:
     expo: "*"
-  checksum: 10/ae5159f45865594970ceb29cdeffb084cb823a24b36a110a7854a889e9124b35c468144130dfc3aeeb8e8f0b760823d29bc702c72626b3665734e0e1244d234e
+  checksum: 10/7a54a5398f31f1cd26f3d6bfb5fa6a6ee6f0ceb33c166ce4bfd7bf0ef11de0b893f05e5edc8fc1e04d855721b8eab0279c5143bd9c6099697d3ee769974c6e6f
   languageName: node
   linkType: hard
 

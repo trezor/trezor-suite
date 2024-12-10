@@ -100,7 +100,7 @@
         "expo-localization": "^16.0.0",
         "expo-navigation-bar": "^4.0.2",
         "expo-secure-store": "^14.0.0",
-        "expo-splash-screen": "^0.29.13",
+        "expo-splash-screen": "0.29.16",
         "expo-status-bar": "^2.0.0",
         "expo-system-ui": "^4.0.2",
         "expo-updates": "0.26.6",
