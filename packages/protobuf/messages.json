@@ -985,6 +985,22 @@
                                 "payment_req_index": {
                                     "type": "uint32",
                                     "id": 12
+                                },
+                                "label": {
+                                    "type": "string",
+                                    "id": 13
+                                },
+                                "label_sig": {
+                                    "type": "bytes",
+                                    "id": 14
+                                },
+                                "label_pk": {
+                                    "type": "string",
+                                    "id": 15
+                                },
+                                "address_pk_sig": {
+                                    "type": "bytes",
+                                    "id": 16
                                 }
                             }
                         }
