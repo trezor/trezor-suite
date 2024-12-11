@@ -159,8 +159,8 @@ export default class EthereumSignTransaction extends AbstractMethod<
             ...tx,
             ...signature,
             type: isLegacy ? 0 : 2, // 0 for legacy, 2 for EIP-1559
-            gasPrice: isLegacy ? tx.gasPrice : null,
-            maxFeePerGas: isLegacy ? tx.maxFeePerGas : tx.maxPriorityFeePerGas,
+            gasPrice: isLegacy ? tx.gasPrice : undefined,
+            maxFeePerGas: !isLegacy ? tx.maxFeePerGas : undefined,
             maxPriorityFeePerGas: !isLegacy ? tx.maxPriorityFeePerGas : undefined,
         } as LegacyTxData | FeeMarketEIP1559TxData;
 
