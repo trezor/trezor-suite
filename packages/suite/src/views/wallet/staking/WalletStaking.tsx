@@ -11,13 +11,7 @@ export const WalletStaking = () => {
     const { selectedAccount } = useSelector(state => state.wallet);
 
     if (selectedAccount.status !== 'loaded') {
-        return (
-            <WalletLayout
-                title="TR_NAV_STAKING"
-                account={selectedAccount}
-                showEmptyHeaderPlaceholder
-            />
-        );
+        return <WalletLayout title="TR_NAV_STAKING" account={selectedAccount} />;
     }
 
     if (hasNetworkFeatures(selectedAccount.account, 'staking')) {
@@ -31,7 +25,7 @@ export const WalletStaking = () => {
     }
 
     return (
-        <WalletLayout title="TR_NAV_STAKING" account={selectedAccount} showEmptyHeaderPlaceholder>
+        <WalletLayout title="TR_NAV_STAKING" account={selectedAccount}>
             <AccountExceptionLayout
                 title={<Translation id="TR_STAKING_IS_NOT_SUPPORTED" />}
                 iconName="warning"

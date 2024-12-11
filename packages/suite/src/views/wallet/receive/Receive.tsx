@@ -40,13 +40,10 @@ export const Receive = () => {
 
     return (
         <WalletLayout title="TR_NAV_RECEIVE" isSubpage account={selectedAccount}>
-            <Column gap={spacings.sm} alignItems="start">
-                {!isDeviceConnected && <ConnectDeviceReceivePromo />}
-
+            {!isDeviceConnected && <ConnectDeviceReceivePromo />}
+            {showCexWarning && <CoinjoinReceiveWarning />}
+            <Column gap={spacings.xl}>
                 <WalletSubpageHeading title="TR_NAV_RECEIVE" />
-
-                {showCexWarning && <CoinjoinReceiveWarning />}
-
                 <FreshAddress
                     account={account}
                     addresses={receive}
@@ -55,16 +52,15 @@ export const Receive = () => {
                     pendingAddresses={pendingAddresses}
                     isDeviceConnected={isDeviceConnected}
                 />
-
                 <UsedAddresses
                     account={account}
                     addresses={receive}
                     locked={isDeviceLocked}
                     pendingAddresses={pendingAddresses}
                 />
-
-                <ConfirmEvmExplanationModal account={account} route="wallet-receive" />
             </Column>
+
+            <ConfirmEvmExplanationModal account={account} route="wallet-receive" />
         </WalletLayout>
     );
 };

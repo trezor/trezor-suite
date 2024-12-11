@@ -3,9 +3,7 @@ import {
     Card,
     Row,
     variables,
-    Column,
     Flex,
-    H3,
     Text,
     InfoItem,
     Button,
@@ -21,6 +19,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Account } from 'src/types/wallet';
 import { Translation, PriceTicker, TrendTicker } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
+import { DashboardSection } from 'src/components/dashboard';
 
 type TradeBoxProps = {
     account: Account;
@@ -63,10 +62,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     );
 
     return (
-        <Column gap={spacings.md}>
-            <H3>
-                <Translation id="TR_NAV_TRADE" />
-            </H3>
+        <DashboardSection heading={<Translation id="TR_NAV_TRADE" />}>
             <Card>
                 <Flex
                     direction={isBelowTablet ? 'column' : 'row'}
@@ -122,6 +118,6 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                     </Row>
                 </Flex>
             </Card>
-        </Column>
+        </DashboardSection>
     );
 };

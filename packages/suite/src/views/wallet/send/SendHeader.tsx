@@ -57,7 +57,6 @@ export const SendHeader = () => {
 
     return (
         <>
-            {!isDeviceConnected && <ConnectDeviceSendPromo />}
             <WalletSubpageHeading title="TR_NAV_SEND">
                 {isDirty && (
                     <ClearButton
@@ -81,6 +80,7 @@ export const SendHeader = () => {
                     ]}
                 />
             </WalletSubpageHeading>
+            {!isDeviceConnected && <ConnectDeviceSendPromo />}
         </>
     );
 };

@@ -43,9 +43,7 @@ export const AccountTypeDescription = ({
 
     return (
         <Column alignItems="flex-start" gap={spacings.sm}>
-            <Paragraph variant="tertiary" typographyStyle="hint">
-                {renderAccountTypeDesc()}
-            </Paragraph>
+            <Paragraph>{renderAccountTypeDesc()}</Paragraph>
             {accountTypeUrl && <LearnMoreButton url={accountTypeUrl} />}
         </Column>
     );

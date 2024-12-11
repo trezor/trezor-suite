@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import { spacings } from '@trezor/theme';
 import { IconButton, Row, SubTabs } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { Route } from '@suite-common/suite-types';
@@ -63,7 +62,7 @@ export const TokensNavigation = ({
     }, [account.symbol, account.index, account.accountType, setSearchQuery]);
 
     return (
-        <Row alignItems="center" justifyContent="space-between" margin={{ bottom: spacings.md }}>
+        <Row alignItems="center" justifyContent="space-between">
             <SubTabs activeItemId={routeName} size="medium">
                 <SubTabs.Item
                     id="wallet-tokens"

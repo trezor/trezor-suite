@@ -13,7 +13,7 @@ import {
     Row,
     SkeletonRectangle,
     variables,
-    Text,
+    InfoItem,
 } from '@trezor/components';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { TokenInfo } from '@trezor/connect';
@@ -34,19 +34,10 @@ import { useAccountSearch, useLoadingSkeleton, useSelector } from 'src/hooks/sui
 import { goto } from 'src/actions/suite/routerActions';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 
-import { ArrowIcon, styledHoverOnParentOfArrowIcon } from '../ArrowIcon';
 import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
 import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledCard = styled(Card)`
-    display: flex;
-    flex-direction: column;
-    transition: box-shadow 0.2s;
-    ${styledHoverOnParentOfArrowIcon};
-`;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const WarningIcon = styled(Icon)`
@@ -147,28 +138,18 @@ export const AssetCard = ({
         );
 
     return (
-        <StyledCard paddingType="small" onClick={handleCardClick}>
-            <Column
-                gap={spacings.xxxl}
-                alignItems="flex-start"
-                flex="1"
-                margin={{
-                    top: spacings.xs,
-                    bottom: spacings.xs,
-                    left: spacings.xs,
-                    right: spacings.xs,
-                }}
-            >
-                <Row justifyContent="space-between" width="100%">
+        <Card paddingType="small" onClick={handleCardClick}>
+            <Column gap={spacings.xxxl} flex="1" margin={spacings.xs}>
+                <Row justifyContent="space-between">
                     <AssetCardInfo
                         network={network}
                         assetsFiatBalances={assetsFiatBalances}
                         index={index}
                     />
-                    <ArrowIcon size={16} name="arrowRightLong" color={theme.iconDisabled} />
+                    <Icon size={16} name="arrowRightLong" variant="disabled" />
                 </Row>
                 {!failed ? (
-                    <Column alignItems="flex-start">
+                    <Column>
                         <FiatAmount>
                             <FiatHeader
                                 symbol={symbol}
@@ -206,19 +187,13 @@ export const AssetCard = ({
             )}
             {!isTestnet(symbol) && (
                 <Card>
-                    <Row alignItems="center" justifyContent="space-between">
-                        <div>
-                            <Text typographyStyle="hint">
-                                <Translation id="TR_EXCHANGE_RATE" />
-                            </Text>
+                    <Row justifyContent="space-between" gap={spacings.md}>
+                        <InfoItem label={<Translation id="TR_EXCHANGE_RATE" />} flex="0">
                             <PriceTicker symbol={symbol} />
-                        </div>
-                        <div>
-                            <Text typographyStyle="hint">
-                                <Translation id="TR_7D_CHANGE" />
-                            </Text>
+                        </InfoItem>
+                        <InfoItem label={<Translation id="TR_7D_CHANGE" />} flex="0">
                             <TrendTicker symbol={symbol} />
-                        </div>
+                        </InfoItem>
                         <CoinmarketBuyButton
                             symbol={symbol}
                             data-testid={`@dashboard/assets/grid/${symbol}/buy-button`}
@@ -226,7 +201,7 @@ export const AssetCard = ({
                     </Row>
                 </Card>
             )}
-        </StyledCard>
+        </Card>
     );
 };
 
@@ -235,33 +210,25 @@ export const AssetCardSkeleton = (props: { animate?: boolean }) => {
     const animate = props.animate ?? shouldAnimate;
 
     return (
-        <StyledCard>
-            <Column
-                gap={spacings.xxxl}
-                alignItems="flex-start"
-                flex="1"
-                margin={{
-                    top: spacings.xs,
-                    bottom: spacings.xs,
-                    left: spacings.xs,
-                    right: spacings.xs,
-                }}
-            >
-                <Row justifyContent="space-between" margin={{ bottom: spacings.xxxl }}>
+        <Card>
+            <Column gap={spacings.xxxl} flex="1" margin={spacings.xs}>
+                <Row justifyContent="space-between">
                     <AssetCardInfoSkeleton animate={animate} />
                 </Row>
-                <FiatAmount>
-                    <IntegerValue>
-                        <SkeletonRectangle animate={animate} width={95} height={32} />
-                    </IntegerValue>
-                </FiatAmount>
-                <CoinAmount>
-                    <SkeletonRectangle animate={animate} width={50} height={16} />
-                </CoinAmount>
+                <Column>
+                    <FiatAmount>
+                        <IntegerValue>
+                            <SkeletonRectangle animate={animate} width={95} height={32} />
+                        </IntegerValue>
+                    </FiatAmount>
+                    <CoinAmount>
+                        <SkeletonRectangle animate={animate} width={50} height={16} />
+                    </CoinAmount>
+                </Column>
             </Column>
             <Card>
                 <SkeletonRectangle animate={animate} width="100%" height={40} />
             </Card>
-        </StyledCard>
+        </Card>
     );
 };

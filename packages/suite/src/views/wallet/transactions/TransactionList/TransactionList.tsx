@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import styled from 'styled-components';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import {
@@ -30,14 +29,6 @@ import { NoSearchResults } from './NoSearchResults';
 import { TransactionCandidates } from './TransactionCandidates';
 import { PendingGroupHeader } from './TransactionsGroup/PendingGroupHeader';
 import { TransactionGroupedList } from './TransactionGroupedList';
-
-const StyledSection = styled(DashboardSection)`
-    margin-bottom: 20px;
-`;
-
-const PaginationWrapper = styled.div`
-    margin-top: 20px;
-`;
 
 interface TransactionListProps {
     transactions: WalletAccountTransaction[];
@@ -145,7 +136,7 @@ export const TransactionList = ({
     const areTransactionsAvailable = transactions.length > 0 && searchedTransactions.length === 0;
 
     return (
-        <StyledSection
+        <DashboardSection
             ref={sectionRef}
             heading={<Translation id="TR_ALL_TRANSACTIONS" />}
             actions={
@@ -198,17 +189,15 @@ export const TransactionList = ({
             )}
 
             {showPagination && (
-                <PaginationWrapper>
-                    <Pagination
-                        hasPages={!isRipple}
-                        currentPage={currentPage}
-                        isLastPage={isLastRipplePage}
-                        perPage={perPage}
-                        totalItems={totalItems}
-                        onPageSelected={onPageSelected}
-                    />
-                </PaginationWrapper>
+                <Pagination
+                    hasPages={!isRipple}
+                    currentPage={currentPage}
+                    isLastPage={isLastRipplePage}
+                    perPage={perPage}
+                    totalItems={totalItems}
+                    onPageSelected={onPageSelected}
+                />
             )}
-        </StyledSection>
+        </DashboardSection>
     );
 };

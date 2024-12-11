@@ -43,7 +43,7 @@ const InfoMessage = styled.div`
 
 const GridWrapper = styled.div`
     display: grid;
-    grid-gap: 10px;
+    grid-gap: ${spacingsPx.sm};
     grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
 `;
 
@@ -176,7 +176,7 @@ export const AssetsView = () => {
                 isMobileLayout ? (
                     <></>
                 ) : (
-                    <Row justifyContent="space-around" alignItems="center">
+                    <Row justifyContent="space-around" gap={spacings.sm}>
                         {hasMainnetNetworksToEnable && (
                             <Button
                                 variant="tertiary"
@@ -184,31 +184,32 @@ export const AssetsView = () => {
                                 size="small"
                                 onClick={goToCoinsSettings}
                                 data-testid="@dashboard/assets/enable-more-coins"
-                                margin={{ right: spacings.sm }}
                             >
                                 <Translation id="TR_ENABLE_MORE_COINS" />
                             </Button>
                         )}
-                        <Icon
-                            name="table"
-                            data-testid="@dashboard/assets/table-icon"
-                            onClick={setTable}
-                            color={
-                                !dashboardAssetsGridMode
-                                    ? theme.textPrimaryDefault
-                                    : theme.textSubdued
-                            }
-                        />
-                        <Icon
-                            name="grid"
-                            data-testid="@dashboard/assets/grid-icon"
-                            onClick={setGrid}
-                            color={
-                                dashboardAssetsGridMode
-                                    ? theme.textPrimaryDefault
-                                    : theme.textSubdued
-                            }
-                        />
+                        <Row gap={spacings.xxxs}>
+                            <Icon
+                                name="table"
+                                data-testid="@dashboard/assets/table-icon"
+                                onClick={setTable}
+                                color={
+                                    !dashboardAssetsGridMode
+                                        ? theme.textPrimaryDefault
+                                        : theme.textSubdued
+                                }
+                            />
+                            <Icon
+                                name="grid"
+                                data-testid="@dashboard/assets/grid-icon"
+                                onClick={setGrid}
+                                color={
+                                    dashboardAssetsGridMode
+                                        ? theme.textPrimaryDefault
+                                        : theme.textSubdued
+                                }
+                            />
+                        </Row>
                     </Row>
                 )
             }

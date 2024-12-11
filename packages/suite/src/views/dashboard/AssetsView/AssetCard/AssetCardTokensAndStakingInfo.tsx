@@ -24,15 +24,14 @@ export const AssetCardTokensAndStakingInfo = ({
     accounts,
 }: AssetCardTokensAndStakingInfoProps) => (
     <Column>
-        <Divider strokeWidth={1} margin={{ top: spacings.xs, bottom: spacings.xs }} />
+        <Divider strokeWidth={1} margin={{ vertical: spacings.xs }} />
         {shouldRenderStaking && (
             <Row
                 justifyContent="space-between"
-                margin={{ left: spacings.xs, right: spacings.xs, bottom: spacings.xs }}
+                margin={{ horizontal: spacings.xs, bottom: spacings.xs }}
             >
                 <Row gap={spacings.xs}>
                     <Icon name="piggyBankFilled" variant="tertiary" />
-
                     <Text typographyStyle="body" variant="tertiary">
                         <Translation id="TR_NAV_STAKING" />
                     </Text>
@@ -54,7 +53,7 @@ export const AssetCardTokensAndStakingInfo = ({
         {shouldRenderTokens && (
             <Row
                 justifyContent="space-between"
-                margin={{ left: spacings.xs, right: spacings.xs, bottom: spacings.xs }}
+                margin={{ horizontal: spacings.xs, bottom: spacings.xs }}
             >
                 <Row gap={spacings.xs}>
                     <TokenIconSetWrapper accounts={accounts} symbol={symbol} />

@@ -31,11 +31,6 @@ export const ColDate = styled(Col)`
     flex: 1;
 `;
 
-export const ColPending = styled(Col)`
-    color: ${({ theme }) => theme.legacy.TYPE_ORANGE};
-    font-variant-numeric: tabular-nums;
-`;
-
 export const ColAmount = styled(Col)<{ $isVisible?: boolean }>`
     padding-left: 16px;
     text-align: right;

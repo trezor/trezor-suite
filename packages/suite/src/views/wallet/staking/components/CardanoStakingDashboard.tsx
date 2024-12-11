@@ -28,7 +28,7 @@ export const CardanoStakingDashboard = ({ selectedAccount }: CardanoStakingDashb
     >;
 
     return (
-        <WalletLayout title="TR_NAV_STAKING" account={selectedAccount} showEmptyHeaderPlaceholder>
+        <WalletLayout title="TR_NAV_STAKING" account={selectedAccount}>
             <>
                 {isActive && (
                     <CardanoRewards account={selectedAccount.account} deviceModel={deviceModel} />

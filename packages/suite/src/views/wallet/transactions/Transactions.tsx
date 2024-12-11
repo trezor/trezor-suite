@@ -1,12 +1,9 @@
 import { ReactNode } from 'react';
 
-import styled from 'styled-components';
-
 import {
     selectAccountTransactionsWithNulls,
     selectIsLoadingAccountTransactions,
 } from '@suite-common/wallet-core';
-import { spacingsPx } from '@trezor/theme';
 
 import { WalletLayout, CoinjoinAccountDiscoveryProgress } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
@@ -20,26 +17,15 @@ import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
 import { CoinjoinSummary } from './CoinjoinSummary/CoinjoinSummary';
 import { TradeBox } from './TradeBox/TradeBox';
 
-const AccountLayout = styled(WalletLayout)`
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.xxl};
-`;
-
 interface LayoutProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
     children?: ReactNode;
-    showEmptyHeaderPlaceholder?: boolean;
 }
 
-const Layout = ({ selectedAccount, showEmptyHeaderPlaceholder = false, children }: LayoutProps) => (
-    <AccountLayout
-        title="TR_NAV_TRANSACTIONS"
-        account={selectedAccount}
-        showEmptyHeaderPlaceholder={showEmptyHeaderPlaceholder}
-    >
+const Layout = ({ selectedAccount, children }: LayoutProps) => (
+    <WalletLayout title="TR_NAV_TRANSACTIONS" account={selectedAccount}>
         {children}
-    </AccountLayout>
+    </WalletLayout>
 );
 
 export const Transactions = () => {
@@ -106,7 +92,7 @@ export const Transactions = () => {
 
     if (account.empty) {
         return (
-            <Layout selectedAccount={selectedAccount} showEmptyHeaderPlaceholder>
+            <Layout selectedAccount={selectedAccount}>
                 <AccountEmpty account={selectedAccount.account} />
                 <TradeBox account={account} />
             </Layout>
@@ -114,7 +100,7 @@ export const Transactions = () => {
     }
 
     return (
-        <Layout selectedAccount={selectedAccount} showEmptyHeaderPlaceholder>
+        <Layout selectedAccount={selectedAccount}>
             <NoTransactions account={account} />
             <TradeBox account={account} />
         </Layout>

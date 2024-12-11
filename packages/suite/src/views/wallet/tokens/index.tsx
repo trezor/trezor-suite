@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
+import { Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
 import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
@@ -30,22 +33,24 @@ export const Tokens = () => {
 
     return (
         <WalletLayout title="TR_TOKENS" account={selectedAccount}>
-            <TokensNavigation
-                selectedAccount={selectedAccount}
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-            />
-            <Switch>
-                <Route path={`${process.env.ASSET_PREFIX}/accounts/tokens/hidden`}>
-                    <HiddenTokensTable
-                        selectedAccount={selectedAccount}
-                        searchQuery={searchQuery}
-                    />
-                </Route>
-                <Route path="*">
-                    <CoinsTable selectedAccount={selectedAccount} searchQuery={searchQuery} />
-                </Route>
-            </Switch>
+            <Column gap={spacings.lg}>
+                <TokensNavigation
+                    selectedAccount={selectedAccount}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                />
+                <Switch>
+                    <Route path={`${process.env.ASSET_PREFIX}/accounts/tokens/hidden`}>
+                        <HiddenTokensTable
+                            selectedAccount={selectedAccount}
+                            searchQuery={searchQuery}
+                        />
+                    </Route>
+                    <Route path="*">
+                        <CoinsTable selectedAccount={selectedAccount} searchQuery={searchQuery} />
+                    </Route>
+                </Switch>
+            </Column>
         </WalletLayout>
     );
 };

@@ -1,21 +1,24 @@
+import { ReactNode } from 'react';
+
 import styled from 'styled-components';
 
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
-import { Paragraph, variables, Card, Column } from '@trezor/components';
-import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL } from '@trezor/urls';
+import { Paragraph, variables, Card, Column, Row, InfoItem, Button } from '@trezor/components';
+import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, Url } from '@trezor/urls';
 import { spacings } from '@trezor/theme';
 
-import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { WalletLayout } from 'src/components/wallet';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { AccountTypeDescription } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AccountTypeSelect/AccountTypeDescription';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { TranslationKey } from 'src/components/suite/Translation';
 
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
-import { Row } from './Row';
 
 const Heading = styled.h3`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
@@ -25,26 +28,34 @@ const Heading = styled.h3`
     text-transform: uppercase;
 `;
 
-const Cards = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-`;
+type DetailsRowProps = {
+    title: TranslationKey;
+    description: ReactNode;
+    children: ReactNode;
+    learnMoreUrl?: Url;
+};
 
-const AccountTypeLabel = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    line-height: 20px;
-    text-align: center;
-    min-width: 170px;
-    gap: 8px;
-`;
-
-const StyledActionButton = styled(ActionButton)`
-    min-width: 170px;
-`;
+const DetailsRow = ({ title, description, learnMoreUrl, children }: DetailsRowProps) => (
+    <Row gap={spacings.xxxl} justifyContent="space-between">
+        <InfoItem
+            label={<Translation id={title} />}
+            typographyStyle="body"
+            variant="default"
+            gap={spacings.xs}
+            maxWidth={500}
+        >
+            <Column gap={spacings.sm}>
+                <Paragraph typographyStyle="hint" variant="tertiary">
+                    {description}
+                </Paragraph>
+                {learnMoreUrl && <LearnMoreButton url={learnMoreUrl} />}
+            </Column>
+        </InfoItem>
+        <Column alignItems="flex-end" gap={spacings.xs}>
+            {children}
+        </Column>
+    </Row>
+);
 
 const Details = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
@@ -71,87 +82,74 @@ const Details = () => {
     const handleXpubClick = () => dispatch(showXpub());
 
     return (
-        <WalletLayout
-            title="TR_ACCOUNT_DETAILS_HEADER"
-            account={selectedAccount}
-            showEmptyHeaderPlaceholder={!isCoinjoinAccount}
-        >
-            <Cards>
-                {isCoinjoinAccount && (
-                    <>
-                        <Heading>
-                            <Translation id="TR_COINJOIN_SETUP_HEADING" />
-                        </Heading>
-                        <CoinjoinSetup accountKey={account.key} />
-                    </>
-                )}
+        <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount}>
+            {isCoinjoinAccount && (
+                <>
+                    <Heading>
+                        <Translation id="TR_COINJOIN_SETUP_HEADING" />
+                    </Heading>
+                    <CoinjoinSetup accountKey={account.key} />
+                </>
+            )}
 
-                <Card>
-                    <Column alignItems="center" gap={spacings.md} hasDivider>
-                        <Row>
-                            <TextColumn
-                                title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}
-                                description={
-                                    <AccountTypeDescription
-                                        bip43Path={account.path}
-                                        accountType={account.accountType}
-                                        symbol={account.symbol}
-                                        networkType={account.networkType}
-                                    />
-                                }
+            <Card>
+                <Column gap={spacings.xxxl} hasDivider>
+                    <DetailsRow
+                        title="TR_ACCOUNT_DETAILS_TYPE_HEADER"
+                        description={
+                            <AccountTypeDescription
+                                bip43Path={account.path}
+                                accountType={account.accountType}
+                                symbol={account.symbol}
+                                networkType={account.networkType}
                             />
-                            <AccountTypeLabel>
-                                <AccountTypeBadge
-                                    accountType={account.accountType}
-                                    shouldDisplayNormalType
-                                    path={account.path}
-                                    networkType={account.networkType}
-                                    onElevation={true}
-                                />
-                                <Paragraph typographyStyle="label">
-                                    (<Translation id={accountTypeTech} />)
-                                </Paragraph>
-                            </AccountTypeLabel>
-                        </Row>
-                        <Row>
-                            <TextColumn
-                                title={<Translation id="TR_ACCOUNT_DETAILS_PATH_HEADER" />}
-                                description={<Translation id="TR_ACCOUNT_DETAILS_PATH_DESC" />}
-                                buttonLink={HELP_CENTER_BIP32_URL}
-                            />
-                            <AccountTypeLabel>
-                                <Paragraph typographyStyle="hint">{account.path}</Paragraph>
-                            </AccountTypeLabel>
-                        </Row>
-                        {!isCoinjoinAccount ? (
-                            shouldDisplayXpubSection && (
-                                <Row>
-                                    <TextColumn
-                                        title={<Translation id="TR_ACCOUNT_DETAILS_XPUB_HEADER" />}
-                                        description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
-                                        buttonLink={HELP_CENTER_XPUB_URL}
-                                    />
-                                    <ActionColumn>
-                                        <StyledActionButton
-                                            variant="tertiary"
-                                            data-testid="@wallets/details/show-xpub-button"
-                                            onClick={handleXpubClick}
-                                            isDisabled={disabled}
-                                            isLoading={locked}
-                                        >
-                                            <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
-                                        </StyledActionButton>
-                                    </ActionColumn>
-                                </Row>
-                            )
-                        ) : (
-                            <RescanAccount account={account} />
-                        )}
-                    </Column>
-                </Card>
+                        }
+                    >
+                        <AccountTypeBadge
+                            accountType={account.accountType}
+                            shouldDisplayNormalType
+                            path={account.path}
+                            networkType={account.networkType}
+                            onElevation={true}
+                        />
+                        <Paragraph typographyStyle="label" textWrap="nowrap">
+                            (<Translation id={accountTypeTech} />)
+                        </Paragraph>
+                    </DetailsRow>
+                    <DetailsRow
+                        title="TR_ACCOUNT_DETAILS_PATH_HEADER"
+                        description={<Translation id="TR_ACCOUNT_DETAILS_PATH_DESC" />}
+                        learnMoreUrl={HELP_CENTER_BIP32_URL}
+                    >
+                        <Paragraph typographyStyle="hint">{account.path}</Paragraph>
+                    </DetailsRow>
+                    {!isCoinjoinAccount ? (
+                        shouldDisplayXpubSection && (
+                            <DetailsRow
+                                title="TR_ACCOUNT_DETAILS_XPUB_HEADER"
+                                description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
+                                learnMoreUrl={HELP_CENTER_XPUB_URL}
+                            >
+                                <Button
+                                    variant="tertiary"
+                                    data-testid="@wallets/details/show-xpub-button"
+                                    onClick={handleXpubClick}
+                                    isDisabled={disabled}
+                                    isLoading={locked}
+                                    size="small"
+                                    minWidth={140}
+                                >
+                                    <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
+                                </Button>
+                            </DetailsRow>
+                        )
+                    ) : (
+                        <RescanAccount account={account} />
+                    )}
+                </Column>
+            </Card>
 
-                {isCoinjoinAccount && <CoinjoinLogs />}
-            </Cards>
+            {isCoinjoinAccount && <CoinjoinLogs />}
         </WalletLayout>
     );
 };

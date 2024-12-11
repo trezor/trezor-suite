@@ -1,26 +1,18 @@
 import { ReactNode } from 'react';
 
-import styled from 'styled-components';
+import { SkeletonRectangle, Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { SkeletonRectangle } from '@trezor/components';
-
-import { AppState, ExtendedMessageDescriptor } from 'src/types/suite';
+import { AppState } from 'src/types/suite';
 import { useTranslation, useLayout } from 'src/hooks/suite';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
+import { TranslationKey } from 'src/components/suite/Translation';
 
 import { AccountBanners } from './AccountBanners/AccountBanners';
 import { AccountException } from './AccountException/AccountException';
 import { CoinjoinAccountDiscovery } from './CoinjoinAccountDiscovery/CoinjoinAccountDiscovery';
 import { AccountTopPanel } from './AccountTopPanel/AccountTopPanel';
 import { AccountNavigation } from './AccountTopPanel/AccountNavigation';
-
-// This placeholder makes the "Receive" and "Trade" tabs look aligned with other tabs in "Accounts" view,
-// which implement some kind of toolbar.
-// Height computation: 24px toolbarHeight + 20px marginBottom = 44px;
-const EmptyHeaderPlaceholder = styled.div`
-    width: 100%;
-    height: 44px;
-`;
 
 type WalletPageHeaderProps = {
     isSubpage?: boolean;
@@ -37,22 +29,13 @@ const WalletPageHeader = ({ isSubpage }: WalletPageHeaderProps) => {
 };
 
 type WalletLayoutProps = {
-    title: ExtendedMessageDescriptor['id'];
+    title: TranslationKey;
     account: AppState['wallet']['selectedAccount'];
     isSubpage?: boolean;
-    showEmptyHeaderPlaceholder?: boolean;
-    className?: string;
     children?: ReactNode;
 };
 
-export const WalletLayout = ({
-    showEmptyHeaderPlaceholder = false,
-    title,
-    account,
-    isSubpage,
-    className,
-    children,
-}: WalletLayoutProps) => {
+export const WalletLayout = ({ title, account, isSubpage, children }: WalletLayoutProps) => {
     const { translationString } = useTranslation();
     const l10nTitle = translationString(title);
 
@@ -66,14 +49,12 @@ export const WalletLayout = ({
                 return (
                     <>
                         <AccountBanners account={selectedAccount} />
-                        {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
                         <CoinjoinAccountDiscovery />
                     </>
                 );
             } else {
                 return (
                     <>
-                        {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
                         <SkeletonRectangle
                             width="100%"
                             height="300px"
@@ -87,18 +68,15 @@ export const WalletLayout = ({
             return (
                 <>
                     <AccountBanners account={selectedAccount} />
-                    {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
                     {status === 'exception' ? (
                         <AccountException loader={loader} network={network} />
                     ) : (
-                        <div className={className}>{children}</div>
+                        children
                     )}
                 </>
             );
         }
     };
 
-    const pageContent = getPageContent();
-
-    return pageContent;
+    return <Column gap={spacings.xxxl}>{getPageContent()}</Column>;
 };

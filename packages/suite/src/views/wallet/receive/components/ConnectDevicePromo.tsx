@@ -1,4 +1,4 @@
-import { Column, Image, Text, Banner } from '@trezor/components';
+import { H4, Paragraph, Banner } from '@trezor/components';
 import { selectDevice } from '@suite-common/wallet-core';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 
@@ -20,14 +20,15 @@ const ConnectDevicePromo = ({ title, description }: ConnectDevicePromoProps) => 
         <Banner
             variant="warning"
             data-testid="@warning/trezorNotConnected"
-            rightContent={<Image alt="Trezor" image={`TREZOR_${selectedDeviceModelInternal}`} />}
+            icon={
+                selectedDeviceModelInternal === 'UNKNOWN'
+                    ? undefined
+                    : `trezor${selectedDeviceModelInternal}`
+            }
+            iconSize="extraLarge"
         >
-            <Column alignItems="start">
-                <Text typographyStyle="highlight" variant="warning">
-                    {title}
-                </Text>
-                <Text typographyStyle="titleSmall">{description}</Text>
-            </Column>
+            <H4>{title}</H4>
+            <Paragraph>{description}</Paragraph>
         </Banner>
     );
 };

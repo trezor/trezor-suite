@@ -15,8 +15,8 @@ export const DashboardSection = forwardRef(
         ref: Ref<HTMLDivElement>,
     ) => (
         <div ref={ref} {...rest}>
-            <Column data-testid={dataTestId}>
-                <Row as="header" justifyContent="space-between" margin={{ bottom: spacings.lg }}>
+            <Column data-testid={dataTestId} gap={spacings.md}>
+                <Row as="header" justifyContent="space-between">
                     {heading && (
                         <H3>
                             <Row as="span">{heading}</Row>

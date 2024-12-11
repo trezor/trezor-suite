@@ -1,5 +1,3 @@
-import { spacings } from '@trezor/theme';
-import { Column } from '@trezor/components';
 import { Context } from '@suite-common/message-system';
 import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 
@@ -26,7 +24,7 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
     const { route } = useSelector(state => state.router);
 
     return (
-        <Column gap={spacings.xl}>
+        <>
             {account?.accountType === 'coinjoin' && <ContextMessage context={Context.coinjoin} />}
             {account?.symbol &&
                 isSupportedEthStakingNetworkSymbol(account.symbol) &&
@@ -41,6 +39,6 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
             <EvmExplanationBanner account={account} />
             <TaprootBanner account={account} />
             {account?.symbol && <StakeEthBanner account={account} />}
-        </Column>
+        </>
     );
 };

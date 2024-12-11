@@ -46,7 +46,7 @@ type NonAsciiBannerProps = {
 
 export const NonAsciiBanner = ({ variant }: NonAsciiBannerProps) => {
     return (
-        <Banner variant={variant} color="default" spacingX="xs">
+        <Banner variant={variant}>
             <Text>
                 <FormattedMessage
                     defaultMessage="We recommend using <code>ABC</code>, <code>abc</code>, <code>123</code>, <code>spaces</code> or <code>these special characters</code>"

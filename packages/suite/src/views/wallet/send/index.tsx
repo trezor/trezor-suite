@@ -2,9 +2,9 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Banner } from '@trezor/components';
+import { Banner, Column } from '@trezor/components';
 import { breakpointMediaQueries } from '@trezor/styles';
-import { spacingsPx } from '@trezor/theme';
+import { spacingsPx, spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { WalletLayout } from 'src/components/wallet';
@@ -22,12 +22,6 @@ import { Options } from './Options/Options';
 import { SendFees } from './SendFees';
 import { TotalSent } from './TotalSent/TotalSent';
 import { SendRaw } from './SendRaw';
-
-const SendLayout = styled(WalletLayout)`
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.md};
-`;
 
 const FormGrid = styled.div`
     gap: ${spacingsPx.md};
@@ -87,29 +81,31 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
     }
 
     return (
-        <SendLayout title="TR_NAV_SEND" isSubpage account={selectedAccount}>
+        <WalletLayout title="TR_NAV_SEND" isSubpage account={selectedAccount}>
             <SendContext.Provider value={sendContextValues}>
-                <SendHeader />
+                <Column gap={spacings.xl}>
+                    <SendHeader />
 
-                <FormGrid data-testid="@wallet/send/outputs-and-options">
-                    <Outputs disableAnim={!!children} />
-                    <Options />
-                    <SendFees />
+                    <FormGrid data-testid="@wallet/send/outputs-and-options">
+                        <Outputs disableAnim={!!children} />
+                        <Options />
+                        <SendFees />
 
-                    {symbol === 'dsol' && (
-                        <Banner icon>
-                            <Translation id="TR_SOLANA_DEVNET_SHORTCUT_WARNING" />
-                        </Banner>
-                    )}
+                        {symbol === 'dsol' && (
+                            <Banner icon>
+                                <Translation id="TR_SOLANA_DEVNET_SHORTCUT_WARNING" />
+                            </Banner>
+                        )}
 
-                    <TotalSent />
-                </FormGrid>
+                        <TotalSent />
+                    </FormGrid>
+                </Column>
 
                 {children}
             </SendContext.Provider>
 
             <ConfirmEvmExplanationModal account={selectedAccount.account} route="wallet-send" />
-        </SendLayout>
+        </WalletLayout>
     );
 };
 
