@@ -13,6 +13,7 @@ import { TableBody } from './TableBody';
 import { useScrollShadow } from '../../utils/useScrollShadow';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { TextPropsKeys, TextProps } from '../typography/utils';
+import { TableFooter } from './TableFooter';
 
 export const allowedTableFrameProps = [
     'margin',
@@ -104,3 +105,4 @@ Table.Row = TableRow;
 Table.Cell = TableCell;
 Table.Header = TableHeader;
 Table.Body = TableBody;
+Table.Footer = TableFooter;

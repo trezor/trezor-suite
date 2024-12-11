@@ -1,51 +1,18 @@
-import styled from 'styled-components';
 import { verify } from 'bitcoinjs-message';
 
 import TrezorConnect from '@trezor/connect';
-import { Banner, Button } from '@trezor/components';
+import { Banner, Button, Card, Dropdown, Row, Table, Text } from '@trezor/components';
 import { selectDevice } from '@suite-common/wallet-core';
 import { TrezorDevice } from '@suite-common/suite-types';
+import { spacings } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { getDeviceState, selectContactsForDevice } from 'src/reducers/suite/contactsReducer';
+import { selectContactsForDevice } from 'src/reducers/suite/contactsReducer';
 import * as contactsActions from 'src/actions/suite/contactsActions';
 import { Contact } from 'src/types/suite';
 
 import { SettingsLayout } from '../../components/settings';
-
-const ContactsWrapper = styled.div`
-    > div {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-
-        > div {
-            display: flex;
-            flex-direction: row;
-
-            > * {
-                display: flex;
-                flex: 0.25;
-                overflow: hidden;
-
-                > div {
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
-            }
-
-            &:first-child {
-                font-weight: bold;
-            }
-        }
-    }
-
-    > :last-child {
-        margin-top: 16px;
-        display: flex;
-        flex-direction: row;
-    }
-`;
+import { useAddContactButton } from './useAddContactButton';
 
 const ContactItem = ({
     contact: { address, label, signature },
@@ -55,22 +22,39 @@ const ContactItem = ({
     remove: () => void;
 }) => {
     return (
-        <div>
-            <div>
-                <div>{address}</div>
-            </div>
-            <div>
-                <div>{label}</div>
-            </div>
-            <div>
-                <div>{signature}</div>
-            </div>
-            <div>
-                <Button size="tiny" onClick={remove}>
-                    Remove
-                </Button>
-            </div>
-        </div>
+        <Table.Row>
+            <Table.Cell>
+                <Text typographyStyle="highlight">{label}</Text>
+            </Table.Cell>
+            <Table.Cell>
+                <Text variant="tertiary" typographyStyle="hint" overflowWrap="anywhere">
+                    {address}
+                </Text>
+            </Table.Cell>
+            <Table.Cell>
+                <Text variant="tertiary" typographyStyle="hint" overflowWrap="anywhere">
+                    {signature}
+                </Text>
+            </Table.Cell>
+            <Table.Cell align="right">
+                <Dropdown
+                    alignMenu="bottom-right"
+                    items={[
+                        {
+                            key: '1',
+                            label: 'Contact',
+                            options: [
+                                {
+                                    label: 'Delete',
+                                    icon: 'userMinusFilled',
+                                    onClick: remove,
+                                },
+                            ],
+                        },
+                    ]}
+                />
+            </Table.Cell>
+        </Table.Row>
     );
 };
 
@@ -81,68 +65,35 @@ const ContactList = ({
     contacts: Contact[];
     remove: (contact: Contact) => void;
 }) => {
-    return (
-        <div>
-            <div>
-                <div>Address</div>
-                <div>Label</div>
-                <div>Signature</div>
-                <div>Remove</div>
-            </div>
-            {contacts.map((contact, i) => (
-                <ContactItem key={i} contact={contact} remove={() => remove(contact)} />
-            ))}
-        </div>
-    );
-};
-
-const AddContactButton = () => {
-    const dispatch = useDispatch();
-    const device = useSelector(selectDevice);
-
-    const addContact = async () => {
-        const deviceState = device && getDeviceState(device);
-        if (!deviceState) {
-            alert('No device selected or device unacquired');
-
-            return;
-        }
-
-        const address = prompt("Recipient's address or public key");
-        const label = prompt('Label for this recipient');
-
-        if (!address || !label) {
-            alert('Missing data');
-
-            return;
-        }
-
-        const message = `${label}/${address}`;
-
-        const response = await TrezorConnect.signMessage({
-            device,
-            path: "m/44'/1'/0'/0/0",
-            coin: 'test',
-            message,
-            useEmptyPassphrase: device.useEmptyPassphrase,
-        });
-
-        if (!response.success) {
-            alert(`Signing failed: ${response.payload.error}`);
-
-            return;
-        }
-
-        const { signature } = response.payload;
-
-        const contact = { address, label, signature, deviceState };
-        dispatch(contactsActions.addContact(contact));
-    };
+    const onAdd = useAddContactButton();
 
     return (
-        <Button size="small" onClick={addContact}>
-            Add contact
-        </Button>
+        <Card paddingType="none" overflow="hidden">
+            <Table isRowHighlightedOnHover margin={{ top: spacings.xs }}>
+                <Table.Header>
+                    <Table.Row>
+                        <Table.Cell>Label</Table.Cell>
+                        <Table.Cell>Address</Table.Cell>
+                        <Table.Cell>Signature</Table.Cell>
+                        <Table.Cell />
+                    </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                    {contacts.map((contact, i) => (
+                        <ContactItem key={i} contact={contact} remove={() => remove(contact)} />
+                    ))}
+                </Table.Body>
+                <Table.Footer>
+                    <Table.Row hasBorderTop={true} isHighlightedOnHover={false}>
+                        <Table.Cell colSpan={4}>
+                            <Button onClick={onAdd} size="small" icon="plus">
+                                Add new contact
+                            </Button>
+                        </Table.Cell>
+                    </Table.Row>
+                </Table.Footer>
+            </Table>
+        </Card>
     );
 };
 
@@ -170,7 +121,7 @@ const FindContactButton = ({ contacts }: { contacts: Contact[] }) => {
     };
 
     return (
-        <Button size="small" onClick={findContact}>
+        <Button variant="tertiary" onClick={findContact} icon="magnifyingGlass">
             Find contact
         </Button>
     );
@@ -197,8 +148,8 @@ const GetMyPubkeyButton = () => {
     };
 
     return (
-        <Button size="small" onClick={getMyPubkey}>
-            Get my identity pubkey
+        <Button variant="tertiary" onClick={getMyPubkey} icon="eye">
+            Show your identity
         </Button>
     );
 };
@@ -206,6 +157,7 @@ const GetMyPubkeyButton = () => {
 const Contacts = ({ device }: { device: TrezorDevice }) => {
     const contacts = useSelector(selectContactsForDevice(device));
     const dispatch = useDispatch();
+    const onAdd = useAddContactButton();
 
     const removeContact = (contact: Contact) => {
         const confirmed = confirm('Do you want to remove this contact?');
@@ -215,18 +167,29 @@ const Contacts = ({ device }: { device: TrezorDevice }) => {
     };
 
     return (
-        <ContactsWrapper>
+        <>
             {contacts.length ? (
                 <ContactList contacts={contacts} remove={removeContact} />
             ) : (
-                'No contacts yet'
+                <Banner
+                    variant="info"
+                    icon
+                    rightContent={
+                        <Banner.Button icon="plus" onClick={onAdd}>
+                            Add new contact
+                        </Banner.Button>
+                    }
+                >
+                    You have no contacts yet
+                </Banner>
             )}
             <div>
-                <AddContactButton />
-                <FindContactButton contacts={contacts} />
-                <GetMyPubkeyButton />
+                <Row gap={spacings.sm}>
+                    <GetMyPubkeyButton />
+                    <FindContactButton contacts={contacts} />
+                </Row>
             </div>
-        </ContactsWrapper>
+        </>
     );
 };
 
@@ -234,7 +197,11 @@ export const SettingsContacts = () => {
     const device = useSelector(selectDevice);
 
     if (!device) {
-        return <Banner>Connect your device to see contacts</Banner>;
+        return (
+            <Banner variant="warning" icon>
+                Connect your device to see your contacts.
+            </Banner>
+        );
     }
 
     return (

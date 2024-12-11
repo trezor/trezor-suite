@@ -22,6 +22,7 @@ import { uiVariants } from '../../../config/types';
 export const allowedTextTextProps = [
     'typographyStyle',
     'textWrap',
+    'overflowWrap',
     'align',
     'ellipsisLineCount',
 ] as const satisfies TextPropsKeys[];

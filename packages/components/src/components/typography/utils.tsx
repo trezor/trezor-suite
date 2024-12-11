@@ -8,9 +8,13 @@ import { UIHorizontalAlignment, uiHorizontalAlignments } from '../../config/type
 export const textWraps = ['balance', 'break-word', 'pretty'];
 export type TextWrap = (typeof textWraps)[number];
 
+export const overflowWraps = ['normal', 'break-word', 'anywhere'];
+export type OverflowWrap = (typeof overflowWraps)[number];
+
 export type TextProps = {
     typographyStyle?: TypographyStyle;
     textWrap?: TextWrap;
+    overflowWrap?: OverflowWrap;
     align?: UIHorizontalAlignment;
     ellipsisLineCount?: number;
 };
@@ -29,6 +33,7 @@ export const pickAndPrepareTextProps = (
 
 export const withTextProps = ({
     $textWrap,
+    $overflowWrap,
     $typographyStyle,
     $align,
     $ellipsisLineCount = 0,
@@ -37,6 +42,10 @@ export const withTextProps = ({
         ${$textWrap &&
         css`
             text-wrap: ${$textWrap};
+        `}
+        ${$overflowWrap &&
+        css`
+            overflow-wrap: ${$overflowWrap};
         `}
         ${$typographyStyle
             ? css`
@@ -68,6 +77,13 @@ const getStorybookType = (key: TextPropsKeys) => {
         case 'textWrap':
             return {
                 options: [undefined, ...textWraps],
+                control: {
+                    type: 'select',
+                },
+            };
+        case 'overflowWrap':
+            return {
+                options: [undefined, ...overflowWraps],
                 control: {
                     type: 'select',
                 },
@@ -119,6 +135,7 @@ export const getTextPropsStory = (allowedTextProps: Array<TextPropsKeys>) => {
     return {
         args: {
             ...(allowedTextProps.includes('textWrap') ? { textWrap: undefined } : {}),
+            ...(allowedTextProps.includes('overflowWrap') ? { overflowWrap: undefined } : {}),
             ...(allowedTextProps.includes('typographyStyle') ? { typographyStyle: undefined } : {}),
             ...(allowedTextProps.includes('align') ? { align: undefined } : {}),
             ...(allowedTextProps.includes('ellipsisLineCount') ? { hasEllipsis: undefined } : {}),
