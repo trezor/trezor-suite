@@ -37,6 +37,7 @@ export { default as getOwnershipId } from './getOwnershipId';
 export { default as getOwnershipProof } from './getOwnershipProof';
 export { default as getPublicKey } from './getPublicKey';
 export { default as nostrGetPublicKey } from './nostrGetPublicKey';
+export { default as nostrSignEvent } from './nostrSignEvent';
 export { default as getSettings } from './getSettings';
 // export { default as init } from './init';
 // export { default as manifest } from './manifest';

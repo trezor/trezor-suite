@@ -52,6 +52,7 @@ import { getOwnershipId } from './getOwnershipId';
 import { getOwnershipProof } from './getOwnershipProof';
 import { getPublicKey } from './getPublicKey';
 import { nostrGetPublicKey } from './nostrGetPublicKey';
+import { nostrSignEvent } from './nostrSignEvent';
 import { getSettings } from './getSettings';
 import { init } from './init';
 import { manifest } from './manifest';
@@ -251,6 +252,9 @@ export interface TrezorConnect {
 
     // todo:
     nostrGetPublicKey: typeof nostrGetPublicKey;
+
+    // todo:
+    nostrSignEvent: typeof nostrSignEvent;
 
     // todo: link docs
     getSettings: typeof getSettings;

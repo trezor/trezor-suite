@@ -150,6 +150,8 @@ export const factory = <
 
     nostrGetPublicKey: params => call({ ...params, method: 'nostrGetPublicKey' }),
 
+    nostrSignEvent: params => call({ ...params, method: 'nostrSignEvent' }),
+
     nemGetAddress: params =>
         call({
             ...params,
