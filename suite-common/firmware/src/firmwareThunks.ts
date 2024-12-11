@@ -2,6 +2,7 @@ import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-util
 import TrezorConnect, { FirmwareType } from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { selectFirmware } from './firmwareReducer';
 import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
@@ -77,7 +78,7 @@ export const firmwareUpdate = createThunk<
         }
 
         const {
-            selectors: { selectDevice, selectLanguage },
+            selectors: { selectLanguage },
         } = extra;
 
         const device = selectDevice(getState());
