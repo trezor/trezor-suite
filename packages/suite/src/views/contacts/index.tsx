@@ -2,16 +2,16 @@ import styled from 'styled-components';
 import { verify } from 'bitcoinjs-message';
 
 import TrezorConnect from '@trezor/connect';
-import { Button } from '@trezor/components';
+import { Banner, Button } from '@trezor/components';
 import { selectDevice } from '@suite-common/wallet-core';
 import { TrezorDevice } from '@suite-common/suite-types';
 
-import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
-import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getDeviceState, selectContactsForDevice } from 'src/reducers/suite/contactsReducer';
 import * as contactsActions from 'src/actions/suite/contactsActions';
 import { Contact } from 'src/types/suite';
+
+import { SettingsLayout } from '../../components/settings';
 
 const ContactsWrapper = styled.div`
     > div {
@@ -231,16 +231,17 @@ const Contacts = ({ device }: { device: TrezorDevice }) => {
 };
 
 const ContactsView = () => {
-    useLayout(
-        'Contacts',
-        <PageHeader>
-            <BasicName nameId="TR_CONTACTS" />
-        </PageHeader>,
-    );
-
     const device = useSelector(selectDevice);
 
-    return device ? <Contacts device={device} /> : null;
+    if (!device) {
+        return <Banner>Connect your device to see contacts</Banner>;
+    }
+
+    return (
+        <SettingsLayout data-testid="@settings/contacts">
+            <Contacts device={device} />
+        </SettingsLayout>
+    );
 };
 
 export default ContactsView;

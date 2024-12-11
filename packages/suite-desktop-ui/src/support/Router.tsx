@@ -65,11 +65,11 @@ const components: { [key: string]: ComponentType<any> } = {
     'wallet-coinmarket-transactions': CoinmarketTransactions,
 
     'password-manager-index': PasswordManager,
-    'contacts-index': Contacts,
 
     'settings-index': SettingsGeneral,
     'settings-coins': SettingsCoins,
     'settings-debug': SettingsDebug,
+    'settings-contacts': Contacts,
     'settings-device': SettingsDevice,
 };
 

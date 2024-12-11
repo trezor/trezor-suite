@@ -69,8 +69,8 @@ export const routes = [
         app: 'password-manager',
     },
     {
-        name: 'contacts-index',
-        pattern: '/contacts',
+        name: 'settings-contacts',
+        pattern: '/settings/contacts',
         app: 'contacts',
     },
     {
