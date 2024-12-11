@@ -190,7 +190,7 @@ const GetMyPubkeyButton = () => {
             showOnTrezor: false,
         });
         if (response.success) {
-            prompt('Your identity pubkey', response.payload.address);
+            alert(`Your identity pubkey: ${response.payload.address}`);
         } else {
             alert(`Failed to get pubkey: ${response.payload.error}`);
         }

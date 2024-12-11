@@ -31,4 +31,5 @@ export interface FormState {
     hasCoinControlBeenOpened: boolean;
     anonymityWarningChecked?: boolean;
     selectedUtxos: AccountUtxo[];
+    contactSignatures: Record<string, string>;
 }

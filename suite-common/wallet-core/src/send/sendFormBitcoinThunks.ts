@@ -1,3 +1,5 @@
+import { verify } from 'bitcoinjs-message';
+
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import TrezorConnect, {
     FeeLevel,
@@ -343,6 +345,46 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
             chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
             ...signEnhancement,
         };
+
+        const deviceState = device.state?.staticSessionId?.split('@')?.[0];
+        const contacts: { address: string; label: string; signature: string }[] = deviceState
+            ? getState().contacts.filter((c: any) => c.deviceState === deviceState)
+            : [];
+
+        signPayload.outputs = signPayload.outputs.map(output => {
+            if (output.address) {
+                const contactSignature = formState.contactSignatures[output.address];
+                if (contactSignature) {
+                    const contact = contacts.find(c => {
+                        try {
+                            return verify(output.address, c.address, contactSignature);
+                        } catch {
+                            return false;
+                        }
+                    });
+                    if (contact) {
+                        return {
+                            ...output,
+                            label: contact.label,
+                            label_sig: Buffer.from(contact.signature, 'base64').toString('hex'),
+                            label_pk: contact.address,
+                            address_pk_sig: contactSignature,
+                        };
+                    }
+                }
+
+                const contact = contacts.find(c => c.address === output.address);
+                if (contact) {
+                    return {
+                        ...output,
+                        label: contact.label,
+                        label_sig: Buffer.from(contact.signature, 'base64').toString('hex'),
+                    };
+                }
+            }
+
+            return output;
+        });
 
         const response = await TrezorConnect.signTransaction(signPayload);
         if (!response.success) {

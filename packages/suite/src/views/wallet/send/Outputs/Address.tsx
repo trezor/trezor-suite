@@ -330,6 +330,12 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         return undefined;
     };
 
+    const setReceiverSignature = () => {
+        const signature = prompt(`Recipient's signature for address ${address}`) ?? '';
+
+        setValue(`contactSignatures.${address}`, signature);
+    };
+
     return (
         <Container>
             <Input
@@ -364,9 +370,24 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     </Text>
                 }
                 labelHoverRight={
-                    <Button variant="tertiary" size="tiny" icon="qrCode" onClick={handleQrClick}>
-                        <Translation id="RECIPIENT_SCAN" />
-                    </Button>
+                    <div style={{ display: 'flex', flexDirection: 'row' }}>
+                        <Button
+                            variant="tertiary"
+                            size="tiny"
+                            icon="addressBook"
+                            onClick={setReceiverSignature}
+                        >
+                            Add signature
+                        </Button>
+                        <Button
+                            variant="tertiary"
+                            size="tiny"
+                            icon="qrCode"
+                            onClick={handleQrClick}
+                        >
+                            <Translation id="RECIPIENT_SCAN" />
+                        </Button>
+                    </div>
                 }
                 labelLeft={
                     <p>
