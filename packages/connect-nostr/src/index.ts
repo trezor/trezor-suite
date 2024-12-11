@@ -1,44 +1,55 @@
-import { getPublicKey, finalizeEvent, verifyEvent, Event } from 'nostr-tools/pure';
+import {
+    getPublicKey,
+    finalizeEvent,
+    verifyEvent,
+    Event,
+    generateSecretKey,
+} from 'nostr-tools/pure';
 import { Relay } from 'nostr-tools/relay';
 import * as nip19 from 'nostr-tools/nip19';
 import { useWebSocketImplementation } from 'nostr-tools/pool';
 import WebSocket from 'ws';
-
-import { TypedEmitter } from '@trezor/utils';
+import { PeerToPeerCommunicationClient, PeerToPeerCommunicationClientEvents } from './abstract';
 
 useWebSocketImplementation(WebSocket);
 
-interface NostrClientEvents {
-    event: Event;
-    status: 'connecting' | 'connected' | 'disconnected';
-}
-
 export type { Event } from 'nostr-tools/pure';
 
-export class NostrClient extends TypedEmitter<NostrClientEvents> {
-    sk: Uint8Array;
-    pk: string;
-    nsec: Uint8Array;
-    npub: nip19.NPub;
+export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommunicationClientEvents> {
+    sk?: Uint8Array;
+    pk?: string;
+    nsec?: Uint8Array;
+    nsecStr?: nip19.NSec;
+    npub?: nip19.NPub;
     relay: Relay;
     events: Event[] = [];
 
     constructor({ nsecStr, relayUrl }: { nsecStr: string; relayUrl: string }) {
         super();
+
+        if (nsecStr) {
+            this.setIdentity(nsecStr);
+        }
+
+        this.relay = new Relay(relayUrl);
+        this.emit('status', 'disconnected');
+    }
+
+    newIdentity() {
+        this.sk = generateSecretKey();
+        return this.setIdentity(nip19.nsecEncode(this.sk));
+    }
+
+    setIdentity(nsecStr: string) {
         const { data, type } = nip19.decode(nsecStr);
         if (type !== 'nsec') {
             throw new Error('invalid nsecStr');
         }
         this.sk = data;
-
         this.pk = getPublicKey(this.sk);
-        const nsec = nip19.nsecEncode(this.sk);
+        this.nsecStr = nip19.nsecEncode(this.sk);
         this.npub = nip19.npubEncode(this.pk);
-
-        this.nsec = nip19.decode(nsec).data;
-
-        this.relay = new Relay(relayUrl);
-        this.emit('status', 'disconnected');
+        this.nsec = nip19.decode(this.nsecStr).data;
     }
 
     async connect() {
@@ -50,6 +61,9 @@ export class NostrClient extends TypedEmitter<NostrClientEvents> {
     }
 
     async send({ content }: { content: string }) {
+        if (!this.nsec) {
+            return Promise.resolve({ success: false, error: 'no identity' });
+        }
         const eventTemplate = {
             kind: 1,
             created_at: Math.floor(Date.now() / 1000),
@@ -65,6 +79,8 @@ export class NostrClient extends TypedEmitter<NostrClientEvents> {
         console.log('isGood:', isGood);
         const publishRes = await this.relay.publish(signedEvent);
         console.log('publishRes:', publishRes);
+
+        return { success: true as true };
     }
 
     subscribe({ pubKeys }: { pubKeys: string[] }) {

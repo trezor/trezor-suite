@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Input, Button } from '@trezor/components';
 import { NostrClient, Event } from '@trezor/connect-nostr';
@@ -26,7 +26,7 @@ export const Nostr = () => {
         setPeerNpub(event.target.value);
     };
 
-    const handleInitClick = async () => {
+    const initPeerToPeerClient = async () => {
         const nostrClient = new NostrClient({
             nsecStr: Nsec,
             relayUrl: 'wss://relay.primal.net',
@@ -49,6 +49,10 @@ export const Nostr = () => {
 
         await nostrClient.connect();
     };
+
+    useEffect(() => {
+        initPeerToPeerClient();
+    }, []);
 
     const handlePeerNpubClick = () => {
         client?.subscribe({ pubKeys: [peerNpub] });
@@ -122,25 +126,11 @@ export const Nostr = () => {
     return (
         <>
             <SectionItem>
-                <TextColumn
-                    title="Example nsecs"
-                    description="nsec1ry7mmu4chqednvud4s0nj45mkkxe9rn4mh8vlmm7c07764q7vl6s4erpcq nsec12rfalrsa6dvnxjhhf4n0d2k4rc2wc8hy49qvp34k2hj8p7cppnnq8ysujz"
-                />
-            </SectionItem>
-            <SectionItem data-testid="@settings/debug/nostr">
-                <TextColumn title="My Nostr keys" description="" />
-
+                <TextColumn title="Client status" description={clientStatus} />
+                <TextColumn title="Relay" description={client?.relay.url} />
                 <ActionColumn>
-                    <Input
-                        disabled={clientStatus === 'connected'}
-                        placeholder="My Nsec"
-                        value={Nsec}
-                        onChange={handleChange}
-                        size="small"
-                    />
-                    <Input disabled={true} placeholder="My Npub" value={myNpub} size="small" />
                     {clientStatus === 'disconnected' && (
-                        <Button onClick={handleInitClick}>Init</Button>
+                        <Button onClick={initPeerToPeerClient}>Connect</Button>
                     )}
                     {clientStatus === 'connected' && (
                         <Button onClick={handleDisconnectClick}>Disconnect</Button>
@@ -148,7 +138,52 @@ export const Nostr = () => {
                 </ActionColumn>
             </SectionItem>
             <SectionItem>
-                <TextColumn title="Peer nostr pubkey" description="" />
+                <TextColumn title="Nostr identity" description="" />
+                <ActionColumn>
+                    <Button
+                        onClick={() => {
+                            client?.newIdentity();
+                            setNsec(client?.nsecStr!);
+                            setMyNpub(client?.pk!);
+                            console.log('client', client);
+                        }}
+                    >
+                        Create new
+                    </Button>
+                </ActionColumn>
+            </SectionItem>
+
+            <SectionItem>
+                <TextColumn title="Nsec" description="" />
+
+                <ActionColumn>
+                    <Input
+                        isDisabled
+                        placeholder="My Nsec"
+                        value={Nsec}
+                        onChange={handleChange}
+                        size="small"
+                    />
+                </ActionColumn>
+            </SectionItem>
+
+            <SectionItem>
+                <TextColumn title="Pubk" description="" />
+                <ActionColumn>
+                    <br />
+                    <Input disabled={true} placeholder="My Npub" value={myNpub} size="small" />
+                </ActionColumn>
+            </SectionItem>
+
+            <SectionItem>
+                <TextColumn title="Peer identity" description="" />
+                <ActionColumn>
+                    <Button onClick={handlePeerNpubClick}>Subscribe</Button>
+                </ActionColumn>
+            </SectionItem>
+
+            <SectionItem>
+                <TextColumn title="Pubk" description="" />
                 <ActionColumn>
                     <Input
                         placeholder="Peer Npub"
@@ -156,16 +191,11 @@ export const Nostr = () => {
                         onChange={handlePeerNpubChange}
                         size="small"
                     />
-                    <Button onClick={handlePeerNpubClick}>Subscribe</Button>
                 </ActionColumn>
             </SectionItem>
 
             {peerNpub && clientStatus === 'connected' && (
                 <>
-                    <SectionItem>
-                        <TextColumn title="Client status" description={clientStatus} />
-                        <TextColumn title="Relay" description={client?.relay.url} />
-                    </SectionItem>
                     <SectionItem>
                         <TextColumn title="Send message" description="Ask peer for address" />
                         <Button onClick={handleSendPaymentRequest} isDisabled={!unusedAddress}>
