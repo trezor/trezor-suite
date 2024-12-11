@@ -1,21 +1,6 @@
 [
     {
         "required": false,
-        "version": [2, 8, 6],
-        "min_bootloader_version": [2, 1, 6],
-        "min_firmware_version": [2, 7, 2],
-        "bootloader_version": [2, 1, 9],
-        "firmware_revision": "17f2a3256b2631823c2bad1855fab61b27985fd2",
-        "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
-        "url": "firmware/t3t1/trezor-t3t1-2.8.6.bin",
-        "fingerprint": "da8741ccfb4a328e639351dfa5dba496198016bdbd076ec02a40a52870d85e91",
-        "changelog": "* Show last typed PIN number for short period of time.\n* Add P2WSH support for Unchained BIP32 paths.\n* Simplified UI of Cardano transactions initiated by Trezor Suite.\n* Improve UI synchronization, ordering, and responsiveness.\n* Improve device responsiveness by removing unnecessary screen refreshes.\n* Bootloader 2.1.9. included\n* Show account info in ETH send/stake flow.\n* Fix ETH account number detection.\n* Fix XPUB confirmed success screen title.\n* New EVM call contract flow UI.\n* Fix translation of the 'Enable labeling' screen.",
-        "url_bitcoinonly": "firmware/t3t1/trezor-t3t1-2.8.6-bitcoinonly.bin",
-        "fingerprint_bitcoinonly": "1ff9b59fb8069e7c2234153f2f6d40a8b8d93a47f26b64f5930db0191a6879e7",
-        "changelog_bitcoinonly": "* Show last typed PIN number for short period of time.\n* Add P2WSH support for Unchained BIP32 paths.\n* Improve UI synchronization, ordering, and responsiveness.\n* Improve device responsiveness by removing unnecessary screen refreshes.\n* Bootloader 2.1.9. included\n* Fix XPUB confirmed success screen title.\n* Fix translation of the 'Enable labeling' screen."
-    },
-    {
-        "required": false,
         "version": [2, 8, 3],
         "min_firmware_version": [2, 7, 2],
         "min_bootloader_version": [2, 1, 6],
