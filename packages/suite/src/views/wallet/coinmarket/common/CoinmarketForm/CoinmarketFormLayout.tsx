@@ -13,7 +13,7 @@ const CoinmarketFormLayoutWrapper = styled.form`
 `;
 
 export const CoinmarketFormLayout = () => (
-    <>
+    <Column gap={spacings.xxxxl}>
         <CoinmarketFormLayoutWrapper>
             <Card>
                 <Column gap={spacings.lg}>
@@ -25,5 +25,5 @@ export const CoinmarketFormLayout = () => (
             </Card>
         </CoinmarketFormLayoutWrapper>
         <CoinmarketFeaturedOffers />
-    </>
+    </Column>
 );

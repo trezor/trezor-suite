@@ -1,3 +1,5 @@
+import { Column } from '@trezor/components';
+
 import { getBestRatedQuote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { WalletSubpageHeading } from 'src/components/wallet';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
@@ -17,7 +19,7 @@ export const CoinmarketFeaturedOffers = () => {
     const bestRatedQuote = getBestRatedQuote(quotes, type);
 
     return (
-        <>
+        <Column>
             <WalletSubpageHeading title="TR_COINMARKET_FEATURED_OFFERS_HEADING" />
             {featuredQuotes.map(quote => (
                 <CoinmarketFeaturedOffersItem
@@ -27,6 +29,6 @@ export const CoinmarketFeaturedOffers = () => {
                     isBestRate={bestRatedQuote?.orderId === quote?.orderId}
                 />
             ))}
-        </>
+        </Column>
     );
 };

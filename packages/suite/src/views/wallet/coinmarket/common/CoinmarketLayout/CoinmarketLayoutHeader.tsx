@@ -1,29 +1,37 @@
 import { PropsWithChildren, useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
 
-import { IconButton, Row, Box } from '@trezor/components';
+import { IconButton, Row, Box, Button } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { Route } from '@suite-common/suite-types';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
-import { useLayout, useSelector, useTranslation } from 'src/hooks/suite';
+import { useLayout, useSelector, useTranslation, useDispatch } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { CoinmarketLayoutNavigationItem } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketLayoutNavigation/CoinmarketLayoutNavigationItem';
-import { TranslationKey } from 'src/components/suite/Translation';
+import { TranslationKey, Translation } from 'src/components/suite/Translation';
+import { goto } from 'src/actions/suite/routerActions';
 
 interface CoinmarketLayoutHeaderProps extends PropsWithChildren {}
 
-type CoinmarketPageHeaderProps = {
-    fallbackTitle: TranslationKey;
-    currentRouteName?: string;
-    goBack: () => void;
+const getBackRoute = (route: Route['name'] | undefined): Route['name'] => {
+    const routePrefix = 'wallet-coinmarket-';
+    const match = route?.match(new RegExp(`^${routePrefix}(exchange|buy|sell)-`));
+
+    return match ? (`${routePrefix}${match[1]}` as Route['name']) : 'wallet-index';
 };
 
-const CoinmarketPageHeader = ({
-    fallbackTitle,
-    currentRouteName,
-    goBack,
-}: CoinmarketPageHeaderProps) => {
+type CoinmarketPageHeaderProps = {
+    fallbackTitle: TranslationKey;
+};
+
+const CoinmarketPageHeader = ({ fallbackTitle }: CoinmarketPageHeaderProps) => {
+    const dispatch = useDispatch();
+    const currentRouteName = useSelector(selectRouteName);
+
+    const goToRoute = (route: Route['name']) => () => {
+        dispatch(goto(route, { preserveParams: true }));
+    };
+
     return (
         <PageHeader>
             <Row width="100%" gap={spacings.md}>
@@ -31,16 +39,21 @@ const CoinmarketPageHeader = ({
                     icon="caretLeft"
                     variant="tertiary"
                     size="medium"
-                    onClick={goBack}
+                    onClick={goToRoute(getBackRoute(currentRouteName))}
                     data-testid="@account-subpage/back"
                 />
                 <BasicName nameId={fallbackTitle} />
                 {currentRouteName !== 'wallet-coinmarket-transactions' && (
                     <Box margin={{ left: 'auto' }}>
-                        <CoinmarketLayoutNavigationItem
-                            route="wallet-coinmarket-transactions"
-                            title="TR_COINMARKET_LAST_TRANSACTIONS"
-                        />
+                        <Button
+                            size="small"
+                            variant="tertiary"
+                            margin={{ left: 'auto' }}
+                            onClick={goToRoute('wallet-coinmarket-transactions')}
+                            data-testid="@coinmarket/menu/wallet-coinmarket-transactions"
+                        >
+                            <Translation id="TR_COINMARKET_LAST_TRANSACTIONS" />
+                        </Button>
                     </Box>
                 )}
             </Row>
@@ -49,9 +62,7 @@ const CoinmarketPageHeader = ({
 };
 
 export const CoinmarketLayoutHeader = ({ children }: CoinmarketLayoutHeaderProps) => {
-    const currentRouteName = useSelector(selectRouteName);
     const { activeSection } = useSelector(state => state.wallet.coinmarket);
-    const { goBack } = useHistory();
     const { translationString } = useTranslation();
     const fallbackTitle = useMemo(
         () => (activeSection === 'exchange' ? 'TR_COINMARKET_SWAP' : 'TR_COINMARKET_BUY_AND_SELL'),
@@ -61,14 +72,7 @@ export const CoinmarketLayoutHeader = ({ children }: CoinmarketLayoutHeaderProps
     const translatedTitle = translationString(fallbackTitle);
     const pageTitle = `Trezor Suite | ${translatedTitle}`;
 
-    useLayout(
-        pageTitle,
-        <CoinmarketPageHeader
-            fallbackTitle={fallbackTitle}
-            currentRouteName={currentRouteName}
-            goBack={goBack}
-        />,
-    );
+    useLayout(pageTitle, <CoinmarketPageHeader fallbackTitle={fallbackTitle} />);
 
     if (!children) return null;
 
