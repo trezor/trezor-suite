@@ -9,6 +9,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { messageSystemActions } from '@suite-common/message-system';
 import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 import type { Route } from '@suite-common/suite-types';
+import { ContactsAction } from '@suite-common/contacts';
 
 import type { RouterAction } from 'src/actions/suite/routerActions';
 import type { AppState } from 'src/reducers/store';
@@ -25,7 +26,6 @@ import type { WalletAction } from 'src/types/wallet';
 import type { BackupAction } from 'src/actions/backup/backupActions';
 import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
 import type { GuideAction } from 'src/actions/suite/guideActions';
-import type { ContactsAction } from 'src/actions/suite/contactsActions';
 
 // reexport
 export type { ExtendedMessageDescriptor } from 'src/components/suite/Translation';
@@ -129,10 +129,3 @@ export enum DisplayMode {
     PAGINATED_TEXT,
     SINGLE_WRAPPED_TEXT,
 }
-
-export type Contact = {
-    address: string;
-    label: string;
-    signature: string;
-    deviceState: string;
-};

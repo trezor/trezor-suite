@@ -5,7 +5,6 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from '../../hooks/suite';
-import { getDeviceState } from '../../reducers/suite/contactsReducer';
 import { useAddContact } from './useAddContact';
 
 type AddNewContactModalProps = {
@@ -14,7 +13,7 @@ type AddNewContactModalProps = {
 
 export const AddNewContactModal = ({ onClose }: AddNewContactModalProps) => {
     const device = useSelector(selectDevice);
-    const deviceState = device && getDeviceState(device);
+    const deviceState = device && !!device.state?.staticSessionId;
 
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [label, setLabel] = useState('');

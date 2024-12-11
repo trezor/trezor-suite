@@ -1,24 +1,25 @@
 import { useState } from 'react';
 
-import { verify } from 'bitcoinjs-message';
-
 import TrezorConnect from '@trezor/connect';
 import { Banner, Button, Row } from '@trezor/components';
 import { selectDevice } from '@suite-common/wallet-core';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { spacings } from '@trezor/theme';
+import {
+    Contact,
+    contactsActions,
+    findContact,
+    selectContactsForDevice,
+} from '@suite-common/contacts';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectContactsForDevice } from 'src/reducers/suite/contactsReducer';
-import * as contactsActions from 'src/actions/suite/contactsActions';
-import { Contact } from 'src/types/suite';
 
 import { SettingsLayout } from '../../components/settings';
 import { AddNewContactModal } from './AddNewContactModal';
 import { ContactList } from './ContactList';
 
 const FindContactButton = ({ contacts }: { contacts: Contact[] }) => {
-    const findContact = () => {
+    const handleClick = async () => {
         const address = prompt('Address signed by the recipient');
         const signature = prompt('Signature from the recipient');
 
@@ -28,20 +29,13 @@ const FindContactButton = ({ contacts }: { contacts: Contact[] }) => {
             return;
         }
 
-        const contact = contacts.find(contact => {
-            try {
-                return verify(address, contact.address, signature);
-            } catch {
-                return false;
-            }
-        });
-
+        const contact = await findContact(contacts, address, signature);
         if (contact) alert(`Address "${address}" was signed by your contact "${contact.label}"`);
         else alert('Recipient not in your contacts');
     };
 
     return (
-        <Button variant="tertiary" onClick={findContact} icon="magnifyingGlass">
+        <Button variant="tertiary" onClick={handleClick} icon="magnifyingGlass">
             Find contact
         </Button>
     );
@@ -59,6 +53,7 @@ const GetMyPubkeyButton = () => {
             coin: 'test',
             useEmptyPassphrase: device.useEmptyPassphrase,
             showOnTrezor: false,
+            scriptType: 'SPENDADDRESS',
         });
         if (response.success) {
             alert(`Your identity pubkey: ${response.payload.address}`);

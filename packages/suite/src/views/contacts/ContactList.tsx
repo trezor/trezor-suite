@@ -1,7 +1,6 @@
+import { Contact } from '@suite-common/contacts';
 import { Button, Card, Dropdown, Table, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { Contact } from '../../types/suite';
 
 const ContactItem = ({
     contact: { address, label, signature },

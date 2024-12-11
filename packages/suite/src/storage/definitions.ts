@@ -14,13 +14,13 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StorageUpdateMessage } from '@trezor/suite-storage';
 import { AnalyticsState } from '@suite-common/analytics';
 import { SimpleTokenStructure } from '@suite-common/token-definitions';
+import { Contact } from '@suite-common/contacts';
 
 import type { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 import type { Account, Discovery, WalletAccountTransaction } from 'src/types/wallet';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import type { MetadataState } from 'src/types/suite/metadata';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
-import { Contact } from 'src/types/suite';
 
 import { GraphData } from '../types/wallet/graph';
 

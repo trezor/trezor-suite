@@ -10,7 +10,6 @@ import * as METADATA_PASSWORDS from './metadataPasswordsConstants';
 import * as DESKTOP_UPDATE from './desktopUpdateConstants';
 import * as GUIDE from './guideConstants';
 import * as PROTOCOL from './protocolConstants';
-import * as CONTACTS from './contactsConstants';
 
 export {
     STORAGE,
@@ -25,5 +24,4 @@ export {
     DESKTOP_UPDATE,
     GUIDE,
     PROTOCOL,
-    CONTACTS,
 };

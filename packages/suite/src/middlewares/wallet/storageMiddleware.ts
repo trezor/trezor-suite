@@ -23,6 +23,7 @@ import { findAccountDevice } from '@suite-common/wallet-utils';
 import { analyticsActions } from '@suite-common/analytics';
 import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
 import { TokenManagementAction } from '@suite-common/token-definitions';
+import { CONTACTS } from '@suite-common/contacts';
 
 import { db } from 'src/storage';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
@@ -30,7 +31,7 @@ import * as walletSettingsActions from 'src/actions/settings/walletSettingsActio
 import { GRAPH, COINMARKET_COMMON, FORM_DRAFT } from 'src/actions/wallet/constants';
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import * as storageActions from 'src/actions/suite/storageActions';
-import { SUITE, METADATA, STORAGE, CONTACTS } from 'src/actions/suite/constants';
+import { SUITE, METADATA, STORAGE } from 'src/actions/suite/constants';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import { serializeDiscovery } from 'src/utils/suite/storage';
 import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';

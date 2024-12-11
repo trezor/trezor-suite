@@ -127,6 +127,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         storageLoadHistoricRates: mockReducer('storageLoadHistoricRates'),
         storageLoadFirmware: mockReducer('storageLoadFirmware'),
         storageLoadDiscovery: mockReducer('storageLoadDiscovery'),
+        storageLoadContacts: mockReducer('storageLoadContacts'),
         addButtonRequestFirmware: mockReducer('addButtonRequestFirmware'),
         setDeviceMetadataReducer: mockReducer('setDeviceMetadataReducer'),
         setDeviceMetadataPasswordsReducer: mockReducer('setDeviceMetadataPasswordsReducer'),

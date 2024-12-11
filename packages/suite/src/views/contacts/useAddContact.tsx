@@ -1,9 +1,9 @@
 import TrezorConnect from '@trezor/connect';
 import { selectDevice } from '@suite-common/wallet-core';
+import { contactsActions } from '@suite-common/contacts';
+import { getDeviceState } from '@suite-common/contacts/src/redux/contactsReducer';
 
 import { useDispatch, useSelector } from '../../hooks/suite';
-import { getDeviceState } from '../../reducers/suite/contactsReducer';
-import * as contactsActions from '../../actions/suite/contactsActions';
 
 export const useAddContact = (onCloseModal: () => void, label: string, address: string) => {
     const dispatch = useDispatch();

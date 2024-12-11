@@ -11,6 +11,7 @@ import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
 import { MetadataState } from '@suite-common/metadata-types';
 import { DefinitionType, TokenManagementAction } from '@suite-common/token-definitions';
+import { Contact } from '@suite-common/contacts';
 
 import { db } from 'src/storage';
 import {
@@ -18,7 +19,7 @@ import {
     serializeDevice,
     serializeCoinjoinAccount,
 } from 'src/utils/suite/storage';
-import type { AppState, Contact, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
+import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';

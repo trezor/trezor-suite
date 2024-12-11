@@ -159,6 +159,7 @@ export const extraDependencies: ExtraDependencies = {
             }
         },
         storageLoadDiscovery: (_, { payload }: StorageLoadAction) => payload.discovery,
+        storageLoadContacts: (_, { payload }: StorageLoadAction) => payload.contacts,
         addButtonRequestFirmware: (
             state,
             {
