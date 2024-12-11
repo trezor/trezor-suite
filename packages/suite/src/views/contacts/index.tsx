@@ -230,7 +230,7 @@ const Contacts = ({ device }: { device: TrezorDevice }) => {
     );
 };
 
-const ContactsView = () => {
+export const SettingsContacts = () => {
     const device = useSelector(selectDevice);
 
     if (!device) {
@@ -243,5 +243,3 @@ const ContactsView = () => {
         </SettingsLayout>
     );
 };
-
-export default ContactsView;
