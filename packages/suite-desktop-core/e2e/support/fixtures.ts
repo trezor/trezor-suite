@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { test as base, ElectronApplication, Page } from '@playwright/test';
+import { existsSync } from 'node:fs';
 
 import {
     SetupEmu,
@@ -84,6 +85,23 @@ const test = base.extend<Fixtures>({
             await use(window);
             const tracePath = `${testInfo.outputDir}/trace.electron.zip`;
             await window.context().tracing.stop({ path: tracePath });
+            testInfo.attachments.push({
+                name: 'trace',
+                path: tracePath,
+                contentType: 'application/zip',
+            });
+
+            // Attach video if it exists
+            const videoPath = `${testInfo.outputDir}/${testInfo.title}`;
+            console.error('videoPath', videoPath);
+            console.error('exists?', existsSync(videoPath));
+            if (existsSync(videoPath)) {
+                testInfo.attachments.push({
+                    name: 'video',
+                    path: videoPath,
+                    contentType: 'video/webm',
+                });
+            }
         } else {
             await page.context().addInitScript(() => {
                 // Tells the app to attach Redux Store to window object. packages/suite-web/src/support/useCypress.ts
