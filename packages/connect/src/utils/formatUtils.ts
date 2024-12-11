@@ -33,8 +33,8 @@ export const hasHexPrefix = (str: string) => str.slice(0, 2).toLowerCase() === '
 
 export const stripHexPrefix = (str: string) => (hasHexPrefix(str) ? str.slice(2) : str);
 
-export const addHexPrefix = (str: string) =>
-    str !== undefined && !hasHexPrefix(str) ? `0x${str}` : str;
+export const addHexPrefix = (str: string): `0x${string}` =>
+    str !== undefined && !hasHexPrefix(str) ? `0x${str}` : (str as `0x${string}`);
 
 // from (isHexString) https://github.com/ethjs/ethjs-util/blob/master/src/index.js
 const isHexString = (value: string, length?: number) => {
@@ -65,23 +65,31 @@ export const messageToHex = (message: string) => {
     return buffer.toString('hex');
 };
 
-export const deepTransform = (transform: (str: string) => string) => {
-    const recursion = <T>(value: T): T => {
+export const deepTransform = <V>(transform: (str: string) => V) => {
+    const recursion = <T>(value: T): DeepTransformed<T, V> => {
         if (typeof value === 'string') {
-            return transform(value) as T;
+            return transform(value) as DeepTransformed<T, V>;
         }
         if (Array.isArray(value)) {
-            return value.map(recursion) as T;
+            return value.map(recursion) as DeepTransformed<T, V>;
         }
         if (value && typeof value === 'object') {
             return Object.entries(value).reduce(
                 (obj, [k, v]) => ({ ...obj, [k]: recursion(v) }),
                 {},
-            ) as T;
+            ) as DeepTransformed<T, V>;
         }
 
-        return value;
+        return value as DeepTransformed<T, V>;
     };
 
     return recursion;
 };
+
+type DeepTransformed<T, V> = T extends string
+    ? V
+    : T extends (infer U)[]
+      ? DeepTransformed<U, V>[]
+      : T extends object
+        ? { [K in keyof T]: DeepTransformed<T[K], V> }
+        : T;
