@@ -10,6 +10,22 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.4.7-beta.1
+
+This release mainly fixes a serialization bug in Ethereum EIP-1559 transactions that was causing signing issues in some cases, presumably since v9.4.3.
+
+The serialization handling has been refactored with improved type checking to ensure the correct output.
+
+## Fixes
+
+-   test(connect): improve serializeEthereumTx unit test (386dc36)
+-   feat(connect): improve serializeEthereumTx (12fad78)
+-   feat(connect): typed deepHexPrefix transform (1edbbc0)
+-   fix(connect): eip1559 correct maxFeePerGas (4f5d6f3)
+-   fix(connect): better mobile fetch errors (ad061ad)
+-   feat(tests): allow for running e2e tests with emulator from URL or from specific firmware branch (6d157a0)
+-   fix(connect-explorer): bundle adding problem (58e00b4)
+
 # 9.4.6
 
 This release brings improvements and optimizations in Solana `getAccountInfo`. It moves security checks outside `getFeatures` that fixes some of the issues with device loading and communication in general.
