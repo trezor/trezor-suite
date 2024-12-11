@@ -5578,6 +5578,75 @@
                 }
             }
         },
+        "NostrGetPubkey": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                }
+            }
+        },
+        "NostrPubkey": {
+            "fields": {
+                "pubkey": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
+        },
+        "NostrSignEvent": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "created_at": {
+                    "type": "uint32",
+                    "id": 2
+                },
+                "kind": {
+                    "type": "uint32",
+                    "id": 3
+                },
+                "tags": {
+                    "rule": "repeated",
+                    "type": "string",
+                    "id": 4
+                },
+                "content": {
+                    "type": "string",
+                    "id": 5
+                }
+            }
+        },
+        "NostrEventSignature": {
+            "fields": {
+                "pubkey": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "id": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                },
+                "signature": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 3
+                }
+            }
+        },
         "RippleGetAddress": {
             "fields": {
                 "address_n": {
@@ -6812,6 +6881,10 @@
                 "GetOwnershipProof": 49,
                 "OwnershipProof": 50,
                 "AuthorizeCoinJoin": 51,
+                "NostrGetPubkey": 2001,
+                "NostrPubkey": 2002,
+                "NostrSignEvent": 2003,
+                "NostrEventSignature": 2004,
                 "CipherKeyValue": 23,
                 "CipheredKeyValue": 48,
                 "SignIdentity": 53,

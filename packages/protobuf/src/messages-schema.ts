@@ -2946,6 +2946,44 @@ export const NEMDecryptedMessage = Type.Object(
     { $id: 'NEMDecryptedMessage' },
 );
 
+export type NostrGetPubkey = Static<typeof NostrGetPubkey>;
+export const NostrGetPubkey = Type.Object(
+    {
+        address_n: Type.Array(Type.Number()),
+    },
+    { $id: 'NostrGetPubkey' },
+);
+
+export type NostrPubkey = Static<typeof NostrPubkey>;
+export const NostrPubkey = Type.Object(
+    {
+        pubkey: Type.String(),
+    },
+    { $id: 'NostrPubkey' },
+);
+
+export type NostrSignEvent = Static<typeof NostrSignEvent>;
+export const NostrSignEvent = Type.Object(
+    {
+        address_n: Type.Array(Type.Number()),
+        created_at: Type.Optional(Type.Number()),
+        kind: Type.Optional(Type.Number()),
+        tags: Type.Array(Type.String()),
+        content: Type.Optional(Type.String()),
+    },
+    { $id: 'NostrSignEvent' },
+);
+
+export type NostrEventSignature = Static<typeof NostrEventSignature>;
+export const NostrEventSignature = Type.Object(
+    {
+        pubkey: Type.String(),
+        id: Type.String(),
+        signature: Type.String(),
+    },
+    { $id: 'NostrEventSignature' },
+);
+
 export type RippleGetAddress = Static<typeof RippleGetAddress>;
 export const RippleGetAddress = Type.Object(
     {
@@ -3752,6 +3790,10 @@ export const MessageType = Type.Object(
         NEMSignedTx,
         NEMDecryptMessage,
         NEMDecryptedMessage,
+        NostrGetPubkey,
+        NostrPubkey,
+        NostrSignEvent,
+        NostrEventSignature,
         RippleGetAddress,
         RippleAddress,
         RipplePayment,

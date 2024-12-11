@@ -1917,6 +1917,28 @@ export type NEMDecryptedMessage = {
     payload: string;
 };
 
+export type NostrGetPubkey = {
+    address_n: number[];
+};
+
+export type NostrPubkey = {
+    pubkey: string;
+};
+
+export type NostrSignEvent = {
+    address_n: number[];
+    created_at?: number;
+    kind?: number;
+    tags: string[];
+    content?: string;
+};
+
+export type NostrEventSignature = {
+    pubkey: string;
+    id: string;
+    signature: string;
+};
+
 export type RippleGetAddress = {
     address_n: number[];
     show_display?: boolean;
@@ -2511,6 +2533,10 @@ export type MessageType = {
     NEMSignedTx: NEMSignedTx;
     NEMDecryptMessage: NEMDecryptMessage;
     NEMDecryptedMessage: NEMDecryptedMessage;
+    NostrGetPubkey: NostrGetPubkey;
+    NostrPubkey: NostrPubkey;
+    NostrSignEvent: NostrSignEvent;
+    NostrEventSignature: NostrEventSignature;
     RippleGetAddress: RippleGetAddress;
     RippleAddress: RippleAddress;
     RipplePayment: RipplePayment;
