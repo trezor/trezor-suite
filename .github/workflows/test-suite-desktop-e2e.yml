@@ -62,7 +62,7 @@ jobs:
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-desktop-ci.yml
         run: |
-          yarn install --immutable
+          yarn workspaces focus @trezor/suite-desktop-core @suite-common/message-system @trezor/suite-data @trezor/transport-bridge @trezor/suite-desktop
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib
