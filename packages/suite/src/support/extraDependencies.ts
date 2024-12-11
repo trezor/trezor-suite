@@ -60,7 +60,7 @@ const connectInitSettings = {
 export const extraDependencies: ExtraDependencies = {
     thunks: {
         cardanoValidatePendingTxOnBlock: cardanoStakingActions.validatePendingTxOnBlock,
-        cardanoFetchTrezorPools: cardanoStakingActions.fetchTrezorPools,
+        cardanoFetchTrezorData: cardanoStakingActions.fetchTrezorData,
         initMetadata: metadataLabelingActions.init,
         fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
         addAccountMetadata: metadataLabelingActions.addAccountMetadata,

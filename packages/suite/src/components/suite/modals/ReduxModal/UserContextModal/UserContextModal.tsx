@@ -50,6 +50,7 @@ import type { ReduxModalProps } from '../ReduxModal';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { PassphraseMismatchModal } from './PassphraseMismatchModal';
 import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
+import { CardanoWithdrawModal } from '../CardanoWithdrawModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({
@@ -105,6 +106,8 @@ export const UserContextModal = ({
             );
         case 'review-transaction':
             return <TransactionReviewModal {...payload} />;
+        case 'cardano-withdraw-modal':
+            return <CardanoWithdrawModal onCancel={onCancel} />;
         case 'coinmarket-buy-terms': {
             return (
                 <CoinmarketTermsModal

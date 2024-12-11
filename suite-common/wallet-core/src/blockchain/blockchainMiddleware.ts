@@ -16,7 +16,7 @@ export const prepareBlockchainMiddleware = createMiddlewareWithExtraDeps(
         // propagate action to reducers
         next(action);
 
-        const { cardanoValidatePendingTxOnBlock, cardanoFetchTrezorPools } = extra.thunks;
+        const { cardanoValidatePendingTxOnBlock, cardanoFetchTrezorData } = extra.thunks;
 
         switch (action.type) {
             case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT:
@@ -26,7 +26,7 @@ export const prepareBlockchainMiddleware = createMiddlewareWithExtraDeps(
                 // for cardano staking if applicable
                 if (['ADA', 'tADA'].includes(action.payload.coin.shortcut)) {
                     dispatch(
-                        cardanoFetchTrezorPools(action.payload.coin.shortcut as 'ADA' | 'tADA'),
+                        cardanoFetchTrezorData(action.payload.coin.shortcut as 'ADA' | 'tADA'),
                     );
                 }
                 break;

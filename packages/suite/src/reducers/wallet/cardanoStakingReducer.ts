@@ -4,17 +4,24 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { CARDANO_STAKING } from 'src/actions/wallet/constants';
 import { WalletAction } from 'src/types/wallet';
-import { CardanoNetwork, PendingStakeTx, PoolsResponse } from 'src/types/wallet/cardanoStaking';
+import {
+    CardanoNetwork,
+    DRepResponse,
+    PendingStakeTx,
+    PoolsResponse,
+} from 'src/types/wallet/cardanoStaking';
 
 export interface State {
     pendingTx: PendingStakeTx[];
     mainnet: {
         trezorPools: PoolsResponse | undefined;
+        trezorDRep: DRepResponse | undefined;
         isFetchLoading: boolean;
         isFetchError: boolean;
     };
     preview: {
         trezorPools: PoolsResponse | undefined;
+        trezorDRep: DRepResponse | undefined;
         isFetchLoading: boolean;
         isFetchError: boolean;
     };
@@ -24,11 +31,13 @@ export const initialState: State = {
     pendingTx: [],
     mainnet: {
         trezorPools: undefined,
+        trezorDRep: undefined,
         isFetchLoading: false,
         isFetchError: false,
     },
     preview: {
         trezorPools: undefined,
+        trezorDRep: undefined,
         isFetchLoading: false,
         isFetchError: false,
     },
@@ -43,10 +52,16 @@ const remove = (state: State, accountKey: string) => {
     state.pendingTx.splice(index, 1);
 };
 
-const setTrezorPools = (state: State, trezorPools: PoolsResponse, network: CardanoNetwork) => {
+const setTrezorData = (
+    state: State,
+    trezorPools: PoolsResponse,
+    trezorDRep: DRepResponse,
+    network: CardanoNetwork,
+) => {
     // sorted from least saturated to most
     trezorPools.pools.sort((a, b) => new BigNumber(a.live_stake).comparedTo(b.live_stake));
     state[network].trezorPools = trezorPools;
+    state[network].trezorDRep = trezorDRep;
 };
 
 const setLoading = (state: State, isLoading: boolean, network: CardanoNetwork) => {
@@ -64,8 +79,8 @@ const cardanoStakingReducer = (state: State = initialState, action: WalletAction
                 return add(draft, action.pendingStakeTx);
             case CARDANO_STAKING.REMOVE_PENDING_STAKE_TX:
                 return remove(draft, action.accountKey);
-            case CARDANO_STAKING.SET_TREZOR_POOLS:
-                return setTrezorPools(draft, action.trezorPools, action.network);
+            case CARDANO_STAKING.SET_TREZOR_DATA:
+                return setTrezorData(draft, action.trezorPools, action.trezorDRep, action.network);
             case CARDANO_STAKING.SET_FETCH_LOADING:
                 return setLoading(draft, action.loading, action.network);
             case CARDANO_STAKING.SET_FETCH_ERROR:
