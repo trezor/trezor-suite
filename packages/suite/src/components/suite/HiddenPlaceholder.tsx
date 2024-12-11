@@ -1,4 +1,4 @@
-import { ReactNode, useLayoutEffect, useRef, useState } from 'react';
+import { MouseEventHandler, ReactNode, useLayoutEffect, useRef, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
@@ -6,6 +6,11 @@ import { RedactNumbersContext } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
+
+type MouseCoords = { clientX: number; clientY: number };
+
+const PIXELS_TOLERANCE = 0.5;
+const approxEqual = (a: number, b: number) => Math.abs(a - b) < PIXELS_TOLERANCE;
 
 type WrapperProps = {
     $intensity: number;
@@ -67,6 +72,7 @@ export const HiddenPlaceholder = ({
     const [automaticIntensity, setAutomaticIntensity] = useState(10);
     const [wrapperMinWidth, setWrapperMinWidth] = useState<undefined | number>(undefined);
     const [isHovered, setIsHovered] = useState(false);
+    const [mouseEnteredAtCoords, setmouseEnteredAtCoords] = useState<MouseCoords | null>(null);
 
     const discreetMode = useSelector(selectIsDiscreteModeActive);
     const shouldRedactNumbers = discreetMode && !isHovered;
@@ -85,16 +91,29 @@ export const HiddenPlaceholder = ({
 
     // we only need to handle the case when revealed content is smaller than redacted, not vice versa.
     // in such case, onMouseEnter shrinks content, and it may immediately onMouseLeave even when cursor is still.
-    const onMouseEnter = () => {
+    const onMouseEnter: MouseEventHandler<HTMLSpanElement> = ({ clientX, clientY }) => {
         setIsHovered(true);
+        setmouseEnteredAtCoords({ clientX, clientY });
         if (ref?.current) {
             setWrapperMinWidth(ref.current.getBoundingClientRect().width);
         }
     };
-    const onMouseLeave = () => {
+    const onMouseLeave: MouseEventHandler<HTMLSpanElement> = ({ clientX, clientY }) => {
+        // prevent flickering that may happen when mouse cursor stands still exactly at the element edge
+        if (
+            mouseEnteredAtCoords !== null &&
+            approxEqual(clientX, mouseEnteredAtCoords.clientX) &&
+            approxEqual(clientY, mouseEnteredAtCoords.clientY)
+        ) {
+            return;
+        }
+
         setIsHovered(false);
         setWrapperMinWidth(undefined);
     };
+
+    // edge case: user enters the element, and then leaves through the same pixel. onMouseLeave would then return
+    const onMouseMove = () => setmouseEnteredAtCoords(null);
 
     const shouldEnforceMinWidth = discreetMode && !disableKeepingWidth;
 
@@ -102,6 +121,7 @@ export const HiddenPlaceholder = ({
         <Wrapper
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
+            onMouseMove={onMouseMove}
             $discreetMode={discreetMode}
             $intensity={enforceIntensity !== undefined ? enforceIntensity : automaticIntensity}
             $minWidth={shouldEnforceMinWidth ? wrapperMinWidth : undefined}
