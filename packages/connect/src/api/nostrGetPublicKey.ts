@@ -3,8 +3,12 @@ import { Assert } from '@trezor/schema-utils';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validatePath } from '../utils/pathUtils';
 import { NostrGetPublicKey as NostrGetPubkeySchema } from '../types/api/nostrGetPublicKey';
+import { PROTO } from '../constants';
 
-export default class NostrGetPublicKey extends AbstractMethod<'nostrGetPublicKey', Params> {
+export default class NostrGetPublicKey extends AbstractMethod<
+    'nostrGetPublicKey',
+    PROTO.NostrGetPubkey
+> {
     init() {
         this.requiredPermissions = ['read'];
 
