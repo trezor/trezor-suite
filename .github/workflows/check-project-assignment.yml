@@ -1,0 +1,61 @@
+name: "[Check] Project/Issue Assignment"
+
+on:
+  pull_request:
+    types:
+      - opened
+      - ready_for_review
+      - labeled
+      - synchronize
+
+jobs:
+  check-project-or-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check if PR is assigned to a project or an issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+        run: |
+          # Fetch PR labels
+          PR_LABELS=$(gh pr view ${{ github.event.pull_request.number }} --json labels --jq '.labels[].name')
+
+          # Check for "no-project" label
+          if echo "$PR_LABELS" | grep -q "^no-project$"; then
+            echo "Pass: The PR has the 'no-project' label."
+            exit 0
+          fi
+
+          # Check for linked issues using GraphQL
+          LINKED_ISSUES=$(gh api graphql -f query='
+          query($owner: String!, $repo: String!, $number: Int!) {
+            repository(owner: $owner, name: $repo) {
+              pullRequest(number: $number) {
+                closingIssuesReferences(first: 10) {
+                  nodes {
+                    id
+                  }
+                }
+              }
+            }
+          }' -F owner=${{ github.repository_owner }} -F repo=${{ github.event.repository.name }} -F number=${{ github.event.pull_request.number }} --jq '.data.repository.pullRequest.closingIssuesReferences.nodes | length')
+
+          if [ "$LINKED_ISSUES" -gt 0 ]; then
+            echo "Pass: The PR is linked to $LINKED_ISSUES issue(s)."
+            exit 0
+          fi
+
+          # Check for associated projects
+          PROJECT_COUNT=$(gh pr view ${{ github.event.pull_request.number }} --json projectItems --jq '.projectItems | length')
+
+          if [ "$PROJECT_COUNT" -gt 0 ]; then
+            echo "Pass: This PR is assigned to a project."
+            exit 0
+          fi
+
+          # If no condition passes
+          echo "Error: This PR is not assigned to any project, not linked to a valid issue, and does not have the 'no-project' label."
+          echo "Please assign the PR to a project or link it to an issue. Alternatively, add the 'no-project' label if not applicable."
+          exit 1
