@@ -1,6 +1,6 @@
 {
     "name": "@suite-native/app",
-    "version": "1.0.0",
+    "version": "24.24.1",
     "suiteNativeVersion": "24.12.1",
     "main": "index.js",
     "scripts": {
