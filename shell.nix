@@ -28,7 +28,9 @@ in
       docker         # for e2e tests running on localhost
       docker-compose # for e2e tests running on localhost
       nodejs
-      yarn
+      (yarn.override {
+        nodejs = null; # use input nodejs
+      })
       jre
       p7zip
       electron
