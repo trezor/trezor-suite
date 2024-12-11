@@ -1,7 +1,9 @@
+import { useState } from 'react';
+
 import { verify } from 'bitcoinjs-message';
 
 import TrezorConnect from '@trezor/connect';
-import { Banner, Button, Card, Dropdown, Row, Table, Text } from '@trezor/components';
+import { Banner, Button, Row } from '@trezor/components';
 import { selectDevice } from '@suite-common/wallet-core';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { spacings } from '@trezor/theme';
@@ -12,90 +14,8 @@ import * as contactsActions from 'src/actions/suite/contactsActions';
 import { Contact } from 'src/types/suite';
 
 import { SettingsLayout } from '../../components/settings';
-import { useAddContactButton } from './useAddContactButton';
-
-const ContactItem = ({
-    contact: { address, label, signature },
-    remove,
-}: {
-    contact: Contact;
-    remove: () => void;
-}) => {
-    return (
-        <Table.Row>
-            <Table.Cell>
-                <Text typographyStyle="highlight">{label}</Text>
-            </Table.Cell>
-            <Table.Cell>
-                <Text variant="tertiary" typographyStyle="hint" overflowWrap="anywhere">
-                    {address}
-                </Text>
-            </Table.Cell>
-            <Table.Cell>
-                <Text variant="tertiary" typographyStyle="hint" overflowWrap="anywhere">
-                    {signature}
-                </Text>
-            </Table.Cell>
-            <Table.Cell align="right">
-                <Dropdown
-                    alignMenu="bottom-right"
-                    items={[
-                        {
-                            key: '1',
-                            label: 'Contact',
-                            options: [
-                                {
-                                    label: 'Delete',
-                                    icon: 'userMinusFilled',
-                                    onClick: remove,
-                                },
-                            ],
-                        },
-                    ]}
-                />
-            </Table.Cell>
-        </Table.Row>
-    );
-};
-
-const ContactList = ({
-    contacts,
-    remove,
-}: {
-    contacts: Contact[];
-    remove: (contact: Contact) => void;
-}) => {
-    const onAdd = useAddContactButton();
-
-    return (
-        <Card paddingType="none" overflow="hidden">
-            <Table isRowHighlightedOnHover margin={{ top: spacings.xs }}>
-                <Table.Header>
-                    <Table.Row>
-                        <Table.Cell>Label</Table.Cell>
-                        <Table.Cell>Address</Table.Cell>
-                        <Table.Cell>Signature</Table.Cell>
-                        <Table.Cell />
-                    </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                    {contacts.map((contact, i) => (
-                        <ContactItem key={i} contact={contact} remove={() => remove(contact)} />
-                    ))}
-                </Table.Body>
-                <Table.Footer>
-                    <Table.Row hasBorderTop={true} isHighlightedOnHover={false}>
-                        <Table.Cell colSpan={4}>
-                            <Button onClick={onAdd} size="small" icon="plus">
-                                Add new contact
-                            </Button>
-                        </Table.Cell>
-                    </Table.Row>
-                </Table.Footer>
-            </Table>
-        </Card>
-    );
-};
+import { AddNewContactModal } from './AddNewContactModal';
+import { ContactList } from './ContactList';
 
 const FindContactButton = ({ contacts }: { contacts: Contact[] }) => {
     const findContact = () => {
@@ -157,7 +77,11 @@ const GetMyPubkeyButton = () => {
 const Contacts = ({ device }: { device: TrezorDevice }) => {
     const contacts = useSelector(selectContactsForDevice(device));
     const dispatch = useDispatch();
-    const onAdd = useAddContactButton();
+    const [isAddNewContactModalVisible, setAddNewContactModalVisible] = useState(false);
+
+    const onAdd = () => {
+        setAddNewContactModalVisible(true);
+    };
 
     const removeContact = (contact: Contact) => {
         const confirmed = confirm('Do you want to remove this contact?');
@@ -169,7 +93,7 @@ const Contacts = ({ device }: { device: TrezorDevice }) => {
     return (
         <>
             {contacts.length ? (
-                <ContactList contacts={contacts} remove={removeContact} />
+                <ContactList contacts={contacts} remove={removeContact} onAdd={onAdd} />
             ) : (
                 <Banner
                     variant="info"
@@ -183,12 +107,13 @@ const Contacts = ({ device }: { device: TrezorDevice }) => {
                     You have no contacts yet
                 </Banner>
             )}
-            <div>
-                <Row gap={spacings.sm}>
-                    <GetMyPubkeyButton />
-                    <FindContactButton contacts={contacts} />
-                </Row>
-            </div>
+            <Row gap={spacings.sm}>
+                <GetMyPubkeyButton />
+                <FindContactButton contacts={contacts} />
+            </Row>
+            {isAddNewContactModalVisible && (
+                <AddNewContactModal onClose={() => setAddNewContactModalVisible(false)} />
+            )}
         </>
     );
 };
