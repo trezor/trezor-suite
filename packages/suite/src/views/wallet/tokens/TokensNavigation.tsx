@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { spacings } from '@trezor/theme';
-import { IconButton, Row, Subtabs } from '@trezor/components';
+import { IconButton, Row, SubTabs } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { Route } from '@suite-common/suite-types';
 
@@ -64,24 +64,24 @@ export const TokensNavigation = ({
 
     return (
         <Row alignItems="center" justifyContent="space-between" margin={{ bottom: spacings.md }}>
-            <Subtabs activeItemId={routeName} size="medium">
-                <Subtabs.Item
+            <SubTabs activeItemId={routeName} size="medium">
+                <SubTabs.Item
                     id="wallet-tokens"
                     iconName="tokens"
                     onClick={goToRoute('wallet-tokens')}
                     count={tokens.shownWithBalance.length}
                 >
                     <Translation id="TR_NAV_TOKENS" />
-                </Subtabs.Item>
-                <Subtabs.Item
+                </SubTabs.Item>
+                <SubTabs.Item
                     id="wallet-tokens-hidden"
                     iconName="hide"
                     onClick={goToRoute('wallet-tokens-hidden')}
                     count={tokens.hiddenWithBalance.length}
                 >
                     <Translation id="TR_HIDDEN" />
-                </Subtabs.Item>
-            </Subtabs>
+                </SubTabs.Item>
+            </SubTabs>
             <Row>
                 <SearchAction
                     tooltipText="TR_TOKENS_SEARCH_TOOLTIP"

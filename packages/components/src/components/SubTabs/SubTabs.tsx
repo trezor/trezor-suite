@@ -12,37 +12,37 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
-import { SubtabsContext } from './SubtabsContext';
-import { SubtabsItem } from './SubtabsItem';
-import { SubtabsSize } from './types';
+import { SubTabsContext } from './SubTabsContext';
+import { SubTabsItem } from './SubTabsItem';
+import { SubTabsSize } from './types';
 
-export const allowedSubtabsFrameProps = ['margin'] as const satisfies FramePropsKeys[];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedSubtabsFrameProps)[number]>;
+export const allowedSubTabsFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedSubTabsFrameProps)[number]>;
 
 const Container = styled.div<TransientProps<AllowedFrameProps>>`
     ${withFrameProps}
 `;
 
-export type SubtabsProps = AllowedFrameProps & {
+export type SubTabsProps = AllowedFrameProps & {
     children: ReactNode;
-    size?: SubtabsSize;
+    size?: SubTabsSize;
     activeItemId?: string;
 };
 
-const Subtabs = ({ activeItemId, size = 'medium', children, ...rest }: SubtabsProps) => {
-    const frameProps = pickAndPrepareFrameProps(rest, allowedSubtabsFrameProps);
+const SubTabs = ({ activeItemId, size = 'medium', children, ...rest }: SubTabsProps) => {
+    const frameProps = pickAndPrepareFrameProps(rest, allowedSubTabsFrameProps);
 
     return (
-        <SubtabsContext.Provider value={{ activeItemId, size }}>
+        <SubTabsContext.Provider value={{ activeItemId, size }}>
             <Container {...frameProps}>
                 <Row alignItems="stretch" gap={spacings.xxs}>
                     {children}
                 </Row>
             </Container>
-        </SubtabsContext.Provider>
+        </SubTabsContext.Provider>
     );
 };
 
-Subtabs.Item = SubtabsItem;
+SubTabs.Item = SubTabsItem;
 
-export { Subtabs };
+export { SubTabs };

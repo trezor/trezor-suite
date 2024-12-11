@@ -5,7 +5,7 @@ import { borders, spacings, mapElevationToBackground, Elevation } from '@trezor/
 import { Row } from '../Flex/Flex';
 import { Text } from '../typography/Text/Text';
 import { Icon, IconName } from '../Icon/Icon';
-import { useSubtabsContext } from './SubtabsContext';
+import { useSubTabsContext } from './SubTabsContext';
 import { mapSizeToTypography, mapSizeToIconSize } from './utils';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
@@ -33,7 +33,7 @@ const Item = styled.div<{ $isActive: boolean; $elevation: Elevation }>`
         `}
 `;
 
-export type SubtabsItemProps = {
+export type SubTabsItemProps = {
     id: string;
     onClick: () => void;
     iconName?: IconName;
@@ -42,15 +42,15 @@ export type SubtabsItemProps = {
     'data-testid'?: string;
 };
 
-export const SubtabsItem = ({
+export const SubTabsItem = ({
     id,
     onClick,
     iconName,
     count = 0,
     'data-testid': dataTestId,
     children,
-}: SubtabsItemProps) => {
-    const { activeItemId, size } = useSubtabsContext();
+}: SubTabsItemProps) => {
+    const { activeItemId, size } = useSubTabsContext();
     const { elevation } = useElevation();
     const isActive = id === activeItemId;
 

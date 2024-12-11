@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { spacings } from '@trezor/theme';
 
-import { Subtabs as SubtabsComponent, SubtabsProps, allowedSubtabsFrameProps } from './Subtabs';
+import { SubTabs as SubTabsComponent, SubTabsProps, allowedSubTabsFrameProps } from './SubTabs';
 import { subtabsSizes } from './types';
 import { Column } from '../Flex/Flex';
 import { IconName } from '../Icon/Icon';
@@ -12,11 +12,11 @@ import { getFramePropsStory } from '../../utils/frameProps';
 import { variables } from '../../config';
 
 const meta: Meta = {
-    title: 'Subtabs',
+    title: 'SubTabs',
 } as Meta;
 export default meta;
 
-const SubtabsApp = (props: Partial<SubtabsProps>) => {
+const SubTabsApp = (props: Partial<SubTabsProps>) => {
     const [selectedTab, setSelectedTab] = useState(0);
 
     const items = ['Lorem', 'Ipsum', 'Dolor Sit', 'Amet'].map((title, index) => ({
@@ -84,28 +84,28 @@ const SubtabsApp = (props: Partial<SubtabsProps>) => {
 
     return (
         <Column gap={spacings.md}>
-            <SubtabsComponent activeItemId={items[selectedTab].id} {...props}>
+            <SubTabsComponent activeItemId={items[selectedTab].id} {...props}>
                 {items.map(item => (
-                    <SubtabsComponent.Item key={item.id} {...item}>
+                    <SubTabsComponent.Item key={item.id} {...item}>
                         {item.title}
-                    </SubtabsComponent.Item>
+                    </SubTabsComponent.Item>
                 ))}
-            </SubtabsComponent>
+            </SubTabsComponent>
             {getContent()}
         </Column>
     );
 };
 
-export const Subtabs: StoryObj = {
+export const SubTabs: StoryObj = {
     render: props => {
-        return <SubtabsApp {...props} />;
+        return <SubTabsApp {...props} />;
     },
     args: {
-        ...getFramePropsStory(allowedSubtabsFrameProps).args,
+        ...getFramePropsStory(allowedSubTabsFrameProps).args,
         size: 'medium',
     },
     argTypes: {
-        ...getFramePropsStory(allowedSubtabsFrameProps).argTypes,
+        ...getFramePropsStory(allowedSubTabsFrameProps).argTypes,
         size: {
             control: {
                 type: 'select',
