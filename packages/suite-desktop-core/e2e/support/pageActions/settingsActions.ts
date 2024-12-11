@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, test } from '@playwright/test';
 
 import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { capitalizeFirstLetter } from '@trezor/utils';
@@ -134,16 +134,29 @@ export class SettingsActions {
     }
 
     async changeTheme(theme: Theme) {
-        await this.themeInput.scrollIntoViewIfNeeded();
-        await this.themeInput.click();
-        await this.themeInputOption(theme).click();
+        await this.selectDropdownOptionWithRetry(this.themeInput, this.themeInputOption(theme));
         await expect(this.themeInput).toHaveText(capitalizeFirstLetter(theme));
     }
 
     async changeLanguage(language: Language) {
-        await this.languageInput.scrollIntoViewIfNeeded();
-        await this.languageInput.click();
-        await this.languageInputOption(language).click();
+        await this.selectDropdownOptionWithRetry(
+            this.languageInput,
+            this.languageInputOption(language),
+        );
         await expect(this.languageInput).toHaveText(languageMap[language]);
+    }
+
+    //Retry mechanism for settings dropdowns which tend to be flaky in automation
+    async selectDropdownOptionWithRetry(dropdown: Locator, option: Locator) {
+        await test.step('Select dropdown option with RETRY', async () => {
+            await dropdown.scrollIntoViewIfNeeded();
+            await expect(async () => {
+                if (!(await option.isVisible())) {
+                    await dropdown.click({ timeout: 2000 });
+                }
+                await expect(option).toBeVisible({ timeout: 2000 });
+                await option.click({ timeout: 2000 });
+            }).toPass({ timeout: 10_000 });
+        });
     }
 }
