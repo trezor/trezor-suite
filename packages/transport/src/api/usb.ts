@@ -27,6 +27,8 @@ interface TransportInterfaceDevice {
     device: USBDevice;
 }
 
+console.log('hello');
+
 export class UsbApi extends AbstractApi {
     chunkSize = 64;
 
@@ -229,6 +231,7 @@ export class UsbApi extends AbstractApi {
         try {
             // https://wicg.github.io/webusb/#ref-for-dom-usbdevice-transferout
             this.logger?.debug('usb: device.transferOut');
+            const perf = performance.now();
             const result = await this.abortableMethod(
                 () =>
                     device.transferOut(
@@ -237,7 +240,8 @@ export class UsbApi extends AbstractApi {
                     ),
                 { signal, onAbort: () => device?.reset() },
             );
-            this.logger?.debug(`usb: device.transferOut done.`);
+            const perf2 = performance.now();
+            console.log(`usb: device.transferOut done. time: ${perf2 - perf}`);
             if (result.status !== 'ok') {
                 this.logger?.error(`usb: device.transferOut status not ok: ${result.status}`);
                 throw new Error('transfer out status not ok');

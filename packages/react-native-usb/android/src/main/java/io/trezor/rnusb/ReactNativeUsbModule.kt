@@ -47,6 +47,8 @@ class ReactNativeUsbModule : Module() {
         PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_MUTABLE)
     }
 
+    private val transferBuffer = ByteBuffer.allocateDirect(64)
+
     // Each module class must implement the definition function. The definition consists of components
     // that describes the module's functionality and behavior.
     // See https://docs.expo.dev/modules/module-api for more details about available components.
@@ -312,10 +314,10 @@ class ReactNativeUsbModule : Module() {
     private fun transferOut(deviceName: String, endpointNumber: Int, data: String): Int {
         Log.d(LOG_TAG, "Transfering data to device $deviceName")
         Log.d(LOG_TAG, "data: $data")
-        // split string into array of numbers and then convert numbers to byte array
         val dataByteArray = data.split(",").map { it.toInt().toByte() }.toByteArray()
         Log.d(LOG_TAG, "dataByteArray: $dataByteArray")
         val device = getDeviceByName(deviceName)
+        
         val usbConnection = openedConnections.getOrPut(device.deviceName) {
             Log.d(LOG_TAG, "Reopening device ${device.deviceName}")
             usbManager.openDevice(device) ?: throw Exception("Failed to open device ${device.deviceName}")
@@ -326,9 +328,38 @@ class ReactNativeUsbModule : Module() {
             Log.e(LOG_TAG, "Failed to get endpoint $endpointNumber for device ${device.deviceName}")
             throw Exception("Failed to get endpoint $endpointNumber for device ${device.deviceName}")
         }
-        val result = usbConnection.bulkTransfer(usbEndpoint, dataByteArray, dataByteArray.size, 0)
-        Log.d(LOG_TAG, "Transfered data to device ${device.deviceName}: $result")
-        return result
+        
+        // Test both approaches
+        val startAlloc = System.nanoTime()
+        val newBuffer = ByteBuffer.allocateDirect(dataByteArray.size)
+        newBuffer.put(dataByteArray)
+        newBuffer.rewind()
+        val allocTime = (System.nanoTime() - startAlloc) / 1_000_000.0
+        
+        val startReuse = System.nanoTime()
+        transferBuffer.put(dataByteArray)
+        transferBuffer.rewind()
+        val reuseTime = (System.nanoTime() - startReuse) / 1_000_000.0
+
+        Log.d(LOG_TAG, "Buffer allocation time: ${"%.3f".format(allocTime)}ms")
+        Log.d(LOG_TAG, "Buffer reuse time: ${"%.3f".format(reuseTime)}ms")
+
+        // Use either buffer for the actual transfer
+        val startTransfer = System.nanoTime()
+        val req = UsbRequest()
+        req.initialize(usbConnection, usbEndpoint)
+        req.queue(newBuffer) // or transferBuffer
+
+        val result = usbConnection.requestWait()
+        if (result == null) {
+            Log.e(LOG_TAG, "Failed to transfer data to device ${device.deviceName}")
+            throw Exception("Failed to transfer data to device ${device.deviceName}")
+        }
+
+        val duration = (System.nanoTime() - startTime) / 1_000_000.0
+        Log.d(LOG_TAG, "Transfer OUT completed in ${"%.3f".format(duration)}ms")
+
+        return dataByteArray.size
     }
 
     private fun transferIn(deviceName: String, endpointNumber: Int, length: Int): IntArray {

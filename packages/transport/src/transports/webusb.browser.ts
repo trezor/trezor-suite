@@ -20,6 +20,7 @@ export class WebUsbTransport extends AbstractApiTransport {
     private readonly sessionsBackgroundUrl: string | null = defaultSessionsBackgroundUrl;
 
     constructor({ logger, sessionsBackgroundUrl, ...rest }: WebUsbTransportParams) {
+        console.log('WebUsbTransport constructor');
         super({
             api: new UsbApi({ usbInterface: navigator.usb, logger }),
             logger,
