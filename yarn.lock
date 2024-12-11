@@ -7941,9 +7941,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/react-native-skia@npm:^1.5.10":
-  version: 1.5.10
-  resolution: "@shopify/react-native-skia@npm:1.5.10"
+"@shopify/react-native-skia@npm:^1.7.2":
+  version: 1.7.2
+  resolution: "@shopify/react-native-skia@npm:1.7.2"
   dependencies:
     canvaskit-wasm: "npm:0.39.1"
     react-reconciler: "npm:0.27.0"
@@ -7958,7 +7958,7 @@ __metadata:
       optional: true
   bin:
     setup-skia-web: ./scripts/setup-canvaskit.js
-  checksum: 10/7d20214d6426bf6fb0f60f2c2f23ead966691c7e641e64a40f7df432c21ae4e8e6c22b5aa062f5030906ae3534805b26e4a17e70cd164393354af0089bab8153
+  checksum: 10/b48c0ebddc0099b37efceb2c1830e0d4a51bb487db41cecd75f43cda848a616e1a092b49f91d252d8a7e0e8818ec029606a983139ccb94337f3ce4205c843204
   languageName: node
   linkType: hard
 
@@ -9920,7 +9920,7 @@ __metadata:
     "@sentry/core": "npm:8.34.0"
     "@sentry/react-native": "npm:6.1.0"
     "@shopify/flash-list": "npm:^1.7.2"
-    "@shopify/react-native-skia": "npm:^1.5.10"
+    "@shopify/react-native-skia": "npm:^1.7.2"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/formatters": "workspace:*"
@@ -10061,7 +10061,7 @@ __metadata:
     "@gorhom/bottom-sheet": "npm:5.0.5"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@shopify/flash-list": "npm:^1.7.2"
-    "@shopify/react-native-skia": "npm:^1.5.10"
+    "@shopify/react-native-skia": "npm:^1.7.2"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/config": "workspace:*"
@@ -10306,7 +10306,7 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:6.1.18"
     "@reduxjs/toolkit": "npm:1.9.5"
-    "@shopify/react-native-skia": "npm:^1.5.10"
+    "@shopify/react-native-skia": "npm:^1.7.2"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-native/link": "workspace:*"
@@ -10368,7 +10368,7 @@ __metadata:
     "@react-navigation/native": "npm:6.1.18"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@sentry/react-native": "npm:6.1.0"
-    "@shopify/react-native-skia": "npm:^1.5.10"
+    "@shopify/react-native-skia": "npm:^1.7.2"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/graph": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -10414,7 +10414,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/icons@workspace:suite-native/icons"
   dependencies:
-    "@shopify/react-native-skia": "npm:^1.5.10"
+    "@shopify/react-native-skia": "npm:^1.7.2"
     "@suite-common/icons": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
@@ -10488,7 +10488,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:6.11.0"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@shopify/flash-list": "npm:^1.7.2"
-    "@shopify/react-native-skia": "npm:^1.5.10"
+    "@shopify/react-native-skia": "npm:^1.7.2"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
@@ -10980,7 +10980,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/react-native-graph@workspace:suite-native/react-native-graph"
   dependencies:
-    "@shopify/react-native-skia": "npm:^1.5.10"
+    "@shopify/react-native-skia": "npm:^1.7.2"
     "@suite-common/suite-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@types/react": "npm:18.2.79"
@@ -10998,7 +10998,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
     "@reduxjs/toolkit": "npm:1.9.5"
-    "@shopify/react-native-skia": "npm:^1.5.10"
+    "@shopify/react-native-skia": "npm:^1.7.2"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -11178,7 +11178,7 @@ __metadata:
     "@react-navigation/native": "npm:6.1.18"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@shopify/flash-list": "npm:^1.7.2"
-    "@shopify/react-native-skia": "npm:^1.5.10"
+    "@shopify/react-native-skia": "npm:^1.7.2"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
