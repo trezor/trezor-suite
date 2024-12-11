@@ -239,8 +239,14 @@ export const TransactionList = ({
     const renderItem = useCallback(
         ({ item, index }: { item: TransactionListItem; index: number }) => {
             if (typeof item === 'string') {
-                return renderSectionHeader({ section: { monthKey: item as MonthKey } });
+                // month with only month name and without token txn
+                const isEmptyMonth = typeof data.at(index + 1) === 'string' || !data.at(index + 1);
+
+                return isEmptyMonth
+                    ? null
+                    : renderSectionHeader({ section: { monthKey: item as MonthKey } });
             }
+
             const isFirstInSection = typeof data.at(index - 1) === 'string';
             const isLastInSection =
                 typeof data.at(index + 1) === 'string' || index === data.length - 1;
