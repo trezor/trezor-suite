@@ -6,10 +6,12 @@ import { DeviceModelInternal } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
+import { useDispatch } from 'src/hooks/suite';
 import { getReasonForDisabledAction, useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { Translation } from 'src/components/suite/Translation';
 import { Account } from 'src/types/wallet';
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
+import { openModal } from 'src/actions/suite/modalActions';
 
 import { DeviceButton } from './DeviceButton';
 import {
@@ -34,13 +36,16 @@ export const CardanoRewards = ({ account, deviceModel }: CardanoRewardsProps) =>
     const {
         address,
         rewards,
-        withdraw,
         calculateFeeAndDeposit,
         loading,
+        withdrawal,
         withdrawingAvailable,
         deviceAvailable,
+        alreadyVoted,
         pendingStakeTx,
     } = useCardanoStaking();
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         calculateFeeAndDeposit('withdrawal');
@@ -103,7 +108,13 @@ export const CardanoRewards = ({ account, deviceModel }: CardanoRewardsProps) =>
                         isLoading={loading}
                         isDisabled={isRewardsWithdrawDisabled}
                         deviceModelInternal={deviceModel}
-                        onClick={withdraw}
+                        onClick={() => {
+                            if (alreadyVoted) {
+                                withdrawal();
+                            } else {
+                                dispatch(openModal({ type: 'cardano-withdraw-modal' }));
+                            }
+                        }}
                         tooltipContent={
                             !reasonMessageId ||
                             (deviceAvailable.status && withdrawingAvailable.status) ? undefined : (

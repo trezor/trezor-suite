@@ -16,6 +16,17 @@ export type PoolsResponse = {
     pools: StakePool[];
 };
 
+interface DRep {
+    hex: string;
+    bech32: string;
+}
+
+export interface DRepResponse {
+    [key: string]: DRep;
+}
+
+export type CardanoAction = 'delegate' | 'withdrawal' | 'voteDelegate' | 'voteAbstain';
+
 export type ActionAvailability =
     | { status: true; reason?: undefined }
     | { status: false; reason: 'POOL_ID_FETCH_FAIL' | 'TX_NOT_FINAL' | 'UTXO_BALANCE_INSUFFICIENT' }
@@ -38,10 +49,15 @@ export type CardanoStaking = {
     isFetchError: boolean;
     isCurrentPoolOversaturated: boolean;
     trezorPools: PoolsResponse | undefined;
+    trezorDRep?: DRepResponse;
+    accountDRepHex?: string;
     isActive: boolean;
+    alreadyVoted: boolean;
     rewards: string;
-    delegate(): void;
-    withdraw(): void;
-    calculateFeeAndDeposit(action: 'delegate' | 'withdrawal'): void;
+    delegate: () => void;
+    withdrawal: () => void;
+    voteDelegate: () => void;
+    voteAbstain: () => void;
+    calculateFeeAndDeposit: (action: CardanoAction) => Promise<void>;
     error?: string;
 };

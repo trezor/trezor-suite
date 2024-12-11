@@ -42,7 +42,7 @@ export type ExtraDependencies = {
             block: BlockchainBlock;
             timestamp: number;
         }>;
-        cardanoFetchTrezorPools: SuiteCompatibleThunk<'tADA' | 'ADA'>;
+        cardanoFetchTrezorData: SuiteCompatibleThunk<'tADA' | 'ADA'>;
         initMetadata: SuiteCompatibleThunk<boolean>;
         fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
         addAccountMetadata: SuiteCompatibleThunk<

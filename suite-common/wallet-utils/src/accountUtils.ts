@@ -858,6 +858,7 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
                     isActive: misc && misc.staking ? misc.staking.isActive : false,
                     address: misc && misc.staking ? misc.staking.address : '',
                     poolId: misc && misc.staking ? misc.staking.poolId : null,
+                    drep: misc && misc.staking ? misc.staking.drep : null,
                 },
             },
             marker: undefined,
