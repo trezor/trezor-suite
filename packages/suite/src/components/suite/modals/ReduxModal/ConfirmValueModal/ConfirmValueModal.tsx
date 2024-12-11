@@ -38,6 +38,7 @@ export interface ConfirmValueModalProps extends Pick<NewModalProps, 'onCancel' |
     validateOnDevice: () => ThunkAction;
     value: string;
     displayMode: DisplayMode;
+    signature?: string;
 }
 
 export const ConfirmValueModal = ({
@@ -52,6 +53,7 @@ export const ConfirmValueModal = ({
     validateOnDevice,
     value,
     displayMode,
+    signature,
 }: ConfirmValueModalProps) => {
     const device = useSelector(selectDevice);
     const modalContext = useSelector(state => state.modal.context);
@@ -71,6 +73,16 @@ export const ConfirmValueModal = ({
             plainValue: true,
             confirmLabel: confirmStepLabel,
         },
+        ...(signature
+            ? [
+                  {
+                      id: 'signature',
+                      label: <Translation id="TR_SIGNATURE" />,
+                      value: signature,
+                      plainValue: true,
+                  },
+              ]
+            : []),
     ];
     const showTokensSubheading = getNetworkFeatures(account.symbol).includes('tokens');
 

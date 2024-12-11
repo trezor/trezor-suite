@@ -21,7 +21,7 @@ export const openAddressModal =
     (
         params: Pick<
             Extract<UserContextPayload, { type: 'address' }>,
-            'addressPath' | 'value' | 'isConfirmed'
+            'addressPath' | 'value' | 'isConfirmed' | 'signature'
         >,
     ) =>
     (dispatch: Dispatch) => {
@@ -73,7 +73,13 @@ export const showAddress =
 
         if (response.success) {
             // show second part of the "confirm address" modal
-            dispatch(openAddressModal({ ...modalPayload, isConfirmed: true }));
+            dispatch(
+                openAddressModal({
+                    ...modalPayload,
+                    isConfirmed: true,
+                    signature: response.payload.signature,
+                }),
+            );
         } else {
             dispatch(modalActions.onCancel());
             // special case: device no-backup permissions not granted
