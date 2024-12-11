@@ -1,19 +1,15 @@
-import {
-    getPublicKey,
-    finalizeEvent,
-    verifyEvent,
-    Event,
-    generateSecretKey,
-} from 'nostr-tools/pure';
-import { Relay } from 'nostr-tools/relay';
+import { getPublicKey, finalizeEvent, Event, generateSecretKey } from 'nostr-tools/pure';
+import { Relay, Subscription } from 'nostr-tools/relay';
 import * as nip19 from 'nostr-tools/nip19';
 import { useWebSocketImplementation } from 'nostr-tools/pool';
 import WebSocket from 'ws';
+
+import { createDeferredManager } from '@trezor/utils';
 import { PeerToPeerCommunicationClient, PeerToPeerCommunicationClientEvents } from './abstract';
 
-useWebSocketImplementation(WebSocket);
-
 export type { Event } from 'nostr-tools/pure';
+
+useWebSocketImplementation(WebSocket);
 
 export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommunicationClientEvents> {
     sk?: Uint8Array;
@@ -23,9 +19,14 @@ export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommuni
     npub?: nip19.NPub;
     relay: Relay;
     events: Event[] = [];
+    subscription?: Subscription;
+
+    private readonly messages;
 
     constructor({ nsecStr, relayUrl }: { nsecStr: string; relayUrl: string }) {
         super();
+
+        this.messages = createDeferredManager();
 
         if (nsecStr) {
             this.setIdentity(nsecStr);
@@ -60,10 +61,12 @@ export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommuni
         console.log(`connected to ${this.relay.url}`);
     }
 
-    async send({ content }: { content: string }) {
+    buildMessage({ content }: { content: string }) {
         if (!this.nsec) {
-            return Promise.resolve({ success: false, error: 'no identity' });
+            // return { success: false, error: 'no identity' };
+            throw new Error('no identity');
         }
+
         const eventTemplate = {
             kind: 1,
             created_at: Math.floor(Date.now() / 1000),
@@ -73,34 +76,58 @@ export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommuni
 
         // this assigns the pubkey, calculates the event id and signs the event in a single step
         const signedEvent = finalizeEvent(eventTemplate, this.nsec);
-        const isGood = verifyEvent(signedEvent);
-
-        console.log('signed event', signedEvent);
-        console.log('isGood:', isGood);
-        const publishRes = await this.relay.publish(signedEvent);
-        console.log('publishRes:', publishRes);
-
-        return { success: true as true };
+        return signedEvent;
     }
 
-    subscribe({ pubKeys }: { pubKeys: string[] }) {
-        this.relay.subscribe(
+    async send({ content }: { content: string }) {
+        const signedEvent = this.buildMessage({ content });
+
+        await this.relay.publish(signedEvent);
+    }
+
+    async request({ content }: { content: string }) {
+        const { promiseId, promise } = this.messages.create();
+
+        const json = JSON.parse(content);
+        json.id = promiseId.toString();
+        const signedEvent = this.buildMessage({ content: JSON.stringify(json) });
+
+        await this.relay.publish(signedEvent);
+
+        return promise;
+    }
+
+    subscribe({ pubKeys }: { pubKeys: nip19.NPub[] }) {
+        console.log('callling subscribe');
+        console.log('subscriribtion', this.subscription);
+        if (this.subscription) {
+            this.subscription.close();
+        }
+        this.subscription = this.relay.subscribe(
             [
                 {
                     kinds: [1],
-                    authors: pubKeys,
+                    authors: pubKeys.map(k => nip19.decode(k).data),
                     limit: 1,
                 },
             ],
             {
                 onevent: event => {
                     this.emit('event', event);
+
+                    const resp = JSON.parse(event.content);
+                    console.log('on event parsed', resp);
+                    const { request_id, ...data } = resp;
+
+                    if (typeof request_id !== 'undefined') {
+                        this.messages.resolve(Number(request_id), data);
+                    }
                     this.events.push(event);
                 },
-                // oneose() {
-                //     console.log('=====oneose====');
-                //     subscription.close();
-                // },
+                oneose() {
+                    // "End of Stored Events".
+                    console.log('=====all stored events processed====');
+                },
             },
         );
     }

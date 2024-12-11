@@ -15,9 +15,14 @@ export const Nostr = () => {
     const [client, setClient] = useState<NostrClient | null>(null);
     const [events, setEvents] = useState<Event>();
     const [clientStatus, setClientStatus] = useState('disconnected');
+    const [addressRequestState, setAddressRequestState] = useState<'none' | 'pending' | 'success'>(
+        'none',
+    );
+
     const unusedAddress = useSelector(
         state => state.wallet.accounts[0]?.addresses?.unused[0].address,
     );
+
     const handleChange = (event: any) => {
         setNsec(event.target.value);
     };
@@ -32,7 +37,9 @@ export const Nostr = () => {
             relayUrl: 'wss://relay.primal.net',
         });
         setClient(nostrClient);
-        setMyNpub(nostrClient.pk);
+        if (nostrClient.npub) {
+            setMyNpub(nostrClient.npub);
+        }
 
         nostrClient.on('event', message => {
             console.log('message', message);
@@ -61,7 +68,7 @@ export const Nostr = () => {
     const handleDisconnectClick = async () => {
         client?.dispose();
     };
-    const handleSendPaymentRequest = () => {
+    const handleSendPaymentData = () => {
         client?.send({
             content: JSON.stringify({
                 type: 'payment_request',
@@ -71,50 +78,68 @@ export const Nostr = () => {
     };
 
     const handleSendAddressRequest = () => {
-        client?.send({
-            content: JSON.stringify({
-                type: 'address_request',
-            }),
-        });
+        setAddressRequestState('pending');
+        client
+            ?.request({
+                content: JSON.stringify({
+                    type: 'address_request',
+                }),
+            })
+            .then(result => {
+                console.log('result', result);
+                setAddressRequestState('success');
+            });
     };
 
-    const handleAddressRequestResponse = () => {
+    const handleAddressRequestResponse = (content: any) => {
+        console.log('handleAddressRequestResponse', content);
+
         client?.send({
             content: JSON.stringify({
                 type: 'address_response',
+                request_id: content.id,
                 payload: unusedAddress,
             }),
         });
     };
 
-    const PeerRequest = ({ created_at, pubkey, content }: any) => {
+    const PeerRequest = ({ pubkey, content }: any) => {
         if (content.type === 'payment_request') {
             return (
-                <div>
-                    <p>timestamp: {created_at} </p>
-                    <p>from {pubkey}</p>
-                    <p>
+                <SectionItem>
+                    <TextColumn
+                        title="Payment request"
+                        description={`received payment data (invoice) from a peer. Peer pubkey: ${pubkey}`}
+                    />
+                    <ActionColumn>
                         <a href={content.payload}>{content.payload}</a>
-                    </p>
-                </div>
+                    </ActionColumn>
+                </SectionItem>
             );
         }
 
         if (content.type === 'address_request') {
             return (
-                <div>
-                    <p>timestamp: {created_at} </p>
-                    <p>from {pubkey}</p>
-                    <Button onClick={handleAddressRequestResponse}>Send address back</Button>
-                </div>
+                <SectionItem>
+                    <TextColumn
+                        title={`Address request`}
+                        description={`received address request from a peer. Peer pubkey: ${pubkey}`}
+                    />
+
+                    <ActionColumn>
+                        <Button onClick={() => handleAddressRequestResponse(content)}>
+                            Send address back
+                        </Button>
+                    </ActionColumn>
+                </SectionItem>
             );
         }
 
         if (content.type === 'address_response') {
             return (
-                <div>
-                    <p>yay, we received address: {content.payload} </p>
-                </div>
+                <SectionItem>
+                    <TextColumn title={`Address response`} description={content.payload} />
+                </SectionItem>
             );
         }
 
@@ -144,7 +169,7 @@ export const Nostr = () => {
                         onClick={() => {
                             client?.newIdentity();
                             setNsec(client?.nsecStr!);
-                            setMyNpub(client?.pk!);
+                            setMyNpub(client?.npub!);
                             console.log('client', client);
                         }}
                     >
@@ -168,7 +193,7 @@ export const Nostr = () => {
             </SectionItem>
 
             <SectionItem>
-                <TextColumn title="Pubk" description="" />
+                <TextColumn title="Npub" description="" />
                 <ActionColumn>
                     <br />
                     <Input disabled={true} placeholder="My Npub" value={myNpub} size="small" />
@@ -183,7 +208,7 @@ export const Nostr = () => {
             </SectionItem>
 
             <SectionItem>
-                <TextColumn title="Pubk" description="" />
+                <TextColumn title="Npub" description="" />
                 <ActionColumn>
                     <Input
                         placeholder="Peer Npub"
@@ -194,22 +219,47 @@ export const Nostr = () => {
                 </ActionColumn>
             </SectionItem>
 
-            {peerNpub && clientStatus === 'connected' && (
+            <SectionItem>
+                <TextColumn
+                    title="Send invoice"
+                    description="send an invoice and do not wait for response"
+                />
+                <ActionColumn>
+                    <Button
+                        isDisabled={!unusedAddress || !peerNpub}
+                        onClick={handleSendPaymentData}
+                    >
+                        Send payment data
+                    </Button>
+                </ActionColumn>
+            </SectionItem>
+
+            <SectionItem>
+                <TextColumn
+                    title="Send address request"
+                    description="Ask peer for address. Wait for response"
+                />
+
+                <ActionColumn>
+                    <Button
+                        onClick={handleSendAddressRequest}
+                        isLoading={addressRequestState === 'pending'}
+                        isDisabled={!peerNpub || addressRequestState === 'pending'}
+                    >
+                        Send address request
+                    </Button>
+                </ActionColumn>
+            </SectionItem>
+
+            {clientStatus === 'connected' && (
                 <>
                     <SectionItem>
-                        <TextColumn title="Send message" description="Ask peer for address" />
-                        <Button onClick={handleSendPaymentRequest} isDisabled={!unusedAddress}>
-                            Send payment request
-                        </Button>
-                        <Button onClick={handleSendAddressRequest} isDisabled={!unusedAddress}>
-                            Send address request
-                        </Button>
+                        <TextColumn
+                            title="Inbox"
+                            description="The last message received from your peer"
+                        />
                     </SectionItem>
-
-                    <SectionItem>
-                        <TextColumn title="Last message received" description="" />
-                        {events && <PeerRequest {...events} />}
-                    </SectionItem>
+                    {events && <PeerRequest {...events} />}
                 </>
             )}
         </>
