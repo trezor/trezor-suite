@@ -1158,6 +1158,14 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
     if (oldVersion < 51) {
         await updateAll(transaction, 'accounts', account => {
+            if (account.networkType === 'cardano') {
+                account.misc.staking.drep = null;
+
+                return account;
+            }
+        });
+
+        await updateAll(transaction, 'accounts', account => {
             if (account.networkType === 'ethereum' && account.symbol !== 'eth') {
                 const { chainId } = getNetwork(account.symbol);
                 account.metadata.key = `${account.descriptor}-${chainId}`;

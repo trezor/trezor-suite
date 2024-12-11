@@ -5,5 +5,6 @@ export type {
     StakePool,
     PoolsResponse,
     ActionAvailability,
+    DRepResponse,
     CardanoStaking,
 } from '@suite-common/wallet-types';

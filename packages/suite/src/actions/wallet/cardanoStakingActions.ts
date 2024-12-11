@@ -1,14 +1,24 @@
 import { getUnixTime } from 'date-fns';
 
 import { BlockchainBlock } from '@trezor/connect';
-import { CARDANO_STAKE_POOL_PREVIEW_URL, CARDANO_STAKE_POOL_MAINNET_URL } from '@trezor/urls';
-import { isPending, getAccountTransactions } from '@suite-common/wallet-utils';
+import {
+    CARDANO_STAKE_POOL_PREVIEW_URL,
+    CARDANO_STAKE_POOL_MAINNET_URL,
+    CARDANO_MAINNET_DREP,
+    CARDANO_PREVIEW_DREP,
+} from '@trezor/urls';
+import { isPending, getAccountTransactions, getNetworkName } from '@suite-common/wallet-utils';
 import { CARDANO_DEFAULT_TTL_OFFSET } from '@suite-common/wallet-constants';
 import { transactionsActions } from '@suite-common/wallet-core';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 
 import { CARDANO_STAKING } from 'src/actions/wallet/constants';
-import { PendingStakeTx, PoolsResponse, CardanoNetwork } from 'src/types/wallet/cardanoStaking';
+import {
+    PendingStakeTx,
+    PoolsResponse,
+    CardanoNetwork,
+    DRepResponse,
+} from 'src/types/wallet/cardanoStaking';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 import { Dispatch, GetState } from 'src/types/suite';
 
@@ -16,8 +26,9 @@ export type CardanoStakingAction =
     | { type: typeof CARDANO_STAKING.ADD_PENDING_STAKE_TX; pendingStakeTx: PendingStakeTx }
     | { type: typeof CARDANO_STAKING.REMOVE_PENDING_STAKE_TX; accountKey: string }
     | {
-          type: typeof CARDANO_STAKING.SET_TREZOR_POOLS;
+          type: typeof CARDANO_STAKING.SET_TREZOR_DATA;
           trezorPools: PoolsResponse;
+          trezorDRep: DRepResponse;
           network: CardanoNetwork;
       }
     | { type: typeof CARDANO_STAKING.SET_FETCH_ERROR; error: boolean; network: CardanoNetwork }
@@ -102,8 +113,8 @@ export const validatePendingStakeTxOnTx =
         }
     };
 
-export const fetchTrezorPools = (network: 'ADA' | 'tADA') => async (dispatch: Dispatch) => {
-    const cardanoNetwork = network === 'ADA' ? 'mainnet' : 'preview';
+export const fetchTrezorData = (network: 'ADA' | 'tADA') => async (dispatch: Dispatch) => {
+    const cardanoNetwork = getNetworkName(network);
 
     dispatch({
         type: CARDANO_STAKING.SET_FETCH_LOADING,
@@ -111,25 +122,38 @@ export const fetchTrezorPools = (network: 'ADA' | 'tADA') => async (dispatch: Di
         network: cardanoNetwork,
     });
 
-    // Fetch ID of Trezor stake pool that will be used in delegation transaction
-    const url =
-        cardanoNetwork === 'mainnet'
-            ? CARDANO_STAKE_POOL_MAINNET_URL
-            : CARDANO_STAKE_POOL_PREVIEW_URL;
-
     try {
-        const response = await fetch(url, { credentials: 'same-origin' });
-        const responseJson = await response.json();
+        // Fetch ID of Trezor stake pool that will be used in delegation transaction
+        const urlPools =
+            cardanoNetwork === 'mainnet'
+                ? CARDANO_STAKE_POOL_MAINNET_URL
+                : CARDANO_STAKE_POOL_PREVIEW_URL;
 
-        if (!responseJson || !('next' in responseJson) || !('pools' in responseJson)) {
-            // todo: even if this happens, error will be overridden by this bug
-            // https://github.com/trezor/trezor-suite/issues/5485
+        const responsePools = await fetch(urlPools, { credentials: 'same-origin' });
+        const responsePoolsJson = await responsePools.json();
+
+        if (
+            !responsePoolsJson ||
+            !('next' in responsePoolsJson) ||
+            !('pools' in responsePoolsJson)
+        ) {
             throw new Error('Cardano: fetchTrezorPools: Invalid data format');
         }
 
+        // Fetch DRep for transaction withdrawal
+        const urlDRep = cardanoNetwork === 'mainnet' ? CARDANO_MAINNET_DREP : CARDANO_PREVIEW_DREP;
+
+        const responseDRep = await fetch(urlDRep, { credentials: 'same-origin' });
+        const responseDRepJson = await responseDRep.json();
+
+        if (!responseDRepJson || !('drep' in responseDRepJson)) {
+            throw new Error('Cardano: fetchTrezorDRep: Invalid data format');
+        }
+
         dispatch({
-            type: CARDANO_STAKING.SET_TREZOR_POOLS,
-            trezorPools: responseJson as PoolsResponse,
+            type: CARDANO_STAKING.SET_TREZOR_DATA,
+            trezorPools: responsePoolsJson as PoolsResponse,
+            trezorDRep: responseDRepJson as DRepResponse,
             network: cardanoNetwork,
         });
     } catch {

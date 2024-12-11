@@ -7609,6 +7609,26 @@ export default defineMessages({
         id: 'TR_CARDANO_FINGERPRINT_HEADLINE',
         defaultMessage: 'Fingerprint',
     },
+    TR_CARDANO_WITHDRAW_MODAL_TITLE: {
+        id: 'TR_CARDANO_WITHDRAW_MODAL_TITLE',
+        defaultMessage: 'Delegate voting rights',
+    },
+    TR_CARDANO_WITHDRAW_MODAL_TITLE_DESCRIPTION: {
+        id: 'TR_CARDANO_WITHDRAW_MODAL_TITLE_DESCRIPTION',
+        defaultMessage: `When withdrawing your rewards, you can choose to support the Cardano ecosystem by delegating your community voting rights. Your votes will be delegated to Five Binaries, the operators of Cardano staking in Trezor Suite. This helps strengthen the network's resilience, sustainability, and community-driven governance. If you prefer, you can easily opt out of governance.`,
+    },
+    TR_CARDANO_WITHDRAW_MODAL_SUB_TITLE: {
+        id: 'TR_CARDANO_WITHDRAW_MODAL_SUB_TITLE',
+        defaultMessage: 'Delegate Representative (DRep)',
+    },
+    TR_CARDANO_WITHDRAW_MODAL_BUTTON_ABSTAIN: {
+        id: 'TR_CARDANO_WITHDRAW_MODAL_BUTTON_ABSTAIN',
+        defaultMessage: 'Opt Out',
+    },
+    TR_CARDANO_WITHDRAW_MODAL_BUTTON_DELEGATE: {
+        id: 'TR_CARDANO_WITHDRAW_MODAL_BUTTON_DELEGATE',
+        defaultMessage: 'Delegate',
+    },
     TR_EXCEEDS_MAX: {
         id: 'TR_EXCEEDS_MAX',
         defaultMessage: 'Exceeds max length',

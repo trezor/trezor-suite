@@ -124,6 +124,10 @@ export const CARDANO_STAKE_POOL_MAINNET_URL: Url =
     'https://trezor-cardano-mainnet.blockfrost.io/api/v0/pools/';
 export const CARDANO_STAKE_POOL_PREVIEW_URL: Url =
     'https://trezor-cardano-preview.blockfrost.io/api/v0/pools/';
+export const CARDANO_MAINNET_DREP: Url =
+    'https://trezor-cardano-mainnet.blockfrost.io/api/v0/dreps/';
+export const CARDANO_PREVIEW_DREP: Url =
+    'https://trezor-cardano-preview.blockfrost.io/api/v0/dreps/';
 
 export const CHROME_URL: Url = 'https://www.google.com/chrome/';
 export const CHROME_UPDATE_URL: Url = 'https://support.google.com/chrome/answer/95414';

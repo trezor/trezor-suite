@@ -630,7 +630,7 @@ export const getVotingCertificates = [
         stakingPath: 'path',
         dRep: {
             type: 0, //keyHash
-            keyHash: 'hex',
+            hex: 'hex',
         },
         result: [
             {
@@ -648,7 +648,7 @@ export const getVotingCertificates = [
         stakingPath: 'path',
         dRep: {
             type: 1, // scriptHash
-            keyHash: 'hex',
+            hex: 'hex',
         },
         result: [
             {

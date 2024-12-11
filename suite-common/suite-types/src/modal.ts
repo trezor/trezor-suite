@@ -186,6 +186,9 @@ export type UserContextPayload =
           type: 'passphrase-mismatch-warning';
       }
     | {
+          type: 'cardano-withdraw-modal';
+      }
+    | {
           type: 'connect-popup';
           onConfirm: () => void;
           onCancel: () => void;

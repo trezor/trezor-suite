@@ -41,6 +41,9 @@ export const getAddressType = () => PROTO.CardanoAddressType.BASE;
 export const getNetworkId = (accountSymbol: Account['symbol']) =>
     accountSymbol === 'ada' ? CARDANO.NETWORK_IDS.mainnet : CARDANO.NETWORK_IDS.testnet;
 
+export const getNetworkName = (accountSymbol: string): 'preview' | 'mainnet' =>
+    accountSymbol.toLowerCase() === 'ada' ? 'mainnet' : 'preview';
+
 export const getUnusedChangeAddress = (account: Pick<Account, 'addresses'>) => {
     if (!account.addresses) return;
 
@@ -135,16 +138,15 @@ export const getDelegationCertificates = (
 
 export const getVotingCertificates = (
     stakingPath: string,
-    dRep: { keyHash?: string; type: PROTO.CardanoDRepType },
+    dRep: { hex?: string; type: PROTO.CardanoDRepType },
 ) => {
     const result: CardanoCertificate[] = [
         {
             type: PROTO.CardanoCertificateType.VOTE_DELEGATION,
             path: stakingPath,
             dRep: {
-                keyHash: dRep.type === PROTO.CardanoDRepType.KEY_HASH ? dRep.keyHash : undefined,
-                scriptHash:
-                    dRep.type === PROTO.CardanoDRepType.SCRIPT_HASH ? dRep.keyHash : undefined,
+                keyHash: dRep.type === PROTO.CardanoDRepType.KEY_HASH ? dRep.hex : undefined,
+                scriptHash: dRep.type === PROTO.CardanoDRepType.SCRIPT_HASH ? dRep.hex : undefined,
                 type: dRep.type,
             },
         },

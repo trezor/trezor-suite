@@ -58,10 +58,12 @@ describe('cardanoStakingReducer reducer', () => {
                             pools: [],
                             next: { hex: 'a', bech32: 'b', live_stake: 'a', saturation: 'a' },
                         },
+                        trezorDRep: undefined,
                         isFetchError: false,
                         isFetchLoading: false,
                     },
                     preview: {
+                        trezorDRep: undefined,
                         trezorPools: {
                             pools: [],
                             next: { hex: 'a', bech32: 'b', live_stake: 'a', saturation: 'a' },
@@ -162,10 +164,10 @@ describe('cardanoStakingReducer reducer', () => {
         });
     });
 
-    it('CARDANO_STAKING.SET_TREZOR_POOLS mainnet', () => {
+    it('CARDANO_STAKING.SET_TREZOR_DATA mainnet', () => {
         expect(
             reducer(undefined, {
-                type: CARDANO_STAKING.SET_TREZOR_POOLS,
+                type: CARDANO_STAKING.SET_TREZOR_DATA,
                 network: 'mainnet',
                 trezorPools: {
                     next: {
@@ -229,7 +231,7 @@ describe('cardanoStakingReducer reducer', () => {
     it('CARDANO_STAKING.SET_TREZOR_POOLS preview', () => {
         expect(
             reducer(undefined, {
-                type: CARDANO_STAKING.SET_TREZOR_POOLS,
+                type: CARDANO_STAKING.SET_TREZOR_DATA,
                 network: 'preview',
                 trezorPools: {
                     next: {
