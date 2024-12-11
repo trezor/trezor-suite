@@ -176,6 +176,33 @@ const FindContactButton = ({ contacts }: { contacts: Contact[] }) => {
     );
 };
 
+const GetMyPubkeyButton = () => {
+    const device = useSelector(selectDevice);
+
+    const getMyPubkey = async () => {
+        if (!device) return;
+
+        const response = await TrezorConnect.getAddress({
+            device,
+            path: "m/44'/1'/0'/0/0",
+            coin: 'test',
+            useEmptyPassphrase: device.useEmptyPassphrase,
+            showOnTrezor: false,
+        });
+        if (response.success) {
+            prompt('Your identity pubkey', response.payload.address);
+        } else {
+            alert(`Failed to get pubkey: ${response.payload.error}`);
+        }
+    };
+
+    return (
+        <Button size="small" onClick={getMyPubkey}>
+            Get my identity pubkey
+        </Button>
+    );
+};
+
 const Contacts = ({ device }: { device: TrezorDevice }) => {
     const contacts = useSelector(selectContactsForDevice(device));
     const dispatch = useDispatch();
@@ -197,6 +224,7 @@ const Contacts = ({ device }: { device: TrezorDevice }) => {
             <div>
                 <AddContactButton />
                 <FindContactButton contacts={contacts} />
+                <GetMyPubkeyButton />
             </div>
         </ContactsWrapper>
     );
