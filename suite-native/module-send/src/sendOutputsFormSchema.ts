@@ -139,7 +139,7 @@ export const sendOutputsFormValidationSchema = yup.object({
                     )
                     .test(
                         'ripple-higher-than-reserve',
-                        'Amount is above the required unspendable reserve (10 XRP)',
+                        'Amount is above the required unspendable reserve (1 XRP)',
                         function (
                             value,
                             { options: { context } }: yup.TestContext<SendFormFormContext>,
