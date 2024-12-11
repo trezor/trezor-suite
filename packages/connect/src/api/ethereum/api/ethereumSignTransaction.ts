@@ -1,7 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignTransaction.js
 
-import { FeeMarketEIP1559TxData, LegacyTxData } from '@ethereumjs/tx';
-
 import { MessagesSchema } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -155,16 +153,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                   definitions,
               );
 
-        const txData = {
-            ...tx,
-            ...signature,
-            type: isLegacy ? 0 : 2, // 0 for legacy, 2 for EIP-1559
-            gasPrice: isLegacy ? tx.gasPrice : undefined,
-            maxFeePerGas: !isLegacy ? tx.maxFeePerGas : undefined,
-            maxPriorityFeePerGas: !isLegacy ? tx.maxPriorityFeePerGas : undefined,
-        } as LegacyTxData | FeeMarketEIP1559TxData;
-
-        const serializedTx = helper.serializeEthereumTx(txData, tx.chainId);
+        const serializedTx = helper.serializeEthereumTx(tx, signature, isLegacy);
 
         return { ...signature, serializedTx };
     }

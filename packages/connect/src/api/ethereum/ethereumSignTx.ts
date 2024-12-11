@@ -7,7 +7,11 @@ import { MessagesSchema } from '@trezor/protobuf';
 
 import { PROTO, ERRORS } from '../../constants';
 import type { TypedCall } from '../../device/DeviceCommands';
-import type { EthereumAccessList } from '../../types/api/ethereum';
+import type {
+    EthereumAccessList,
+    EthereumTransaction,
+    EthereumTransactionEIP1559,
+} from '../../types/api/ethereum';
 import { addHexPrefix, deepTransform } from '../../utils/formatUtils';
 
 const splitString = (str?: string, len?: number) => {
@@ -26,9 +30,9 @@ const processTxRequest = async (
     data?: string,
     chain_id?: number,
 ): Promise<{
-    v: string;
-    r: string;
-    s: string;
+    v: `0x${string}`;
+    r: `0x${string}`;
+    s: `0x${string}`;
 }> => {
     if (!request.data_length) {
         let v = request.signature_v;
@@ -59,24 +63,50 @@ const processTxRequest = async (
 
 const deepHexPrefix = deepTransform(addHexPrefix);
 
-export const serializeEthereumTx = (
-    txData: LegacyTxData | FeeMarketEIP1559TxData,
-    chainId: number,
-) => {
+export const getCommonForChain = (chainId: number) => {
+    // @ethereumjs/tx directly supported chains
+    if (Common.isSupportedChainId(BigInt(chainId))) return new Common({ chain: chainId });
+
     // @ethereumjs/tx doesn't support ETC (chain 61) by default
     // and it needs to be declared as custom chain
     // see: https://github.com/ethereumjs/ethereumjs-tx/blob/master/examples/custom-chain-tx.ts
-    const txOptions =
-        chainId === 61
-            ? {
-                  common: Common.custom(
-                      { name: 'ethereum-classic', networkId: 1, chainId: 61 },
-                      { baseChain: Chain.Mainnet, hardfork: Hardfork.Petersburg },
-                  ),
-              }
-            : { chain: chainId };
+    if (chainId === 61)
+        return Common.custom(
+            { name: 'ethereum-classic', networkId: 1, chainId: 61 },
+            { baseChain: Chain.Mainnet, hardfork: Hardfork.Petersburg },
+        );
 
-    const ethTx = TransactionFactory.fromTxData(deepHexPrefix(txData), txOptions);
+    // other chains
+    return Common.custom({ chainId });
+};
+
+export const serializeEthereumTx = (
+    tx: EthereumTransactionEIP1559 | EthereumTransaction,
+    signature: { v: `0x${string}`; r: `0x${string}`; s: `0x${string}` },
+    isLegacy: boolean,
+) => {
+    const txData = deepHexPrefix({
+        ...tx,
+        ...signature,
+        type: isLegacy ? 0 : 2, // 0 for legacy, 2 for EIP-1559
+        ...(isLegacy
+            ? {
+                  gasPrice: tx.gasPrice,
+                  maxFeePerGas: undefined,
+                  maxPriorityFeePerGas: undefined,
+              }
+            : {
+                  gasPrice: undefined,
+                  maxFeePerGas: tx.maxFeePerGas,
+                  maxPriorityFeePerGas: tx.maxPriorityFeePerGas,
+              }),
+    }) satisfies LegacyTxData | FeeMarketEIP1559TxData;
+
+    const txOptions = {
+        common: getCommonForChain(tx.chainId),
+    };
+
+    const ethTx = TransactionFactory.fromTxData(txData, txOptions);
 
     return `0x${Buffer.from(ethTx.serialize()).toString('hex')}`;
 };
