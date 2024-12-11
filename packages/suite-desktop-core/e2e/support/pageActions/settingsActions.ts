@@ -2,6 +2,7 @@ import { Locator, Page, test } from '@playwright/test';
 
 import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { capitalizeFirstLetter } from '@trezor/utils';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { expect } from '../customMatchers';
 
@@ -19,8 +20,20 @@ const languageMap = {
     es: 'Español',
 };
 
+const backgroundImages = {
+    original_t2t1: {
+        path: 'static/images/homescreens/COLOR_240x240/original_t2t1.jpg',
+        locator: '@modal/gallery/color_240x240/original_t2t1',
+    },
+    circleweb: {
+        path: 'static/images/homescreens/BW_64x128/circleweb.png',
+        locator: '@modal/gallery/bw_64x128/circleweb',
+    },
+};
+
 export class SettingsActions {
     private readonly window: Page;
+    private readonly apiURL: string;
     private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 5;
     readonly settingsMenuButton: Locator;
     readonly settingsHeader: Locator;
@@ -34,6 +47,10 @@ export class SettingsActions {
     readonly earlyAccessSkipButton: Locator;
     readonly settingsCloseButton: Locator;
     readonly modal: Locator;
+    readonly deviceLabelInput: Locator;
+    readonly deviceLabelSubmit: Locator;
+    readonly confirmOnDevicePrompt: Locator;
+    readonly homescreenGalleryButton: Locator;
     //coin Advance settings
     readonly coinNetworkButton = (coin: NetworkSymbol) =>
         this.window.getByTestId(`@settings/wallet/network/${coin}`);
@@ -51,8 +68,9 @@ export class SettingsActions {
     readonly languageInputOption = (language: Language) =>
         this.window.getByTestId(`@settings/language-select/option/${language}`);
 
-    constructor(window: Page) {
+    constructor(window: Page, apiURL: string) {
         this.window = window;
+        this.apiURL = apiURL;
         this.settingsMenuButton = this.window.getByTestId('@suite/menu/settings');
         this.settingsHeader = this.window.getByTestId('@settings/menu/title');
         this.debugTabButton = this.window.getByTestId('@settings/menu/debug');
@@ -69,6 +87,12 @@ export class SettingsActions {
         this.earlyAccessSkipButton = this.window.getByTestId('@settings/early-access-skip-button');
         this.settingsCloseButton = this.window.getByTestId('@settings/menu/close');
         this.modal = this.window.getByTestId('@modal');
+        this.deviceLabelInput = this.window.getByTestId('@settings/device/label-input');
+        this.deviceLabelSubmit = this.window.getByTestId('@settings/device/label-submit');
+        this.confirmOnDevicePrompt = this.window.getByTestId('@prompts/confirm-on-device');
+        this.homescreenGalleryButton = this.window.getByTestId(
+            '@settings/device/homescreen-gallery',
+        );
         //coin Advance settings
         this.coinBackendSelector = this.window.getByTestId('@settings/advance/select-type/input');
         this.coinAddressInput = this.window.getByTestId('@settings/advance/url');
@@ -157,6 +181,30 @@ export class SettingsActions {
                 await expect(option).toBeVisible({ timeout: 2000 });
                 await option.click({ timeout: 2000 });
             }).toPass({ timeout: 10_000 });
+        });
+    }
+
+    async changeDeviceName(newDeviceName: string) {
+        await this.deviceLabelInput.clear();
+        await this.deviceLabelInput.fill(newDeviceName);
+        await this.deviceLabelSubmit.click();
+        await expect(this.confirmOnDevicePrompt).toBeVisible();
+        await TrezorUserEnvLink.pressYes();
+        await this.confirmOnDevicePrompt.waitFor({ state: 'detached' });
+    }
+
+    async changeDeviceBackground(image: keyof typeof backgroundImages) {
+        await test.step('Change display background image', async () => {
+            // To solve the flakiness of the test, we need to wait for the image to load
+            const buttonImageLoad = this.window.waitForResponse(
+                `${this.apiURL}${backgroundImages[image].path}`,
+            );
+            await this.homescreenGalleryButton.click();
+            await buttonImageLoad;
+            await this.window.getByTestId(backgroundImages[image].locator).click();
+            await expect(this.confirmOnDevicePrompt).toBeVisible();
+            await TrezorUserEnvLink.pressYes();
+            await this.confirmOnDevicePrompt.waitFor({ state: 'detached' });
         });
     }
 }

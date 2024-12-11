@@ -111,8 +111,8 @@ const test = base.extend<Fixtures>({
         const dashboardPage = new DashboardActions(window);
         await use(dashboardPage);
     },
-    settingsPage: async ({ window }, use) => {
-        const settingsPage = new SettingsActions(window);
+    settingsPage: async ({ window, apiURL }, use) => {
+        const settingsPage = new SettingsActions(window, apiURL);
         await use(settingsPage);
     },
     suiteGuidePage: async ({ window }, use) => {

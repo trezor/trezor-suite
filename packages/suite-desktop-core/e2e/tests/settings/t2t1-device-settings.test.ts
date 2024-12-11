@@ -1,22 +1,18 @@
-// TODOS:
-// - focus this test on testing what is different from T2T1: (background image, display rotation)
-// - implement these differences in suite in the first place. both suite and T2B1 will happily accept
-//   request to change display rotation but it has no effect. It should be at least hidden on client.
-// https://github.com/trezor/trezor-suite/issues/6567
 import { test, expect } from '../../support/fixtures';
 
-test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () => {
-    test.use({
-        emulatorStartConf: { version: '2-latest', model: 'T2B1', wipe: true },
-    });
-
+test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
+    test.use({ emulatorStartConf: { wipe: true, model: 'T2T1' } });
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo();
         await settingsPage.deviceTabButton.click();
     });
 
-    test('change all possible device settings', async ({ settingsPage, window: page, apiURL }) => {
+    test('change all possible device settings', async ({
+        window: page,
+        settingsPage,
+        trezorUserEnvLink,
+    }) => {
         await test.step('Verify firmware modal', async () => {
             await page.getByTestId('@settings/device/update-button').click();
             await page.getByTestId('@modal/close-button').click();
@@ -28,7 +24,12 @@ test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () 
             await expect(page.getByTestId('@menu/device/label')).toHaveText(newDeviceName);
         });
 
-        await settingsPage.changeDeviceBackground('circleweb');
+        await test.step('Change display rotation', async () => {
+            await page.getByTestId('select-bar/East').click();
+            await expect(page.getByTestId('@prompts/confirm-on-device')).toBeVisible();
+            await trezorUserEnvLink.pressYes();
+            await page.getByTestId('@prompts/confirm-on-device').waitFor({ state: 'detached' });
+        });
     });
 
     test('Device Wipe', async ({ window: page, trezorUserEnvLink }) => {
@@ -37,14 +38,29 @@ test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () 
         await page.getByTestId('@wipe/checkbox-2').click();
         await page.getByTestId('@wipe/wipe-button').click();
         await trezorUserEnvLink.pressYes();
-        //TODO: Verification?
+        //TODO: Any verification?
     });
 
     test('Backup in settings', async ({ window: page }) => {
-        await expect(page.getByTestId('@settings/device/check-seed-button')).toBeEnabled();
+        await expect(page.getByTestId('@settings/device/check-seed-button')).toBeVisible();
         await page.getByTestId('@settings/device/failed-backup-row').waitFor({ state: 'detached' });
         await page.getByTestId('@settings/device/check-seed-button').click();
         await expect(page.getByTestId('@modal')).toBeVisible();
         //TODO: Verification? Should we actually do the backup?
     });
+
+    test('Can change homescreen background in firmware >= 2.5.4', async ({ settingsPage }) => {
+        await settingsPage.changeDeviceBackground('original_t2t1');
+    });
+
+    test.describe('T2T1 - older firmware < 2.5.4', { tag: ['@group=settings'] }, () => {
+        test.use({ emulatorStartConf: { wipe: true, model: 'T2T1', version: '2.5.3' } });
+        test('Cannot change homescreen in firmware < 2.5.4', async ({ window: page }) => {
+            await expect(page.getByTestId('@settings/device/homescreen-gallery')).toBeDisabled();
+            await expect(page.getByTestId('@settings/device/homescreen-upload')).toBeDisabled();
+        });
+    });
+
+    // TODO: upload custom image
+    // TODO: set auto-lock (needs pin)
 });
