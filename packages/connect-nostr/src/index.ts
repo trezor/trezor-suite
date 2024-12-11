@@ -11,46 +11,85 @@ export type { Event } from 'nostr-tools/pure';
 
 useWebSocketImplementation(WebSocket);
 
+type Signer = (data: any) => any;
+type KeysParams =
+    | {
+          type: 'hot-keys';
+          nsecStr: `nsec1${string}`;
+          npubStr?: undefined;
+          signer?: undefined;
+      }
+    | {
+          type: 'signer';
+          nsecStr?: undefined;
+          npubStr: `npub${string}`;
+          signer: Signer;
+      };
+
+type Params = KeysParams & {
+    relayUrl: string;
+};
 export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommunicationClientEvents> {
-    sk?: Uint8Array;
-    pk?: string;
+    public readonly relay: Relay;
+    private readonly messages;
+
+    private subscription?: Subscription;
+    events: Event[] = [];
+
+    // hot(keys) mode
+    private sk?: Uint8Array;
+    private pk?: string;
     nsec?: Uint8Array;
     nsecStr?: nip19.NSec;
     npub?: nip19.NPub;
-    relay: Relay;
-    events: Event[] = [];
-    subscription?: Subscription;
 
-    private readonly messages;
+    // signer mode
+    signer?: Signer;
 
-    constructor({ nsecStr, relayUrl }: { nsecStr: string; relayUrl: string }) {
+    constructor({ relayUrl, type, ...rest }: Params) {
         super();
+
+        this.relay = new Relay(relayUrl);
 
         this.messages = createDeferredManager();
 
-        if (nsecStr) {
-            this.setIdentity(nsecStr);
+        if (type === 'hot-keys') {
+            const { nsecStr } = rest;
+            if (!nsecStr) {
+                throw new Error('nsecStr is required');
+            }
+            this.setIdentity({ type, ...rest });
+        } else {
+            this.signer = rest.signer;
+
+            // this.npub = rest.npubStr;
         }
 
-        this.relay = new Relay(relayUrl);
         this.emit('status', 'disconnected');
     }
 
     newIdentity() {
         this.sk = generateSecretKey();
-        return this.setIdentity(nip19.nsecEncode(this.sk));
+        return this.setIdentity({
+            type: 'hot-keys',
+            nsecStr: nip19.nsecEncode(this.sk),
+        });
     }
 
-    setIdentity(nsecStr: string) {
-        const { data, type } = nip19.decode(nsecStr);
-        if (type !== 'nsec') {
-            throw new Error('invalid nsecStr');
+    private setIdentity(params: KeysParams) {
+        if (params.type === 'hot-keys') {
+            const { data, type } = nip19.decode(params.nsecStr);
+            if (type !== 'nsec') {
+                throw new Error('invalid nsecStr');
+            }
+            this.sk = data;
+            this.pk = getPublicKey(this.sk);
+            this.nsecStr = nip19.nsecEncode(this.sk);
+            this.npub = nip19.npubEncode(this.pk);
+            this.nsec = nip19.decode(this.nsecStr).data;
+            this.signer = undefined;
+        } else {
         }
-        this.sk = data;
-        this.pk = getPublicKey(this.sk);
-        this.nsecStr = nip19.nsecEncode(this.sk);
-        this.npub = nip19.npubEncode(this.pk);
-        this.nsec = nip19.decode(this.nsecStr).data;
     }
 
     async connect() {
@@ -74,15 +113,19 @@ export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommuni
             content,
         };
 
-        // this assigns the pubkey, calculates the event id and signs the event in a single step
-        const signedEvent = finalizeEvent(eventTemplate, this.nsec);
-        return signedEvent;
+        if (this.signer) {
+            return this.signer(eventTemplate);
+        } else {
+            return finalizeEvent(eventTemplate, this.nsec);
+        }
     }
 
     async send({ content }: { content: string }) {
         const signedEvent = this.buildMessage({ content });
 
         await this.relay.publish(signedEvent);
+
+        return { success: true as const };
     }
 
     async request({ content }: { content: string }) {
@@ -94,12 +137,12 @@ export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommuni
 
         await this.relay.publish(signedEvent);
 
-        return promise;
+        await promise;
+
+        return { success: true as const, response: promise };
     }
 
     subscribe({ pubKeys }: { pubKeys: nip19.NPub[] }) {
-        console.log('callling subscribe');
-        console.log('subscriribtion', this.subscription);
         if (this.subscription) {
             this.subscription.close();
         }

@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 
+import TrezorConnect from '@trezor/connect';
 import { Input, Button } from '@trezor/components';
 import { NostrClient, Event } from '@trezor/connect-nostr';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 
+const defaultNsec = 'nsec12rfalrsa6dvnxjhhf4n0d2k4rc2wc8hy49qvp34k2hj8p7cppnnq8ysujz';
 export const Nostr = () => {
-    const [Nsec, setNsec] = useState(
-        'nsec12rfalrsa6dvnxjhhf4n0d2k4rc2wc8hy49qvp34k2hj8p7cppnnq8ysujz',
-    );
+    const [Nsec, setNsec] = useState<`nsec1${string}` | undefined>(defaultNsec);
     const [myNpub, setMyNpub] = useState('');
-    const [peerNpub, setPeerNpub] = useState('');
+    const [peerNpub, setPeerNpub] = useState<`npub1${string}` | undefined>(undefined);
     const [client, setClient] = useState<NostrClient | null>(null);
     const [events, setEvents] = useState<Event>();
     const [clientStatus, setClientStatus] = useState('disconnected');
@@ -33,7 +33,9 @@ export const Nostr = () => {
 
     const initPeerToPeerClient = async () => {
         const nostrClient = new NostrClient({
-            nsecStr: Nsec,
+            type: 'hot-keys',
+            nsecStr: defaultNsec,
+
             relayUrl: 'wss://relay.primal.net',
         });
         setClient(nostrClient);
@@ -62,6 +64,7 @@ export const Nostr = () => {
     }, []);
 
     const handlePeerNpubClick = () => {
+        if (!peerNpub) return;
         client?.subscribe({ pubKeys: [peerNpub] });
     };
 
@@ -262,6 +265,21 @@ export const Nostr = () => {
                     {events && <PeerRequest {...events} />}
                 </>
             )}
+
+            <SectionItem>
+                <TextColumn title="Nostr npub from device" description="" />
+                <ActionColumn>
+                    <Button
+                        onClick={() => {
+                            TrezorConnect.nostrGetPublicKey({
+                                path: "m/44'/194'/0'/0/0",
+                            }).then(console.log);
+                        }}
+                    >
+                        nostr get npub
+                    </Button>
+                </ActionColumn>
+            </SectionItem>
         </>
     );
 };
