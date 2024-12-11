@@ -23,6 +23,7 @@ import { WalletAccountTransaction } from 'src/types/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { AccountLabels } from 'src/types/suite/metadata';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { selectLabelingValueBeingEdited } from 'src/reducers/suite/metadataReducer';
 
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
 import { TargetAddressLabel } from './TargetAddressLabel';
@@ -167,6 +168,10 @@ export const TransactionTarget = ({
     const operation = getTxOperation(transaction.type);
     const targetMetadata = accountMetadata?.outputLabels?.[transaction.txid]?.[target.n];
 
+    const defaultMetadataValue = `${transaction.txid}-${target.n}`;
+    const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
+    const isBeingEdited = defaultMetadataValue === labelingValueBeingEdited;
+
     const copyAddress = () => {
         let payload: ToastPayload = { type: 'copy-to-clipboard' };
         if (!target?.addresses) {
@@ -190,6 +195,7 @@ export const TransactionTarget = ({
     return (
         <TransactionTargetLayout
             {...baseLayoutProps}
+            useHiddenPlaceholder={!isBeingEdited}
             addressLabel={
                 <MetadataLabeling
                     isDisabled={isActionDisabled}
@@ -213,7 +219,7 @@ export const TransactionTarget = ({
                         entityKey: accountKey,
                         txid: transaction.txid,
                         outputIndex: target.n,
-                        defaultValue: `${transaction.txid}-${target.n}`,
+                        defaultValue: defaultMetadataValue,
                         value: targetMetadata,
                     }}
                 />

@@ -101,6 +101,7 @@ interface TransactionTargetLayoutProps {
     amount?: ReactNode;
     fiatAmount?: ReactNode;
     useAnimation?: boolean;
+    useHiddenPlaceholder?: boolean;
     singleRowLayout?: boolean;
     isFirst?: boolean;
     isLast?: boolean;
@@ -115,6 +116,7 @@ export const TransactionTargetLayout = ({
     singleRowLayout,
     isFirst,
     isLast,
+    useHiddenPlaceholder,
     ...rest
 }: TransactionTargetLayoutProps) => {
     const animation = useAnimation ? motionAnimation.expand : {};
@@ -128,7 +130,11 @@ export const TransactionTargetLayout = ({
             </TimelineDotWrapper>
 
             <TargetAddress>
-                <StyledHiddenPlaceholder>{addressLabel}</StyledHiddenPlaceholder>
+                {useHiddenPlaceholder === false ? (
+                    addressLabel
+                ) : (
+                    <StyledHiddenPlaceholder>{addressLabel}</StyledHiddenPlaceholder>
+                )}
             </TargetAddress>
 
             <TargetAmountsWrapper $paddingBottom={!isLast}>

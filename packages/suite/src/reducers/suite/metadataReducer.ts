@@ -280,7 +280,7 @@ export const selectIsLabelingAvailable = (state: MetadataRootState) => {
 };
 
 /**
- it is possible to initiate metadata 
+ it is possible to initiate metadata
  */
 export const selectIsLabelingInitPossible = (state: MetadataRootState) => {
     const device = selectDevice(state);
@@ -327,5 +327,7 @@ export const selectPasswordManagerState = (
     return (provider.data[fileName] ||
         METADATA_PASSWORDS.DEFAULT_PASSWORD_MANAGER_STATE) as PasswordManagerState;
 };
+
+export const selectLabelingValueBeingEdited = ({ metadata }: MetadataRootState) => metadata.editing;
 
 export default metadataReducer;
