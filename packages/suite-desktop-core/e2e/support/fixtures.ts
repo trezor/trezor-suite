@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { test as base, ElectronApplication, Page } from '@playwright/test';
-import { existsSync } from 'node:fs';
 
 import {
     SetupEmu,
@@ -10,7 +9,7 @@ import {
 } from '@trezor/trezor-user-env-link';
 
 import { DashboardActions } from './pageActions/dashboardActions';
-import { getApiUrl, launchSuite } from './common';
+import { getApiUrl, getElectronVideoPath, launchSuite } from './common';
 import { SettingsActions } from './pageActions/settingsActions';
 import { SuiteGuide } from './pageActions/suiteGuideActions';
 import { WalletActions } from './pageActions/walletActions';
@@ -67,7 +66,11 @@ const test = base.extend<Fixtures>({
         }
 
         if (testInfo.project.name === PlaywrightProjects.Desktop) {
-            const suite = await launchSuite({ locale, colorScheme });
+            const suite = await launchSuite({
+                locale,
+                colorScheme,
+                videoFolder: testInfo.outputDir,
+            });
             await use(suite.electronApp);
             await suite.electronApp.close(); // Ensure cleanup after tests
         } else {
@@ -90,18 +93,11 @@ const test = base.extend<Fixtures>({
                 path: tracePath,
                 contentType: 'application/zip',
             });
-
-            // Attach video if it exists
-            const videoPath = `${testInfo.outputDir}/${testInfo.title}`;
-            console.error('videoPath', videoPath);
-            console.error('exists?', existsSync(videoPath));
-            if (existsSync(videoPath)) {
-                testInfo.attachments.push({
-                    name: 'video',
-                    path: videoPath,
-                    contentType: 'video/webm',
-                });
-            }
+            testInfo.attachments.push({
+                name: 'video',
+                path: getElectronVideoPath(testInfo.outputDir),
+                contentType: 'video/webm',
+            });
         } else {
             await page.context().addInitScript(() => {
                 // Tells the app to attach Redux Store to window object. packages/suite-web/src/support/useCypress.ts

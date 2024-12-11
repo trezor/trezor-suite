@@ -2,7 +2,7 @@
 
 import { _electron as electron, TestInfo } from '@playwright/test';
 import path from 'path';
-import fse from 'fs-extra';
+import { readdirSync, removeSync } from 'fs-extra';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
@@ -19,6 +19,7 @@ type LaunchSuiteParams = {
     bridgeDaemon?: boolean;
     locale?: string;
     colorScheme?: 'light' | 'dark' | 'no-preference' | null | undefined;
+    videoFolder?: string;
 };
 
 const formatErrorLogMessage = (data: string) => {
@@ -54,19 +55,20 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams = {}) => 
         ],
         colorScheme: params.colorScheme,
         locale: params.locale,
-        // when testing electron, video needs to be setup like this. it works locally but not in docker
-        // recordVideo: { dir: 'test-results' },
+        ...(params.videoFolder && {
+            recordVideo: { dir: params.videoFolder, size: { width: 1280, height: 720 } },
+        }),
     });
 
     const localDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'));
 
     if (options.rmUserData) {
-        const filesToDelete = fse.readdirSync(localDataDir);
+        const filesToDelete = readdirSync(localDataDir);
         filesToDelete.forEach(file => {
             // omitting Cache folder it sometimes prevents the deletion and is not necessary to delete for test idempotency
             if (file !== 'Cache') {
                 try {
-                    fse.removeSync(`${localDataDir}/${file}`);
+                    removeSync(`${localDataDir}/${file}`);
                 } catch {
                     // If files does not exist do nothing.
                 }
@@ -112,4 +114,17 @@ export const getApiUrl = (webBaseUrl: string | undefined, testInfo: TestInfo) =>
     }
 
     return apiURL;
+};
+
+export const getElectronVideoPath = (videoFolder: string) => {
+    const videoFilenames = readdirSync(videoFolder).filter(file => file.endsWith('.webm'));
+    if (videoFilenames.length > 1) {
+        console.error(
+            formatErrorLogMessage(
+                `Warning: More than one electron video file found in the output directory: ${videoFolder}\nAttaching only the first one: ${videoFilenames[0]}`,
+            ),
+        );
+    }
+
+    return path.join(videoFolder, videoFilenames[0]);
 };
