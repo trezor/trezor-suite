@@ -8,17 +8,24 @@ describe('helpers/ethereumSignTx', () => {
     describe('serializeEthereumTx', () => {
         fixtures.serializeEthereumTx.forEach(f => {
             it(f.description, () => {
-                // ETC is not supported
-                if (f.chainId !== 61) {
-                    const tx = TransactionFactory.fromTxData(f.tx);
-                    const hash1 = Buffer.from(tx.hash()).toString('hex');
-                    expect(`0x${hash1}`).toEqual(f.result);
-                }
-                const serialized = serializeEthereumTx({ ...f.tx, type: 0 }, f.chainId);
-                const hash2 = toHex(
+                const isLegacy = f.type === undefined || f.type === 0;
+                const serialized = serializeEthereumTx(f.tx, f.signature, isLegacy);
+
+                // Verify signature hash
+                const hash = toHex(
                     keccak256(Uint8Array.from(Buffer.from(serialized.slice(2), 'hex'))),
                 );
-                expect(hash2).toEqual(f.result);
+                expect(hash).toEqual(f.result);
+
+                // Verify by parsing the serialized tx
+                const tx = TransactionFactory.fromSerializedData(
+                    Buffer.from(serialized.slice(2), 'hex'),
+                );
+                const hash2 = Buffer.from(tx.hash()).toString('hex');
+                expect(`0x${hash2}`).toEqual(f.result);
+
+                // Compare sender address (based on signature)
+                expect(tx.getSenderAddress().toString()).toEqual(f.from);
             });
         });
     });
