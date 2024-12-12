@@ -10,12 +10,18 @@ import { useLayout, useSelector, useTranslation, useDispatch } from 'src/hooks/s
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { TranslationKey, Translation } from 'src/components/suite/Translation';
 import { goto } from 'src/actions/suite/routerActions';
+import { CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
 
-interface CoinmarketLayoutHeaderProps extends PropsWithChildren {}
-
-const getBackRoute = (route: Route['name'] | undefined): Route['name'] => {
+const getBackRoute = (
+    route?: Route['name'],
+    activeSection?: CoinmarketTradeType,
+): Route['name'] => {
     const routePrefix = 'wallet-coinmarket-';
     const match = route?.match(new RegExp(`^${routePrefix}(exchange|buy|sell)-`));
+
+    if (route === `${routePrefix}transactions`) {
+        return activeSection === 'exchange' ? `${routePrefix}exchange` : `${routePrefix}buy`;
+    }
 
     return match ? (`${routePrefix}${match[1]}` as Route['name']) : 'wallet-index';
 };
@@ -27,6 +33,7 @@ type CoinmarketPageHeaderProps = {
 const CoinmarketPageHeader = ({ fallbackTitle }: CoinmarketPageHeaderProps) => {
     const dispatch = useDispatch();
     const currentRouteName = useSelector(selectRouteName);
+    const activeSection = useSelector(state => state.wallet.coinmarket.activeSection);
 
     const goToRoute = (route: Route['name']) => () => {
         dispatch(goto(route, { preserveParams: true }));
@@ -39,7 +46,7 @@ const CoinmarketPageHeader = ({ fallbackTitle }: CoinmarketPageHeaderProps) => {
                     icon="caretLeft"
                     variant="tertiary"
                     size="medium"
-                    onClick={goToRoute(getBackRoute(currentRouteName))}
+                    onClick={goToRoute(getBackRoute(currentRouteName, activeSection))}
                     data-testid="@account-subpage/back"
                 />
                 <BasicName nameId={fallbackTitle} />
@@ -61,7 +68,7 @@ const CoinmarketPageHeader = ({ fallbackTitle }: CoinmarketPageHeaderProps) => {
     );
 };
 
-export const CoinmarketLayoutHeader = ({ children }: CoinmarketLayoutHeaderProps) => {
+export const CoinmarketLayoutHeader = ({ children }: PropsWithChildren) => {
     const { activeSection } = useSelector(state => state.wallet.coinmarket);
     const { translationString } = useTranslation();
     const fallbackTitle = useMemo(
