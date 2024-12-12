@@ -47,16 +47,13 @@ const GetMyPubkeyButton = () => {
     const getMyPubkey = async () => {
         if (!device) return;
 
-        const response = await TrezorConnect.getAddress({
+        const response = await TrezorConnect.nostrGetPublicKey({
             device,
-            path: "m/44'/1'/0'/0/0",
-            coin: 'test',
             useEmptyPassphrase: device.useEmptyPassphrase,
-            showOnTrezor: false,
-            scriptType: 'SPENDADDRESS',
+            path: "m/44'/1237'/0'/0/0",
         });
         if (response.success) {
-            alert(`Your identity pubkey: ${response.payload.address}`);
+            alert(`Your identity pubkey: ${response.payload.pubkey}`);
         } else {
             alert(`Failed to get pubkey: ${response.payload.error}`);
         }

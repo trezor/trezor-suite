@@ -8,25 +8,23 @@ export const findContactBySignedMessage = (
     address: string,
     signature: string,
 ) => {
-    for (const contact of contacts) {
-        try {
-            // same logic as on fw side
-            const messageDigest = sha256(address);
-            let recId = Buffer.from(signature.slice(0, 2), 'hex')[0];
-            recId -= 27;
-            recId &= 3;
+    let recover;
+    try {
+        // same logic as on fw side
+        const messageDigest = sha256(address);
+        let recId = Buffer.from(signature.slice(0, 2), 'hex')[0];
+        recId -= 27;
+        recId &= 3;
 
-            const recover = secp256k1.Signature.fromCompact(Buffer.from(signature.slice(2), 'hex'))
-                .addRecoveryBit(recId)
-                .recoverPublicKey(messageDigest)
-                .toHex();
+        recover = secp256k1.Signature.fromCompact(Buffer.from(signature.slice(2), 'hex'))
+            .addRecoveryBit(recId)
+            .recoverPublicKey(messageDigest)
+            .toHex();
+    } catch (error) {
+        console.error(error);
 
-            if (recover.slice(2) === contact.address) {
-                return contact;
-            }
-        } catch (error) {
-            console.error(error);
-            continue;
-        }
+        return;
     }
+
+    return contacts.find(c => c.address === recover.slice(2));
 };

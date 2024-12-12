@@ -16,14 +16,16 @@ export const useAddContact = (onCloseModal: () => void, label: string, address: 
             return { error: 'Missing data' };
         }
 
-        const message = `${label}/${address}`;
+        const content = `${label}/${address}`;
 
-        const response = await TrezorConnect.signMessage({
+        const response = await TrezorConnect.nostrSignEvent({
             device,
-            path: "m/44'/1'/0'/0/0",
-            coin: 'test',
-            message,
             useEmptyPassphrase: device.useEmptyPassphrase,
+            path: "m/44'/1237'/0'/0/0",
+            created_at: 0,
+            kind: 27922,
+            tags: [],
+            content,
         });
 
         if (!response.success) {

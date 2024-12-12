@@ -38,7 +38,7 @@ export const AddNewContactModal = ({ onClose }: AddNewContactModalProps) => {
                     </NewModal.Button>
                 }
             >
-                No device selected or device unacquired
+                {errorMessage}
             </NewModal>
         );
 

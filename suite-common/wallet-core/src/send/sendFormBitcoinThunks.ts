@@ -351,18 +351,16 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
             if (output.address) {
                 const contactSignature = formState.contactSignatures?.[output.address];
                 if (contactSignature) {
-                    //console.log('contactSignature', contactSignature);
                     const contact = findContactBySignedMessage(
                         contacts,
                         output.address,
                         contactSignature,
                     );
-                    //console.log('contact', contact);
                     if (contact) {
                         return {
                             ...output,
                             label: contact.label,
-                            label_sig: Buffer.from(contact.signature, 'base64').toString('hex'),
+                            label_sig: contact.signature,
                             label_pk: contact.address,
                             address_pk_sig: contactSignature,
                         };
@@ -370,12 +368,11 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
                 }
 
                 const contact = contacts.find(c => c.address === output.address);
-                //console.log('direct contact', contact);
                 if (contact) {
                     return {
                         ...output,
                         label: contact.label,
-                        label_sig: Buffer.from(contact.signature, 'base64').toString('hex'),
+                        label_sig: contact.signature,
                     };
                 }
             }
