@@ -5,6 +5,7 @@ import type {
     AddressAlias,
     TokenTransfer as BlockbookTokenTransfer,
     ContractInfo,
+    MultiTokenValue,
     StakingPool,
 } from './blockbook-api';
 import type { SolanaStakingAccount } from './solana';
@@ -189,6 +190,10 @@ export interface TokenInfo {
     accounts?: TokenAccount[]; // token accounts for solana
     policyId?: string; // Cardano policy id
     fingerprint?: string; // Cardano starting with "asset"
+    multiTokenValues?: MultiTokenValue[];
+    ids?: string[];
+    totalReceived?: string;
+    totalSent?: string;
     // transfers: number, // total transactions?
 }
 
