@@ -29,6 +29,10 @@ const backgroundImages = {
         path: 'static/images/homescreens/BW_64x128/circleweb.png',
         locator: '@modal/gallery/bw_64x128/circleweb',
     },
+    nyancat: {
+        path: 'static/images/homescreens/BW_64x128/nyancat.png',
+        locator: '@modal/gallery/bw_64x128/nyancat',
+    },
 };
 
 export class SettingsActions {
@@ -51,6 +55,8 @@ export class SettingsActions {
     readonly deviceLabelSubmit: Locator;
     readonly confirmOnDevicePrompt: Locator;
     readonly homescreenGalleryButton: Locator;
+    readonly notificationSuccessToast: Locator;
+    readonly pinSubmitButton: Locator;
     //coin Advance settings
     readonly coinNetworkButton = (coin: NetworkSymbol) =>
         this.window.getByTestId(`@settings/wallet/network/${coin}`);
@@ -67,6 +73,7 @@ export class SettingsActions {
     readonly languageInput: Locator;
     readonly languageInputOption = (language: Language) =>
         this.window.getByTestId(`@settings/language-select/option/${language}`);
+    readonly pinInput = (index: number) => this.window.getByTestId(`@pin/input/${index}`);
 
     constructor(window: Page, apiURL: string) {
         this.window = window;
@@ -93,7 +100,7 @@ export class SettingsActions {
         this.homescreenGalleryButton = this.window.getByTestId(
             '@settings/device/homescreen-gallery',
         );
-        //coin Advance settings
+        this.notificationSuccessToast = this.window.getByTestId('@toast/settings-applied');
         this.coinBackendSelector = this.window.getByTestId('@settings/advance/select-type/input');
         this.coinAddressInput = this.window.getByTestId('@settings/advance/url');
         this.coinAdvanceSettingSaveButton = this.window.getByTestId(
@@ -101,6 +108,7 @@ export class SettingsActions {
         );
         this.themeInput = this.window.getByTestId('@theme/color-scheme-select/input');
         this.languageInput = this.window.getByTestId('@settings/language-select/input');
+        this.pinSubmitButton = this.window.getByTestId('@pin/submit-button');
     }
 
     async navigateTo() {
@@ -160,6 +168,7 @@ export class SettingsActions {
     async changeTheme(theme: Theme) {
         await this.selectDropdownOptionWithRetry(this.themeInput, this.themeInputOption(theme));
         await expect(this.themeInput).toHaveText(capitalizeFirstLetter(theme));
+        await expect(this.notificationSuccessToast).toBeVisible();
     }
 
     async changeLanguage(language: Language) {
@@ -168,6 +177,7 @@ export class SettingsActions {
             this.languageInputOption(language),
         );
         await expect(this.languageInput).toHaveText(languageMap[language]);
+        await expect(this.notificationSuccessToast).toBeVisible();
     }
 
     //Retry mechanism for settings dropdowns which tend to be flaky in automation
@@ -191,6 +201,7 @@ export class SettingsActions {
         await expect(this.confirmOnDevicePrompt).toBeVisible();
         await TrezorUserEnvLink.pressYes();
         await this.confirmOnDevicePrompt.waitFor({ state: 'detached' });
+        await expect(this.notificationSuccessToast).toBeVisible();
     }
 
     async changeDeviceBackground(image: keyof typeof backgroundImages) {
@@ -205,6 +216,16 @@ export class SettingsActions {
             await expect(this.confirmOnDevicePrompt).toBeVisible();
             await TrezorUserEnvLink.pressYes();
             await this.confirmOnDevicePrompt.waitFor({ state: 'detached' });
+            await expect(this.notificationSuccessToast).toBeVisible();
+        });
+    }
+
+    async enterPinOnBlindMatrix(pinEntryNumber: string) {
+        await test.step('Find number on blind matrix and click it', async () => {
+            const state = await TrezorUserEnvLink.getDebugState();
+            const index = state.matrix.indexOf(pinEntryNumber) + 1;
+            await this.pinInput(index).click();
+            await this.pinSubmitButton.click();
         });
     }
 }
