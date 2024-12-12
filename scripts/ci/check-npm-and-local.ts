@@ -1,24 +1,24 @@
-const { execSync } = require('child_process');
+import { execSync } from 'child_process';
 
-const fs = require('fs');
-const util = require('util');
-const fetch = require('cross-fetch');
-const tar = require('tar');
-const path = require('path');
-const crypto = require('crypto');
-const semver = require('semver');
+import fs from 'fs';
+import util from 'util';
+import fetch from 'cross-fetch';
+import path from 'path';
+import * as tar from 'tar';
+import crypto from 'crypto';
+import semver from 'semver';
 
 const mkdir = util.promisify(fs.mkdir);
 const existsDirectory = util.promisify(fs.exists);
 
-const makeSureDirExists = async dirPath => {
+const makeSureDirExists = async (dirPath: string) => {
     if (!(await existsDirectory(dirPath))) {
         // Make sure there is dirPath directory.
         return mkdir(dirPath, { recursive: true });
     }
 };
 
-async function extractTarball(tarballPath, extractPath) {
+async function extractTarball(tarballPath: string, extractPath: string) {
     try {
         await makeSureDirExists(extractPath);
         await tar.x({ file: tarballPath, C: extractPath });
@@ -28,7 +28,7 @@ async function extractTarball(tarballPath, extractPath) {
     }
 }
 
-const downloadFile = (url, filePath) =>
+const downloadFile = (url: string, filePath: string) =>
     new Promise((resolve, reject) => {
         fetch(url)
             .then(res => {
@@ -46,9 +46,10 @@ const downloadFile = (url, filePath) =>
                 // Create a file stream
                 const file = fs.createWriteStream(filePath);
 
-                // Pipe the response stream to the file stream
-                stream.pipe(file);
-
+                if (stream) {
+                    // Pipe the response stream to the file stream
+                    (stream as any).pipe(file);
+                }
                 file.on('error', err => {
                     file.close();
                     reject(err);
@@ -65,7 +66,7 @@ const downloadFile = (url, filePath) =>
             });
     });
 
-const packModule = (moduleName, modulePath, outputDirectory) => {
+const packModule = (moduleName: string, modulePath: string, outputDirectory: string) => {
     try {
         const currentPwd = __dirname;
         // Change the current working directory
@@ -85,14 +86,14 @@ const packModule = (moduleName, modulePath, outputDirectory) => {
     }
 };
 
-const calculateChecksumForFile = filePath => {
+const calculateChecksumForFile = (filePath: string) => {
     const fileBuffer = fs.readFileSync(filePath);
     const hashSum = crypto.createHash('sha256');
     hashSum.update(fileBuffer);
     return hashSum.digest('hex');
 };
 
-const calculateChecksum = directoryPath => {
+const calculateChecksum = (directoryPath: string) => {
     const combinedHash = crypto.createHash('sha256');
 
     fs.readdirSync(directoryPath).forEach(file => {
@@ -107,7 +108,22 @@ const calculateChecksum = directoryPath => {
     return combinedHash.digest('hex');
 };
 
-const getLocalAndRemoteChecksums = async moduleName => {
+export const getLocalAndRemoteChecksums = async (
+    moduleName: string,
+): Promise<
+    | {
+          success: true;
+          data: {
+              localChecksum: string;
+              remoteChecksum: string;
+              distributionTags: {
+                  beta: string;
+                  latest: string;
+              };
+          };
+      }
+    | { success: false; error: string }
+> => {
     const ROOT = path.join(__dirname, '..', '..');
 
     const [_prefix, name] = moduleName.split('/');
@@ -116,51 +132,56 @@ const getLocalAndRemoteChecksums = async moduleName => {
     const npmRegistryUrl = `https://registry.npmjs.org/${moduleName}`;
 
     try {
-        console.log(`fetching npm registry info from: ${npmRegistryUrl}`);
+        console.info(`fetching npm registry info from: ${npmRegistryUrl}`);
         const response = await fetch(npmRegistryUrl);
         const data = await response.json();
         if (data.error) {
-            return { success: false };
+            return { success: false, error: 'Error fetching from npm registry' };
         }
 
         const betaVersion = data['dist-tags'].beta;
-        console.log(`beta remote version in npm registry: ${betaVersion}`);
+        console.info(`beta remote version in npm registry: ${betaVersion}`);
         const latestVersion = data['dist-tags'].latest;
-        console.log(`latest remote version in npm registry: ${latestVersion}`);
+        console.info(`latest remote version in npm registry: ${latestVersion}`);
 
         // When beta version has greatest semver in NPM then we need to check with
         // that one since that was released latest in time, so it includes oldest changes.
         const greatestSemver =
             betaVersion && semver.gt(betaVersion, latestVersion) ? betaVersion : latestVersion;
 
-        console.log(`greatest remove version in npm registry: ${greatestSemver}`);
+        console.info(`greatest remove version in npm registry: ${greatestSemver}`);
 
         const tarballUrl = data.versions[greatestSemver].dist.tarball;
 
         const tarballDestination = path.join(__dirname, 'tmp', name);
-        console.log(`downloading tarball from ${tarballUrl} to `);
+        console.info(`downloading tarball from ${tarballUrl} to `);
         const fileName = await downloadFile(tarballUrl, tarballDestination);
-        console.log(`File downloaded!: ${fileName}`);
+        console.info(`File downloaded!: ${fileName}`);
 
         const extractRemotePath = path.join(__dirname, 'tmp', 'remote', name);
-        console.log(`extracting remote tarball from ${tarballDestination} to ${extractRemotePath}`);
+        console.info(
+            `extracting remote tarball from ${tarballDestination} to ${extractRemotePath}`,
+        );
         await extractTarball(tarballDestination, extractRemotePath);
 
-        console.log(`packaging local npm module from ${PACKAGE_PATH} to ${tmpDir}`);
+        console.info(`packaging local npm module from ${PACKAGE_PATH} to ${tmpDir}`);
         const tarballPath = packModule(name, PACKAGE_PATH, tmpDir);
+        if (!tarballPath) {
+            return { success: false, error: 'Error packing module tarball' };
+        }
 
         const extractLocalPath = path.join(__dirname, 'tmp', 'local', name);
 
-        console.log(`extracting local tarball  from ${tarballPath} to ${extractLocalPath}`);
+        console.info(`extracting local tarball  from ${tarballPath} to ${extractLocalPath}`);
         await extractTarball(tarballPath, extractLocalPath);
 
-        console.log('calculating remote package checksum');
+        console.info('calculating remote package checksum');
         const remoteChecksum = calculateChecksum(`${extractRemotePath}/package`);
-        console.log('remoteChecksum', remoteChecksum);
+        console.info('remoteChecksum', remoteChecksum);
 
-        console.log('calculating local package checksum');
+        console.info('calculating local package checksum');
         const localChecksum = calculateChecksum(`${extractLocalPath}/package`);
-        console.log('localChecksum', localChecksum);
+        console.info('localChecksum', localChecksum);
 
         return {
             success: true,
@@ -170,8 +191,4 @@ const getLocalAndRemoteChecksums = async moduleName => {
         console.error('error getting local and remote checksums:', error);
         return { success: false, error };
     }
-};
-
-module.exports = {
-    getLocalAndRemoteChecksums,
 };

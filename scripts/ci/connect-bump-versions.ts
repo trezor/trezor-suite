@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 
 import { promisify } from 'util';
-import { gettingNpmDistributionTags } from './helpers';
+import { getPackagesAndDependenciesRequireUpdate, gettingNpmDistributionTags } from './helpers';
 
 const readFile = promisify(fs.readFile);
 const existsDirectory = promisify(fs.exists);
@@ -116,18 +116,48 @@ const updateConnectChangelog = async (
 
 const bumpConnect = async () => {
     try {
-        const checkResult: { update: string[]; errors: string[] } = await checkPackageDependencies(
-            'connect',
-            deploymentType,
+        const connectDependenciesToUpdate: { update: string[]; errors: string[] } =
+            await checkPackageDependencies('connect', deploymentType);
+
+        console.info('connectDependenciesToUpdate', connectDependenciesToUpdate);
+
+        const update = connectDependenciesToUpdate.update.map((pkg: string) =>
+            pkg.replace('@trezor/', ''),
+        );
+        const errors = connectDependenciesToUpdate.errors.map((pkg: string) =>
+            pkg.replace('@trezor/', ''),
         );
 
-        console.log('checkResult', checkResult);
+        // We also have some packages that we want to update with connect but they are not
+        // dependencies of connect, and they have their own version. We also do not want
+        // to release them every time we release connect but when there are changes applied in
+        // those packages.
+        const independentPackagesNames = [
+            '@trezor/connect-plugin-ethereum',
+            '@trezor/connect-plugin-stellar',
+        ];
 
-        const update = checkResult.update.map((pkg: string) => pkg.replace('@trezor/', ''));
-        const errors = checkResult.errors.map((pkg: string) => pkg.replace('@trezor/', ''));
+        const independentPackagesAndDependenciesToUpdate =
+            await getPackagesAndDependenciesRequireUpdate(independentPackagesNames);
 
-        if (update) {
-            for (const packageName of update) {
+        console.info(
+            'independentPackagesAndDependenciesToUpdate',
+            independentPackagesAndDependenciesToUpdate,
+        );
+
+        const allPackagesToUpdate = [
+            ...independentPackagesAndDependenciesToUpdate.map((pkg: string) =>
+                pkg.replace('@trezor/', ''),
+            ),
+            ...update,
+        ];
+        console.info('allPackagesToUpdate', allPackagesToUpdate);
+
+        const allUniquePackagesToUpdate = [...new Set(allPackagesToUpdate)];
+        console.info('allUniquePackagesToUpdate', allUniquePackagesToUpdate);
+
+        if (allUniquePackagesToUpdate) {
+            for (const packageName of allUniquePackagesToUpdate) {
                 const PACKAGE_PATH = path.join(ROOT, 'packages', packageName);
                 const PACKAGE_JSON_PATH = path.join(PACKAGE_PATH, 'package.json');
 
@@ -246,7 +276,7 @@ const bumpConnect = async () => {
             });
         }
 
-        const depsChecklist = update.reduce(
+        const depsChecklist = allUniquePackagesToUpdate.reduce(
             (acc, packageName) =>
                 `${acc}\n- [ ] [![NPM](https://img.shields.io/npm/v/@trezor/${packageName}.svg)](https://www.npmjs.org/package/@trezor/${packageName}) @trezor/${packageName}`,
             '',
@@ -281,7 +311,7 @@ const bumpConnect = async () => {
             );
 
             if (!connectGitLogText) {
-                console.log('no changelog for @trezor/connect');
+                console.info('no changelog for @trezor/connect');
                 return;
             }
 
@@ -291,7 +321,7 @@ const bumpConnect = async () => {
             });
         }
     } catch (error) {
-        console.log('error:', error);
+        console.info('error:', error);
     }
 };
 

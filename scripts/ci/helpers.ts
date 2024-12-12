@@ -2,14 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import semver from 'semver';
 import fetch from 'cross-fetch';
-
+import { promisify } from 'util';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 
-import { promisify } from 'util';
+import { getLocalAndRemoteChecksums } from './check-npm-and-local';
 
 const readFile = promisify(fs.readFile);
-
-const { getLocalAndRemoteChecksums } = require('./check-npm-and-local');
 
 const ROOT = path.join(__dirname, '..', '..');
 
@@ -43,12 +41,49 @@ export const getNpmRemoteGreatestVersion = async (moduleName: string) => {
     }
 };
 
+export const getPackagesAndDependenciesRequireUpdate = async (packages: string[]) => {
+    let packagesRequireUpdate = [];
+    let dependenciesRequireUpdate = [];
+    for (const packageName of packages) {
+        const response = await getLocalAndRemoteChecksums(packageName);
+
+        if (!response.success) {
+            console.error('Error when getting local and remote checksums');
+        } else {
+            const { localChecksum, remoteChecksum, distributionTags } = response.data;
+            console.info('localChecksum', localChecksum);
+            console.info('remoteChecksum', remoteChecksum);
+            console.info('distributionTags', distributionTags);
+            if (localChecksum !== remoteChecksum) {
+                packagesRequireUpdate.push(packageName);
+            }
+        }
+    }
+
+    for (const packageName of packagesRequireUpdate) {
+        const checkResult: { update: string[]; errors: string[] } = await checkPackageDependencies(
+            packageName.replace('@trezor/', ''),
+            'stable',
+        );
+        console.info('checkResult', checkResult);
+        if (checkResult.update) {
+            console.info('checkResult.update', checkResult.update);
+            dependenciesRequireUpdate.push(...checkResult.update);
+        }
+    }
+
+    console.info('packagesRequireUpdate', packagesRequireUpdate);
+    console.info('dependenciesRequireUpdate', dependenciesRequireUpdate);
+
+    return [...packagesRequireUpdate, ...dependenciesRequireUpdate];
+};
+
 export const checkPackageDependencies = async (
     packageName: string,
     deploymentType: 'stable' | 'canary',
 ): Promise<{ update: string[]; errors: string[] }> => {
-    console.log('######################################################');
-    console.log(`Checking package ${packageName}`);
+    console.info('######################################################');
+    console.info(`Checking package ${packageName}`);
     const rawPackageJSON = await readFile(
         path.join(ROOT, 'packages', packageName, 'package.json'),
         'utf-8',
@@ -76,7 +111,7 @@ export const checkPackageDependencies = async (
         if (!response.success) {
             // If the package was not found it might be it has not been release yet or other issue, so we include it in errors.
             const index = errors.findIndex(lib => lib === dependency);
-            console.log('index', index);
+            console.info('index', index);
             if (index > -1) {
                 errors.splice(index, 1);
             }
@@ -84,7 +119,7 @@ export const checkPackageDependencies = async (
             errors.push(dependency);
         } else {
             const { localChecksum, remoteChecksum, distributionTags } = response.data;
-            console.log('distributionTags', distributionTags);
+            console.info('distributionTags', distributionTags);
 
             if (localChecksum !== remoteChecksum) {
                 // if the checked dependency is already in the array, remove it and push it to the end of array
@@ -124,7 +159,7 @@ export const exec = async (
     cmd: string,
     params: any[],
 ): Promise<{ stdout: string; stderr: string }> => {
-    console.log(cmd, ...params);
+    console.info(cmd, ...params);
 
     const res: ChildProcessWithoutNullStreams = spawn(cmd, params, {
         cwd: ROOT,
@@ -166,7 +201,8 @@ export const exec = async (
 
 export const commit = async ({ path, message }: { path: string; message: string }) => {
     await exec('git', ['add', path]);
-    await exec('git', ['commit', '-m', `${message}`]);
+    // We need to add `-n` so we do not have problems with git hooks when committing in CI.
+    await exec('git', ['commit', '-m', `${message}`, '-n']);
 };
 
 export const comment = async ({ prNumber, body }: { prNumber: string; body: string }) => {
