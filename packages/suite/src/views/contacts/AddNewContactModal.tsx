@@ -42,7 +42,7 @@ export const AddNewContactModal = ({ onClose }: AddNewContactModalProps) => {
                     </NewModal.Button>
                 }
             >
-                {errorMessage}
+                {errorMessage || 'Device missing or not acquired'}
             </NewModal>
         );
 

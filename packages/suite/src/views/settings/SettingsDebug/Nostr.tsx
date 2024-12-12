@@ -134,7 +134,11 @@ export const Nostr = () => {
                 <SectionItem>
                     <TextColumn
                         title="Address response"
-                        description={JSON.stringify(content.payload)}
+                        description={
+                            <div style={{ lineBreak: 'anywhere' }}>
+                                {JSON.stringify(content.payload)}
+                            </div>
+                        }
                     />
                 </SectionItem>
             );
