@@ -67,8 +67,8 @@ export const useAddContact = (
             console.log('newAddress', newAddress);
             contact.receiveAddresses = [
                 {
-                    address: newAddress.response.payload,
-                    signature: newAddress.response.signature,
+                    address: newAddress.response.payload.address,
+                    signature: newAddress.response.payload.signature,
                 },
             ];
         }

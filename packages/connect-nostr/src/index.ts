@@ -157,17 +157,19 @@ export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommuni
         return { success: true as const, response };
     }
 
-    subscribe({ recipientPubkey }: { recipientPubkey: string }) {
+    subscribe({ recipientPubkeys }: { recipientPubkeys: string[] }) {
         if (this.subscription) {
             this.subscription.close();
         }
         this.subscription = this.relay.subscribe(
-            [
-                {
-                    '#p': [nip19.decode(recipientPubkey).data.toString()],
-                    since: Math.floor(Date.now() / 1000),
-                },
-            ],
+            recipientPubkeys.map(recipientPubkey => ({
+                '#p': [
+                    recipientPubkey.startsWith('npub')
+                        ? nip19.decode(recipientPubkey).data.toString()
+                        : recipientPubkey,
+                ],
+                since: Math.floor(Date.now() / 1000),
+            })),
             {
                 onevent: event => {
                     this.emit('event', event);

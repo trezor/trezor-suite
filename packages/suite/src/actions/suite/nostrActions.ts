@@ -77,9 +77,24 @@ export const init = () => (dispatch: Dispatch, _getState: GetState) => {
     nostrClient.connect();
 };
 
-export const subscribe = () => (_dispatch: Dispatch, getState: GetState) => {
+export const subscribe = () => async (_dispatch: Dispatch, getState: GetState) => {
     const { npub } = getState().nostr.keys;
-    nostrClient?.subscribe({ recipientPubkey: npub });
+    const { selectedDevice } = getState().device;
+
+    const response = await TrezorConnect.nostrGetPublicKey({
+        path: "m/44'/1237'/0'/0/0",
+        device: selectedDevice,
+        useEmptyPassphrase: selectedDevice?.useEmptyPassphrase,
+    });
+
+    if (!response.success) {
+        console.log('nostrGetPublicKey error', response.payload.error);
+
+        return;
+    }
+
+    const permanentNpub = response.payload.pubkey;
+    nostrClient?.subscribe({ recipientPubkeys: [npub, permanentNpub] });
 };
 
 export const send = (content: any) => (_dispatch: Dispatch, _getState: GetState) => {
@@ -106,6 +121,7 @@ export const setIdentity = () => async (dispatch: Dispatch, _getState: GetState)
     const response = await TrezorConnect.nostrGetPublicKey({
         path: "m/44'/1237'/0'/0/0",
         device: selectedDevice,
+        useEmptyPassphrase: selectedDevice?.useEmptyPassphrase,
     });
 
     console.log('response', response);
@@ -120,6 +136,7 @@ export const setIdentity = () => async (dispatch: Dispatch, _getState: GetState)
             TrezorConnect.nostrSignEvent({
                 path: "m/44'/1237'/0'/0/0",
                 device: selectedDevice,
+                useEmptyPassphrase: selectedDevice?.useEmptyPassphrase,
                 ...event,
             }),
     });
