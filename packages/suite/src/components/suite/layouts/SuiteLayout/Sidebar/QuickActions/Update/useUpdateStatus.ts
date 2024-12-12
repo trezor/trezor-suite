@@ -67,7 +67,7 @@ const getDeviceStatus = ({
 
 export const useUpdateStatus = (): UpdateStatusData => {
     const { device } = useDevice();
-    const { desktopUpdate } = useSelector(state => state);
+    const desktopUpdate = useSelector(state => state.desktopUpdate);
 
     const isDeviceDisconnected = device?.connected !== true;
     const isFirmwareOutdated = device?.firmware === 'outdated';
