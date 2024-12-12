@@ -5,6 +5,7 @@ import { useWebSocketImplementation } from 'nostr-tools/pool';
 import WebSocket from 'ws';
 
 import { createDeferredManager } from '@trezor/utils';
+
 import { PeerToPeerCommunicationClient, PeerToPeerCommunicationClientEvents } from './abstract';
 
 export type { Event } from 'nostr-tools/pure';
@@ -72,6 +73,7 @@ export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommuni
 
     newIdentity() {
         this.sk = generateSecretKey();
+
         return this.setIdentity({
             type: 'hot-keys',
             nsecStr: nip19.nsecEncode(this.sk),
@@ -109,16 +111,20 @@ export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommuni
         console.log(`connected to ${this.relay.url}`);
     }
 
-    buildMessage({ content }: { content: string }) {
+    buildMessage({ kind = 1, content, tags = [] }: { kind: number; content: string; tags: any[] }) {
         if (!this.nsec && !this.signer) {
             // return { success: false, error: 'no identity' };
             throw new Error('no identity');
         }
 
         const eventTemplate = {
-            kind: 1,
+            kind,
             created_at: Math.floor(Date.now() / 1000),
-            tags: [],
+            tags: tags.map(tag =>
+                tag.map((value: any) =>
+                    value.startsWith('npub') ? nip19.decode(value).data.toString() : value,
+                ),
+            ),
             content,
         };
 
@@ -129,20 +135,20 @@ export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommuni
         }
     }
 
-    async send({ content }: { content: string }) {
-        const signedEvent = this.buildMessage({ content });
+    async send({ ...params }: { kind: number; content: string; tags: any[] }) {
+        const signedEvent = this.buildMessage({ ...params });
 
         await this.relay.publish(signedEvent);
 
         return { success: true as const };
     }
 
-    async request({ content }: { content: string }) {
+    async request({ content, ...params }: { kind: number; content: string; tags: any[] }) {
         const { promiseId, promise } = this.messages.create();
 
         const json = JSON.parse(content);
         json.id = promiseId.toString();
-        const signedEvent = this.buildMessage({ content: JSON.stringify(json) });
+        const signedEvent = this.buildMessage({ ...params, content: JSON.stringify(json) });
 
         await this.relay.publish(signedEvent);
 
@@ -151,16 +157,14 @@ export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommuni
         return { success: true as const, response: promise };
     }
 
-    subscribe({ pubKeys }: { pubKeys: nip19.NPub[] }) {
+    subscribe({ recipientPubkey }: { recipientPubkey: string }) {
         if (this.subscription) {
             this.subscription.close();
         }
         this.subscription = this.relay.subscribe(
             [
                 {
-                    kinds: [1],
-                    authors: pubKeys.map(k => nip19.decode(k).data),
-                    limit: 1,
+                    '#p': [nip19.decode(recipientPubkey).data.toString()],
                 },
             ],
             {

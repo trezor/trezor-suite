@@ -35,7 +35,7 @@ export const Nostr = () => {
 
     const handlePeerNpubClick = () => {
         if (!peerNpub) return;
-        dispatch(nostrActions.subscribe(peerNpub));
+        dispatch(nostrActions.subscribe());
     };
 
     const handleDisconnectClick = async () => {
@@ -57,6 +57,8 @@ export const Nostr = () => {
         setAddressRequestState('pending');
         await dispatch(
             nostrActions.request({
+                kind: 9898,
+                tags: [['p', peerNpub]],
                 content: JSON.stringify({
                     type: 'address_request',
                 }),
@@ -75,6 +77,8 @@ export const Nostr = () => {
 
         dispatch(
             nostrActions.send({
+                kind: 9898,
+                tags: [['p', events.pubkey]],
                 content: JSON.stringify({
                     type: 'address_response',
                     request_id: content.id,

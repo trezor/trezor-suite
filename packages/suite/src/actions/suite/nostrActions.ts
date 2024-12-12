@@ -1,6 +1,7 @@
 import TrezorConnect from '@trezor/connect';
-import { Dispatch, GetState } from 'src/types/suite';
 import { NostrClient } from '@trezor/connect-nostr';
+
+import { Dispatch, GetState } from 'src/types/suite';
 import { NOSTR } from 'src/actions/suite/constants';
 
 export type NostrAction =
@@ -76,17 +77,20 @@ export const init = () => (dispatch: Dispatch, _getState: GetState) => {
     nostrClient.connect();
 };
 
-export const subscribe = (pubkey: string) => (_dispatch: Dispatch, _getState: GetState) => {
-    nostrClient?.subscribe({ pubKeys: [pubkey] });
+export const subscribe = () => (_dispatch: Dispatch, getState: GetState) => {
+    const { npub } = getState().nostr.keys;
+    nostrClient?.subscribe({ recipientPubkey: npub });
 };
 
 export const send = (content: any) => (_dispatch: Dispatch, _getState: GetState) => {
     nostrClient?.send(content);
 };
 
-export const request = (content: any) => (_dispatch: Dispatch, _getState: GetState) => {
-    return nostrClient?.request(content);
-};
+export const request =
+    (params: { kind: number; content: string; tags: any[] }) =>
+    (_dispatch: Dispatch, _getState: GetState) => {
+        return nostrClient?.request(params);
+    };
 
 export const newIdentity = () => (_dispatch: Dispatch, _getState: GetState) => {
     return nostrClient?.newIdentity();
@@ -99,7 +103,7 @@ export const dispose = () => (_dispatch: Dispatch, _getState: GetState) => {
 export const setIdentity =
     (params: Parameters<(typeof nostrClient)['setIdentity']>[0]) =>
     async (dispatch: Dispatch, _getState: GetState) => {
-        const selectedDevice = _getState().device.selectedDevice;
+        const { selectedDevice } = _getState().device;
 
         const response = await TrezorConnect.nostrGetPublicKey({
             path: "m/44'/1237'/0'/0/0",
