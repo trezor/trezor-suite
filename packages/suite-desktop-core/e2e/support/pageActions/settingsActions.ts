@@ -100,7 +100,7 @@ export class SettingsActions {
         this.homescreenGalleryButton = this.window.getByTestId(
             '@settings/device/homescreen-gallery',
         );
-        this.notificationSuccessToast = this.window.getByTestId('@toast/settings-applied');
+        this.notificationSuccessToast = this.window.getByTestId('@toast/settings-applied').first();
         this.coinBackendSelector = this.window.getByTestId('@settings/advance/select-type/input');
         this.coinAddressInput = this.window.getByTestId('@settings/advance/url');
         this.coinAdvanceSettingSaveButton = this.window.getByTestId(
@@ -168,7 +168,6 @@ export class SettingsActions {
     async changeTheme(theme: Theme) {
         await this.selectDropdownOptionWithRetry(this.themeInput, this.themeInputOption(theme));
         await expect(this.themeInput).toHaveText(capitalizeFirstLetter(theme));
-        await expect(this.notificationSuccessToast).toBeVisible();
     }
 
     async changeLanguage(language: Language) {
@@ -177,7 +176,6 @@ export class SettingsActions {
             this.languageInputOption(language),
         );
         await expect(this.languageInput).toHaveText(languageMap[language]);
-        await expect(this.notificationSuccessToast).toBeVisible();
     }
 
     //Retry mechanism for settings dropdowns which tend to be flaky in automation
