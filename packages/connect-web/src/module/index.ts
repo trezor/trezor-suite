@@ -11,9 +11,9 @@ import {
     TRANSPORT,
     TRANSPORT_EVENT,
 } from '@trezor/connect/src/exports';
-import { getInstallerPackage } from '@trezor/connect-common';
-import { suggestBridgeInstaller } from '@trezor/connect/src/data/transportInfo';
-import { suggestUdevInstaller } from '@trezor/connect/src/data/udevInfo';
+// import { getInstallerPackage } from '@trezor/connect-common';
+// import { suggestBridgeInstaller } from '@trezor/connect/src/data/transportInfo';
+// import { suggestUdevInstaller } from '@trezor/connect/src/data/udevInfo';
 
 interface ConnectWebDynamicImplementation
     extends ConnectFactoryDependencies<ConnectSettingsPublic> {
@@ -30,9 +30,9 @@ const impl = new TrezorConnectDynamic<
             type: 'core-in-module',
             impl: new CoreInModule((message: CoreEventMessage) => {
                 if (message.event === TRANSPORT_EVENT) {
-                    const platform = getInstallerPackage();
-                    message.payload.bridge = suggestBridgeInstaller(platform);
-                    message.payload.udev = suggestUdevInstaller(platform);
+                    // const platform = getInstallerPackage();
+                    // message.payload.bridge = suggestBridgeInstaller(platform);
+                    // message.payload.udev = suggestUdevInstaller(platform);
                 }
 
                 return message;
