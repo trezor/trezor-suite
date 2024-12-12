@@ -3,9 +3,8 @@
 import fs from 'fs';
 import path from 'path';
 import { sync } from 'glob';
-import webpack from 'webpack';
+import rspack, { Configuration, Chunk } from '@rspack/core';
 import childProcess from 'child_process';
-import TerserPlugin from 'terser-webpack-plugin';
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 
 import uriSchemes from '../../suite-desktop/uriSchemes.json';
@@ -54,7 +53,7 @@ const devDependencies = Object.keys(pkg.devDependencies);
 
 /* **** CONFIG **** */
 
-const config: webpack.Configuration = {
+const config: Configuration = {
     target: 'electron-main',
     mode: isDev ? 'development' : 'production',
     devtool: 'source-map',
@@ -82,24 +81,25 @@ const config: webpack.Configuration = {
         ...dependencies,
         ...devDependencies,
         'bufferutil', // optional dependency of ws lib
-        'memcpy', // optional depencency of bytebuffer lib
         'utf-8-validate', // optional dependency of ws lib
-        'osx-temperature-sensor', // optional dependency of systeminformation lib
     ],
+    externalsType: 'commonjs2',
     module: {
         rules: [
             {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: ['babel-loader'],
-            },
-            {
-                test: /\.ts$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-typescript'],
+                test: /\.(js|ts)$/,
+                exclude: [/[\\/]node_modules[\\/]/],
+                loader: 'builtin:swc-loader',
+                options: {
+                    jsc: {
+                        parser: {
+                            syntax: 'typescript',
+                        },
+                        externalHelpers: true,
+                    },
+                    env: {
+                        // electron 32 uses node 20 https://www.electronjs.org/docs/latest/tutorial/electron-timelines
+                        targets: 'node 20',
                     },
                 },
             },
@@ -112,6 +112,8 @@ const config: webpack.Configuration = {
         alias: {
             '@emurgo/cardano-serialization-lib-nodejs': '@emurgo/cardano-serialization-lib-browser',
             '@trezor/connect$': '@trezor/connect/src/index', // alternative for "module": "src/index" in connect's package.json
+            // optionally required subdependency of systeminformation lib is mocked as undefined
+            'osx-temperature-sensor': false,
         },
     },
     performance: {
@@ -119,26 +121,32 @@ const config: webpack.Configuration = {
     },
     optimization: {
         splitChunks: {
+            // By default, each entry point file would map to one output file, and those files would have a lot of duplicated code between them
+            // With this option, Rspack splits as much common code as possible into separate files to be shared
             chunks: 'all',
-            name(_: any, chunks: any) {
+            // To avoid lots of chunk files with numerical names, they are named (and thus grouped) based on which output file shares them
+            // Rspack type declaration is missing the 2nd argument https://github.com/web-infra-dev/rspack/pull/8707
+            // @ts-expect-error
+            name: (_module, chunks: Chunk[]) => {
                 return chunks.length === 1
                     ? chunks[0].name
                     : `shared/${chunks.map((item: any) => item.name.split('/').pop()).join('~')}`;
             },
         },
         minimizer: [
-            new TerserPlugin({
+            new rspack.SwcJsMinimizerRspackPlugin({
                 extractComments: false,
-                terserOptions: {
+                minimizerOptions: {
                     format: {
                         comments: false,
                     },
                 },
             }),
+            new rspack.LightningCssMinimizerRspackPlugin(),
         ],
     },
     plugins: [
-        new webpack.DefinePlugin({
+        new rspack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
             'process.env.COMMITHASH': JSON.stringify(gitRevision),
             'process.env.APP_PUBKEY': JSON.stringify(appKey),
@@ -152,6 +160,7 @@ const config: webpack.Configuration = {
         }),
         ...(!isDev && SENTRY_AUTH_TOKEN
             ? [
+                  // Sentry plugin is for webpack, but compatible with Rspack https://rspack.dev/guide/compatibility/plugin
                   sentryWebpackPlugin({
                       telemetry: false,
                       org: 'satoshilabs',
@@ -172,7 +181,7 @@ const config: webpack.Configuration = {
     // "Critical dependency: the request of a dependency is an expression" due to require in generated wasm module
     // https://github.com/Emurgo/cardano-serialization-lib/issues/119
     experiments: { asyncWebAssembly: true },
-    ignoreWarnings: [{ module: /cardano-serialization-lib-browser/ }],
+    ignoreWarnings: [/Critical dependency: the request of a dependency is an expression/],
 };
 
 export default config;

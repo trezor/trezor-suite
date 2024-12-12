@@ -8,6 +8,7 @@
     "main": "src/app.ts",
     "scripts": {
         "build:core": "yarn g:rimraf dist && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/core.webpack.config.ts",
+        "build:core:rspack": "yarn g:rimraf dist && TS_NODE_PROJECT=\"tsconfig.json\" yarn rspack build --config ./webpack/core.rspack.config.ts",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest",
         "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
