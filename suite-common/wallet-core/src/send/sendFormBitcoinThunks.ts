@@ -347,43 +347,41 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
 
         const contacts = selectContactsForDevice(device)(getState());
 
-        signPayload.outputs = await Promise.all(
-            signPayload.outputs.map(async output => {
-                if (output.address) {
-                    const contactSignature = formState.contactSignatures?.[output.address];
-                    if (contactSignature) {
-                        //console.log('contactSignature', contactSignature);
-                        const contact = await findContactBySignedMessage(
-                            contacts,
-                            output.address,
-                            contactSignature,
-                        );
-                        //console.log('contact', contact);
-                        if (contact) {
-                            return {
-                                ...output,
-                                label: contact.label,
-                                label_sig: Buffer.from(contact.signature, 'base64').toString('hex'),
-                                label_pk: contact.address,
-                                address_pk_sig: contactSignature,
-                            };
-                        }
-                    }
-
-                    const contact = contacts.find(c => c.address === output.address);
-                    //console.log('direct contact', contact);
+        signPayload.outputs = signPayload.outputs.map(output => {
+            if (output.address) {
+                const contactSignature = formState.contactSignatures?.[output.address];
+                if (contactSignature) {
+                    //console.log('contactSignature', contactSignature);
+                    const contact = findContactBySignedMessage(
+                        contacts,
+                        output.address,
+                        contactSignature,
+                    );
+                    //console.log('contact', contact);
                     if (contact) {
                         return {
                             ...output,
                             label: contact.label,
                             label_sig: Buffer.from(contact.signature, 'base64').toString('hex'),
+                            label_pk: contact.address,
+                            address_pk_sig: contactSignature,
                         };
                     }
                 }
 
-                return output;
-            }),
-        );
+                const contact = contacts.find(c => c.address === output.address);
+                //console.log('direct contact', contact);
+                if (contact) {
+                    return {
+                        ...output,
+                        label: contact.label,
+                        label_sig: Buffer.from(contact.signature, 'base64').toString('hex'),
+                    };
+                }
+            }
+
+            return output;
+        });
 
         //console.log('signPayload', signPayload);
         const response = await TrezorConnect.signTransaction(signPayload);

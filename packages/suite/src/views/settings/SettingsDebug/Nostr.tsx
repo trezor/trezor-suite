@@ -125,7 +125,7 @@ export const Nostr = () => {
             return (
                 <SectionItem>
                     <TextColumn
-                        title={`Address request`}
+                        title="Address request"
                         description={`received address request from a peer. Peer pubkey: ${pubkey}`}
                     />
 
@@ -141,7 +141,7 @@ export const Nostr = () => {
         if (content.type === 'address_response') {
             return (
                 <SectionItem>
-                    <TextColumn title={`Address response`} description={content.payload} />
+                    <TextColumn title="Address response" description={content.payload} />
                 </SectionItem>
             );
         }
@@ -272,7 +272,7 @@ export const Nostr = () => {
                     <Button
                         onClick={() => {
                             TrezorConnect.nostrGetPublicKey({
-                                path: "m/44'/194'/0'/0/0",
+                                path: "m/44'/1237'/0'/0/0",
                             }).then(console.log);
                         }}
                     >

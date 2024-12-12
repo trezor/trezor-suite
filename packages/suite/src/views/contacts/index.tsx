@@ -19,7 +19,7 @@ import { ContactList } from './ContactList';
 import { RemoveContactConfirmation } from './RemoveContactConfirmation';
 
 const FindContactButton = ({ contacts }: { contacts: Contact[] }) => {
-    const handleClick = async () => {
+    const handleClick = () => {
         const address = prompt('Address signed by the recipient');
         const signature = prompt('Signature from the recipient');
 
@@ -29,7 +29,7 @@ const FindContactButton = ({ contacts }: { contacts: Contact[] }) => {
             return;
         }
 
-        const contact = await findContactBySignedMessage(contacts, address, signature);
+        const contact = findContactBySignedMessage(contacts, address, signature);
         if (contact) alert(`Address "${address}" was signed by your contact "${contact.label}"`);
         else alert('Recipient not in your contacts');
     };

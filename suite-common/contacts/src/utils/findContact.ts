@@ -1,26 +1,31 @@
-import TrezorConnect from '@trezor/connect';
+import { secp256k1 } from '@noble/curves/secp256k1';
+import { sha256 } from '@noble/hashes/sha256';
 
 import { Contact } from '../types';
 
-export const findContactBySignedMessage = async (
+export const findContactBySignedMessage = (
     contacts: Contact[],
     address: string,
     signature: string,
 ) => {
     for (const contact of contacts) {
         try {
-            // I thought this would work better but it still doesn't...
-            const response = await TrezorConnect.verifyMessage({
-                address: contact.address,
-                message: address,
-                signature: Buffer.from(signature, 'hex').toString('base64'),
-                coin: 'test',
-            });
+            // same logic as on fw side
+            const messageDigest = sha256(address);
+            let recId = Buffer.from(signature.slice(0, 2), 'hex')[0];
+            recId -= 27;
+            recId &= 3;
 
-            if (response.success) {
+            const recover = secp256k1.Signature.fromCompact(Buffer.from(signature.slice(2), 'hex'))
+                .addRecoveryBit(recId)
+                .recoverPublicKey(messageDigest)
+                .toHex();
+
+            if (recover.slice(2) === contact.address) {
                 return contact;
             }
-        } catch {
+        } catch (error) {
+            console.error(error);
             continue;
         }
     }

@@ -10,6 +10,8 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@noble/curves": "1.7.0",
+        "@noble/hashes": "1.6.1",
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/suite-types": "workspace:*",
         "@trezor/connect": "workspace:*"
