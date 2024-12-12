@@ -2,7 +2,11 @@ import TrezorConnect from '@trezor/connect';
 
 import { Contact } from '../types';
 
-export const findContact = async (contacts: Contact[], address: string, signature: string) => {
+export const findContactBySignedMessage = async (
+    contacts: Contact[],
+    address: string,
+    signature: string,
+) => {
     for (const contact of contacts) {
         try {
             // I thought this would work better but it still doesn't...

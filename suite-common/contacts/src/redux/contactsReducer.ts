@@ -1,4 +1,3 @@
-import { TrezorDevice } from '@suite-common/suite-types';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { Contact } from '../types';
@@ -14,9 +13,6 @@ const initialState: ContactsState = [];
 
 const isEqual = (c1: Contact, c2: Contact) =>
     c1.address === c2.address && c1.deviceState === c2.deviceState;
-
-export const getDeviceState = (device: TrezorDevice) =>
-    device.state?.staticSessionId?.split('@')?.[0];
 
 export const prepareContactsReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
     builder

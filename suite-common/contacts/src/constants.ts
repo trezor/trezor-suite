@@ -1,2 +1,1 @@
-export const ADD = '@contacts/add';
-export const REMOVE = '@contacts/remove';
+export const CONTACTS_MODULE_PREFIX = '@common/contacts';

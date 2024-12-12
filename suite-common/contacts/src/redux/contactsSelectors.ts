@@ -1,6 +1,7 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 
-import { ContactsRootState, getDeviceState } from './contactsReducer';
+import { ContactsRootState } from './contactsReducer';
+import { getDeviceState } from '../utils';
 
 export const selectContacts = (state: ContactsRootState) => state.contacts;
 

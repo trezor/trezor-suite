@@ -17,13 +17,13 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { firmwareActions } from '@suite-common/firmware';
+import { contactsActions } from '@suite-common/contacts';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { messageSystemActions } from '@suite-common/message-system';
 import { findAccountDevice } from '@suite-common/wallet-utils';
 import { analyticsActions } from '@suite-common/analytics';
 import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
 import { TokenManagementAction } from '@suite-common/token-definitions';
-import { CONTACTS } from '@suite-common/contacts';
 
 import { db } from 'src/storage';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
@@ -349,10 +349,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     break;
                 }
 
-                case CONTACTS.ADD:
+                case contactsActions.addContact.type:
                     api.dispatch(storageActions.saveContact(action.payload));
                     break;
-                case CONTACTS.REMOVE:
+                case contactsActions.removeContact.type:
                     api.dispatch(storageActions.removeContact(action.payload));
                     break;
 

@@ -1,7 +1,6 @@
 import TrezorConnect from '@trezor/connect';
 import { selectDevice } from '@suite-common/wallet-core';
-import { contactsActions } from '@suite-common/contacts';
-import { getDeviceState } from '@suite-common/contacts/src/redux/contactsReducer';
+import { contactsActions, getDeviceState } from '@suite-common/contacts';
 
 import { useDispatch, useSelector } from '../../hooks/suite';
 

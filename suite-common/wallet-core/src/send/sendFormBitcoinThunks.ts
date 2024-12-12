@@ -25,7 +25,7 @@ import {
     PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { createThunk } from '@suite-common/redux-utils';
-import { findContact, selectContactsForDevice } from '@suite-common/contacts';
+import { findContactBySignedMessage, selectContactsForDevice } from '@suite-common/contacts';
 
 import { selectTransactions } from '../transactions/transactionsReducer';
 import { selectDevice } from '../device/deviceReducer';
@@ -353,7 +353,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
                     const contactSignature = formState.contactSignatures?.[output.address];
                     if (contactSignature) {
                         //console.log('contactSignature', contactSignature);
-                        const contact = await findContact(
+                        const contact = await findContactBySignedMessage(
                             contacts,
                             output.address,
                             contactSignature,

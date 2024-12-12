@@ -5,7 +5,11 @@ import { Banner, Button, Row } from '@trezor/components';
 import { selectDevice } from '@suite-common/wallet-core';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { spacings } from '@trezor/theme';
-import { Contact, findContact, selectContactsForDevice } from '@suite-common/contacts';
+import {
+    Contact,
+    findContactBySignedMessage,
+    selectContactsForDevice,
+} from '@suite-common/contacts';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -25,7 +29,7 @@ const FindContactButton = ({ contacts }: { contacts: Contact[] }) => {
             return;
         }
 
-        const contact = await findContact(contacts, address, signature);
+        const contact = await findContactBySignedMessage(contacts, address, signature);
         if (contact) alert(`Address "${address}" was signed by your contact "${contact.label}"`);
         else alert('Recipient not in your contacts');
     };
