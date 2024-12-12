@@ -2,8 +2,13 @@ import { AccountExceptionLayout } from 'src/components/wallet';
 
 interface NoTokensProps {
     title: JSX.Element | string;
+    isNft?: boolean;
 }
 
-export const NoTokens = ({ title }: NoTokensProps) => (
-    <AccountExceptionLayout title={title} iconName="coins" iconVariant="tertiary" />
+export const NoTokens = ({ title, isNft }: NoTokensProps) => (
+    <AccountExceptionLayout
+        title={title}
+        iconName={isNft ? 'pictureFrame' : 'coins'}
+        iconVariant="tertiary"
+    />
 );

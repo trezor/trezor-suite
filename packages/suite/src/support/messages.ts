@@ -2603,6 +2603,14 @@ export default defineMessages({
         defaultMessage: 'Unrecognized tokens pose potential risks. Use caution.',
         id: 'TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP',
     },
+    TR_COLLECTIONS_UNRECOGNIZED_BY_TREZOR: {
+        defaultMessage: 'Unrecognized collections',
+        id: 'TR_COLLECTIONS_UNRECOGNIZED_BY_TREZOR',
+    },
+    TR_NFT_UNRECOGNIZED_BY_TREZOR_TOOLTIP: {
+        defaultMessage: 'Unrecognized NFTs pose potential risks. Use caution.',
+        id: 'TR_NFT_UNRECOGNIZED_BY_TREZOR_TOOLTIP',
+    },
     TR_LEARN: {
         defaultMessage: 'Learn',
         description: 'Link to Suite Guide.',
@@ -2725,6 +2733,14 @@ export default defineMessages({
     TR_NAV_TOKENS: {
         defaultMessage: 'Tokens',
         id: 'TR_NAV_TOKENS',
+    },
+    TR_NAV_COLLECTIONS: {
+        defaultMessage: 'Collections',
+        id: 'TR_NAV_COLLECTIONS',
+    },
+    TR_NAV_NFTS: {
+        defaultMessage: 'NFTs',
+        id: 'TR_NAV_NFTS',
     },
     TR_NAV_SIGN_AND_VERIFY: {
         defaultMessage: 'Sign & verify',
@@ -3315,6 +3331,11 @@ export default defineMessages({
         defaultMessage: 'Details',
         id: 'TR_TRANSACTION_DETAILS',
     },
+    TR_TOKEN_ID_COLON: {
+        defaultMessage: 'Token ID:',
+        id: 'TR_TOKEN_ID_COLON',
+    },
+
     TR_TOKEN_ID: {
         defaultMessage: 'Token ID',
         id: 'TR_TOKEN_ID',
@@ -4966,6 +4987,15 @@ export default defineMessages({
         defaultMessage: 'Experimental',
         description: 'Section title for Early Access program so far',
     },
+    TR_EXPERIMENTAL_NFT_SECTION: {
+        id: 'TR_EXPERIMENTAL_NFT_SECTION',
+        defaultMessage: 'NFTs (non-fungible tokens)',
+    },
+    TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION',
+        defaultMessage:
+            'Access the NFTs stored in your wallet. Currently available for EVM-based chains only.',
+    },
     TR_EXPERIMENTAL_FEATURES_ALLOW: {
         id: 'TR_EXPERIMENTAL_FEATURES_ALLOW',
         defaultMessage: 'Experimental features',
@@ -5281,17 +5311,33 @@ export default defineMessages({
         id: 'TR_TOKENS',
         defaultMessage: 'Tokens',
     },
+    TR_COLLECTIONS: {
+        id: 'TR_COLLECTIONS',
+        defaultMessage: 'Collections',
+    },
     TR_TOKENS_EMPTY: {
         id: 'TR_TOKENS_EMPTY',
         defaultMessage: 'No tokens... yet.',
+    },
+    TR_NFT_EMPTY: {
+        id: 'TR_NFT_EMPTY',
+        defaultMessage: 'No NFT collections... yet.',
     },
     TR_TOKENS_EMPTY_CHECK_HIDDEN: {
         id: 'TR_TOKENS_EMPTY_CHECK_HIDDEN',
         defaultMessage: 'No tokens. They may be hidden.',
     },
+    TR_NFT_EMPTY_CHECK_HIDDEN: {
+        id: 'TR_NFT_EMPTY_CHECK_HIDDEN',
+        defaultMessage: 'No NFT collections. They may be hidden.',
+    },
     TR_HIDDEN_TOKENS_EMPTY: {
         id: 'TR_HIDDEN_TOKENS_EMPTY',
         defaultMessage: 'You have no hidden tokens.',
+    },
+    TR_HIDDEN_NFT_EMPTY: {
+        id: 'TR_HIDDEN_NFT_EMPTY',
+        defaultMessage: 'You have no hidden NFT collections.',
     },
     TR_ADD_TOKEN_TITLE: {
         id: 'TR_ADD_TOKEN_TITLE',
@@ -5381,6 +5427,10 @@ export default defineMessages({
     AMOUNT: {
         defaultMessage: 'Amount',
         id: 'AMOUNT',
+    },
+    TR_QUANTITY: {
+        defaultMessage: 'Quantity',
+        id: 'TR_QUANTITY',
     },
     AMOUNT_SEND_MAX: {
         id: 'AMOUNT_SEND_MAX',
@@ -6371,6 +6421,10 @@ export default defineMessages({
     TR_UNHIDE_TOKEN: {
         id: 'TR_UNHIDE_TOKEN',
         defaultMessage: 'Unhide token',
+    },
+    TR_HIDE_COLLECTION: {
+        id: 'TR_HIDE_COLLECTION',
+        defaultMessage: 'Hide collection',
     },
     TR_UNHIDE: {
         id: 'TR_UNHIDE',
@@ -8838,6 +8892,10 @@ export default defineMessages({
     ZERO_BALANCE_TOKENS: {
         id: 'ZERO_BALANCE_TOKENS',
         defaultMessage: 'Zero-balance tokens',
+    },
+    EMPTY_NFT_COLLECTIONS: {
+        id: 'EMPTY_NFT_COLLECTIONS',
+        defaultMessage: 'Empty collections',
     },
     TR_STAKE_ADDING_TO_POOL: {
         id: 'TR_STAKE_ADDING_TO_POOL',
