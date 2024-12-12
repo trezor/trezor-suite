@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import TrezorConnect from '@trezor/connect';
 import { Input, Button } from '@trezor/components';
-import { Event } from '@trezor/connect-nostr';
+import { selectDevice } from '@suite-common/wallet-core';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';
 import * as nostrActions from 'src/actions/suite/nostrActions';
 
 export const Nostr = () => {
+    const device = useSelector(selectDevice);
     const [peerNpub, setPeerNpub] = useState<`npub1${string}` | undefined>(undefined);
     const [addressRequestState, setAddressRequestState] = useState<'none' | 'pending' | 'success'>(
         'none',
@@ -37,7 +38,7 @@ export const Nostr = () => {
         dispatch(nostrActions.subscribe());
     };
 
-    const handleDisconnectClick = async () => {
+    const handleDisconnectClick = () => {
         dispatch(nostrActions.dispose());
     };
 
@@ -73,8 +74,11 @@ export const Nostr = () => {
 
     const handleAddressRequestResponse = async () => {
         console.log('handleAddressRequestResponse', events);
+        if (!device) return;
 
         const addressResponse = await TrezorConnect.getAddress({
+            device,
+            useEmptyPassphrase: device.useEmptyPassphrase,
             coin: 'test',
             path: "m/44'/1'/0'/0/0",
             showOnTrezor: false,
@@ -117,7 +121,7 @@ export const Nostr = () => {
                     />
 
                     <ActionColumn>
-                        <Button onClick={() => handleAddressRequestResponse(content)}>
+                        <Button onClick={() => handleAddressRequestResponse()}>
                             Send address back
                         </Button>
                     </ActionColumn>

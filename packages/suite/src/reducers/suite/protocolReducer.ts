@@ -9,6 +9,7 @@ export interface SendFormState {
     scheme: Protocol;
     address: string;
     amount?: number;
+    signature?: string;
 }
 
 type Autofill<T> = Partial<T> & {
@@ -33,6 +34,7 @@ const protocolReducer = (state: State = initialState, action: Action): State =>
                 draft.sendForm.address = action.payload.address;
                 draft.sendForm.scheme = action.payload.scheme;
                 draft.sendForm.amount = action.payload.amount;
+                draft.sendForm.signature = action.payload.signature;
                 draft.sendForm.shouldFill = false;
                 break;
             case PROTOCOL.RESET:

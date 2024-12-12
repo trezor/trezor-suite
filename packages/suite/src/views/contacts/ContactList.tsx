@@ -2,6 +2,9 @@ import { Contact } from '@suite-common/contacts';
 import { Button, Card, Dropdown, Table, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { useDispatch } from 'src/hooks/suite';
+import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
+
 const ContactItem = ({
     contact: { address, label, receiveAddresses },
     remove,
@@ -9,6 +12,11 @@ const ContactItem = ({
     contact: Contact;
     remove: () => void;
 }) => {
+    const dispatch = useDispatch();
+    const prefillAddress = (ra: { address: string; signature: string }) => {
+        dispatch(handleProtocolRequest('test:' + ra.address + '?signature=' + ra.signature));
+    };
+
     return (
         <Table.Row>
             <Table.Cell>
@@ -22,7 +30,8 @@ const ContactItem = ({
             <Table.Cell>
                 <Text variant="tertiary" typographyStyle="hint" overflowWrap="anywhere">
                     {receiveAddresses?.map(ra => (
-                        <a href={'bitcoin:' + ra.address} key={ra.address}>
+                        /* eslint-disable-next-line jsx-a11y/anchor-is-valid */
+                        <a href="#" onClick={() => prefillAddress(ra)} key={ra.address}>
                             {ra.address}
                         </a>
                     ))}

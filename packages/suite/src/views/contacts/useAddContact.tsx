@@ -6,7 +6,12 @@ import * as nostrActions from 'src/actions/suite/nostrActions';
 
 import { useDispatch, useSelector } from '../../hooks/suite';
 
-export const useAddContact = (onCloseModal: () => void, label: string, address: string) => {
+export const useAddContact = (
+    onCloseModal: () => void,
+    label: string,
+    address: string,
+    requestAddress: boolean,
+) => {
     const dispatch = useDispatch();
     const device = useSelector(selectDevice);
 
@@ -36,17 +41,6 @@ export const useAddContact = (onCloseModal: () => void, label: string, address: 
 
         const { signature } = response.payload;
 
-        const newAddress = await dispatch(
-            nostrActions.request({
-                kind: 9898,
-                tags: [['p', address]],
-                content: JSON.stringify({
-                    type: 'address_request',
-                }),
-            }),
-        );
-        console.log('newAddress', newAddress);
-
         const contact = {
             address,
             label,
@@ -54,11 +48,31 @@ export const useAddContact = (onCloseModal: () => void, label: string, address: 
             deviceState,
             receiveAddresses: [
                 {
-                    address: newAddress.response.address,
-                    signature: newAddress.response.signature,
+                    address: 'a',
+                    signature: 'b',
                 },
             ],
         };
+
+        if (requestAddress) {
+            const newAddress = await dispatch(
+                nostrActions.request({
+                    kind: 9898,
+                    tags: [['p', address]],
+                    content: JSON.stringify({
+                        type: 'address_request',
+                    }),
+                }),
+            );
+            console.log('newAddress', newAddress);
+            contact.receiveAddresses = [
+                {
+                    address: newAddress.response.payload,
+                    signature: newAddress.response.signature,
+                },
+            ];
+        }
+
         dispatch(contactsActions.addContact(contact));
 
         onCloseModal();

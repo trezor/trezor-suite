@@ -152,9 +152,9 @@ export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommuni
 
         await this.relay.publish(signedEvent);
 
-        await promise;
+        const response = await promise;
 
-        return { success: true as const, response: promise };
+        return { success: true as const, response };
     }
 
     subscribe({ recipientPubkey }: { recipientPubkey: string }) {

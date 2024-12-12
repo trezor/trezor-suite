@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Column, Input, NewModal, Textarea } from '@trezor/components';
+import { Checkbox, Column, Input, NewModal, Textarea } from '@trezor/components';
 import { selectDevice } from '@suite-common/wallet-core';
 import { spacings } from '@trezor/theme';
 
@@ -18,8 +18,9 @@ export const AddNewContactModal = ({ onClose }: AddNewContactModalProps) => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [label, setLabel] = useState('');
     const [address, setAddress] = useState('');
+    const [requestAddress, setRequestAddress] = useState(false);
 
-    const addContact = useAddContact(onClose, label, address);
+    const addContact = useAddContact(onClose, label, address, requestAddress);
     const onAddContact = async () => {
         const { error } = await addContact();
         setErrorMessage(error);
@@ -67,6 +68,12 @@ export const AddNewContactModal = ({ onClose }: AddNewContactModalProps) => {
                     label="Recipient's address or public key"
                     onChange={event => setAddress(event.target.value)}
                 />
+                <Checkbox
+                    isChecked={requestAddress}
+                    onClick={() => setRequestAddress(!requestAddress)}
+                >
+                    Request address from recipient
+                </Checkbox>
             </Column>
         </NewModal>
     );

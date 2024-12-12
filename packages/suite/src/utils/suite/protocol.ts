@@ -8,6 +8,7 @@ export type CoinProtocolInfo = {
     scheme: Protocol;
     address: string;
     amount?: number;
+    signature?: string;
 };
 
 const removeLeadingTrailingSlashes = (text: string) => text.replace(/^\/{0,2}|\/$/g, '');
@@ -42,10 +43,13 @@ export const getProtocolInfo = (
         const address =
             removeLeadingTrailingSlashes(pathname) || removeLeadingTrailingSlashes(host);
 
+        const { signature } = params;
+
         return {
             scheme,
             address,
             amount,
+            signature,
         };
     }
 
