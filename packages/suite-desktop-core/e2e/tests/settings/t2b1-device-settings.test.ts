@@ -16,7 +16,7 @@ test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () 
         await settingsPage.deviceTabButton.click();
     });
 
-    test('change all possible device settings', async ({ settingsPage, window: page, apiURL }) => {
+    test('change all possible device settings', async ({ settingsPage, window: page }) => {
         await test.step('Verify firmware modal', async () => {
             await page.getByTestId('@settings/device/update-button').click();
             await page.getByTestId('@modal/close-button').click();
