@@ -41,7 +41,7 @@ testCases.forEach(({ testName, userPreferences, text, textColor, bodyBackgroundC
             await onboardingPage.optionallyDismissFwHashCheckError();
             await expect(onboardingPage.analyticsHeading).toHaveText(text);
             await expect(onboardingPage.analyticsHeading).toHaveCSS('color', textColor);
-            await expect(onboardingPage.window.locator('body')).toHaveCSS(
+            await expect(onboardingPage.page.locator('body')).toHaveCSS(
                 'background-color',
                 bodyBackgroundColor,
             );

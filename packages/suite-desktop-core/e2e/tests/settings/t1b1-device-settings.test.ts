@@ -10,7 +10,7 @@ test.describe('T1B1 - Device settings', { tag: ['@group=settings'] }, () => {
         await settingsPage.deviceTabButton.click();
     });
 
-    test('enable pin', async ({ window: page, trezorUserEnvLink, settingsPage }) => {
+    test('enable pin', async ({ page, trezorUserEnvLink, settingsPage }) => {
         await page.getByTestId('@settings/device/pin-switch').click();
         await expect(page.getByTestId('@prompts/confirm-on-device')).toBeVisible();
         await trezorUserEnvLink.pressYes();
@@ -22,7 +22,7 @@ test.describe('T1B1 - Device settings', { tag: ['@group=settings'] }, () => {
         await expect(page.getByTestId('@toast/pin-changed')).toBeVisible();
     });
 
-    test('pin mismatch', async ({ window: page, trezorUserEnvLink }) => {
+    test('pin mismatch', async ({ page, trezorUserEnvLink }) => {
         await page.getByTestId('@settings/device/pin-switch').click();
         await expect(page.getByTestId('@prompts/confirm-on-device')).toBeVisible();
         await trezorUserEnvLink.pressYes();

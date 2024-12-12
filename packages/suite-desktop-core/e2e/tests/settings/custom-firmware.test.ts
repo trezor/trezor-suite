@@ -12,7 +12,7 @@ test.describe('Custom firmware', { tag: ['@group=settings'] }, () => {
         await settingsPage.deviceTabButton.click();
     });
 
-    test('Custom firmware installation', async ({ window: page }) => {
+    test('Custom firmware installation', async ({ page }) => {
         await test.step('Start `Install firmware` flow', async () => {
             await page.getByTestId('@settings/device/custom-firmware-modal-button').click();
             await expect(page.getByTestId('@firmware-modal/install-button')).toBeDisabled();

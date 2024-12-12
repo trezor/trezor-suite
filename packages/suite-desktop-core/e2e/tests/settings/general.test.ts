@@ -20,7 +20,7 @@ test.describe('General settings', { tag: ['@group=settings'] }, () => {
         analytics,
         settingsPage,
         dashboardPage,
-        window: page,
+        page,
     }) => {
         await test.step('Check default currency is USD', async () => {
             await expect(page.getByTestId('@dashboard/index')).toContainText('$0.00');

@@ -5,11 +5,11 @@ import { Requests, EventPayload } from '@trezor/suite-web/e2e/support/types';
 import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
 
 export class AnalyticsFixture {
-    private window: Page;
+    private page: Page;
     requests: Requests = [];
 
-    constructor(window: Page) {
-        this.window = window;
+    constructor(page: Page) {
+        this.page = page;
     }
 
     //TODO: #15811 To be refactored
@@ -25,7 +25,7 @@ export class AnalyticsFixture {
 
     //TODO: #15811 To be refactored
     async interceptAnalytics() {
-        await this.window.route('**://data.trezor.io/suite/log/**', route => {
+        await this.page.route('**://data.trezor.io/suite/log/**', route => {
             const url = route.request().url();
             const params = urlSearchParams(url);
             this.requests.push(params);

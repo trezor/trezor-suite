@@ -9,7 +9,7 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
     });
 
     test('change all possible device settings', async ({
-        window: page,
+        page,
         settingsPage,
         trezorUserEnvLink,
     }) => {
@@ -32,7 +32,7 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
         });
     });
 
-    test('Device Wipe', async ({ window: page, trezorUserEnvLink }) => {
+    test('Device Wipe', async ({ page, trezorUserEnvLink }) => {
         await page.getByTestId('@settings/device/open-wipe-modal-button').click();
         await page.getByTestId('@wipe/checkbox-1').click();
         await page.getByTestId('@wipe/checkbox-2').click();
@@ -41,7 +41,7 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
         //TODO: Any verification?
     });
 
-    test('Backup in settings', async ({ window: page }) => {
+    test('Backup in settings', async ({ page }) => {
         await expect(page.getByTestId('@settings/device/check-seed-button')).toBeVisible();
         await page.getByTestId('@settings/device/failed-backup-row').waitFor({ state: 'detached' });
         await page.getByTestId('@settings/device/check-seed-button').click();
@@ -55,7 +55,7 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
 
     test.describe('T2T1 - older firmware < 2.5.4', { tag: ['@group=settings'] }, () => {
         test.use({ emulatorStartConf: { wipe: true, model: 'T2T1', version: '2.5.3' } });
-        test('Cannot change homescreen in firmware < 2.5.4', async ({ window: page }) => {
+        test('Cannot change homescreen in firmware < 2.5.4', async ({ page }) => {
             await expect(page.getByTestId('@settings/device/homescreen-gallery')).toBeDisabled();
             await expect(page.getByTestId('@settings/device/homescreen-upload')).toBeDisabled();
         });

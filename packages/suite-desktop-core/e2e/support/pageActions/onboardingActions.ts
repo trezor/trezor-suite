@@ -20,21 +20,21 @@ export class OnboardingActions {
     isModelWithSecureElement = () => ['T2B1', 'T3T1'].includes(this.model);
 
     constructor(
-        public window: Page,
+        public page: Page,
         model: Model,
         testInfo: TestInfo,
     ) {
         this.model = model;
         this.testInfo = testInfo;
-        this.welcomeTitle = this.window.getByTestId('@welcome/title');
-        this.analyticsHeading = this.window.getByTestId('@analytics/consent/heading');
-        this.analyticsContinueButton = this.window.getByTestId('@analytics/continue-button');
-        this.onboardingContinueButton = this.window.getByTestId('@onboarding/exit-app-button');
-        this.onboardingViewOnlySkipButton = this.window.getByTestId('@onboarding/viewOnly/skip');
-        this.viewOnlyTooltipGotItButton = this.window.getByTestId('@viewOnlyTooltip/gotIt');
-        this.connectDevicePrompt = this.window.getByTestId('@connect-device-prompt');
-        this.authenticityStartButton = this.window.getByTestId('@authenticity-check/start-button');
-        this.authenticityContinueButton = this.window.getByTestId(
+        this.welcomeTitle = this.page.getByTestId('@welcome/title');
+        this.analyticsHeading = this.page.getByTestId('@analytics/consent/heading');
+        this.analyticsContinueButton = this.page.getByTestId('@analytics/continue-button');
+        this.onboardingContinueButton = this.page.getByTestId('@onboarding/exit-app-button');
+        this.onboardingViewOnlySkipButton = this.page.getByTestId('@onboarding/viewOnly/skip');
+        this.viewOnlyTooltipGotItButton = this.page.getByTestId('@viewOnlyTooltip/gotIt');
+        this.connectDevicePrompt = this.page.getByTestId('@connect-device-prompt');
+        this.authenticityStartButton = this.page.getByTestId('@authenticity-check/start-button');
+        this.authenticityContinueButton = this.page.getByTestId(
             '@authenticity-check/continue-button',
         );
     }
@@ -42,7 +42,7 @@ export class OnboardingActions {
     async optionallyDismissFwHashCheckError() {
         await expect(this.welcomeTitle).toBeVisible({ timeout: 10000 });
         // dismisses the error modal only if it appears (handle it async in parallel, not necessary to block the rest of the flow)
-        this.window
+        this.page
             .$('[data-testid="@device-compromised/back-button"]')
             .then(dismissFwHashCheckButton => dismissFwHashCheckButton?.click());
     }
@@ -67,7 +67,7 @@ export class OnboardingActions {
         // Desktop starts with already disabled firmware hash check. Web needs to disable it.
         await expect(this.welcomeTitle).toBeVisible({ timeout: 10000 });
         // eslint-disable-next-line @typescript-eslint/no-shadow
-        await this.window.evaluate(SuiteActions => {
+        await this.page.evaluate(SuiteActions => {
             window.store.dispatch({
                 type: SuiteActions.DEVICE_FIRMWARE_HASH_CHECK,
                 payload: { isDisabled: true },

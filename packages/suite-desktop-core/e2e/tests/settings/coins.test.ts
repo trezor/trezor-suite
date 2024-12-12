@@ -15,7 +15,7 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
     test('go to wallet settings page, check BTC, activate all coins, deactivate all coins, set custom backend', async ({
         dashboardPage,
         settingsPage,
-        window: page,
+        page,
     }) => {
         const defaultUnchecked: NetworkSymbol[] = [
             'ltc',

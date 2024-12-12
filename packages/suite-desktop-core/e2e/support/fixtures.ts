@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { test as base, ElectronApplication, Page } from '@playwright/test';
+import { test as base, Page } from '@playwright/test';
 
 import {
     SetupEmu,
@@ -23,8 +23,8 @@ type Fixtures = {
     emulatorSetupConf: SetupEmu;
     apiURL: string;
     trezorUserEnvLink: TrezorUserEnvLinkClass;
-    appContext: ElectronApplication | undefined;
-    window: Page;
+    electronWindow: Page | undefined;
+    page: Page;
     dashboardPage: DashboardActions;
     settingsPage: SettingsActions;
     suiteGuidePage: SuiteGuide;
@@ -44,7 +44,7 @@ const test = base.extend<Fixtures>({
     trezorUserEnvLink: async ({}, use) => {
         await use(TrezorUserEnvLink);
     },
-    appContext: async (
+    electronWindow: async (
         {
             trezorUserEnvLink,
             startEmulator,
@@ -71,7 +71,7 @@ const test = base.extend<Fixtures>({
                 colorScheme,
                 videoFolder: testInfo.outputDir,
             });
-            await use(suite.electronApp);
+            await use(suite.window);
             await suite.electronApp.close(); // Ensure cleanup after tests
         } else {
             if (startEmulator) {
@@ -80,14 +80,13 @@ const test = base.extend<Fixtures>({
             await use(undefined);
         }
     },
-    window: async ({ appContext, page }, use, testInfo) => {
-        if (appContext) {
-            await page.close(); // Close the default chromium page
-            const window = await appContext.firstWindow();
-            await window.context().tracing.start({ screenshots: true, snapshots: true });
-            await use(window);
+    page: async ({ electronWindow, page: webPage }, use, testInfo) => {
+        if (electronWindow) {
+            await webPage.close(); // Close the default chromium page
+            await electronWindow.context().tracing.start({ screenshots: true, snapshots: true });
+            await use(electronWindow);
             const tracePath = `${testInfo.outputDir}/trace.electron.zip`;
-            await window.context().tracing.stop({ path: tracePath });
+            await electronWindow.context().tracing.stop({ path: tracePath });
             testInfo.attachments.push({
                 name: 'trace',
                 path: tracePath,
@@ -99,40 +98,40 @@ const test = base.extend<Fixtures>({
                 contentType: 'video/webm',
             });
         } else {
-            await page.context().addInitScript(() => {
+            await webPage.context().addInitScript(() => {
                 // Tells the app to attach Redux Store to window object. packages/suite-web/src/support/useCypress.ts
                 window.Playwright = true;
             });
-            await page.goto('./');
-            await use(page);
+            await webPage.goto('./');
+            await use(webPage);
         }
     },
-    dashboardPage: async ({ window }, use) => {
-        const dashboardPage = new DashboardActions(window);
+    dashboardPage: async ({ page }, use) => {
+        const dashboardPage = new DashboardActions(page);
         await use(dashboardPage);
     },
-    settingsPage: async ({ window, apiURL }, use) => {
-        const settingsPage = new SettingsActions(window, apiURL);
+    settingsPage: async ({ page, apiURL }, use) => {
+        const settingsPage = new SettingsActions(page, apiURL);
         await use(settingsPage);
     },
-    suiteGuidePage: async ({ window }, use) => {
-        const suiteGuidePage = new SuiteGuide(window);
+    suiteGuidePage: async ({ page }, use) => {
+        const suiteGuidePage = new SuiteGuide(page);
         await use(suiteGuidePage);
     },
-    walletPage: async ({ window }, use) => {
-        const walletPage = new WalletActions(window);
+    walletPage: async ({ page }, use) => {
+        const walletPage = new WalletActions(page);
         await use(walletPage);
     },
-    onboardingPage: async ({ window, emulatorStartConf }, use, testInfo) => {
+    onboardingPage: async ({ page, emulatorStartConf }, use, testInfo) => {
         const onboardingPage = new OnboardingActions(
-            window,
+            page,
             emulatorStartConf.model ?? TrezorUserEnvLink.defaultModel,
             testInfo,
         );
         await use(onboardingPage);
     },
-    analytics: async ({ window }, use) => {
-        const analytics = new AnalyticsFixture(window);
+    analytics: async ({ page }, use) => {
+        const analytics = new AnalyticsFixture(page);
         await use(analytics);
     },
 });

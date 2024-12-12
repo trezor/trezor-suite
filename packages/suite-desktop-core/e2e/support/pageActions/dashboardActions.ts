@@ -3,7 +3,7 @@ import { Locator, Page, expect } from '@playwright/test';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export class DashboardActions {
-    private readonly window: Page;
+    private readonly page: Page;
     readonly dashboardMenuButton: Locator;
     readonly discoveryHeader: Locator;
     readonly discoveryBar: Locator;
@@ -11,24 +11,24 @@ export class DashboardActions {
     readonly deviceSwitchingOpenButton: Locator;
     readonly modal: Locator;
     readonly walletAtIndex = (index: number) =>
-        this.window.getByTestId(`@switch-device/wallet-on-index/${index}`);
+        this.page.getByTestId(`@switch-device/wallet-on-index/${index}`);
     readonly walletAtIndexEjectButton = (index: number) =>
-        this.window.getByTestId(`@switch-device/wallet-on-index/${index}/eject-button`);
+        this.page.getByTestId(`@switch-device/wallet-on-index/${index}/eject-button`);
     readonly confirmDeviceEjectButton: Locator;
     readonly addStandardWalletButton: Locator;
     readonly balanceOfNetwork = (symbol: NetworkSymbol) =>
-        this.window.getByTestId(`@wallet/coin-balance/value-${symbol}`);
+        this.page.getByTestId(`@wallet/coin-balance/value-${symbol}`);
 
-    constructor(window: Page) {
-        this.window = window;
-        this.dashboardMenuButton = this.window.getByTestId('@suite/menu/suite-index');
-        this.discoveryHeader = this.window.getByRole('heading', { name: 'Dashboard' });
-        this.discoveryBar = this.window.getByTestId('@wallet/discovery-progress-bar');
-        this.dashboardGraph = this.window.getByTestId('@dashboard/graph');
-        this.deviceSwitchingOpenButton = this.window.getByTestId('@menu/switch-device');
-        this.modal = this.window.getByTestId('@modal');
-        this.confirmDeviceEjectButton = this.window.getByTestId('@switch-device/eject');
-        this.addStandardWalletButton = this.window.getByTestId('@switch-device/add-wallet-button');
+    constructor(page: Page) {
+        this.page = page;
+        this.dashboardMenuButton = this.page.getByTestId('@suite/menu/suite-index');
+        this.discoveryHeader = this.page.getByRole('heading', { name: 'Dashboard' });
+        this.discoveryBar = this.page.getByTestId('@wallet/discovery-progress-bar');
+        this.dashboardGraph = this.page.getByTestId('@dashboard/graph');
+        this.deviceSwitchingOpenButton = this.page.getByTestId('@menu/switch-device');
+        this.modal = this.page.getByTestId('@modal');
+        this.confirmDeviceEjectButton = this.page.getByTestId('@switch-device/eject');
+        this.addStandardWalletButton = this.page.getByTestId('@switch-device/add-wallet-button');
     }
 
     async navigateTo() {

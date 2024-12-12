@@ -16,7 +16,7 @@ test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () 
         await settingsPage.deviceTabButton.click();
     });
 
-    test('change all possible device settings', async ({ settingsPage, window: page }) => {
+    test('change all possible device settings', async ({ settingsPage, page }) => {
         await test.step('Verify firmware modal', async () => {
             await page.getByTestId('@settings/device/update-button').click();
             await page.getByTestId('@modal/close-button').click();
@@ -31,7 +31,7 @@ test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () 
         await settingsPage.changeDeviceBackground('circleweb');
     });
 
-    test('Device Wipe', async ({ window: page, trezorUserEnvLink }) => {
+    test('Device Wipe', async ({ page, trezorUserEnvLink }) => {
         await page.getByTestId('@settings/device/open-wipe-modal-button').click();
         await page.getByTestId('@wipe/checkbox-1').click();
         await page.getByTestId('@wipe/checkbox-2').click();
@@ -40,7 +40,7 @@ test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () 
         //TODO: Verification?
     });
 
-    test('Backup in settings', async ({ window: page }) => {
+    test('Backup in settings', async ({ page }) => {
         await expect(page.getByTestId('@settings/device/check-seed-button')).toBeEnabled();
         await page.getByTestId('@settings/device/failed-backup-row').waitFor({ state: 'detached' });
         await page.getByTestId('@settings/device/check-seed-button').click();

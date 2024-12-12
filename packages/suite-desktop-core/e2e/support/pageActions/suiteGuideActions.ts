@@ -6,7 +6,7 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 const anyTestIdEndingWithClose = '[data-testid$="close"]';
 
 export class SuiteGuide {
-    private readonly window: Page;
+    private readonly page: Page;
     readonly guideButton: Locator;
     readonly supportAndFeedbackButton: Locator;
     readonly bugFormButton: Locator;
@@ -14,7 +14,7 @@ export class SuiteGuide {
     readonly bugLocationDropdown: Locator;
     readonly bugLocationDropdownInput: Locator;
     readonly bugLocationDropdownOption = (location: FeedbackCategory) =>
-        this.window.getByTestId(`@guide/feedback/suggestion-dropdown/select/option/${location}`);
+        this.page.getByTestId(`@guide/feedback/suggestion-dropdown/select/option/${location}`);
     readonly bugInputTextField: Locator;
     readonly submitButton: Locator;
     readonly closeButton: Locator;
@@ -22,30 +22,30 @@ export class SuiteGuide {
     readonly searchInput: Locator;
     readonly searchResults: Locator;
     readonly articleWithText = (text: string) =>
-        this.window.locator(`[data-testid^="@guide/node"]`, { hasText: text });
+        this.page.locator(`[data-testid^="@guide/node"]`, { hasText: text });
     readonly toastNotifications: Locator;
     readonly feedbackSuccessToast: Locator;
     readonly articleHeader: Locator;
 
-    constructor(window: Page) {
-        this.window = window;
-        this.guideButton = this.window.getByTestId('@guide/button-open');
-        this.supportAndFeedbackButton = this.window.getByTestId('@guide/button-feedback');
-        this.bugFormButton = this.window.getByTestId('@guide/feedback/bug');
-        this.feedbackFormButton = this.window.getByTestId('@guide/feedback/suggestion');
-        this.bugLocationDropdown = this.window.getByTestId('@guide/feedback/suggestion-dropdown');
-        this.bugLocationDropdownInput = this.window.getByTestId(
+    constructor(page: Page) {
+        this.page = page;
+        this.guideButton = this.page.getByTestId('@guide/button-open');
+        this.supportAndFeedbackButton = this.page.getByTestId('@guide/button-feedback');
+        this.bugFormButton = this.page.getByTestId('@guide/feedback/bug');
+        this.feedbackFormButton = this.page.getByTestId('@guide/feedback/suggestion');
+        this.bugLocationDropdown = this.page.getByTestId('@guide/feedback/suggestion-dropdown');
+        this.bugLocationDropdownInput = this.page.getByTestId(
             '@guide/feedback/suggestion-dropdown/select/input',
         );
-        this.bugInputTextField = this.window.getByTestId('@guide/feedback/suggestion-form');
-        this.submitButton = this.window.getByTestId('@guide/feedback/submit-button');
-        this.closeButton = this.window.getByTestId('@guide/button-close');
-        this.guidePanel = this.window.getByTestId('@guide/panel');
-        this.searchInput = this.window.getByTestId('@guide/search');
-        this.searchResults = this.window.getByTestId('@guide/search/results');
-        this.toastNotifications = this.window.locator('[data-testid-alt="@toast"]');
-        this.feedbackSuccessToast = this.window.getByTestId('@toast/user-feedback-send-success');
-        this.articleHeader = this.window.getByTestId('@guide/article').locator('h1');
+        this.bugInputTextField = this.page.getByTestId('@guide/feedback/suggestion-form');
+        this.submitButton = this.page.getByTestId('@guide/feedback/submit-button');
+        this.closeButton = this.page.getByTestId('@guide/button-close');
+        this.guidePanel = this.page.getByTestId('@guide/panel');
+        this.searchInput = this.page.getByTestId('@guide/search');
+        this.searchResults = this.page.getByTestId('@guide/search/results');
+        this.toastNotifications = this.page.locator('[data-testid-alt="@toast"]');
+        this.feedbackSuccessToast = this.page.getByTestId('@toast/user-feedback-send-success');
+        this.articleHeader = this.page.getByTestId('@guide/article').locator('h1');
     }
 
     async openPanel() {
@@ -63,7 +63,7 @@ export class SuiteGuide {
         await this.bugFormButton.click();
         await this.selectBugLocation(args.location);
         // stability necessity
-        await this.window.waitForTimeout(250);
+        await this.page.waitForTimeout(250);
         await this.bugInputTextField.fill(args.report);
         await this.submitButton.click();
     }

@@ -36,7 +36,7 @@ const backgroundImages = {
 };
 
 export class SettingsActions {
-    private readonly window: Page;
+    private readonly page: Page;
     private readonly apiURL: string;
     private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 5;
     readonly settingsMenuButton: Locator;
@@ -59,56 +59,56 @@ export class SettingsActions {
     readonly pinSubmitButton: Locator;
     //coin Advance settings
     readonly networkButton = (symbol: NetworkSymbol) =>
-        this.window.getByTestId(`@settings/wallet/network/${symbol}`);
+        this.page.getByTestId(`@settings/wallet/network/${symbol}`);
     readonly networkSymbolAdvanceSettingsButton = (symbol: NetworkSymbol) =>
-        this.window.getByTestId(`@settings/wallet/network/${symbol}/advance`);
+        this.page.getByTestId(`@settings/wallet/network/${symbol}/advance`);
     readonly coinBackendSelector: Locator;
     readonly coinBackendSelectorOption = (backend: BackendType) =>
-        this.window.getByTestId(`@settings/advance/${backend}`);
+        this.page.getByTestId(`@settings/advance/${backend}`);
     readonly coinAddressInput: Locator;
     readonly coinAdvanceSettingSaveButton: Locator;
     readonly themeInput: Locator;
     readonly themeInputOption = (theme: Theme) =>
-        this.window.getByTestId(`@theme/color-scheme-select/option/${theme}`);
+        this.page.getByTestId(`@theme/color-scheme-select/option/${theme}`);
     readonly languageInput: Locator;
     readonly languageInputOption = (language: Language) =>
-        this.window.getByTestId(`@settings/language-select/option/${language}`);
-    readonly pinInput = (index: number) => this.window.getByTestId(`@pin/input/${index}`);
+        this.page.getByTestId(`@settings/language-select/option/${language}`);
+    readonly pinInput = (index: number) => this.page.getByTestId(`@pin/input/${index}`);
 
-    constructor(window: Page, apiURL: string) {
-        this.window = window;
+    constructor(page: Page, apiURL: string) {
+        this.page = page;
         this.apiURL = apiURL;
-        this.settingsMenuButton = this.window.getByTestId('@suite/menu/settings');
-        this.settingsHeader = this.window.getByTestId('@settings/menu/title');
-        this.debugTabButton = this.window.getByTestId('@settings/menu/debug');
-        this.applicationTabButton = this.window.getByTestId('@settings/menu/general');
-        this.deviceTabButton = this.window.getByTestId('@settings/menu/device');
-        this.coinsTabButton = this.window.getByTestId('@settings/menu/wallet');
-        this.earlyAccessJoinButton = this.window.getByTestId('@settings/early-access-join-button');
-        this.earlyAccessConfirmCheck = this.window.getByTestId(
+        this.settingsMenuButton = this.page.getByTestId('@suite/menu/settings');
+        this.settingsHeader = this.page.getByTestId('@settings/menu/title');
+        this.debugTabButton = this.page.getByTestId('@settings/menu/debug');
+        this.applicationTabButton = this.page.getByTestId('@settings/menu/general');
+        this.deviceTabButton = this.page.getByTestId('@settings/menu/device');
+        this.coinsTabButton = this.page.getByTestId('@settings/menu/wallet');
+        this.earlyAccessJoinButton = this.page.getByTestId('@settings/early-access-join-button');
+        this.earlyAccessConfirmCheck = this.page.getByTestId(
             '@settings/early-access-confirm-check',
         );
-        this.earlyAccessConfirmButton = this.window.getByTestId(
+        this.earlyAccessConfirmButton = this.page.getByTestId(
             '@settings/early-access-confirm-button',
         );
-        this.earlyAccessSkipButton = this.window.getByTestId('@settings/early-access-skip-button');
-        this.settingsCloseButton = this.window.getByTestId('@settings/menu/close');
-        this.modal = this.window.getByTestId('@modal');
-        this.deviceLabelInput = this.window.getByTestId('@settings/device/label-input');
-        this.deviceLabelSubmit = this.window.getByTestId('@settings/device/label-submit');
-        this.confirmOnDevicePrompt = this.window.getByTestId('@prompts/confirm-on-device');
-        this.homescreenGalleryButton = this.window.getByTestId(
+        this.earlyAccessSkipButton = this.page.getByTestId('@settings/early-access-skip-button');
+        this.settingsCloseButton = this.page.getByTestId('@settings/menu/close');
+        this.modal = this.page.getByTestId('@modal');
+        this.deviceLabelInput = this.page.getByTestId('@settings/device/label-input');
+        this.deviceLabelSubmit = this.page.getByTestId('@settings/device/label-submit');
+        this.confirmOnDevicePrompt = this.page.getByTestId('@prompts/confirm-on-device');
+        this.homescreenGalleryButton = this.page.getByTestId(
             '@settings/device/homescreen-gallery',
         );
-        this.notificationSuccessToast = this.window.getByTestId('@toast/settings-applied').first();
-        this.coinBackendSelector = this.window.getByTestId('@settings/advance/select-type/input');
-        this.coinAddressInput = this.window.getByTestId('@settings/advance/url');
-        this.coinAdvanceSettingSaveButton = this.window.getByTestId(
+        this.notificationSuccessToast = this.page.getByTestId('@toast/settings-applied').first();
+        this.coinBackendSelector = this.page.getByTestId('@settings/advance/select-type/input');
+        this.coinAddressInput = this.page.getByTestId('@settings/advance/url');
+        this.coinAdvanceSettingSaveButton = this.page.getByTestId(
             '@settings/advance/button/save',
         );
-        this.themeInput = this.window.getByTestId('@theme/color-scheme-select/input');
-        this.languageInput = this.window.getByTestId('@settings/language-select/input');
-        this.pinSubmitButton = this.window.getByTestId('@pin/submit-button');
+        this.themeInput = this.page.getByTestId('@theme/color-scheme-select/input');
+        this.languageInput = this.page.getByTestId('@settings/language-select/input');
+        this.pinSubmitButton = this.page.getByTestId('@pin/submit-button');
     }
 
     async navigateTo() {
@@ -205,12 +205,12 @@ export class SettingsActions {
     async changeDeviceBackground(image: keyof typeof backgroundImages) {
         await test.step('Change display background image', async () => {
             // To solve the flakiness of the test, we need to wait for the image to load
-            const buttonImageLoad = this.window.waitForResponse(
+            const buttonImageLoad = this.page.waitForResponse(
                 `${this.apiURL}${backgroundImages[image].path}`,
             );
             await this.homescreenGalleryButton.click();
             await buttonImageLoad;
-            await this.window.getByTestId(backgroundImages[image].locator).click();
+            await this.page.getByTestId(backgroundImages[image].locator).click();
             await expect(this.confirmOnDevicePrompt).toBeVisible();
             await TrezorUserEnvLink.pressYes();
             await this.confirmOnDevicePrompt.waitFor({ state: 'detached' });

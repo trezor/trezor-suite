@@ -9,13 +9,13 @@ test.describe('Safety Checks Settings', { tag: ['@group=settings'] }, () => {
     });
 
     test('There is button in device settings, that opens safety checks modal.', async ({
-        window: page,
+        page,
     }) => {
         await page.getByTestId('@settings/device/safety-checks-button').click();
         await expect(page.getByTestId('@safety-checks-apply')).toBeVisible();
     });
 
-    test('Only one level is selected at a time', async ({ window: page }) => {
+    test('Only one level is selected at a time', async ({ page }) => {
         // Open the safety checks modal.
         await page.getByTestId('@settings/device/safety-checks-button').click();
 
@@ -38,7 +38,7 @@ test.describe('Safety Checks Settings', { tag: ['@group=settings'] }, () => {
         ).toHaveCount(1);
     });
 
-    test('Apply button is enabled only when value is changed', async ({ window: page }) => {
+    test('Apply button is enabled only when value is changed', async ({ page }) => {
         // Open the safety checks modal.
         await page.getByTestId('@settings/device/safety-checks-button').click();
 
@@ -48,7 +48,7 @@ test.describe('Safety Checks Settings', { tag: ['@group=settings'] }, () => {
     });
 
     test('Device safety_check setting is changed after pressing the apply button', async ({
-        window: page,
+        page,
         trezorUserEnvLink,
     }) => {
         await page.getByTestId('@settings/device/safety-checks-button').click();
