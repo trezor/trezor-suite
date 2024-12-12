@@ -1,109 +1,87 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import TrezorConnect from '@trezor/connect';
 import { Input, Button } from '@trezor/components';
-import { NostrClient, Event } from '@trezor/connect-nostr';
+import { Event } from '@trezor/connect-nostr';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector, useDispatch } from 'src/hooks/suite';
+import * as nostrActions from 'src/actions/suite/nostrActions';
 
-const defaultNsec = 'nsec12rfalrsa6dvnxjhhf4n0d2k4rc2wc8hy49qvp34k2hj8p7cppnnq8ysujz';
 export const Nostr = () => {
-    const [Nsec, setNsec] = useState<`nsec1${string}` | undefined>(defaultNsec);
-    const [myNpub, setMyNpub] = useState('');
     const [peerNpub, setPeerNpub] = useState<`npub1${string}` | undefined>(undefined);
-    const [client, setClient] = useState<NostrClient | null>(null);
-    const [events, setEvents] = useState<Event>();
-    const [clientStatus, setClientStatus] = useState('disconnected');
     const [addressRequestState, setAddressRequestState] = useState<'none' | 'pending' | 'success'>(
         'none',
     );
 
+    const nostr = useSelector(state => state.nostr);
+    const { keys, status: clientStatus, event: events, relayUrl, type } = nostr;
+    const { nsec: Nsec, npub: myNpub } = keys;
+
+    console.log('status', clientStatus);
+    console.log('events, ', events);
+    console.log('type', type);
+    console.log('Nsec', Nsec);
+    console.log('myNpub', myNpub);
     const unusedAddress = useSelector(
         state => state.wallet.accounts[0]?.addresses?.unused[0].address,
     );
 
-    const handleChange = (event: any) => {
-        setNsec(event.target.value);
-    };
+    const dispatch = useDispatch();
 
     const handlePeerNpubChange = (event: any) => {
         setPeerNpub(event.target.value);
     };
 
-    const initPeerToPeerClient = async () => {
-        const nostrClient = new NostrClient({
-            type: 'hot-keys',
-            nsecStr: defaultNsec,
-
-            relayUrl: 'wss://relay.primal.net',
-        });
-        setClient(nostrClient);
-        if (nostrClient.npub) {
-            setMyNpub(nostrClient.npub);
-        }
-
-        nostrClient.on('event', message => {
-            console.log('message', message);
-
-            if (message) {
-                const { content } = message;
-                setEvents({ ...message, content: JSON.parse(content) });
-            }
-        });
-
-        nostrClient.on('status', status => {
-            setClientStatus(status);
-        });
-
-        await nostrClient.connect();
-    };
-
-    useEffect(() => {
-        initPeerToPeerClient();
-    }, []);
-
     const handlePeerNpubClick = () => {
         if (!peerNpub) return;
-        client?.subscribe({ pubKeys: [peerNpub] });
+        dispatch(nostrActions.subscribe(peerNpub));
     };
 
     const handleDisconnectClick = async () => {
-        client?.dispose();
-    };
-    const handleSendPaymentData = () => {
-        client?.send({
-            content: JSON.stringify({
-                type: 'payment_request',
-                payload: `bitcoin:${unusedAddress}?amount=0.1`,
-            }),
-        });
+        dispatch(nostrActions.dispose());
     };
 
-    const handleSendAddressRequest = () => {
+    const handleSendPaymentData = () => {
+        dispatch(
+            nostrActions.send({
+                content: JSON.stringify({
+                    type: 'payment_request',
+                    payload: `bitcoin:${unusedAddress}?amount=0.1`,
+                }),
+            }),
+        );
+    };
+
+    const handleSendAddressRequest = async () => {
         setAddressRequestState('pending');
-        client
-            ?.request({
+        await dispatch(
+            nostrActions.request({
                 content: JSON.stringify({
                     type: 'address_request',
                 }),
-            })
-            .then(result => {
-                console.log('result', result);
-                setAddressRequestState('success');
-            });
+            }),
+        );
+        // .then(result => {
+        //     console.log('result', result);
+        // });
+        setAddressRequestState('success');
+
+        // dispatch()
     };
 
     const handleAddressRequestResponse = (content: any) => {
         console.log('handleAddressRequestResponse', content);
 
-        client?.send({
-            content: JSON.stringify({
-                type: 'address_response',
-                request_id: content.id,
-                payload: unusedAddress,
+        dispatch(
+            nostrActions.send({
+                content: JSON.stringify({
+                    type: 'address_response',
+                    request_id: content.id,
+                    payload: unusedAddress,
+                }),
             }),
-        });
+        );
     };
 
     const PeerRequest = ({ pubkey, content }: any) => {
@@ -155,13 +133,17 @@ export const Nostr = () => {
         <>
             <SectionItem>
                 <TextColumn title="Client status" description={clientStatus} />
-                <TextColumn title="Relay" description={client?.relay.url} />
+                <TextColumn title="Relay" description={relayUrl} />
                 <ActionColumn>
-                    {clientStatus === 'disconnected' && (
-                        <Button onClick={initPeerToPeerClient}>Connect</Button>
-                    )}
+                    {clientStatus === 'disconnected' && <Button onClick={() => {}}>Connect</Button>}
                     {clientStatus === 'connected' && (
-                        <Button onClick={handleDisconnectClick}>Disconnect</Button>
+                        <Button
+                            onClick={() => {
+                                handleDisconnectClick();
+                            }}
+                        >
+                            Disconnect
+                        </Button>
                     )}
                 </ActionColumn>
             </SectionItem>
@@ -170,10 +152,8 @@ export const Nostr = () => {
                 <ActionColumn>
                     <Button
                         onClick={() => {
-                            client?.newIdentity();
-                            setNsec(client?.nsecStr!);
-                            setMyNpub(client?.npub!);
-                            console.log('client', client);
+                            // @ts-ignore
+                            dispatch(nostrActions.newIdentity());
                         }}
                     >
                         Create new
@@ -189,7 +169,7 @@ export const Nostr = () => {
                         isDisabled
                         placeholder="My Nsec"
                         value={Nsec}
-                        onChange={handleChange}
+                        onChange={() => {}}
                         size="small"
                     />
                 </ActionColumn>
@@ -262,21 +242,19 @@ export const Nostr = () => {
                             description="The last message received from your peer"
                         />
                     </SectionItem>
-                    {events && <PeerRequest {...events} />}
+                    {events?.kind && <PeerRequest {...events} />}
                 </>
             )}
 
             <SectionItem>
-                <TextColumn title="Nostr npub from device" description="" />
+                <TextColumn title={type} description="" />
                 <ActionColumn>
                     <Button
                         onClick={() => {
-                            TrezorConnect.nostrGetPublicKey({
-                                path: "m/44'/1237'/0'/0/0",
-                            }).then(console.log);
+                            dispatch(nostrActions.setIdentity());
                         }}
                     >
-                        nostr get npub
+                        Switch identity
                     </Button>
                 </ActionColumn>
             </SectionItem>

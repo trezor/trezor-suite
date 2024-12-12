@@ -45,10 +45,12 @@ export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommuni
 
     // signer mode
     signer?: Signer;
+    type: 'hot-keys' | 'signer';
 
     constructor({ relayUrl, type, ...rest }: Params) {
         super();
 
+        this.type = type;
         this.relay = new Relay(relayUrl);
 
         this.messages = createDeferredManager();
@@ -76,7 +78,7 @@ export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommuni
         });
     }
 
-    private setIdentity(params: KeysParams) {
+    setIdentity(params: KeysParams) {
         if (params.type === 'hot-keys') {
             const { data, type } = nip19.decode(params.nsecStr);
             if (type !== 'nsec') {
@@ -89,7 +91,14 @@ export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommuni
             this.nsec = nip19.decode(this.nsecStr).data;
             this.signer = undefined;
         } else {
+            this.signer = params.signer;
+            this.npub = nip19.npubEncode(params.npubStr);
+            this.nsec = undefined;
+            this.nsecStr = undefined;
+            this.sk = undefined;
+            this.pk = undefined;
         }
+        this.emit('identity', { npub: this.npub, nsec: this.nsecStr, type: params.type });
     }
 
     async connect() {
@@ -101,7 +110,7 @@ export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommuni
     }
 
     buildMessage({ content }: { content: string }) {
-        if (!this.nsec) {
+        if (!this.nsec && !this.signer) {
             // return { success: false, error: 'no identity' };
             throw new Error('no identity');
         }

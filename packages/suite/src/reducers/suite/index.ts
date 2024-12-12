@@ -17,6 +17,7 @@ import metadata from './metadataReducer';
 import desktopUpdate from './desktopUpdateReducer';
 import guide from './guideReducer';
 import protocol from './protocolReducer';
+import { nostrReducer } from './nostrReducer';
 
 const analytics = prepareAnalyticsReducer(extraDependencies);
 // Type annotation as workaround for type-check error "The inferred type of 'default' cannot be named..."
@@ -34,6 +35,7 @@ export default {
     window,
     analytics,
     metadata,
+    nostr: nostrReducer,
     desktopUpdate,
     messageSystem,
     guide,

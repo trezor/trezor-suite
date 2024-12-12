@@ -26,6 +26,7 @@ import type { WalletAction } from 'src/types/wallet';
 import type { BackupAction } from 'src/actions/backup/backupActions';
 import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
 import type { GuideAction } from 'src/actions/suite/guideActions';
+import { NostrAction } from 'src/actions/suite/nostrActions';
 
 // reexport
 export type { ExtendedMessageDescriptor } from 'src/components/suite/Translation';
@@ -86,7 +87,8 @@ export type Action =
     | ProtocolAction
     | DiscoveryAction
     | DeviceAction
-    | DeviceAuthenticityAction;
+    | DeviceAuthenticityAction
+    | NostrAction;
 
 export type ThunkAction = TAction<any, AppState, any, Action>;
 
