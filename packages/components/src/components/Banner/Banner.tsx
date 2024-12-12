@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import styled, { css, DefaultTheme, useTheme } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
 import { Elevation, borders, spacingsPx, typography, spacings } from '@trezor/theme';
 
@@ -21,7 +21,7 @@ import {
     mapVariantToIconColor,
     mapVariantToTextColor,
 } from './utils';
-import { Icon, IconName } from '../Icon/Icon';
+import { Icon, IconName, IconSize } from '../Icon/Icon';
 import { SCREEN_SIZE } from '../../config/variables';
 import { TransientProps } from '../../utils/transientProps';
 import { useMediaQuery } from '../../utils/useMediaQuery';
@@ -32,8 +32,6 @@ import { Spinner } from '../loaders/Spinner/Spinner';
 
 export const allowedBannerFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBannerFrameProps)[number]>;
-type SpacingX = 'xs' | 'lg';
-type Color = 'inherit' | 'default';
 
 export type BannerProps = AllowedFrameProps & {
     children: ReactNode;
@@ -41,10 +39,9 @@ export type BannerProps = AllowedFrameProps & {
     variant?: BannerVariant;
     rightContent?: ReactNode;
     icon?: IconName | true;
+    iconSize?: IconSize | number;
     filled?: boolean;
     'data-testid'?: string;
-    spacingX?: SpacingX;
-    color?: Color;
     isLoading?: boolean;
 };
 
@@ -53,14 +50,7 @@ type WrapperParams = TransientProps<AllowedFrameProps> & {
     $withIcon?: boolean;
     $elevation: Elevation;
     $filled: boolean;
-    $spacingX: SpacingX;
-    $color: Color;
 };
-
-const colorMap = (theme: DefaultTheme) => ({
-    inherit: mapVariantToTextColor,
-    default: theme.textDefault,
-});
 
 const Wrapper = styled.div<WrapperParams>`
     align-items: center;
@@ -72,11 +62,11 @@ const Wrapper = styled.div<WrapperParams>`
               `
             : ''}
 
-    color: ${({ $color, theme }) => colorMap(theme)[$color]};
+    color: ${mapVariantToTextColor};
     display: flex;
     ${typography.hint}
     gap: ${spacingsPx.sm};
-    padding: ${spacingsPx.sm} ${({ $spacingX }) => spacingsPx[$spacingX]};
+    padding: ${spacingsPx.sm} ${spacingsPx.lg};
 
     ${withFrameProps}
     ${variables.SCREEN_QUERY.MOBILE} {
@@ -89,12 +79,11 @@ const Wrapper = styled.div<WrapperParams>`
 export const Banner = ({
     children,
     className,
-    color = 'inherit',
     variant = DEFAULT_VARIANT,
     icon,
+    iconSize = 20,
     filled = true,
     rightContent,
-    spacingX = 'lg',
     'data-testid': dataTest,
     isLoading = false,
     ...rest
@@ -130,15 +119,13 @@ export const Banner = ({
             className={className}
             $elevation={elevation}
             $filled={filled}
-            $spacingX={spacingX}
-            $color={color}
             data-testid={dataTest}
             {...frameProps}
         >
             {isLoading && <Spinner size={22} />}
             {!isLoading && withIcon && (
                 <Icon
-                    size={20}
+                    size={iconSize}
                     name={icon === true ? mapVariantToIcon({ $variant: variant }) : icon}
                     // Todo: unify variants
                     color={mapVariantToIconColor({
