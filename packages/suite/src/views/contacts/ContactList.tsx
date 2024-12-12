@@ -3,7 +3,7 @@ import { Button, Card, Dropdown, Table, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 const ContactItem = ({
-    contact: { address, label, signature },
+    contact: { address, label, receiveAddresses },
     remove,
 }: {
     contact: Contact;
@@ -21,7 +21,11 @@ const ContactItem = ({
             </Table.Cell>
             <Table.Cell>
                 <Text variant="tertiary" typographyStyle="hint" overflowWrap="anywhere">
-                    {signature}
+                    {receiveAddresses?.map(ra => (
+                        <a href={'bitcoin:' + ra.address} key={ra.address}>
+                            {ra.address}
+                        </a>
+                    ))}
                 </Text>
             </Table.Cell>
             <Table.Cell align="right">
@@ -61,8 +65,8 @@ export const ContactList = ({
                 <Table.Header>
                     <Table.Row>
                         <Table.Cell>Label</Table.Cell>
-                        <Table.Cell>Address</Table.Cell>
-                        <Table.Cell>Signature</Table.Cell>
+                        <Table.Cell>Npub</Table.Cell>
+                        <Table.Cell>Receive address</Table.Cell>
                         <Table.Cell />
                     </Table.Row>
                 </Table.Header>

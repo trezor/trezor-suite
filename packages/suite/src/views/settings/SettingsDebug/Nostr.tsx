@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import TrezorConnect from '@trezor/connect';
 import { Input, Button } from '@trezor/components';
@@ -18,11 +18,11 @@ export const Nostr = () => {
     const { keys, status: clientStatus, event: events, relayUrl, type } = nostr;
     const { nsec: Nsec, npub: myNpub } = keys;
 
-    console.log('status', clientStatus);
+    /*console.log('status', clientStatus);
     console.log('events, ', events);
     console.log('type', type);
     console.log('Nsec', Nsec);
-    console.log('myNpub', myNpub);
+    console.log('myNpub', myNpub);*/
     const unusedAddress = useSelector(
         state => state.wallet.accounts[0]?.addresses?.unused[0].address,
     );
@@ -34,7 +34,6 @@ export const Nostr = () => {
     };
 
     const handlePeerNpubClick = () => {
-        if (!peerNpub) return;
         dispatch(nostrActions.subscribe());
     };
 
@@ -72,8 +71,14 @@ export const Nostr = () => {
         // dispatch()
     };
 
-    const handleAddressRequestResponse = (content: any) => {
-        console.log('handleAddressRequestResponse', content);
+    const handleAddressRequestResponse = async () => {
+        console.log('handleAddressRequestResponse', events);
+
+        const addressResponse = await TrezorConnect.getAddress({
+            coin: 'test',
+            path: "m/44'/1'/0'/0/0",
+            showOnTrezor: false,
+        });
 
         dispatch(
             nostrActions.send({
@@ -81,8 +86,8 @@ export const Nostr = () => {
                 tags: [['p', events.pubkey]],
                 content: JSON.stringify({
                     type: 'address_response',
-                    request_id: content.id,
-                    payload: unusedAddress,
+                    request_id: events.content.id,
+                    payload: addressResponse.payload,
                 }),
             }),
         );
@@ -123,15 +128,16 @@ export const Nostr = () => {
         if (content.type === 'address_response') {
             return (
                 <SectionItem>
-                    <TextColumn title="Address response" description={content.payload} />
+                    <TextColumn
+                        title="Address response"
+                        description={JSON.stringify(content.payload)}
+                    />
                 </SectionItem>
             );
         }
 
         return null;
     };
-
-    console.log(events);
 
     return (
         <>
@@ -156,7 +162,6 @@ export const Nostr = () => {
                 <ActionColumn>
                     <Button
                         onClick={() => {
-                            // @ts-ignore
                             dispatch(nostrActions.newIdentity());
                         }}
                     >

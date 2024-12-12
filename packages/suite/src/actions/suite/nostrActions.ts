@@ -100,31 +100,29 @@ export const dispose = () => (_dispatch: Dispatch, _getState: GetState) => {
     return nostrClient?.dispose();
 };
 
-export const setIdentity =
-    (params: Parameters<(typeof nostrClient)['setIdentity']>[0]) =>
-    async (dispatch: Dispatch, _getState: GetState) => {
-        const { selectedDevice } = _getState().device;
+export const setIdentity = () => async (dispatch: Dispatch, _getState: GetState) => {
+    const { selectedDevice } = _getState().device;
 
-        const response = await TrezorConnect.nostrGetPublicKey({
-            path: "m/44'/1237'/0'/0/0",
-            device: selectedDevice,
-        });
+    const response = await TrezorConnect.nostrGetPublicKey({
+        path: "m/44'/1237'/0'/0/0",
+        device: selectedDevice,
+    });
 
-        console.log('response', response);
-        if (!response.success) {
-            return;
-        }
+    console.log('response', response);
+    if (!response.success) {
+        return;
+    }
 
-        nostrClient?.setIdentity({
-            type: 'signer',
-            npubStr: response.payload.pubkey,
-            signer: (event: any) =>
-                TrezorConnect.nostrSignEvent({
-                    path: "m/44'/1237'/0'/0/0",
-                    device: selectedDevice,
-                    ...event,
-                }),
-        });
+    nostrClient?.setIdentity({
+        type: 'signer',
+        npubStr: response.payload.pubkey,
+        signer: (event: any) =>
+            TrezorConnect.nostrSignEvent({
+                path: "m/44'/1237'/0'/0/0",
+                device: selectedDevice,
+                ...event,
+            }),
+    });
 
-        console.log('nostrClient', nostrClient);
-    };
+    console.log('nostrClient', nostrClient);
+};

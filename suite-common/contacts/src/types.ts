@@ -3,4 +3,8 @@ export type Contact = {
     label: string;
     signature: string;
     deviceState: string;
+    receiveAddresses: {
+        address: string;
+        signature: string;
+    }[];
 };

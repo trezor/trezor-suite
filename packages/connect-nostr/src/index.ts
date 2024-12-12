@@ -165,6 +165,7 @@ export class NostrClient extends PeerToPeerCommunicationClient<PeerToPeerCommuni
             [
                 {
                     '#p': [nip19.decode(recipientPubkey).data.toString()],
+                    since: Math.floor(Date.now() / 1000),
                 },
             ],
             {
