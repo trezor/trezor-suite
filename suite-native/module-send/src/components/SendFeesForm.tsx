@@ -80,13 +80,14 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     const rippleDestinationTag = useSelector((state: NativeSendRootState) =>
         selectRippleDestinationTagFromDraft(state, accountKey, tokenContract),
     );
+    const normalFee = feeLevels.normal as PrecomposedTransactionFinal; // user is not allowed to enter this screen if normal fee is not final
 
     const form = useForm<SendFeesFormValues>({
         validation: sendFeesFormValidationSchema,
         defaultValues: {
             feeLevel: formDraft?.selectedFee as NativeSupportedFeeLevel,
             customFeePerUnit: formDraft?.feePerUnit,
-            customFeeLimit: formDraft?.feeLimit,
+            customFeeLimit: normalFee?.feeLimit,
         },
         context: {
             networkFeeInfo,
@@ -105,7 +106,6 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
         selectNetworkFeeLevelFeePerUnit(state, account?.symbol, selectedFeeLevel),
     );
 
-    const normalFee = feeLevels.normal as PrecomposedTransactionFinal; // user is not allowed to enter this screen if normal fee is not final
     const transactionBytes = normalFee.bytes as number;
 
     // If trezor-connect was not able to compose the fee level, we have calculate total amount locally.
