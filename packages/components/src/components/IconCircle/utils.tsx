@@ -2,32 +2,20 @@ import { DefaultTheme } from 'styled-components';
 
 import { Color, CSSColor } from '@trezor/theme';
 
-import {
-    IconCircleVariant,
-    IconCircleExclusiveColorOrVariant,
-    IconCirclePaddingType,
-} from './types';
-import { TransientProps } from '../../utils/transientProps';
+import { IconCircleVariant, IconCirclePaddingType } from './types';
 
 type VariantMapArgs = {
     theme: DefaultTheme;
     $hasBorder: boolean;
-} & TransientProps<IconCircleExclusiveColorOrVariant>;
+    $variant: IconCircleVariant;
+};
 
 type PaddingTypeMap = {
     $paddingType: IconCirclePaddingType;
     $size: number;
 };
 
-export const mapVariantToIconBorderColor = ({
-    $variant,
-    theme,
-    $iconColor,
-}: VariantMapArgs): CSSColor => {
-    if ($variant === undefined) {
-        return $iconColor?.foreground ?? 'transparent';
-    }
-
+export const mapVariantToIconBorderColor = ({ $variant, theme }: VariantMapArgs): CSSColor => {
     const colorMap: Record<IconCircleVariant, Color> = {
         primary: 'backgroundPrimarySubtleOnElevation0',
         warning: 'backgroundAlertYellowSubtleOnElevation0',
@@ -42,13 +30,8 @@ export const mapVariantToIconBorderColor = ({
 export const mapVariantToIconBackground = ({
     theme,
     $hasBorder,
-    $iconColor,
     $variant,
 }: VariantMapArgs): CSSColor => {
-    if ($variant === undefined) {
-        return $iconColor?.background ?? 'transparent';
-    }
-
     const noBorderColorMap: Record<IconCircleVariant, Color> = {
         primary: 'backgroundPrimarySubtleOnElevation0',
         warning: 'backgroundAlertYellowSubtleOnElevation0',

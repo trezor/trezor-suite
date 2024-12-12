@@ -123,7 +123,7 @@ export const TorProgressBar = ({
 
             <InfoWrapper>
                 <ProgressWrapper>
-                    <StyledProgressBar isRed={isTorError} value={isTorError ? 100 : progress} />
+                    <StyledProgressBar value={isTorError ? 100 : progress} />
 
                     <ProgressMessage>
                         {isTorError ? (

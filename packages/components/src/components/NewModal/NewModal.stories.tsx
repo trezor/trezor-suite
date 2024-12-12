@@ -8,7 +8,6 @@ import {
     NewModalProps,
     variables,
     intermediaryTheme,
-    IconCircle,
 } from '../../index';
 import { newModalVariants, newModalSizes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
@@ -50,7 +49,6 @@ export const NewModal: StoryObj<NewModalProps> = {
     args: {
         variant: 'primary',
         iconName: undefined,
-        iconComponent: undefined,
         heading: 'Modal heading',
         description: 'Modal description',
         children:
@@ -68,19 +66,6 @@ export const NewModal: StoryObj<NewModalProps> = {
                 type: 'select',
             },
             options: [...newModalVariants, undefined],
-        },
-        iconComponent: {
-            options: ['nothing', 'purple'],
-            mapping: {
-                nothing: undefined,
-                purple: (
-                    <IconCircle
-                        name="eap"
-                        iconColor={{ foreground: '#550070', background: '#c458d9' }}
-                        size={40}
-                    />
-                ),
-            },
         },
         size: {
             control: {

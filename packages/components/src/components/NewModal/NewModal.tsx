@@ -20,7 +20,7 @@ import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext
 import { useScrollShadow } from '../../utils/useScrollShadow';
 import { IconCircle } from '../IconCircle/IconCircle';
 import { IconName } from '../Icon/Icon';
-import { Row } from '../Flex/Flex';
+import { Box } from '../Box/Box';
 import { NewModalButton } from './NewModalButton';
 import { NewModalContext } from './NewModalContext';
 import { NewModalBackdrop } from './NewModalBackdrop';
@@ -99,10 +99,6 @@ const Footer = styled.footer`
     border-top: 1px solid ${({ theme }) => theme.borderElevation0};
 `;
 
-type ExclusiveIconNameOrComponent =
-    | { iconName?: IconName; iconComponent?: undefined }
-    | { iconName?: undefined; iconComponent?: ReactNode };
-
 type NewModalProps = AllowedFrameProps & {
     variant?: NewModalVariant;
     children?: ReactNode;
@@ -114,8 +110,9 @@ type NewModalProps = AllowedFrameProps & {
     isBackdropCancelable?: boolean;
     alignment?: NewModalAlignment;
     size?: NewModalSize;
+    iconName?: IconName;
     'data-testid'?: string;
-} & ExclusiveIconNameOrComponent;
+};
 
 const InnerNewModalBase = ({
     children,
@@ -125,7 +122,6 @@ const InnerNewModalBase = ({
     description,
     bottomContent,
     iconName,
-    iconComponent,
     onBackClick,
     onCancel,
     isBackdropCancelable,
@@ -193,18 +189,15 @@ const InnerNewModalBase = ({
                 <ShadowTop />
                 <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
                     <Body id={NEW_MODAL_CONTENT_ID}>
-                        {(iconComponent || iconName) && (
-                            <Row
+                        {iconName && (
+                            <Box
                                 margin={{
                                     bottom: spacings.md,
                                     top: isIconPushedTop ? negativeSpacings.md : 0,
                                 }}
                             >
-                                {iconComponent ??
-                                    (iconName && (
-                                        <IconCircle name={iconName} size={110} variant={variant} />
-                                    ))}
-                            </Row>
+                                <IconCircle name={iconName} size={110} variant={variant} />
+                            </Box>
                         )}
                         <ElevationUp>{children}</ElevationUp>
                     </Body>

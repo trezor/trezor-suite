@@ -1,8 +1,8 @@
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { fromWei } from 'web3-utils';
 
 import {
-    IconCircle,
+    Icon,
     Text,
     H3,
     useElevation,
@@ -31,10 +31,13 @@ const IconWrapper = styled.div<{ $elevation: Elevation }>`
     border-radius: ${borders.radii.full};
 `;
 
-const NestedIconWrapper = styled.div`
+const NestedIconWrapper = styled.div<{ $elevation: Elevation }>`
     position: absolute;
     top: -${spacingsPx.xxs};
     right: -${spacingsPx.xxs};
+    background: ${mapElevationToBorder};
+    border-radius: ${borders.radii.full};
+    padding: ${spacingsPx.xxxs};
 `;
 
 const Item = ({ label, iconName, children }: Partial<InfoItemProps>) => (
@@ -67,7 +70,6 @@ export const BasicTxDetails = ({
     explorerUrlQueryString,
 }: BasicTxDetailsProps) => {
     const { elevation } = useElevation();
-    const theme = useTheme();
     // all solana txs which are fetched are already confirmed
     const isConfirmed = confirmations > 0 || tx.solanaSpecific?.status === 'confirmed';
 
@@ -76,16 +78,10 @@ export const BasicTxDetails = ({
             <Row gap={spacings.sm}>
                 <IconWrapper $elevation={elevation}>
                     <CoinLogo symbol={tx.symbol} size={48} />
-                    <NestedIconWrapper>
-                        <IconCircle
-                            size={18}
-                            paddingType="small"
-                            hasBorder={false}
-                            iconColor={{
-                                foreground:
-                                    theme[tx.type === 'failed' ? 'textAlertRed' : 'textDefault'],
-                                background: mapElevationToBorder({ theme, $elevation: elevation }),
-                            }}
+                    <NestedIconWrapper $elevation={elevation}>
+                        <Icon
+                            size={14}
+                            variant={tx.type === 'failed' ? 'destructive' : 'default'}
                             name={getTxIcon(tx.type)}
                         />
                     </NestedIconWrapper>

@@ -1,33 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import styled from 'styled-components';
-
 import { UpdateProgress } from '@trezor/suite-desktop-api';
 import { bytesToHumanReadable } from '@trezor/utils';
-import { H2, NewModal, ProgressBar, variables, Row, Column } from '@trezor/components';
+import { NewModal, ProgressBar, Paragraph, Column, Text, H3 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-
-const DownloadProgress = styled.span`
-    font-size: 20px;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-`;
-
-const ReceivedData = styled.span`
-    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
-`;
-
-const TotalData = styled.span`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Text = styled(H2)`
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
 
 interface DownloadingProps {
     hideWindow: () => void;
@@ -52,30 +30,27 @@ export const Downloading = ({ hideWindow, progress }: DownloadingProps) => {
                     <Translation id="TR_BACKGROUND_DOWNLOAD" />
                 </NewModal.Button>
             }
+            iconName="download"
         >
-            <Column alignItems="start" gap={spacings.md}>
-                <Row margin={{ top: spacings.md }} justifyContent="space-between" width="100%">
-                    {progress?.verifying ? (
-                        <Text>
-                            <Translation id="TR_VERIFYING_SIGNATURE" />
-                            {ellipsisArray.filter((_, k) => k < step)}
-                        </Text>
-                    ) : (
-                        <>
-                            <Text>
-                                <Translation id="TR_DOWNLOADING" />
-                            </Text>
-                            <DownloadProgress>
-                                <ReceivedData>
-                                    {bytesToHumanReadable(progress?.transferred || 0)}
-                                </ReceivedData>
-                                /<TotalData>{bytesToHumanReadable(progress?.total || 0)}</TotalData>
-                            </DownloadProgress>
-                        </>
-                    )}
-                </Row>
-
+            <H3>
+                {progress?.verifying ? (
+                    <>
+                        <Translation id="TR_VERIFYING_SIGNATURE" />
+                        {ellipsisArray.filter((_, k) => k < step)}
+                    </>
+                ) : (
+                    <Translation id="TR_DOWNLOADING" />
+                )}
+            </H3>
+            <Column gap={spacings.xxs} margin={{ top: spacings.xs }}>
                 <ProgressBar value={progress?.percent || 0} />
+                <Paragraph variant="tertiary" typographyStyle="body" align="right">
+                    <Text variant="primary">
+                        {bytesToHumanReadable(progress?.transferred || 0)}
+                    </Text>
+                    {' / '}
+                    {bytesToHumanReadable(progress?.total || 0)}
+                </Paragraph>
             </Column>
         </NewModal>
     );

@@ -1,18 +1,9 @@
 import { useCallback, useState } from 'react';
 
-import { useTheme } from 'styled-components';
-
 import { SUITE_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import {
-    Button,
-    Column,
-    NewModal,
-    Paragraph,
-    IconCircleColors,
-    IconCircle,
-} from '@trezor/components';
+import { NewModal, Paragraph, H3, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation, TrezorLink } from 'src/components/suite';
@@ -23,8 +14,6 @@ interface EarlyAccessDisableProps {
 
 export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
     const [enabled, setEnabled] = useState(true);
-
-    const theme = useTheme();
 
     const allowPrerelease = useCallback(() => {
         analytics.report({
@@ -37,63 +26,58 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
         setEnabled(false);
     }, []);
 
-    const purpleModalColorBranding: IconCircleColors = {
-        foreground: theme.iconAlertPurple,
-        background: theme.backgroundAlertPurpleSubtleOnElevationNegative,
-    };
-
-    const eapIconComponent = (
-        <IconCircle name="eap" iconColor={purpleModalColorBranding} size={110} />
-    );
-
     return enabled ? (
         <NewModal
-            iconComponent={eapIconComponent}
+            iconName="eap"
+            variant="info"
             onCancel={hideWindow}
-            heading={<Translation id="TR_EARLY_ACCESS" />}
             bottomContent={
                 <>
-                    <Button onClick={allowPrerelease}>
+                    <NewModal.Button onClick={allowPrerelease}>
                         <Translation id="TR_EARLY_ACCESS_DISABLE" />
-                    </Button>
-                    <Button onClick={hideWindow} variant="tertiary">
+                    </NewModal.Button>
+                    <NewModal.Button onClick={hideWindow} variant="tertiary">
                         <Translation id="TR_EARLY_ACCESS_STAY_IN" />
-                    </Button>
+                    </NewModal.Button>
                 </>
             }
         >
-            <Column gap={spacings.xs} alignItems="start">
-                <Paragraph typographyStyle="highlight">
+            <Column gap={spacings.xxs}>
+                <H3>
+                    <Translation id="TR_EARLY_ACCESS" />
+                </H3>
+                <Paragraph variant="tertiary" typographyStyle="hint">
                     <Translation id="TR_EARLY_ACCESS_DISABLE_CONFIRM_TITLE" />
-                </Paragraph>
-                <Paragraph variant="tertiary">
+                    <br />
                     <Translation id="TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION" />
                 </Paragraph>
             </Column>
         </NewModal>
     ) : (
         <NewModal
-            iconComponent={eapIconComponent}
+            iconName="eap"
+            variant="info"
             onCancel={hideWindow}
-            heading={<Translation id="TR_EARLY_ACCESS" />}
             bottomContent={
                 <>
                     <TrezorLink variant="nostyle" href={SUITE_URL}>
-                        <Button icon="arrowUpRight" iconAlignment="right" variant="primary">
+                        <NewModal.Button icon="arrowUpRight" iconAlignment="right">
                             <Translation id="TR_EARLY_ACCESS_REINSTALL" />
-                        </Button>
+                        </NewModal.Button>
                     </TrezorLink>
-                    <Button onClick={hideWindow} variant="tertiary">
+                    <NewModal.Button onClick={hideWindow} variant="tertiary">
                         <Translation id="TR_EARLY_ACCESS_SKIP_REINSTALL" />
-                    </Button>
+                    </NewModal.Button>
                 </>
             }
         >
-            <Column gap={spacings.xs} alignItems="start">
-                <Paragraph typographyStyle="highlight">
+            <Column gap={spacings.xxs}>
+                <H3>
+                    <Translation id="TR_EARLY_ACCESS" />
+                </H3>
+                <Paragraph variant="tertiary" typographyStyle="hint">
                     <Translation id="TR_EARLY_ACCESS_LEFT_TITLE" />
-                </Paragraph>
-                <Paragraph variant="tertiary">
+                    <br />
                     <Translation id="TR_EARLY_ACCESS_LEFT_DESCRIPTION" />
                 </Paragraph>
             </Column>

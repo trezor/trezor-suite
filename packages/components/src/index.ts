@@ -52,7 +52,6 @@ export {
     IconCircle,
     type IconCircleProps,
     type IconCircleVariant,
-    type IconCircleColors,
 } from './components/IconCircle/IconCircle';
 export { InfoSegments, type InfoSegmentsProps } from './components/InfoSegments/InfoSegments';
 export { InfoItem, type InfoItemProps } from './components/InfoItem/InfoItem';

@@ -1,11 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
 
-import { Column, Markdown, NewModal, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Markdown, NewModal, Card } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-
-import { Changelog } from './changelogComponents';
 
 interface AvailableProps {
     onCancel: () => void;
@@ -29,14 +26,11 @@ export const JustUpdated = ({ onCancel }: AvailableProps) => {
     return (
         <NewModal
             heading={
-                <Paragraph typographyStyle="titleSmall" variant="primary">
-                    <Translation
-                        id="TR_VERSION_HAS_BEEN_RELEASED"
-                        values={{ version: suiteCurrentVersion }}
-                    />
-                </Paragraph>
+                <Translation
+                    id="TR_VERSION_HAS_BEEN_RELEASED"
+                    values={{ version: suiteCurrentVersion }}
+                />
             }
-            description={<Translation id="TR_UPDATE_MODAL_WHATS_NEW" />}
             onCancel={onCancel}
             bottomContent={
                 <>
@@ -46,15 +40,17 @@ export const JustUpdated = ({ onCancel }: AvailableProps) => {
                 </>
             }
         >
-            <Column gap={spacings.xs} alignItems="start">
-                <Changelog>
-                    {changelog !== null ? (
-                        <Markdown>{changelog}</Markdown>
-                    ) : (
-                        <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
-                    )}
-                </Changelog>
-            </Column>
+            <Card
+                maxHeight={400}
+                overflow="auto"
+                label={<Translation id="TR_UPDATE_MODAL_WHATS_NEW" />}
+            >
+                {changelog !== null ? (
+                    <Markdown>{changelog}</Markdown>
+                ) : (
+                    <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
+                )}
+            </Card>
         </NewModal>
     );
 };

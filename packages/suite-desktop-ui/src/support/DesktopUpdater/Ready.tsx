@@ -1,4 +1,4 @@
-import { Button, NewModal, Paragraph, Row } from '@trezor/components';
+import { NewModal, Paragraph, H3, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -20,25 +20,28 @@ export const Ready = ({ hideWindow }: ReadyProps) => {
 
     return (
         <NewModal
-            heading={<Translation id="TR_UPDATE_MODAL_UPDATE_DOWNLOADED" />}
             onCancel={installOnQuit}
+            iconName="download"
             bottomContent={
-                <Row gap={spacings.xs}>
-                    <Button onClick={installOnQuit} variant="tertiary">
-                        <Translation id="TR_UPDATE_MODAL_UPDATE_ON_QUIT" />
-                    </Button>
-                    <Button onClick={install} variant="primary">
+                <>
+                    <NewModal.Button onClick={install}>
                         <Translation id="TR_UPDATE_MODAL_INSTALL_AND_RESTART" />
-                    </Button>
-                </Row>
+                    </NewModal.Button>
+                    <NewModal.Button onClick={installOnQuit} variant="tertiary">
+                        <Translation id="TR_UPDATE_MODAL_UPDATE_ON_QUIT" />
+                    </NewModal.Button>
+                </>
             }
         >
-            <Paragraph typographyStyle="highlight" variant="primary">
-                <Translation id="TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER" />
-            </Paragraph>
-            <Paragraph>
-                <Translation id="TR_UPDATE_MODAL_RESTART_NEEDED" />
-            </Paragraph>
+            <Column gap={spacings.xxs}>
+                <H3>
+                    <Translation id="TR_UPDATE_MODAL_UPDATE_DOWNLOADED" />
+                </H3>
+                <Paragraph variant="tertiary" typographyStyle="hint">
+                    <Translation id="TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER" />{' '}
+                    <Translation id="TR_UPDATE_MODAL_RESTART_NEEDED" />
+                </Paragraph>
+            </Column>
         </NewModal>
     );
 };
