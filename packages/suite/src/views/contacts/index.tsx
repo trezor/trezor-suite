@@ -5,18 +5,14 @@ import { Banner, Button, Row } from '@trezor/components';
 import { selectDevice } from '@suite-common/wallet-core';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { spacings } from '@trezor/theme';
-import {
-    Contact,
-    contactsActions,
-    findContact,
-    selectContactsForDevice,
-} from '@suite-common/contacts';
+import { Contact, findContact, selectContactsForDevice } from '@suite-common/contacts';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { SettingsLayout } from '../../components/settings';
 import { AddNewContactModal } from './AddNewContactModal';
 import { ContactList } from './ContactList';
+import { RemoveContactConfirmation } from './RemoveContactConfirmation';
 
 const FindContactButton = ({ contacts }: { contacts: Contact[] }) => {
     const handleClick = async () => {
@@ -71,18 +67,16 @@ const GetMyPubkeyButton = () => {
 
 const Contacts = ({ device }: { device: TrezorDevice }) => {
     const contacts = useSelector(selectContactsForDevice(device));
-    const dispatch = useDispatch();
+
     const [isAddNewContactModalVisible, setAddNewContactModalVisible] = useState(false);
+    const [contactToRemove, setContactToRemove] = useState<Contact | null>(null);
 
     const onAdd = () => {
         setAddNewContactModalVisible(true);
     };
 
     const removeContact = (contact: Contact) => {
-        const confirmed = confirm('Do you want to remove this contact?');
-        if (confirmed) {
-            dispatch(contactsActions.removeContact(contact));
-        }
+        setContactToRemove(contact);
     };
 
     return (
@@ -108,6 +102,12 @@ const Contacts = ({ device }: { device: TrezorDevice }) => {
             </Row>
             {isAddNewContactModalVisible && (
                 <AddNewContactModal onClose={() => setAddNewContactModalVisible(false)} />
+            )}
+            {contactToRemove && (
+                <RemoveContactConfirmation
+                    contact={contactToRemove}
+                    onClose={() => setContactToRemove(null)}
+                />
             )}
         </>
     );
