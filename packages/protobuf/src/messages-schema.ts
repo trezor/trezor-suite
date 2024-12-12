@@ -2950,6 +2950,7 @@ export type NostrGetPubkey = Static<typeof NostrGetPubkey>;
 export const NostrGetPubkey = Type.Object(
     {
         address_n: Type.Array(Type.Number()),
+        show_display: Type.Optional(Type.Boolean()),
     },
     { $id: 'NostrGetPubkey' },
 );

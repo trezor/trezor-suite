@@ -5587,6 +5587,10 @@
                     "options": {
                         "packed": false
                     }
+                },
+                "show_display": {
+                    "type": "bool",
+                    "id": 2
                 }
             }
         },

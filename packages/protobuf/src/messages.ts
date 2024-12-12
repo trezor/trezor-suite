@@ -1919,6 +1919,7 @@ export type NEMDecryptedMessage = {
 
 export type NostrGetPubkey = {
     address_n: number[];
+    show_display?: boolean;
 };
 
 export type NostrPubkey = {
