@@ -21,6 +21,7 @@ export default class NostrGetPublicKey extends AbstractMethod<
 
         this.params = {
             address_n,
+            show_display: this.payload.showOnTrezor,
         };
     }
 
