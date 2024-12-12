@@ -2,6 +2,7 @@
     "name": "@trezor/suite-desktop",
     "description": "Trezor Suite desktop application",
     "type": "module",
+    "sideEffects": ["./src/app.ts"],
     "version": "1.0.0",
     "private": true,
     "author": "SatoshiLabs <info@satoshilabs.com>",
