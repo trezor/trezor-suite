@@ -50,6 +50,8 @@
         "@playwright/browser-firefox": "^1.49.1",
         "@playwright/browser-webkit": "^1.49.1",
         "@playwright/test": "^1.49.1",
+        "@rspack/cli": "^1.1.6",
+        "@rspack/core": "^1.1.6",
         "@sentry/webpack-plugin": "^2.22.7",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/type-utils": "workspace:*",
