@@ -95,9 +95,9 @@ jobs:
       - name: Install libs
         run: yarn workspaces focus @suite-native/app
       - name: Build on EAS Android
-        run: eas build
-          --platform android
-          --profile productionAPK
-          --non-interactive
-          --message ${{ github.sha }}
+        run: |
+          BUILD_ID=$(eas build --platform android --profile productionAPK --non-interactive --message ${{ github.sha }} --wait --json | jq -r '.[0].id')
+          echo "BUILD_ID: $BUILD_ID"
+          BUILD_URL=$(eas build:view "$BUILD_ID" --json | jq -r '.artifacts.buildUrl')
+          echo "BUILD_URL: $BUILD_URL"
         working-directory: suite-native/app
