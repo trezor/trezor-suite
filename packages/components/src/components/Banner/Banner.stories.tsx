@@ -1,7 +1,13 @@
 import { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
-import { Banner as BannerComponent, BannerProps, variables, Row } from '../../index';
+import {
+    Banner as BannerComponent,
+    BannerProps,
+    variables,
+    Row,
+    iconVerticalAlignments,
+} from '../../index';
 import { allowedBannerFrameProps } from './Banner';
 import { getFramePropsStory } from '../../utils/frameProps';
 
@@ -54,6 +60,12 @@ export const Banner: StoryObj<BannerProps> = {
         },
         icon: {
             options: [undefined, true, ...variables.ICONS],
+            control: {
+                type: 'select',
+            },
+        },
+        iconAlignment: {
+            options: [undefined, ...Object.values(iconVerticalAlignments)],
             control: {
                 type: 'select',
             },

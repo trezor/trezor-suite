@@ -26,18 +26,23 @@ import { SCREEN_SIZE } from '../../config/variables';
 import { TransientProps } from '../../utils/transientProps';
 import { useMediaQuery } from '../../utils/useMediaQuery';
 import { useElevation } from '../ElevationContext/ElevationContext';
-import { Column, Row } from '../Flex/Flex';
-import { variables } from '../../config';
+import { Column, FlexAlignItems, Row } from '../Flex/Flex';
 import { Spinner } from '../loaders/Spinner/Spinner';
+import { variables } from '../../config';
+import { uiVerticalAlignments } from '../../config/types';
 
 export const allowedBannerFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBannerFrameProps)[number]>;
+
+export const iconVerticalAlignments = uiVerticalAlignments;
+export type IconVerticalAlignment = (typeof iconVerticalAlignments)[number];
 
 export type BannerProps = AllowedFrameProps & {
     children: ReactNode;
     className?: string;
     variant?: BannerVariant;
     rightContent?: ReactNode;
+    iconAlignment?: IconVerticalAlignment;
     icon?: IconName | true;
     iconSize?: IconSize | number;
     filled?: boolean;
@@ -46,14 +51,28 @@ export type BannerProps = AllowedFrameProps & {
 };
 
 type WrapperParams = TransientProps<AllowedFrameProps> & {
+    $iconAlignment?: IconVerticalAlignment;
     $variant: BannerVariant;
     $withIcon?: boolean;
     $elevation: Elevation;
     $filled: boolean;
 };
 
+export const mapVerticalAlignmentToAlignItems = (
+    verticalAlignment: IconVerticalAlignment,
+): FlexAlignItems => {
+    const alignItemsMap: Record<IconVerticalAlignment, FlexAlignItems> = {
+        top: 'flex-start',
+        center: 'center',
+        bottom: 'flex-end',
+    };
+
+    return alignItemsMap[verticalAlignment];
+};
+
 const Wrapper = styled.div<WrapperParams>`
-    align-items: center;
+    align-items: ${({ $iconAlignment }) =>
+        $iconAlignment ? mapVerticalAlignmentToAlignItems($iconAlignment) : 'center'};
     ${({ $filled }) =>
         $filled
             ? css<WrapperParams>`
@@ -68,18 +87,19 @@ const Wrapper = styled.div<WrapperParams>`
     gap: ${spacingsPx.sm};
     padding: ${spacingsPx.sm} ${spacingsPx.lg};
 
-    ${withFrameProps}
     ${variables.SCREEN_QUERY.MOBILE} {
-        align-items: stretch;
-        flex-direction: column;
-        gap: ${spacingsPx.xs};
+        align-items: ${({ $iconAlignment }) =>
+            $iconAlignment ? mapVerticalAlignmentToAlignItems($iconAlignment) : 'flex-start'};
     }
+
+    ${withFrameProps}
 `;
 
 export const Banner = ({
     children,
     className,
     variant = DEFAULT_VARIANT,
+    iconAlignment,
     icon,
     iconSize = 20,
     filled = true,
@@ -99,21 +119,24 @@ export const Banner = ({
     const ContentComponent = ({ children }: { children: ReactNode }) => {
         const commonProps = {
             justifyContent: 'space-between' as const,
-            alignItems: 'center' as const,
-            gap: spacings.lg,
             flex: '1' as const,
         };
 
         return isMobile ? (
-            <Column {...commonProps}>{children}</Column>
+            <Column gap={spacings.sm} {...commonProps}>
+                {children}
+            </Column>
         ) : (
-            <Row {...commonProps}>{children}</Row>
+            <Row alignItems="center" gap={spacings.lg} {...commonProps}>
+                {children}
+            </Row>
         );
     };
     const frameProps = pickAndPrepareFrameProps(rest, allowedBannerFrameProps);
 
     return (
         <Wrapper
+            $iconAlignment={iconAlignment}
             $variant={variant}
             $withIcon={withIcon}
             className={className}
