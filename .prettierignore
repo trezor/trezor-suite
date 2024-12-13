@@ -94,33 +94,7 @@ buck-out/
 *.keystore
 !debug.keystore
 
-# fastlane
-#
-# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
-# screenshots whenever they are needed.
-# For more information about the recommended setup visit:
-# https://docs.fastlane.tools/best-practices/source-control/
-
-**/android/fastlane/report.xml
-**/android/fastlane/Preview.html
-**/android/fastlane/screenshots
-**/android/fastlane/test_output
-**/ios/fastlane/report.xml
-**/ios/fastlane/Preview.html
-**/ios/fastlane/screenshots
-**/ios/fastlane/test_output
-**/fastlane/report.xml
-**/fastlane/Preview.html
-**/fastlane/screenshots
-**/fastlane/test_output
-
-*.cer
-*.certSigningRequest
-*.p12
-*.mobileprovision
-
 # scan temporary files
-**/android/fastlane/test_output
 
 !**/suite-native/app/.env.debug
 !**/suite-native/app/.env.develop

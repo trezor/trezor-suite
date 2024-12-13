@@ -1,3 +1,21 @@
+.github
+docker
+docs
+
+packages/ipc-proxy/
+packages/suite/
+packages/suite-analytics/
+packages/suite-build/
+packages/suite-data/
+packages/suite-desktop/
+packages/suite-desktop-api/
+packages/suite-desktop-core/
+packages/suite-desktop-ui/
+packages/suite-storage/
+packages/suite-web/
+
+### content of all .gitignore files is not applied if .easignore is present
+
 build
 build-electron
 build-renderer
@@ -100,8 +118,9 @@ _.hprof
 
 !**/suite-native/app/.env.debug
 !**/suite-native/app/.env.develop
+!**/suite-native/app/.env.preview
 !**/suite-native/app/.env.production
-!**/suite-native/app/.env.staging
+!\*\*/suite-native/app/.env.staging
 
 # ios
 
@@ -148,14 +167,54 @@ packages/suite-data/files/translations/master.json
 
 # @trezor/connect-explorer
 
-packages/connect-explorer/build-webextension
-
-# @trezor/connect-explorer-theme
-
-packages/connect-explorer-theme/style.css
+**/build-webextension/**
 
 # cypress download folder
 
 packages/suite-web/e2e/downloads
 
-.github
+### suite-native/app/.gitignore
+
+# Expo
+
+.expo/
+web-build/
+
+# Native
+
+suite-native/app/**/_.orig._
+suite-native/app/**/_.jks
+suite-native/app/\*\*/_.p8
+suite-native/app/**/\*.p12
+suite-native/app/**/_.key
+suite-native/app/\*\*/_.mobileprovision
+
+# These are generated when running `expo prebuild`
+
+suite-native/app/ios
+suite-native/app/android
+
+# Metro
+
+.metro-health-check\*
+
+# debug
+
+npm-debug._
+yarn-debug._
+yarn-error.\*
+
+# macOS
+
+.DS_Store
+\*.pem
+
+# local env files
+
+.env
+!suite-native/app/.env._
+.env._.local
+
+# typescript
+
+\*.tsbuildinfo
