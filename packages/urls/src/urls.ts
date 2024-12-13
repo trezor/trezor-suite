@@ -128,8 +128,6 @@ export const CHROME_UPDATE_URL: Url = 'https://support.google.com/chrome/answer/
 export const CHROME_ANDROID_URL: Url =
     'https://play.google.com/store/apps/details?id=com.android.chrome';
 export const TOR_PROJECT_URL: Url = 'https://www.torproject.org/';
-export const TOR_SNOWFLAKE_PROJECT_URL: Url = 'https://snowflake.torproject.org/';
-export const TOR_SNOWFLAKE_KB_URL: Url = 'https://trezor.io/learn/a/tor-snowflake-in-trezor-suite';
 export const EXPERIMENTAL_FEATURES_KB_URL: Url =
     'https://trezor.io/learn/a/experimental-features-in-trezor-suite';
 export const EXPERIMENTAL_PASSWORD_MANAGER_KB_URL: Url =
