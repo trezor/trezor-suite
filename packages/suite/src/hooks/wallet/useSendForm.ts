@@ -310,6 +310,12 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                     shouldValidate: true,
                 });
             }
+            if (protocol.sendForm.address && protocol.sendForm.signature) {
+                setValue(
+                    `contactSignatures.${protocol.sendForm.address}`,
+                    protocol.sendForm.signature,
+                );
+            }
             dispatch(fillSendForm(false));
             composeRequest();
         }

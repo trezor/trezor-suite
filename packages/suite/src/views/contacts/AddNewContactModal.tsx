@@ -15,6 +15,7 @@ export const AddNewContactModal = ({ onClose }: AddNewContactModalProps) => {
     const device = useSelector(selectDevice);
     const deviceState = device && !!device.state?.staticSessionId;
 
+    const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [label, setLabel] = useState('');
     const [address, setAddress] = useState('');
@@ -22,7 +23,9 @@ export const AddNewContactModal = ({ onClose }: AddNewContactModalProps) => {
 
     const addContact = useAddContact(onClose, label, address, requestAddress);
     const onAddContact = async () => {
+        setLoading(true);
         const { error } = await addContact();
+        setLoading(false);
         setErrorMessage(error);
     };
 
@@ -50,7 +53,9 @@ export const AddNewContactModal = ({ onClose }: AddNewContactModalProps) => {
             size="medium"
             bottomContent={
                 <>
-                    <NewModal.Button onClick={onAddContact}>Save</NewModal.Button>
+                    <NewModal.Button onClick={onAddContact} isLoading={loading}>
+                        Save
+                    </NewModal.Button>
                     <NewModal.Button variant="tertiary" onClick={onClose}>
                         Cancel
                     </NewModal.Button>
@@ -72,7 +77,7 @@ export const AddNewContactModal = ({ onClose }: AddNewContactModalProps) => {
                     isChecked={requestAddress}
                     onClick={() => setRequestAddress(!requestAddress)}
                 >
-                    Request address from recipient
+                    Request address from recipient via Nostr
                 </Checkbox>
             </Column>
         </NewModal>
