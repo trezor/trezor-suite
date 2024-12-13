@@ -1,16 +1,16 @@
 |             Package              | Stable | Canary |
 | :------------------------------: | :----: | :----: |
-|       npm @trezor/connect        | 9.4.6  |   -    |
-|     npm @trezor/connect-web      | 9.4.6  |   -    |
-| npm @trezor/connect-webextension | 9.4.6  |   -    |
+|       npm @trezor/connect        | 9.4.7  |   -    |
+|     npm @trezor/connect-web      | 9.4.7  |   -    |
+| npm @trezor/connect-webextension | 9.4.7  |   -    |
 
 |     Deployment     | Stable | Canary |
 | :----------------: | :----: | :----: |
-| connect.trezor.io/ | 9.4.6  |   -    |
+| connect.trezor.io/ | 9.4.7  |   -    |
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.4.7-beta.1
+# 9.4.7
 
 This release mainly fixes a serialization bug in Ethereum EIP-1559 transactions that was causing signing issues in some cases, presumably since v9.4.3.
 
