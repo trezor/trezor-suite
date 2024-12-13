@@ -44,6 +44,7 @@ import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
 import { constructFormDraft } from '../utils';
 import { FeeLevelsMaxAmount } from '../types';
 import { storeFeeLevels } from '../sendFormSlice';
+import { useSubscribeForSolanaBlockUpdates } from '../hooks/useSubscribeForSolanaBlockUpdates';
 
 const buttonWrapperStyle = prepareNativeStyle(utils => ({
     width: '100%',
@@ -96,6 +97,8 @@ export const SendOutputsScreen = ({
     const sendFormDraft = useSelector((state: SendRootState) =>
         selectSendFormDraftByKey(state, accountKey, tokenContract),
     );
+
+    useSubscribeForSolanaBlockUpdates(account);
 
     const deviceUnavailableCapabilities = useSelector(selectDeviceUnavailableCapabilities);
 
@@ -210,7 +213,8 @@ export const SendOutputsScreen = ({
                 setValue('rippleDestinationTag', sendFormDraft.rippleDestinationTag, {
                     shouldTouch: true,
                 });
-                await calculateNormalFeeMaxAmount();
+                // The max amount is equal to the total token balance for tokens. (fee is paid in mainnet currency)
+                if (!tokenContract) await calculateNormalFeeMaxAmount();
                 trigger();
             }
         };
