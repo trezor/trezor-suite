@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
-import { selectDevice, deviceActions } from '@suite-common/wallet-core';
+import { selectSelectedDevice, deviceActions } from '@suite-common/wallet-core';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 
@@ -16,7 +16,7 @@ const buttonRequest =
         // in case when "passphrase on device" was chosen in <PassphraseModal /> do not display this modal ever again.
         // catch passphrase request and respond immediately with `passphraseOnDevice: true` without action propagation
         if (action.type === UI.REQUEST_PASSPHRASE) {
-            const device = selectDevice(api.getState());
+            const device = selectSelectedDevice(api.getState());
             if (
                 device &&
                 device.features &&
@@ -70,7 +70,7 @@ const buttonRequest =
             case UI.INVALID_PIN:
                 api.dispatch(
                     deviceActions.addButtonRequest({
-                        device: selectDevice(api.getState()),
+                        device: selectSelectedDevice(api.getState()),
                         buttonRequest: {
                             code: action.payload.type ? action.payload.type : action.type,
                         },
@@ -81,7 +81,7 @@ const buttonRequest =
                 const { device: _, ...request } = action.payload;
                 api.dispatch(
                     deviceActions.addButtonRequest({
-                        device: selectDevice(api.getState()),
+                        device: selectSelectedDevice(api.getState()),
                         buttonRequest: request,
                     }),
                 );
@@ -91,7 +91,7 @@ const buttonRequest =
                 if (!action.payload) {
                     api.dispatch(
                         deviceActions.removeButtonRequests({
-                            device: selectDevice(api.getState()),
+                            device: selectSelectedDevice(api.getState()),
                         }),
                     );
                 }
@@ -101,7 +101,7 @@ const buttonRequest =
                 // clear all device's button requests in each step of the onboarding and after device authenticity check
                 api.dispatch(
                     deviceActions.removeButtonRequests({
-                        device: selectDevice(api.getState()),
+                        device: selectSelectedDevice(api.getState()),
                     }),
                 );
                 break;

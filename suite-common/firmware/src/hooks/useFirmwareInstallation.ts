@@ -13,7 +13,7 @@ import {
     hasBitcoinOnlyFirmware,
     isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 /*
 There are three firmware update flows, depending on current firmware version:
@@ -44,7 +44,7 @@ export const useFirmwareInstallation = (
 ) => {
     const dispatch = useDispatch();
     const firmware = useSelector(selectFirmware);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
 
     // Device in its state before installation is cached when installation begins.
     // Until then, access device as normal.

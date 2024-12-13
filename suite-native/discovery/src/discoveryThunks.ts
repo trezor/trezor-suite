@@ -11,7 +11,7 @@ import {
     removeDiscovery,
     getAvailableCardanoDerivationsThunk,
     selectDeviceAccountByDescriptorAndNetworkSymbol,
-    selectDevice,
+    selectSelectedDevice,
     LIMIT,
     selectDeviceAccountsForNetworkSymbolAndAccountType,
     disableAccountsThunk,
@@ -90,7 +90,7 @@ const fetchBundleDescriptorsThunk = createThunk<
 >(
     `${DISCOVERY_MODULE_PREFIX}/fetchBundleDescriptorsThunk`,
     async (bundle, { getState, rejectWithValue, fulfillWithValue }) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
 
         const result = await TrezorConnect.getAccountDescriptor({
             bundle,
@@ -235,7 +235,7 @@ export const addAccountByDescriptorThunk = createThunk(
         },
         { dispatch, getState },
     ) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         const { success, payload: accountInfo } = await TrezorConnect.getAccountInfo({
             coin: bundleItem.coin,
             identity,
@@ -300,7 +300,7 @@ const discoverAccountsByDescriptorThunk = createThunk(
             isFinalRound = true;
         }
 
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         for (const bundleItem of descriptorsBundle) {
             const { success, payload: accountInfo } = await TrezorConnect.getAccountInfo({
                 coin: bundleItem.coin,

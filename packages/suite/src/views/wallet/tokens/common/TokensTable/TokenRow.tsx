@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
 import { Network, getCoingeckoId } from '@suite-common/wallet-config';
 import {
@@ -99,7 +99,7 @@ export const TokenRow = ({
     const { isMobileLayout } = useLayoutSize();
     const { translationString } = useTranslation();
     const { address: unusedAddress, path } = getUnusedAddressFromAccount(account);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const { isLocked } = useDevice();
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
     const shouldShowUnhideTokenModal = useSelector(selectIsUnhideTokenModalShown);

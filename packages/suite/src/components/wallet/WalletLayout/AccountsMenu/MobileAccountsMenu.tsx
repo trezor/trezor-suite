@@ -4,7 +4,7 @@ import styled, { css, useTheme } from 'styled-components';
 
 import { H2, variables, Icon } from '@trezor/components';
 import { zIndices, spacingsPx } from '@trezor/theme';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
 import { useDiscovery, useSelector } from 'src/hooks/suite';
@@ -95,7 +95,7 @@ const StyledIcon = styled(Icon)<{ $isActive: boolean }>`
 `;
 
 export const MobileAccountsMenu = () => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const [isExpanded, setIsExpanded] = useState(false);
 
     const theme = useTheme();

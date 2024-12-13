@@ -1,4 +1,4 @@
-import { deviceActions, selectDevice } from '@suite-common/wallet-core';
+import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { createThunk } from '@suite-common/redux-utils';
 
 const NATIVE_DEVICE_MODULE_PREFIX = 'nativeDevice';
@@ -6,7 +6,7 @@ const NATIVE_DEVICE_MODULE_PREFIX = 'nativeDevice';
 export const setDeviceForceRememberedThunk = createThunk(
     `${NATIVE_DEVICE_MODULE_PREFIX}/setDeviceForceRemembered`,
     ({ forceRemember }: { forceRemember: boolean }, { getState, rejectWithValue, dispatch }) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         if (!device) {
             return rejectWithValue('Device not found');
         }

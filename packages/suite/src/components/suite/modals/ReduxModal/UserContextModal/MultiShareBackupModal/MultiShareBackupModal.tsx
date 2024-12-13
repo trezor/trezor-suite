@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { NewModal, NewModalProps } from '@trezor/components';
 import {
     HELP_CENTER_KEEPING_SEED_SAFE_URL,
@@ -30,7 +30,7 @@ type MultiShareBackupModalProps = {
 type StepConfig = Partial<NewModalProps>;
 
 export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
 
     const isInBackupMode =
         device?.features !== undefined && isAdditionalShamirBackupInProgress(device.features);

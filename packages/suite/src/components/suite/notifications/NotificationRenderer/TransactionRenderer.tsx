@@ -1,5 +1,5 @@
 import {
-    selectDevice as selectDeviceSelector,
+    selectSelectedDevice as selectDeviceSelector,
     selectDevices,
     selectAccounts,
     selectBlockchainState,

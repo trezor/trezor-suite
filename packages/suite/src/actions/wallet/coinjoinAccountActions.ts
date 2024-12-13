@@ -9,7 +9,7 @@ import {
     accountsActions,
     selectAccountByKey,
     transactionsActions,
-    selectDevice,
+    selectSelectedDevice,
     selectDevices,
 } from '@suite-common/wallet-core';
 import {
@@ -578,7 +578,7 @@ export const createCoinjoinAccount =
 
         dispatch(coinjoinAccountPreloading(true));
 
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         const unlockPath = await TrezorConnect.unlockPath({
             path: "m/10025'",
             device,
@@ -697,7 +697,7 @@ export const rescanCoinjoinAccount =
 const authorizeCoinjoin =
     (account: Account, coordinator: string, params: CoinjoinSessionParameters) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
 
         // authorize coinjoin session on Trezor
         dispatch(coinjoinAccountAuthorize(account.key));
@@ -775,7 +775,7 @@ export const restoreCoinjoinSession =
     (accountKey: string) => async (dispatch: Dispatch, getState: GetState) => {
         // TODO: check if device is connected, passphrase is authorized...
         const isDeviceLocked = selectIsDeviceLocked(getState());
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account || !isCoinjoinSupportedSymbol(account.symbol)) {

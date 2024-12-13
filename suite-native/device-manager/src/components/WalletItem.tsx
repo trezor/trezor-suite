@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { TrezorDevice } from '@suite-common/suite-types';
-import { selectDevice, selectDeviceByState } from '@suite-common/wallet-core';
+import { selectSelectedDevice, selectDeviceByState } from '@suite-common/wallet-core';
 import { selectDeviceTotalFiatBalanceNative } from '@suite-native/device';
 
 import { WalletItemBase } from './WalletItemBase';
@@ -14,7 +14,7 @@ type WalletItemProps = {
 
 export const WalletItem = ({ onPress, deviceState, isSelectable = true }: WalletItemProps) => {
     const device = useSelector((state: any) => selectDeviceByState(state, deviceState));
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
     const fiatBalance = useSelector((state: any) =>
         device?.state?.staticSessionId
             ? String(selectDeviceTotalFiatBalanceNative(state, device?.state?.staticSessionId))

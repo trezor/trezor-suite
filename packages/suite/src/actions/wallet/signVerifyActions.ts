@@ -1,6 +1,6 @@
 import TrezorConnect, { Unsuccessful, Success } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
@@ -27,7 +27,7 @@ const getStateParams = (getState: GetState): Promise<StateParams> => {
             selectedAccount: { account },
         },
     } = getState();
-    const device = selectDevice(getState());
+    const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
 
     return !device || !device.connected || !device.available || !account

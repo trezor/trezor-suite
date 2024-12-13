@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { VStack, Stack, ACCESSIBILITY_FONTSIZE_MULTIPLIER } from '@suite-native/atoms';
 import {
     PORTFOLIO_TRACKER_DEVICE_ID,
-    selectDevice,
+    selectSelectedDevice,
     selectDeviceThunk,
     selectHasDeviceDiscovery,
     selectIsPortfolioTrackerDevice,
@@ -47,7 +47,7 @@ export const DeviceManagerContent = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     const hasDiscovery = useSelector(selectHasDeviceDiscovery);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const { setIsDeviceManagerVisible } = useDeviceManager();
 
     const toggleIsChangeDeviceRequested = () =>

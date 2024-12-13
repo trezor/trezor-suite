@@ -1,7 +1,7 @@
 import {
     authorizeDeviceThunk,
     deviceActions,
-    selectDevice,
+    selectSelectedDevice,
     selectDeviceDiscovery,
     accountsActions,
     disableAccountsThunk,
@@ -84,7 +84,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             return action;
 
         let authorizationIntent = false;
-        const device = selectDevice(nextState);
+        const device = selectSelectedDevice(nextState);
         const isDeviceLocked = selectIsDeviceLocked(nextState);
         // 1. selected device is acquired but doesn't have a state
         if (

@@ -1,7 +1,7 @@
 import { UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { Success, Unsuccessful } from '@trezor/connect';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { getDerivationType } from '@suite-common/wallet-utils';
 
 import { onCancel, openModal, preserve } from 'src/actions/suite/modalActions';
@@ -14,7 +14,7 @@ export const openXpubModal =
     };
 
 export const showXpub = () => async (dispatch: Dispatch, getState: GetState) => {
-    const device = selectDevice(getState());
+    const device = selectSelectedDevice(getState());
     const { account } = getState().wallet.selectedAccount;
 
     if (!device || !account) return;

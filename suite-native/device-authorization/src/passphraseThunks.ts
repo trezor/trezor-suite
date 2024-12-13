@@ -1,7 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import {
     deviceActions,
-    selectDevice,
+    selectSelectedDevice,
     selectDeviceThunk,
     selectDevices,
     createDeviceInstanceThunk,
@@ -16,7 +16,7 @@ export const cancelPassphraseAndSelectStandardDeviceThunk = createThunk(
     `${PASSPHRASE_MODULE_PREFIX}/cancelPassphraseFlow`,
     (_, { getState, dispatch, extra }) => {
         const devices = selectDevices(getState());
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
 
         if (!device) return;
 
@@ -50,7 +50,7 @@ export const verifyPassphraseOnEmptyWalletThunk = createThunk<
 >(
     `${PASSPHRASE_MODULE_PREFIX}/verifyPassphraseOnEmptyWallet`,
     async (_, { getState, rejectWithValue, fulfillWithValue, dispatch }) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
 
         if (!device) return rejectWithValue({ error: 'no-device' });
 
@@ -86,7 +86,7 @@ export const verifyPassphraseOnEmptyWalletThunk = createThunk<
 export const retryPassphraseAuthenticationThunk = createThunk(
     `${PASSPHRASE_MODULE_PREFIX}/retryPassphraseAuthentication`,
     (_, { dispatch, getState, extra }) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
 
         if (!device) return;
 
@@ -95,7 +95,7 @@ export const retryPassphraseAuthenticationThunk = createThunk(
         // Remove device on which the passphrase flow was restarted
         dispatch(deviceActions.forgetDevice({ device, settings }));
 
-        const newDevice = selectDevice(getState());
+        const newDevice = selectSelectedDevice(getState());
 
         if (!newDevice) return;
 

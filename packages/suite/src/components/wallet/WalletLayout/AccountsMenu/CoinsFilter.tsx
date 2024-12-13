@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { motion, AnimatePresence, MotionProps } from 'framer-motion';
 
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { borders, spacingsPx } from '@trezor/theme';
@@ -44,7 +44,7 @@ const Container = styled.div`
 export const CoinsFilter = () => {
     const { coinFilter, setCoinFilter } = useAccountSearch();
     const enabledNetworks = useSelector(selectEnabledNetworks);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
 
     const unavailableCapabilities = device?.unavailableCapabilities ?? {};
     const supportedNetworks = enabledNetworks.filter(symbol => !unavailableCapabilities[symbol]);

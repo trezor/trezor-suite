@@ -14,7 +14,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import trezorConnect, { PROTO } from '@trezor/connect';
-import { addFakePendingCardanoTxThunk, selectDevice } from '@suite-common/wallet-core';
+import { addFakePendingCardanoTxThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { ActionAvailability, CardanoStaking } from 'src/types/wallet/cardanoStaking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -62,7 +62,7 @@ export const useCardanoStaking = (): CardanoStaking => {
         throw Error('useCardanoStaking used for other network');
     }
 
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const isDeviceLocked = useSelector(selectIsDeviceLocked);
     const cardanoStaking = useSelector(state => state.wallet.cardanoStaking);
     const dispatch = useDispatch();

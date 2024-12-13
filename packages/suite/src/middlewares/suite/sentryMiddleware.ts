@@ -4,7 +4,7 @@ import {
     discoveryActions,
     accountsActions,
     blockchainActions,
-    selectDevice,
+    selectSelectedDevice,
     deviceActions,
     authorizeDeviceThunk,
 } from '@suite-common/wallet-core';
@@ -112,7 +112,7 @@ const sentryMiddleware =
                     firmware: getFirmwareVersion(action.payload.device),
                     isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload.device),
                     bootloader: getBootloaderVersion(action.payload.device),
-                    model: selectDevice(state)?.features?.internal_model,
+                    model: selectSelectedDevice(state)?.features?.internal_model,
                 });
                 break;
             }

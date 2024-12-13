@@ -4,7 +4,7 @@ import {
     AccountsRootState,
     selectAccountByKey,
     DeviceRootState,
-    selectDevice,
+    selectSelectedDevice,
     State,
     selectDeviceByState,
     deviceActions,
@@ -268,7 +268,7 @@ const selectLabelableEntityByKey = (
 export const selectIsLabelingAvailable = (state: MetadataRootState) => {
     const { enabled, error } = selectMetadata(state);
     const provider = selectSelectedProviderForLabels(state);
-    const device = selectDevice(state);
+    const device = selectSelectedDevice(state);
 
     return (
         enabled &&
@@ -283,7 +283,7 @@ export const selectIsLabelingAvailable = (state: MetadataRootState) => {
  it is possible to initiate metadata
  */
 export const selectIsLabelingInitPossible = (state: MetadataRootState) => {
-    const device = selectDevice(state);
+    const device = selectSelectedDevice(state);
 
     return (
         // device already has keys or it is at least connected and authorized
@@ -301,7 +301,7 @@ export const selectIsLabelingAvailableForEntity = (
 ) => {
     const device = deviceState
         ? selectDeviceByStaticSessionId(state, deviceState)
-        : selectDevice(state);
+        : selectSelectedDevice(state);
     if (!device?.state?.staticSessionId) return false;
     const entity = selectLabelableEntityByKey(state, device.state.staticSessionId, entityKey);
 

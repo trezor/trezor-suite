@@ -9,7 +9,7 @@ import {
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
     selectAccountByKey,
-    selectDevice,
+    selectSelectedDevice,
     selectSendFormDraftByKey,
     sendFormActions,
     signTransactionThunk,
@@ -51,7 +51,7 @@ export const signTransactionNativeThunk = createThunk<
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
         const formState = selectSendFormDraftByKey(getState(), accountKey, tokenContract);
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
 
         if (!account || !formState)
             return rejectWithValue({
@@ -112,7 +112,7 @@ export const cleanupSendFormThunk = createThunk(
         }: { accountKey: AccountKey; shouldDeleteDraft?: boolean },
         { dispatch, getState },
     ) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
 
         dispatch(sendFormActions.dispose());
 

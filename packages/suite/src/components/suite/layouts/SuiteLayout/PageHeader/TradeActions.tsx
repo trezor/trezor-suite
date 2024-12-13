@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { Row, variables } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { spacings } from '@trezor/theme';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
 
@@ -35,7 +35,7 @@ export const TradeActions = ({
 }: TradeActionsProps) => {
     const dispatch = useDispatch();
     const account = selectedAccount?.account;
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const currentRouteName = useSelector(selectRouteName);
 

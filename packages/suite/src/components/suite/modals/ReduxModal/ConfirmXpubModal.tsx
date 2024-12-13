@@ -1,4 +1,4 @@
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
@@ -13,7 +13,7 @@ import { ConfirmActionModal } from './DeviceContextModal/ConfirmActionModal';
 export const ConfirmXpubModal = (
     props: Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel'>,
 ) => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const account = useSelector(selectSelectedAccount);
     const { accountLabel } = useSelector(selectLabelingDataForSelectedAccount);
 

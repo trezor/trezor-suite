@@ -18,7 +18,7 @@ import {
     AccountsRootState,
     DeviceRootState,
     LIMIT,
-    selectDevice,
+    selectSelectedDevice,
     selectDeviceAccounts,
     selectIsDeviceInViewOnlyMode,
     accountsActions,
@@ -82,7 +82,7 @@ export const useAddCoinAccount = () => {
     const deviceAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccounts(state),
     );
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const enabledDiscoveryNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
 

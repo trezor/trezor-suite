@@ -1,5 +1,5 @@
 import { H3, Spinner, Column } from '@trezor/components';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -8,7 +8,7 @@ import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModa
 import { useSelector } from 'src/hooks/suite';
 
 export const DiscoveryLoader = () => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     if (!device) return null;
 
     return (

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { variables, Button } from '@trezor/components';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import GraphWorker from 'src/support/workers/graph';
 import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
@@ -47,7 +47,7 @@ type DashboardGraphProps = {
 
 export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     const { error, isLoading, selectedRange } = useSelector(state => state.wallet.graph);
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
     const localCurrency = useSelector(selectLocalCurrency);
     const dispatch = useDispatch();
 

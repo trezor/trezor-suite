@@ -3,7 +3,7 @@ import produce from 'immer';
 import type { InvityServerEnvironment } from '@suite-common/invity';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { discoveryActions, DeviceRootState, selectDevice } from '@suite-common/wallet-core';
+import { discoveryActions, DeviceRootState, selectSelectedDevice } from '@suite-common/wallet-core';
 import { versionUtils } from '@trezor/utils';
 import { isWeb } from '@trezor/env-utils';
 import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
@@ -416,7 +416,7 @@ export const selectIsActionAbortable = (state: SuiteRootState) => {
 
 export const selectPrerequisite = (state: SuiteRootState & RouterRootState & DeviceRootState) => {
     const { transport } = state.suite;
-    const device = selectDevice(state);
+    const device = selectSelectedDevice(state);
     const router = selectRouter(state);
 
     const excluded = getExcludedPrerequisites(router);
@@ -460,7 +460,7 @@ export const selectHasExperimentalFeature =
  * Get firmware revision check error, or null if check was successful / skipped.
  */
 export const selectFirmwareRevisionCheckError = (state: AppState) => {
-    const device = selectDevice(state);
+    const device = selectSelectedDevice(state);
     if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
     const checkResult = device.authenticityChecks.firmwareRevision;
 
@@ -483,7 +483,7 @@ export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AppState) => {
  * Get firmware hash check error, or null if check was successful / skipped.
  */
 export const selectFirmwareHashCheckError = (state: AppState) => {
-    const device = selectDevice(state);
+    const device = selectSelectedDevice(state);
     if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
     const checkResult = device.authenticityChecks.firmwareHash;
 

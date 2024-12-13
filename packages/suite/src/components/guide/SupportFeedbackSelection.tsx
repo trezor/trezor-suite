@@ -6,7 +6,7 @@ import { resolveStaticPath, isDevEnv } from '@suite-common/suite-utils';
 import { Icon, Link, variables } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { borders } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -105,7 +105,7 @@ const LabelSubheadline = styled.div`
 
 export const SupportFeedbackSelection = () => {
     const desktopUpdate = useSelector(state => state.desktopUpdate);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
 
     const appUpToDate =

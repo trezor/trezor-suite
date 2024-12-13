@@ -1,4 +1,4 @@
-import { selectDevices, selectDevice, deviceActions } from '@suite-common/wallet-core';
+import { selectDevices, selectSelectedDevice, deviceActions } from '@suite-common/wallet-core';
 import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
 import * as deviceUtils from '@suite-common/suite-utils';
 import TrezorConnect, { ERRORS } from '@trezor/connect';
@@ -16,7 +16,7 @@ import { selectSuiteSettings } from '../../reducers/suite/suiteReducer';
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         if (!device) return;
         const result = await TrezorConnect.applySettings({
             device: {
@@ -36,7 +36,7 @@ export const applySettings =
 export const changePin =
     (params: Parameters<typeof TrezorConnect.changePin>[0] = {}, skipSuccessToast?: boolean) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
 
         if (!device) return;
 
@@ -69,7 +69,7 @@ export const changePin =
 export const changeWipeCode =
     ({ remove }: Parameters<typeof TrezorConnect.changeWipeCode>[0] = {}) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
 
         if (!device) return;
 
@@ -93,7 +93,7 @@ export const changeWipeCode =
     };
 
 export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) => {
-    const device = selectDevice(getState());
+    const device = selectSelectedDevice(getState());
     if (!device) return;
     const bootloaderMode = device.mode === 'bootloader';
     const devices = selectDevices(getState());
@@ -114,7 +114,7 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
         // we need to retrieve device objects BEFORE and AFTER the wipe process.
         // and call SUITE.FORGET_DEVICE on ALL devices (with old and new device.id)
         const state = getState();
-        const newDevice = selectDevice(getState());
+        const newDevice = selectSelectedDevice(getState());
         const newDevices = selectDevices(getState());
         const settings = selectSuiteSettings(getState());
 
@@ -147,7 +147,7 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
 export const resetDevice =
     (params: Parameters<typeof TrezorConnect.resetDevice>[0] = {}) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
 
         if (!device || !device.features) return;
 
@@ -175,7 +175,7 @@ export const resetDevice =
 export const changeLanguage = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/update-firmware-language`,
     async (params: Parameters<typeof TrezorConnect.changeLanguage>[0], { dispatch, getState }) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
 
         if (!device) return;
 

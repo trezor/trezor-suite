@@ -32,8 +32,8 @@ import {
 import { getEnvironment } from '@trezor/env-utils';
 
 import {
-    selectDevice,
-    selectDevice as selectDeviceSelector,
+    selectSelectedDevice,
+    selectSelectedDevice as selectDeviceSelector,
     selectDeviceById,
     selectDevices,
 } from './deviceReducer';
@@ -552,7 +552,7 @@ export const confirmAddressOnDeviceThunk = createThunk(
         }: { accountKey: AccountKey; addressPath: string; chunkify: boolean },
         { getState },
     ): Promise<ConnectResponse<Address | CardanoAddress>> => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!device || !account)
@@ -619,7 +619,7 @@ export const onPassphraseSubmit = createThunk(
         { value, passphraseOnDevice }: { value: string; passphraseOnDevice: boolean },
         { dispatch, getState },
     ) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         if (!device) return;
 
         if (!device.state) {

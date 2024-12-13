@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Translation } from 'src/components/suite';
@@ -21,7 +21,7 @@ interface ConfirmAddressModalProps
 }
 
 export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAddressModalProps) => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const account = useSelector(selectAccountIncludingChosenInCoinmarket);
     const { modalCryptoId } = useSelector(state => state.wallet.coinmarket);
     const displayMode = useDisplayMode({ type: 'address' });

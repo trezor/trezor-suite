@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { selectDevicesCount, selectDevice } from '@suite-common/wallet-core';
+import { selectDevicesCount, selectSelectedDevice } from '@suite-common/wallet-core';
 import type { TimerId } from '@trezor/type-utils';
 import { borders, spacingsPx } from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
@@ -69,7 +69,7 @@ const InnerContainer = styled.div`
 `;
 
 export const DeviceSelector = () => {
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
 
     const deviceCount = useSelector(selectDevicesCount);
     const dispatch = useDispatch();

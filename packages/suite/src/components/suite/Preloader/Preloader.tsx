@@ -1,7 +1,7 @@
 import { FC, useEffect, PropsWithChildren } from 'react';
 
 import {
-    selectDevice,
+    selectSelectedDevice,
     selectIsFirmwareAuthenticityCheckDismissed,
 } from '@suite-common/wallet-core';
 
@@ -58,7 +58,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const router = useSelector(state => state.router);
     const prerequisite = useSelector(selectPrerequisite);
     const isLoggedOut = useSelector(selectIsLoggedOut);
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
     const { initialRun, viewOnlyPromoClosed } = useSelector(selectSuiteFlags);
     const isFirmwareCheckFailed = useSelector(
         selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,

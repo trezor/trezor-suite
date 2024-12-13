@@ -2,7 +2,7 @@ import { satisfies } from 'semver';
 
 import { Badge, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { Translation } from '../../../../components/suite';
@@ -48,7 +48,7 @@ type ShamirOptionsProps = {
 };
 
 export const ShamirOptions = ({ defaultType, onSelect, selected }: ShamirOptionsProps) => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const firmwareVersion = getFirmwareVersion(device);
 
     const is1of1shamirSupportedByFirmware = satisfies(firmwareVersion, '>=2.7.1');

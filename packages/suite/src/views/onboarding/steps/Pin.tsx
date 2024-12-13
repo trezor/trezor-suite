@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { PinMatrix, Translation } from 'src/components/suite';
 import {
@@ -18,7 +18,7 @@ const SetPinStep = () => {
     const [status, setStatus] = useState<'initial' | 'enter-pin' | 'repeat-pin' | 'success'>(
         'initial',
     );
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const modal = useSelector(state => state.modal);
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const dispatch = useDispatch();

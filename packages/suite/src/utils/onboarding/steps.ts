@@ -1,4 +1,4 @@
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
@@ -8,7 +8,7 @@ import { ID_AUTHENTICATE_DEVICE_STEP } from 'src/constants/onboarding/steps';
 
 export const isStepUsed = (step: Step, getState: GetState): boolean => {
     const state = getState();
-    const device = selectDevice(state);
+    const device = selectSelectedDevice(state);
 
     const { path } = state.onboarding;
     const deviceModelInternal = device?.features?.internal_model;

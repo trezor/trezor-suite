@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
-import { deviceActions, selectDevice } from '@suite-common/wallet-core';
+import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 import {
     messageSystemActions,
@@ -32,7 +32,7 @@ const messageSystemMiddleware =
         if (actions.includes(action.type)) {
             const { config } = api.getState().messageSystem;
             const { transport, torStatus } = api.getState().suite;
-            const device = selectDevice(api.getState());
+            const device = selectSelectedDevice(api.getState());
             const { enabledNetworks } = api.getState().wallet.settings;
 
             const validMessages = getValidMessages(config, {

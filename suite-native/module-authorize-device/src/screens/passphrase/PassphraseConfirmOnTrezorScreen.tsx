@@ -13,7 +13,7 @@ import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     deviceActions,
-    selectDevice,
+    selectSelectedDevice,
     selectIsDeviceConnectedAndAuthorized,
     selectHasDeviceDiscovery,
 } from '@suite-common/wallet-core';
@@ -36,7 +36,7 @@ export const PassphraseConfirmOnTrezorScreen = () => {
 
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const hasDiscovery = useSelector(selectHasDeviceDiscovery);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
 
     // If this screen was present during authorizing device with passphrase for some feature,
     // on success, this hook will close the stack and go back

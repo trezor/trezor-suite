@@ -14,7 +14,7 @@ import {
     variables,
 } from '@trezor/components';
 import { Elevation, borders, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
-import { selectDevice, toggleRememberDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice, toggleRememberDevice } from '@suite-common/wallet-core';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
@@ -153,7 +153,7 @@ const ButtonsContainer = styled.div`
 
 const Top = () => {
     const { elevation } = useElevation();
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
     const selectedDeviceModelInternal =
         selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
 
@@ -204,7 +204,7 @@ const Top = () => {
 
 const Buttons = () => {
     const dispatch = useDispatch();
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
 
     const onYes = () => {
         if (device !== undefined) {

@@ -2,7 +2,7 @@ import crypto from 'crypto';
 
 import TrezorConnect from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { METADATA, METADATA_PROVIDER, METADATA_PASSWORDS } from 'src/actions/suite/constants';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -74,7 +74,7 @@ export const fetchPasswords =
     };
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
-    let device = selectDevice(getState());
+    let device = selectSelectedDevice(getState());
 
     if (!device?.state) {
         console.error('no device state!');
@@ -160,7 +160,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         console.error('cipherKeyValue error', err);
     }
 
-    device = selectDevice(getState());
+    device = selectSelectedDevice(getState());
     const selectedProvider = selectSelectedProviderForPasswords(getState());
     if (!selectedProvider || !device?.state?.staticSessionId) {
         // ts, should not happen
@@ -174,7 +174,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     if (device?.state && !metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
         metadataProviderActions.fetchIntervals[fetchIntervalTrackingId] = setInterval(() => {
-            device = selectDevice(getState());
+            device = selectSelectedDevice(getState());
             const { fileName, aesKey } = device?.passwords?.[1] || {};
 
             if (!getState().suite.online || !device?.state || !fileName || !aesKey) {

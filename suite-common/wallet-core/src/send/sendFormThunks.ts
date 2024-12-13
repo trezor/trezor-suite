@@ -38,7 +38,7 @@ import {
 } from '../transactions/transactionsThunks';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey } from '../accounts/accountsReducer';
-import { selectDevice } from '../device/deviceReducer';
+import { selectSelectedDevice } from '../device/deviceReducer';
 import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
 import {
     selectSendFormDrafts,
@@ -274,7 +274,7 @@ export const pushSendFormTransactionThunk = createThunk<
         } = extra;
         const precomposedTransaction = selectSendPrecomposedTx(getState());
         const serializedTx = selectSendSerializedTx(getState());
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
 
         if (!serializedTx || !precomposedTransaction)
@@ -413,7 +413,7 @@ export const signTransactionThunk = createThunk<
             selectors: { selectSelectedAccountStatus },
         } = extra;
         const accountStatus = selectSelectedAccountStatus(getState());
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
 
         if (
             G.isNullable(selectedAccount) ||
@@ -512,7 +512,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
         { transactionFormValues: formValues, precomposedTransaction, selectedAccount },
         { getState, dispatch, rejectWithValue },
     ) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         const selectedAccountNetwork = getNetwork(selectedAccount.symbol);
         if (!device) return rejectWithValue('Device not found');
 

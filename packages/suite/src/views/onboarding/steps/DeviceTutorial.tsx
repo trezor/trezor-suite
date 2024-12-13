@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl';
 
 import styled from 'styled-components';
 
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { Button } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
@@ -33,7 +33,7 @@ const ButtonContainer = styled.div`
 export const DeviceTutorial = () => {
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const status = useSelector(selectOnboardingTutorialStatus);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
     const intl = useIntl();
 

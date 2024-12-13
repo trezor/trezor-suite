@@ -26,7 +26,7 @@ import {
     MIN_ETH_FOR_WITHDRAWALS,
     UNSTAKE_INTERCHANGES,
 } from '@suite-common/wallet-constants';
-import { selectDevice, ComposeActionContext } from '@suite-common/wallet-core';
+import { selectSelectedDevice, ComposeActionContext } from '@suite-common/wallet-core';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Dispatch, GetState } from 'src/types/suite';
@@ -190,7 +190,7 @@ export const signTransaction =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { selectedAccount, transactions } = getState().wallet;
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         if (
             selectedAccount.status !== 'loaded' ||
             !device ||

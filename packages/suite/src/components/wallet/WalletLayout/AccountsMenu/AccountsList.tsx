@@ -1,6 +1,6 @@
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@suite-common/wallet-utils';
 import { Account } from '@suite-common/wallet-types';
-import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
+import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { spacings } from '@trezor/theme';
 import { Column } from '@trezor/components';
 import { AccountType } from '@suite-common/wallet-config';
@@ -72,7 +72,7 @@ const Accounts = ({
 };
 
 export const AccountsList = ({ onItemClick }: AccountListProps) => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const accounts = useSelector(selectAccounts);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);

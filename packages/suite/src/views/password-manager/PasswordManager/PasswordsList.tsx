@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import type { PasswordEntry as PasswordEntryType } from 'src/types/suite/metadata';
 import { useSelector } from 'src/hooks/suite';
@@ -47,7 +47,7 @@ export const PasswordsList = ({
     fileName,
     nextId,
 }: PasswordsListProps) => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
 
     return (
         <Wrapper>

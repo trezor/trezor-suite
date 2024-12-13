@@ -1,6 +1,6 @@
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { UI } from '@trezor/connect';
-import { deviceActions, selectDevice } from '@suite-common/wallet-core';
+import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 
 export const prepareButtonRequestMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, getState, next }) => {
@@ -9,7 +9,7 @@ export const prepareButtonRequestMiddleware = createMiddlewareWithExtraDeps(
         if (action.type === UI.REQUEST_PIN) {
             dispatch(
                 deviceActions.addButtonRequest({
-                    device: selectDevice(getState()),
+                    device: selectSelectedDevice(getState()),
                     buttonRequest: {
                         code: action.payload.type,
                     },
@@ -22,7 +22,7 @@ export const prepareButtonRequestMiddleware = createMiddlewareWithExtraDeps(
 
             dispatch(
                 deviceActions.addButtonRequest({
-                    device: selectDevice(getState()),
+                    device: selectSelectedDevice(getState()),
                     buttonRequest: request,
                 }),
             );

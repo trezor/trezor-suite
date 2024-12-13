@@ -22,7 +22,7 @@ import {
     mapElevationToBorder,
     spacingsPx,
 } from '@trezor/theme';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { TranslationKey } from '@suite-common/intl-types';
 import { DeviceModelInternal } from '@trezor/connect';
 
@@ -102,7 +102,7 @@ export const SelectBackupType = ({
 }: SelectBackupTypeProps) => {
     const { elevation } = useElevation();
     const [isOpen, setIsOpen] = useState(false);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const { isMobileLayout } = useLayoutSize();
 
     const defaultBackupType: BackupType = device?.features?.internal_model

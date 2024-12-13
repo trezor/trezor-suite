@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { selectDiscoveryByDeviceState, selectDevice } from '@suite-common/wallet-core';
+import { selectDiscoveryByDeviceState, selectSelectedDevice } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 import { DiscoveryStatusType } from 'src/types/wallet';
@@ -8,7 +8,7 @@ import { DiscoveryStatusType } from 'src/types/wallet';
 import { useSelector } from './useSelector';
 
 export const useDiscovery = () => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const discovery = useSelector(state => selectDiscoveryByDeviceState(state, device?.state));
 
     const calculateProgress = useCallback(() => {

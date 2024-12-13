@@ -2,7 +2,7 @@ import type { ComponentType } from 'react';
 import { useSelector } from 'react-redux';
 
 import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
-import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
 import { NotificationViewProps } from 'src/components/suite';
@@ -65,7 +65,7 @@ export const NotificationRenderer = ({
     notification,
     render,
 }: NotificationRendererProps): JSX.Element => {
-    const deviceLabel = useSelector(selectDeviceLabelOrName);
+    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 
     switch (notification.type) {
         case 'acquire-error':

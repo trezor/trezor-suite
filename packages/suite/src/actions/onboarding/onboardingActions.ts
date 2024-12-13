@@ -1,6 +1,6 @@
 import { OnboardingAnalytics } from '@trezor/suite-analytics';
 import TrezorConnect from '@trezor/connect';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import * as STEP from 'src/constants/onboarding/steps';
@@ -123,7 +123,7 @@ const updateBackupType = (payload: BackupType): OnboardingAction => ({
 });
 
 const beginOnboardingTutorial = () => async (dispatch: Dispatch, getState: GetState) => {
-    const device = selectDevice(getState());
+    const device = selectSelectedDevice(getState());
     if (!device) return;
 
     dispatch(setDeviceTutorialStatus('active'));

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { PinMatrix, PrerequisitesGuide, Translation } from 'src/components/suite';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
@@ -24,7 +24,7 @@ interface UnexpectedStateProps {
  * This component handles unexpected device states across various steps in the onboarding.
  */
 const UnexpectedState = ({ children }: UnexpectedStateProps) => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const prerequisite = useSelector(selectPrerequisite);
 
     const { prevDevice, activeStepId, showPinMatrix } = useOnboarding();

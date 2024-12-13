@@ -5,7 +5,7 @@ import { useDebounce } from 'react-use';
 import { FiatCurrencyCode } from 'invity-api';
 
 import { isChanged } from '@suite-common/suite-utils';
-import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
+import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     amountToSmallestUnit,
     formatAmount,
@@ -65,7 +65,7 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const accounts = useSelector(selectAccounts);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const accountsSorted = coinmarketGetSortedAccounts({
         accounts,
         deviceState: device?.state?.staticSessionId,

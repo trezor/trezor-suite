@@ -2,7 +2,7 @@ import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 import {
     selectDevices,
-    selectDevice,
+    selectSelectedDevice,
     selectDeviceByStaticSessionId,
 } from '@suite-common/wallet-core';
 
@@ -165,7 +165,7 @@ export const fetchAndSaveMetadata =
 
         let device = deviceStateArg
             ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
-            : selectDevice(getState());
+            : selectSelectedDevice(getState());
 
         if (
             !device?.state?.staticSessionId ||
@@ -196,7 +196,7 @@ export const fetchAndSaveMetadata =
 
             device = deviceStateArg
                 ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
-                : selectDevice(getState());
+                : selectSelectedDevice(getState());
             if (
                 !device?.state?.staticSessionId ||
                 !device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]
@@ -560,7 +560,7 @@ export const init =
     async (dispatch: Dispatch, getState: GetState) => {
         let device = deviceStateArg
             ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
-            : selectDevice(getState());
+            : selectSelectedDevice(getState());
 
         if (!device?.state?.staticSessionId) {
             return false;
@@ -611,7 +611,7 @@ export const init =
 
         device = deviceStateArg
             ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
-            : selectDevice(getState());
+            : selectSelectedDevice(getState());
 
         if (!device) return false;
 
@@ -639,7 +639,7 @@ export const init =
         const selectedProvider = selectSelectedProviderForLabels(getState());
         device = deviceStateArg
             ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
-            : selectDevice(getState());
+            : selectSelectedDevice(getState());
 
         if (!device?.state?.staticSessionId || !selectedProvider) {
             return true;
@@ -656,7 +656,7 @@ export const init =
             // todo: possible race condition that has been around since always
             // user is editing label and at that very moment update arrives. updates to specific entities should be probably discarded in such case?
             metadataProviderActions.fetchIntervals[fetchIntervalTrackingId] = setInterval(() => {
-                const device = selectDevice(getState());
+                const device = selectSelectedDevice(getState());
                 if (!getState().suite.online || !device?.state?.staticSessionId) {
                     return;
                 }

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Banner, Text, Button, IconButton, Row, Column } from '@trezor/components';
 import { WalletType } from '@suite-common/wallet-types';
 
@@ -25,7 +25,7 @@ export const DashboardPassphraseBanner = () => {
     const dispatch = useDispatch();
     const { isDashboardPassphraseBannerVisible } = useSelector(selectSuiteFlags);
     const selectedAddressDisplay = useSelector(state => state.suite.settings.defaultWalletLoading);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const { isDiscoveryRunning } = useDiscovery();
 
     if (

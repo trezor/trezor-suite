@@ -2,7 +2,7 @@ import { MiddlewareAPI } from 'redux';
 
 import {
     selectDevices,
-    selectDevice,
+    selectSelectedDevice,
     accountsActions,
     deviceActions,
     authorizeDeviceThunk,
@@ -43,7 +43,7 @@ const eventsMiddleware =
             if (!device) return action; // this shouldn't happen
             const seen = deviceUtils.isSelectedDevice(
                 action.payload.device,
-                selectDevice(api.getState()),
+                selectSelectedDevice(api.getState()),
             );
 
             const toRemove = api

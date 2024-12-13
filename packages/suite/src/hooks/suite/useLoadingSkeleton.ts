@@ -1,9 +1,9 @@
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
 
 export const useLoadingSkeleton = () => {
-    const waitingForDevice = !useSelector(selectDevice)?.state;
+    const waitingForDevice = !useSelector(selectSelectedDevice)?.state;
     const modalActive = useSelector(state => state.modal.context) !== '@modal/context-none';
 
     return {

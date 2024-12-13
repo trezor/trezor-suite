@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import TrezorConnect from '@trezor/connect';
-import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 
 import { Modal, ModalProps, PinMatrix, Translation } from 'src/components/suite';
 import { PIN_MATRIX_MAX_WIDTH } from 'src/components/suite/PinMatrix/PinMatrix';
@@ -25,7 +25,7 @@ interface PinModalProps extends ModalProps {
 }
 
 export const PinModal = ({ device, ...rest }: PinModalProps) => {
-    const deviceLabel = useSelector(selectDeviceLabelOrName);
+    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const { isRequestingNewPinCode, isWipeCode, isPinInvalid, isModalExtended } = usePin();
 
     if (!device.features) return null;

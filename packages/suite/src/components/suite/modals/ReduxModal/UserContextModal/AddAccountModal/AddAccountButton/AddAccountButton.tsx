@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { UnavailableCapability } from '@trezor/connect';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Network, NetworkAccount } from '@suite-common/wallet-config';
 
 import { Account } from 'src/types/wallet';
@@ -67,7 +67,7 @@ const AddDefaultAccountButton = ({
     selectedAccount,
 }: AddAccountButtonProps) => {
     const defaultAccount = emptyAccounts[emptyAccounts.length - 1];
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
 
     const { setCoinFilter, setSearchString, coinFilter } = useAccountSearch();
 

@@ -1,4 +1,4 @@
-import { selectDevice, selectPendingAccountAddresses } from '@suite-common/wallet-core';
+import { selectSelectedDevice, selectPendingAccountAddresses } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -17,7 +17,7 @@ export const Receive = () => {
     );
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const receive = useSelector(state => state.wallet.receive);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
 
     const { account } = selectedAccount;
 

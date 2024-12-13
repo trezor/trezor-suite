@@ -1,7 +1,7 @@
 import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { BACKUP } from 'src/actions/backup/constants';
 import type { Dispatch, GetState } from 'src/types/suite';
@@ -43,7 +43,7 @@ export const resetReducer = (): BackupAction => ({
 export const backupDevice =
     (params: Parameters<typeof TrezorConnect.backupDevice>[0] = {}, skipSuccessToast?: boolean) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         if (!device) {
             return dispatch(
                 notificationsActions.addToast({

@@ -1,5 +1,5 @@
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useFirmwareInstallation } from '@suite-common/firmware';
 
 import { MODAL } from 'src/actions/suite/constants';
@@ -17,7 +17,7 @@ import { useSelector, useOnboarding } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 export const FirmwareStep = () => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const modal = useSelector(state => state.modal);
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const { status, error, resetReducer, firmwareUpdate, firmwareHashInvalid, targetType } =

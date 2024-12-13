@@ -3,7 +3,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Image } from '@trezor/components';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import {
     OnboardingButtonCta,
@@ -31,7 +31,7 @@ const StyledImage = styled(Image)`
 export const BackupStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
     const backup = useSelector(state => state.backup);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const isDeviceLocked = useSelector(selectIsDeviceLocked);
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const dispatch = useDispatch();

@@ -12,7 +12,7 @@ import {
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
     replaceTransactionThunk,
-    selectDevice,
+    selectSelectedDevice,
     selectSendFormDrafts,
     signTransactionThunk,
     sendFormActions,
@@ -199,7 +199,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         },
         { dispatch, getState },
     ) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         if (!device || !selectedAccount) return;
 
         const enhancedPrecomposedTransaction = await dispatch(

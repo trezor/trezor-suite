@@ -12,7 +12,7 @@ import {
 } from '@suite-native/navigation';
 import { analytics, EventType } from '@suite-native/analytics';
 import {
-    selectDevice,
+    selectSelectedDevice,
     selectIsDeviceConnected,
     selectInstacelessUnselectedDevices,
     selectHasDeviceDiscovery,
@@ -129,7 +129,7 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
     const { setIsDeviceManagerVisible } = useDeviceManager();
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const notSelectedInstancelessDevices = useSelector(selectInstacelessUnselectedDevices);
     const hasDiscovery = useSelector(selectHasDeviceDiscovery);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);

@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
-import { selectDevice, selectDevices, deviceActions } from '@suite-common/wallet-core';
+import { selectSelectedDevice, selectDevices, deviceActions } from '@suite-common/wallet-core';
 
 import * as routerActions from 'src/actions/suite/routerActions';
 import { AppState, Action, Dispatch, TrezorDevice } from 'src/types/suite';
@@ -38,7 +38,7 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
     }
 
     // reset wallet params if switching from one device to another
-    if (selectDevice(state) && state.router.app === 'wallet' && state.router.params) {
+    if (selectSelectedDevice(state) && state.router.app === 'wallet' && state.router.params) {
         dispatch(routerActions.goto(state.router.route.name));
     }
 };

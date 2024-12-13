@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
     deviceActions,
-    selectDevice,
+    selectSelectedDevice,
     selectHasDeviceDiscovery,
     selectIsDeviceRemembered,
     selectIsPortfolioTrackerDevice,
@@ -34,7 +34,7 @@ export const useShowViewOnlyAlert = () => {
     const { showToast } = useToast();
 
     const { isBiometricsInitialSetupFinished } = useIsBiometricsInitialSetupFinished();
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const isDeviceReadyToUseAndAuthorized = useSelector(selectIsDeviceReadyToUseAndAuthorized);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const viewOnlyCancelationTimestamp = useSelector(selectViewOnlyCancelationTimestamp);

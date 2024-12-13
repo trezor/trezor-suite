@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 import {
-    selectDevice,
+    selectSelectedDevice,
     selectDevices,
     selectAccountByKey,
     selectDeviceThunk,
@@ -81,7 +81,7 @@ interface CoinjoinStatusBarProps {
 export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinStatusBarProps) => {
     const devices = useSelector(selectDevices);
     const relatedAccount = useSelector(state => selectAccountByKey(state, accountKey));
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
     const routerParams = useSelector(selectRouterParams);
     const sessionProgress = useSelector(state =>
         selectSessionProgressByAccountKey(state, accountKey),

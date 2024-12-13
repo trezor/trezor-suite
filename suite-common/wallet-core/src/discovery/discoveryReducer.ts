@@ -5,7 +5,7 @@ import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { DeviceState, StaticSessionId } from '@trezor/connect';
 
 import { discoveryActions } from './discoveryActions';
-import { DeviceRootState, selectDevice } from '../device/deviceReducer';
+import { DeviceRootState, selectSelectedDevice } from '../device/deviceReducer';
 
 export type DiscoveryState = Discovery[];
 
@@ -94,7 +94,7 @@ export const selectDiscoveryByDeviceState = (
         : undefined;
 
 export const selectDeviceDiscovery = (state: DiscoveryRootState & DeviceRootState) => {
-    const selectedDevice = selectDevice(state);
+    const selectedDevice = selectSelectedDevice(state);
 
     return selectDiscoveryByDeviceState(state, selectedDevice?.state?.staticSessionId);
 };

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, Divider, Text } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 
@@ -36,7 +36,7 @@ const canChooseBackupType = (device: DeviceModelInternal) => device !== DeviceMo
 
 export const ResetDeviceStep = () => {
     const { isLocked } = useDevice();
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const deviceModel = device?.features?.internal_model;

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { TrezorDevice } from '@suite-common/suite-types';
 
 import { selectIsDeviceOrUiLocked } from 'src/reducers/suite/suiteReducer';
@@ -13,7 +13,7 @@ type Result = {
 };
 
 export const useDevice = (): Result => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const isDeviceOrUiLocked = useSelector(selectIsDeviceOrUiLocked);
 
     const isLocked = useCallback(

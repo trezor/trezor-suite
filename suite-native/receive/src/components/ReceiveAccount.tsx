@@ -7,7 +7,7 @@ import {
     AccountsRootState,
     removeButtonRequests,
     selectAccountByKey,
-    selectDevice,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
@@ -29,7 +29,7 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const hasReceiveButtonRequest = useSelector(hasReceiveAddressButtonRequest);
 
     const { address, isReceiveApproved, isUnverifiedAddressRevealed, handleShowAddress } =

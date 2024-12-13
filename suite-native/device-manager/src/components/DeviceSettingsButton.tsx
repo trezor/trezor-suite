@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { analytics, EventType } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceStackRoutes,
@@ -45,7 +45,7 @@ export const DeviceSettingsButton = ({ showAsFullWidth }: DeviceInfoButtonProps)
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
     const { setIsDeviceManagerVisible } = useDeviceManager();
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
 
     const handleDeviceRedirect = () => {
         setIsDeviceManagerVisible(false);

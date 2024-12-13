@@ -5,7 +5,7 @@ import {
     AccountsRootState,
     DeviceRootState,
     selectAccountByKey,
-    selectDevice,
+    selectSelectedDevice,
     selectSendPrecomposedTx,
     selectSendFormDraftByKey,
     selectSendFormReviewButtonRequestsCount,
@@ -35,7 +35,7 @@ export const selectTransactionReviewOutputs = (
             : undefined;
 
     const account = selectAccountByKey(state, accountKey);
-    const device = selectDevice(state);
+    const device = selectSelectedDevice(state);
 
     const sendReviewButtonRequests = selectSendFormReviewButtonRequestsCount(
         state,

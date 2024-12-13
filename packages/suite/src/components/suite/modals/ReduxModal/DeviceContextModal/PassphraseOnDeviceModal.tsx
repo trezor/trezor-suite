@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { H2, NewModal, Paragraph } from '@trezor/components';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import {
-    selectDeviceLabelOrName,
+    selectSelectedDeviceLabelOrName,
     selectIsDiscoveryAuthConfirmationRequired,
 } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
@@ -34,7 +34,7 @@ export const PassphraseOnDeviceModal = ({ device }: PassphraseOnDeviceModalProps
     const intl = useIntl();
     const authConfirmation =
         useSelector(selectIsDiscoveryAuthConfirmationRequired) || device.authConfirm;
-    const deviceLabel = useSelector(selectDeviceLabelOrName);
+    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 
     const onCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 

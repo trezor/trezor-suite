@@ -4,7 +4,7 @@ import { Button } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { isDesktop, isLinux } from '@trezor/env-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { Translation, TroubleshootingTips, UdevDownload } from 'src/components/suite';
 import {
@@ -112,7 +112,7 @@ interface DeviceUnreadableProps {
  * - missing udev rule on linux
  */
 export const DeviceUnreadable = ({ device }: DeviceUnreadableProps) => {
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
 
     // this error is dispatched by trezord when udev rules are missing
     if (isLinux() && device?.error === 'LIBUSB_ERROR_ACCESS') {

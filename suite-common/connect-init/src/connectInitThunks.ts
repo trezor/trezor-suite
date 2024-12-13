@@ -9,7 +9,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { DATA_URL } from '@trezor/urls';
 import { createDeferred, getSynchronize } from '@trezor/utils';
-import { deviceConnectThunks, selectDevice } from '@suite-common/wallet-core';
+import { deviceConnectThunks, selectSelectedDevice } from '@suite-common/wallet-core';
 import { isDesktop, isNative } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { serializeError } from '@trezor/connect/src/constants/errors';
@@ -187,7 +187,7 @@ export const connectPopupCallThunk = createThunk(
         { dispatch, getState, extra },
     ) => {
         try {
-            const device = selectDevice(getState());
+            const device = selectSelectedDevice(getState());
 
             if (!device) {
                 console.error('Device not found');

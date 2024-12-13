@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { removeButtonRequests, selectDevice } from '@suite-common/wallet-core';
+import { removeButtonRequests, selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { analytics, EventType } from '@suite-native/analytics';
 import { Button, ButtonColorScheme } from '@suite-native/atoms';
@@ -64,7 +64,7 @@ export const DevicePinActionButton = ({
     const { showToast } = useToast();
     const { showAlert, hideAlert } = useAlert();
 
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
 
     const showSuccess = useCallback(
         (messageKey: TxKeyPath) => {

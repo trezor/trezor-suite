@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { acquireDevice, selectDevice } from '@suite-common/wallet-core';
+import { acquireDevice, selectSelectedDevice } from '@suite-common/wallet-core';
 import { variables } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
@@ -66,7 +66,7 @@ export const FirmwareModal = ({
         confirmOnDevice,
         showConfirmationPill,
     } = useFirmwareInstallation({ shouldSwitchFirmwareType });
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
     const intl = useIntl();
 

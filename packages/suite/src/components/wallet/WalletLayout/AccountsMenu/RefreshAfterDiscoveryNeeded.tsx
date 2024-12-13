@@ -5,7 +5,7 @@ import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 
 import { Button, IconButton, motionEasing, Row, Tooltip } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
-import { selectDevice, startDiscoveryThunk } from '@suite-common/wallet-core';
+import { selectSelectedDevice, startDiscoveryThunk } from '@suite-common/wallet-core';
 
 import { useRediscoveryNeeded, useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
@@ -42,7 +42,7 @@ const animationConfig: MotionProps = {
 export const RefreshAfterDiscoveryNeeded = () => {
     const dispatch = useDispatch();
     const isDiscoveryButtonVisible = useRediscoveryNeeded();
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
     const isSidebarCollapsed = useIsSidebarCollapsed();
     if (!selectedDevice?.connected) {
         return null;

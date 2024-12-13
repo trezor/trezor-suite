@@ -655,7 +655,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
 // Basic state selectors (no need to wrap in createMemoizedSelector)
 export const selectDevices = (state: DeviceRootState) => state.device?.devices;
 export const selectDevicesCount = (state: DeviceRootState) => state.device?.devices?.length;
-export const selectDevice = (state: DeviceRootState) => state.device.selectedDevice;
+export const selectSelectedDevice = (state: DeviceRootState) => state.device.selectedDevice;
 
 // Derived selectors
 export const selectIsPendingTransportEvent = createMemoizedSelector(
@@ -664,19 +664,22 @@ export const selectIsPendingTransportEvent = createMemoizedSelector(
 );
 
 export const selectIsDeviceUnlocked = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => !!device?.features?.unlocked,
 );
 
 export const selectDeviceAuthFailed = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => !!device?.authFailed,
 );
 
-export const selectDeviceType = createMemoizedSelector([selectDevice], device => device?.type);
+export const selectDeviceType = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => device?.type,
+);
 
 export const selectDeviceFeatures = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => device?.features,
 );
 
@@ -696,7 +699,7 @@ export const selectIsDeviceProtectedByWipeCode = createMemoizedSelector(
 );
 
 export const selectDeviceButtonRequests = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => device?.buttonRequests ?? [],
 );
 
@@ -709,7 +712,10 @@ export const selectDeviceButtonRequestsCodes = createMemoizedSelector(
         ),
 );
 
-export const selectDeviceMode = createMemoizedSelector([selectDevice], device => device?.mode);
+export const selectDeviceMode = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => device?.mode,
+);
 
 export const selectIsUnacquiredDevice = createMemoizedSelector(
     [selectDeviceType],
@@ -731,17 +737,17 @@ export const selectIsDeviceInitialized = createMemoizedSelector(
 );
 
 export const selectIsConnectedDeviceUninitialized = createMemoizedSelector(
-    [selectDevice, selectIsDeviceInitialized],
+    [selectSelectedDevice, selectIsDeviceInitialized],
     (device, isDeviceInitialized) => device && !isDeviceInitialized,
 );
 
 export const selectIsDeviceAuthorized = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => !!device?.state,
 );
 
 export const selectHasDeviceAuthConfirm = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => !!device?.authConfirm,
 );
 
@@ -751,7 +757,7 @@ export const selectIsDeviceConnectedAndAuthorized = createMemoizedSelector(
 );
 
 export const selectDeviceInternalModel = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => device?.features?.internal_model,
 );
 
@@ -770,7 +776,7 @@ export const selectDeviceByStaticSessionId = createMemoizedSelector(
 );
 
 export const selectDeviceUnavailableCapabilities = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => device?.unavailableCapabilities,
 );
 
@@ -785,31 +791,34 @@ export const selectHasDevicePassphraseEntryCapability = createMemoizedSelector(
 );
 
 export const selectDeviceStatus = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => device && getStatus(device),
 );
 
-export const selectDeviceSupportedNetworks = createMemoizedSelector([selectDevice], device => {
-    const firmwareVersion = getFirmwareVersion(device);
-    const result = networkSymbolCollection.filter(symbol => {
-        const unavailableCapability = device?.unavailableCapabilities?.[symbol];
-        // if device does not have fw, do not show coins which are not supported by device in any case
-        if (!firmwareVersion && unavailableCapability === 'no-support') {
-            return false;
-        }
-        // if device has fw, do not show coins which are not supported by current fw
-        if (
-            firmwareVersion &&
-            ['no-support', 'no-capability'].includes(unavailableCapability || '')
-        ) {
-            return false;
-        }
+export const selectDeviceSupportedNetworks = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => {
+        const firmwareVersion = getFirmwareVersion(device);
+        const result = networkSymbolCollection.filter(symbol => {
+            const unavailableCapability = device?.unavailableCapabilities?.[symbol];
+            // if device does not have fw, do not show coins which are not supported by device in any case
+            if (!firmwareVersion && unavailableCapability === 'no-support') {
+                return false;
+            }
+            // if device has fw, do not show coins which are not supported by current fw
+            if (
+                firmwareVersion &&
+                ['no-support', 'no-capability'].includes(unavailableCapability || '')
+            ) {
+                return false;
+            }
 
-        return true;
-    });
+            return true;
+        });
 
-    return returnStableArrayIfEmpty(result);
-});
+        return returnStableArrayIfEmpty(result);
+    },
+);
 
 export const selectDeviceById = createMemoizedSelector(
     [state => state.device.devices, (_state, deviceId: TrezorDevice['id']) => deviceId],
@@ -822,26 +831,29 @@ export const selectDeviceAuthenticity = createMemoizedSelector(
 );
 
 export const selectSelectedDeviceAuthenticity = createMemoizedSelector(
-    [selectDevice, selectDeviceAuthenticity],
+    [selectSelectedDevice, selectDeviceAuthenticity],
     (device, deviceAuthenticity) => (device?.id ? deviceAuthenticity?.[device.id] : undefined),
 );
 
 export const selectIsFirmwareAuthenticityCheckDismissed = createMemoizedSelector(
-    [selectDevice, state => state.device.dismissedSecurityChecks?.firmwareAuthenticity],
+    [selectSelectedDevice, state => state.device.dismissedSecurityChecks?.firmwareAuthenticity],
     (device, dismissedChecks) => !!(device?.id && dismissedChecks?.includes(device.id)),
 );
 
 export const selectIsPortfolioTrackerDevice = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => device?.id === PORTFOLIO_TRACKER_DEVICE_ID,
 );
 
 export const selectDeviceLabel = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => device?.features?.label,
 );
 
-export const selectDeviceName = createMemoizedSelector([selectDevice], device => device?.name);
+export const selectDeviceName = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => device?.name,
+);
 
 export const selectDeviceLabelOrNameById = createMemoizedSelector(
     [state => state.device.devices, (_state, id: TrezorDevice['id']) => id],
@@ -852,13 +864,13 @@ export const selectDeviceLabelOrNameById = createMemoizedSelector(
     },
 );
 
-export const selectDeviceLabelOrName = createMemoizedSelector(
-    [selectDevice],
+export const selectSelectedDeviceLabelOrName = createMemoizedSelector(
+    [selectSelectedDevice],
     selectedDevice => selectedDevice?.features?.label || selectedDevice?.name || '',
 );
 
 export const selectDeviceId = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     selectedDevice => selectedDevice?.id ?? null,
 );
 
@@ -872,16 +884,16 @@ export const selectDeviceModelById = createMemoizedSelector(
 );
 
 export const selectDeviceModel = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     selectedDevice => selectedDevice?.features?.internal_model ?? null,
 );
 
 export const selectDeviceReleaseInfo = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => device?.firmwareRelease ?? null,
 );
 
-export const selectDeviceFirmwareVersion = createMemoizedSelector([selectDevice], device =>
+export const selectDeviceFirmwareVersion = createMemoizedSelector([selectSelectedDevice], device =>
     getFirmwareVersionArray(device),
 );
 
@@ -914,17 +926,17 @@ export const selectDeviceLanguage = createMemoizedSelector(
 );
 
 export const selectHasDeviceFirmwareInstalled = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => !!device && device.firmware !== 'none',
 );
 
 export const selectIsDeviceRemembered = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => !!device?.remember,
 );
 
 export const selectIsDeviceForceRemembered = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => !!device?.forceRemember,
 );
 
@@ -945,7 +957,7 @@ export const selectRememberedHiddenWalletsCount = createMemoizedSelector(
 );
 
 export const selectIsDeviceConnected = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => !!device?.connected,
 );
 
@@ -955,7 +967,7 @@ export const selectIsDeviceInViewOnlyMode = createMemoizedSelector(
 );
 
 export const selectIsDeviceUsingPassphrase = createMemoizedSelector(
-    [selectIsDeviceProtectedByPassphrase, selectDevice],
+    [selectIsDeviceProtectedByPassphrase, selectSelectedDevice],
     (isDeviceProtectedByPassphrase, device) => {
         const shouldTreatAsPassphraseProtected = (device?.instance ?? 1) > 1;
 
@@ -972,17 +984,17 @@ export const selectPhysicalDevicesGrouppedById = createMemoizedSelector(
 );
 
 export const selectDeviceState = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => device?.state ?? null,
 );
 
 export const selectDeviceStaticSessionId = createMemoizedSelector(
-    [selectDevice],
+    [selectSelectedDevice],
     device => device?.state?.staticSessionId ?? null,
 );
 
 export const selectDeviceInstances = createMemoizedSelector(
-    [selectDevice, selectDevices],
+    [selectSelectedDevice, selectDevices],
     (device, allDevices) => {
         if (!device) {
             return [];
@@ -998,7 +1010,7 @@ export const selectNumberOfDeviceInstances = createMemoizedSelector(
 );
 
 export const selectInstacelessUnselectedDevices = createMemoizedSelector(
-    [selectDevice, selectDevices],
+    [selectSelectedDevice, selectDevices],
     (device, allDevices) =>
         pipe(
             deviceUtils.getSortedDevicesWithoutInstances(allDevices, device?.id),
@@ -1006,16 +1018,16 @@ export const selectInstacelessUnselectedDevices = createMemoizedSelector(
         ),
 );
 
-export const selectIsBitcoinOnlyDevice = createMemoizedSelector([selectDevice], device =>
+export const selectIsBitcoinOnlyDevice = createMemoizedSelector([selectSelectedDevice], device =>
     isBitcoinOnlyDevice(device),
 );
 
-export const selectHasBitcoinOnlyFirmware = createMemoizedSelector([selectDevice], device =>
+export const selectHasBitcoinOnlyFirmware = createMemoizedSelector([selectSelectedDevice], device =>
     hasBitcoinOnlyFirmware(device),
 );
 
 export const selectDeviceUpdateFirmwareVersion = (state: DeviceRootState) => {
-    const device = selectDevice(state);
+    const device = selectSelectedDevice(state);
 
     return device ? getFwUpdateVersion(device) : null;
 };

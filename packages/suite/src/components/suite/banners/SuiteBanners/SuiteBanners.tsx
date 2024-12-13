@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { selectBannerMessage } from '@suite-common/message-system';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { isDesktop } from '@trezor/env-utils';
 import { spacingsPx } from '@trezor/theme';
 
@@ -38,7 +38,7 @@ const Container = styled.div<{ $isVisible?: boolean }>`
 
 export const SuiteBanners = () => {
     const transport = useSelector(selectTransport);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const isOnline = useSelector(state => state.suite.online);
     const firmwareHashInvalid = useSelector(state => state.firmware.firmwareHashInvalid);
     const bannerMessage = useSelector(selectBannerMessage);

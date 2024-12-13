@@ -9,7 +9,7 @@ import {
     getIsUpdatedSendFlow,
     getIsUpdatedEthereumSendFlow,
 } from '@suite-common/wallet-utils';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { StakeType } from '@suite-common/wallet-types';
 
 import { TrezorDevice } from 'src/types/suite';
@@ -131,7 +131,7 @@ export const TransactionReviewTotalOutput = forwardRef<
         },
         ref,
     ) => {
-        const device = useSelector(selectDevice);
+        const device = useSelector(selectSelectedDevice);
 
         if (!device) {
             return null;

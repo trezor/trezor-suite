@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import TrezorConnect from '@trezor/connect';
 import { Button, Checkbox, Input } from '@trezor/components';
 import type { PasswordEntry, PasswordEntryDecoded } from '@suite-common/metadata-types';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { isUrl } from '@trezor/utils';
 import { spacingsPx } from '@trezor/theme';
 
@@ -46,7 +46,7 @@ export const EntryForm = ({ onEncrypted, entry, cancel }: Props) => {
     const [inProgress, setInProgress] = useState(false);
 
     const { tags } = usePasswords();
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
 
     const encrypt = () => {
         if (inProgress || !device) return;

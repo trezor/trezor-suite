@@ -3,7 +3,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { selectDevice, selectSelectedDeviceAuthenticity } from '@suite-common/wallet-core';
+import { selectSelectedDevice, selectSelectedDeviceAuthenticity } from '@suite-common/wallet-core';
 import { variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_URL } from '@trezor/urls';
@@ -30,7 +30,7 @@ type DeviceAuthenticityProps = {
 };
 
 export const DeviceAuthenticity = ({ goToNext }: DeviceAuthenticityProps) => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const selectedDeviceAuthenticity = useSelector(selectSelectedDeviceAuthenticity);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const dispatch = useDispatch();

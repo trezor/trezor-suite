@@ -6,7 +6,7 @@ import { DEVICE, Device, DeviceModelInternal, UI } from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { spacings } from '@trezor/theme';
-import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { useFirmwareInstallation } from '@suite-common/firmware';
 
 import { useDevice, useSelector } from 'src/hooks/suite';
@@ -63,7 +63,7 @@ interface ReconnectDevicePromptProps {
 }
 
 export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePromptProps) => {
-    const deviceLabel = useSelector(selectDeviceLabelOrName);
+    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const isWebUsbTransport = useSelector(selectIsWebUsb);
     const { showManualReconnectPrompt, status, uiEvent } = useFirmwareInstallation();
     const { device } = useDevice();

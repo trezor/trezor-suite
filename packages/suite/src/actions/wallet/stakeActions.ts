@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import TrezorConnect from '@trezor/connect';
 import {
-    selectDevice,
+    selectSelectedDevice,
     replaceTransactionThunk,
     syncAccountsWithBlockchainThunk,
     stakeActions,
@@ -56,7 +56,7 @@ const pushTransaction =
     (stakeType: StakeType) => async (dispatch: Dispatch, getState: GetState) => {
         const { serializedTx, precomposedTx } = getState().wallet.stake;
         const { account } = getState().wallet.selectedAccount;
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         if (!serializedTx || !precomposedTx || !account) return;
 
         const sentTx = await TrezorConnect.pushTransaction({
@@ -147,7 +147,7 @@ const pushTransaction =
 export const signTransaction =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         const { account } = getState().wallet.selectedAccount;
 
         if (!device || !account) return;

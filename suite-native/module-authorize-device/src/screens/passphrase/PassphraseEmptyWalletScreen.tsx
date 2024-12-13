@@ -12,7 +12,7 @@ import {
 import { VStack, Card, Text, Button, Box, TextDivider } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
-import { deviceActions, selectDevice } from '@suite-common/wallet-core';
+import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { retryPassphraseAuthenticationThunk } from '@suite-native/device-authorization';
 import { EventType, analytics } from '@suite-native/analytics';
 
@@ -37,7 +37,7 @@ export const PassphraseEmptyWalletScreen = () => {
 
     const dispatch = useDispatch();
 
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
 
     const navigation = useNavigation<NavigationProp>();
 

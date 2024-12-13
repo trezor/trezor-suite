@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
+import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
@@ -16,7 +16,7 @@ export const useCoinmarketBuildAccountGroups = (
 ): CoinmarketAccountsOptionsGroupProps[] => {
     const accounts = useSelector(selectAccounts);
     const accountLabels = useSelector(selectAccountLabels);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const { tokenDefinitions } = useSelector(state => state);
     const supportedSymbols = useSelector(selectSupportedSymbols(type));

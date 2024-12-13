@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
+import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 
@@ -22,7 +22,7 @@ export const useCoinmarketAccount = ({
     isNotFormPage,
 }: CoinmarketUseAccountProps): [Account, (state: Account) => void] => {
     const accounts = useSelector(selectAccounts);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
 
     // coinmarketAccount is used on offers page
     // if is testnet, use

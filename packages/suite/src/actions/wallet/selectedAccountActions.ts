@@ -1,6 +1,6 @@
 import {
     selectDeviceDiscovery,
-    selectDevice,
+    selectSelectedDevice,
     accountsActions,
     blockchainActions,
     discoveryActions,
@@ -17,7 +17,7 @@ import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 import { Action, Dispatch, GetState, AppState } from 'src/types/suite';
 
 const getAccountState = (state: AppState): SelectedAccountStatus => {
-    const device = selectDevice(state);
+    const device = selectSelectedDevice(state);
 
     // waiting for device
     if (!device) {

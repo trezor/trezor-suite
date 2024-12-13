@@ -2,7 +2,7 @@ import { useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { getPackagingUrl } from '@suite-common/suite-utils';
 import { DeviceAnimation, Banner, variables } from '@trezor/components';
 import { TREZOR_RESELLERS_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
@@ -33,7 +33,7 @@ const StyledWarning = styled(Banner)`
 `;
 
 export const Hologram = () => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const hologramRef = useRef<HTMLVideoElement>(null);
 
     const packagingUrl = getPackagingUrl(device);

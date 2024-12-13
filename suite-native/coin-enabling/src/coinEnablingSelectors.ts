@@ -1,6 +1,6 @@
 import {
     DeviceRootState,
-    selectDevice,
+    selectSelectedDevice,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceUnlocked,
     selectIsPortfolioTrackerDevice,
@@ -15,7 +15,7 @@ import { FeatureFlagsRootState } from '@suite-native/feature-flags';
 export const selectShouldShowCoinEnablingInitFlow = (
     state: DeviceRootState & DiscoveryConfigSliceRootState & FeatureFlagsRootState,
 ) => {
-    const device = selectDevice(state);
+    const device = selectSelectedDevice(state);
     const isDeviceUnlocked = selectIsDeviceUnlocked(state);
     const isPortfolioTrackerDevice = selectIsPortfolioTrackerDevice(state);
     const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(state);

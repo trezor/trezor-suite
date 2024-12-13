@@ -13,7 +13,7 @@ import {
 import { Output, AddressDisplayOptions } from '@suite-common/wallet-types/src';
 import {
     confirmAddressOnDeviceThunk,
-    selectDevice,
+    selectSelectedDevice,
     toggleRememberDevice,
 } from '@suite-common/wallet-core';
 
@@ -94,7 +94,7 @@ export const verifyAddress =
             | typeof COINMARKET_BUY.VERIFY_ADDRESS,
     ) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         if (!device || !account) return;
         const accountAddress = getUnusedAddressFromAccount(account);
         address = address ?? accountAddress.address;
@@ -165,7 +165,7 @@ export const submitRequestForm =
         };
     }) =>
     (dispatch: Dispatch, getState: GetState) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         if (device && !device.remember && !isDesktop()) {
             dispatch(toggleRememberDevice({ device, forceRemember: true }));
         }

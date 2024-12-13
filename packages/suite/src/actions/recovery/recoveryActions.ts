@@ -1,4 +1,4 @@
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { UI, RecoveryDevice, DeviceModelInternal, PROTO } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
@@ -56,7 +56,7 @@ const submit = (word: string) => () => {
 
 const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
     const { advancedRecovery, wordsCount } = getState().recovery;
-    const device = selectDevice(getState());
+    const device = selectSelectedDevice(getState());
 
     if (!device?.features) return;
 
@@ -96,7 +96,7 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
 
 const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const { advancedRecovery, wordsCount } = getState().recovery;
-    const device = selectDevice(getState());
+    const device = selectSelectedDevice(getState());
 
     if (!device?.features) {
         return;
@@ -142,7 +142,7 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
 // or seed check). This way, communication is renewed and host starts receiving messages from device again.
 const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
     const { router } = getState();
-    const device = selectDevice(getState());
+    const device = selectSelectedDevice(getState());
     if (!device?.features) {
         return;
     }

@@ -9,7 +9,7 @@ import { deviceModelToIconName } from '@suite-native/icons';
 import {
     DeviceRootState,
     DiscoveryRootState,
-    selectDevice,
+    selectSelectedDevice,
     selectDeviceModel,
     selectDeviceReleaseInfo,
     selectIsDiscoveryActiveByDeviceState,
@@ -59,7 +59,7 @@ type NavigationProp = StackNavigationProps<
 const allowReinstall = isDevelopOrDebugEnv();
 
 export const DeviceFirmwareCard = () => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const deviceModel = useSelector(selectDeviceModel);
     const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
     const isDiscoveryRunning = useSelector((state: DiscoveryRootState & DeviceRootState) =>

@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { Icon, Input } from '@trezor/components';
 import { borders } from '@trezor/theme';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { useSelector, useAccountSearch, useTranslation } from 'src/hooks/suite';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
@@ -28,7 +28,7 @@ export const AccountSearchBox = () => {
     const { translationString } = useTranslation();
     const { setCoinFilter, searchString, setSearchString } = useAccountSearch();
     const enabledNetworks = useSelector(selectEnabledNetworks);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
 
     const unavailableCapabilities = device?.unavailableCapabilities ?? {};
     const supportedNetworks = enabledNetworks.filter(symbol => !unavailableCapabilities[symbol]);

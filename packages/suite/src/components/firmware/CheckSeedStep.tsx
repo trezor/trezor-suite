@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Button, Checkbox, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
-import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
@@ -48,7 +48,7 @@ type CheckSeedStepProps = {
 };
 
 export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSeedStepProps) => {
-    const deviceLabel = useSelector(selectDeviceLabelOrName);
+    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const dispatch = useDispatch();
     const { device } = useDevice();
     const [isChecked, setIsChecked] = useState(false);

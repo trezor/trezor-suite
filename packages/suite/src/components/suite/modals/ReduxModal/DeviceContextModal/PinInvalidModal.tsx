@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Paragraph } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -21,7 +21,7 @@ interface PinInvalidModalProps extends ModalProps {
 }
 
 export const PinInvalidModal = ({ device, ...rest }: PinInvalidModalProps) => {
-    const deviceLabel = useSelector(selectDeviceLabelOrName);
+    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 
     return (
         <StyledModal

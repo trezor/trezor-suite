@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { pickByDeviceModel } from '@trezor/device-utils';
 import { DeviceModelInternal } from '@trezor/connect';
 import { isDeviceWithButtons } from '@suite-common/suite-utils';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { OnboardingButtonCta } from 'src/components/onboarding';
 import { SelectWordCount, SelectRecoveryType, SelectRecoveryWord } from 'src/components/recovery';
@@ -23,7 +23,7 @@ const InProgressRecoveryStepBox = styled(RecoveryStepBox)<{
 
 export const RecoveryStep = () => {
     const isActionAbortable = useSelector(selectIsActionAbortable);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
 
     const {

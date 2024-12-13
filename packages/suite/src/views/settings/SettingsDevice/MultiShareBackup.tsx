@@ -1,5 +1,5 @@
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
@@ -34,7 +34,7 @@ const doesSupportMultiShare = (device: TrezorDevice | undefined): boolean => {
 };
 
 export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }) => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
 
     // "NotAvailable" means, that backup has been already done and thus is not available.

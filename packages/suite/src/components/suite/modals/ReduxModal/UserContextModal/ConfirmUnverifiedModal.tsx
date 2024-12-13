@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { Button, H3, NewModal, Paragraph } from '@trezor/components';
-import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
 import { TranslationKey } from 'src/components/suite/Translation';
@@ -25,7 +25,7 @@ export const ConfirmUnverifiedModal = ({
     warningText,
     verifyProcess,
 }: ConfirmUnverifiedModalProps) => {
-    const deviceLabel = useSelector(selectDeviceLabelOrName);
+    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const { device } = useDevice();
     const dispatch = useDispatch();
     const { isLocked } = useDevice();

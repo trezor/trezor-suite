@@ -1,5 +1,5 @@
 import * as deviceUtils from '@suite-common/suite-utils';
-import { selectDevice, selectDevices } from '@suite-common/wallet-core';
+import { selectSelectedDevice, selectDevices } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -10,7 +10,7 @@ import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceModal } from './SwitchDeviceModal';
 
 export const SwitchDevice = ({ onCancel }: ForegroundAppProps) => {
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
 
     // exclude selectedDevice from list, because other devices could have a higher priority

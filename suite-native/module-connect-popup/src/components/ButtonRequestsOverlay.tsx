@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
 
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorImage } from '@suite-native/device';
 import { ButtonRequest } from '@suite-common/suite-types';
 import { Translation } from '@suite-native/intl';
 
 export const ButtonRequestsOverlay = () => {
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
 
     if (!selectedDevice?.buttonRequests || selectedDevice.buttonRequests.length === 0) {
         return null;

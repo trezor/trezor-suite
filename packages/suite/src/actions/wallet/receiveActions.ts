@@ -1,6 +1,6 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { UserContextPayload } from '@suite-common/suite-types';
-import { confirmAddressOnDeviceThunk, selectDevice } from '@suite-common/wallet-core';
+import { confirmAddressOnDeviceThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { RECEIVE } from 'src/actions/wallet/constants';
@@ -40,7 +40,7 @@ export const openAddressModal =
 
 export const showAddress =
     (path: string, address: string) => async (dispatch: Dispatch, getState: GetState) => {
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         const { account } = getState().wallet.selectedAccount;
 
         if (!device || !account) return;

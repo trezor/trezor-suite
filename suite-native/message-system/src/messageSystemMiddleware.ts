@@ -7,7 +7,7 @@ import {
     getValidMessages,
     selectMessageSystemConfig,
 } from '@suite-common/message-system';
-import { deviceActions, selectDevice } from '@suite-common/wallet-core';
+import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     selectDeviceEnabledDiscoveryNetworkSymbols,
     toggleEnabledDiscoveryNetworkSymbol,
@@ -27,7 +27,7 @@ export const messageSystemMiddleware = createMiddleware((action, { next, dispatc
 
     if (isAnyOfMessageSystemAffectingActions(action)) {
         const config = selectMessageSystemConfig(getState());
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
         const enabledNetworks = selectDeviceEnabledDiscoveryNetworkSymbols(getState());
 
         const validMessages = getValidMessages(config, {

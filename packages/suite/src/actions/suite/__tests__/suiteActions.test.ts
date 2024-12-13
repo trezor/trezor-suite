@@ -3,7 +3,7 @@
 import { testMocks } from '@suite-common/test-utils';
 import {
     prepareDeviceReducer,
-    selectDevice,
+    selectSelectedDevice,
     selectDevices,
     selectDevicesCount,
     deviceActions,
@@ -307,7 +307,7 @@ describe('Suite Actions', () => {
             await store.dispatch(
                 switchDuplicatedDevice({ device: f.device, duplicate: f.duplicate }),
             );
-            const device = selectDevice(store.getState());
+            const device = selectSelectedDevice(store.getState());
             const devicesCount = selectDevicesCount(store.getState());
             expect(device).toEqual(f.result.selected);
             expect(devicesCount).toEqual(f.result.devices.length);

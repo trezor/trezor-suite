@@ -15,7 +15,7 @@ import { accountsActions } from './accountsActions';
 import { formattedAccountTypeMap } from './accountsConstants';
 import {
     DeviceRootState,
-    selectDevice,
+    selectSelectedDevice,
     selectDeviceState,
     selectHasOnlyPortfolioDevice,
 } from '../device/deviceReducer';
@@ -195,7 +195,7 @@ export const selectAccountsByDeviceStateAndNetworkSymbol = createMemoizedSelecto
 );
 
 export const selectDeviceAccounts = createMemoizedSelector(
-    [selectAccounts, selectDevice],
+    [selectAccounts, selectSelectedDevice],
     (accounts, device) => {
         if (!device?.state?.staticSessionId) return EMPTY_STABLE_ACCOUNTS_ARRAY;
 

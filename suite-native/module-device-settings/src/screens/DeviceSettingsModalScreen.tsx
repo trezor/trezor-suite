@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import {
-    selectDevice,
+    selectSelectedDevice,
     selectDeviceModel,
     selectDeviceReleaseInfo,
 } from '@suite-common/wallet-core';
@@ -20,7 +20,7 @@ import { HowToUpdateBottomSheet } from '../components/HowToUpdateBottomSheet';
 export const DeviceSettingsModalScreen = () => {
     const { translate } = useTranslate();
 
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const deviceModel = useSelector(selectDeviceModel);
     const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
 

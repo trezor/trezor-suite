@@ -27,7 +27,7 @@ import {
 import { createThunk } from '@suite-common/redux-utils';
 
 import { selectTransactions } from '../transactions/transactionsReducer';
-import { selectDevice } from '../device/deviceReducer';
+import { selectSelectedDevice } from '../device/deviceReducer';
 import {
     ComposeTransactionThunkArguments,
     ComposeFeeLevelsError,
@@ -64,7 +64,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
         const { account, excludedUtxos, feeInfo, prison } = composeContext;
 
         const areSatsAmountUnit = selectAreSatsAmountUnit(getState());
-        const device = selectDevice(getState());
+        const device = selectSelectedDevice(getState());
 
         const isSatoshis =
             areSatsAmountUnit &&

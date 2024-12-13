@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 import { getStatus, deviceNeedsAttention } from '@suite-common/suite-utils';
 import { Button, motionEasing } from '@trezor/components';
-import { selectDevices, selectDevice } from '@suite-common/wallet-core';
+import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { ConnectDevicePrompt, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -49,7 +49,7 @@ interface PrerequisitesGuideProps {
 
 export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProps) => {
     const dispatch = useDispatch();
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
     const connectedDevicesCount = devices.filter(d => d.connected === true).length;
     const isWebUsbTransport = useSelector(selectIsWebUsb);

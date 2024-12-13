@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 import { IconButton, IconName, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
 import { Translation, WebUsbButton } from 'src/components/suite';
@@ -45,7 +45,7 @@ export const DeviceHeader = ({
     forceConnectionInfo,
     icon = 'caretCircleDown',
 }: DeviceHeaderProps) => {
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
     const isWebUsbTransport = useSelector(selectIsWebUsb);
     const isDeviceConnected = selectedDevice?.connected === true;
     const deviceModelInternal = device.features?.internal_model;

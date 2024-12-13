@@ -12,7 +12,7 @@ import {
     Card,
 } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { selectDevice, selectDeviceLabelOrName } from '@suite-common/wallet-core';
+import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { palette, spacings } from '@trezor/theme';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
@@ -53,10 +53,10 @@ export const ConfirmValueModal = ({
     value,
     displayMode,
 }: ConfirmValueModalProps) => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const modalContext = useSelector(state => state.modal.context);
     const isActionAbortable = useSelector(selectIsActionAbortable);
-    const deviceLabel = useSelector(selectDeviceLabelOrName);
+    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const dispatch = useDispatch();
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);

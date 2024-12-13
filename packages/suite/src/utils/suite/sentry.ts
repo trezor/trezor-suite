@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/core';
 
 import { allowReportTag } from '@suite-common/sentry';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { Dispatch, GetState } from 'src/types/suite';
 import { redactDevice, redactDiscovery, getApplicationLog } from 'src/utils/suite/logsUtils';
@@ -30,7 +30,7 @@ export const unsetSentryUser = () => {
 
 export const reportToSentry = (error: any) => (_: Dispatch, getState: GetState) => {
     const { analytics, wallet, logs } = getState();
-    const device = selectDevice(getState());
+    const device = selectSelectedDevice(getState());
 
     Sentry.withScope(scope => {
         scope.setUser({ id: analytics.instanceId });

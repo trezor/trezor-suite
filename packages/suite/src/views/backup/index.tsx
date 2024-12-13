@@ -2,7 +2,7 @@ import { Paragraph, Image, Column, NewModal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { backupDevice } from 'src/actions/backup/backupActions';
@@ -78,7 +78,7 @@ const getModalContent = (backupStatus: BackupStatus, error?: string) => {
 };
 
 export const Backup = ({ onCancel }: ForegroundAppProps) => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const backup = useSelector(selectBackup);
     const isDeviceLocked = useSelector(selectIsDeviceLocked);
 

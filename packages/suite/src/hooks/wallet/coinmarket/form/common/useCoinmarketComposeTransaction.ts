@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
-import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
+import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getFeeLevels } from '@suite-common/wallet-utils';
 
@@ -31,7 +31,7 @@ export const useCoinmarketComposeTransaction = <T extends CoinmarketSellExchange
 }: CoinmarketUseComposeTransactionProps<T>): CoinmarketUseComposeTransactionReturnProps => {
     const dispatch = useDispatch();
     const accounts = useSelector(selectAccounts);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const addressDisplayType = useSelector(selectAddressDisplayType);
     const fees = useSelector(state => state.wallet.fees);
     const { translationString } = useTranslation();

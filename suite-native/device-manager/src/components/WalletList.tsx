@@ -5,7 +5,7 @@ import { A } from '@mobily/ts-belt';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
     createDeviceInstanceThunk,
-    selectDevice,
+    selectSelectedDevice,
     selectDeviceInstances,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
@@ -22,7 +22,7 @@ type WalletListProps = {
 export const WalletList = ({ onSelectDevice }: WalletListProps) => {
     const dispatch = useDispatch();
     const devices = useSelector(selectDeviceInstances);
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
     const hasNoDeviceWithEmptyPassphrase = useSelector(selectHasNoDeviceWithEmptyPassphrase);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isSelectable = devices.length > 1 || hasNoDeviceWithEmptyPassphrase;

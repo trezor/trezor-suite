@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectDevice, selectIsDeviceProtectedByPin } from '@suite-common/wallet-core';
+import { selectSelectedDevice, selectIsDeviceProtectedByPin } from '@suite-common/wallet-core';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -8,7 +8,7 @@ import { DevicePinActionButton } from './DevicePinActionButton';
 import { DeviceSettingsCardLayout } from './DeviceSettingsCardLayout';
 
 export const DevicePinProtectionCard = () => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const isDeviceProtectedByPin = useSelector(selectIsDeviceProtectedByPin);
 
     if (!device) {

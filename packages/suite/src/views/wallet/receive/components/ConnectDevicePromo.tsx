@@ -1,5 +1,5 @@
 import { H4, Paragraph, Banner } from '@trezor/components';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 
 import { Translation } from 'src/components/suite';
@@ -12,7 +12,7 @@ type ConnectDevicePromoProps = {
 };
 
 const ConnectDevicePromo = ({ title, description }: ConnectDevicePromoProps) => {
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
     const selectedDeviceModelInternal =
         selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
 

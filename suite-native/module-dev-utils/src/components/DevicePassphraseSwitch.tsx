@@ -4,7 +4,7 @@ import TrezorConnect from '@trezor/connect';
 import { Box, HStack, Switch, Text } from '@suite-native/atoms';
 import {
     removeButtonRequests,
-    selectDevice,
+    selectSelectedDevice,
     selectDeviceButtonRequestsCodes,
     selectIsDeviceProtectedByPassphrase,
     selectIsPortfolioTrackerDevice,
@@ -13,7 +13,7 @@ import { useToast } from '@suite-native/toasts';
 
 export const DevicePassphraseSwitch = () => {
     const dispatch = useDispatch();
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isPassphraseEnabled = useSelector(selectIsDeviceProtectedByPassphrase);
     const { showToast } = useToast();

@@ -1,7 +1,7 @@
 import { WalletType as DefaultWalletLoadingOptions } from '@suite-common/wallet-types';
 import { SelectBar } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { deviceActions, selectDevice } from '@suite-common/wallet-core';
+import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
@@ -22,7 +22,7 @@ const options = [
 ];
 
 export const DefaultWalletLoading = () => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const selectedAddressDisplay = useSelector(state => state.suite.settings.defaultWalletLoading);
     const dispatch = useDispatch();
 

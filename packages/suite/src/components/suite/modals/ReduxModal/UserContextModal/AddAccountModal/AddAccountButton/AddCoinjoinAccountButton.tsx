@@ -5,7 +5,7 @@ import { UnavailableCapabilities } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
@@ -54,7 +54,7 @@ export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjo
     const [isLoading, setIsLoading] = useState(false);
 
     const { isTorEnabled } = useSelector(selectTorState);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const accounts = useSelector(state => state.wallet.accounts);
     const dispatch = useDispatch();
 

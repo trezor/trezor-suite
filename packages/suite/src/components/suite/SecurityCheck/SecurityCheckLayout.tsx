@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Image, variables } from '@trezor/components';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -48,7 +48,7 @@ interface SecurityCheckLayoutProps {
 }
 
 export const SecurityCheckLayout = ({ isFailed, children }: SecurityCheckLayoutProps) => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
 
     const deviceModelInternal = device?.features?.internal_model;
     const imageVariant = isFailed ? 'GHOST' : 'LARGE';

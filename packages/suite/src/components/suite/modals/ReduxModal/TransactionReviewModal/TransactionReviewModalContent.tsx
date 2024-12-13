@@ -6,7 +6,7 @@ import { variables } from '@trezor/components';
 import { Deferred } from '@trezor/utils';
 import {
     DeviceRootState,
-    selectDevice,
+    selectSelectedDevice,
     selectPrecomposedSendForm,
     selectSendFormReviewButtonRequestsCount,
     selectStakePrecomposedForm,
@@ -66,7 +66,7 @@ export const TransactionReviewModalContent = ({
 }: TransactionReviewModalContentProps) => {
     const account = useSelector(selectAccountIncludingChosenInCoinmarket);
     const fees = useSelector(state => state.wallet.fees);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const [detailsOpen, setDetailsOpen] = useState(false);
     const [isSending, setIsSending] = useState(false);

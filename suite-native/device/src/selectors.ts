@@ -11,7 +11,7 @@ import {
     selectAccounts,
     selectAccountsByDeviceState,
     selectCurrentFiatRates,
-    selectDevice,
+    selectSelectedDevice,
     selectDeviceFirmwareVersion,
     selectDeviceInstances,
     selectDeviceModel,
@@ -64,7 +64,7 @@ export const selectIsDeviceReadyToUseAndAuthorized = (
 export const selectDeviceError = (
     state: DeviceRootState & AccountsRootState & DiscoveryRootState,
 ) => {
-    const device = selectDevice(state);
+    const device = selectSelectedDevice(state);
 
     return device?.error;
 };

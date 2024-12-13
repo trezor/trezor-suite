@@ -1,6 +1,6 @@
 import { findAccountDevice } from '@suite-common/wallet-utils';
 import { isSelectedDevice } from '@suite-common/suite-utils';
-import { selectDevices, selectDevice } from '@suite-common/wallet-core';
+import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import { BadgeProps } from '@trezor/components';
 
 import { AccountLabel } from 'src/components/suite';
@@ -21,7 +21,7 @@ export const AccountLabeling = ({
     accountTypeBadgeSize,
     showAccountTypeBadge,
 }: AccountProps) => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
 
     const accounts = !Array.isArray(account) ? [account] : account;

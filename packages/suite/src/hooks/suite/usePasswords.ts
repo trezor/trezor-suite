@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { useSelector, useDispatch } from 'src/hooks/suite';
 import * as metadataProviderActions from 'src/actions/suite/metadataProviderActions';
@@ -18,7 +18,7 @@ export const usePasswords = () => {
 
     const [selectedTags, setSelectedTags] = useState<Record<string, boolean>>({});
 
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const selectedProvider = useSelector(selectSelectedProviderForPasswords);
 
     const { fileName, aesKey } = device?.passwords?.[1] || {};

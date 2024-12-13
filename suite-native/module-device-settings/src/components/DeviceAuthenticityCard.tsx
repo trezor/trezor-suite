@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { analytics, DeviceAuthenticityCheckResult, EventType } from '@suite-native/analytics';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useAlert } from '@suite-native/alerts';
 import { Button, IconListItem, Text, VStack } from '@suite-native/atoms';
@@ -30,7 +30,7 @@ export const DeviceAuthenticityCard = () => {
     const navigation = useNavigation<NavigationProp>();
     const { showAlert } = useAlert();
 
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
 
     const reportCheckResult = useCallback(
         (result: DeviceAuthenticityCheckResult) =>

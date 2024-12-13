@@ -4,7 +4,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { AcquiredDevice } from '@suite-common/suite-types';
-import { deviceActions, selectDevice, selectDevices } from '@suite-common/wallet-core';
+import { deviceActions, selectSelectedDevice, selectDevices } from '@suite-common/wallet-core';
 import { Button, Column, Icon, H2, Text, Tooltip, Divider } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import {
@@ -157,7 +157,7 @@ const SecurityCheckContent = ({
 }: SecurityCheckContentProps) => {
     const { isMobileLayout } = useLayoutSize();
     const recovery = useSelector(state => state.recovery);
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const isOnboardingActive = useSelector(selectIsOnboardingActive);
 
     const [isFailed, setIsFailed] = useState(false);
@@ -270,7 +270,7 @@ const SecurityCheckContent = ({
 };
 
 export const SecurityCheck = () => {
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
     const { initialRun } = useSelector(selectSuiteFlags);
     const {

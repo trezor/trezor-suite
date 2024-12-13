@@ -15,7 +15,7 @@ import {
 import { DeviceManager } from '@suite-native/device-manager';
 import {
     deviceActions,
-    selectDevice,
+    selectSelectedDevice,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceDiscoveryActive,
     selectIsPortfolioTrackerDevice,
@@ -36,7 +36,7 @@ export const ConnectPopupScreen = ({
     const navigation = useNavigation();
 
     const dispatch = useDispatch();
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const deviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const validDevice = deviceConnectedAndAuthorized && !isPortfolioTrackerDevice;

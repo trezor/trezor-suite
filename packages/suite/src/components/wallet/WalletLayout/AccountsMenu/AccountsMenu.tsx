@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { spacings, spacingsPx, zIndices } from '@trezor/theme';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
 import { useScrollShadow, Row, Column } from '@trezor/components';
 
@@ -41,7 +41,7 @@ const ScrollContainer = styled.div`
 `;
 
 export const AccountsMenu = () => {
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const accounts = useSelector(state => state.wallet.accounts);
     const { discovery } = useDiscovery();
     const { scrollElementRef, onScroll, ShadowTop, ShadowBottom, ShadowContainer } =

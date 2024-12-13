@@ -4,7 +4,7 @@ import {
     selectDiscoveryByDeviceState,
     selectCurrentFiatRates,
     selectDeviceThunk,
-    selectDevice,
+    selectSelectedDevice,
     createDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { Card, Icon, Tooltip, Row, Column, Text, Divider } from '@trezor/components';
@@ -51,7 +51,7 @@ export const WalletInstance = ({
     const discoveryProcess = useSelector(state =>
         selectDiscoveryByDeviceState(state, instance.state),
     );
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const { defaultAccountLabelString } = useWalletLabeling();
 
     const deviceAccounts = getAllAccounts(instance.state, accounts);

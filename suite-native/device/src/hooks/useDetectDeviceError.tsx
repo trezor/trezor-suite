@@ -8,7 +8,7 @@ import { analytics, EventType } from '@suite-native/analytics';
 import {
     acquireDevice,
     deviceActions,
-    selectDevice,
+    selectSelectedDevice,
     selectIsConnectedDeviceUninitialized,
     selectIsNoPhysicalDeviceConnected,
     selectIsDeviceInBootloader,
@@ -50,7 +50,7 @@ export const useDetectDeviceError = () => {
     const openLink = useOpenLink();
     const navigation = useNavigation<NavigationProps>();
 
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
     const isUnacquiredDevice = useSelector(selectIsUnacquiredDevice);
     const isConnectedDeviceUninitialized = useSelector(selectIsConnectedDeviceUninitialized);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);

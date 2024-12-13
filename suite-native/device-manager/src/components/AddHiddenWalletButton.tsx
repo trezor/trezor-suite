@@ -6,7 +6,7 @@ import { Translation } from '@suite-native/intl';
 import { HStack, Text } from '@suite-native/atoms';
 import {
     createDeviceInstanceThunk,
-    selectDevice,
+    selectSelectedDevice,
     selectIsDeviceProtectedByPassphrase,
 } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -40,7 +40,7 @@ export const AddHiddenWalletButton = () => {
 
     const { applyStyle } = useNativeStyles();
 
-    const device = useSelector(selectDevice);
+    const device = useSelector(selectSelectedDevice);
     const isPassphraseEnabledOnDevice = useSelector(selectIsDeviceProtectedByPassphrase);
 
     const { setIsDeviceManagerVisible } = useDeviceManager();

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { variables, Column } from '@trezor/components';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { selectDevice, selectDeviceThunk, acquireDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice, selectDeviceThunk, acquireDevice } from '@suite-common/wallet-core';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -37,7 +37,7 @@ export const DeviceItem = ({
     onCancel,
     isFullHeaderVisible,
 }: DeviceItemProps) => {
-    const selectedDevice = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
     const deviceStatus = deviceUtils.getStatus(device);
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);

@@ -3,7 +3,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import {
     selectDevices,
-    selectDevice,
+    selectSelectedDevice,
     selectDiscoveryByDeviceState,
     discoveryActions,
     accountsActions,
@@ -204,7 +204,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (sendFormActions.storeDraft.match(action)) {
-                const device = selectDevice(api.getState());
+                const device = selectSelectedDevice(api.getState());
                 const { formState, accountKey } = action.payload;
                 // save drafts for remembered device
                 if (isDeviceRemembered(device)) {
@@ -242,7 +242,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     api.dispatch(storageActions.saveSuiteSettings());
                     break;
                 case SUITE.COINJOIN_RECEIVE_WARNING: {
-                    const device = selectDevice(api.getState());
+                    const device = selectSelectedDevice(api.getState());
                     const isWalletRemembered = device?.remember;
 
                     if (!isWalletRemembered) {
@@ -301,7 +301,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     break;
                 }
                 case FORM_DRAFT.STORE_DRAFT: {
-                    const device = selectDevice(api.getState());
+                    const device = selectSelectedDevice(api.getState());
                     // save drafts for remembered device
                     if (isDeviceRemembered(device)) {
                         storageActions.saveFormDraft(action.key, action.formDraft);
