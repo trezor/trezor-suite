@@ -1,12 +1,15 @@
+import { Tooltip } from '@trezor/components';
+
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 export const ConnectLabelingProvider = () => {
     const dispatch = useDispatch();
-
+    const { device } = useDevice();
+    const isDeviceConnected = device?.connected && device?.available;
     const handleClick = () => dispatch(metadataLabelingActions.init(true));
 
     return (
@@ -16,13 +19,20 @@ export const ConnectLabelingProvider = () => {
                 description={<Translation id="TR_TO_MAKE_YOUR_LABELS_PERSISTENT" />}
             />
             <ActionColumn>
-                <ActionButton
-                    variant="primary"
-                    onClick={handleClick}
-                    data-testid="@settings/metadata/connect-provider-button"
+                <Tooltip
+                    content={
+                        isDeviceConnected ? undefined : <Translation id="TR_DEVICE_NOT_CONNECTED" />
+                    }
                 >
-                    <Translation id="TR_CONNECT" />
-                </ActionButton>
+                    <ActionButton
+                        variant="primary"
+                        onClick={handleClick}
+                        isDisabled={!isDeviceConnected}
+                        data-testid="@settings/metadata/connect-provider-button"
+                    >
+                        <Translation id="TR_CONNECT" />
+                    </ActionButton>
+                </Tooltip>
             </ActionColumn>
         </SettingsSectionItem>
     );
