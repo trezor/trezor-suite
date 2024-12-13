@@ -36,7 +36,7 @@ export const TaprootBanner = ({ account }: TaprootBannerProps) => {
     return (
         <CloseableBanner
             onClose={closeTaprootBanner}
-            variant="primary"
+            variant="info"
             title={<Translation id="TR_TAPROOT_BANNER_TITLE" />}
         >
             <BannerPoints
