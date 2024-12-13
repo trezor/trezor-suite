@@ -853,12 +853,8 @@ export const selectDeviceLabelOrNameById = createMemoizedSelector(
 );
 
 export const selectDeviceLabelOrName = createMemoizedSelector(
-    [selectDevice, selectDevices],
-    (selectedDevice, devices) => {
-        const device = devices.find(d => d.id === selectedDevice?.id);
-
-        return device?.features?.label || device?.name || '';
-    },
+    [selectDevice],
+    selectedDevice => selectedDevice?.features?.label || selectedDevice?.name || '',
 );
 
 export const selectDeviceId = createMemoizedSelector(
