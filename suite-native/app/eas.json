@@ -29,7 +29,13 @@
             "autoIncrement": true,
             "developmentClient": true,
             "credentialsSource": "remote",
-            "distribution": "internal"
+            "ios": {
+                "distribution": "store"
+            },
+            "android": {
+                "distribution": "internal",
+                "resourceClass": "large"
+            }
         },
         "adhoc": {
             "extends": "preview",
@@ -65,6 +71,13 @@
             "ios": {
                 "bundleIdentifier": "io.trezor.suite.develop",
                 "ascAppId": "1631884497",
+                "appleTeamId": "C3P22XVH2C"
+            }
+        },
+        "preview": {
+            "ios": {
+                "bundleIdentifier": "io.trezor.suite.preview",
+                "ascAppId": "6739429089",
                 "appleTeamId": "C3P22XVH2C"
             }
         },
