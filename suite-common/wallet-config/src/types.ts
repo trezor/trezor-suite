@@ -22,6 +22,7 @@ export type NetworkSymbol =
     | 'base'
     | 'op'
     | 'test'
+    | 'test4'
     | 'regtest'
     | 'tsep'
     | 'thol'

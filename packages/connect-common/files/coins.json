@@ -2682,10 +2682,10 @@
             "blockchain_link": {
                 "type": "solana",
                 "url": [
-                    "https://sol1.trezor.io",
-                    "https://sol2.trezor.io",
-                    "https://sol3.trezor.io",
-                    "https://sol4.trezor.io"
+                    "https://solana1.trezor.io",
+                    "https://solana2.trezor.io",
+                    "https://solana3.trezor.io",
+                    "https://solana4.trezor.io"
                 ]
             },
             "curve": "ed25519",
@@ -2788,12 +2788,7 @@
         {
             "blockchain_link": {
                 "type": "ripple",
-                "url": [
-                    "wss://xrplcluster.com",
-                    "wss://xrpl.ws",
-                    "wss://s1.ripple.com",
-                    "wss://s2.ripple.com"
-                ]
+                "url": ["wss://s1.ripple.com", "wss://s-east.ripple.com", "wss://s-west.ripple.com"]
             },
             "curve": "secp256k1",
             "decimals": 6,

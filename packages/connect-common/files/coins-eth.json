@@ -23,7 +23,7 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": ["https://bsc1.trezor.io", "https://bsc2.trezor.io"]
+                "url": ["https://bsc1.trezor.io"]
             },
             "chain": "bsc",
             "chain_id": 56,
@@ -63,55 +63,15 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": ["https://pol1.trezor.io", "https://pol2.trezor.io"]
+                "url": ["https://matic1.trezor.io", "https://matic2.trezor.io"]
             },
-            "chain": "pol",
+            "chain": "matic",
             "chain_id": 137,
             "coingecko_id": "polygon-pos",
             "is_testnet": false,
             "name": "Polygon",
-            "shortcut": "POL",
+            "shortcut": "MATIC",
             "slip44": 966,
-            "support": {
-                "T1B1": "1.9.4",
-                "T2B1": "2.6.1",
-                "T2T1": "2.3.5",
-                "T3B1": "2.8.1",
-                "T3T1": "2.6.1"
-            }
-        },
-        {
-            "blockchain_link": {
-                "type": "blockbook",
-                "url": ["https://base1.trezor.io", "https://base2.trezor.io"]
-            },
-            "chain": "base",
-            "chain_id": 8453,
-            "coingecko_id": "base",
-            "is_testnet": false,
-            "name": "Base",
-            "shortcut": "BASE",
-            "slip44": 1,
-            "support": {
-                "T1B1": "1.9.4",
-                "T2B1": "2.6.1",
-                "T2T1": "2.3.5",
-                "T3B1": "2.8.1",
-                "T3T1": "2.6.1"
-            }
-        },
-        {
-            "blockchain_link": {
-                "type": "blockbook",
-                "url": ["https://op1.trezor.io", "https://op2.trezor.io"]
-            },
-            "chain": "op",
-            "chain_id": 10,
-            "coingecko_id": "optimistic-ethereum",
-            "is_testnet": false,
-            "name": "Optimism",
-            "shortcut": "OP",
-            "slip44": 1,
             "support": {
                 "T1B1": "1.9.4",
                 "T2B1": "2.6.1",
