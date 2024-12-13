@@ -16,10 +16,6 @@ export class TorExternalProcess {
         this.torController = new TorControllerExternal({ host: this.host, port: this.port });
     }
 
-    public setTorConfig(_torConfig: { useExternalTor: boolean; snowflakeBinaryPath: string }) {
-        // Do nothing
-    }
-
     public getPort() {
         return this.port;
     }

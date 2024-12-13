@@ -103,7 +103,6 @@ declare type TorSettings = {
     port: number; // Port of the Tor process through which traffic is routed
     controlPort: number; // Port of the Tor Control Port
     torDataDir: string; // Path of tor data directory
-    snowflakeBinaryPath: string; // Path in user system to the snowflake binary
     useExternalTor: boolean; // Tor should use external daemon instead of the one built-in suite.
 };
 

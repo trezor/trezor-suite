@@ -30,28 +30,23 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
 
     const settings = store.getTorSettings();
 
-    const processes = [
-        {
-            type: 'tor',
-            process: new TorProcess({
-                host: settings.host,
-                port: settings.port,
-                controlPort: settings.controlPort,
-                torDataDir: settings.torDataDir,
-                snowflakeBinaryPath: settings.snowflakeBinaryPath,
-            }),
-        },
-        {
-            type: 'tor-external',
-            process: new TorExternalProcess(),
-        },
-    ];
+    const bundledTorProcess = new TorProcess({
+        host: settings.host,
+        port: settings.port,
+        controlPort: settings.controlPort,
+        torDataDir: settings.torDataDir,
+    });
+
+    const externalTorProcess = new TorExternalProcess();
 
     const getTarget = () => {
         const { useExternalTor } = store.getTorSettings();
-        const currentTarget = useExternalTor ? 'tor-external' : 'tor';
 
-        return processes.find(process => process.type === currentTarget)!.process;
+        if (useExternalTor) {
+            return externalTorProcess;
+        }
+
+        return bundledTorProcess;
     };
 
     const updateTorPort = (port: number) => {
@@ -145,7 +140,7 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
     };
 
     const setupTor = async (shouldEnableTor: boolean) => {
-        const { useExternalTor, snowflakeBinaryPath } = store.getTorSettings();
+        const { useExternalTor } = store.getTorSettings();
 
         const isTorRunning = (await getTarget().status()).process;
 
@@ -161,7 +156,6 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
             getTarget().torController.on('bootstrap/event', handleBootstrapEvent);
 
             try {
-                getTarget().setTorConfig({ snowflakeBinaryPath, useExternalTor });
                 updateTorPort(port);
                 if (useExternalTor) {
                     await getTarget().start();
@@ -196,19 +190,12 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
 
     ipcMain.handle(
         'tor/change-settings',
-        (
-            ipcEvent,
-            {
-                snowflakeBinaryPath,
-                useExternalTor,
-            }: { snowflakeBinaryPath: string; useExternalTor: boolean },
-        ) => {
+        (ipcEvent, { useExternalTor }: { useExternalTor: boolean }) => {
             validateIpcMessage(ipcEvent);
 
             try {
                 store.setTorSettings({
                     ...store.getTorSettings(),
-                    snowflakeBinaryPath,
                     useExternalTor,
                 });
 

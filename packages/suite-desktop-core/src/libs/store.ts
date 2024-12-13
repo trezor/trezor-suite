@@ -65,7 +65,6 @@ export class Store {
             port: 9050,
             controlPort: 9051,
             host: '127.0.0.1',
-            snowflakeBinaryPath: '',
             useExternalTor: false,
             torDataDir: '',
         });
