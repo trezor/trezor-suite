@@ -68,8 +68,31 @@ const useWatchTimeframeChangeForAnalytics = (
     }, [timeframeHours, symbol, isFirstRender]);
 };
 
+const redactAfterSubstring = (string: string, substring: string) => {
+    const index = string.indexOf(substring);
+
+    if (index !== -1) {
+        return string.slice(0, index + substring.length) + ' redacted';
+    }
+
+    return string;
+};
+
+const redact = (string: string) => {
+    const redactAfterSubstringArray = [
+        'Account not found:',
+        'Unable to fetch fiat rates for defined timestamps. ',
+    ];
+    let msg = string;
+    redactAfterSubstringArray.map(substring => {
+        msg = redactAfterSubstring(msg, substring);
+    });
+
+    return msg;
+};
+
 const checkAndReportGraphError = (error: string | null) => {
-    if (error) captureException(error);
+    if (error) captureException(redact(error));
 };
 
 export const useGraphForSingleAccount = ({
