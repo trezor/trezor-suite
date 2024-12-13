@@ -633,7 +633,7 @@ export const networks = {
         customBackends: ['solana'],
         accountTypes: {},
         coingeckoId: undefined,
-        coingeckoNativeId: 'test-ripple', // fake, coingecko does not have testnets
+        coingeckoNativeId: undefined,
     },
     tada: {
         // icarus derivation

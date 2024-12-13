@@ -535,19 +535,20 @@ export const useCoinmarketExchangeForm = ({
             return;
         }
 
+        const selectedTrade = trade?.data || selectedQuote;
         // sendAddress may be set by useCoinmarketWatchTrade hook to the trade object
-        const sendAddress = selectedQuote?.sendAddress || trade?.data?.sendAddress;
+        const sendAddress = selectedTrade?.sendAddress;
         if (
-            selectedQuote &&
-            selectedQuote.orderId &&
+            selectedTrade &&
+            selectedTrade.orderId &&
             sendAddress &&
-            selectedQuote.sendStringAmount
+            selectedTrade.sendStringAmount
         ) {
             const sendStringAmount = shouldSendInSats
-                ? amountToSmallestUnit(selectedQuote.sendStringAmount, decimals)
-                : selectedQuote.sendStringAmount;
+                ? amountToSmallestUnit(selectedTrade.sendStringAmount, decimals)
+                : selectedTrade.sendStringAmount;
             const sendPaymentExtraId =
-                selectedQuote.partnerPaymentExtraId || trade?.data?.partnerPaymentExtraId;
+                selectedTrade.partnerPaymentExtraId || trade?.data?.partnerPaymentExtraId;
             const result = await recomposeAndSign({
                 account,
                 address: sendAddress,
@@ -559,12 +560,12 @@ export const useCoinmarketExchangeForm = ({
             if (result?.success) {
                 dispatch(
                     coinmarketExchangeActions.saveTrade(
-                        selectedQuote,
+                        selectedTrade,
                         selectedAccount.account,
                         new Date().toISOString(),
                     ),
                 );
-                dispatch(coinmarketExchangeActions.saveTransactionId(selectedQuote.orderId));
+                dispatch(coinmarketExchangeActions.saveTransactionId(selectedTrade.orderId));
                 navigateToExchangeDetail();
             }
         } else {
