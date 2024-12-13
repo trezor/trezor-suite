@@ -4,10 +4,8 @@ import { D, pipe } from '@mobily/ts-belt';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
-    PushTransactionError,
     deviceActions,
     enhancePrecomposedTransactionThunk,
-    pushSendFormTransactionThunk,
     selectAccountByKey,
     selectSelectedDevice,
     selectSendFormDraftByKey,
@@ -19,7 +17,6 @@ import {
     SignTransactionError,
 } from '@suite-common/wallet-core';
 import {
-    Account,
     AccountKey,
     FormState,
     GeneralPrecomposedTransactionFinal,
@@ -119,29 +116,6 @@ export const cleanupSendFormThunk = createThunk(
         if (shouldDeleteDraft) dispatch(sendFormActions.removeDraft({ accountKey }));
 
         dispatch(deviceActions.removeButtonRequests({ device }));
-    },
-);
-
-export const sendTransactionAndCleanupSendFormThunk = createThunk<
-    { txid: string },
-    { account: Account },
-    { rejectValue: PushTransactionError }
->(
-    `${SEND_MODULE_PREFIX}/sendTransactionAndCleanupSendFormThunk`,
-    async ({ account }, { dispatch, rejectWithValue }) => {
-        const response = await dispatch(
-            pushSendFormTransactionThunk({
-                selectedAccount: account,
-            }),
-        );
-
-        if (isRejected(response)) {
-            return rejectWithValue(response.payload!);
-        }
-
-        dispatch(cleanupSendFormThunk({ accountKey: account.key }));
-
-        return response.payload.payload;
     },
 );
 
