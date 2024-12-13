@@ -18,7 +18,6 @@ const controlAuthCookiePath = `${torDataDir}/control_auth_cookie`;
 const host = 'localhost';
 const port = 9998;
 const controlPort = 9999;
-const snowflakeBinaryPath = '';
 
 describe('TorControlPort', () => {
     beforeAll(async () => {
@@ -40,7 +39,6 @@ describe('TorControlPort', () => {
                 port,
                 controlPort,
                 torDataDir,
-                snowflakeBinaryPath,
             };
             const fakeListener = () => {};
             const torControlPort = new TorControlPort(options, fakeListener);
@@ -105,7 +103,6 @@ describe('TorControlPort', () => {
                 port,
                 controlPort,
                 torDataDir,
-                snowflakeBinaryPath,
             };
             const fakeListener = () => {};
             const torControlPort = new TorControlPort(options, fakeListener);

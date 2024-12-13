@@ -2,7 +2,6 @@ import { EventEmitter } from 'events';
 import path from 'path';
 
 import { ScheduleActionParams, ScheduledAction, scheduleAction } from '@trezor/utils';
-import { checkFileExists } from '@trezor/node-utils';
 
 import { TorControlPort } from './torControlPort';
 import {
@@ -85,13 +84,9 @@ export class TorController extends EventEmitter {
         });
     }
 
-    public async getTorConfiguration(
-        processId: number,
-        snowflakeBinaryPath?: string,
-    ): Promise<string[]> {
+    public getTorConfiguration(processId: number): string[] {
         const { torDataDir } = this.options;
         const controlAuthCookiePath = path.join(torDataDir, 'control_auth_cookie');
-        const snowflakeLogPath = path.join(torDataDir, 'snowflake.log');
 
         // https://github.com/torproject/tor/blob/bf30943cb75911d70367106af644d4273baaa85d/doc/man/tor.1.txt
         const config: string[] = [
@@ -153,40 +148,6 @@ export class TorController extends EventEmitter {
             '--DataDirectory',
             this.options.torDataDir,
         ];
-
-        let existsSnowflakeBinary = false;
-        if (snowflakeBinaryPath && snowflakeBinaryPath.trim() !== '') {
-            // If provided snowflake file does not exists, do not use it.
-            existsSnowflakeBinary = await checkFileExists(snowflakeBinaryPath);
-        }
-
-        if (existsSnowflakeBinary) {
-            // Snowflake is a WebRTC pluggable transport for Tor (client)
-            // More info:
-            // https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/-/tree/main/client
-            // https://packages.debian.org/bookworm/snowflake-client
-
-            const SNOWFLAKE_PLUGIN = 'snowflake exec';
-            const SNOWFLAKE_SERVER = 'snowflake 192.0.2.3:80';
-            const SNOWFLAKE_FINGERPRINT = '2B280B23E1107BB62ABFC40DDCC8824814F80A72';
-            const SNOWFLAKE_URL = 'https://snowflake-broker.torproject.net.global.prod.fastly.net/';
-            const SNOWFLAKE_FRONT = 'fronts=foursquare.com,github.githubassets.com';
-            const SNOWFLAKE_ICE =
-                'ice=stun:stun.l.google.com:19302,stun:stun.antisip.com:3478,stun:stun.bluesip.net:3478,stun:stun.dus.net:3478,stun:stun.epygi.com:3478,stun:stun.sonetel.com:3478,stun:stun.uls.co.za:3478,stun:stun.voipgate.com:3478,stun:stun.voys.nl:3478';
-            const SNOWFLAKE_UTLS = 'utls-imitate=hellorandomizedalpn';
-
-            const snowflakeCommand = `${SNOWFLAKE_PLUGIN} ${snowflakeBinaryPath} -log ${snowflakeLogPath}`;
-            const snowflakeBridge = `${SNOWFLAKE_SERVER} ${SNOWFLAKE_FINGERPRINT} fingerprint=${SNOWFLAKE_FINGERPRINT} url=${SNOWFLAKE_URL} ${SNOWFLAKE_FRONT} ${SNOWFLAKE_ICE} ${SNOWFLAKE_UTLS}`;
-
-            config.push(
-                '--UseBridges',
-                '1',
-                '--ClientTransportPlugin',
-                snowflakeCommand,
-                '--Bridge',
-                snowflakeBridge,
-            );
-        }
 
         return config;
     }
