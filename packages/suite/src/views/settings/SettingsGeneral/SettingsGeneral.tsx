@@ -5,7 +5,6 @@ import { SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import {
-    selectHasExperimentalFeature,
     selectIsSettingsDesktopAppPromoBannerShown,
     selectTorState,
 } from 'src/reducers/suite/suiteReducer';
@@ -30,7 +29,6 @@ import { DesktopSuiteBanner } from './DesktopSuiteBanner';
 import { AddressDisplay } from './AddressDisplay';
 import { EnableViewOnly } from './EnableViewOnly';
 import { Experimental } from './Experimental';
-import { TorSnowflake } from './TorSnowflake';
 import { AutomaticUpdate } from './AutomaticUpdate';
 import { AutoStart } from './AutoStart';
 import { ShowOnTray } from './ShowOnTray';
@@ -45,9 +43,6 @@ export const SettingsGeneral = () => {
     const desktopUpdate = useSelector(state => state.desktopUpdate);
     const metadata = useSelector(state => state.metadata);
     const { isMobileLayout } = useLayoutSize();
-    const torSnowflakeExperimentalFeature = useSelector(
-        selectHasExperimentalFeature('tor-snowflake'),
-    );
 
     const hasBitcoinNetworks = enabledNetworks.some(symbol => {
         const networkFeatures = getNetwork(symbol).features;
@@ -85,7 +80,6 @@ export const SettingsGeneral = () => {
                 <SettingsSection title={<Translation id="TR_TOR" />} icon="torBrowser">
                     {isDesktop() && <Tor />}
                     {isTorEnabled && <TorOnionLinks />}
-                    {isDesktop() && torSnowflakeExperimentalFeature && <TorSnowflake />}
                 </SettingsSection>
             )}
 

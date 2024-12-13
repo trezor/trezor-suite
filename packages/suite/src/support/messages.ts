@@ -4052,27 +4052,6 @@ export default defineMessages({
         id: 'TR_ONION_LINKS_TITLE',
         defaultMessage: 'Open trezor.io links as .onion links',
     },
-    TR_TOR_CONFIG_SNOWFLAKE_TITLE: {
-        id: 'TR_TOR_CONFIG_SNOWFLAKE_TITLE',
-        defaultMessage: 'Tor Snowflake Binary Path',
-    },
-    TR_TOR_CONFIG_SNOWFLAKE_DESCRIPTION: {
-        id: 'TR_TOR_CONFIG_SNOWFLAKE_DESCRIPTION',
-        defaultMessage:
-            'Enter the path to the Tor Snowflake binary on your system. Make sure Tor is disabled before making this change.',
-    },
-    TR_TOR_CONFIG_SNOWFLAKE_ERROR_PATH: {
-        id: 'TR_TOR_CONFIG_SNOWFLAKE_ERROR_PATH',
-        defaultMessage: 'Must be a valid full path.',
-    },
-    TR_TOR_CONFIG_SNOWFLAKE_UPDATE_LABEL: {
-        id: 'TR_TOR_CONFIG_SNOWFLAKE_UPDATE_LABEL',
-        defaultMessage: 'Update path',
-    },
-    TR_TOR_CONFIG_SNOWFLAKE_DISABLE_LABEL: {
-        id: 'TR_TOR_CONFIG_SNOWFLAKE_DISABLE_LABEL',
-        defaultMessage: 'Disable Tor Snowflake',
-    },
     TR_TOR_ENABLE_TITLE: {
         id: 'TR_TOR_ENABLE_TITLE',
         defaultMessage: 'Enable Tor',
@@ -5000,15 +4979,6 @@ export default defineMessages({
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION',
         defaultMessage:
             'Use this utility to retrieve passwords stored on Dropbox and secured by Trezor. Designed for former users of the Trezor Password Manager Chrome extension.',
-    },
-    TR_EXPERIMENTAL_TOR_SNOWFLAKE: {
-        id: 'TR_EXPERIMENTAL_TOR_SNOWFLAKE',
-        defaultMessage: 'Tor Snowflake',
-    },
-    TR_EXPERIMENTAL_TOR_SNOWFLAKE_DESCRIPTION: {
-        id: 'TR_EXPERIMENTAL_TOR_SNOWFLAKE_DESCRIPTION',
-        defaultMessage:
-            'Access censored websites and apps using Tor Snowflake, a system designed to bypass restrictions.',
     },
     TR_EXPERIMENTAL_TOR_EXTERNAL: {
         id: 'TR_EXPERIMENTAL_TOR_EXTERNAL',

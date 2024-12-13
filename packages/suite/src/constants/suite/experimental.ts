@@ -1,11 +1,12 @@
 import { TranslationKey } from '@suite-common/intl-types';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { EXPERIMENTAL_PASSWORD_MANAGER_KB_URL, TOR_SNOWFLAKE_KB_URL, Url } from '@trezor/urls';
+import { EXPERIMENTAL_PASSWORD_MANAGER_KB_URL, Url } from '@trezor/urls';
 import { Route } from '@suite-common/suite-types';
+import { isDesktop } from '@trezor/env-utils';
 
 import { Dispatch } from '../../types/suite';
 
-export type ExperimentalFeature = 'password-manager' | 'tor-snowflake' | 'tor-external';
+export type ExperimentalFeature = 'password-manager' | 'tor-external';
 
 export type ExperimentalFeatureConfig = {
     title: TranslationKey;
@@ -23,27 +24,12 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         knowledgeBaseUrl: EXPERIMENTAL_PASSWORD_MANAGER_KB_URL,
         routeName: 'password-manager-index',
     },
-    'tor-snowflake': {
-        title: 'TR_EXPERIMENTAL_TOR_SNOWFLAKE',
-        description: 'TR_EXPERIMENTAL_TOR_SNOWFLAKE_DESCRIPTION',
-        knowledgeBaseUrl: TOR_SNOWFLAKE_KB_URL,
-        onToggle: async ({ newValue }) => {
-            if (!newValue) {
-                const result = await desktopApi.getTorSettings();
-                if (result.success && result.payload.snowflakeBinaryPath !== '') {
-                    await desktopApi.changeTorSettings({
-                        ...result.payload,
-                        snowflakeBinaryPath: '',
-                    });
-                }
-            }
-        },
-    },
     'tor-external': {
         title: 'TR_EXPERIMENTAL_TOR_EXTERNAL',
         description: 'TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION',
         // TODO: create knowledge base page for this!
         // knowledgeBaseUrl: TOR_EXTERNAL_KNOWLEDGE_BASE,
+        isDisabled: () => !isDesktop(),
         onToggle: async ({ newValue }) => {
             const result = await desktopApi.getTorSettings();
             if (result.success && result.payload.useExternalTor !== newValue) {
