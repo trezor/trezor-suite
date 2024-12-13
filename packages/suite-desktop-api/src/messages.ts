@@ -54,7 +54,6 @@ export type HandshakeTorModule = {
 };
 
 export type TorSettings = {
-    snowflakeBinaryPath: string;
     useExternalTor: boolean;
 };
 

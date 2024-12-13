@@ -125,7 +125,7 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         getTorSettings: () => ipcRenderer.invoke('tor/get-settings'),
 
         changeTorSettings: payload => {
-            if (validation.isObject({ snowflakeBinaryPath: 'string' }, payload)) {
+            if (validation.isObject({ useExternalTor: 'boolean' }, payload)) {
                 return ipcRenderer.invoke('tor/change-settings', payload);
             }
 
