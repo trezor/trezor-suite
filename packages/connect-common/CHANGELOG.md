@@ -1,3 +1,9 @@
+# 0.2.7
+
+-   npm-prerelease: @trezor/connect-common 0.2.7-beta.1 (d876bc6071)
+-   Revert chore(connect-common): add fw 2.8.6. for t3t1 (064c56a642)
+-   chore(connect-common): add fw 2.8.6. for t3t1 (21b4b9b0a3)
+
 # 0.2.6
 
 -   fix(connect-common): update ripple default backends (6a3dbf2b77)
