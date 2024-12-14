@@ -43,7 +43,8 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
         >
             {state.routes.map((route, index) => {
                 const isFocused = state.index === index;
-                const { routeName, iconName, label, params } = tabItemOptions[route.name];
+                const { routeName, iconName, focusedIconName, label, params } =
+                    tabItemOptions[route.name];
 
                 const handleTabBarItemPress = () => {
                     const event = navigation.emit({
@@ -62,6 +63,7 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                         key={route.key}
                         isFocused={isFocused}
                         iconName={iconName}
+                        focusedIconName={focusedIconName}
                         title={label}
                         onPress={handleTabBarItemPress}
                         testID={route.name}

@@ -8,6 +8,7 @@ type TabBarItemProps = {
     isFocused: boolean;
     onPress: () => void;
     iconName: IconName;
+    focusedIconName: IconName;
     title?: string;
     testID: string;
 };
@@ -26,7 +27,14 @@ const tabBarItemContainerStyle = prepareNativeStyle(utils => ({
 
 const TAB_BAR_ITEM_HORIZONTAL_HIT_SLOP = 15;
 
-export const TabBarItem = ({ isFocused, onPress, iconName, title, testID }: TabBarItemProps) => {
+export const TabBarItem = ({
+    isFocused,
+    onPress,
+    iconName,
+    focusedIconName,
+    title,
+    testID,
+}: TabBarItemProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -49,7 +57,7 @@ export const TabBarItem = ({ isFocused, onPress, iconName, title, testID }: TabB
         >
             <View style={applyStyle(tabBarItemContainerStyle)}>
                 <Icon
-                    name={iconName}
+                    name={isFocused ? focusedIconName : iconName}
                     size="large"
                     color={isFocused ? 'iconPrimaryDefault' : 'iconDisabled'}
                 />

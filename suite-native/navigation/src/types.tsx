@@ -64,6 +64,7 @@ export type TabsOptions = {
     [routeName: string]: {
         routeName: string;
         iconName: IconName;
+        focusedIconName: IconName;
         label: string;
         params?: Record<string, unknown>;
     };
