@@ -9,6 +9,7 @@ import { isCodesignBuild } from '@trezor/env-utils';
 import { mergeDeepObject } from '@trezor/utils';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
+import { accountsActions } from '@suite-common/wallet-core';
 
 import suiteMiddlewares from 'src/middlewares/suite';
 import walletMiddlewares from 'src/middlewares/wallet';
@@ -54,7 +55,7 @@ const middleware = [
     ...recoveryMiddlewares,
 ];
 
-const excludedActions = [addLog.type];
+const excludedActions = [addLog.type, accountsActions.updateAccountRefreshTimestamp.type];
 
 if (!isCodesignBuild()) {
     const excludeLogger = (_getState: any, action: any): boolean =>
