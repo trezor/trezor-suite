@@ -1825,6 +1825,7 @@ export const icons = {
     piFilled: require('../assets/piFilled.svg'),
     pianoKeys: require('../assets/pianoKeys.svg'),
     pianoKeysFilled: require('../assets/pianoKeysFilled.svg'),
+    pictureFrame: require('../assets/pictureFrame.svg'),
     pictureInPicture: require('../assets/pictureInPicture.svg'),
     pictureInPictureFilled: require('../assets/pictureInPictureFilled.svg'),
     piggyBank: require('../assets/piggyBank.svg'),

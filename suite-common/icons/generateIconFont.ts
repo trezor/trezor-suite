@@ -80,6 +80,7 @@ const usedIcons = [
     'pencilSimpleLine',
     'piggyBank',
     'piggyBankFilled',
+    'pictureFrame',
     'plugs',
     'plus',
     'plusCircle',
