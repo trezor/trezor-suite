@@ -25,6 +25,7 @@ import { selectIsCopyAddressModalShown } from 'src/reducers/suite/suiteReducer';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 
 import { BlurUrls } from '../../tokens/common/BlurUrls';
+import { DropdownRow } from '../../tokens/DropdownRow';
 
 type NftsRowProps = {
     nft: EnhancedTokenInfo;
@@ -36,7 +37,14 @@ type NftsRowProps = {
     isEmptyCollectionsOpen?: boolean;
 };
 
-const NftsRow = ({ nft, network, isShown, selectedAccount }: NftsRowProps) => {
+const NftsRow = ({
+    nft,
+    network,
+    isShown,
+    selectedAccount,
+    isEmptyCollection = false,
+    isEmptyCollectionsOpen = false,
+}: NftsRowProps) => {
     const dispatch = useDispatch();
     const [isCollectionOpen, setIsCollectionOpen] = useState(false);
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
@@ -46,7 +54,13 @@ const NftsRow = ({ nft, network, isShown, selectedAccount }: NftsRowProps) => {
 
     return (
         <>
-            <Table.Row onClick={() => setIsCollectionOpen(!isCollectionOpen)}>
+            <Table.Row
+                onClick={
+                    isEmptyCollection ? undefined : () => setIsCollectionOpen(!isCollectionOpen)
+                }
+                isCollapsed={isEmptyCollection && !isEmptyCollectionsOpen}
+                isHighlightedOnHover={!isEmptyCollection}
+            >
                 <Table.Cell colSpan={1}>
                     <DropdownRow
                         isActive={isCollectionOpen}
@@ -203,9 +217,8 @@ const NftsRow = ({ nft, network, isShown, selectedAccount }: NftsRowProps) => {
                         key={`${nft.contract}-${index}`}
                         isCollapsed={!isCollectionOpen}
                         isHighlightedOnHover={false}
-                        // hasBorderTop={true}
                     >
-                        <Table.Cell colSpan={1}>
+                        <Table.Cell colSpan={2}>
                             <Text typographyStyle="hint">
                                 <HiddenPlaceholder>
                                     <Row gap={spacings.xs}>
