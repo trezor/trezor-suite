@@ -11,7 +11,7 @@ interface AppNavigationTooltipProps {
 }
 
 export const AppNavigationTooltip = ({ children, isActiveTab }: AppNavigationTooltipProps) => {
-    const { selectedAccount } = useSelector(state => state.wallet);
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const isAccountLoading = selectedAccount.status === 'loading';
 

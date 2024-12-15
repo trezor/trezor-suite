@@ -43,7 +43,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     const fee = formatNetworkAmount(tx.fee, tx.symbol);
     const cardanoWithdrawal = formatCardanoWithdrawal(tx);
     const cardanoDeposit = formatCardanoDeposit(tx);
-    const { selectedAccount } = useSelector(state => state.wallet);
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const txSignature = tx.ethereumSpecific?.parsedData?.methodId;
     const isStakeTypeTxNoAmount = isStakeTypeTx(txSignature) && amount.eq(0);

@@ -11,7 +11,7 @@ import { NftsTablesSection } from './NftsTablesSection';
 export const Nfts = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
-    const { selectedAccount } = useSelector(state => state.wallet);
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const dispatch = useDispatch();
 
@@ -25,11 +25,11 @@ export const Nfts = () => {
     }, [selectedAccount, dispatch]);
 
     if (selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="TR_NFT" account={selectedAccount} />;
+        return <WalletLayout title="TR_NAV_NFTS" account={selectedAccount} />;
     }
 
     return (
-        <WalletLayout title="TR_NFT" account={selectedAccount} isSubpage={false}>
+        <WalletLayout title="TR_NAV_NFTS" account={selectedAccount} isSubpage={false}>
             <TokensNavigation
                 selectedAccount={selectedAccount}
                 searchQuery={searchQuery}

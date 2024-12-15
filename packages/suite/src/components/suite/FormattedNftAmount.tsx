@@ -32,7 +32,7 @@ export const FormattedNftAmount = ({
 }: FormattedNftAmountProps) => {
     const theme = useTheme();
     const { translationString } = useTranslation();
-    const { selectedAccount } = useSelector(state => state.wallet);
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { network } = selectedAccount;
 
     const symbolComponent = transfer.symbol ? (

@@ -15,7 +15,7 @@ import { HiddenTokensTable } from './hidden-tokens/HiddenTokensTable';
 export const Tokens = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
-    const { selectedAccount } = useSelector(state => state.wallet);
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const dispatch = useDispatch();
 
     useEffect(() => {

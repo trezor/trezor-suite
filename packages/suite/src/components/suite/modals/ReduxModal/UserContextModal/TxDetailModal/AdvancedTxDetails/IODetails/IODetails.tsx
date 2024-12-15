@@ -101,7 +101,7 @@ const IOGroup = ({
     hasHeadings = true,
     isUtxoBased = false,
 }: IOGroupProps) => {
-    const { selectedAccount } = useSelector(state => state.wallet);
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const anonymitySet = selectedAccount?.account?.addresses?.anonymitySet;
     const hasInputs = !!inputs?.length;
@@ -316,8 +316,7 @@ type IODetailsProps = {
 
 // Not ready for Cardano tokens, they will not be visible, probably
 export const IODetails = ({ tx, isPhishingTransaction }: IODetailsProps) => {
-    const { selectedAccount } = useSelector(state => state.wallet);
-    const { network } = selectedAccount;
+    const network = useSelector(state => state.wallet.selectedAccount.network);
 
     const getContent = () => {
         if (network?.networkType === 'ethereum') {
