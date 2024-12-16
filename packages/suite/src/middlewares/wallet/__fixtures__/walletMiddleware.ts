@@ -44,7 +44,7 @@ export const blockchainSubscription = [
                 coin: 'eth',
             },
             disconnect: {
-                called: 0,
+                called: 1,
             },
         },
     },
@@ -62,7 +62,7 @@ export const blockchainSubscription = [
                 called: 0,
             },
             disconnect: {
-                called: 1,
+                called: 2,
                 coin: 'eth',
             },
         },
