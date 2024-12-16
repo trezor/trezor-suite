@@ -1,6 +1,11 @@
+import { UseFormSetValue } from 'react-hook-form';
+
+import { toChecksumAddress } from 'web3-utils';
+
 import addressValidator from '@trezor/address-validator';
 import { getTestnetSymbols } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
+import { AccountInfo } from '@trezor/blockchain-link-types';
 
 const getNetworkType = (symbol: Account['symbol']) => {
     if (symbol === 'regtest') return symbol;
@@ -86,4 +91,27 @@ export const isHexValid = (value: string, prefix?: string) => {
     if (!/^[0-9A-Fa-f]+$/.test(value)) return false;
 
     return true;
+};
+
+export const checkIsAddressNotUsedNotChecksummed = (
+    address: string,
+    history: AccountInfo['history'],
+    inputName: string,
+    setValue: UseFormSetValue<any>,
+    setHasAddressChecksummed: (value: boolean) => void,
+) => {
+    const hasHistory = history.total !== 0;
+
+    if (hasHistory) {
+        setValue(inputName, toChecksumAddress(address), { shouldValidate: true });
+        setHasAddressChecksummed(true);
+
+        return false;
+    }
+
+    if (!hasHistory && address === address.toLowerCase()) {
+        return true;
+    }
+
+    return false;
 };

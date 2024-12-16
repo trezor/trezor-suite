@@ -60,7 +60,7 @@ export const BottomText = ({
                     (iconName && (
                         <Icon name={iconName} size="medium" variant={variant as IconVariant} />
                     ))}
-                <Text variant={variant as TextVariant} typographyStyle="hint" as="div">
+                <Text variant={variant as TextVariant} typographyStyle="hint" as="div" flex="auto">
                     {children}
                 </Text>
             </Row>

@@ -166,7 +166,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                             feeLimitError?.message ? (
                                 <InputError
                                     message={feeLimitError?.message}
-                                    button={validationButtonProps}
+                                    buttonProps={validationButtonProps}
                                 />
                             ) : null
                         }

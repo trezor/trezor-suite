@@ -7,23 +7,23 @@ import { spacings } from '@trezor/theme';
 import { LearnMoreButton } from '../suite/LearnMoreButton';
 
 type ButtonProps = { onClick: MouseEventHandler<HTMLButtonElement>; text: string };
-type LinkProps = { url: Url };
 
 export type InputErrorProps = {
-    button?: ButtonProps | LinkProps;
+    buttonProps?: ButtonProps;
+    learnMoreUrl?: Url;
     message?: string;
 };
 
-export const InputError = ({ button, message }: InputErrorProps) => (
+export const InputError = ({ buttonProps, learnMoreUrl, message }: InputErrorProps) => (
     <Row gap={spacings.xs} justifyContent="space-between" flex="1">
-        <Paragraph>{message}</Paragraph>
-        {button &&
-            ('url' in button ? (
-                <LearnMoreButton url={button.url} />
-            ) : (
-                <Button size="tiny" variant="tertiary" onClick={button.onClick} textWrap={false}>
-                    {button.text}
-                </Button>
-            ))}
+        <Row gap={spacings.xs}>
+            <Paragraph>{message}</Paragraph>
+            {learnMoreUrl && <LearnMoreButton url={learnMoreUrl} />}
+        </Row>
+        {buttonProps?.text && (
+            <Button size="tiny" variant="tertiary" onClick={buttonProps.onClick}>
+                {buttonProps.text}
+            </Button>
+        )}
     </Row>
 );
