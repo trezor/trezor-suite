@@ -1,25 +1,106 @@
 import { useState, useMemo } from 'react';
 
-import { NewModal, Column, Banner } from '@trezor/components';
-import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
+import { NewModal } from '@trezor/components';
 import { isPending, findChainedTransactions, getAccountKey } from '@suite-common/wallet-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     selectAccountByKey,
-    selectTransactionConfirmations,
     selectAllPendingTransactions,
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
-import { spacings } from '@trezor/theme';
+import { ChainedTransactions } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
-import { Translation, TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 
-import { BasicTxDetails } from './BasicTxDetails';
 import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
 import { ChangeFee } from './ChangeFee/ChangeFee';
 import { ReplaceTxButton } from './ChangeFee/ReplaceTxButton';
+import { TxDetailModalBase } from './TxDetailModalBase';
+
+type DetailModalProps = {
+    tx: WalletAccountTransaction;
+    onCancel: () => void;
+    tab: TabID | undefined;
+    onChangeFeeClick: () => void;
+    chainedTxs?: ChainedTransactions;
+};
+
+const DetailModal = ({ tx, onCancel, tab, onChangeFeeClick, chainedTxs }: DetailModalProps) => {
+    const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
+    const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
+    const network = getNetwork(account.symbol);
+    const isPhishingTransaction = useSelector(state =>
+        selectIsPhishingTransaction(state, tx.txid, accountKey),
+    );
+    const blockchain = useSelector(state => state.wallet.blockchain[tx.symbol]);
+
+    return (
+        <TxDetailModalBase
+            tx={tx}
+            onCancel={onCancel}
+            heading={<Translation id="TR_TRANSACTION_DETAILS" />}
+            bottomContent={
+                <NewModal.Button variant="tertiary" onClick={onChangeFeeClick}>
+                    <Translation id="TR_BUMP_FEE" />
+                </NewModal.Button>
+            }
+            onBackClick={undefined}
+        >
+            <AdvancedTxDetails
+                explorerUrl={blockchain.explorer.tx}
+                defaultTab={tab}
+                network={network}
+                accountType={account.accountType}
+                tx={tx}
+                chainedTxs={chainedTxs}
+                isPhishingTransaction={isPhishingTransaction}
+            />
+        </TxDetailModalBase>
+    );
+};
+
+type BumpFeeModalProps = {
+    tx: WalletAccountTransaction;
+    onCancel: () => void;
+    onBackClick: () => void;
+    onShowChained: () => void;
+    chainedTxs?: ChainedTransactions;
+};
+
+const BumpFeeModal = ({
+    tx,
+    onCancel,
+    onBackClick,
+    onShowChained,
+    chainedTxs,
+}: BumpFeeModalProps) => {
+    const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
+    const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
+    const network = getNetwork(account.symbol);
+    const networkFeatures = network.accountTypes[account.accountType]?.features ?? network.features;
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+
+    return (
+        <TxDetailModalBase
+            tx={tx}
+            onCancel={onCancel}
+            heading={<Translation id="TR_TRANSACTION_DETAILS" />}
+            bottomContent={
+                networkFeatures?.includes('rbf') &&
+                tx.rbfParams &&
+                !tx.deadline &&
+                selectedAccount.status === 'loaded' ? (
+                    <ReplaceTxButton rbfParams={tx.rbfParams} selectedAccount={selectedAccount} />
+                ) : null
+            }
+            onBackClick={onBackClick}
+        >
+            <ChangeFee tx={tx} chainedTxs={chainedTxs} showChained={onShowChained} />
+        </TxDetailModalBase>
+    );
+};
 
 type TxDetailModalProps = {
     tx: WalletAccountTransaction;
@@ -28,14 +109,12 @@ type TxDetailModalProps = {
 };
 
 export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => {
-    const blockchain = useSelector(state => state.wallet.blockchain[tx.symbol]);
-    const transactions = useSelector(selectAllPendingTransactions);
-
     const [section, setSection] = useState<'CHANGE_FEE' | 'DETAILS'>(
         rbfForm ? 'CHANGE_FEE' : 'DETAILS',
     );
     const [tab, setTab] = useState<TabID | undefined>(undefined);
 
+    const transactions = useSelector(selectAllPendingTransactions);
     // const confirmations = getConfirmations(tx, blockchain.blockHeight);
     // TODO: replace this part will be refactored after blockbook implementation:
     // https://github.com/trezor/blockbook/issues/555
@@ -44,114 +123,37 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
 
         return findChainedTransactions(tx.descriptor, tx.txid, transactions);
     }, [tx, transactions]);
-    const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
-    const confirmations = useSelector(state =>
-        selectTransactionConfirmations(state, tx.txid, accountKey),
-    );
-    const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const network = getNetwork(account.symbol);
-    const networkFeatures = network.accountTypes[account.accountType]?.features ?? network.features;
-
-    const isPhishingTransaction = useSelector(state =>
-        selectIsPhishingTransaction(state, tx.txid, accountKey),
-    );
 
     const onBackClick = () => {
         setSection('DETAILS');
         setTab(undefined);
     };
 
-    const getBottomContent = () => {
-        if (
-            networkFeatures?.includes('rbf') &&
-            tx.rbfParams &&
-            !tx.deadline &&
-            selectedAccount.status === 'loaded'
-        ) {
-            if (section === 'CHANGE_FEE') {
-                return (
-                    <ReplaceTxButton rbfParams={tx.rbfParams} selectedAccount={selectedAccount} />
-                );
-            } else {
-                return (
-                    <NewModal.Button
-                        variant="tertiary"
-                        onClick={() => {
-                            setSection('CHANGE_FEE');
-                            setTab(undefined);
-                        }}
-                    >
-                        <Translation id="TR_BUMP_FEE" />
-                    </NewModal.Button>
-                );
-            }
-        }
+    const onShowChained = () => {
+        setSection('DETAILS');
+        setTab('chained');
     };
 
-    return (
-        <NewModal
+    const onChangeFeeClick = () => {
+        setSection('CHANGE_FEE');
+        setTab(undefined);
+    };
+
+    return section === 'DETAILS' ? (
+        <DetailModal
+            tx={tx}
             onCancel={onCancel}
-            heading={
-                section === 'CHANGE_FEE' ? (
-                    <Translation id="TR_BUMP_FEE" />
-                ) : (
-                    <Translation id="TR_TRANSACTION_DETAILS" />
-                )
-            }
-            size="large"
-            bottomContent={getBottomContent()}
-            onBackClick={section === 'CHANGE_FEE' ? onBackClick : undefined}
-        >
-            <Column gap={spacings.lg}>
-                <BasicTxDetails
-                    explorerUrl={blockchain.explorer.tx}
-                    explorerUrlQueryString={blockchain.explorer.queryString}
-                    tx={tx}
-                    network={network}
-                    confirmations={confirmations}
-                />
-
-                {isPhishingTransaction && (
-                    <Banner icon>
-                        <Translation
-                            id="TR_ZERO_PHISHING_BANNER"
-                            values={{
-                                a: chunks => (
-                                    <TrezorLink
-                                        typographyStyle="hint"
-                                        href={HELP_CENTER_ZERO_VALUE_ATTACKS}
-                                        variant="underline"
-                                    >
-                                        {chunks}
-                                    </TrezorLink>
-                                ),
-                            }}
-                        />
-                    </Banner>
-                )}
-
-                {section === 'CHANGE_FEE' ? (
-                    <ChangeFee
-                        tx={tx}
-                        chainedTxs={chainedTxs}
-                        showChained={() => {
-                            setSection('DETAILS');
-                            setTab('chained');
-                        }}
-                    />
-                ) : (
-                    <AdvancedTxDetails
-                        explorerUrl={blockchain.explorer.tx}
-                        defaultTab={tab}
-                        network={network}
-                        accountType={account.accountType}
-                        tx={tx}
-                        chainedTxs={chainedTxs}
-                        isPhishingTransaction={isPhishingTransaction}
-                    />
-                )}
-            </Column>
-        </NewModal>
+            tab={tab}
+            onChangeFeeClick={onChangeFeeClick}
+            chainedTxs={chainedTxs}
+        />
+    ) : (
+        <BumpFeeModal
+            tx={tx}
+            onCancel={onCancel}
+            onBackClick={onBackClick}
+            onShowChained={onShowChained}
+            chainedTxs={chainedTxs}
+        />
     );
 };
