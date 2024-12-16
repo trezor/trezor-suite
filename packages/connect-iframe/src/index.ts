@@ -134,8 +134,6 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
             isDev: process.env.NODE_ENV === 'development',
         });
 
-        const transport = transports?.[0];
-
         analytics.report({
             type: EventType.AppReady,
             payload: {
@@ -145,8 +143,8 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
                 referrerEmail: settings?.manifest?.email,
                 method: method?.name,
                 payload: method?.payload ? Object.keys(method.payload) : undefined,
-                transportType: transport?.type,
-                transportVersion: transport?.version,
+                transportTypes: transports?.map(t => t.type),
+                bridgeVersion: transports?.find(t => t.type === 'BridgeTransport')?.version,
             },
         });
 

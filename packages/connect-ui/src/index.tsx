@@ -97,7 +97,7 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
         };
     }, [state?.settings?.origin]);
 
-    const outdated = state?.transports?.[0]?.outdated;
+    const outdated = state?.transports?.find(t => t.type === 'BridgeTransport')?.outdated;
 
     const [Component, Notifications] = useMemo(() => {
         let component: ReactNode | null;

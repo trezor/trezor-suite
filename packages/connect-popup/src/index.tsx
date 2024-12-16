@@ -327,7 +327,7 @@ const handleMessageInCoreMode = (
             reactEventBus.dispatch({ type: 'state-update', payload: getState() });
 
             const { settings } = getState();
-            const transport = core.getActiveTransports()?.[0];
+            const transports = core.getActiveTransports();
             analytics.report({
                 type: EventType.AppReady,
                 payload: {
@@ -337,8 +337,8 @@ const handleMessageInCoreMode = (
                     referrerEmail: settings?.manifest?.email,
                     method: method?.name,
                     payload: method?.payload ? Object.keys(method.payload) : undefined,
-                    transportType: transport?.type,
-                    transportVersion: transport?.version,
+                    transportTypes: transports?.map(t => t.type),
+                    bridgeVersion: transports?.find(t => t.type === 'BridgeTransport')?.version,
                 },
             });
         });

@@ -28,8 +28,8 @@ export type ConnectAnalyticsEvent =
               referrerEmail?: string;
               method?: string;
               payload?: string[];
-              transportType?: string;
-              transportVersion?: string;
+              transportTypes?: string[];
+              bridgeVersion?: string;
           };
       }
     | {
