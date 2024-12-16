@@ -13,6 +13,7 @@ export class OnboardingActions {
     readonly analyticsContinueButton: Locator;
     readonly onboardingContinueButton: Locator;
     readonly onboardingViewOnlySkipButton: Locator;
+    readonly onboardingViewOnlyEnableButton: Locator;
     readonly viewOnlyTooltipGotItButton: Locator;
     readonly connectDevicePrompt: Locator;
     readonly authenticityStartButton: Locator;
@@ -31,6 +32,7 @@ export class OnboardingActions {
         this.analyticsContinueButton = this.page.getByTestId('@analytics/continue-button');
         this.onboardingContinueButton = this.page.getByTestId('@onboarding/exit-app-button');
         this.onboardingViewOnlySkipButton = this.page.getByTestId('@onboarding/viewOnly/skip');
+        this.onboardingViewOnlyEnableButton = this.page.getByTestId('@onboarding/viewOnly/enable');
         this.viewOnlyTooltipGotItButton = this.page.getByTestId('@viewOnlyTooltip/gotIt');
         this.connectDevicePrompt = this.page.getByTestId('@connect-device-prompt');
         this.authenticityStartButton = this.page.getByTestId('@authenticity-check/start-button');
@@ -47,7 +49,7 @@ export class OnboardingActions {
             .then(dismissFwHashCheckButton => dismissFwHashCheckButton?.click());
     }
 
-    async completeOnboarding() {
+    async completeOnboarding({ enableViewOnly = false } = {}) {
         if (this.testInfo.project.name === PlaywrightProjects.Web) {
             await this.disableFirmwareHashCheck();
         }
@@ -59,7 +61,11 @@ export class OnboardingActions {
             await TrezorUserEnvLink.pressYes();
             await this.authenticityContinueButton.click();
         }
-        await this.onboardingViewOnlySkipButton.click();
+        if (enableViewOnly) {
+            await this.onboardingViewOnlyEnableButton.click();
+        } else {
+            await this.onboardingViewOnlySkipButton.click();
+        }
         await this.viewOnlyTooltipGotItButton.click();
     }
 
