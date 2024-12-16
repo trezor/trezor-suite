@@ -42,6 +42,12 @@ module.exports = {
             stream: require.resolve('stream-browserify'),
         },
     },
+    externals: [
+        {
+            // Replace cross-fetch with native fetch, otherwise it will use node-fetch and fails to build
+            'cross-fetch': 'fetch',
+        },
+    ],
     performance: {
         hints: false,
     },
