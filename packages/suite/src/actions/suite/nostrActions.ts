@@ -5,16 +5,16 @@ import { Dispatch, GetState } from 'src/types/suite';
 import { NOSTR } from 'src/actions/suite/constants';
 
 export type NostrAction =
-    | {
-          type: typeof NOSTR.INIT;
-          payload: { npub: string; nsec: string; relayUrl: string; type: 'hot-keys' | 'signer' };
-      }
     | { type: typeof NOSTR.DISPOSE }
     | { type: typeof NOSTR.NEW_EVENT; payload: { event: any } }
     | {
           type: typeof NOSTR.SET_STATUS;
           payload: {
-              status: 'connected' | 'disconnected' | 'connecting';
+              status: 'connected' | 'disconnected';
+              npub: NostrClient['npubStr'];
+              nsec: NostrClient['nsecStr'];
+              relayUrl: string;
+              type: 'hot-keys' | 'signer';
           };
       };
 
@@ -25,50 +25,29 @@ const nostrClient = new NostrClient({
 });
 
 export const init = () => (dispatch: Dispatch, _getState: GetState) => {
-    // nostrClient.newIdentity();
-
-    dispatch({
-        type: NOSTR.INIT,
-        payload: {
-            npub: nostrClient.npub,
-            nsec: nostrClient.nsecStr,
-            relayUrl: nostrClient.relay.url,
-        },
-    });
-
     nostrClient.on('event', message => {
-        console.log('nostr event', message);
-
-        if (message) {
-            const { content } = message;
-            dispatch({
-                type: NOSTR.NEW_EVENT,
-                payload: {
-                    event: {
-                        ...message,
-                        content: JSON.parse(content),
-                    },
-                },
-            });
-        }
-    });
-
-    nostrClient.on('status', status => {
+        const { content } = message;
         dispatch({
-            type: NOSTR.SET_STATUS,
+            type: NOSTR.NEW_EVENT,
             payload: {
-                status,
+                event: {
+                    ...message,
+                    // todo: content parsing should take place deeper
+                    content: JSON.parse(content),
+                },
             },
         });
     });
 
-    nostrClient.on('identity', identity => {
+    nostrClient.on('status', event => {
+        console.log('event status', event);
         dispatch({
-            type: NOSTR.INIT,
+            type: NOSTR.SET_STATUS,
             payload: {
-                type: identity.type,
-                npub: identity.npub,
-                nsec: identity.nsec,
+                status: event.relayConnection,
+                type: event.identity.type,
+                npub: event.identity.npubStr,
+                nsec: event.identity.nsecStr,
                 relayUrl: nostrClient.relay.url,
             },
         });
@@ -77,9 +56,18 @@ export const init = () => (dispatch: Dispatch, _getState: GetState) => {
     nostrClient.connect();
 };
 
+export const connect = () => async (_dispatch: Dispatch, _getState: GetState) => {
+    return nostrClient.connect();
+};
+
 export const subscribe = () => async (_dispatch: Dispatch, getState: GetState) => {
-    const { npub } = getState().nostr.keys;
+    const { npub } = getState().nostr;
     const { selectedDevice } = getState().device;
+
+    if (!selectedDevice) {
+        console.warn('no device connected');
+        return;
+    }
 
     const response = await TrezorConnect.nostrGetPublicKey({
         path: "m/44'/1237'/0'/0/0",
@@ -89,7 +77,6 @@ export const subscribe = () => async (_dispatch: Dispatch, getState: GetState) =
 
     if (!response.success) {
         console.log('nostrGetPublicKey error', response.payload.error);
-
         return;
     }
 
@@ -115,31 +102,49 @@ export const dispose = () => (_dispatch: Dispatch, _getState: GetState) => {
     return nostrClient?.dispose();
 };
 
-export const setIdentity = () => async (dispatch: Dispatch, _getState: GetState) => {
+export const setIdentity = () => async (_dispatch: Dispatch, _getState: GetState) => {
     const { selectedDevice } = _getState().device;
 
-    const response = await TrezorConnect.nostrGetPublicKey({
-        path: "m/44'/1237'/0'/0/0",
-        device: selectedDevice,
-        useEmptyPassphrase: selectedDevice?.useEmptyPassphrase,
-    });
-
-    console.log('response', response);
-    if (!response.success) {
+    if (!selectedDevice) {
+        console.warn('no device connected');
         return;
     }
 
-    nostrClient?.setIdentity({
-        type: 'signer',
-        npubStr: response.payload.pubkey,
-        signer: (event: any) =>
-            TrezorConnect.nostrSignEvent({
-                path: "m/44'/1237'/0'/0/0",
-                device: selectedDevice,
-                useEmptyPassphrase: selectedDevice?.useEmptyPassphrase,
-                ...event,
-            }),
-    });
+    const targetType: NostrClient['type'] =
+        nostrClient?.type === 'hot-keys' ? 'signer' : 'hot-keys';
+
+    console.log('targetType', targetType);
+
+    if (targetType === 'signer') {
+        const response = await TrezorConnect.nostrGetPublicKey({
+            path: "m/44'/1237'/0'/0/0",
+            device: selectedDevice,
+            useEmptyPassphrase: selectedDevice?.useEmptyPassphrase,
+        });
+
+        console.log('response', response);
+        if (!response.success) {
+            return;
+        }
+
+        nostrClient?.setIdentity({
+            type: 'signer',
+            // @ts-ignore. will this change in the fw?
+            npubStr: response.payload.pubkey,
+            signer: (event: any) =>
+                TrezorConnect.nostrSignEvent({
+                    path: "m/44'/1237'/0'/0/0",
+                    device: selectedDevice,
+                    useEmptyPassphrase: selectedDevice?.useEmptyPassphrase,
+                    ...event,
+                }),
+        });
+    } else {
+        nostrClient?.setIdentity({
+            type: 'hot-keys',
+            nsecStr: nostrClient.getNewNsec(),
+        });
+    }
 
     console.log('nostrClient', nostrClient);
 };

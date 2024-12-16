@@ -10,20 +10,16 @@ import * as nostrActions from 'src/actions/suite/nostrActions';
 
 export const Nostr = () => {
     const device = useSelector(selectDevice);
-    const [peerNpub, setPeerNpub] = useState<`npub1${string}` | undefined>(undefined);
+    const [peerNpub, setPeerNpub] = useState<`npub1${string}` | ''>('');
     const [addressRequestState, setAddressRequestState] = useState<'none' | 'pending' | 'success'>(
         'none',
     );
 
-    const nostr = useSelector(state => state.nostr);
-    const { keys, status: clientStatus, event: events, relayUrl, type } = nostr;
-    const { nsec: Nsec, npub: myNpub } = keys;
+    const npub = useSelector(state => state.nostr.npub);
+    const nsec = useSelector(state => state.nostr.nsec);
+    const clientStatus = useSelector(state => state.nostr.status);
+    const { event: events, relayUrl, type } = useSelector(state => state.nostr);
 
-    /*console.log('status', clientStatus);
-    console.log('events, ', events);
-    console.log('type', type);
-    console.log('Nsec', Nsec);
-    console.log('myNpub', myNpub);*/
     const unusedAddress = useSelector(
         state => state.wallet.accounts[0]?.addresses?.unused[0].address,
     );
@@ -38,6 +34,9 @@ export const Nostr = () => {
         dispatch(nostrActions.subscribe());
     };
 
+    const handleConnectClick = () => {
+        dispatch(nostrActions.connect());
+    };
     const handleDisconnectClick = () => {
         dispatch(nostrActions.dispose());
     };
@@ -153,15 +152,11 @@ export const Nostr = () => {
                 <TextColumn title="Client status" description={clientStatus} />
                 <TextColumn title="Relay" description={relayUrl} />
                 <ActionColumn>
-                    {clientStatus === 'disconnected' && <Button onClick={() => {}}>Connect</Button>}
+                    {clientStatus === 'disconnected' && (
+                        <Button onClick={handleConnectClick}>Connect</Button>
+                    )}
                     {clientStatus === 'connected' && (
-                        <Button
-                            onClick={() => {
-                                handleDisconnectClick();
-                            }}
-                        >
-                            Disconnect
-                        </Button>
+                        <Button onClick={handleDisconnectClick}>Disconnect</Button>
                     )}
                 </ActionColumn>
             </SectionItem>
@@ -182,13 +177,7 @@ export const Nostr = () => {
                 <TextColumn title="Nsec" description="" />
 
                 <ActionColumn>
-                    <Input
-                        isDisabled
-                        placeholder="My Nsec"
-                        value={Nsec}
-                        onChange={() => {}}
-                        size="small"
-                    />
+                    <Input readOnly value={nsec || ''} onChange={() => {}} size="small" />
                 </ActionColumn>
             </SectionItem>
 
@@ -196,7 +185,7 @@ export const Nostr = () => {
                 <TextColumn title="Npub" description="" />
                 <ActionColumn>
                     <br />
-                    <Input disabled={true} placeholder="My Npub" value={myNpub} size="small" />
+                    <Input readOnly value={npub || ''} size="small" />
                 </ActionColumn>
             </SectionItem>
 
@@ -271,7 +260,7 @@ export const Nostr = () => {
                             dispatch(nostrActions.setIdentity());
                         }}
                     >
-                        Switch identity
+                        {type === 'hot-keys' ? 'Switch to hw signer' : 'Switch to hot-keys'}
                     </Button>
                 </ActionColumn>
             </SectionItem>
