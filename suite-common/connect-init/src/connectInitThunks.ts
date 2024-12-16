@@ -45,6 +45,12 @@ export const connectInitThunk = createThunk(
         });
 
         TrezorConnect.on(UI_EVENT, ({ event: _, ...action }) => {
+            if (action.type === 'ui-select_device') {
+                // this is why you received the ui-select_device event.
+                console.warn(
+                    'Hey, it looks like you called a TrezorConnect method without providing device property.',
+                );
+            }
             // dispatch event as action
             dispatch(action);
         });
