@@ -23,6 +23,7 @@ import {
 } from '@suite-native/settings';
 import { useToast } from '@suite-native/toasts';
 import { TimerId } from '@trezor/type-utils';
+import { selectIsCreatingNewPassphraseWallet } from '@suite-native/device-authorization';
 
 import viewOnlyLottie from '../../assets/view-only-lottie.json';
 
@@ -40,7 +41,7 @@ export const useShowViewOnlyAlert = () => {
     const viewOnlyCancelationTimestamp = useSelector(selectViewOnlyCancelationTimestamp);
     const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
     const hasDiscovery = useSelector(selectHasDeviceDiscovery);
-
+    const isCreatingNewPassphraseWallet = useSelector(selectIsCreatingNewPassphraseWallet);
     const [isAvailableBiometrics, setIsAvailableBiometrics] = useState(false);
 
     useEffect(() => {
@@ -109,6 +110,7 @@ export const useShowViewOnlyAlert = () => {
             !isPortfolioTrackerDevice &&
             !hasDiscovery &&
             !viewOnlyCancelationTimestamp &&
+            !isCreatingNewPassphraseWallet &&
             (isBiometricsInitialSetupFinished || !isAvailableBiometrics);
 
         //show after a delay
@@ -133,5 +135,6 @@ export const useShowViewOnlyAlert = () => {
         isPortfolioTrackerDevice,
         showViewOnlyAlert,
         viewOnlyCancelationTimestamp,
+        isCreatingNewPassphraseWallet,
     ]);
 };
