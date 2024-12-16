@@ -77,7 +77,8 @@ const config: webpack.Configuration = {
         module: true,
         path: dist,
         publicPath: './',
-        library: { type: 'module' },
+        chunkFormat: 'module',
+        chunkLoading: 'import',
     },
     externals: [
         ...dependencies,
