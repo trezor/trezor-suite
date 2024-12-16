@@ -48,7 +48,13 @@ export const RotateDeviceImage = ({
                     width={animationWidth}
                 />
             ) : (
-                <StyledImage alt="Trezor" image={`TREZOR_${deviceModel}`} className={className} />
+                <StyledImage
+                    width={animationWidth}
+                    height={animationHeight}
+                    alt="Trezor"
+                    image={`TREZOR_${deviceModel}`}
+                    className={className}
+                />
             )}
         </>
     );

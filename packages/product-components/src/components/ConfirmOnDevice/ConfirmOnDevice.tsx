@@ -33,15 +33,13 @@ export const SLIDE_DOWN = keyframes`
     }
 `;
 
-const Wrapper = styled.div<{ $animation?: AnimationDirection }>`
-    display: flex;
-    width: 300px;
-    height: 62px;
-    padding: 0 ${spacingsPx.md} 0 ${spacingsPx.xxl};
+const Wrapper = styled.div<{ $animation?: AnimationDirection; $isCancelable?: boolean }>`
+    padding: ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.xxl};
     border-radius: ${borders.radii.full};
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     box-shadow: ${({ theme }) => theme.boxShadowBase};
-    align-items: center;
+
+    ${({ $isCancelable }) => !$isCancelable && `padding-right: ${spacingsPx.xxl};`}
 
     ${({ $animation }) =>
         $animation === AnimationDirection.Up &&
@@ -70,6 +68,7 @@ export interface ConfirmOnDeviceProps {
 export const ConfirmOnDevice = ({ isConfirmed, ...rest }: ConfirmOnDeviceProps) => (
     <Wrapper
         $animation={isConfirmed ? AnimationDirection.Down : AnimationDirection.Up}
+        $isCancelable={!!rest.onCancel}
         data-testid="@prompts/confirm-on-device"
         onClick={e => e.stopPropagation()}
     >

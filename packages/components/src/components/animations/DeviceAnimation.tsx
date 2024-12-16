@@ -10,8 +10,8 @@ import { AnimationWrapper, Shape } from './AnimationPrimitives';
 import { resolveStaticPath } from '../../utils/resolveStaticPath';
 
 const StyledVideo = styled.video`
-    width: 100%;
-    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
 `;
 
 export type AnimationDeviceType =
@@ -80,8 +80,6 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                         loop={loop}
                         autoPlay
                         muted
-                        width={width}
-                        height={height}
                         ref={videoRef}
                         onMouseOver={onVideoMouseOver}
                         key={key}
@@ -100,8 +98,6 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                         loop={loop}
                         autoPlay
                         muted
-                        height={height}
-                        width={width}
                         ref={videoRef}
                         onMouseOver={onVideoMouseOver}
                         key={key}
@@ -136,8 +132,6 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                         loop={loop}
                         autoPlay
                         muted
-                        width={height}
-                        height={height}
                         ref={videoRef}
                         onMouseOver={onVideoMouseOver}
                         key={key}
