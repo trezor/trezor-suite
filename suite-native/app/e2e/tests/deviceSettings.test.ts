@@ -16,7 +16,7 @@ import {
     restartApp,
 } from '../utils';
 
-conditionalDescribe(device.getPlatform() !== 'android', 'Device settings', () => {
+conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () => {
     beforeAll(async () => {
         await prepareTrezorEmulator();
         await openApp({ newInstance: true });

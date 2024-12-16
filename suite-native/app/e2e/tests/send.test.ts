@@ -66,7 +66,7 @@ const signTransactionAndSendIt = async () => {
     await onSendOutputsReview.clickSendTransaction();
 };
 
-conditionalDescribe(device.getPlatform() !== 'android', 'Send transaction flow.', () => {
+conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow.', () => {
     beforeAll(async () => {
         await prepareTrezorEmulator();
         await openApp({ newInstance: true });

@@ -11,7 +11,7 @@ import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
 const platform = device.getPlatform();
 
 conditionalDescribe(
-    device.getPlatform() !== 'android',
+    device.getPlatform() === 'android',
     'Go through onboarding and connect Trezor.',
     () => {
         beforeAll(async () => {

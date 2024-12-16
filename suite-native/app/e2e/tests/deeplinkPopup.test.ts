@@ -38,7 +38,7 @@ const openUriScheme = (url: string, platformToOpen: 'android') => {
     });
 };
 
-conditionalDescribe(device.getPlatform() !== 'android', 'Deeplink connect popup.', () => {
+conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.', () => {
     beforeAll(async () => {
         await new Promise(resolve => {
             server = http.createServer((req, res) => {
