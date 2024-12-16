@@ -58,7 +58,7 @@ export const Row = styled.tr<{
         $isCollapsed &&
         css`
             visibility: collapse;
-            border-top: 0;
+            border-top: 1;
             opacity: 0;
         `}
 
