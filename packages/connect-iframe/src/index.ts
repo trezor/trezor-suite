@@ -105,13 +105,13 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
         // Handle immediately, before other logic
         core.handleMessage({ type: POPUP.HANDSHAKE });
 
-        const transport = core.getTransportInfo();
+        const transports = core.getActiveTransports();
         const settings = DataManager.getSettings();
 
         postMessage(
             createPopupMessage(POPUP.HANDSHAKE, {
                 settings: DataManager.getSettings(),
-                transport,
+                transports,
             }),
         );
         _log.debug('loading current method');
@@ -133,6 +133,8 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
             commitId: process.env.COMMIT_HASH || '',
             isDev: process.env.NODE_ENV === 'development',
         });
+
+        const transport = transports?.[0];
 
         analytics.report({
             type: EventType.AppReady,

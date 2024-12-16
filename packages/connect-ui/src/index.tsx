@@ -97,6 +97,8 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
         };
     }, [state?.settings?.origin]);
 
+    const outdated = state?.transports?.[0]?.outdated;
+
     const [Component, Notifications] = useMemo(() => {
         let component: ReactNode | null;
 
@@ -125,7 +127,7 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
 
         // notifications
         const notifications: { [key: string]: JSX.Element } = {};
-        if (state?.transport?.outdated) {
+        if (outdated) {
             notifications['bridge-outdated'] = <BridgeUpdateNotification key="bridge-outdated" />;
         }
         messages.forEach(message => {
@@ -141,7 +143,7 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
         });
 
         return [component, notifications];
-    }, [messages, postMessage, state?.transport?.outdated]);
+    }, [messages, postMessage, outdated]);
 
     useEffect(() => {
         if (Component) {

@@ -33,27 +33,26 @@ export interface UdevInfo {
 }
 
 export interface TransportInfo {
+    apiType: Transport['apiType'];
     type: Transport['name'];
     version: string;
     outdated: boolean;
+}
+
+export interface TransportError {
+    apiType?: Transport['apiType'];
+    error: string;
+    code?: string;
+}
+
+export interface InstallerInfo {
     bridge?: BridgeInfo;
     udev?: UdevInfo;
 }
 
 export type TransportEvent =
-    | {
-          type: typeof TRANSPORT.START;
-          payload: TransportInfo;
-      }
-    | {
-          type: typeof TRANSPORT.ERROR;
-          payload: {
-              error: string;
-              code?: string;
-              bridge?: BridgeInfo;
-              udev?: UdevInfo;
-          };
-      };
+    | { type: typeof TRANSPORT.START; payload: TransportInfo & InstallerInfo }
+    | { type: typeof TRANSPORT.ERROR; payload: TransportError & InstallerInfo };
 
 export interface TransportSetTransports {
     type: typeof TRANSPORT.SET_TRANSPORTS;

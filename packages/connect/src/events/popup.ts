@@ -51,7 +51,7 @@ export interface PopupHandshake {
     type: typeof POPUP.HANDSHAKE;
     payload: {
         settings: ConnectSettings; // those are settings from the iframe, they could be different from window.opener settings
-        transport?: TransportInfo;
+        transports?: TransportInfo[];
     };
 }
 
