@@ -9,6 +9,7 @@ import {
 } from '@suite-common/wallet-core';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import { desktopApi } from '@trezor/suite-desktop-api';
+import * as trezorConnectPopupActions from '@trezor/suite-desktop-connect-popup';
 import { isDesktop } from '@trezor/env-utils';
 
 import * as routerActions from 'src/actions/suite/routerActions';
@@ -115,7 +116,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     // 14. init connect popup handler
     if (isDesktop()) {
-        dispatch(trezorConnectActions.connectPopupInitThunk());
+        dispatch(trezorConnectPopupActions.connectPopupInitThunk());
     }
 
     // 15. backend connected, suite is ready to use

@@ -9431,7 +9431,6 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:^"
-    "@trezor/suite-desktop-api": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     redux-mock-store: "npm:^1.5.4"
@@ -12374,6 +12373,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/suite-desktop-connect-popup@workspace:*, @trezor/suite-desktop-connect-popup@workspace:packages/suite-desktop-connect-popup":
+  version: 0.0.0-use.local
+  resolution: "@trezor/suite-desktop-connect-popup@workspace:packages/suite-desktop-connect-popup"
+  dependencies:
+    "@reduxjs/toolkit": "npm:1.9.5"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/env-utils": "workspace:^"
+    "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    redux-mock-store: "npm:^1.5.4"
+    redux-thunk: "npm:^2.4.2"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/suite-desktop-core@workspace:packages/suite-desktop-core":
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-core@workspace:packages/suite-desktop-core"
@@ -12600,6 +12618,7 @@ __metadata:
     "@trezor/suite-analytics": "workspace:*"
     "@trezor/suite-data": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/suite-desktop-connect-popup": "workspace:*"
     "@trezor/suite-storage": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"

@@ -1,14 +1,12 @@
 {
-    "name": "@suite-common/connect-init",
+    "name": "@trezor/suite-desktop-connect-popup",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index",
     "scripts": {
-        "type-check": "yarn g:tsc --build tsconfig.json",
-        "test:unit": "yarn g:jest -c ./jest.config.js",
-        "test-unit:watch": "yarn g:jest -c ../../jest.config.base.js -o --watch"
+        "type-check": "yarn g:tsc --build tsconfig.json"
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",
@@ -18,6 +16,7 @@
         "@suite-common/wallet-core": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/env-utils": "workspace:^",
+        "@trezor/suite-desktop-api": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*"
     },

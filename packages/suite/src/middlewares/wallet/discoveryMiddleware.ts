@@ -1,3 +1,4 @@
+import { connectPopupCallThunk } from '@trezor/suite-desktop-connect-popup';
 import {
     authorizeDeviceThunk,
     deviceActions,
@@ -15,7 +16,6 @@ import { UI } from '@trezor/connect';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { connectPopupCallThunk } from '@suite-common/connect-init';
 
 import { SUITE, ROUTER, MODAL } from 'src/actions/suite/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';

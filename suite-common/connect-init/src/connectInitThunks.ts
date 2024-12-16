@@ -3,16 +3,13 @@ import TrezorConnect, {
     BLOCKCHAIN_EVENT,
     DEVICE,
     DEVICE_EVENT,
-    ERRORS,
     TRANSPORT_EVENT,
     UI_EVENT,
 } from '@trezor/connect';
 import { DATA_URL } from '@trezor/urls';
-import { createDeferred, getSynchronize } from '@trezor/utils';
-import { deviceConnectThunks, selectSelectedDevice } from '@suite-common/wallet-core';
+import { getSynchronize } from '@trezor/utils';
+import { deviceConnectThunks } from '@suite-common/wallet-core';
 import { isDesktop, isNative } from '@trezor/env-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
-import { serializeError } from '@trezor/connect/src/constants/errors';
 
 import { cardanoConnectPatch } from './cardanoConnectPatch';
 
@@ -164,97 +161,6 @@ export const connectInitThunk = createThunk(
                 formattedError = error.code ? `${error.code}: ${error.message}` : error.message;
             }
             throw new Error(formattedError);
-        }
-    },
-);
-
-export const connectPopupCallThunk = createThunk(
-    `${CONNECT_INIT_MODULE}/callThunk`,
-    async (
-        {
-            id,
-            method,
-            payload,
-            processName,
-            origin,
-        }: {
-            id: number;
-            method: string;
-            payload: any;
-            processName?: string;
-            origin?: string;
-        },
-        { dispatch, getState, extra },
-    ) => {
-        try {
-            const device = selectSelectedDevice(getState());
-
-            if (!device) {
-                console.error('Device not found');
-
-                // TODO: wait for device selection and continue
-                throw ERRORS.TypedError('Device_NotFound');
-            }
-
-            // @ts-expect-error: method is dynamic
-            const methodInfo = await TrezorConnect[method]({
-                ...payload,
-                __info: true,
-            });
-            if (!methodInfo.success) {
-                throw methodInfo;
-            }
-
-            const confirmation = createDeferred();
-            dispatch(extra.actions.lockDevice(true));
-            dispatch(
-                extra.actions.openModal({
-                    type: 'connect-popup',
-                    onCancel: () => confirmation.reject(ERRORS.TypedError('Method_Cancel')),
-                    onConfirm: () => confirmation.resolve(),
-                    method: methodInfo.payload.info,
-                    processName,
-                    origin,
-                }),
-            );
-            await confirmation.promise;
-            dispatch(extra.actions.lockDevice(false));
-
-            // @ts-expect-error: method is dynamic
-            const response = await TrezorConnect[method]({
-                device: {
-                    path: device.path,
-                    instance: device.instance,
-                    state: device.state,
-                },
-                ...payload,
-            });
-
-            dispatch(extra.actions.onModalCancel());
-
-            desktopApi.connectPopupResponse({
-                ...response,
-                id,
-            });
-        } catch (error) {
-            console.error('connectPopupCallThunk', error);
-            desktopApi.connectPopupResponse({
-                success: false,
-                payload: serializeError(error),
-                id,
-            });
-        }
-    },
-);
-
-export const connectPopupInitThunk = createThunk(
-    `${CONNECT_INIT_MODULE}/initPopupThunk`,
-    async (_, { dispatch }) => {
-        if (desktopApi.available && (await desktopApi.connectPopupEnabled())) {
-            desktopApi.on('connect-popup/call', params => {
-                dispatch(connectPopupCallThunk(params));
-            });
-            desktopApi.connectPopupReady();
         }
     },
 );

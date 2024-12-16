@@ -75,6 +75,7 @@
         "@trezor/suite-analytics": "workspace:*",
         "@trezor/suite-data": "workspace:*",
         "@trezor/suite-desktop-api": "workspace:*",
+        "@trezor/suite-desktop-connect-popup": "workspace:*",
         "@trezor/suite-storage": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
