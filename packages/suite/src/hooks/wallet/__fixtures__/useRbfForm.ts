@@ -1,3 +1,10 @@
+import {
+    ChainedTransactions,
+    WalletAccountTransaction,
+    WalletAccountTransactionWithRequiredRbfParams,
+} from '@suite-common/wallet-types';
+import { AccountUtxo } from '@trezor/connect';
+
 export { getRootReducer } from './useSendForm';
 
 const ABCD = 'abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd';
@@ -71,7 +78,41 @@ const BTC_CJ_ACCOUNT = {
 //     // script_type: 'PAYTOADDRESS',
 // },
 
-const PREPARE_TX = (params = {}) => ({
+const txDummyData = {
+    deviceState: 'A@B:1',
+    descriptor: '',
+    type: 'sent',
+    txid: '',
+    amount: '',
+    fee: '',
+    targets: [],
+    tokens: [],
+    internalTransfers: [],
+    details: {
+        vin: [],
+        vout: [],
+        size: 0,
+        totalInput: '',
+        totalOutput: '',
+    },
+} satisfies Partial<WalletAccountTransaction>;
+
+// This type-magic here is for 2 reasons:
+//
+//   1. WalletAccountTransaction has rbfParams as optional, but we want to
+//      enforce it in this fixture as we test only this case here
+//
+//   2. We need to add `required` into AccountUtxo because this is then passed
+//      down into utxo-lib where it is present on ComposeInput. This is not
+//      ideal and pretty magic, maybe subject of future refactor.
+//
+type HackedTxType = WalletAccountTransactionWithRequiredRbfParams & {
+    rbfParams: WalletAccountTransactionWithRequiredRbfParams['rbfParams'] & {
+        utxo: Array<AccountUtxo & { required?: boolean }>;
+    };
+};
+
+const PREPARE_TX = (params: Partial<HackedTxType['rbfParams']> = {}): HackedTxType => ({
     symbol: 'btc',
     rbfParams: {
         txid: 'ABCD',
@@ -110,9 +151,21 @@ const PREPARE_TX = (params = {}) => ({
         baseFee: 175,
         ...params,
     },
+    ...txDummyData,
 });
 
-export const composeAndSign = [
+type ComposeAndSignFixture = {
+    description: string;
+    store: any;
+    tx: WalletAccountTransactionWithRequiredRbfParams;
+    composedLevels: any;
+    composeTransactionCalls: number;
+    chainedTxs?: ChainedTransactions;
+    signedTx?: any;
+    decreasedOutputs?: boolean | string;
+};
+
+export const composeAndSign: ComposeAndSignFixture[] = [
     {
         description:
             'change-output reduced by fee. outputs order not affected. change was at the end of original tx.',
@@ -152,7 +205,7 @@ export const composeAndSign = [
                 ],
             },
         },
-        composeTransactionCalls: 2,
+        composeTransactionCalls: 1,
         signedTx: {
             outputs: [
                 {
@@ -178,10 +231,10 @@ export const composeAndSign = [
             },
         },
         chainedTxs: {
-            own: [{ txid: 'aaaa', fee: '500' }],
+            own: [{ symbol: 'btc', ...txDummyData, txid: 'aaaa', fee: '500' }],
             others: [
-                { txid: 'bbbb', fee: '500' },
-                { txid: 'cccc', fee: '5000' },
+                { symbol: 'btc', ...txDummyData, txid: 'bbbb', fee: '500' },
+                { symbol: 'btc', ...txDummyData, txid: 'cccc', fee: '5000' },
             ],
         },
         tx: PREPARE_TX({
@@ -207,7 +260,7 @@ export const composeAndSign = [
                 feePerByte: '34.34', // 3.79 (old) + 4 (new) + 26.55 for chainedTxs
             },
         },
-        composeTransactionCalls: 2,
+        composeTransactionCalls: 1,
         signedTx: {
             outputs: [
                 {
@@ -218,7 +271,7 @@ export const composeAndSign = [
                 },
                 {
                     address_n: [2147483692, 2147483648, 2147483648, 1, 0],
-                    amount: '9239',
+                    amount: '3239',
                     orig_index: 1,
                     orig_hash: 'ABCD',
                 },
@@ -249,7 +302,7 @@ export const composeAndSign = [
                 ],
             },
         },
-        composeTransactionCalls: 2,
+        composeTransactionCalls: 1,
         signedTx: {
             outputs: [
                 {
@@ -304,7 +357,7 @@ export const composeAndSign = [
                 ],
             },
         },
-        composeTransactionCalls: 2,
+        composeTransactionCalls: 1,
         signedTx: {
             outputs: [
                 // change-output is gone
@@ -358,7 +411,7 @@ export const composeAndSign = [
                 ],
             },
         },
-        composeTransactionCalls: 4, // 1. normal fee, 2. custom fee
+        composeTransactionCalls: 2, // 1. normal fee, 2. custom fee
         signedTx: {
             outputs: [
                 // change-output is gone
@@ -432,7 +485,7 @@ export const composeAndSign = [
                 ],
             },
         },
-        composeTransactionCalls: 2,
+        composeTransactionCalls: 1,
         signedTx: {
             outputs: [
                 {
@@ -503,7 +556,7 @@ export const composeAndSign = [
                 ],
             },
         },
-        composeTransactionCalls: 4, // 1. normal fee, 2. custom fee
+        composeTransactionCalls: 2, // 1. normal fee, 2. custom fee
         signedTx: {
             inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }],
             outputs: [
@@ -578,7 +631,7 @@ export const composeAndSign = [
                 ],
             },
         },
-        composeTransactionCalls: 4, // 1. normal fee, 2. custom fee
+        composeTransactionCalls: 2, // 1. normal fee, 2. custom fee
         signedTx: {
             inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }],
             outputs: [
@@ -648,7 +701,7 @@ export const composeAndSign = [
                 ],
             },
         },
-        composeTransactionCalls: 6, // 1. normal fee, 2. custom fee, 3. send-max
+        composeTransactionCalls: 3, // 1. normal fee, 2. custom fee, 3. send-max
         decreasedOutputs: true,
         signedTx: {
             inputs: [{ prev_hash: DCBA }],
@@ -695,7 +748,7 @@ export const composeAndSign = [
             feeRate: '1.37',
             changeAddress: undefined,
         }),
-        composeTransactionCalls: 2, // 1. immediate send-max
+        composeTransactionCalls: 1, // 1. immediate send-max
         decreasedOutputs: true,
         composedLevels: {
             normal: {
@@ -754,7 +807,7 @@ export const composeAndSign = [
                 ],
             },
         },
-        composeTransactionCalls: 6, // 1. normal fee, 2. custom fee, 3 send-max
+        composeTransactionCalls: 3, // 1. normal fee, 2. custom fee, 3 send-max
         decreasedOutputs: true,
         signedTx: {
             inputs: [{ prev_hash: DCBA }],
@@ -816,7 +869,7 @@ export const composeAndSign = [
                 ],
             },
         },
-        composeTransactionCalls: 2,
+        composeTransactionCalls: 1,
         signedTx: {
             // outputs are restored
             outputs: [
@@ -878,7 +931,7 @@ export const composeAndSign = [
                 error: 'NOT-ENOUGH-FUNDS',
             },
         },
-        composeTransactionCalls: 8, // 1. normal fee, 2. custom fee, 3. send-max normal fee, 4. send-max custom fee
+        composeTransactionCalls: 4, // 1. normal fee, 2. custom fee, 3. send-max normal fee, 4. send-max custom fee
         // tx is not signed
     },
     {
@@ -943,7 +996,7 @@ export const composeAndSign = [
                 feePerByte: '15.33', // 11.33 (old) + 4 (new)
             },
         },
-        composeTransactionCalls: 2, // 1. immediate send-max
+        composeTransactionCalls: 1, // 1. immediate send-max
         decreasedOutputs: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_RBF_WARNING',
         signedTx: {
             inputs: [{ prev_hash: DCBA }],
@@ -1029,7 +1082,7 @@ export const composeAndSign = [
                 feePerByte: '15.33', // 11.33 (old) + 4 (new)
             },
         },
-        composeTransactionCalls: 2, // 1. immediate send-max
+        composeTransactionCalls: 1, // 1. immediate send-max
         decreasedOutputs: 'TR_UTXO_REGISTERED_IN_COINJOIN_RBF_WARNING',
         signedTx: {
             inputs: [{ prev_hash: DCBA }],

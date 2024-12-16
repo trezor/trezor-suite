@@ -2,8 +2,7 @@ import { NewModal } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite';
-
-import { useRbfContext } from '../../../../../../../hooks/wallet/useRbfForm';
+import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 export const ReplaceTxButton = () => {
     const { device, isLocked } = useDevice();

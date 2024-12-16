@@ -8,18 +8,25 @@ import {
     selectAllPendingTransactions,
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
-import { ChainedTransactions, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { RequiredKey } from '@trezor/type-utils';
+import {
+    ChainedTransactions,
+    SelectedAccountLoaded,
+    WalletAccountTransactionWithRequiredRbfParams,
+} from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
+import { RbfContext, useRbf } from 'src/hooks/wallet/useRbfForm';
 
 import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
 import { ChangeFee } from './ChangeFee/ChangeFee';
 import { ReplaceTxButton } from './ChangeFee/ReplaceTxButton';
 import { TxDetailModalBase } from './TxDetailModalBase';
-import { RbfContext, useRbf } from '../../../../../../hooks/wallet/useRbfForm';
+
+const hasRbfParams = (
+    tx: WalletAccountTransaction,
+): tx is WalletAccountTransactionWithRequiredRbfParams => tx.rbfParams !== undefined;
 
 type DetailModalProps = {
     tx: WalletAccountTransaction;
@@ -64,7 +71,7 @@ const DetailModal = ({ tx, onCancel, tab, onChangeFeeClick, chainedTxs }: Detail
 };
 
 type BumpFeeModalProps = {
-    tx: RequiredKey<WalletAccountTransaction, 'rbfParams'>;
+    tx: WalletAccountTransactionWithRequiredRbfParams;
     onCancel: () => void;
     onBackClick: () => void;
     onShowChained: () => void;
@@ -140,18 +147,16 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
         setTab(undefined);
     };
 
-    const { rbfParams } = tx; // This is just for trick to enforce type-narrowing
-
     if (
+        hasRbfParams(tx) &&
         section === 'CHANGE_FEE' &&
         networkFeatures?.includes('rbf') &&
-        rbfParams !== undefined &&
         !tx.deadline &&
         selectedAccount.status === 'loaded'
     ) {
         return (
             <BumpFeeModal
-                tx={{ ...tx, rbfParams }} // This is just for trick to enforce type-narrowing
+                tx={tx}
                 onCancel={onCancel}
                 onBackClick={onBackClick}
                 onShowChained={onShowChained}

@@ -2,7 +2,6 @@ import { screen } from '@testing-library/react';
 
 import TrezorConnect from '@trezor/connect';
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
-import { SelectedAccountLoaded, RbfTransactionParams } from '@suite-common/wallet-types';
 
 import {
     renderWithProviders,
@@ -14,7 +13,7 @@ import { ChangeFee } from 'src/components/suite/modals/ReduxModal/UserContextMod
 import { ReplaceTxButton } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ReplaceTxButton';
 
 import * as fixtures from '../__fixtures__/useRbfForm';
-import { useRbfContext } from '../useRbfForm';
+import { RbfContext, useRbf, useRbfContext } from '../useRbfForm';
 
 // do not mock
 jest.unmock('@trezor/connect');
@@ -39,22 +38,30 @@ jest.mock('@trezor/blockchain-link', () => ({
     default: class BlockchainLink {
         name = 'jest-mocked-module';
         listeners: Record<string, () => void> = {};
+
         constructor(args: any) {
             this.name = args.name;
         }
+
         on(...args: any[]) {
             const [type, fn] = args;
             this.listeners[type] = fn;
         }
+
         listenerCount() {
             return 0;
         }
+
         connect() {
             return true;
         }
+
         disconnect() {}
+
         removeAllListeners() {}
+
         dispose() {}
+
         getInfo() {
             return {
                 url: this,
@@ -66,6 +73,7 @@ jest.mock('@trezor/blockchain-link', () => ({
                 blockHash: 'abcd',
             };
         }
+
         estimateFee(params: { blocks: number[] }) {
             return params.blocks.map(() => ({ feePerUnit: '-1' }));
         }
@@ -73,6 +81,7 @@ jest.mock('@trezor/blockchain-link', () => ({
 }));
 
 type RootReducerState = ReturnType<ReturnType<typeof fixtures.getRootReducer>>;
+
 interface Args {
     send?: Partial<RootReducerState['wallet']['send']>;
     fees?: any;
@@ -97,6 +106,7 @@ const initStore = ({ send, fees, selectedAccount, coinjoin }: Args = {}) => {
 interface TestCallback {
     getContextValues?: () => any;
 }
+
 // component rendered inside of SendIndex
 // callback prop is an object passed from single test case
 // getContextValues returns actual state of SendFormContext
@@ -130,17 +140,25 @@ describe('useRbfForm hook', () => {
         it(`composeAndSign: ${f.description}`, async () => {
             const store = initStore(f.store);
             const callback: TestCallback = {};
-            const { unmount } = renderWithProviders(
-                store,
-                // @ts-expect-error f.tx is not exact
-                <ChangeFee tx={f.tx} chainedTxs={f.chainedTxs} showChained={() => {}}>
-                    <Component callback={callback} />
-                    <ReplaceTxButton
-                        rbfParams={f.tx.rbfParams as RbfTransactionParams}
-                        selectedAccount={f.store.selectedAccount as SelectedAccountLoaded}
-                    />
-                </ChangeFee>,
-            );
+
+            const TestComponent = () => {
+                const contextValues = useRbf({
+                    rbfParams: f.tx.rbfParams,
+                    chainedTxs: f.chainedTxs,
+                    selectedAccount: f.store.selectedAccount,
+                });
+
+                return (
+                    <RbfContext.Provider value={contextValues}>
+                        <ChangeFee tx={f.tx} chainedTxs={f.chainedTxs} showChained={() => {}}>
+                            <Component callback={callback} />
+                            <ReplaceTxButton />
+                        </ChangeFee>
+                    </RbfContext.Provider>
+                );
+            };
+
+            const { unmount } = renderWithProviders(store, <TestComponent />);
 
             const composeTransactionSpy = jest.spyOn(TrezorConnect, 'composeTransaction');
 
@@ -165,13 +183,11 @@ describe('useRbfForm hook', () => {
             expect(composedLevels).toMatchObject(f.composedLevels);
 
             // validate number of calls to '@trezor/connect'
-            if (typeof f.composeTransactionCalls === 'number') {
-                expect(composeTransactionSpy).toHaveBeenCalledTimes(f.composeTransactionCalls);
-            }
+            expect(composeTransactionSpy).toHaveBeenCalledTimes(f.composeTransactionCalls);
 
-            if (f.decreasedOutputs) {
+            if (f.decreasedOutputs !== undefined) {
                 if (typeof f.decreasedOutputs === 'string') {
-                    expect(() => screen.getByText(f.decreasedOutputs)).not.toThrow();
+                    expect(() => screen.getByText(f.decreasedOutputs as string)).not.toThrow();
                 } else {
                     expect(() => findByTestId('@send/decreased-outputs')).not.toThrow();
                 }

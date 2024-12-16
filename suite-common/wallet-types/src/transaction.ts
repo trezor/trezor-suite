@@ -15,6 +15,7 @@ import {
 } from '@trezor/connect';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { TranslationKey } from '@suite-common/intl-types';
+import { RequiredKey } from '@trezor/type-utils';
 
 import { Account } from './account';
 
@@ -184,6 +185,11 @@ export interface WalletAccountTransaction extends AccountTransaction {
      */
     deadline?: number;
 }
+
+export type WalletAccountTransactionWithRequiredRbfParams = RequiredKey<
+    WalletAccountTransaction,
+    'rbfParams'
+>;
 
 export interface ChainedTransactions {
     own: WalletAccountTransaction[];
