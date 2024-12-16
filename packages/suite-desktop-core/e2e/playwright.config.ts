@@ -21,6 +21,7 @@ const config: PlaywrightTestConfig = {
         {
             name: PlaywrightProjects.Desktop,
             use: {},
+            grepInvert: /@webOnly/,
         },
     ],
     testDir: 'tests',
