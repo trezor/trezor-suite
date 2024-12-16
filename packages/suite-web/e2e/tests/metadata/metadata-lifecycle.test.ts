@@ -54,11 +54,11 @@ describe('Metadata - cancel metadata on device', () => {
         cy.task('pressNo');
 
         // set wallet to remembered
+        cy.discoveryShouldFinish();
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@viewOnlyStatus/disabled').click();
         cy.getTestElement('@viewOnly/radios/enabled').click();
         cy.safeReload();
-        cy.discoveryShouldFinish(); // no dialogue, metadata keys survive together with remembered wallet!
 
         // but when user tries to add another wallet, there is enable labeling dialogue again
         cy.getTestElement('@menu/switch-device').click();
