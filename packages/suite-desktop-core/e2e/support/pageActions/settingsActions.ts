@@ -97,15 +97,11 @@ export class SettingsActions {
         this.deviceLabelInput = this.page.getByTestId('@settings/device/label-input');
         this.deviceLabelSubmit = this.page.getByTestId('@settings/device/label-submit');
         this.confirmOnDevicePrompt = this.page.getByTestId('@prompts/confirm-on-device');
-        this.homescreenGalleryButton = this.page.getByTestId(
-            '@settings/device/homescreen-gallery',
-        );
+        this.homescreenGalleryButton = this.page.getByTestId('@settings/device/homescreen-gallery');
         this.notificationSuccessToast = this.page.getByTestId('@toast/settings-applied').first();
         this.coinBackendSelector = this.page.getByTestId('@settings/advance/select-type/input');
         this.coinAddressInput = this.page.getByTestId('@settings/advance/url');
-        this.coinAdvanceSettingSaveButton = this.page.getByTestId(
-            '@settings/advance/button/save',
-        );
+        this.coinAdvanceSettingSaveButton = this.page.getByTestId('@settings/advance/button/save');
         this.themeInput = this.page.getByTestId('@theme/color-scheme-select/input');
         this.languageInput = this.page.getByTestId('@settings/language-select/input');
         this.pinSubmitButton = this.page.getByTestId('@pin/submit-button');
