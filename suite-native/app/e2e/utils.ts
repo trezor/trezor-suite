@@ -16,7 +16,7 @@ export const sleep = (ms: number) => new Promise(res => setTimeout(res, ms));
 
 const getExpoDeepLinkUrl = () => {
     const expoLauncherUrl = encodeURIComponent(
-        `http://localhost:8081/index.bundle?platform=${platform}&dev=true&minify=false&disableOnboarding=1`,
+        `http://localhost:8081?platform=${platform}&dev=true&minify=false&disableOnboarding=1`,
     );
 
     return `exp+trezor-suite-debug://expo-development-client/?url=${expoLauncherUrl}`;
