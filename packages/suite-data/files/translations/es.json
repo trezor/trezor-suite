@@ -1847,7 +1847,7 @@
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON": "Cancelar",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION": "Tus fondos y transacciones no estarán visibles hasta que vuelvas a conectar tu dispositivo.",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION": "Tus fondos y transacciones no estarán visibles hasta que vuelvas a conectar tu dispositivo.",
-  "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON": "Desactivar y expulsar",
+  "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON": "Desactivar",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_TITLE": "Desactivar el modo de solo lectura expulsará este monedero",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON": "Expulsar",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE": "¿Expulsar este monedero?",

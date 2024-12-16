@@ -1847,7 +1847,7 @@
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON": "Annuler",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION": "Vos fonds et vos transactions ne seront pas visibles tant que vous n’aurez pas reconnecté votre dispositif.",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION": "Vos fonds et vos transactions ne seront pas visibles tant que vous n’aurez pas reconnecté votre dispositif.",
-  "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON": "Désactiver et éjecter",
+  "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON": "Désactiver",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_TITLE": "Le fait de désactiver la lecture seule éjectera ce portefeuille",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON": "Éjecter",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE": "Éjecter ce portefeuille ?",

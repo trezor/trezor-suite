@@ -1847,7 +1847,7 @@
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON": "Annulla",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION": "I fondi e le transazioni non saranno visibili fino a quando non riconnetterai il dispositivo.",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION": "I fondi e le transazioni non saranno visibili fino a quando non riconnetterai il dispositivo.",
-  "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON": "Disattiva ed espelli",
+  "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON": "Disattiva",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_TITLE": "Disattivando la solo visualizzazione, questo wallet verrà espulso",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON": "Rimuovi",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE": "Espellere il wallet?",

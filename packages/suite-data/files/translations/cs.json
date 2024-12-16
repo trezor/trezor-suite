@@ -1847,7 +1847,7 @@
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON": "Zrušit",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION": "Vaše prostředky a transakce nebudou viditelné, dokud znovu nepřipojíte zařízení.",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION": "Vaše prostředky a transakce nebudou viditelné, dokud znovu nepřipojíte zařízení.",
-  "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON": "Vypnout a odebrat",
+  "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON": "Vypnout",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_TITLE": "Vypnutím režimu prohlížení odeberete peněženku",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON": "Odebrat",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE": "Odebrat tuto peněženku?",

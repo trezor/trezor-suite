@@ -1508,7 +1508,7 @@ export default defineMessages({
         id: 'TR_ONBOARDING_ALLOW_ANALYTICS',
     },
     TR_ALLOW_ANALYTICS: {
-        defaultMessage: 'Data usage',
+        defaultMessage: 'Data collection',
         id: 'TR_ALLOW_ANALYTICS',
     },
     TR_ALLOW_ANALYTICS_DESCRIPTION: {
@@ -3211,7 +3211,7 @@ export default defineMessages({
     },
     TR_SKIP_UPDATE_DESCRIPTION: {
         defaultMessage:
-            'It only takes a moment to stay protected. Keep your Trezor secure and future-ready by installing the latest firmware.',
+            'Why take the risk? Update your Trezor with the latest firmware to stay secure and protected.',
         id: 'TR_SKIP_UPDATE_DESCRIPTION',
     },
     TR_SOLVE_ISSUE: {
@@ -3308,7 +3308,7 @@ export default defineMessages({
         id: 'TR_TRANSACTION_DETAILS',
     },
     TR_TOKEN_ID: {
-        defaultMessage: 'Token ID:',
+        defaultMessage: 'Token ID',
         id: 'TR_TOKEN_ID',
     },
     TR_NO_TRANSPORT: {
@@ -3500,7 +3500,7 @@ export default defineMessages({
         id: 'TR_YOUR_TREZOR_IS_NOT_BACKED_UP',
     },
     TR_YOUR_WALLET_IS_READY_WHAT: {
-        defaultMessage: 'Your wallet is ready to use!',
+        defaultMessage: 'Your wallet is ready.',
         id: 'TR_YOUR_WALLET_IS_READY_WHAT',
     },
     TR_GAS_PRICE: {
@@ -6783,12 +6783,12 @@ export default defineMessages({
     },
     TR_DEVICE_CONNECTED_UNACQUIRED: {
         id: 'TR_DEVICE_CONNECTED_UNACQUIRED',
-        defaultMessage: 'This device is being used elsewhere.',
+        defaultMessage: 'This device is being used by another app.',
     },
     TR_DEVICE_CONNECTED_UNACQUIRED_DESCRIPTION: {
         id: 'TR_DEVICE_CONNECTED_UNACQUIRED_DESCRIPTION',
         defaultMessage:
-            'The app {transportSessionOwner} may currently be using this device. You can take control of the device if needed.',
+            'The app {transportSessionOwner} is currently using your Trezor. You can take control of your device if needed.',
     },
     TR_WIPE_OR_UPDATE: {
         id: 'TR_WIPE_OR_UPDATE',
@@ -9041,7 +9041,7 @@ export default defineMessages({
     },
     TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON: {
         id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON',
-        defaultMessage: 'Disable & eject',
+        defaultMessage: 'Disable',
     },
     TR_DO_NOT_SHOW_AGAIN: {
         id: 'TR_DO_NOT_SHOW_AGAIN',
@@ -9153,15 +9153,15 @@ export default defineMessages({
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM1: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM1',
-        defaultMessage: "It's important to first learn how a passphrase works",
+        defaultMessage: "It's important to first learn how a passphrase works.",
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM2: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM2',
-        defaultMessage: 'A passphrase opens a wallet secured by that phrase',
+        defaultMessage: 'A passphrase opens a wallet secured by that phrase.',
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM3: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM3',
-        defaultMessage: 'No one can recover it, not even Trezor Support',
+        defaultMessage: 'No one can recover it, not even Trezor Support.',
     },
     TR_UNRECOGNIZED: {
         id: 'TR_UNRECOGNIZED',

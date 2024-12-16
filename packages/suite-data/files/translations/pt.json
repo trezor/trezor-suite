@@ -1847,7 +1847,7 @@
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON": "Cancelar",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION": "Seus fundos e transações não serão visíveis até que você reconecte seu dispositivo.",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION": "Seus fundos e transações não serão visíveis até que você reconecte seu dispositivo.",
-  "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON": "Desativar e ejetar",
+  "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON": "Desativar",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_TITLE": "A desativação do view-only ejetará essa carteira",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON": "Ejetar",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE": "Ejetar esta carteira?",

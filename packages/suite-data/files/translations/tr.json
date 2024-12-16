@@ -1847,7 +1847,7 @@
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON": "İptal et",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION": "Cihazınızı yeniden bağlayana kadar fonlarınız ve işlemleriniz görünmez.",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION": "Cihazınızı yeniden bağlayana kadar fonlarınız ve işlemleriniz görünmez.",
-  "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON": "Devre dışı bırak ve çıkar",
+  "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON": "Devre dışı bırak",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_TITLE": "Yalnızca görüntüleme özelliği devre dışı bırakıldığında bu cüzdan çıkarılır",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON": "Çıkar",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE": "Bu cüzdan çıkarılsın mı?",

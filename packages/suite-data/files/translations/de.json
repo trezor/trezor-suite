@@ -1847,7 +1847,7 @@
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON": "Abbrechen",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION": "Deine Assets und Transaktionen werden erst sichtbar, wenn du dein Gerät erneut verbindest.",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION": "Deine Assets und Transaktionen werden erst sichtbar, wenn du dein Gerät erneut verbindest.",
-  "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON": "Deaktivieren und auswerfen",
+  "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON": "Deaktivieren",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_TITLE": "Durch die Deaktivierung von „Nur Anzeige“ wird dieses Wallet ausgeworfen",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON": "Auswerfen",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE": "Dieses Wallet auswerfen?",

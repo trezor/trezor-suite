@@ -1828,7 +1828,7 @@
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON": "Mégsem",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION": "A pénzed és tranzakcióid az eszköz újracsatlakoztatásáig nem lesznek láthatóak.",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION": "A pénzed és tranzakcióid az eszköz újracsatlakoztatásáig nem lesznek láthatóak.",
-  "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON": "Letiltás & leválasztás",
+  "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON": "Letiltás",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_TITLE": "A figyelő mód letiltása leválasztja ezt a tárcát",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON": "Leválasztás",
   "TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE": "Tárca leválasztása?",
