@@ -32,13 +32,16 @@ describe('Import Bitcoin network accounts.', () => {
         });
     });
 
-    it('Import BTC Taproot account', async () => {
-        await onAccountImport.importAccount({
-            networkSymbol: 'btc',
-            xpub: xpubs.btc.taproot,
-            accountName: 'BTC Taproot',
+    //  This test is skipped for iOS, because detox runner is unable to input single quote (') correctly and inputs quotation mark (’) instead.
+    //  Since the quotation mark is invalid character in terms of taproot xpub, the test always fails on iOS.
+    if (device.getPlatform() !== 'ios')
+        it('Import BTC Taproot account', async () => {
+            await onAccountImport.importAccount({
+                networkSymbol: 'btc',
+                xpub: xpubs.btc.taproot,
+                accountName: 'BTC Taproot',
+            });
         });
-    });
 
     it('Import BTC Legacy account', async () => {
         await onAccountImport.importAccount({

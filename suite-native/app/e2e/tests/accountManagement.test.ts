@@ -42,14 +42,14 @@ describe('Account management', () => {
     });
 
     it('Import account and remove it', async () => {
-        const accountName = 'BTC Taproot';
+        const accountName = 'BTC Legacy SegWit';
 
         await onTabBar.navigateToMyAssets();
         await onMyAssets.addAccount();
 
         await onAccountImport.importAccount({
             networkSymbol: 'btc',
-            xpub: xpubs.btc.taproot,
+            xpub: xpubs.btc.legacySegwit,
             accountName,
         });
 

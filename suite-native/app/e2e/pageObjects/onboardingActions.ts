@@ -1,5 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
+import { onAlertSheet } from './alertSheetActions';
+
 const platform = device.getPlatform();
 
 class OnOnboardingActions {
@@ -26,7 +28,7 @@ class OnOnboardingActions {
         await element(by.id('@onboarding/UserDataConsent/allow')).tap();
 
         try {
-            await element(by.id('reject-biometrics')).tap();
+            await onAlertSheet.tapSecondaryButton();
         } catch {
             // Android emulator does not support biometrics, so the sheet is not displayed at all.
             console.warn(
