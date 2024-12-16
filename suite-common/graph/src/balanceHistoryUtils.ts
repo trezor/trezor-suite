@@ -324,7 +324,7 @@ export const getAccountHistoryMovementFromTransactions = ({
             return getAccountHistoryMovementItemRipple({ transactions, from, to });
         case 'eth':
         case 'pol':
-        case 'bnb':
+        case 'bsc':
             return getAccountHistoryMovementItemETH({ transactions, from, to });
 
         default:

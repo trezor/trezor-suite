@@ -9,7 +9,7 @@ export const coinsColors: CoinsColors = {
     arb: '#213147',
     base: '#0052ff',
     bch: '#0ac18e',
-    bnb: '#f0b90b',
+    bsc: '#f0b90b',
     btc: '#f29937',
     btg: '#3b5185',
     dash: '#1796e4',

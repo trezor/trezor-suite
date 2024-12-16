@@ -1216,7 +1216,7 @@ export const coinselectIndexFixture = [
         dustThreshold: 546,
     },
     {
-        description: 'exhausting BnB',
+        description: 'exhausting bnb',
         feeRate: 10,
         inputs: [
             {

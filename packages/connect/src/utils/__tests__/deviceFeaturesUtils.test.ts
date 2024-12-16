@@ -282,7 +282,7 @@ describe('utils/deviceFeaturesUtils', () => {
         it('handles duplicated shortcuts correctly, ', () => {
             const customCoins = [
                 { shortcut: 'BSC', type: 'ethereum', support: { T2T1: '2.4.4' } },
-                { shortcut: 'BSC', type: 'misc', support: { T2T1: '2.3.3' } },
+                { shortcut: 'BNB', type: 'misc', support: { T2T1: '2.3.3' } },
                 { shortcut: 'ETH', type: 'ethereum', support: { T2T1: false } },
             ];
             const customFeatures = {
@@ -313,7 +313,7 @@ describe('utils/deviceFeaturesUtils', () => {
         it('handles duplicated shortcuts correctly, does not include bsc: no-support', () => {
             const customCoins = [
                 { shortcut: 'BSC', type: 'ethereum', support: { T1B1: '1.1.3' } },
-                { shortcut: 'BSC', type: 'misc', support: { T1B1: false } },
+                { shortcut: 'BNB', type: 'misc', support: { T1B1: false } },
                 { shortcut: 'ETH', type: 'ethereum', support: { T1B1: false } },
             ];
             const customFeatures = {
@@ -328,6 +328,7 @@ describe('utils/deviceFeaturesUtils', () => {
 
             expect(result).toEqual({
                 eth: 'no-support',
+                bnb: 'no-support',
                 amountUnit: 'update-required',
                 chunkify: 'no-support',
                 coinjoin: 'update-required',
@@ -343,7 +344,7 @@ describe('utils/deviceFeaturesUtils', () => {
         it('handles duplicated shortcuts correctly, includes no-support because none is supported', () => {
             const customCoins = [
                 { shortcut: 'BSC', type: 'ethereum', support: { T1B1: false } },
-                { shortcut: 'BSC', type: 'misc', support: { T1B1: false } },
+                { shortcut: 'BNB', type: 'misc', support: { T1B1: false } },
                 { shortcut: 'ETH', type: 'ethereum', support: { T1B1: false } },
             ];
             const customFeatures = {
@@ -358,6 +359,7 @@ describe('utils/deviceFeaturesUtils', () => {
 
             expect(result).toEqual({
                 eth: 'no-support',
+                bnb: 'no-support',
                 bsc: 'no-support',
                 amountUnit: 'update-required',
                 chunkify: 'no-support',

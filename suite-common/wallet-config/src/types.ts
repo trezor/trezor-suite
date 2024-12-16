@@ -18,7 +18,7 @@ export type NetworkSymbol =
     | 'ada'
     | 'sol'
     | 'pol'
-    | 'bnb'
+    | 'bsc'
     | 'arb'
     | 'base'
     | 'op'

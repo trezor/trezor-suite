@@ -20,6 +20,7 @@ import { PartialRecord } from '@trezor/type-utils';
 
 import type { CustomBackend, BlockbookUrl } from 'src/types/wallet/backend';
 import type { State } from 'src/reducers/wallet/settingsReducer';
+import { migrationOfBnbNetwork } from 'src/storage/migrations/networks/bnb';
 
 import { updateAll } from './utils';
 import type { DBWalletAccountTransaction, SuiteDBSchema } from '../definitions';
@@ -1148,5 +1149,9 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
             return tx;
         });
+    }
+
+    if (oldVersion < 50) {
+        await migrationOfBnbNetwork(db, oldVersion, newVersion, transaction);
     }
 };

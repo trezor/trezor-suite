@@ -12,7 +12,7 @@ export const getTokenName = (tokenName?: string) => {
 export const NETWORK_SYMBOLS_WITH_TOKENS = [
     'eth',
     'pol',
-    'bnb',
+    'bsc',
     'sol',
 ] satisfies Array<NetworkSymbol>;
 export type NetworkSymbolWithTokens = (typeof NETWORK_SYMBOLS_WITH_TOKENS)[number];

@@ -474,7 +474,7 @@ export const selectAssetModalNetworks: NetworkFilterCategory[] = [
     },
     {
         name: 'BNB Smart Chain',
-        symbol: 'bnb',
+        symbol: 'bsc',
         coingeckoId: 'binance-smart-chain',
         coingeckoNativeId: 'binancecoin',
     },

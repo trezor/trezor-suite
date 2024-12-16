@@ -1448,7 +1448,7 @@ var CURRENCIES = [
     },
     {
         name: 'BNB Smart Chain',
-        symbol: 'bnb',
+        symbol: 'bsc',
         validator: ETHValidator,
     },
     {

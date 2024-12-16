@@ -26,6 +26,7 @@ export type Protocol =
     | 'ltc'
     | 'bch'
     | 'bsc'
+    | 'bnb'
     | 'btg'
     | 'dgb'
     | 'doge'
@@ -38,7 +39,7 @@ export type Protocol =
     | 'ada'
     | 'sol'
     | 'pol'
-    | 'bnb'
+    | 'bsc'
     | 'arbitrum'
     | 'arbitrum-one'
     | 'arb'
@@ -70,7 +71,7 @@ export const NETWORK_TO_PROTOCOLS: Record<NetworkSymbol, Protocol[]> = {
     ada: ['cardano', 'ada'],
     sol: ['solana', 'sol'],
     pol: ['polygon', 'matic', 'pol'],
-    bnb: ['binance', 'bnb', 'bsc'],
+    bsc: ['binance', 'bnb', 'bsc'],
     arb: ['arbitrum', 'arbitrum-one', 'arb', 'arbitrum-ethereum'],
     base: ['base'],
     op: ['optimism', 'op'],

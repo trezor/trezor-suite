@@ -26,7 +26,7 @@ export const networkSymbolsWhitelistMap: Record<'mainnet' | 'testnet', readonly 
         'btc',
         'eth',
         'pol',
-        'bnb',
+        'bsc',
         'ltc',
         'etc',
         'ada',

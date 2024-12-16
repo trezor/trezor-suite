@@ -138,8 +138,8 @@ export const networks = {
         coingeckoId: 'polygon-pos',
         coingeckoNativeId: 'polygon-ecosystem-token',
     },
-    bnb: {
-        symbol: 'bnb',
+    bsc: {
+        symbol: 'bsc',
         name: 'BNB Smart Chain',
         networkType: 'ethereum',
         chainId: 56,

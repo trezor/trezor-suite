@@ -786,8 +786,8 @@ describe('WAValidator.validate()', function () {
             isValidAddressType('aaaaaaaaaaaaaaa000000000000000', 'siacoin', 'prod', undefined);
         });
 
-        it('should return true for correct BNB addresses', function () {
-            valid('0x0590396689ee1d287147e9383fb8dd24532f2006', 'bnb');
+        it('should return true for correct BSC addresses', function () {
+            valid('0x0590396689ee1d287147e9383fb8dd24532f2006', 'bsc');
             valid('0x07fc5c2bcaa0fa6bdaa4fff897490312c8f33c27', 'BNB smart chain');
         });
 
@@ -1116,12 +1116,12 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should return true for correct BNB smart chain address', function () {
-            valid('0x7ae2f5b9e386cd1b50a4550696d957cb4900f03a', 'bnb');
+            valid('0x7ae2f5b9e386cd1b50a4550696d957cb4900f03a', 'bsc');
             valid('0x0000000000000000000000000000000000001000', 'BNB Smart Chain');
         });
 
         it('should return false for incorrect BNB smart chain address', function () {
-            invalid('bnb1xlvns0n2mxh77mzaspn2hgav4rr4m8eerfju38', 'bnb');
+            invalid('bnb1xlvns0n2mxh77mzaspn2hgav4rr4m8eerfju38', 'bsc');
         });
 
         it('should return true for correct xtz(tezos) address', function () {
@@ -1567,13 +1567,13 @@ describe('WAValidator.validate()', function () {
             invalid('g4VPBPrHZkfE8CsjuG2S4yBQNd455UWmk', 'stellar');
         });
 
-        it('should return false for incorrect bnb addresses', function () {
+        it('should return false for incorrect bsc addresses', function () {
             commonTests('bnb smart chain');
-            commonTests('bnb');
-            invalid('xrb_1f5e4w33ndqbkx4bw5jtp13kp5xghebfxcmw9hdt1f7goid1s4373w6tjdgu', 'bnb');
-            invalid('nano_1f5e4w33ndqbkx4bw5jtp13kp5xghebfxcmw9hdt1f7goid1s4373w6tjdgu', 'bnb');
-            invalid('xrb_1111111112111111111111111111111111111111111111111111hifc8npp', 'bnb');
-            invalid('nano_111111111111111111111111111111111111111111111111111hifc8npp', 'bnb');
+            commonTests('bsc');
+            invalid('xrb_1f5e4w33ndqbkx4bw5jtp13kp5xghebfxcmw9hdt1f7goid1s4373w6tjdgu', 'bsc');
+            invalid('nano_1f5e4w33ndqbkx4bw5jtp13kp5xghebfxcmw9hdt1f7goid1s4373w6tjdgu', 'bsc');
+            invalid('xrb_1111111112111111111111111111111111111111111111111111hifc8npp', 'bsc');
+            invalid('nano_111111111111111111111111111111111111111111111111111hifc8npp', 'bsc');
         });
 
         it('should return false for incorrect xtz(tezos) address', function () {

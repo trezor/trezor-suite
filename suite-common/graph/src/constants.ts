@@ -7,7 +7,7 @@ export const NUMBER_OF_POINTS = 40;
 export const LOCAL_BALANCE_HISTORY_COINS = [
     'eth',
     'pol',
-    'bnb',
+    'bsc',
     'xrp',
 ] satisfies Array<NetworkSymbol>;
 export type LocalBalanceHistoryCoin = (typeof LOCAL_BALANCE_HISTORY_COINS)[number];

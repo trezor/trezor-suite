@@ -82,7 +82,7 @@ describe('filter receive accounts', () => {
     });
 
     it('returns no results when given a non-existing network in acccounts list', () => {
-        expect(runFilterReceiveAccouns({ symbol: 'bnb' })).toEqual([]);
+        expect(runFilterReceiveAccouns({ symbol: 'bsc' })).toEqual([]);
     });
 
     it('returns all accounts when debug mode is on', () => {

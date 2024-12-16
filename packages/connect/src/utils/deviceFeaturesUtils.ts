@@ -47,8 +47,6 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
     const fw = [features.major_version, features.minor_version, features.patch_version].join('.');
     const key = features.internal_model;
 
-    const duplicatedShortcuts = ['bsc']; // relevant duplicated shortcuts from duplicity_overrides.json from fw repo
-
     // 1. check if firmware version is supported by CoinInfo.support
     const supported = coins.filter(info => {
         // info.support[key] possible types:
@@ -57,22 +55,17 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
         // - string for supported models (version)
         if (!info.support || info.support[key] === false) {
             const shortcut = info.shortcut.toLowerCase();
-            if (!duplicatedShortcuts.includes(shortcut)) {
+
+            const occurrences = coins.filter(coin => shortcut == coin.shortcut.toLowerCase());
+            const allUnsupported = occurrences.every(
+                info2 => !info2.support || info2.support[key] === false,
+            );
+
+            if (allUnsupported) {
                 list[shortcut] = 'no-support';
-
-                return false;
-            } else {
-                const occurrences = coins.filter(coin => shortcut == coin.shortcut.toLowerCase());
-                const allUnsupported = occurrences.every(
-                    info2 => !info2.support || info2.support[key] === false,
-                );
-
-                if (allUnsupported) {
-                    list[shortcut] = 'no-support';
-                }
-
-                return false;
             }
+
+            return false;
         }
 
         return true;

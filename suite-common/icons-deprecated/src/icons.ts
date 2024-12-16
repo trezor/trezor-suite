@@ -232,7 +232,7 @@ export const cryptoIcons = {
     arb: require('../assets/cryptoIcons/arb.svg'),
     base: require('../assets/cryptoIcons/base.svg'),
     bch: require('../assets/cryptoIcons/bch.svg'),
-    bnb: require('../assets/cryptoIcons/bnb.svg'),
+    bsc: require('../assets/cryptoIcons/bsc.svg'),
     btc: require('../assets/cryptoIcons/btc.svg'),
     btg: require('../assets/cryptoIcons/btg.svg'),
     dash: require('../assets/cryptoIcons/dash.svg'),
