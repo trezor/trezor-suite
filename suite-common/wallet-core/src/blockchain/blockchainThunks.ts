@@ -305,7 +305,7 @@ export const unsubscribeBlockchainThunk = createThunk(
                     true,
                 );
 
-                return removedAccounts
+                const transformedRemovedAccounts = removedAccounts
                     .filter(acc => acc.symbol === symbol)
                     .map(getAccountIdentity)
                     .filter(arrayDistinct)
@@ -315,6 +315,8 @@ export const unsubscribeBlockchainThunk = createThunk(
                         blocks: false,
                         accounts: accountIdentities[identity] ?? [],
                     }));
+
+                return [...transformedRemovedAccounts, { symbol, blocks: true, accounts: [] }];
             } else {
                 return [{ symbol, accounts: accountsToSubscribe, blocks: true }];
             }
