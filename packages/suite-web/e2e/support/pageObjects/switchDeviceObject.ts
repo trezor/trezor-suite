@@ -13,7 +13,10 @@ class SwitchDevice {
 
     clickAddLabel(index: number) {
         cy.wait(2000); // TODO fix waiting for animation
-        this.hoverOverWallet(index);
+        this.hoverAndCheck(
+            index,
+            `${this.walletSelectorBeginPart}[data-testid$=":${index + 1}/add-label-button"]`,
+        );
         cy.get(
             `${this.walletSelectorBeginPart}[data-testid$=":${index + 1}/add-label-button"]`,
         ).click();
@@ -21,7 +24,10 @@ class SwitchDevice {
 
     clickEditLabel(index: number) {
         cy.wait(2000); // TODO fix waiting for animation
-        this.hoverOverWallet(index);
+        this.hoverAndCheck(
+            index,
+            `${this.walletSelectorBeginPart}[data-testid$=":${index + 1}/edit-label-button"]`,
+        );
         cy.get(
             `${this.walletSelectorBeginPart}[data-testid$=":${index + 1}/edit-label-button"]`,
         ).click();
@@ -33,10 +39,20 @@ class SwitchDevice {
         cy.get('@metadataInput').type('{enter}');
     }
 
-    private hoverOverWallet(index: number) {
+    private hoverAndCheck(index: number, checkSelector: string, retryCount = 2) {
+        if (retryCount === 0) {
+            throw new Error(`Failed to make the ${checkSelector} visible`);
+        }
+
         cy.get(
             `${this.walletSelectorBeginPart}[data-testid$=":${index + 1}/hover-container"]`,
         ).realHover();
+        cy.get(checkSelector).then($el => {
+            if (!$el.is(':visible')) {
+                cy.log(`Retrying hover and check for index ${index}`);
+                this.hoverAndCheck(index, checkSelector, retryCount - 1);
+            }
+        });
     }
 }
 
