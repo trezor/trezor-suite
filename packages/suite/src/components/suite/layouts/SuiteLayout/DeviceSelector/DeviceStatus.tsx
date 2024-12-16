@@ -67,7 +67,7 @@ export const DeviceStatus = ({
                     {content}
                 </>
             ) : (
-                <Tooltip hasArrow cursor="pointer" placement="right" content={content}>
+                <Tooltip hasArrow cursor="inherit" placement="right" content={content}>
                     {image}
                 </Tooltip>
             )}
