@@ -7,7 +7,7 @@ import { spacings } from '@trezor/theme';
 
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { useRbf, RbfContext, UseRbfProps } from 'src/hooks/wallet/useRbfForm';
+import { useRbfContext, UseRbfProps } from 'src/hooks/wallet/useRbfForm';
 
 import { RbfFees } from './RbfFees';
 import { AffectedTransactions } from './AffectedTransactions';
@@ -21,53 +21,53 @@ interface ChangeFeeProps extends UseRbfProps {
 }
 
 const ChangeFeeLoaded = (props: ChangeFeeProps) => {
-    const contextValues = useRbf(props);
     const { tx, showChained, children } = props;
-    const { networkType } = contextValues.account;
+    const {
+        account: { networkType },
+    } = useRbfContext();
+
     const feeRate =
         networkType === 'bitcoin' ? `${tx.rbfParams?.feeRate} ${getFeeUnits(networkType)}` : null;
     const fee = formatNetworkAmount(tx.fee, tx.symbol);
 
     return (
-        <RbfContext.Provider value={contextValues}>
-            <Card fillType="none">
-                <InfoItem
-                    direction="row"
-                    label={
-                        <>
-                            <Translation id="TR_CURRENT_FEE" />
-                            &nbsp;({feeRate})
-                        </>
-                    }
-                    typographyStyle="body"
-                >
-                    <Row gap={spacings.md} alignItems="baseline">
-                        <FormattedCryptoAmount
+        <Card fillType="none">
+            <InfoItem
+                direction="row"
+                label={
+                    <>
+                        <Translation id="TR_CURRENT_FEE" />
+                        &nbsp;({feeRate})
+                    </>
+                }
+                typographyStyle="body"
+            >
+                <Row gap={spacings.md} alignItems="baseline">
+                    <FormattedCryptoAmount
+                        disableHiddenPlaceholder
+                        value={fee}
+                        symbol={tx.symbol}
+                    />
+                    <Text variant="tertiary" typographyStyle="label">
+                        <FiatValue
                             disableHiddenPlaceholder
-                            value={fee}
+                            amount={fee}
                             symbol={tx.symbol}
+                            showApproximationIndicator
                         />
-                        <Text variant="tertiary" typographyStyle="label">
-                            <FiatValue
-                                disableHiddenPlaceholder
-                                amount={fee}
-                                symbol={tx.symbol}
-                                showApproximationIndicator
-                            />
-                        </Text>
-                    </Row>
-                </InfoItem>
+                    </Text>
+                </Row>
+            </InfoItem>
 
-                <Divider />
+            <Divider />
 
-                <RbfFees />
+            <RbfFees />
 
-                <DecreasedOutputs />
-                <AffectedTransactions showChained={showChained} />
+            <DecreasedOutputs />
+            <AffectedTransactions showChained={showChained} />
 
-                {children}
-            </Card>
-        </RbfContext.Provider>
+            {children}
+        </Card>
     );
 };
 

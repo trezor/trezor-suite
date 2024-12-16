@@ -8,7 +8,8 @@ import {
     selectAllPendingTransactions,
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
-import { ChainedTransactions } from '@suite-common/wallet-types';
+import { ChainedTransactions, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { RequiredKey } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
@@ -18,6 +19,7 @@ import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails'
 import { ChangeFee } from './ChangeFee/ChangeFee';
 import { ReplaceTxButton } from './ChangeFee/ReplaceTxButton';
 import { TxDetailModalBase } from './TxDetailModalBase';
+import { RbfContext, useRbf } from '../../../../../../hooks/wallet/useRbfForm';
 
 type DetailModalProps = {
     tx: WalletAccountTransaction;
@@ -62,11 +64,12 @@ const DetailModal = ({ tx, onCancel, tab, onChangeFeeClick, chainedTxs }: Detail
 };
 
 type BumpFeeModalProps = {
-    tx: WalletAccountTransaction;
+    tx: RequiredKey<WalletAccountTransaction, 'rbfParams'>;
     onCancel: () => void;
     onBackClick: () => void;
     onShowChained: () => void;
     chainedTxs?: ChainedTransactions;
+    selectedAccount: SelectedAccountLoaded;
 };
 
 const BumpFeeModal = ({
@@ -75,30 +78,22 @@ const BumpFeeModal = ({
     onBackClick,
     onShowChained,
     chainedTxs,
+    selectedAccount,
 }: BumpFeeModalProps) => {
-    const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
-    const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
-    const network = getNetwork(account.symbol);
-    const networkFeatures = network.accountTypes[account.accountType]?.features ?? network.features;
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const contextValues = useRbf({ rbfParams: tx.rbfParams, chainedTxs, selectedAccount });
 
     return (
-        <TxDetailModalBase
-            tx={tx}
-            onCancel={onCancel}
-            heading={<Translation id="TR_TRANSACTION_DETAILS" />}
-            bottomContent={
-                networkFeatures?.includes('rbf') &&
-                tx.rbfParams &&
-                !tx.deadline &&
-                selectedAccount.status === 'loaded' ? (
-                    <ReplaceTxButton rbfParams={tx.rbfParams} selectedAccount={selectedAccount} />
-                ) : null
-            }
-            onBackClick={onBackClick}
-        >
-            <ChangeFee tx={tx} chainedTxs={chainedTxs} showChained={onShowChained} />
-        </TxDetailModalBase>
+        <RbfContext.Provider value={contextValues}>
+            <TxDetailModalBase
+                tx={tx}
+                onCancel={onCancel}
+                heading={<Translation id="TR_TRANSACTION_DETAILS" />}
+                bottomContent={<ReplaceTxButton />}
+                onBackClick={onBackClick}
+            >
+                <ChangeFee tx={tx} chainedTxs={chainedTxs} showChained={onShowChained} />
+            </TxDetailModalBase>
+        </RbfContext.Provider>
     );
 };
 
@@ -113,6 +108,12 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
         rbfForm ? 'CHANGE_FEE' : 'DETAILS',
     );
     const [tab, setTab] = useState<TabID | undefined>(undefined);
+
+    const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
+    const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
+    const network = getNetwork(account.symbol);
+    const networkFeatures = network.accountTypes[account.accountType]?.features ?? network.features;
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const transactions = useSelector(selectAllPendingTransactions);
     // const confirmations = getConfirmations(tx, blockchain.blockHeight);
@@ -139,20 +140,33 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
         setTab(undefined);
     };
 
-    return section === 'DETAILS' ? (
+    const { rbfParams } = tx; // This is just for trick to enforce type-narrowing
+
+    if (
+        section === 'CHANGE_FEE' &&
+        networkFeatures?.includes('rbf') &&
+        rbfParams !== undefined &&
+        !tx.deadline &&
+        selectedAccount.status === 'loaded'
+    ) {
+        return (
+            <BumpFeeModal
+                tx={{ ...tx, rbfParams }} // This is just for trick to enforce type-narrowing
+                onCancel={onCancel}
+                onBackClick={onBackClick}
+                onShowChained={onShowChained}
+                chainedTxs={chainedTxs}
+                selectedAccount={selectedAccount}
+            />
+        );
+    }
+
+    return (
         <DetailModal
             tx={tx}
             onCancel={onCancel}
             tab={tab}
             onChangeFeeClick={onChangeFeeClick}
-            chainedTxs={chainedTxs}
-        />
-    ) : (
-        <BumpFeeModal
-            tx={tx}
-            onCancel={onCancel}
-            onBackClick={onBackClick}
-            onShowChained={onShowChained}
             chainedTxs={chainedTxs}
         />
     );

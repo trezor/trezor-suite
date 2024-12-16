@@ -1,21 +1,14 @@
 import { NewModal } from '@trezor/components';
-import { SelectedAccountLoaded, RbfTransactionParams } from '@suite-common/wallet-types';
 
 import { Translation } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite';
-import { useRbf } from 'src/hooks/wallet/useRbfForm';
 
-type ReplaceTxButtonProps = {
-    rbfParams: RbfTransactionParams;
-    selectedAccount: SelectedAccountLoaded;
-};
+import { useRbfContext } from '../../../../../../../hooks/wallet/useRbfForm';
 
-export const ReplaceTxButton = ({ rbfParams, selectedAccount }: ReplaceTxButtonProps) => {
+export const ReplaceTxButton = () => {
     const { device, isLocked } = useDevice();
-    const { isLoading, signTransaction, getValues, composedLevels } = useRbf({
-        selectedAccount,
-        rbfParams,
-    });
+
+    const { isLoading, signTransaction, getValues, composedLevels } = useRbfContext();
 
     const values = getValues();
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;
