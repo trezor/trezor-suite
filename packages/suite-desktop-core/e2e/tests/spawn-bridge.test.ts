@@ -7,6 +7,7 @@ import {
     expectBridgeToBeStopped,
     waitForAppToBeInitialized,
 } from '../support/bridge';
+import { AnalyticsActions } from '../support/pageActions/analyticsActions';
 
 test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
     test.beforeEach(async ({ trezorUserEnvLink }) => {
@@ -53,6 +54,7 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         await suite.window.title();
         const onboardingPage = new OnboardingActions(
             suite.window,
+            new AnalyticsActions(suite.window),
             trezorUserEnvLink.defaultModel,
             testInfo,
         );

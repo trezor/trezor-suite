@@ -16,6 +16,10 @@ import { WalletActions } from './pageActions/walletActions';
 import { OnboardingActions } from './pageActions/onboardingActions';
 import { PlaywrightProjects } from '../playwright.config';
 import { AnalyticsFixture } from './analytics';
+import { BackupActions } from './pageActions/backupActions';
+import { DevicePromptActions } from './pageActions/devicePromptActions';
+import { AnalyticsActions } from './pageActions/analyticsActions';
+import { IndexedDbFixture } from './indexedDb';
 
 type Fixtures = {
     startEmulator: boolean;
@@ -30,12 +34,16 @@ type Fixtures = {
     suiteGuidePage: SuiteGuide;
     walletPage: WalletActions;
     onboardingPage: OnboardingActions;
+    backupPage: BackupActions;
+    analyticsPage: AnalyticsActions;
+    devicePrompt: DevicePromptActions;
     analytics: AnalyticsFixture;
+    indexedDb: IndexedDbFixture;
 };
 
 const test = base.extend<Fixtures>({
     startEmulator: true,
-    emulatorStartConf: {},
+    emulatorStartConf: { wipe: true },
     emulatorSetupConf: {},
     apiURL: async ({ baseURL }, use, testInfo) => {
         await use(getApiUrl(baseURL, testInfo));
@@ -62,6 +70,9 @@ const test = base.extend<Fixtures>({
             await trezorUserEnvLink.stopEmu();
             await trezorUserEnvLink.connect();
             await trezorUserEnvLink.startEmu(emulatorStartConf);
+        }
+
+        if (startEmulator && emulatorSetupConf) {
             await trezorUserEnvLink.setupEmu(emulatorSetupConf);
         }
 
@@ -122,17 +133,34 @@ const test = base.extend<Fixtures>({
         const walletPage = new WalletActions(page);
         await use(walletPage);
     },
-    onboardingPage: async ({ page, emulatorStartConf }, use, testInfo) => {
+    onboardingPage: async ({ page, analyticsPage, emulatorStartConf }, use, testInfo) => {
         const onboardingPage = new OnboardingActions(
             page,
+            analyticsPage,
             emulatorStartConf.model ?? TrezorUserEnvLink.defaultModel,
             testInfo,
         );
         await use(onboardingPage);
     },
+    backupPage: async ({ page, devicePrompt }, use) => {
+        const backupPage = new BackupActions(page, devicePrompt);
+        await use(backupPage);
+    },
+    analyticsPage: async ({ page }, use) => {
+        const analyticsPage = new AnalyticsActions(page);
+        await use(analyticsPage);
+    },
+    devicePrompt: async ({ page }, use) => {
+        const devicePromptActions = new DevicePromptActions(page);
+        await use(devicePromptActions);
+    },
     analytics: async ({ page }, use) => {
         const analytics = new AnalyticsFixture(page);
         await use(analytics);
+    },
+    indexedDb: async ({ page }, use) => {
+        const indexedDb = new IndexedDbFixture(page);
+        await use(indexedDb);
     },
 });
 

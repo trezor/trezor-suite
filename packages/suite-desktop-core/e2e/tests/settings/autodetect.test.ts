@@ -37,10 +37,10 @@ test.use({ startEmulator: false });
 testCases.forEach(({ testName, userPreferences, text, textColor, bodyBackgroundColor }) => {
     test.describe.serial('Language and theme detection', { tag: ['@group=settings'] }, () => {
         test.use(userPreferences);
-        test(testName, async ({ onboardingPage }) => {
+        test(testName, async ({ onboardingPage, analyticsPage }) => {
             await onboardingPage.optionallyDismissFwHashCheckError();
-            await expect(onboardingPage.analyticsHeading).toHaveText(text);
-            await expect(onboardingPage.analyticsHeading).toHaveCSS('color', textColor);
+            await expect(analyticsPage.heading).toHaveText(text);
+            await expect(analyticsPage.heading).toHaveCSS('color', textColor);
             await expect(onboardingPage.page.locator('body')).toHaveCSS(
                 'background-color',
                 bodyBackgroundColor,

@@ -4,13 +4,12 @@ import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
 
 import { PlaywrightProjects } from '../../playwright.config';
+import { AnalyticsActions } from './analyticsActions';
 
 export class OnboardingActions {
     readonly model: Model;
     readonly testInfo: TestInfo;
     readonly welcomeTitle: Locator;
-    readonly analyticsHeading: Locator;
-    readonly analyticsContinueButton: Locator;
     readonly onboardingContinueButton: Locator;
     readonly onboardingViewOnlySkipButton: Locator;
     readonly onboardingViewOnlyEnableButton: Locator;
@@ -18,18 +17,29 @@ export class OnboardingActions {
     readonly connectDevicePrompt: Locator;
     readonly authenticityStartButton: Locator;
     readonly authenticityContinueButton: Locator;
+    readonly createBackupButton: Locator;
+    readonly recoverWalletButton: Locator;
+    readonly startRecoveryButton: Locator;
+    readonly continueRecoveryButton: Locator;
+    readonly retryRecoveryButton: Locator;
+    readonly firmwareContinueButton: Locator;
+    readonly skipFirmwareButton: Locator;
+    readonly skipConfirmButton: Locator;
+    readonly skipPinButton: Locator;
+    readonly continueCoinsButton: Locator;
+    readonly finalTitle: Locator;
+
     isModelWithSecureElement = () => ['T2B1', 'T3T1'].includes(this.model);
 
     constructor(
         public page: Page,
+        private analyticsPage: AnalyticsActions,
         model: Model,
         testInfo: TestInfo,
     ) {
         this.model = model;
         this.testInfo = testInfo;
         this.welcomeTitle = this.page.getByTestId('@welcome/title');
-        this.analyticsHeading = this.page.getByTestId('@analytics/consent/heading');
-        this.analyticsContinueButton = this.page.getByTestId('@analytics/continue-button');
         this.onboardingContinueButton = this.page.getByTestId('@onboarding/exit-app-button');
         this.onboardingViewOnlySkipButton = this.page.getByTestId('@onboarding/viewOnly/skip');
         this.onboardingViewOnlyEnableButton = this.page.getByTestId('@onboarding/viewOnly/enable');
@@ -39,6 +49,17 @@ export class OnboardingActions {
         this.authenticityContinueButton = this.page.getByTestId(
             '@authenticity-check/continue-button',
         );
+        this.createBackupButton = this.page.getByTestId('@onboarding/create-backup-button');
+        this.recoverWalletButton = this.page.getByTestId('@onboarding/path-recovery-button');
+        this.startRecoveryButton = this.page.getByTestId('@onboarding/recovery/start-button');
+        this.continueRecoveryButton = this.page.getByTestId('@onboarding/recovery/continue-button');
+        this.retryRecoveryButton = this.page.getByTestId('@onboarding/recovery/retry-button');
+        this.firmwareContinueButton = this.page.getByTestId('@firmware/continue-button');
+        this.skipFirmwareButton = this.page.getByTestId('@firmware/skip-button');
+        this.skipPinButton = this.page.getByTestId('@onboarding/skip-button');
+        this.skipConfirmButton = this.page.getByTestId('@onboarding/skip-button-confirm');
+        this.continueCoinsButton = this.page.getByTestId('@onboarding/coins/continue-button');
+        this.finalTitle = this.page.getByTestId('@onboarding/final');
     }
 
     async optionallyDismissFwHashCheckError() {
@@ -50,11 +71,9 @@ export class OnboardingActions {
     }
 
     async completeOnboarding({ enableViewOnly = false } = {}) {
-        if (this.testInfo.project.name === PlaywrightProjects.Web) {
-            await this.disableFirmwareHashCheck();
-        }
+        await this.disableFirmwareHashCheck();
         await this.optionallyDismissFwHashCheckError();
-        await this.analyticsContinueButton.click();
+        await this.analyticsPage.continue();
         await this.onboardingContinueButton.click();
         if (this.isModelWithSecureElement()) {
             await this.authenticityStartButton.click();
@@ -71,6 +90,10 @@ export class OnboardingActions {
 
     async disableFirmwareHashCheck() {
         // Desktop starts with already disabled firmware hash check. Web needs to disable it.
+        if (this.testInfo.project.name !== PlaywrightProjects.Web) {
+            return;
+        }
+
         await expect(this.welcomeTitle).toBeVisible({ timeout: 10000 });
         // eslint-disable-next-line @typescript-eslint/no-shadow
         await this.page.evaluate(SuiteActions => {
@@ -83,5 +106,15 @@ export class OnboardingActions {
                 payload: { showDebugMenu: true },
             });
         }, SuiteActions);
+    }
+
+    async skipFirmware() {
+        await this.skipFirmwareButton.click();
+        await this.skipConfirmButton.click();
+    }
+
+    async skipPin() {
+        await this.skipPinButton.click();
+        await this.skipConfirmButton.click();
     }
 }
