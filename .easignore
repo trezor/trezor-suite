@@ -8,7 +8,6 @@ packages/suite-analytics/
 packages/suite-build/
 packages/suite-data/
 packages/suite-desktop/
-packages/suite-desktop-api/
 packages/suite-desktop-core/
 packages/suite-desktop-ui/
 packages/suite-storage/
