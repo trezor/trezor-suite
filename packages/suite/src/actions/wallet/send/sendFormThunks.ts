@@ -17,6 +17,7 @@ import {
     signTransactionThunk,
     sendFormActions,
     selectPrecomposedSendForm,
+    cancelSignSendFormTransactionThunk,
 } from '@suite-common/wallet-core';
 import { isCardanoTx, isRbfTransaction } from '@suite-common/wallet-utils';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
@@ -270,6 +271,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             );
         }
 
+        // This thunk uses precomposedForm so it must be called before cleanup.
         dispatch(
             applySendFormMetadataLabelsThunk({
                 selectedAccount,
@@ -277,6 +279,9 @@ export const signAndPushSendFormTransactionThunk = createThunk(
                 txid,
             }),
         );
+
+        // Clean send form state and close review modal.
+        dispatch(cancelSignSendFormTransactionThunk());
 
         return result;
     },

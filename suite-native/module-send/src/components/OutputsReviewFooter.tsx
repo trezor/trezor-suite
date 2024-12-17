@@ -145,7 +145,6 @@ export const OutputsReviewFooter = ({
         const sendResponse = await dispatch(
             pushSendFormTransactionThunk({
                 selectedAccount: account,
-                shouldDiscardTransaction: false,
             }),
         );
         if (isFulfilled(sendResponse)) {
