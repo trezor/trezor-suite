@@ -5,8 +5,12 @@ import prettier from 'prettier';
 import chalk from 'chalk';
 
 import templatePackageJson from './package-template/package.json';
-import { getPrettierConfig } from './utils/getPrettierConfig';
-import { getWorkspacesList } from './utils/getWorkspacesList';
+// todo: calling yarn generate-package failed on not resolving destructuring imports. default imports seem to work.
+import import1 from './utils/getPrettierConfig';
+import import2 from './utils/getWorkspacesList';
+
+const { getPrettierConfig } = import1;
+const { getWorkspacesList } = import2;
 
 const templatePath = './scripts/package-template';
 
