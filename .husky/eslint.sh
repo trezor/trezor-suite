@@ -1,5 +1,13 @@
 #!/bin/bash
 
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+if [ "$TREZOR_PRE_COMMIT_ESLINT_SKIP" == "true" ]; then
+  echo "Skipping eslint pre-commit hook, do: 'export TREZOR_PRE_COMMIT_ESLINT_SKIP=false' to re-enable it."
+  exit 0
+fi
+
 # This check will get all staged files that are *.js(x)/*.ts(x) files
 # and run eslint on them and tries to fix them and re-add them to be committed.
 # If auto-fix is possible it shall be transparent for the user.
@@ -7,11 +15,12 @@
 
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=d | grep '(\.js\|\.jsx$\|\.ts\|\.tsx)$')
 
+echo -e "${GREEN}Running Eslint pre-commit hook, to disable it do: 'export TREZOR_PRE_COMMIT_ESLINT_SKIP=true'.${NC}"
+
 # Exit if no files. Passing no arguments would trigger eslint for whole repo
 if [ -z "$STAGED_FILES" ]; then
   echo "No staged JavaScript/TypeScript files to lint."
 else
-  echo "Linting JavaScript/TypeScript files..."
   echo "$STAGED_FILES"
   echo ""
 
