@@ -17,7 +17,7 @@ import { useUpdateStatus } from './QuickActions/Update/useUpdateStatus';
 import { setSidebarWidth as setSidebarWidthInRedux } from '../../../../../actions/suite/suiteActions';
 import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 
-const Container = styled.nav<{ $elevation: Elevation }>`
+const Container = styled.nav<{ $elevation: Elevation; $isSidebarDragged: boolean }>`
     display: flex;
     container-type: inline-size;
     flex-direction: column;
@@ -25,21 +25,30 @@ const Container = styled.nav<{ $elevation: Elevation }>`
     height: 100%;
     background: ${mapElevationToBackground};
     border-right: 1px solid ${mapElevationToBorder};
+    ${({ $isSidebarDragged }) =>
+        $isSidebarDragged
+            ? `
+    filter: blur(10px);
+    transition: filter 0.1s;`
+            : ''}
 `;
 
 const Wrapper = styled.div`
     display: flex;
 `;
-const Content = styled.div`
+const Content = styled.div<{ $isSidebarCollapsed: number }>`
     height: 100%;
     display: flex;
     flex-direction: column;
+    ${({ $isSidebarCollapsed }) => $isSidebarCollapsed && `max-width: 84px`};
 `;
 
 export const Sidebar = () => {
     const [closedNotificationDevice, setClosedNotificationDevice] = useState(false);
     const [closedNotificationSuite, setClosedNotificationSuite] = useState(false);
-    const { isSidebarCollapsed } = useResponsiveContext();
+    const { isSidebarCollapsed, setSidebarWidth, sidebarWidth } = useResponsiveContext();
+
+    const [isSidebarDragged, setIsSidebarDragged] = useState(false);
 
     const { elevation } = useElevation();
     const { updateStatusDevice, updateStatusSuite } = useUpdateStatus();
@@ -48,13 +57,14 @@ export const Sidebar = () => {
         setSidebarWidth: (width: number) => setSidebarWidthInRedux({ width }),
     });
 
-    const { setSidebarWidth, sidebarWidth } = useResponsiveContext();
-
     const handleSidebarWidthChanged = (width: number) => {
+        setSidebarWidth(width);
         actions.setSidebarWidth(width);
+        setIsSidebarDragged(false);
     };
     const handleSidebarWidthUpdate = (width: number) => {
         setSidebarWidth(width);
+        setIsSidebarDragged(true);
     };
 
     const onNotificationBannerClosed = () => {
@@ -83,10 +93,10 @@ export const Sidebar = () => {
                 onWidthResizeMove={handleSidebarWidthUpdate}
                 disabledWidthInterval={[84, 240]}
             >
-                <Container $elevation={elevation}>
+                <Container $elevation={elevation} $isSidebarDragged={isSidebarDragged}>
                     <ElevationUp>
                         <TrafficLightOffset>
-                            <Content>
+                            <Content $isSidebarCollapsed={isSidebarCollapsed}>
                                 <DeviceSelector />
                                 <Navigation />
                                 <AccountsMenu />
