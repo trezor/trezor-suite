@@ -40,7 +40,7 @@ export const Labeling = () => {
     // - Labeling enabled without any device connected
     // - Labeling enabled with the device connected inside Settings
     // The initialization of Labeling then start when user select a Wallet.
-    const isDisabled = isLocked() || device?.mode !== 'normal';
+    const isDisabled = isLocked() || device?.mode !== 'normal' || !device?.state?.staticSessionId;
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.Labeling}>
