@@ -68,3 +68,19 @@ jobs:
       - run: yarn install --immutable
       - run: yarn message-system-sign-config
       - run: yarn test:unit
+
+  utility-scripts:
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - run: yarn install --immutable
+      - run: yarn generate-package @trezor/meow-package
+      - run: rm -rf packages/meow-package
