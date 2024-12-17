@@ -122,13 +122,7 @@ const reducerActions = [
                 },
             },
         ],
-        result: [
-            {
-                transport: {
-                    type: 'BridgeTransport',
-                },
-            },
-        ],
+        result: [{ transport: { transports: [{ type: 'BridgeTransport' }] } }],
     },
     {
         description: `TRANSPORT.ERROR`,

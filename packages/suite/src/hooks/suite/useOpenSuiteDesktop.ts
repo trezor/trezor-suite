@@ -4,10 +4,10 @@ import { useWindowFocus } from '@trezor/react-utils';
 import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectIsWebUsb } from 'src/reducers/suite/suiteReducer';
+import { selectHasTransportOfType } from 'src/reducers/suite/suiteReducer';
 
 export const useOpenSuiteDesktop = () => {
-    const isWebUsbTransport = useSelector(selectIsWebUsb);
+    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const windowFocused = useWindowFocus();
     const handleOpenSuite = () => {
         if (isWebUsbTransport) {

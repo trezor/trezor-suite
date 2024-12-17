@@ -10,7 +10,7 @@ import { Translation, WebUsbButton } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 import { WebUsbIconButton } from 'src/components/suite/WebUsbButton';
-import { selectIsWebUsb } from 'src/reducers/suite/suiteReducer';
+import { selectHasTransportOfType } from 'src/reducers/suite/suiteReducer';
 
 const Container = styled.div<{ $isFullHeaderVisible: boolean }>`
     display: flex;
@@ -46,7 +46,7 @@ export const DeviceHeader = ({
     icon = 'caretCircleDown',
 }: DeviceHeaderProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
-    const isWebUsbTransport = useSelector(selectIsWebUsb);
+    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const isDeviceConnected = selectedDevice?.connected === true;
     const deviceModelInternal = device.features?.internal_model;
 

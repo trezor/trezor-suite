@@ -1,7 +1,7 @@
-import type { TransportInfo } from '@trezor/connect';
 import { DefinedUnionMember } from '@trezor/type-utils';
 
 import { RouterState } from 'src/reducers/suite/routerReducer';
+import type { TransportState } from 'src/reducers/suite/suiteReducer';
 import type { TrezorDevice, AppState } from 'src/types/suite';
 
 import {
@@ -12,7 +12,7 @@ import {
 type GetPrerequisiteNameParams = {
     router: AppState['router'];
     device?: TrezorDevice;
-    transport?: Partial<TransportInfo>;
+    transport?: TransportState;
 };
 
 export const getPrerequisiteName = ({ router, device, transport }: GetPrerequisiteNameParams) => {
@@ -20,7 +20,7 @@ export const getPrerequisiteName = ({ router, device, transport }: GetPrerequisi
 
     // no transport available
     // todo: is transport-bridge good name? other prerequisites denote to the problem. this ones denotes to the solution
-    if (transport && !transport.type) return 'transport-bridge';
+    if (transport && !transport.transports.length) return 'transport-bridge';
 
     if (!device) return 'device-disconnected';
 

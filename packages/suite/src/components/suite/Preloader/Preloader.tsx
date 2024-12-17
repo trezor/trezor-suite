@@ -16,7 +16,7 @@ import {
     selectIsLoggedOut,
     selectSuiteFlags,
     selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
-    selectTransport,
+    selectIsTransportInitialized,
 } from 'src/reducers/suite/suiteReducer';
 import { SuiteStart } from 'src/views/start/SuiteStart';
 import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
@@ -54,7 +54,7 @@ const getFullscreenApp = (route: AppState['router']['route']): FC | undefined =>
 // Decides which content should be displayed basing on route and prerequisites.
 export const Preloader = ({ children }: PropsWithChildren) => {
     const lifecycle = useSelector(state => state.suite.lifecycle);
-    const transport = useSelector(selectTransport);
+    const isTransportInitialized = useSelector(selectIsTransportInitialized);
     const router = useSelector(state => state.router);
     const prerequisite = useSelector(selectPrerequisite);
     const isLoggedOut = useSelector(selectIsLoggedOut);
@@ -89,7 +89,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
 
     // @trezor/connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     // display Loader as full page view
-    if (lifecycle.status !== 'ready' || !router.loaded || !transport) {
+    if (lifecycle.status !== 'ready' || !router.loaded || !isTransportInitialized) {
         return <InitialLoading timeout={90} />;
     }
 

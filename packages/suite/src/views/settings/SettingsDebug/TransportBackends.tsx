@@ -4,7 +4,7 @@ import { isDevEnv } from '@suite-common/suite-utils';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { selectTransport } from 'src/reducers/suite/suiteReducer';
+import { selectTransportOfType } from 'src/reducers/suite/suiteReducer';
 
 import { useBridgeDesktopApi } from '../../../hooks/suite/useBridgeDesktopApi';
 
@@ -13,7 +13,7 @@ const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0.01;
 
 export const TransportBackends = () => {
     const allowPrerelease = useSelector(state => state.desktopUpdate.allowPrerelease);
-    const transport = useSelector(selectTransport);
+    const bridge = useSelector(selectTransportOfType('BridgeTransport'));
 
     const { bridgeProcess, bridgeSettings, changeBridgeSettings, bridgeDesktopApiError } =
         useBridgeDesktopApi();
@@ -33,9 +33,7 @@ export const TransportBackends = () => {
             <SectionItem data-testid="@settings/debug/processes/Bridge">
                 <TextColumn
                     title="Bridge server"
-                    description={
-                        transport?.version ? `version: ${transport.version}` : 'not running'
-                    }
+                    description={bridge?.version ? `version: ${bridge.version}` : 'not running'}
                 />
                 <ActionColumn>
                     <Checkbox

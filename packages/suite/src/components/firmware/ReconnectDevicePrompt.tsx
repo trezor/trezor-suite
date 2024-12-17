@@ -12,7 +12,7 @@ import { useFirmwareInstallation } from '@suite-common/firmware';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { Translation, WebUsbButton } from 'src/components/suite';
-import { selectIsWebUsb } from 'src/reducers/suite/suiteReducer';
+import { selectHasTransportOfType } from 'src/reducers/suite/suiteReducer';
 
 const RebootDeviceGraphics = ({
     device,
@@ -64,7 +64,7 @@ interface ReconnectDevicePromptProps {
 
 export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePromptProps) => {
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
-    const isWebUsbTransport = useSelector(selectIsWebUsb);
+    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const { showManualReconnectPrompt, status, uiEvent } = useFirmwareInstallation();
     const { device } = useDevice();
 

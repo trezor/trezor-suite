@@ -6,9 +6,13 @@ import { DATA_URL } from '@trezor/urls';
 import { Translation, Modal, Metadata } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { isWebUsb } from 'src/utils/suite/transport';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
-import { selectTransport } from 'src/reducers/suite/suiteReducer';
+import {
+    selectBridgeInstaller,
+    selectHasActiveTransport,
+    selectHasTransportOfType,
+    selectTransportOfType,
+} from 'src/reducers/suite/suiteReducer';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
@@ -36,10 +40,13 @@ const DownloadStandalone = ({ target }: { target: string }) => (
 
 // it actually changes to "Install suite desktop"
 export const BridgeUnavailable = () => {
-    const transport = useSelector(selectTransport);
+    const hasTransport = useSelector(selectHasActiveTransport);
+    const isWebUsb = useSelector(selectHasTransportOfType('WebUsbTransport'));
+    const bridge = useSelector(selectTransportOfType('BridgeTransport'));
+    const bridgeInstaller = useSelector(selectBridgeInstaller);
     const dispatch = useDispatch();
 
-    const preferredTarget = transport?.bridge?.packages?.find(i => i.preferred === true);
+    const preferredTarget = bridgeInstaller?.packages?.find(i => i.preferred === true);
     const target = preferredTarget
         ? `${DATA_URL}${preferredTarget.url}`
         : 'https://github.com/trezor/data/tree/master/bridge/2.0.27';
@@ -50,10 +57,10 @@ export const BridgeUnavailable = () => {
 
     // if bridge is running, user will never be directed to this page, but since this page is accessible directly over /bridge url
     // it makes sense to show some meaningful information here
-    if (transport?.type) {
-        const description = isWebUsb(transport)
-            ? `Using WebUSB. No action required.`
-            : `Trezor Bridge HTTP server is running.  Version: ${transport?.version}`;
+    if (hasTransport) {
+        const description = !bridge
+            ? `Using ${isWebUsb ? 'WebUSB' : 'different transport'}. No action required.`
+            : `Trezor Bridge HTTP server is running.  Version: ${bridge.version}`;
 
         return (
             <Modal

@@ -9,7 +9,7 @@ import { Translation, WebUsbButton } from 'src/components/suite';
 import { FirmwareOffer, FirmwareProgressBar, ReconnectDevicePrompt } from 'src/components/firmware';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { TrezorDevice } from 'src/types/suite';
-import { selectIsActionAbortable, selectIsWebUsb } from 'src/reducers/suite/suiteReducer';
+import { selectIsActionAbortable, selectHasTransportOfType } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from 'src/hooks/suite/useSelector';
 
 const SelectDevice = styled.div`
@@ -42,7 +42,7 @@ export const FirmwareInstallation = ({
 }: FirmwareInstallationProps) => {
     const { status, showReconnectPrompt, uiEvent, targetType } = useFirmwareInstallation();
     const isActionAbortable = useSelector(selectIsActionAbortable);
-    const isWebUsbTransport = useSelector(selectIsWebUsb);
+    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
     const getInnerActionComponent = () => {
         if (

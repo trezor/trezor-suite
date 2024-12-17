@@ -9,7 +9,7 @@ import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { ConnectDevicePrompt, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsWebUsb, selectPrerequisite } from 'src/reducers/suite/suiteReducer';
+import { selectHasTransportOfType, selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 import { goto } from 'src/actions/suite/routerActions';
 
 import { Transport } from './Transport';
@@ -52,7 +52,7 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
     const device = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
     const connectedDevicesCount = devices.filter(d => d.connected === true).length;
-    const isWebUsbTransport = useSelector(selectIsWebUsb);
+    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const prerequisite = useSelector(selectPrerequisite);
 
     const TipComponent = useMemo(

@@ -13,7 +13,7 @@ import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,
-    selectTransport,
+    selectTransportOfType,
 } from 'src/reducers/suite/suiteReducer';
 
 import { MessageSystemBanner } from '../MessageSystemBanner';
@@ -37,7 +37,7 @@ const Container = styled.div<{ $isVisible?: boolean }>`
 `;
 
 export const SuiteBanners = () => {
-    const transport = useSelector(selectTransport);
+    const bridge = useSelector(selectTransportOfType('BridgeTransport'));
     const device = useSelector(selectSelectedDevice);
     const isOnline = useSelector(state => state.suite.online);
     const firmwareHashInvalid = useSelector(state => state.firmware.firmwareHashInvalid);
@@ -54,13 +54,13 @@ export const SuiteBanners = () => {
     const showUpdateBridge = () => {
         if (
             isDesktop() &&
-            transport?.version &&
-            ['2.0.27', '2.0.28', '2.0.29'].includes(transport.version)
+            bridge?.version &&
+            ['2.0.27', '2.0.28', '2.0.29'].includes(bridge.version)
         ) {
             return false;
         }
 
-        return transport?.outdated;
+        return bridge?.outdated;
     };
 
     let banner = null;

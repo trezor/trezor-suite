@@ -212,8 +212,7 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
     analytics: state.analytics.enabled,
     instanceId: hideSensitiveInfo ? REDACTED_REPLACEMENT : state.analytics.instanceId,
     sessionId: hideSensitiveInfo ? REDACTED_REPLACEMENT : state.analytics.sessionId,
-    transport: state.suite.transport?.type,
-    transportVersion: state.suite.transport?.version,
+    transports: state.suite.transport?.transports.map(({ type, version }) => ({ type, version })),
     rememberedStandardWallets: selectDevices(state).filter(d => d.remember && d.useEmptyPassphrase)
         .length,
     rememberedHiddenWallets: selectDevices(state).filter(d => d.remember && !d.useEmptyPassphrase)

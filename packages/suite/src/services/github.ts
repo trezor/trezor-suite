@@ -14,7 +14,7 @@ import type { TrezorDevice } from 'src/types/suite';
 
 type DebugInfo = {
     device?: TrezorDevice;
-    transport?: Partial<TransportInfo>;
+    transports: TransportInfo[];
 };
 
 const getDeviceInfo = (device?: TrezorDevice) => {
@@ -30,17 +30,17 @@ const getDeviceInfo = (device?: TrezorDevice) => {
 const getSuiteInfo = () =>
     `${isDesktop() ? 'desktop' : 'web'} ${getSuiteVersion()} (${getCommitHash()})`;
 
-const getTransportInfo = (transport?: Partial<TransportInfo>) => {
-    if (!transport?.type) {
+const getTransportInfo = (transports: TransportInfo[]) => {
+    if (!transports.length) {
         return 'N/A';
     }
 
-    return transport?.type === 'BridgeTransport'
-        ? `${transport.type} ${transport.version}`
-        : transport.type;
+    return transports
+        .map(({ type, version }) => `${type}${version ? ` ${version}` : ''}`)
+        .join(', ');
 };
 
-export const openGithubIssue = ({ device, transport }: DebugInfo) => {
+export const openGithubIssue = ({ device, transports }: DebugInfo) => {
     const url = new URL(`${GITHUB_REPO_URL}/issues/new`);
 
     const body = `
@@ -58,7 +58,7 @@ A clear and concise description of what the bug is.
  - OS: ${navigator.platform}
  - Screen: ${getScreenWidth()}x${getScreenHeight()}
  - Device: ${getDeviceInfo(device)}
- - Transport: ${getTransportInfo(transport)}
+ - Transport: ${getTransportInfo(transports)}
 
 **Expected result:**
 A clear and concise description of what you expected to happen.

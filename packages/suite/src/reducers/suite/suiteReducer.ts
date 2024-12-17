@@ -6,7 +6,7 @@ import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { discoveryActions, DeviceRootState, selectSelectedDevice } from '@suite-common/wallet-core';
 import { versionUtils } from '@trezor/utils';
 import { isWeb } from '@trezor/env-utils';
-import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
+import { TRANSPORT, TransportInfo, ConnectSettings, InstallerInfo } from '@trezor/connect';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
@@ -25,7 +25,6 @@ import {
     isSkippedHashCheckError,
     revisionCheckErrorScenarios,
 } from 'src/constants/suite/firmware';
-import { isWebUsb } from 'src/utils/suite/transport';
 
 import { RouterRootState, selectRouter } from './routerReducer';
 
@@ -109,12 +108,16 @@ export interface SuiteSettings {
     sidebarWidth: number;
 }
 
+export interface TransportState extends InstallerInfo {
+    transports: TransportInfo[];
+}
+
 export interface SuiteState {
     online: boolean;
     torStatus: TorStatus;
     torBootstrap: TorBootstrap | null;
     lifecycle: SuiteLifecycle;
-    transport?: Partial<TransportInfo>;
+    transport?: TransportState;
     locks: Record<(typeof SUITE.LOCK_TYPE)[keyof typeof SUITE.LOCK_TYPE], number>;
     flags: Flags;
     evmSettings: EvmSettings;
@@ -298,17 +301,24 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 draft.settings.sidebarWidth = action.payload.width;
                 break;
 
-            case TRANSPORT.START:
-                draft.transport = action.payload;
+            case TRANSPORT.START: {
+                const { udev, bridge, ...transport } = action.payload;
+                const transports = draft.transport?.transports ?? [];
+                const index = transports.findIndex(t => t.apiType === transport.apiType);
+                if (index >= 0) transports[index] = transport;
+                else transports.push(transport);
+                draft.transport = { udev, bridge, transports };
                 break;
-
-            case TRANSPORT.ERROR:
-                draft.transport = {
-                    bridge: action.payload.bridge,
-                    udev: action.payload.udev,
-                };
+            }
+            case TRANSPORT.ERROR: {
+                const { udev, bridge, apiType } = action.payload;
+                const transports =
+                    !draft.transport || !apiType
+                        ? draft.transport?.transports ?? []
+                        : draft.transport.transports?.filter(t => t.apiType !== apiType);
+                draft.transport = { udev, bridge, transports };
                 break;
-
+            }
             case SUITE.ONLINE_STATUS:
                 draft.online = action.payload;
                 break;
@@ -398,20 +408,29 @@ export const selectIsRouterLocked = (state: SuiteRootState) =>
 export const selectIsRouterOrUiLocked = (state: SuiteRootState) =>
     !!state.suite.locks[SUITE.LOCK_TYPE.ROUTER] || !!state.suite.locks[SUITE.LOCK_TYPE.UI];
 
-export const selectTransport = (state: SuiteRootState) => state.suite.transport;
+export const selectIsTransportInitialized = (state: SuiteRootState) => !!state.suite.transport;
 
-export const selectIsWebUsb = (state: SuiteRootState) => {
-    const transport = selectTransport(state);
+export const selectActiveTransports = (state: SuiteRootState) =>
+    state.suite.transport?.transports ?? [];
 
-    return isWebUsb(transport);
-};
+export const selectHasActiveTransport = (state: SuiteRootState) =>
+    !!state.suite.transport?.transports.length;
+
+export const selectHasTransportOfType = (type: TransportInfo['type']) => (state: SuiteRootState) =>
+    state.suite.transport?.transports.some(t => t.type === type) ?? false;
+
+export const selectTransportOfType = (type: TransportInfo['type']) => (state: SuiteRootState) =>
+    state.suite.transport?.transports.find(t => t.type === type);
+
+export const selectUdevInstaller = (state: SuiteRootState) => state.suite.transport?.udev;
+
+export const selectBridgeInstaller = (state: SuiteRootState) => state.suite.transport?.bridge;
 
 export const selectIsActionAbortable = (state: SuiteRootState) => {
-    const transport = selectTransport(state);
+    const bridge = state.suite.transport?.transports.find(t => t.type === 'BridgeTransport');
 
-    return transport?.type === 'BridgeTransport'
-        ? versionUtils.isNewerOrEqual(transport?.version as string, '2.0.31')
-        : true; // WebUSB
+    // TODO abortable actions should be decided based on specific device's transport
+    return !bridge || versionUtils.isNewerOrEqual(bridge.version as string, '2.0.31');
 };
 
 export const selectPrerequisite = (state: SuiteRootState & RouterRootState & DeviceRootState) => {

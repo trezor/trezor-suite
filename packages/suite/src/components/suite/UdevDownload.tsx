@@ -8,7 +8,7 @@ import { spacings, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { selectTransport } from 'src/reducers/suite/suiteReducer';
+import { selectUdevInstaller } from 'src/reducers/suite/suiteReducer';
 
 import { LearnMoreButton } from './LearnMoreButton';
 
@@ -51,16 +51,15 @@ interface Installer {
 }
 
 export const UdevDownload = () => {
-    const transport = useSelector(selectTransport);
+    const udev = useSelector(selectUdevInstaller);
 
-    const installers: Installer[] =
-        transport && transport.udev
-            ? transport.udev.packages.map(p => ({
-                  label: p.name,
-                  value: DATA_URL + p.url.substring(1),
-                  preferred: p.preferred,
-              }))
-            : [];
+    const installers: Installer[] = udev
+        ? udev.packages.map(p => ({
+              label: p.name,
+              value: DATA_URL + p.url.substring(1),
+              preferred: p.preferred,
+          }))
+        : [];
     const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
     const preferredTarget = installers.find(i => i.preferred);
     const target = selectedTarget || preferredTarget || installers[0];

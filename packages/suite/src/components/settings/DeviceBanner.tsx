@@ -7,7 +7,7 @@ import { spacings } from '@trezor/theme';
 
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { WebUsbButton } from 'src/components/suite/WebUsbButton';
-import { selectIsWebUsb } from 'src/reducers/suite/suiteReducer';
+import { selectHasTransportOfType } from 'src/reducers/suite/suiteReducer';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLottieAnimation = styled(LottieAnimation)`
@@ -45,7 +45,7 @@ interface DeviceBannerProps {
 
 export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
     const { device } = useDevice();
-    const isWebUsbTransport = useSelector(selectIsWebUsb);
+    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
     return (
         <Card

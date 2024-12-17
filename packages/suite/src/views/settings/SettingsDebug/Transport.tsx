@@ -7,7 +7,7 @@ import { ArrayElement } from '@trezor/type-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
-import { DebugModeOptions, selectTransport } from 'src/reducers/suite/suiteReducer';
+import { DebugModeOptions, selectActiveTransports } from 'src/reducers/suite/suiteReducer';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 
 type TransportMenuItem = {
@@ -19,7 +19,7 @@ type TransportMenuItem = {
 
 export const Transport = () => {
     const debug = useSelector(state => state.suite.settings.debug);
-    const transport = useSelector(selectTransport);
+    const activeTransports = useSelector(selectActiveTransports);
     const dispatch = useDispatch();
 
     // fallback [] to avoid need of migration.
@@ -35,11 +35,11 @@ export const Transport = () => {
             transports.push('WebUsbTransport');
         }
 
-        return transports.map(t => ({
-            active: t === transport?.type,
-            name: t,
+        return transports.map(type => ({
+            active: activeTransports.some(a => a.type === type),
+            name: type,
         }));
-    }, [transport]);
+    }, [activeTransports]);
 
     return (
         <>

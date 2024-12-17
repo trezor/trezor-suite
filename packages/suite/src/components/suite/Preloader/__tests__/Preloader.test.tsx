@@ -57,7 +57,7 @@ const getInitialState = ({ suite, router, device }: any = {}) => ({
         lifecycle: {
             status: 'ready',
         },
-        transport: { type: undefined },
+        transport: { transports: [] },
         settings: { debug: {}, theme: { variant: 'light' } },
         online: true,
         locks: [],
@@ -171,7 +171,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'BridgeTransport' },
+                    transport: { transports: [{ type: 'BridgeTransport' }] },
                 },
             }),
         );
@@ -187,7 +187,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'WebUsbTransport' },
+                    transport: { transports: [{ type: 'WebUsbTransport' }] },
                 },
             }),
         );
@@ -210,7 +210,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'BridgeTransport' },
+                    transport: { transports: [{ type: 'BridgeTransport' }] },
                 },
                 device,
             }),
@@ -235,7 +235,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'WebUsbTransport' },
+                    transport: { transports: [{ type: 'WebUsbTransport' }] },
                 },
                 device,
             }),
@@ -261,7 +261,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'BridgeTransport' },
+                    transport: { transports: [{ type: 'BridgeTransport' }] },
                 },
                 device,
             }),
@@ -287,7 +287,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'BridgeTransport' },
+                    transport: { transports: [{ type: 'BridgeTransport' }] },
                 },
                 device,
             }),
@@ -311,7 +311,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'BridgeTransport' },
+                    transport: { transports: [{ type: 'BridgeTransport' }] },
                 },
                 device,
             }),
@@ -335,7 +335,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'BridgeTransport' },
+                    transport: { transports: [{ type: 'BridgeTransport' }] },
                 },
                 device,
             }),
@@ -359,7 +359,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'BridgeTransport' },
+                    transport: { transports: [{ type: 'BridgeTransport' }] },
                 },
                 device,
             }),
@@ -383,7 +383,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'BridgeTransport' },
+                    transport: { transports: [{ type: 'BridgeTransport' }] },
                 },
                 device,
             }),
@@ -408,7 +408,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'BridgeTransport' },
+                    transport: { transports: [{ type: 'BridgeTransport' }] },
                 },
                 device,
             }),
@@ -433,7 +433,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'BridgeTransport' },
+                    transport: { transports: [{ type: 'BridgeTransport' }] },
                 },
                 device,
             }),
@@ -458,7 +458,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'BridgeTransport' },
+                    transport: { transports: [{ type: 'BridgeTransport' }] },
                 },
                 device,
             }),
@@ -483,7 +483,7 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'BridgeTransport' },
+                    transport: { transports: [{ type: 'BridgeTransport' }] },
                 },
                 device,
             }),

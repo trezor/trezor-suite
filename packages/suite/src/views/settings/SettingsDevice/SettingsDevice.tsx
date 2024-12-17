@@ -1,5 +1,4 @@
 import { isDeviceRemembered, isDeviceWithButtons } from '@suite-common/suite-utils';
-import type { TransportInfo } from '@trezor/connect';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 
@@ -8,7 +7,7 @@ import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import type { TrezorDevice } from 'src/types/suite';
 import { isRecoveryInProgress } from 'src/utils/device/isRecoveryInProgress';
-import { selectTransport } from 'src/reducers/suite/suiteReducer';
+import { selectHasActiveTransport } from 'src/reducers/suite/suiteReducer';
 
 import { AuthenticateDevice } from './AuthenticateDevice';
 import { AutoLock } from './AutoLock';
@@ -35,20 +34,19 @@ import { Brightness } from './Brightness';
 import { DefaultWalletLoading } from './DefaultWalletLoading';
 import { FirmwareRevisionCheck } from './FirmwareRevisionCheck';
 
-const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
-    const noTransportAvailable = transport && !transport.type;
+const deviceSettingsUnavailable = (device?: TrezorDevice) => {
     const wrongDeviceType = device?.type && ['unacquired', 'unreadable'].includes(device.type);
     const wrongDeviceMode =
         (device?.mode && ['seedless'].includes(device.mode)) ||
         (device?.features !== undefined && isRecoveryInProgress(device?.features));
     const firmwareUpdateRequired = device?.firmware === 'required';
 
-    return noTransportAvailable || wrongDeviceType || wrongDeviceMode || firmwareUpdateRequired;
+    return wrongDeviceType || wrongDeviceMode || firmwareUpdateRequired;
 };
 
 export const SettingsDevice = () => {
     const { device, isLocked } = useDevice();
-    const transport = useSelector(selectTransport);
+    const noTransportAvailable = !useSelector(selectHasActiveTransport);
     const deviceUnavailable = !device?.features;
     const isDeviceLocked = isLocked();
     const bootloaderMode = device?.mode === 'bootloader';
@@ -58,7 +56,7 @@ export const SettingsDevice = () => {
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
     const isPassphraseProtectionOn = Boolean(device?.features?.passphrase_protection);
 
-    if (deviceSettingsUnavailable(device, transport)) {
+    if (noTransportAvailable || deviceSettingsUnavailable(device)) {
         return (
             <SettingsLayout>
                 <DeviceBanner

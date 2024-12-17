@@ -3,13 +3,13 @@ import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { openGithubIssue } from 'src/services/github';
-import { selectTransport } from 'src/reducers/suite/suiteReducer';
+import { selectActiveTransports } from 'src/reducers/suite/suiteReducer';
 
 export const GithubIssue = () => {
-    const transport = useSelector(selectTransport);
+    const transports = useSelector(selectActiveTransports);
     const { device } = useDevice();
 
-    const handleClick = () => openGithubIssue({ device, transport });
+    const handleClick = () => openGithubIssue({ device, transports });
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.GithubIssue}>
