@@ -93,11 +93,13 @@ export const setup = async (
             throw new Error('Unknown emulator start type');
     }
 
+    const { settings, ...restOptions } = options;
+
     if (!options.wiped) {
         const mnemonic = options.mnemonic || MNEMONICS.mnemonic_all;
 
         await TrezorUserEnvLink.setupEmu({
-            ...options,
+            ...restOptions,
             mnemonic,
             pin: options.pin || '',
             passphrase_protection: !!options.passphrase_protection,
@@ -106,7 +108,7 @@ export const setup = async (
         });
     }
 
-    if (options.settings) {
+    if (settings) {
         // allow apply-settings to fail, older FW may not know some flags yet
         try {
             await TrezorUserEnvLink.send({ type: 'emulator-apply-settings', ...options.settings });
