@@ -83,7 +83,7 @@ export const ConfirmUnverifiedModal = ({
                         </Button>
                     )}
                     <Button onClick={handleClose} variant="tertiary">
-                        <Translation id="TR_BACK" />
+                        <Translation id="TR_DISMISS" />
                     </Button>
                 </>
             }
