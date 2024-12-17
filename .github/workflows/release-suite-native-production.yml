@@ -6,7 +6,7 @@ on:
       PLATFORM:
         type: choice
         options:
-          - All
+          - iOS & Android
           - iOS
           - Android
           - Android APK
@@ -19,8 +19,8 @@ concurrency:
 
 jobs:
   ios:
-    if: ${{ (github.event.inputs.PLATFORM == 'iOS' || github.event.inputs.PLATFORM == 'All') && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') }}
-    name: Build and release iOS
+    if: ${{ (github.event.inputs.PLATFORM == 'iOS' || github.event.inputs.PLATFORM == 'iOS & Android') && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') }}
+    name: Build and submit iOS
     environment: production-suite-native
     runs-on: ubuntu-latest
     env:
@@ -47,8 +47,8 @@ jobs:
           --message ${{ github.sha }}
         working-directory: suite-native/app
   android:
-    if: ${{ github.event.inputs.PLATFORM == 'Android' || github.event.inputs.PLATFORM == 'All' && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') }}
-    name: Build and release Android
+    if: ${{ github.event.inputs.PLATFORM == 'Android' || github.event.inputs.PLATFORM == 'iOS & Android' && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') }}
+    name: Build and submit Android
     environment: production-suite-native
     runs-on: ubuntu-latest
     env:
@@ -75,8 +75,8 @@ jobs:
           --message ${{ github.sha }}
         working-directory: suite-native/app
   androidAPK:
-    if: ${{ github.event.inputs.PLATFORM == 'Android APK' || github.event.inputs.PLATFORM == 'All' && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') }}
-    name: Build Android APK to GH releases
+    if: ${{ github.event.inputs.PLATFORM == 'Android APK' && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') }}
+    name: Build standalone Android APK and release to S3
     environment: production-suite-native
     runs-on: ubuntu-latest
     env:
@@ -92,12 +92,29 @@ jobs:
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_mobile_prod_deploy
+          aws-region: eu-central-1
       - name: Install libs
         run: yarn workspaces focus @suite-native/app
+
+      - name: Get Suite version
+        id: get_version
+        run: |
+          APP_VERSION=$(jq -r '.suiteNativeVersion' suite-native/app/package.json)
+          echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
+
       - name: Build on EAS Android
+        working-directory: suite-native/app
+        id: eas_build
         run: |
           BUILD_ID=$(eas build --platform android --profile productionAPK --non-interactive --message ${{ github.sha }} --wait --json | jq -r '.[0].id')
-          echo "BUILD_ID: $BUILD_ID"
           BUILD_URL=$(eas build:view "$BUILD_ID" --json | jq -r '.artifacts.buildUrl')
-          echo "BUILD_URL: $BUILD_URL"
-        working-directory: suite-native/app
+          echo "build_url=$BUILD_URL" >> $GITHUB_OUTPUT
+
+      - name: Upload APK to S3
+        run: |
+          wget -O "Trezor-Suite-${{ steps.get_version.outputs.app_version }}.apk" "${{ steps.eas_build.outputs.build_url }}"
+          aws s3 cp "./Trezor-Suite-${{ steps.get_version.outputs.app_version }}.apk" s3://data.trezor.io/suite/releases/mobile/
