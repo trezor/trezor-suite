@@ -1,5 +1,6 @@
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Deferred, createDeferred } from '@trezor/utils';
+import type { Credentials } from '@trezor/metadata';
 
 import { getPrefixedURL } from 'src/utils/suite/router';
 import { METADATA_PROVIDER } from 'src/actions/suite/constants';
@@ -15,10 +16,6 @@ export const getOauthReceiverUrl = () => {
 
     return desktopApi.getHttpReceiverAddress('/oauth');
 };
-
-type Credentials =
-    | { access_token?: undefined; code: string }
-    | { access_token: string; code?: undefined };
 
 type Message = { [key: string]: string };
 
@@ -125,7 +122,6 @@ const getWebHandlerInstance = (
         if (window.location.origin !== e.origin) return;
         if (!e.data.search && !e.data.hash) return;
         if (e.data.key !== 'trezor-oauth') return;
-
         handleResponse(
             e.data,
             originalParams,

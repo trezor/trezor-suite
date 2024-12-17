@@ -5,9 +5,6 @@ import { Account } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
 import { createZip } from '@trezor/utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-
-import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
-import { Dispatch, GetState } from 'src/types/suite';
 import {
     MetadataProvider,
     DeviceMetadata,
@@ -15,10 +12,13 @@ import {
     DataType,
     WalletLabels,
     AccountLabels,
-} from 'src/types/suite/metadata';
+} from '@trezor/metadata';
+import type { AbstractMetadataProvider, PasswordManagerState } from '@trezor/metadata';
+
+import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
+import { Dispatch, GetState } from 'src/types/suite';
 import * as metadataUtils from 'src/utils/suite/metadata';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
-import type { AbstractMetadataProvider, PasswordManagerState } from 'src/types/suite/metadata';
 
 import { getProviderInstance } from './metadataProviderActions';
 

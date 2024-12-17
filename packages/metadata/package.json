@@ -1,5 +1,5 @@
 {
-    "name": "@suite-common/metadata-types",
+    "name": "@trezor/metadata",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -10,6 +10,11 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@trezor/metadata": "workspace:*"
+        "@trezor/env-utils": "workspace:^",
+        "@trezor/utils": "workspace:^",
+        "dropbox": "^10.34.0"
+    },
+    "devDependencies": {
+        "@trezor/suite-desktop-api": "workspace:*"
     }
 }

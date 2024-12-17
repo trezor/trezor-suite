@@ -7,14 +7,8 @@
  */
 
 import { isDesktop } from '@trezor/env-utils';
-
-import { METADATA_PROVIDER } from 'src/actions/suite/constants';
-import { OAuthServerEnvironment, Tokens } from 'src/types/suite/metadata';
-import {
-    extractCredentialsFromAuthorizationFlow,
-    getOauthReceiverUrl,
-} from 'src/utils/suite/oauth';
-import { getCodeChallenge } from 'src/utils/suite/random';
+import { Credentials, OAuthServerEnvironment, Tokens } from '@trezor/metadata';
+import { getWeakRandomId } from '@trezor/utils';
 
 const SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
 const BOUNDARY = '-------314159265358979323846';
@@ -85,12 +79,14 @@ type GetTokenInfoResponse = {
 
 type Flow = 'implicit' | 'code';
 
+const getCodeChallenge = () => getWeakRandomId(128);
+
 /**
  * This class provides communication interface with selected google rest APIs:
  * - oauth v2
  * - drive v3
  */
-class Client {
+export class Client {
     static nameIdMap: Record<string, string>;
     static listPromise?: Promise<ListResponse>;
     static flow: Flow;
@@ -105,12 +101,20 @@ class Client {
         staging: 'https://staging-suite-auth.trezor.io',
         localhost: 'http://localhost:3005',
     };
+    static clientIds: { code: string; implicit: string };
+    static receiverUrl = '';
+    static requestCodeFn: () => Promise<Credentials & { random: string }>;
 
     public static setEnvironment(environment: OAuthServerEnvironment) {
         Client.authServerUrl = Client.servers[environment];
     }
 
-    static init({ accessToken, refreshToken }: Tokens, environment: OAuthServerEnvironment) {
+    static init(
+        { accessToken, refreshToken }: Tokens,
+        environment: OAuthServerEnvironment,
+        clientIds: { code: string; implicit: string },
+    ) {
+        Client.clientIds = clientIds;
         Client.initPromise = new Promise(resolve => {
             Client.nameIdMap = {};
             Client.setEnvironment(environment);
@@ -127,16 +131,14 @@ class Client {
                     // if our server providing the refresh token is not available, fallback to a flow with access tokens only (authorization for a limited time)
                     Client.flow = result ? 'code' : 'implicit';
                     // the app has two sets of credentials to enable both OAuth flows
-                    Client.clientId =
-                        Client.flow === 'code'
-                            ? METADATA_PROVIDER.GOOGLE_CODE_FLOW_CLIENT_ID
-                            : METADATA_PROVIDER.GOOGLE_IMPLICIT_FLOW_CLIENT_ID;
+                    Client.clientId = clientIds[Client.flow];
+
                     resolve(Client);
                 });
             } else {
                 // code flow with loopback IP address does not work unless redirect_uri is localhost (Google returns redirect_uri_mismatch)
                 Client.flow = 'implicit';
-                Client.clientId = METADATA_PROVIDER.GOOGLE_IMPLICIT_FLOW_CLIENT_ID;
+                Client.clientId = clientIds[Client.flow];
                 resolve(Client);
             }
         });
@@ -179,16 +181,15 @@ class Client {
         return Client.authServerAvailable;
     }
 
-    static async authorize() {
-        await Client.initPromise;
-        const redirectUri = await getOauthReceiverUrl();
-        if (!redirectUri) return;
-
+    static getOAuthUrl() {
+        if (!Client.receiverUrl) {
+            throw new Error('Receiver URL is not set.');
+        }
         const random = getCodeChallenge();
 
         const options = {
             client_id: Client.clientId,
-            redirect_uri: redirectUri,
+            redirect_uri: Client.receiverUrl,
             scope: SCOPES,
         };
 
@@ -209,8 +210,14 @@ class Client {
         const url = `https://accounts.google.com/o/oauth2/v2/auth?${new URLSearchParams(
             options,
         ).toString()}`;
-        const response = await extractCredentialsFromAuthorizationFlow(url);
-        const { access_token, code } = response;
+
+        return { url, random };
+    }
+
+    static async authorize() {
+        await Client.initPromise;
+
+        const { access_token, code, random } = await Client.requestCodeFn();
 
         if (access_token) {
             // implicit flow returns short lived access_token directly
@@ -224,7 +231,7 @@ class Client {
                         clientId: Client.clientId,
                         code,
                         codeVerifier: random,
-                        redirectUri,
+                        redirectUri: Client.receiverUrl,
                     }),
                     headers: {
                         'Content-Type': 'application/json',
@@ -232,12 +239,14 @@ class Client {
                 });
 
                 const json = await res.json();
+
                 if (!json?.access_token || !json?.refresh_token) {
                     throw new Error('Could not retrieve the tokens.');
                 }
                 Client.accessToken = json.access_token;
                 Client.refreshToken = json.refresh_token;
             } catch {
+                // TODO: it looks like that this actually does not work. I tested it even on develop by throwing an artifical error somewhere above.
                 await Client.forceImplicitFlow();
             }
         }
@@ -248,7 +257,7 @@ class Client {
     static async forceImplicitFlow() {
         if (Client.flow === 'code') {
             Client.flow = 'implicit';
-            Client.clientId = METADATA_PROVIDER.GOOGLE_IMPLICIT_FLOW_CLIENT_ID;
+            Client.clientId = Client.clientIds[Client.flow];
             await Client.authorize();
         }
     }
@@ -473,5 +482,3 @@ class Client {
         return response;
     }
 }
-
-export default Client;

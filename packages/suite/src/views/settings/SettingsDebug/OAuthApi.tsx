@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
+import { Client as GoogleClient } from '@trezor/metadata/src/services/google';
+
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
-import GoogleClient from 'src/services/google';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import type { OAuthServerEnvironment } from 'src/types/suite/metadata';

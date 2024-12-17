@@ -30,7 +30,8 @@ import {
     Shadow,
 } from '@shopify/react-native-skia';
 
-import { hexToRgba } from '@suite-common/suite-utils';
+// todo: needed to change this import because of some seemingly unrelated type-check issues
+import { hexToRgba } from '@suite-common/suite-utils/src/hexToRgba';
 
 import type { AnimatedLineGraphProps, GraphEventWithCords } from './LineGraphProps';
 import { SelectionDot as DefaultSelectionDot } from './SelectionDot';

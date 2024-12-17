@@ -3,15 +3,10 @@ import type { users } from 'dropbox';
 
 import { getWeakRandomId } from '@trezor/utils';
 
-import { AbstractMetadataProvider } from 'src/types/suite/metadata';
-import {
-    extractCredentialsFromAuthorizationFlow,
-    getOauthReceiverUrl,
-} from 'src/utils/suite/oauth';
-
+import { AbstractMetadataProvider } from './AbstractProvider';
 // Dropbox messed up types, that's why @ts-expect-error occurs in this file
 
-class DropboxProvider extends AbstractMetadataProvider {
+export class DropboxProvider extends AbstractMetadataProvider {
     client: Dropbox;
     auth: DropboxAuth;
     user?: users.FullAccount;
@@ -55,7 +50,9 @@ class DropboxProvider extends AbstractMetadataProvider {
     }
 
     async connect() {
-        const redirectUrl = await getOauthReceiverUrl();
+        const redirectUrl = await new Promise<string>(resolve => {
+            this.emit('request-receiver-url', resolve);
+        });
 
         if (!redirectUrl) return this.error('AUTH_ERROR', 'Failed to get oauth receiver url');
 
@@ -73,7 +70,16 @@ class DropboxProvider extends AbstractMetadataProvider {
         try {
             // dropbox supports authorization code flow for both web and desktop
             // @ts-expect-error dropbox lib types url as String object, but it is primite string
-            const { code } = await extractCredentialsFromAuthorizationFlow(url);
+            // const { code } = await extractCredentialsFromAuthorizationFlow(url);
+
+            const { code } = await new Promise<string>((resolve, reject) => {
+                this.emit(
+                    'request-code',
+                    // @ts-expect-error dropbox lib types url as String object, but it is primite string
+                    url,
+                    resolve,
+                );
+            });
 
             if (!code)
                 return this.error('AUTH_ERROR', 'Failed to extract code from authorization flow');
@@ -141,12 +147,12 @@ class DropboxProvider extends AbstractMetadataProvider {
                 if (!match) match = matchLegacy;
 
                 if (match && 'metadata' in match.metadata) {
-                    const { result } = await this.client.filesDownload({
+                    const { result: result2 } = await this.client.filesDownload({
                         path: match!.metadata.metadata.path_lower!,
                     });
 
                     // @ts-expect-error fileBlob is missing in dropbox lib types file, but it is available
-                    const ab = await result.fileBlob.arrayBuffer();
+                    const ab = await result2.fileBlob.arrayBuffer();
 
                     return this.ok(Buffer.from(ab));
                 }
@@ -283,5 +289,3 @@ class DropboxProvider extends AbstractMetadataProvider {
         return this.error('OTHER_ERROR', message);
     }
 }
-
-export default DropboxProvider;

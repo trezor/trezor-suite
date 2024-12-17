@@ -9620,6 +9620,8 @@ __metadata:
 "@suite-common/metadata-types@workspace:*, @suite-common/metadata-types@workspace:suite-common/metadata-types":
   version: 0.0.0-use.local
   resolution: "@suite-common/metadata-types@workspace:suite-common/metadata-types"
+  dependencies:
+    "@trezor/metadata": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -12174,6 +12176,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/metadata@workspace:*, @trezor/metadata@workspace:packages/metadata":
+  version: 0.0.0-use.local
+  resolution: "@trezor/metadata@workspace:packages/metadata"
+  dependencies:
+    "@trezor/env-utils": "workspace:^"
+    "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/utils": "workspace:^"
+    dropbox: "npm:^10.34.0"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/node-utils@workspace:*, @trezor/node-utils@workspace:^, @trezor/node-utils@workspace:packages/node-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/node-utils@workspace:packages/node-utils"
@@ -12685,7 +12698,6 @@ __metadata:
     "@types/zxcvbn": "npm:^4.4.4"
     bs58check: "npm:^4.0.0"
     date-fns: "npm:^2.30.0"
-    dropbox: "npm:^10.34.0"
     file-saver: "npm:^2.0.5"
     framer-motion: "npm:^11.0.3"
     history: "npm:^4.10.1"

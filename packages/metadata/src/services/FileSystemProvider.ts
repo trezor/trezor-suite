@@ -1,11 +1,14 @@
-import { desktopApi } from '@trezor/suite-desktop-api';
+import type { DesktopApi } from '@trezor/suite-desktop-api';
 
-import { AbstractMetadataProvider } from 'src/types/suite/metadata';
+import { AbstractMetadataProvider } from './AbstractProvider';
 
-class FileSystemProvider extends AbstractMetadataProvider {
+export class FileSystemProvider extends AbstractMetadataProvider {
     isCloud = false;
-    constructor() {
+    desktopApi: DesktopApi;
+
+    constructor({ desktopApi }: { desktopApi: DesktopApi }) {
         super('fileSystem');
+        this.desktopApi = desktopApi;
     }
 
     get clientId() {
@@ -32,7 +35,7 @@ class FileSystemProvider extends AbstractMetadataProvider {
     }
 
     async getFileContent(file: string) {
-        const result = await desktopApi.metadataRead({ file });
+        const result = await this.desktopApi.metadataRead({ file });
         if (!result.success && result.code !== 'ENOENT') {
             return this.error('PROVIDER_ERROR', result.error);
         }
@@ -43,7 +46,7 @@ class FileSystemProvider extends AbstractMetadataProvider {
     async setFileContent(file: string, content: Buffer) {
         const hex = content.toString('hex');
 
-        const result = await desktopApi.metadataWrite({
+        const result = await this.desktopApi.metadataWrite({
             file,
             content: hex,
         });
@@ -55,7 +58,7 @@ class FileSystemProvider extends AbstractMetadataProvider {
     }
 
     async getFilesList() {
-        const response = await desktopApi.metadataGetFiles();
+        const response = await this.desktopApi.metadataGetFiles();
 
         if (!response.success) {
             return this.error('PROVIDER_ERROR', response.error);
@@ -65,7 +68,7 @@ class FileSystemProvider extends AbstractMetadataProvider {
     }
 
     async renameFile(from: string, to: string) {
-        const response = await desktopApi.metadataRenameFile({
+        const response = await this.desktopApi.metadataRenameFile({
             file: from,
             to,
         });
@@ -81,5 +84,3 @@ class FileSystemProvider extends AbstractMetadataProvider {
         return true;
     }
 }
-
-export default FileSystemProvider;

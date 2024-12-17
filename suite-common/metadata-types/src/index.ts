@@ -1,1 +1,1 @@
-export * from './metadataTypes';
+export * from '@trezor/metadata';

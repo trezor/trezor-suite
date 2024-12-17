@@ -1,13 +1,18 @@
-import { AbstractMetadataProvider, OAuthServerEnvironment, Tokens } from 'src/types/suite/metadata';
-import GoogleClient from 'src/services/google';
-
-class GoogleProvider extends AbstractMetadataProvider {
+import { Client as GoogleClient } from './google';
+import { AbstractMetadataProvider } from './AbstractProvider';
+import { OAuthServerEnvironment, Tokens } from '../types';
+import type { Credentials } from '../types';
+export class GoogleProvider extends AbstractMetadataProvider {
     connected = false;
     isCloud = true;
 
-    constructor(tokens: Tokens, environment: OAuthServerEnvironment) {
+    constructor(
+        tokens: Tokens,
+        environment: OAuthServerEnvironment,
+        clientIds: { code: string; implicit: string },
+    ) {
         super('google');
-        GoogleClient.init(tokens, environment);
+        GoogleClient.init(tokens, environment, clientIds);
     }
 
     get clientId() {
@@ -15,7 +20,23 @@ class GoogleProvider extends AbstractMetadataProvider {
     }
 
     async connect() {
+        const redirectUrl = await new Promise<string>(resolve => {
+            this.emit('request-receiver-url', resolve);
+        });
+
         try {
+            GoogleClient.receiverUrl = redirectUrl;
+
+            GoogleClient.requestCodeFn = async () => {
+                const { url, random } = GoogleClient.getOAuthUrl();
+
+                const res = await new Promise<Credentials>(resolve => {
+                    this.emit('request-code', url, resolve);
+                });
+
+                return { ...res, random };
+            };
+
             await GoogleClient.authorize();
             this.connected = true;
 
@@ -220,5 +241,3 @@ class GoogleProvider extends AbstractMetadataProvider {
         return this.error('OTHER_ERROR', message);
     }
 }
-
-export default GoogleProvider;

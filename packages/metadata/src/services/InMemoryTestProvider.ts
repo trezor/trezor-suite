@@ -1,4 +1,4 @@
-import { AbstractMetadataProvider } from 'src/types/suite/metadata';
+import { AbstractMetadataProvider } from './AbstractProvider';
 
 export class InMemoryTestProvider extends AbstractMetadataProvider {
     #files: Record<string, string> = {};

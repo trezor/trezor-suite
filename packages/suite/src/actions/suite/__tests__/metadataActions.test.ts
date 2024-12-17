@@ -1,13 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 
+import { DropboxProvider } from '@trezor/metadata';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
 import { testMocks } from '@suite-common/test-utils';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import metadataReducer from 'src/reducers/suite/metadataReducer';
 import { SuiteState } from 'src/reducers/suite/suiteReducer';
-import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import { accountsReducer } from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -117,7 +117,7 @@ const initStore = (state: State) => {
 
 describe('Metadata Actions', () => {
     beforeAll(() => {
-        jest.mock('src/services/suite/metadata/DropboxProvider');
+        jest.mock('@trezor/metadata/src/services/DropboxProvider');
         DropboxProvider.prototype.connect = () =>
             Promise.resolve({ success: true, payload: undefined });
         DropboxProvider.prototype.getProviderDetails = () =>

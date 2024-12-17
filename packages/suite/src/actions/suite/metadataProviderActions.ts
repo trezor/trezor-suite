@@ -2,6 +2,13 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { createDeferred } from '@trezor/utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Device } from '@trezor/connect';
+import {
+    DropboxProvider,
+    GoogleProvider,
+    FileSystemProvider,
+    InMemoryTestProvider,
+} from '@trezor/metadata';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { METADATA, METADATA_PROVIDER } from 'src/actions/suite/constants';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -15,11 +22,11 @@ import {
     DataType,
 } from 'src/types/suite/metadata';
 import * as modalActions from 'src/actions/suite/modalActions';
-import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
-import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
-import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
+import {
+    extractCredentialsFromAuthorizationFlow,
+    getOauthReceiverUrl,
+} from 'src/utils/suite/oauth';
 
-import { InMemoryTestProvider } from '../../services/suite/metadata/InMemoryTestProvider';
 import * as metadataActions from './metadataActions';
 
 export type MetadataAction = {
@@ -52,19 +59,46 @@ const createProviderInstance = (
     environment: OAuthServerEnvironment = 'production',
     clientId?: string,
 ) => {
-    switch (type) {
-        case 'dropbox':
-            return new DropboxProvider({
-                token: tokens?.refreshToken,
-                clientId: clientId || METADATA_PROVIDER.DROPBOX_CLIENT_ID,
-            });
-        case 'google':
-            return new GoogleProvider(tokens, environment);
-        case 'fileSystem':
-            return new FileSystemProvider();
-        case 'inMemoryTest':
-            return new InMemoryTestProvider();
-    }
+    const provider = (() => {
+        switch (type) {
+            case 'dropbox':
+                return new DropboxProvider({
+                    token: tokens?.refreshToken,
+                    clientId: clientId || METADATA_PROVIDER.DROPBOX_CLIENT_ID,
+                });
+            case 'google':
+                return new GoogleProvider(tokens, environment, {
+                    code: METADATA_PROVIDER.GOOGLE_CODE_FLOW_CLIENT_ID,
+                    implicit: METADATA_PROVIDER.GOOGLE_IMPLICIT_FLOW_CLIENT_ID,
+                });
+            case 'fileSystem':
+                return new FileSystemProvider({ desktopApi });
+            case 'inMemoryTest':
+                return new InMemoryTestProvider();
+        }
+    })();
+
+    // provider will ask for a url that will be used to send token back from the auth flow
+    provider.on('request-receiver-url', async callback => {
+        const url = await getOauthReceiverUrl();
+        if (!url) {
+            console.error('no url found');
+
+            return;
+        }
+
+        return callback(url);
+    });
+
+    // provider will ask for a code. it is now implementators (suite, suite mobile) responsibility to extract it
+    // and pass it back.
+    provider.on('request-code', async (url, callback) => {
+        const res = await extractCredentialsFromAuthorizationFlow(url);
+
+        return callback(res);
+    });
+
+    return provider;
 };
 
 /**
@@ -128,12 +162,12 @@ export const disconnectProvider =
         if (provider) {
             await provider.disconnect();
             providerInstance[dataType] = undefined;
+            dispatch({
+                type: METADATA.REMOVE_PROVIDER,
+                payload: provider,
+            });
         }
         // flush reducer
-        dispatch({
-            type: METADATA.REMOVE_PROVIDER,
-            payload: provider,
-        });
         dispatch({
             type: METADATA.SET_SELECTED_PROVIDER,
             payload: { dataType, clientId: undefined },
