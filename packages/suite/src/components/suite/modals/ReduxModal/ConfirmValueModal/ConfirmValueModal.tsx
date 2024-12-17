@@ -114,7 +114,7 @@ export const ConfirmValueModal = ({
                 description={showTokensSubheading && <Translation id="TR_INCLUDING_TOKENS" />}
                 onCancel={isCancelable ? onCancel : undefined}
             >
-                <Column gap={spacings.xl} alignItems="center">
+                <Column gap={spacings.xl}>
                     {!device?.connected && (
                         <Banner icon="warningTriangle" variant="warning">
                             <Paragraph typographyStyle="hint">
