@@ -472,10 +472,7 @@ export const validateTransportCompatibility = [
             bridge: ['2.0.27', '2.0.28'],
             webusbplugin: '*',
         },
-        transport: {
-            type: 'bridge',
-            version: '2.0.27',
-        },
+        transports: [{ type: 'bridge', version: '2.0.27' }],
         result: true,
     },
     {
@@ -484,7 +481,7 @@ export const validateTransportCompatibility = [
             bridge: ['2.0.27', '2.0.28'],
             webusbplugin: '*',
         },
-        transport: undefined,
+        transports: [],
         result: false,
     },
     {
@@ -493,10 +490,7 @@ export const validateTransportCompatibility = [
             bridge: '*',
             webusbplugin: '*',
         },
-        transport: {
-            type: 'bridge',
-            version: '2.0.27',
-        },
+        transports: [{ type: 'bridge', version: '2.0.27' }],
         result: true,
     },
     {
@@ -505,10 +499,7 @@ export const validateTransportCompatibility = [
             bridge: ['2.0.27', '2.0.28'],
             webusbplugin: '*',
         },
-        transport: {
-            type: 'tunnel',
-            version: '2.0.27',
-        },
+        transports: [{ type: 'tunnel', version: '2.0.27' }],
         result: false,
     },
     {
@@ -517,10 +508,7 @@ export const validateTransportCompatibility = [
             bridge: '2',
             webusbplugin: '*',
         },
-        transport: {
-            type: 'bridge',
-            version: '2.0.25',
-        },
+        transports: [{ type: 'BridgeTransport', version: '2.0.25' }],
         result: true,
     },
     {
@@ -529,9 +517,7 @@ export const validateTransportCompatibility = [
             bridge: '2',
             webusbplugin: '*',
         },
-        transport: {
-            type: 'bridge',
-        },
+        transports: [{ type: 'bridge' }],
         result: false,
     },
     {
@@ -540,9 +526,7 @@ export const validateTransportCompatibility = [
             bridge: '2',
             webusbplugin: '*',
         },
-        transport: {
-            version: '2.0.0',
-        },
+        transports: [{ version: '2.0.0' }],
         result: false,
     },
     {
@@ -551,10 +535,7 @@ export const validateTransportCompatibility = [
             bridge: '2',
             webusbplugin: '2',
         },
-        transport: {
-            type: 'WebUsbPlugin',
-            version: '2.0.0',
-        },
+        transports: [{ type: 'WebUsbTransport', version: '2.0.0' }],
         result: true,
     },
     {
@@ -563,11 +544,20 @@ export const validateTransportCompatibility = [
             bridge: '2',
             webusbplugin: '1.9.2',
         },
-        transport: {
-            type: 'WebUsbPlugin',
-            version: '1.9.3',
-        },
+        transports: [{ type: 'WebUsbPlugin', version: '1.9.3' }],
         result: false,
+    },
+    {
+        description: 'validateTransportCompatibility case 10',
+        transportCondition: {
+            bridge: '2.0.31',
+            webusbplugin: '*',
+        },
+        transports: [
+            { type: 'UdpTransport', version: '1.9.3' },
+            { type: 'BridgeTransport', version: '2.0.31' },
+        ],
+        result: true,
     },
 ];
 
@@ -1606,7 +1596,7 @@ export const getValidMessages = [
         }),
         options: {
             settings: { tor: false, enabledNetworks: [] },
-            transport: { type: 'bridge', version: '2.3.4' },
+            transports: [{ type: 'bridge', version: '2.3.4' }],
         },
         result: [getMessageSystemConfig().actions[1].message],
     },
@@ -1630,7 +1620,7 @@ export const getValidMessages = [
         }),
         options: {
             settings: { tor: false, enabledNetworks: [] },
-            transport: { type: 'bridge', version: '2.3.4' },
+            transports: [{ type: 'bridge', version: '2.3.4' }],
         },
         result: [],
     },
@@ -1781,7 +1771,7 @@ export const getValidMessages = [
         config: getMessageSystemConfig(),
         options: {
             settings: { tor: true, enabledNetworks: ['btc'] },
-            transport: { type: 'bridge', version: '2.0.30' },
+            transports: [{ type: 'bridge', version: '2.0.30' }],
             device: getConnectDevice(),
         },
         result: getMessageSystemConfig().actions.map(action => action.message),

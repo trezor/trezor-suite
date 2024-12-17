@@ -13,6 +13,7 @@ import { SUITE } from 'src/actions/suite/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { getIsTorEnabled } from 'src/utils/suite/tor';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
+import { selectActiveTransports } from 'src/reducers/suite/suiteReducer';
 
 // actions which can affect message system messages
 const actions = [
@@ -32,13 +33,14 @@ const messageSystemMiddleware =
 
         if (actions.includes(action.type)) {
             const { config } = api.getState().messageSystem;
-            const { transport, torStatus } = api.getState().suite;
+            const { torStatus } = api.getState().suite;
+            const transports = selectActiveTransports(api.getState());
             const device = selectSelectedDevice(api.getState());
             const { enabledNetworks } = api.getState().wallet.settings;
 
             const validMessages = getValidMessages(config, {
                 device,
-                transport,
+                transports,
                 settings: {
                     tor: getIsTorEnabled(torStatus),
                     enabledNetworks,
@@ -48,7 +50,7 @@ const messageSystemMiddleware =
 
             const validExperiments = getValidExperiments(config, {
                 device,
-                transport,
+                transports,
                 settings: {
                     tor: getIsTorEnabled(torStatus),
                     enabledNetworks,
