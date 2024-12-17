@@ -82,7 +82,7 @@ export const AddAccountModal = ({
     const [enabledNetworks, disabledNetworks] = arrayPartition(supportedNetworks, network =>
         enabledNetworkSymbols.includes(network.symbol),
     );
-    const [disabledMainnetNetworks, disabledTestnetNetworks] = arrayPartition(
+    const [, disabledTestnetNetworks] = arrayPartition(
         disabledNetworks,
         network => !network?.testnet,
     );
@@ -98,6 +98,15 @@ export const AddAccountModal = ({
                   a.empty,
           )
         : [];
+
+    const filterNetworksBySymbol = (networks: Network[], symbol?: NetworkSymbol) =>
+        symbol ? networks.filter(network => network.symbol === symbol) : networks;
+
+    const filteredDisabledNetworks = filterNetworksBySymbol(disabledNetworks, symbol);
+    const filteredEnabledNetworks = filterNetworksBySymbol(enabledNetworks, symbol);
+
+    const visibleNetworks =
+        emptyAccounts.length > 0 ? filteredEnabledNetworks : filteredDisabledNetworks;
 
     const isCoinjoinVisible = (isCoinjoinPublic || isDebug) && !isCoinjoinDisabled;
 
@@ -208,20 +217,22 @@ export const AddAccountModal = ({
                   children: (
                       <>
                           <NetworksWrapper>
-                              <SelectNetwork
-                                  heading={<Translation id="TR_ACTIVATED_COINS" />}
-                                  networks={enabledNetworks}
-                                  selectedNetworks={selectedNetworks}
-                                  handleNetworkSelection={selectNetwork}
-                              />
+                              {!symbol && (
+                                  <SelectNetwork
+                                      heading={<Translation id="TR_ACTIVATED_COINS" />}
+                                      networks={enabledNetworks}
+                                      selectedNetworks={selectedNetworks}
+                                      handleNetworkSelection={selectNetwork}
+                                  />
+                              )}
                               <SelectNetwork
                                   heading={<Translation id="TR_INACTIVE_COINS" />}
-                                  networks={disabledMainnetNetworks}
+                                  networks={visibleNetworks}
                                   selectedNetworks={selectedNetworks}
                                   handleNetworkSelection={selectNetwork}
                               />
                           </NetworksWrapper>
-                          {!!disabledTestnetNetworks.length && (
+                          {!symbol && !!disabledTestnetNetworks.length && (
                               <CollapsibleBox
                                   heading={
                                       <Tooltip
@@ -243,7 +254,7 @@ export const AddAccountModal = ({
                                   />
                               </CollapsibleBox>
                           )}
-                          {showUnsupportedCoins && (
+                          {!symbol && showUnsupportedCoins && (
                               <CollapsibleBox
                                   heading={
                                       <Tooltip

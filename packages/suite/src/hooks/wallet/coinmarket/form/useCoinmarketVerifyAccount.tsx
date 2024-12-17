@@ -63,7 +63,7 @@ const getTranslationIds = (
 };
 
 const useCoinmarketVerifyAccount = ({
-    currency,
+    cryptoId,
 }: CoinmarketVerifyAccountProps): CoinmarketVerifyAccountReturnProps => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const accounts = useSelector(state => state.wallet.accounts);
@@ -82,15 +82,15 @@ const useCoinmarketVerifyAccount = ({
         CoinmarketVerifyFormAccountOptionProps | undefined
     >();
 
-    const networkId = currency && parseCryptoId(currency).networkId;
-    const symbol = currency && cryptoIdToSymbol(currency);
+    const networkId = cryptoId && parseCryptoId(cryptoId).networkId;
+    const symbol = cryptoId && cryptoIdToSymbol(cryptoId);
 
     const isSupportedNetwork = [...supportedMainnets, ...supportedTestnets].some(
         network => network.symbol === symbol,
     );
 
     const suiteReceiveAccounts = useMemo(() => {
-        if (currency) {
+        if (cryptoId) {
             return filterReceiveAccounts({
                 accounts,
                 deviceState: device?.state?.staticSessionId,
@@ -100,7 +100,7 @@ const useCoinmarketVerifyAccount = ({
         }
 
         return undefined;
-    }, [accounts, currency, device, isDebug, symbol]);
+    }, [accounts, cryptoId, device, isDebug, symbol]);
 
     const selectAccountOptions = useMemo(
         () => getSelectAccountOptions(suiteReceiveAccounts, device, isSupportedNetwork),
