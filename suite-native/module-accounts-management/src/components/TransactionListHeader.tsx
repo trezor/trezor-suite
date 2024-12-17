@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Button, Divider, HStack, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
@@ -128,19 +128,14 @@ export const TransactionListHeader = memo(
             isDeviceConnectEnabled && isNetworkSendFlowEnabled && !isPortfolioTrackerDevice;
 
         return (
-            <Box marginBottom="sp8">
+            <>
                 <VStack spacing="sp24">
                     <TransactionListHeaderContent
                         accountKey={accountKey}
                         tokenContract={tokenContract}
                     />
                     {accountHasTransactions && (
-                        <HStack
-                            marginVertical="sp16"
-                            paddingHorizontal="sp16"
-                            flex={1}
-                            spacing="sp12"
-                        >
+                        <HStack paddingHorizontal="sp16" flex={1} spacing="sp12">
                             <Box flex={1}>
                                 <Button
                                     viewLeft="arrowLineDown"
@@ -165,24 +160,16 @@ export const TransactionListHeader = memo(
                             )}
                         </HStack>
                     )}
-                    {isPriceCardDisplayed && (
-                        <Box marginBottom={accountHasTransactions ? undefined : 'sp16'}>
-                            <CoinPriceCard accountKey={accountKey} />
-                        </Box>
-                    )}
-
-                    {accountHasTransactions && (
-                        <>
-                            <Divider />
-                            <Box marginVertical="sp8" marginHorizontal="sp24">
-                                <Text variant="titleSmall">
-                                    <Translation id="transactions.title" />
-                                </Text>
-                            </Box>
-                        </>
-                    )}
+                    {isPriceCardDisplayed && <CoinPriceCard accountKey={accountKey} />}
                 </VStack>
-            </Box>
+                {accountHasTransactions && (
+                    <Box marginTop="sp52" marginHorizontal="sp32">
+                        <Text variant="titleSmall">
+                            <Translation id="transactions.title" />
+                        </Text>
+                    </Box>
+                )}
+            </>
         );
     },
 );

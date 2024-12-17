@@ -31,7 +31,7 @@ export const TransactionsListFooter = ({
         );
     } else if (!areAllTxnsFetched) {
         return (
-            <Box paddingHorizontal="sp16" paddingVertical="sp32">
+            <Box paddingTop="sp32" paddingHorizontal="sp16">
                 <Button
                     colorScheme="tertiaryElevation0"
                     onPress={onButtonPress}

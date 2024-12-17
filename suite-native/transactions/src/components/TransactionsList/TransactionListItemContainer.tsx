@@ -69,7 +69,6 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
                 condition: isLast,
                 style: {
                     paddingBottom: utils.spacings.sp16,
-                    marginBottom: utils.spacings.sp8,
                     borderBottomLeftRadius: utils.borders.radii.r12,
                     borderBottomRightRadius: utils.borders.radii.r12,
                 },
