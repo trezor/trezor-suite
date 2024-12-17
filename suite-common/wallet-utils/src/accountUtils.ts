@@ -955,6 +955,13 @@ export const accountSearchFn = (
     const metadataMatch = !!metadataAccountLabel?.toLowerCase().includes(searchString);
     const accountLabelMatch = !!account.accountLabel?.toLowerCase().includes(searchString);
 
+    const filterTokens = (token: TokenInfo) =>
+        token.name?.toLowerCase().includes(searchString) ||
+        token.symbol?.toLowerCase().includes(searchString) ||
+        token.contract.toLowerCase().includes(searchString);
+
+    const tokenMatch = !!account.tokens && !!account.tokens.filter(filterTokens).length;
+
     return (
         symbolMatch ||
         networkNameMatch ||
@@ -963,7 +970,8 @@ export const accountSearchFn = (
         addressMatch ||
         matchXRPAlternativeName ||
         metadataMatch ||
-        accountLabelMatch
+        accountLabelMatch ||
+        tokenMatch
     );
 };
 
