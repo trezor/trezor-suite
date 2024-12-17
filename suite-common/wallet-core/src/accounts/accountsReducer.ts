@@ -474,7 +474,7 @@ export const selectIsDeviceNotEmpty = createMemoizedSelector(
 );
 
 export const selectStakingAccounts = createMemoizedSelector([selectAccountByKey], account => {
-    if (!account) return null;
+    if (!account || account.networkType !== 'solana') return null;
 
-    return account.stakingAccounts ?? null;
+    return account.misc.solStakingAccounts ?? [];
 });

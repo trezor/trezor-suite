@@ -100,7 +100,8 @@
         "node-gyp": "10.2.0",
         "reselect": "5.1.1",
         "### We need promise to be same version in mobile unless it produces undefined behavior, check PR #15815": "1.0.0",
-        "promise": "8.3.0"
+        "promise": "8.3.0",
+        "@everstake/wallet-sdk/@solana/web3.js": "1.95.8"
     },
     "devDependencies": {
         "@babel/cli": "^7.23.9",

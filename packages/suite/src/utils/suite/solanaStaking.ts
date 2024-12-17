@@ -1,10 +1,11 @@
-import { LAMPORTS_PER_SOL, VersionedTransaction } from '@solana/web3.js';
+import { VersionedTransaction, PublicKey } from '@solana/web3.js-version1';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { WALLET_SDK_SOURCE } from '@suite-common/wallet-constants';
+import { LAMPORTS_PER_SOL, WALLET_SDK_SOURCE } from '@suite-common/wallet-constants';
 import { selectSolanaWalletSdkNetwork } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 import type { SolanaSignTransaction } from '@trezor/connect';
+import { Blockchain } from '@suite-common/wallet-types';
 
 type SolanaTx = SolanaSignTransaction & {
     versionedTx: VersionedTransaction;
@@ -33,11 +34,16 @@ export const transformTx = (
     return transformedTx;
 };
 
+export const getPubKeyFromAddress = (address: string) => {
+    return new PublicKey(address);
+};
+
 interface PrepareStakeSolTxParams {
     from: string;
     path: string | number[];
     amount: string;
     symbol: NetworkSymbol;
+    selectedBlockchain: Blockchain;
 }
 export type PrepareStakeSolTxResponse =
     | {
@@ -54,9 +60,10 @@ export const prepareStakeSolTx = async ({
     path,
     amount,
     symbol,
+    selectedBlockchain,
 }: PrepareStakeSolTxParams): Promise<PrepareStakeSolTxResponse> => {
     try {
-        const solanaClient = selectSolanaWalletSdkNetwork(symbol);
+        const solanaClient = selectSolanaWalletSdkNetwork(symbol, selectedBlockchain.url);
 
         const lamports = new BigNumber(LAMPORTS_PER_SOL).multipliedBy(amount).toNumber(); // stake method expects lamports as a number
         const tx = await solanaClient.stake(from, lamports, WALLET_SDK_SOURCE);
