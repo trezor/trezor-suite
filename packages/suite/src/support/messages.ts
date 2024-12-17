@@ -189,9 +189,25 @@ export default defineMessages({
         defaultMessage: 'Redirecting ...',
         id: 'TR_TRADE_REDIRECTING',
     },
-    TR_FRACTION_BUTTONS_ALL: {
-        defaultMessage: 'All',
-        id: 'TR_FRACTION_BUTTONS_ALL',
+    TR_FRACTION_BUTTONS_10_PERCENT: {
+        defaultMessage: '10%',
+        id: 'TR_FRACTION_BUTTONS_10_PERCENT',
+    },
+    TR_FRACTION_BUTTONS_25_PERCENT: {
+        defaultMessage: '25%',
+        id: 'TR_FRACTION_BUTTONS_25_PERCENT',
+    },
+    TR_FRACTION_BUTTONS_50_PERCENT: {
+        defaultMessage: '50%',
+        id: 'TR_FRACTION_BUTTONS_50_PERCENT',
+    },
+    TR_FRACTION_BUTTONS_MAX: {
+        defaultMessage: 'Max',
+        id: 'TR_FRACTION_BUTTONS_MAX',
+    },
+    TR_FRACTION_BUTTONS_REWARDS: {
+        defaultMessage: 'Rewards',
+        id: 'TR_FRACTION_BUTTONS_REWARDS',
     },
     TR_EXCHANGE_FIXED_OFFERS_INFO: {
         id: 'TR_EXCHANGE_FIXED_OFFERS_INFO',

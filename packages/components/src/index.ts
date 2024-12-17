@@ -43,6 +43,7 @@ export * from './components/form/Select/Select';
 export * from './components/form/SelectBar/SelectBar';
 export * from './components/form/Switch/Switch';
 export * from './components/form/Textarea/Textarea';
+export * from './components/form/FractionButton/FractionButton';
 export * from './components/GradientOverlay/GradientOverlay';
 export { Grid, type GridProps } from './components/Grid/Grid';
 export * from './components/HotkeyBadge/HotkeyBadge';

@@ -1,9 +1,11 @@
-import { Icon, Banner, Column, Text, Button } from '@trezor/components';
+import { Icon, Banner, Column, Text, Button, FractionButton, Row } from '@trezor/components';
 import { getInputState, getStakingLimitsByNetwork } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { spacings } from '@trezor/theme';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { BigNumber } from '@trezor/utils';
+import { MIN_ETH_AMOUNT_FOR_STAKING } from '@suite-common/wallet-constants';
 
 import { NumberInput, Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
@@ -16,7 +18,6 @@ import {
 } from 'src/utils/suite/validation';
 import { FIAT_INPUT, CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { validateStakingMax } from 'src/utils/suite/staking';
-import { FormFractionButtons } from 'src/components/suite/FormFractionButtons';
 
 export const Inputs = () => {
     const { translationString } = useTranslation();
@@ -73,19 +74,70 @@ export const Inputs = () => {
     const shouldShowAmountForWithdrawalWarning =
         isLessAmountForWithdrawalWarningShown || isAmountForWithdrawalWarningShown;
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
+
+    const isFractionButtonDisabled = (divisor: number) => {
+        if (!account.formattedBalance || !network.decimals) return false;
+
+        return new BigNumber(account.formattedBalance)
+            .dividedBy(divisor)
+            .decimalPlaces(network.decimals)
+            .lte(MIN_ETH_AMOUNT_FOR_STAKING);
+    };
+
+    const tooltip = (
+        <Translation
+            id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
+            values={{
+                amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
+                networkDisplaySymbol,
+            }}
+        />
+    );
+
+    const fractionButtons = [
+        {
+            id: 'TR_FRACTION_BUTTONS_10_PERCENT%',
+            children: <Translation id="TR_FRACTION_BUTTONS_10_PERCENT" />,
+            tooltip,
+            isDisabled: isFractionButtonDisabled(10),
+            onClick: () => setRatioAmount(10),
+        },
+        {
+            id: 'TR_FRACTION_BUTTONS_25_PERCENT%',
+            children: <Translation id="TR_FRACTION_BUTTONS_25_PERCENT" />,
+            tooltip,
+            isDisabled: isFractionButtonDisabled(4),
+            onClick: () => setRatioAmount(4),
+        },
+        {
+            id: 'TR_FRACTION_BUTTONS_50_PERCENT%',
+            children: <Translation id="TR_FRACTION_BUTTONS_50_PERCENT" />,
+            tooltip,
+            isDisabled: isFractionButtonDisabled(2),
+            onClick: () => setRatioAmount(2),
+        },
+        {
+            id: 'TR_FRACTION_BUTTONS_MAX',
+            children: <Translation id="TR_FRACTION_BUTTONS_MAX" />,
+            tooltip,
+            isDisabled: new BigNumber(account.formattedBalance || '0').lt(
+                MIN_ETH_AMOUNT_FOR_STAKING,
+            ),
+            onClick: () => setMax(),
+        },
+    ];
 
     return (
         <Column gap={spacings.sm} alignItems="center">
             <NumberInput
                 name={CRYPTO_INPUT}
                 labelLeft={
-                    <FormFractionButtons
-                        setRatioAmount={setRatioAmount}
-                        setMax={setMax}
-                        account={account}
-                        decimals={network.decimals}
-                    />
+                    <Row gap={spacings.xs}>
+                        {fractionButtons.map(button => (
+                            <FractionButton key={button.id} {...button} />
+                        ))}
+                    </Row>
                 }
                 labelRight={
                     (isDirty || hasValues) && (
@@ -97,7 +149,7 @@ export const Inputs = () => {
                 control={control}
                 rules={cryptoInputRules}
                 maxLength={formInputsMaxLength.amount}
-                innerAddon={<Text variant="tertiary">{displaySymbol}</Text>}
+                innerAddon={<Text variant="tertiary">{networkDisplaySymbol}</Text>}
                 bottomText={errors[CRYPTO_INPUT]?.message ?? null}
                 inputState={getInputState(cryptoError || fiatError)}
                 onChange={value => {
@@ -133,7 +185,7 @@ export const Inputs = () => {
                         }
                         values={{
                             amount: MIN_FOR_WITHDRAWALS.toString(),
-                            networkDisplaySymbol: displaySymbol,
+                            networkDisplaySymbol,
                         }}
                     />
                 </Banner>
@@ -145,7 +197,7 @@ export const Inputs = () => {
                         id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
                         values={{
                             amount: MIN_FOR_WITHDRAWALS.toString(),
-                            networkDisplaySymbol: displaySymbol,
+                            networkDisplaySymbol,
                         }}
                     />
                 </Banner>

@@ -19,7 +19,7 @@ export const CoinmarketFractionButtons = ({
         { label: '1/4', value: 4 },
         { label: '1/3', value: 3 },
         { label: '1/2', value: 2 },
-        { label: <Translation id="TR_FRACTION_BUTTONS_ALL" />, value: null },
+        { label: <Translation id="TR_FRACTION_BUTTONS_MAX" /> },
     ];
 
     return (
