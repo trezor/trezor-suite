@@ -55,7 +55,7 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
                 {actions.map(a => (
                     <Button
                         key={a.label || 'TR_RETRY'}
-                        variant={a.variant || 'primary'}
+                        variant={a.variant || 'warning'}
                         icon={a.icon || 'plus'}
                         isLoading={isLocked()}
                         onClick={a.action}
