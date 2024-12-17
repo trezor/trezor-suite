@@ -4,6 +4,7 @@ import { Paragraph, Tooltip, Banner, Card, Column, InfoItem, NewModal } from '@t
 import { spacings } from '@trezor/theme';
 import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
@@ -61,7 +62,7 @@ export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
             description={
                 <Translation
                     id="TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED"
-                    values={{ symbol: account.symbol.toUpperCase() }}
+                    values={{ networkSymbol: getNetworkDisplaySymbol(account.symbol) }}
                 />
             }
             size="small"

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { Paragraph, Icon, motionAnimation } from '@trezor/components';
 import { borders, spacingsPx, typography } from '@trezor/theme';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
@@ -81,7 +82,8 @@ export const ExampleCSV = () => {
                             address,amount,currency{isLabelingAvailable && ',label'}
                         </Paragraph>
                         <Paragraph typographyStyle="hint">
-                            {addresses[0]},0.31337,{account.symbol.toUpperCase()}
+                            {addresses[0]},0.31337,
+                            {getNetworkDisplaySymbol(account.symbol)}
                             {isLabelingAvailable &&
                                 `,${translationString('TR_SENDFORM_LABELING_EXAMPLE_1')}`}
                         </Paragraph>

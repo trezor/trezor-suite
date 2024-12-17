@@ -12,6 +12,7 @@ import {
     getInputState,
     findToken,
 } from '@suite-common/wallet-utils';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { FiatValue, Translation, NumberInput } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -81,7 +82,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     }
 
     const withTokens = hasNetworkFeatures(account, 'tokens');
-    const displayTicker = shouldSendInSats ? 'sat' : symbol.toUpperCase();
+    const displayTicker = shouldSendInSats ? 'sat' : getNetworkDisplaySymbol(symbol);
     const isLowAnonymity = isLowAnonymityWarning(outputError);
     const inputState = isLowAnonymity ? 'warning' : getInputState(error);
     const bottomText = isLowAnonymity ? undefined : error?.message;

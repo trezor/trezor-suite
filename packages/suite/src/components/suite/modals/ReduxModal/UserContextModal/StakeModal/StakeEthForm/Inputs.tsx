@@ -4,6 +4,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { MIN_ETH_FOR_WITHDRAWALS } from '@suite-common/wallet-constants';
 import { spacings } from '@trezor/theme';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { NumberInput, Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
@@ -71,6 +72,8 @@ export const Inputs = () => {
     const shouldShowAmountForWithdrawalWarning =
         isLessAmountForWithdrawalWarningShown || isAmountForWithdrawalWarningShown;
 
+    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+
     return (
         <Column gap={spacings.sm} alignItems="center">
             <NumberInput
@@ -94,7 +97,7 @@ export const Inputs = () => {
                 control={control}
                 rules={cryptoInputRules}
                 maxLength={formInputsMaxLength.amount}
-                innerAddon={<Text variant="tertiary">{account.symbol.toUpperCase()}</Text>}
+                innerAddon={<Text variant="tertiary">{displaySymbol}</Text>}
                 bottomText={errors[CRYPTO_INPUT]?.message ?? null}
                 inputState={getInputState(cryptoError || fiatError)}
                 onChange={value => {
@@ -130,7 +133,7 @@ export const Inputs = () => {
                         }
                         values={{
                             amount: MIN_ETH_FOR_WITHDRAWALS.toString(),
-                            symbol: account.symbol.toUpperCase(),
+                            networkSymbol: displaySymbol,
                         }}
                     />
                 </Banner>
@@ -142,7 +145,7 @@ export const Inputs = () => {
                         id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
                         values={{
                             amount: MIN_ETH_FOR_WITHDRAWALS.toString(),
-                            symbol: account.symbol.toUpperCase(),
+                            networkSymbol: displaySymbol,
                         }}
                     />
                 </Banner>

@@ -3,7 +3,12 @@ import { forwardRef, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import type { NetworkSymbol, NetworkSymbolExtended } from '@suite-common/wallet-config';
+import {
+    getNetworkDisplaySymbol,
+    isNetworkSymbol,
+    type NetworkSymbol,
+    type NetworkSymbolExtended,
+} from '@suite-common/wallet-config';
 import { TokenInfo } from '@trezor/connect';
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
 import { zIndices } from '@trezor/theme';
@@ -145,7 +150,7 @@ export type TransactionReviewOutputElementProps = {
     indicator?: JSX.Element;
     lines: OutputElementLine[];
     symbol?: NetworkSymbol;
-    displaySymbol?: NetworkSymbolExtended;
+    symbolIncludedTokens?: NetworkSymbolExtended;
     fiatVisible?: boolean;
     token?: TokenInfo;
     account?: Account;
@@ -163,7 +168,7 @@ export const TransactionReviewOutputElement = forwardRef<
             lines,
             token,
             symbol,
-            displaySymbol,
+            symbolIncludedTokens,
             fiatVisible = false,
             account,
             state,
@@ -176,6 +181,10 @@ export const TransactionReviewOutputElement = forwardRef<
         const isActive = state === 'active';
 
         const showMultiIndicator = lines.length > 1;
+        const displaySymbol =
+            symbolIncludedTokens && isNetworkSymbol(symbolIncludedTokens)
+                ? getNetworkDisplaySymbol(symbolIncludedTokens)
+                : symbolIncludedTokens;
 
         return (
             <OutputWrapper ref={ref}>

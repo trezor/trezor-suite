@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { Checkbox, NewModal, Column, Banner, Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
-import { NetworkType } from '@suite-common/wallet-config';
 import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
+import { getNetworkDisplaySymbol, type NetworkType } from '@suite-common/wallet-config';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -47,6 +47,8 @@ export const ConfirmStakeEthModal = ({
         onConfirm();
     };
 
+    if (!account) return null;
+
     return (
         <NewModal
             heading={<Translation id="TR_STAKE_CONFIRM_ENTRY_PERIOD" />}
@@ -87,7 +89,7 @@ export const ConfirmStakeEthModal = ({
                                     {chunks}
                                 </TrezorLink>
                             ),
-                            symbol: account?.symbol.toUpperCase(),
+                            networkSymbol: getNetworkDisplaySymbol(account.symbol),
                         }}
                     />
                 </Banner>

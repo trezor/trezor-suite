@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { H2, Paragraph } from '@trezor/components';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
@@ -15,7 +16,10 @@ interface HeaderProps {
 
 export const Header = ({ account }: HeaderProps) => {
     const title = (
-        <Translation id="RECEIVE_TITLE" values={{ symbol: account.symbol.toUpperCase() }} />
+        <Translation
+            id="RECEIVE_TITLE"
+            values={{ networkSymbol: getNetworkDisplaySymbol(account.symbol) }}
+        />
     );
     if (account.networkType === 'bitcoin') {
         return (

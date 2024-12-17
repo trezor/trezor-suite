@@ -11,7 +11,7 @@ import {
 } from '@trezor/components';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { CoinLogo } from '@trezor/product-components';
-import { getNetwork } from '@suite-common/wallet-config';
+import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
@@ -84,7 +84,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                 width="fit-content"
                             >
                                 <Text variant="tertiary" typographyStyle="hint">
-                                    {account.symbol.toUpperCase()}
+                                    {getNetworkDisplaySymbol(account.symbol)}
                                 </Text>
                             </InfoItem>
                         </Row>

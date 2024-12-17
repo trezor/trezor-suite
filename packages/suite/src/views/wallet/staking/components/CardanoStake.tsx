@@ -4,6 +4,7 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Banner } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite/Translation';
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
@@ -87,7 +88,7 @@ export const CardanoStake = ({ account, deviceModel }: CardanoStakeProps) => {
                                 </Title>
                                 <Value>
                                     {formatNetworkAmount(deposit || '0', account.symbol)}{' '}
-                                    {account.symbol.toUpperCase()}
+                                    {getNetworkDisplaySymbol(account.symbol)}
                                 </Value>
                             </CardanoColumn>
                         </Row>
@@ -98,7 +99,7 @@ export const CardanoStake = ({ account, deviceModel }: CardanoStakeProps) => {
                                 </Title>
                                 <Value>
                                     {formatNetworkAmount(fee || '0', account.symbol)}{' '}
-                                    {account.symbol.toUpperCase()}
+                                    {getNetworkDisplaySymbol(account.symbol)}
                                 </Value>
                             </CardanoColumn>
                         </Row>

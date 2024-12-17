@@ -341,6 +341,12 @@ export const coinmarketBuildAccountOptions = ({
         deviceState,
     });
 
+    /**
+     * TODO: allow second layer ETH coins to trade, now it is not working -> skip them
+     * Temporary solution to skip not native network symbols
+     */
+    const skipNotNativeNetworkSymbols: readonly NetworkSymbol[] = ['op', 'base', 'arb'];
+
     const groups: CoinmarketAccountsOptionsGroupProps[] = [];
 
     accountsSorted.forEach(account => {
@@ -353,7 +359,9 @@ export const coinmarketBuildAccountOptions = ({
             accountType,
         } = account;
 
-        if (!getNetwork(accountSymbol).coingeckoNativeId) {
+        const network = getNetwork(accountSymbol);
+
+        if (!network.coingeckoNativeId) {
             return;
         }
 
@@ -365,18 +373,18 @@ export const coinmarketBuildAccountOptions = ({
                 index,
             });
 
-        const accountDecimals = getNetwork(accountSymbol).decimals;
-        const options: CoinmarketAccountOptionsGroupOptionProps[] = [
-            {
-                value: getNetwork(accountSymbol).coingeckoNativeId as CryptoId,
-                label: accountSymbol.toUpperCase(),
-                cryptoName: getNetworkName(accountSymbol),
-                descriptor,
-                balance: formattedBalance ?? '',
-                accountType: account.accountType,
-                decimals: accountDecimals,
-            },
-        ];
+        const accountDecimals = network.decimals;
+        const option: CoinmarketAccountOptionsGroupOptionProps = {
+            value: network.coingeckoNativeId as CryptoId,
+            label: accountSymbol.toUpperCase(),
+            cryptoName: network.name,
+            descriptor,
+            balance: formattedBalance ?? '',
+            accountType: account.accountType,
+            decimals: accountDecimals,
+        };
+        const options: CoinmarketAccountOptionsGroupOptionProps[] =
+            !skipNotNativeNetworkSymbols.includes(network.symbol) ? [option] : [];
 
         // add crypto tokens to options
         if (tokens && tokens.length > 0) {
@@ -426,7 +434,7 @@ export const coinmarketBuildAccountOptions = ({
         });
     });
 
-    return groups;
+    return groups.filter(group => group.options.length > 0);
 };
 
 export const coinmarketGetAmountLabels = ({

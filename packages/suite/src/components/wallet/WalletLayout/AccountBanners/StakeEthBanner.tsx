@@ -6,6 +6,7 @@ import { Account } from '@suite-common/wallet-types';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { MIN_ETH_AMOUNT_FOR_STAKING } from '@suite-common/wallet-constants';
 import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
@@ -65,7 +66,7 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
                         id="TR_STAKE_ANY_AMOUNT_ETH"
                         values={{
                             apyPercent: ethApy,
-                            symbol: account?.symbol.toUpperCase(),
+                            networkSymbol: getNetworkDisplaySymbol(account.symbol),
                             amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
                         }}
                     />

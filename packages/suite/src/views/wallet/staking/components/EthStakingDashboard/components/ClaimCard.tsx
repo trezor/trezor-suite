@@ -34,11 +34,11 @@ export const ClaimCard = () => {
     }, [selectedAccount?.key]);
 
     useEffect(() => {
-        if (prevIsClaimPending.current && !isClaimPending) {
+        if (prevIsClaimPending.current && !isClaimPending && selectedAccount?.symbol) {
             dispatch(
                 notificationsActions.addToast({
                     type: 'successful-claim',
-                    symbol: selectedAccount?.symbol.toUpperCase() || '',
+                    symbol: selectedAccount.symbol,
                 }),
             );
             prevIsClaimPending.current = false;

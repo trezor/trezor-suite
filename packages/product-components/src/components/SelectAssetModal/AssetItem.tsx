@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { AssetLogo, Badge, Column, Row, Text } from '@trezor/components';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 
 import { CoinLogo } from '../CoinLogo/CoinLogo';
 import { AssetOptionBaseProps } from './SelectAssetModal';
@@ -43,6 +44,9 @@ export const AssetItem = ({
 }: AssetItemProps) => {
     const getCoinLogo = () =>
         isCoinSymbol(symbol) ? <CoinLogo size={24} symbol={symbol} /> : null;
+    const displaySymbol = isNetworkSymbol(ticker)
+        ? getNetworkDisplaySymbol(ticker)
+        : ticker.toUpperCase();
 
     return (
         <ClickableContainer
@@ -66,7 +70,7 @@ export const AssetItem = ({
                                 ? getContractAddressForNetworkSymbol(symbol, contractAddress)
                                 : undefined
                         }
-                        placeholder={ticker.toUpperCase()}
+                        placeholder={displaySymbol}
                         shouldTryToFetch={shouldTryToFetch}
                     />
                 ) : (
@@ -86,7 +90,7 @@ export const AssetItem = ({
                         )}
                     </Row>
                     <Text typographyStyle="hint" variant="tertiary">
-                        {ticker.toUpperCase()}
+                        {displaySymbol}
                     </Text>
                 </Column>
             </Row>

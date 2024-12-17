@@ -1,4 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
@@ -36,7 +37,7 @@ export const ConfirmXpubModal = (
                     <Translation
                         id="TR_XPUB_MODAL_TITLE"
                         values={{
-                            networkName: account.symbol.toUpperCase(),
+                            networkSymbol: getNetworkDisplaySymbol(account.symbol),
                             accountIndex: `#${account.index + 1}`,
                         }}
                     />

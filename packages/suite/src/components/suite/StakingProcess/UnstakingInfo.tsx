@@ -10,6 +10,7 @@ import {
     StakeRootState,
     AccountsRootState,
 } from '@suite-common/wallet-core';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { getDaysToUnstake } from 'src/utils/suite/ethereumStaking';
@@ -34,7 +35,7 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
     if (!account) return null;
 
     const daysToUnstake = getDaysToUnstake(unstakeTxs, data);
-    const accountSymbol = account.symbol.toUpperCase();
+    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
 
     const infoRows = [
         {
@@ -49,7 +50,7 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
             subheading: (
                 <Translation
                     id="TR_STAKING_CONSOLIDATING_FUNDS"
-                    values={{ symbol: accountSymbol }}
+                    values={{ networkSymbol: displaySymbol }}
                 />
             ),
             content: {
@@ -58,12 +59,15 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
         },
         {
             heading: (
-                <Translation id="TR_STAKE_CLAIM_UNSTAKED" values={{ symbol: accountSymbol }} />
+                <Translation
+                    id="TR_STAKE_CLAIM_UNSTAKED"
+                    values={{ networkSymbol: displaySymbol }}
+                />
             ),
             subheading: (
                 <Translation
                     id="TR_STAKING_YOUR_UNSTAKED_FUNDS"
-                    values={{ symbol: accountSymbol }}
+                    values={{ networkSymbol: displaySymbol }}
                 />
             ),
             content: {
@@ -72,7 +76,9 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
             },
         },
         {
-            heading: <Translation id="TR_STAKE_IN_ACCOUNT" values={{ symbol: accountSymbol }} />,
+            heading: (
+                <Translation id="TR_STAKE_IN_ACCOUNT" values={{ networkSymbol: displaySymbol }} />
+            ),
         },
     ];
 

@@ -144,7 +144,7 @@ export const TransactionReviewTotalOutput = forwardRef<
                     />
                 }
                 lines={lines}
-                displaySymbol={symbol}
+                symbolIncludedTokens={symbol}
                 symbol={symbol}
                 fiatVisible={!isTestnet(symbol)}
                 ref={ref}

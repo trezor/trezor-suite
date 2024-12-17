@@ -4,6 +4,7 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Column, Icon } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { getReasonForDisabledAction, useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { Translation } from 'src/components/suite/Translation';
@@ -85,7 +86,7 @@ export const CardanoRewards = ({ account, deviceModel }: CardanoRewardsProps) =>
                             <HiddenPlaceholder>
                                 <Value>
                                     {formatNetworkAmount(rewards, account.symbol)}{' '}
-                                    {account.symbol.toUpperCase()}
+                                    {getNetworkDisplaySymbol(account.symbol)}
                                 </Value>
                             </HiddenPlaceholder>
                         </CardanoColumn>

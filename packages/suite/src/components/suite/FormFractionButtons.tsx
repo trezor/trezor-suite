@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { MIN_ETH_AMOUNT_FOR_STAKING } from '@suite-common/wallet-constants';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 
@@ -51,6 +51,8 @@ export const FormFractionButtons = ({
     const isMaxDisabled =
         isDisabled || new BigNumber(totalAmount || '0').lt(MIN_ETH_AMOUNT_FOR_STAKING);
 
+    const displaySymbol = getNetworkDisplaySymbol(symbol);
+
     return (
         <Flex>
             <Tooltip
@@ -60,7 +62,7 @@ export const FormFractionButtons = ({
                             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
                             values={{
                                 amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
-                                symbol: symbol.toUpperCase(),
+                                networkSymbol: displaySymbol,
                             }}
                         />
                     )
@@ -78,7 +80,7 @@ export const FormFractionButtons = ({
                             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
                             values={{
                                 amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
-                                symbol: symbol.toUpperCase(),
+                                networkSymbol: displaySymbol,
                             }}
                         />
                     )
@@ -96,7 +98,7 @@ export const FormFractionButtons = ({
                             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
                             values={{
                                 amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
-                                symbol: symbol.toUpperCase(),
+                                networkSymbol: displaySymbol,
                             }}
                         />
                     )
@@ -114,7 +116,7 @@ export const FormFractionButtons = ({
                             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
                             values={{
                                 amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
-                                symbol: symbol.toUpperCase(),
+                                networkSymbol: displaySymbol,
                             }}
                         />
                     )

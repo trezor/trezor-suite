@@ -4,7 +4,11 @@ import styled from 'styled-components';
 
 import { AssetLogo, Row, Tooltip, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
-import { Network } from '@suite-common/wallet-config';
+import {
+    getNetworkDisplaySymbol,
+    type NetworkSymbol,
+    type Network,
+} from '@suite-common/wallet-config';
 
 import { CheckableTag } from './CheckableTag';
 
@@ -18,7 +22,7 @@ const NetworkTabsWrapper = styled.div<{ $elevation: Elevation }>`
 
 export type NetworkFilterCategory = {
     name: Network['name'];
-    symbol: Network['symbol'];
+    symbol: NetworkSymbol;
     coingeckoId: Network['coingeckoId'];
     coingeckoNativeId?: Network['coingeckoNativeId'];
 };
@@ -95,7 +99,7 @@ export const NetworkTabs = ({ tabs, activeTab, setActiveTab, networkCount }: Net
                                 <AssetLogo
                                     size={20}
                                     coingeckoId={network.coingeckoNativeId}
-                                    placeholder={network.symbol}
+                                    placeholder={getNetworkDisplaySymbol(network.symbol)}
                                 />
                             )}
                             {network.name}

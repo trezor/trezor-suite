@@ -29,7 +29,7 @@ import {
     ExternalOutput,
     AddressDisplayOptions,
 } from '@suite-common/wallet-types';
-import { getNetwork } from '@suite-common/wallet-config';
+import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { selectTransactions } from '../transactions/transactionsReducer';
 import {
@@ -71,8 +71,7 @@ const calculate = (
                 errorMessage: {
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
                     values: {
-                        symbol: 'ETH',
-                        feeAmount: `(${fromWei(feeInGwei, 'ether')} ETH)`,
+                        feeAmount: fromWei(feeInGwei, 'ether').toString(),
                     },
                 },
             } as const;
@@ -244,11 +243,11 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                 tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT'
             ) {
                 tx.errorMessage = {
-                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
                     values: {
-                        symbol: tx.errorMessage?.values?.symbol || 'ETH',
+                        symbol: getNetworkDisplaySymbol(network.symbol),
                         feeAmount: tx.errorMessage?.values?.feeAmount || '',
                     },
+                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
                 };
             }
         });

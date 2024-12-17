@@ -23,6 +23,7 @@ import {
     getNetwork,
     type NetworkSymbolExtended,
     networkSymbolCollection,
+    getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';
 import {
     Account,
@@ -417,11 +418,12 @@ export const formatNetworkAmount = (
     let formattedAmount = formatAmount(amount, decimals);
 
     if (withSymbol) {
-        let formattedSymbol = symbol?.toUpperCase();
+        let formattedSymbol = getNetworkDisplaySymbol(symbol).toUpperCase();
 
         if (isSatoshis) {
             formattedAmount = amount;
-            formattedSymbol = symbol === 'btc' ? 'sat' : `sat ${symbol?.toUpperCase()}`;
+            formattedSymbol =
+                symbol === 'btc' ? 'sat' : `sat ${getNetworkDisplaySymbol(symbol).toUpperCase()}`;
         }
 
         return `${formattedAmount} ${formattedSymbol}`;

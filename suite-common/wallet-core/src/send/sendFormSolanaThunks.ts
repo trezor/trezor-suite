@@ -25,6 +25,7 @@ import {
     dummyPriorityFeesForFeeEstimation,
     getAccountIdentity,
 } from '@suite-common/wallet-utils';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { selectBlockchainBlockInfoBySymbol } from '../blockchain/blockchainReducer';
 import {
@@ -309,7 +310,9 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
                 tx.errorMessage = {
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                    values: { symbol: network.symbol.toUpperCase() },
+                    values: {
+                        networkSymbol: getNetworkDisplaySymbol(network.symbol),
+                    },
                 };
             }
         });

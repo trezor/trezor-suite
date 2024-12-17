@@ -1,4 +1,5 @@
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
@@ -12,6 +13,8 @@ interface AccountEmptyProps {
 
 export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const dispatch = useDispatch();
+
+    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
 
     const handleNavigateToReceivePage = () => {
         dispatch(goto('wallet-receive', { preserveParams: true }));
@@ -39,7 +42,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
             description={
                 <Translation
                     id="TR_ACCOUNT_IS_EMPTY_DESCRIPTION"
-                    values={{ network: account.symbol.toUpperCase() }}
+                    values={{ network: displaySymbol }}
                 />
             }
             iconName="arrowsLeftRight"
@@ -52,7 +55,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                     children: (
                         <Translation
                             id="TR_RECEIVE_NETWORK"
-                            values={{ network: account.symbol.toUpperCase() }}
+                            values={{ networkSymbol: displaySymbol }}
                         />
                     ),
                 },
@@ -63,7 +66,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                     children: (
                         <Translation
                             id="TR_BUY_NETWORK"
-                            values={{ network: account.symbol.toUpperCase() }}
+                            values={{ networkSymbol: displaySymbol }}
                         />
                     ),
                 },

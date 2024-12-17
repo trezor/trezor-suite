@@ -15,6 +15,7 @@ import {
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation, StakingFeature } from 'src/components/suite';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -39,6 +40,8 @@ export const EmptyStakingCard = () => {
         }
     };
 
+    const displaySymbol = account?.symbol ? getNetworkDisplaySymbol(account.symbol) : '';
+
     const stakeEthFeatures = useMemo(
         () => [
             {
@@ -50,7 +53,7 @@ export const EmptyStakingCard = () => {
                         id="TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC"
                         values={{
                             apyPercent: ethApy,
-                            symbol: account?.symbol.toUpperCase(),
+                            symbol: displaySymbol,
                             t: text => (
                                 <Tooltip
                                     dashed
@@ -77,17 +80,12 @@ export const EmptyStakingCard = () => {
                 description: <Translation id="TR_STAKE_ETH_EVERSTAKE_DESC" />,
             },
         ],
-        [ethApy, account?.symbol],
+        [ethApy, displaySymbol],
     );
 
     return (
         <DashboardSection
-            heading={
-                <Translation
-                    id="TR_STAKE_NETWORK"
-                    values={{ symbol: account?.symbol.toUpperCase() }}
-                />
-            }
+            heading={<Translation id="TR_STAKE_NETWORK" values={{ symbol: displaySymbol }} />}
         >
             <Card>
                 <Column>
@@ -98,7 +96,9 @@ export const EmptyStakingCard = () => {
                         <Paragraph variant="tertiary">
                             <Translation
                                 id="TR_STAKE_NETWORK_STAKING_IS"
-                                values={{ symbol: account?.symbol.toUpperCase() }}
+                                values={{
+                                    symbol: displaySymbol,
+                                }}
                             />
                         </Paragraph>
                     </section>

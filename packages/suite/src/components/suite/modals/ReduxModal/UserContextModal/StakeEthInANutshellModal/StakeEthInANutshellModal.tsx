@@ -16,6 +16,7 @@ import {
 import { TranslationKey } from '@suite-common/intl-types';
 import { spacings } from '@trezor/theme';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -85,6 +86,8 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
         },
     ];
 
+    if (!account) return null;
+
     return (
         <NewModal
             heading={<Translation id="TR_STAKE_STAKING_IN_A_NUTSHELL" />}
@@ -108,7 +111,7 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
                             <Translation
                                 id={translationId}
                                 values={{
-                                    symbol: account?.symbol.toUpperCase(),
+                                    networkSymbol: getNetworkDisplaySymbol(account.symbol),
                                     count: unstakingPeriod,
                                 }}
                             />

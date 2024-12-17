@@ -11,6 +11,7 @@ import {
     selectPoolStatsApyData,
     AccountsRootState,
 } from '@suite-common/wallet-core';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { getDaysToAddToPool } from 'src/utils/suite/ethereumStaking';
@@ -50,7 +51,7 @@ export const StakingInfo = ({ isExpanded }: StakingInfoProps) => {
             subheading: (
                 <Translation
                     id="TR_STAKING_GETTING_READY"
-                    values={{ symbol: account.symbol.toUpperCase() }}
+                    values={{ networkSymbol: getNetworkDisplaySymbol(account.symbol) }}
                 />
             ),
             content: {

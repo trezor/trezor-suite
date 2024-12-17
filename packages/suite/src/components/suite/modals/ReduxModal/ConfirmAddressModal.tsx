@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Translation } from 'src/components/suite';
@@ -46,7 +47,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
                     <Translation
                         id="TR_ADDRESS_MODAL_TITLE_EXCHANGE"
                         values={{
-                            networkName: symbol,
+                            networkSymbol: symbol,
                             networkCurrencyName: coinSymbol,
                         }}
                     />
@@ -57,7 +58,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
                 <Translation
                     id="TR_ADDRESS_MODAL_TITLE"
                     values={{
-                        networkName: coinSymbol,
+                        networkSymbol: coinSymbol,
                     }}
                 />
             );
@@ -67,7 +68,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
             <Translation
                 id="TR_ADDRESS_MODAL_TITLE"
                 values={{
-                    networkName: account.symbol.toUpperCase(),
+                    networkSymbol: getNetworkDisplaySymbol(account.symbol),
                 }}
             />
         );

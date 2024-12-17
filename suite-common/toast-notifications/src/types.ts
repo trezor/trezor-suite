@@ -132,7 +132,7 @@ export type ToastPayload = (
       }
     | {
           type: 'successful-claim';
-          symbol: string;
+          symbol: NetworkSymbol;
       }
     | StakedTransactionNotification
     | UnstakedTransactionNotification

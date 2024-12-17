@@ -13,7 +13,7 @@ import {
     ExternalOutput,
 } from '@suite-common/wallet-types';
 import { ComposeActionContext } from '@suite-common/wallet-core';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, NetworkSymbol } from '@suite-common/wallet-config';
 
 type StakingParams = {
     feeInBaseUnits: string;
@@ -147,7 +147,7 @@ export const composeStakingTransaction = (
         if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
             tx.errorMessage = {
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                values: { symbol: network.symbol.toUpperCase() },
+                values: { networkSymbol: getNetworkDisplaySymbol(network.symbol) },
             };
         }
     });

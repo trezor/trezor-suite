@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { NotificationViewProps } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
@@ -291,7 +292,7 @@ export const NotificationRenderer = ({
             );
         case 'successful-claim':
             return success(render, notification, 'TOAST_SUCCESSFUL_CLAIM', 'check', {
-                symbol: notification.symbol,
+                networkSymbol: getNetworkDisplaySymbol(notification.symbol),
             });
         case 'firmware-language-changed':
             return success(render, notification, 'TR_FIRMWARE_LANGUAGE_CHANGED');

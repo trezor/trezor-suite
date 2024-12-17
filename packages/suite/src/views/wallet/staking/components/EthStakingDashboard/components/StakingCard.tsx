@@ -17,7 +17,7 @@ import {
 import { spacings } from '@trezor/theme';
 import { selectAccountStakeTransactions } from '@suite-common/wallet-core';
 import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { FiatValue, Translation, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -171,7 +171,9 @@ export const StakingCard = ({
                                         <Translation
                                             id="TR_STAKE_ETH_REWARDS_EARN_APY"
                                             values={{
-                                                symbol: selectedAccount.symbol.toUpperCase(),
+                                                networkSymbol: getNetworkDisplaySymbol(
+                                                    selectedAccount.symbol,
+                                                ),
                                             }}
                                         />
                                     }

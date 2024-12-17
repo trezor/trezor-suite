@@ -48,6 +48,7 @@ export const getExplorerUrls = (
 export const networks = {
     btc: {
         symbol: 'btc',
+        displaySymbol: 'BTC',
         name: 'Bitcoin',
         networkType: 'bitcoin',
         bip43Path: "m/84'/0'/i'",
@@ -82,6 +83,7 @@ export const networks = {
     },
     eth: {
         symbol: 'eth',
+        displaySymbol: 'ETH',
         name: 'Ethereum',
         networkType: 'ethereum',
         chainId: 1,
@@ -118,6 +120,7 @@ export const networks = {
     },
     pol: {
         symbol: 'pol',
+        displaySymbol: 'POL',
         name: 'Polygon PoS',
         networkType: 'ethereum',
         chainId: 137,
@@ -140,6 +143,7 @@ export const networks = {
     },
     bsc: {
         symbol: 'bsc',
+        displaySymbol: 'BNB',
         name: 'BNB Smart Chain',
         networkType: 'ethereum',
         chainId: 56,
@@ -162,6 +166,7 @@ export const networks = {
     },
     arb: {
         symbol: 'arb',
+        displaySymbol: 'ETH',
         name: 'Arbitrum One',
         networkType: 'ethereum',
         chainId: 42161,
@@ -185,6 +190,7 @@ export const networks = {
     },
     base: {
         symbol: 'base',
+        displaySymbol: 'ETH',
         name: 'Base',
         networkType: 'ethereum',
         chainId: 8453,
@@ -208,6 +214,7 @@ export const networks = {
     },
     op: {
         symbol: 'op',
+        displaySymbol: 'ETH',
         name: 'Optimism',
         networkType: 'ethereum',
         chainId: 10,
@@ -231,6 +238,7 @@ export const networks = {
     },
     sol: {
         symbol: 'sol',
+        displaySymbol: 'SOL',
         name: 'Solana',
         networkType: 'solana',
         bip43Path: "m/44'/501'/i'/0'", // phantom - bip44Change
@@ -260,6 +268,7 @@ export const networks = {
     ada: {
         // icarus derivation
         symbol: 'ada',
+        displaySymbol: 'ADA',
         name: 'Cardano',
         networkType: 'cardano',
         bip43Path: "m/1852'/1815'/i'",
@@ -294,6 +303,7 @@ export const networks = {
     },
     etc: {
         symbol: 'etc',
+        displaySymbol: 'ETC',
         name: 'Ethereum Classic',
         networkType: 'ethereum',
         chainId: 61,
@@ -309,6 +319,7 @@ export const networks = {
     },
     xrp: {
         symbol: 'xrp',
+        displaySymbol: 'XRP',
         name: 'XRP',
         networkType: 'ripple',
         bip43Path: "m/44'/144'/i'/0/0",
@@ -323,6 +334,7 @@ export const networks = {
     },
     ltc: {
         symbol: 'ltc',
+        displaySymbol: 'LTC',
         name: 'Litecoin',
         networkType: 'bitcoin',
         bip43Path: "m/84'/2'/i'",
@@ -346,6 +358,7 @@ export const networks = {
     },
     bch: {
         symbol: 'bch',
+        displaySymbol: 'BCH',
         name: 'Bitcoin Cash',
         networkType: 'bitcoin',
         bip43Path: "m/44'/145'/i'",
@@ -360,6 +373,7 @@ export const networks = {
     },
     doge: {
         symbol: 'doge',
+        displaySymbol: 'DOGE',
         name: 'Dogecoin',
         networkType: 'bitcoin',
         bip43Path: "m/44'/3'/i'",
@@ -374,6 +388,7 @@ export const networks = {
     },
     zec: {
         symbol: 'zec',
+        displaySymbol: 'ZEC',
         name: 'Zcash',
         networkType: 'bitcoin',
         bip43Path: "m/44'/133'/i'",
@@ -388,6 +403,7 @@ export const networks = {
     },
     dash: {
         symbol: 'dash',
+        displaySymbol: 'DASH',
         name: 'Dash',
         networkType: 'bitcoin',
         bip43Path: "m/44'/5'/i'",
@@ -402,6 +418,7 @@ export const networks = {
     },
     btg: {
         symbol: 'btg',
+        displaySymbol: 'BTG',
         name: 'Bitcoin Gold',
         networkType: 'bitcoin',
         bip43Path: "m/49'/156'/i'",
@@ -421,6 +438,7 @@ export const networks = {
     },
     dgb: {
         symbol: 'dgb',
+        displaySymbol: 'DGB',
         name: 'DigiByte',
         networkType: 'bitcoin',
         bip43Path: "m/49'/20'/i'",
@@ -440,6 +458,7 @@ export const networks = {
     },
     nmc: {
         symbol: 'nmc',
+        displaySymbol: 'NMC',
         name: 'Namecoin',
         networkType: 'bitcoin',
         bip43Path: "m/44'/7'/i'",
@@ -454,6 +473,7 @@ export const networks = {
     },
     vtc: {
         symbol: 'vtc',
+        displaySymbol: 'VTC',
         name: 'Vertcoin',
         networkType: 'bitcoin',
         bip43Path: "m/84'/28'/i'",
@@ -478,6 +498,7 @@ export const networks = {
     // testnets
     test: {
         symbol: 'test',
+        displaySymbol: 'TEST',
         name: 'Bitcoin Testnet',
         networkType: 'bitcoin',
         bip43Path: "m/84'/1'/i'",
@@ -512,6 +533,7 @@ export const networks = {
     },
     regtest: {
         symbol: 'regtest',
+        displaySymbol: 'REGTEST',
         name: 'Bitcoin Regtest',
         networkType: 'bitcoin',
         bip43Path: "m/84'/1'/i'",
@@ -547,6 +569,7 @@ export const networks = {
     },
     tsep: {
         symbol: 'tsep',
+        displaySymbol: 'tSEP',
         name: 'Ethereum Sepolia',
         networkType: 'ethereum',
         bip43Path: "m/44'/1'/0'/0/i",
@@ -562,6 +585,7 @@ export const networks = {
     },
     thol: {
         symbol: 'thol',
+        displaySymbol: 'tHOL',
         name: 'Ethereum Holesky',
         networkType: 'ethereum',
         bip43Path: "m/44'/1'/0'/0/i",
@@ -577,6 +601,7 @@ export const networks = {
     },
     dsol: {
         symbol: 'dsol',
+        displaySymbol: 'DSOL',
         name: 'Solana Devnet',
         networkType: 'solana',
         bip43Path: "m/44'/501'/i'/0'",
@@ -599,6 +624,7 @@ export const networks = {
     tada: {
         // icarus derivation
         symbol: 'tada',
+        displaySymbol: 'tADA',
         name: 'Cardano Testnet',
         networkType: 'cardano',
         bip43Path: "m/1852'/1815'/i'",
@@ -631,6 +657,7 @@ export const networks = {
     },
     txrp: {
         symbol: 'txrp',
+        displaySymbol: 'tXRP',
         name: 'XRP Testnet',
         networkType: 'ripple',
         bip43Path: "m/44'/144'/i'/0/0",

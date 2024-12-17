@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { Checkbox, NewModal, Column, Banner, Card, IconName } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -22,6 +23,10 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
         dispatch(openModal({ type: 'stake' }));
     };
 
+    if (!account) return null;
+
+    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+
     const banners: {
         icon: IconName;
         message: JSX.Element;
@@ -36,7 +41,7 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
                             : 'TR_STAKE_BY_STAKING_YOU_CAN_EARN_REWARDS'
                     }
                     values={{
-                        symbol: account?.symbol.toUpperCase(),
+                        networkSymbol: displaySymbol,
                         t: text => <strong>{text}</strong>,
                     }}
                 />
@@ -52,7 +57,7 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
                             : 'TR_STAKE_SECURELY_DELEGATE_TO_EVERSTAKE'
                     }
                     values={{
-                        symbol: account?.symbol.toUpperCase(),
+                        symbol: displaySymbol,
                     }}
                 />
             ),
@@ -61,12 +66,7 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
 
     return (
         <NewModal
-            heading={
-                <Translation
-                    id="TR_STAKE_NETWORK"
-                    values={{ symbol: account?.symbol.toUpperCase() }}
-                />
-            }
+            heading={<Translation id="TR_STAKE_NETWORK" values={{ symbol: displaySymbol }} />}
             description={<Translation id="TR_STAKE_YOUR_FUNDS_MAINTAINED" />}
             onCancel={onCancel}
             size="small"

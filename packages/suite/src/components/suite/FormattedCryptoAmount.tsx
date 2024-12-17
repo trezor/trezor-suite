@@ -1,6 +1,11 @@
 import styled from 'styled-components';
 
-import { getNetworkOptional, type NetworkSymbolExtended } from '@suite-common/wallet-config';
+import {
+    getNetworkDisplaySymbol,
+    getNetworkOptional,
+    isNetworkSymbol,
+    type NetworkSymbolExtended,
+} from '@suite-common/wallet-config';
 import { SignValue } from '@suite-common/suite-types';
 import {
     formatCoinBalance,
@@ -64,7 +69,8 @@ export const FormattedCryptoAmount = ({
     const areSatsSupported = !!networkFeatures?.includes('amount-unit');
 
     let formattedValue = value;
-    let formattedSymbol = symbol?.toUpperCase();
+    let formattedSymbol =
+        symbol && isNetworkSymbol(symbol) ? getNetworkDisplaySymbol(symbol) : symbol?.toUpperCase();
 
     const isSatoshis = areSatsSupported && areSatsDisplayed;
 
