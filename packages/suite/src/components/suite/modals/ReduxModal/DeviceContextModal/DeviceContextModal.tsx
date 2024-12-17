@@ -29,10 +29,12 @@ export const DeviceContextModal = ({
     data,
 }: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
     const device = useSelector(selectSelectedDevice);
+    const transport = useSelector(state => state.suite.transport)?.transports[0];
     const intl = useIntl();
 
     if (!device) return null;
 
+    const isBridge27 = transport?.type === 'BridgeTransport' && transport.version === '2.0.27';
     const abort = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
     switch (windowType) {
@@ -63,7 +65,7 @@ export const DeviceContextModal = ({
             return <TransactionReviewModal type="sign-transaction" />;
         }
         case 'ButtonRequest_Other': {
-            return <ConfirmActionModal device={device} />;
+            return <ConfirmActionModal device={device} onCancel={abort} />;
         }
         case 'ButtonRequest_FirmwareCheck':
             return <ConfirmFingerprintModal device={device} renderer={renderer} />;
@@ -74,14 +76,16 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_RecoveryHomepage':
         case 'ButtonRequest_MnemonicWordCount':
         case 'ButtonRequest_MnemonicInput':
-        case 'ButtonRequest_ProtectCall':
         case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for T2T1, weird but true
         case 'ButtonRequest_ConfirmWord': // dispatched on BackupDevice call for T1B1
         case 'ButtonRequest_WipeDevice':
         case 'ButtonRequest_UnknownDerivationPath':
         case 'ButtonRequest_FirmwareUpdate':
         case 'ButtonRequest_PinEntry':
-            return <ConfirmActionModal device={device} />;
+            return <ConfirmActionModal device={device} onCancel={abort} />;
+        // it appears that cancelling ButtonRequest_ProtectCall doesn't work using bridge 2.0.27.
+        case 'ButtonRequest_ProtectCall':
+            return <ConfirmActionModal device={device} onCancel={isBridge27 ? undefined : abort} />;
         case 'ButtonRequest_Address':
             return data ? (
                 <ConfirmAddressModal

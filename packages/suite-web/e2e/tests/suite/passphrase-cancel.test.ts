@@ -18,7 +18,9 @@ describe('Passphrase cancel', () => {
                 mnemonic: 'mnemonic_all',
                 passphrase_protection: true,
             });
-            cy.task('startBridge');
+
+            // using specific bridge version - older versions don't support 'cancel' button
+            cy.task('startBridge', '2.0.33');
             cy.prefixedVisit('/');
             cy.passThroughInitialRun();
             cy.discoveryShouldFinish();
