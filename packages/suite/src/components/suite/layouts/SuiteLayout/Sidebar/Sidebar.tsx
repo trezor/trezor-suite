@@ -39,7 +39,7 @@ const Content = styled.div`
 export const Sidebar = () => {
     const [closedNotificationDevice, setClosedNotificationDevice] = useState(false);
     const [closedNotificationSuite, setClosedNotificationSuite] = useState(false);
-    const { isSidebarCollapsed } = useResponsiveContext();
+    const { isSidebarCollapsed, setSidebarWidth, sidebarWidth } = useResponsiveContext();
 
     const { elevation } = useElevation();
     const { updateStatusDevice, updateStatusSuite } = useUpdateStatus();
@@ -48,9 +48,8 @@ export const Sidebar = () => {
         setSidebarWidth: (width: number) => setSidebarWidthInRedux({ width }),
     });
 
-    const { setSidebarWidth, sidebarWidth } = useResponsiveContext();
-
     const handleSidebarWidthChanged = (width: number) => {
+        setSidebarWidth(width);
         actions.setSidebarWidth(width);
     };
     const handleSidebarWidthUpdate = (width: number) => {
