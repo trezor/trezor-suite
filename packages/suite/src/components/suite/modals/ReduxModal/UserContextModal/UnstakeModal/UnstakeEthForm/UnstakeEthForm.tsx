@@ -13,7 +13,8 @@ import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 import { getUnstakingPeriodInDays } from 'src/utils/suite/ethereumStaking';
 import { ApproximateInstantEthAmount } from 'src/views/wallet/staking/components/EthStakingDashboard/components/ApproximateInstantEthAmount';
 
-import { Options } from './Options';
+import { Inputs } from './Inputs';
+import { AvailableBalance } from '../../StakeModal/StakeEthForm/AvailableBalance';
 
 export const UnstakeEthForm = () => {
     const selectedAccount = useSelector(selectSelectedAccount);
@@ -39,8 +40,11 @@ export const UnstakeEthForm = () => {
         selectValidatorsQueueData(state, account?.symbol),
     );
     const unstakingPeriod = getUnstakingPeriodInDays(validatorWithdrawTime);
-    const { canClaim = false, claimableAmount = '0' } =
-        getStakingDataForNetwork(selectedAccount) ?? {};
+    const {
+        autocompoundBalance = '0',
+        canClaim = false,
+        claimableAmount = '0',
+    } = getStakingDataForNetwork(selectedAccount) ?? {};
 
     const inputError = errors[CRYPTO_INPUT] || errors[FIAT_INPUT];
     const showError = inputError && inputError.type === 'compose';
@@ -64,7 +68,9 @@ export const UnstakeEthForm = () => {
                 )}
 
                 <Column gap={spacings.lg}>
-                    <Options symbol={symbol} />
+                    <AvailableBalance formattedBalance={autocompoundBalance} symbol={symbol} />
+
+                    <Inputs />
                     {showError && <Banner variant="destructive">{inputError?.message}</Banner>}
                 </Column>
 

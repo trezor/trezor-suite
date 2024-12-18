@@ -46,6 +46,7 @@ type UnstakeContextValues = UnstakeContextValuesBase & {
     approximatedInstantEthAmount?: string | null;
     unstakeOption: UnstakeOptions;
     setUnstakeOption: (option: UnstakeOptions) => void;
+    setRatioAmount: (divisor: number) => void;
 };
 
 export const UnstakeEthFormContext = createContext<UnstakeContextValues | null>(null);
@@ -245,6 +246,28 @@ export const useUnstakeEthForm = ({
         [clearErrors, onCryptoAmountChange, setValue],
     );
 
+    const setRatioAmount = useCallback(
+        async (divisor: number) => {
+            setValue(CRYPTO_INPUT, undefined, { shouldDirty: true });
+            clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
+
+            const amount = new BigNumber(account.formattedBalance)
+                .dividedBy(divisor)
+                .decimalPlaces(network.decimals)
+                .toString();
+
+            setValue(CRYPTO_INPUT, amount, { shouldDirty: true, shouldValidate: true });
+            await onCryptoAmountChange(amount);
+        },
+        [
+            account.formattedBalance,
+            clearErrors,
+            network.decimals,
+            onCryptoAmountChange,
+            setValue
+        ],
+    );
+
     const clearForm = useCallback(async () => {
         removeDraft(account.key);
         reset(defaultValues);
@@ -283,6 +306,7 @@ export const useUnstakeEthForm = ({
         signTx,
         clearErrors,
         onOptionChange,
+        setRatioAmount,
         currentRate,
         feeInfo,
         changeFeeLevel,

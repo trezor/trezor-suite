@@ -95,35 +95,37 @@ export const Inputs = () => {
         />
     );
 
+    const isBalanceBelowMinStake = new BigNumber(account.formattedBalance || '0').lt(
+        MIN_ETH_AMOUNT_FOR_STAKING,
+    );
+
     const fractionButtons = [
         {
             id: 'TR_FRACTION_BUTTONS_10_PERCENT%',
             children: <Translation id="TR_FRACTION_BUTTONS_10_PERCENT" />,
-            tooltip,
+            tooltip: isFractionButtonDisabled(10) && tooltip,
             isDisabled: isFractionButtonDisabled(10),
             onClick: () => setRatioAmount(10),
         },
         {
             id: 'TR_FRACTION_BUTTONS_25_PERCENT%',
             children: <Translation id="TR_FRACTION_BUTTONS_25_PERCENT" />,
-            tooltip,
+            tooltip: isFractionButtonDisabled(4) && tooltip,
             isDisabled: isFractionButtonDisabled(4),
             onClick: () => setRatioAmount(4),
         },
         {
             id: 'TR_FRACTION_BUTTONS_50_PERCENT%',
             children: <Translation id="TR_FRACTION_BUTTONS_50_PERCENT" />,
-            tooltip,
+            tooltip: isFractionButtonDisabled(2) && tooltip,
             isDisabled: isFractionButtonDisabled(2),
             onClick: () => setRatioAmount(2),
         },
         {
             id: 'TR_FRACTION_BUTTONS_MAX',
             children: <Translation id="TR_FRACTION_BUTTONS_MAX" />,
-            tooltip,
-            isDisabled: new BigNumber(account.formattedBalance || '0').lt(
-                MIN_ETH_AMOUNT_FOR_STAKING,
-            ),
+            tooltip: isBalanceBelowMinStake && tooltip,
+            isDisabled: isBalanceBelowMinStake,
             onClick: () => setMax(),
         },
     ];
