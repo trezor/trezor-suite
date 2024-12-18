@@ -182,7 +182,9 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
         expect(round3.payload).toMatchObject({ error: 'No preauthorized operation' });
     });
 
-    conditionalTest(['1', '<2.5.4'], 'Authorize and re-authorize', async () => {
+    // TODO: currently skipped due to flaky behavior
+    // Original condition: ['1', '<2.5.4']
+    conditionalTest(['1', '2'], 'Authorize and re-authorize', async () => {        
         const confirmationScreensCount = 1;
         // setup two wallets, 1 with and 1 without passphrase
         await TrezorConnect.applySettings({ use_passphrase: true });

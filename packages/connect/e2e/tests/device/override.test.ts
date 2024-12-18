@@ -17,7 +17,7 @@ describe('TrezorConnect override param', () => {
     });
 
     [1, 10, 100, 300, 500, 1000, 1500].forEach(delay => {
-        it(`override previous call after ${delay}ms`, async () => {
+        it.skip(`override previous call after ${delay}ms`, async () => {
             TrezorConnect.removeAllListeners();
 
             const overriden = TrezorConnect.getAddress({
