@@ -5,7 +5,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { stakeActions } from './stakeActions';
 import { ValidatorsQueue } from './stakeTypes';
-import { fetchEverstakeData } from './stakeThunks';
+import { fetchEverstakeAssetData, fetchEverstakeData } from './stakeThunks';
 import { SerializedTx } from '../send/sendFormTypes';
 
 export interface StakeState {
@@ -14,7 +14,7 @@ export interface StakeState {
     serializedTx?: SerializedTx; // payload for TrezorConnect.pushTransaction
     data: {
         [key in NetworkSymbol]?: {
-            poolStats: {
+            poolStats?: {
                 error: boolean | string;
                 isLoading: boolean;
                 lastSuccessfulFetchTimestamp: Timestamp;
@@ -24,11 +24,17 @@ export interface StakeState {
                     isPoolStatsLoading?: boolean;
                 };
             };
-            validatorsQueue: {
+            validatorsQueue?: {
                 error: boolean | string;
                 isLoading: boolean;
                 lastSuccessfulFetchTimestamp: Timestamp;
                 data: ValidatorsQueue;
+            };
+            getAssets?: {
+                error: boolean | string;
+                isLoading: boolean;
+                lastSuccessfulFetchTimestamp: Timestamp;
+                data: { apy?: number };
             };
         };
     };
@@ -70,10 +76,10 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
             delete state.serializedTx;
         })
         .addCase(fetchEverstakeData.pending, (state, action) => {
-            const { networkSymbol } = action.meta.arg;
+            const { symbol } = action.meta.arg;
 
-            if (!state.data[networkSymbol]) {
-                state.data[networkSymbol] = {
+            if (!state.data[symbol]) {
+                state.data[symbol] = {
                     poolStats: {
                         error: false,
                         isLoading: true,
@@ -90,9 +96,9 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
             }
         })
         .addCase(fetchEverstakeData.fulfilled, (state, action) => {
-            const { networkSymbol, endpointType } = action.meta.arg;
+            const { symbol, endpointType } = action.meta.arg;
 
-            const data = state.data[networkSymbol];
+            const data = state.data[symbol];
 
             if (data?.[endpointType]) {
                 data[endpointType] = {
@@ -104,9 +110,51 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
             }
         })
         .addCase(fetchEverstakeData.rejected, (state, action) => {
-            const { networkSymbol, endpointType } = action.meta.arg;
+            const { symbol, endpointType } = action.meta.arg;
 
-            const data = state.data[networkSymbol];
+            const data = state.data[symbol];
+
+            if (data?.[endpointType]) {
+                data[endpointType] = {
+                    error: true,
+                    isLoading: false,
+                    lastSuccessfulFetchTimestamp: 0 as Timestamp,
+                    data: {},
+                };
+            }
+        })
+        .addCase(fetchEverstakeAssetData.pending, (state, action) => {
+            const { symbol } = action.meta.arg;
+
+            if (!state.data[symbol]) {
+                state.data[symbol] = {
+                    getAssets: {
+                        error: false,
+                        isLoading: true,
+                        lastSuccessfulFetchTimestamp: 0 as Timestamp,
+                        data: {},
+                    },
+                };
+            }
+        })
+        .addCase(fetchEverstakeAssetData.fulfilled, (state, action) => {
+            const { symbol, endpointType } = action.meta.arg;
+
+            const data = state.data[symbol];
+
+            if (data?.[endpointType]) {
+                data[endpointType] = {
+                    error: false,
+                    isLoading: false,
+                    lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                    data: action.payload,
+                };
+            }
+        })
+        .addCase(fetchEverstakeAssetData.rejected, (state, action) => {
+            const { symbol, endpointType } = action.meta.arg;
+
+            const data = state.data[symbol];
 
             if (data?.[endpointType]) {
                 data[endpointType] = {
