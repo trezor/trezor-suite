@@ -226,6 +226,10 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         setState(getStateFromProps(props)); // resetting state will trigger "loadDraft" useEffect block, which will reset FormState to default
     }, [dispatch, props, setComposedLevels]);
 
+    const resetDraft = useCallback(() => {
+        dispatch(removeSendFormDraftThunk());
+    }, [dispatch]);
+
     // declare useSendFormImport, sub-hook of useSendForm
     const { importTransaction, validateImportedTransaction } = useSendFormImport({
         network: state.network,
@@ -393,6 +397,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         loadTransaction,
         signTransaction: sign,
         setDraftSaveRequest,
+        resetDraft,
         utxoSelection,
         ...sendFormUtils,
         ...sendFormOutputs,

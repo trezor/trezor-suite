@@ -73,6 +73,7 @@ export type SendContextValues<TFormValues extends FormState = FormState> =
             outputs: Partial<Output & { id: string }>[]; // useFieldArray fields
             updateContext: (value: Partial<UseSendFormState>) => void;
             resetContext: () => void;
+            resetDraft: () => void;
             composeTransaction: (field?: FieldPath<TFormValues>) => void;
             loadTransaction: () => Promise<void>;
             signTransaction: () => void;

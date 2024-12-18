@@ -124,6 +124,8 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
         watch,
         setValue,
         setDraftSaveRequest,
+        resetDraft,
+        setMax,
     } = useSendFormContext();
 
     const dispatch = useDispatch();
@@ -215,9 +217,20 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
             token => token.contract === selectedAsset.contractAddress,
         );
 
+        resetDraft();
+
         setValue(tokenInputName, newlySelectedToken?.contract || account.symbol, {
             shouldDirty: true,
         });
+        setValue(amountInputName, '', {
+            shouldDirty: true,
+        });
+
+        const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
+
+        if (isSetMaxActive) {
+            setMax(outputId, isSetMaxActive);
+        }
 
         setIsTokensModalActive(false);
 
