@@ -33,9 +33,15 @@ class AccountImportActions {
     async submitXpub({ xpub, isValid }: { xpub: string; isValid: boolean }) {
         await element(by.id('@accounts-import/sync-coins/xpub-input')).replaceText(xpub);
 
+        const xpubSubmitButton = element(by.id('@accounts-import/sync-coins/xpub-submit'));
+
         // Submit button is not visible without scrolling
-        await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
-        await element(by.id('@accounts-import/sync-coins/xpub-submit')).tap();
+        await waitFor(xpubSubmitButton)
+            .toBeVisible()
+            .whileElement(by.id('@screen/mainScrollView'))
+            .scroll(50, 'down');
+
+        await xpubSubmitButton.tap();
 
         if (isValid) {
             await waitFor(element(by.id('@screen/AccountImportSummary')))
