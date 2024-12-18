@@ -125,7 +125,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
                     // Process transaction events only for the single account detail graph.
                     if (!isPortfolioGraph) {
                         await getAccountMovementEvents({
-                            account: accounts[0],
+                            accountItem: accounts[0],
                             startOfTimeFrameDate,
                             endOfTimeFrameDate,
                             dispatch,

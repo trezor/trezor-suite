@@ -18,7 +18,6 @@ import {
 } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@suite-native/analytics';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 
 import { timeSwitchItems } from './components/TimeSwitch';
@@ -31,6 +30,9 @@ import {
     setPortfolioGraphTimeframe,
 } from './slice';
 import { selectPortfolioGraphAccountItems } from './selectors';
+
+type UseGraphForSingleAccountProps = { accountKey: string } & CommonUseGraphParams &
+    Omit<AccountItem, 'account'>;
 
 const useWatchTimeframeChangeForAnalytics = (
     timeframeHours: TimeframeHoursValue,
@@ -100,7 +102,7 @@ export const useGraphForSingleAccount = ({
     fiatCurrency,
     tokensFilter,
     hideMainAccount = false,
-}: CommonUseGraphParams & Omit<AccountItem, 'symbol' | 'descriptor'>) => {
+}: UseGraphForSingleAccountProps) => {
     const dispatch = useDispatch();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -118,29 +120,18 @@ export const useGraphForSingleAccount = ({
     const { startOfTimeFrameDate, endOfTimeFrameDate } =
         useGetTimeFrameForHistoryHours(accountGraphTimeframe);
 
-    const identity = account ? tryGetAccountIdentity(account) : undefined;
     const accounts = useMemo<AccountItem[]>(() => {
         if (!account?.symbol) return [];
 
         return [
             {
-                symbol: account.symbol,
-                descriptor: account.descriptor,
-                accountKey: account.key,
-                identity,
+                account,
                 hideMainAccount,
                 tokensFilter,
             },
         ];
         // We need to specify all dependicies here, because whole account will be updated very often will could result in endless rerendering.
-    }, [
-        identity,
-        account?.symbol,
-        account?.descriptor,
-        account?.key,
-        hideMainAccount,
-        tokensFilter,
-    ]);
+    }, [account, hideMainAccount, tokensFilter]);
 
     useWatchTimeframeChangeForAnalytics(accountGraphTimeframe, account?.symbol);
 

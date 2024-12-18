@@ -5,13 +5,13 @@ import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { formatNetworkAmount, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
-import TrezorConnect, { AccountInfo } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { Account, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 
 import {
     NUMBER_OF_POINTS,
@@ -71,61 +71,34 @@ export const addBalanceForAccountMovementHistory = (
     return historyWithBalance;
 };
 
-const getLatestAccountInfo = async ({
-    symbol,
-    identity,
-    descriptor,
-}: {
-    symbol: NetworkSymbol;
-    identity?: string;
-    descriptor: string;
-}) => {
-    const accountInfo = await TrezorConnect.getAccountInfo({
-        coin: symbol,
-        identity,
-        descriptor,
-        suppressBackupWarning: true,
-        details: 'tokenBalances',
-    });
-
-    if (!accountInfo?.success) {
-        throw new Error(`Get account balance info error: ${accountInfo.payload.error}`);
-    }
-
-    return accountInfo.payload;
-};
-
-const getBalanceFromAccountInfo = ({
-    accountInfo,
-    symbol,
+const getBalanceFromAccount = ({
+    account,
     contractId,
 }: {
-    accountInfo: AccountInfo;
-    symbol: NetworkSymbol;
+    account: Account;
     contractId?: string;
 }) => {
-    const networkType = getNetworkType(symbol);
+    const { networkType } = account;
 
     switch (networkType) {
         case 'ripple':
             // On Ripple, if we use availableBalance, we will get higher balance, IDK why.
-            return accountInfo.balance;
+            return account.balance;
         case 'ethereum':
         case 'solana':
             if (contractId) {
-                const token = accountInfo.tokens?.find(t => t.contract === contractId);
+                const token = account.tokens?.find(t => t.contract === contractId);
 
                 if (token && token.balance) {
-                    // this is raw value from getAccountInfo, we need to divide it by 10^decimals (in redux it's already formatted)
-                    return new BigNumber(token.balance).div(10 ** token.decimals).toFixed();
+                    return new BigNumber(token.balance).toFixed();
                 }
 
                 return '0';
             }
 
-            return accountInfo.availableBalance;
+            return account.availableBalance;
         default:
-            return accountInfo.availableBalance;
+            return account.availableBalance;
     }
 };
 
@@ -146,7 +119,9 @@ const getAccountBalanceHistory = async ({
     forceRefetch?: boolean;
     dispatch: ReturnType<typeof useDispatch>;
 }): Promise<AccountBalanceHistoryWithTokens> => {
-    const { symbol, identity, descriptor, accountKey, tokensFilter } = accountItem;
+    const { account, tokensFilter } = accountItem;
+    const { key: accountKey, symbol, descriptor } = account;
+    const identity = account ? tryGetAccountIdentity(account) : undefined;
     const endTimeFrameTimestamp = getUnixTime(endOfTimeFrameDate);
     const startOfTimeFrameDateTimestamp = startOfTimeFrameDate
         ? (getUnixTime(startOfTimeFrameDate) as Timestamp)
@@ -216,19 +191,16 @@ const getAccountBalanceHistory = async ({
         };
     };
 
-    const [accountMovementHistory, latestAccountInfo] = await Promise.all([
-        getBalanceHistory(),
-        getLatestAccountInfo({ symbol, identity, descriptor }),
-    ]);
+    const accountMovementHistory = await getBalanceHistory();
 
     const accountMovementHistoryWithBalance = addBalanceForAccountMovementHistory(
         accountMovementHistory.main,
         symbol,
-        getBalanceFromAccountInfo({ accountInfo: latestAccountInfo, symbol }),
+        getBalanceFromAccount({ account }),
     );
 
     const tokens: Array<readonly [TokenAddress, AccountHistoryMovementItem[]]> = pipe(
-        latestAccountInfo.tokens ?? [],
+        account.tokens ?? [],
 
         A.map(
             t =>
@@ -243,9 +215,8 @@ const getAccountBalanceHistory = async ({
     const tokensMovementHistoryWithBalance = D.mapWithKey(
         D.fromPairs(tokens),
         (contractId, tokenHistory) => {
-            const latestBalance = getBalanceFromAccountInfo({
-                accountInfo: latestAccountInfo,
-                symbol,
+            const latestBalance = getBalanceFromAccount({
+                account,
                 contractId: contractId.toString(),
             });
             const historyWithBalance = addBalanceForAccountMovementHistory(
@@ -267,10 +238,7 @@ const getAccountBalanceHistory = async ({
     // TODO: We can get value from redux account info instead of fetching it again which could cause minor inconsistency.
     accountMovementHistoryWithBalance.push({
         time: endTimeFrameTimestamp,
-        cryptoBalance: formatNetworkAmount(
-            getBalanceFromAccountInfo({ accountInfo: latestAccountInfo, symbol }),
-            symbol,
-        ),
+        cryptoBalance: formatNetworkAmount(getBalanceFromAccount({ account }), symbol),
     });
 
     const result: AccountBalanceHistoryWithTokens = {
@@ -352,7 +320,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
 }): Promise<FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[]> => {
     const accountsWithBalanceHistory = await Promise.all(
         accounts.map(accountItem => {
-            const { symbol } = accountItem;
+            const { symbol } = accountItem.account;
 
             return getAccountBalanceHistory({
                 endOfTimeFrameDate,
@@ -378,34 +346,31 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
 
     const accountsWithBalanceHistoryFlattened: AccountWithBalanceHistory[] = pipe(
         accountsWithBalanceHistory,
-        A.map(
-            ({
-                accountItem: { symbol, descriptor, tokensFilter, hideMainAccount },
-                balanceHistory,
-            }) => {
-                const main = hideMainAccount
-                    ? []
-                    : [{ symbol, descriptor, balanceHistory: balanceHistory.main }];
+        A.map(({ accountItem, balanceHistory }) => {
+            const { account, tokensFilter, hideMainAccount } = accountItem;
+            const { symbol, descriptor } = account;
+            const main = hideMainAccount
+                ? []
+                : [{ symbol, descriptor, balanceHistory: balanceHistory.main }];
 
-                const tokens = pipe(
-                    balanceHistory.tokens,
-                    D.filterWithKey(
-                        (contractId, _) => !tokensFilter || tokensFilter.includes(contractId),
-                    ),
-                    D.mapWithKey((contractId, tokenBalanceHistory) => {
-                        return {
-                            symbol,
-                            descriptor,
-                            contractId,
-                            balanceHistory: tokenBalanceHistory!,
-                        };
-                    }),
-                    D.values,
-                );
+            const tokens = pipe(
+                balanceHistory.tokens,
+                D.filterWithKey(
+                    (contractId, _) => !tokensFilter || tokensFilter.includes(contractId),
+                ),
+                D.mapWithKey((contractId, tokenBalanceHistory) => {
+                    return {
+                        symbol,
+                        descriptor,
+                        contractId,
+                        balanceHistory: tokenBalanceHistory!,
+                    };
+                }),
+                D.values,
+            );
 
-                return [...main, ...tokens];
-            },
-        ),
+            return [...main, ...tokens];
+        }),
         A.flat,
         F.toMutable,
     );

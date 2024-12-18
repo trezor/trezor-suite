@@ -13,7 +13,6 @@ import {
     selectDeviceMainnetAccounts,
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 
 type GraphCommonRootState = DeviceRootState & AccountsRootState & TokenDefinitionsRootState;
 
@@ -27,10 +26,7 @@ export const selectPortfolioGraphAccountItems = (state: GraphCommonRootState): A
         const tokensFilter = knownTokens?.map(token => token.contract as TokenAddress);
 
         return {
-            symbol: account.symbol,
-            descriptor: account.descriptor,
-            identity: tryGetAccountIdentity(account),
-            accountKey: account.key,
+            account,
             tokensFilter,
         };
     });

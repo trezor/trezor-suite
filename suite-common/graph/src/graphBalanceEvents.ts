@@ -8,6 +8,7 @@ import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-cor
 import { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import TrezorConnect from '@trezor/connect';
+import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
 import { isLocalBalanceHistoryCoin, isIgnoredBalanceHistoryCoin } from './constants';
@@ -123,17 +124,19 @@ export const mergeGroups = ({
 const GROUPING_DIVISOR = 30000;
 
 export const getAccountMovementEvents = async ({
-    account,
+    accountItem,
     startOfTimeFrameDate,
     endOfTimeFrameDate,
     dispatch,
 }: {
-    account: AccountItem;
+    accountItem: AccountItem;
     startOfTimeFrameDate: Date | null;
     endOfTimeFrameDate: Date;
     dispatch: ReturnType<typeof useDispatch>;
 }) => {
-    const { symbol, identity, descriptor, tokensFilter, accountKey } = account;
+    const { account, tokensFilter } = accountItem;
+    const { symbol, descriptor, key: accountKey } = account;
+    const identity = account ? tryGetAccountIdentity(account) : undefined;
     const tokenAddress = tokensFilter?.[0]; // This is only for graph on detail screen where we have always only one token
 
     const getBalanceHistory = async () => {
@@ -143,7 +146,7 @@ export const getAccountMovementEvents = async ({
         if (isLocalBalanceHistoryCoin(symbol)) {
             const allTransactions = await dispatch(
                 fetchTransactionsFromNowUntilTimestamp({
-                    accountKey: account.accountKey,
+                    accountKey,
                     timestamp: startOfTimeFrameDate
                         ? (getUnixTime(startOfTimeFrameDate) as Timestamp)
                         : null,

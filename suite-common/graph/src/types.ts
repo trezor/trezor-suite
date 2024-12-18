@@ -1,5 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { Account, AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 export type FiatGraphPoint = {
@@ -13,18 +13,12 @@ export type FiatGraphPointWithCryptoBalance = {
 
 /**
  * Represents an account item in graph
- * @symbol - network symbol
- * @identity - optional identity string for ETH accounts
- * @descriptor - account descriptor
- * @accountKey - account key
+ * @account - account
  * @tokensFilter - optional array of token addresses, pass empty array to show only main account or undefined to show all tokens
  * @hideMainAccount - optional flag to hide main account - if you want graph to show only token(s)
  */
 export type AccountItem = {
-    symbol: NetworkSymbol;
-    identity?: string;
-    descriptor: string;
-    accountKey: AccountKey;
+    account: Account;
     tokensFilter?: TokenAddress[];
     hideMainAccount?: boolean;
 };
