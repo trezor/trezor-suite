@@ -6,6 +6,7 @@ import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import { Checkbox, Spinner, TextButton, Tooltip } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
 import { borders, spacingsPx, typography } from '@trezor/theme';
+import { CheckContainer } from '@trezor/components/src/components/form/Checkbox/Checkbox';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import {
@@ -56,7 +57,7 @@ const StyledCheckbox = styled(Checkbox)`
     margin-right: ${spacingsPx.xs};
 `;
 
-const Wrapper = styled.div<{ $isDisabled: boolean }>`
+const Wrapper = styled.div<{ $isChecked: boolean; $isDisabled: boolean }>`
     align-items: flex-start;
     border-radius: ${borders.radii.xs};
     display: flex;
@@ -74,19 +75,18 @@ const Wrapper = styled.div<{ $isDisabled: boolean }>`
 
     &:hover,
     &:focus-within {
-        ${({ $isDisabled }) =>
+        background: ${({ $isDisabled, theme }) =>
+            !$isDisabled && theme.backgroundSurfaceElevation2};
+
+        ${({ $isChecked, $isDisabled }) =>
+            !$isChecked &&
             !$isDisabled &&
             css`
-                background: ${({ theme }) => theme.backgroundSurfaceElevation2};
-
-                ${StyledCheckbox} > :first-child {
+                ${CheckContainer} {
+                    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
                     border-color: ${({ theme }) => theme.borderFocus};
                 }
             `};
-
-        ${DetailPartVisibleOnHover} {
-            opacity: 1;
-        }
     }
 `;
 
@@ -191,7 +191,11 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     };
 
     return (
-        <Wrapper $isDisabled={isDisabled} onClick={isDisabled ? undefined : handleCheckbox}>
+        <Wrapper
+            $isChecked={isChecked}
+            $isDisabled={isDisabled}
+            onClick={isDisabled ? undefined : handleCheckbox}
+        >
             <Tooltip content={isDisabled && <Translation id="TR_UTXO_REGISTERED_IN_COINJOIN" />}>
                 <StyledCheckbox
                     isChecked={isChecked}
