@@ -1,5 +1,12 @@
 import { spacings } from '@trezor/theme';
-import { Row, Column, Card, ElevationContext } from '@trezor/components';
+import {
+    Row,
+    Column,
+    Card,
+    ElevationContext,
+    FractionButton,
+    FractionButtonProps,
+} from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { formatAmount } from '@suite-common/wallet-utils';
@@ -19,6 +26,7 @@ import {
     CoinmarketBuyFormProps,
     CoinmarketExchangeFormProps,
     CoinmarketSellFormProps,
+    CoinmarketUseFormActionsReturnProps,
 } from 'src/types/coinmarket/coinmarketForm';
 import { CoinmarketFormInputCryptoSelect } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCryptoSelect';
 import { CoinmarketFormInputAccount } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputAccount';
@@ -26,13 +34,40 @@ import { CoinmarketFormInputCountry } from 'src/views/wallet/coinmarket/common/C
 import { CoinmarketFormInputPaymentMethod } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputPaymentMethod';
 import { CoinmarketFormSwitcherExchangeRates } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormSwitcherExchangeRates';
 import { CoinmarketFormInputFiatCrypto } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputFiatCrypto';
-import { CoinmarketFractionButtons } from 'src/views/wallet/coinmarket/common/CoinmarketFractionButtons';
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
 import { getCoinmarketNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     isCoinmarketExchangeContext,
     isCoinmarketSellContext,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import { Translation } from 'src/components/suite';
+
+const generateFractionButtons = (
+    helpers: CoinmarketUseFormActionsReturnProps,
+): FractionButtonProps[] => {
+    return [
+        {
+            label: '1/4',
+            isDisabled: helpers.isBalanceZero,
+            onClick: () => helpers.setRatioAmount(4),
+        },
+        {
+            label: '1/3',
+            isDisabled: helpers.isBalanceZero,
+            onClick: () => helpers.setRatioAmount(3),
+        },
+        {
+            label: '1/2',
+            isDisabled: helpers.isBalanceZero,
+            onClick: () => helpers.setRatioAmount(2),
+        },
+        {
+            label: 'All',
+            translation: <Translation id="TR_FRACTION_BUTTONS_ALL" />,
+            onClick: () => helpers.setAllAmount(),
+        },
+    ];
+};
 
 export const CoinmarketFormInputs = () => {
     const context = useCoinmarketFormContext();
@@ -78,11 +113,11 @@ export const CoinmarketFormInputs = () => {
                     />
                     {amountInCrypto && (
                         <Row justifyContent="space-between" alignItems="flex-start">
-                            <CoinmarketFractionButtons
-                                disabled={helpers.isBalanceZero}
-                                onFractionClick={helpers.setRatioAmount}
-                                onAllClick={helpers.setAllAmount}
-                            />
+                            <Row gap={spacings.xs}>
+                                {generateFractionButtons(helpers).map(button => (
+                                    <FractionButton key={button.label} {...button} />
+                                ))}
+                            </Row>
                             <CoinmarketBalance
                                 balance={outputAmount}
                                 displaySymbol={sendCryptoSelect?.value}
@@ -159,11 +194,11 @@ export const CoinmarketFormInputs = () => {
                     />
                     {amountInCrypto && (
                         <Row justifyContent="space-between" alignItems="flex-start">
-                            <CoinmarketFractionButtons
-                                disabled={helpers.isBalanceZero}
-                                onFractionClick={helpers.setRatioAmount}
-                                onAllClick={helpers.setAllAmount}
-                            />
+                            <Row gap={spacings.xs}>
+                                {generateFractionButtons(helpers).map(button => (
+                                    <FractionButton key={button.label} {...button} />
+                                ))}
+                            </Row>
                             <CoinmarketBalance
                                 balance={outputAmount}
                                 displaySymbol={sendCryptoSelect?.value}
