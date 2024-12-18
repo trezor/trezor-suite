@@ -7,7 +7,6 @@ import { variables, Button } from '@trezor/components';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 
-import GraphWorker from 'src/support/workers/graph';
 import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
@@ -90,7 +89,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
 
     useEffect(() => {
         if (!graph.isLoading) {
-            const worker = new GraphWorker();
+            const worker = new Worker(new URL('src/support/workers/graph', import.meta.url));
             setIsProcessing(true);
             const rawData = getGraphDataForInterval({ deviceState: selectedDeviceState, graph });
 

@@ -132,24 +132,6 @@ const config: webpack.Configuration = {
                     },
                 ],
             },
-            // This worker loader is used for suite-desktop
-            {
-                test: /\/workers\/[^/]+\/index\.ts$/,
-                use: [
-                    {
-                        loader: 'worker-loader',
-                        options: {
-                            filename: 'static/worker.[contenthash].js',
-                        },
-                    },
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['@babel/preset-typescript'],
-                        },
-                    },
-                ],
-            },
             // Images
             {
                 test: /\.(gif|jpe?g|png|svg)$/,
