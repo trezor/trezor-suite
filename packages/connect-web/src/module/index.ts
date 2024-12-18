@@ -1,3 +1,4 @@
+import { cloneObject } from '@trezor/utils';
 import { factory } from '@trezor/connect/src/factory';
 import { config } from '@trezor/connect/src/data/config';
 import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
@@ -31,8 +32,8 @@ const impl = new TrezorConnectDynamic<
             impl: new CoreInModule((message: CoreEventMessage) => {
                 if (message.event === TRANSPORT_EVENT) {
                     const platform = getInstallerPackage();
-                    message.payload.bridge = suggestBridgeInstaller(platform);
-                    message.payload.udev = suggestUdevInstaller(platform);
+                    message.payload.bridge = cloneObject(suggestBridgeInstaller(platform));
+                    message.payload.udev = cloneObject(suggestUdevInstaller(platform));
                 }
 
                 return message;
