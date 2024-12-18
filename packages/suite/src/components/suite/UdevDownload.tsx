@@ -22,10 +22,7 @@ const Download = styled.div`
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    ${typography.label}
-
-    /* min-height to avoid jumpy behavior in transition loader > select */
-    min-height: 40px;
+    ${typography.label} /* min-height to avoid jumpy behavior in transition loader > select */ min-height: 40px;
 `;
 
 const LoaderWrapper = styled.div`
@@ -57,7 +54,7 @@ export const UdevDownload = () => {
         ? udev.packages.map(p => ({
               label: p.name,
               value: DATA_URL + p.url.substring(1),
-              preferred: p.preferred,
+              preferred: p.preferred, // This is not available on the desktop
           }))
         : [];
     const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);

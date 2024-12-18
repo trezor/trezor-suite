@@ -19,7 +19,7 @@ export const UdevDescription = () => {
     const handleClick = () => dispatch(goto('suite-udev'));
 
     return (
-        <Wrapper>
+        <Wrapper data-testid="@connect-device-prompt/unreadable-udev">
             <Translation
                 id="TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION"
                 values={{

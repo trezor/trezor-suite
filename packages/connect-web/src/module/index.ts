@@ -31,6 +31,7 @@ const impl = new TrezorConnectDynamic<
             type: 'core-in-module',
             impl: new CoreInModule((message: CoreEventMessage) => {
                 if (message.event === TRANSPORT_EVENT) {
+                    // note: udev and bridge are part of the event already emitted from "core" but without "preferred" field set
                     const platform = getInstallerPackage();
                     message.payload.bridge = cloneObject(suggestBridgeInstaller(platform));
                     message.payload.udev = cloneObject(suggestUdevInstaller(platform));

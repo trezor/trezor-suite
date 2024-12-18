@@ -1,12 +1,7 @@
-import { useState, MouseEvent } from 'react';
-
-import { Button } from '@trezor/components';
-import { desktopApi } from '@trezor/suite-desktop-api';
-import { isDesktop, isLinux } from '@trezor/env-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { isLinux } from '@trezor/env-utils';
 
-import { Translation, TroubleshootingTips, UdevDownload } from 'src/components/suite';
+import { Translation, TroubleshootingTips } from 'src/components/suite';
 import {
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
@@ -14,92 +9,10 @@ import {
     TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE,
     TROUBLESHOOTING_TIP_RECONNECT,
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
+    TROUBLESHOOTING_TIP_UDEV,
 } from 'src/components/suite/troubleshooting/tips';
-import { useSelector, useDispatch } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import type { TrezorDevice } from 'src/types/suite';
-
-// linux web
-const UdevWeb = () => (
-    <TroubleshootingTips
-        label={<Translation id="TR_TROUBLESHOOTING_UNREADABLE_UDEV" />}
-        items={[
-            {
-                key: 'udev-about',
-                noBullet: true,
-                description: <Translation id="TR_UDEV_DOWNLOAD_DESC" />,
-            },
-            {
-                key: 'udev-download',
-                noBullet: true,
-                description: <UdevDownload />,
-            },
-        ]}
-        data-testid="@connect-device-prompt/unreadable-udev"
-    />
-);
-
-// linux desktop
-const UdevDesktop = () => {
-    const [response, setResponse] = useState(-1);
-
-    const dispatch = useDispatch();
-
-    const handleCtaClick = async (event: MouseEvent) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const resp = await desktopApi.installUdevRules();
-
-        if (resp?.success) {
-            setResponse(1);
-        } else {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: resp?.error || 'desktopApi not available',
-                }),
-            );
-
-            setResponse(0);
-        }
-    };
-
-    if (response === 1) {
-        return (
-            <TroubleshootingTips
-                opened={false}
-                label={<Translation id="TR_RECONNECT_IN_NORMAL" />}
-                items={[]}
-                data-testid="@connect-device-prompt/unreadable-udev"
-            />
-        );
-    }
-
-    return (
-        <TroubleshootingTips
-            opened={response === 0}
-            label={<Translation id="TR_TROUBLESHOOTING_UNREADABLE_UDEV" />}
-            cta={
-                <Button onClick={handleCtaClick}>
-                    <Translation id="TR_TROUBLESHOOTING_UDEV_INSTALL_TITLE" />
-                </Button>
-            }
-            items={[
-                {
-                    key: 'udev-about',
-                    description: <Translation id="TR_UDEV_DOWNLOAD_DESC" />,
-                    noBullet: true,
-                },
-                {
-                    key: 'udev-download',
-                    description: <UdevDownload />,
-                    noBullet: true,
-                },
-            ]}
-            data-testid="@connect-device-prompt/unreadable-udev"
-        />
-    );
-};
 
 interface DeviceUnreadableProps {
     device?: TrezorDevice; // this should be actually UnreadableDevice, but it is not worth type casting
@@ -114,13 +27,13 @@ interface DeviceUnreadableProps {
 export const DeviceUnreadable = ({ device }: DeviceUnreadableProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
 
-    // this error is dispatched by trezord when udev rules are missing
-    if (isLinux() && device?.error === 'LIBUSB_ERROR_ACCESS') {
-        return <> {isDesktop() ? <UdevDesktop /> : <UdevWeb />}</>;
-    }
-
     // generic troubleshooting tips
     const items = [];
+
+    // this error is dispatched by trezord when udev rules are missing
+    if (isLinux() && device?.error === 'LIBUSB_ERROR_ACCESS') {
+        items.push(TROUBLESHOOTING_TIP_UDEV);
+    }
 
     // only for unreadable HID devices
     if (

@@ -23,7 +23,6 @@ import * as metadata from './metadata';
 import * as customProtocols from './custom-protocols';
 import * as autoUpdater from './auto-updater';
 import * as store from './store';
-import * as udevInstall from './udev-install';
 import * as userData from './user-data';
 import * as trezorConnect from './trezor-connect';
 import * as devTools from './dev-tools';
@@ -56,7 +55,6 @@ const MODULES: Module[] = [
     customProtocols,
     autoUpdater,
     store,
-    udevInstall,
     userData,
     trezorConnect,
     devTools,
@@ -85,6 +83,7 @@ interface MainThreadMessages {
     'app/fully-quit': void;
     'app/show': void;
 }
+
 export const mainThreadEmitter = new TypedEmitter<MainThreadMessages>();
 export type MainThreadEmitter = typeof mainThreadEmitter;
 

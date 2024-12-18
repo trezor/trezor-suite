@@ -268,23 +268,6 @@ describe('DesktopApi', () => {
             expect(spy).toHaveBeenCalledWith('user-data/open', existingDirectory);
         });
 
-        it('DesktopApi.installUdevRules', async () => {
-            const spy = jest
-                .spyOn(ipcRenderer, 'invoke')
-                .mockImplementation(() => Promise.resolve({ success: true }));
-            const result = await api.installUdevRules();
-            expect(spy).toHaveBeenCalledWith('udev/install');
-            expect(result.success).toBe(true);
-            if (result.success) {
-                expect(result.payload).toBe(undefined);
-            } else {
-                expect(result.error).toBe('should not happen');
-            }
-
-            // @ts-expect-error no expected params
-            api.installUdevRules(true);
-        });
-
         it('DesktopApi.handshake', async () => {
             const spy = jest
                 .spyOn(ipcRenderer, 'invoke')

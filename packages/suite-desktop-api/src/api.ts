@@ -159,8 +159,6 @@ export interface DesktopApi {
     clearStore: DesktopApiSend<'store/clear'>;
     clearUserData: DesktopApiInvoke<'user-data/clear'>;
     openUserDataDirectory: DesktopApiInvoke<'user-data/open'>;
-    // Udev rules
-    installUdevRules: DesktopApiInvoke<'udev/install'>;
     // Logger
     configLogger: DesktopApiSend<'logger/config'>;
     // Bridge

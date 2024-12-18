@@ -7186,17 +7186,9 @@ export default defineMessages({
         defaultMessage:
             'Restarting your computer may fix the communication issue between your browser and device.',
     },
-    TR_TROUBLESHOOTING_UNREADABLE_UDEV: {
-        id: 'TR_TROUBLESHOOTING_UNREADABLE_UDEV',
-        defaultMessage: 'Missing udev rules',
-    },
     TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN: {
         id: 'TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN',
         defaultMessage: 'Unexpected state: {error}',
-    },
-    TR_TROUBLESHOOTING_UDEV_INSTALL_TITLE: {
-        id: 'TR_TROUBLESHOOTING_UDEV_INSTALL_TITLE',
-        defaultMessage: 'Install rules automatically',
     },
     TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE: {
         id: 'TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE',
