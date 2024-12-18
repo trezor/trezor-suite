@@ -15,11 +15,17 @@ import {
     MIN_SOL_AMOUNT_FOR_STAKING,
     MIN_SOL_BALANCE_FOR_STAKING,
     MIN_SOL_FOR_WITHDRAWALS,
+    SOL_STAKING_OPERATION_FEE,
 } from '@suite-common/wallet-constants';
 
 import { Dispatch, GetState } from 'src/types/suite';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
-import { getPubKeyFromAddress, prepareStakeSolTx } from 'src/utils/suite/solanaStaking';
+import {
+    getPubKeyFromAddress,
+    prepareClaimSolTx,
+    prepareStakeSolTx,
+    prepareUnstakeSolTx,
+} from 'src/utils/suite/solanaStaking';
 
 import { calculate, composeStakingTransaction } from './stakeFormActions';
 
@@ -30,7 +36,8 @@ const calculateTransaction = (
     compareWithAmount = true,
     symbol: NetworkSymbol,
 ): PrecomposedTransaction => {
-    const feeInLamports = new BigNumber(feeLevel.feePerTx ?? '0').toString();
+    // TODO: change to the dynamic fee
+    const feeInLamports = new BigNumber(SOL_STAKING_OPERATION_FEE).toString();
 
     const stakingParams = {
         feeInBaseUnits: feeInLamports,
@@ -95,6 +102,25 @@ export const signTransaction =
                 from: account.descriptor,
                 path: account.path,
                 amount: formValues.outputs[0].amount,
+                symbol: account.symbol,
+                selectedBlockchain,
+            });
+        }
+
+        if (stakeType === 'unstake') {
+            txData = await prepareUnstakeSolTx({
+                from: account.descriptor,
+                path: account.path,
+                amount: formValues.outputs[0].amount,
+                symbol: account.symbol,
+                selectedBlockchain,
+            });
+        }
+
+        if (stakeType === 'claim') {
+            txData = await prepareClaimSolTx({
+                from: account.descriptor,
+                path: account.path,
                 symbol: account.symbol,
                 selectedBlockchain,
             });

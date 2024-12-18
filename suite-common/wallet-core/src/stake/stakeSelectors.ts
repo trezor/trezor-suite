@@ -6,9 +6,9 @@ import { StakeRootState } from './stakeReducer';
 
 export const selectEverstakeData = (
     state: StakeRootState,
-    networkSymbol: NetworkSymbol,
+    symbol: NetworkSymbol,
     endpointType: 'poolStats' | 'validatorsQueue' | 'getAssets',
-) => state.wallet.stake?.data?.[networkSymbol]?.[endpointType];
+) => state.wallet.stake?.data?.[symbol]?.[endpointType];
 
 export const selectPoolStatsApyData = (state: StakeRootState, symbol?: NetworkSymbol) => {
     const { data } = state.wallet.stake ?? {};
