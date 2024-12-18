@@ -1,0 +1,143 @@
+name: "[Test] suite-native iOS E2E"
+
+on:
+  schedule:
+    # Runs at midnight (00:00) on every Monday
+    # So far the iOS do not support Trezor device connection, so it is not necessary to run tests every day.
+    # Will be probably changed in the future.
+    - cron: "0 0 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_ENV: "test"
+  DETOX_BINARY_PATH: ../../node_modules/.bin/detox
+
+jobs:
+  prepare_ios_test_app:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: macos-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          submodules: "true"
+
+      - name: Install node and yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Setup node_modules cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node_modules/${{ github.ref }}/${{github.run_id}}
+
+      - name: Install Yarn dependencies
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+          yarn install
+
+      - name: Prebuild native expo project
+        working-directory: ./suite-native/app
+        run: yarn prebuild --platform ios --clean
+
+      - name: Sign message system config
+        working-directory: ./suite-common/message-system
+        run: yarn sign-config
+
+      - name: Use latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Build a Detox test app
+        working-directory: ./suite-native/app
+        run: $DETOX_BINARY_PATH build  --configuration ios.sim.release
+
+      - name: Store build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-test-build
+          path: |
+            suite-native/app/ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteLiteDebug.app
+
+  run_ios_e2e_tests:
+    runs-on: macos-latest
+    needs: prepare_ios_test_app
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          submodules: "true"
+
+      - name: Install node and yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Load node modules cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node_modules/${{ github.ref }}/${{github.run_id}}
+
+      - name: Install Yarn dependencies
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+          yarn install
+
+      - name: Install macOS dependencies
+        run: |
+          brew tap wix/brew
+          brew install wix/brew/applesimutils
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: 1
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+      - name: Download app build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-test-build
+          path: |
+            suite-native/app/ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteLiteDebug.app
+
+      - name: Prepare iPhone 11 Simulator
+        run: xcrun simctl create "iPhone 11"  com.apple.CoreSimulator.SimDeviceType.iPhone-11
+
+      - name: Run Detox E2E iOS tests
+        working-directory: ./suite-native/app
+        run: |
+          $DETOX_BINARY_PATH clean-framework-cache && $DETOX_BINARY_PATH build-framework-cache
+          yarn test:e2e ios.sim.release --headless --take-screenshots failing --record-videos failing
+
+      # TODO: add reporting to Currents.dev dashboard same as the android e2e tests have. cc @HajekOndrej
+      # - name: Upload results to Currents.dev
+      #   if: ${{ ! cancelled() }}
+      #   env:
+      #     CURRENTS_PROJECT_ID: iUe1Y4
+      #     CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+      #   working-directory: ./suite-native/app
+      #   run: |
+      #     npx currents convert \
+      #       --input-format=junit \
+      #       --input-file=./reports/junit-report.xml \
+      #       --output-dir=./currents \
+      #       --framework=postman \
+      #       --framework-version=v11.2.0
+      #     npx currents upload --project-id=${CURRENTS_PROJECT_ID} --key=${CURRENTS_RECORD_KEY} --report-dir ./currents
+
+      - name: "Store failed test screenshot artifacts"
+        if: ${{failure()}}
+        uses: actions/upload-artifact@v4
+        with:
+          name: failed-ios-tests
+          path: suite-native/app/artifacts
