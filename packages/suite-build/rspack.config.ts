@@ -1,12 +1,13 @@
+// webpack-merge supports Rspack configs https://github.com/web-infra-dev/rspack/issues/6059#issuecomment-2027385233
 import { merge } from 'webpack-merge';
 
 // Env utils
 import { project, isDev } from './utils/env';
 // Configs
-import base from './configs/base.webpack.config';
-import dev from './configs/dev.webpack.config';
-import web from './configs/web.webpack.config';
-import desktop from './configs/desktop.webpack.config';
+import base from './configs/base.rspack.config';
+import dev from './configs/dev.rspack.config';
+import web from './configs/web.rspack.config';
+import desktop from './configs/desktop.rspack.config';
 
 const configs = [base];
 if (isDev) {

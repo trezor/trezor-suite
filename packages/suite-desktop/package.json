@@ -8,9 +8,11 @@
     "main": "dist/app.js",
     "scripts": {
         "dev": "yarn clean && LAUNCH_ELECTRON=true yarn run dev:local",
+        "dev:rspack": "yarn clean && LAUNCH_ELECTRON=true yarn run dev:local:rspack",
         "dev:run": "yarn electron .",
         "dev:prepare": "yarn build:app:dev",
         "dev:local": "yarn workspace @trezor/suite-build run dev:desktop",
+        "dev:local:rspack": "yarn workspace @trezor/suite-build run dev:desktop:rspack",
         "clean": "yarn g:rimraf ./build-electron && yarn g:rimraf ./build && yarn g:rimraf ./dist",
         "build:ui": "yarn workspace @trezor/suite-build run build:desktop",
         "build:core": "yarn workspace @trezor/suite-desktop-core run build:core",

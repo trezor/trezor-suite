@@ -3,7 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 import { sync } from 'glob';
-import rspack, { Configuration, Chunk } from '@rspack/core';
+import rspack, { Configuration, Chunk, SwcLoaderOptions } from '@rspack/core';
 import childProcess from 'child_process';
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 
@@ -101,7 +101,7 @@ const config: Configuration = {
                         // electron 32 uses node 20 https://www.electronjs.org/docs/latest/tutorial/electron-timelines
                         targets: 'node 20',
                     },
-                },
+                } satisfies SwcLoaderOptions,
             },
         ],
     },

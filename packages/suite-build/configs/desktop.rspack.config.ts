@@ -1,6 +1,5 @@
 import path from 'path';
-import webpack from 'webpack';
-import CopyPlugin from 'copy-webpack-plugin';
+import rspack, { Configuration } from '@rspack/core';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 import { FLAGS } from '@suite-common/suite-config';
@@ -16,14 +15,14 @@ const electronArgs = process.argv.slice(electronArgsIndex);
 const baseDirUI = getPathForProject('desktop-ui');
 const baseDir = getPathForProject('desktop');
 
-const config: webpack.Configuration = {
+const config: Configuration = {
     target: 'browserslist:Chrome >= 128', // Electron 32 is running on chromium 128
     entry: [path.join(baseDirUI, 'src', 'index.tsx')],
     output: {
         path: path.join(baseDir, 'build'),
     },
     plugins: [
-        new CopyPlugin({
+        new rspack.CopyRspackPlugin({
             patterns: ['bin', 'fonts', 'images', 'videos', 'guide/assets']
                 .map(dir => ({
                     from: path.join(__dirname, '..', '..', 'suite-data', 'files', dir),
@@ -73,9 +72,6 @@ const config: webpack.Configuration = {
                         to: path.join(baseDir, 'build'),
                     },
                 ]),
-            options: {
-                concurrency: 100,
-            },
         }),
         new HtmlWebpackPlugin({
             minify: !isDev,

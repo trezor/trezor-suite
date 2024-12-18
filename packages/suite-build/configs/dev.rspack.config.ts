@@ -1,14 +1,14 @@
 import path from 'path';
-import webpack from 'webpack';
+import { Configuration } from '@rspack/core';
+import ReactRefreshPlugin from '@rspack/plugin-react-refresh';
 import { WebpackPluginServe } from 'webpack-plugin-serve';
-import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 
 import { project } from '../utils/env';
 import { DEV_PORTS } from '../utils/constants';
 import { getPathForProject } from '../utils/path';
 
 const distPath = path.join(getPathForProject(project), 'build');
-const config: webpack.Configuration = {
+const config: Configuration = {
     stats: {
         children: true,
         errorDetails: true,
@@ -41,7 +41,7 @@ const config: webpack.Configuration = {
                 protocol: 'ws',
             },
         }),
-        new ReactRefreshWebpackPlugin({
+        new ReactRefreshPlugin({
             overlay: false,
         }),
     ],

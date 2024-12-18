@@ -1,7 +1,6 @@
 import path from 'path';
-import webpack from 'webpack';
+import rspack, { Configuration /*SwcLoaderOptions*/ } from '@rspack/core';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-import TerserPlugin from 'terser-webpack-plugin';
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 
 import {
@@ -27,7 +26,7 @@ const sentryRelease = `${suiteVersion}.${project}${
     isCodesignBuild ? '.codesign' : ''
 }.${gitRevision}`;
 
-const config: webpack.Configuration = {
+const config: Configuration = {
     mode: 'production',
     devtool: 'source-map',
     output: {
@@ -80,7 +79,7 @@ const config: webpack.Configuration = {
             },
         },
         minimizer: [
-            new TerserPlugin({
+            new rspack.SwcJsMinimizerRspackPlugin({
                 exclude: /static\/connect/, // connect is already minimized with specific rules
             }),
         ],
@@ -91,7 +90,11 @@ const config: webpack.Configuration = {
     },
     module: {
         // Throw error on missing exports instead of warning
-        strictExportPresence: true,
+        parser: {
+            javascript: {
+                exportsPresence: 'error',
+            },
+        },
         rules: [
             // TypeScript/JavaScript
             {
@@ -124,15 +127,42 @@ const config: webpack.Configuration = {
                     },
                 },
             },
+            /*
+            {
+                test: /\.(j|t)sx?$/,
+                exclude: [/[\\/]node_modules[\\/]/],
+                loader: 'builtin:swc-loader',
+                options: {
+                    jsc: {
+                        parser: {
+                            syntax: 'typescript',
+                        },
+                        externalHelpers: true,
+                        transform: {
+                            react: {
+                                runtime: 'automatic',
+                                development: isDev,
+                                refresh: isDev,
+                            },
+                        },
+                    },
+                    env: {
+                        // TODO remove?
+                        targets: 'Chrome >= 128',
+                        // targets: 'browserslist:Chrome >= 128',
+                    },
+                } satisfies SwcLoaderOptions,
+                // TODO https://www.npmjs.com/package/@swc/plugin-styled-components
+            },
+            */
             {
                 test: /\.md/,
-                use: [
-                    {
-                        loader: 'raw-loader',
-                    },
-                ],
+                type: 'asset/source',
             },
             // This worker loader is used for suite-desktop
+            // TODO: both Rspack and webpack 5 no longer need worker-loader
+            //  https://rspack.org/guide/features/web-workers
+            //  https://webpack.js.org/guides/web-workers/
             {
                 test: /\/workers\/[^/]+\/index\.ts$/,
                 use: [
@@ -158,8 +188,8 @@ const config: webpack.Configuration = {
         ],
     },
     plugins: [
-        new webpack.ProgressPlugin(),
-        new webpack.DefinePlugin({
+        new rspack.ProgressPlugin(),
+        new rspack.DefinePlugin({
             'process.browser': true,
             'process.env.SUITE_TYPE': JSON.stringify(project),
             'process.env.VERSION': JSON.stringify(suiteVersion),
@@ -170,7 +200,7 @@ const config: webpack.Configuration = {
             __SENTRY_DEBUG__: isDev,
             __SENTRY_TRACING__: false, // needs to be removed when we introduce performance monitoring in trezor-suite
         }),
-        new webpack.ProvidePlugin({
+        new rspack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
             process: 'process',
         }),
@@ -184,6 +214,7 @@ const config: webpack.Configuration = {
             : []),
         ...(!isDev && sentryAuthToken
             ? [
+                  // Sentry plugin is for webpack, but compatible with Rspack https://rspack.dev/guide/compatibility/plugin
                   sentryWebpackPlugin({
                       telemetry: false,
                       org: 'satoshilabs',

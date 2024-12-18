@@ -1,8 +1,6 @@
 import path from 'path';
-import webpack from 'webpack';
-import CopyPlugin from 'copy-webpack-plugin';
+import rspack, { Configuration } from '@rspack/core';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 
 import { FLAGS, routes } from '@suite-common/suite-config';
 
@@ -10,14 +8,14 @@ import { assetPrefix, isDev } from '../utils/env';
 import { getPathForProject } from '../utils/path';
 
 const baseDir = getPathForProject('web');
-const config: webpack.Configuration = {
+const config: Configuration = {
     target: 'browserslist',
     entry: [path.join(baseDir, 'src', 'index.ts')],
     output: {
         path: path.join(baseDir, 'build'),
     },
     plugins: [
-        new CopyPlugin({
+        new rspack.CopyRspackPlugin({
             patterns: ['browser-detection', 'fonts', 'images', 'oauth', 'videos', 'guide/assets']
                 .map(dir => ({
                     from: path.join(__dirname, '..', '..', 'suite-data', 'files', dir),
@@ -36,9 +34,6 @@ const config: webpack.Configuration = {
                         to: path.join(baseDir, 'build', 'static', 'message-system'),
                     },
                 ]),
-            options: {
-                concurrency: 100,
-            },
         }),
         // Html files
         ...routes.map(
@@ -67,12 +62,14 @@ const config: webpack.Configuration = {
                 }),
         ),
         // imports from @trezor/connect in @trezor/suite package need to be replaced by imports from @trezor/connect-web/src/module
-        new webpack.NormalModuleReplacementPlugin(
+        new rspack.NormalModuleReplacementPlugin(
             /@trezor\/connect$/,
             '@trezor/connect-web/src/module',
         ),
-        ...(!isDev ? [new CssMinimizerPlugin()] : []),
     ],
+    optimization: {
+        minimizer: !isDev ? [new rspack.LightningCssMinimizerRspackPlugin()] : [],
+    },
 };
 
 export default config;
