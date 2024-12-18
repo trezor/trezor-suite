@@ -96,6 +96,8 @@ export const HELP_CENTER_DEVICE_AUTHENTICATION: Url =
     'https://trezor.io/learn/a/trezor-safe-device-authentication-check';
 export const HELP_CENTER_ETH_STAKING: Url =
     'https://trezor.io/learn/a/stake-ethereum-eth-in-trezor-suite';
+export const HELP_CENTER_SOL_STAKING: Url =
+    'https://trezor.io/learn/a/stake-solana-sol-in-trezor-suite';
 export const HELP_CENTER_SEED_CARD_URL: Url = 'https://trezor.io/learn/a/recovery-seed-card';
 export const HELP_CENTER_MULTI_SHARE_BACKUP_URL: Url =
     'https://trezor.io/learn/a/multi-share-backup-on-trezor';

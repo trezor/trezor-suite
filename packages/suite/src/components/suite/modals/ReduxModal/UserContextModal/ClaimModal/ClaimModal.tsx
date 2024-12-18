@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { Paragraph, Tooltip, Banner, Card, Column, InfoItem, NewModal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
+import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
@@ -45,7 +45,7 @@ export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
 
-    const { claimableAmount = '0' } = getAccountEverstakeStakingPool(selectedAccount.account) ?? {};
+    const { claimableAmount = '0' } = getStakingDataForNetwork(selectedAccount.account) ?? {};
     const isDisabled =
         !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
 
@@ -62,7 +62,7 @@ export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
             description={
                 <Translation
                     id="TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED"
-                    values={{ networkSymbol: getNetworkDisplaySymbol(account.symbol) }}
+                    values={{ networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol) }}
                 />
             }
             size="small"

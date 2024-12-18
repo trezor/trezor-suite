@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux';
 import { selectPoolStatsApyData, StakeRootState } from '@suite-common/wallet-core';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 import { negativeSpacings, spacings } from '@trezor/theme';
-import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
+import { HELP_CENTER_ETH_STAKING, HELP_CENTER_SOL_STAKING } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { FiatValue, FormattedCryptoAmount, TrezorLink } from 'src/components/suite';
-import { calculateGains } from 'src/utils/suite/ethereumStaking';
+import { calculateGains } from 'src/utils/suite/staking';
 
 export const EstimatedGains = () => {
     const { account, getValues, formState } = useStakeEthFormContext();
@@ -22,22 +22,22 @@ export const EstimatedGains = () => {
 
     const cryptoInput = hasInvalidFormState || !value ? '0' : value;
 
-    const ethApy = useSelector((state: StakeRootState) =>
+    const apy = useSelector((state: StakeRootState) =>
         selectPoolStatsApyData(state, account?.symbol),
     );
 
     const gains = [
         {
             label: <Translation id="TR_STAKE_WEEKLY" />,
-            value: calculateGains(cryptoInput, ethApy, 52),
+            value: calculateGains(cryptoInput, apy, 52),
         },
         {
             label: <Translation id="TR_STAKE_MONTHLY" />,
-            value: calculateGains(cryptoInput, ethApy, 12),
+            value: calculateGains(cryptoInput, apy, 12),
         },
         {
             label: <Translation id="TR_STAKE_YEARLY" />,
-            value: calculateGains(cryptoInput, ethApy, 1),
+            value: calculateGains(cryptoInput, apy, 1),
         },
     ];
 
@@ -45,7 +45,7 @@ export const EstimatedGains = () => {
         <Column gap={spacings.lg}>
             <Column>
                 <Paragraph variant="primary" typographyStyle="titleMedium">
-                    {ethApy}%
+                    {apy}%
                 </Paragraph>
                 <Paragraph
                     typographyStyle="hint"
@@ -74,7 +74,15 @@ export const EstimatedGains = () => {
                     id="TR_STAKING_YOUR_EARNINGS"
                     values={{
                         a: chunks => (
-                            <TrezorLink href={HELP_CENTER_ETH_STAKING}>{chunks}</TrezorLink>
+                            <TrezorLink
+                                href={
+                                    account.networkType === 'solana'
+                                        ? HELP_CENTER_SOL_STAKING
+                                        : HELP_CENTER_ETH_STAKING
+                                }
+                            >
+                                {chunks}
+                            </TrezorLink>
                         ),
                     }}
                 />

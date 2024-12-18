@@ -5,9 +5,9 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import {
     fromFiatCurrency,
-    getAccountAutocompoundBalance,
     getFeeInfo,
     getFiatRateKey,
+    getStakingDataForNetwork,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
@@ -70,7 +70,7 @@ export const useUnstakeEthForm = ({
         selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'current'),
     );
 
-    const autocompoundBalance = getAccountAutocompoundBalance(account);
+    const { autocompoundBalance = '0' } = getStakingDataForNetwork(account) ?? {};
     const amountLimits: AmountLimitProps = {
         currency: symbol,
         maxCrypto: autocompoundBalance,

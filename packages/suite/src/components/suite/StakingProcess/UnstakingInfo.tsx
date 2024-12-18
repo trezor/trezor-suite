@@ -10,13 +10,48 @@ import {
     StakeRootState,
     AccountsRootState,
 } from '@suite-common/wallet-core';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 
 import { Translation } from 'src/components/suite';
 import { getDaysToUnstake } from 'src/utils/suite/ethereumStaking';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 
 import { InfoRow } from './InfoRow';
+
+type InfoRowsData = {
+    readyForClaimDays: number | undefined;
+    deactivatePeriodHeading: JSX.Element;
+    deactivatePeriodSubheading: JSX.Element;
+};
+
+const getInfoRowsData = (
+    networkType: NetworkType,
+    accountSymbol: NetworkSymbol,
+    daysToUnstake?: number,
+): InfoRowsData | null => {
+    switch (networkType) {
+        case 'ethereum':
+            return {
+                readyForClaimDays: daysToUnstake,
+                deactivatePeriodHeading: <Translation id="TR_STAKE_LEAVE_STAKING_POOL" />,
+                deactivatePeriodSubheading: (
+                    <Translation
+                        id="TR_STAKING_CONSOLIDATING_FUNDS"
+                        values={{ networkDisplaySymbol: accountSymbol.toUpperCase() }}
+                    />
+                ),
+            };
+        case 'solana':
+            return {
+                readyForClaimDays: SOLANA_EPOCH_DAYS,
+                deactivatePeriodHeading: <Translation id="TR_STAKE_COOL_DOWN_PERIOD" />,
+                deactivatePeriodSubheading: <Translation id="TR_STAKE_WAIT_FOR_DEACTIVATION" />,
+            };
+        default:
+            return null;
+    }
+};
 
 interface UnstakingInfoProps {
     isExpanded?: boolean;
@@ -36,6 +71,7 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
 
     const daysToUnstake = getDaysToUnstake(unstakeTxs, data);
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const infoRowsData = getInfoRowsData(account.networkType, account.symbol, daysToUnstake);
 
     const infoRows = [
         {
@@ -46,15 +82,15 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
             },
         },
         {
-            heading: <Translation id="TR_STAKE_LEAVE_STAKING_POOL" />,
-            subheading: (
-                <Translation
-                    id="TR_STAKING_CONSOLIDATING_FUNDS"
-                    values={{ networkDisplaySymbol: displaySymbol }}
-                />
-            ),
+            heading: infoRowsData?.deactivatePeriodHeading,
+            subheading: infoRowsData?.deactivatePeriodSubheading,
             content: {
-                text: <Translation id="TR_STAKE_DAYS" values={{ count: daysToUnstake }} />,
+                text: (
+                    <Translation
+                        id="TR_STAKE_DAYS"
+                        values={{ count: infoRowsData?.readyForClaimDays }}
+                    />
+                ),
             },
         },
         {

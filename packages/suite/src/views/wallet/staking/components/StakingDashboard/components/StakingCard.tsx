@@ -16,7 +16,13 @@ import {
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { selectAccountStakeTransactions } from '@suite-common/wallet-core';
-import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
+import {
+    calculateSolanaStakingReward,
+    getStakingAccountCurrentStatus,
+    getStakingDataForNetwork,
+    isPending,
+} from '@suite-common/wallet-utils';
+import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { getNetworkDisplaySymbol, type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { FiatValue, Translation, FormattedCryptoAmount } from 'src/components/suite';
@@ -65,12 +71,14 @@ type StakingCardProps = {
     isValidatorsQueueLoading?: boolean;
     daysToAddToPool?: number;
     daysToUnstake?: number;
+    apy?: number;
 };
 
 export const StakingCard = ({
     isValidatorsQueueLoading,
     daysToAddToPool,
     daysToUnstake,
+    apy,
 }: StakingCardProps) => {
     const selectedAccount = useSelector(selectSelectedAccount);
     const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
@@ -89,7 +97,7 @@ export const StakingCard = ({
         totalPendingStakeBalance = '0',
         withdrawTotalAmount = '0',
         claimableAmount = '0',
-    } = getAccountEverstakeStakingPool(selectedAccount) ?? {};
+    } = getStakingDataForNetwork(selectedAccount) ?? {};
 
     const canUnstake = new BigNumber(autocompoundBalance).gt(0);
     const isStakePending = new BigNumber(totalPendingStakeBalance).gt(0);
@@ -110,11 +118,15 @@ export const StakingCard = ({
     );
     const isStakeConfirming = stakeTxs.some(tx => isPending(tx));
 
-    const { progressLabelsData } = useProgressLabelsData({
+    const solStakingAccountStatus = getStakingAccountCurrentStatus(selectedAccount);
+
+    const progressLabelsData = useProgressLabelsData({
         daysToAddToPool,
         isDaysToAddToPoolShown,
         isStakeConfirming,
         isStakePending,
+        selectedAccount,
+        solStakingAccountStatus,
     });
 
     const dispatch = useDispatch();
@@ -132,6 +144,10 @@ export const StakingCard = ({
     if (!selectedAccount?.symbol) {
         return null;
     }
+
+    const solReward = calculateSolanaStakingReward(depositedBalance, apy?.toString());
+
+    const stakingReward = selectedAccount.networkType === 'solana' ? solReward : restakedReward;
 
     return (
         <Card>
@@ -151,11 +167,10 @@ export const StakingCard = ({
                             data-testid="@account/staking/pending"
                         />
                     )}
-
                     <Item
                         label={<Translation id="TR_STAKE_STAKE" />}
                         iconName="lock"
-                        symbol={selectedAccount.symbol}
+                        symbol={selectedAccount?.symbol}
                         cryptoAmount={depositedBalance}
                         fiatAmount={depositedBalance}
                         data-testid="@account/staking/staked"
@@ -164,7 +179,16 @@ export const StakingCard = ({
                     <Item
                         label={
                             <Row gap={spacings.xs}>
-                                <Translation id="TR_STAKE_REWARDS" />
+                                <Translation
+                                    id={
+                                        selectedAccount.networkType === 'solana'
+                                            ? 'TR_STAKE_EXPECTED_REWARDS'
+                                            : 'TR_STAKE_REWARDS'
+                                    }
+                                    values={{
+                                        days: SOLANA_EPOCH_DAYS,
+                                    }}
+                                />
                                 <Tooltip
                                     maxWidth={250}
                                     content={
@@ -189,12 +213,11 @@ export const StakingCard = ({
                         }
                         iconName="plusCircle"
                         isReward
-                        cryptoAmount={restakedReward}
-                        fiatAmount={restakedReward}
+                        cryptoAmount={stakingReward}
+                        fiatAmount={stakingReward}
                         data-testid="@account/staking/rewards"
                         symbol={selectedAccount.symbol}
                     />
-
                     {isPendingUnstakeShown && (
                         <Item
                             label={
@@ -224,11 +247,11 @@ export const StakingCard = ({
                 </Grid>
 
                 <ProgressBar
-                    $rewards={Number(restakedReward)}
+                    $rewards={Number(stakingReward)}
                     $unstaking={Number(withdrawTotalAmount)}
                     $total={
                         Number(depositedBalance) +
-                        Number(restakedReward) +
+                        Number(stakingReward) +
                         Number(withdrawTotalAmount)
                     }
                     $isPendingUnstakeShown={isPendingUnstakeShown}

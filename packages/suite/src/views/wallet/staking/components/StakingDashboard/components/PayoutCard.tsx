@@ -4,7 +4,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Card, Column, Icon, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BACKUP_REWARD_PAYOUT_DAYS } from '@suite-common/wallet-constants';
-import { getAccountAutocompoundBalance } from '@suite-common/wallet-utils';
+import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 
 import { Translation } from 'src/components/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -23,7 +23,8 @@ export const PayoutCard = ({
 }: PayoutCardProps) => {
     const selectedAccount = useSelector(selectSelectedAccount);
 
-    const autocompoundBalance = getAccountAutocompoundBalance(selectedAccount);
+    const { autocompoundBalance = '0' } = getStakingDataForNetwork(selectedAccount) ?? {};
+
     const payout = useMemo(() => {
         if (!nextRewardPayout || !daysToAddToPool) return undefined;
 

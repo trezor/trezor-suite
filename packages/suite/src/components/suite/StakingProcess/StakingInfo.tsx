@@ -11,13 +11,56 @@ import {
     selectPoolStatsApyData,
     AccountsRootState,
 } from '@suite-common/wallet-core';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
+import { getNetworkDisplaySymbol, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { getDaysToAddToPool } from 'src/utils/suite/ethereumStaking';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 
 import { InfoRow } from './InfoRow';
+
+type InfoRowsData = {
+    payoutDays: number | undefined;
+    rewardsPeriodHeading: JSX.Element;
+    rewardsPeriodSubheading: JSX.Element;
+    rewardsEarningHeading: JSX.Element;
+};
+
+const getInfoRowsData = (
+    networkType: NetworkType,
+    accountSymbol: NetworkSymbol,
+    daysToAddToPool?: number,
+): InfoRowsData | null => {
+    switch (networkType) {
+        case 'ethereum':
+            return {
+                payoutDays: daysToAddToPool,
+                rewardsPeriodHeading: <Translation id="TR_STAKE_ENTER_THE_STAKING_POOL" />,
+                rewardsPeriodSubheading: (
+                    <Translation
+                        id="TR_STAKING_GETTING_READY"
+                        values={{ networkDisplaySymbol: getNetworkDisplaySymbol(accountSymbol) }}
+                    />
+                ),
+                rewardsEarningHeading: <Translation id="TR_STAKE_EARN_REWARDS_WEEKLY" />,
+            };
+        case 'solana':
+            return {
+                payoutDays: SOLANA_EPOCH_DAYS,
+                rewardsPeriodHeading: <Translation id="TR_STAKE_WARM_UP_PERIOD" />,
+                rewardsPeriodSubheading: <Translation id="TR_STAKE_WAIT_FOR_ACTIVATION" />,
+                rewardsEarningHeading: (
+                    <Translation
+                        id="TR_STAKE_EARN_REWARDS_EVERY"
+                        values={{ days: SOLANA_EPOCH_DAYS }}
+                    />
+                ),
+            };
+        default:
+            return null;
+    }
+};
 
 interface StakingInfoProps {
     isExpanded?: boolean;
@@ -33,13 +76,14 @@ export const StakingInfo = ({ isExpanded }: StakingInfoProps) => {
         selectAccountStakeTransactions(state, account?.key ?? ''),
     );
 
-    const ethApy = useSelector((state: StakeRootState) =>
+    const apy = useSelector((state: StakeRootState) =>
         selectPoolStatsApyData(state, account?.symbol),
     );
 
     if (!account) return null;
 
     const daysToAddToPool = getDaysToAddToPool(stakeTxs, data);
+    const infoRowsData = getInfoRowsData(account.networkType, account.symbol, daysToAddToPool);
 
     const infoRows = [
         {
@@ -47,25 +91,24 @@ export const StakingInfo = ({ isExpanded }: StakingInfoProps) => {
             content: { text: <Translation id="TR_COINMARKET_NETWORK_FEE" />, isBadge: true },
         },
         {
-            heading: <Translation id="TR_STAKE_ENTER_THE_STAKING_POOL" />,
-            subheading: (
-                <Translation
-                    id="TR_STAKING_GETTING_READY"
-                    values={{ networkSymbol: getNetworkDisplaySymbol(account.symbol) }}
-                />
-            ),
+            heading: infoRowsData?.rewardsPeriodHeading,
+            subheading: infoRowsData?.rewardsPeriodSubheading,
             content: {
                 text: (
                     <>
-                        ~<Translation id="TR_STAKE_DAYS" values={{ count: daysToAddToPool }} />
+                        ~
+                        <Translation
+                            id="TR_STAKE_DAYS"
+                            values={{ count: infoRowsData?.payoutDays }}
+                        />
                     </>
                 ),
             },
         },
         {
-            heading: <Translation id="TR_STAKE_EARN_REWARDS_WEEKLY" />,
+            heading: infoRowsData?.rewardsEarningHeading,
             subheading: <Translation id="TR_STAKING_REWARDS_ARE_RESTAKED" />,
-            content: { text: `~${ethApy}% p.a.` },
+            content: { text: `~${apy}% p.a.` },
         },
     ];
 

@@ -6,6 +6,7 @@ import { Account } from '@suite-common/wallet-types';
 import { spacingsPx, zIndices, typography } from '@trezor/theme';
 import { H2 } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import {
     MetadataLabeling,
@@ -117,7 +118,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                             showAccountTypeBadge
                             accountLabel={selectedAccountLabels.accountLabel}
                             accountType={accountType}
-                            symbol={selectedAccount.symbol}
+                            symbol={getNetworkDisplaySymbol(selectedAccount.symbol)}
                             index={index}
                             path={path}
                             networkType={selectedAccount.networkType}

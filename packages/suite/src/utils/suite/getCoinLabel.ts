@@ -1,13 +1,19 @@
 import type { TranslationKey } from '@suite-common/intl-types';
-import type { NetworkFeature } from '@suite-common/wallet-config';
+import type { NetworkFeature, NetworkType } from '@suite-common/wallet-config';
 
 export const getCoinLabel = (
     features: NetworkFeature[],
     isTestnet: boolean,
     isCustomBackend: boolean,
+    networkType?: NetworkType,
+    isDebug?: boolean,
 ): TranslationKey | undefined => {
     const hasTokens = features.includes('tokens');
-    const hasStaking = features.includes('staking');
+    // TODO: Remove this condition when Solana staking is available
+    const hasStaking =
+        networkType === 'solana'
+            ? isDebug && features.includes('staking') // Solana staking only in debug mode
+            : features.includes('staking');
 
     if (isCustomBackend) {
         return 'TR_CUSTOM_BACKEND';

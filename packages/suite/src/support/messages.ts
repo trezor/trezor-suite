@@ -7486,7 +7486,7 @@ export default defineMessages({
     },
     TR_STAKING_GETTING_READY: {
         id: 'TR_STAKING_GETTING_READY',
-        defaultMessage: 'Your {networkSymbol} is getting ready to work',
+        defaultMessage: 'Your {networkDisplaySymbol} is getting ready to work',
     },
     TR_STAKING_REWARDS_ARE_RESTAKED: {
         id: 'TR_STAKING_REWARDS_ARE_RESTAKED',
@@ -8687,7 +8687,7 @@ export default defineMessages({
     TR_STAKE_ANY_AMOUNT_ETH: {
         id: 'TR_STAKE_ANY_AMOUNT_ETH',
         defaultMessage:
-            'Stake a minimum amount of {amount} {networkSymbol} and start earning rewards. With our current APY rate of {apyPercent}%, your rewards earn too!',
+            'Stake a minimum amount of {amount} {networkDisplaySymbol} and start earning rewards. With our current APY rate of {apyPercent}%, your rewards earn too!',
     },
     TR_STAKE_LEARN_MORE: {
         id: 'TR_STAKE_LEARN_MORE',
@@ -8712,6 +8712,26 @@ export default defineMessages({
     TR_STAKE_ENTER_THE_STAKING_POOL: {
         id: 'TR_STAKE_ENTER_THE_STAKING_POOL',
         defaultMessage: 'Enter the staking pool',
+    },
+    TR_STAKE_WAIT_FOR_ACTIVATION: {
+        id: 'TR_STAKE_WAIT_FOR_ACTIVATION',
+        defaultMessage: 'Wait for the next epoch until your stake activated',
+    },
+    TR_STAKE_WARM_UP_PERIOD: {
+        id: 'TR_STAKE_WARM_UP_PERIOD',
+        defaultMessage: 'Warm Up period',
+    },
+    TR_STAKE_EARN_REWARDS_EVERY: {
+        id: 'TR_STAKE_EARN_REWARDS_EVERY',
+        defaultMessage: 'Earn rewards every ~{days} days',
+    },
+    TR_STAKE_COOL_DOWN_PERIOD: {
+        id: 'TR_STAKE_COOL_DOWN_PERIOD',
+        defaultMessage: 'Cool Down Period',
+    },
+    TR_STAKE_WAIT_FOR_DEACTIVATION: {
+        id: 'TR_STAKE_WAIT_FOR_DEACTIVATION',
+        defaultMessage: 'Wait for the next epoch until your stake deactivated',
     },
     TR_STAKE_EARN_REWARDS_WEEKLY: {
         id: 'TR_STAKE_EARN_REWARDS_WEEKLY',
@@ -8867,6 +8887,10 @@ export default defineMessages({
         id: 'TR_STAKE_REWARDS',
         defaultMessage: 'Rewards',
     },
+    TR_STAKE_EXPECTED_REWARDS: {
+        id: 'TR_STAKE_EXPECTED_REWARDS',
+        defaultMessage: 'Expected rewards per 1 epoch (~{days} days)',
+    },
     TR_TX_CONFIRMED: {
         id: 'TR_TX_CONFIRMED',
         defaultMessage: 'Transaction confirmed',
@@ -8946,7 +8970,7 @@ export default defineMessages({
     },
     TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED: {
         id: 'TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED',
-        defaultMessage: 'The claimed amount is transferred to your {networkSymbol} account.',
+        defaultMessage: 'The claimed amount is transferred to your {networkDisplaySymbol} account.',
     },
     TR_STAKE_CLAIMING_PERIOD: {
         id: 'TR_STAKE_CLAIMING_PERIOD',

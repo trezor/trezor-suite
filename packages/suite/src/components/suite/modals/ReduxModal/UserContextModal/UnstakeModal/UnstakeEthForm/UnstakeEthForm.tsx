@@ -1,8 +1,8 @@
 import { InfoItem, Tooltip, Banner, Column, Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
-import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -40,7 +40,7 @@ export const UnstakeEthForm = () => {
     );
     const unstakingPeriod = getUnstakingPeriodInDays(validatorWithdrawTime);
     const { canClaim = false, claimableAmount = '0' } =
-        getAccountEverstakeStakingPool(selectedAccount) ?? {};
+        getStakingDataForNetwork(selectedAccount) ?? {};
 
     const inputError = errors[CRYPTO_INPUT] || errors[FIAT_INPUT];
     const showError = inputError && inputError.type === 'compose';

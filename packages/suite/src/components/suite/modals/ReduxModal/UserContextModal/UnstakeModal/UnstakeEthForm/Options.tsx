@@ -6,7 +6,7 @@ import { Radio, Column, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
+import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -70,7 +70,7 @@ export const Options = ({ symbol }: OptionsProps) => {
         autocompoundBalance = '0',
         depositedBalance = '0',
         restakedReward = '0',
-    } = getAccountEverstakeStakingPool(selectedAccount) ?? {};
+    } = getStakingDataForNetwork(selectedAccount) ?? {};
 
     return (
         <Column gap={spacings.sm}>

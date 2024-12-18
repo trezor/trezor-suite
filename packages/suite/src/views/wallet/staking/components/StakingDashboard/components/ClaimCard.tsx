@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 
 import { Button, Paragraph, Tooltip, Card, Column, InfoItem } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
+import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';
 import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
@@ -22,7 +22,7 @@ export const ClaimCard = () => {
     const isClaimPending = useMemo(() => claimTxs.some(tx => isPending(tx)), [claimTxs]);
 
     const { canClaim = false, claimableAmount = '0' } =
-        getAccountEverstakeStakingPool(selectedAccount) ?? {};
+        getStakingDataForNetwork(selectedAccount) ?? {};
 
     // Show success message when claim tx confirmation is complete.
     const prevIsClaimPending = useRef(false);
