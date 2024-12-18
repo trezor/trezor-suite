@@ -7,10 +7,12 @@ import { Card, Icon, IconButton } from '@trezor/components';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
 import { spacingsPx } from '@trezor/theme';
 import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
+import { NumberInput } from '@trezor/product-components';
 
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { NumberInput, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 import { canLocktimeTxBeBroadcast } from './canLocktimeTxBeBroadcast';
 
@@ -38,6 +40,8 @@ export const Locktime = ({ close }: LocktimeProps) => {
     const blockchain = useSelector(state => selectNetworkBlockchainInfo(state, network.symbol));
 
     const { translationString } = useTranslation();
+
+    const locale = useSelector(selectLanguage);
 
     const options = getDefaultValue('options', []);
     const broadcastEnabled = options.includes('broadcast');
@@ -85,6 +89,7 @@ export const Locktime = ({ close }: LocktimeProps) => {
             <NumberInput
                 control={control}
                 name={inputName}
+                locale={locale}
                 inputState={getInputState(error)}
                 defaultValue={defaultInputValue}
                 rules={rules}

@@ -4,9 +4,9 @@ import { getInputState } from '@suite-common/wallet-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { useDidUpdate } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
+import { NumberInput } from '@trezor/product-components';
 
-import { useTranslation } from 'src/hooks/suite';
-import { NumberInput } from 'src/components/suite';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 import { validateDecimals, validateMin } from 'src/utils/suite/validation';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketFormInputCurrency } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCurrency';
@@ -18,6 +18,7 @@ import {
 } from 'src/types/coinmarket/coinmarketForm';
 import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_FIAT } from 'src/constants/wallet/coinmarket/form';
 import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 export const CoinmarketFormInputFiat = <TFieldValues extends CoinmarketAllFormProps>({
     cryptoInputName,
@@ -27,6 +28,8 @@ export const CoinmarketFormInputFiat = <TFieldValues extends CoinmarketAllFormPr
     labelRight,
 }: CoinmarketFormInputFiatCryptoProps<TFieldValues>) => {
     const { translationString } = useTranslation();
+    const locale = useSelector(selectLanguage);
+
     const context = useCoinmarketFormContext();
     const { amountLimits } = context;
     const {
@@ -98,6 +101,7 @@ export const CoinmarketFormInputFiat = <TFieldValues extends CoinmarketAllFormPr
     return (
         <NumberInput
             name={fiatInputName}
+            locale={locale}
             labelLeft={labelLeft}
             labelRight={labelRight}
             onChange={() => {

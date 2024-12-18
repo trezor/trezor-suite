@@ -5,21 +5,21 @@ import { render } from '@testing-library/react';
 import { Store } from 'redux';
 import userEvent from '@testing-library/user-event';
 
+import { NumberInput } from '@trezor/product-components';
 import { configureMockStore } from '@suite-common/test-utils';
 
 import suiteReducer, { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { ThemeProvider } from 'src/support/suite/ThemeProvider';
 import { Locale } from 'src/config/suite/languages';
 
-import { NumberInput } from '../NumberInput';
-
 const onChangeMock = jest.fn();
 
 interface InputWithFormProps {
     store: Store;
+    locale: Locale;
 }
 
-const InputWithForm = ({ store }: InputWithFormProps) => {
+const InputWithForm = ({ store, locale }: InputWithFormProps) => {
     const { control } = useForm({
         defaultValues: {
             input: '',
@@ -34,6 +34,7 @@ const InputWithForm = ({ store }: InputWithFormProps) => {
                     name="input"
                     data-testid="number-input"
                     onChange={onChangeMock}
+                    locale={locale}
                 />
             </ThemeProvider>
         </Provider>
@@ -46,7 +47,7 @@ const renderInput = (language: Locale) => {
         preloadedState: { suite: { settings: { language } } as unknown as SuiteState },
     });
 
-    const { getByTestId } = render(<InputWithForm store={store} />);
+    const { getByTestId } = render(<InputWithForm store={store} locale={language} />);
     const input = getByTestId('number-input') as HTMLInputElement;
 
     return input;

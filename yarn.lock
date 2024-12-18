@@ -12157,6 +12157,7 @@ __metadata:
     "@types/react": "npm:18.2.79"
     framer-motion: "npm:^11.0.3"
     react: "npm:18.2.0"
+    react-hook-form: "npm:^7.53.2"
     react-intl: "npm:^6.6.8"
     react-svg: "npm:^16.1.33"
     storybook: "npm:^7.6.13"

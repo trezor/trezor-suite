@@ -14,14 +14,11 @@ import { Input, InputProps } from '@trezor/components';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { getLocaleSeparators } from '@trezor/utils';
 
-import { Locale } from 'src/config/suite/languages';
-import { useSelector } from 'src/hooks/suite';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
-
 const isValidDecimalString = (value: string) => /^([^.]*)\.[^.]+$/.test(value);
 const hasLeadingZeroes = (value: string) => /^0+(\d+\.\d*|\d+)$/.test(value);
 
-const cleanValueString = (value: string, locale: Locale) => {
+// TODO: locale should be of type Locale
+const cleanValueString = (value: string, locale: string) => {
     if (value === undefined) {
         return '';
     }
@@ -73,6 +70,8 @@ export type NumberInputProps<TFieldValues extends FieldValues> = Omit<
         decimalScale?: number;
         onChange?: (value: string) => void;
         rules?: UseControllerProps['rules'];
+        // TODO: locale should be of type Locale
+        locale: string;
     };
 
 export const NumberInput = <TFieldValues extends FieldValues>({
@@ -81,6 +80,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
     control,
     onChange: onChangeCallback,
     defaultValue,
+    locale,
     ...props
 }: NumberInputProps<TFieldValues>) => {
     const {
@@ -93,7 +93,6 @@ export const NumberInput = <TFieldValues extends FieldValues>({
         defaultValue,
     });
 
-    const locale = useSelector(selectLanguage);
     const [pressedKey, setPressedKey] = useState('');
     const [displayValue, setDisplayValue] = useState(localizeNumber(value, locale));
     const [changeHistory, setChangeHistory] = useState<string[]>([value]);
@@ -298,12 +297,12 @@ export const NumberInput = <TFieldValues extends FieldValues>({
                 return;
             }
 
-            const { selectionStart, selectionEnd, value } = inputRef.current;
+            const { selectionStart, selectionEnd, value: refValue } = inputRef.current;
             if (selectionStart === null || selectionEnd === null) {
                 return;
             }
 
-            const copiedString = value.substring(selectionStart, selectionEnd);
+            const copiedString = refValue.substring(selectionStart, selectionEnd);
             e.clipboardData.setData('text/plain', cleanValueString(copiedString, locale));
 
             e.preventDefault();
@@ -320,12 +319,13 @@ export const NumberInput = <TFieldValues extends FieldValues>({
                 return;
             }
 
-            const { selectionStart, selectionEnd, value } = inputRef.current;
+            const { selectionStart, selectionEnd, value: refValue } = inputRef.current;
             if (selectionStart === null || selectionEnd === null) {
                 return;
             }
 
-            const resultString = value.substring(0, selectionStart) + value.substring(selectionEnd);
+            const resultString =
+                refValue.substring(0, selectionStart) + refValue.substring(selectionEnd);
             // needed for cursor repositioning logic in handleChange() to function
             inputRef.current.value = resultString;
             inputRef.current.selectionStart = selectionStart;
@@ -353,13 +353,17 @@ export const NumberInput = <TFieldValues extends FieldValues>({
                 return;
             }
 
-            const { selectionStart: cursorPosition, selectionEnd, value } = inputRef.current;
+            const {
+                selectionStart: cursorPosition,
+                selectionEnd,
+                value: refValue,
+            } = inputRef.current;
             if (cursorPosition === null || cursorPosition !== selectionEnd) {
                 return;
             }
 
             const { thousandsSeparator } = getLocaleSeparators(locale);
-            const characterBeforeCursor = value[cursorPosition + cursorCharacterOffset];
+            const characterBeforeCursor = refValue[cursorPosition + cursorCharacterOffset];
 
             if (characterBeforeCursor?.at(0) === thousandsSeparator) {
                 const newPosition = cursorPosition + cursorPositionOffset;
@@ -375,7 +379,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
             return;
         }
 
-        const { selectionStart, selectionEnd, value } = inputRef.current;
+        const { selectionStart, selectionEnd, value: refValue } = inputRef.current;
         if (selectionStart === selectionEnd) {
             handleCursorShift(-1, -1);
         }
@@ -383,7 +387,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
         if (selectionStart === null || selectionEnd === null) {
             return;
         }
-        const selectedPart = value.substring(selectionStart, selectionEnd);
+        const selectedPart = refValue.substring(selectionStart, selectionEnd);
         const { thousandsSeparator } = getLocaleSeparators(locale);
         // do not allow selecting group separators to avoid unwanted behavior
         if (selectedPart.length === 1 && selectedPart.at(0) === thousandsSeparator) {
@@ -394,10 +398,10 @@ export const NumberInput = <TFieldValues extends FieldValues>({
     // jump over group separators when navigatind the input
     const handleKeyNav = useCallback(
         (e: KeyboardEvent<HTMLInputElement>) => {
-            const pressedKey = e.key;
+            const currentPressedKey = e.key;
 
-            if (pressedKey === 'ArrowRight') handleCursorShift(0, 1);
-            if (pressedKey === 'ArrowLeft') handleCursorShift(-2, -1);
+            if (currentPressedKey === 'ArrowRight') handleCursorShift(0, 1);
+            if (currentPressedKey === 'ArrowLeft') handleCursorShift(-2, -1);
         },
         [handleCursorShift],
     );
@@ -427,30 +431,38 @@ export const NumberInput = <TFieldValues extends FieldValues>({
 
     const handleKeyDown = useCallback(
         (e: KeyboardEvent<HTMLInputElement>) => {
-            const pressedKey = e.key;
-            setPressedKey(pressedKey);
+            const currentPressedKey = e.key;
+            setPressedKey(currentPressedKey);
 
-            if (['ArrowLeft', 'ArrowRight'].includes(pressedKey)) {
+            if (['ArrowLeft', 'ArrowRight'].includes(currentPressedKey)) {
                 handleKeyNav(e);
 
                 return;
             }
 
-            if (!e.shiftKey && (e.ctrlKey || e.metaKey) && pressedKey.toLocaleLowerCase() === 'z') {
+            if (
+                !e.shiftKey &&
+                (e.ctrlKey || e.metaKey) &&
+                currentPressedKey.toLocaleLowerCase() === 'z'
+            ) {
                 e.preventDefault();
                 handleUndo();
 
                 return;
             }
 
-            if (e.shiftKey && (e.ctrlKey || e.metaKey) && pressedKey.toLocaleLowerCase() === 'z') {
+            if (
+                e.shiftKey &&
+                (e.ctrlKey || e.metaKey) &&
+                currentPressedKey.toLocaleLowerCase() === 'z'
+            ) {
                 e.preventDefault();
                 handleRedo();
 
                 return;
             }
 
-            if (pressedKey === 'Backspace') {
+            if (currentPressedKey === 'Backspace') {
                 setRedoHistory([]);
             }
         },

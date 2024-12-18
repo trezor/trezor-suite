@@ -13,11 +13,13 @@ import {
     findToken,
 } from '@suite-common/wallet-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { NumberInput } from '@trezor/product-components';
 
-import { FiatValue, Translation, NumberInput } from 'src/components/suite';
+import { FiatValue, Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useTranslation } from 'src/hooks/suite';
+import { useSelector, useTranslation } from 'src/hooks/suite';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import {
     validateDecimals,
     validateInteger,
@@ -50,6 +52,8 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const { symbol, tokens } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
+
+    const locale = useSelector(selectLanguage);
 
     const amountName = `outputs.${outputId}.amount` as const;
     const tokenInputName = `outputs.${outputId}.token`;
@@ -111,7 +115,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                     }
 
                     return translationString('AMOUNT_IS_BELOW_DUST', {
-                        dust: `${dust} ${shouldSendInSats ? 'sat' : symbol.toUpperCase()}`,
+                        dust: `${dust} ${shouldSendInSats ? 'sat' : getNetworkDisplaySymbol(symbol)}`,
                     });
                 }
             },
@@ -145,6 +149,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
             >
                 <NumberInput
                     inputState={inputState}
+                    locale={locale}
                     labelHoverRight={
                         !isSetMaxVisible && (!isWithRate || isBelowLaptop) && sendMaxSwitch
                     }

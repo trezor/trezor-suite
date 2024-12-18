@@ -15,11 +15,12 @@ import { FeeInfo, FormState } from '@suite-common/wallet-types';
 import { NetworkType } from '@suite-common/wallet-config';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
+import { NumberInput } from '@trezor/product-components';
 
 import { validateDecimals } from 'src/utils/suite/validation';
-import { useTranslation } from 'src/hooks/suite';
-import { NumberInput } from 'src/components/suite/NumberInput';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 import { InputError } from '../InputError';
@@ -50,6 +51,8 @@ export const CustomFee = <TFieldValues extends FormState>({
 }: CustomFeeProps<TFieldValues>) => {
     const { translationString } = useTranslation();
     const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
+
+    const locale = useSelector(selectLanguage);
 
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
     const { getValues, setValue } = props as unknown as UseFormReturn<FormState>;
@@ -160,8 +163,9 @@ export const CustomFee = <TFieldValues extends FormState>({
             <Grid gap={spacings.xs} columns={useFeeLimit && !isBelowLaptop ? 2 : 1}>
                 {useFeeLimit ? (
                     <NumberInput
-                        control={control}
                         label={<Translation id="TR_GAS_LIMIT" />}
+                        locale={locale}
+                        control={control}
                         inputState={getInputState(feeLimitError)}
                         name={FEE_LIMIT}
                         data-testid={FEE_LIMIT}
@@ -180,8 +184,9 @@ export const CustomFee = <TFieldValues extends FormState>({
                     <input type="hidden" {...register(FEE_LIMIT as FieldPath<TFieldValues>)} />
                 )}
                 <NumberInput
-                    control={control}
                     label={useFeeLimit ? <Translation id="TR_GAS_PRICE" /> : undefined}
+                    locale={locale}
+                    control={control}
                     inputState={getInputState(feePerUnitError)}
                     innerAddon={
                         <Text variant="tertiary" typographyStyle="label">

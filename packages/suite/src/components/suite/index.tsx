@@ -43,7 +43,6 @@ import { StatusLight } from './StatusLight';
 import { AmountUnitSwitchWrapper } from './AmountUnitSwitchWrapper';
 import { TorLoader } from './TorLoader/TorLoader';
 import { CountdownTimer } from './CountdownTimer';
-import { NumberInput, NumberInputProps } from './NumberInput';
 import { QrCode } from './QrCode';
 import { CoinBalance } from './CoinBalance';
 import { DeviceAuthenticationExplainer } from './DeviceAuthenticationExplainer';
@@ -97,7 +96,6 @@ export {
     AmountUnitSwitchWrapper,
     TorLoader,
     CountdownTimer,
-    NumberInput,
     QrCode,
     CoinBalance,
     DeviceAuthenticationExplainer,
@@ -111,4 +109,4 @@ export * from './graph';
 export * from './notifications';
 export * from './section';
 export * from './styled';
-export type { ModalProps, NumberInputProps };
+export type { ModalProps };

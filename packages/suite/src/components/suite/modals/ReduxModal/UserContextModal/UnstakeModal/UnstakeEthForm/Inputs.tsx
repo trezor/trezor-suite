@@ -7,13 +7,15 @@ import {
     getNonComposeErrorMessage,
     getStakingDataForNetwork,
 } from '@suite-common/wallet-utils';
+import { NumberInput } from '@trezor/product-components';
 
-import { FiatValue, FormattedCryptoAmount, NumberInput, Translation } from 'src/components/suite';
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/wallet/stakeForms';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { validateDecimals, validateCryptoLimits, validateMin } from 'src/utils/suite/validation';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 export const Inputs = () => {
     const selectedAccount = useSelector(selectSelectedAccount);
@@ -21,6 +23,7 @@ export const Inputs = () => {
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
     const { symbol } = useSelector(selectSelectedAccount) ?? {};
+    const locale = useSelector(selectLanguage);
 
     const {
         control,
@@ -120,6 +123,7 @@ export const Inputs = () => {
         <Column gap={spacings.sm} alignItems="center">
             <NumberInput
                 name={OUTPUT_AMOUNT}
+                locale={locale}
                 labelLeft={
                     <Row gap={spacings.xs}>
                         {fractionButtons.map(button => (
@@ -142,6 +146,7 @@ export const Inputs = () => {
                     <Icon name="arrowsDownUp" size={20} variant="tertiary" />
                     <NumberInput
                         name={FIAT_INPUT}
+                        locale={locale}
                         control={control}
                         rules={fiatInputRules}
                         maxLength={formInputsMaxLength.fiat}

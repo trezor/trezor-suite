@@ -1,5 +1,5 @@
 import { Controller } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
     Timestamp,
@@ -20,12 +20,13 @@ import {
 import { formInputsMaxLength } from '@suite-common/validators';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { NumberInput } from '@trezor/product-components';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { NumberInput } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
 import { validateDecimals } from 'src/utils/suite/validation';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 type FiatInputProps = {
     output: Partial<Output>;
@@ -56,6 +57,7 @@ export const FiatInput = ({
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
+    const locale = useSelector(selectLanguage);
     const { translationString } = useTranslation();
     const dispatch = useDispatch();
 
@@ -170,6 +172,7 @@ export const FiatInput = ({
             labelHoverRight={labelHoverRight}
             labelRight={labelRight}
             labelLeft={labelLeft}
+            locale={locale}
             control={control}
             inputState={inputState}
             onChange={handleChange}
