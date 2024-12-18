@@ -123,7 +123,6 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
         composeTransaction,
         watch,
         setValue,
-        setDraftSaveRequest,
     } = useSendFormContext();
 
     const dispatch = useDispatch();
@@ -172,13 +171,13 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     useEffect(() => {
         if (sendFormPrefill) {
             setValue(tokenInputName, sendFormPrefill, { shouldValidate: true, shouldDirty: true });
-            setDraftSaveRequest(true);
+            composeTransaction(tokenInputName);
             dispatch({
                 type: SUITE.SET_SEND_FORM_PREFILL,
                 payload: '',
             });
         }
-    }, [sendFormPrefill, setValue, tokenInputName, setDraftSaveRequest, dispatch]);
+    }, [sendFormPrefill, setValue, tokenInputName, composeTransaction, dispatch]);
 
     const tokensWithRates = enhanceTokensWithRates(
         account.tokens,

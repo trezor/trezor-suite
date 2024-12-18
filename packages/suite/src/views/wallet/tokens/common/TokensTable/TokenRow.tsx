@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectSelectedDevice, sendFormActions } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
 import { Network, getCoingeckoId } from '@suite-common/wallet-config';
 import {
@@ -494,11 +494,6 @@ export const TokenRow = ({
                                             type: SUITE.SET_SEND_FORM_PREFILL,
                                             payload: token.contract,
                                         });
-                                        dispatch(
-                                            sendFormActions.removeDraft({
-                                                accountKey: account.key,
-                                            }),
-                                        );
                                         goToWithAnalytics('wallet-send', {
                                             params: {
                                                 symbol: account.symbol,
