@@ -63,6 +63,7 @@ type AccountNetworkSpecific =
           misc: {
               rent?: number;
               solStakingAccounts?: SolanaStakingAccount[];
+              solEpoch?: number;
           };
           marker: undefined;
           page: AccountInfo['page'];

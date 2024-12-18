@@ -3198,15 +3198,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@everstake/wallet-sdk@npm:^1.0.5":
-  version: 1.0.5
-  resolution: "@everstake/wallet-sdk@npm:1.0.5"
+"@everstake/wallet-sdk@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "@everstake/wallet-sdk@npm:1.0.7"
   dependencies:
-    "@solana/web3.js": "npm:^1.75.0"
-    bignumber.js: "npm:^9.1.2"
-    superstruct: "npm:^0.16.7"
-    web3: "npm:^4.14.0"
-  checksum: 10/00715f194f44f2c9b2631b0d5e4b3c31be1483b2e750f8a1c9554ca3cc601f2756798ae5e78c7eb4ccc88c2e5c585e6442b654e6081570232489d667d241f4f9
+    "@solana/web3.js": "npm:1.95.8"
+    bignumber.js: "npm:9.1.2"
+    superstruct: "npm:2.0.2"
+    web3: "npm:4.16.0"
+  checksum: 10/ed96a3ad15f3da3cf5d8884bca6bdbdc6e20bdec2b5b24ab8046cd5f7cfe25b760ef00e75723c9802f6f45e0df03c2d512b9e17cc8e0df18d647f10aa7e3a1d3
   languageName: node
   linkType: hard
 
@@ -9584,7 +9584,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-utils@workspace:suite-common/wallet-utils"
   dependencies:
-    "@everstake/wallet-sdk": "npm:^1.0.5"
+    "@everstake/wallet-sdk": "npm:^1.0.7"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@solana-program/compute-budget": "npm:^0.6.1"
     "@solana-program/system": "npm:^0.6.2"
@@ -11328,7 +11328,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-types@workspace:packages/blockchain-link-types"
   dependencies:
-    "@everstake/wallet-sdk": "npm:^1.0.5"
+    "@everstake/wallet-sdk": "npm:^1.0.7"
     "@solana/web3.js": "npm:^2.0.0"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
@@ -11342,7 +11342,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils"
   dependencies:
-    "@everstake/wallet-sdk": "npm:^1.0.5"
+    "@everstake/wallet-sdk": "npm:^1.0.7"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -11359,7 +11359,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
-    "@everstake/wallet-sdk": "npm:^1.0.5"
+    "@everstake/wallet-sdk": "npm:^1.0.7"
     "@solana-program/token": "npm:^0.4.1"
     "@solana-program/token-2022": "npm:^0.3.1"
     "@solana/web3.js": "npm:^2.0.0"
@@ -12319,7 +12319,7 @@ __metadata:
   resolution: "@trezor/suite@workspace:packages/suite"
   dependencies:
     "@crowdin/cli": "npm:^4.0.0"
-    "@everstake/wallet-sdk": "npm:^1.0.5"
+    "@everstake/wallet-sdk": "npm:^1.0.7"
     "@floating-ui/react": "npm:^0.26.9"
     "@formatjs/cli": "npm:^6.2.7"
     "@formatjs/intl": "npm:2.10.0"
@@ -16348,7 +16348,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.1.2":
+"bignumber.js@npm:9.1.2, bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.1.2":
   version: 9.1.2
   resolution: "bignumber.js@npm:9.1.2"
   checksum: 10/d89b8800a987225d2c00dcbf8a69dc08e92aa0880157c851c287b307d31ceb2fc2acb0c62c3e3a3d42b6c5fcae9b004035f13eb4386e56d529d7edac18d5c9d8
@@ -39215,24 +39215,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"superstruct@npm:2.0.2, superstruct@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "superstruct@npm:2.0.2"
+  checksum: 10/10e1944a9da4baee187fbaa6c5d97d7af266b55786dfe50bce67f0f1e7d93f1a5a42dd51e245a2e16404f8336d07c21c67f1c1fbc4ad0a252d3d2601d6c926da
+  languageName: node
+  linkType: hard
+
 "superstruct@npm:^0.12.1":
   version: 0.12.2
   resolution: "superstruct@npm:0.12.2"
   checksum: 10/7ba374a10cb27fa8aa44be5dde633213c23bf9ad51369aa88a5f7469ddc23e1cd2139033578a7e83094a43e1dd9356002344272b524a0ea0f8a6c5fc66bd68e9
-  languageName: node
-  linkType: hard
-
-"superstruct@npm:^0.16.7":
-  version: 0.16.7
-  resolution: "superstruct@npm:0.16.7"
-  checksum: 10/2f3fb30f8fa3e012fb74fc6f8c850b13b6f6c4b8a412186996b55da8292586205dda8495bcd2e850436a6476dd25f7d0d226905f1ed97162903dcf4cce59d2b8
-  languageName: node
-  linkType: hard
-
-"superstruct@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "superstruct@npm:2.0.2"
-  checksum: 10/10e1944a9da4baee187fbaa6c5d97d7af266b55786dfe50bce67f0f1e7d93f1a5a42dd51e245a2e16404f8336d07c21c67f1c1fbc4ad0a252d3d2601d6c926da
   languageName: node
   linkType: hard
 
@@ -42086,76 +42079,76 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web3-core@npm:^4.4.0, web3-core@npm:^4.5.0, web3-core@npm:^4.5.1, web3-core@npm:^4.6.0, web3-core@npm:^4.7.0":
-  version: 4.7.0
-  resolution: "web3-core@npm:4.7.0"
+"web3-core@npm:^4.4.0, web3-core@npm:^4.5.0, web3-core@npm:^4.6.0, web3-core@npm:^4.7.1":
+  version: 4.7.1
+  resolution: "web3-core@npm:4.7.1"
   dependencies:
-    web3-errors: "npm:^1.3.0"
-    web3-eth-accounts: "npm:^4.2.1"
+    web3-errors: "npm:^1.3.1"
+    web3-eth-accounts: "npm:^4.3.1"
     web3-eth-iban: "npm:^4.0.7"
     web3-providers-http: "npm:^4.2.0"
     web3-providers-ipc: "npm:^4.0.7"
     web3-providers-ws: "npm:^4.0.8"
-    web3-types: "npm:^1.8.1"
-    web3-utils: "npm:^4.3.2"
+    web3-types: "npm:^1.10.0"
+    web3-utils: "npm:^4.3.3"
     web3-validator: "npm:^2.0.6"
   dependenciesMeta:
     web3-providers-ipc:
       optional: true
-  checksum: 10/76f740cff838f32e21992a2d263b770256562fe9cad5c7b6b220db9990b09b940ff7eb7261400dab971fc2a00bfb75ab4f89f9b5b67c4e70cac099072c177944
+  checksum: 10/c6b9447e62f5c57ccc3c96492adf5630cb3256968c15ce5675c660dec1f6da0bf60397efa88588029640f749ff45a1adaa0167a402ba0b4a46e600d8eda76334
   languageName: node
   linkType: hard
 
-"web3-errors@npm:^1.1.3, web3-errors@npm:^1.2.0, web3-errors@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "web3-errors@npm:1.3.0"
+"web3-errors@npm:^1.1.3, web3-errors@npm:^1.2.0, web3-errors@npm:^1.3.0, web3-errors@npm:^1.3.1":
+  version: 1.3.1
+  resolution: "web3-errors@npm:1.3.1"
   dependencies:
-    web3-types: "npm:^1.7.0"
-  checksum: 10/613b01013b697dcaaad0ff9cfac8c4c69557fb0ffbc9efe86ac3eaf5179c6f18687fdcd2e53faf0a2c3ee68409491171968eb2017444cb14ffa74663ff77556f
+    web3-types: "npm:^1.10.0"
+  checksum: 10/0d1cb0e02701a4bd619f856b0a6702fdd4cdc0a434029c3c3dcde3f3cc4acaca418117ad10238002aa697745840e7fd312bd43ad5341482b3ff8f9e6eb438a31
   languageName: node
   linkType: hard
 
-"web3-eth-abi@npm:^4.2.3, web3-eth-abi@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "web3-eth-abi@npm:4.3.0"
+"web3-eth-abi@npm:^4.4.1":
+  version: 4.4.1
+  resolution: "web3-eth-abi@npm:4.4.1"
   dependencies:
     abitype: "npm:0.7.1"
-    web3-errors: "npm:^1.3.0"
-    web3-types: "npm:^1.8.1"
-    web3-utils: "npm:^4.3.2"
+    web3-errors: "npm:^1.3.1"
+    web3-types: "npm:^1.10.0"
+    web3-utils: "npm:^4.3.3"
     web3-validator: "npm:^2.0.6"
-  checksum: 10/e490ad7142ae14c2def2b596551b54e83727af76a96ee4854e236cd19477028960eb944af258c42efc4646fc0b685ae4f3b3f2e0c4c75e15bfc346fc05c1ff6e
+  checksum: 10/0c7f4f9f05f04e0ac98f6029edfb3bf7e514efc325f6be83e999203f49c7a0cdc9759f4b1011ce12d80c2044c74a867f7fc0ee83538408c2ebb4c9f407027b7f
   languageName: node
   linkType: hard
 
-"web3-eth-accounts@npm:^4.2.1":
-  version: 4.2.1
-  resolution: "web3-eth-accounts@npm:4.2.1"
+"web3-eth-accounts@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "web3-eth-accounts@npm:4.3.1"
   dependencies:
     "@ethereumjs/rlp": "npm:^4.0.1"
     crc-32: "npm:^1.2.2"
     ethereum-cryptography: "npm:^2.0.0"
-    web3-errors: "npm:^1.3.0"
-    web3-types: "npm:^1.7.0"
-    web3-utils: "npm:^4.3.1"
+    web3-errors: "npm:^1.3.1"
+    web3-types: "npm:^1.10.0"
+    web3-utils: "npm:^4.3.3"
     web3-validator: "npm:^2.0.6"
-  checksum: 10/a19a2bad97ed9cc7a82af6ce6acba906f3ed8829116bda1dcd72dd4ee7e31d332239f7464cfa89f053dffcef857fc284777474571e68878dbc2377057f9ea329
+  checksum: 10/f8b689146c908d88b983bd467c3e794ed96e284490aa3f74e665580202db4f0826d4108f0aa95dc6ef1e14f9a8a41939ff2c4485e9713744dc6474d7082d9239
   languageName: node
   linkType: hard
 
-"web3-eth-contract@npm:^4.5.0, web3-eth-contract@npm:^4.7.0":
-  version: 4.7.0
-  resolution: "web3-eth-contract@npm:4.7.0"
+"web3-eth-contract@npm:^4.5.0, web3-eth-contract@npm:^4.7.2":
+  version: 4.7.2
+  resolution: "web3-eth-contract@npm:4.7.2"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
-    web3-core: "npm:^4.5.1"
-    web3-errors: "npm:^1.3.0"
-    web3-eth: "npm:^4.8.2"
-    web3-eth-abi: "npm:^4.2.3"
-    web3-types: "npm:^1.7.0"
-    web3-utils: "npm:^4.3.1"
+    web3-core: "npm:^4.7.1"
+    web3-errors: "npm:^1.3.1"
+    web3-eth: "npm:^4.11.1"
+    web3-eth-abi: "npm:^4.4.1"
+    web3-types: "npm:^1.10.0"
+    web3-utils: "npm:^4.3.3"
     web3-validator: "npm:^2.0.6"
-  checksum: 10/1ae62530fdf1389aa896af527c028e3c39ca16e2318e010d07e6b7d421abb8b1c6a6dbe834d3317098a29a6c8ad47f057d17e1c9602dc0060b689c331c3ce440
+  checksum: 10/f5dd22199a69c6f10b0c38daee790341f80247a0155bad03e7c1a9ffad2d6c47722010b4fd0e3fe7832a43eb72a2fceadfd2892712ef199898c1e43067a92c0d
   languageName: node
   linkType: hard
 
@@ -42202,22 +42195,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web3-eth@npm:^4.10.0, web3-eth@npm:^4.8.0, web3-eth@npm:^4.8.2, web3-eth@npm:^4.9.0":
-  version: 4.10.0
-  resolution: "web3-eth@npm:4.10.0"
+"web3-eth@npm:^4.11.1, web3-eth@npm:^4.8.0, web3-eth@npm:^4.9.0":
+  version: 4.11.1
+  resolution: "web3-eth@npm:4.11.1"
   dependencies:
     setimmediate: "npm:^1.0.5"
-    web3-core: "npm:^4.7.0"
-    web3-errors: "npm:^1.3.0"
-    web3-eth-abi: "npm:^4.3.0"
-    web3-eth-accounts: "npm:^4.2.1"
+    web3-core: "npm:^4.7.1"
+    web3-errors: "npm:^1.3.1"
+    web3-eth-abi: "npm:^4.4.1"
+    web3-eth-accounts: "npm:^4.3.1"
     web3-net: "npm:^4.1.0"
     web3-providers-ws: "npm:^4.0.8"
     web3-rpc-methods: "npm:^1.3.0"
-    web3-types: "npm:^1.8.1"
-    web3-utils: "npm:^4.3.2"
+    web3-types: "npm:^1.10.0"
+    web3-utils: "npm:^4.3.3"
     web3-validator: "npm:^2.0.6"
-  checksum: 10/9dcbce05e160cde8148f2ad9919c56e0ad242beb05c2a013219a7d7ab697f5ca7e3c55089d27bdff50c28eebc36a9e1ae4b8b40c57432bdf5a200ace46d8cdc8
+  checksum: 10/b39f5f1559a012ece0017f3976207ffb5358c4ebb2e8518721efcc4975005ed8948814613795d1ceee67eb28f33608cbc89f6b231534241052de231c6477ed17
   languageName: node
   linkType: hard
 
@@ -42281,37 +42274,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web3-rpc-providers@npm:^1.0.0-rc.2":
-  version: 1.0.0-rc.2
-  resolution: "web3-rpc-providers@npm:1.0.0-rc.2"
+"web3-rpc-providers@npm:^1.0.0-rc.4":
+  version: 1.0.0-rc.4
+  resolution: "web3-rpc-providers@npm:1.0.0-rc.4"
   dependencies:
-    web3-errors: "npm:^1.3.0"
+    web3-errors: "npm:^1.3.1"
     web3-providers-http: "npm:^4.2.0"
     web3-providers-ws: "npm:^4.0.8"
-    web3-types: "npm:^1.7.0"
-    web3-utils: "npm:^4.3.1"
+    web3-types: "npm:^1.10.0"
+    web3-utils: "npm:^4.3.3"
     web3-validator: "npm:^2.0.6"
-  checksum: 10/8f1fb9a798cec61f245e6e13b796f1b43231d7bd5eb0db8b5b636b4e2facc75ee1453541237f057292ec7ecdb56ba284c29734cd17ea010c27c5580d6edea787
+  checksum: 10/a6dff5ce76e6905eb3e8e7175984305b859a35f17ffad9511371e0840097cdccc4d8dd4a4bc893aeb78f93c22034b4c73cac79551a4d7cba204e55590018909b
   languageName: node
   linkType: hard
 
-"web3-types@npm:^1.3.0, web3-types@npm:^1.6.0, web3-types@npm:^1.7.0, web3-types@npm:^1.8.0, web3-types@npm:^1.8.1":
-  version: 1.8.1
-  resolution: "web3-types@npm:1.8.1"
-  checksum: 10/e64f7e59806e1875e34a1daaa34e98043fcaebfd2fc96ab9948789129e8da73e812de62f63cf32c347c202d6ba40121f87516b183bb7074f27331fc7f90a46d9
+"web3-types@npm:^1.10.0, web3-types@npm:^1.3.0, web3-types@npm:^1.6.0, web3-types@npm:^1.7.0, web3-types@npm:^1.8.0":
+  version: 1.10.0
+  resolution: "web3-types@npm:1.10.0"
+  checksum: 10/849f05a001896b27082c5b5c46c62b65a28f463366eeec7223802418a61db6d3487ebfb73d1fe6dcad3f0849a76e20706098819cb4e266df4f75ca24617e62a1
   languageName: node
   linkType: hard
 
-"web3-utils@npm:^4.0.7, web3-utils@npm:^4.3.0, web3-utils@npm:^4.3.1, web3-utils@npm:^4.3.2":
-  version: 4.3.2
-  resolution: "web3-utils@npm:4.3.2"
+"web3-utils@npm:^4.0.7, web3-utils@npm:^4.3.0, web3-utils@npm:^4.3.1, web3-utils@npm:^4.3.2, web3-utils@npm:^4.3.3":
+  version: 4.3.3
+  resolution: "web3-utils@npm:4.3.3"
   dependencies:
     ethereum-cryptography: "npm:^2.0.0"
     eventemitter3: "npm:^5.0.1"
-    web3-errors: "npm:^1.3.0"
-    web3-types: "npm:^1.8.1"
+    web3-errors: "npm:^1.3.1"
+    web3-types: "npm:^1.10.0"
     web3-validator: "npm:^2.0.6"
-  checksum: 10/3fff4418782b0fb05587c9150daedbad90a9ebadd1e3b115a71a72fea885ce10341054758087e47ab81f3cc67da812eaf9077f05e07a872e63d27299f285a81a
+  checksum: 10/c91ebbe67e469fe184ab258564b1f002f6f0e563a91637429c8e5bd3f0653b970d0c45dac544402021a5512297f0bea39aa2dd0b4c9bc6f54d4b58897f2dd002
   languageName: node
   linkType: hard
 
@@ -42328,16 +42321,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web3@npm:^4.14.0":
-  version: 4.14.0
-  resolution: "web3@npm:4.14.0"
+"web3@npm:4.16.0":
+  version: 4.16.0
+  resolution: "web3@npm:4.16.0"
   dependencies:
-    web3-core: "npm:^4.7.0"
-    web3-errors: "npm:^1.3.0"
-    web3-eth: "npm:^4.10.0"
-    web3-eth-abi: "npm:^4.3.0"
-    web3-eth-accounts: "npm:^4.2.1"
-    web3-eth-contract: "npm:^4.7.0"
+    web3-core: "npm:^4.7.1"
+    web3-errors: "npm:^1.3.1"
+    web3-eth: "npm:^4.11.1"
+    web3-eth-abi: "npm:^4.4.1"
+    web3-eth-accounts: "npm:^4.3.1"
+    web3-eth-contract: "npm:^4.7.2"
     web3-eth-ens: "npm:^4.4.0"
     web3-eth-iban: "npm:^4.0.7"
     web3-eth-personal: "npm:^4.1.0"
@@ -42345,11 +42338,11 @@ __metadata:
     web3-providers-http: "npm:^4.2.0"
     web3-providers-ws: "npm:^4.0.8"
     web3-rpc-methods: "npm:^1.3.0"
-    web3-rpc-providers: "npm:^1.0.0-rc.2"
-    web3-types: "npm:^1.8.1"
-    web3-utils: "npm:^4.3.2"
+    web3-rpc-providers: "npm:^1.0.0-rc.4"
+    web3-types: "npm:^1.10.0"
+    web3-utils: "npm:^4.3.3"
     web3-validator: "npm:^2.0.6"
-  checksum: 10/cd8db8ace62c73b7c9ae4a1e1eaec99d8c107295e75e1e6fe770c52bcce919ef17c1d84b835d33c595ac72972207f23ae5cbdcb5382656709cc91db82437fc07
+  checksum: 10/8d63e70404914d2717d2675ba19350f112b07e50583a0703a68dd326eeb43a5c82b56f1165f4339cd89e697967581e0cd65fdb42ca0f1150fb7a3ce612f1a829
   languageName: node
   linkType: hard
 
