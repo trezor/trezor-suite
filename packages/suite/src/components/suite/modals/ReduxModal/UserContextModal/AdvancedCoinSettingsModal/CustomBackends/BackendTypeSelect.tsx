@@ -16,7 +16,7 @@ const Capitalize = styled.span`
 const useBackendOptions = (network: Network) =>
     useMemo(
         () =>
-            ['default', ...network.customBackends]
+            ['default', ...network.backendTypes]
                 .filter(backend => {
                     switch (backend) {
                         case 'default':

@@ -46,7 +46,7 @@ export const normalizeNetworkAccounts = (network: Network): NormalizedNetworkAcc
 };
 
 export const isBlockbookBasedNetwork = (symbol: NetworkSymbol) =>
-    networks[symbol]?.customBackends.some(backend => backend === 'blockbook');
+    networks[symbol]?.backendTypes.some(backend => backend === 'blockbook');
 
 export const getNetworkType = (symbol: NetworkSymbol) => networks[symbol]?.networkType;
 

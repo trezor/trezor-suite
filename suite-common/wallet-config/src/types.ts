@@ -109,7 +109,7 @@ type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
     isHidden?: boolean; // not used here, but supported elsewhere
     chainId?: number;
     features: NetworkFeature[];
-    customBackends: BackendType[];
+    backendTypes: BackendType[];
     support?: NetworkDeviceSupport;
     isDebugOnlyNetwork?: boolean;
     coingeckoId?: string;
