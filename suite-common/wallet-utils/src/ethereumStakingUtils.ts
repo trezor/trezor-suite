@@ -5,7 +5,7 @@ import {
     StakingPoolExtended,
     StakeType,
     supportedNetworkSymbols,
-    SupportedNetworkSymbol,
+    SupportedEthereumNetworkSymbol,
 } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
@@ -69,7 +69,7 @@ export const getEthereumCryptoBalanceWithStaking = (account: Account) => {
 
 export function isSupportedEthStakingNetworkSymbol(
     symbol: NetworkSymbol,
-): symbol is SupportedNetworkSymbol {
+): symbol is SupportedEthereumNetworkSymbol {
     return isArrayMember(symbol, supportedNetworkSymbols);
 }
 
@@ -83,7 +83,7 @@ export const getStakingSymbols = (symbols: NetworkSymbol[]) =>
         }
 
         return acc;
-    }, [] as SupportedNetworkSymbol[]);
+    }, [] as SupportedEthereumNetworkSymbol[]);
 
 // Define signature constants
 const STAKE_SIGNATURE = '0x3a29dbae';

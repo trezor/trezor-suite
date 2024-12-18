@@ -21,6 +21,14 @@ export const EVERSTAKE_ENDPOINT_TYPES = {
     [EverstakeEndpointType.ValidatorsQueue]: 'validators/queue',
 };
 
+export enum EverstakeAssetEndpointType {
+    GetAssets = 'getAssets',
+}
+
+export const EVERSTAKE_ASSET_ENDPOINT_TYPES = {
+    [EverstakeAssetEndpointType.GetAssets]: 'chain',
+};
+
 export interface ValidatorsQueue {
     validatorsEnteringNum?: number;
     validatorsExitingNum?: number;
