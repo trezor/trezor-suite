@@ -1,8 +1,7 @@
 import { Icon, Banner, Column, Text, Button } from '@trezor/components';
-import { getInputState } from '@suite-common/wallet-utils';
+import { getInputState, getStakingLimitsByNetwork } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { MIN_ETH_FOR_WITHDRAWALS } from '@suite-common/wallet-constants';
 import { spacings } from '@trezor/theme';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
@@ -42,6 +41,8 @@ export const Inputs = () => {
         clearForm,
     } = useStakeEthFormContext();
 
+    const { MIN_FOR_WITHDRAWALS, MAX_AMOUNT_FOR_STAKING } = getStakingLimitsByNetwork(account);
+
     const cryptoError = errors.cryptoInput;
     const fiatError = errors.fiatInput;
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
@@ -57,7 +58,7 @@ export const Inputs = () => {
         required: translationString('AMOUNT_IS_NOT_SET'),
         validate: {
             min: validateMin(translationString),
-            max: validateStakingMax(translationString),
+            max: validateStakingMax(translationString, { maxAmount: MAX_AMOUNT_FOR_STAKING }),
             decimals: validateDecimals(translationString, { decimals: network.decimals }),
             reserveOrBalance: validateReserveOrBalance(translationString, {
                 account,
@@ -82,8 +83,7 @@ export const Inputs = () => {
                     <FormFractionButtons
                         setRatioAmount={setRatioAmount}
                         setMax={setMax}
-                        symbol={account.symbol}
-                        totalAmount={account.formattedBalance}
+                        account={account}
                         decimals={network.decimals}
                     />
                 }
@@ -132,7 +132,7 @@ export const Inputs = () => {
                                 : 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL'
                         }
                         values={{
-                            amount: MIN_ETH_FOR_WITHDRAWALS.toString(),
+                            amount: MIN_FOR_WITHDRAWALS.toString(),
                             networkDisplaySymbol: displaySymbol,
                         }}
                     />
@@ -144,7 +144,7 @@ export const Inputs = () => {
                     <Translation
                         id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
                         values={{
-                            amount: MIN_ETH_FOR_WITHDRAWALS.toString(),
+                            amount: MIN_FOR_WITHDRAWALS.toString(),
                             networkDisplaySymbol: displaySymbol,
                         }}
                     />

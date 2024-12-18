@@ -9,16 +9,12 @@ import {
     fromFiatCurrency,
     getFeeInfo,
     getFiatRateKey,
+    getStakingLimitsByNetwork,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { isChanged } from '@suite-common/suite-utils';
 import { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
 import { StakeContextValues, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import {
-    MIN_ETH_AMOUNT_FOR_STAKING,
-    MIN_ETH_BALANCE_FOR_STAKING,
-    MIN_ETH_FOR_WITHDRAWALS,
-} from '@suite-common/wallet-constants';
 
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
@@ -57,9 +53,12 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
         selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'current'),
     );
 
+    const { MIN_AMOUNT_FOR_STAKING, MIN_FOR_WITHDRAWALS, MIN_BALANCE_FOR_STAKING } =
+        getStakingLimitsByNetwork(account);
+
     const amountLimits: CryptoAmountLimitProps = {
         currency: symbol,
-        minCrypto: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
+        minCrypto: MIN_AMOUNT_FOR_STAKING.toString(),
         maxCrypto: account.formattedBalance,
     };
 
@@ -199,14 +198,14 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
             const balanceMinusFee = balance.minus(composedFee);
 
             if (
-                cryptoValue.gt(balanceMinusFee.minus(MIN_ETH_FOR_WITHDRAWALS)) &&
+                cryptoValue.gt(balanceMinusFee.minus(MIN_FOR_WITHDRAWALS)) &&
                 cryptoValue.lt(balanceMinusFee) &&
-                cryptoValue.gte(MIN_ETH_AMOUNT_FOR_STAKING)
+                cryptoValue.gte(MIN_AMOUNT_FOR_STAKING)
             ) {
                 setIsAdviceForWithdrawalWarningShown(true);
             }
         },
-        [composedFee],
+        [composedFee, MIN_FOR_WITHDRAWALS, MIN_AMOUNT_FOR_STAKING],
     );
 
     const onCryptoAmountChange = useCallback(
@@ -291,14 +290,14 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
 
         const amount = new BigNumber(account.formattedBalance).toString();
 
-        if (amount < MIN_ETH_BALANCE_FOR_STAKING.toString()) {
+        if (amount < MIN_BALANCE_FOR_STAKING.toString()) {
             setIsLessAmountForWithdrawalWarningShown(true);
         }
 
         setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true });
         await composeRequest(CRYPTO_INPUT);
         setIsAmountForWithdrawalWarningShown(true);
-    }, [account.formattedBalance, clearErrors, composeRequest, setValue]);
+    }, [account.formattedBalance, clearErrors, composeRequest, setValue, MIN_BALANCE_FOR_STAKING]);
 
     useEffect(() => {
         if (formState.errors[CRYPTO_INPUT]) {

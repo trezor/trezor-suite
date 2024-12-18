@@ -2,8 +2,9 @@ import styled from 'styled-components';
 
 import { Button, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { MIN_ETH_AMOUNT_FOR_STAKING } from '@suite-common/wallet-constants';
-import { getNetworkDisplaySymbol, NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { Account } from '@suite-common/wallet-types';
+import { getStakingLimitsByNetwork } from '@suite-common/wallet-utils';
 
 import { Translation } from 'src/components/suite';
 
@@ -24,8 +25,7 @@ interface FormFractionButtonsProps {
     setRatioAmount: (divisor: number) => void;
     setMax: () => void;
     isDisabled?: boolean;
-    symbol: NetworkSymbol;
-    totalAmount?: number | string;
+    account: Account;
     decimals?: number;
 }
 
@@ -33,23 +33,26 @@ export const FormFractionButtons = ({
     setRatioAmount,
     setMax,
     isDisabled = false,
-    symbol,
-    totalAmount,
+    account,
     decimals,
 }: FormFractionButtonsProps) => {
+    const { symbol, formattedBalance: totalAmount } = account;
+
+    const { MIN_AMOUNT_FOR_STAKING } = getStakingLimitsByNetwork(account);
+
     const isFractionButtonDisabled = (divisor: number) => {
         if (!totalAmount || !decimals) return false;
 
         return new BigNumber(totalAmount)
             .dividedBy(divisor)
             .decimalPlaces(decimals)
-            .lte(MIN_ETH_AMOUNT_FOR_STAKING);
+            .lte(MIN_AMOUNT_FOR_STAKING);
     };
     const is10PercentDisabled = isDisabled || isFractionButtonDisabled(10);
     const is25PercentDisabled = isDisabled || isFractionButtonDisabled(4);
     const is50PercentDisabled = isDisabled || isFractionButtonDisabled(2);
     const isMaxDisabled =
-        isDisabled || new BigNumber(totalAmount || '0').lt(MIN_ETH_AMOUNT_FOR_STAKING);
+        isDisabled || new BigNumber(totalAmount || '0').lt(MIN_AMOUNT_FOR_STAKING);
 
     const displaySymbol = getNetworkDisplaySymbol(symbol);
 
@@ -61,7 +64,7 @@ export const FormFractionButtons = ({
                         <Translation
                             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
                             values={{
-                                amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
+                                amount: MIN_AMOUNT_FOR_STAKING.toString(),
                                 networkDisplaySymbol: displaySymbol,
                             }}
                         />
@@ -79,7 +82,7 @@ export const FormFractionButtons = ({
                         <Translation
                             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
                             values={{
-                                amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
+                                amount: MIN_AMOUNT_FOR_STAKING.toString(),
                                 networkDisplaySymbol: displaySymbol,
                             }}
                         />
@@ -97,7 +100,7 @@ export const FormFractionButtons = ({
                         <Translation
                             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
                             values={{
-                                amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
+                                amount: MIN_AMOUNT_FOR_STAKING.toString(),
                                 networkDisplaySymbol: displaySymbol,
                             }}
                         />
@@ -115,7 +118,7 @@ export const FormFractionButtons = ({
                         <Translation
                             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
                             values={{
-                                amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
+                                amount: MIN_AMOUNT_FOR_STAKING.toString(),
                                 networkDisplaySymbol: displaySymbol,
                             }}
                         />
