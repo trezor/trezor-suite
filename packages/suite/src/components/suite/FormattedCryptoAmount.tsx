@@ -95,7 +95,7 @@ export const FormattedCryptoAmount = ({
     }
 
     const content = (
-        <Row width="100%" gap={spacings.xxs} className={className}>
+        <Row width="100%" gap={spacings.xxs}>
             <Row data-testid={dataTest}>
                 {!!signValue && <Sign value={signValue} />}
                 <Value>
@@ -115,5 +115,5 @@ export const FormattedCryptoAmount = ({
         return content;
     }
 
-    return <HiddenPlaceholder>{content}</HiddenPlaceholder>;
+    return <HiddenPlaceholder className={className}>{content}</HiddenPlaceholder>;
 };
