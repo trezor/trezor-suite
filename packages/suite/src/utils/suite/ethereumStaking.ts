@@ -11,13 +11,17 @@ import {
     DEFAULT_PAYMENT,
     STAKE_GAS_LIMIT_RESERVE,
     MIN_ETH_AMOUNT_FOR_STAKING,
-    MAX_ETH_AMOUNT_FOR_STAKING,
     UNSTAKE_INTERCHANGES,
     WALLET_SDK_SOURCE,
     UNSTAKING_ETH_PERIOD,
 } from '@suite-common/wallet-constants';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { getEthereumEstimateFeeParams, isPending, sanitizeHex } from '@suite-common/wallet-utils';
+import {
+    getEthereumEstimateFeeParams,
+    isPending,
+    isSupportedEthStakingNetworkSymbol,
+    sanitizeHex,
+} from '@suite-common/wallet-utils';
 import TrezorConnect, { EthereumTransaction, Success, InternalTransfer } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { ValidatorsQueue } from '@suite-common/wallet-core';
@@ -633,22 +637,27 @@ export const calculateGains = (input: string, apy: number, divisor: number) => {
 };
 
 interface ValidateMaxOptions {
+    maxAmount: BigNumber;
     except?: boolean;
 }
 
 export const validateStakingMax =
-    (translationString: TranslationFunction, options?: ValidateMaxOptions) => (value: string) => {
-        if (!options?.except && value && BigNumber(value).gt(MAX_ETH_AMOUNT_FOR_STAKING)) {
+    (translationString: TranslationFunction, { except, maxAmount }: ValidateMaxOptions) =>
+    (value: string) => {
+        if (!except && value && BigNumber(value).gt(maxAmount)) {
             return translationString('AMOUNT_EXCEEDS_MAX', {
-                maxAmount: MAX_ETH_AMOUNT_FOR_STAKING.toString(),
+                maxAmount: maxAmount.toString(),
             });
         }
     };
+
 export const simulateUnstake = async ({
     amount,
     from,
     symbol,
 }: StakeTxBaseArgs & { amount: string }) => {
+    if (!isSupportedEthStakingNetworkSymbol(symbol)) return null;
+
     const ethNetwork = getEthNetworkForWalletSdk(symbol);
     const ethereumClient = new Ethereum(ethNetwork);
     const { addressContractPool } = getEthNetworkAddresses(symbol);

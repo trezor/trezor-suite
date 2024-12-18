@@ -1,5 +1,4 @@
 import { accountsActions } from '@suite-common/wallet-core';
-import { MIN_ETH_BALANCE_FOR_STAKING } from '@suite-common/wallet-constants';
 import type { SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import type { Action } from 'src/types/suite';
@@ -44,16 +43,6 @@ export const selectSelectedAccountBalance = (state: SelectedAccountRootState) =>
 
 export const selectSelectedAccountParams = (state: SelectedAccountRootState) =>
     state.wallet.selectedAccount.params;
-
-export const selectSelectedAccountHasSufficientEthForStaking = (
-    state: SelectedAccountRootState,
-) => {
-    const { formattedBalance, symbol } = selectSelectedAccount(state) ?? {};
-
-    if (typeof formattedBalance !== 'string' || symbol !== 'eth') return false;
-
-    return MIN_ETH_BALANCE_FOR_STAKING.isLessThanOrEqualTo(formattedBalance);
-};
 
 export const selectIsSelectedAccountLoaded = (state: SelectedAccountRootState) =>
     state.wallet.selectedAccount.status === 'loaded';
