@@ -10,24 +10,25 @@ import {
     selectPoolStatsNextRewardPayout,
     selectValidatorsQueue,
 } from '@suite-common/wallet-core';
-import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
-import { SelectedAccountStatus } from '@suite-common/wallet-types';
+import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { getDaysToAddToPool, getDaysToUnstake } from 'src/utils/suite/ethereumStaking';
 
-import { StakingCard } from './StakingCard';
-import { ApyCard } from './ApyCard';
-import { PayoutCard } from './PayoutCard';
-import { ClaimCard } from './ClaimCard';
+import { StakingCard } from '../../StakingDashboard/components/StakingCard';
+import { ClaimCard } from '../../StakingDashboard/components/ClaimCard';
+import { StakingDashboard } from '../../StakingDashboard/StakingDashboard';
+import { ApyCard } from '../../StakingDashboard/components/ApyCard';
+import { PayoutCard } from '../../StakingDashboard/components/PayoutCard';
 import { Transactions } from './Transactions';
 import { InstantStakeBanner } from './InstantStakeBanner';
-import { StakingDashboard } from '../../StakingDashboard/StakingDashboard';
 
 interface EthStakingDashboardProps {
-    selectedAccount: SelectedAccountStatus;
+    selectedAccount: SelectedAccountLoaded;
 }
 
 export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProps) => {
@@ -38,7 +39,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
     const { data, isLoading } =
         useSelector(state => selectValidatorsQueue(state, account?.symbol)) || {};
 
-    const ethApy = useSelector(state => selectPoolStatsApyData(state, account?.symbol));
+    const apy = useSelector(state => selectPoolStatsApyData(state, account?.symbol));
     const nextRewardPayout = useSelector(state =>
         selectPoolStatsNextRewardPayout(state, account?.symbol),
     );
@@ -64,7 +65,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
     const daysToAddToPool = getDaysToAddToPool(stakeTxs, data);
     const daysToUnstake = getDaysToUnstake(unstakeTxs, data);
 
-    const { canClaim = false } = getAccountEverstakeStakingPool(account) ?? {};
+    const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
 
     return (
         <StakingDashboard
@@ -75,7 +76,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                         heading={
                             <Translation
                                 id="TR_STAKE_NETWORK"
-                                values={{ symbol: account?.symbol.toUpperCase() }}
+                                values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
                             />
                         }
                     >
@@ -88,7 +89,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                             <Grid columns={isBelowLaptop || !canClaim ? 1 : 2} gap={spacings.sm}>
                                 <ClaimCard />
                                 <Flex direction={canClaim ? 'column' : 'row'} gap={spacings.sm}>
-                                    <ApyCard apy={ethApy} />
+                                    <ApyCard apy={apy} />
                                     <PayoutCard
                                         nextRewardPayout={nextRewardPayout}
                                         daysToAddToPool={daysToAddToPool}

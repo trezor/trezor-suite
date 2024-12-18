@@ -8746,6 +8746,26 @@ export default defineMessages({
         id: 'TR_STAKE_ENTER_THE_STAKING_POOL',
         defaultMessage: 'Enter the staking pool',
     },
+    TR_STAKE_WAIT_FOR_ACTIVATION: {
+        id: 'TR_STAKE_WAIT_FOR_ACTIVATION',
+        defaultMessage: 'Wait for the next epoch until your stake activated',
+    },
+    TR_STAKE_WARM_UP_PERIOD: {
+        id: 'TR_STAKE_WARM_UP_PERIOD',
+        defaultMessage: 'Warm Up period',
+    },
+    TR_STAKE_EARN_REWARDS_EVERY: {
+        id: 'TR_STAKE_EARN_REWARDS_EVERY',
+        defaultMessage: 'Earn rewards every ~{days} days',
+    },
+    TR_STAKE_COOL_DOWN_PERIOD: {
+        id: 'TR_STAKE_COOL_DOWN_PERIOD',
+        defaultMessage: 'Cool Down Period',
+    },
+    TR_STAKE_WAIT_FOR_DEACTIVATION: {
+        id: 'TR_STAKE_WAIT_FOR_DEACTIVATION',
+        defaultMessage: 'Wait for the next epoch until your stake deactivated',
+    },
     TR_STAKE_EARN_REWARDS_WEEKLY: {
         id: 'TR_STAKE_EARN_REWARDS_WEEKLY',
         defaultMessage: 'Earn rewards weekly',
@@ -8899,6 +8919,10 @@ export default defineMessages({
     TR_STAKE_REWARDS: {
         id: 'TR_STAKE_REWARDS',
         defaultMessage: 'Rewards',
+    },
+    TR_STAKE_EXPECTED_REWARDS: {
+        id: 'TR_STAKE_EXPECTED_REWARDS',
+        defaultMessage: 'Expected rewards per 1 epoch (~{days} days)',
     },
     TR_TX_CONFIRMED: {
         id: 'TR_TX_CONFIRMED',

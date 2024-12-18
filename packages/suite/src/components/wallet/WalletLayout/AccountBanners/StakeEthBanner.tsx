@@ -23,7 +23,7 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
     const dispatch = useDispatch();
     const { stakeEthBannerClosed } = useSelector(selectSuiteFlags);
     const { route } = useSelector(state => state.router);
-    const ethApy = useSelector(state => selectPoolStatsApyData(state, account.symbol));
+    const apy = useSelector(state => selectPoolStatsApyData(state, account.symbol));
     const theme = useTheme();
 
     const closeBanner = () => {
@@ -65,7 +65,7 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
                     <Translation
                         id="TR_STAKE_ANY_AMOUNT_ETH"
                         values={{
-                            apyPercent: ethApy,
+                            apyPercent: apy,
                             networkSymbol: getNetworkDisplaySymbol(account.symbol),
                             amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
                         }}

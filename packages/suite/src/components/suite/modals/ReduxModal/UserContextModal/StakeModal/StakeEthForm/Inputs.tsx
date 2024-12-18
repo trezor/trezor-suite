@@ -15,7 +15,7 @@ import {
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
 import { FIAT_INPUT, CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
-import { validateStakingMax } from 'src/utils/suite/ethereumStaking';
+import { validateStakingMax } from 'src/utils/suite/staking';
 import { FormFractionButtons } from 'src/components/suite/FormFractionButtons';
 
 export const Inputs = () => {

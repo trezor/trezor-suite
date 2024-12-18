@@ -9,6 +9,7 @@ import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Translation } from 'src/components/suite';
 import { useDevice, useDiscovery, useSelector } from 'src/hooks/suite';
 import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 import { Coin } from './Coin';
 
@@ -35,6 +36,8 @@ export const CoinList = ({
     onToggle,
 }: CoinListProps) => {
     const { device, isLocked } = useDevice();
+    const isDebug = useSelector(selectIsDebugModeActive);
+
     const blockchain = useSelector(state => state.wallet.blockchain);
     const isDeviceLocked = !!device && isLocked();
     const { isDiscoveryRunning } = useDiscovery();
@@ -50,7 +53,14 @@ export const CoinList = ({
     return (
         <Wrapper>
             {networks.map(network => {
-                const { symbol, name, support, features, testnet: isTestnet } = network;
+                const {
+                    symbol,
+                    name,
+                    support,
+                    features,
+                    testnet: isTestnet,
+                    networkType,
+                } = network;
                 const hasCustomBackend = !!blockchain[symbol].backends.selected;
 
                 const firmwareSupportRestriction =
@@ -76,7 +86,13 @@ export const CoinList = ({
                     getCoinUnavailabilityMessage(unavailableReason);
                 const tooltipString = discoveryTooltip || lockedTooltip || unavailabilityTooltip;
 
-                const label = getCoinLabel(features, isTestnet, hasCustomBackend);
+                const label = getCoinLabel(
+                    features,
+                    isTestnet,
+                    hasCustomBackend,
+                    networkType,
+                    isDebug,
+                );
 
                 return (
                     <Tooltip

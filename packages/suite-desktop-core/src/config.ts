@@ -27,6 +27,7 @@ export const allowedDomains = [
     'blockfrost.dev',
     'eth-api-b2c-stage.everstake.one', // staking endpoint for Holesky testnet, works only with VPN
     'eth-api-b2c.everstake.one', // staking endpoint for Ethereum mainnet
+    'dashboard-api.everstake.one', // staking enpoint for Solana
 ];
 
 export const cspRules = [

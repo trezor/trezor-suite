@@ -46,7 +46,7 @@ export const StakeEthCard = () => {
         showDashboardStakingPromoBanner &&
         !isBitcoinOnlyDevice;
 
-    const ethApy = useSelector(state => selectPoolStatsApyData(state, bannerSymbol));
+    const apy = useSelector(state => selectPoolStatsApyData(state, bannerSymbol));
 
     const { discovery } = useDiscovery();
     const { accounts } = useAccounts(discovery);
@@ -72,7 +72,7 @@ export const StakeEthCard = () => {
                     <Translation
                         id="TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC"
                         values={{
-                            apyPercent: ethApy,
+                            apyPercent: apy,
                             symbol: bannerSymbol.toUpperCase(),
                             t: text => (
                                 <Tooltip
@@ -100,7 +100,7 @@ export const StakeEthCard = () => {
                 description: <Translation id="TR_STAKE_ETH_MAXIMIZE_REWARDS_DESC" />,
             },
         ],
-        [ethApy],
+        [apy],
     );
 
     if (!isShown) return null;

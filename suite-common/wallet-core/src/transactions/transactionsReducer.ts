@@ -374,7 +374,7 @@ export const selectAccountClaimTransactions = createMemoizedSelector(
         ),
 );
 
-export const selectAccountHasStaked = createMemoizedSelector(
+export const selectEthAccountHasStaked = createMemoizedSelector(
     [selectAccountStakeTransactions, selectAccountByKey],
     (stakeTxs, account) => {
         if (!account) return false;
@@ -386,7 +386,7 @@ export const selectAccountHasStaked = createMemoizedSelector(
 export const selectAssetAccountsThatStaked = (
     state: TransactionsRootState & AccountsRootState,
     accounts: Account[],
-) => accounts.filter(account => selectAccountHasStaked(state, account.key));
+) => accounts.filter(account => selectEthAccountHasStaked(state, account.key));
 
 export const selectAccountTransactionsFetchStatus = (
     state: TransactionsRootState,
