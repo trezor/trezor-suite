@@ -226,7 +226,6 @@ export interface AccountInfo {
         nonce?: string;
         contractInfo?: ContractInfo;
         stakingPools?: StakingPool[];
-        solStakingAccounts?: SolanaStakingAccount[]; // solana staking accounts
         addressAliases?: { [key: string]: AddressAlias };
         // XRP
         sequence?: number;
@@ -243,6 +242,8 @@ export interface AccountInfo {
         // SOL
         owner?: string; // The Solana program owning the account
         rent?: number; // The rent required for the account to opened
+        solStakingAccounts?: SolanaStakingAccount[]; // Solana staking accounts
+        solEpoch?: number; // Solana current epoch
     };
     page?: {
         // blockbook and blockfrost

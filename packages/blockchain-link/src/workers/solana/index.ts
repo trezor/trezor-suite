@@ -61,7 +61,7 @@ import { IntervalId } from '@trezor/type-utils';
 
 import { getBaseFee, getPriorityFee } from './fee';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
-// import { getSolanaStakingAccounts } from '../utils';
+import { getSolanaStakingData } from '../utils';
 
 export type SolanaAPI = Readonly<{
     clusterUrl: ClusterUrl;
@@ -208,8 +208,7 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
 
 const getAccountInfo = async (
     request: Request<MessageTypes.GetAccountInfo>,
-    // TODO: uncomment when solana staking accounts are supported
-    // isTestnet: boolean,
+    isTestnet: boolean,
 ) => {
     const { payload } = request;
     const { details = 'basic' } = payload;
@@ -351,12 +350,12 @@ const getAccountInfo = async (
             const accountDataBytes = getBase64Encoder().encode(accountDataEncoded);
             const accountDataLength = BigInt(accountDataBytes.byteLength);
             const rent = await api.rpc.getMinimumBalanceForRentExemption(accountDataLength).send();
-            // TODO: uncomment when solana staking accounts are supported
-            // const stakingAccounts = await getSolanaStakingAccounts(payload.descriptor, isTestnet);
+            const stakingData = await getSolanaStakingData(payload.descriptor, isTestnet);
             misc = {
                 owner: accountInfo?.owner,
                 rent: Number(rent),
-                solStakingAccounts: [],
+                solStakingAccounts: stakingData?.stakingAccounts,
+                solEpoch: stakingData?.epoch,
             };
         }
     }
@@ -708,7 +707,7 @@ const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
 const onRequest = (request: Request<MessageTypes.Message>, isTestnet: boolean) => {
     switch (request.type) {
         case MESSAGES.GET_ACCOUNT_INFO:
-            return getAccountInfo(request);
+            return getAccountInfo(request, isTestnet);
         case MESSAGES.GET_INFO:
             return getInfo(request, isTestnet);
         case MESSAGES.PUSH_TRANSACTION:
