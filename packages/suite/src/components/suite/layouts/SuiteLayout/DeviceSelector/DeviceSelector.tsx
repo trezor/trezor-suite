@@ -134,6 +134,7 @@ export const DeviceSelector = () => {
         >
             <ViewOnlyTooltip>
                 <Tooltip
+                    placement="bottom"
                     content={
                         discoveryInProgress ? (
                             <Translation id="TR_UNAVAILABLE_WHILE_LOADING" />
