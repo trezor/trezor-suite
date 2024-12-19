@@ -15,6 +15,8 @@ import { useFastAccounts } from 'src/hooks/wallet';
 import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { getTokens } from 'src/utils/wallet/tokenUtils';
+import { Account } from 'src/types/wallet';
 
 import { PortfolioCardHeader } from './PortfolioCardHeader';
 import { PortfolioCardException } from './PortfolioCardException';
@@ -47,9 +49,17 @@ export const PortfolioCard = memo(() => {
     const dispatch = useDispatch();
     const { device } = useDevice();
 
+    const tokenDefinitions = useSelector(state => state.tokenDefinitions);
+    const deviceAccounts: Account[] = accounts.map(account => {
+        const coinDefinitions = tokenDefinitions?.[account.symbol]?.coin;
+        const tokens = getTokens(account.tokens ?? [], account.symbol, coinDefinitions);
+
+        return { ...account, tokens: tokens.shownWithBalance };
+    });
+
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const fiatAmount = getTotalFiatBalance({
-        deviceAccounts: accounts,
+        deviceAccounts,
         localCurrency,
         rates: currentFiatRates,
     }).toString();
