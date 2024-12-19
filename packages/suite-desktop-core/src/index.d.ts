@@ -1,5 +1,8 @@
-// Include suite globals (as some dependencies from @suite can rely on them)
-/// <reference path="../../suite/global.d.ts" />
+interface Window {
+    // Needed for Cypress and Playwright
+    Playwright?: any;
+    store?: any;
+}
 
 type LogMessage = {
     date: Date;
@@ -13,30 +16,35 @@ declare interface ILogger {
      * Exit the Logger (will correctly end the log file)
      */
     exit();
+
     /**
      * Error message (level: 1)
      * @param topic(string) - Log topic
      * @param message(string | string[]) - Message content(s)
      */
     error(topic: string, message: string | string[]);
+
     /**
      * Warning message (level: 2)
      * @param topic(string) - Log topic
      * @param message(string | string[]) - Message content(s)
      */
     warn(topic: string, message: string | string[]);
+
     /**
      * Info message (level: 3)
      * @param topic(string) - Log topic
      * @param message(string | string[]) - Message content(s)
      */
     info(topic: string, message: string | string[]);
+
     /**
      * Debug message (level: 4)
      * @param topic(string) - Log topic
      * @param message(string | string[]) - Message content(s)
      */
     debug(topic: string, message: string | string[]);
+
     /**
      * Log Level getter
      */
@@ -77,6 +85,7 @@ declare type BeforeRequestListener = (
 
 declare interface RequestInterceptor {
     onBeforeRequest(listener: BeforeRequestListener): void;
+
     offBeforeRequest(listener: BeforeRequestListener): void;
 }
 

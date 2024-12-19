@@ -48,7 +48,6 @@ export const typescriptConfig = [
                 },
             ],
             '@typescript-eslint/no-empty-object-type': 'off', // Todo: we shall solve this, this is bad practice
-            '@typescript-eslint/triple-slash-reference': 'off', // Todo: solve before merge
         },
     },
 ];
