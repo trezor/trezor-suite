@@ -23,6 +23,9 @@ import {
     devicePersistTransform,
     walletStopPersistTransform,
     migrateDeviceState,
+    migrateEnabledDiscoveryNetworkSymbols,
+    migrateAccountBnbToBsc,
+    migrateTransactionsBnbToBsc,
 } from '@suite-native/storage';
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import {
@@ -31,7 +34,11 @@ import {
 } from '@suite-common/message-system';
 import { notificationsReducer } from '@suite-common/toast-notifications';
 import { graphReducer, graphPersistTransform } from '@suite-native/graph';
-import { discoveryConfigPersistWhitelist, discoveryConfigReducer } from '@suite-native/discovery';
+import {
+    discoveryConfigPersistWhitelist,
+    discoveryConfigReducer,
+    DiscoveryConfigState,
+} from '@suite-native/discovery';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import { nativeFirmwareReducer } from '@suite-native/firmware';
@@ -139,7 +146,23 @@ export const prepareRootReducers = async () => {
         reducer: discoveryConfigReducer,
         persistedKeys: discoveryConfigPersistWhitelist,
         key: 'discoveryConfig',
-        version: 1,
+        version: 2,
+        migrations: {
+            2: (oldState: DiscoveryConfigState) => {
+                if (!oldState.enabledDiscoveryNetworkSymbols) return oldState;
+
+                const { enabledDiscoveryNetworkSymbols } = oldState;
+                const migrateNetworkSymbols = migrateEnabledDiscoveryNetworkSymbols(
+                    enabledDiscoveryNetworkSymbols,
+                );
+                const migratedState = {
+                    ...oldState,
+                    enabledDiscoveryNetworkSymbols: migrateNetworkSymbols,
+                };
+
+                return migratedState;
+            },
+        },
     });
 
     const featureFlagsPersistedReducer = await preparePersistReducer({
@@ -180,7 +203,27 @@ export const prepareRootReducers = async () => {
         transforms: [walletPersistTransform, graphPersistTransform],
         mergeLevel: 2,
         key: 'root',
-        version: 1,
+        version: 2,
+        migrations: {
+            2: (oldState: { wallet: { accounts: any; transactions: { transactions: any } } }) => {
+                const oldStateWallet = oldState.wallet;
+                const migratedAccounts = migrateAccountBnbToBsc(oldStateWallet.accounts);
+
+                const migratedTransactions = migrateTransactionsBnbToBsc(
+                    oldStateWallet.transactions?.transactions,
+                );
+                const migratedState = {
+                    ...oldState,
+                    wallet: {
+                        ...oldStateWallet,
+                        accounts: migratedAccounts,
+                        transactions: { transactions: migratedTransactions },
+                    },
+                };
+
+                return migratedState;
+            },
+        },
     });
 
     return rootReducer;

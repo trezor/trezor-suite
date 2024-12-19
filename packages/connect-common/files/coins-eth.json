@@ -95,6 +95,7 @@
             "is_testnet": false,
             "name": "Arbitrum One",
             "shortcut": "ARB",
+            "label": "ETH",
             "slip44": 9001,
             "support": {
                 "T1B1": "1.9.4",

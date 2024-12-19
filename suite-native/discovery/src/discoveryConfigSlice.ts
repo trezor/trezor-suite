@@ -37,7 +37,7 @@ type DiscoveryInfo = {
     networkSymbols: NetworkSymbol[];
 };
 
-type DiscoveryConfigState = {
+export type DiscoveryConfigState = {
     areTestnetsEnabled: boolean;
     discoveryInfo: DiscoveryInfo | null;
     isCoinEnablingInitFinished: boolean;
