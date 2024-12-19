@@ -73,6 +73,11 @@ export const discoveryConfigSlice = createSlice({
         setDiscoveryInfo: (state, { payload }: PayloadAction<DiscoveryInfo | null>) => {
             state.discoveryInfo = payload;
         },
+        addEnabledDiscoveryNetworkSymbol: (state, { payload }: PayloadAction<NetworkSymbol>) => {
+            if (!state.enabledDiscoveryNetworkSymbols.includes(payload)) {
+                state.enabledDiscoveryNetworkSymbols.push(payload);
+            }
+        },
         toggleEnabledDiscoveryNetworkSymbol: (state, { payload }: PayloadAction<NetworkSymbol>) => {
             const symbol = payload;
             const index = state.enabledDiscoveryNetworkSymbols.indexOf(symbol);
@@ -208,6 +213,7 @@ export const selectTokenDefinitionsEnabledNetworks = createMemoizedSelector(
 export const {
     toggleAreTestnetsEnabled,
     setDiscoveryInfo,
+    addEnabledDiscoveryNetworkSymbol,
     toggleEnabledDiscoveryNetworkSymbol,
     setEnabledDiscoveryNetworkSymbols,
     setIsCoinEnablingInitFinished,

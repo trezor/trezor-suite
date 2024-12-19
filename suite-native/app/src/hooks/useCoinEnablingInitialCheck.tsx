@@ -42,7 +42,7 @@ export const useCoinEnablingInitialCheck = () => {
             let timeoutId: TimerId;
             //if btc only device, just run discovery for btc and do not show the UI
             if (hasBitcoinOnlyFirmware) {
-                dispatch(setEnabledDiscoveryNetworkSymbols(['btc']));
+                // discoveryMiddleware ensures that BTC is enabled for devices with BTC-only firmware
                 dispatch(setIsCoinEnablingInitFinished(true));
                 dispatch(applyDiscoveryChangesThunk());
             } else {

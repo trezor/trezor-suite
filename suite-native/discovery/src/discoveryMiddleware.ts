@@ -9,6 +9,7 @@ import {
     accountsActions,
 } from '@suite-common/wallet-core';
 import { isFirmwareVersionSupported } from '@suite-native/device';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import { startDescriptorPreloadedDiscoveryThunk, discoveryCheckThunk } from './discoveryThunks';
 import {
@@ -17,6 +18,7 @@ import {
     toggleAreTestnetsEnabled,
     setEnabledDiscoveryNetworkSymbols,
     toggleEnabledDiscoveryNetworkSymbol,
+    addEnabledDiscoveryNetworkSymbol,
 } from './discoveryConfigSlice';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
@@ -67,6 +69,15 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
                     forcedDeviceState: action.payload.state?.staticSessionId,
                 }),
             );
+        }
+
+        // ensure that BTC is enabled when device with BTC-only firmware is connected
+        // (it could have been disabled via some other device with universal firmware)
+        if (deviceActions.selectDevice.match(action)) {
+            const device = action.payload;
+            if (device?.connected && hasBitcoinOnlyFirmware(device)) {
+                dispatch(addEnabledDiscoveryNetworkSymbol('btc'));
+            }
         }
 
         // for further continual discovery check for various other reasons
