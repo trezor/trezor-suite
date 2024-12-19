@@ -134,6 +134,7 @@ export const DeviceSelector = () => {
         >
             <ViewOnlyTooltip>
                 <Tooltip
+                    isFullWidth
                     placement="bottom"
                     content={
                         discoveryInProgress ? (
