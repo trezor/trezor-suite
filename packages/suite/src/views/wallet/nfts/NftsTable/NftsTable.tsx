@@ -42,7 +42,7 @@ const NftsTable = ({ selectedAccount, isShown, verified, nfts }: NftsTableProps)
     const nftsToShow = getNftsToShow();
     const nftsWithoutBalance = getNftsWithoutBalance();
 
-    return nftsToShow.length > 0 ? (
+    return nftsToShow.length > 0 || nftsWithoutBalance.length > 0 ? (
         <Column width="100%" alignItems="start" gap={12}>
             <Card paddingType="none" overflow="hidden">
                 <Table
