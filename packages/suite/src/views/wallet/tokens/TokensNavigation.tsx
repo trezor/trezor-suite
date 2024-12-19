@@ -117,8 +117,10 @@ export const TokensNavigation = ({
             </SubTabs>
             <Row>
                 <SearchAction
-                    tooltipText="TR_TOKENS_SEARCH_TOOLTIP"
-                    placeholder="TR_SEARCH_TOKENS"
+                    tooltipText={
+                        isNft ? 'TR_COLLECTIONS_SEARCH_TOOLTIP' : 'TR_TOKENS_SEARCH_TOOLTIP'
+                    }
+                    placeholder={isNft ? 'TR_SEARCH_COLLECTIONS' : 'TR_SEARCH_TOKENS'}
                     isExpanded={isExpanded}
                     searchQuery={searchQuery}
                     setExpanded={setExpanded}

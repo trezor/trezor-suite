@@ -6510,9 +6510,17 @@ export default defineMessages({
         id: 'TR_SEARCH_TOKENS',
         defaultMessage: 'Search tokens',
     },
+    TR_SEARCH_COLLECTIONS: {
+        id: 'TR_SEARCH_COLLECTIONS',
+        defaultMessage: 'Search collections',
+    },
     TR_TOKENS_SEARCH_TOOLTIP: {
         id: 'TR_TOKENS_SEARCH_TOOLTIP',
         defaultMessage: 'Search by token, symbol, or contract address.',
+    },
+    TR_COLLECTIONS_SEARCH_TOOLTIP: {
+        id: 'TR_COLLECTIONS_SEARCH_TOOLTIP',
+        defaultMessage: 'Search by collection name, symbol, or contract address.',
     },
     TR_SEARCH_TRANSACTIONS: {
         id: 'TR_SEARCH_TRANSACTIONS',
