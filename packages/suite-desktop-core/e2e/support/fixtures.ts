@@ -20,6 +20,8 @@ import { BackupActions } from './pageActions/backupActions';
 import { DevicePromptActions } from './pageActions/devicePromptActions';
 import { AnalyticsActions } from './pageActions/analyticsActions';
 import { IndexedDbFixture } from './indexedDb';
+import { RecoverActions } from './pageActions/recoverActions';
+import { WordInputActions } from './pageActions/wordInputActions';
 
 type Fixtures = {
     startEmulator: boolean;
@@ -38,6 +40,8 @@ type Fixtures = {
     backupPage: BackupActions;
     analyticsPage: AnalyticsActions;
     devicePrompt: DevicePromptActions;
+    recoverPage: RecoverActions;
+    wordInputPage: WordInputActions;
     analytics: AnalyticsFixture;
     indexedDb: IndexedDbFixture;
 };
@@ -156,6 +160,14 @@ const test = base.extend<Fixtures>({
     devicePrompt: async ({ page }, use) => {
         const devicePromptActions = new DevicePromptActions(page);
         await use(devicePromptActions);
+    },
+    recoverPage: async ({ page }, use) => {
+        const recoverPage = new RecoverActions(page);
+        await use(recoverPage);
+    },
+    wordInputPage: async ({ page }, use) => {
+        const wordinputPage = new WordInputActions(page);
+        await use(wordinputPage);
     },
     analytics: async ({ page }, use) => {
         const analytics = new AnalyticsFixture(page);
