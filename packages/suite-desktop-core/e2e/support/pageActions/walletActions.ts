@@ -3,7 +3,6 @@ import { Locator, Page, expect } from '@playwright/test';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export class WalletActions {
-    private readonly page: Page;
     readonly walletMenuButton: Locator;
     readonly searchInput: Locator;
     readonly accountChevron: Locator;
@@ -11,8 +10,7 @@ export class WalletActions {
     readonly walletStakingButton: Locator;
     readonly stakeAddress: Locator;
 
-    constructor(page: Page) {
-        this.page = page;
+    constructor(private readonly page: Page) {
         this.walletMenuButton = this.page.getByTestId('@suite/menu/wallet-index');
         this.searchInput = this.page.getByTestId('@wallet/accounts/search-icon');
         this.accountChevron = this.page.getByTestId('@account-menu/arrow');

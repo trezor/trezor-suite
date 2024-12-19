@@ -6,7 +6,6 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 const anyTestIdEndingWithClose = '[data-testid$="close"]';
 
 export class SuiteGuide {
-    private readonly page: Page;
     readonly guideButton: Locator;
     readonly supportAndFeedbackButton: Locator;
     readonly bugFormButton: Locator;
@@ -27,8 +26,7 @@ export class SuiteGuide {
     readonly feedbackSuccessToast: Locator;
     readonly articleHeader: Locator;
 
-    constructor(page: Page) {
-        this.page = page;
+    constructor(private readonly page: Page) {
         this.guideButton = this.page.getByTestId('@guide/button-open');
         this.supportAndFeedbackButton = this.page.getByTestId('@guide/button-feedback');
         this.bugFormButton = this.page.getByTestId('@guide/feedback/bug');

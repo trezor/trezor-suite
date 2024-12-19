@@ -7,8 +7,6 @@ import { PlaywrightProjects } from '../../playwright.config';
 import { AnalyticsActions } from './analyticsActions';
 
 export class OnboardingActions {
-    readonly model: Model;
-    readonly testInfo: TestInfo;
     readonly welcomeTitle: Locator;
     readonly onboardingContinueButton: Locator;
     readonly onboardingViewOnlySkipButton: Locator;
@@ -34,11 +32,9 @@ export class OnboardingActions {
     constructor(
         public page: Page,
         private analyticsPage: AnalyticsActions,
-        model: Model,
-        testInfo: TestInfo,
+        private readonly model: Model,
+        private readonly testInfo: TestInfo,
     ) {
-        this.model = model;
-        this.testInfo = testInfo;
         this.welcomeTitle = this.page.getByTestId('@welcome/title');
         this.onboardingContinueButton = this.page.getByTestId('@onboarding/exit-app-button');
         this.onboardingViewOnlySkipButton = this.page.getByTestId('@onboarding/viewOnly/skip');

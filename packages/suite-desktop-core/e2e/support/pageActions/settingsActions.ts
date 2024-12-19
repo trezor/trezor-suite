@@ -36,8 +36,6 @@ const backgroundImages = {
 };
 
 export class SettingsActions {
-    private readonly page: Page;
-    private readonly apiURL: string;
     private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 5;
     readonly settingsMenuButton: Locator;
     readonly settingsHeader: Locator;
@@ -75,9 +73,10 @@ export class SettingsActions {
         this.page.getByTestId(`@settings/language-select/option/${language}`);
     readonly pinInput = (index: number) => this.page.getByTestId(`@pin/input/${index}`);
 
-    constructor(page: Page, apiURL: string) {
-        this.page = page;
-        this.apiURL = apiURL;
+    constructor(
+        private readonly page: Page,
+        private readonly apiURL: string,
+    ) {
         this.settingsMenuButton = this.page.getByTestId('@suite/menu/settings');
         this.settingsHeader = this.page.getByTestId('@settings/menu/title');
         this.debugTabButton = this.page.getByTestId('@settings/menu/debug');

@@ -3,7 +3,6 @@ import { Locator, Page, expect } from '@playwright/test';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export class DashboardActions {
-    private readonly page: Page;
     readonly dashboardMenuButton: Locator;
     readonly discoveryHeader: Locator;
     readonly discoveryBar: Locator;
@@ -19,8 +18,7 @@ export class DashboardActions {
     readonly balanceOfNetwork = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@wallet/coin-balance/value-${symbol}`);
 
-    constructor(page: Page) {
-        this.page = page;
+    constructor(private readonly page: Page) {
         this.dashboardMenuButton = this.page.getByTestId('@suite/menu/suite-index');
         this.discoveryHeader = this.page.getByRole('heading', { name: 'Dashboard' });
         this.discoveryBar = this.page.getByTestId('@wallet/discovery-progress-bar');
