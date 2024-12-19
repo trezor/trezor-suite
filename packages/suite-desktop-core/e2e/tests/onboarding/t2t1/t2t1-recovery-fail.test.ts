@@ -1,4 +1,4 @@
-import { test } from '../../support/fixtures';
+import { test } from '../../../support/fixtures';
 
 test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-management'] }, () => {
     // This test always needs to run the newest possible emulator version

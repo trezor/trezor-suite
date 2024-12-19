@@ -1,4 +1,4 @@
-import { test, expect } from '../../support/fixtures';
+import { test, expect } from '../../../support/fixtures';
 
 test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] }, () => {
     // This test always needs to run the newest possible emulator version
@@ -15,12 +15,14 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
     test('Success (Shamir backup)', async ({
         page,
         analyticsPage,
+        onboardingPage,
         backupPage,
         devicePrompt,
         trezorUserEnvLink,
     }) => {
         await analyticsPage.passThroughAnalytics();
-        await page.getByTestId('@firmware/continue-button').click();
+        await onboardingPage.firmwareContinueButton.click();
+
         await page.getByTestId('@onboarding/path-create-button').click();
 
         // Will be clicking on Shamir backup button

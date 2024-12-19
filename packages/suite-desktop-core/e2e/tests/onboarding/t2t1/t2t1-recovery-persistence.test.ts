@@ -1,4 +1,4 @@
-import { test } from '../../support/fixtures';
+import { test } from '../../../support/fixtures';
 
 const shareOneOfThree = [
     'gesture',
