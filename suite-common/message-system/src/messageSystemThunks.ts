@@ -22,7 +22,18 @@ import {
 } from './messageSystemSelectors';
 import { jws as configJwsLocal } from '../files/config.v1';
 
+// Enable this for local development purposes:
+// set to true to always fetch local JWS
+const FORCE_LOCAL_JWS = false;
+
 const getConfigJws = async () => {
+    if (FORCE_LOCAL_JWS) {
+        return {
+            configJws: configJwsLocal,
+            isRemote: false,
+        };
+    }
+
     const remoteConfigUrl = isCodesignBuild()
         ? CONFIG_URL_REMOTE.stable
         : CONFIG_URL_REMOTE.develop;
@@ -100,7 +111,10 @@ export const fetchConfigThunk = createThunk(
 
                 const timestampNew = isRemote ? Date.now() : 0;
 
-                if (currentSequence < config.sequence) {
+                if (
+                    currentSequence < config.sequence ||
+                    FORCE_LOCAL_JWS /* Allow to skip sequence check for local testing */
+                ) {
                     await dispatch(
                         messageSystemActions.fetchSuccessUpdate({
                             config,
