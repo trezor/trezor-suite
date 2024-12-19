@@ -1,8 +1,70 @@
 {
     "version": 1,
-    "timestamp": "2024-11-29T00:00:00+00:00",
-    "sequence": 68,
+    "timestamp": "2024-12-19T00:00:00+00:00",
+    "sequence": 69,
     "actions": [
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": ">=24.12.1",
+                        "web": "*"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3T1",
+                            "firmware": "2.8.6",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "cdcc9424-a42a-4d85-b46d-1ac2e9e1dc8a",
+                "priority": 90,
+                "dismissible": false,
+                "variant": "critical",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "en": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "es": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "cs": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "ru": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "ja": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "hu": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "it": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "fr": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "de": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "tr": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "pt": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances.",
+                    "uk": "You have downloaded an incomplete firmware version 2.8.6, released unintentionally. Tap here to open our chatbot and create a support ticket for assistance. Remember, never share your wallet backup with anyone under any circumstances."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://trezor.io/learn/a/what-is-trezor-suite-lite#open-chat",
+                    "label": {
+                        "en-GB": "Contact support",
+                        "en": "Contact support",
+                        "es": "Contact support",
+                        "cs": "Contact support",
+                        "ru": "Contact support",
+                        "ja": "Contact support",
+                        "hu": "Contact support",
+                        "it": "Contact support",
+                        "fr": "Contact support",
+                        "de": "Contact support",
+                        "tr": "Contact support",
+                        "pt": "Contact support",
+                        "uk": "Contact support"
+                    }
+                }
+            }
+        },
         {
             "conditions": [
                 {
