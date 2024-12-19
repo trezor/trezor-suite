@@ -498,7 +498,6 @@ export const useCoinmarketSellForm = ({
                 address: destinationAddress,
                 amount: cryptoStringAmount,
                 destinationTag: destinationPaymentExtraId,
-                setMaxOutputId: values.setMaxOutputId,
             });
             if (result?.success) {
                 // send txid to the server as confirmation

@@ -554,7 +554,6 @@ export const useCoinmarketExchangeForm = ({
                 address: sendAddress,
                 amount: sendStringAmount,
                 destinationTag: sendPaymentExtraId,
-                setMaxOutputId: values.setMaxOutputId,
             });
             // in case of not success, recomposeAndSign shows notification
             if (result?.success) {
