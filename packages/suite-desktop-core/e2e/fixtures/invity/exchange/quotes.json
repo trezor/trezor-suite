@@ -1,0 +1,36 @@
+[
+    {
+        "send": "REGTEST",
+        "sendStringAmount": "0.005",
+        "receive": "ETH",
+        "receiveStringAmount": "0.053845",
+        "rate": 12.219697768043531,
+        "min": 0.0018,
+        "max": "NONE",
+        "fee": "UNKNOWN",
+        "exchange": "changehero"
+    },
+    {
+        "send": "REGTEST",
+        "sendStringAmount": "0.005",
+        "receive": "ETH",
+        "receiveStringAmount": "0.062824",
+        "rate": 12.211581272726496,
+        "min": 0.00017350799999999998,
+        "max": 1.71004235,
+        "fee": "INCLUDED",
+        "rateIdentificator": "sI4vrh5vjTzUJWzvIISLAevvDdCfeZCb",
+        "exchange": "changenow"
+    },
+    {
+        "send": "REGTEST",
+        "sendStringAmount": "0.005",
+        "receive": "ETH",
+        "receiveStringAmount": "0.063230",
+        "rate": 11.802143287485098,
+        "min": 0.001247436,
+        "max": "NONE",
+        "fee": "UNKNOWN",
+        "exchange": "changelly"
+    }
+]

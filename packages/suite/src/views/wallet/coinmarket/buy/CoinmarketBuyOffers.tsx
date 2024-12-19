@@ -18,5 +18,7 @@ const CoinmarketBuyOffersComponent = ({ selectedAccount }: UseCoinmarketProps) =
 };
 
 export const CoinmarketBuyOffers = () => (
-    <CoinmarketContainer SectionComponent={CoinmarketBuyOffersComponent} />
+    <span data-testid="@coinmarket/buy-offers">
+        <CoinmarketContainer SectionComponent={CoinmarketBuyOffersComponent} />
+    </span>
 );

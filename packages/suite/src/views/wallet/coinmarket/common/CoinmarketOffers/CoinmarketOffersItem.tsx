@@ -128,7 +128,7 @@ export const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                         />
                     </ExchangeNameOfferColumn>
                     <AmountOfferColumn>
-                        <Row alignItems="flex-end">
+                        <Row alignItems="flex-end" data-testid="@coinmarket/offer/amount">
                             <CoinmarketUtilsPrice {...cryptoAmountProps} />
                             {isCoinmarketExchangeContext(context) && (
                                 <CoinmarketUtilsKyc

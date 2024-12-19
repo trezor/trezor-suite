@@ -13,7 +13,7 @@ const CoinmarketFormLayoutWrapper = styled.form`
 `;
 
 export const CoinmarketFormLayout = () => (
-    <Column gap={spacings.xxxxl}>
+    <Column gap={spacings.xxxxl} data-testid="@coinmarket/form">
         <CoinmarketFormLayoutWrapper>
             <Card>
                 <Column gap={spacings.lg}>

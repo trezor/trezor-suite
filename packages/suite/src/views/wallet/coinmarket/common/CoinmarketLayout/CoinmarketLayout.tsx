@@ -13,7 +13,7 @@ export const CoinmarketLayout = ({ children }: CoinmarketLayoutProps) => {
     const routeName = useSelector(selectRouteName);
 
     return (
-        <Column gap={spacings.xl}>
+        <Column data-testid="@coinmarket" gap={spacings.xl}>
             {!routeName?.includes(`wallet-coinmarket-exchange`) && (
                 <CoinmarketLayoutNavigation route={routeName} />
             )}

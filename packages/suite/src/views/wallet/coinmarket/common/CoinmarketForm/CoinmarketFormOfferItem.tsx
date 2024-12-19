@@ -30,6 +30,7 @@ export const CoinmarketFormOfferItem = ({
                         justifyContent="center"
                         margin={{ vertical: spacings.xs }}
                         gap={spacings.sm}
+                        data-testid="@coinmarket/offers/loading-spinner"
                     >
                         <Spinner size={32} isGrey={false} />
                         <Paragraph typographyStyle="hint" variant="tertiary">

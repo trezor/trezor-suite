@@ -1,0 +1,50 @@
+[
+    {
+        "name": "changenowfr",
+        "companyName": "ChangeNOW",
+        "logo": "changenowfr-icon.jpg",
+        "isActive": true,
+        "isFixedRate": true,
+        "isDex": false,
+        "buyTickers": ["REGTEST", "LTC", "ETH", "ADA"],
+        "sellTickers": ["REGTEST", "LTC", "ETH", "ADA"],
+        "addressFormats": { "BCH": "legacy", "LTC": "type3" },
+        "statusUrl": "https://changenow.io/exchange/txs/{{orderId}}",
+        "kycUrl": "https://changenow.io/faq#kyc",
+        "supportUrl": "https://support.changenow.io",
+        "kycPolicy": "KYC requested in exceptional cases. KYC not required for refunds. 🤝",
+        "isRefundRequired": false
+    },
+    {
+        "name": "changelly",
+        "companyName": "Changelly",
+        "logo": "changelly-icon.jpg",
+        "isActive": true,
+        "isFixedRate": false,
+        "isDex": false,
+        "buyTickers": ["REGTEST", "LTC", "ETH", "ADA"],
+        "sellTickers": ["REGTEST", "LTC", "ETH", "ADA"],
+        "addressFormats": { "BCH": "cashaddr", "LTC": "type3" },
+        "statusUrl": "https://support.changelly.com",
+        "kycUrl": "https://changelly.com/aml-kyc",
+        "supportUrl": "https://support.changelly.com",
+        "kycPolicy": "KYC requested in exceptional cases. KYC required for refunds. 👈",
+        "isRefundRequired": false
+    },
+    {
+        "name": "changehero",
+        "companyName": "ChangeHero",
+        "logo": "changehero-icon.png",
+        "isActive": true,
+        "isFixedRate": false,
+        "isDex": false,
+        "buyTickers": ["REGTEST", "LTC", "ETH", "ADA"],
+        "sellTickers": ["REGTEST", "LTC", "ETH", "ADA"],
+        "addressFormats": { "BCH": "legacy", "LTC": "type3" },
+        "statusUrl": "https://changehero.io/transaction/{{orderId}}",
+        "kycUrl": "https://changehero.io/aml-kyc",
+        "supportUrl": "https://changehero.io/support",
+        "kycPolicy": "KYC requested in exceptional cases. KYC required for refunds. 👈",
+        "isRefundRequired": false
+    }
+]
