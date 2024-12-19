@@ -34,9 +34,17 @@ type DetailModalProps = {
     tab: TabID | undefined;
     onChangeFeeClick: () => void;
     chainedTxs?: ChainedTransactions;
+    canBumpFee: boolean;
 };
 
-const DetailModal = ({ tx, onCancel, tab, onChangeFeeClick, chainedTxs }: DetailModalProps) => {
+const DetailModal = ({
+    tx,
+    onCancel,
+    tab,
+    onChangeFeeClick,
+    chainedTxs,
+    canBumpFee,
+}: DetailModalProps) => {
     const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
     const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
     const network = getNetwork(account.symbol);
@@ -51,9 +59,11 @@ const DetailModal = ({ tx, onCancel, tab, onChangeFeeClick, chainedTxs }: Detail
             onCancel={onCancel}
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
             bottomContent={
-                <NewModal.Button variant="tertiary" onClick={onChangeFeeClick}>
-                    <Translation id="TR_BUMP_FEE" />
-                </NewModal.Button>
+                canBumpFee ? (
+                    <NewModal.Button variant="tertiary" onClick={onChangeFeeClick}>
+                        <Translation id="TR_BUMP_FEE" />
+                    </NewModal.Button>
+                ) : null
             }
             onBackClick={undefined}
         >
@@ -147,13 +157,13 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
         setTab(undefined);
     };
 
-    if (
+    const canBumpFee =
         hasRbfParams(tx) &&
-        section === 'CHANGE_FEE' &&
         networkFeatures?.includes('rbf') &&
         !tx.deadline &&
-        selectedAccount.status === 'loaded'
-    ) {
+        selectedAccount.status === 'loaded';
+
+    if (section === 'CHANGE_FEE' && canBumpFee) {
         return (
             <BumpFeeModal
                 tx={tx}
@@ -173,6 +183,7 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
             tab={tab}
             onChangeFeeClick={onChangeFeeClick}
             chainedTxs={chainedTxs}
+            canBumpFee={canBumpFee}
         />
     );
 };
