@@ -222,6 +222,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                     category: ['BROWSABLE', 'DEFAULT'],
                 },
             ],
+            // These permission are included by expo-video, but we don't need them. The video is always played when is the app open and user is on the specific screen.
+            blockedPermissions: ['FOREGROUND_SERVICE', 'FOREGROUND_SERVICE_MEDIA_PLAYBACK'],
         },
         ios: {
             bundleIdentifier,
