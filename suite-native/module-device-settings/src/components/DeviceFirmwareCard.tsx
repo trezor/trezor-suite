@@ -66,9 +66,9 @@ export const DeviceFirmwareCard = () => {
         selectIsDiscoveryActiveByDeviceState(state, device?.state),
     );
     const navigation = useNavigation<NavigationProp>();
-    const isFirmwareUpdateEnabled = useFeatureFlag(FeatureFlag.IsFirmwareUpdateEnabled);
+    const [isFirmwareUpdateEnabled] = useFeatureFlag(FeatureFlag.IsFirmwareUpdateEnabled);
 
-    if (!device || !deviceModel || !isFirmwareUpdateEnabled) {
+    if (!device || !deviceModel) {
         return null;
     }
 
@@ -78,6 +78,10 @@ export const DeviceFirmwareCard = () => {
         : 'moduleDeviceSettings.firmware.typeUniversal';
 
     const firmwareUpdateProps = (() => {
+        if (!isFirmwareUpdateEnabled) {
+            return undefined;
+        }
+
         if (G.isNotNullable(deviceReleaseInfo)) {
             const isUpgradable = deviceReleaseInfo.isNewer ?? false;
 
