@@ -25,18 +25,18 @@ export const CoinmarketOfferExchange = ({
     quoteAmounts,
 }: CoinmarketOfferExchangeProps) => {
     const { exchangeStep } = useCoinmarketFormContext<CoinmarketTradeExchangeType>();
-    const currency = selectedQuote?.receive;
-    const coinmarketVerifyAccount = useCoinmarketVerifyAccount({ currency });
+    const cryptoId = selectedQuote?.receive;
+    const coinmarketVerifyAccount = useCoinmarketVerifyAccount({ cryptoId });
 
     const steps: CoinmarketSelectedOfferStepperItemProps[] = [
         {
             step: 'RECEIVING_ADDRESS',
             translationId: 'TR_EXCHANGE_VERIFY_ADDRESS_STEP',
             isActive: exchangeStep === 'RECEIVING_ADDRESS',
-            component: currency ? (
+            component: cryptoId ? (
                 <CoinmarketVerify
                     coinmarketVerifyAccount={coinmarketVerifyAccount}
-                    currency={currency}
+                    cryptoId={cryptoId}
                 />
             ) : null,
         },

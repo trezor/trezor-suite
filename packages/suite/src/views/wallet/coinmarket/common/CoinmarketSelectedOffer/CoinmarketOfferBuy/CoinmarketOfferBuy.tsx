@@ -14,16 +14,16 @@ export const CoinmarketOfferBuy = ({
     paymentMethod,
     paymentMethodName,
 }: CoinmarketOfferBuyProps) => {
-    const currency = selectedQuote?.receiveCurrency;
-    const coinmarketVerifyAccount = useCoinmarketVerifyAccount({ currency });
+    const cryptoId = selectedQuote?.receiveCurrency;
+    const coinmarketVerifyAccount = useCoinmarketVerifyAccount({ cryptoId });
 
     return (
         <>
             <Card>
-                {currency && (
+                {cryptoId && (
                     <CoinmarketVerify
                         coinmarketVerifyAccount={coinmarketVerifyAccount}
-                        currency={currency}
+                        cryptoId={cryptoId}
                     />
                 )}
             </Card>

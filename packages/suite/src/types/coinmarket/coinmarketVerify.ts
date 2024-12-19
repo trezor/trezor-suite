@@ -20,7 +20,7 @@ export interface CoinmarketVerifyFormAccountOptionProps {
 }
 
 export interface CoinmarketVerifyAccountProps {
-    currency: CryptoId | undefined;
+    cryptoId: CryptoId | undefined;
 }
 
 export interface CoinmarketGetTranslationIdsProps {

@@ -27,10 +27,10 @@ import { getCoinmarketNetworkDisplaySymbol } from 'src/utils/wallet/coinmarket/c
 
 interface CoinmarketVerifyProps {
     coinmarketVerifyAccount: CoinmarketVerifyAccountReturnProps;
-    currency: CryptoId;
+    cryptoId: CryptoId;
 }
 
-export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: CoinmarketVerifyProps) => {
+export const CoinmarketVerify = ({ coinmarketVerifyAccount, cryptoId }: CoinmarketVerifyProps) => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const { cryptoIdToCoinSymbol, cryptoIdToNativeCoinSymbol } = useCoinmarketInfo();
@@ -60,13 +60,13 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
     const { accountTooltipTranslationId, addressTooltipTranslationId } = getTranslationIds(
         selectedAccountOption?.type,
     );
-    const coinSymbol = getCoinmarketNetworkDisplaySymbol(cryptoIdToCoinSymbol(currency) ?? '');
+    const coinSymbol = getCoinmarketNetworkDisplaySymbol(cryptoIdToCoinSymbol(cryptoId) ?? '');
 
     const { ref: networkRef, ...networkField } = form.register('address', {
         required: translationString('TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED'),
         validate: value => {
-            if (selectedAccountOption?.type === 'NON_SUITE' && currency) {
-                const symbol = cryptoIdToNativeCoinSymbol(currency);
+            if (selectedAccountOption?.type === 'NON_SUITE' && cryptoId) {
+                const symbol = cryptoIdToNativeCoinSymbol(cryptoId);
                 if (value && !addressValidator.validate(value, symbol)) {
                     return translationString('TR_EXCHANGE_RECEIVING_ADDRESS_INVALID');
                 }
@@ -111,7 +111,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
                 />
             </Paragraph>
             <CoinmarketVerifyOptions
-                receiveNetwork={currency}
+                receiveNetwork={cryptoId}
                 selectedAccountOption={selectedAccountOption}
                 selectAccountOptions={selectAccountOptions}
                 isMenuOpen={isMenuOpen}
@@ -129,7 +129,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
                             account={selectedAccountOption?.account}
                             address={address}
                             control={form.control}
-                            receiveSymbol={currency}
+                            receiveSymbol={cryptoId}
                             setValue={form.setValue}
                             label={
                                 <Tooltip
