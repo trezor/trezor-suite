@@ -18,6 +18,7 @@ import { setSidebarWidth as setSidebarWidthInRedux } from '../../../../../action
 import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 
 const Container = styled.nav<{ $elevation: Elevation }>`
+    overflow-x: hidden;
     display: flex;
     container-type: inline-size;
     flex-direction: column;
