@@ -2,7 +2,7 @@ import { test, expect } from '../../support/fixtures';
 
 const regexpBtcValue = /^\d+(\.\d+)? BTC$/;
 
-test.describe('Coin market buy', { tag: ['@group=settings'] }, () => {
+test.describe('Coin market buy', { tag: ['@group_other'] }, () => {
     test.use({ emulatorStartConf: { wipe: true } });
     test.beforeEach(async ({ onboardingPage, dashboardPage, marketPage }) => {
         await onboardingPage.completeOnboarding();
@@ -51,7 +51,10 @@ test.describe('Coin market buy', { tag: ['@group=settings'] }, () => {
         await expect(marketPage.tradeConfirmation).toHaveScreenshot(
             'best-offer-buy-confirmation.png',
             {
-                mask: [marketPage.tradeConfirmationCryptoAmount],
+                mask: [
+                    marketPage.tradeConfirmationCryptoAmount,
+                    marketPage.tradeConfirmationProvider,
+                ],
             },
         );
         await expect(marketPage.tradeConfirmationCryptoAmount).toHaveText(amount);

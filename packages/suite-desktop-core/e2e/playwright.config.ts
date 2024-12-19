@@ -32,7 +32,6 @@ const config: PlaywrightTestConfig = {
         video: 'on',
         screenshot: 'on',
         testIdAttribute: 'data-testid',
-        actionTimeout: 30000,
     },
     reportSlowTests: null,
     reporter: process.env.GITHUB_ACTION
