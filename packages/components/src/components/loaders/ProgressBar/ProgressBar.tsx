@@ -1,11 +1,8 @@
 import styled from 'styled-components';
 
-import { borders, spacingsPx } from '@trezor/theme';
-
 const Wrapper = styled.div`
     background: ${({ theme }) => theme.backgroundNeutralSubdued};
     width: 100%;
-    border-radius: ${borders.radii.full};
     overflow: hidden;
 `;
 
@@ -16,7 +13,7 @@ type ValueProps = {
 
 const Value = styled.div<ValueProps>`
     background: ${({ theme }) => theme.iconPrimaryDefault};
-    height: ${spacingsPx.xs};
+    height: 5px;
     max-width: 100%;
     width: 1%;
     transform: ${({ $max, $value }) => `scaleX(${(100 / $max) * $value})`};
