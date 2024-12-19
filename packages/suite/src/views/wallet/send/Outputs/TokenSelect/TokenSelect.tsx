@@ -307,12 +307,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                 />
             )}
 
-            <Card
-                fillType="default"
-                margin={{ bottom: spacings.sm }}
-                paddingType="normal"
-                onClick={onOpenSelectAssetModal}
-            >
+            <Card fillType="default" paddingType="normal" onClick={onOpenSelectAssetModal}>
                 <Row justifyContent="space-between" height={64}>
                     <Row justifyContent="flex-start" gap={spacings.sm}>
                         {networkTokenContractAddress ? (

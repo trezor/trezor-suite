@@ -5,11 +5,10 @@ import { motion } from 'framer-motion';
 
 import { Card, motionEasing, Column } from '@trezor/components';
 import { motionEasingStrings } from '@trezor/components/src/config/motion';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 
 import { useSendFormContext } from 'src/hooks/wallet';
-import { useLayoutSize } from 'src/hooks/suite';
 
 import { Address } from './Address';
 import { Amount } from './Amount/Amount';
@@ -19,12 +18,6 @@ import { TokenSelect } from './TokenSelect/TokenSelect';
 const Container = styled.div<{ $height: number }>`
     height: ${({ $height }) => ($height ? `${$height}px` : 'auto')};
     transition: height 0.2s ${motionEasingStrings.transition};
-
-    > div {
-        display: flex;
-        flex-direction: column;
-        gap: ${spacingsPx.md};
-    }
 `;
 
 interface OutputsProps {
@@ -34,7 +27,6 @@ interface OutputsProps {
 export const Outputs = ({ disableAnim }: OutputsProps) => {
     const [height, setHeight] = useState(0);
     const [hasRenderedOutputs, setHasRenderedOutputs] = useState(false);
-    const size = useLayoutSize();
 
     const {
         outputs,
@@ -46,7 +38,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
 
     useLayoutEffect(() => {
         setHeight(ref.current?.offsetHeight || 0);
-    }, [outputs, errors.outputs, size]);
+    }, [outputs, errors.outputs]);
 
     // needed to have no entrance animation on the first render
     // for some reason the first render does not have all the outputs
@@ -61,38 +53,41 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
     return (
         <Container $height={height || 0}>
             <div ref={ref}>
-                {outputs.map((output, index) => (
-                    <motion.div
-                        layout
-                        key={output.id}
-                        initial={
-                            index === 0 || !hasRenderedOutputs || disableAnim
-                                ? undefined
-                                : { scale: 0.8, opacity: 0 }
-                        }
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{
-                            duration: 0.2,
-                            ease: motionEasing.transition,
-                        }}
-                    >
-                        {areTokensSupported && <TokenSelect outputId={index} />}
-                        <Card>
-                            {output.type === 'opreturn' ? (
-                                <OpReturn outputId={index} />
-                            ) : (
-                                <Column gap={spacings.md}>
-                                    <Address
-                                        output={outputs[index]}
-                                        outputId={index}
-                                        outputsCount={outputs.length}
-                                    />
-                                    <Amount output={outputs[index]} outputId={index} />
-                                </Column>
-                            )}
-                        </Card>
-                    </motion.div>
-                ))}
+                <Column gap={spacings.md}>
+                    {outputs.map((output, index) => (
+                        <motion.div
+                            key={output.id}
+                            initial={
+                                index === 0 || !hasRenderedOutputs || disableAnim
+                                    ? undefined
+                                    : { opacity: 0, scale: 0.8 }
+                            }
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{
+                                duration: 0.2,
+                                ease: motionEasing.transition,
+                            }}
+                        >
+                            <Column gap={spacings.sm}>
+                                {areTokensSupported && <TokenSelect outputId={index} />}
+                                <Card>
+                                    {output.type === 'opreturn' ? (
+                                        <OpReturn outputId={index} />
+                                    ) : (
+                                        <Column gap={spacings.md}>
+                                            <Address
+                                                output={outputs[index]}
+                                                outputId={index}
+                                                outputsCount={outputs.length}
+                                            />
+                                            <Amount output={outputs[index]} outputId={index} />
+                                        </Column>
+                                    )}
+                                </Card>
+                            </Column>
+                        </motion.div>
+                    ))}
+                </Column>
             </div>
         </Container>
     );
