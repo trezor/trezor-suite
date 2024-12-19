@@ -5426,6 +5426,11 @@ export default defineMessages({
         defaultMessage: 'Not enough {symbol} to cover transaction fee',
         id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
     },
+
+    AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT: {
+        defaultMessage: 'Not enough {symbol} to cover transaction fee {feeAmount}',
+        id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
+    },
     REMAINING_BALANCE_LESS_THAN_RENT: {
         defaultMessage:
             'After sending this amount, your account will have {remainingSolBalance} SOL remaining. A non-empty account must maintain a balance of more than {rent} SOL.',

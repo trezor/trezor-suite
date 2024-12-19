@@ -32,7 +32,8 @@ type PrecomposedTransactionErrorExtended =
               | 'AMOUNT_IS_TOO_LOW'
               | 'AMOUNT_IS_LESS_THAN_RESERVE'
               | 'TR_STAKE_NOT_ENOUGH_FUNDS'
-              | 'REMAINING_BALANCE_LESS_THAN_RENT';
+              | 'REMAINING_BALANCE_LESS_THAN_RENT'
+              | 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT';
       };
 
 export type PrecomposedTransactionCardanoNonFinal =

@@ -75,21 +75,31 @@ export const calculateMax = (availableBalance: string, fee: string): string => {
 
 // ETH SPECIFIC
 
-/*
-    Calculate fee from gas price and gas limit
+/**
+ * Calculate the Ethereum fee from gas price and gas limit.
+ * @param {string} [gasPrice] - The gas price in wei.
+ * @param {string} [gasLimit] - The gas limit.
+ * @returns {string} The calculated fee in wei, or '0' if inputs are invalid.
  */
 export const calculateEthFee = (gasPrice?: string, gasLimit?: string): string => {
     if (!gasPrice || !gasLimit) {
         return '0';
     }
-    try {
-        const result = new BigNumber(gasPrice).times(gasLimit);
-        if (result.isNaN()) throw new Error('NaN');
 
-        return result.toFixed();
-    } catch {
+    const gasPriceBN = new BigNumber(gasPrice);
+    const gasLimitBN = new BigNumber(gasLimit);
+
+    if (gasPriceBN.isNaN() || gasLimitBN.isNaN()) {
         return '0';
     }
+
+    const fee = gasPriceBN.times(gasLimitBN);
+
+    if (fee.isNaN()) {
+        return '0';
+    }
+
+    return fee.toFixed();
 };
 
 const getSerializedAmount = (amount?: string) =>
