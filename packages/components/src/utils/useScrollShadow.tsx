@@ -87,7 +87,9 @@ export const useScrollShadow = () => {
     const { elevation } = useElevation();
 
     useEffect(() => {
-        setShadows();
+        setTimeout(() => {
+            setShadows();
+        }, 100);
         window.addEventListener('resize', () => setShadows());
         window.addEventListener('orientationchange', () => setShadows());
 
@@ -111,6 +113,7 @@ export const useScrollShadow = () => {
             $direction="top"
         />
     );
+
     const ShadowBottom = ({ backgroundColor, style }: ShadowProps) => (
         <Gradient
             $backgroundColor={backgroundColor}
