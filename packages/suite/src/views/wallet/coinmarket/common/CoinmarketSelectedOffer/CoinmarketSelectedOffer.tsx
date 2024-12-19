@@ -29,7 +29,7 @@ export const CoinmarketSelectedOffer = () => {
     const paymentMethod = getPaymentMethod(context.selectedQuote, context);
 
     return (
-        <Wrapper>
+        <Wrapper data-testid="@coinmarket/selected-offer">
             {isCoinmarketBuyContext(context) && (
                 <CoinmarketOfferBuy
                     account={account}

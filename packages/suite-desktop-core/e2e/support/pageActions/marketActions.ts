@@ -1,9 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { capitalizeFirstLetter } from '@trezor/utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-
-import { invityFixtures } from '../../fixtures/invity';
 
 export class MarketActions {
     readonly accountMenuButton: Locator;
@@ -18,6 +15,8 @@ export class MarketActions {
     readonly buyOffersPage: Locator;
     readonly compareButton: Locator;
     readonly quotes: Locator;
+    readonly quoteOfProvider = (provider: string) =>
+        this.page.getByTestId(`@coinmarket/offers/quote-${provider}`);
     readonly quoteProvider: Locator;
     readonly quoteAmount: Locator;
     readonly selectThisQuoteButton: Locator;
@@ -28,6 +27,7 @@ export class MarketActions {
     readonly tradeConfirmation: Locator;
     readonly tradeConfirmationCryptoAmount: Locator;
     readonly tradeConfirmationProvider: Locator;
+    readonly tradeConfirmationContinueButton: Locator;
 
     constructor(private page: Page) {
         this.accountMenuButton = this.page.getByTestId('@account-menu/btc/normal/0');
@@ -55,16 +55,20 @@ export class MarketActions {
             '@coinmarket/offer/confirm-on-trezor-button',
         );
         this.confirmOnDevicePrompt = this.page.getByTestId('@prompts/confirm-on-device');
-        this.tradeConfirmation = this.page.getByTestId('@coinmarket/form/info');
+        this.tradeConfirmation = this.page.getByTestId('@coinmarket/selected-offer');
         this.tradeConfirmationCryptoAmount = this.page.getByTestId(
             '@coinmarket/form/info/crypto-amount',
         );
         this.tradeConfirmationProvider = this.page.getByTestId('@coinmarket/form/info/provider');
+        this.tradeConfirmationContinueButton = this.page.getByTestId(
+            '@coinmarket/offer/continue-transaction-button',
+        );
     }
 
     openCoinMarket = async () => {
         await this.accountMenuButton.click();
         await this.coinMarketBuyButton.click();
+        await this.waitForOffers();
     };
 
     waitForOffers = async () => {
@@ -73,41 +77,11 @@ export class MarketActions {
     };
 
     setYouPayAmount = async (amount: string) => {
+        //Warning: the field is initialized empty and gets default value after the first offer sync
+        //Solved by waiting for offers when opening the coin market
         await this.youPayInput.fill(amount);
+        //Warning: Bug #16054, as a workaround we wait for offer sync after setting the amount
         await this.waitForOffers();
-    };
-
-    interceptInvity = async () => {
-        const invityApiUrlToIntercept = 'https://exchange.trezor.io';
-        for (const [path, fixture] of Object.entries(invityFixtures)) {
-            await this.page.route(`${invityApiUrlToIntercept}${path}`, route => {
-                route.fulfill({
-                    status: 200,
-                    body: JSON.stringify(fixture),
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-            });
-        }
-    };
-
-    findQuoteRow = async (provider: string) => {
-        //TODO #16041 Refactor to testid with provider name
-        await expect(this.buyOffersPage).toBeVisible();
-        const availableQuotes = await this.quotes.all();
-        for (const quote of availableQuotes) {
-            const quoteProvider = await quote.locator(this.quoteProvider).textContent();
-            if (quoteProvider === capitalizeFirstLetter(provider)) {
-                return quote;
-            }
-        }
-        throw new Error(`Offer with provider ${provider} not found`);
-    };
-
-    selectQuote = async (provider: string) => {
-        const quote = await this.findQuoteRow(provider);
-        await quote.locator(this.selectThisQuoteButton).click();
     };
 
     confirmTrade = async () => {
@@ -117,5 +91,17 @@ export class MarketActions {
         await expect(this.confirmOnDevicePrompt).toBeVisible();
         await TrezorUserEnvLink.pressYes();
         await expect(this.confirmOnDevicePrompt).not.toBeVisible();
+    };
+
+    readBestOfferValues = async () => {
+        const amount = await this.bestOfferAmount.textContent();
+        const provider = await this.bestOfferProvider.textContent();
+        if (!amount || !provider) {
+            throw new Error(
+                `Test was not able to extract amount or provider from the page. Amount: ${amount}, Provider: ${provider}`,
+            );
+        }
+
+        return { amount, provider };
     };
 }

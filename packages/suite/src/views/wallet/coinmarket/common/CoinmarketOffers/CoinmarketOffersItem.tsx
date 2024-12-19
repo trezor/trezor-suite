@@ -107,7 +107,10 @@ export const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
     if (!cryptoAmountProps) return null;
 
     return (
-        <CoinmarketTestWrapper data-testid="@coinmarket/offers/quote">
+        <CoinmarketTestWrapper
+            data-testid="@coinmarket/offers/quote"
+            data-testid-alt={`@coinmarket/offers/quote-${exchange}`}
+        >
             <Card margin={{ top: spacings.md }} minHeight={100}>
                 <Offer>
                     <ExchangeNameOfferColumn>
