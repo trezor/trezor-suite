@@ -1,4 +1,4 @@
-import { toWei } from 'web3-utils';
+import { fromWei, toWei } from 'web3-utils';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
@@ -46,31 +46,43 @@ const calculate = (
     feeLevel: FeeLevel,
     token?: TokenInfo,
 ): PrecomposedTransaction => {
-    const feeInSatoshi = calculateEthFee(
-        toWei(feeLevel.feePerUnit, 'gwei'),
-        feeLevel.feeLimit || '0',
-    );
-
     let amount: string;
     let max: string | undefined;
+    const feeInGwei = calculateEthFee(toWei(feeLevel.feePerUnit, 'gwei'), feeLevel.feeLimit || '0');
+
     const availableTokenBalance = token
         ? amountToSmallestUnit(token.balance!, token.decimals)
         : undefined;
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
-        max = availableTokenBalance || calculateMax(availableBalance, feeInSatoshi);
+        max = availableTokenBalance || calculateMax(availableBalance, feeInGwei);
         amount = max;
     } else {
         amount = output.amount;
     }
 
     // total ETH spent (amount + fee), in ERC20 only fee
-    const totalSpent = new BigNumber(calculateTotal(token ? '0' : amount, feeInSatoshi));
+    const totalSpent = new BigNumber(calculateTotal(token ? '0' : amount, feeInGwei));
 
     if (totalSpent.isGreaterThan(availableBalance)) {
-        const error = token ? 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' : 'AMOUNT_IS_NOT_ENOUGH';
+        if (token) {
+            return {
+                type: 'error',
+                error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
+                errorMessage: {
+                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
+                    values: {
+                        symbol: 'ETH',
+                        feeAmount: `(${fromWei(feeInGwei, 'ether')} ETH)`,
+                    },
+                },
+            } as const;
+        }
 
-        // errorMessage declared later
-        return { type: 'error', error, errorMessage: { id: error } } as const;
+        return {
+            type: 'error',
+            error: 'AMOUNT_IS_NOT_ENOUGH',
+            errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
+        } as const;
     }
 
     // validate if token balance is not 0 or lower than amount
@@ -89,7 +101,7 @@ const calculate = (
         type: 'nonfinal' as const,
         totalSpent: token ? amount : totalSpent.toString(),
         max,
-        fee: feeInSatoshi,
+        fee: feeInGwei,
         feePerByte: feeLevel.feePerUnit,
         feeLimit: feeLevel.feeLimit,
         token,
@@ -227,10 +239,16 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                     ? customFeeLimit.toFixed(0)
                     : undefined;
             }
-            if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
+            if (
+                tx.type === 'error' &&
+                tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT'
+            ) {
                 tx.errorMessage = {
-                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                    values: { symbol: network.symbol.toUpperCase() },
+                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
+                    values: {
+                        symbol: tx.errorMessage?.values?.symbol || 'ETH',
+                        feeAmount: tx.errorMessage?.values?.feeAmount || '',
+                    },
                 };
             }
         });
