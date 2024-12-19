@@ -1,4 +1,4 @@
-import React, { ReactNode, useRef, useState } from 'react';
+import React, { ReactNode, useRef } from 'react';
 
 import styled from 'styled-components';
 
@@ -89,13 +89,20 @@ type NavBackendsProps = {
  * The issue here is that `Dropdown` component expects child with `isDisabled` prop,
  * as it passes this props via `cloneElement()`.
  */
-// @ts-expect-error `isDisabled` is needed here despite not being used
-const WrapperDiv = ({ children, isDisabled }: { isDisabled?: boolean; children: ReactNode }) => (
-    <div>{children}</div>
+const WrapperDiv = ({
+    children,
+    isDisabled: _, // `isDisabled` is needed here despite not being used
+    onClick,
+}: {
+    isDisabled?: boolean;
+    children: ReactNode;
+    onClick?: () => void;
+}) => (
+    // eslint-disable-next-line
+    <div onClick={onClick}>{children}</div>
 );
 
 export const NavBackends = ({ customBackends, children }: NavBackendsProps) => {
-    const [open, setOpen] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
     const blockchain = useSelector(state => state.wallet.blockchain);
     const dispatch = useDispatch();
@@ -136,7 +143,6 @@ export const NavBackends = ({ customBackends, children }: NavBackendsProps) => {
 
     return (
         <StyledDropdown
-            onToggle={() => setOpen(!open)}
             ref={dropdownRef}
             alignMenu="top-right"
             addon={{
