@@ -9,6 +9,7 @@ import { getTokens } from 'src/utils/wallet/tokenUtils';
 
 import { NoTokens } from '../tokens/common/NoTokens';
 import NftsTable from './NftsTable/NftsTable';
+import { NoSearchResultsWrapped } from '../tokens/common/TokensTable/TokensTable';
 
 type EvmNftsTablesProps = {
     selectedAccount: SelectedAccountLoaded;
@@ -73,14 +74,24 @@ export const NftsTablesSection = ({
     };
 
     if (isShown) {
-        return areNoShownNfts ? (
-            <NoTokens isNft={true} title={<Translation id={getNoTokensTitle()} />} />
-        ) : (
+        if (areNoShownNfts) {
+            if (searchQuery) {
+                return <NoSearchResultsWrapped />;
+            }
+
+            return <NoTokens isNft={true} title={<Translation id={getNoTokensTitle()} />} />;
+        }
+
+        return (
             <NftsTable selectedAccount={selectedAccount} isShown={isShown} verified nfts={nfts} />
         );
     }
 
     if (areNoHiddenNfts && areNoUnverifiedNfts) {
+        if (searchQuery) {
+            return <NoSearchResultsWrapped />;
+        }
+
         return <NoTokens isNft={true} title={<Translation id="TR_HIDDEN_NFT_EMPTY" />} />;
     }
 

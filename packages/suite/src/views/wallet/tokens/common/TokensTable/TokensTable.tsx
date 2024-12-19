@@ -12,6 +12,18 @@ import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarket
 import { TokenRow } from './TokenRow';
 import { DropdownRow } from '../../DropdownRow';
 
+const NoSearchResults = () => (
+    <Paragraph margin={{ top: spacings.xxl, bottom: spacings.xxl }} align="center">
+        <Translation id="TR_NO_SEARCH_RESULTS" />
+    </Paragraph>
+);
+
+export const NoSearchResultsWrapped = () => (
+    <Card paddingType="none" overflow="hidden">
+        <NoSearchResults />
+    </Card>
+);
+
 interface TokensTableProps {
     account: Account;
     tokensWithBalance: EnhancedTokenInfo[];
@@ -39,9 +51,7 @@ export const TokensTable = ({
     return (
         <Card paddingType="none" overflow="hidden">
             {tokensWithBalance.length === 0 && tokensWithoutBalance.length === 0 && searchQuery ? (
-                <Paragraph margin={{ top: spacings.xxl, bottom: spacings.xxl }} align="center">
-                    <Translation id="TR_NO_SEARCH_RESULTS" />
-                </Paragraph>
+                <NoSearchResults />
             ) : (
                 <Table
                     margin={{ top: spacings.xs }}
