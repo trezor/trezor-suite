@@ -37,8 +37,8 @@ jobs:
           #   CONTAINERS: "trezor-user-env-unix"
           # - TEST_GROUP: "@group=passphrase"
           #   CONTAINERS: "trezor-user-env-unix"
-          # - TEST_GROUP: "@group=other"
-          #   CONTAINERS: "trezor-user-env-unix"
+          - TEST_GROUP: "@group=other"
+            CONTAINERS: "trezor-user-env-unix"
           - TEST_GROUP: "@group=wallet"
             CONTAINERS: "trezor-user-env-unix"
 

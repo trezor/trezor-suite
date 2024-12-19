@@ -32,6 +32,8 @@ on:
       - ".github/workflows/release*"
       - ".github/workflows/template*"
       - ".github/actions/release*/**"
+  schedule:
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 env:
@@ -103,8 +105,8 @@ jobs:
           #   CONTAINERS: "trezor-user-env-unix"
           # - TEST_GROUP: "@group=passphrase"
           #   CONTAINERS: "trezor-user-env-unix"
-          # - TEST_GROUP: "@group=other"
-          #   CONTAINERS: "trezor-user-env-unix"
+          - TEST_GROUP: "@group=other"
+            CONTAINERS: "trezor-user-env-unix"
           - TEST_GROUP: "@group=wallet"
             CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
 
