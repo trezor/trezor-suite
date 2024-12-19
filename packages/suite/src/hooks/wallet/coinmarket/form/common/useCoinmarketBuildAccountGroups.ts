@@ -18,7 +18,7 @@ export const useCoinmarketBuildAccountGroups = (
     const accountLabels = useSelector(selectAccountLabels);
     const device = useSelector(selectSelectedDevice);
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
-    const { tokenDefinitions } = useSelector(state => state);
+    const tokenDefinitions = useSelector(state => state.tokenDefinitions);
     const supportedSymbols = useSelector(selectSupportedSymbols(type));
 
     const groups = useMemo(
