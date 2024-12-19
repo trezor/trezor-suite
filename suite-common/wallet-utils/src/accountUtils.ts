@@ -287,16 +287,16 @@ export const stripNetworkAmount = (amount: string, decimals: number) =>
     new BigNumber(amount).toFixed(decimals, 1);
 
 export const formatAmount = (amount: BigNumberValue, decimals: number) => {
-    try {
-        const bAmount = new BigNumber(amount);
-        if (bAmount.isNaN()) {
-            throw new Error('Amount is not a number');
-        }
+    const safeAmount = amount || '0';
+    const bAmount = new BigNumber(safeAmount);
 
-        return bAmount.div(new BigNumber(10).exponentiatedBy(decimals)).toString(10);
-    } catch {
-        return '-1'; // TODO: this is definitely not correct return value
+    if (bAmount.isNaN()) {
+        throw new Error('Amount is not a number');
     }
+
+    const factor = new BigNumber(10).exponentiatedBy(decimals);
+
+    return bAmount.div(factor).toString(10);
 };
 
 export const amountToSmallestUnit = (amount: BigNumberValue, decimals: number) => {
@@ -353,7 +353,7 @@ export const formatNetworkAmount = (
         let formattedSymbol = getNetworkDisplaySymbol(symbol);
 
         if (isSatoshis) {
-            formattedAmount = amount;
+            formattedAmount = amount || '0';
             formattedSymbol = symbol === 'btc' ? 'sat' : `sat ${getNetworkDisplaySymbol(symbol)}`;
         }
 

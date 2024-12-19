@@ -90,10 +90,15 @@ export const Fees = <TFieldValues extends FormState>({
     const error = errors.selectedFee;
     const selectedLevel = feeInfo.levels.find(level => level.label === selectedOption)!;
     const transactionInfo = composedLevels?.[selectedOption];
+    const hasTransactionInfo = transactionInfo !== undefined && transactionInfo.type !== 'error';
     // Solana has only `normal` fee level, so we do not display any feeOptions since there is nothing to choose from
     const feeOptions = networkType === 'solana' ? [] : buildFeeOptions(feeInfo.levels);
 
     const shouldAnimateNormalFee = !isCustomLevel;
+
+    const networkAmount = hasTransactionInfo
+        ? formatNetworkAmount(transactionInfo.fee, symbol)
+        : null;
 
     return (
         <Column gap={spacings.xs}>
@@ -114,17 +119,17 @@ export const Fees = <TFieldValues extends FormState>({
                     )
                 }
             >
-                {transactionInfo !== undefined && transactionInfo.type !== 'error' && (
+                {networkAmount && (
                     <Row gap={spacings.md} alignItems="baseline">
                         <FormattedCryptoAmount
                             disableHiddenPlaceholder
-                            value={formatNetworkAmount(transactionInfo.fee, symbol)}
+                            value={networkAmount}
                             symbol={symbol}
                         />
                         <Text variant="tertiary" typographyStyle="label">
                             <FiatValue
                                 disableHiddenPlaceholder
-                                amount={formatNetworkAmount(transactionInfo.fee, symbol)}
+                                amount={networkAmount}
                                 symbol={symbol}
                                 showApproximationIndicator
                             />

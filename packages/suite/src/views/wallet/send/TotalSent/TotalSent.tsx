@@ -24,7 +24,7 @@ export const TotalSent = () => {
     const selectedFee = getValues().selectedFee || 'normal';
     const transactionInfo = composedLevels ? composedLevels[selectedFee] : undefined;
     const isTokenTransfer = networkType === 'ethereum' && !!getValues('outputs.0.token');
-    const hasTransactionInfo = transactionInfo && transactionInfo.type !== 'error';
+    const hasTransactionInfo = transactionInfo !== undefined && transactionInfo.type !== 'error';
     const tokenInfo = hasTransactionInfo ? transactionInfo.token : undefined;
 
     return (
@@ -53,6 +53,7 @@ export const TotalSent = () => {
                             />
                         )}
                     </InfoItem>
+
                     <InfoItem
                         label={<Translation id={isTokenTransfer ? 'FEE' : 'INCLUDING_FEE'} />}
                         direction="row"
