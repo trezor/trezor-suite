@@ -67,9 +67,9 @@ export const UnstakeEthForm = () => {
                     </Banner>
                 )}
 
-                <Column gap={spacings.lg}>
-                    <AvailableBalance formattedBalance={autocompoundBalance} symbol={symbol} />
+                <AvailableBalance formattedBalance={autocompoundBalance} symbol={symbol} />
 
+                <Column gap={spacings.lg}>
                     <Inputs />
                     {showError && <Banner variant="destructive">{inputError?.message}</Banner>}
                 </Column>

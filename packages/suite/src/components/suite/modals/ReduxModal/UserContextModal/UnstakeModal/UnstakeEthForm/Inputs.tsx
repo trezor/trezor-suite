@@ -1,4 +1,4 @@
-import { Icon, Text, Row, FractionButton, Column, FractionButtonProps } from '@trezor/components';
+import { Text, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { useFormatters } from '@suite-common/formatters';
@@ -7,29 +7,30 @@ import {
     getNonComposeErrorMessage,
     getStakingDataForNetwork,
 } from '@suite-common/wallet-utils';
-import { NumberInput } from '@trezor/product-components';
+import { InputWithOptions } from '@trezor/product-components';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { UnstakeFormState } from '@suite-common/wallet-core';
 
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/wallet/stakeForms';
 import { useSelector, useTranslation } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { validateDecimals, validateCryptoLimits, validateMin } from 'src/utils/suite/validation';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 export const Inputs = () => {
-    const selectedAccount = useSelector(selectSelectedAccount);
-
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
-    const { symbol } = useSelector(selectSelectedAccount) ?? {};
+
     const locale = useSelector(selectLanguage);
 
     const {
+        account,
         control,
         network,
         formState: { errors },
         amountLimits,
+        getValues,
         onCryptoAmountChange,
         onFiatAmountChange,
         localCurrency,
@@ -41,7 +42,13 @@ export const Inputs = () => {
         autocompoundBalance = '0',
         depositedBalance = '0',
         restakedReward = '0',
-    } = getStakingDataForNetwork(selectedAccount) ?? {};
+    } = getStakingDataForNetwork(account) ?? {};
+
+    const { symbol } = account;
+    const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
+
+    const { outputs } = getValues();
+    const amount = outputs?.[0]?.amount;
 
     const cryptoError = errors.cryptoInput;
     const fiatError = errors.fiatInput;
@@ -65,100 +72,119 @@ export const Inputs = () => {
         },
     };
 
-    const fractionButtons: FractionButtonProps[] = [
-        {
-            label: '10%',
-            onClick: () => setRatioAmount(10),
-        },
-        {
-            label: '25%',
-            onClick: () => setRatioAmount(4),
-        },
-        {
-            label: '50%',
-            onClick: () => setRatioAmount(2),
-        },
-        {
-            label: 'Max',
-            translation: <Translation id="TR_STAKE_MAX" />,
-            tooltip: (
-                <Column alignItems="flex-end">
-                    <FormattedCryptoAmount value={autocompoundBalance} symbol={symbol} />
-                    {symbol && (
-                        <Text typographyStyle="hint">
-                            <FiatValue amount={depositedBalance} symbol={symbol}>
-                                {({ value }) => value && <span>{value} + </span>}
-                            </FiatValue>
-                            <Text variant="primary">
-                                <FiatValue amount={restakedReward} symbol={symbol} />
-                            </Text>
-                        </Text>
-                    )}
-                </Column>
-            ),
-            onClick: () => onCryptoAmountChange(autocompoundBalance),
-        },
-        {
-            label: 'Reward',
-            translation: <Translation id="TR_STAKE_ONLY_REWARDS" />,
-            tooltip: (
-                <Column alignItems="flex-end">
-                    <FormattedCryptoAmount value={restakedReward} symbol={symbol} />
-                    {symbol && (
-                        <Text variant="primary">
-                            <FiatValue amount={restakedReward} symbol={symbol} />
-                        </Text>
-                    )}
-                </Column>
-            ),
-            variant: 'primary',
-            onClick: () => {
-                console.log('restakedReward', restakedReward);
-                onCryptoAmountChange(restakedReward);
-            },
-        },
-    ];
+    const labelLeft = <Translation id="AMOUNT" />;
 
     return (
         <Column gap={spacings.sm} alignItems="center">
-            <NumberInput
-                name={OUTPUT_AMOUNT}
-                locale={locale}
-                labelLeft={
-                    <Row gap={spacings.xs}>
-                        {fractionButtons.map(button => (
-                            <FractionButton key={button.label} {...button} />
-                        ))}
-                    </Row>
-                }
-                control={control}
-                rules={cryptoInputRules}
-                maxLength={formInputsMaxLength.amount}
-                innerAddon={<Text variant="tertiary">{symbol?.toUpperCase()}</Text>}
-                bottomText={getNonComposeErrorMessage(errors[CRYPTO_INPUT])}
-                inputState={getInputState(cryptoError || fiatError)}
-                onChange={value => {
-                    onCryptoAmountChange(value);
+            <InputWithOptions<UnstakeFormState>
+                cryptoInputProps={{
+                    name: OUTPUT_AMOUNT,
+                    locale,
+                    labelLeft,
+                    control,
+                    rules: cryptoInputRules,
+                    maxLength: formInputsMaxLength.amount,
+                    innerAddon: <Text variant="tertiary">{networkDisplaySymbol}</Text>,
+                    bottomText: getNonComposeErrorMessage(errors[CRYPTO_INPUT]),
+                    inputState: getInputState(cryptoError || fiatError),
+                    onChange: onCryptoAmountChange,
                 }}
+                fiatInputProps={
+                    currentRate?.rate
+                        ? {
+                              name: FIAT_INPUT,
+                              locale,
+                              labelLeft,
+                              control,
+                              rules: fiatInputRules,
+                              maxLength: formInputsMaxLength.fiat,
+                              innerAddon: (
+                                  <Text variant="tertiary">{localCurrency.toUpperCase()}</Text>
+                              ),
+                              bottomText: getNonComposeErrorMessage(errors[FIAT_INPUT]),
+                              inputState: getInputState(fiatError || cryptoError),
+                              onChange: onFiatAmountChange,
+                          }
+                        : undefined
+                }
+                switchTranslation={{
+                    fiat: (
+                        <Translation
+                            id="TR_COINMARKET_ENTER_AMOUNT_IN"
+                            values={{ currency: localCurrency.toUpperCase() }}
+                        />
+                    ),
+                    crypto: (
+                        <Translation
+                            id="TR_COINMARKET_ENTER_AMOUNT_IN"
+                            values={{ currency: networkDisplaySymbol }}
+                        />
+                    ),
+                }}
+                fiatValue={
+                    <FiatValue amount={amount} symbol={symbol} showApproximationIndicator>
+                        {({ value }) =>
+                            value ? (
+                                <Text typographyStyle="label" variant="tertiary">
+                                    {value}
+                                </Text>
+                            ) : null
+                        }
+                    </FiatValue>
+                }
+                options={[
+                    {
+                        id: 'TR_FRACTION_BUTTONS_10_PERCENT',
+                        children: <Translation id="TR_FRACTION_BUTTONS_10_PERCENT" />,
+                        onClick: () => setRatioAmount(10),
+                    },
+                    {
+                        id: 'TR_FRACTION_BUTTONS_25_PERCENT',
+                        children: <Translation id="TR_FRACTION_BUTTONS_25_PERCENT" />,
+                        onClick: () => setRatioAmount(4),
+                    },
+                    {
+                        id: 'TR_FRACTION_BUTTONS_50_PERCENT',
+                        children: <Translation id="TR_FRACTION_BUTTONS_50_PERCENT" />,
+                        onClick: () => setRatioAmount(2),
+                    },
+                    {
+                        id: 'TR_FRACTION_BUTTONS_MAX',
+                        children: <Translation id="TR_FRACTION_BUTTONS_MAX" />,
+                        tooltip: (
+                            <Column alignItems="flex-end">
+                                <FormattedCryptoAmount
+                                    value={autocompoundBalance}
+                                    symbol={symbol}
+                                />
+                                <Text typographyStyle="hint">
+                                    <FiatValue amount={depositedBalance} symbol={symbol}>
+                                        {({ value }) => value && <span>{value} + </span>}
+                                    </FiatValue>
+                                    <Text variant="primary">
+                                        <FiatValue amount={restakedReward} symbol={symbol} />
+                                    </Text>
+                                </Text>
+                            </Column>
+                        ),
+                        onClick: () => onCryptoAmountChange(autocompoundBalance),
+                    },
+                    {
+                        id: 'TR_FRACTION_BUTTONS_REWARDS',
+                        children: <Translation id="TR_FRACTION_BUTTONS_REWARDS" />,
+                        tooltip: (
+                            <Column alignItems="flex-end">
+                                <FormattedCryptoAmount value={restakedReward} symbol={symbol} />
+                                <Text variant="primary">
+                                    <FiatValue amount={restakedReward} symbol={symbol} />
+                                </Text>
+                            </Column>
+                        ),
+                        variant: 'primary',
+                        onClick: () => onCryptoAmountChange(restakedReward),
+                    },
+                ]}
             />
-            {currentRate?.rate && (
-                <>
-                    <Icon name="arrowsDownUp" size={20} variant="tertiary" />
-                    <NumberInput
-                        name={FIAT_INPUT}
-                        locale={locale}
-                        control={control}
-                        rules={fiatInputRules}
-                        maxLength={formInputsMaxLength.fiat}
-                        innerAddon={<Text variant="tertiary">{localCurrency?.toUpperCase()}</Text>}
-                        bottomText={getNonComposeErrorMessage(errors[FIAT_INPUT])}
-                        inputState={getInputState(fiatError || cryptoError)}
-                        onChange={value => {
-                            onFiatAmountChange(value);
-                        }}
-                    />
-                </>
-            )}
         </Column>
     );
 };

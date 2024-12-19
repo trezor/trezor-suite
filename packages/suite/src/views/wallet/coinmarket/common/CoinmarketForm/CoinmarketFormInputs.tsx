@@ -47,23 +47,26 @@ const generateFractionButtons = (
 ): FractionButtonProps[] => {
     return [
         {
-            label: '1/4',
+            id: 'TR_FRACTION_BUTTONS_10_PERCENT',
+            children: <Translation id="TR_FRACTION_BUTTONS_10_PERCENT" />,
+            isDisabled: helpers.isBalanceZero,
+            onClick: () => helpers.setRatioAmount(10),
+        },
+        {
+            id: 'TR_FRACTION_BUTTONS_25_PERCENT',
+            children: <Translation id="TR_FRACTION_BUTTONS_25_PERCENT" />,
             isDisabled: helpers.isBalanceZero,
             onClick: () => helpers.setRatioAmount(4),
         },
         {
-            label: '1/3',
-            isDisabled: helpers.isBalanceZero,
-            onClick: () => helpers.setRatioAmount(3),
-        },
-        {
-            label: '1/2',
+            id: 'TR_FRACTION_BUTTONS_50_PERCENT',
+            children: <Translation id="TR_FRACTION_BUTTONS_50_PERCENT" />,
             isDisabled: helpers.isBalanceZero,
             onClick: () => helpers.setRatioAmount(2),
         },
         {
-            label: 'All',
-            translation: <Translation id="TR_FRACTION_BUTTONS_ALL" />,
+            id: 'TR_FRACTION_BUTTONS_MAX',
+            children: <Translation id="TR_FRACTION_BUTTONS_MAX" />,
             onClick: () => helpers.setAllAmount(),
         },
     ];
@@ -115,7 +118,7 @@ export const CoinmarketFormInputs = () => {
                         <Row justifyContent="space-between" alignItems="flex-start">
                             <Row gap={spacings.xs}>
                                 {generateFractionButtons(helpers).map(button => (
-                                    <FractionButton key={button.label} {...button} />
+                                    <FractionButton key={button.id} {...button} />
                                 ))}
                             </Row>
                             <CoinmarketBalance
@@ -196,7 +199,7 @@ export const CoinmarketFormInputs = () => {
                         <Row justifyContent="space-between" alignItems="flex-start">
                             <Row gap={spacings.xs}>
                                 {generateFractionButtons(helpers).map(button => (
-                                    <FractionButton key={button.label} {...button} />
+                                    <FractionButton key={button.id} {...button} />
                                 ))}
                             </Row>
                             <CoinmarketBalance

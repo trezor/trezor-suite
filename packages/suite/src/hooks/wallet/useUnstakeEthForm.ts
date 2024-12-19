@@ -259,13 +259,7 @@ export const useUnstakeEthForm = ({
             setValue(CRYPTO_INPUT, amount, { shouldDirty: true, shouldValidate: true });
             await onCryptoAmountChange(amount);
         },
-        [
-            account.formattedBalance,
-            clearErrors,
-            network.decimals,
-            onCryptoAmountChange,
-            setValue
-        ],
+        [account.formattedBalance, clearErrors, network.decimals, onCryptoAmountChange, setValue],
     );
 
     const clearForm = useCallback(async () => {
