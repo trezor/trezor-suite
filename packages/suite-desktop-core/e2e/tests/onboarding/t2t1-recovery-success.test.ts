@@ -3,14 +3,12 @@ import { test, expect } from '../../support/fixtures';
 test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-management'] }, () => {
     test.use({
         emulatorStartConf: { wipe: true, model: 'T2T1', version: '2.5.3' },
-        emulatorSetupConf: undefined,
+        setupEmulator: false,
     });
     test.beforeEach(async ({ analyticsPage, onboardingPage }) => {
         await onboardingPage.disableFirmwareHashCheck();
 
-        // Go through analytics opt-out
-        analyticsPage.continue();
-        analyticsPage.continue();
+        analyticsPage.passThroughAnalytics();
     });
 
     test('Successfully recovers wallet from mnemonic', async ({

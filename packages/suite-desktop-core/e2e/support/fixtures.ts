@@ -23,6 +23,7 @@ import { IndexedDbFixture } from './indexedDb';
 
 type Fixtures = {
     startEmulator: boolean;
+    setupEmulator: boolean;
     emulatorStartConf: StartEmu;
     emulatorSetupConf: SetupEmu;
     apiURL: string;
@@ -43,7 +44,8 @@ type Fixtures = {
 
 const test = base.extend<Fixtures>({
     startEmulator: true,
-    emulatorStartConf: { wipe: true },
+    setupEmulator: true,
+    emulatorStartConf: {},
     emulatorSetupConf: {},
     apiURL: async ({ baseURL }, use, testInfo) => {
         await use(getApiUrl(baseURL, testInfo));
@@ -56,6 +58,7 @@ const test = base.extend<Fixtures>({
         {
             trezorUserEnvLink,
             startEmulator,
+            setupEmulator,
             emulatorStartConf,
             emulatorSetupConf,
             locale,
@@ -72,7 +75,7 @@ const test = base.extend<Fixtures>({
             await trezorUserEnvLink.startEmu(emulatorStartConf);
         }
 
-        if (startEmulator && emulatorSetupConf) {
+        if (startEmulator && setupEmulator) {
             await trezorUserEnvLink.setupEmu(emulatorSetupConf);
         }
 

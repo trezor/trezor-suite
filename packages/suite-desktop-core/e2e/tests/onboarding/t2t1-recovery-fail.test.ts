@@ -5,7 +5,7 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-managem
     // Emulator setup: wipe: true, model: T2T1, version: 2-latest
     test.use({
         emulatorStartConf: { wipe: true, model: 'T2T1', version: '2-latest' },
-        emulatorSetupConf: undefined,
+        setupEmulator: false,
     });
 
     test.beforeEach(async ({ onboardingPage }) => {
@@ -19,8 +19,8 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-managem
         devicePrompt,
         trezorUserEnvLink,
     }) => {
-        await analyticsPage.continue();
-        await analyticsPage.continue();
+        await analyticsPage.passThroughAnalytics();
+
         // Start wallet recovery process and confirm on device
         await onboardingPage.firmwareContinueButton.click();
         await onboardingPage.recoverWalletButton.click();

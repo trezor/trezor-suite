@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
@@ -15,7 +15,6 @@ export class BackupActions {
         private page: Page,
         private devicePrompt: DevicePromptActions,
     ) {
-        this.devicePrompt = devicePrompt;
         this.backupStartButton = page.getByTestId('@backup/start-button');
         this.wroteSeedProperlyCheckbox = page.getByTestId('@backup/check-item/wrote-seed-properly');
         this.madeNoDigitalCopyCheckbox = page.getByTestId(
@@ -27,7 +26,7 @@ export class BackupActions {
 
     async passThroughShamirBackup(shares: number, threshold: number) {
         // Backup button should be disabled until all checkboxes are checked
-        await this.backupStartButton.isDisabled();
+        await expect(this.backupStartButton).toBeDisabled();
 
         await this.wroteSeedProperlyCheckbox.click();
         await this.madeNoDigitalCopyCheckbox.click();

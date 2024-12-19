@@ -9,7 +9,8 @@ export class AnalyticsActions {
         this.heading = page.getByTestId('@analytics/consent/heading');
     }
 
-    async continue() {
+    async passThroughAnalytics() {
+        await this.continueButton.click();
         await this.continueButton.click();
     }
 }

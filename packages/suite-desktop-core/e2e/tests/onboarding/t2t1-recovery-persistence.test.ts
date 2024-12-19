@@ -49,15 +49,13 @@ const shareTwoOfThree = [
 test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-management'] }, () => {
     test.use({
         emulatorStartConf: { wipe: true, model: 'T2T1', version: '2.5.3' },
-        emulatorSetupConf: undefined,
+        setupEmulator: false,
     });
 
     test.beforeEach(async ({ page, onboardingPage, analyticsPage }) => {
         await onboardingPage.disableFirmwareHashCheck();
 
-        // Go through analytics opt-out
-        await analyticsPage.continue();
-        await analyticsPage.continue();
+        await analyticsPage.passThroughAnalytics();
 
         await onboardingPage.skipFirmware();
         await page.getByTestId('@onboarding/path-recovery-button').click();
@@ -92,8 +90,7 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-manag
         await onboardingPage.disableFirmwareHashCheck();
 
         // Go through analytics opt-out again
-        await analyticsPage.continue();
-        await analyticsPage.continue();
+        await analyticsPage.passThroughAnalytics();
 
         // Recovery device persisted after reload
         await devicePrompt.confirmOnDevicePromptIsShown();
@@ -120,7 +117,6 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-manag
         }
 
         await devicePrompt.confirmOnDevicePromptIsShown();
-        //await page.waitForTimeout(501);
 
         // Disconnect and reconnect device
         await trezorUserEnvLink.stopEmu();

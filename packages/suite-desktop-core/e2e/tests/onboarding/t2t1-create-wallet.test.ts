@@ -1,11 +1,11 @@
-import { test } from '../../support/fixtures';
+import { test, expect } from '../../support/fixtures';
 
 test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] }, () => {
     // This test always needs to run the newest possible emulator version
     // Emulator setup: wipe: true, model: T2T1, version: 2-latest
     test.use({
         emulatorStartConf: { wipe: true, model: 'T2T1', version: '2-latest' },
-        emulatorSetupConf: undefined,
+        setupEmulator: false,
     });
 
     test.beforeEach(async ({ onboardingPage }) => {
@@ -16,10 +16,10 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         page,
         analyticsPage,
         backupPage,
+        devicePrompt,
         trezorUserEnvLink,
     }) => {
-        await analyticsPage.continue();
-        await analyticsPage.continue();
+        await analyticsPage.passThroughAnalytics();
         await page.getByTestId('@firmware/continue-button').click();
         await page.getByTestId('@onboarding/path-create-button').click();
 
@@ -27,7 +27,7 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         await page.getByTestId('@onboarding/select-seed-type-open-dialog').click();
         await page.getByTestId('@onboarding/select-seed-type-shamir-advanced').click();
         await page.getByTestId('@onboarding/select-seed-type-confirm').click();
-        await page.getByTestId('@onboarding/confirm-on-device').isVisible();
+        await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
 
         await page.getByTestId('@onboarding/create-backup-button').click();
@@ -36,13 +36,13 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         const threshold = 2;
         await backupPage.passThroughShamirBackup(shares, threshold);
         await page.getByTestId('@onboarding/set-pin-button').click();
-        await page.getByTestId('@onboarding/confirm-on-device').isVisible();
+        await devicePrompt.confirmOnDevicePromptIsShown();
 
         await trezorUserEnvLink.pressYes();
         await trezorUserEnvLink.inputEmu('12');
         await trezorUserEnvLink.inputEmu('12');
-        await page.getByTestId('@prompts/confirm-on-device').isVisible();
+        await expect(page.getByTestId('@prompts/confirm-on-device')).toBeVisible();
         await trezorUserEnvLink.pressYes();
-        await page.getByTestId('@onboarding/pin/continue-button').isVisible();
+        await expect(page.getByTestId('@onboarding/pin/continue-button')).toBeVisible();
     });
 });

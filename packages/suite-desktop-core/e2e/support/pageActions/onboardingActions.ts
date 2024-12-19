@@ -73,7 +73,7 @@ export class OnboardingActions {
     async completeOnboarding({ enableViewOnly = false } = {}) {
         await this.disableFirmwareHashCheck();
         await this.optionallyDismissFwHashCheckError();
-        await this.analyticsPage.continue();
+        await this.analyticsPage.continueButton.click();
         await this.onboardingContinueButton.click();
         if (this.isModelWithSecureElement()) {
             await this.authenticityStartButton.click();
