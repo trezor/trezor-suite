@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
+import { Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
 import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
@@ -30,28 +33,30 @@ export const Nfts = () => {
 
     return (
         <WalletLayout title="TR_NAV_NFTS" account={selectedAccount} isSubpage={false}>
-            <TokensNavigation
-                selectedAccount={selectedAccount}
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                isNft
-            />
-            <Switch>
-                <Route path={`${process.env.ASSET_PREFIX}/accounts/nfts/hidden`}>
-                    <NftsTablesSection
-                        selectedAccount={selectedAccount}
-                        searchQuery={searchQuery}
-                        isShown={false}
-                    />
-                </Route>
-                <Route path="*">
-                    <NftsTablesSection
-                        selectedAccount={selectedAccount}
-                        searchQuery={searchQuery}
-                        isShown
-                    />
-                </Route>
-            </Switch>
+            <Column gap={spacings.lg}>
+                <TokensNavigation
+                    selectedAccount={selectedAccount}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    isNft
+                />
+                <Switch>
+                    <Route path={`${process.env.ASSET_PREFIX}/accounts/nfts/hidden`}>
+                        <NftsTablesSection
+                            selectedAccount={selectedAccount}
+                            searchQuery={searchQuery}
+                            isShown={false}
+                        />
+                    </Route>
+                    <Route path="*">
+                        <NftsTablesSection
+                            selectedAccount={selectedAccount}
+                            searchQuery={searchQuery}
+                            isShown
+                        />
+                    </Route>
+                </Switch>
+            </Column>
         </WalletLayout>
     );
 };
