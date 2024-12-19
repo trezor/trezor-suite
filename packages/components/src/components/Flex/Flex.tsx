@@ -137,6 +137,10 @@ const Container = styled.div<ContainerProps>`
 
     ${({ $hasDivider, ...props }) => $hasDivider && withDivider(props)}
     ${withFrameProps}
+
+    &:empty {
+        display: none;
+    }
 `;
 
 export type FlexProps = AllowedFrameProps & {
