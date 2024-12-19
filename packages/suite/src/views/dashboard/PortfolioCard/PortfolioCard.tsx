@@ -52,7 +52,11 @@ export const PortfolioCard = memo(() => {
     const tokenDefinitions = useSelector(state => state.tokenDefinitions);
     const deviceAccounts: Account[] = accounts.map(account => {
         const coinDefinitions = tokenDefinitions?.[account.symbol]?.coin;
-        const tokens = getTokens(account.tokens ?? [], account.symbol, coinDefinitions);
+        const tokens = getTokens({
+            tokens: account.tokens ?? [],
+            symbol: account.symbol,
+            tokenDefinitions: coinDefinitions,
+        });
 
         return { ...account, tokens: tokens.shownWithBalance };
     });
