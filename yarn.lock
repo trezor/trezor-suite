@@ -10867,7 +10867,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.76.1"
     react-redux: "npm:8.0.7"
-    redux-devtools-expo-dev-plugin: "npm:^0.1.0"
+    redux-devtools-expo-dev-plugin: "npm:1.0.0"
     redux-logger: "npm:^3.0.6"
     redux-persist: "npm:6.0.0"
   languageName: unknown
@@ -36283,17 +36283,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-devtools-expo-dev-plugin@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "redux-devtools-expo-dev-plugin@npm:0.1.0"
+"redux-devtools-expo-dev-plugin@npm:1.0.0":
+  version: 1.0.0
+  resolution: "redux-devtools-expo-dev-plugin@npm:1.0.0"
   dependencies:
     "@redux-devtools/instrument": "npm:^2.2.0"
     "@redux-devtools/utils": "npm:^3.0.0"
     jsan: "npm:^3.1.14"
   peerDependencies:
-    expo: "*"
+    expo: ">=52"
     redux: "*"
-  checksum: 10/b8f074a006972e849d94ae3c1eb03f9c33820e92eaa210b7d0044700cf1e81e38cbd42f822675cbe1c1d412e99ecca615cacca11c47da71e0a98e7d361a14a6c
+  checksum: 10/d77032f131703e68c8bc14e45b5981b5d817ad34d17abc6af3bc55b01b4c0e34050445a028de2b776d3f44a23a03314563d6e4e760634cb76ec473dcac4acfa1
   languageName: node
   linkType: hard
 
