@@ -27,19 +27,30 @@ Generally it's recommended to follow official [React Native environment setup](h
 
 ## Running app on iOS
 
-You need a Mac to be able to run iOS app.
+You need a Mac to be able to run the iOS app.
 
-Trezor can't be connected to iOS device via cable but it's possible to use Portfolio tracker feature for watch only wallets. You will need Xcode and [xcode-select](https://www.freecodecamp.org/news/install-xcode-command-line-tools/).
+Trezor can't be connected to iOS device via cable, but it's possible to use Portfolio tracker feature for watch only wallets. You will need Xcode and [xcode-select](https://www.freecodecamp.org/news/install-xcode-command-line-tools/).
 
 1. Run packager - `yarn native:start`
-1. Run `yarn native:ios` to build and run the app on iOS simulator/device
+2. Run `yarn native:ios` to build and run the app on iOS Simulator/device
 
 Or via Xcode (for native errors debug):
 
 1. Open `suite-native/app/ios/TrezorSuite.xcworkspace` in Xcode (from cli `xed suite-native/app/ios`)
-1. Hit ▶️ `Run` button
+2. Hit the ▶️ `Run` button
 
-It is also possible for development purposes to connect Trezor emulator to iOS simulator (not physical device) if you turn on the feature flag `Connect device` in DEV utils.
+It is also possible for development purposes to connect Trezor emulator to iOS Simulator if you turn on the feature flag `Connect device` in DEV utils.
+
+## Connecting a physical Trezor
+
+Once Trezor Suite Lite is running in iOS Simulator / Android emulator, it's possible to use it with a physical Trezor.
+
+1. Start desktop version of Trezor Suite that will serve as Trezor Bridge.
+    - Make sure Trezor emulator is stopped before starting the desktop app.
+2. Connect a physical Trezor to your laptop and unlock it if necessary.
+3. You might need to tap the _Use Trezor here_ button and/or reload the app.
+
+Patience might be required but your Trezor should be connected eventually.
 
 ## Aliases
 
