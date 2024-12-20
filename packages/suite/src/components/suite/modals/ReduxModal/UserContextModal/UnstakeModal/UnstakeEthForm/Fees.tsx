@@ -37,7 +37,6 @@ const UnstakeFees = () => {
                 composedLevels={composedLevels}
                 changeFeeLevel={changeFeeLevel}
                 helperText={<Translation id="TR_STAKE_PAID_FROM_BALANCE" />}
-                showFeeWhilePending={false}
             />
         </StyledCard>
     );

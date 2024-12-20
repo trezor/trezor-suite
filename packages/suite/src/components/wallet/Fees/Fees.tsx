@@ -66,7 +66,6 @@ export interface FeesProps<TFieldValues extends FormState> {
     label?: TranslationKey;
     rbfForm?: boolean;
     helperText?: React.ReactNode;
-    showFeeWhilePending?: boolean;
 }
 
 export const Fees = <TFieldValues extends FormState>({
@@ -79,7 +78,6 @@ export const Fees = <TFieldValues extends FormState>({
     label,
     rbfForm,
     helperText,
-    showFeeWhilePending = true,
     ...props
 }: FeesProps<TFieldValues>) => {
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
@@ -95,8 +93,7 @@ export const Fees = <TFieldValues extends FormState>({
     // Solana has only `normal` fee level, so we do not display any feeOptions since there is nothing to choose from
     const feeOptions = networkType === 'solana' ? [] : buildFeeOptions(feeInfo.levels);
 
-    const showNormalFee = showFeeWhilePending || transactionInfo?.type === 'final';
-    const shouldAnimateNormalFee = showNormalFee && !isCustomLevel;
+    const shouldAnimateNormalFee = !isCustomLevel;
 
     return (
         <Column gap={spacings.xs}>
@@ -164,7 +161,7 @@ export const Fees = <TFieldValues extends FormState>({
                                     feeInfo={feeInfo}
                                     selectedLevel={selectedLevel}
                                     transactionInfo={transactionInfo}
-                                    showFee={showNormalFee}
+                                    showFee={true}
                                 />
                             </motion.div>
                         )}

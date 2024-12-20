@@ -123,7 +123,6 @@ export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
                             composedLevels={composedLevels}
                             changeFeeLevel={changeFeeLevel}
                             helperText={<Translation id="TR_STAKE_PAID_FROM_BALANCE" />}
-                            showFeeWhilePending={true}
                         />
                     </Card>
 
