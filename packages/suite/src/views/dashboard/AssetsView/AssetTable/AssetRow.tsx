@@ -8,7 +8,7 @@ import { isTestnet } from '@suite-common/wallet-utils';
 import { spacings } from '@trezor/theme';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import { selectAssetAccountsThatStaked } from '@suite-common/wallet-core';
+import { selectDebugFilteredAssetAccountsThatStaked } from '@suite-common/wallet-core';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
@@ -24,6 +24,7 @@ import {
 import { goto } from 'src/actions/suite/routerActions';
 import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
@@ -81,8 +82,15 @@ export const AssetRow = memo(
         const stakingAccountsForAsset = stakingAccounts.filter(
             account => account.symbol === network.symbol,
         );
-        const accountsThatStaked = useSelector(state =>
-            selectAssetAccountsThatStaked(state, stakingAccountsForAsset),
+
+        // TODO: remove this logic when Solana staking is available
+        const isDebugModeActive = useSelector(selectIsDebugModeActive);
+        const debugFilteredStakedAccounts = useSelector(state =>
+            selectDebugFilteredAssetAccountsThatStaked(
+                state,
+                stakingAccountsForAsset,
+                isDebugModeActive,
+            ),
         );
 
         const {
@@ -92,7 +100,7 @@ export const AssetRow = memo(
             shouldRenderTokenRow,
         } = handleTokensAndStakingData(
             assetTokens,
-            accountsThatStaked,
+            debugFilteredStakedAccounts,
             symbol,
             localCurrency,
             coinDefinitions,

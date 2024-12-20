@@ -1,4 +1,4 @@
-import { selectEthAccountHasStaked, selectSolStakingAccounts } from '@suite-common/wallet-core';
+import { selectEthAccountHasStaked, selectSolAccountHasStaked } from '@suite-common/wallet-core';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
@@ -17,14 +17,13 @@ export const StakingDashboard = ({ selectedAccount, dashboard }: StakingDashboar
     const hasEthStaked = useSelector(state =>
         selectEthAccountHasStaked(state, selectedAccount.account?.key ?? ''),
     );
-    const solStakingAccounts = useSelector(state =>
-        selectSolStakingAccounts(state, selectedAccount.account?.key),
+    const hasSolStaked = useSelector(state =>
+        selectSolAccountHasStaked(state, selectedAccount.account?.key),
     );
 
     if (selectedAccount.status !== 'loaded') return null;
 
-    const hasSolStakingAccount = !!solStakingAccounts?.length;
-    const shouldShowDashboard = hasEthStaked || hasSolStakingAccount;
+    const shouldShowDashboard = hasEthStaked || hasSolStaked;
 
     return (
         <WalletLayout

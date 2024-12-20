@@ -1,6 +1,6 @@
 import { Account } from '@suite-common/wallet-types';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import { selectEthAccountHasStaked, selectSolStakingAccounts } from '@suite-common/wallet-core';
+import { selectEthAccountHasStaked, selectSolAccountHasStaked } from '@suite-common/wallet-core';
 import { isSupportedStakingNetworkSymbol } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -37,12 +37,13 @@ export const AccountSection = ({
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
     const hasEthStaked = useSelector(state => selectEthAccountHasStaked(state, account.key));
-    const solStakingAccounts = useSelector(state => selectSolStakingAccounts(state, account.key));
+    const hasSolStaked = useSelector(state => selectSolAccountHasStaked(state, account.key));
+
     // TODO: remove isDebugModeActive when staking will be ready for launch
-    const hasSolStakingAccount = !!solStakingAccounts?.length && isDebugModeActive; // for solana
+    const isSolStakingEnabled = hasSolStaked && isDebugModeActive;
 
     const isStakeShown =
-        isSupportedStakingNetworkSymbol(symbol) && (hasEthStaked || hasSolStakingAccount);
+        isSupportedStakingNetworkSymbol(symbol) && (hasEthStaked || isSolStakingEnabled);
 
     const showGroup = ['ethereum', 'solana', 'cardano'].includes(networkType);
 

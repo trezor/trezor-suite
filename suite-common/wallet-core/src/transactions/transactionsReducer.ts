@@ -32,7 +32,11 @@ import {
     fetchTransactionsPageThunk,
     fetchAllTransactionsForAccountThunk,
 } from './transactionsThunks';
-import { AccountsRootState, selectAccountByKey } from '../accounts/accountsReducer';
+import {
+    AccountsRootState,
+    selectAccountByKey,
+    selectSolAccountHasStaked,
+} from '../accounts/accountsReducer';
 
 export type AccountTransactionsFetchStatusDetail =
     | {
@@ -386,7 +390,24 @@ export const selectEthAccountHasStaked = createMemoizedSelector(
 export const selectAssetAccountsThatStaked = (
     state: TransactionsRootState & AccountsRootState,
     accounts: Account[],
-) => accounts.filter(account => selectEthAccountHasStaked(state, account.key));
+) =>
+    accounts.filter(
+        account =>
+            selectEthAccountHasStaked(state, account.key) ||
+            selectSolAccountHasStaked(state, account.key),
+    );
+
+export const selectDebugFilteredAssetAccountsThatStaked = (
+    state: TransactionsRootState & AccountsRootState,
+    accounts: Account[],
+    isDebugModeActive: boolean,
+) => {
+    const accountsThatStaked = selectAssetAccountsThatStaked(state, accounts);
+
+    return !isDebugModeActive
+        ? accountsThatStaked.filter(account => account.networkType !== 'solana')
+        : accountsThatStaked;
+};
 
 export const selectAccountTransactionsFetchStatus = (
     state: TransactionsRootState,
