@@ -22,6 +22,7 @@ import { Backends } from './Backends';
 import { PreField } from './PreField';
 import { Tor } from './Tor';
 import { Metadata } from './Metadata';
+import { MessageSystemDebugInfo } from './MessageSystemDebugInfo';
 
 export const SettingsDebug = () => {
     const flags = useSelector(selectSuiteFlags);
@@ -79,6 +80,9 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SettingsSection title="Metadata">
                 <Metadata />
+            </SettingsSection>
+            <SettingsSection title="Message system info">
+                <MessageSystemDebugInfo />
             </SettingsSection>
         </SettingsLayout>
     );
