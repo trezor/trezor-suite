@@ -2,9 +2,9 @@ import { Locator, Page, expect } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import { WalletActions } from './walletActions';
+
 export class MarketActions {
-    readonly accountMenuButton: Locator;
-    readonly coinMarketBuyButton: Locator;
     readonly offerSpinner: Locator;
     readonly layout: Locator;
     readonly form: Locator;
@@ -30,8 +30,6 @@ export class MarketActions {
     readonly tradeConfirmationContinueButton: Locator;
 
     constructor(private page: Page) {
-        this.accountMenuButton = this.page.getByTestId('@account-menu/btc/normal/0');
-        this.coinMarketBuyButton = this.page.getByTestId('@wallet/menu/wallet-coinmarket-buy');
         this.offerSpinner = this.page.getByTestId('@coinmarket/offers/loading-spinner');
         this.layout = this.page.getByTestId('@coinmarket');
         this.form = this.page.getByTestId('@coinmarket/form');
@@ -66,19 +64,25 @@ export class MarketActions {
     }
 
     openCoinMarket = async () => {
-        await this.accountMenuButton.click();
-        await this.coinMarketBuyButton.click();
-        await this.waitForOffers();
+        const walletPage = new WalletActions(this.page);
+        await walletPage.accountMenuButton.click();
+        //TODO: #16073 We cannot set resolution for Electron. on CI button is hidden under dropdown due to a breakpoint
+        if (await walletPage.walletExtraDropDown.isVisible()) {
+            await walletPage.walletExtraDropDown.click();
+        }
+        await walletPage.coinMarketBuyButton.click();
     };
 
     waitForOffers = async () => {
-        await expect(this.offerSpinner).toBeVisible();
-        await expect(this.offerSpinner).toBeHidden({ timeout: 30000 });
+        const isOfferSyncActive = await this.offerSpinner.isVisible();
+        if (isOfferSyncActive) {
+            await expect(this.offerSpinner).toBeHidden({ timeout: 30000 });
+        }
     };
 
     setYouPayAmount = async (amount: string) => {
         //Warning: the field is initialized empty and gets default value after the first offer sync
-        //Solved by waiting for offers when opening the coin market
+        await this.waitForOffers();
         await this.youPayInput.fill(amount);
         //Warning: Bug #16054, as a workaround we wait for offer sync after setting the amount
         await this.waitForOffers();
