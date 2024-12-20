@@ -1,4 +1,4 @@
-import { filterCoinbase } from './coinselectUtils';
+import { filterCoinbase, MINIMAL_COINBASE_CONFIRMATIONS } from './coinselectUtils';
 import { CoinSelectAlgorithm, CoinSelectOptions, CoinSelectInput } from '../types';
 
 function filterUtxos(utxos: CoinSelectInput[], minConfOwn: number, minConfOther: number) {
@@ -31,7 +31,7 @@ export function tryConfirmed(
 ): CoinSelectAlgorithm {
     const own = options.own || 1;
     const other = options.other || 6;
-    const coinbase = options.coinbase || 100;
+    const coinbase = options.coinbase || MINIMAL_COINBASE_CONFIRMATIONS;
 
     return (utxosO, outputs, feeRate, optionsIn) => {
         const utxos = filterCoinbase(utxosO, coinbase);

@@ -5805,6 +5805,11 @@ export default defineMessages({
         defaultMessage: 'Rejected by coordinator',
         description: 'Tooltip over an icon in Coin control section',
     },
+    TR_UTXO_NOT_MATURED_COINBASE: {
+        id: 'TR_UTXO_NOT_MATURED_COINBASE',
+        defaultMessage:
+            'Coinbase transaction has to have at least {confirmations} confirmations to be spendable',
+    },
     TR_CHANGE_ADDRESS_TOOLTIP: {
         id: 'TR_CHANGE_ADDRESS_TOOLTIP',
         defaultMessage: 'This is a change address created from a previous send.',

@@ -1,10 +1,10 @@
-import { MouseEventHandler } from 'react';
+import { MouseEventHandler, ReactNode } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import { Checkbox, Row, Spinner, TextButton, Tooltip } from '@trezor/components';
-import type { AccountUtxo } from '@trezor/connect';
+import { AccountUtxo } from '@trezor/connect';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 import { CheckContainer } from '@trezor/components/src/components/form/Checkbox/Checkbox';
 
@@ -120,6 +120,36 @@ const StyledFiatValue = styled(FiatValue)`
     ${typography.hint}
 `;
 
+type ResolveUtxoSpendableProps = {
+    utxo: AccountUtxo;
+    coinjoinRegisteredUtxos: AccountUtxo[];
+};
+
+// Same as MINIMAL_COINBASE_CONFIRMATIONS in '@trezor/utxo-lib'; It is redeclared here to avoid
+// some magic import/export errors. This is very niche stuff and probably never changes.
+// Also, this most probably bothers only developers on Regtest.
+const MINIMAL_COINBASE_CONFIRMATIONS = 100;
+
+const resolveUtxoSpendable = ({
+    utxo,
+    coinjoinRegisteredUtxos,
+}: ResolveUtxoSpendableProps): ReactNode | null => {
+    if (utxo.coinbase === true && utxo.confirmations < MINIMAL_COINBASE_CONFIRMATIONS) {
+        return (
+            <Translation
+                id="TR_UTXO_NOT_MATURED_COINBASE"
+                values={{ confirmations: MINIMAL_COINBASE_CONFIRMATIONS }}
+            />
+        );
+    }
+
+    if (coinjoinRegisteredUtxos.includes(utxo)) {
+        return <Translation id="TR_UTXO_REGISTERED_IN_COINJOIN" />;
+    }
+
+    return null;
+};
+
 type UtxoSelectionProps = {
     transaction?: WalletAccountTransaction;
     utxo: AccountUtxo;
@@ -155,7 +185,10 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     const isChecked = isCoinControlEnabled
         ? selectedUtxos.some(selected => isSameUtxo(selected, utxo))
         : composedInputs.some(u => u.prev_hash === utxo.txid && u.prev_index === utxo.vout);
-    const isDisabled = coinjoinRegisteredUtxos.includes(utxo);
+
+    const unspendableTooltip = resolveUtxoSpendable({ utxo, coinjoinRegisteredUtxos });
+    const isDisabled = unspendableTooltip !== null;
+
     const utxoTagIconColor = isDisabled
         ? theme.legacy.TYPE_LIGHT_GREY
         : theme.legacy.TYPE_DARK_GREY;
@@ -174,7 +207,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
             $isDisabled={isDisabled}
             onClick={isDisabled ? undefined : handleCheckbox}
         >
-            <Tooltip content={isDisabled && <Translation id="TR_UTXO_REGISTERED_IN_COINJOIN" />}>
+            <Tooltip content={unspendableTooltip}>
                 <Checkbox
                     isChecked={isChecked}
                     isDisabled={isDisabled}

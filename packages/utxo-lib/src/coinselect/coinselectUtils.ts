@@ -39,6 +39,9 @@ const INPUT_SIZE = 160; // 4 * (32 + 4 + 4)
 
 const DUST_RELAY_FEE_RATE = 3; // 3000 sat/kB https://github.com/bitcoin/bitcoin/blob/be443328037162f265cc85d05b1a7665b5f104d2/src/policy/policy.h#L55
 
+/** Coinbase transaction must have at least 100 confirmations to be spendable.*/
+export const MINIMAL_COINBASE_CONFIRMATIONS = 100;
+
 type Vin = { type: CoinSelectInput['type']; script: { length: number }; weight?: number };
 type VinVout = { script: { length: number }; weight?: number };
 

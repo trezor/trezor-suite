@@ -8,6 +8,7 @@ import {
     getFee,
     finalize,
     ZERO,
+    MINIMAL_COINBASE_CONFIRMATIONS,
 } from '../coinselectUtils';
 import {
     CoinSelectInput,
@@ -23,7 +24,7 @@ export function split(
     feeRate: number,
     options: CoinSelectOptions,
 ): CoinSelectResult {
-    const coinbase = options.coinbase || 100;
+    const coinbase = options.coinbase || MINIMAL_COINBASE_CONFIRMATIONS;
     const utxos = filterCoinbase(utxosOrig, coinbase);
 
     const fee = getFee(utxos, outputs, feeRate, options);
