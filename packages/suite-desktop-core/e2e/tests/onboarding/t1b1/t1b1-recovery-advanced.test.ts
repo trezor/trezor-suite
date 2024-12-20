@@ -14,6 +14,7 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
         onboardingPage,
         analyticsPage,
         devicePrompt,
+        recoverPage,
         page,
         trezorUserEnvLink,
     }) => {
@@ -23,9 +24,9 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
         await onboardingPage.recoverWalletButton.click();
 
         // Select advanced recovery
-        await page.getByTestId('@recover/select-count/24').click();
+        await recoverPage.selectWordCount(24);
         await page.getByTestId('@recover/select-type/advanced').click();
-        await page.getByTestId('@onboarding/confirm-on-device').waitFor({ state: 'visible' });
+        await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
 
         // Simulate user input
@@ -43,11 +44,11 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
 
         // Retry recovery with basic type
         await onboardingPage.retryRecoveryButton.click();
-        await page.getByTestId('@recover/select-count/12').click();
+        await recoverPage.selectWordCount(12);
         await page.getByTestId('@recover/select-type/basic').click();
 
         // Confirm on device
-        await page.getByTestId('@onboarding/confirm-on-device').waitFor({ state: 'visible' });
+        await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
 
         // Ensure input field for basic recovery is visible

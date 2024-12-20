@@ -7,7 +7,7 @@ export class RecoverActions {
         this.selectBasicRecoveryButton = page.getByTestId('@recover/select-type/basic');
     }
 
-    async selectWordCount(number: number) {
+    async selectWordCount(number: 12 | 18 | 24) {
         await this.page.getByTestId(`@recover/select-count/${number}`).click();
     }
 }
