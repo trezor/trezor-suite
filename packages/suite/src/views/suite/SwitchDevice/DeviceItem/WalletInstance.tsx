@@ -8,7 +8,7 @@ import {
     createDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { Card, Icon, Tooltip, Row, Column, Text, Divider, Box } from '@trezor/components';
-import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
+import { getAllAccounts } from '@suite-common/wallet-utils';
 import { spacings, negativeSpacings } from '@trezor/theme';
 
 import { WalletLabeling, Translation, MetadataLabeling } from 'src/components/suite';
@@ -19,6 +19,7 @@ import { METADATA_LABELING } from 'src/actions/suite/constants';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
+import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 
 import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
 import { EjectConfirmation, EjectConfirmationDisableViewOnly } from './EjectConfirmation';
@@ -55,11 +56,9 @@ export const WalletInstance = ({
     const { defaultAccountLabelString } = useWalletLabeling();
 
     const deviceAccounts = getAllAccounts(instance.state, accounts);
-    const instanceBalance = getTotalFiatBalance({
-        deviceAccounts,
-        localCurrency,
-        rates: currentFiatRates,
-    });
+
+    const walletBalance = useTotalFiatBalance(deviceAccounts, localCurrency, currentFiatRates);
+
     const isSelected = enabled && selected && !!discoveryProcess;
     const { walletLabel } = useSelector(state =>
         selectLabelingDataForWallet(state, instance.state),
@@ -174,7 +173,7 @@ export const WalletInstance = ({
                     </Text>
 
                     <FiatHeader
-                        amount={instanceBalance.toString()}
+                        amount={walletBalance}
                         size="medium"
                         localCurrency={localCurrency}
                     />

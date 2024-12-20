@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { Dropdown, Card, Tooltip, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { getTotalFiatBalance } from '@suite-common/wallet-utils';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
@@ -15,8 +14,7 @@ import { useFastAccounts } from 'src/hooks/wallet';
 import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { getTokens } from 'src/utils/wallet/tokenUtils';
-import { Account } from 'src/types/wallet';
+import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 
 import { PortfolioCardHeader } from './PortfolioCardHeader';
 import { PortfolioCardException } from './PortfolioCardException';
@@ -49,24 +47,8 @@ export const PortfolioCard = memo(() => {
     const dispatch = useDispatch();
     const { device } = useDevice();
 
-    const tokenDefinitions = useSelector(state => state.tokenDefinitions);
-    const deviceAccounts: Account[] = accounts.map(account => {
-        const coinDefinitions = tokenDefinitions?.[account.symbol]?.coin;
-        const tokens = getTokens({
-            tokens: account.tokens ?? [],
-            symbol: account.symbol,
-            tokenDefinitions: coinDefinitions,
-        });
-
-        return { ...account, tokens: tokens.shownWithBalance };
-    });
-
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
-    const fiatAmount = getTotalFiatBalance({
-        deviceAccounts,
-        localCurrency,
-        rates: currentFiatRates,
-    }).toString();
+    const walletBalance = useTotalFiatBalance(accounts, localCurrency, currentFiatRates);
 
     const discoveryStatus = getDiscoveryStatus();
 
@@ -162,7 +144,7 @@ export const PortfolioCard = memo(() => {
                     <PortfolioCardHeader
                         showGraphControls={showGraphControls}
                         hideBorder={!body}
-                        fiatAmount={fiatAmount}
+                        fiatAmount={walletBalance}
                         localCurrency={localCurrency}
                         isWalletEmpty={isWalletEmpty}
                         isWalletLoading={isWalletLoading}
