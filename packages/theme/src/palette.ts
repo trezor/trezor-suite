@@ -110,7 +110,7 @@ export const palette: Record<string, CSSColor> = {
     darkGray700: '#A3A3A3',
     darkGray800: '#E1E1E1',
     darkGray900: '#F4F4F4',
-    darkPrimaryForest100: '#0E2F25',
+    darkPrimaryForest100: '#0D211B',
     darkPrimaryForest200: '#0E2F25',
     darkPrimaryForest300: '#135340',
     darkPrimaryForest400: '#186850',
