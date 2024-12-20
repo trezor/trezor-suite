@@ -67,25 +67,26 @@ export class MarketActions {
         const walletPage = new WalletActions(this.page);
         await walletPage.accountMenuButton.click();
         //TODO: #16073 We cannot set resolution for Electron. on CI button is hidden under dropdown due to a breakpoint
-        if (await walletPage.walletExtraDropDown.isVisible()) {
+        const isBuyButtonHidden = !(await walletPage.coinMarketBuyButton.isVisible());
+        if (isBuyButtonHidden) {
             await walletPage.walletExtraDropDown.click();
+            await walletPage.coinMarketDropdownBuyButton.click();
+        } else {
+            await walletPage.coinMarketBuyButton.click();
         }
-        await walletPage.coinMarketBuyButton.click();
     };
 
-    waitForOffers = async () => {
-        const isOfferSyncActive = await this.offerSpinner.isVisible();
-        if (isOfferSyncActive) {
-            await expect(this.offerSpinner).toBeHidden({ timeout: 30000 });
-        }
+    waitForOffersSyncToFinish = async () => {
+        await expect(this.offerSpinner).toBeHidden({ timeout: 30000 });
     };
 
     setYouPayAmount = async (amount: string) => {
         //Warning: the field is initialized empty and gets default value after the first offer sync
-        await this.waitForOffers();
+        await expect(this.youPayInput).not.toHaveValue('');
+        await this.waitForOffersSyncToFinish();
         await this.youPayInput.fill(amount);
         //Warning: Bug #16054, as a workaround we wait for offer sync after setting the amount
-        await this.waitForOffers();
+        await this.waitForOffersSyncToFinish();
     };
 
     confirmTrade = async () => {

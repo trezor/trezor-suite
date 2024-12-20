@@ -12,6 +12,7 @@ export class WalletActions {
     readonly accountMenuButton: Locator;
     readonly walletExtraDropDown: Locator;
     readonly coinMarketBuyButton: Locator;
+    readonly coinMarketDropdownBuyButton: Locator;
 
     constructor(private readonly page: Page) {
         this.walletMenuButton = this.page.getByTestId('@suite/menu/wallet-index');
@@ -27,6 +28,9 @@ export class WalletActions {
         this.accountMenuButton = this.page.getByTestId('@account-menu/btc/normal/0');
         this.walletExtraDropDown = this.page.getByTestId('@wallet/menu/extra-dropdown');
         this.coinMarketBuyButton = this.page.getByTestId('@wallet/menu/wallet-coinmarket-buy');
+        this.coinMarketDropdownBuyButton = this.page
+            .getByRole('list')
+            .getByTestId('@wallet/menu/wallet-coinmarket-buy');
     }
 
     async filterTransactions(transaction: string) {
