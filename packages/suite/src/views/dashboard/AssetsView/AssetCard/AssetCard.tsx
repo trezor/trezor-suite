@@ -19,7 +19,7 @@ import { AssetFiatBalance } from '@suite-common/assets';
 import { TokenInfo } from '@trezor/connect';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
-import { selectAssetAccountsThatStaked } from '@suite-common/wallet-core';
+import { selectDebugFilteredAssetAccountsThatStaked } from '@suite-common/wallet-core';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 
@@ -33,6 +33,7 @@ import {
 import { useAccountSearch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
@@ -123,14 +124,21 @@ export const AssetCard = ({
 
     const stakingAccountsForAsset = stakingAccounts.filter(account => account.symbol === symbol);
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
-    const accountsThatStaked = useSelector(state =>
-        selectAssetAccountsThatStaked(state, stakingAccountsForAsset),
+
+    // TODO: remove this logic when Solana staking is available
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
+    const debugFilteredStakedAccounts = useSelector(state =>
+        selectDebugFilteredAssetAccountsThatStaked(
+            state,
+            stakingAccountsForAsset,
+            isDebugModeActive,
+        ),
     );
 
     const { tokensFiatBalance, assetStakingBalance, shouldRenderStakingRow, shouldRenderTokenRow } =
         handleTokensAndStakingData(
             assetTokens,
-            accountsThatStaked,
+            debugFilteredStakedAccounts,
             symbol,
             localCurrency,
             coinDefinitions,

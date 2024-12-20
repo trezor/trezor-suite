@@ -478,3 +478,9 @@ export const selectSolStakingAccounts = createMemoizedSelector([selectAccountByK
 
     return account.misc.solStakingAccounts ?? [];
 });
+
+export const selectSolAccountHasStaked = createMemoizedSelector([selectAccountByKey], account => {
+    if (!account || account.networkType !== 'solana') return false;
+
+    return !!account.misc.solStakingAccounts?.length;
+});

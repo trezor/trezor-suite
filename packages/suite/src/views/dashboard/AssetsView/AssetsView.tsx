@@ -10,6 +10,7 @@ import {
     getFiatRateKey,
     toFiatCurrency,
     isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import {
     type NetworkSymbol,
@@ -139,8 +140,10 @@ export const AssetsView = () => {
                     ? assetNativeCryptoBalance.toNumber()
                     : '0',
                 assetTokens: assetTokens?.length ? assetTokens : undefined,
-                stakingAccounts: accounts.filter(account =>
-                    isSupportedEthStakingNetworkSymbol(account.symbol),
+                stakingAccounts: accounts.filter(
+                    account =>
+                        isSupportedEthStakingNetworkSymbol(account.symbol) ||
+                        isSupportedSolStakingNetworkSymbol(account.symbol),
                 ),
                 accounts,
             };
