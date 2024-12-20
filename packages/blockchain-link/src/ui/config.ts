@@ -116,6 +116,28 @@ export default [
     },
     {
         blockchain: {
+            name: 'Arbitrum One',
+            worker: 'js/blockbook-worker.js',
+            server: ['https://arb1.trezor.io', 'https://arb2.trezor.io'],
+            debug: true,
+        },
+        data: {
+            address: '',
+            accountInfoOptions: {
+                page: 1,
+                pageSize: 25,
+                contractFilter: undefined,
+            },
+            estimateFeeOptions: {
+                blocks: [1, 2, 10],
+            },
+            txid: '',
+            tx: '',
+            subscribe: '',
+        },
+    },
+    {
+        blockchain: {
             name: 'Base',
             worker: 'js/blockbook-worker.js',
             server: ['https://base1.trezor.io', 'https://base2.trezor.io'],
