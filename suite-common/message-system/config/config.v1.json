@@ -1,7 +1,7 @@
 {
     "version": 1,
     "timestamp": "2024-01-02T00:00:00+00:00",
-    "sequence": 71,
+    "sequence": 72,
     "actions": [
         {
             "conditions": [
@@ -1194,6 +1194,76 @@
                     "tr": "Firmware güncellemesi Trezor'unuzu silebilir. Devam etmeden önce cüzdan yedeğinizin hazır olduğundan emin olun.",
                     "pt": "A atualização do firmware pode apagar o seu Trezor. Certifique-se de que o backup da carteira está preparado antes de continuar.",
                     "uk": "Оновлення прошивки може видалити ваш Trezor. Переконайтеся, що ваша резервна копія гаманця готова перед продовженням."
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "!",
+                        "web": "*"
+                    },
+                    "devices": [
+                        {
+                            "model": "1",
+                            "firmware": ">=1.5.1 <1.7.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T1B1",
+                            "firmware": ">=1.5.1 <1.7.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "a3c3a3b7-efbe-4e39-9ffd-1836338e7811",
+                "priority": 96,
+                "dismissible": true,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Updating the firmware may wipe your Trezor. Verify your backup now to ensure you can recover your assets.",
+                    "en": "Updating the firmware may wipe your Trezor. Verify your backup now to ensure you can recover your assets.",
+                    "es": "La actualización del firmware podría borrar su Trezor. Verifique su copia de seguridad ahora para asegurarse de que puede recuperar sus activos.",
+                    "cs": "Aktualizace firmwaru může vymazat váš Trezor. Zkontrolujte nyní svou zálohu, abyste se ujistili, že můžete obnovit své prostředky.",
+                    "ru": "Обновление прошивки может стереть ваш Trezor. Проверьте свою резервную копию сейчас, чтобы убедиться, что вы сможете восстановить свои активы.",
+                    "ja": "ファームウェアの更新により、Trezorが消去される可能性があります。資産を回復できることを確認するために、今すぐバックアップを確認してください。",
+                    "hu": "A firmware frissítése törölheti a Trezorját. Ellenőrizze most a biztonsági mentését, hogy biztosítsa, hogy vissza tudja állítani az eszközét.",
+                    "it": "L'aggiornamento del firmware potrebbe cancellare il tuo Trezor. Verifica il tuo backup ora per assicurarti di poter recuperare i tuoi asset.",
+                    "fr": "La mise à jour du micrologiciel peut effacer votre Trezor. Vérifiez votre sauvegarde maintenant pour vous assurer que vous pouvez récupérer vos actifs.",
+                    "de": "Ein Firmware-Update kann Ihren Trezor löschen. Überprüfen Sie jetzt Ihr Backup, um sicherzustellen, dass Sie Ihre Assets wiederherstellen können.",
+                    "tr": "Firmware güncellemesi Trezor'unuzu silebilir. Varlıklarınızı kurtarabileceğinizden emin olmak için yedeğinizi şimdi doğrulayın.",
+                    "pt": "A atualização do firmware pode apagar o seu Trezor. Verifique o seu backup agora para garantir que pode recuperar os seus ativos.",
+                    "uk": "Оновлення прошивки може видалити ваш Trezor. Перевірте свою резервну копію зараз, щоб переконатися, що ви зможете відновити свої активи."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "recovery-index",
+                    "label": {
+                        "en-GB": "Check wallet backup",
+                        "en": "Check wallet backup",
+                        "es": "Verificar copia de seguridad de la cartera",
+                        "cs": "Zkontrolovat zálohu peněženky",
+                        "ru": "Проверить резервную копию кошелька",
+                        "ja": "ウォレットのバックアップを確認",
+                        "hu": "Ellenőrizze a pénztárca biztonsági mentését",
+                        "it": "Verifica il backup del portafoglio",
+                        "fr": "Vérifier la sauvegarde du portefeuille",
+                        "de": "Überprüfen Sie das Wallet-Backup",
+                        "tr": "Cüzdan yedeğini kontrol et",
+                        "pt": "Verificar backup da carteira",
+                        "uk": "Перевірити резервну копію гаманця"
+                    }
                 }
             }
         },
