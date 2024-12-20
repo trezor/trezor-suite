@@ -156,7 +156,6 @@ const useCoinmarketVerifyAccount = ({
 
     const onChangeAccount = (account: CoinmarketVerifyFormAccountOptionProps) => {
         if (account.type === 'ADD_SUITE' && device) {
-            setIsMenuOpen(true);
             dispatch(
                 openModal({
                     type: 'add-account',
@@ -181,7 +180,7 @@ const useCoinmarketVerifyAccount = ({
             selectAccountOption(preselectedAccount);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [accounts]);
 
     useEffect(() => {
         methods.trigger();
