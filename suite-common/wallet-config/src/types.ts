@@ -19,6 +19,7 @@ export type NetworkSymbol =
     | 'sol'
     | 'pol'
     | 'bnb'
+    | 'arb'
     | 'base'
     | 'op'
     | 'test'

@@ -160,6 +160,29 @@ export const networks = {
         coingeckoId: 'binance-smart-chain',
         coingeckoNativeId: 'binancecoin',
     },
+    arb: {
+        symbol: 'arb',
+        name: 'Arbitrum One',
+        networkType: 'ethereum',
+        chainId: 42161,
+        bip43Path: "m/44'/60'/0'/0/i",
+        decimals: 18,
+        testnet: false,
+        explorer: getExplorerUrls('https://arbiscan.io', 'ethereum'),
+        features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'coin-definitions', 'nft-definitions'],
+        backendTypes: ['blockbook'],
+        accountTypes: {
+            ledger: {
+                // ledger (live), #1 acc is same as Trezor, so it is skipped
+                accountType: 'ledger',
+                bip43Path: "m/44'/60'/i'/0/0",
+                isDebugOnlyAccountType: true,
+            },
+        },
+        coingeckoId: 'arbitrum-one',
+        coingeckoNativeId: 'ethereum',
+        isDebugOnlyNetwork: true,
+    },
     base: {
         symbol: 'base',
         name: 'Base',
@@ -191,7 +214,7 @@ export const networks = {
         bip43Path: "m/44'/60'/0'/0/i",
         decimals: 18,
         testnet: false,
-        explorer: getExplorerUrls('https://op1.trezor.io', 'ethereum'),
+        explorer: getExplorerUrls('https://optimistic.etherscan.io', 'ethereum'),
         features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'coin-definitions', 'nft-definitions'],
         backendTypes: ['blockbook'],
         accountTypes: {

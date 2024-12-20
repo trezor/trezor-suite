@@ -1452,6 +1452,11 @@ var CURRENCIES = [
         validator: ETHValidator,
     },
     {
+        name: 'Arbitrum One',
+        symbol: 'arb', // TODO
+        validator: ETHValidator,
+    },
+    {
         name: 'Base',
         symbol: 'base', // TODO
         validator: ETHValidator,

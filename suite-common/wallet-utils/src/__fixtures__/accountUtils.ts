@@ -70,6 +70,7 @@ export const accountTitleFixture: Array<{
     { symbol: 'zec', title: 'TR_NETWORK_ZCASH' },
     { symbol: 'eth', title: 'TR_NETWORK_ETHEREUM' },
     { symbol: 'bnb', title: 'TR_NETWORK_BNB' },
+    { symbol: 'arb', title: 'TR_NETWORK_ARBITRUM_ONE' },
     { symbol: 'base', title: 'TR_NETWORK_BASE' },
     { symbol: 'op', title: 'TR_NETWORK_OP' },
     { symbol: 'etc', title: 'TR_NETWORK_ETHEREUM_CLASSIC' },

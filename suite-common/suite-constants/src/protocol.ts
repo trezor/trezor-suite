@@ -39,6 +39,10 @@ export type Protocol =
     | 'sol'
     | 'pol'
     | 'bnb'
+    | 'arbitrum'
+    | 'arbitrum-one'
+    | 'arb'
+    | 'arbitrum-ethereum'
     | 'base'
     | 'op'
     | 'test'
@@ -67,6 +71,7 @@ export const NETWORK_TO_PROTOCOLS: Record<NetworkSymbol, Protocol[]> = {
     sol: ['solana', 'sol'],
     pol: ['polygon', 'matic', 'pol'],
     bnb: ['binance', 'bnb', 'bsc'],
+    arb: ['arbitrum', 'arbitrum-one', 'arb', 'arbitrum-ethereum'],
     base: ['base'],
     op: ['optimism', 'op'],
     test: ['test'],

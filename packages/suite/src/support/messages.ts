@@ -2822,6 +2822,10 @@ export default defineMessages({
         defaultMessage: 'BNB Smart Chain',
         id: 'TR_NETWORK_BNB',
     },
+    TR_NETWORK_ARBITRUM_ONE: {
+        defaultMessage: 'Arbitrum One',
+        id: 'TR_NETWORK_ARBITRUM_ONE',
+    },
     TR_NETWORK_BASE: {
         defaultMessage: 'Base',
         id: 'TR_NETWORK_BASE',
