@@ -119,21 +119,20 @@ jobs:
           $DETOX_BINARY_PATH clean-framework-cache && $DETOX_BINARY_PATH build-framework-cache
           yarn test:e2e ios.sim.release --headless --take-screenshots failing --record-videos failing
 
-      # TODO: add reporting to Currents.dev dashboard same as the android e2e tests have. cc @HajekOndrej
-      # - name: Upload results to Currents.dev
-      #   if: ${{ ! cancelled() }}
-      #   env:
-      #     CURRENTS_PROJECT_ID: iUe1Y4
-      #     CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
-      #   working-directory: ./suite-native/app
-      #   run: |
-      #     npx currents convert \
-      #       --input-format=junit \
-      #       --input-file=./reports/junit-report.xml \
-      #       --output-dir=./currents \
-      #       --framework=postman \
-      #       --framework-version=v11.2.0
-      #     npx currents upload --project-id=${CURRENTS_PROJECT_ID} --key=${CURRENTS_RECORD_KEY} --report-dir ./currents
+      - name: Upload results to Currents.dev
+        if: ${{ ! cancelled() }}
+        env:
+          CURRENTS_PROJECT_ID: LjEjiV
+          CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+        working-directory: ./suite-native/app
+        run: |
+          npx currents convert \
+            --input-format=junit \
+            --input-file=./reports/junit-report.xml \
+            --output-dir=./currents \
+            --framework=postman \
+            --framework-version=v11.2.0
+          npx currents upload --project-id=${CURRENTS_PROJECT_ID} --key=${CURRENTS_RECORD_KEY} --report-dir ./currents
 
       - name: "Store failed test screenshot artifacts"
         if: ${{failure()}}
