@@ -113,7 +113,7 @@ export const useAddCoinAccount = () => {
             availableTypes.set(symbol, [
                 NORMAL_ACCOUNT_TYPE,
                 // For Cardano and EVMs allow only normal account type
-                ...(['ada', 'eth', 'pol', 'bnb', 'sol', 'op', 'base'].includes(symbol)
+                ...(['ada', 'eth', 'pol', 'bnb', 'sol', 'op', 'base', 'arb'].includes(symbol)
                     ? []
                     : types),
             ]);
