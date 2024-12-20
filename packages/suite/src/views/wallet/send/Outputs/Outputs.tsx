@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
@@ -30,15 +30,24 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
 
     const {
         outputs,
-        formState: { errors },
         account: { symbol },
     } = useSendFormContext();
 
     const ref = useRef<HTMLDivElement>(null);
 
-    useLayoutEffect(() => {
-        setHeight(ref.current?.offsetHeight || 0);
-    }, [outputs, errors.outputs]);
+    useEffect(() => {
+        if (!ref.current) return;
+
+        const observer = new ResizeObserver(([entry]) => {
+            if (entry) {
+                setHeight(entry.contentRect.height);
+            }
+        });
+
+        observer.observe(ref.current);
+
+        return () => observer.disconnect();
+    }, []);
 
     // needed to have no entrance animation on the first render
     // for some reason the first render does not have all the outputs
