@@ -51,3 +51,4 @@ export * from './isFullPath';
 export * from './asciiUtils';
 export * from './resolveAfter';
 export * from './zip';
+export * from './convertTaprootXpub';

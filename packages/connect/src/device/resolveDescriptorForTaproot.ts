@@ -1,32 +1,26 @@
 import { MessagesSchema as Messages } from '@trezor/protobuf';
+import { convertTaprootXpub } from '@trezor/utils';
 
 import { HDNodeResponse } from '../types/api/getPublicKey';
 
-interface Params {
+interface ResolveDescriptorForTaprootParams {
     response: HDNodeResponse;
     publicKey: Messages.PublicKey;
 }
 
-export const resolveDescriptorForTaproot = ({ response, publicKey }: Params) => {
+export const resolveDescriptorForTaproot = ({
+    response,
+    publicKey,
+}: ResolveDescriptorForTaprootParams) => {
     if (publicKey.descriptor !== null && publicKey.descriptor !== undefined) {
         const [xpub, checksum] = publicKey.descriptor.split('#');
 
-        // This is here to keep backwards compatibility, suite and blockbooks are still using `'` over `h`
-        const openingSquareBracketSplit = xpub.split('[');
-        if (openingSquareBracketSplit.length === 2) {
-            const [beforeOpeningBracket, afterOpeningBracket] = openingSquareBracketSplit;
+        // This is here to keep backwards compatibility, suite and block-books
+        // are still using `'` over `h`.
+        const correctedXpub = convertTaprootXpub({ xpub, direction: 'h-to-apostrophe' });
 
-            const closingSquareBracketSplit = afterOpeningBracket.split(']');
-            if (closingSquareBracketSplit.length === 2) {
-                const [path, afterClosingBracket] = closingSquareBracketSplit;
-
-                const correctedPath = path.replace(/h/g, "'"); // .replaceAll()
-
-                return {
-                    xpub: `${beforeOpeningBracket}[${correctedPath}]${afterClosingBracket}`,
-                    checksum,
-                };
-            }
+        if (correctedXpub !== null) {
+            return { xpub: correctedXpub, checksum };
         }
     }
 

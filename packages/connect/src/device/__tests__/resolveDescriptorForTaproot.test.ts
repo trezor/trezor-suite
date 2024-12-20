@@ -85,7 +85,7 @@ describe(resolveDescriptorForTaproot.name, () => {
         });
 
         expect(response).toEqual({
-            checksum: undefined, // code is defensive, it will work but it wont provide checksum
+            checksum: undefined, // code is defensive, it will work but it won't provide checksum
             xpub: "tr([71d98c03/86'/0'/0']xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33p/<0;1>/*)",
         });
     });

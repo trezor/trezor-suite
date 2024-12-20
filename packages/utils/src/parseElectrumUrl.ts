@@ -1,3 +1,5 @@
+// Todo: one day, we shall purify the @trezor/utils and remove domain-specific stuff from it
+
 // URL is in format host:port:[t|s] (t for tcp, s for ssl)
 const ELECTRUM_URL_REGEX = /^(?:([a-zA-Z0-9.-]+)|\[([a-f0-9:]+)\]):([0-9]{1,5}):([ts])$/;
 

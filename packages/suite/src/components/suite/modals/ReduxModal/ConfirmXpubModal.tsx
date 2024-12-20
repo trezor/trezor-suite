@@ -1,4 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { convertTaprootXpub } from '@trezor/utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
@@ -27,6 +28,13 @@ export const ConfirmXpubModal = (
             ? `${account.descriptor}#${account.descriptorChecksum}`
             : account.descriptor;
 
+    // Suite internally uses apostrophe, but FW uses 'h' for taproot descriptors,
+    // and we want to show it correctly to the user
+    const xpubWithReplacedApostropheWithH = convertTaprootXpub({
+        xpub,
+        direction: 'apostrophe-to-h',
+    });
+
     return (
         <ConfirmValueModal
             account={account}
@@ -47,7 +55,7 @@ export const ConfirmXpubModal = (
             confirmStepLabel={<Translation id="TR_XPUB_MATCH" />}
             validateOnDevice={showXpub}
             copyButtonText={<Translation id="TR_XPUB_MODAL_CLIPBOARD" />}
-            value={xpub}
+            value={xpubWithReplacedApostropheWithH ?? xpub}
             displayMode={DisplayMode.PAGINATED_TEXT}
             {...props}
         />
