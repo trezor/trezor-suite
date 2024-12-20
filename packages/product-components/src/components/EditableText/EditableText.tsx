@@ -2,7 +2,14 @@ import React, { ReactNode, useEffect } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { borders, Elevation, mapElevationToBorder, nextElevation, spacings } from '@trezor/theme';
+import {
+    borders,
+    Elevation,
+    mapElevationToBorder,
+    nextElevation,
+    palette,
+    spacings,
+} from '@trezor/theme';
 import { Row, useElevation, Box, Badge, IconButton, Tooltip } from '@trezor/components';
 
 type MaxWidth = number | string;
@@ -27,6 +34,13 @@ const EditableContainer = styled.span<{ $maxWidth?: MaxWidth }>`
         `}
 `;
 
+const ActionsBackground = styled.div<{ $elevation: Elevation }>`
+    //background: ${palette.darkGray300};
+    background: ${({ theme }) => mapElevationToBorder({ theme, $elevation: 2 })};
+    border-radius: ${borders.radii.full};
+    padding: 4px;
+    margin-left: 10px;
+`;
 const ActionsContainer = styled.span`
     position: absolute;
     left: 100%;
@@ -86,7 +100,7 @@ const useShortcuts = ({ isEditable, handleSave, handleCancel }: ShortcutsProps) 
         };
     }, [handleCancel, handleSave, isEditable]);
 };
-
+// TODO při focus out ukládat
 export const EditableText = ({ children, maxWidth, onSave }: EditableTextProps) => {
     const [isEditable, setIsEditable] = React.useState(false);
     const [isHovered, setIsHovered] = React.useState(false);
@@ -173,26 +187,30 @@ export const EditableText = ({ children, maxWidth, onSave }: EditableTextProps) 
             </EditableContainer>
             <ActionsContainer>
                 {!isJustSaved && isEditable && (
-                    <Row gap={spacings.xxs} margin={{ left: spacings.sm }}>
-                        <Tooltip content="Save" hasArrow delayShow={1000} cursor="inherit">
-                            <IconButton icon="check" size="tiny" onClick={handleSave} />
-                        </Tooltip>
-                        <Tooltip content="Cancel" hasArrow delayShow={1000} cursor="inherit">
-                            <IconButton
-                                variant="destructive"
-                                icon="x"
-                                size="tiny"
-                                onClick={handleCancel}
-                            />
-                        </Tooltip>
-                        {/*<Icon name="check" size="medium" onClick={handleSave} />*/}
-                        {/*<Icon name="x" size="medium" onClick={handleCancel} />*/}
-                    </Row>
+                    <ActionsBackground $elevation={elevation}>
+                        <Row gap={spacings.xxs}>
+                            <Tooltip content="Save" hasArrow delayShow={1000} cursor="inherit">
+                                <IconButton icon="check" size="tiny" onClick={handleSave} />
+                            </Tooltip>
+                            <Tooltip content="Cancel" hasArrow delayShow={1000} cursor="inherit">
+                                <IconButton
+                                    variant="destructive"
+                                    icon="x"
+                                    size="tiny"
+                                    onClick={handleCancel}
+                                />
+                            </Tooltip>
+                        </Row>
+                    </ActionsBackground>
                 )}
                 {!isJustSaved && !isEditable && isHovered && (
                     <Box margin={{ left: spacings.sm }}>
-                        <IconButton icon="pencil" size="tiny" onClick={handleEdit} />
-                        {/*<Icon name="pencil" size="medium" onClick={handleEdit} />*/}
+                        <IconButton
+                            variant="tertiary"
+                            icon="pencil"
+                            size="tiny"
+                            onClick={handleEdit}
+                        />
                     </Box>
                 )}
                 {isJustSaved && (
