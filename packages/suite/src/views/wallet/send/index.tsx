@@ -1,14 +1,17 @@
 import { ReactNode } from 'react';
+import { useWatch } from 'react-hook-form';
 
-import styled from 'styled-components';
-
-import { Banner, Column } from '@trezor/components';
-import { breakpointMediaQueries } from '@trezor/styles';
-import { spacingsPx, spacings } from '@trezor/theme';
+import { Banner, Column, Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { WalletLayout } from 'src/components/wallet';
-import { useSendForm, SendContext, UseSendFormProps } from 'src/hooks/wallet/useSendForm';
+import {
+    useSendForm,
+    SendContext,
+    UseSendFormProps,
+    useSendFormContext,
+} from 'src/hooks/wallet/useSendForm';
 import {
     selectTargetAnonymityByAccountKey,
     selectRegisteredUtxosByAccountKey,
@@ -22,29 +25,32 @@ import { Options } from './Options/Options';
 import { SendFees } from './SendFees';
 import { TotalSent } from './TotalSent/TotalSent';
 import { SendRaw } from './SendRaw';
+import { CoinControl } from './Options/BitcoinOptions/CoinControl/CoinControl';
 
-const FormGrid = styled.div`
-    gap: ${spacingsPx.md};
+const UtxoPanel = () => {
+    const { toggleOption, setDraftSaveRequest, setValue, getDefaultValue, control } =
+        useSendFormContext();
 
-    ${breakpointMediaQueries.xl} {
-        display: grid;
-        grid-template-columns: minmax(500px, auto) minmax(340px, 420px);
+    const toggleUtxoSelection = () => {
+        setValue('hasCoinControlBeenOpened', true); // required for analytics
+        toggleOption('utxoSelection');
 
-        > :not(:last-child) {
-            grid-column: 1;
-        }
+        // This will trigger the effect in `useSendForm` and do `saveSendFormDraftThunk`.
+        // This is not nice, but it will endure the new state is persisted in the Redux Store.
+        // Without this, this change may be lost which will result in UI glitch (closing the Coin Control UI)
+        setDraftSaveRequest(true);
+    };
 
-        > :last-child {
-            grid-column: 2;
-            grid-row: 1;
-        }
-    }
+    const options = useWatch({
+        name: 'options',
+        defaultValue: getDefaultValue('options', []),
+        control,
+    });
 
-    ${breakpointMediaQueries.below_xl} {
-        display: flex;
-        flex-direction: column;
-    }
-`;
+    const utxoSelectionEnabled = options.includes('utxoSelection');
+
+    return utxoSelectionEnabled && <CoinControl close={toggleUtxoSelection} />;
+};
 
 interface SendProps {
     children: ReactNode;
@@ -83,23 +89,26 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
     return (
         <WalletLayout title="TR_NAV_SEND" isSubpage account={selectedAccount}>
             <SendContext.Provider value={sendContextValues}>
-                <Column gap={spacings.xl}>
-                    <SendHeader />
+                <Row>
+                    <Column gap={spacings.xl} alignItems="start">
+                        <Column gap={spacings.xl}>
+                            <SendHeader />
 
-                    <FormGrid data-testid="@wallet/send/outputs-and-options">
-                        <Outputs disableAnim={!!children} />
-                        <Options />
-                        <SendFees />
+                            <Outputs disableAnim={!!children} />
+                            <Options />
+                            <SendFees />
 
-                        {symbol === 'dsol' && (
-                            <Banner icon>
-                                <Translation id="TR_SOLANA_DEVNET_SHORTCUT_WARNING" />
-                            </Banner>
-                        )}
-
+                            {symbol === 'dsol' && (
+                                <Banner icon>
+                                    <Translation id="TR_SOLANA_DEVNET_SHORTCUT_WARNING" />
+                                </Banner>
+                            )}
+                        </Column>
                         <TotalSent />
-                    </FormGrid>
-                </Column>
+                    </Column>
+
+                    <UtxoPanel />
+                </Row>
 
                 {children}
             </SendContext.Provider>

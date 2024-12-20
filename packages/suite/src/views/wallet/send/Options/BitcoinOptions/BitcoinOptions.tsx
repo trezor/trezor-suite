@@ -12,7 +12,6 @@ import { OpenGuideFromTooltip } from 'src/components/guide';
 import { useSelector } from 'src/hooks/suite';
 
 import { Locktime } from './Locktime/Locktime';
-import { CoinControl } from './CoinControl/CoinControl';
 import { OnOffSwitcher } from '../OnOffSwitcher';
 import { canLocktimeTxBeBroadcast } from './Locktime/canLocktimeTxBeBroadcast';
 
@@ -209,8 +208,6 @@ export const BitcoinOptions = () => {
                     }}
                 />
             )}
-
-            {utxoSelectionEnabled && <CoinControl close={toggleUtxoSelection} />}
         </Wrapper>
     );
 };
