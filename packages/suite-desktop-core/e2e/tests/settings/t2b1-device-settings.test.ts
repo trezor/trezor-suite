@@ -10,8 +10,9 @@ test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () 
         emulatorStartConf: { version: '2-latest', model: 'T2B1', wipe: true },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
+    test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
+        await dashboardPage.discoveryShouldFinish();
         await settingsPage.navigateTo();
         await settingsPage.deviceTabButton.click();
     });

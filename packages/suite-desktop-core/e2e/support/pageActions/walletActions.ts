@@ -57,4 +57,16 @@ export class WalletActions {
             .locator(`[data-testid*="@account-menu/${symbol}"][tabindex]`)
             .count();
     }
+
+    async openCoinMarket() {
+        await this.accountMenuButton.click();
+        //TODO: #16073 We cannot set resolution for Electron. on CI button is hidden under dropdown due to a breakpoint
+        const isBuyButtonHidden = !(await this.coinMarketBuyButton.isVisible());
+        if (isBuyButtonHidden) {
+            await this.walletExtraDropDown.click();
+            await this.coinMarketDropdownBuyButton.click();
+        } else {
+            await this.coinMarketBuyButton.click();
+        }
+    }
 }
