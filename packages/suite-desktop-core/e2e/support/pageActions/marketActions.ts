@@ -102,6 +102,8 @@ export class MarketActions {
     };
 
     readBestOfferValues = async () => {
+        //Even though the offer sync is finished, the best offer might not be available yet and show 0 BTC
+        await expect(this.bestOfferAmount).not.toHaveText('0 BTC');
         const amount = await this.bestOfferAmount.textContent();
         const provider = await this.bestOfferProvider.textContent();
         if (!amount || !provider) {

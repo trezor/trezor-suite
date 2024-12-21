@@ -35,6 +35,7 @@ const config: PlaywrightTestConfig = {
         video: 'on',
         screenshot: 'on',
         testIdAttribute: 'data-testid',
+        geolocation: { latitude: 50.11432979105013, longitude: 14.481946491687228 }, // Trezor, Prague, Czech Republic
     },
     reportSlowTests: null,
     reporter: process.env.GITHUB_ACTION
