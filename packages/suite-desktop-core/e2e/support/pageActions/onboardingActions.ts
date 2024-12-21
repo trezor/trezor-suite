@@ -3,8 +3,8 @@ import { Locator, Page, TestInfo, expect } from '@playwright/test';
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
 
-import { PlaywrightProjects } from '../../playwright.config';
 import { AnalyticsActions } from './analyticsActions';
+import { isWebProject } from '../common';
 
 export class OnboardingActions {
     readonly welcomeTitle: Locator;
@@ -86,7 +86,7 @@ export class OnboardingActions {
 
     async disableFirmwareHashCheck() {
         // Desktop starts with already disabled firmware hash check. Web needs to disable it.
-        if (this.testInfo.project.name !== PlaywrightProjects.Web) {
+        if (!isWebProject(this.testInfo)) {
             return;
         }
 

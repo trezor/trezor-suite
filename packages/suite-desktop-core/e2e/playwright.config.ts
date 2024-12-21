@@ -22,6 +22,8 @@ const config: PlaywrightTestConfig = {
             name: PlaywrightProjects.Desktop,
             use: {},
             grepInvert: /@webOnly/,
+            //TODO: #16073 We cannot set resolution for Electron. Once solved, remove ignoreSnapshots
+            ignoreSnapshots: true,
         },
     ],
     testDir: 'tests',
@@ -43,7 +45,7 @@ const config: PlaywrightTestConfig = {
     snapshotPathTemplate: 'snapshots/{projectName}/{testFilePath}/{arg}{ext}',
     expect: {
         toHaveScreenshot: {
-            maxDiffPixelRatio: 0.025,
+            maxDiffPixelRatio: 0.001,
         },
     },
 };

@@ -12,7 +12,7 @@ test.describe('Coin market buy', { tag: ['@group=other'] }, () => {
 
     test('Buy crypto from compared offers', async ({ marketPage }) => {
         await test.step('Fill input amount and opens offer comparison', async () => {
-            await marketPage.setYouPayAmount('500');
+            await marketPage.setYouPayAmount('1234');
             await expect(marketPage.layout).toHaveScreenshot('buy-coins-layout.png', {
                 mask: [marketPage.bestOfferAmount, marketPage.bestOfferProvider],
             });
@@ -39,12 +39,12 @@ test.describe('Coin market buy', { tag: ['@group=other'] }, () => {
             );
             // TOOD: #16041 Once solved, Assert mocked price
             await expect(marketPage.tradeConfirmationCryptoAmount).toHaveText(regexpBtcValue);
+            await expect(marketPage.tradeConfirmationContinueButton).toBeEnabled();
         });
-        await expect(marketPage.tradeConfirmationContinueButton).toBeEnabled();
     });
 
     test('Buy crypto from best offer', async ({ marketPage }) => {
-        await marketPage.setYouPayAmount('500');
+        await marketPage.setYouPayAmount('1234');
         const { amount, provider } = await marketPage.readBestOfferValues();
         await marketPage.buyBestOfferButton.click();
         await marketPage.confirmTrade();

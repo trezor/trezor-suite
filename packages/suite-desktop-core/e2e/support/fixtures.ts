@@ -9,12 +9,11 @@ import {
 } from '@trezor/trezor-user-env-link';
 
 import { DashboardActions } from './pageActions/dashboardActions';
-import { getApiUrl, getElectronVideoPath, launchSuite } from './common';
+import { getApiUrl, getElectronVideoPath, isDesktopProject, launchSuite } from './common';
 import { SettingsActions } from './pageActions/settingsActions';
 import { SuiteGuide } from './pageActions/suiteGuideActions';
 import { WalletActions } from './pageActions/walletActions';
 import { OnboardingActions } from './pageActions/onboardingActions';
-import { PlaywrightProjects } from '../playwright.config';
 import { AnalyticsFixture } from './analytics';
 import { BackupActions } from './pageActions/backupActions';
 import { DevicePromptActions } from './pageActions/devicePromptActions';
@@ -85,7 +84,7 @@ const test = base.extend<Fixtures>({
             await trezorUserEnvLink.setupEmu(emulatorSetupConf);
         }
 
-        if (testInfo.project.name === PlaywrightProjects.Desktop) {
+        if (isDesktopProject(testInfo)) {
             const suite = await launchSuite({
                 locale,
                 colorScheme,

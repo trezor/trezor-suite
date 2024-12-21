@@ -105,10 +105,15 @@ export const launchSuite = async (params: LaunchSuiteParams = {}) => {
     return { electronApp, window };
 };
 
+export const isDesktopProject = (testInfo: TestInfo) =>
+    testInfo.project.name === PlaywrightProjects.Desktop;
+
+export const isWebProject = (testInfo: TestInfo) =>
+    testInfo.project.name === PlaywrightProjects.Web;
+
 export const getApiUrl = (webBaseUrl: string | undefined, testInfo: TestInfo) => {
     const electronApiURL = 'file:///';
-    const apiURL =
-        testInfo.project.name === PlaywrightProjects.Desktop ? electronApiURL : webBaseUrl;
+    const apiURL = isDesktopProject(testInfo) ? electronApiURL : webBaseUrl;
     if (!apiURL) {
         throw new Error('apiURL is not defined');
     }

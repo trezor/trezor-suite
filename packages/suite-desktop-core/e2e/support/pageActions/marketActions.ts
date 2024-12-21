@@ -77,13 +77,14 @@ export class MarketActions {
     };
 
     waitForOffersSyncToFinish = async () => {
+        await expect(this.offerSpinner).toBeVisible();
         await expect(this.offerSpinner).toBeHidden({ timeout: 30000 });
     };
 
     setYouPayAmount = async (amount: string) => {
         //Warning: the field is initialized empty and gets default value after the first offer sync
         await expect(this.youPayInput).not.toHaveValue('');
-        await this.waitForOffersSyncToFinish();
+        await expect(this.offerSpinner).toBeHidden({ timeout: 30000 });
         await this.youPayInput.fill(amount);
         //Warning: Bug #16054, as a workaround we wait for offer sync after setting the amount
         await this.waitForOffersSyncToFinish();
