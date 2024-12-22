@@ -94,6 +94,16 @@ export const EthereumNetworkInfo = Type.Intersect([
     }),
 ]);
 
+export type EthereumNetworkInfoDefinitionValues = Static<
+    typeof EthereumNetworkInfoDefinitionValues
+>;
+export const EthereumNetworkInfoDefinitionValues = Type.Omit(EthereumNetworkInfo, [
+    'minFee',
+    'maxFee',
+    'defaultFees',
+    'blockTime',
+]);
+
 export type MiscNetworkInfo = Static<typeof MiscNetworkInfo>;
 export const MiscNetworkInfo = Type.Intersect([
     Common,

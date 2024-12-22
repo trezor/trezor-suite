@@ -17,13 +17,13 @@ import {
 } from '../ethereumDefinitions';
 import type { EthereumTransaction, EthereumTransactionEIP1559 } from '../../../types/api/ethereum';
 import {
-    EthereumNetworkInfo,
+    EthereumNetworkInfoDefinitionValues,
     EthereumSignTransaction as EthereumSignTransactionSchema,
 } from '../../../types';
 
 type Params = {
     path: number[];
-    network?: EthereumNetworkInfo;
+    network?: EthereumNetworkInfoDefinitionValues;
     definitions?: MessagesSchema.EthereumDefinitions;
     chunkify: boolean;
 } & (

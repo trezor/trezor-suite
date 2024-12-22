@@ -10,7 +10,7 @@ import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
 import { stripHexPrefix } from '../../../utils/formatUtils';
 import { PROTO, ERRORS } from '../../../constants';
 import { UI, createUiMessage } from '../../../events';
-import type { EthereumNetworkInfo } from '../../../types';
+import type { EthereumNetworkInfoDefinitionValues } from '../../../types';
 import {
     getEthereumDefinitions,
     decodeEthereumDefinition,
@@ -21,7 +21,7 @@ import { GetAddress as GetAddressSchema } from '../../../types/api/getAddress';
 
 type Params = PROTO.EthereumGetAddress & {
     address?: string;
-    network?: EthereumNetworkInfo;
+    network?: EthereumNetworkInfoDefinitionValues;
     encoded_network?: ArrayBuffer;
 };
 

@@ -5,7 +5,6 @@ import { getBitcoinFeeLevels, getEthereumFeeLevels, getMiscFeeLevels } from './d
 import { ERRORS } from '../constants';
 import { toHardened, fromHardened } from '../utils/pathUtils';
 import type {
-    CoinInfo,
     BitcoinNetworkInfo,
     EthereumNetworkInfo,
     MiscNetworkInfo,
@@ -258,7 +257,7 @@ const parseEthereumNetworksJson = (json: any) => {
 
         ethereumNetworks.push({
             ...ethereumNetworkInfoBase,
-            ...getEthereumFeeLevels(network.chain),
+            ...getEthereumFeeLevels(),
             blockchainLink: network.blockchain_link,
             chainId: network.chain_id,
             label: network.label,
@@ -304,8 +303,8 @@ export const parseCoinsJson = (json: any) => {
     });
 };
 
-export const getUniqueNetworks = (networks: (CoinInfo | undefined)[]) =>
-    networks.reduce((result: CoinInfo[], info?: CoinInfo) => {
+export const getUniqueNetworks = <T extends { shortcut: string }>(networks: (T | undefined)[]) =>
+    networks.reduce((result: T[], info?: T) => {
         if (!info || result.find(i => i.shortcut === info.shortcut)) return result;
 
         return result.concat(info);

@@ -5,7 +5,7 @@ import { trzd } from '@trezor/protocol';
 import { Type, Static, Assert } from '@trezor/schema-utils';
 
 import { DataManager } from '../../data/DataManager';
-import { EthereumNetworkInfo } from '../../types';
+import { EthereumNetworkInfoDefinitionValues } from '../../types';
 import { ethereumNetworkInfoBase } from '../../data/coinInfo';
 
 interface GetEthereumDefinitions {
@@ -135,14 +135,10 @@ export const decodeEthereumDefinition = (
     return decoded;
 };
 
-/**
- * Converts protobuf decoded eth definitions to EthereumNetworkInfo type
- */
 export const ethereumNetworkInfoFromDefinition = (
     definition: EthereumNetworkDefinitionDecoded,
-): EthereumNetworkInfo => ({
+): EthereumNetworkInfoDefinitionValues => ({
     ...ethereumNetworkInfoBase,
-
     chainId: definition.chain_id,
     label: definition.name,
     name: definition.name,
