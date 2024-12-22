@@ -18,6 +18,7 @@ export class MarketActions {
     readonly layout: Locator;
     readonly form: Locator;
     readonly bestOfferProvider: Locator;
+    readonly bestOfferYouGet: Locator;
     readonly bestOfferAmount: Locator;
     readonly buyBestOfferButton: Locator;
     readonly youPayInput: Locator;
@@ -47,6 +48,7 @@ export class MarketActions {
         this.layout = this.page.getByTestId('@coinmarket');
         this.form = this.page.getByTestId('@coinmarket/form');
         this.bestOfferProvider = this.page.getByTestId('@coinmarket/offers/quote/provider');
+        this.bestOfferYouGet = this.page.getByTestId('@coinmarket/best-offer/amount');
         this.bestOfferAmount = this.page.getByTestId('@coinmarket/form/offer/crypto-amount');
         this.buyBestOfferButton = this.page.getByTestId('@coinmarket/form/buy-button');
         this.youPayInput = this.page.getByTestId('@coinmarket/form/fiat-input');
