@@ -1,3 +1,5 @@
+import { BigNumber } from '@trezor/utils';
+
 import { FeeLevel, FeeInfo } from '../types';
 
 // this is workaround for the lack of information from 'trezor-common'
@@ -17,6 +19,25 @@ const getDefaultBlocksForFeeLevel = (shortcut: string, label: string) =>
     BLOCKS_FOR_FEE_LEVEL[shortcut] && BLOCKS_FOR_FEE_LEVEL[shortcut][label]
         ? BLOCKS_FOR_FEE_LEVEL[shortcut][label]
         : -1; // -1 for unknown
+
+const EVM_GAS_PRICE_PER_CHAIN_IN_GWEI: Record<
+    string,
+    { min: number; max: number; defaultGas: number }
+> = {
+    eth: { min: 1, max: 10000, defaultGas: 15 },
+    pol: { min: 1, max: 10000000, defaultGas: 200 },
+    bsc: { min: 1, max: 100000, defaultGas: 3 },
+    base: { min: 0.0000001, max: 1000, defaultGas: 0.01 },
+    arb: { min: 0.001, max: 1000, defaultGas: 0.01 },
+    op: { min: 0.000000001, max: 1000, defaultGas: 0.01 },
+};
+
+const getEvmChainGweiGasPrice = (chain: string) =>
+    EVM_GAS_PRICE_PER_CHAIN_IN_GWEI[chain] ?? {
+        min: 0.000000001,
+        max: 10000,
+        defaultGas: 5,
+    };
 
 // partial data from coins.jon
 interface CoinsJsonData {
@@ -58,20 +79,24 @@ export const getBitcoinFeeLevels = (coin: CoinsJsonData): FeeInfoWithLevels => {
     };
 };
 
-export const getEthereumFeeLevels = (): FeeInfoWithLevels => ({
-    blockTime: -1, // unknown
-    defaultFees: [
-        {
-            label: 'normal' as const,
-            feePerUnit: '5000000000',
-            feeLimit: '21000', // unlike the other networks ethereum have additional value "feeLimit" (Gas limit)
-            blocks: -1, // unknown
-        },
-    ],
-    minFee: 1,
-    maxFee: 10000,
-    dustLimit: -1, // unknown/unused
-});
+export const getEthereumFeeLevels = (chain: string): FeeInfoWithLevels => {
+    const { min, max, defaultGas } = getEvmChainGweiGasPrice(chain);
+
+    return {
+        blockTime: -1, // unknown
+        defaultFees: [
+            {
+                label: 'normal' as const,
+                feePerUnit: new BigNumber(defaultGas).multipliedBy('1e+9').toString(), // defined in wei 1 Gwei = 10^9 Wei
+                feeLimit: '21000', // default transfer gas limit
+                blocks: -1, // unknown
+            },
+        ],
+        minFee: min,
+        maxFee: max,
+        dustLimit: -1, // unknown/unused
+    };
+};
 
 const RIPPLE_FEE_INFO: FeeInfoWithLevels = {
     blockTime: -1, // unknown
