@@ -54,6 +54,7 @@ export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSe
     const [isChecked, setIsChecked] = useState(false);
 
     const handleCheckboxClick = () => setIsChecked(prev => !prev);
+
     const getContent = () => {
         const isBackedUp =
             device?.features?.backup_availability !== 'Required' &&
@@ -123,6 +124,10 @@ export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSe
 
     const { heading, description, checkbox } = getContent();
 
+    const onCheckBackup = () => {
+        dispatch(goto('recovery-index'));
+    };
+
     return (
         <OnboardingStepBox
             image="FIRMWARE"
@@ -138,6 +143,9 @@ export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSe
                         <Translation
                             id={deviceWillBeWiped ? 'TR_WIPE_AND_REINSTALL' : 'TR_CONTINUE'}
                         />
+                    </Button>
+                    <Button onClick={onCheckBackup} variant="tertiary">
+                        <Translation id="TR_CHECK_BACKUP" />
                     </Button>
                 </FirmwareButtonsRow>
             }
