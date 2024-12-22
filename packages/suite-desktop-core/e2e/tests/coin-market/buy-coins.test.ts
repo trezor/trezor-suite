@@ -12,7 +12,7 @@ test.describe('Coin market buy', { tag: ['@group=other'] }, () => {
 
     test('Buy crypto from compared offers', async ({ marketPage }) => {
         await test.step('Fill input amount and opens offer comparison', async () => {
-            await marketPage.setYouPayAmount('1234', 'czk');
+            await marketPage.setYouPayAmount('1234');
             await expect(marketPage.layout).toHaveScreenshot('buy-coins-layout.png', {
                 mask: [marketPage.bestOfferAmount, marketPage.bestOfferProvider],
             });
@@ -44,7 +44,7 @@ test.describe('Coin market buy', { tag: ['@group=other'] }, () => {
     });
 
     test('Buy crypto from best offer', async ({ marketPage }) => {
-        await marketPage.setYouPayAmount('1234', 'czk');
+        await marketPage.setYouPayAmount('1234');
         const { amount, provider } = await marketPage.readBestOfferValues();
         await marketPage.buyBestOfferButton.click();
         await marketPage.confirmTrade();
