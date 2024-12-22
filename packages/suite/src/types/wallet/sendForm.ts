@@ -31,7 +31,6 @@ export type ExportFileType = 'csv' | 'pdf' | 'json';
 export type UseSendFormState = {
     account: Account;
     network: Network;
-    coinFees: FeeInfo;
     localCurrencyOption: { value: FiatCurrencyCode; label: Uppercase<FiatCurrencyCode> };
     feeInfo: FeeInfo;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;

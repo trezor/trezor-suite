@@ -4,10 +4,10 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { useDidUpdate } from '@trezor/react-utils';
 import { FormState } from '@suite-common/wallet-types';
 import {
-    getFeeLevels,
     getDefaultValues,
     amountToSmallestUnit,
     formatAmount,
+    getFeeInfo,
 } from '@suite-common/wallet-utils';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
@@ -62,9 +62,10 @@ export interface UseSendFormProps extends SendFormProps {
 const getStateFromProps = (props: UseSendFormProps) => {
     const { account, network } = props.selectedAccount;
     const { symbol, networkType } = account;
-    const coinFees = props.fees[symbol];
-    const levels = getFeeLevels(networkType, coinFees);
-    const feeInfo = { ...coinFees, levels };
+    const feeInfo = getFeeInfo({
+        networkType,
+        feeInfo: props.fees[symbol],
+    });
     const currencyCode = props.localCurrency;
     const localCurrencyOption = {
         value: currencyCode,
@@ -74,7 +75,6 @@ const getStateFromProps = (props: UseSendFormProps) => {
     return {
         account,
         network,
-        coinFees,
         feeInfo,
         localCurrencyOption,
         online: props.online,
@@ -152,7 +152,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     const excludedUtxos = useExcludedUtxos({
         account: state.account,
-        dustLimit: state.coinFees.dustLimit,
+        dustLimit: state.feeInfo.dustLimit,
         targetAnonymity: props.targetAnonymity,
     });
 

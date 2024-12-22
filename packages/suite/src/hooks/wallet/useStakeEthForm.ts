@@ -7,7 +7,7 @@ import { fromWei } from 'web3-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import {
     fromFiatCurrency,
-    getFeeLevels,
+    getFeeInfo,
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
@@ -81,8 +81,10 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     const isDraft = !!draft;
 
     const state = useMemo(() => {
-        const levels = getFeeLevels(account.networkType, symbolFees);
-        const feeInfo = { ...symbolFees, levels };
+        const feeInfo = getFeeInfo({
+            networkType: account.networkType,
+            feeInfo: symbolFees,
+        });
 
         return {
             account,
@@ -133,9 +135,10 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
 
     // sub-hook, FeeLevels handler
     const fees = useSelector(state => state.wallet.fees);
-    const coinFees = fees[account.symbol];
-    const levels = getFeeLevels(account.networkType, coinFees);
-    const feeInfo = { ...coinFees, levels };
+    const feeInfo = getFeeInfo({
+        networkType: account.networkType,
+        feeInfo: fees[account.symbol],
+    });
     const { changeFeeLevel, selectedFee: _selectedFee } = useFees({
         defaultValue: 'normal',
         feeInfo,

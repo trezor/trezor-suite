@@ -4,7 +4,7 @@ import { UseFormReturn } from 'react-hook-form';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { getFeeLevels } from '@suite-common/wallet-utils';
+import { getFeeInfo } from '@suite-common/wallet-utils';
 
 import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { FORM_OUTPUT_ADDRESS, FORM_OUTPUT_AMOUNT } from 'src/constants/wallet/coinmarket/form';
@@ -41,9 +41,14 @@ export const useCoinmarketComposeTransaction = <T extends CoinmarketSellExchange
     >;
     const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;
     const { symbol, networkType } = account;
-    const coinFees = fees[symbol];
-    const levels = getFeeLevels(networkType, coinFees);
-    const feeInfo = useMemo(() => ({ ...coinFees, levels }), [coinFees, levels]);
+    const feeInfo = useMemo(
+        () =>
+            getFeeInfo({
+                networkType,
+                feeInfo: fees[symbol],
+            }),
+        [networkType, symbol, fees],
+    );
     const initState = useMemo(() => ({ account, network, feeInfo }), [account, network, feeInfo]);
     const outputAddress = values?.outputs?.[0].address;
     const [state, setState] = useState<CoinmarketUseComposeTransactionStateProps>(initState);

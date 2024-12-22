@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { getFeeLevels } from '@suite-common/wallet-utils';
+import { getFeeInfo } from '@suite-common/wallet-utils';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -40,8 +40,10 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
     }, [account.symbol]);
 
     const state = useMemo(() => {
-        const levels = getFeeLevels(account.networkType, symbolFees);
-        const feeInfo = { ...symbolFees, levels };
+        const feeInfo = getFeeInfo({
+            networkType: account.networkType,
+            feeInfo: symbolFees,
+        });
 
         return {
             account,
@@ -101,9 +103,10 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
 
     // sub-hook, FeeLevels handler
     const fees = useSelector(state => state.wallet.fees);
-    const coinFees = fees[account.symbol];
-    const levels = getFeeLevels(account.networkType, coinFees);
-    const feeInfo = { ...coinFees, levels };
+    const feeInfo = getFeeInfo({
+        networkType: account.networkType,
+        feeInfo: fees[account.symbol],
+    });
     const { changeFeeLevel, selectedFee: _selectedFee } = useFees({
         defaultValue: 'normal',
         feeInfo,

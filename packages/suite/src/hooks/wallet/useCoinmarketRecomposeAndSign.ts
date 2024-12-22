@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { FormState } from '@suite-common/wallet-types';
-import { getFeeLevels } from '@suite-common/wallet-utils';
+import { getFeeInfo } from '@suite-common/wallet-utils';
 import { networks } from '@suite-common/wallet-config';
 import type { Account, FormOptions } from '@suite-common/wallet-types';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
@@ -80,9 +80,10 @@ export const useCoinmarketRecomposeAndSign = () => {
             };
 
             // prepare form state for composeAction
-            const coinFees = fees[account.symbol];
-            const levels = getFeeLevels(account.networkType, coinFees);
-            const feeInfo = { ...coinFees, levels };
+            const feeInfo = getFeeInfo({
+                networkType: account.networkType,
+                feeInfo: fees[account.symbol],
+            });
             const composeContext = { account, network, feeInfo };
 
             // recalcCustomLimit is used in case of custom fee level, when we want to keep the feePerUnit defined by the user

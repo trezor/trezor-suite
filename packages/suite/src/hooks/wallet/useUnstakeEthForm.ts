@@ -6,7 +6,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 import {
     fromFiatCurrency,
     getAccountAutocompoundBalance,
-    getFeeLevels,
+    getFeeInfo,
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
@@ -93,8 +93,10 @@ export const useUnstakeEthForm = ({
     const isDraft = !!draft;
 
     const state = useMemo(() => {
-        const levels = getFeeLevels(account.networkType, symbolFees);
-        const feeInfo = { ...symbolFees, levels };
+        const feeInfo = getFeeInfo({
+            networkType: account.networkType,
+            feeInfo: symbolFees,
+        });
 
         return {
             account,
@@ -168,9 +170,10 @@ export const useUnstakeEthForm = ({
 
     // sub-hook, FeeLevels handler
     const fees = useSelector(state => state.wallet.fees);
-    const coinFees = fees[account.symbol];
-    const levels = getFeeLevels(account.networkType, coinFees);
-    const feeInfo = { ...coinFees, levels };
+    const feeInfo = getFeeInfo({
+        networkType: account.networkType,
+        feeInfo: fees[account.symbol],
+    });
     const { changeFeeLevel, selectedFee: _selectedFee } = useFees({
         defaultValue: 'normal',
         feeInfo,

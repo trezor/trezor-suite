@@ -166,7 +166,12 @@ export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
     return result;
 };
 
-export const getFeeLevels = (networkType: NetworkType, feeInfo: FeeInfo) => {
+interface GetFeeInfoProps {
+    feeInfo: FeeInfo;
+    networkType: NetworkType;
+}
+
+const getFeeLevels = ({ feeInfo, networkType }: GetFeeInfoProps) => {
     const levels = feeInfo.levels.concat({
         label: 'custom',
         feePerUnit: '0',
@@ -193,6 +198,11 @@ export const getFeeLevels = (networkType: NetworkType, feeInfo: FeeInfo) => {
 
     return levels;
 };
+
+export const getFeeInfo = ({ networkType, feeInfo }: GetFeeInfoProps): FeeInfo => ({
+    ...feeInfo,
+    levels: getFeeLevels({ networkType, feeInfo }),
+});
 
 export const getInputState = (
     error?: FieldError | Merge<FieldError, FieldErrorsImpl<FieldValues>>,
