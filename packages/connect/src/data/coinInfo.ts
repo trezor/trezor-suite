@@ -249,8 +249,7 @@ const parseBitcoinNetworksJson = (json: any) => {
 
 export const ethereumNetworkInfoBase = {
     type: 'ethereum' as const,
-    decimals: 16,
-    ...getEthereumFeeLevels(),
+    decimals: 18,
 };
 
 const parseEthereumNetworksJson = (json: any) => {
@@ -259,6 +258,7 @@ const parseEthereumNetworksJson = (json: any) => {
 
         ethereumNetworks.push({
             ...ethereumNetworkInfoBase,
+            ...getEthereumFeeLevels(network.chain),
             blockchainLink: network.blockchain_link,
             chainId: network.chain_id,
             label: network.label,
