@@ -45,7 +45,6 @@ const ContentWrapper = styled.div`
 `;
 
 const OptionsRow = styled(MethodContent)`
-    margin-top: -${spacingsPx.sm};
     margin-bottom: ${spacingsPx.md};
     align-items: center;
 

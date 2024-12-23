@@ -54,7 +54,7 @@ const onFieldChange = (state: MethodState, _field: Field<any>, value: any) => {
         setAffectedValues(newState, field);
     }
 
-    return updateParams(newState);
+    return updateParams({ ...state, fields: newState.fields });
 };
 
 // Update field data
