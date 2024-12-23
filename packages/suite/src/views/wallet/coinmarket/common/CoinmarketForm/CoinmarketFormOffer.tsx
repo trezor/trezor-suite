@@ -29,6 +29,7 @@ import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm
 import { FORM_EXCHANGE_DEX, FORM_EXCHANGE_TYPE } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { CoinmarketFormOffersSwitcher } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOffersSwitcher';
+import { useCoinmarketDeviceDisconnected } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketDeviceDisconnected';
 
 const getSelectedQuote = (
     context: CoinmarketFormContextValues<CoinmarketTradeType>,
@@ -73,6 +74,8 @@ export const CoinmarketFormOffer = () => {
     const shouldDisplayFiatAmount = isCoinmarketExchangeContext(context) ? false : amountInCrypto;
     const { networkId, contractAddress } = parseCryptoId(selectedCrypto?.value ?? ('' as CryptoId));
     const network = selectedCrypto?.value ? cryptoIdToPlatformName(networkId) : undefined;
+
+    const { coinmarketDeviceDisconnected } = useCoinmarketDeviceDisconnected();
 
     return (
         <Column gap={spacings.lg}>
@@ -154,7 +157,7 @@ export const CoinmarketFormOffer = () => {
                     top: spacings.md,
                 }}
                 isFullWidth
-                isDisabled={state.isLoadingOrInvalid || !quote}
+                isDisabled={coinmarketDeviceDisconnected || state.isLoadingOrInvalid || !quote}
                 data-testid={`@coinmarket/form/${type}-button`}
             >
                 <Translation id={coinmarketGetSectionActionLabel(type)} />

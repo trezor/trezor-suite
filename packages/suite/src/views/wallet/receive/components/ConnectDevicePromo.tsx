@@ -33,6 +33,13 @@ const ConnectDevicePromo = ({ title, description }: ConnectDevicePromoProps) => 
     );
 };
 
+export const ConnectDeviceGenericPromo = () => (
+    <ConnectDevicePromo
+        title={<Translation id="TR_CONNECT_DEVICE_GENERIC_PROMO_TITLE" />}
+        description={<Translation id="TR_CONNECT_DEVICE_GENERIC_PROMO_DESCRIPTION" />}
+    />
+);
+
 export const ConnectDeviceReceivePromo = () => (
     <ConnectDevicePromo
         title={<Translation id="TR_CONNECT_DEVICE_RECEIVE_PROMO_TITLE" />}

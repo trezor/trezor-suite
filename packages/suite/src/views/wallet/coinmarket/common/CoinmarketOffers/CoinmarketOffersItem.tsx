@@ -20,6 +20,7 @@ import { CoinmarketTestWrapper } from 'src/views/wallet/coinmarket';
 import { CoinmarketUtilsPrice } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsPrice';
 import { CoinmarketUtilsProvider } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsProvider';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { useCoinmarketDeviceDisconnected } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketDeviceDisconnected';
 
 const Offer = styled.div`
     display: flex;
@@ -95,7 +96,7 @@ export interface CoinmarketOffersItemProps {
 export const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
     const theme = useTheme();
     const context = useCoinmarketFormContext();
-    const { device, callInProgress } = context;
+    const { callInProgress } = context;
     const providers = getProvidersInfoProps(context);
     const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
     const { exchange } = quote;
@@ -103,6 +104,8 @@ export const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
     const tagsExist = tag !== '';
 
     const selectQuote = getSelectQuoteTyped(context);
+
+    const { coinmarketDeviceDisconnected } = useCoinmarketDeviceDisconnected();
 
     if (!cryptoAmountProps) return null;
 
@@ -152,7 +155,7 @@ export const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                                 <Button
                                     isFullWidth
                                     isLoading={callInProgress}
-                                    isDisabled={!!quote.error || !device?.connected}
+                                    isDisabled={!!quote.error || coinmarketDeviceDisconnected}
                                     onClick={() => selectQuote(quote)}
                                     data-testid="@coinmarket/offers/get-this-deal-button"
                                 >

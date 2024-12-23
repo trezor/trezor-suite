@@ -9275,6 +9275,14 @@ export default defineMessages({
         id: 'TR_UNRECOGNIZED',
         defaultMessage: 'Unrecognized',
     },
+    TR_CONNECT_DEVICE_GENERIC_PROMO_TITLE: {
+        id: 'TR_CONNECT_DEVICE_GENERIC_PROMO_TITLE',
+        defaultMessage: 'Trezor disconnected',
+    },
+    TR_CONNECT_DEVICE_GENERIC_PROMO_DESCRIPTION: {
+        id: 'TR_CONNECT_DEVICE_GENERIC_PROMO_DESCRIPTION',
+        defaultMessage: 'To perform trade, connect your Trezor.',
+    },
     TR_CONNECT_DEVICE_SEND_PROMO_TITLE: {
         id: 'TR_CONNECT_DEVICE_SEND_PROMO_TITLE',
         defaultMessage: "Your Trezor isn't connected",
