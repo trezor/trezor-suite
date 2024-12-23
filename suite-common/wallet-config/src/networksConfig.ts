@@ -355,29 +355,6 @@ export const networks = {
         coingeckoId: 'zcash',
         coingeckoNativeId: 'zcash',
     },
-    btg: {
-        symbol: 'btg',
-        name: 'Bitcoin Gold',
-        networkType: 'bitcoin',
-        bip43Path: "m/49'/156'/i'",
-        decimals: 8,
-        testnet: false,
-        explorer: {
-            tx: 'https://btg1.trezor.io/tx/',
-            account: 'https://btg1.trezor.io/xpub/',
-            address: 'https://btg1.trezor.io/address/',
-        },
-        features: ['sign-verify'],
-        customBackends: ['blockbook'],
-        accountTypes: {
-            legacy: {
-                accountType: 'legacy',
-                bip43Path: "m/44'/156'/i'",
-            },
-        },
-        coingeckoId: 'bitcoin-gold',
-        coingeckoNativeId: 'bitcoin-gold',
-    },
     // testnets
     test: {
         symbol: 'test',
