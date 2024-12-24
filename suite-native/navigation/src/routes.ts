@@ -14,13 +14,14 @@ export enum RootStackRoutes {
     AddCoinAccountStack = 'AddCoinAccountStack',
     CoinEnablingInit = 'CoinEnablingInit',
     ConnectPopup = 'ConnectPopup',
+    SettingsScreenStack = 'SettingsScreenStack',
 }
 
 export enum AppTabsRoutes {
     HomeStack = 'HomeStack',
     AccountsStack = 'AccountsStack',
     ReceiveStack = 'ReceiveStack',
-    SettingsStack = 'SettingsStack',
+    Settings = 'Settings',
 }
 
 export enum OnboardingStackRoutes {
@@ -108,7 +109,6 @@ export enum AddCoinAccountStackRoutes {
 }
 
 export enum SettingsStackRoutes {
-    Settings = 'Settings',
     SettingsLocalization = 'SettingsLocalization',
     SettingsCustomization = 'SettingsCustomization',
     SettingsPrivacyAndSecurity = 'SettingsPrivacyAndSecurity',

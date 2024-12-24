@@ -6,7 +6,6 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { SettingsScreen } from '../screens/SettingsScreen';
 import { SettingsLocalizationScreen } from '../screens/SettingsLocalizationScreen';
 import { SettingsCustomizationScreen } from '../screens/SettingsCustomizationScreen';
 import { SettingsPrivacyAndSecurity } from '../screens/SettingsPrivacyAndSecurity';
@@ -15,18 +14,10 @@ import { SettingsAboutUsScreen } from '../screens/SettingsAboutUsScreen';
 import { SettingsFAQScreen } from '../screens/SettingsFAQScreen';
 import { SettingsCoinEnablingScreen } from '../screens/SettingsCoinEnablingScreen';
 
-export const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
+const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
 
 export const SettingsStackNavigator = () => (
-    <SettingsStack.Navigator
-        initialRouteName={SettingsStackRoutes.Settings}
-        screenOptions={stackNavigationOptionsConfig}
-    >
-        <SettingsStack.Screen
-            options={{ title: SettingsStackRoutes.Settings }}
-            name={SettingsStackRoutes.Settings}
-            component={SettingsScreen}
-        />
+    <SettingsStack.Navigator screenOptions={stackNavigationOptionsConfig}>
         <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsLocalization }}
             name={SettingsStackRoutes.SettingsLocalization}

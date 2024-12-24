@@ -57,7 +57,6 @@ export type DevUtilsStackParamList = {
 };
 
 export type SettingsStackParamList = {
-    [SettingsStackRoutes.Settings]: undefined;
     [SettingsStackRoutes.SettingsLocalization]: undefined;
     [SettingsStackRoutes.SettingsCustomization]: undefined;
     [SettingsStackRoutes.SettingsPrivacyAndSecurity]: undefined;
@@ -102,7 +101,7 @@ export type AppTabsParamList = {
     [AppTabsRoutes.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
     [AppTabsRoutes.AccountsStack]: NavigatorScreenParams<AccountsStackParamList>;
     [AppTabsRoutes.ReceiveStack]: NavigatorScreenParams<ReceiveStackParamList>;
-    [AppTabsRoutes.SettingsStack]: NavigatorScreenParams<SettingsStackParamList>;
+    [AppTabsRoutes.Settings]: undefined;
 };
 
 export type OnboardingStackParamList = {
@@ -213,4 +212,5 @@ export type RootStackParamList = {
     [RootStackRoutes.ConnectPopup]: {
         parsedUrl: ParsedURL;
     };
+    [RootStackRoutes.SettingsScreenStack]: NavigatorScreenParams<SettingsStackParamList>;
 };

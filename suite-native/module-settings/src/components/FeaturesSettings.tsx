@@ -5,36 +5,26 @@ import { useAtomValue } from 'jotai';
 
 import {
     SettingsStackRoutes,
-    SettingsStackParamList,
-    StackToStackCompositeNavigationProps,
-    RootStackParamList,
     RootStackRoutes,
+    StackNavigationProps,
+    RootStackParamList,
 } from '@suite-native/navigation';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
 
+import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 import { SettingsSection } from './SettingsSection';
 import { SettingsSectionItem } from './SettingsSectionItem';
 import { isDevButtonVisibleAtom } from './ProductionDebug';
 
-type NavigationProp = StackToStackCompositeNavigationProps<
-    SettingsStackParamList,
-    SettingsStackRoutes.Settings,
-    RootStackParamList
->;
-
 export const FeaturesSettings = () => {
     const isDevButtonVisible = useAtomValue(isDevButtonVisibleAtom);
     const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
+    const navigateTo = useSettingsNavigateTo();
 
     const hasDiscovery = useSelector(selectHasDeviceDiscovery);
-
-    const navigation = useNavigation<NavigationProp>();
-
-    const handleNavigation = (routeName: SettingsStackRoutes): void => {
-        navigation.navigate(routeName);
-    };
 
     return (
         <SettingsSection title={<Translation id="moduleSettings.items.features.title" />}>
@@ -53,7 +43,7 @@ export const FeaturesSettings = () => {
                 subtitle={
                     <Translation id="moduleSettings.items.features.privacyAndSecurity.subtitle" />
                 }
-                onPress={() => handleNavigation(SettingsStackRoutes.SettingsPrivacyAndSecurity)}
+                onPress={() => navigateTo(SettingsStackRoutes.SettingsPrivacyAndSecurity)}
                 testID="@settings/privacy-and-security"
             />
             {isUsbDeviceConnectFeatureEnabled && (
@@ -64,7 +54,7 @@ export const FeaturesSettings = () => {
                         subtitle={
                             <Translation id="moduleSettings.items.features.viewOnly.subtitle" />
                         }
-                        onPress={() => handleNavigation(SettingsStackRoutes.SettingsViewOnly)}
+                        onPress={() => navigateTo(SettingsStackRoutes.SettingsViewOnly)}
                         testID="@settings/view-only"
                     />
                     <SettingsSectionItem
@@ -75,7 +65,7 @@ export const FeaturesSettings = () => {
                         subtitle={
                             <Translation id="moduleSettings.items.features.coinEnabling.subtitle" />
                         }
-                        onPress={() => handleNavigation(SettingsStackRoutes.SettingsCoinEnabling)}
+                        onPress={() => navigateTo(SettingsStackRoutes.SettingsCoinEnabling)}
                         isLoading={hasDiscovery}
                         testID="@settings/coin-enabling"
                     />

@@ -1,26 +1,13 @@
-import { useNavigation } from '@react-navigation/core';
-
-import {
-    RootStackParamList,
-    SettingsStackParamList,
-    SettingsStackRoutes,
-    StackToStackCompositeNavigationProps,
-} from '@suite-native/navigation';
+import { SettingsStackRoutes } from '@suite-native/navigation';
 import { TrezorSuiteLiteHeader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
+import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 import { SettingsSection } from './SettingsSection';
 import { SettingsSectionItem } from './SettingsSectionItem';
 
 export const SupportSettings = () => {
-    const navigation =
-        useNavigation<
-            StackToStackCompositeNavigationProps<
-                SettingsStackParamList,
-                SettingsStackRoutes,
-                RootStackParamList
-            >
-        >();
+    const navigateTo = useSettingsNavigateTo();
 
     return (
         <SettingsSection title="Support">
@@ -28,7 +15,7 @@ export const SupportSettings = () => {
                 iconName="question"
                 title={<Translation id="moduleSettings.items.support.help.title" />}
                 subtitle={<Translation id="moduleSettings.items.support.help.subtitle" />}
-                onPress={() => navigation.navigate(SettingsStackRoutes.SettingsFAQ)}
+                onPress={() => navigateTo(SettingsStackRoutes.SettingsFAQ)}
                 testID="@settings/help"
             />
             <SettingsSectionItem
@@ -39,7 +26,7 @@ export const SupportSettings = () => {
                     </>
                 }
                 iconName="trezorSafe5"
-                onPress={() => navigation.navigate(SettingsStackRoutes.SettingsAbout)}
+                onPress={() => navigateTo(SettingsStackRoutes.SettingsAbout)}
                 testID="@settings/about"
             />
         </SettingsSection>

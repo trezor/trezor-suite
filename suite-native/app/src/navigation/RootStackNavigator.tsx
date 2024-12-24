@@ -25,6 +25,7 @@ import { SendStackNavigator } from '@suite-native/module-send';
 import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
 import { ConnectPopupScreen, useConnectPopupNavigation } from '@suite-native/module-connect-popup';
 import { StakingDetailScreen } from '@suite-native/module-staking-management';
+import { SettingsStackNavigator } from '@suite-native/module-settings';
 
 import { AppTabNavigator } from './AppTabNavigator';
 import { useCoinEnablingInitialCheck } from '../hooks/useCoinEnablingInitialCheck';
@@ -110,6 +111,10 @@ export const RootStackNavigator = () => {
             />
             <RootStack.Screen name={RootStackRoutes.SendStack} component={SendStackNavigator} />
             <RootStack.Screen name={RootStackRoutes.ConnectPopup} component={ConnectPopupScreen} />
+            <RootStack.Screen
+                name={RootStackRoutes.SettingsScreenStack}
+                component={SettingsStackNavigator}
+            />
         </RootStack.Navigator>
     );
 };

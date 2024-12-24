@@ -3,7 +3,7 @@ import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/b
 import { ReceiveStackNavigator } from '@suite-native/module-receive';
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
-import { SettingsStackNavigator } from '@suite-native/module-settings';
+import { SettingsScreen } from '@suite-native/module-settings';
 import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
 import { useHandleDeviceRequestsPassphrase } from '@suite-native/device-authorization';
 
@@ -28,7 +28,7 @@ export const AppTabNavigator = () => {
             <Tab.Screen name={AppTabsRoutes.HomeStack} component={HomeStackNavigator} />
             <Tab.Screen name={AppTabsRoutes.AccountsStack} component={AccountsStackNavigator} />
             <Tab.Screen name={AppTabsRoutes.ReceiveStack} component={ReceiveStackNavigator} />
-            <Tab.Screen name={AppTabsRoutes.SettingsStack} component={SettingsStackNavigator} />
+            <Tab.Screen name={AppTabsRoutes.Settings} component={SettingsScreen} />
         </Tab.Navigator>
     );
 };

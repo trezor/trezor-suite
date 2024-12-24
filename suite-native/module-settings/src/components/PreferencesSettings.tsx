@@ -1,29 +1,12 @@
-import { useNavigation } from '@react-navigation/core';
-
-import {
-    SettingsStackRoutes,
-    SettingsStackParamList,
-    StackToStackCompositeNavigationProps,
-    RootStackParamList,
-} from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
+import { SettingsStackRoutes } from '@suite-native/navigation';
 
+import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 import { SettingsSection } from './SettingsSection';
 import { SettingsSectionItem } from './SettingsSectionItem';
 
 export const PreferencesSettings = () => {
-    const navigation =
-        useNavigation<
-            StackToStackCompositeNavigationProps<
-                SettingsStackParamList,
-                SettingsStackRoutes.Settings,
-                RootStackParamList
-            >
-        >();
-
-    const handleNavigation = (routeName: SettingsStackRoutes): void => {
-        navigation.navigate(routeName);
-    };
+    const navigateTo = useSettingsNavigateTo();
 
     return (
         <SettingsSection title={<Translation id="moduleSettings.items.preferences.title" />}>
@@ -33,7 +16,7 @@ export const PreferencesSettings = () => {
                 subtitle={
                     <Translation id="moduleSettings.items.preferences.localization.subtitle" />
                 }
-                onPress={() => handleNavigation(SettingsStackRoutes.SettingsLocalization)}
+                onPress={() => navigateTo(SettingsStackRoutes.SettingsLocalization)}
                 testID="@settings/localization"
             />
             <SettingsSectionItem
@@ -42,7 +25,7 @@ export const PreferencesSettings = () => {
                 subtitle={
                     <Translation id="moduleSettings.items.preferences.customization.subtitle" />
                 }
-                onPress={() => handleNavigation(SettingsStackRoutes.SettingsCustomization)}
+                onPress={() => navigateTo(SettingsStackRoutes.SettingsCustomization)}
                 testID="@settings/customization"
             />
         </SettingsSection>
