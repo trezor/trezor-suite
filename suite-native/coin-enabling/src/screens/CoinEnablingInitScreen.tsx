@@ -42,9 +42,9 @@ const contentStyle = prepareNativeStyle(_ => ({
 }));
 
 const gradientBackgroundBottomStyle = prepareNativeStyle<{ showButton: boolean }>(
-    (_, { showButton }) => ({
+    (utils, { showButton }) => ({
         width: '100%',
-        height: 40,
+        height: utils.spacings.sp16,
         position: 'absolute',
         bottom: -BOTTOM_OFFSET,
         pointerEvents: 'none',

@@ -20,13 +20,11 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { hexToRgba } from '@suite-common/suite-utils';
 import { selectViewOnlyDevicesAccountsNetworkSymbols } from '@suite-native/device';
 
-const GRADIENT_HEIGHT = 40;
-
-const gradientBaseStyleParams = prepareNativeStyle<{ bottom: number }>((_, { bottom }) => ({
+const gradientBaseStyleParams = prepareNativeStyle(utils => ({
     width: '100%',
-    height: GRADIENT_HEIGHT,
+    height: utils.spacings.sp16,
     position: 'absolute',
-    bottom,
+    bottom: -utils.spacings.sp16,
     pointerEvents: 'none',
 }));
 
@@ -80,26 +78,15 @@ export const SettingsCoinEnablingScreen = () => {
                         <LinearGradient
                             dither={false}
                             colors={[utils.colors.backgroundSurfaceElevation0, transparentColor]}
-                            style={applyStyle(gradientBaseStyleParams, {
-                                bottom: -GRADIENT_HEIGHT,
-                            })}
+                            style={applyStyle(gradientBaseStyleParams)}
                         />
                     )}
                 </View>
             }
-            footer={
-                showNetworks && (
-                    <LinearGradient
-                        dither={false}
-                        colors={[transparentColor, utils.colors.backgroundSurfaceElevation0]}
-                        style={applyStyle(gradientBaseStyleParams, { bottom: 0 })}
-                    />
-                )
-            }
             noTopPadding
         >
             {showNetworks ? (
-                <Box paddingTop="sp24" paddingBottom="sp16">
+                <Box paddingTop="sp16">
                     <DiscoveryCoinsFilter />
                 </Box>
             ) : (
