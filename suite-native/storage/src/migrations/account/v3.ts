@@ -21,7 +21,6 @@ type NetworkSymbol =
     | 'btg'
     | 'dgb'
     | 'doge'
-    | 'nmc'
     | 'zec'
     | 'test'
     | 'regtest'
