@@ -378,29 +378,6 @@ export const networks = {
         coingeckoId: 'bitcoin-gold',
         coingeckoNativeId: 'bitcoin-gold',
     },
-    dgb: {
-        symbol: 'dgb',
-        name: 'DigiByte',
-        networkType: 'bitcoin',
-        bip43Path: "m/49'/20'/i'",
-        decimals: 8,
-        testnet: false,
-        explorer: {
-            tx: 'https://dgb1.trezor.io/tx/',
-            account: 'https://dgb1.trezor.io/xpub/',
-            address: 'https://dgb1.trezor.io/address/',
-        },
-        features: ['sign-verify'],
-        customBackends: ['blockbook'],
-        accountTypes: {
-            legacy: {
-                accountType: 'legacy',
-                bip43Path: "m/44'/20'/i'",
-            },
-        },
-        coingeckoId: 'digibyte',
-        coingeckoNativeId: 'digibyte',
-    },
     // testnets
     test: {
         symbol: 'test',
