@@ -11,7 +11,6 @@ export type NetworkSymbol =
     | 'btg'
     | 'dgb'
     | 'doge'
-    | 'nmc'
     | 'zec'
     | 'ada'
     | 'sol'

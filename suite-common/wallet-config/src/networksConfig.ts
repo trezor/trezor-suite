@@ -401,24 +401,6 @@ export const networks = {
         coingeckoId: 'digibyte',
         coingeckoNativeId: 'digibyte',
     },
-    nmc: {
-        symbol: 'nmc',
-        name: 'Namecoin',
-        networkType: 'bitcoin',
-        bip43Path: "m/44'/7'/i'",
-        decimals: 8,
-        testnet: false,
-        explorer: {
-            tx: 'https://nmc1.trezor.io/tx/',
-            account: 'https://nmc1.trezor.io/xpub/',
-            address: 'https://nmc1.trezor.io/address/',
-        },
-        features: ['sign-verify'],
-        customBackends: ['blockbook'],
-        accountTypes: {},
-        coingeckoId: 'namecoin',
-        coingeckoNativeId: 'namecoin',
-    },
     // testnets
     test: {
         symbol: 'test',
