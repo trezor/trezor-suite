@@ -12,7 +12,6 @@ export type NetworkSymbol =
     | 'dgb'
     | 'doge'
     | 'nmc'
-    | 'vtc'
     | 'zec'
     | 'ada'
     | 'sol'

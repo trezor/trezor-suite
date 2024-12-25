@@ -419,33 +419,6 @@ export const networks = {
         coingeckoId: 'namecoin',
         coingeckoNativeId: 'namecoin',
     },
-    vtc: {
-        symbol: 'vtc',
-        name: 'Vertcoin',
-        networkType: 'bitcoin',
-        bip43Path: "m/84'/28'/i'",
-        decimals: 8,
-        testnet: false,
-        explorer: {
-            tx: 'https://vtc1.trezor.io/tx/',
-            account: 'https://vtc1.trezor.io/xpub/',
-            address: 'https://vtc1.trezor.io/address/',
-        },
-        features: ['sign-verify'],
-        customBackends: ['blockbook'],
-        accountTypes: {
-            segwit: {
-                accountType: 'segwit',
-                bip43Path: "m/49'/28'/i'",
-            },
-            legacy: {
-                accountType: 'legacy',
-                bip43Path: "m/44'/28'/i'",
-            },
-        },
-        coingeckoId: 'vertcoin',
-        coingeckoNativeId: 'vertcoin',
-    },
     // testnets
     test: {
         symbol: 'test',
