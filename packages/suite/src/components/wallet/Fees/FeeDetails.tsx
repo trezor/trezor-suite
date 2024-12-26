@@ -110,7 +110,7 @@ export const FeeDetails = (props: DetailsProps) => {
     const { networkType } = props;
 
     return (
-        <Text as="div" typographyStyle="hint">
+        <Text data-testid="@wallet/fee-details" as="div" typographyStyle="hint">
             <Row gap={spacings.md}>
                 {networkType === 'bitcoin' && <BitcoinDetails {...props} />}
                 {networkType === 'ethereum' && <EthereumDetails {...props} />}

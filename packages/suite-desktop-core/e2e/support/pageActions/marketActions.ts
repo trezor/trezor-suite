@@ -26,6 +26,8 @@ export class MarketActions {
     readonly youPayCurrencyOption = (currency: FiatCurrencyCode) =>
         this.page.getByTestId(`@coinmarket/form/fiat-currency-select/option/${currency}`);
     readonly countryOfResidenceDropdown: Locator;
+    readonly countryOfResidenceOption = (countryCode: string) =>
+        this.page.getByTestId(`@coinmarket/form/country-select/option/${countryCode}`);
     readonly buyOffersPage: Locator;
     readonly compareButton: Locator;
     readonly quotes: Locator;
@@ -42,6 +44,7 @@ export class MarketActions {
     readonly tradeConfirmationCryptoAmount: Locator;
     readonly tradeConfirmationProvider: Locator;
     readonly tradeConfirmationContinueButton: Locator;
+    readonly exchangeFeeDetails: Locator;
 
     constructor(private page: Page) {
         this.offerSpinner = this.page.getByTestId('@coinmarket/offers/loading-spinner');
@@ -82,6 +85,7 @@ export class MarketActions {
         this.tradeConfirmationContinueButton = this.page.getByTestId(
             '@coinmarket/offer/continue-transaction-button',
         );
+        this.exchangeFeeDetails = this.page.getByTestId('@wallet/fee-details');
     }
 
     waitForOffersSyncToFinish = async () => {
@@ -91,24 +95,24 @@ export class MarketActions {
         await expect(this.buyBestOfferButton).toBeEnabled();
     };
 
-    selectCountryOfResidence = async (country: string) => {
-        const countryLabel = getCountryLabel(country);
+    selectCountryOfResidence = async (countryCode: string) => {
+        const countryLabel = getCountryLabel(countryCode);
         const currentCountry = await this.countryOfResidenceDropdown.textContent();
         if (currentCountry === countryLabel) {
             return;
         }
         await this.countryOfResidenceDropdown.click();
         await this.countryOfResidenceDropdown.getByRole('combobox').fill(countryLabel);
-        await this.page.getByTestId(`@coinmarket/form/country-select/option/${country}`).click();
+        await this.countryOfResidenceOption(countryCode).click();
     };
 
-    selectFiatCurrency = async (currency: FiatCurrencyCode) => {
+    selectFiatCurrency = async (currencyCode: FiatCurrencyCode) => {
         const currentCurrency = await this.youPayCurrencyDropdown.textContent();
-        if (currentCurrency === currency.toUpperCase()) {
+        if (currentCurrency === currencyCode.toUpperCase()) {
             return;
         }
         await this.youPayCurrencyDropdown.click();
-        await this.youPayCurrencyOption(currency).click();
+        await this.youPayCurrencyOption(currencyCode).click();
     };
 
     setYouPayAmount = async (
