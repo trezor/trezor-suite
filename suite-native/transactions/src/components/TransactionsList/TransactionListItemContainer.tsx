@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { isPending } from '@suite-common/wallet-utils';
 import { AccountKey, TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
@@ -15,14 +16,12 @@ import { Badge, Box, DiscreetText, HStack, Text } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
 import {
     selectIsPhishingTransaction,
-    selectIsTransactionPending,
     selectTransactionBlockTimeById,
     selectTransactionByAccountKeyAndTxid,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TypedTokenTransfer } from '@suite-native/tokens';
-import { Color } from '@trezor/theme';
 import { Translation } from '@suite-native/intl';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
@@ -129,16 +128,12 @@ export const TransactionListItemContainer = ({
         selectTransactionBlockTimeById(state, accountKey, txid),
     );
 
-    const isTransactionPending = useSelector((state: TransactionsRootState) =>
-        selectIsTransactionPending(state, txid, accountKey),
-    );
-
+    const isTransactionPending = isPending(transaction);
     const isPhishingTransaction = useSelector(
         (state: TokenDefinitionsRootState & TransactionsRootState) =>
             selectIsPhishingTransaction(state, txid, accountKey),
     );
 
-    const iconColor: Color = isTransactionPending ? 'backgroundAlertYellowBold' : 'iconSubdued';
     const coinSymbol = isPhishingTransaction ? undefined : symbol;
     const contractAddress = isPhishingTransaction ? undefined : tokenTransfer?.contract;
 
@@ -155,7 +150,6 @@ export const TransactionListItemContainer = ({
                     contractAddress={contractAddress}
                     transactionType={transactionType}
                     isAnimated={isTransactionPending}
-                    iconColor={iconColor}
                 />
                 <Box marginLeft="sp16" flex={1}>
                     <HStack flexDirection="row" alignItems="center" spacing="sp4">

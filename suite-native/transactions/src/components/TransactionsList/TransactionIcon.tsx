@@ -12,15 +12,10 @@ type TransactionIconProps = {
     symbol?: NetworkSymbol;
     contractAddress?: TokenAddress;
     isAnimated?: boolean;
-    iconColor?: Color;
-    spinnerColor?: Color;
-    spinnerWidth?: number;
     backgroundColor?: Color;
     containerSize?: number;
     iconSize?: IconSize;
 };
-
-const DEFAULT_CONTAINER_SIZE = 48;
 
 const transactionIconMap: Record<TransactionType, IconName> = {
     recv: 'arrowDown',
@@ -46,12 +41,9 @@ export const TransactionIcon = ({
     contractAddress,
     transactionType,
     backgroundColor,
-    spinnerColor,
-    spinnerWidth,
-    containerSize = DEFAULT_CONTAINER_SIZE,
+    containerSize = 48,
     iconSize = 'mediumLarge',
     isAnimated = false,
-    iconColor = 'iconSubdued',
 }: TransactionIconProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -59,7 +51,6 @@ export const TransactionIcon = ({
         <Box>
             <RoundedIcon
                 name={transactionIconMap[transactionType]}
-                color={iconColor}
                 iconSize={iconSize}
                 backgroundColor={backgroundColor}
                 containerSize={containerSize}
@@ -67,8 +58,8 @@ export const TransactionIcon = ({
             {isAnimated && (
                 <TransactionIconSpinner
                     size={containerSize}
-                    color={spinnerColor ?? iconColor}
-                    width={spinnerWidth}
+                    color="backgroundAlertYellowBold"
+                    width={3}
                 />
             )}
             {symbol && (

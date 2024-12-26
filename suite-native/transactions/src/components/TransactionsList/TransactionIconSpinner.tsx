@@ -17,22 +17,17 @@ import { ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
 type TransactionIconSpinnerProps = {
     size: number;
     color: Color;
-    width?: number;
+    width: number;
 };
 
 const FULL_CIRCLE_TURN = 360;
 const ROTATION_DURATION = 2500;
-const DEFAULT_STROKE_WIDTH = 8;
 
 const ContainerStyle = prepareNativeStyle(_ => ({
     position: 'absolute',
 }));
 
-export const TransactionIconSpinner = ({
-    size,
-    color,
-    width = DEFAULT_STROKE_WIDTH,
-}: TransactionIconSpinnerProps) => {
+export const TransactionIconSpinner = ({ size, color, width }: TransactionIconSpinnerProps) => {
     const { applyStyle, utils } = useNativeStyles();
 
     const rotation = useSharedValue(0);

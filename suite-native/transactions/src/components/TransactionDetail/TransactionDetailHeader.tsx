@@ -1,29 +1,26 @@
-import { Badge, Box, DiscreetTextTrigger, Text, VStack } from '@suite-native/atoms';
-import { isPending } from '@suite-common/wallet-utils';
 import { AccountKey } from '@suite-common/wallet-types';
+import { isPending } from '@suite-common/wallet-utils';
+import { Badge, Box, DiscreetTextTrigger, Text, VStack } from '@suite-native/atoms';
 import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
+    SignValueFormatter,
     TokenAmountFormatter,
     TokenToFiatAmountFormatter,
-    SignValueFormatter,
 } from '@suite-native/formatters';
+import { Translation } from '@suite-native/intl';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Translation } from '@suite-native/intl';
 
 import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
-import { TransactionIcon } from '../TransactionsList/TransactionIcon';
 import { getTransactionValueSign } from '../../utils';
+import { TransactionIcon } from '../TransactionsList/TransactionIcon';
 
 type TransactionDetailHeaderProps = {
     transaction: WalletAccountTransaction;
     tokenTransfer?: TypedTokenTransfer;
     accountKey: AccountKey;
 };
-
-const ICON_SIZE = 56;
-const ICON_SPINNER_WIDTH = 3;
 
 const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
     extend: {
@@ -65,11 +62,8 @@ export const TransactionDetailHeader = ({
                     <TransactionIcon
                         transactionType={txType}
                         isAnimated={isPendingTx}
-                        containerSize={ICON_SIZE}
+                        containerSize={56}
                         iconSize="extraLarge"
-                        spinnerWidth={ICON_SPINNER_WIDTH}
-                        iconColor="iconDefault"
-                        spinnerColor="backgroundAlertYellowBold"
                         backgroundColor="backgroundSurfaceElevation1"
                     />
 

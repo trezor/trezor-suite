@@ -125,7 +125,6 @@ export const TransactionNotification = ({
                     transactionType={transactionType}
                     symbol={notification.symbol}
                     isAnimated={isIconAnimated}
-                    iconColor={isIconAnimated ? 'iconAlertYellow' : 'iconSubdued'}
                 />
             }
             iconRight={<Icon name="caretCircleRight" />}
