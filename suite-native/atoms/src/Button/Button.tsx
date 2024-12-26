@@ -74,6 +74,12 @@ export type ButtonStyleProps = {
     hasTitle?: boolean;
 };
 
+export type ButtonTextStyleProps = {
+    additionalSpacing: number;
+    hasLeftView: boolean;
+    hasRightView: boolean;
+};
+
 const LOADER_FADE_IN_DURATION = 500;
 
 const baseDisabledScheme: BaseButtonColorScheme = {
@@ -186,19 +192,26 @@ const sizeToDimensionsMap = {
     small: {
         minHeight: 40,
         paddingVertical: 10,
-        paddingHorizontal: nativeSpacings.sp16,
+        paddingHorizontal: nativeSpacings.sp12,
     },
     medium: {
         minHeight: 48,
         paddingVertical: nativeSpacings.sp12,
-        paddingHorizontal: nativeSpacings.sp20,
+        paddingHorizontal: nativeSpacings.sp16,
     },
     large: {
         minHeight: 56,
         paddingVertical: nativeSpacings.sp16,
-        paddingHorizontal: nativeSpacings.sp24,
+        paddingHorizontal: nativeSpacings.sp20,
     },
 } as const satisfies Record<ButtonSize, NativeStyleObject>;
+
+const sizeToAdditionalSpacingMap = {
+    extraSmall: 0,
+    small: nativeSpacings.sp1,
+    medium: nativeSpacings.sp2,
+    large: nativeSpacings.sp4,
+} as const satisfies Record<ButtonSize, number>;
 
 export const buttonToTextSizeMap = {
     extraSmall: 'hint',
@@ -233,6 +246,15 @@ export const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
                     },
                 },
             ],
+        };
+    },
+);
+
+const buttonTextStyle = prepareNativeStyle<ButtonTextStyleProps>(
+    (_, { additionalSpacing, hasLeftView, hasRightView }) => {
+        return {
+            marginLeft: !hasLeftView ? additionalSpacing : undefined,
+            marginRight: !hasRightView ? additionalSpacing : undefined,
         };
     },
 );
@@ -321,7 +343,16 @@ export const Button = ({
                             iconSize={size}
                         />
                     )}
-                    <Text textAlign="center" variant={buttonToTextSizeMap[size]} color={textColor}>
+                    <Text
+                        textAlign="center"
+                        variant={buttonToTextSizeMap[size]}
+                        color={textColor}
+                        style={applyStyle(buttonTextStyle, {
+                            additionalSpacing: sizeToAdditionalSpacingMap[size],
+                            hasLeftView: !!viewLeft,
+                            hasRightView: !!viewRight,
+                        })}
+                    >
                         {children}
                     </Text>
                     {viewRight && (

@@ -147,6 +147,23 @@ export const DemoScreen = () => {
                                     </Button>
                                 ))}
                             </Box>
+                            <Box
+                                flexDirection="row"
+                                justifyContent="space-around"
+                                alignItems="center"
+                                style={applyStyle(flexWrapStyle)}
+                            >
+                                {buttonSizes.map(buttonSize => (
+                                    <Button
+                                        key={buttonSize}
+                                        colorScheme={buttonScheme}
+                                        viewRight="calendar"
+                                        size={buttonSize}
+                                    >
+                                        {buttonSize}
+                                    </Button>
+                                ))}
+                            </Box>
                         </VStack>
                     ))}
                     <VStack>
@@ -162,6 +179,42 @@ export const DemoScreen = () => {
                                     key={buttonSize}
                                     colorScheme="primary"
                                     viewLeft="calendar"
+                                    size={buttonSize}
+                                    isDisabled
+                                >
+                                    {buttonSize}
+                                </Button>
+                            ))}
+                        </Box>
+                        <Box
+                            flexDirection="row"
+                            justifyContent="space-around"
+                            alignItems="center"
+                            style={applyStyle(flexWrapStyle)}
+                        >
+                            {buttonSizes.map(buttonSize => (
+                                <Button
+                                    key={buttonSize}
+                                    colorScheme="primary"
+                                    viewLeft="calendar"
+                                    size={buttonSize}
+                                    isDisabled
+                                >
+                                    {buttonSize}
+                                </Button>
+                            ))}
+                        </Box>
+                        <Box
+                            flexDirection="row"
+                            justifyContent="space-around"
+                            alignItems="center"
+                            style={applyStyle(flexWrapStyle)}
+                        >
+                            {buttonSizes.map(buttonSize => (
+                                <Button
+                                    key={buttonSize}
+                                    colorScheme="primary"
+                                    viewRight="calendar"
                                     size={buttonSize}
                                     isDisabled
                                 >
