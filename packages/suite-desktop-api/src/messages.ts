@@ -55,6 +55,7 @@ export type HandshakeTorModule = {
 
 export type TorSettings = {
     useExternalTor: boolean;
+    externalPort: number;
 };
 
 export type TraySettings = {

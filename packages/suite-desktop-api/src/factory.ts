@@ -125,7 +125,9 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         getTorSettings: () => ipcRenderer.invoke('tor/get-settings'),
 
         changeTorSettings: payload => {
-            if (validation.isObject({ useExternalTor: 'boolean' }, payload)) {
+            if (
+                validation.isObject({ useExternalTor: 'boolean', externalPort: 'number' }, payload)
+            ) {
                 return ipcRenderer.invoke('tor/change-settings', payload);
             }
 
