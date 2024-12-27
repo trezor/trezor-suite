@@ -39,6 +39,7 @@ test.describe('Recovery T2T1 - dry run', { tag: ['@group=device-management'] }, 
         await expect(recoveryPage.successTitle).toHaveText('Wallet backup checked successfully');
     });
 
+    //TODO: #14987 Fix Recovery - dry run test for T2T1
     test.skip('Recovery with device reconnection', async () => {
         // Start dry recovery check process
         // First interrupt: Disconnect device and check that recovery process is paused
