@@ -19,8 +19,8 @@ import { BackupActions } from './pageActions/backupActions';
 import { DevicePromptActions } from './pageActions/devicePromptActions';
 import { AnalyticsActions } from './pageActions/analyticsActions';
 import { IndexedDbFixture } from './indexedDb';
-import { RecoveryActions } from './pageActions/recoverActions';
-import { TrezorInputActions } from './pageActions/wordInputActions';
+import { RecoveryActions } from './pageActions/recoveryActions';
+import { TrezorInputActions } from './pageActions/trezorInputActions';
 import { MarketActions } from './pageActions/marketActions';
 
 type Fixtures = {
