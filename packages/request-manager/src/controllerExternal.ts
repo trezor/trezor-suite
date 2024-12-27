@@ -40,6 +40,10 @@ export class TorControllerExternal extends EventEmitter {
         this.status = TOR_CONTROLLER_STATUS.ExternalTorRunning;
     }
 
+    public updatePort(port: number) {
+        this.options.port = port;
+    }
+
     public getTorConfiguration() {
         return '';
     }
