@@ -4,16 +4,20 @@ import { Status } from './BaseProcess';
 
 export type TorProcessStatus = Status & { isBootstrapping?: boolean };
 
-const DEFAULT_TOR_EXTERNAL_HOST = '127.0.0.1';
-const DEFAULT_TOR_EXTERNAL_PORT = 9050;
-
 export class TorExternalProcess {
     isStopped = true;
     torController: TorControllerExternal;
-    port = DEFAULT_TOR_EXTERNAL_PORT;
-    host = DEFAULT_TOR_EXTERNAL_HOST;
-    constructor() {
+    port: number;
+    host: string;
+    constructor({ port, host }: { port: number; host: string }) {
+        this.port = port;
+        this.host = host;
         this.torController = new TorControllerExternal({ host: this.host, port: this.port });
+    }
+
+    public updatePort(port: number) {
+        this.port = port;
+        this.torController.updatePort(port);
     }
 
     public getPort() {

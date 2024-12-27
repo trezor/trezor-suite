@@ -66,6 +66,7 @@ export class Store {
             controlPort: 9051,
             host: '127.0.0.1',
             useExternalTor: false,
+            externalPort: 9050,
             torDataDir: '',
         });
     }

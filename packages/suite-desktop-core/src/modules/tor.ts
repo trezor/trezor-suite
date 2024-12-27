@@ -37,7 +37,10 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
         torDataDir: settings.torDataDir,
     });
 
-    const externalTorProcess = new TorExternalProcess();
+    const externalTorProcess = new TorExternalProcess({
+        host: settings.host,
+        port: settings.externalPort,
+    });
 
     const getTarget = () => {
         const { useExternalTor } = store.getTorSettings();
@@ -64,11 +67,11 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
     };
 
     const getProxySettings = (shouldEnableTor: boolean) => {
-        const { useExternalTor, port, host } = store.getTorSettings();
+        const { useExternalTor, port, host, externalPort } = store.getTorSettings();
 
         return shouldEnableTor
             ? {
-                  proxy: `socks://${host}:${useExternalTor ? 9050 : port}`,
+                  proxy: `socks://${host}:${useExternalTor ? externalPort : port}`,
               }
             : { proxy: '' };
     };
@@ -140,7 +143,7 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
     };
 
     const setupTor = async (shouldEnableTor: boolean) => {
-        const { useExternalTor } = store.getTorSettings();
+        const { useExternalTor, externalPort } = store.getTorSettings();
 
         const isTorRunning = (await getTarget().status()).process;
 
@@ -150,13 +153,16 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
 
         if (shouldEnableTor === true) {
             const { host } = store.getTorSettings();
+            if (useExternalTor) {
+                getTarget().updatePort(externalPort);
+            }
             const port = getTarget().getPort();
+            updateTorPort(port);
             const proxyRule = `socks5://${host}:${port}`;
             setProxy(proxyRule);
             getTarget().torController.on('bootstrap/event', handleBootstrapEvent);
 
             try {
-                updateTorPort(port);
                 if (useExternalTor) {
                     await getTarget().start();
                     createFakeBootstrapProcess();
@@ -190,13 +196,17 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
 
     ipcMain.handle(
         'tor/change-settings',
-        (ipcEvent, { useExternalTor }: { useExternalTor: boolean }) => {
+        (
+            ipcEvent,
+            { useExternalTor, externalPort }: { useExternalTor: boolean; externalPort: number },
+        ) => {
             validateIpcMessage(ipcEvent);
 
             try {
                 store.setTorSettings({
                     ...store.getTorSettings(),
                     useExternalTor,
+                    externalPort,
                 });
 
                 return { success: true };

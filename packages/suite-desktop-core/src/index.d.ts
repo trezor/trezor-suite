@@ -113,6 +113,7 @@ declare type TorSettings = {
     controlPort: number; // Port of the Tor Control Port
     torDataDir: string; // Path of tor data directory
     useExternalTor: boolean; // Tor should use external daemon instead of the one built-in suite.
+    externalPort: number; // Tor external port.
 };
 
 declare type BridgeSettings = {

@@ -28,6 +28,10 @@ export class TorProcess extends BaseProcess {
         });
     }
 
+    public updatePort(port: number) {
+        this.port = port;
+    }
+
     public getPort() {
         return this.port;
     }

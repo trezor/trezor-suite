@@ -12,8 +12,10 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
     logger.info(SERVICE_NAME, `Starting service`);
 
     const setProxy = () => {
-        const { running, host, port } = store.getTorSettings();
-        const payload = running ? { proxy: `socks://${host}:${port}` } : { proxy: '' };
+        const { running, host, port, externalPort, useExternalTor } = store.getTorSettings();
+        const payload = running
+            ? { proxy: `socks://${host}:${useExternalTor ? externalPort : port}` }
+            : { proxy: '' };
         logger.info(SERVICE_NAME, `${running ? 'Enable' : 'Disable'} proxy ${payload.proxy}`);
 
         return TrezorConnect.setProxy(payload);
