@@ -54,8 +54,8 @@ const getEthereumFeeInfo = (info: FeeInfo, gasPrice: string) => {
     const minFeeFromNetwork = new BigNumber(feeInfo.levels[0].feePerUnit);
 
     const getFee = () => {
-        if (minFeeFromNetwork.lte(current.plus(1))) {
-            return current.plus(1);
+        if (minFeeFromNetwork.lte(current.plus(feeInfo.minFee))) {
+            return current.plus(feeInfo.minFee);
         }
 
         return minFeeFromNetwork;
@@ -72,7 +72,7 @@ const getEthereumFeeInfo = (info: FeeInfo, gasPrice: string) => {
     return {
         ...feeInfo,
         levels,
-        minFee: current.plus(1).toNumber(), // increase required minFee rate
+        minFee: current.plus(feeInfo.minFee).toNumber(), // increase required minFee rate
     };
 };
 

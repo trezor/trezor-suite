@@ -119,9 +119,13 @@ export const CustomFee = <TFieldValues extends FormState>({
                 except: networkType !== 'ethereum',
             }),
             range: (value: string) => {
-                const feeBig = new BigNumber(value);
-                if (feeBig.isGreaterThan(maxFee) || feeBig.isLessThan(minFee)) {
-                    return translationString('CUSTOM_FEE_NOT_IN_RANGE', { minFee, maxFee });
+                const customFee = new BigNumber(value);
+
+                if (customFee.isGreaterThan(maxFee) || customFee.isLessThan(minFee)) {
+                    return translationString('CUSTOM_FEE_NOT_IN_RANGE', {
+                        minFee: new BigNumber(minFee).toString(),
+                        maxFee: new BigNumber(maxFee).toString(),
+                    });
                 }
             },
         },
