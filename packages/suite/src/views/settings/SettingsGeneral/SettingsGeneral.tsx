@@ -7,6 +7,7 @@ import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import {
     selectIsSettingsDesktopAppPromoBannerShown,
     selectTorState,
+    selectHasExperimentalFeature,
 } from 'src/reducers/suite/suiteReducer';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
@@ -32,6 +33,7 @@ import { Experimental } from './Experimental';
 import { AutomaticUpdate } from './AutomaticUpdate';
 import { AutoStart } from './AutoStart';
 import { ShowOnTray } from './ShowOnTray';
+import { TorExternal } from './TorExternal';
 
 export const SettingsGeneral = () => {
     const shouldShowSettingsDesktopAppPromoBanner = useSelector(
@@ -49,6 +51,10 @@ export const SettingsGeneral = () => {
 
         return networkFeatures.includes('amount-unit');
     });
+
+    const torExternalExperimentalFeature = useSelector(
+        selectHasExperimentalFeature('tor-external'),
+    );
 
     const isMetadataEnabled = metadata.enabled && !metadata.initiating;
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
@@ -80,6 +86,7 @@ export const SettingsGeneral = () => {
                 <SettingsSection title={<Translation id="TR_TOR" />} icon="torBrowser">
                     {isDesktop() && <Tor />}
                     {isTorEnabled && <TorOnionLinks />}
+                    {torExternalExperimentalFeature && <TorExternal />}
                 </SettingsSection>
             )}
 
