@@ -2,17 +2,11 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { variables, Card, SkeletonRectangle } from '@trezor/components';
+import { variables, Card, SkeletonRectangle, Column } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { HiddenPlaceholder, FormattedCryptoAmount, Sign } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
-
-const InfoCardContent = styled.div`
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-`;
 
 const Title = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
@@ -72,7 +66,7 @@ export const InfoCard = (props: InfoCardProps) => {
 
     return (
         <Card minHeight={100}>
-            <InfoCardContent>
+            <Column>
                 <Title>{props.title}</Title>
                 {props.isLoading && <SkeletonRectangle width="160px" />}
 
@@ -104,7 +98,7 @@ export const InfoCard = (props: InfoCardProps) => {
                         )}
                     </>
                 )}
-            </InfoCardContent>
+            </Column>
         </Card>
     );
 };

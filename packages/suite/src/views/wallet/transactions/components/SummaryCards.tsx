@@ -14,7 +14,6 @@ import { InfoCard } from './InfoCard';
 
 const InfoCardsWrapper = styled.div`
     display: grid;
-    margin-top: 20px;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-gap: 20px;
 
@@ -46,7 +45,7 @@ interface SummaryCardProps {
     data: AggregatedAccountHistory[];
     dataInterval: [number, number];
     localCurrency: string;
-    symbol: Account['symbol'];
+    account: Account;
     isLoading?: boolean;
     className?: string;
 }
@@ -67,14 +66,14 @@ export const SummaryCards = ({
     data,
     dataInterval,
     localCurrency,
-    symbol,
+    account,
     isLoading,
     className,
 }: SummaryCardProps) => {
     const { FiatAmountFormatter } = useFormatters();
     const [fromTimestamp, toTimestamp] = dataInterval;
     // aggregate values from shown graph data
-    const numOfTransactions = data.reduce((acc, d) => (acc += d.txs), 0);
+    const numOfTransactions = data.reduce((acc, d) => (acc += d.txs), 0) || account.history.total;
     const totalSentAmount = data.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
     const totalReceivedAmount = data.reduce((acc, d) => acc.plus(d.received), new BigNumber(0));
     const totalSentFiatMap: { [k: string]: string | undefined } = data.reduce(
@@ -109,36 +108,40 @@ export const SummaryCards = ({
                     ) : null
                 }
             />
-            <InfoCard
-                title={<Translation id="TR_INCOMING" />}
-                value={totalReceivedAmount.toFixed()}
-                secondaryValue={
-                    totalReceivedFiatMap[localCurrency] ? (
-                        <FiatAmountFormatter
-                            currency={localCurrency}
-                            value={totalReceivedFiatMap[localCurrency]!}
-                        />
-                    ) : undefined
-                }
-                symbol={symbol}
-                isLoading={isLoading}
-                isNumeric
-            />
-            <InfoCard
-                title={<Translation id="TR_OUTGOING" />}
-                value={totalSentAmount.negated().toFixed()}
-                secondaryValue={
-                    totalSentFiatMap[localCurrency] ? (
-                        <FiatAmountFormatter
-                            currency={localCurrency}
-                            value={totalSentFiatMap[localCurrency]!}
-                        />
-                    ) : undefined
-                }
-                symbol={symbol}
-                isLoading={isLoading}
-                isNumeric
-            />
+            {account.networkType !== 'solana' && (
+                <>
+                    <InfoCard
+                        title={<Translation id="TR_INCOMING" />}
+                        value={totalReceivedAmount.toFixed()}
+                        secondaryValue={
+                            totalReceivedFiatMap[localCurrency] ? (
+                                <FiatAmountFormatter
+                                    currency={localCurrency}
+                                    value={totalReceivedFiatMap[localCurrency]!}
+                                />
+                            ) : undefined
+                        }
+                        symbol={account.symbol}
+                        isLoading={isLoading}
+                        isNumeric
+                    />
+                    <InfoCard
+                        title={<Translation id="TR_OUTGOING" />}
+                        value={totalSentAmount.negated().toFixed()}
+                        secondaryValue={
+                            totalSentFiatMap[localCurrency] ? (
+                                <FiatAmountFormatter
+                                    currency={localCurrency}
+                                    value={totalSentFiatMap[localCurrency]!}
+                                />
+                            ) : undefined
+                        }
+                        symbol={account.symbol}
+                        isLoading={isLoading}
+                        isNumeric
+                    />
+                </>
+            )}
         </InfoCardsWrapper>
     );
 };
