@@ -1,31 +1,7 @@
 import { test, expect } from '../../../support/fixtures';
 
-const mnemonic = [
-    'nasty',
-    'answer',
-    'gentle',
-    'inform',
-    'unaware',
-    'abandon',
-    'regret',
-    'supreme',
-    'dragon',
-    'gravity',
-    'behind',
-    'lava',
-    'dose',
-    'pilot',
-    'garden',
-    'into',
-    'dynamic',
-    'outer',
-    'hard',
-    'speed',
-    'luxury',
-    'run',
-    'truly',
-    'armed',
-];
+const mnemonic =
+    'nasty answer gentle inform unaware abandon regret supreme dragon gravity behind lava dose pilot garden into dynamic outer hard speed luxury run truly armed';
 
 test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-management'] }, () => {
     test.use({
@@ -42,8 +18,8 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
         onboardingPage,
         analyticsPage,
         devicePrompt,
-        recoverPage,
-        wordInputPage,
+        recoveryPage,
+        trezorInput,
         trezorUserEnvLink,
     }) => {
         await analyticsPage.passThroughAnalytics();
@@ -51,14 +27,14 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
         // Start wallet recovery process
         await onboardingPage.firmwareContinueButton.click();
         await onboardingPage.recoverWalletButton.click();
-        await recoverPage.selectWordCount(24);
-        await recoverPage.selectBasicRecoveryButton.click();
+        await recoveryPage.selectWordCount(24);
+        await recoveryPage.selectBasicRecoveryButton.click();
         await devicePrompt.confirmOnDevicePromptIsShown();
         await page.waitForTimeout(1000);
         await trezorUserEnvLink.pressYes();
 
         // Input mnemonic
-        await wordInputPage.inputMnemonicT1B1(mnemonic);
+        await trezorInput.inputMnemonicT1B1(mnemonic);
 
         // Finalize recovery, skip pin, and verify success
         await onboardingPage.continueRecoveryButton.click();

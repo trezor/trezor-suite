@@ -54,7 +54,6 @@ export class SettingsActions {
     readonly confirmOnDevicePrompt: Locator;
     readonly homescreenGalleryButton: Locator;
     readonly notificationSuccessToast: Locator;
-    readonly pinSubmitButton: Locator;
     //coin Advance settings
     readonly networkButton = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@settings/wallet/network/${symbol}`);
@@ -71,7 +70,7 @@ export class SettingsActions {
     readonly languageInput: Locator;
     readonly languageInputOption = (language: Language) =>
         this.page.getByTestId(`@settings/language-select/option/${language}`);
-    readonly pinInput = (index: number) => this.page.getByTestId(`@pin/input/${index}`);
+    readonly checkSeedButton: Locator;
 
     constructor(
         private readonly page: Page,
@@ -103,7 +102,7 @@ export class SettingsActions {
         this.coinAdvanceSettingSaveButton = this.page.getByTestId('@settings/advance/button/save');
         this.themeInput = this.page.getByTestId('@theme/color-scheme-select/input');
         this.languageInput = this.page.getByTestId('@settings/language-select/input');
-        this.pinSubmitButton = this.page.getByTestId('@pin/submit-button');
+        this.checkSeedButton = this.page.getByTestId('@settings/device/check-seed-button');
     }
 
     async navigateTo() {
@@ -210,15 +209,6 @@ export class SettingsActions {
             await TrezorUserEnvLink.pressYes();
             await this.confirmOnDevicePrompt.waitFor({ state: 'detached' });
             await expect(this.notificationSuccessToast).toBeVisible();
-        });
-    }
-
-    async enterPinOnBlindMatrix(pinEntryNumber: string) {
-        await test.step('Find number on blind matrix and click it', async () => {
-            const state = await TrezorUserEnvLink.getDebugState();
-            const index = state.matrix.indexOf(pinEntryNumber) + 1;
-            await this.pinInput(index).click();
-            await this.pinSubmitButton.click();
         });
     }
 }

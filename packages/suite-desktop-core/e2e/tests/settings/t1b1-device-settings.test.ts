@@ -10,15 +10,15 @@ test.describe('T1B1 - Device settings', { tag: ['@group=settings'] }, () => {
         await settingsPage.deviceTabButton.click();
     });
 
-    test('enable pin', async ({ page, trezorUserEnvLink, settingsPage }) => {
+    test('enable pin', async ({ page, trezorUserEnvLink, trezorInput }) => {
         await page.getByTestId('@settings/device/pin-switch').click();
         await expect(page.getByTestId('@prompts/confirm-on-device')).toBeVisible();
         await trezorUserEnvLink.pressYes();
 
         const pinEntryNumber = '1';
-        await settingsPage.enterPinOnBlindMatrix(pinEntryNumber);
+        await trezorInput.enterPinOnBlindMatrix(pinEntryNumber);
         await expect(page.getByTestId('@pin/input/1')).toBeVisible();
-        await settingsPage.enterPinOnBlindMatrix(pinEntryNumber);
+        await trezorInput.enterPinOnBlindMatrix(pinEntryNumber);
         await expect(page.getByTestId('@toast/pin-changed')).toBeVisible();
     });
 

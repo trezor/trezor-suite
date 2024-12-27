@@ -40,12 +40,4 @@ test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () 
         await trezorUserEnvLink.pressYes();
         //TODO: Verification?
     });
-
-    test('Backup in settings', async ({ page }) => {
-        await expect(page.getByTestId('@settings/device/check-seed-button')).toBeEnabled();
-        await page.getByTestId('@settings/device/failed-backup-row').waitFor({ state: 'detached' });
-        await page.getByTestId('@settings/device/check-seed-button').click();
-        await expect(page.getByTestId('@modal')).toBeVisible();
-        //TODO: Verification? Should we actually do the backup?
-    });
 });

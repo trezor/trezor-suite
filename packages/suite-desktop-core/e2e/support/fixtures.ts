@@ -19,8 +19,8 @@ import { BackupActions } from './pageActions/backupActions';
 import { DevicePromptActions } from './pageActions/devicePromptActions';
 import { AnalyticsActions } from './pageActions/analyticsActions';
 import { IndexedDbFixture } from './indexedDb';
-import { RecoverActions } from './pageActions/recoverActions';
-import { WordInputActions } from './pageActions/wordInputActions';
+import { RecoveryActions } from './pageActions/recoverActions';
+import { TrezorInputActions } from './pageActions/wordInputActions';
 import { MarketActions } from './pageActions/marketActions';
 
 type Fixtures = {
@@ -40,8 +40,8 @@ type Fixtures = {
     backupPage: BackupActions;
     analyticsPage: AnalyticsActions;
     devicePrompt: DevicePromptActions;
-    recoverPage: RecoverActions;
-    wordInputPage: WordInputActions;
+    recoveryPage: RecoveryActions;
+    trezorInput: TrezorInputActions;
     analytics: AnalyticsFixture;
     indexedDb: IndexedDbFixture;
     marketPage: MarketActions;
@@ -162,13 +162,13 @@ const test = base.extend<Fixtures>({
         const devicePromptActions = new DevicePromptActions(page);
         await use(devicePromptActions);
     },
-    recoverPage: async ({ page }, use) => {
-        const recoverPage = new RecoverActions(page);
-        await use(recoverPage);
+    recoveryPage: async ({ page }, use) => {
+        const recoveryPage = new RecoveryActions(page);
+        await use(recoveryPage);
     },
-    wordInputPage: async ({ page }, use) => {
-        const wordinputPage = new WordInputActions(page);
-        await use(wordinputPage);
+    trezorInput: async ({ page }, use) => {
+        const trezorInput = new TrezorInputActions(page);
+        await use(trezorInput);
     },
     analytics: async ({ page }, use) => {
         const analytics = new AnalyticsFixture(page);

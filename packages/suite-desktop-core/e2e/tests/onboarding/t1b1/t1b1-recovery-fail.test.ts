@@ -13,7 +13,7 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
     test('Device disconnected during recovery offers retry', async ({
         onboardingPage,
         analyticsPage,
-        recoverPage,
+        recoveryPage,
         devicePrompt,
         trezorUserEnvLink,
     }) => {
@@ -22,8 +22,8 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
         // Start wallet recovery process
         await onboardingPage.firmwareContinueButton.click();
         await onboardingPage.recoverWalletButton.click();
-        await recoverPage.selectWordCount(24);
-        await recoverPage.selectBasicRecoveryButton.click();
+        await recoveryPage.selectWordCount(24);
+        await recoveryPage.selectBasicRecoveryButton.click();
         await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
 
@@ -34,8 +34,8 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
 
         // Retry recovery process
         await onboardingPage.retryRecoveryButton.click();
-        await recoverPage.selectWordCount(24);
-        await recoverPage.selectBasicRecoveryButton.click();
+        await recoveryPage.selectWordCount(24);
+        await recoveryPage.selectBasicRecoveryButton.click();
         await devicePrompt.confirmOnDevicePromptIsShown();
     });
 });

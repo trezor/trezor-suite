@@ -42,14 +42,6 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
         //TODO: Any verification?
     });
 
-    test('Backup in settings', async ({ page }) => {
-        await expect(page.getByTestId('@settings/device/check-seed-button')).toBeVisible();
-        await page.getByTestId('@settings/device/failed-backup-row').waitFor({ state: 'detached' });
-        await page.getByTestId('@settings/device/check-seed-button').click();
-        await expect(page.getByTestId('@modal')).toBeVisible();
-        //TODO: Verification? Should we actually do the backup?
-    });
-
     test('Can change homescreen background in firmware >= 2.5.4', async ({ settingsPage }) => {
         await settingsPage.changeDeviceBackground('original_t2t1');
     });
