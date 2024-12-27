@@ -19,7 +19,6 @@ type NetworkSymbol =
     | 'xrp'
     | 'bch'
     | 'btg'
-    | 'dgb'
     | 'doge'
     | 'zec'
     | 'test'

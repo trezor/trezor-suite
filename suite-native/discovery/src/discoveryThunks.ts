@@ -59,7 +59,6 @@ const DISCOVERY_DEFAULT_BATCH_SIZE = 2;
 const DISCOVERY_BATCH_SIZE_PER_COIN: Partial<Record<NetworkSymbol, number>> = {
     bch: 1,
     btg: 1,
-    dgb: 1,
     zec: 1,
     etc: 1,
 };
