@@ -3,11 +3,9 @@ import { forwardRef } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Button, Divider, VStack } from '@suite-native/atoms';
+import { Box, Button, VStack } from '@suite-native/atoms';
 import { Assets } from '@suite-native/assets';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
-    AccountsImportStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
@@ -22,14 +20,6 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
 
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
-    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
-
-    const handleImportAssets = () => {
-        navigation.navigate(RootStackRoutes.AccountsImport, {
-            screen: AccountsImportStackRoutes.SelectNetwork,
-        });
-    };
-
     const handleReceive = () => {
         navigation.navigate(RootStackRoutes.ReceiveModal, { closeActionType: 'back' });
     };
@@ -42,31 +32,14 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
                     <Assets />
                 </Box>
                 {isPortfolioTrackerDevice && (
-                    <Box marginBottom="sp8">
-                        <Button
-                            testID="@home/portfolio/sync-coins-button"
-                            colorScheme="tertiaryElevation0"
-                            size="large"
-                            onPress={handleImportAssets}
-                        >
-                            <Translation id="moduleHome.buttons.syncMyCoins" />
-                        </Button>
-                    </Box>
-                )}
-                {!isUsbDeviceConnectFeatureEnabled && (
-                    <>
-                        <Divider />
-                        <Box>
-                            <Button
-                                data-testID="@home/portolio/recieve-button"
-                                size="large"
-                                onPress={handleReceive}
-                                viewLeft="arrowLineDown"
-                            >
-                                <Translation id="moduleHome.buttons.receive" />
-                            </Button>
-                        </Box>
-                    </>
+                    <Button
+                        data-testID="@home/portolio/recieve-button"
+                        size="large"
+                        onPress={handleReceive}
+                        viewLeft="arrowLineDown"
+                    >
+                        <Translation id="moduleHome.buttons.receive" />
+                    </Button>
                 )}
             </VStack>
         </VStack>
