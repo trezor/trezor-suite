@@ -18,7 +18,6 @@ type NetworkSymbol =
     | 'etc'
     | 'xrp'
     | 'bch'
-    | 'btg'
     | 'doge'
     | 'zec'
     | 'test'

@@ -32,15 +32,11 @@ export const networkSymbolsWhitelistMap = {
         'ada',
         'xrp',
         'bch',
-        'btg',
         'doge',
         'zec',
     ] as NetworkSymbol[],
     testnet: ['test', 'regtest', 'tsep', 'thol', 'tada', 'txrp'] as NetworkSymbol[],
 } as const satisfies Record<string, NetworkSymbol[]>;
-
-// Blacklisting coins that are allowed inside `networkSymbolsWhitelistMap` so that we don't have to configs and just filter these out
-const portfolioTrackerBlacklist = ['btg'];
 
 export const discoverySupportedNetworks = [
     ...networkSymbolsWhitelistMap.mainnet,
@@ -76,9 +72,7 @@ export const filterBlacklistedNetworks = (
     );
 
 export const portfolioTrackerMainnets = sortNetworks(
-    getMainnets()
-        .filter(network => networkSymbolsWhitelistMap.mainnet.includes(network.symbol))
-        .filter(network => !portfolioTrackerBlacklist.includes(network.symbol)),
+    getMainnets().filter(network => networkSymbolsWhitelistMap.mainnet.includes(network.symbol)),
 ).map(network => network.symbol);
 
 const getPortfolioTrackerTestnets = () => {
