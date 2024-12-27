@@ -14,6 +14,7 @@ import {
     deviceGraphDataFilterFn,
 } from 'src/utils/wallet/graph';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { State } from 'src/reducers/wallet/graphReducer';
 
 import {
     ACCOUNT_GRAPH_SUCCESS,
@@ -176,38 +177,42 @@ export const updateGraphData =
         });
     };
 
-export const getGraphDataForInterval =
-    (options: { account?: Account; deviceState?: StaticSessionId }) =>
-    (_dispatch: Dispatch, getState: GetState) => {
-        const { graph } = getState().wallet;
-        const { selectedRange } = graph;
+// TODO: should be in graphUtils
+export const getGraphDataForInterval = ({
+    account,
+    deviceState,
+    graph,
+}: {
+    account?: Account;
+    deviceState?: StaticSessionId;
+    graph: State;
+}) => {
+    const { selectedRange } = graph;
 
-        const data: GraphData[] = [];
-        graph.data.forEach(accountGraph => {
-            const accountFilter = options.account
-                ? accountGraphDataFilterFn(accountGraph, options.account)
-                : true;
-            const deviceFilter = options.deviceState
-                ? deviceGraphDataFilterFn(accountGraph, options.deviceState)
-                : true;
+    const data: GraphData[] = [];
+    graph.data.forEach(accountGraph => {
+        const accountFilter = account ? accountGraphDataFilterFn(accountGraph, account) : true;
+        const deviceFilter = deviceState
+            ? deviceGraphDataFilterFn(accountGraph, deviceState)
+            : true;
 
-            if (accountFilter && deviceFilter) {
-                if (selectedRange.startDate && selectedRange.endDate) {
-                    data.push({
-                        ...accountGraph,
-                        data:
-                            accountGraph.data?.filter(d =>
-                                isWithinInterval(fromUnixTime(d.time), {
-                                    start: selectedRange.startDate,
-                                    end: selectedRange.endDate,
-                                }),
-                            ) ?? [],
-                    });
-                } else {
-                    data.push(accountGraph);
-                }
+        if (accountFilter && deviceFilter) {
+            if (selectedRange.startDate && selectedRange.endDate) {
+                data.push({
+                    ...accountGraph,
+                    data:
+                        accountGraph.data?.filter(d =>
+                            isWithinInterval(fromUnixTime(d.time), {
+                                start: selectedRange.startDate,
+                                end: selectedRange.endDate,
+                            }),
+                        ) ?? [],
+                });
+            } else {
+                data.push(accountGraph);
             }
-        });
+        }
+    });
 
-        return data;
-    };
+    return data;
+};

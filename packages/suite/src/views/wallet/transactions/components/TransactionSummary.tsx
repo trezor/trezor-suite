@@ -63,10 +63,12 @@ interface TransactionSummaryProps {
 
 export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const selectedRange = useSelector(state => state.wallet.graph.selectedRange);
+    const graph = useSelector(state => state.wallet.graph);
+
     const localCurrency = useSelector(selectLocalCurrency);
     const dispatch = useDispatch();
 
-    const intervalGraphData = dispatch(getGraphDataForInterval({ account }));
+    const intervalGraphData = getGraphDataForInterval({ account, graph });
     const data = intervalGraphData[0]?.data
         ? aggregateBalanceHistory(intervalGraphData, selectedRange.groupBy, 'account')
         : [];

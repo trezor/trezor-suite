@@ -46,7 +46,7 @@ type DashboardGraphProps = {
 };
 
 export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
-    const { error, isLoading, selectedRange } = useSelector(state => state.wallet.graph);
+    const graph = useSelector(state => state.wallet.graph);
     const selectedDevice = useSelector(selectSelectedDevice);
     const localCurrency = useSelector(selectLocalCurrency);
     const dispatch = useDispatch();
@@ -56,7 +56,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     const [xTicks, setXticks] = useState<number[]>([]);
 
     const selectedDeviceState = selectedDevice?.state?.staticSessionId;
-    const failedAccounts = error?.filter(a => a.deviceState === selectedDeviceState);
+    const failedAccounts = graph.error?.filter(a => a.deviceState === selectedDeviceState);
     const allFailed =
         failedAccounts &&
         failedAccounts.every(fa => accounts.some(a => a.descriptor === fa.descriptor));
@@ -89,23 +89,23 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     );
 
     useEffect(() => {
-        if (!isLoading) {
+        if (!graph.isLoading) {
             const worker = new GraphWorker();
             setIsProcessing(true);
-            const rawData = dispatch(getGraphDataForInterval({ deviceState: selectedDeviceState }));
+            const rawData = getGraphDataForInterval({ deviceState: selectedDeviceState, graph });
 
             worker.postMessage({
                 history: rawData,
-                groupBy: selectedRange.groupBy,
+                groupBy: graph.selectedRange.groupBy,
                 type: 'dashboard',
             });
 
             const handleMessage = (event: MessageEvent) => {
                 const aggregatedData = event.data;
                 const graphTicks =
-                    selectedRange.label === 'all'
+                    graph.selectedRange.label === 'all'
                         ? calcTicksFromData(aggregatedData).map(getUnixTime)
-                        : calcTicks(selectedRange.startDate, selectedRange.endDate).map(
+                        : calcTicks(graph.selectedRange.startDate, graph.selectedRange.endDate).map(
                               getUnixTime,
                           );
 
@@ -121,7 +121,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                 worker.terminate();
             };
         }
-    }, [dispatch, isLoading, selectedDeviceState, selectedRange]);
+    }, [graph, selectedDeviceState]);
 
     return (
         <Wrapper data-testid="@dashboard/graph">
@@ -138,12 +138,12 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                         hideToolbar
                         variant="all-assets"
                         onRefresh={onRefresh}
-                        isLoading={isLoading || isProcessing}
+                        isLoading={graph.isLoading || isProcessing}
                         localCurrency={localCurrency}
                         xTicks={xTicks}
                         minMaxValues={minMaxValues}
                         data={data}
-                        selectedRange={selectedRange}
+                        selectedRange={graph.selectedRange}
                         receivedValueFn={receivedValueFn}
                         sentValueFn={sentValueFn}
                         balanceValueFn={balanceValueFn}
