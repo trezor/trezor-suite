@@ -1,7 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-
 export class DashboardActions {
     readonly dashboardMenuButton: Locator;
     readonly discoveryHeader: Locator;
@@ -9,14 +7,17 @@ export class DashboardActions {
     readonly dashboardGraph: Locator;
     readonly deviceSwitchingOpenButton: Locator;
     readonly modal: Locator;
+    //TODO: Refactor to wallet page object
     readonly walletAtIndex = (index: number) =>
         this.page.getByTestId(`@switch-device/wallet-on-index/${index}`);
     readonly walletAtIndexEjectButton = (index: number) =>
         this.page.getByTestId(`@switch-device/wallet-on-index/${index}/eject-button`);
+    readonly walletAtIndexFiatAmount = (index: number) =>
+        this.page.getByTestId(`@switch-device/wallet-on-index/${index}/fiat-amount`);
     readonly confirmDeviceEjectButton: Locator;
     readonly addStandardWalletButton: Locator;
-    readonly balanceOfNetwork = (symbol: NetworkSymbol) =>
-        this.page.getByTestId(`@wallet/coin-balance/value-${symbol}`);
+    readonly hideBalanceButton: Locator;
+    readonly portfolioFiatAmount: Locator;
 
     constructor(private readonly page: Page) {
         this.dashboardMenuButton = this.page.getByTestId('@suite/menu/suite-index');
@@ -27,6 +28,8 @@ export class DashboardActions {
         this.modal = this.page.getByTestId('@modal');
         this.confirmDeviceEjectButton = this.page.getByTestId('@switch-device/eject');
         this.addStandardWalletButton = this.page.getByTestId('@switch-device/add-wallet-button');
+        this.hideBalanceButton = this.page.getByTestId('@quickActions/hideBalances');
+        this.portfolioFiatAmount = this.page.getByTestId('@dashboard/portfolio/fiat-amount');
     }
 
     async navigateTo() {

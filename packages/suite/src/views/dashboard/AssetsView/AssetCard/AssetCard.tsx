@@ -138,7 +138,11 @@ export const AssetCard = ({
         );
 
     return (
-        <Card paddingType="small" onClick={handleCardClick}>
+        <Card
+            paddingType="small"
+            onClick={handleCardClick}
+            data-testid={`@dashboard/asset-card/${symbol}`}
+        >
             <Column gap={spacings.xxxl} flex="1" margin={spacings.xs}>
                 <Row justifyContent="space-between">
                     <AssetCardInfo
@@ -150,7 +154,7 @@ export const AssetCard = ({
                 </Row>
                 {!failed ? (
                     <Column>
-                        <FiatAmount>
+                        <FiatAmount data-testid={`@dashboard/asset/${symbol}/fiat-amount`}>
                             <FiatHeader
                                 symbol={symbol}
                                 amount={cryptoValue}
@@ -186,17 +190,25 @@ export const AssetCard = ({
                 />
             )}
             {!isTestnet(symbol) && (
-                <Card>
+                <Card data-testid="@dashboard/asset/bottom-info">
                     <Row justifyContent="space-between" gap={spacings.md}>
-                        <InfoItem label={<Translation id="TR_EXCHANGE_RATE" />} flex="0">
+                        <InfoItem
+                            data-testid="@dashboard/asset/exchange-rate"
+                            label={<Translation id="TR_EXCHANGE_RATE" />}
+                            flex="0"
+                        >
                             <PriceTicker symbol={symbol} />
                         </InfoItem>
-                        <InfoItem label={<Translation id="TR_7D_CHANGE" />} flex="0">
+                        <InfoItem
+                            data-testid="@dashboard/asset/week-change"
+                            label={<Translation id="TR_7D_CHANGE" />}
+                            flex="0"
+                        >
                             <TrendTicker symbol={symbol} />
                         </InfoItem>
                         <CoinmarketBuyButton
                             symbol={symbol}
-                            data-testid={`@dashboard/assets/grid/${symbol}/buy-button`}
+                            data-testid={`@dashboard/asset/${symbol}/buy-button`}
                         />
                     </Row>
                 </Card>

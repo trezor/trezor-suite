@@ -13,6 +13,8 @@ export class WalletActions {
     readonly walletExtraDropDown: Locator;
     readonly coinMarketBuyButton: Locator;
     readonly coinMarketDropdownBuyButton: Locator;
+    readonly balanceOfNetwork = (symbol: NetworkSymbol) =>
+        this.page.getByTestId(`@wallet/coin-balance/value-${symbol}`);
 
     constructor(private readonly page: Page) {
         this.walletMenuButton = this.page.getByTestId('@suite/menu/wallet-index');

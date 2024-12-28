@@ -22,6 +22,7 @@ import { IndexedDbFixture } from './indexedDb';
 import { RecoverActions } from './pageActions/recoverActions';
 import { WordInputActions } from './pageActions/wordInputActions';
 import { MarketActions } from './pageActions/marketActions';
+import { AssetsActions } from './pageActions/assetsActions';
 
 type Fixtures = {
     startEmulator: boolean;
@@ -45,6 +46,7 @@ type Fixtures = {
     analytics: AnalyticsFixture;
     indexedDb: IndexedDbFixture;
     marketPage: MarketActions;
+    assetsPage: AssetsActions;
 };
 
 const test = base.extend<Fixtures>({
@@ -181,6 +183,10 @@ const test = base.extend<Fixtures>({
     marketPage: async ({ page }, use) => {
         const marketPage = new MarketActions(page);
         await use(marketPage);
+    },
+    assetsPage: async ({ page }, use) => {
+        const assetPage = new AssetsActions(page);
+        await use(assetPage);
     },
 });
 

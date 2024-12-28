@@ -167,6 +167,7 @@ export const AssetsView = () => {
 
     return (
         <DashboardSection
+            data-testid="@dashboard/assets"
             heading={
                 <LoadingContent isLoading={isDiscoveryRunning}>
                     <Translation id="TR_MY_ASSETS" />

@@ -63,6 +63,7 @@ export type TableCellProps = AllowedFrameProps & {
     children?: ReactNode;
     colSpan?: number;
     align?: UIHorizontalAlignment;
+    'data-testid'?: string;
 };
 
 export const TableCell = ({
@@ -71,6 +72,7 @@ export const TableCell = ({
     align = 'left',
     padding,
     maxWidth = 300,
+    'data-testid': dataTestId,
 }: TableCellProps) => {
     const isHeader = useTableHeader();
     const { hasBorders, typographyStyle } = useTable();
@@ -91,6 +93,7 @@ export const TableCell = ({
             $padding={padding ?? defaultPadding}
             $maxWidth={maxWidth}
             $hasBorder={hasBorders}
+            data-testid={dataTestId}
         >
             <Text
                 as="div"

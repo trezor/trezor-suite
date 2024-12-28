@@ -176,6 +176,7 @@ export const WalletInstance = ({
                         amount={walletBalance}
                         size="medium"
                         localCurrency={localCurrency}
+                        data-testid={`${dataTestBase}/fiat-amount`}
                     />
                 </Column>
 

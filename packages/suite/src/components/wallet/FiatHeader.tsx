@@ -37,6 +37,7 @@ type UseFiatAmountProps = { amount: string; symbol?: NetworkSymbol };
 type FiatHeaderProps = {
     size: 'large' | 'medium';
     localCurrency: string;
+    'data-testid'?: string;
 } & UseFiatAmountProps;
 
 // redacted value placeholder doesn't have to be displayed twice, display it only for whole value
@@ -59,7 +60,13 @@ const useFiatAmount = ({ amount, symbol }: UseFiatAmountProps) => {
 /**
  * If `symbol` is not provided, `amount` is returned as is, otherwise it is converted to fiat currency.
  */
-export const FiatHeader = ({ amount, symbol, size, localCurrency }: FiatHeaderProps) => {
+export const FiatHeader = ({
+    amount,
+    symbol,
+    size,
+    localCurrency,
+    'data-testid': dataTestId,
+}: FiatHeaderProps) => {
     const language = useSelector(selectLanguage);
     const fiatAmount = useFiatAmount({ amount, symbol });
     const { FiatAmountFormatter } = useFormatters();
@@ -75,7 +82,7 @@ export const FiatHeader = ({ amount, symbol, size, localCurrency }: FiatHeaderPr
 
     return (
         <HiddenPlaceholder enforceIntensity={10}>
-            <ValueWrapper>
+            <ValueWrapper data-testid={dataTestId}>
                 <WholeValue $size={size}>
                     <RedactNumericalValue value={whole} />
                 </WholeValue>

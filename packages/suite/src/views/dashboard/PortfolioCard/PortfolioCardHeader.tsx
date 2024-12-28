@@ -103,7 +103,12 @@ export const PortfolioCardHeader = ({
         <Wrapper $hideBorder={hideBorder}>
             <Left>
                 <LoadingContent size={24} isLoading={isDiscoveryRunning || isMissingFiatRate}>
-                    <FiatHeader size="large" amount={fiatAmount} localCurrency={localCurrency} />
+                    <FiatHeader
+                        data-testid="@dashboard/portfolio/fiat-amount"
+                        size="large"
+                        amount={fiatAmount}
+                        localCurrency={localCurrency}
+                    />
                 </LoadingContent>
             </Left>
             <Right>{actions}</Right>

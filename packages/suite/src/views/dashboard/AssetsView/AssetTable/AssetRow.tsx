@@ -101,7 +101,7 @@ export const AssetRow = memo(
 
         return (
             <>
-                <Table.Row onClick={handleRowClick}>
+                <Table.Row onClick={handleRowClick} data-testid={`@dashboard/asset-row/${symbol}`}>
                     <Table.Cell align="center">
                         <Section
                             $dashedLinePosition={
@@ -125,7 +125,7 @@ export const AssetRow = memo(
                                 alignItems="flex-start"
                                 justifyContent="center"
                                 gap={spacings.xxxs}
-                                data-testid={`@asset-card/${symbol}/balance`}
+                                data-testid={`@dashboard/asset/${symbol}/fiat-amount`}
                             >
                                 <FiatValue amount={assetNativeCryptoBalance} symbol={symbol} />
 
@@ -151,17 +151,19 @@ export const AssetRow = memo(
                             </Text>
                         )}
                     </Table.Cell>
-                    <Table.Cell align="right">
+                    <Table.Cell align="right" data-testid="@dashboard/asset/exchange-rate">
                         {!isTestnet(symbol) && <PriceTicker symbol={symbol} />}
                     </Table.Cell>
 
-                    <Table.Cell>{!isTestnet(symbol) && <TrendTicker symbol={symbol} />}</Table.Cell>
+                    <Table.Cell data-testid="@dashboard/asset/week-change">
+                        {!isTestnet(symbol) && <TrendTicker symbol={symbol} />}
+                    </Table.Cell>
                     <Table.Cell align="right" colSpan={2}>
                         <Row gap={spacings.md}>
                             {!isTestnet(symbol) && (
                                 <CoinmarketBuyButton
                                     symbol={symbol}
-                                    data-testid={`@dashboard/assets/table/${symbol}/buy-button`}
+                                    data-testid={`@dashboard/asset/${symbol}/buy-button`}
                                 />
                             )}
                             <IconButton icon="arrowRight" size="small" variant="tertiary" />

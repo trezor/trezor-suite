@@ -17,6 +17,7 @@ test.describe.serial(
         test('Electrum completes discovery successfully', async ({
             dashboardPage,
             settingsPage,
+            walletPage,
         }) => {
             test.info().annotations.push({
                 type: 'dependency',
@@ -33,7 +34,7 @@ test.describe.serial(
             await dashboardPage.navigateTo();
             await dashboardPage.discoveryShouldFinish();
 
-            await expect(dashboardPage.balanceOfNetwork('regtest').first()).toBeVisible();
+            await expect(walletPage.balanceOfNetwork('regtest').first()).toBeVisible();
         });
     },
 );

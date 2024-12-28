@@ -15,7 +15,7 @@ const getCountryLabel = (country: string) => {
 
 export class MarketActions {
     readonly offerSpinner: Locator;
-    readonly layout: Locator;
+    readonly section: Locator;
     readonly form: Locator;
     readonly bestOfferProvider: Locator;
     readonly bestOfferYouGet: Locator;
@@ -45,7 +45,7 @@ export class MarketActions {
 
     constructor(private page: Page) {
         this.offerSpinner = this.page.getByTestId('@coinmarket/offers/loading-spinner');
-        this.layout = this.page.getByTestId('@coinmarket');
+        this.section = this.page.getByTestId('@coinmarket');
         this.form = this.page.getByTestId('@coinmarket/form');
         this.bestOfferProvider = this.page.getByTestId('@coinmarket/offers/quote/provider');
         this.bestOfferYouGet = this.page.getByTestId('@coinmarket/best-offer/amount');

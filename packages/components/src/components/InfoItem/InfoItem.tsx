@@ -52,6 +52,7 @@ export type InfoItemProps = AllowedFrameProps &
         labelWidth?: string | number;
         verticalAlignment?: InfoItemVerticalAlignment;
         gap?: SpacingValues;
+        'data-testid'?: string;
     };
 
 export const InfoItem = ({
@@ -64,13 +65,14 @@ export const InfoItem = ({
     gap,
     labelWidth,
     verticalAlignment = 'center',
+    'data-testid': dataTestId,
     ...rest
 }: InfoItemProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedInfoItemFrameProps);
     const isRow = direction === 'row';
 
     return (
-        <Container {...frameProps}>
+        <Container data-testid={dataTestId} {...frameProps}>
             <Flex
                 direction={direction}
                 alignItems={isRow ? mapVerticalAlignmentToAlignItems(verticalAlignment) : 'normal'}
