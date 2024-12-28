@@ -4998,7 +4998,16 @@ export default defineMessages({
     TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION',
         defaultMessage:
-            'Access the NFTs stored in your wallet. Currently available for EVM-based chains only.',
+            'Adds an NFT section to EVM-based chain accounts. Currently, viewing is supported, but sending is not available.',
+    },
+    TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT: {
+        id: 'TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT',
+        defaultMessage: 'Support for Ethereum L2 networks (Arbitrum One, Base, Optimism)',
+    },
+    TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT_DESCRIPTION',
+        defaultMessage:
+            'Allows to enable Arbitrum One, Base, and Optimism networks in the coin settings.',
     },
     TR_EXPERIMENTAL_FEATURES_ALLOW: {
         id: 'TR_EXPERIMENTAL_FEATURES_ALLOW',

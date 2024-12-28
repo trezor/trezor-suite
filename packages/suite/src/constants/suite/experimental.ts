@@ -6,7 +6,11 @@ import { isDesktop } from '@trezor/env-utils';
 
 import { Dispatch } from '../../types/suite';
 
-export type ExperimentalFeature = 'password-manager' | 'tor-external' | 'nft-section';
+export type ExperimentalFeature =
+    | 'password-manager'
+    | 'tor-external'
+    | 'nft-section'
+    | 'ethereum-l2-support';
 
 export type ExperimentalFeatureConfig = {
     title: TranslationKey;
@@ -39,6 +43,10 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
                 });
             }
         },
+    },
+    'ethereum-l2-support': {
+        title: 'TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT',
+        description: 'TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT_DESCRIPTION',
     },
     'nft-section': {
         title: 'TR_EXPERIMENTAL_NFT_SECTION',

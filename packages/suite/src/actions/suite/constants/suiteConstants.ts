@@ -1,3 +1,5 @@
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+
 export const INIT = '@suite/init';
 export const READY = '@suite/ready';
 export const ERROR = '@suite/error';
@@ -35,3 +37,4 @@ export const LOCK_TYPE = {
 export const REQUEST_DEVICE_RECONNECT = '@suite/request-device-reconnect';
 export const SET_EXPERIMENTAL_FEATURES = '@suite/set-experimental-features';
 export const SET_SIDEBAR_WIDTH = '@suite/set-sidebar-width';
+export const EXPERIMENTAL_L2_NETWORKS: readonly NetworkSymbol[] = ['op', 'arb', 'base'];
