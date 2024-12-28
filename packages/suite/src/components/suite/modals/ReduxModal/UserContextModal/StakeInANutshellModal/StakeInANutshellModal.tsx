@@ -50,11 +50,11 @@ const STAKING_DETAILS: StakingDetails[] = [
     },
 ];
 
-interface StakeEthInANutshellModalProps {
+interface StakeInANutshellModalProps {
     onCancel: () => void;
 }
 
-export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalProps) => {
+export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) => {
     const account = useSelector(selectSelectedAccount);
     const dispatch = useDispatch();
     const { validatorWithdrawTime } = useSelector(state =>

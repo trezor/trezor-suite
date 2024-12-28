@@ -33,7 +33,7 @@ import {
     AuthenticateDeviceModal,
     AuthenticateDeviceFailModal,
     DeviceAuthenticityOptOutModal,
-    StakeEthInANutshellModal,
+    StakeInANutshellModal,
     StakeModal,
     UnstakeModal,
     ClaimModal,
@@ -185,8 +185,8 @@ export const UserContextModal = ({
             return <AuthenticateDeviceModal />;
         case 'authenticate-device-fail':
             return <AuthenticateDeviceFailModal />;
-        case 'stake-eth-in-a-nutshell':
-            return <StakeEthInANutshellModal onCancel={onCancel} />;
+        case 'stake-in-a-nutshell':
+            return <StakeInANutshellModal onCancel={onCancel} />;
         case 'stake':
             return <StakeModal onCancel={onCancel} />;
         case 'unstake':

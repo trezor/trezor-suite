@@ -159,7 +159,7 @@ export type UserContextPayload =
           type: 'authenticate-device-fail';
       }
     | {
-          type: 'stake-eth-in-a-nutshell';
+          type: 'stake-in-a-nutshell';
       }
     | {
           type: 'stake';

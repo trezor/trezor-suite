@@ -33,9 +33,9 @@ export const EmptyStakingCard = () => {
     const apy = useSelector(state => selectPoolStatsApyData(state, account?.symbol));
 
     const dispatch = useDispatch();
-    const openStakingEthInANutshellModal = () => {
+    const openStakeInANutshellModal = () => {
         if (!isStakingDisabled) {
-            dispatch(openModal({ type: 'stake-eth-in-a-nutshell' }));
+            dispatch(openModal({ type: 'stake-in-a-nutshell' }));
         }
     };
 
@@ -119,7 +119,7 @@ export const EmptyStakingCard = () => {
                         </Grid>
                         <Tooltip content={stakingMessageContent}>
                             <Button
-                                onClick={openStakingEthInANutshellModal}
+                                onClick={openStakeInANutshellModal}
                                 isDisabled={isStakingDisabled}
                                 icon={isStakingDisabled ? 'info' : undefined}
                             >
