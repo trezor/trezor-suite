@@ -375,8 +375,6 @@ export const IODetails = ({ tx, isPhishingTransaction }: IODetailsProps) => {
         }
     };
 
-    console.log(tx);
-
     return (
         <Column gap={spacings.xxl}>
             <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
