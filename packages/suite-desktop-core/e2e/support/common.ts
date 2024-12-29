@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import { _electron as electron, TestInfo } from '@playwright/test';
+import test, { _electron as electron, TestInfo } from '@playwright/test';
 import path from 'path';
 import { readdirSync, removeSync } from 'fs-extra';
 
@@ -133,3 +133,17 @@ export const getElectronVideoPath = (videoFolder: string) => {
 
     return path.join(videoFolder, videoFilenames[0]);
 };
+
+export function step(stepName?: string) {
+    /* eslint-disable @typescript-eslint/no-unsafe-function-type */
+    return function decorator(target: Function, context: ClassMethodDecoratorContext) {
+        return function replacementMethod(this: any, ...args: any) {
+            const name = stepName || `${this.constructor.name + '.' + (context.name as string)}`;
+
+            return test.step(name, async () => {
+                return await target.call(this, ...args);
+            });
+        };
+    };
+    /* eslint-enable @typescript-eslint/no-unsafe-function-type */
+}

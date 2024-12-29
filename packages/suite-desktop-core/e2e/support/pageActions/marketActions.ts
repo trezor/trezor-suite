@@ -4,6 +4,8 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import regional from '@trezor/suite/src/constants/wallet/coinmarket/regional';
 
+import { step } from '../common';
+
 const getCountryLabel = (country: string) => {
     const labelWithFlag = regional.countriesMap.get(country);
     if (!labelWithFlag) {
@@ -88,14 +90,16 @@ export class MarketActions {
         this.exchangeFeeDetails = this.page.getByTestId('@wallet/fee-details');
     }
 
-    waitForOffersSyncToFinish = async () => {
+    @step()
+    async waitForOffersSyncToFinish() {
         await expect(this.offerSpinner).toBeHidden({ timeout: 30000 });
         //Even though the offer sync is finished, the best offer might not be displayed correctly yet and show 0 BTC
         await expect(this.bestOfferAmount).not.toHaveText('0 BTC');
         await expect(this.buyBestOfferButton).toBeEnabled();
-    };
+    }
 
-    selectCountryOfResidence = async (countryCode: string) => {
+    @step()
+    async selectCountryOfResidence(countryCode: string) {
         const countryLabel = getCountryLabel(countryCode);
         const currentCountry = await this.countryOfResidenceDropdown.textContent();
         if (currentCountry === countryLabel) {
@@ -104,41 +108,45 @@ export class MarketActions {
         await this.countryOfResidenceDropdown.click();
         await this.countryOfResidenceDropdown.getByRole('combobox').fill(countryLabel);
         await this.countryOfResidenceOption(countryCode).click();
-    };
+    }
 
-    selectFiatCurrency = async (currencyCode: FiatCurrencyCode) => {
+    @step()
+    async selectFiatCurrency(currencyCode: FiatCurrencyCode) {
         const currentCurrency = await this.youPayCurrencyDropdown.textContent();
         if (currentCurrency === currencyCode.toUpperCase()) {
             return;
         }
         await this.youPayCurrencyDropdown.click();
         await this.youPayCurrencyOption(currencyCode).click();
-    };
+    }
 
-    setYouPayAmount = async (
+    @step()
+    async setYouPayAmount(
         amount: string,
         currency: FiatCurrencyCode = 'czk',
         country: string = 'CZ',
-    ) => {
-        //Warning: the field is initialized empty and gets default value after the first offer sync
+    ) {
+        // Warning: the field is initialized empty and gets default value after the first offer sync
         await expect(this.youPayInput).not.toHaveValue('');
         await this.selectCountryOfResidence(country);
         await this.selectFiatCurrency(currency);
         await this.youPayInput.fill(amount);
-        //Warning: Bug #16054, as a workaround we wait for offer sync after setting the amount
+        // Warning: Bug #16054, as a workaround we wait for offer sync after setting the amount
         await this.waitForOffersSyncToFinish();
-    };
+    }
 
-    confirmTrade = async () => {
+    @step()
+    async confirmTrade() {
         await expect(this.modal).toBeVisible();
         await this.buyTermsConfirmButton.click();
         await this.confirmOnTrezorButton.click();
         await expect(this.confirmOnDevicePrompt).toBeVisible();
         await TrezorUserEnvLink.pressYes();
         await expect(this.confirmOnDevicePrompt).not.toBeVisible();
-    };
+    }
 
-    readBestOfferValues = async () => {
+    @step()
+    async readBestOfferValues() {
         await expect(this.bestOfferAmount).not.toHaveText('0 BTC');
         const amount = await this.bestOfferAmount.textContent();
         const provider = await this.bestOfferProvider.textContent();
@@ -149,5 +157,5 @@ export class MarketActions {
         }
 
         return { amount, provider };
-    };
+    }
 }

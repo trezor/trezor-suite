@@ -5,6 +5,7 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { expect } from '../customMatchers';
+import { step } from '../common';
 
 export enum Theme {
     System = 'system',
@@ -105,11 +106,13 @@ export class SettingsActions {
         this.checkSeedButton = this.page.getByTestId('@settings/device/check-seed-button');
     }
 
+    @step()
     async navigateTo() {
         await this.settingsMenuButton.click();
         await expect(this.settingsHeader).toHaveText('Settings', { timeout: 10000 });
     }
 
+    @step()
     async toggleDebugModeInSettings() {
         await expect(this.settingsHeader).toBeVisible();
         for (let i = 0; i < this.TIMES_CLICK_TO_SET_DEBUG_MODE; i++) {
@@ -118,6 +121,7 @@ export class SettingsActions {
         await expect(this.debugTabButton).toBeVisible();
     }
 
+    @step()
     async openNetworkAdvanceSettings(symbol: NetworkSymbol) {
         const isNetworkActive = await this.networkButton(symbol).getAttribute('data-active');
         if (isNetworkActive === 'false') {
@@ -128,16 +132,19 @@ export class SettingsActions {
         await expect(this.modal).toBeVisible();
     }
 
+    @step()
     async enableNetwork(symbol: NetworkSymbol) {
         await this.networkButton(symbol).click();
         await expect(this.networkButton(symbol)).toBeEnabledCoin();
     }
 
+    @step()
     async disableNetwork(symbol: NetworkSymbol) {
         await this.networkButton(symbol).click();
         await expect(this.networkButton(symbol)).toBeDisabledCoin();
     }
 
+    @step()
     async changeCoinBackend(backend: BackendType, backendUrl: string) {
         await this.coinBackendSelector.click();
         await this.coinBackendSelectorOption(backend).click();
@@ -145,6 +152,7 @@ export class SettingsActions {
         await this.coinAdvanceSettingSaveButton.click();
     }
 
+    @step()
     async joinEarlyAccessProgram() {
         await this.earlyAccessJoinButton.scrollIntoViewIfNeeded();
         await this.earlyAccessJoinButton.click();
@@ -154,16 +162,19 @@ export class SettingsActions {
         await this.earlyAccessSkipButton.click();
     }
 
+    @step()
     async closeSettings() {
         await this.settingsCloseButton.click();
         await this.settingsHeader.waitFor({ state: 'detached' });
     }
 
+    @step()
     async changeTheme(theme: Theme) {
         await this.selectDropdownOptionWithRetry(this.themeInput, this.themeInputOption(theme));
         await expect(this.themeInput).toHaveText(capitalizeFirstLetter(theme));
     }
 
+    @step()
     async changeLanguage(language: Language) {
         await this.selectDropdownOptionWithRetry(
             this.languageInput,
@@ -173,6 +184,7 @@ export class SettingsActions {
     }
 
     //Retry mechanism for settings dropdowns which tend to be flaky in automation
+    @step()
     async selectDropdownOptionWithRetry(dropdown: Locator, option: Locator) {
         await test.step('Select dropdown option with RETRY', async () => {
             await dropdown.scrollIntoViewIfNeeded();
@@ -186,6 +198,7 @@ export class SettingsActions {
         });
     }
 
+    @step()
     async changeDeviceName(newDeviceName: string) {
         await this.deviceLabelInput.clear();
         await this.deviceLabelInput.fill(newDeviceName);
@@ -196,6 +209,7 @@ export class SettingsActions {
         await expect(this.notificationSuccessToast).toBeVisible();
     }
 
+    @step()
     async changeDeviceBackground(image: keyof typeof backgroundImages) {
         await test.step('Change display background image', async () => {
             // To solve the flakiness of the test, we need to wait for the image to load

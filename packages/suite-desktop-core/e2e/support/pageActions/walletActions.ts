@@ -2,6 +2,8 @@ import { Locator, Page, expect } from '@playwright/test';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
+import { step } from '../common';
+
 type WalletParams = { symbol?: NetworkSymbol; atIndex?: number };
 
 export class WalletActions {
@@ -35,17 +37,20 @@ export class WalletActions {
             .getByTestId('@wallet/menu/wallet-coinmarket-buy');
     }
 
+    @step()
     async filterTransactions(transaction: string) {
         await this.searchInput.click();
         await this.searchInput.fill(transaction, { force: true });
     }
 
+    @step()
     async expandAllAccountsInMenu() {
         for (const chevron of await this.accountChevron.all()) {
             await chevron.click();
         }
     }
 
+    @step()
     async checkStakesOfCardanoAccounts() {
         for (const type in this.cardanoAccountLabels) {
             await this.cardanoAccountLabels[type].click();
@@ -54,6 +59,7 @@ export class WalletActions {
         }
     }
 
+    @step()
     async getAccountsCount(symbol: NetworkSymbol) {
         return await this.page
             .locator(`[data-testid*="@account-menu/${symbol}"][tabindex]`)
@@ -64,6 +70,7 @@ export class WalletActions {
         return this.page.getByTestId(`@account-menu/${symbol}/normal/${atIndex}`);
     };
 
+    @step()
     async openCoinMarket(params: WalletParams = {}) {
         await this.walletMenuButton(params).click();
         //TODO: #16073 We cannot set resolution for Electron. on CI button is hidden under dropdown due to a breakpoint
@@ -76,6 +83,7 @@ export class WalletActions {
         }
     }
 
+    @step()
     async openExchangeMarket(params: WalletParams = {}) {
         await this.walletMenuButton(params).click();
         await this.coinExchangeButton.click();

@@ -1,5 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 
+import { step } from '../common';
+
 export class DashboardActions {
     readonly dashboardMenuButton: Locator;
     readonly discoveryHeader: Locator;
@@ -32,28 +34,33 @@ export class DashboardActions {
         this.portfolioFiatAmount = this.page.getByTestId('@dashboard/portfolio/fiat-amount');
     }
 
+    @step()
     async navigateTo() {
         await this.dashboardMenuButton.click();
         await expect(this.discoveryHeader).toBeVisible();
     }
 
+    @step()
     async discoveryShouldFinish() {
         await this.discoveryBar.waitFor({ state: 'attached', timeout: 10_000 });
         await this.discoveryBar.waitFor({ state: 'detached', timeout: 120_000 });
         await expect(this.dashboardGraph).toBeVisible();
     }
 
+    @step()
     async openDeviceSwitcher() {
         await this.deviceSwitchingOpenButton.click();
         await expect(this.modal).toBeVisible();
     }
 
+    @step()
     async ejectWallet(walletIndex: number = 0) {
         await this.walletAtIndexEjectButton(walletIndex).click();
         await this.confirmDeviceEjectButton.click();
         await this.walletAtIndex(walletIndex).waitFor({ state: 'detached' });
     }
 
+    @step()
     async addStandardWallet() {
         await this.addStandardWalletButton.click();
         await this.modal.waitFor({ state: 'detached' });

@@ -1,5 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 
+import { step } from '../common';
+
 export class AnalyticsActions {
     readonly heading: Locator;
     readonly continueButton: Locator;
@@ -9,6 +11,7 @@ export class AnalyticsActions {
         this.heading = page.getByTestId('@analytics/consent/heading');
     }
 
+    @step()
     async passThroughAnalytics() {
         await this.continueButton.click();
         await this.continueButton.click();

@@ -3,6 +3,7 @@ import { Locator, Page, test } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { expect } from '../customMatchers';
+import { step } from '../common';
 
 export class TrezorInputActions {
     readonly wordSelectInput: Locator;
@@ -14,11 +15,13 @@ export class TrezorInputActions {
         this.pinSubmitButton = this.page.getByTestId('@pin/submit-button');
     }
 
+    @step()
     async inputWord(word: string) {
         await this.wordSelectInput.type(word);
         await this.page.getByTestId(`@word-input-select/option/${word}`).click();
     }
 
+    @step()
     async inputMnemonicT1B1(mnemonic: string) {
         const arrayMnemonic = mnemonic.split(' ');
         await test.step(`Inputting words ${arrayMnemonic.length}x ${arrayMnemonic}`, async () => {
@@ -41,6 +44,7 @@ export class TrezorInputActions {
     }
 
     //TODO: #16107 Not working with anything else than 12x 'all' - I will ask around
+    @step()
     async inputMnemonicT2T1(mnemonic: string) {
         for (const word of mnemonic.split(' ')) {
             await test.step(`Inputting word ${word.slice(0, 4)}`, async () => {
@@ -49,6 +53,7 @@ export class TrezorInputActions {
         }
     }
 
+    @step()
     async enterPinOnBlindMatrix(pinEntryNumber: string) {
         await test.step('Find number on blind matrix and click it', async () => {
             const state = await TrezorUserEnvLink.getDebugState();

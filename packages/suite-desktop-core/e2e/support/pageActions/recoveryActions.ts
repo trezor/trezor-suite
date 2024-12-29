@@ -1,5 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 
+import { step } from '../common';
+
 export class RecoveryActions {
     readonly selectBasicRecoveryButton: Locator;
     readonly userUnderstandsCheckbox: Locator;
@@ -13,10 +15,12 @@ export class RecoveryActions {
         this.successTitle = page.getByTestId('@recovery/success-title');
     }
 
+    @step()
     async selectWordCount(number: 12 | 18 | 24) {
         await this.page.getByTestId(`@recover/select-count/${number}`).click();
     }
 
+    @step()
     async initDryCheck(type: 'basic' | 'advanced', numberOfWords: 12 | 18 | 24) {
         await this.userUnderstandsCheckbox.click();
         await this.startButton.click();

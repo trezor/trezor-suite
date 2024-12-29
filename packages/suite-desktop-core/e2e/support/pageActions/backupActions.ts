@@ -3,6 +3,7 @@ import { Locator, Page, expect } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { DevicePromptActions } from './devicePromptActions';
+import { step } from '../common';
 
 export class BackupActions {
     readonly backupStartButton: Locator;
@@ -24,6 +25,7 @@ export class BackupActions {
         this.backupCloseButton = page.getByTestId('@backup/close-button');
     }
 
+    @step()
     async passThroughShamirBackup(shares: number, threshold: number) {
         // Backup button should be disabled until all checkboxes are checked
         await expect(this.backupStartButton).toBeDisabled();

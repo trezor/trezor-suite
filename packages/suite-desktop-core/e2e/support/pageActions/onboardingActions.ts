@@ -4,7 +4,7 @@ import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
 
 import { AnalyticsActions } from './analyticsActions';
-import { isWebProject } from '../common';
+import { isWebProject, step } from '../common';
 
 export class OnboardingActions {
     readonly welcomeTitle: Locator;
@@ -58,6 +58,7 @@ export class OnboardingActions {
         this.finalTitle = this.page.getByTestId('@onboarding/final');
     }
 
+    @step()
     async optionallyDismissFwHashCheckError() {
         await expect(this.welcomeTitle).toBeVisible({ timeout: 10000 });
         // dismisses the error modal only if it appears (handle it async in parallel, not necessary to block the rest of the flow)
@@ -66,6 +67,7 @@ export class OnboardingActions {
             .then(dismissFwHashCheckButton => dismissFwHashCheckButton?.click());
     }
 
+    @step()
     async completeOnboarding({ enableViewOnly = false } = {}) {
         await this.disableFirmwareHashCheck();
         await this.optionallyDismissFwHashCheckError();
@@ -84,6 +86,7 @@ export class OnboardingActions {
         await this.viewOnlyTooltipGotItButton.click();
     }
 
+    @step()
     async disableFirmwareHashCheck() {
         // Desktop starts with already disabled firmware hash check. Web needs to disable it.
         if (!isWebProject(this.testInfo)) {
@@ -104,11 +107,13 @@ export class OnboardingActions {
         }, SuiteActions);
     }
 
+    @step()
     async skipFirmware() {
         await this.skipFirmwareButton.click();
         await this.skipConfirmButton.click();
     }
 
+    @step()
     async skipPin() {
         await this.skipPinButton.click();
         await this.skipConfirmButton.click();
