@@ -3,12 +3,7 @@ import { forwardRef, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import {
-    getNetworkDisplaySymbol,
-    isNetworkSymbol,
-    type NetworkSymbol,
-    type NetworkSymbolExtended,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenInfo } from '@trezor/connect';
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
 import { zIndices } from '@trezor/theme';
@@ -150,7 +145,6 @@ export type TransactionReviewOutputElementProps = {
     indicator?: JSX.Element;
     lines: OutputElementLine[];
     symbol?: NetworkSymbol;
-    symbolIncludedTokens?: NetworkSymbolExtended;
     fiatVisible?: boolean;
     token?: TokenInfo;
     account?: Account;
@@ -161,111 +155,90 @@ export type TransactionReviewOutputElementProps = {
 export const TransactionReviewOutputElement = forwardRef<
     HTMLDivElement,
     TransactionReviewOutputElementProps
->(
-    (
-        {
-            indicator,
-            lines,
-            token,
-            symbol,
-            symbolIncludedTokens,
-            fiatVisible = false,
-            account,
-            state,
-            displayMode,
-        },
-        ref,
-    ) => {
-        const network = account?.networkType;
-        const cardanoFingerprint = getFingerprint(account?.tokens, token?.symbol);
-        const isActive = state === 'active';
+>(({ indicator, lines, token, symbol, fiatVisible = false, account, state, displayMode }, ref) => {
+    const network = account?.networkType;
+    const cardanoFingerprint = getFingerprint(account?.tokens, token?.symbol);
+    const isActive = state === 'active';
 
-        const showMultiIndicator = lines.length > 1;
-        const displaySymbol =
-            symbolIncludedTokens && isNetworkSymbol(symbolIncludedTokens)
-                ? getNetworkDisplaySymbol(symbolIncludedTokens)
-                : symbolIncludedTokens;
+    const showMultiIndicator = lines.length > 1;
 
-        return (
-            <OutputWrapper ref={ref}>
-                <OutputLeft $isCentered={showMultiIndicator}>
-                    {showMultiIndicator ? (
-                        <MultiIndicatorWrapper $linesCount={lines.length - 1}>
-                            {indicator}
-                        </MultiIndicatorWrapper>
-                    ) : (
-                        <>{indicator}</>
-                    )}
-                </OutputLeft>
-                <OutputRight>
-                    {lines.map(line => (
-                        <OutputRightLine key={line.id}>
-                            <OutputHeadline>
-                                {isActive && (line.id === 'address' || line.id === 'regular_legacy')
-                                    ? line.confirmLabel
-                                    : line.label}
-                            </OutputHeadline>
-                            <OutputValue>
-                                {isActive &&
-                                displayMode &&
-                                TYPES_TO_BE_DISPLAYED_IN_SCREEN_BOX.includes(line.id) ? (
-                                    <DeviceDisplay displayMode={displayMode} address={line.value} />
-                                ) : (
+    return (
+        <OutputWrapper ref={ref}>
+            <OutputLeft $isCentered={showMultiIndicator}>
+                {showMultiIndicator ? (
+                    <MultiIndicatorWrapper $linesCount={lines.length - 1}>
+                        {indicator}
+                    </MultiIndicatorWrapper>
+                ) : (
+                    <>{indicator}</>
+                )}
+            </OutputLeft>
+            <OutputRight>
+                {lines.map(line => (
+                    <OutputRightLine key={line.id}>
+                        <OutputHeadline>
+                            {isActive && (line.id === 'address' || line.id === 'regular_legacy')
+                                ? line.confirmLabel
+                                : line.label}
+                        </OutputHeadline>
+                        <OutputValue>
+                            {isActive &&
+                            displayMode &&
+                            TYPES_TO_BE_DISPLAYED_IN_SCREEN_BOX.includes(line.id) ? (
+                                <DeviceDisplay displayMode={displayMode} address={line.value} />
+                            ) : (
+                                <OutputValueWrapper>
+                                    {line.plainValue ? (
+                                        line.value
+                                    ) : (
+                                        <FormattedCryptoAmount
+                                            disableHiddenPlaceholder
+                                            value={line.value}
+                                            symbol={
+                                                // TX fee is so far always paid in network native coin
+                                                line.id !== 'fee' && token ? token.symbol : symbol
+                                            }
+                                        />
+                                    )}
+                                </OutputValueWrapper>
+                            )}
+                            {/* temporary solution until fiat value for ERC20 tokens will be fixed  */}
+                            {symbol && fiatVisible && !(line.id !== 'fee' && token) && (
+                                <>
+                                    <DotSeparatorWrapper>
+                                        <DotSeparator />
+                                    </DotSeparatorWrapper>
                                     <OutputValueWrapper>
-                                        {line.plainValue ? (
-                                            line.value
-                                        ) : (
-                                            <FormattedCryptoAmount
-                                                disableHiddenPlaceholder
-                                                value={line.value}
-                                                symbol={
-                                                    // TX fee is so far always paid in network native coin
-                                                    line.id !== 'fee' && token
-                                                        ? token.symbol
-                                                        : displaySymbol
-                                                }
-                                            />
-                                        )}
+                                        <FiatValue
+                                            disableHiddenPlaceholder
+                                            amount={line.value}
+                                            symbol={symbol}
+                                        />
                                     </OutputValueWrapper>
-                                )}
-                                {/* temporary solution until fiat value for ERC20 tokens will be fixed  */}
-                                {symbol && fiatVisible && !(line.id !== 'fee' && token) && (
-                                    <>
-                                        <DotSeparatorWrapper>
-                                            <DotSeparator />
-                                        </DotSeparatorWrapper>
-                                        <OutputValueWrapper>
-                                            <FiatValue
-                                                disableHiddenPlaceholder
-                                                amount={line.value}
-                                                symbol={symbol}
-                                            />
-                                        </OutputValueWrapper>
-                                    </>
-                                )}
-                            </OutputValue>
-                            {network === 'cardano' && cardanoFingerprint && (
-                                <CardanoTrezorAmountWrapper>
-                                    <OutputHeadline>
-                                        <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />
-                                    </OutputHeadline>
-                                    <OutputValue>{cardanoFingerprint}</OutputValue>
-                                </CardanoTrezorAmountWrapper>
+                                </>
                             )}
-                            {network === 'cardano' && token && token.decimals !== 0 && (
-                                <CardanoTrezorAmountWrapper>
-                                    <OutputHeadline>
-                                        <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />
-                                    </OutputHeadline>
-                                    <OutputValue>
-                                        {amountToSmallestUnit(line.value, token.decimals)}
-                                    </OutputValue>
-                                </CardanoTrezorAmountWrapper>
-                            )}
-                        </OutputRightLine>
-                    ))}
-                </OutputRight>
-            </OutputWrapper>
-        );
-    },
-);
+                        </OutputValue>
+                        {network === 'cardano' && cardanoFingerprint && (
+                            <CardanoTrezorAmountWrapper>
+                                <OutputHeadline>
+                                    <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />
+                                </OutputHeadline>
+                                <OutputValue>{cardanoFingerprint}</OutputValue>
+                            </CardanoTrezorAmountWrapper>
+                        )}
+                        {network === 'cardano' && token && token.decimals !== 0 && (
+                            <CardanoTrezorAmountWrapper>
+                                <OutputHeadline>
+                                    <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />
+                                </OutputHeadline>
+                                <OutputValue>
+                                    {amountToSmallestUnit(line.value, token.decimals)}
+                                </OutputValue>
+                            </CardanoTrezorAmountWrapper>
+                        )}
+                    </OutputRightLine>
+                ))}
+            </OutputRight>
+        </OutputWrapper>
+    );
+});

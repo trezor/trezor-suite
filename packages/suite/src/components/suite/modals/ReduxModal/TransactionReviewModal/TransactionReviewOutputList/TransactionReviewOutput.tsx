@@ -3,11 +3,7 @@ import { ReactNode, forwardRef } from 'react';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { formatNetworkAmount, formatAmount, isTestnet } from '@suite-common/wallet-utils';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
-import {
-    getNetworkDisplaySymbol,
-    NetworkSymbol,
-    NetworkSymbolExtended,
-} from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, NetworkSymbol } from '@suite-common/wallet-config';
 import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import { TranslationKey } from '@suite-common/intl-types';
 
@@ -99,17 +95,13 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
         }
 
         let outputValue = value;
-        let symbolIncludedTokens: NetworkSymbolExtended | undefined;
         let fiatVisible = false;
         if (token) {
             outputValue = formatAmount(value, token.decimals);
-            symbolIncludedTokens = token.symbol;
         } else if (type === 'fee' || type === 'amount') {
             outputValue = formatNetworkAmount(value, symbol);
-            symbolIncludedTokens = symbol;
             fiatVisible = !isTestnet(symbol);
         } else if (type === 'gas') {
-            symbolIncludedTokens = symbol;
             fiatVisible = !isTestnet(symbol);
         }
 
@@ -128,7 +120,6 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
                     value: formatNetworkAmount(props.value2, symbol),
                 },
             ];
-            symbolIncludedTokens = symbol;
             fiatVisible = !isTestnet(symbol);
         } else if (type === 'reduce-output') {
             outputLines = [
@@ -149,7 +140,6 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
                     value: formatNetworkAmount(props.value2, symbol),
                 },
             ];
-            symbolIncludedTokens = symbol;
             fiatVisible = !isTestnet(symbol);
         } else if (type === 'txid') {
             outputLines = [
@@ -246,7 +236,6 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
                 token={token}
                 state={state}
                 symbol={symbol}
-                symbolIncludedTokens={symbolIncludedTokens}
                 fiatVisible={fiatVisible}
                 displayMode={displayMode}
             />
