@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 import { motion, AnimatePresence, MotionProps } from 'framer-motion';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { borders, spacingsPx } from '@trezor/theme';
 
 import { useSelector, useAccountSearch } from 'src/hooks/suite';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
+import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCoinLogo = styled(CoinLogo)<{ $isSelected?: boolean }>`
@@ -44,12 +44,15 @@ const Container = styled.div`
 export const CoinsFilter = () => {
     const { coinFilter, setCoinFilter } = useAccountSearch();
     const enabledNetworks = useSelector(selectEnabledNetworks);
-    const device = useSelector(selectSelectedDevice);
+    const { supportedMainnets, supportedTestnets } = useNetworkSupport();
 
-    const unavailableCapabilities = device?.unavailableCapabilities ?? {};
-    const supportedNetworks = enabledNetworks.filter(symbol => !unavailableCapabilities[symbol]);
+    const supportedNetworks = [...supportedMainnets, ...supportedTestnets].map(
+        network => network.symbol,
+    );
 
-    const showCoinFilter = supportedNetworks.length > 1;
+    const availableNetworks = enabledNetworks.filter(symbol => supportedNetworks.includes(symbol));
+
+    const showCoinFilter = availableNetworks.length > 1;
 
     const coinAnimcationConfig: MotionProps = {
         initial: {
@@ -80,7 +83,7 @@ export const CoinsFilter = () => {
             }}
         >
             <AnimatePresence initial={false}>
-                {supportedNetworks.map(network => {
+                {availableNetworks.map(network => {
                     const isSelected = coinFilter === network;
 
                     return (
