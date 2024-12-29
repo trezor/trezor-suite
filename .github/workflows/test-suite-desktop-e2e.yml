@@ -27,8 +27,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # - TEST_GROUP: "@group=suite"
-          #   CONTAINERS: "trezor-user-env-unix"
+          - TEST_GROUP: "@group=suite"
+            CONTAINERS: "trezor-user-env-unix"
           - TEST_GROUP: "@group=device-management"
             CONTAINERS: "trezor-user-env-unix"
           - TEST_GROUP: "@group=settings"
