@@ -186,7 +186,6 @@ export const networks = {
         },
         coingeckoId: 'arbitrum-one',
         coingeckoNativeId: 'ethereum',
-        isDebugOnlyNetwork: true,
     },
     base: {
         symbol: 'base',
@@ -210,7 +209,6 @@ export const networks = {
         },
         coingeckoId: 'base',
         coingeckoNativeId: 'ethereum',
-        isDebugOnlyNetwork: true,
     },
     op: {
         symbol: 'op',
@@ -234,7 +232,6 @@ export const networks = {
         },
         coingeckoId: 'optimistic-ethereum',
         coingeckoNativeId: 'ethereum',
-        isDebugOnlyNetwork: true,
     },
     sol: {
         symbol: 'sol',
