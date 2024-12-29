@@ -590,7 +590,7 @@ export const networks = {
         decimals: 18,
         testnet: true,
         explorer: getExplorerUrls('https://holesky1.trezor.io', 'ethereum'),
-        features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'nft-definitions'],
+        features: ['rbf', 'sign-verify', 'tokens', 'staking', 'nfts', 'nft-definitions'],
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: undefined,
