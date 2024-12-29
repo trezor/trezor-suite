@@ -163,7 +163,7 @@ export const TransactionHeading = ({
                         />
                     )}
                     <BlurWrapper $isBlurred={isPhishingTransaction}>
-                        <Row gap={spacings.xxs}>
+                        <Row gap={spacings.xxs} flexWrap="wrap">
                             <TransactionHeader transaction={transaction} isPending={isPending} />
                             {isSupportedEthStakingNetworkSymbol(transaction.symbol) && (
                                 <InstantStakeBadge transaction={transaction} symbol={symbol} />
