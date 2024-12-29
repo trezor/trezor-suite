@@ -1,5 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
-import { Network, networksCollection, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 
 import { isDebugOnlyAccountType, filterReceiveAccounts } from '../filterReceiveAccounts';
@@ -47,21 +47,12 @@ const runFilterReceiveAccouns = ({
         },
         state: deviceState,
     });
-    const unavailableCapabilities = device?.unavailableCapabilities ?? {};
-
-    const receiveNetworks = networksCollection.filter(
-        (n: Network) =>
-            n.symbol === symbol &&
-            !unavailableCapabilities[n.symbol] &&
-            ((n.isDebugOnlyNetwork && isDebug) || !n.isDebugOnlyNetwork),
-    );
 
     return filterReceiveAccounts({
         accounts,
         deviceState: device.state?.staticSessionId,
         symbol,
         isDebug,
-        receiveNetworks,
     });
 };
 

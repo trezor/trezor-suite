@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { Network, networksCollection } from '@suite-common/wallet-config';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { TrezorDevice } from '@suite-common/suite-types';
@@ -17,7 +16,6 @@ import {
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     CoinmarketAccountType,
-    CoinmarketGetSuiteReceiveAccountsProps,
     CoinmarketGetTranslationIdsProps,
     CoinmarketVerifyAccountProps,
     CoinmarketVerifyAccountReturnProps,
@@ -25,22 +23,22 @@ import {
     CoinmarketVerifyFormProps,
 } from 'src/types/coinmarket/coinmarketVerify';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
+import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 
 const getSelectAccountOptions = (
     suiteReceiveAccounts: Account[] | undefined,
     device: TrezorDevice | undefined,
+    isSupportedNetwork: boolean,
 ): CoinmarketVerifyFormAccountOptionProps[] => {
     const selectAccountOptions: CoinmarketVerifyFormAccountOptionProps[] = [];
 
-    if (suiteReceiveAccounts) {
-        suiteReceiveAccounts.forEach(account => {
-            selectAccountOptions.push({ type: 'SUITE', account });
-        });
+    suiteReceiveAccounts?.forEach(account => {
+        selectAccountOptions.push({ type: 'SUITE', account });
+    });
 
-        // have to be signed by private key
-        if (device?.connected) {
-            selectAccountOptions.push({ type: 'ADD_SUITE' });
-        }
+    // have to be signed by private key
+    if (device?.connected && isSupportedNetwork) {
+        selectAccountOptions.push({ type: 'ADD_SUITE' });
     }
 
     selectAccountOptions.push({ type: 'NON_SUITE' });
@@ -64,36 +62,6 @@ const getTranslationIds = (
     };
 };
 
-const getSuiteReceiveAccounts = ({
-    currency,
-    device,
-    symbol,
-    isDebug,
-    accounts,
-}: CoinmarketGetSuiteReceiveAccountsProps): Account[] | undefined => {
-    if (currency) {
-        const unavailableCapabilities = device?.unavailableCapabilities ?? {};
-
-        // Is the symbol supported by the suite and the device natively?
-        const receiveNetworks = networksCollection.filter(
-            (n: Network) =>
-                n.symbol === symbol &&
-                !unavailableCapabilities[n.symbol] &&
-                ((n.isDebugOnlyNetwork && isDebug) || !n.isDebugOnlyNetwork),
-        );
-
-        return filterReceiveAccounts({
-            accounts,
-            deviceState: device?.state?.staticSessionId,
-            symbol,
-            isDebug,
-            receiveNetworks,
-        });
-    }
-
-    return undefined;
-};
-
 const useCoinmarketVerifyAccount = ({
     currency,
 }: CoinmarketVerifyAccountProps): CoinmarketVerifyAccountReturnProps => {
@@ -103,6 +71,8 @@ const useCoinmarketVerifyAccount = ({
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
     const [isMenuOpen, setIsMenuOpen] = useState<boolean | undefined>(undefined);
+
+    const { supportedMainnets, supportedTestnets } = useNetworkSupport();
 
     const methods = useForm<CoinmarketVerifyFormProps>({
         mode: 'onChange',
@@ -114,21 +84,27 @@ const useCoinmarketVerifyAccount = ({
 
     const networkId = currency && parseCryptoId(currency).networkId;
     const symbol = currency && cryptoIdToSymbol(currency);
-    const suiteReceiveAccounts = useMemo(
-        () =>
-            getSuiteReceiveAccounts({
-                currency,
-                device,
-                symbol,
-                isDebug,
-                accounts,
-            }),
-        [accounts, currency, device, isDebug, symbol],
+
+    const isSupportedNetwork = [...supportedMainnets, ...supportedTestnets].some(
+        network => network.symbol === symbol,
     );
 
+    const suiteReceiveAccounts = useMemo(() => {
+        if (currency) {
+            return filterReceiveAccounts({
+                accounts,
+                deviceState: device?.state?.staticSessionId,
+                symbol,
+                isDebug,
+            });
+        }
+
+        return undefined;
+    }, [accounts, currency, device, isDebug, symbol]);
+
     const selectAccountOptions = useMemo(
-        () => getSelectAccountOptions(suiteReceiveAccounts, device),
-        [device, suiteReceiveAccounts],
+        () => getSelectAccountOptions(suiteReceiveAccounts, device, isSupportedNetwork),
+        [device, suiteReceiveAccounts, isSupportedNetwork],
     );
     const preselectedAccount = useMemo(
         () =>

@@ -3,11 +3,10 @@ import { UseFormReturn } from 'react-hook-form';
 
 import { CryptoId } from 'invity-api';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountAddress } from '@trezor/connect';
 
 import type { Account } from 'src/types/wallet';
-import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
+import { ExtendedMessageDescriptor } from 'src/types/suite';
 
 export interface CoinmarketVerifyFormProps {
     address?: string;
@@ -50,12 +49,4 @@ export type CoinmarketVerifyOptionsProps = { receiveNetwork: CryptoId; label: Re
 export interface CoinmarketVerifyOptionsItemProps {
     option: CoinmarketVerifyFormAccountOptionProps;
     receiveNetwork: CryptoId;
-}
-
-export interface CoinmarketGetSuiteReceiveAccountsProps {
-    currency: CryptoId | undefined;
-    device: TrezorDevice | undefined;
-    symbol: NetworkSymbol | undefined;
-    isDebug: boolean;
-    accounts: Account[];
 }

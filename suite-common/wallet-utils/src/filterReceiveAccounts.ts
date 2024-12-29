@@ -1,4 +1,4 @@
-import { AccountType, getNetwork, Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountType, getNetwork, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
 
@@ -20,7 +20,6 @@ type FilterReceiveAccountsProps = {
     deviceState?: StaticSessionId;
     symbol?: NetworkSymbol;
     isDebug: boolean;
-    receiveNetworks: Network[];
 };
 
 export const filterReceiveAccounts = ({
