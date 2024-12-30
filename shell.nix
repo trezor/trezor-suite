@@ -21,6 +21,7 @@ in
     name = "trezor-suite-dev";
     buildInputs = [
       bash
+      git
       git-lfs
       gnupg
       mdbook
