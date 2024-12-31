@@ -68,24 +68,37 @@ const useWatchTimeframeChangeForAnalytics = (
     }, [timeframeHours, symbol, isFirstRender]);
 };
 
-const redactAfterSubstring = (string: string, substring: string) => {
-    const index = string.indexOf(substring);
+const redactBetweenSubstrings = (string: string, substring1: string, substring2?: string) => {
+    const start = string.indexOf(substring1);
+    const end = substring2 ? string.indexOf(substring2) : -1;
 
-    if (index !== -1) {
-        return string.slice(0, index + substring.length) + ' redacted';
+    if (start !== -1) {
+        const str = string.slice(0, start + substring1.length) + ' redacted';
+        if (end !== -1 && end > start + substring1.length) {
+            return str + ' ' + string.slice(end);
+        }
+
+        return str;
     }
 
     return string;
 };
 
+// this array defines start and end substrings for redacting using redact()
+const redactSubstringsArray: { start: string; end?: string }[] = [
+    { start: 'Account not found:' },
+    { start: 'Unable to fetch fiat rates for defined timestamps. ' },
+    { start: 'Aborted by timeout -' },
+    {
+        start: 'getTransaction ',
+        end: 'not found (transaction indexing still in progress)',
+    },
+];
+
 const redact = (string: string) => {
-    const redactAfterSubstringArray = [
-        'Account not found:',
-        'Unable to fetch fiat rates for defined timestamps. ',
-    ];
     let msg = string;
-    redactAfterSubstringArray.map(substring => {
-        msg = redactAfterSubstring(msg, substring);
+    redactSubstringsArray.map(a => {
+        msg = redactBetweenSubstrings(msg, a.start, a.end);
     });
 
     return msg;
