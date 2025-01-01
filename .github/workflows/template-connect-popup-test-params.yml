@@ -37,6 +37,7 @@ jobs:
     name: web
     runs-on: ubuntu-latest
     if: ${{ inputs.runWeb }}
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
@@ -97,6 +98,7 @@ jobs:
     name: webextension
     runs-on: ubuntu-latest
     if: ${{ inputs.runWebextension }}
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
@@ -156,6 +158,7 @@ jobs:
     name: core_in_popup
     runs-on: ubuntu-latest
     if: ${{ inputs.runCoreInPopup }}
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:

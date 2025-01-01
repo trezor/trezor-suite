@@ -19,6 +19,7 @@ jobs:
   install-connect:
     runs-on: ubuntu-latest
     if: github.repository == 'trezor/trezor-suite'
+    timeout-minutes: 60
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,6 +34,7 @@ jobs:
   test-protobuf:
     runs-on: ubuntu-latest
     if: github.repository == 'trezor/trezor-suite'
+    timeout-minutes: 60
     steps:
       - name: Checkout
         uses: actions/checkout@v4
