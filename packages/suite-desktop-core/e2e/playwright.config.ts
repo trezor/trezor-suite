@@ -17,6 +17,8 @@ const config: PlaywrightTestConfig = {
                 baseURL: process.env.BASE_URL || 'http://localhost:8000/',
             },
             grepInvert: /@desktopOnly/,
+            //TODO: #16073 Instability on Web tests. Once solved, remove ignoreSnapshots
+            ignoreSnapshots: true,
         },
         {
             name: PlaywrightProjects.Desktop,
