@@ -1,13 +1,13 @@
-import { test, expect } from '../support/fixtures';
-import { launchSuite, LEGACY_BRIDGE_VERSION } from '../support/common';
-import { OnboardingActions } from '../support/pageActions/onboardingActions';
+import { test, expect } from '../../support/fixtures';
+import { launchSuite, LEGACY_BRIDGE_VERSION } from '../../support/common';
+import { OnboardingActions } from '../../support/pageActions/onboardingActions';
 import {
     BRIDGE_URL,
     expectBridgeToBeRunning,
     expectBridgeToBeStopped,
     waitForAppToBeInitialized,
-} from '../support/bridge';
-import { AnalyticsActions } from '../support/pageActions/analyticsActions';
+} from '../../support/bridge';
+import { AnalyticsActions } from '../../support/pageActions/analyticsActions';
 
 test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
     test.beforeEach(async ({ trezorUserEnvLink }) => {

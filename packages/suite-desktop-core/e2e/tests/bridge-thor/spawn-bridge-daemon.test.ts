@@ -1,10 +1,10 @@
-import { test, expect } from '../support/fixtures';
-import { launchSuite, launchSuiteElectronApp } from '../support/common';
+import { test, expect } from '../../support/fixtures';
+import { launchSuite, launchSuiteElectronApp } from '../../support/common';
 import {
     expectBridgeToBeRunning,
     expectBridgeToBeStopped,
     waitForAppToBeInitialized,
-} from '../support/bridge';
+} from '../../support/bridge';
 
 test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
     test.beforeAll(async ({ trezorUserEnvLink }) => {

@@ -1,8 +1,8 @@
 import { Page } from '@playwright/test';
 
-import { test, expect } from '../support/fixtures';
-import { launchSuite } from '../support/common';
-import { NetworkAnalyzer } from '../support/networkAnalyzer';
+import { test, expect } from '../../support/fixtures';
+import { launchSuite } from '../../support/common';
+import { NetworkAnalyzer } from '../../support/networkAnalyzer';
 
 const timeout = 1000 * 60 * 5; // 5 minutes because it takes a while to start tor.
 

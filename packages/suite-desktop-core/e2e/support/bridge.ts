@@ -20,6 +20,6 @@ export const expectBridgeToBeStopped = async (request: APIRequestContext) => {
 // Bridge should be ready to check `/status` endpoint.
 export const waitForAppToBeInitialized = async (suite: any) =>
     await Promise.race([
-        expect(suite.page.getByTestId('@welcome/title')).toBeVisible(),
-        expect(suite.page.getByTestId('@dashboard/graph')).toBeVisible(),
+        expect(suite.window.getByTestId('@welcome/title')).toBeVisible(),
+        expect(suite.window.getByTestId('@dashboard/graph')).toBeVisible(),
     ]);
