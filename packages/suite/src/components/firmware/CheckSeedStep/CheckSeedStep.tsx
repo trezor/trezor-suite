@@ -6,19 +6,13 @@ import { Button, Checkbox, Column, variables } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDevice, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
-import { goto } from 'src/actions/suite/routerActions';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 
-import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
-import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';
-
-const TextButton = styled.span`
-    cursor: pointer;
-    text-decoration: underline;
-`;
+import { FirmwareButtonsRow } from '../Buttons/FirmwareButtonsRow';
+import { FirmwareSwitchWarning } from '../FirmwareSwitchWarning';
+import { FirmwareInstallationBackupButton } from './FirmwareInstallationBackupButton';
 
 const StyledSwitchWarning = styled(FirmwareSwitchWarning)`
     align-self: flex-start;
@@ -38,28 +32,20 @@ type CheckSeedStepProps = {
 
 export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSeedStepProps) => {
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
-    const dispatch = useDispatch();
     const { device } = useDevice();
     const [isChecked, setIsChecked] = useState(false);
 
+    const isBackedUp =
+        device?.features?.backup_availability !== 'Required' &&
+        !device?.features?.unfinished_backup;
+
     const handleCheckboxClick = () => setIsChecked(prev => !prev);
     const getContent = () => {
-        const isBackedUp =
-            device?.features?.backup_availability !== 'Required' &&
-            !device?.features?.unfinished_backup;
-
         const noBackupHeading = (
             <Translation id="TR_DEVICE_LABEL_IS_NOT_BACKED_UP" values={{ deviceLabel }} />
         );
 
         if (deviceWillBeWiped) {
-            const goToDeviceSettingsAnchor = (anchor: SettingsAnchor) =>
-                dispatch(goto('settings-device', { anchor }));
-            const goToCreateBackup = () =>
-                goToDeviceSettingsAnchor(SettingsAnchor.BackupRecoverySeed);
-            const goToCheckBackup = () =>
-                goToDeviceSettingsAnchor(SettingsAnchor.CheckRecoverySeed);
-
             return {
                 heading: isBackedUp ? (
                     <Translation id="TR_CONTINUE_ONLY_WITH_SEED" />
@@ -81,15 +67,6 @@ export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSe
                                     ? 'TR_CONTINUE_ONLY_WITH_SEED_DESCRIPTION_2'
                                     : 'TR_SWITCH_FIRMWARE_NO_BACKUP_2'
                             }
-                            values={{
-                                button: chunks => (
-                                    <TextButton
-                                        onClick={isBackedUp ? goToCheckBackup : goToCreateBackup}
-                                    >
-                                        {chunks}
-                                    </TextButton>
-                                ),
-                            }}
                         />
                     </Column>
                 ),
@@ -128,6 +105,7 @@ export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSe
                             id={deviceWillBeWiped ? 'TR_WIPE_AND_REINSTALL' : 'TR_CONTINUE'}
                         />
                     </Button>
+                    <FirmwareInstallationBackupButton isBackedUp={isBackedUp} />
                 </FirmwareButtonsRow>
             }
             disableConfirmWrapper

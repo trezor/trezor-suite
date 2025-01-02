@@ -1,4 +1,4 @@
-export { CheckSeedStep } from './CheckSeedStep';
+export { CheckSeedStep } from './CheckSeedStep/CheckSeedStep';
 export { ReconnectDevicePrompt } from './ReconnectDevicePrompt';
 export { FirmwareOffer } from './FirmwareOffer';
 export { FirmwareInstallation } from './FirmwareInstallation';

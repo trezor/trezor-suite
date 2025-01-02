@@ -4627,7 +4627,7 @@ export default defineMessages({
     TR_BEFORE_ANY_FURTHER_ACTIONS: {
         id: 'TR_BEFORE_ANY_FURTHER_ACTIONS',
         defaultMessage:
-            'Although unlikely, you may need to access your wallet backup in case of a firmware update issue.',
+            "Although unlikely, you may need to access your wallet backup in the event of a firmware update issue. If you're uncertain about the accuracy of your backup, you can verify it before proceeding with the installation.",
     },
     TR_CONTINUE_ONLY_WITH_SEED: {
         id: 'TR_CONTINUE_ONLY_WITH_SEED',
@@ -4641,7 +4641,7 @@ export default defineMessages({
     TR_CONTINUE_ONLY_WITH_SEED_DESCRIPTION_2: {
         id: 'TR_CONTINUE_ONLY_WITH_SEED_DESCRIPTION_2',
         defaultMessage:
-            'Before you continue, <button>check your backup in Settings</button>. This is an easy way to check and verify your wallet backup.',
+            'Before you continue, check your wallet backup. This is an easy way to check and verify your wallet backup.',
     },
     TR_SWITCH_FIRMWARE_NO_BACKUP: {
         id: 'TR_SWITCH_FIRMWARE_NO_BACKUP',
@@ -4651,7 +4651,7 @@ export default defineMessages({
     TR_SWITCH_FIRMWARE_NO_BACKUP_2: {
         id: 'TR_SWITCH_FIRMWARE_NO_BACKUP_2',
         defaultMessage:
-            'In all cases, we strongly recommend <button>creating a wallet backup in Settings</button>. With a wallet backup, your coins are safe and secure even if your Trezor is lost, damaged, or stolen.',
+            'In all cases, we strongly recommend creating a wallet backup. With a wallet backup, your coins are safe and secure even if your Trezor is lost, damaged, or stolen.',
     },
     TR_IMPORTANT: {
         id: 'TR_IMPORTANT',
