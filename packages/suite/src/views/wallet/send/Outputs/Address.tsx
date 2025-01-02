@@ -96,6 +96,8 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const broadcastEnabled = options.includes('broadcast');
     const isOnline = useSelector(state => state.suite.online);
 
+    const isContractAddressWarningEnabled = ['eth', 'tsep', 'thol'].includes(symbol);
+
     useEffect(() => {
         contractAddressWarningDismissed.current = false;
     }, [address]);
@@ -291,8 +293,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         }
                     }
 
-                    //2. Check if address is a contract address
-                    if (!contractAddressWarningDismissed.current && symbol === 'eth') {
+                    // 2. Check if address is a contract address (right now only for Eth, Holesky and Sepolia)
+                    if (
+                        !contractAddressWarningDismissed.current &&
+                        isContractAddressWarningEnabled
+                    ) {
                         const isContract = payload.misc?.contractInfo;
                         if (isContract) {
                             return translationString('TR_EVM_ADDRESS_IS_CONTRACT');
