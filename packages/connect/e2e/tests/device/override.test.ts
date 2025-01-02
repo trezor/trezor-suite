@@ -8,7 +8,7 @@ describe('TrezorConnect override param', () => {
         await setup(controller, {
             mnemonic: 'mnemonic_all',
         });
-        await initTrezorConnect(controller);
+        await initTrezorConnect(controller, { autoConfirm: false });
     });
 
     afterAll(() => {
