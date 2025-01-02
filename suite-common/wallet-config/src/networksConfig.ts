@@ -524,7 +524,7 @@ export const networks = {
     },
     tsep: {
         symbol: 'tsep',
-        displaySymbol: 'tSEP',
+        displaySymbol: 'tETH',
         name: 'Ethereum Sepolia',
         networkType: 'ethereum',
         bip43Path: "m/44'/1'/0'/0/i",
@@ -540,7 +540,7 @@ export const networks = {
     },
     thol: {
         symbol: 'thol',
-        displaySymbol: 'tHOL',
+        displaySymbol: 'tETH',
         name: 'Ethereum Holesky',
         networkType: 'ethereum',
         bip43Path: "m/44'/1'/0'/0/i",
@@ -556,7 +556,7 @@ export const networks = {
     },
     dsol: {
         symbol: 'dsol',
-        displaySymbol: 'DSOL',
+        displaySymbol: 'dSOL',
         name: 'Solana Devnet',
         networkType: 'solana',
         bip43Path: "m/44'/501'/i'/0'",
