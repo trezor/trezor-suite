@@ -20,6 +20,7 @@
     },
     "devDependencies": {
         "@types/json-stable-stringify": "^1",
+        "babel-plugin-styled-components": "^2.1.4",
         "esbuild": "^0.23.1",
         "html-webpack-plugin": "^5.6.0",
         "pkg": "^5.8.1",

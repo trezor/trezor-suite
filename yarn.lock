@@ -12728,6 +12728,7 @@ __metadata:
     "@trezor/transport": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/json-stable-stringify": "npm:^1"
+    babel-plugin-styled-components: "npm:^2.1.4"
     esbuild: "npm:^0.23.1"
     html-webpack-plugin: "npm:^5.6.0"
     json-stable-stringify: "npm:^1.1.1"
