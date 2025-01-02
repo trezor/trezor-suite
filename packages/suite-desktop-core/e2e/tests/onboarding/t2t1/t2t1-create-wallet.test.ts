@@ -1,3 +1,4 @@
+import { SeedType } from '../../../support/enums/seedType';
 import { test, expect } from '../../../support/fixtures';
 
 test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] }, () => {
@@ -26,9 +27,7 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         await page.getByTestId('@onboarding/path-create-button').click();
 
         // Will be clicking on Shamir backup button
-        await page.getByTestId('@onboarding/select-seed-type-open-dialog').click();
-        await page.getByTestId('@onboarding/select-seed-type-shamir-advanced').click();
-        await page.getByTestId('@onboarding/select-seed-type-confirm').click();
+        await onboardingPage.selectSeedType(SeedType.Advanced);
         await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
 

@@ -143,10 +143,11 @@ const test = base.extend<Fixtures>({
         const walletPage = new WalletActions(page);
         await use(walletPage);
     },
-    onboardingPage: async ({ page, analyticsPage, emulatorStartConf }, use, testInfo) => {
+    onboardingPage: async ({ page, analyticsPage, devicePrompt, emulatorStartConf }, use, testInfo) => {
         const onboardingPage = new OnboardingActions(
             page,
             analyticsPage,
+            devicePrompt,
             emulatorStartConf.model ?? TrezorUserEnvLink.defaultModel,
             testInfo,
         );
