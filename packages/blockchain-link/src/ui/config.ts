@@ -4,10 +4,10 @@ export default [
             name: 'Ripple',
             worker: 'js/ripple-worker.js',
             server: [
-                'wss://xrplcluster.com',
-                'wss://xrpl.ws',
-                'wss://s1.ripple.com',
-                'wss://s2.ripple.com',
+                'wss://xrp1.trezor.io',
+                'wss://xrp2.trezor.io',
+                'wss://xrp3.trezor.io',
+                'wss://xrp4.trezor.io',
             ],
             debug: true,
         },
@@ -38,8 +38,7 @@ export default [
         blockchain: {
             name: 'Ripple Testnet',
             worker: 'js/ripple-worker.js',
-            server: ['wss://s.altnet.rippletest.net'],
-            // server: ['wss://s.devnet.rippletest.net'],
+            server: ['wss://txrp1.trezor.io'],
             debug: true,
         },
         data: {
@@ -499,8 +498,7 @@ export default [
         blockchain: {
             name: 'Cardano Mainnet',
             worker: 'js/blockfrost-worker.js',
-            server: ['wss://trezor-cardano-mainnet.blockfrost.io'],
-            // server: ['ws://localhost:3005'],
+            server: ['wss://ada1.trezor.io', 'wss://ada2.trezor.io'],
             debug: true,
         },
         data: {
@@ -523,7 +521,7 @@ export default [
         blockchain: {
             name: 'Cardano Preview Testnet',
             worker: 'js/blockfrost-worker.js',
-            server: ['wss://trezor-cardano-preview.blockfrost.io'],
+            server: ['wss://tada1.trezor.io'],
             debug: true,
         },
         data: {
@@ -579,7 +577,7 @@ export default [
             name: 'Solana Devnet',
             // we do not use path to worker build here because its not used, we use it just to match this config to actual implementation of the worker
             worker: 'solana',
-            server: ['https://solana-dev.trezor.io'],
+            server: ['https://dsol1.trezor.io'],
             debug: true,
         },
         data: {

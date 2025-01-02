@@ -2582,7 +2582,7 @@
         {
             "blockchain_link": {
                 "type": "blockfrost",
-                "url": ["wss://trezor-cardano-mainnet.blockfrost.io"]
+                "url": ["wss://ada1.trezor.io", "wss://ada2.trezor.io"]
             },
             "curve": "ed25519",
             "decimals": 6,
@@ -2615,7 +2615,7 @@
             }
         },
         {
-            "blockchain_link": { "type": "solana", "url": ["https://solana-dev.trezor.io"] },
+            "blockchain_link": { "type": "solana", "url": ["https://dsol1.trezor.io"] },
             "curve": "ed25519",
             "decimals": 9,
             "is_testnet": false,
@@ -2705,7 +2705,7 @@
         {
             "blockchain_link": {
                 "type": "blockfrost",
-                "url": ["wss://trezor-cardano-preview.blockfrost.io"]
+                "url": ["wss://tada1.trezor.io"]
             },
             "curve": "ed25519",
             "decimals": 6,
@@ -2722,7 +2722,7 @@
             }
         },
         {
-            "blockchain_link": { "type": "ripple", "url": ["wss://s.altnet.rippletest.net"] },
+            "blockchain_link": { "type": "ripple", "url": ["wss://txrp1.trezor.io"] },
             "curve": "secp256k1",
             "decimals": 6,
             "is_testnet": false,
@@ -2789,10 +2789,10 @@
             "blockchain_link": {
                 "type": "ripple",
                 "url": [
-                    "wss://xrplcluster.com",
-                    "wss://xrpl.ws",
-                    "wss://s1.ripple.com",
-                    "wss://s2.ripple.com"
+                    "wss://xrp1.trezor.io",
+                    "wss://xrp2.trezor.io",
+                    "wss://xrp3.trezor.io",
+                    "wss://xrp4.trezor.io"
                 ]
             },
             "curve": "secp256k1",
