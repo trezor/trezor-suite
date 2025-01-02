@@ -10,6 +10,7 @@ import {
     getAccountKey,
     getAccountSpecific,
 } from '@suite-common/wallet-utils';
+import { getNetwork } from '@suite-common/wallet-config';
 
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
 
@@ -50,45 +51,56 @@ const composeCreateAccountActionPayload = ({
     imported,
     accountLabel,
     visible,
-}: CreateAccountActionProps): Account => ({
-    deviceState,
-    accountLabel,
-    imported,
-    index: discoveryItem.index,
-    path: discoveryItem.path,
-    unlockPath: discoveryItem.unlockPath,
-    descriptor: accountInfo.descriptor,
-    descriptorChecksum: accountInfo.descriptorChecksum,
-    key: getAccountKey(accountInfo.descriptor, discoveryItem.coin, deviceState),
-    accountType: discoveryItem.accountType,
-    symbol: discoveryItem.coin,
-    empty: accountInfo.empty,
-    ...(discoveryItem.backendType === 'coinjoin'
-        ? {
-              backendType: 'coinjoin',
-              status: discoveryItem.status,
-          }
-        : {
-              backendType: discoveryItem.backendType,
-          }),
-    visible,
-    balance: accountInfo.balance,
-    availableBalance: accountInfo.availableBalance,
-    formattedBalance: formatNetworkAmount(
-        // xrp `availableBalance` is reduced by reserve, use regular balance
-        discoveryItem.networkType === 'ripple' ? accountInfo.balance : accountInfo.availableBalance,
-        discoveryItem.coin,
-    ),
-    tokens: enhanceTokens(accountInfo.tokens),
-    addresses: enhanceAddresses(accountInfo, discoveryItem),
-    utxo: enhanceUtxo(accountInfo.utxo, discoveryItem.networkType, discoveryItem.index),
-    history: accountInfo.history,
-    metadata: {
-        key: accountInfo.legacyXpub || accountInfo.descriptor,
-    },
-    ts: Date.now(),
-    ...getAccountSpecific(accountInfo, discoveryItem.networkType),
-});
+}: CreateAccountActionProps): Account => {
+    const { chainId } = getNetwork(discoveryItem.coin);
+    const isNonEthEvm = discoveryItem.networkType === 'ethereum' && discoveryItem.coin !== 'eth';
+
+    const metadataKey = isNonEthEvm
+        ? `${accountInfo.descriptor}-${chainId}`
+        : accountInfo.legacyXpub || accountInfo.descriptor;
+
+    return {
+        deviceState,
+        accountLabel,
+        imported,
+        index: discoveryItem.index,
+        path: discoveryItem.path,
+        unlockPath: discoveryItem.unlockPath,
+        descriptor: accountInfo.descriptor,
+        descriptorChecksum: accountInfo.descriptorChecksum,
+        key: getAccountKey(accountInfo.descriptor, discoveryItem.coin, deviceState),
+        accountType: discoveryItem.accountType,
+        symbol: discoveryItem.coin,
+        empty: accountInfo.empty,
+        ...(discoveryItem.backendType === 'coinjoin'
+            ? {
+                  backendType: 'coinjoin',
+                  status: discoveryItem.status,
+              }
+            : {
+                  backendType: discoveryItem.backendType,
+              }),
+        visible,
+        balance: accountInfo.balance,
+        availableBalance: accountInfo.availableBalance,
+        formattedBalance: formatNetworkAmount(
+            // xrp `availableBalance` is reduced by reserve, use regular balance
+            discoveryItem.networkType === 'ripple'
+                ? accountInfo.balance
+                : accountInfo.availableBalance,
+            discoveryItem.coin,
+        ),
+        tokens: enhanceTokens(accountInfo.tokens),
+        addresses: enhanceAddresses(accountInfo, discoveryItem),
+        utxo: enhanceUtxo(accountInfo.utxo, discoveryItem.networkType, discoveryItem.index),
+        history: accountInfo.history,
+        metadata: {
+            key: metadataKey,
+        },
+        ts: Date.now(),
+        ...getAccountSpecific(accountInfo, discoveryItem.networkType),
+    };
+};
 
 const createIndexLabeledAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/createIndexLabeledAccount`,
