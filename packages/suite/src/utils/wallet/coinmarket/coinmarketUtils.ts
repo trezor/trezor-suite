@@ -396,6 +396,8 @@ export const coinmarketBuildAccountOptions = ({
         const options: CoinmarketAccountOptionsGroupOptionProps[] =
             !skipNotNativeNetworkSymbols.includes(network.symbol) ? [option] : [];
 
+        const hasNativeToken = options.length > 0;
+
         // add crypto tokens to options
         if (tokens && tokens.length > 0) {
             const hasCoinDefinitions = getNetworkFeatures(account.symbol).includes(
@@ -436,6 +438,13 @@ export const coinmarketBuildAccountOptions = ({
                     decimals: token.decimals,
                 });
             });
+        }
+
+        const hasTokens = hasNativeToken && options.length > 1;
+
+        // exclude account if the native token has 0 balance and has no other tokens
+        if (!hasTokens && hasNativeToken && options[0].balance === '0') {
+            return;
         }
 
         groups.push({

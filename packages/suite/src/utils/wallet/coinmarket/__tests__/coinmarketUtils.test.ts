@@ -187,20 +187,6 @@ describe('coinmarket utils', () => {
                     {
                         accountType: 'normal',
                         balance: '0',
-                        cryptoName: 'Bitcoin',
-                        descriptor: 'descriptor1',
-                        label: 'BTC',
-                        value: 'bitcoin',
-                        decimals: 8,
-                    },
-                ],
-            },
-            {
-                label,
-                options: [
-                    {
-                        accountType: 'normal',
-                        balance: '0',
                         cryptoName: 'Ethereum',
                         descriptor: 'descriptor3',
                         label: 'ETH',
