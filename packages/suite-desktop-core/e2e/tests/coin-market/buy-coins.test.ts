@@ -10,7 +10,8 @@ test.describe('Coin market buy', { tag: ['@group=other'] }, () => {
         await walletPage.openCoinMarket();
     });
 
-    test('Buy crypto from compared offers', async ({ marketPage }) => {
+    // TOOD: #16041 Once solved, fix and uncomment, invity calls are not stable on CI
+    test.skip('Buy crypto from compared offers', async ({ marketPage }) => {
         await test.step('Fill input amount and opens offer comparison', async () => {
             await marketPage.setYouPayAmount('1234');
             await expect(marketPage.layout).toHaveScreenshot('buy-coins-layout.png', {
@@ -43,7 +44,8 @@ test.describe('Coin market buy', { tag: ['@group=other'] }, () => {
         });
     });
 
-    test('Buy crypto from best offer', async ({ marketPage }) => {
+    // TOOD: #16041 Once solved, fix and uncomment, invity calls are not stable on CI
+    test.skip('Buy crypto from best offer', async ({ marketPage }) => {
         await marketPage.setYouPayAmount('1234');
         const { amount, provider } = await marketPage.readBestOfferValues();
         await marketPage.buyBestOfferButton.click();
