@@ -1,7 +1,7 @@
 {
     "version": 1,
     "timestamp": "2024-01-02T00:00:00+00:00",
-    "sequence": 72,
+    "sequence": 73,
     "actions": [
         {
             "conditions": [
@@ -1105,7 +1105,7 @@
                 }
             ],
             "message": {
-                "id": "814507f2-64be-4232-9a43-abeaf5055d11",
+                "id": "036c0094-49f0-4033-a23c-b9150890a285",
                 "priority": 93,
                 "dismissible": true,
                 "variant": "warning",
@@ -1271,14 +1271,14 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">=24.10.1",
+                        "desktop": "<24.12.3",
                         "mobile": "!",
-                        "web": ">=24.10.1"
+                        "web": "<24.12.3"
                     }
                 }
             ],
             "message": {
-                "id": "f10a4296-7f58-4cb4-91b0-13aa66c4d701",
+                "id": "3cd41bc4-c635-44d0-94cd-d711da2752ac",
                 "priority": 1,
                 "dismissible": false,
                 "variant": "info",
