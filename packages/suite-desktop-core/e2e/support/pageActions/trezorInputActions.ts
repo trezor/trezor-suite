@@ -2,6 +2,8 @@ import { Locator, Page, test } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import { expect } from '../customMatchers';
+
 export class TrezorInputActions {
     readonly wordSelectInput: Locator;
     readonly pinSubmitButton: Locator;
@@ -19,12 +21,23 @@ export class TrezorInputActions {
 
     async inputMnemonicT1B1(mnemonic: string) {
         const arrayMnemonic = mnemonic.split(' ');
-        for (let i = 0; i < arrayMnemonic.length; i++) {
-            await this.page.waitForTimeout(400);
-            const state = await TrezorUserEnvLink.getDebugState();
-            const position = state.recovery_word_pos - 1;
-            await this.inputWord(arrayMnemonic[position]);
-        }
+        await test.step(`Inputting words ${arrayMnemonic.length}x ${arrayMnemonic}`, async () => {
+            for (let i = 0; i < 24; i++) {
+                await expect(this.wordSelectInput).toHaveText("Check your Trezor's screen");
+                const state = await TrezorUserEnvLink.getDebugState();
+                const position = state.recovery_word_pos - 1;
+                const isGivenFakeWord = position === -1;
+                if (isGivenFakeWord) {
+                    await test.step(`Inputting fake word ${state.recovery_fake_word}`, async () => {
+                        await this.inputWord(state.recovery_fake_word);
+                    });
+                } else {
+                    await test.step(`Inputting word ${arrayMnemonic[position]} at position ${position}`, async () => {
+                        await this.inputWord(arrayMnemonic[position]);
+                    });
+                }
+            }
+        });
     }
 
     //TODO: #16107 Not working with anything else than 12x 'all' - I will ask around
