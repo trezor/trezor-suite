@@ -8,7 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "jest -c ../../jest.config.base.js"
+        "test:unit": "yarn g:jest -c ../../jest.config.base.js"
     },
     "dependencies": {}
 }
