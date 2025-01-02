@@ -23,6 +23,7 @@ import {
     isCoinmarketBuyContext,
     isCoinmarketExchangeContext,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import { getCoinmarketNetworkDisplaySymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 interface CoinmarketVerifyProps {
     coinmarketVerifyAccount: CoinmarketVerifyAccountReturnProps;
@@ -59,6 +60,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
     const { accountTooltipTranslationId, addressTooltipTranslationId } = getTranslationIds(
         selectedAccountOption?.type,
     );
+    const coinSymbol = getCoinmarketNetworkDisplaySymbol(cryptoIdToCoinSymbol(currency) ?? '');
 
     const { ref: networkRef, ...networkField } = form.register('address', {
         required: translationString('TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED'),
@@ -105,7 +107,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
             <Paragraph typographyStyle="hint" variant="tertiary">
                 <Translation
                     id="TR_EXCHANGE_RECEIVING_ADDRESS_INFO"
-                    values={{ symbol: cryptoIdToCoinSymbol(currency) }}
+                    values={{ symbol: coinSymbol }}
                 />
             </Paragraph>
             <CoinmarketVerifyOptions

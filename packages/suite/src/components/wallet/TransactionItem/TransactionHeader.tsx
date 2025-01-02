@@ -2,6 +2,7 @@ import { getTxHeaderSymbol, isSupportedEthStakingNetworkSymbol } from '@suite-co
 import { AccountTransaction } from '@trezor/connect';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 
 import { useTranslation } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
@@ -79,7 +80,11 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
     }
 
     const isMultiTokenTransaction = transaction.tokens.length > 1;
-    const symbol = getTxHeaderSymbol(transaction)?.toUpperCase();
+    const transactionSymbol = getTxHeaderSymbol(transaction);
+    const symbol =
+        transactionSymbol && isNetworkSymbol(transactionSymbol)
+            ? getNetworkDisplaySymbol(transactionSymbol)
+            : transactionSymbol?.toUpperCase();
 
     return (
         <BlurUrls

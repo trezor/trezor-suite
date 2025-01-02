@@ -5,7 +5,10 @@ import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    getCoinmarketNetworkDisplaySymbol,
+    parseCryptoId,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
 
 interface CoinmarketInfoHeaderProps {
@@ -16,22 +19,25 @@ export const CoinmarketInfoHeader = ({ receiveCurrency }: CoinmarketInfoHeaderPr
     const { cryptoIdToCoinSymbol, cryptoIdToPlatformName } = useCoinmarketInfo();
 
     const { networkId, contractAddress } = parseCryptoId(receiveCurrency!);
-    const network = cryptoIdToPlatformName(networkId);
+    const platform = cryptoIdToPlatformName(networkId);
+    const displaySymbol = platform ? getCoinmarketNetworkDisplaySymbol(platform) : platform;
+    const tokenNameHelper = receiveCurrency && cryptoIdToCoinSymbol(receiveCurrency);
+    const tokenName = tokenNameHelper ? getCoinmarketNetworkDisplaySymbol(tokenNameHelper) : '';
 
     return (
         <Row gap={spacings.xs}>
             {receiveCurrency && <CoinmarketCoinLogo cryptoId={receiveCurrency} size={24} />}
             <Text typographyStyle="titleSmall">
-                {contractAddress && network ? (
+                {contractAddress && displaySymbol ? (
                     <Translation
                         id="TR_COINMARKET_TOKEN_NETWORK"
                         values={{
-                            tokenName: cryptoIdToCoinSymbol(receiveCurrency!),
-                            networkName: network,
+                            tokenName,
+                            networkName: displaySymbol,
                         }}
                     />
                 ) : (
-                    cryptoIdToCoinSymbol(receiveCurrency!)
+                    tokenName
                 )}
             </Text>
         </Row>

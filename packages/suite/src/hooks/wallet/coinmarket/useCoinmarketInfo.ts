@@ -2,7 +2,11 @@ import { useCallback } from 'react';
 
 import { CoinInfo, CryptoId } from 'invity-api';
 
-import { getNetwork, getNetworkByCoingeckoNativeId } from '@suite-common/wallet-config';
+import {
+    getNetwork,
+    getNetworkByCoingeckoNativeId,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
 import addressValidator from '@trezor/address-validator';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -17,19 +21,26 @@ const supportedAddressValidatorSymbols = new Set(
     addressValidator.getCurrencies().map(c => c.symbol),
 );
 
-function toCryptoOption(cryptoId: CryptoId, coinInfo: CoinInfo): CoinmarketCryptoSelectItemProps {
+const toCryptoOption = (
+    cryptoId: CryptoId,
+    coinInfo: CoinInfo,
+): CoinmarketCryptoSelectItemProps => {
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
+    const coinInfoSymbol = coinInfo.symbol.toLowerCase();
+    const displaySymbol = isNetworkSymbol(coinInfoSymbol)
+        ? getNetwork(coinInfoSymbol)?.displaySymbol
+        : coinInfoSymbol.toUpperCase();
 
     return {
         type: 'currency',
         value: cryptoId,
-        label: coinInfo.symbol.toUpperCase(),
+        label: displaySymbol,
         cryptoName: coinInfo.name,
         coingeckoId: networkId,
         contractAddress: contractAddress || null,
         symbol: coinInfo.symbol,
     };
-}
+};
 
 const sortPopularCurrencies = (
     a: CoinmarketCryptoSelectItemProps,

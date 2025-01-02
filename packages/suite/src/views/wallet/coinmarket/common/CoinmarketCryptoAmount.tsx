@@ -8,6 +8,7 @@ import { FormattedCryptoAmount } from 'src/components/suite';
 import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { CoinmarketTestWrapper } from 'src/views/wallet/coinmarket';
+import { getCoinmarketNetworkDisplaySymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const LogoWrapper = styled.div`
     line-height: 0;
@@ -25,7 +26,7 @@ export const CoinmarketCryptoAmount = ({
     displayLogo,
 }: CoinmarketCryptoAmountProps) => {
     const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
-    const symbol = cryptoIdToCoinSymbol(cryptoId);
+    const symbol = cryptoIdToCoinSymbol(cryptoId)?.toLowerCase();
 
     if (!amount || amount === '') {
         return (
@@ -35,7 +36,7 @@ export const CoinmarketCryptoAmount = ({
                         <CoinmarketCoinLogo cryptoId={cryptoId} margin={{ right: spacings.xs }} />
                     </LogoWrapper>
                 )}
-                {symbol}
+                {symbol ? getCoinmarketNetworkDisplaySymbol(symbol) : ''}
             </Row>
         );
     }

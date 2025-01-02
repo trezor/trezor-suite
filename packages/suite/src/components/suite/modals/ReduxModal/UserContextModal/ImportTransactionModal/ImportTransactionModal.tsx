@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { UserContextPayload } from '@suite-common/suite-types';
 import { parseCSV } from '@suite-common/wallet-utils';
+import { networksCollection } from '@suite-common/wallet-config';
 
 import { Translation, Modal } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
@@ -29,6 +30,17 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
 
     const onCsvResult = (result: string) => {
         const parsed = parseCSV(result, ['address', 'amount', 'currency', 'label'], delimiter);
+
+        parsed.forEach(item => {
+            const network = networksCollection.find(
+                network => network.displaySymbol === item.currency,
+            );
+
+            if (network) {
+                item.currency = network.symbol;
+            }
+        });
+
         decision.resolve(parsed);
         onCancel();
     };

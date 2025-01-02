@@ -5,7 +5,7 @@ import { fromWei } from 'web3-utils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { trezorLogo } from '@suite-common/suite-constants';
 import { TokenDefinitions, getIsPhishingTransaction } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     ExportFileType,
     RatesByTimestamps,
@@ -186,11 +186,13 @@ const prepareContent = (
                     const targetData = {
                         ...sharedData,
                         fee: !hasFeeBeenAlreadyUsed ? t.fee : '', // fee only once per tx
-                        feeSymbol: !hasFeeBeenAlreadyUsed ? symbol.toUpperCase() : '',
+                        feeSymbol: !hasFeeBeenAlreadyUsed
+                            ? getNetworkDisplaySymbol(data.symbol)
+                            : '',
                         address: target.isAddress ? target.addresses[0] : '', // SENT - it is destination address, RECV - it is MY address
                         label: target.isAddress && target.metadataLabel ? target.metadataLabel : '',
                         amount: target.isAddress ? target.amount : '',
-                        symbol: target.isAddress ? symbol.toUpperCase() : '',
+                        symbol: target.isAddress ? getNetworkDisplaySymbol(data.symbol) : '',
                         fiat:
                             target.isAddress && target.amount && historicRate
                                 ? localizeNumber(
@@ -227,7 +229,9 @@ const prepareContent = (
                     const tokenData = {
                         ...sharedData,
                         fee: !hasFeeBeenAlreadyUsed ? t.fee : '', // fee only once per tx
-                        feeSymbol: !hasFeeBeenAlreadyUsed ? symbol.toUpperCase() : '',
+                        feeSymbol: !hasFeeBeenAlreadyUsed
+                            ? getNetworkDisplaySymbol(data.symbol)
+                            : '',
                         address: token.to || '', // SENT - it is destination address, RECV - it is MY address
                         label: '', // token transactions do not have labels
                         amount: token.amount, // TODO: what to show if token.decimals missing so amount is not formatted correctly?
@@ -256,11 +260,13 @@ const prepareContent = (
                     const internalTransferData = {
                         ...sharedData,
                         fee: !hasFeeBeenAlreadyUsed ? t.fee : '', // fee only once per tx
-                        feeSymbol: !hasFeeBeenAlreadyUsed ? symbol.toUpperCase() : '',
+                        feeSymbol: !hasFeeBeenAlreadyUsed
+                            ? getNetworkDisplaySymbol(data.symbol)
+                            : '',
                         address: internal.to || '', // SENT - it is destination address, RECV - it is MY address
                         label: '', // internal transactions do not have labels
                         amount: internal.amount,
-                        symbol: symbol.toUpperCase(), // if symbol not available, use contract address
+                        symbol: getNetworkDisplaySymbol(data.symbol), // if symbol not available, use contract address
                         fiat:
                             internal.amount && historicRate
                                 ? localizeNumber(

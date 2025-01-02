@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Translation } from 'src/components/suite';
@@ -39,16 +39,16 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
 
     const getHeading = () => {
         if (modalCryptoId) {
-            const coinSymbol = cryptoIdToCoinSymbol(modalCryptoId)?.toUpperCase();
-            const symbol = cryptoIdToSymbol(modalCryptoId)?.toUpperCase();
+            const coinSymbol = cryptoIdToCoinSymbol(modalCryptoId)?.toLowerCase();
+            const symbol = cryptoIdToSymbol(modalCryptoId);
 
             if (symbol && coinSymbol !== symbol) {
                 return (
                     <Translation
                         id="TR_ADDRESS_MODAL_TITLE_EXCHANGE"
                         values={{
-                            networkSymbol: symbol,
-                            networkCurrencyName: coinSymbol,
+                            networkSymbol: getNetworkDisplaySymbol(symbol),
+                            networkCurrencyName: coinSymbol?.toUpperCase(),
                         }}
                     />
                 );
@@ -58,7 +58,10 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
                 <Translation
                     id="TR_ADDRESS_MODAL_TITLE"
                     values={{
-                        networkSymbol: coinSymbol,
+                        networkSymbol:
+                            coinSymbol && isNetworkSymbol(coinSymbol)
+                                ? getNetworkDisplaySymbol(coinSymbol)
+                                : coinSymbol?.toUpperCase(),
                     }}
                 />
             );

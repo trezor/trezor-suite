@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Column, Icon, Row, variables } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
+import { getNetwork } from '@suite-common/wallet-config';
 
 import { AccountLabeling, Translation } from 'src/components/suite';
 import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/coinmarket/form';
@@ -44,7 +45,7 @@ export const CoinmarketVerifyOptionsItem = ({
                     </AccountName>
                     <CoinmarketBalance
                         balance={formattedBalance}
-                        cryptoSymbolLabel={symbol.toLocaleUpperCase()}
+                        displaySymbol={getNetwork(symbol).displaySymbol}
                         symbol={symbol}
                         sendCryptoSelect={
                             isCoinmarketExchangeContext(context)

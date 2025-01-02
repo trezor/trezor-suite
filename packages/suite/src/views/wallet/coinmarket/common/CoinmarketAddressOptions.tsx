@@ -15,7 +15,10 @@ import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { useSelector } from 'src/hooks/suite';
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
-import { getCoinmarketNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    getCoinmarketNetworkDecimals,
+    getCoinmarketNetworkDisplaySymbol,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
@@ -111,6 +114,10 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
                             ? formatAmount(accountAddress.balance, networkDecimals)
                             : accountAddress.balance;
 
+                        const coinSymbol = cryptoIdToCoinSymbol(receiveSymbol);
+                        const displaySymbol =
+                            coinSymbol && getCoinmarketNetworkDisplaySymbol(coinSymbol);
+
                         return (
                             <Column>
                                 <div data-testid="@coinmarket/form/verify/address">
@@ -120,7 +127,7 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
                                 <InfoSegments typographyStyle="label" variant="tertiary">
                                     <CoinmarketBalance
                                         balance={balance}
-                                        cryptoSymbolLabel={cryptoIdToCoinSymbol(receiveSymbol)}
+                                        displaySymbol={displaySymbol}
                                         symbol={account.symbol}
                                         sendCryptoSelect={sendCryptoSelect}
                                     />

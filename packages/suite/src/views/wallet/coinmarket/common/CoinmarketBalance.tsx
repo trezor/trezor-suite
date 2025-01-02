@@ -14,8 +14,8 @@ import {
 
 interface CoinmarketBalanceProps {
     balance: string | undefined;
-    cryptoSymbolLabel: string | undefined;
     symbol: NetworkSymbol;
+    displaySymbol: string | undefined;
     tokenAddress?: TokenAddress | undefined;
     showOnlyAmount?: boolean;
     amountInCrypto?: boolean;
@@ -24,15 +24,15 @@ interface CoinmarketBalanceProps {
 
 export const CoinmarketBalance = ({
     balance, // expects a value in full units (BTC not sats)
-    cryptoSymbolLabel,
     symbol,
+    displaySymbol,
     tokenAddress,
     showOnlyAmount,
     amountInCrypto,
     sendCryptoSelect,
 }: CoinmarketBalanceProps) => {
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
-    const balanceCurrency = coinmarketGetAccountLabel(cryptoSymbolLabel ?? '', shouldSendInSats);
+    const balanceCurrency = coinmarketGetAccountLabel(displaySymbol ?? '', shouldSendInSats);
     const networkDecimals = getCoinmarketNetworkDecimals({
         sendCryptoSelect,
         network: getNetwork(symbol),
@@ -56,7 +56,7 @@ export const CoinmarketBalance = ({
                 &asymp;{' '}
                 {!amountInCrypto ? (
                     <HiddenPlaceholder>
-                        {formattedBalance} {cryptoSymbolLabel}
+                        {formattedBalance} {balanceCurrency}
                     </HiddenPlaceholder>
                 ) : (
                     stringBalance &&

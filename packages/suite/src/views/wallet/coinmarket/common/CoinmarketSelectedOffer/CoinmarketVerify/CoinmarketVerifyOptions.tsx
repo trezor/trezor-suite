@@ -6,7 +6,10 @@ import {
     CoinmarketVerifyOptionsProps,
     CoinmarketVerifyFormAccountOptionProps,
 } from 'src/types/coinmarket/coinmarketVerify';
-import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    getCoinmarketNetworkDisplaySymbol,
+    parseCryptoId,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketVerifyOptionsItem } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketVerify/CoinmarketVerifyOptionsItem';
 
 export const CoinmarketVerifyOptions = ({
@@ -20,9 +23,10 @@ export const CoinmarketVerifyOptions = ({
     const { cryptoIdToPlatformName, cryptoIdToCoinName } = useCoinmarketInfo();
 
     const { networkId, contractAddress } = parseCryptoId(receiveNetwork);
-    const networkName = contractAddress
+    const coinName = contractAddress
         ? cryptoIdToPlatformName(networkId)
         : cryptoIdToCoinName(networkId);
+    const displaySymbol = coinName && getCoinmarketNetworkDisplaySymbol(coinName);
 
     return (
         <Select
@@ -43,7 +47,7 @@ export const CoinmarketVerifyOptions = ({
                 <Translation
                     id="TR_EXCHANGE_SELECT_RECEIVE_ACCOUNT"
                     values={{
-                        symbol: networkName,
+                        symbol: displaySymbol,
                     }}
                 />
             }

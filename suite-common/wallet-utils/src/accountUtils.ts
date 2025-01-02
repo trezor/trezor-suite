@@ -418,12 +418,11 @@ export const formatNetworkAmount = (
     let formattedAmount = formatAmount(amount, decimals);
 
     if (withSymbol) {
-        let formattedSymbol = getNetworkDisplaySymbol(symbol).toUpperCase();
+        let formattedSymbol = getNetworkDisplaySymbol(symbol);
 
         if (isSatoshis) {
             formattedAmount = amount;
-            formattedSymbol =
-                symbol === 'btc' ? 'sat' : `sat ${getNetworkDisplaySymbol(symbol).toUpperCase()}`;
+            formattedSymbol = symbol === 'btc' ? 'sat' : `sat ${getNetworkDisplaySymbol(symbol)}`;
         }
 
         return `${formattedAmount} ${formattedSymbol}`;

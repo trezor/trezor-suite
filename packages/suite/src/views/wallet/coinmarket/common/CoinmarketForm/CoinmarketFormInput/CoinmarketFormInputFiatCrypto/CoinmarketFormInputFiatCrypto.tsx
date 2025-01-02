@@ -6,7 +6,10 @@ import {
     CoinmarketSellFormProps,
 } from 'src/types/coinmarket/coinmarketForm';
 import { CoinmarketFormSwitcherCryptoFiat } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormSwitcherCryptoFiat';
-import { coinmarketGetAmountLabels } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    coinmarketGetAmountLabels,
+    getCoinmarketNetworkDisplaySymbol,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketFormInputCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputCryptoAmount';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { CoinmarketFormInputFiat } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputFiat';
@@ -38,6 +41,11 @@ export const CoinmarketFormInputFiatCrypto = <
     } = formProps;
     const { amountInCrypto } = methods.getValues();
     const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto });
+    const coinSymbol =
+        !amountInCrypto && cryptoCurrencyLabel
+            ? cryptoIdToCoinSymbol(cryptoCurrencyLabel)
+            : currencySelectLabel ?? '';
+    const displaySymbol = coinSymbol && getCoinmarketNetworkDisplaySymbol(coinSymbol);
 
     const inputProps = {
         cryptoInputName,
@@ -47,11 +55,7 @@ export const CoinmarketFormInputFiatCrypto = <
         labelLeft: showLabel ? <Translation id={amountLabels.inputLabel} /> : undefined,
         labelRight: showLabel ? (
             <CoinmarketFormSwitcherCryptoFiat
-                symbol={
-                    !amountInCrypto && cryptoCurrencyLabel
-                        ? cryptoIdToCoinSymbol(cryptoCurrencyLabel)
-                        : currencySelectLabel ?? ''
-                }
+                currency={displaySymbol}
                 isDisabled={isFormLoading}
                 toggleAmountInCrypto={toggleAmountInCrypto}
             />

@@ -26,6 +26,7 @@ import {
 import {
     coinmarketGetAccountLabel,
     getCoinmarketNetworkDecimals,
+    getCoinmarketNetworkDisplaySymbol,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     FORM_OUTPUT_AMOUNT,
@@ -73,6 +74,10 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
             ? (errors as FieldErrors<CoinmarketSellExchangeFormProps>)?.outputs?.[0]?.amount
             : (errors as FieldErrors<CoinmarketBuyFormProps>).cryptoInput;
     const symbol = cryptoSelect?.value && cryptoIdToCoinSymbol(cryptoSelect?.value);
+    const displaySymbol = coinmarketGetAccountLabel(
+        getCoinmarketNetworkDisplaySymbol(symbol ?? ''),
+        shouldSendInSats,
+    );
     const decimals = getCoinmarketNetworkDecimals({
         sendCryptoSelect: !isCoinmarketBuyContext(context)
             ? context.getValues()[FORM_SEND_CRYPTO_CURRENCY_SELECT]
@@ -129,14 +134,7 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
             rules={cryptoInputRules}
             maxLength={formInputsMaxLength.amount}
             bottomText={cryptoInputError?.message || null}
-            innerAddon={
-                <>
-                    {coinmarketGetAccountLabel(
-                        cryptoSelect?.value && symbol ? symbol : '',
-                        shouldSendInSats,
-                    )}
-                </>
-            }
+            innerAddon={<>{displaySymbol}</>}
             data-testid="@coinmarket/form/crypto-input"
         />
     );
