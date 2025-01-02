@@ -1,4 +1,4 @@
-import { Paragraph, Image, Column, NewModal } from '@trezor/components';
+import { Paragraph, Image, Column, NewModal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
@@ -127,16 +127,16 @@ export const Backup = ({ onCancel }: ForegroundAppProps) => {
                 }
             >
                 {device.features.unfinished_backup ? (
-                    <Paragraph variant="tertiary" data-testid="@backup/already-failed-message">
+                    <Text variant="tertiary" data-testid="@backup/already-failed-message">
                         <Translation id="BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION" />
                         <TrezorLink icon="arrowUpRight" href={HELP_CENTER_RECOVERY_ISSUES_URL}>
                             <Translation id="TR_LEARN_MORE" />
                         </TrezorLink>
-                    </Paragraph>
+                    </Text>
                 ) : (
-                    <Paragraph variant="tertiary" data-testid="@backup/already-finished-message">
+                    <Text variant="tertiary" data-testid="@backup/already-finished-message">
                         <Translation id="BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION" />
-                    </Paragraph>
+                    </Text>
                 )}
             </NewModal>
         );
