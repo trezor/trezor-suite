@@ -228,7 +228,7 @@ const NewModal = ({ isBackdropCancelable = true, ...rest }: NewModalProps) => {
             onClick={isBackdropCancelable ? onCancel : undefined}
             alignment={alignment}
         >
-            <NewModalBase {...rest} />
+            <NewModalBase isBackdropCancelable={isBackdropCancelable} {...rest} />
         </NewModalBackdrop>
     );
 };
