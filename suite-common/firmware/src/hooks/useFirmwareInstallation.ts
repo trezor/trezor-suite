@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useMemo, useCallback } from 'react';
 
-import { FirmwareStatus } from '@suite-common/suite-types';
+import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
 import {
     firmwareUpdate as firmwareUpdateThunk,
     selectFirmware,
@@ -22,9 +22,26 @@ There are three firmware update flows, depending on current firmware version:
 - reboot_and_upgrade: a device with firmware version >= 2.6.3 can reboot and upgrade in one step (not supported for reinstallation and downgrading)
 */
 
-const VERSIONS_GUARANTEED_TO_WIPE_DEVICE_ON_UPDATE: ReturnType<typeof getFirmwareVersion>[] = [
-    '1.6.1',
-];
+// TODO: Determine this in Connect.
+const determineIfDeviceWillBeWiped = (
+    device: TrezorDevice | undefined,
+    shouldSwitchFirmwareType: boolean,
+) => {
+    const deviceModelInternal = device?.features?.internal_model;
+    const deviceIsInitializedOrInBootloader = device?.mode !== 'initialize';
+    // Changing vendor header always results in device wipe. T1B1 and T2T1 have the same vendor header for bitcoin-only and universal firmware.
+    const installationWillChangeFirmwareVendorHeader =
+        !!shouldSwitchFirmwareType &&
+        deviceModelInternal !== undefined &&
+        ![DeviceModelInternal.T1B1, DeviceModelInternal.T2T1].includes(deviceModelInternal);
+    // Faulty firmware version.
+    const firmwareVersionIsGuaranteedToWipeDevice = getFirmwareVersion(device) === '1.6.1';
+
+    return (
+        deviceIsInitializedOrInBootloader &&
+        (installationWillChangeFirmwareVendorHeader || firmwareVersionIsGuaranteedToWipeDevice)
+    );
+};
 
 export type UseFirmwareInstallationParams =
     | {
@@ -66,15 +83,10 @@ export const useFirmwareInstallation = (
             )) ||
         showManualReconnectPrompt;
 
-    const deviceModelInternal = originalDevice?.features?.internal_model;
-    // Device may be wiped during firmware type switch because Universal and Bitcoin-only firmware have different vendor headers,
-    // except T1B1 and T2T1. There may be some false negatives here during custom installation.
-    // TODO: Determine this in Connect.
-    const deviceWillBeWiped =
-        (!!shouldSwitchFirmwareType &&
-            deviceModelInternal !== undefined &&
-            ![DeviceModelInternal.T1B1, DeviceModelInternal.T2T1].includes(deviceModelInternal)) ||
-        VERSIONS_GUARANTEED_TO_WIPE_DEVICE_ON_UPDATE.includes(getFirmwareVersion(originalDevice));
+    const deviceWillBeWiped = determineIfDeviceWillBeWiped(
+        originalDevice,
+        !!shouldSwitchFirmwareType,
+    );
 
     const confirmOnDevice =
         // Show the confirmation pill before starting the installation using the "wait" or "manual" method,
