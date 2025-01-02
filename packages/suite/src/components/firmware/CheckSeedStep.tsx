@@ -2,8 +2,8 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Button, Checkbox, variables } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Button, Checkbox, Column, variables } from '@trezor/components';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
@@ -14,17 +14,6 @@ import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
 import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledCheckbox = styled(Checkbox)`
-    margin: ${spacingsPx.md} 0;
-`;
-
-const DescriptionWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.md};
-`;
 
 const TextButton = styled.span`
     cursor: pointer;
@@ -78,7 +67,7 @@ export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSe
                     noBackupHeading
                 ),
                 description: (
-                    <DescriptionWrapper>
+                    <Column gap={spacings.md}>
                         <Translation
                             id={
                                 isBackedUp
@@ -102,7 +91,7 @@ export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSe
                                 ),
                             }}
                         />
-                    </DescriptionWrapper>
+                    </Column>
                 ),
                 checkbox: <Translation id="TR_READ_AND_UNDERSTOOD" />,
             };
@@ -149,13 +138,14 @@ export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSe
                     <Translation id="TR_FIRMWARE_SWITCH_WARNING_3" />
                 </StyledSwitchWarning>
             )}
-            <StyledCheckbox
+            <Checkbox
                 isChecked={isChecked}
                 onClick={handleCheckboxClick}
+                margin={{ top: spacings.md }}
                 data-testid="@firmware/confirm-seed-checkbox"
             >
                 {checkbox}
-            </StyledCheckbox>
+            </Checkbox>
         </OnboardingStepBox>
     );
 };
