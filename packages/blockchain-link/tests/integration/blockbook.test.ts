@@ -45,6 +45,7 @@ backends.forEach(b => {
             expect(result).toEqual({
                 name: 'TestMock',
                 shortcut: 'test',
+                network: 'test',
                 decimals: 9,
                 blockHeight: 1,
                 url: expect.any(String),

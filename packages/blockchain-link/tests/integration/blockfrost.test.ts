@@ -45,6 +45,7 @@ backends.forEach(b => {
             expect(result).toEqual({
                 name: 'BlockfrostMock',
                 shortcut: 'ada',
+                network: 'ada',
                 decimals: 6,
                 blockHeight: 1,
                 blockHash: 'test_block_hash-hash',

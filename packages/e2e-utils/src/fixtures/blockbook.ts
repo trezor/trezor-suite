@@ -3,6 +3,7 @@ export const blockbook = {
         data: {
             name: 'TestMock',
             shortcut: 'test',
+            network: 'test',
             decimals: 9,
             bestHeight: 1,
         },
