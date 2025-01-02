@@ -90,6 +90,5 @@ export { default as loadDevice } from './loadDevice';
 // pushTransaction
 // recoveryDevice
 // requestLogin
-// resetDevice
 // setProxy
 // wipeDevice
