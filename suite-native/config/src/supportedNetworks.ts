@@ -22,30 +22,9 @@ const discoveryBlacklist: NetworkSymbol[] = ['op', 'base', 'arb'];
 
 // All supported coins for device discovery
 export const networkSymbolsWhitelistMap: Record<'mainnet' | 'testnet', readonly NetworkSymbol[]> = {
-    mainnet: [
-        'btc',
-        'eth',
-        'pol',
-        'sol',
-        'bsc',
-        'ltc',
-        'etc',
-        'ada',
-        'xrp',
-        'bch',
-        'btg',
-        'dash',
-        'dgb',
-        'doge',
-        'nmc',
-        'vtc',
-        'zec',
-    ],
+    mainnet: ['btc', 'eth', 'pol', 'sol', 'bsc', 'ltc', 'etc', 'ada', 'xrp', 'bch', 'doge', 'zec'],
     testnet: ['test', 'regtest', 'tsep', 'thol', 'dsol', 'tada', 'txrp'],
 };
-
-// Blacklisting coins that are allowed inside `networkSymbolsWhitelistMap` so that we don't have to configs and just filter these out
-const portfolioTrackerBlacklist: readonly NetworkSymbol[] = ['btg', 'dash', 'dgb', 'nmc', 'vtc'];
 
 export const discoverySupportedNetworks = [
     ...networkSymbolsWhitelistMap.mainnet,
@@ -79,9 +58,7 @@ export const filterBlacklistedNetworks = (
     );
 
 export const portfolioTrackerMainnets = sortNetworks(
-    getMainnets()
-        .filter(network => networkSymbolsWhitelistMap.mainnet.includes(network.symbol))
-        .filter(network => !portfolioTrackerBlacklist.includes(network.symbol)),
+    getMainnets().filter(network => networkSymbolsWhitelistMap.mainnet.includes(network.symbol)),
 ).map(network => network.symbol);
 
 const getPortfolioTrackerTestnets = () =>
