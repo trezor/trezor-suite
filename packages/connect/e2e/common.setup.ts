@@ -165,7 +165,8 @@ export const initTrezorConnect = async (
     });
 
     if (autoConfirm) {
-        TrezorConnect.on(UI.REQUEST_BUTTON, () => {
+        TrezorConnect.on(UI.REQUEST_BUTTON, e => {
+            if (e.code === 'ButtonRequest_PinEntry') return;
             setTimeout(() => TrezorUserEnvLink.send({ type: 'emulator-press-yes' }), 1);
         });
     }
