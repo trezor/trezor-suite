@@ -58,6 +58,9 @@ export const selectActiveExperimentGroup = ({
     if (!instanceId || !experiment) return undefined;
 
     const inclusionFromInstanceId = getInclusionFromInstanceId(instanceId, experiment.id);
+    // eslint-disable-next-line no-console
+    console.log('[percentage of user]', inclusionFromInstanceId);
+
     const { groups } = experiment;
 
     const experimentRange = getExperimentGroupByInclusion({

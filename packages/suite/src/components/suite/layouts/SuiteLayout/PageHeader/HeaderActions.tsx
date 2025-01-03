@@ -14,6 +14,7 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
 import { selectWindowSize } from 'src/reducers/suite/windowReducer';
+import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 
 const Container = styled.div`
     display: flex;
@@ -111,31 +112,79 @@ export const HeaderActions = () => {
             )}
 
             <AppNavigationTooltip>
-                <ButtonGroup size="small" isDisabled={isAccountLoading}>
-                    <HeaderActionButton
-                        key="wallet-send"
-                        icon="send"
-                        onClick={() => {
-                            goToWithAnalytics('wallet-send', { preserveParams: true });
-                        }}
-                        data-testid="@wallet/menu/wallet-send"
-                        variant={isDeviceConnected ? 'primary' : 'tertiary'}
-                    >
-                        <Translation id="TR_NAV_SEND" />
-                    </HeaderActionButton>
+                <ExperimentWrapper
+                    id="testButton"
+                    components={[
+                        {
+                            variant: 'A',
+                            element: (
+                                <ButtonGroup size="small" isDisabled={isAccountLoading}>
+                                    <HeaderActionButton
+                                        key="wallet-send"
+                                        icon="send"
+                                        onClick={() => {
+                                            goToWithAnalytics('wallet-send', {
+                                                preserveParams: true,
+                                            });
+                                        }}
+                                        data-testid="@wallet/menu/wallet-send"
+                                        variant={isDeviceConnected ? 'primary' : 'tertiary'}
+                                    >
+                                        <Translation id="TR_NAV_SEND" />
+                                    </HeaderActionButton>
 
-                    <HeaderActionButton
-                        key="wallet-receive"
-                        icon="receive"
-                        onClick={() => {
-                            goToWithAnalytics('wallet-receive', { preserveParams: true });
-                        }}
-                        data-testid="@wallet/menu/wallet-receive"
-                        variant={isDeviceConnected ? 'primary' : 'tertiary'}
-                    >
-                        <Translation id="TR_NAV_RECEIVE" />
-                    </HeaderActionButton>
-                </ButtonGroup>
+                                    <HeaderActionButton
+                                        key="wallet-receive"
+                                        icon="receive"
+                                        onClick={() => {
+                                            goToWithAnalytics('wallet-receive', {
+                                                preserveParams: true,
+                                            });
+                                        }}
+                                        data-testid="@wallet/menu/wallet-receive"
+                                        variant={isDeviceConnected ? 'primary' : 'tertiary'}
+                                    >
+                                        <Translation id="TR_NAV_RECEIVE" />
+                                    </HeaderActionButton>
+                                </ButtonGroup>
+                            ),
+                        },
+                        {
+                            variant: 'B',
+                            element: (
+                                <ButtonGroup size="small" isDisabled={isAccountLoading}>
+                                    <HeaderActionButton
+                                        key="wallet-send"
+                                        icon="send"
+                                        onClick={() => {
+                                            goToWithAnalytics('wallet-send', {
+                                                preserveParams: true,
+                                            });
+                                        }}
+                                        data-testid="@wallet/menu/wallet-send"
+                                        variant="destructive"
+                                    >
+                                        <Translation id="TR_NAV_SEND" />
+                                    </HeaderActionButton>
+
+                                    <HeaderActionButton
+                                        key="wallet-receive"
+                                        icon="receive"
+                                        onClick={() => {
+                                            goToWithAnalytics('wallet-receive', {
+                                                preserveParams: true,
+                                            });
+                                        }}
+                                        data-testid="@wallet/menu/wallet-receive"
+                                        variant="destructive"
+                                    >
+                                        <Translation id="TR_NAV_RECEIVE" />
+                                    </HeaderActionButton>
+                                </ButtonGroup>
+                            ),
+                        },
+                    ]}
+                />
             </AppNavigationTooltip>
         </Container>
     );

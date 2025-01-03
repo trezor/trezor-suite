@@ -1306,5 +1306,34 @@
                 ]
             }
         }
+    ],
+    "experiments": [
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "sol": true
+                        },
+                        {
+                            "dash": true
+                        }
+                    ]
+                }
+            ],
+            "experiment": {
+                "id": "e2e8d05f-1469-4e47-9ab0-53544e5cad07",
+                "groups": [
+                    {
+                        "variant": "A",
+                        "percentage": 30
+                    },
+                    {
+                        "variant": "B",
+                        "percentage": 70
+                    }
+                ]
+            }
+        }
     ]
 }

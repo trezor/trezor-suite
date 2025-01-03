@@ -14,6 +14,9 @@ export const useExperiment = (id: ExperimentNameType) => {
     const experimentUuid = experiments[id];
     const instanceId = useSelector(selectAnalyticsInstanceId);
     const experiment = useSelector(selectExperimentById(experimentUuid));
+
+    console.log('[active AB test]', experiment);
+
     const activeExperimentVariant = useMemo(
         () => selectActiveExperimentGroup({ instanceId, experiment }),
         [instanceId, experiment],
