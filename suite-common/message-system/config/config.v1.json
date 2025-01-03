@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2024-01-02T00:00:00+00:00",
-    "sequence": 73,
+    "timestamp": "2024-01-03T00:00:00+00:00",
+    "sequence": 74,
     "actions": [
         {
             "conditions": [
@@ -1150,14 +1150,14 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "*",
+                        "desktop": ">=24.12.3",
                         "mobile": "!",
                         "web": "*"
                     },
                     "devices": [
                         {
                             "model": "1",
-                            "firmware": "<1.7.0",
+                            "firmware": ">=1.5.2 <1.7.0",
                             "bootloader": "*",
                             "variant": "*",
                             "firmwareRevision": "*",
@@ -1165,58 +1165,7 @@
                         },
                         {
                             "model": "T1B1",
-                            "firmware": "<1.7.0",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        }
-                    ]
-                }
-            ],
-            "message": {
-                "id": "9023b8f0-3579-4355-a789-cc31cacbdbbb",
-                "priority": 96,
-                "dismissible": true,
-                "variant": "critical",
-                "category": "banner",
-                "content": {
-                    "en-GB": "Updating the firmware may wipe your Trezor. Ensure your wallet backup is prepared before proceeding.",
-                    "en": "Updating the firmware may wipe your Trezor. Ensure your wallet backup is prepared before proceeding.",
-                    "es": "La actualización del firmware podría borrar su Trezor. Asegúrese de que su copia de seguridad de la cartera esté preparada antes de proceder.",
-                    "cs": "Aktualizace firmwaru může smazat váš Trezor. Ujistěte se, že máte zálohu peněženky připravenou před pokračováním.",
-                    "ru": "Обновление прошивки может стереть ваш Trezor. Убедитесь, что резервная копия вашего кошелька подготовлена перед продолжением.",
-                    "ja": "ファームウェアの更新により、Trezorが消去される可能性があります。更新を行う前に、ウォレットのバックアップが準備されていることを確認してください。",
-                    "hu": "A firmware frissítése törölheti a Trezorját. Győződjön meg róla, hogy a pénztárca biztonsági mentése készen áll a folytatás előtt.",
-                    "it": "L'aggiornamento del firmware potrebbe cancellare il tuo Trezor. Assicurati che il backup del portafoglio sia pronto prima di procedere.",
-                    "fr": "La mise à jour du micrologiciel peut effacer votre Trezor. Assurez-vous que votre sauvegarde de portefeuille est prête avant de continuer.",
-                    "de": "Ein Firmware-Update kann Ihren Trezor löschen. Stellen Sie sicher, dass Ihr Wallet-Backup vor dem Fortfahren bereit ist.",
-                    "tr": "Firmware güncellemesi Trezor'unuzu silebilir. Devam etmeden önce cüzdan yedeğinizin hazır olduğundan emin olun.",
-                    "pt": "A atualização do firmware pode apagar o seu Trezor. Certifique-se de que o backup da carteira está preparado antes de continuar.",
-                    "uk": "Оновлення прошивки може видалити ваш Trezor. Переконайтеся, що ваша резервна копія гаманця готова перед продовженням."
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": "*",
-                        "mobile": "!",
-                        "web": "*"
-                    },
-                    "devices": [
-                        {
-                            "model": "1",
-                            "firmware": ">=1.5.1 <1.7.0",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        },
-                        {
-                            "model": "T1B1",
-                            "firmware": ">=1.5.1 <1.7.0",
+                            "firmware": ">=1.5.2 <1.7.0",
                             "bootloader": "*",
                             "variant": "*",
                             "firmwareRevision": "*",
