@@ -10,6 +10,7 @@ on:
   push:
     branches:
       - develop
+      - test/ab-testing # testing
     paths-ignore:
       - "suite-native/**"
       - "packages/connect*/**"
