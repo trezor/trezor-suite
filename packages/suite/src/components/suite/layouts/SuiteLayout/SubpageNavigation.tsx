@@ -17,7 +17,13 @@ const Container = styled.div`
     border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
     z-index: ${zIndices.stickyBar};
     width: 100%;
+`;
+
+const ScrollContainer = styled.div`
     padding: ${spacingsPx.md} ${spacingsPx.md} 0;
+    overflow: auto hidden;
+    width: 100%;
+    height: 100%;
 `;
 
 type TabRoute = Route['name'] | undefined;
@@ -46,22 +52,29 @@ export const SubpageNavigation = ({ items }: SubpageNavigationProps) => {
 
     return (
         <Container>
-            <AppNavigationTooltip>
-                <Tabs
-                    hasBorder={false}
-                    size="large"
-                    isDisabled={isAccountLoading}
-                    activeItemId={activeItemdId}
-                >
-                    {items
-                        .filter(item => !item.isHidden)
-                        .map(({ id, callback, title, 'data-testid': dataTestId }) => (
-                            <Tabs.Item key={id} id={id} onClick={callback} data-testid={dataTestId}>
-                                {title}
-                            </Tabs.Item>
-                        ))}
-                </Tabs>
-            </AppNavigationTooltip>
+            <ScrollContainer>
+                <AppNavigationTooltip>
+                    <Tabs
+                        hasBorder={false}
+                        size="large"
+                        isDisabled={isAccountLoading}
+                        activeItemId={activeItemdId}
+                    >
+                        {items
+                            .filter(item => !item.isHidden)
+                            .map(({ id, callback, title, 'data-testid': dataTestId }) => (
+                                <Tabs.Item
+                                    key={id}
+                                    id={id}
+                                    onClick={callback}
+                                    data-testid={dataTestId}
+                                >
+                                    {title}
+                                </Tabs.Item>
+                            ))}
+                    </Tabs>
+                </AppNavigationTooltip>
+            </ScrollContainer>
         </Container>
     );
 };
