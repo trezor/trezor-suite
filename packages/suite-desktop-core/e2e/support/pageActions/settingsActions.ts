@@ -2,10 +2,9 @@ import { Locator, Page, test } from '@playwright/test';
 
 import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { capitalizeFirstLetter } from '@trezor/utils';
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { expect } from '../customMatchers';
-import { step } from '../common';
+import { step, TrezorUserEnvLinkProxy } from '../common';
 
 export enum Theme {
     System = 'system',
@@ -204,7 +203,7 @@ export class SettingsActions {
         await this.deviceLabelInput.fill(newDeviceName);
         await this.deviceLabelSubmit.click();
         await expect(this.confirmOnDevicePrompt).toBeVisible();
-        await TrezorUserEnvLink.pressYes();
+        await TrezorUserEnvLinkProxy.pressYes();
         await this.confirmOnDevicePrompt.waitFor({ state: 'detached' });
         await expect(this.notificationSuccessToast).toBeVisible();
     }
@@ -220,7 +219,7 @@ export class SettingsActions {
             await buttonImageLoad;
             await this.page.getByTestId(backgroundImages[image].locator).click();
             await expect(this.confirmOnDevicePrompt).toBeVisible();
-            await TrezorUserEnvLink.pressYes();
+            await TrezorUserEnvLinkProxy.pressYes();
             await this.confirmOnDevicePrompt.waitFor({ state: 'detached' });
             await expect(this.notificationSuccessToast).toBeVisible();
         });

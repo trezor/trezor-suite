@@ -1,9 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-
 import { DevicePromptActions } from '../devicePromptActions';
-import { step } from '../../common';
+import { step, TrezorUserEnvLinkProxy } from '../../common';
 
 export class BackupActions {
     readonly startButton: Locator;
@@ -40,7 +38,7 @@ export class BackupActions {
 
         // Adding delay to mitigate race condition; avoids hitting the homescreen
         await this.page.waitForTimeout(1000);
-        await TrezorUserEnvLink.readAndConfirmShamirMnemonicEmu({ shares, threshold });
+        await TrezorUserEnvLinkProxy.readAndConfirmShamirMnemonicEmu({ shares, threshold });
 
         await this.closeButton.click();
     }

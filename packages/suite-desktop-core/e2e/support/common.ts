@@ -150,16 +150,19 @@ export function step(stepName?: string) {
 }
 
 // Wraps any TrezorUserEnvLink call with test.step
-export const TrezorUserEnvLinkProxy = new Proxy(TrezorUserEnvLink, {
+const TrezorUserEnvLinkProxy = new Proxy(TrezorUserEnvLink, {
     get(target: any, propKey) {
         const origMethod = target[propKey];
 
         return function (...args: any[]) {
             const params = JSON.stringify(args).slice(1, -1);
             const methodName = String(propKey);
-            test.step(`TrezorLink.${methodName}(${params})`, () => {
+
+            return test.step(`TrezorLink.${methodName}(${params})`, () => {
                 return origMethod.apply(target, args);
             });
         };
     },
 });
+
+export { TrezorUserEnvLinkProxy };

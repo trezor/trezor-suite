@@ -1,10 +1,10 @@
 import { Locator, Page, TestInfo, expect } from '@playwright/test';
 
-import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { Model } from '@trezor/trezor-user-env-link';
 import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
 
 import { AnalyticsActions } from '../analyticsActions';
-import { isWebProject, step } from '../../common';
+import { isWebProject, step, TrezorUserEnvLinkProxy } from '../../common';
 import { DevicePromptActions } from '../devicePromptActions';
 import { SeedType } from '../../enums/seedType';
 import { BackupActions } from './backupActions';
@@ -130,7 +130,7 @@ export class OnboardingActions {
     async passThroughAuthenticityCheck() {
         await this.authenticityStartButton.click();
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLink.pressYes();
+        await TrezorUserEnvLinkProxy.pressYes();
         await this.authenticityContinueButton.click();
     }
 
