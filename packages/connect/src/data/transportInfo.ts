@@ -3,45 +3,55 @@
 import type { BridgeInfo } from '../events/transport';
 
 const info: BridgeInfo = {
-    version: [],
-    directory: '',
-    packages: [],
+    version: [2, 0, 27],
+    packages: [
+        {
+            name: 'Linux 64-bit (deb)',
+            platform: ['deb64'],
+            url: 'bridge/2.0.27/trezor-bridge_2.0.27_amd64.deb',
+        },
+        {
+            name: 'Linux 64-bit (rpm)',
+            platform: ['rpm64'],
+            url: 'bridge/2.0.27/trezor-bridge-2.0.27-1.x86_64.rpm',
+        },
+        {
+            name: 'Linux 32-bit (deb)',
+            platform: ['deb32'],
+            url: 'bridge/2.0.27/trezor-bridge_2.0.27_i386.deb',
+        },
+        {
+            name: 'Linux 32-bit (rpm)',
+            platform: ['rpm32'],
+            url: 'bridge/2.0.27/trezor-bridge-2.0.27-1.i386.rpm',
+        },
+        {
+            name: 'macOS',
+            platform: ['mac'],
+            signature: 'bridge/2.0.27/trezor-bridge-2.0.27.pkg.asc',
+            url: 'bridge/2.0.27/trezor-bridge-2.0.27.pkg',
+        },
+        {
+            name: 'Windows',
+            platform: ['win32', 'win64'],
+            signature: 'bridge/2.0.27/trezor-bridge-2.0.27-win32-install.exe.asc',
+            url: 'bridge/2.0.27/trezor-bridge-2.0.27-win32-install.exe',
+        },
+    ],
     changelog: '',
-};
-
-// Parse JSON loaded from config.assets.bridge
-export const parseBridgeJSON = (json: any) => {
-    const latest = json[0];
-    const version = latest.version.join('.');
-    const data: BridgeInfo = JSON.parse(JSON.stringify(latest).replace(/{version}/g, version));
-    const { directory } = data;
-    const packages = data.packages.map(p => ({
-        name: p.name,
-        platform: p.platform,
-        url: `${directory}${p.url}`,
-        signature: p.signature ? `${directory}${p.signature}` : undefined,
-    }));
-
-    info.version = data.version;
-    info.directory = directory;
-    info.packages = packages;
-
-    return info;
 };
 
 export const getBridgeInfo = (): BridgeInfo => info;
 
-export const suggestBridgeInstaller = (platform?: string) => {
+export const suggestBridgeInstaller = (platform?: string): BridgeInfo => {
     const info2 = getBridgeInfo();
     // check if preferred field was already added
-    if (!info2.packages.find(p => p.preferred)) {
-        if (platform) {
-            // override BridgeInfo packages, add preferred field
-            info2.packages = info2.packages.map(p => ({
-                ...p,
-                preferred: p.platform.indexOf(platform) >= 0,
-            }));
-        }
+    if (platform) {
+        // override BridgeInfo packages, add preferred field
+        info2.packages = info2.packages.map(p => ({
+            ...p,
+            preferred: p.platform.indexOf(platform) >= 0,
+        }));
     }
 
     return info2;

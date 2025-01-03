@@ -2,12 +2,10 @@
 
 import coins from '@trezor/connect-common/files/coins.json';
 import coinsEth from '@trezor/connect-common/files/coins-eth.json';
-import bridge from '@trezor/connect-common/files/bridge/releases.json';
 import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
 import { parseFirmware } from './firmwareInfo';
-import { parseBridgeJSON } from './transportInfo';
 import { ConnectSettings, DeviceModelInternal } from '../types';
 import { firmwareAssets } from '../utils/assetUtils'; // Adjust the path as necessary
 
@@ -27,7 +25,6 @@ export class DataManager {
         const assetsMap = {
             coins,
             coinsEth,
-            bridge,
             ...Object.fromEntries(
                 Object.entries(firmwareAssets).map(([key, value]) => [
                     `firmware-${key.toLowerCase()}`,
@@ -36,9 +33,6 @@ export class DataManager {
             ),
         };
         Object.assign(this.assets, assetsMap);
-
-        // parse bridge JSON
-        parseBridgeJSON(this.assets.bridge);
 
         // parse coins definitions
         parseCoinsJson({

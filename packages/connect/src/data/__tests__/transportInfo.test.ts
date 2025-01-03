@@ -1,12 +1,9 @@
-import * as releases from '@trezor/connect-common/files/bridge/releases.json';
-
-import { parseBridgeJSON } from '../transportInfo';
+import { getBridgeInfo } from '../transportInfo';
 
 describe('data/transportInfo', () => {
     test('parseBridgeJSON', () => {
-        expect(parseBridgeJSON(releases)).toEqual({
+        expect(getBridgeInfo()).toEqual({
             version: [2, 0, 27],
-            directory: 'bridge/2.0.27/',
             packages: [
                 {
                     name: 'Linux 64-bit (deb)',

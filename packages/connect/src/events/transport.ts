@@ -10,7 +10,6 @@ export { TRANSPORT } from '@trezor/transport/src/constants';
 export const TRANSPORT_EVENT = 'TRANSPORT_EVENT';
 export interface BridgeInfo {
     version: number[];
-    directory: string;
     packages: {
         name: string;
         platform: string[];
@@ -22,7 +21,6 @@ export interface BridgeInfo {
 }
 
 export interface UdevInfo {
-    directory: string;
     packages: {
         name: string;
         platform: string[];
