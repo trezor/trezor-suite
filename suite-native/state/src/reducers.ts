@@ -26,6 +26,9 @@ import {
     migrateEnabledDiscoveryNetworkSymbols,
     migrateAccountBnbToBsc,
     migrateTransactionsBnbToBsc,
+    migrateDiscoveryDeprecateNetworks,
+    migrateAccountsDeprecateNetworks,
+    migrateTransactionsDeprecateNetworks,
 } from '@suite-native/storage';
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import {
@@ -144,7 +147,7 @@ export const prepareRootReducers = async () => {
         reducer: discoveryConfigReducer,
         persistedKeys: discoveryConfigPersistWhitelist,
         key: 'discoveryConfig',
-        version: 2,
+        version: 3,
         migrations: {
             2: (oldState: DiscoveryConfigState) => {
                 if (!oldState.enabledDiscoveryNetworkSymbols) return oldState;
@@ -156,6 +159,20 @@ export const prepareRootReducers = async () => {
                 const migratedState = {
                     ...oldState,
                     enabledDiscoveryNetworkSymbols: migrateNetworkSymbols,
+                };
+
+                return migratedState;
+            },
+            3: (oldState: DiscoveryConfigState) => {
+                if (!oldState.enabledDiscoveryNetworkSymbols) return oldState;
+
+                const { enabledDiscoveryNetworkSymbols } = oldState;
+                const migratedNetworkSymbols = migrateDiscoveryDeprecateNetworks(
+                    enabledDiscoveryNetworkSymbols,
+                );
+                const migratedState = {
+                    ...oldState,
+                    enabledDiscoveryNetworkSymbols: migratedNetworkSymbols,
                 };
 
                 return migratedState;
@@ -201,13 +218,30 @@ export const prepareRootReducers = async () => {
         transforms: [walletPersistTransform, graphPersistTransform],
         mergeLevel: 2,
         key: 'root',
-        version: 2,
+        version: 3,
         migrations: {
             2: (oldState: { wallet: { accounts: any; transactions: { transactions: any } } }) => {
                 const oldStateWallet = oldState.wallet;
                 const migratedAccounts = migrateAccountBnbToBsc(oldStateWallet.accounts);
 
                 const migratedTransactions = migrateTransactionsBnbToBsc(
+                    oldStateWallet.transactions?.transactions,
+                );
+                const migratedState = {
+                    ...oldState,
+                    wallet: {
+                        ...oldStateWallet,
+                        accounts: migratedAccounts,
+                        transactions: { transactions: migratedTransactions },
+                    },
+                };
+
+                return migratedState;
+            },
+            3: (oldState: { wallet: { accounts: any; transactions: { transactions: any } } }) => {
+                const oldStateWallet = oldState.wallet;
+                const migratedAccounts = migrateAccountsDeprecateNetworks(oldStateWallet.accounts);
+                const migratedTransactions = migrateTransactionsDeprecateNetworks(
                     oldStateWallet.transactions?.transactions,
                 );
                 const migratedState = {
