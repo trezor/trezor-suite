@@ -21,6 +21,7 @@ export const useWalletLabeling = () => {
 
     const defaultAccountLabelString = useCallback(
         ({ device }: { device: TrezorDevice }) => {
+            if (!device.state?.staticSessionId) return undefined; // wallet not authorized yet
             if (device.useEmptyPassphrase) return translationString('TR_NO_PASSPHRASE_WALLET');
             if (!device.walletNumber) return undefined;
 
