@@ -3,25 +3,29 @@
 ## Page Actions
 
 We use `page actions` pattern to encapsulate all UI elements and operations.
+Furthermore, every method in the page object class should have `step` decorator. This decorator wraps the method into playwright `test.step()`. This vastly improves readability of test report.
+
 Example:
 
 ```typescript
+import { step } from '../common';
+
 export class WalletActions {
-    private readonly window: Page;
     readonly searchInput: Locator;
     readonly accountChevron: Locator;
 
-    constructor(window: Page) {
-        this.window = window;
+    constructor(private readonly page: Page) {
         this.searchInput = this.window.getByTestId('@wallet/accounts/search-icon');
         this.accountChevron = this.window.getByTestId('@account-menu/arrow');
     }
 
+    @step()
     async filterTransactions(transaction: string) {
         await this.searchInput.click();
         await this.searchInput.fill(transaction, { force: true });
     }
 
+    @step()
     async expandAllAccountsInMenu() {
         for (const chevron of await this.accountChevron.all()) {
             await chevron.click();
@@ -30,7 +34,10 @@ export class WalletActions {
 ```
 
 ❌ Never pass `Page` instance as a method argument.
+
 ✅ Always create a construtor to pass the `Page` instance to the page action.
+
+✅ Always add an descriptor `@step()` before every `Page` object method.
 
 ## Fixtures
 
@@ -99,11 +106,13 @@ export class SuiteGuide {
         );
     }
 
+    @step()
     async openPanel() {
         await this.guideButton.click();
         await expect(this.guidePanel).toBeVisible();
     }
 
+    @step()
     async selectBugLocation(location: FeedbackCategory) {
         await this.bugLocationDropdown.click();
         await this.bugLocationDropdownOption(location).click();
