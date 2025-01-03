@@ -3,7 +3,7 @@ import { FunctionComponent } from 'react';
 import { FirmwareUpdate } from 'src/views/firmware/FirmwareUpdate';
 import { FirmwareCustom } from 'src/views/firmware/FirmwareCustom';
 import { Recovery } from 'src/views/recovery';
-import { Backup } from 'src/views/backup';
+import { Backup } from 'src/views/backup/Backup';
 import { useDispatch } from 'src/hooks/suite';
 import { closeModalApp } from 'src/actions/suite/routerActions';
 import { BridgeUnavailable } from 'src/views/suite/bridge';
