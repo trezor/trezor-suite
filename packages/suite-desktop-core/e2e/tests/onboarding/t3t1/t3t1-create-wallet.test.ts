@@ -11,14 +11,21 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         await onboardingPage.disableFirmwareHashCheck();
     });
 
-    test('Success (Shamir backup)', async ({ page, onboardingPage, devicePrompt, analyticsPage, trezorUserEnvLink }) => {
+    test('Success (Shamir backup)', async ({
+        page,
+        onboardingPage,
+        devicePrompt,
+        analyticsPage,
+        trezorUserEnvLink,
+    }) => {
+        await page.pause();
         await analyticsPage.passThroughAnalytics();
-        
+
         // Device onboarding steps
-        await onboardingPage.skipFirmware();
+        await onboardingPage.firmware.skip();
         await onboardingPage.passThroughAuthenticityCheck();
         await page.waitForTimeout(500);
-        await onboardingPage.skipTutorial();
+        await onboardingPage.tutorial.skip();
 
         // Create wallet with Shamir backup
         await onboardingPage.selectSeedType(SeedType.Advanced);
@@ -26,7 +33,7 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         // Accept ToS
         await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
-        
+
         // Confirm wallet created
         await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
@@ -36,10 +43,10 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         // Create backup with Shamir shares and threshold
         const shares = 3;
         const threshold = 2;
-        await onboardingPage.passThroughBackupShamir(shares, threshold);
+        await onboardingPage.backup.passThroughShamirBackup(shares, threshold);
 
         // Set PIN
-        await onboardingPage.setPinButton.click();
+        await onboardingPage.pin.setPinButton.click();
         await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
         await trezorUserEnvLink.inputEmu('12');
@@ -48,6 +55,6 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
 
-        await onboardingPage.continuePinButton.click();
+        await onboardingPage.pin.continueButton.click();
     });
 });

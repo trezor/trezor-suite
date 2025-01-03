@@ -13,9 +13,8 @@ import { getApiUrl, getElectronVideoPath, isDesktopProject, launchSuite } from '
 import { SettingsActions } from './pageActions/settingsActions';
 import { SuiteGuide } from './pageActions/suiteGuideActions';
 import { WalletActions } from './pageActions/walletActions';
-import { OnboardingActions } from './pageActions/onboardingActions';
+import { OnboardingActions } from './pageActions/onboarding/onboardingActions';
 import { AnalyticsFixture } from './analytics';
-import { BackupActions } from './pageActions/backupActions';
 import { DevicePromptActions } from './pageActions/devicePromptActions';
 import { AnalyticsActions } from './pageActions/analyticsActions';
 import { IndexedDbFixture } from './indexedDb';
@@ -38,7 +37,6 @@ type Fixtures = {
     suiteGuidePage: SuiteGuide;
     walletPage: WalletActions;
     onboardingPage: OnboardingActions;
-    backupPage: BackupActions;
     analyticsPage: AnalyticsActions;
     devicePrompt: DevicePromptActions;
     recoveryPage: RecoveryActions;
@@ -143,7 +141,11 @@ const test = base.extend<Fixtures>({
         const walletPage = new WalletActions(page);
         await use(walletPage);
     },
-    onboardingPage: async ({ page, analyticsPage, devicePrompt, emulatorStartConf }, use, testInfo) => {
+    onboardingPage: async (
+        { page, analyticsPage, devicePrompt, emulatorStartConf },
+        use,
+        testInfo,
+    ) => {
         const onboardingPage = new OnboardingActions(
             page,
             analyticsPage,
@@ -152,10 +154,6 @@ const test = base.extend<Fixtures>({
             testInfo,
         );
         await use(onboardingPage);
-    },
-    backupPage: async ({ page, devicePrompt }, use) => {
-        const backupPage = new BackupActions(page, devicePrompt);
-        await use(backupPage);
     },
     analyticsPage: async ({ page }, use) => {
         const analyticsPage = new AnalyticsActions(page);

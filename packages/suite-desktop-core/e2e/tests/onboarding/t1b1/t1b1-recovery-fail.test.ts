@@ -20,7 +20,7 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
         await analyticsPage.passThroughAnalytics();
 
         // Start wallet recovery process
-        await onboardingPage.firmwareContinueButton.click();
+        await onboardingPage.firmware.continueButton.click();
         await onboardingPage.recoverWalletButton.click();
         await recoveryPage.selectWordCount(24);
         await recoveryPage.selectBasicRecoveryButton.click();

@@ -25,7 +25,7 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
         await analyticsPage.passThroughAnalytics();
 
         // Start wallet recovery process
-        await onboardingPage.firmwareContinueButton.click();
+        await onboardingPage.firmware.continueButton.click();
         await onboardingPage.recoverWalletButton.click();
         await recoveryPage.selectWordCount(24);
         await recoveryPage.selectBasicRecoveryButton.click();
@@ -38,7 +38,7 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
 
         // Finalize recovery, skip pin, and verify success
         await onboardingPage.continueRecoveryButton.click();
-        await onboardingPage.skipPin();
+        await onboardingPage.pin.skip();
         await onboardingPage.continueCoinsButton.click();
         await expect(onboardingPage.finalTitle).toBeVisible();
         await expect(onboardingPage.finalTitle).toContainText('Setup complete!');

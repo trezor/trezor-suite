@@ -18,7 +18,7 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-managem
         trezorUserEnvLink,
     }) => {
         // Start wallet recovery process and confirm on device
-        await onboardingPage.skipFirmware();
+        await onboardingPage.firmware.skip();
         await onboardingPage.recoverWalletButton.click();
         await onboardingPage.startRecoveryButton.click();
         await devicePrompt.confirmOnDevicePromptIsShown();
@@ -48,7 +48,7 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-managem
 
         // Finalize recovery, skip pin, and check success
         await onboardingPage.continueRecoveryButton.click();
-        await onboardingPage.skipPin();
+        await onboardingPage.pin.skip();
         await onboardingPage.continueCoinsButton.click();
         await expect(onboardingPage.finalTitle).toBeVisible();
         await expect(onboardingPage.finalTitle).toContainText('Setup complete!');

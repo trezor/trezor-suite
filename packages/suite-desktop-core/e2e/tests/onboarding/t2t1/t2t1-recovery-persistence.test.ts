@@ -57,7 +57,7 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-manag
 
         await analyticsPage.passThroughAnalytics();
 
-        await onboardingPage.skipFirmware();
+        await onboardingPage.firmware.skip();
         await page.getByTestId('@onboarding/path-recovery-button').click();
     });
 

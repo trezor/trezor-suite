@@ -1,6 +1,6 @@
 import { test, expect } from '../../support/fixtures';
 import { launchSuite, LEGACY_BRIDGE_VERSION } from '../../support/common';
-import { OnboardingActions } from '../../support/pageActions/onboardingActions';
+import { OnboardingActions } from '../../support/pageActions/onboarding/onboardingActions';
 import {
     BRIDGE_URL,
     expectBridgeToBeRunning,
@@ -8,6 +8,7 @@ import {
     waitForAppToBeInitialized,
 } from '../../support/bridge';
 import { AnalyticsActions } from '../../support/pageActions/analyticsActions';
+import { DevicePromptActions } from '../../support/pageActions/devicePromptActions';
 
 test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
     test.beforeEach(async ({ trezorUserEnvLink }) => {
@@ -52,16 +53,20 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
 
         const suite = await launchSuite();
         await suite.window.title();
+
+        const devicePrompt = new DevicePromptActions(suite.window);
+
         const onboardingPage = new OnboardingActions(
             suite.window,
             new AnalyticsActions(suite.window),
+            devicePrompt,
             trezorUserEnvLink.defaultModel,
             testInfo,
         );
         await onboardingPage.completeOnboarding();
 
         await trezorUserEnvLink.stopBridge();
-        await expect(onboardingPage.connectDevicePrompt).toBeVisible();
+        await devicePrompt.connectDevicePromptIsShown();
 
         await trezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
         await expect(suite.window.getByTestId('@dashboard/index')).toBeVisible();

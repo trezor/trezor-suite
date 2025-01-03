@@ -22,7 +22,7 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-managem
         await analyticsPage.passThroughAnalytics();
 
         // Start wallet recovery process and confirm on device
-        await onboardingPage.firmwareContinueButton.click();
+        await onboardingPage.firmware.continueButton.click();
         await onboardingPage.recoverWalletButton.click();
         await onboardingPage.startRecoveryButton.click();
         await devicePrompt.confirmOnDevicePromptIsShown();

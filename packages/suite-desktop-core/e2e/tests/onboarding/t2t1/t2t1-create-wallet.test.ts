@@ -17,12 +17,11 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         page,
         analyticsPage,
         onboardingPage,
-        backupPage,
         devicePrompt,
         trezorUserEnvLink,
     }) => {
         await analyticsPage.passThroughAnalytics();
-        await onboardingPage.firmwareContinueButton.click();
+        await onboardingPage.firmware.continueButton.click();
 
         await page.getByTestId('@onboarding/path-create-button').click();
 
@@ -35,7 +34,7 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
 
         const shares = 3;
         const threshold = 2;
-        await backupPage.passThroughShamirBackup(shares, threshold);
+        await onboardingPage.backup.passThroughShamirBackup(shares, threshold);
         await page.getByTestId('@onboarding/set-pin-button').click();
         await devicePrompt.confirmOnDevicePromptIsShown();
 

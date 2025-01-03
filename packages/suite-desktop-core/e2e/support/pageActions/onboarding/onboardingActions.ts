@@ -3,12 +3,21 @@ import { Locator, Page, TestInfo, expect } from '@playwright/test';
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
 
-import { AnalyticsActions } from './analyticsActions';
-import { isWebProject, step } from '../common';
-import { DevicePromptActions } from './devicePromptActions';
-import { SeedType } from '../enums/seedType';
+import { AnalyticsActions } from '../analyticsActions';
+import { isWebProject, step } from '../../common';
+import { DevicePromptActions } from '../devicePromptActions';
+import { SeedType } from '../../enums/seedType';
+import { BackupActions } from './backupActions';
+import { FirmwareActions } from './firmwareActions';
+import { PinActions } from './pinActions';
+import { TutorialActions } from './tutorialActions';
 
 export class OnboardingActions {
+    readonly backup: BackupActions;
+    readonly firmware: FirmwareActions;
+    readonly pin: PinActions;
+    readonly tutorial: TutorialActions;
+
     readonly welcomeTitle: Locator;
     readonly onboardingContinueButton: Locator;
     readonly onboardingViewOnlySkipButton: Locator;
@@ -22,21 +31,8 @@ export class OnboardingActions {
     readonly startRecoveryButton: Locator;
     readonly continueRecoveryButton: Locator;
     readonly retryRecoveryButton: Locator;
-    readonly firmwareContinueButton: Locator;
-    readonly skipFirmwareButton: Locator;
-    readonly skipConfirmButton: Locator;
-    readonly skipPinButton: Locator;
-    readonly skipTutorialButton: Locator;
     readonly continueCoinsButton: Locator;
-    readonly tutorialContinueButton: Locator;
-    readonly continuePinButton: Locator;
-    readonly setPinButton: Locator;
     readonly finalTitle: Locator;
-    readonly startBackupButton: Locator;
-    readonly closeBackupButton: Locator;
-    readonly wroteSeedProperlyCheckbox: Locator;
-    readonly madeNoDigitalCopyCheckbox: Locator;
-    readonly willHideSeedCheckbox: Locator;
     readonly createWalletButton: Locator;
     readonly selectSeedTypeOpenButton: Locator;
     readonly selectSeedConfirmButton: Locator;
@@ -50,6 +46,11 @@ export class OnboardingActions {
         private readonly model: Model,
         private readonly testInfo: TestInfo,
     ) {
+        this.backup = new BackupActions(page, devicePrompt);
+        this.firmware = new FirmwareActions(page);
+        this.tutorial = new TutorialActions(page);
+        this.pin = new PinActions(page);
+
         this.welcomeTitle = this.page.getByTestId('@welcome/title');
         this.onboardingContinueButton = this.page.getByTestId('@onboarding/exit-app-button');
         this.onboardingViewOnlySkipButton = this.page.getByTestId('@onboarding/viewOnly/skip');
@@ -65,24 +66,17 @@ export class OnboardingActions {
         this.startRecoveryButton = this.page.getByTestId('@onboarding/recovery/start-button');
         this.continueRecoveryButton = this.page.getByTestId('@onboarding/recovery/continue-button');
         this.retryRecoveryButton = this.page.getByTestId('@onboarding/recovery/retry-button');
-        this.firmwareContinueButton = this.page.getByTestId('@firmware/continue-button');
-        this.skipFirmwareButton = this.page.getByTestId('@firmware/skip-button');
-        this.skipPinButton = this.page.getByTestId('@onboarding/skip-button');
-        this.skipConfirmButton = this.page.getByTestId('@onboarding/skip-button-confirm');
-        this.skipTutorialButton = this.page.getByTestId('@tutorial/skip-button');
+
         this.continueCoinsButton = this.page.getByTestId('@onboarding/coins/continue-button');
-        this.tutorialContinueButton = this.page.getByTestId('@tutorial/continue-button');
-        this.continuePinButton = this.page.getByTestId('@onboarding/pin/continue-button');
-        this.setPinButton = this.page.getByTestId('@onboarding/set-pin-button');
         this.finalTitle = this.page.getByTestId('@onboarding/final');
-        this.startBackupButton = this.page.getByTestId('@backup/start-button');
-        this.closeBackupButton = this.page.getByTestId('@backup/close-button');
-        this.wroteSeedProperlyCheckbox = this.page.getByTestId('@backup/check-item/wrote-seed-properly');
-        this.madeNoDigitalCopyCheckbox = this.page.getByTestId('@backup/check-item/made-no-digital-copy');
-        this.willHideSeedCheckbox = this.page.getByTestId('@backup/check-item/will-hide-seed');
+
         this.createWalletButton = this.page.getByTestId('@onboarding/path-create-button');
-        this.selectSeedTypeOpenButton = this.page.getByTestId('@onboarding/select-seed-type-open-dialog');
-        this.selectSeedConfirmButton = this.page.getByTestId('@onboarding/select-seed-type-confirm');
+        this.selectSeedTypeOpenButton = this.page.getByTestId(
+            '@onboarding/select-seed-type-open-dialog',
+        );
+        this.selectSeedConfirmButton = this.page.getByTestId(
+            '@onboarding/select-seed-type-confirm',
+        );
     }
 
     @step()
@@ -144,29 +138,14 @@ export class OnboardingActions {
                 payload: { showDebugMenu: true },
             });
         }, SuiteActions);
-    
+
         await this.page.getByTestId('@authenticity-check/start-button').click();
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLink.pressYes();
         await this.page.getByTestId('@authenticity-check/continue-button').click();
-    };
-
     @step()
-    async skipFirmware() {
-        await this.skipFirmwareButton.click();
-        await this.skipConfirmButton.click();
-    }
-
     @step()
-    async skipPin() {
-        await this.skipPinButton.click();
-        await this.skipConfirmButton.click();
-    }
-
     @step()
-    async skipTutorial() {
-        await this.skipTutorialButton.click();
-        await this.tutorialContinueButton.click();
     }
 
     @step()
@@ -176,20 +155,5 @@ export class OnboardingActions {
         await this.page.getByTestId(`@onboarding/select-seed-type-${seedType}`).click();
         await this.selectSeedConfirmButton.click();
     }
-
     @step()
-    async passThroughBackupShamir(shares: number, threshold: number) {
-        await expect(this.startBackupButton).toBeDisabled();
-
-        await this.wroteSeedProperlyCheckbox.click();
-        await this.madeNoDigitalCopyCheckbox.click();
-        await this.willHideSeedCheckbox.click();
-
-        await this.startBackupButton.click();
-        await this.devicePrompt.confirmOnDevicePromptIsShown();
-        
-        await TrezorUserEnvLink.readAndConfirmShamirMnemonicEmu({ shares, threshold });
-
-        await this.closeBackupButton.click();
-    }
 }
