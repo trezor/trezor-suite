@@ -62,16 +62,10 @@ export const BackupStep1Initial = ({
                 </>
             }
         >
-            <>
-                <Paragraph
-                    variant="tertiary"
-                    typographyStyle="hint"
-                    margin={{ bottom: spacings.xl }}
-                >
-                    <Translation id="TR_BACKUP_SUBHEADING_1" />
-                </Paragraph>
-                <PreBackupCheckboxes />
-            </>
+            <Paragraph variant="tertiary" typographyStyle="hint" margin={{ bottom: spacings.xl }}>
+                <Translation id="TR_BACKUP_SUBHEADING_1" />
+            </Paragraph>
+            <PreBackupCheckboxes />
         </NewModal>
     );
 };

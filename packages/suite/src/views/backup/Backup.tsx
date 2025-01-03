@@ -8,12 +8,12 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useSelector } from 'src/hooks/suite';
 import { Translation, TrezorLink } from 'src/components/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
-import { BackupState } from 'src/reducers/backup/backupReducer';
 
 import { BackupStep1Initial } from './BackupStep1Initial';
 import { BackupStep2InProgress } from './BackupStep2InProgress';
 import { BackupStep3Finished } from './BackupStep3Finished';
 import { BackupStepError } from './BackupStepError';
+import { selectBackup } from '../../reducers/backup/backupReducer';
 
 const getEdgeCaseModalHeading = (unfinishedBackup: boolean) => {
     if (unfinishedBackup) {
@@ -28,12 +28,7 @@ export const Backup = ({
     onCancel,
 }: ForegroundAppProps): NonNullable<ReactNode> /* NonNullable return type is required here to prevent default return from switch-case */ => {
     const device = useSelector(selectSelectedDevice);
-    // const backup = useSelector(selectBackup);
-
-    const backup: BackupState = {
-        status: 'finished',
-        userConfirmed: [],
-    };
+    const backup = useSelector(selectBackup);
 
     const isDeviceUnavailable = !isDeviceAcquired(device) || !device.connected;
 

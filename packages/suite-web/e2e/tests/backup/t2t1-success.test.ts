@@ -50,11 +50,11 @@ describe('Backup success', () => {
         cy.task('pressYes');
 
         cy.log('click all after checkboxes and close backup modal');
-        cy.getTestElement('@backup/continue-to-pin-button').should('be.disabled');
+        cy.getTestElement('@backup/close-button').should('be.disabled');
         cy.getTestElement('@backup/check-item/wrote-seed-properly').click();
         cy.getTestElement('@backup/check-item/made-no-digital-copy').click();
         cy.getTestElement('@backup/check-item/will-hide-seed').click();
-        cy.getTestElement('@backup/continue-to-pin-button').should('not.be.disabled');
+        cy.getTestElement('@backup/close-button').should('not.be.disabled');
 
         cy.findAnalyticsEventByType<ExtractByEventType<EventType.CreateBackup>>(
             requests,
