@@ -9,7 +9,13 @@ import {
 } from '@trezor/trezor-user-env-link';
 
 import { DashboardActions } from './pageActions/dashboardActions';
-import { getApiUrl, getElectronVideoPath, isDesktopProject, launchSuite } from './common';
+import {
+    getApiUrl,
+    getElectronVideoPath,
+    isDesktopProject,
+    launchSuite,
+    TrezorUserEnvLinkProxy,
+} from './common';
 import { SettingsActions } from './pageActions/settingsActions';
 import { SuiteGuide } from './pageActions/suiteGuideActions';
 import { WalletActions } from './pageActions/walletActions';
@@ -57,7 +63,7 @@ const test = base.extend<Fixtures>({
     },
     /* eslint-disable-next-line no-empty-pattern */
     trezorUserEnvLink: async ({}, use) => {
-        await use(TrezorUserEnvLink);
+        await use(TrezorUserEnvLinkProxy);
     },
     electronWindow: async (
         {
