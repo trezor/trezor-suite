@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 51
+
+-   Changed `metadata.key` on non-eth EVM networks accounts to be `descriptor-chainId`
+
 ## 49
 
 -   networks now have same order everywhere

@@ -3,6 +3,7 @@ import { toWei } from 'web3-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { isDesktop } from '@trezor/env-utils';
 import {
+    getNetwork,
     isNetworkSymbol,
     type NetworkSymbol,
     networkSymbolCollection,
@@ -1153,5 +1154,18 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
     if (oldVersion < 50) {
         await migrationOfBnbNetwork(db, oldVersion, newVersion, transaction);
+    }
+
+    if (oldVersion < 51) {
+        await updateAll(transaction, 'accounts', account => {
+            if (account.networkType === 'ethereum' && account.symbol !== 'eth') {
+                const { chainId } = getNetwork(account.symbol);
+                account.metadata.key = `${account.descriptor}-${chainId}`;
+
+                return account;
+            }
+
+            return account;
+        });
     }
 };
