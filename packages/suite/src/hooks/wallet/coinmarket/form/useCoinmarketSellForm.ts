@@ -479,20 +479,21 @@ export const useCoinmarketSellForm = ({
     const sendTransaction = async () => {
         dispatch(coinmarketCommonActions.setCoinmarketModalAccount(account));
 
+        const selectedTrade = trade?.data || selectedQuote;
         // destinationAddress may be set by useCoinmarketWatchTrade hook to the trade object
         const destinationAddress =
-            selectedQuote?.destinationAddress || trade?.data?.destinationAddress;
+            selectedTrade?.destinationAddress || trade?.data?.destinationAddress;
         if (
-            selectedQuote &&
-            selectedQuote.orderId &&
+            selectedTrade &&
+            selectedTrade.orderId &&
             destinationAddress &&
-            selectedQuote.cryptoStringAmount
+            selectedTrade.cryptoStringAmount
         ) {
             const cryptoStringAmount = shouldSendInSats
-                ? amountToSmallestUnit(selectedQuote.cryptoStringAmount, decimals)
-                : selectedQuote.cryptoStringAmount;
+                ? amountToSmallestUnit(selectedTrade.cryptoStringAmount, decimals)
+                : selectedTrade.cryptoStringAmount;
             const destinationPaymentExtraId =
-                selectedQuote.destinationPaymentExtraId || trade?.data?.destinationPaymentExtraId;
+                selectedTrade.destinationPaymentExtraId || trade?.data?.destinationPaymentExtraId;
             const result = await recomposeAndSign({
                 account,
                 address: destinationAddress,
@@ -503,7 +504,7 @@ export const useCoinmarketSellForm = ({
                 // send txid to the server as confirmation
                 const { txid } = result.payload;
                 const quote: SellFiatTrade = {
-                    ...selectedQuote,
+                    ...selectedTrade,
                     txid,
                     destinationAddress,
                     destinationPaymentExtraId,
@@ -532,7 +533,7 @@ export const useCoinmarketSellForm = ({
                         new Date().toISOString(),
                     ),
                 );
-                dispatch(coinmarketSellActions.saveTransactionId(selectedQuote.orderId));
+                dispatch(coinmarketSellActions.saveTransactionId(selectedTrade.orderId));
                 dispatch(
                     routerActions.goto('wallet-coinmarket-sell-detail', {
                         params: {

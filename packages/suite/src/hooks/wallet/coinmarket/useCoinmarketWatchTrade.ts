@@ -69,6 +69,10 @@ const coinmarketWatchTrade = async <T extends CoinmarketTradeType>({
                 tradeData.destinationPaymentExtraId = sellResponse.destinationPaymentExtraId;
             }
 
+            if (sellResponse.cryptoStringAmount) {
+                tradeData.cryptoStringAmount = sellResponse.cryptoStringAmount;
+            }
+
             dispatch(saveSellTrade(tradeData, account, newDate));
         }
 

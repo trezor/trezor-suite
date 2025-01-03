@@ -18,6 +18,11 @@ import { CoinmarketOfferExchange } from 'src/views/wallet/coinmarket/common/Coin
 import { CoinmarketWrapper } from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
 import { useCoinmarketDeviceDisconnected } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketDeviceDisconnected';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
+import {
+    CoinmarketOfferBuyProps,
+    CoinmarketOfferExchangeProps,
+    CoinmarketOfferSellProps,
+} from 'src/types/coinmarket/coinmarketForm';
 
 const Wrapper = styled.div`
     ${CoinmarketWrapper}
@@ -25,15 +30,16 @@ const Wrapper = styled.div`
 
 export const CoinmarketSelectedOffer = () => {
     const context = useCoinmarketFormContext();
-    const { account } = context;
+    const { account, trade, selectedQuote } = context;
     const providers = getProvidersInfoProps(context);
+    const selectedTrade = trade?.data || selectedQuote;
 
     const { coinmarketDeviceDisconnected } = useCoinmarketDeviceDisconnected();
 
-    if (!context.selectedQuote) return null;
+    if (!selectedTrade) return null;
 
-    const quoteAmounts = getCryptoQuoteAmountProps(context.selectedQuote, context);
-    const paymentMethod = getPaymentMethod(context.selectedQuote, context);
+    const quoteAmounts = getCryptoQuoteAmountProps(selectedTrade, context);
+    const paymentMethod = getPaymentMethod(selectedTrade, context);
 
     return (
         <Column gap={spacings.md}>
@@ -43,7 +49,7 @@ export const CoinmarketSelectedOffer = () => {
                 {isCoinmarketBuyContext(context) && (
                     <CoinmarketOfferBuy
                         account={account}
-                        selectedQuote={context.selectedQuote}
+                        selectedQuote={selectedTrade as CoinmarketOfferBuyProps['selectedQuote']}
                         providers={providers}
                         type={context.type}
                         quoteAmounts={quoteAmounts}
@@ -53,7 +59,7 @@ export const CoinmarketSelectedOffer = () => {
                 {isCoinmarketSellContext(context) && (
                     <CoinmarketOfferSell
                         account={account}
-                        selectedQuote={context.selectedQuote}
+                        selectedQuote={selectedTrade as CoinmarketOfferSellProps['selectedQuote']}
                         providers={providers}
                         type={context.type}
                         quoteAmounts={quoteAmounts}
@@ -63,7 +69,9 @@ export const CoinmarketSelectedOffer = () => {
                 {isCoinmarketExchangeContext(context) && (
                     <CoinmarketOfferExchange
                         account={account}
-                        selectedQuote={context.selectedQuote}
+                        selectedQuote={
+                            selectedTrade as CoinmarketOfferExchangeProps['selectedQuote']
+                        }
                         providers={providers}
                         type={context.type}
                         quoteAmounts={quoteAmounts}

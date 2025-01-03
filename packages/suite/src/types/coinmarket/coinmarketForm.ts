@@ -42,7 +42,7 @@ import type { Account } from 'src/types/wallet';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import { AppState } from 'src/reducers/store';
 import { Dispatch, GetState } from 'src/types/suite';
-import { Option, TradeExchange, TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
+import { Option, TradeBuy, TradeExchange, TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { SendContextValues } from 'src/types/wallet/sendForm';
 import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
@@ -179,6 +179,7 @@ export interface CoinmarketBuyFormContextProps
     quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
     quotes: AppState['wallet']['coinmarket']['buy']['quotes'];
     selectedQuote: BuyTrade | undefined;
+    trade?: TradeBuy;
     addressVerified: string | undefined;
     // form - additional helpers for form
     form: {
@@ -385,6 +386,10 @@ export interface CoinmarketOfferCommonProps {
 
 export interface CoinmarketOfferBuyProps extends CoinmarketOfferCommonProps {
     selectedQuote: BuyTrade;
+}
+
+export interface CoinmarketOfferSellProps extends CoinmarketOfferCommonProps {
+    selectedQuote: SellFiatTrade;
 }
 
 export interface CoinmarketOfferExchangeProps
