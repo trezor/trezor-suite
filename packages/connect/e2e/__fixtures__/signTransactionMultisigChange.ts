@@ -1,3 +1,5 @@
+import { MultisigPubkeysOrder } from "@trezor/protobuf/src/messages";
+
 const { TX_CACHE } = global.TestUtils;
 
 const xpubExt1 =
@@ -24,6 +26,8 @@ const multisig1 = {
     ],
     signatures: ['', '', ''],
     m: 2,
+    pubkeys_order: MultisigPubkeysOrder.PRESERVED,
+    somebullshit: 'test',
 };
 const multisig2 = {
     pubkeys: [
@@ -42,6 +46,7 @@ const multisig2 = {
     ],
     signatures: ['', '', ''],
     m: 2,
+    pubkeys_order: MultisigPubkeysOrder.PRESERVED,
 };
 
 const input1 = {
