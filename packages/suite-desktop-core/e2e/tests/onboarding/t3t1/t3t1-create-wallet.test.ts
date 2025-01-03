@@ -18,7 +18,6 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         analyticsPage,
         trezorUserEnvLink,
     }) => {
-        await page.pause();
         await analyticsPage.passThroughAnalytics();
 
         // Device onboarding steps
@@ -28,6 +27,7 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         await onboardingPage.tutorial.skip();
 
         // Create wallet with Shamir backup
+        await onboardingPage.createWalletButton.click();
         await onboardingPage.selectSeedType(SeedType.Advanced);
 
         // Accept ToS

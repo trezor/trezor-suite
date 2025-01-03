@@ -3,7 +3,7 @@ import { Locator, Page, expect } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { DevicePromptActions } from '../devicePromptActions';
-import { step } from '../common';
+import { step } from '../../common';
 
 export class BackupActions {
     readonly startButton: Locator;

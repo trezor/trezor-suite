@@ -1,5 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 
+import { step } from '../../common';
+
 export class TutorialActions {
     readonly skipTutorialButton: Locator;
     readonly tutorialContinueButton: Locator;
@@ -9,6 +11,7 @@ export class TutorialActions {
         this.tutorialContinueButton = this.page.getByTestId('@tutorial/continue-button');
     }
 
+    @step()
     async skip() {
         await this.skipTutorialButton.click();
         await this.tutorialContinueButton.click();

@@ -1,5 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 
+import { step } from '../../common';
+
 export class FirmwareActions {
     readonly continueButton: Locator;
     readonly skipButton: Locator;
@@ -11,6 +13,7 @@ export class FirmwareActions {
         this.skipConfirmButton = this.page.getByTestId('@onboarding/skip-button-confirm');
     }
 
+    @step()
     async skip() {
         await this.skipButton.click();
         await this.skipConfirmButton.click();

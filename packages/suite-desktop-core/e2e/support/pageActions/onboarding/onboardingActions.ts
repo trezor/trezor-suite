@@ -95,9 +95,7 @@ export class OnboardingActions {
         await this.analyticsPage.continueButton.click();
         await this.onboardingContinueButton.click();
         if (this.isModelWithSecureElement()) {
-            await this.authenticityStartButton.click();
-            await TrezorUserEnvLink.pressYes();
-            await this.authenticityContinueButton.click();
+            await this.passThroughAuthenticityCheck();
         }
         if (enableViewOnly) {
             await this.onboardingViewOnlyEnableButton.click();
@@ -130,30 +128,16 @@ export class OnboardingActions {
 
     @step()
     async passThroughAuthenticityCheck() {
-        // enable debug mode to allow debug keys for authenticity check
-        // eslint-disable-next-line @typescript-eslint/no-shadow
-        await this.page.evaluate(SuiteActions => {
-            window.store.dispatch({
-                type: SuiteActions.SET_DEBUG_MODE,
-                payload: { showDebugMenu: true },
-            });
-        }, SuiteActions);
-
-        await this.page.getByTestId('@authenticity-check/start-button').click();
+        await this.authenticityStartButton.click();
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLink.pressYes();
-        await this.page.getByTestId('@authenticity-check/continue-button').click();
-    @step()
-    @step()
-    @step()
+        await this.authenticityContinueButton.click();
     }
 
     @step()
     async selectSeedType(seedType: SeedType) {
-        await this.createWalletButton.click();
         await this.selectSeedTypeOpenButton.click();
         await this.page.getByTestId(`@onboarding/select-seed-type-${seedType}`).click();
         await this.selectSeedConfirmButton.click();
     }
-    @step()
 }

@@ -1,5 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 
+import { step } from '../../common';
+
 export class PinActions {
     readonly skipButton: Locator;
     readonly setPinButton: Locator;
@@ -13,6 +15,7 @@ export class PinActions {
         this.continueButton = this.page.getByTestId('@onboarding/pin/continue-button');
     }
 
+    @step()
     async skip() {
         await this.skipButton.click();
         await this.skipConfirmButton.click();
