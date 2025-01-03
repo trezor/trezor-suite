@@ -2134,7 +2134,7 @@
   "TR_YOUR_NEW_VERSION_IS_READY": "A versão {{version}} foi baixada e está pronta para ser instalada.",
   "TR_YOUR_TREZOR_IS_NOT_BACKED_UP": "Sua carteira Trezor não tem uma cópia de segurança.",
   "TR_YOUR_WALLET_IS_ALMOST_READY_DESCRIPTION": "Ótimo trabalho! Agora vamos criar um backup da carteira. O backup da carteira é a única maneira de recuperar o acesso à sua carteira.",
-  "TR_YOUR_WALLET_IS_READY_WHAT": "A sua carteira está pronta!",
+  "TR_YOUR_WALLET_IS_READY_WHAT": "Sua carteira está pronta!",
   "TR_YOUR_WALLET_SUCCESSFULLY_CREATED": "Carteira criada com sucesso",
   "TR_YOU_HAVE_CONNECTED": "Você conectou uma",
   "TR_YOU_SHOULD_ANONYMIZE": "Você deve anonimizá-los",
