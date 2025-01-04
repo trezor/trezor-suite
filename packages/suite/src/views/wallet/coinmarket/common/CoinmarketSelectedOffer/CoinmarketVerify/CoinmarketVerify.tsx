@@ -23,7 +23,10 @@ import {
     isCoinmarketBuyContext,
     isCoinmarketExchangeContext,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import { getCoinmarketNetworkDisplaySymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    cryptoIdToNetwork,
+    getCoinmarketNetworkDisplaySymbol,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 interface CoinmarketVerifyProps {
     coinmarketVerifyAccount: CoinmarketVerifyAccountReturnProps;
@@ -66,7 +69,8 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, cryptoId }: Coinmark
         required: translationString('TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED'),
         validate: value => {
             if (selectedAccountOption?.type === 'NON_SUITE' && cryptoId) {
-                const symbol = cryptoIdToNativeCoinSymbol(cryptoId);
+                const symbol =
+                    cryptoIdToNetwork(cryptoId)?.symbol ?? cryptoIdToNativeCoinSymbol(cryptoId);
                 if (value && !addressValidator.validate(value, symbol)) {
                     return translationString('TR_EXCHANGE_RECEIVING_ADDRESS_INVALID');
                 }

@@ -15,7 +15,11 @@ import {
     CoinmarketCryptoSelectOptionProps,
     CoinmarketInfoProps,
 } from 'src/types/coinmarket/coinmarket';
-import { parseCryptoId, testnetToProdCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    cryptoIdToNetwork,
+    parseCryptoId,
+    testnetToProdCryptoId,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const supportedAddressValidatorSymbols = new Set(
     addressValidator.getCurrencies().map(c => c.symbol),
@@ -103,9 +107,9 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
                     return;
                 }
 
-                const nativeCoinSymbol = cryptoIdToNativeCoinSymbol(
-                    testnetToProdCryptoId(cryptoId),
-                );
+                const nativeCoinSymbol =
+                    cryptoIdToNetwork(testnetToProdCryptoId(cryptoId))?.symbol ??
+                    cryptoIdToNativeCoinSymbol(testnetToProdCryptoId(cryptoId));
                 if (!nativeCoinSymbol || !supportedAddressValidatorSymbols.has(nativeCoinSymbol)) {
                     return;
                 }
