@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, ReactNode } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Animated, { LinearTransition } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import { ScrollView, PanGestureHandler } from 'react-native-gesture-handler';
 import { GestureResponderEvent, Pressable } from 'react-native';
 
@@ -103,7 +103,6 @@ export const BottomSheet = ({
                                     insetBottom,
                                 }),
                             ]}
-                            layout={LinearTransition}
                         >
                             <BottomSheetHeader
                                 title={title}
