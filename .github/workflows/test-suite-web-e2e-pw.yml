@@ -139,7 +139,7 @@ jobs:
           echo -e "\nenableScripts: false" >> .yarnrc.yml
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           yarn workspaces focus @trezor/suite-desktop-core
-          npx playwright install --with-deps chromium
+          npx playwright install --with-deps
           docker compose pull ${{ matrix.CONTAINERS }}
 
       - name: Run Playwright e2e web tests

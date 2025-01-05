@@ -1,8 +1,8 @@
 import { test, expect } from '../../support/fixtures';
 
-test.use({ emulatorStartConf: { wipe: true }, browserName: 'webkit' });
+test.use({ startEmulator: false, browserName: 'webkit' });
 test.describe('Safari', { tag: ['@group=other', '@webOnly'] }, () => {
-    test('Should display unsupported browsers page', async ({ page }) => {
+    test('Suite does not support Safari', async ({ page }) => {
         await expect(
             page.getByRole('heading', { name: 'Your browser is not supported' }),
         ).toBeVisible();

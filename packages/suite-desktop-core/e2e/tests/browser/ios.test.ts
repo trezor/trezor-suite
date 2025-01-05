@@ -2,13 +2,9 @@ import { devices } from '@playwright/test';
 
 import { test, expect } from '../../support/fixtures';
 
-test.use({
-    emulatorStartConf: { wipe: true },
-    browserName: 'chromium',
-    ...devices['iPhone 15 Pro'],
-});
+test.use({ startEmulator: false, browserName: 'chromium', ...devices['iPhone 15 Pro'] });
 test.describe('iPhone with Chrome browser', { tag: ['@group=other', '@webOnly'] }, () => {
-    test('There is no way to connect trezor to iPhone at the moment', async ({ page }) => {
+    test('Suite does not support iOS', async ({ page }) => {
         await expect(
             page.getByRole('heading', { name: 'Suite doesn’t work on iOS yet' }),
         ).toBeVisible();
