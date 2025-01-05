@@ -29,15 +29,17 @@ test.describe('Coin market buy', { tag: ['@group=other'] }, () => {
 
         await test.step('Confirm trade and verifies confirmation summary', async () => {
             await marketPage.confirmTrade();
-            await expect(marketPage.tradeConfirmation).toHaveScreenshot(
-                'compared-offers-buy-confirmation.png',
-                {
-                    mask: [
-                        marketPage.tradeConfirmationCryptoAmount,
-                        marketPage.tradeConfirmationProvider,
-                    ],
-                },
-            );
+            //TODO: #16073 The field changes size based on how long the number is
+            // Add and use locator that encompasses the whole field, then uncomment
+            // await expect(marketPage.tradeConfirmation).toHaveScreenshot(
+            //     'compared-offers-buy-confirmation.png',
+            //     {
+            //         mask: [
+            //             marketPage.tradeConfirmationCryptoAmount,
+            //             marketPage.tradeConfirmationProvider,
+            //         ],
+            //     },
+            // );
             // TOOD: #16041 Once solved, Assert mocked price
             await expect(marketPage.tradeConfirmationCryptoAmount).toHaveText(regexpBtcValue);
             await expect(marketPage.tradeConfirmationContinueButton).toBeEnabled();
@@ -50,15 +52,17 @@ test.describe('Coin market buy', { tag: ['@group=other'] }, () => {
         const { amount, provider } = await marketPage.readBestOfferValues();
         await marketPage.buyBestOfferButton.click();
         await marketPage.confirmTrade();
-        await expect(marketPage.tradeConfirmation).toHaveScreenshot(
-            'best-offer-buy-confirmation.png',
-            {
-                mask: [
-                    marketPage.tradeConfirmationCryptoAmount,
-                    marketPage.tradeConfirmationProvider,
-                ],
-            },
-        );
+        //TODO: #16073 The field changes size based on how long the number is
+        // Add and use locator that encompasses the whole field, then uncomment
+        // await expect(marketPage.tradeConfirmation).toHaveScreenshot(
+        //     'best-offer-buy-confirmation.png',
+        //     {
+        //         mask: [
+        //             marketPage.tradeConfirmationCryptoAmount,
+        //             marketPage.tradeConfirmationProvider,
+        //         ],
+        //     },
+        // );
         await expect(marketPage.tradeConfirmationCryptoAmount).toHaveText(amount);
         await expect(marketPage.tradeConfirmationProvider).toHaveText(provider);
         await expect(marketPage.tradeConfirmationContinueButton).toBeEnabled();
