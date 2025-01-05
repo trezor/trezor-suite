@@ -1,4 +1,14 @@
-import { Button, Icon, Link, NewModal, Row, Column, Text, Card } from '@trezor/components';
+import {
+    Button,
+    Icon,
+    Link,
+    NewModal,
+    Row,
+    Column,
+    Text,
+    Card,
+    Paragraph,
+} from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { getNetworkName } from '@suite-common/wallet-utils';
 
@@ -25,17 +35,25 @@ export const CardanoWithdrawModal = ({ onCancel }: { onCancel: () => void }) => 
         <NewModal
             onCancel={onCancel}
             heading={<Translation id="TR_CARDANO_WITHDRAW_MODAL_TITLE" />}
+            bottomContent={
+                <>
+                    <Button onClick={() => voteDelegate()}>
+                        <Translation id="TR_CARDANO_WITHDRAW_MODAL_BUTTON_DELEGATE" />
+                    </Button>
+                    <Button onClick={() => voteAbstain()} variant="tertiary">
+                        <Translation id="TR_CARDANO_WITHDRAW_MODAL_BUTTON_ABSTAIN" />
+                    </Button>
+                </>
+            }
         >
-            <Text variant="tertiary">
+            <Paragraph variant="tertiary">
                 <Translation id="TR_CARDANO_WITHDRAW_MODAL_TITLE_DESCRIPTION" />
-            </Text>
+            </Paragraph>
             <Row padding={{ top: spacings.xl }}>
-                <Column>
-                    <Row padding={{ bottom: spacings.md }}>
-                        <Text>
-                            <Translation id="TR_CARDANO_WITHDRAW_MODAL_SUB_TITLE" />
-                        </Text>
-                    </Row>
+                <Column gap={spacings.md}>
+                    <Text>
+                        <Translation id="TR_CARDANO_WITHDRAW_MODAL_SUB_TITLE" />
+                    </Text>
                     <Card>
                         <Row>
                             {trezorDRepBech32}
@@ -47,16 +65,6 @@ export const CardanoWithdrawModal = ({ onCancel }: { onCancel: () => void }) => 
                         </Row>
                     </Card>
                 </Column>
-            </Row>
-            <Row padding={{ top: spacings.xl }}>
-                <Button onClick={() => voteDelegate()}>
-                    <Translation id="TR_CARDANO_WITHDRAW_MODAL_BUTTON_DELEGATE" />
-                </Button>
-                <Row padding={{ left: spacings.sm }}>
-                    <Button onClick={() => voteAbstain()} variant="tertiary">
-                        <Translation id="TR_CARDANO_WITHDRAW_MODAL_BUTTON_ABSTAIN" />
-                    </Button>
-                </Row>
             </Row>
         </NewModal>
     );
