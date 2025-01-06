@@ -171,7 +171,7 @@ export const StakingCard = ({
                                         <Translation
                                             id="TR_STAKE_ETH_REWARDS_EARN_APY"
                                             values={{
-                                                networkSymbol: getNetworkDisplaySymbol(
+                                                networkDisplaySymbol: getNetworkDisplaySymbol(
                                                     selectedAccount.symbol,
                                                 ),
                                             }}

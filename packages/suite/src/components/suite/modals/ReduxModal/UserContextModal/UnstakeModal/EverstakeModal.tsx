@@ -41,7 +41,7 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
                             : 'TR_STAKE_BY_STAKING_YOU_CAN_EARN_REWARDS'
                     }
                     values={{
-                        networkSymbol: displaySymbol,
+                        networkDisplaySymbol: displaySymbol,
                         t: text => <strong>{text}</strong>,
                     }}
                 />

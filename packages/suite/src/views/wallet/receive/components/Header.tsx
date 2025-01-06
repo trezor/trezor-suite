@@ -18,7 +18,7 @@ export const Header = ({ account }: HeaderProps) => {
     const title = (
         <Translation
             id="RECEIVE_TITLE"
-            values={{ networkSymbol: getNetworkDisplaySymbol(account.symbol) }}
+            values={{ networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol) }}
         />
     );
     if (account.networkType === 'bitcoin') {

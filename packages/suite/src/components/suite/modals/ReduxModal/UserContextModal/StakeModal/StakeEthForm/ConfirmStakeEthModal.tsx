@@ -89,7 +89,7 @@ export const ConfirmStakeEthModal = ({
                                     {chunks}
                                 </TrezorLink>
                             ),
-                            networkSymbol: getNetworkDisplaySymbol(account.symbol),
+                            networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
                         }}
                     />
                 </Banner>

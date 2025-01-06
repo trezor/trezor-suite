@@ -133,7 +133,7 @@ export const Inputs = () => {
                         }
                         values={{
                             amount: MIN_ETH_FOR_WITHDRAWALS.toString(),
-                            networkSymbol: displaySymbol,
+                            networkDisplaySymbol: displaySymbol,
                         }}
                     />
                 </Banner>
@@ -145,7 +145,7 @@ export const Inputs = () => {
                         id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
                         values={{
                             amount: MIN_ETH_FOR_WITHDRAWALS.toString(),
-                            networkSymbol: displaySymbol,
+                            networkDisplaySymbol: displaySymbol,
                         }}
                     />
                 </Banner>

@@ -62,7 +62,7 @@ export const FormFractionButtons = ({
                             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
                             values={{
                                 amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
-                                networkSymbol: displaySymbol,
+                                networkDisplaySymbol: displaySymbol,
                             }}
                         />
                     )
@@ -80,7 +80,7 @@ export const FormFractionButtons = ({
                             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
                             values={{
                                 amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
-                                networkSymbol: displaySymbol,
+                                networkDisplaySymbol: displaySymbol,
                             }}
                         />
                     )
@@ -98,7 +98,7 @@ export const FormFractionButtons = ({
                             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
                             values={{
                                 amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
-                                networkSymbol: displaySymbol,
+                                networkDisplaySymbol: displaySymbol,
                             }}
                         />
                     )
@@ -116,7 +116,7 @@ export const FormFractionButtons = ({
                             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
                             values={{
                                 amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
-                                networkSymbol: displaySymbol,
+                                networkDisplaySymbol: displaySymbol,
                             }}
                         />
                     )

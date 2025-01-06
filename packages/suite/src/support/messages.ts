@@ -1425,11 +1425,11 @@ export default defineMessages({
         id: 'TR_COPY_TO_CLIPBOARD',
     },
     TR_ADDRESS_MODAL_TITLE: {
-        defaultMessage: '{networkSymbol} receive address',
+        defaultMessage: '{networkName} receive address',
         id: 'TR_ADDRESS_MODAL_TITLE',
     },
     TR_ADDRESS_MODAL_TITLE_EXCHANGE: {
-        defaultMessage: '{networkCurrencyName} receive address on {networkSymbol} network',
+        defaultMessage: '{networkCurrencyName} receive address on {networkName} network',
         id: 'TR_ADDRESS_MODAL_TITLE_EXCHANGE',
     },
     TR_XPUB_MODAL_CLIPBOARD: {
@@ -1437,7 +1437,7 @@ export default defineMessages({
         id: 'TR_XPUB_MODAL_CLIPBOARD',
     },
     TR_XPUB_MODAL_TITLE: {
-        defaultMessage: '{networkSymbol} Account {accountIndex} public key (XPUB)',
+        defaultMessage: '{networkName} Account {accountIndex} public key (XPUB)',
         id: 'TR_XPUB_MODAL_TITLE',
     },
     TR_XPUB_MODAL_TITLE_METADATA: {
@@ -3031,11 +3031,11 @@ export default defineMessages({
         id: 'TR_RECEIVE',
     },
     TR_RECEIVE_NETWORK: {
-        defaultMessage: 'Receive {networkSymbol}',
+        defaultMessage: 'Receive {networkDisplaySymbol}',
         id: 'TR_RECEIVE_NETWORK',
     },
     TR_BUY_NETWORK: {
-        defaultMessage: 'Buy {networkSymbol}',
+        defaultMessage: 'Buy {networkDisplaySymbol}',
         id: 'TR_BUY_NETWORK',
     },
     TR_TAPROOT_BANNER_TITLE: {
@@ -4385,7 +4385,7 @@ export default defineMessages({
     },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
-        defaultMessage: 'Receive {networkSymbol}',
+        defaultMessage: 'Receive {networkDisplaySymbol}',
     },
     RECEIVE_DESC_BITCOIN: {
         id: 'RECEIVE_DESC_BITCOIN',
@@ -5486,12 +5486,13 @@ export default defineMessages({
         id: 'AMOUNT_IS_LESS_THAN_RESERVE',
     },
     AMOUNT_NOT_ENOUGH_CURRENCY_FEE: {
-        defaultMessage: 'Not enough {networkSymbol} to cover transaction fee',
+        defaultMessage: 'Not enough {networkDisplaySymbol} to cover transaction fee',
         id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
     },
 
     AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT: {
-        defaultMessage: 'Not enough {symbol} to cover transaction fee ({feeAmount} {symbol})',
+        defaultMessage:
+            'Not enough {networkDisplaySymbol} to cover transaction fee ({feeAmount} {networkDisplaySymbol})',
         id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
     },
     REMAINING_BALANCE_LESS_THAN_RENT: {
@@ -7536,11 +7537,11 @@ export default defineMessages({
     },
     TR_STAKING_CONSOLIDATING_FUNDS: {
         id: 'TR_STAKING_CONSOLIDATING_FUNDS',
-        defaultMessage: 'Consolidating your {networkSymbol} for you',
+        defaultMessage: 'Consolidating your {networkDisplaySymbol} for you',
     },
     TR_STAKING_YOUR_UNSTAKED_FUNDS: {
         id: 'TR_STAKING_YOUR_UNSTAKED_FUNDS',
-        defaultMessage: 'Your unstaked {networkSymbol} is ready',
+        defaultMessage: 'Your unstaked {networkDisplaySymbol} is ready',
     },
     TR_RECEIVING_SYMBOL: {
         id: 'TR_RECEIVING_SYMBOL',
@@ -8773,12 +8774,12 @@ export default defineMessages({
     },
     TR_STAKE_IN_ACCOUNT: {
         id: 'TR_STAKE_IN_ACCOUNT',
-        defaultMessage: '{networkSymbol} in account',
+        defaultMessage: '{networkDisplaySymbol} in account',
     },
     TR_STAKE_STAKED_ETH_AMOUNT_LOCKED: {
         id: 'TR_STAKE_STAKED_ETH_AMOUNT_LOCKED',
         defaultMessage:
-            'The staked amount of {networkSymbol} is locked and can’t be traded or sent.',
+            'The staked amount of {networkDisplaySymbol} is locked and can’t be traded or sent.',
     },
     TR_STAKE_UNSTAKING_TAKES: {
         id: 'TR_STAKE_UNSTAKING_TAKES',
@@ -8788,7 +8789,7 @@ export default defineMessages({
     TR_STAKE_ETH_REWARDS_EARN: {
         id: 'TR_STAKE_ETH_REWARDS_EARN',
         defaultMessage:
-            'Your rewards also earn. Keep them staked and watch your {networkSymbol} rewards soar.',
+            'Your rewards also earn. Keep them staked and watch your {networkDisplaySymbol} rewards soar.',
     },
     TR_STAKE_AVAILABLE: {
         id: 'TR_STAKE_AVAILABLE',
@@ -8806,17 +8807,17 @@ export default defineMessages({
     TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL: {
         id: 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL',
         defaultMessage:
-            'We’ve left {amount} {networkSymbol} out so you can pay for withdrawal fees.',
+            'We’ve left {amount} {networkDisplaySymbol} out so you can pay for withdrawal fees.',
     },
     TR_STAKE_LEFT_SMALL_AMOUNT_FOR_WITHDRAWAL: {
         id: 'TR_STAKE_LEFT_SMALL_AMOUNT_FOR_WITHDRAWAL',
         defaultMessage:
-            'We’ve left a small amount of {networkSymbol} out so you can pay for withdrawal fees.',
+            'We’ve left a small amount of {networkDisplaySymbol} out so you can pay for withdrawal fees.',
     },
     TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS: {
         id: 'TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS',
         defaultMessage:
-            "It's recommended to leave {amount} {networkSymbol} so you can pay for withdrawal fees.",
+            "It's recommended to leave {amount} {networkDisplaySymbol} so you can pay for withdrawal fees.",
     },
     TR_STAKE_CONFIRM_ENTRY_PERIOD: {
         id: 'TR_STAKE_CONFIRM_ENTRY_PERIOD',
@@ -8838,7 +8839,7 @@ export default defineMessages({
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',
         defaultMessage:
-            'Your {networkSymbol} will be blocked during this period, and you can’t cancel this. <a>Learn more</a>',
+            'Your {networkDisplaySymbol} will be blocked during this period, and you can’t cancel this. <a>Learn more</a>',
     },
     TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD: {
         id: 'TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD',
@@ -8903,7 +8904,7 @@ export default defineMessages({
     TR_STAKE_ETH_REWARDS_EARN_APY: {
         id: 'TR_STAKE_ETH_REWARDS_EARN_APY',
         defaultMessage:
-            'Your {networkSymbol} rewards also earn the APY rate. Keep your funds staked or add more to increase your rewards.',
+            'Your {networkDisplaySymbol} rewards also earn the APY rate. Keep your funds staked or add more to increase your rewards.',
     },
     TR_STAKE_REWARDS: {
         id: 'TR_STAKE_REWARDS',
@@ -8996,7 +8997,7 @@ export default defineMessages({
     },
     TR_STAKE_MIN_AMOUNT_TOOLTIP: {
         id: 'TR_STAKE_MIN_AMOUNT_TOOLTIP',
-        defaultMessage: 'Minimum amount to stake is {amount} {networkSymbol}',
+        defaultMessage: 'Minimum amount to stake is {amount} {networkDisplaySymbol}',
     },
     TOAST_TX_STAKED: {
         id: 'TOAST_TX_STAKED',
@@ -9012,7 +9013,7 @@ export default defineMessages({
     },
     TOAST_SUCCESSFUL_CLAIM: {
         id: 'TOAST_SUCCESSFUL_CLAIM',
-        defaultMessage: '{networkSymbol} claimed successfully',
+        defaultMessage: '{networkDisplaySymbol} claimed successfully',
     },
     TOAST_ESTIMATED_FEE_ERROR: {
         id: 'TOAST_ESTIMATED_FEE_ERROR',
@@ -9050,7 +9051,7 @@ export default defineMessages({
     TR_STAKE_EVERSTAKE_MANAGES: {
         id: 'TR_STAKE_EVERSTAKE_MANAGES',
         defaultMessage:
-            'Everstake maintains and protects your staked {networkSymbol} <t>with their smart contracts, infrastructure, and technology.</t>',
+            'Everstake maintains and protects your staked {networkDisplaySymbol} <t>with their smart contracts, infrastructure, and technology.</t>',
     },
     TR_STAKE_TREZOR_NO_LIABILITY: {
         id: 'TR_STAKE_TREZOR_NO_LIABILITY',

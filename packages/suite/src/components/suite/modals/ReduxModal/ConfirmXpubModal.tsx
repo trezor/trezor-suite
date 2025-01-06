@@ -45,7 +45,7 @@ export const ConfirmXpubModal = (
                     <Translation
                         id="TR_XPUB_MODAL_TITLE"
                         values={{
-                            networkSymbol: getNetworkDisplaySymbol(account.symbol),
+                            networkName: getNetworkDisplaySymbol(account.symbol),
                             accountIndex: `#${account.index + 1}`,
                         }}
                     />

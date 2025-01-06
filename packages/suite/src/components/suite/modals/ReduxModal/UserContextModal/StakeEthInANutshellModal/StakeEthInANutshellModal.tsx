@@ -111,7 +111,7 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
                             <Translation
                                 id={translationId}
                                 values={{
-                                    networkSymbol: getNetworkDisplaySymbol(account.symbol),
+                                    networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
                                     count: unstakingPeriod,
                                 }}
                             />

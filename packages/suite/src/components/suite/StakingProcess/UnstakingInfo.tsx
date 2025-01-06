@@ -50,7 +50,7 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
             subheading: (
                 <Translation
                     id="TR_STAKING_CONSOLIDATING_FUNDS"
-                    values={{ networkSymbol: displaySymbol }}
+                    values={{ networkDisplaySymbol: displaySymbol }}
                 />
             ),
             content: {
@@ -61,13 +61,13 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
             heading: (
                 <Translation
                     id="TR_STAKE_CLAIM_UNSTAKED"
-                    values={{ networkSymbol: displaySymbol }}
+                    values={{ networkDisplaySymbol: displaySymbol }}
                 />
             ),
             subheading: (
                 <Translation
                     id="TR_STAKING_YOUR_UNSTAKED_FUNDS"
-                    values={{ networkSymbol: displaySymbol }}
+                    values={{ networkDisplaySymbol: displaySymbol }}
                 />
             ),
             content: {
@@ -77,7 +77,10 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
         },
         {
             heading: (
-                <Translation id="TR_STAKE_IN_ACCOUNT" values={{ networkSymbol: displaySymbol }} />
+                <Translation
+                    id="TR_STAKE_IN_ACCOUNT"
+                    values={{ networkDisplaySymbol: displaySymbol }}
+                />
             ),
         },
     ];

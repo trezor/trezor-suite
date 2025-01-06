@@ -147,7 +147,7 @@ export const composeStakingTransaction = (
         if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
             tx.errorMessage = {
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                values: { networkSymbol: getNetworkDisplaySymbol(network.symbol) },
+                values: { networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol) },
             };
         }
     });

@@ -47,7 +47,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
                     <Translation
                         id="TR_ADDRESS_MODAL_TITLE_EXCHANGE"
                         values={{
-                            networkSymbol: getNetworkDisplaySymbol(symbol),
+                            networkName: getNetworkDisplaySymbol(symbol),
                             networkCurrencyName: coinSymbol?.toUpperCase(),
                         }}
                     />
@@ -58,7 +58,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
                 <Translation
                     id="TR_ADDRESS_MODAL_TITLE"
                     values={{
-                        networkSymbol:
+                        networkName:
                             coinSymbol && isNetworkSymbol(coinSymbol)
                                 ? getNetworkDisplaySymbol(coinSymbol)
                                 : coinSymbol?.toUpperCase(),
@@ -71,7 +71,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
             <Translation
                 id="TR_ADDRESS_MODAL_TITLE"
                 values={{
-                    networkSymbol: getNetworkDisplaySymbol(account.symbol),
+                    networkName: getNetworkDisplaySymbol(account.symbol),
                 }}
             />
         );

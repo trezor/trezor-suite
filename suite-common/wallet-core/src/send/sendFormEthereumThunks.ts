@@ -244,7 +244,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
             ) {
                 tx.errorMessage = {
                     values: {
-                        symbol: getNetworkDisplaySymbol(network.symbol),
+                        networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol),
                         feeAmount: tx.errorMessage?.values?.feeAmount || '',
                     },
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',

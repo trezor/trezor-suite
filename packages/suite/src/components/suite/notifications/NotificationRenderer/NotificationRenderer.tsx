@@ -292,7 +292,7 @@ export const NotificationRenderer = ({
             );
         case 'successful-claim':
             return success(render, notification, 'TOAST_SUCCESSFUL_CLAIM', 'check', {
-                networkSymbol: getNetworkDisplaySymbol(notification.symbol),
+                networkDisplaySymbol: getNetworkDisplaySymbol(notification.symbol),
             });
         case 'firmware-language-changed':
             return success(render, notification, 'TR_FIRMWARE_LANGUAGE_CHANGED');
