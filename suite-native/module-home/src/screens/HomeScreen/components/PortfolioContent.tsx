@@ -1,16 +1,16 @@
-import { useSelector } from 'react-redux';
 import { forwardRef } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Button, VStack } from '@suite-native/atoms';
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { Button, VStack } from '@suite-native/atoms';
 import { Assets } from '@suite-native/assets';
 import {
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 
 import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
@@ -18,29 +18,26 @@ import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
 export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
-    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
 
     const handleReceive = () => {
         navigation.navigate(RootStackRoutes.ReceiveModal, { closeActionType: 'back' });
     };
 
     return (
-        <VStack spacing="sp24" marginTop="sp8">
+        <VStack spacing="sp32" marginTop="sp8">
             <PortfolioGraph ref={ref} />
             <VStack spacing="sp24" marginHorizontal="sp16">
-                <Box>
-                    <Assets />
-                </Box>
-                {isPortfolioTrackerDevice && (
+                {!hasDiscovery && (
                     <Button
                         data-testID="@home/portolio/recieve-button"
-                        size="large"
                         onPress={handleReceive}
                         viewLeft="arrowLineDown"
                     >
                         <Translation id="moduleHome.buttons.receive" />
                     </Button>
                 )}
+                <Assets />
             </VStack>
         </VStack>
     );

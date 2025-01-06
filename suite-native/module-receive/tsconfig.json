@@ -1,9 +1,0 @@
-{
-    "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
-    "references": [
-        { "path": "../accounts" },
-        { "path": "../device-manager" },
-        { "path": "../navigation" }
-    ]
-}

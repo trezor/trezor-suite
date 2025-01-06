@@ -155,17 +155,6 @@ export const useAddCoinAccount = () => {
                     closeActionType: 'close',
                 });
                 break;
-
-            case 'home':
-            case 'receive':
-                navigation.replace(RootStackRoutes.ReceiveModal, {
-                    networkSymbol: symbol,
-                    accountType,
-                    accountIndex,
-                    closeActionType: 'close',
-                });
-
-                break;
         }
     };
 
@@ -272,8 +261,6 @@ export const useAddCoinAccount = () => {
             let screen = AppTabsRoutes.HomeStack;
             if (flowType === 'accounts') {
                 screen = AppTabsRoutes.AccountsStack;
-            } else if (flowType === 'receive') {
-                screen = AppTabsRoutes.ReceiveStack;
             }
 
             if (newAccountResult.payload === 'Passphrase is incorrect') {

@@ -9737,7 +9737,6 @@ __metadata:
     "@suite-native/module-device-settings": "workspace:*"
     "@suite-native/module-home": "workspace:*"
     "@suite-native/module-onboarding": "workspace:*"
-    "@suite-native/module-receive": "workspace:*"
     "@suite-native/module-send": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/module-staking-management": "workspace:*"
@@ -10548,20 +10547,6 @@ __metadata:
     react-native: "npm:0.76.1"
     react-native-svg: "npm:^15.9.0"
     react-redux: "npm:8.0.7"
-  languageName: unknown
-  linkType: soft
-
-"@suite-native/module-receive@workspace:*, @suite-native/module-receive@workspace:suite-native/module-receive":
-  version: 0.0.0-use.local
-  resolution: "@suite-native/module-receive@workspace:suite-native/module-receive"
-  dependencies:
-    "@react-navigation/native": "npm:6.1.18"
-    "@react-navigation/native-stack": "npm:6.11.0"
-    "@suite-native/accounts": "workspace:*"
-    "@suite-native/device-manager": "workspace:*"
-    "@suite-native/navigation": "workspace:*"
-    react: "npm:18.2.0"
-    react-native: "npm:0.76.1"
   languageName: unknown
   linkType: soft
 

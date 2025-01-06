@@ -135,11 +135,10 @@ export const TransactionListHeader = memo(
                         tokenContract={tokenContract}
                     />
                     {accountHasTransactions && (
-                        <HStack paddingHorizontal="sp16" flex={1} spacing="sp12">
+                        <HStack paddingTop="sp8" paddingHorizontal="sp16" flex={1} spacing="sp12">
                             <Box flex={1}>
                                 <Button
                                     viewLeft="arrowLineDown"
-                                    size="large"
                                     onPress={handleReceive}
                                     testID="@account-detail/receive-button"
                                 >
@@ -150,7 +149,6 @@ export const TransactionListHeader = memo(
                                 <Box flex={1}>
                                     <Button
                                         viewLeft="arrowLineUp"
-                                        size="large"
                                         onPress={handleSend}
                                         testID="@account-detail/send-button"
                                     >

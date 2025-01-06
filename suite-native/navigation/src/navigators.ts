@@ -100,7 +100,6 @@ export type SendStackParamList = {
 export type AppTabsParamList = {
     [AppTabsRoutes.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
     [AppTabsRoutes.AccountsStack]: NavigatorScreenParams<AccountsStackParamList>;
-    [AppTabsRoutes.ReceiveStack]: NavigatorScreenParams<ReceiveStackParamList>;
     [AppTabsRoutes.Settings]: undefined;
 };
 
@@ -128,7 +127,7 @@ export type AccountsImportStackParamList = {
     };
 };
 
-export type AddCoinFlowType = 'home' | 'receive' | 'accounts';
+export type AddCoinFlowType = 'home' | 'accounts';
 
 export type AddCoinAccountStackParamList = {
     [AddCoinAccountStackRoutes.AddCoinAccount]: {
