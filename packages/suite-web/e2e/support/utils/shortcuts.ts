@@ -44,7 +44,7 @@ export const passThroughBackup = () => {
     cy.log('Create backup on device');
     cy.getTestElement('@backup/start-button').click();
     // cy.getConfirmActionOnDeviceModal();
-    cy.getTestElement('@onboarding/confirm-on-device');
+    cy.getTestElement('@prompts/confirm-on-device');
     cy.task('readAndConfirmMnemonicEmu');
 
     cy.getTestElement('@backup/close-button').click();
@@ -60,7 +60,7 @@ export const passThroughBackupShamir = (shares: number, threshold: number) => {
 
     cy.log('Create Shamir backup on device');
     cy.getTestElement('@backup/start-button').click();
-    cy.getTestElement('@onboarding/confirm-on-device');
+    cy.getTestElement('@prompts/confirm-on-device');
     cy.wait(1000); // It seems that there is a race condition and the next task fails sometimes, because it hits the homescreen instead of the expected one
     cy.task('readAndConfirmShamirMnemonicEmu', { shares, threshold });
 

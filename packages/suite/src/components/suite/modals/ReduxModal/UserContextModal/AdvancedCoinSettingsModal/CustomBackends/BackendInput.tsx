@@ -13,9 +13,16 @@ type BackendInputProps = {
     isActive: boolean;
     isLoading?: boolean;
     onRemove?: () => void;
+    'data-testid'?: string;
 };
 
-export const BackendInput = ({ url, isActive, isLoading, onRemove }: BackendInputProps) => {
+export const BackendInput = ({
+    url,
+    isActive,
+    isLoading,
+    onRemove,
+    'data-testid': dataTest,
+}: BackendInputProps) => {
     const getInnerAddon = () => {
         if (isLoading) {
             return <Spinner size={18} />;
@@ -34,6 +41,7 @@ export const BackendInput = ({ url, isActive, isLoading, onRemove }: BackendInpu
             showClearButton={onRemove && 'hover'}
             onClear={onRemove}
             innerAddon={getInnerAddon()}
+            data-testid={dataTest}
         />
     );
 };

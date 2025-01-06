@@ -28,7 +28,7 @@ test.describe('Assets', { tag: ['@group=suite'] }, () => {
         settingsPage,
     }) => {
         await assetsPage.enableMoreCoins.click();
-        await settingsPage.enableNetwork('eth');
+        await settingsPage.coins.enableNetwork('eth');
 
         await dashboardPage.navigateTo();
         await dashboardPage.discoveryShouldFinish();

@@ -2,7 +2,7 @@ import { ExtractByEventType } from '@trezor/suite-web/e2e/support/types';
 import { EventType } from '@trezor/suite-analytics';
 
 import { test, expect } from '../../support/fixtures';
-import { Language, Theme } from '../../support/pageActions/settingsActions';
+import { Language, Theme } from '../../support/pageActions/settings/settingsActions';
 
 export enum Currency {
     EUR = 'eur',
@@ -27,7 +27,7 @@ test.describe('General settings', { tag: ['@group=settings'] }, () => {
         });
 
         await test.step('Change fiat currency to EUR', async () => {
-            await settingsPage.navigateTo();
+            await settingsPage.navigateTo('application');
             await page.getByTestId('@settings/fiat-select/input').click();
             await page.getByTestId(`@settings/fiat-select/option/${Currency.EUR}`).click();
 
@@ -43,7 +43,7 @@ test.describe('General settings', { tag: ['@group=settings'] }, () => {
         });
 
         await test.step('Change theme mode to Dark', async () => {
-            await settingsPage.navigateTo();
+            await settingsPage.navigateTo('application');
             await settingsPage.changeTheme(Theme.Dark);
 
             const settingsGeneralChangeThemeEvent = analytics.findAnalyticsEventByType<

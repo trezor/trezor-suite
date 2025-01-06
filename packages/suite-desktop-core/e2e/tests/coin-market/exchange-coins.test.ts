@@ -12,14 +12,13 @@ test.describe('Coinmarket Exchange', { tag: ['@group=other'] }, () => {
         async ({ onboardingPage, dashboardPage, walletPage, settingsPage, trezorUserEnvLink }) => {
             await onboardingPage.completeOnboarding();
             await dashboardPage.discoveryShouldFinish();
-            await settingsPage.navigateTo();
-            await settingsPage.coinsTabButton.click();
-            await settingsPage.enableNetwork('regtest');
+            await settingsPage.navigateTo('coins');
+            await settingsPage.coins.enableNetwork('regtest');
             await trezorUserEnvLink.sendToAddressAndMineBlock({
                 address: 'bcrt1qnspxpr2xj9s2jt6qlhuvdnxw6q55jvyg6q7g5r',
                 btc_amount: 25,
             });
-            await settingsPage.enableNetwork('eth');
+            await settingsPage.coins.enableNetwork('eth');
             await dashboardPage.navigateTo();
             await walletPage.openExchangeMarket({ symbol: 'regtest' });
         },

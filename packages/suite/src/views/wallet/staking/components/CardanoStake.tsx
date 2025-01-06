@@ -55,7 +55,7 @@ export const CardanoStake = ({ account, deviceModel }: CardanoStakeProps) => {
         !!pendingStakeTx;
 
     return (
-        <Card>
+        <Card data-testid="@wallet/cardano/staking">
             <Column gap={spacings.xs} alignItems="center">
                 <StyledH2>
                     <Icon name="close" size={25} />

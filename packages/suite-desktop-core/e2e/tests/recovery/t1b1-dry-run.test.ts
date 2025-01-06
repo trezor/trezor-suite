@@ -12,8 +12,7 @@ test.describe('Recovery T1B1 - dry run', { tag: ['@group=device-management'] }, 
 
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.navigateTo();
-        await settingsPage.deviceTabButton.click();
+        await settingsPage.navigateTo('device');
     });
 
     test('Standard recovery dry run', async ({

@@ -4,7 +4,7 @@ import { SeedType } from '../enums/seedType';
 
 class OnboardingPage {
     waitForConfirmationOnDevice() {
-        cy.getTestElement('@onboarding/confirm-on-device').should('be.visible');
+        cy.getTestElement('@prompts/confirm-on-device').should('be.visible');
     }
 
     createWallet() {

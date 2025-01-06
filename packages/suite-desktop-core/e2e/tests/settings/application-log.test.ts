@@ -6,7 +6,7 @@ test.describe('Application Logs', { tag: ['@group=settings'] }, () => {
     test.use({ emulatorStartConf: { wipe: true } });
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.navigateTo();
+        await settingsPage.navigateTo('application');
     });
 
     test(

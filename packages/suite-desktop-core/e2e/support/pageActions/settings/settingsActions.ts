@@ -1,10 +1,10 @@
 import { Locator, Page, test } from '@playwright/test';
 
-import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { expect } from '../customMatchers';
-import { step, TrezorUserEnvLinkProxy } from '../common';
+import { expect } from '../../customMatchers';
+import { step, TrezorUserEnvLinkProxy } from '../../common';
+import { CoinsActions } from './coinActions';
 
 export enum Theme {
     System = 'system',
@@ -37,6 +37,8 @@ const backgroundImages = {
 
 export class SettingsActions {
     private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 5;
+    readonly coins: CoinsActions;
+
     readonly settingsMenuButton: Locator;
     readonly settingsHeader: Locator;
     readonly debugTabButton: Locator;
@@ -49,21 +51,12 @@ export class SettingsActions {
     readonly earlyAccessSkipButton: Locator;
     readonly settingsCloseButton: Locator;
     readonly modal: Locator;
+    readonly modalCloseButton: Locator;
     readonly deviceLabelInput: Locator;
     readonly deviceLabelSubmit: Locator;
     readonly confirmOnDevicePrompt: Locator;
     readonly homescreenGalleryButton: Locator;
     readonly notificationSuccessToast: Locator;
-    //coin Advance settings
-    readonly networkButton = (symbol: NetworkSymbol) =>
-        this.page.getByTestId(`@settings/wallet/network/${symbol}`);
-    readonly networkSymbolAdvanceSettingsButton = (symbol: NetworkSymbol) =>
-        this.page.getByTestId(`@settings/wallet/network/${symbol}/advance`);
-    readonly coinBackendSelector: Locator;
-    readonly coinBackendSelectorOption = (backend: BackendType) =>
-        this.page.getByTestId(`@settings/advance/${backend}`);
-    readonly coinAddressInput: Locator;
-    readonly coinAdvanceSettingSaveButton: Locator;
     readonly themeInput: Locator;
     readonly themeInputOption = (theme: Theme) =>
         this.page.getByTestId(`@theme/color-scheme-select/option/${theme}`);
@@ -76,6 +69,8 @@ export class SettingsActions {
         private readonly page: Page,
         private readonly apiURL: string,
     ) {
+        this.coins = new CoinsActions(page);
+
         this.settingsMenuButton = this.page.getByTestId('@suite/menu/settings');
         this.settingsHeader = this.page.getByTestId('@settings/menu/title');
         this.debugTabButton = this.page.getByTestId('@settings/menu/debug');
@@ -92,23 +87,31 @@ export class SettingsActions {
         this.earlyAccessSkipButton = this.page.getByTestId('@settings/early-access-skip-button');
         this.settingsCloseButton = this.page.getByTestId('@settings/menu/close');
         this.modal = this.page.getByTestId('@modal');
+        this.modalCloseButton = this.page.getByTestId('@modal/close-button');
         this.deviceLabelInput = this.page.getByTestId('@settings/device/label-input');
         this.deviceLabelSubmit = this.page.getByTestId('@settings/device/label-submit');
         this.confirmOnDevicePrompt = this.page.getByTestId('@prompts/confirm-on-device');
         this.homescreenGalleryButton = this.page.getByTestId('@settings/device/homescreen-gallery');
         this.notificationSuccessToast = this.page.getByTestId('@toast/settings-applied').first();
-        this.coinBackendSelector = this.page.getByTestId('@settings/advance/select-type/input');
-        this.coinAddressInput = this.page.getByTestId('@settings/advance/url');
-        this.coinAdvanceSettingSaveButton = this.page.getByTestId('@settings/advance/button/save');
         this.themeInput = this.page.getByTestId('@theme/color-scheme-select/input');
         this.languageInput = this.page.getByTestId('@settings/language-select/input');
         this.checkSeedButton = this.page.getByTestId('@settings/device/check-seed-button');
     }
 
     @step()
-    async navigateTo() {
-        await this.settingsMenuButton.click();
-        await expect(this.settingsHeader).toHaveText('Settings', { timeout: 10000 });
+    async navigateTo(tab: 'application' | 'coins' | 'device' | 'debug') {
+        const notInSettings = !(await this.settingsHeader.isVisible());
+        if (notInSettings) {
+            await this.settingsMenuButton.click();
+            await expect(this.settingsHeader).toHaveText('Settings', { timeout: 10000 });
+        }
+        const tabActions: { [key: string]: () => Promise<void> } = {
+            application: () => this.applicationTabButton.click(),
+            coins: () => this.coinsTabButton.click(),
+            device: () => this.deviceTabButton.click(),
+            debug: () => this.debugTabButton.click(),
+        };
+        await tabActions[tab]();
     }
 
     @step()
@@ -118,37 +121,6 @@ export class SettingsActions {
             await this.settingsHeader.click();
         }
         await expect(this.debugTabButton).toBeVisible();
-    }
-
-    @step()
-    async openNetworkAdvanceSettings(symbol: NetworkSymbol) {
-        const isNetworkActive = await this.networkButton(symbol).getAttribute('data-active');
-        if (isNetworkActive === 'false') {
-            await this.enableNetwork(symbol);
-        }
-        await this.networkButton(symbol).hover();
-        await this.networkSymbolAdvanceSettingsButton(symbol).click();
-        await expect(this.modal).toBeVisible();
-    }
-
-    @step()
-    async enableNetwork(symbol: NetworkSymbol) {
-        await this.networkButton(symbol).click();
-        await expect(this.networkButton(symbol)).toBeEnabledCoin();
-    }
-
-    @step()
-    async disableNetwork(symbol: NetworkSymbol) {
-        await this.networkButton(symbol).click();
-        await expect(this.networkButton(symbol)).toBeDisabledCoin();
-    }
-
-    @step()
-    async changeCoinBackend(backend: BackendType, backendUrl: string) {
-        await this.coinBackendSelector.click();
-        await this.coinBackendSelectorOption(backend).click();
-        await this.coinAddressInput.fill(backendUrl);
-        await this.coinAdvanceSettingSaveButton.click();
     }
 
     @step()

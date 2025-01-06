@@ -8,8 +8,7 @@ test.describe('Custom firmware', { tag: ['@group=device-management'] }, () => {
     test.use({ emulatorStartConf: { wipe: true } });
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.navigateTo();
-        await settingsPage.deviceTabButton.click();
+        await settingsPage.navigateTo('device');
     });
 
     test('Custom firmware installation', async ({ page }) => {

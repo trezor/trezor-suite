@@ -6,8 +6,7 @@ test.describe('T1B1 - Device settings', { tag: ['@group=settings'] }, () => {
         await onboardingPage.completeOnboarding();
         // Initiating pin change is not stable when discovery is not yet finished
         await dashboardPage.discoveryShouldFinish();
-        await settingsPage.navigateTo();
-        await settingsPage.deviceTabButton.click();
+        await settingsPage.navigateTo('device');
     });
 
     test('enable pin', async ({ page, trezorUserEnvLink, trezorInput }) => {

@@ -123,6 +123,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
 
                 {(isEditable ? urls : defaultUrls).map(url => (
                     <BackendInput
+                        data-testid="@settings/advance/url"
                         key={url}
                         url={url}
                         isActive={url === blockchain[symbol]?.url}

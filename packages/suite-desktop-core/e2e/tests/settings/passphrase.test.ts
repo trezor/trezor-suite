@@ -5,8 +5,7 @@ test.describe('Passphrase', { tag: ['@group=settings'] }, () => {
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
-        await settingsPage.navigateTo();
-        await settingsPage.deviceTabButton.click();
+        await settingsPage.navigateTo('device');
     });
 
     test('Enable Passphrase protection', async ({ page, trezorUserEnvLink }) => {

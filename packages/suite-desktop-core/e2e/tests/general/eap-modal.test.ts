@@ -17,8 +17,7 @@ test.beforeAll(async ({ onboardingPage }) => {
 
 test('Join early access button', { tag: '@settings' }, async ({ settingsPage }) => {
     const buttonText = 'Leave';
-    await settingsPage.navigateTo();
-    await settingsPage.applicationTabButton.click();
+    await settingsPage.navigateTo('application');
     await settingsPage.joinEarlyAccessProgram();
     expect(await settingsPage.earlyAccessJoinButton.textContent()).toContain(buttonText);
 });

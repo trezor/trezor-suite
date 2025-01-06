@@ -24,10 +24,9 @@ test(
     'Discover all Cardano account types',
     { tag: ['@group=wallet'] },
     async ({ dashboardPage, settingsPage, walletPage }) => {
-        await settingsPage.navigateTo();
-        await settingsPage.coinsTabButton.click();
-        await settingsPage.enableNetwork('ada');
-        await settingsPage.disableNetwork('btc');
+        await settingsPage.navigateTo('coins');
+        await settingsPage.coins.enableNetwork('ada');
+        await settingsPage.coins.disableNetwork('btc');
 
         await dashboardPage.navigateTo();
         await dashboardPage.discoveryShouldFinish();

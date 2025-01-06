@@ -39,7 +39,7 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         await page.getByTestId('@backup/check-item/wrote-seed-properly').click();
         await page.getByTestId('@backup/check-item/made-no-digital-copy').click();
         await page.getByTestId('@backup/check-item/will-hide-seed').click();
-        await expect(page.getByTestId('@onboarding/confirm-on-device')).not.toBeVisible();
+        await expect(page.getByTestId('@prompts/confirm-on-device')).not.toBeVisible();
 
         await page.getByTestId('@backup/start-button').click();
         await devicePrompt.confirmOnDevicePromptIsShown();
@@ -69,7 +69,7 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         await page.getByTestId('@pin-mismatch/try-again-button').click();
 
         // Retry PIN setup
-        await page.getByTestId('@onboarding/confirm-on-device').waitFor({ state: 'visible' });
+        await page.getByTestId('@prompts/confirm-on-device').waitFor({ state: 'visible' });
         await trezorUserEnvLink.pressYes();
 
         // Pin matrix appears again

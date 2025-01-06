@@ -13,8 +13,7 @@ test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () 
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
-        await settingsPage.navigateTo();
-        await settingsPage.deviceTabButton.click();
+        await settingsPage.navigateTo('device');
     });
 
     test('change all possible device settings', async ({ settingsPage, page }) => {

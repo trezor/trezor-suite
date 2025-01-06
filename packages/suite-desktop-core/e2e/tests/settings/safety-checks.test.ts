@@ -4,8 +4,7 @@ test.describe('Safety Checks Settings', { tag: ['@group=settings'] }, () => {
     test.use({ emulatorStartConf: { wipe: true } });
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.navigateTo();
-        await settingsPage.deviceTabButton.click();
+        await settingsPage.navigateTo('device');
     });
 
     test('There is button in device settings, that opens safety checks modal.', async ({

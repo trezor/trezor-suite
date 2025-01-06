@@ -18,6 +18,17 @@ export class WalletActions {
     readonly coinMarketDropdownBuyButton: Locator;
     readonly balanceOfNetwork = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@wallet/coin-balance/value-${symbol}`);
+    readonly accountDetailsTabButton: Locator;
+    readonly accountDetails: Locator;
+    readonly showPublicKeyButton: Locator;
+    readonly copyPublicKeyButton: Locator;
+    readonly sendButton: Locator;
+    readonly sendForm: Locator;
+    readonly receiveButton: Locator;
+    readonly revealAddressButton: Locator;
+    readonly copyAddressButton: Locator;
+    readonly stakingButton: Locator;
+    readonly stakingCardano: Locator;
 
     constructor(private readonly page: Page) {
         this.searchInput = this.page.getByTestId('@wallet/accounts/search-icon');
@@ -35,6 +46,17 @@ export class WalletActions {
         this.coinMarketDropdownBuyButton = this.page
             .getByRole('list')
             .getByTestId('@wallet/menu/wallet-coinmarket-buy');
+        this.accountDetailsTabButton = this.page.getByTestId('@wallet/menu/wallet-details');
+        this.accountDetails = this.page.getByTestId('@wallet/account-details');
+        this.showPublicKeyButton = this.page.getByTestId('@wallets/details/show-xpub-button');
+        this.copyPublicKeyButton = this.page.getByRole('button', { name: 'Copy public key' });
+        this.sendButton = this.page.getByTestId('@wallet/menu/wallet-send');
+        this.sendForm = this.page.getByTestId('@wallet/send/outputs-and-options');
+        this.receiveButton = this.page.getByTestId('@wallet/menu/wallet-receive');
+        this.revealAddressButton = this.page.getByTestId('@wallet/receive/reveal-address-button');
+        this.copyAddressButton = this.page.getByTestId('@metadata/copy-address-button');
+        this.stakingButton = this.page.getByTestId('@wallet/menu/staking');
+        this.stakingCardano = this.page.getByTestId('@wallet/cardano/staking');
     }
 
     @step()
@@ -66,13 +88,13 @@ export class WalletActions {
             .count();
     }
 
-    walletMenuButton = ({ symbol = 'btc', atIndex = 0 }: WalletParams = {}): Locator => {
+    accountButton = ({ symbol = 'btc', atIndex = 0 }: WalletParams = {}): Locator => {
         return this.page.getByTestId(`@account-menu/${symbol}/normal/${atIndex}`);
     };
 
     @step()
     async openCoinMarket(params: WalletParams = {}) {
-        await this.walletMenuButton(params).click();
+        await this.accountButton(params).click();
         //TODO: #16073 We cannot set resolution for Electron. on CI button is hidden under dropdown due to a breakpoint
         const isBuyButtonHidden = !(await this.coinMarketBuyButton.isVisible());
         if (isBuyButtonHidden) {
@@ -85,7 +107,7 @@ export class WalletActions {
 
     @step()
     async openExchangeMarket(params: WalletParams = {}) {
-        await this.walletMenuButton(params).click();
+        await this.accountButton(params).click();
         await this.coinExchangeButton.click();
     }
 }

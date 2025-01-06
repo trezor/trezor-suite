@@ -92,7 +92,7 @@ const Details = () => {
                 </>
             )}
 
-            <Card>
+            <Card data-testid="@wallet/account-details">
                 <Column gap={spacings.xxxl} hasDivider>
                     <DetailsRow
                         title="TR_ACCOUNT_DETAILS_TYPE_HEADER"

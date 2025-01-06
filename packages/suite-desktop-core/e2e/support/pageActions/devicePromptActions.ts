@@ -1,14 +1,16 @@
 import { Locator, Page, expect } from '@playwright/test';
 
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+
 import { step } from '../common';
 
 export class DevicePromptActions {
-    private readonly confirmOnDevicePrompt: Locator;
+    readonly confirmOnDevicePrompt: Locator;
     private readonly connectDevicePrompt: Locator;
     readonly modal: Locator;
 
     constructor(page: Page) {
-        this.confirmOnDevicePrompt = page.getByTestId('@onboarding/confirm-on-device');
+        this.confirmOnDevicePrompt = page.getByTestId('@prompts/confirm-on-device');
         this.connectDevicePrompt = page.getByTestId('@connect-device-prompt');
         this.modal = page.getByTestId('@modal');
     }
@@ -21,5 +23,11 @@ export class DevicePromptActions {
     @step()
     async connectDevicePromptIsShown() {
         await expect(this.connectDevicePrompt).toBeVisible();
+    }
+
+    @step()
+    async waitForPromptAndConfirm() {
+        await this.confirmOnDevicePromptIsShown();
+        await TrezorUserEnvLink.pressYes();
     }
 }

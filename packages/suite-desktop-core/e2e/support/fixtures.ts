@@ -16,7 +16,7 @@ import {
     launchSuite,
     TrezorUserEnvLinkProxy,
 } from './common';
-import { SettingsActions } from './pageActions/settingsActions';
+import { SettingsActions } from './pageActions/settings/settingsActions';
 import { SuiteGuide } from './pageActions/suiteGuideActions';
 import { WalletActions } from './pageActions/walletActions';
 import { OnboardingActions } from './pageActions/onboarding/onboardingActions';
