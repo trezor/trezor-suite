@@ -1,0 +1,68 @@
+/**
+ * 
+ * 
+Using the all seed:
+* Generate xpub without passphrase
+
+trezorctl btc get-public-node -n m/45h/0
+Please enter passphrase on your Trezor device.
+node.depth: 2
+node.fingerprint: 02fef5d4
+node.child_num: 0
+node.chain_code: 8eb1f96a45dcb693dbad61f5184871d999127a37f1b0d4dae9964eaf3fb0e15b
+node.public_key: 03922315cd2d2d874e4c55add2e0ea41af9c2957f02c0abe0f55285d364a067b61
+xpub: xpub69numS2foCPDWvbnTE95o7m92kWr1CFoSA91EHAADBDHcaQw6VwrDFbg5KUGGnyLdKjJ3ohRG4BHQNzpM1kBbVPKkBQB5j221NcvByaWDz2
+
+
+* Generate xpub with passphrase "a"
+trezorctl btc get-public-node -n m/45h/0
+Please enter passphrase on your Trezor device.
+node.depth: 2
+node.fingerprint: 6cd806f9
+node.child_num: 0
+node.chain_code: 764d773d7e086fb959638f1cb5acf6dfd0f0cfa9618557b2c3e6b8d35c999c82
+node.public_key: 027545fa5766d5622a29d2b8cb3400972317d7c4bd58e3fb9b739845fe8d7bfea9
+xpub: xpub6Aa2xqN8KL1Z7pkp6fVhKdw9LfCiFnrE2ob7sf3K3JMro1TQhzirx6715Jg4BDLaQ6Hx5jGdPmpv1Vah8nacjooyGVEpdAt6Uh3RVbvrpzP
+
+* Generate xpub with passphrase "b"
+trezorctl btc get-public-node -n m/45h/0
+Please enter passphrase on your Trezor device.
+node.depth: 2
+node.fingerprint: cc987b3b
+node.child_num: 0
+node.chain_code: e976cafd8082e6c392a9e31032f9388791acadea3fba795e83c2425bb747e20c
+node.public_key: 031f107fe6c44315057613d2f9c7e098faac3964aeefff6d3f894c7c7bba73a333
+xpub: xpub6BGrXGfWm6MtezCbx6zmm73uZwve9DvLX2QhS5FXchkJ6GSkJom8Bekqr7ezyqHHCvPTTwMcmzLsSddCQBnnxtXqjqpeE2oQVZ1ftxVQfrr
+
+
+ trezorctl btc get-address -n m/45h/0/0/7 -m 3 -x xpub0101 -x xpub0202 -x xpub0303
+
+
+* Get address for multisig xpub0101 - xpub0202 - xpub0303
+trezorctl btc get-address -n m/45h/0/0/7 -m 3 -x xpub69numS2foCPDWvbnTE95o7m92kWr1CFoSA91EHAADBDHcaQw6VwrDFbg5KUGGnyLdKjJ3ohRG4BHQNzpM1kBbVPKkBQB5j221NcvByaWDz2 -x xpub6Aa2xqN8KL1Z7pkp6fVhKdw9LfCiFnrE2ob7sf3K3JMro1TQhzirx6715Jg4BDLaQ6Hx5jGdPmpv1Vah8nacjooyGVEpdAt6Uh3RVbvrpzP -x xpub6BGrXGfWm6MtezCbx6zmm73uZwve9DvLX2QhS5FXchkJ6GSkJom8Bekqr7ezyqHHCvPTTwMcmzLsSddCQBnnxtXqjqpeE2oQVZ1ftxVQfrr
+Please enter passphrase on your Trezor device.
+33jEiWu9kUTSiq4Z9xuwVHC6oZrhaE4RAf
+
+* Get address for multisig xpub0303 - xpub0101 - xpub0202
+
+trezorctl btc get-address -n m/45h/0/0/7 -m 3 -x xpub6BGrXGfWm6MtezCbx6zmm73uZwve9DvLX2QhS5FXchkJ6GSkJom8Bekqr7ezyqHHCvPTTwMcmzLsSddCQBnnxtXqjqpeE2oQVZ1ftxVQfrr -x xpub69numS2foCPDWvbnTE95o7m92kWr1CFoSA91EHAADBDHcaQw6VwrDFbg5KUGGnyLdKjJ3ohRG4BHQNzpM1kBbVPKkBQB5j221NcvByaWDz2 -x xpub6Aa2xqN8KL1Z7pkp6fVhKdw9LfCiFnrE2ob7sf3K3JMro1TQhzirx6715Jg4BDLaQ6Hx5jGdPmpv1Vah8nacjooyGVEpdAt6Uh3RVbvrpzP
+Please enter passphrase on your Trezor device.
+
+
+trezorctl btc get-address -n m/45h/0/0/7 -m 3 -x xpub6BGrXGfWm6MtezCbx6zmm73uZwve9DvLX2QhS5FXchkJ6GSkJom8Bekqr7ezyqHHCvPTTwMcmzLsSddCQBnnxtXqjqpeE2oQVZ1ftxVQfrr -x xpub69numS2foCPDWvbnTE95o7m92kWr1CFoSA91EHAADBDHcaQw6VwrDFbg5KUGGnyLdKjJ3ohRG4BHQNzpM1kBbVPKkBQB5j221NcvByaWDz2 -x xpub6Aa2xqN8KL1Z7pkp6fVhKdw9LfCiFnrE2ob7sf3K3JMro1TQhzirx6715Jg4BDLaQ6Hx5jGdPmpv1Vah8nacjooyGVEpdAt6Uh3RVbvrpzP --multisig-sort-pubkeys
+Please enter passphrase on your Trezor device.
+3MRC9dTyRWpmoNwbUa6XTeV2KvbPhciNYN
+
+trezorctl btc get-address -n m/45h/0/0/7 -m 3 -x xpub6BGrXGfWm6MtezCbx6zmm73uZwve9DvLX2QhS5FXchkJ6GSkJom8Bekqr7ezyqHHCvPTTwMcmzLsSddCQBnnxtXqjqpeE2oQVZ1ftxVQfrr -x xpub69numS2foCPDWvbnTE95o7m92kWr1CFoSA91EHAADBDHcaQw6VwrDFbg5KUGGnyLdKjJ3ohRG4BHQNzpM1kBbVPKkBQB5j221NcvByaWDz2 -x xpub6Aa2xqN8KL1Z7pkp6fVhKdw9LfCiFnrE2ob7sf3K3JMro1TQhzirx6715Jg4BDLaQ6Hx5jGdPmpv1Vah8nacjooyGVEpdAt6Uh3RVbvrpzP --multisig-sort-pubkeys
+Please enter passphrase on your Trezor device.
+3MRC9dTyRWpmoNwbUa6XTeV2KvbPhciNYN
+
+trezorctl btc get-address -n m/45h/0/0/7 -m 3 -x xpub69numS2foCPDWvbnTE95o7m92kWr1CFoSA91EHAADBDHcaQw6VwrDFbg5KUGGnyLdKjJ3ohRG4BHQNzpM1kBbVPKkBQB5j221NcvByaWDz2 -x xpub6Aa2xqN8KL1Z7pkp6fVhKdw9LfCiFnrE2ob7sf3K3JMro1TQhzirx6715Jg4BDLaQ6Hx5jGdPmpv1Vah8nacjooyGVEpdAt6Uh3RVbvrpzP -x xpub6BGrXGfWm6MtezCbx6zmm73uZwve9DvLX2QhS5FXchkJ6GSkJom8Bekqr7ezyqHHCvPTTwMcmzLsSddCQBnnxtXqjqpeE2oQVZ1ftxVQfrr --multisig-sort-pubkeys
+Please enter passphrase on your Trezor device.
+33jEiWu9kUTSiq4Z9xuwVHC6oZrhaE4RAf
+
+trezorctl btc get-address -n m/45h/0/0/7 -m 3 -x xpub69numS2foCPDWvbnTE95o7m92kWr1CFoSA91EHAADBDHcaQw6VwrDFbg5KUGGnyLdKjJ3ohRG4BHQNzpM1kBbVPKkBQB5j221NcvByaWDz2 -x xpub6Aa2xqN8KL1Z7pkp6fVhKdw9LfCiFnrE2ob7sf3K3JMro1TQhzirx6715Jg4BDLaQ6Hx5jGdPmpv1Vah8nacjooyGVEpdAt6Uh3RVbvrpzP -x xpub6BGrXGfWm6MtezCbx6zmm73uZwve9DvLX2QhS5FXchkJ6GSkJom8Bekqr7ezyqHHCvPTTwMcmzLsSddCQBnnxtXqjqpeE2oQVZ1ftxVQfrr --multisig-sort-pubkeys
+Please enter passphrase on your Trezor device.
+33jEiWu9kUTSiq4Z9xuwVHC6oZrhaE4RAf
+
+ */
