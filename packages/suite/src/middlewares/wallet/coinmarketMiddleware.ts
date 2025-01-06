@@ -4,7 +4,11 @@ import { UI } from '@trezor/connect';
 import { Route } from '@suite-common/suite-types';
 
 import { AppState, Action, Dispatch } from 'src/types/suite';
-import { COINMARKET_COMMON } from 'src/actions/wallet/constants';
+import {
+    COINMARKET_COMMON,
+    COINMARKET_EXCHANGE,
+    COINMARKET_SELL,
+} from 'src/actions/wallet/constants';
 import { INVITY_API_RELOAD_DATA_AFTER_MS } from 'src/constants/wallet/coinmarket/metadata';
 import invityAPI from 'src/services/suite/invityAPI';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
@@ -29,6 +33,22 @@ const getTradeTypeByRoute = (route: Route | undefined): CoinmarketTradeType | un
     }
 };
 
+/**
+ * In the Sell and Swap section an account can be changed by a user in the select
+ */
+export const getAccountAccordingToRoute = (state: AppState) => {
+    const tradeType = getTradeTypeByRoute(state.router.route);
+
+    const { account } = state.wallet.selectedAccount;
+    const sellSelectedAccount = state.wallet.coinmarket.sell.coinmarketAccount;
+    const exchangeSelectedAccount = state.wallet.coinmarket.exchange.coinmarketAccount;
+
+    if (tradeType === 'sell' && sellSelectedAccount) return sellSelectedAccount;
+    if (tradeType === 'exchange' && exchangeSelectedAccount) return exchangeSelectedAccount;
+
+    return account;
+};
+
 export const coinmarketMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
@@ -40,7 +60,7 @@ export const coinmarketMiddleware =
         const { router, modal } = state;
 
         if (action.type === COINMARKET_COMMON.LOAD_DATA) {
-            const { account, status } = state.wallet.selectedAccount;
+            const account = getAccountAccordingToRoute(state);
             const { platforms, coins } = state.wallet.coinmarket.info;
             const { buyInfo } = state.wallet.coinmarket.buy;
 
@@ -48,7 +68,6 @@ export const coinmarketMiddleware =
             const isDifferentAccount = currentAccountDescriptor !== account?.descriptor;
 
             if (
-                status === 'loaded' &&
                 account &&
                 !isLoading &&
                 (isDifferentAccount ||
@@ -180,6 +199,18 @@ export const coinmarketMiddleware =
 
             if (cleanupPrefilledFromCryptoId) {
                 api.dispatch(coinmarketCommonActions.setCoinmarketPrefilledFromCryptoId(undefined));
+            }
+        }
+
+        // after an account change in the Sell or Swap update the invityAPIKey based on the account
+        if (
+            action.type === COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT ||
+            action.type === COINMARKET_SELL.SET_COINMARKET_ACCOUNT
+        ) {
+            const account = getAccountAccordingToRoute(newState);
+
+            if (account) {
+                invityAPI.createInvityAPIKey(account.descriptor);
             }
         }
 
