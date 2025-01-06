@@ -25,7 +25,7 @@ const Container = styled.div`
     padding: ${spacingsPx.xs} ${spacingsPx.md};
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
-    overflow: hidden;
+    overflow: auto hidden;
     z-index: ${zIndices.pageHeader};
 `;
 
