@@ -44,9 +44,10 @@ export const AssetItem = ({
 }: AssetItemProps) => {
     const getCoinLogo = () =>
         isCoinSymbol(symbol) ? <CoinLogo size={24} symbol={symbol} /> : null;
-    const displaySymbol = isNetworkSymbol(ticker)
-        ? getNetworkDisplaySymbol(ticker)
-        : ticker.toUpperCase();
+    const displaySymbol =
+        isNetworkSymbol(ticker) && !contractAddress
+            ? getNetworkDisplaySymbol(ticker)
+            : ticker.toUpperCase();
 
     return (
         <ClickableContainer

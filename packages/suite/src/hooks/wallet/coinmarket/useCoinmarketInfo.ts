@@ -31,9 +31,10 @@ const toCryptoOption = (
 ): CoinmarketCryptoSelectItemProps => {
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
     const coinInfoSymbol = coinInfo.symbol.toLowerCase();
-    const displaySymbol = isNetworkSymbol(coinInfoSymbol)
-        ? getNetwork(coinInfoSymbol)?.displaySymbol
-        : coinInfoSymbol.toUpperCase();
+    const displaySymbol =
+        isNetworkSymbol(coinInfoSymbol) && !contractAddress
+            ? getNetwork(coinInfoSymbol)?.displaySymbol
+            : coinInfoSymbol.toUpperCase();
 
     return {
         type: 'currency',
