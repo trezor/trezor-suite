@@ -5,11 +5,13 @@ import TrezorConnect, { ERRORS } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { createThunk } from '@suite-common/redux-utils';
+import { getFirmwareVersion } from '@trezor/device-utils';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { Dispatch, GetState } from 'src/types/suite';
 import * as DEVICE from 'src/constants/suite/device';
+import { reportCheckFail } from 'src/components/suite/SecurityCheck/useReportDeviceCompromised';
 
 import { selectSuiteSettings } from '../../reducers/suite/suiteReducer';
 
@@ -166,7 +168,23 @@ export const resetDevice =
         });
 
         if (!result.success) {
-            dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'Something went wrong, try again.',
+                }),
+            );
+            if (result.payload.code === 'Failure_EntropyCheck') {
+                const revision = device?.features?.revision;
+                const version = getFirmwareVersion(device);
+                const vendor = device?.features?.fw_vendor;
+                reportCheckFail('Entropy', {
+                    revision,
+                    version,
+                    vendor,
+                    error: result.payload.error,
+                });
+            }
         }
 
         return result;
