@@ -1,4 +1,4 @@
-import { AppUpdateEvent } from '@trezor/suite-analytics';
+import { AppUpdateEvent, SuiteAnalyticsEventSuiteReady } from '@trezor/suite-analytics';
 import {
     getScreenWidth,
     getScreenHeight,
@@ -48,7 +48,9 @@ export const redactTransactionIdFromAnchor = (anchor?: string) => {
 // 1. replace coinjoin by taproot
 export const redactRouterUrl = (url: string) => url.replace(/coinjoin/g, 'taproot');
 
-export const getSuiteReadyPayload = async (state: AppState) => {
+export const getSuiteReadyPayload = async (
+    state: AppState,
+): Promise<SuiteAnalyticsEventSuiteReady['payload']> => {
     const systemInformation = await getOptionalSystemInformation();
 
     return {

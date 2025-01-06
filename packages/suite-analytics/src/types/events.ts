@@ -1,37 +1,42 @@
 import { EventType } from '../constants';
 import type { AppUpdateEvent, OnboardingAnalytics } from './definitions';
 
+export type SuiteAnalyticsEventSuiteReady = {
+    type: EventType.SuiteReady;
+    payload: {
+        language: string;
+        enabledNetworks: string[];
+        customBackends: string[];
+        localCurrency: string;
+        bitcoinUnit: string;
+        discreetMode: boolean;
+        screenWidth: number;
+        screenHeight: number;
+        tor: boolean;
+        labeling: string;
+        rememberedStandardWallets: number;
+        rememberedHiddenWallets: number;
+        theme: string;
+        suiteVersion: string;
+        earlyAccessProgram: boolean;
+        experimentalFeatures?: string[];
+        browserName: string;
+        browserVersion: string;
+        osName: string;
+        osVersion: string;
+        windowWidth: number;
+        windowHeight: number;
+        platformLanguages: string;
+        autodetectLanguage: boolean;
+        autodetectTheme: boolean;
+        desktopOsVersion: string | undefined;
+        desktopOsName: string | undefined;
+        desktopOsArchitecture: string | undefined;
+    };
+};
+
 export type SuiteAnalyticsEvent =
-    | {
-          type: EventType.SuiteReady;
-          payload: {
-              language: string;
-              enabledNetworks: string[];
-              customBackends: string[];
-              localCurrency: string;
-              bitcoinUnit: string;
-              discreetMode: boolean;
-              screenWidth: number;
-              screenHeight: number;
-              tor: boolean;
-              labeling: string;
-              rememberedStandardWallets: number;
-              rememberedHiddenWallets: number;
-              theme: string;
-              suiteVersion: string;
-              earlyAccessProgram: boolean;
-              experimentalFeatures?: string[];
-              browserName: string;
-              browserVersion: string;
-              osName: string;
-              osVersion: string;
-              windowWidth: number;
-              windowHeight: number;
-              platformLanguages: string;
-              autodetectLanguage: boolean;
-              autodetectTheme: boolean;
-          };
-      }
+    | SuiteAnalyticsEventSuiteReady
     | {
           type: EventType.RouterLocationChange;
           payload: {
