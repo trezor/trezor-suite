@@ -4,6 +4,7 @@ import { motion, AnimatePresence, MotionProps } from 'framer-motion';
 import { TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { borders, spacingsPx } from '@trezor/theme';
+import { getNetwork } from '@suite-common/wallet-config';
 
 import { useSelector, useAccountSearch } from 'src/hooks/suite';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
@@ -46,13 +47,15 @@ export const CoinsFilter = () => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const { supportedMainnets, supportedTestnets } = useNetworkSupport();
 
-    const supportedNetworks = [...supportedMainnets, ...supportedTestnets].map(
+    const supportedNetworkSymbols = [...supportedMainnets, ...supportedTestnets].map(
         network => network.symbol,
     );
 
-    const availableNetworks = enabledNetworks.filter(symbol => supportedNetworks.includes(symbol));
+    const availableNetworksSymbols = enabledNetworks.filter(networkSymbol =>
+        supportedNetworkSymbols.includes(networkSymbol),
+    );
 
-    const showCoinFilter = availableNetworks.length > 1;
+    const showCoinFilter = availableNetworksSymbols.length > 1;
 
     const coinAnimcationConfig: MotionProps = {
         initial: {
@@ -83,27 +86,31 @@ export const CoinsFilter = () => {
             }}
         >
             <AnimatePresence initial={false}>
-                {availableNetworks.map(network => {
-                    const isSelected = coinFilter === network;
+                {availableNetworksSymbols.map(networkSymbol => {
+                    const isSelected = coinFilter === networkSymbol;
 
                     return (
                         <Tooltip
-                            key={network}
-                            content={network.toUpperCase()}
+                            key={networkSymbol}
+                            content={getNetwork(networkSymbol).name}
                             cursor="pointer"
                             delayShow={TOOLTIP_DELAY_NORMAL}
                         >
-                            <motion.div key={network} {...coinAnimcationConfig} layout>
+                            <motion.div key={networkSymbol} {...coinAnimcationConfig} layout>
                                 <StyledCoinLogo
-                                    data-testid={`@account-menu/filter/${network}`}
-                                    symbol={network}
+                                    data-testid={`@account-menu/filter/${networkSymbol}`}
+                                    symbol={networkSymbol}
                                     size={16}
-                                    data-test-activated={coinFilter === network}
+                                    data-test-activated={coinFilter === networkSymbol}
                                     $isSelected={isSelected}
                                     onClick={e => {
                                         e.stopPropagation();
                                         // select the coin or deactivate if it's already selected
-                                        setCoinFilter(coinFilter === network ? undefined : network);
+                                        setCoinFilter(
+                                            coinFilter === networkSymbol
+                                                ? undefined
+                                                : networkSymbol,
+                                        );
                                     }}
                                 />
                             </motion.div>
