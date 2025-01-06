@@ -12049,6 +12049,10 @@ __metadata:
 "@trezor/crypto-utils@workspace:*, @trezor/crypto-utils@workspace:packages/crypto-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/crypto-utils@workspace:packages/crypto-utils"
+  dependencies:
+    tsx: "npm:^4.16.3"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 

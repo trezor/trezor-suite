@@ -1,12 +1,43 @@
 {
     "name": "@trezor/crypto-utils",
     "version": "1.0.0",
-    "private": true,
-    "license": "See LICENSE.md in repo root",
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/crypto-utils",
+    "keywords": [
+        "Trezor",
+        "trezor-connect"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "npmPublishAccess": "public",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "description": "Collection of crypto utilities",
     "sideEffects": false,
     "main": "src/index",
+    "files": [
+        "lib/",
+        "CHANGELOG.md",
+        "!**/*.map"
+    ],
+    "publishConfig": {
+        "main": "lib/index.js"
+    },
     "scripts": {
+        "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/prepublish.js"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
+    },
+    "devDependencies": {
+        "tsx": "^4.16.3"
     }
 }

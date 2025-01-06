@@ -38,6 +38,8 @@
 
 /packages/connect-mobile @mroz22 @karliatto @martykan
 
+/packages/crypto-utils @mroz22 @marekrjpolak
+
 /packages/icons @trezor/suite-mobile
 
 /suite-common/message-system @tomasklim @matejkriz
