@@ -1,6 +1,6 @@
 import { StartEmu, SetupEmu } from '@trezor/trezor-user-env-link';
 
-import { getController, initTrezorConnect } from '../../common.setup';
+import { conditionalTest, getController, initTrezorConnect } from '../../common.setup';
 import TrezorConnect from '../../../src';
 
 const getAddress = (showOnTrezor: boolean, coin: string = 'regtest') => {
@@ -159,8 +159,7 @@ describe('TrezorConnect.cancel', () => {
         await assertGetAddressWorks();
     });
 
-    // todo: this should be conditionalTest(['2'])
-    it('Pin request - Cancel', async () => {
+    conditionalTest(['2'], 'Pin request - Cancel', async () => {
         await setupTest({
             setupParams: {
                 version: '1-latest',
@@ -190,8 +189,7 @@ describe('TrezorConnect.cancel', () => {
         expect(feat.payload).toMatchObject({ initialized: true });
     });
 
-    // todo: this should be conditionalTest(['2'])
-    it('Word request - Cancel', async () => {
+    conditionalTest(['2'], 'Word request - Cancel', async () => {
         await controller.startEmu({ version: '1-latest', model: 'T1B1', wipe: true });
         await controller.startBridge(
             // @ts-expect-error
