@@ -23,6 +23,10 @@ on:
       - "yarn.lock"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   transport-e2e-test:
     if: github.repository == 'trezor/trezor-suite'

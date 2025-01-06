@@ -17,6 +17,10 @@ on:
   workflow_dispatch:
     # manual dispatch will not add any comment to PR, use label 'build-mobile' if PR exists
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   update:
     if: ( github.event.action != 'labeled' || contains(github.event.pull_request.labels.*.name, 'build-mobile')) && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private')
