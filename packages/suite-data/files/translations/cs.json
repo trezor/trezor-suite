@@ -119,7 +119,7 @@
   "RECEIVE_TABLE_NOT_USED": "Nepoužito",
   "RECEIVE_TABLE_RECEIVED": "Celkem přijato",
   "RECEIVE_TABLE_USED": "Použito",
-  "RECEIVE_TITLE": "Přijmout {symbol}",
+  "RECEIVE_TITLE": "Přijato {symbol}",
   "RECEIVE_UNVERIFIED_ADDRESS_REVEAL": "Vygenerovat neověřenou adresu",
   "RECIPIENT_ADD": "Přidat příjemce",
   "RECIPIENT_ADDRESS": "Adresa",

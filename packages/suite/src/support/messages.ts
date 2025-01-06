@@ -5485,12 +5485,12 @@ export default defineMessages({
         id: 'AMOUNT_IS_LESS_THAN_RESERVE',
     },
     AMOUNT_NOT_ENOUGH_CURRENCY_FEE: {
-        defaultMessage: 'Not enough {displayNetworkSymbol} to cover transaction fee',
+        defaultMessage: 'Not enough {networkDisplaySymbol} to cover transaction fee',
         id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
     },
     AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT: {
         defaultMessage:
-            'Insufficient {symbol} to cover the transaction fee ({feeAmount} {symbol}).',
+            'Insufficient {networkDisplaySymbol} to cover the transaction fee ({feeAmount} {networkDisplaySymbol}).',
         id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
     },
     REMAINING_BALANCE_LESS_THAN_RENT: {
@@ -9059,7 +9059,7 @@ export default defineMessages({
     TR_STAKE_BY_STAKING_YOU_CAN_EARN_REWARDS: {
         id: 'TR_STAKE_BY_STAKING_YOU_CAN_EARN_REWARDS',
         defaultMessage:
-            "Stake your {networkSymbol} to earn rewards and help enhance the network's security and stability.",
+            "Stake your {networkDisplaySymbol} to earn rewards and help enhance the network's security and stability.",
     },
     TR_STAKE_SECURELY_DELEGATE_TO_EVERSTAKE: {
         id: 'TR_STAKE_SECURELY_DELEGATE_TO_EVERSTAKE',
