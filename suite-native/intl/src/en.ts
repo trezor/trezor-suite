@@ -402,6 +402,12 @@ export const en = {
                 updateButton: 'Update firmware',
                 title: 'Firmware update',
                 subtitle: 'New firmware is now available. Update your device now.',
+                changelog: {
+                    button: 'What’s new?',
+                    title: 'What’s new?',
+                    closeButton: 'Close',
+                    changelogUnavailable: 'No changelog available',
+                },
             },
             firmwareUpdateProgress: {
                 initializing: { title: 'Preparing your Trezor' },

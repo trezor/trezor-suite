@@ -1036,3 +1036,14 @@ export const selectDeviceUpdateFirmwareVersion = (state: DeviceRootState) => {
 
     return device ? getFwUpdateVersion(device) : null;
 };
+
+export const selectFirmwareChangelog = (state: DeviceRootState) => {
+    const device = selectSelectedDevice(state);
+    const isBitcoinOnlyFirmware = selectHasBitcoinOnlyFirmware(state);
+
+    if (isBitcoinOnlyFirmware) {
+        return device?.firmwareRelease?.changelog?.[0]?.changelog_bitcoinonly;
+    }
+
+    return device?.firmwareRelease?.changelog?.[0]?.changelog;
+};

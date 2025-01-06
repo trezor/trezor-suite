@@ -23,6 +23,7 @@ import { useAlert } from '@suite-native/alerts';
 import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 
 import { FirmwareUpdateVersionCard } from './FirmwareVersionCard';
+import { FirmwareChangelogButton } from './FirmwareChangelogButton';
 
 const firmwareUpdateButtonStyle = prepareNativeStyle(utils => ({
     marginHorizontal: utils.spacings.sp16,
@@ -86,7 +87,8 @@ export const FirmwareUpdateScreen = () => {
                     <Translation id="moduleDeviceSettings.firmware.firmwareUpdateScreen.subtitle" />
                 </Text>
             </Box>
-            <FirmwareUpdateVersionCard marginTop="sp32" />
+            <FirmwareUpdateVersionCard marginTop="sp32" marginBottom="sp12" />
+            <FirmwareChangelogButton />
         </Screen>
     );
 };
