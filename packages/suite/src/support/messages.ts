@@ -1666,10 +1666,6 @@ export default defineMessages({
         defaultMessage: 'What about your current wallet backup?',
         id: 'TR_MULTI_SHARE_BACKUP_CALLOUT_2',
     },
-    TR_MULTI_SHARE_BACKUP_CALLOUT_3: {
-        defaultMessage: 'Note',
-        id: 'TR_MULTI_SHARE_BACKUP_CALLOUT_3',
-    },
     TR_MULTI_SHARE_BACKUP_EXPLANATION_1: {
         defaultMessage:
             'Generates multiple 20-word shares (wordlists) to recover your wallet. A minimum number of shares, set by you, are needed to regain access to your wallet.',
@@ -1704,10 +1700,6 @@ export default defineMessages({
         defaultMessage:
             "You've taken a major step in enhancing your security. Now, choose trusted individuals or secure locations for storing your shares.",
         id: 'TR_CREATE_MULTI_SHARE_BACKUP_CREATED_INFO_TEXT',
-    },
-    TR_MULTI_SHARE_BACKUP_BACKUPS: {
-        defaultMessage: 'Your wallet backups',
-        id: 'TR_MULTI_SHARE_BACKUP_BACKUPS',
     },
     TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT: {
         defaultMessage: 'Your previous wallet backup',
@@ -1752,10 +1744,6 @@ export default defineMessages({
     TR_MULTI_SHARE_BACKUP_LOST_YOUR_BACKUP_INFO_TEXT: {
         defaultMessage: 'There may be no options to recover your wallet. Contact Trezor Support.',
         id: 'TR_MULTI_SHARE_BACKUP_LOST_YOUR_BACKUP_INFO_TEXT',
-    },
-    TR_NEXT_UP: {
-        defaultMessage: 'Next',
-        id: 'TR_NEXT_UP',
     },
     TR_N_MIN: {
         defaultMessage: '{n} min',
@@ -1875,10 +1863,6 @@ export default defineMessages({
     TR_HIDDEN: {
         defaultMessage: 'Hidden',
         id: 'TR_HIDDEN',
-    },
-    TR_HIDDEN_TOKENS: {
-        defaultMessage: 'Hidden tokens',
-        id: 'TR_HIDDEN_TOKENS',
     },
     TR_CONFIRM: {
         defaultMessage: 'Confirm',
@@ -3338,10 +3322,6 @@ export default defineMessages({
     TR_TOKEN_ID_COLON: {
         defaultMessage: 'Token ID:',
         id: 'TR_TOKEN_ID_COLON',
-    },
-    TR_TOKEN_ID: {
-        defaultMessage: 'Token ID',
-        id: 'TR_TOKEN_ID',
     },
     TR_NO_TRANSPORT: {
         defaultMessage: "Your browser can't communicate with your device",
@@ -5001,7 +4981,7 @@ export default defineMessages({
     },
     TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT: {
         id: 'TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT',
-        defaultMessage: 'Support for Ethereum L2 networks (Arbitrum One, Base, Optimism)',
+        defaultMessage: 'Support Ethereum L2 networks',
     },
     TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT_DESCRIPTION',
@@ -5037,7 +5017,7 @@ export default defineMessages({
     TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION',
         defaultMessage:
-            'Connect to an external Tor daemon running on port 9050, rather than using the one bundled with Trezor Suite.',
+            'Connect to Tor daemon running on port 9050, rather than using the one bundled with Trezor Suite.',
     },
     TR_EXPERIMENTAL_TOR_EXTERNAL_PORT: {
         id: 'TR_EXPERIMENTAL_TOR_EXTERNAL_PORT',
@@ -5046,7 +5026,7 @@ export default defineMessages({
     TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION',
         defaultMessage:
-            'Allows you to use Tor daemon running in a external process instead of the one bundled with Trezor Suite.',
+            'Use Tor daemon running in an external process instead of the one bundled with Trezor Suite.',
     },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
@@ -5448,10 +5428,6 @@ export default defineMessages({
     AMOUNT: {
         defaultMessage: 'Amount',
         id: 'AMOUNT',
-    },
-    TR_QUANTITY: {
-        defaultMessage: 'Quantity',
-        id: 'TR_QUANTITY',
     },
     AMOUNT_SEND_MAX: {
         id: 'AMOUNT_SEND_MAX',
@@ -6286,10 +6262,6 @@ export default defineMessages({
         id: 'TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES',
         defaultMessage: 'Enable automatic updates',
     },
-    TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES_NEW_TAG: {
-        id: 'TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES_NEW_TAG',
-        defaultMessage: 'New',
-    },
     TR_UPDATE_MODAL_NOT_NOW: {
         id: 'TR_UPDATE_MODAL_NOT_NOW',
         defaultMessage: 'Not now',
@@ -6957,15 +6929,6 @@ export default defineMessages({
         defaultMessage:
             'We want to be sure that your device is in tip-top shape before you start using it. Reach out to Trezor Support to find out what to do next.',
     },
-    TR_DEVICE_MAYBE_COMPROMISED_HEADING: {
-        id: 'TR_DEVICE_MAYBE_COMPROMISED_HEADING',
-        defaultMessage: 'Device verification unsuccessful',
-    },
-    TR_DEVICE_MAYBE_COMPROMISED_TEXT: {
-        id: 'TR_DEVICE_MAYBE_COMPROMISED_TEXT',
-        defaultMessage:
-            "Reconnect your device and try verifying again. If the issue continues, contact Trezor Support to figure out what's going on with your device and what to do next.",
-    },
     TR_DISCONNECT_DEVICE: {
         id: 'TR_DISCONNECT_DEVICE',
         defaultMessage: 'Disconnect your device from your laptop or computer.',
@@ -6977,10 +6940,6 @@ export default defineMessages({
     TR_USE_CHAT: {
         id: 'TR_USE_CHAT',
         defaultMessage: 'Click below and use the <b>Chat</b> option on the next page.',
-    },
-    TR_SEE_IF_ISSUE_PERSISTS: {
-        id: 'TR_SEE_IF_ISSUE_PERSISTS',
-        defaultMessage: 'See if issue persists.',
     },
     TR_CONTACT_TREZOR_SUPPORT: {
         id: 'TR_CONTACT_TREZOR_SUPPORT',
@@ -7148,11 +7107,6 @@ export default defineMessages({
     TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH: {
         id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH',
         defaultMessage: 'Firmware hash check failed. Your Trezor might be counterfeit.',
-    },
-    TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR: {
-        id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR',
-        defaultMessage:
-            "Firmware hash check couldn't be performed. Your Trezor might be counterfeit.",
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
@@ -7537,10 +7491,6 @@ export default defineMessages({
     TR_STAKING_REWARDS_ARE_RESTAKED: {
         id: 'TR_STAKING_REWARDS_ARE_RESTAKED',
         defaultMessage: 'Rewards are automatically restaked',
-    },
-    TR_STAKING_YOU_ARE_HERE: {
-        id: 'TR_STAKING_YOU_ARE_HERE',
-        defaultMessage: "You're here",
     },
     TR_STAKING_CONSOLIDATING_FUNDS: {
         id: 'TR_STAKING_CONSOLIDATING_FUNDS',
@@ -8846,7 +8796,7 @@ export default defineMessages({
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',
         defaultMessage:
-            'Your {networkDisplaySymbol} will be blocked during this period and cannot be canceled. <a>Learn more</a>',
+            "Your {networkDisplaySymbol} will be blocked during this period and can't be canceled. <a>Learn more</a>",
     },
     TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD: {
         id: 'TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD',
