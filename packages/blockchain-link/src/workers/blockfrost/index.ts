@@ -91,7 +91,8 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
 
 const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const api = await request.connect();
-    const info = await api.getAccountInfo(request.payload);
+    const { details = 'basic', ...rest } = request.payload;
+    const info = await api.getAccountInfo({ details, ...rest });
 
     return {
         type: RESPONSES.GET_ACCOUNT_INFO,
