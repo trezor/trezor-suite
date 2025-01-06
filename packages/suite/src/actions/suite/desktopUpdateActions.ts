@@ -26,7 +26,11 @@ export const checking = (): DesktopUpdateAction => ({ type: DESKTOP_UPDATE.CHECK
 export const available = (info: UpdateInfo) => (dispatch: Dispatch, getState: GetState) => {
     const { allowPrerelease } = getState().desktopUpdate;
 
-    const payload = getAppUpdatePayload(AppUpdateEventStatus.Available, allowPrerelease, info);
+    const payload = getAppUpdatePayload({
+        status: AppUpdateEventStatus.Available,
+        earlyAccessProgram: allowPrerelease,
+        updateInfo: info,
+    });
     analytics.report({
         type: EventType.AppUpdate,
         payload,
@@ -49,7 +53,11 @@ export const notAvailable = (info: UpdateInfo) => (dispatch: Dispatch) => {
 export const download = () => (dispatch: Dispatch, getState: GetState) => {
     const { latest, allowPrerelease } = getState().desktopUpdate;
 
-    const payload = getAppUpdatePayload(AppUpdateEventStatus.Download, allowPrerelease, latest);
+    const payload = getAppUpdatePayload({
+        status: AppUpdateEventStatus.Download,
+        earlyAccessProgram: allowPrerelease,
+        updateInfo: latest,
+    });
     analytics.report({
         type: EventType.AppUpdate,
         payload,
@@ -74,7 +82,11 @@ export const ready = (info: UpdateInfo) => (dispatch: Dispatch, getState: GetSta
 
     // update can fail even if it was downloaded successfully
     // TODO: Update successful status from electron layer
-    const payload = getAppUpdatePayload(AppUpdateEventStatus.Downloaded, allowPrerelease, latest);
+    const payload = getAppUpdatePayload({
+        status: AppUpdateEventStatus.Downloaded,
+        earlyAccessProgram: allowPrerelease,
+        updateInfo: latest,
+    });
     analytics.report({
         type: EventType.AppUpdate,
         payload,
@@ -90,13 +102,15 @@ export const installUpdate =
     (_: Dispatch, getState: GetState) => {
         const { desktopUpdate } = getState();
 
-        const payload = getAppUpdatePayload(
-            installNow
+        const payload = getAppUpdatePayload({
+            status: installNow
                 ? AppUpdateEventStatus.InstallAndRestart
                 : AppUpdateEventStatus.InstallOnQuit,
-            desktopUpdate.allowPrerelease,
-            desktopUpdate.latest,
-        );
+            earlyAccessProgram: desktopUpdate.allowPrerelease,
+            updateInfo: desktopUpdate.latest,
+            isAutoUpdated: desktopUpdate.isAutomaticUpdateEnabled,
+        });
+
         analytics.report({
             type: EventType.AppUpdate,
             payload,
@@ -122,7 +136,11 @@ export const error = (err: Error) => (dispatch: Dispatch, getState: GetState) =>
     if (state !== UpdateState.Checking) {
         dispatch(notificationsActions.addToast({ type: 'auto-updater-error', state }));
 
-        const payload = getAppUpdatePayload(AppUpdateEventStatus.Error, allowPrerelease, latest);
+        const payload = getAppUpdatePayload({
+            status: AppUpdateEventStatus.Error,
+            earlyAccessProgram: allowPrerelease,
+            updateInfo: latest,
+        });
         analytics.report({
             type: EventType.AppUpdate,
             payload,

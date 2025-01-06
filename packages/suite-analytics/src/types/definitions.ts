@@ -17,4 +17,5 @@ export type AppUpdateEvent = {
     status: AppUpdateEventStatus;
     earlyAccessProgram: boolean;
     isPrerelease?: boolean;
+    isAutoUpdated?: boolean;
 };

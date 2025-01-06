@@ -29,9 +29,10 @@ export type SuiteAnalyticsEventSuiteReady = {
         platformLanguages: string;
         autodetectLanguage: boolean;
         autodetectTheme: boolean;
-        desktopOsVersion: string | undefined;
-        desktopOsName: string | undefined;
-        desktopOsArchitecture: string | undefined;
+        desktopOsVersion?: string;
+        desktopOsName?: string;
+        desktopOsArchitecture?: string;
+        isAutomaticUpdateEnabled: boolean;
     };
 };
 

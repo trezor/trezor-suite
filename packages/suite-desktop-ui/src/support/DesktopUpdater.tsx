@@ -69,11 +69,11 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
     const hideWindow = useCallback(() => {
         dispatch(setUpdateModalVisibility('hidden'));
 
-        const payload = getAppUpdatePayload(
-            AppUpdateEventStatus.Closed,
-            desktopUpdate.allowPrerelease,
-            desktopUpdate.latest,
-        );
+        const payload = getAppUpdatePayload({
+            status: AppUpdateEventStatus.Closed,
+            earlyAccessProgram: desktopUpdate.allowPrerelease,
+            updateInfo: desktopUpdate.latest,
+        });
         analytics.report({
             type: EventType.AppUpdate,
             payload,

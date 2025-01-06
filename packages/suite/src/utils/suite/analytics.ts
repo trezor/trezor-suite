@@ -92,17 +92,26 @@ export const getSuiteReadyPayload = async (
         windowHeight: getWindowHeight(),
         autodetectLanguage: state.suite.settings.autodetect.language,
         autodetectTheme: state.suite.settings.autodetect.theme,
+
+        isAutomaticUpdateEnabled: state.desktopUpdate.isAutomaticUpdateEnabled,
     };
 };
 
-export const getAppUpdatePayload = (
-    status: AppUpdateEvent['status'],
-    earlyAccessProgram: boolean,
-    updateInfo?: UpdateInfo,
-): AppUpdateEvent => ({
+export const getAppUpdatePayload = ({
+    status,
+    earlyAccessProgram,
+    updateInfo,
+    isAutoUpdated,
+}: {
+    status: AppUpdateEvent['status'];
+    earlyAccessProgram: boolean;
+    updateInfo?: UpdateInfo;
+    isAutoUpdated?: boolean;
+}): AppUpdateEvent => ({
     fromVersion: process.env.VERSION || '',
     toVersion: updateInfo?.version,
     status,
     earlyAccessProgram,
     isPrerelease: updateInfo?.prerelease,
+    isAutoUpdated,
 });
