@@ -11,6 +11,7 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
     test('change all possible device settings', async ({
         page,
         settingsPage,
+        devicePrompt,
         trezorUserEnvLink,
     }) => {
         await test.step('Verify firmware modal', async () => {
@@ -26,9 +27,9 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
 
         await test.step('Change display rotation', async () => {
             await page.getByTestId('select-bar/East').click();
-            await expect(page.getByTestId('@prompts/confirm-on-device')).toBeVisible();
+            await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressYes();
-            await page.getByTestId('@prompts/confirm-on-device').waitFor({ state: 'detached' });
+            await devicePrompt.confirmOnDevicePromptIsHidden();
         });
     });
 

@@ -40,7 +40,7 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         await trezorUserEnvLink.pressYes();
         await trezorUserEnvLink.inputEmu('12');
         await trezorUserEnvLink.inputEmu('12');
-        await expect(page.getByTestId('@prompts/confirm-on-device')).toBeVisible();
+        await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
         await expect(page.getByTestId('@onboarding/pin/continue-button')).toBeVisible();
     });

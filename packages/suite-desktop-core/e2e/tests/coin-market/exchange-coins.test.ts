@@ -83,7 +83,7 @@ test.describe('Coinmarket Exchange', { tag: ['@group=other'] }, () => {
         // );
         // // Confirming the transaction
         // await page.getByTestId('@coinmarket/exchange/offers/confirm-on-trezor-button').click();
-        // await page.getByTestId('@prompts/confirm-on-device');
+        // await devicePrompt.confirmOnDevicePromptIsShown();
         // await trezorUserEnvLink.pressYes();
         // await page.getByTestId('@coinmarket/exchange/offers/continue-transaction-button').click();
         // await page.getByTestId('@coinmarket/exchange/offers/confirm-on-trezor-and-send').click();

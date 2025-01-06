@@ -21,6 +21,11 @@ export class DevicePromptActions {
     }
 
     @step()
+    async confirmOnDevicePromptIsHidden() {
+        await expect(this.confirmOnDevicePrompt).toBeHidden();
+    }
+
+    @step()
     async connectDevicePromptIsShown() {
         await expect(this.connectDevicePrompt).toBeVisible();
     }
