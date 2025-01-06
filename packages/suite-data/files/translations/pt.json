@@ -9,7 +9,7 @@
   "AMOUNT_IS_NOT_IN_RANGE_DECIMALS": "Máximo de {decimals} casas decimais permitido",
   "AMOUNT_IS_NOT_SET": "O valor não está definido",
   "AMOUNT_IS_TOO_LOW": "A quantidade é muito baixa.",
-  "AMOUNT_NOT_ENOUGH_CURRENCY_FEE": "Não é suficiente {symbol} para cobrir a taxa de transação",
+  "AMOUNT_NOT_ENOUGH_CURRENCY_FEE": "{symbol} insuficiente para cobrir a taxa de transação",
   "AMOUNT_SEND_MAX": "Enviar máx.",
   "BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION": "Uma tentativa anterior de fazer cópia de segurança deste dispositivo falhou. A cópia de segurança da carteira pode ser feita apenas uma vez.",
   "BACKUP_BACKUP_ALREADY_FAILED_HEADING": "Falha na cópia de segurança da carteira",
