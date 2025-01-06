@@ -55,7 +55,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                     children: (
                         <Translation
                             id="TR_RECEIVE_NETWORK"
-                            values={{ displayNetworkSymbol: displaySymbol }}
+                            values={{ networkDisplaySymbol: displaySymbol }}
                         />
                     ),
                 },
@@ -66,7 +66,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                     children: (
                         <Translation
                             id="TR_BUY_NETWORK"
-                            values={{ displayNetworkSymbol: displaySymbol }}
+                            values={{ networkDisplaySymbol: displaySymbol }}
                         />
                     ),
                 },
