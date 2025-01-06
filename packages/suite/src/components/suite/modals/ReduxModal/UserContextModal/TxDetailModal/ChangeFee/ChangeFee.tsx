@@ -37,7 +37,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
                 label={
                     <>
                         <Translation id="TR_CURRENT_FEE" />
-                        &nbsp;({feeRate})
+                        {feeRate && ` (${feeRate})`}
                     </>
                 }
                 typographyStyle="body"
