@@ -1771,7 +1771,7 @@
   "TR_STAKE_ETH_REWARDS_EARN": "Your rewards also earn. Keep them staked and watch your {networkDisplaySymbol} rewards soar.",
   "TR_STAKE_ETH_REWARDS_EARN_APY": "Your {networkDisplaySymbol} rewards also earn the APY rate. Keep your funds staked or add more to increase your rewards.",
   "TR_STAKE_ETH_SEE_MONEY_DANCE": "Watch your money dance",
-  "TR_STAKE_ETH_WILL_BE_BLOCKED": "Your {networkDisplaySymbol} will be blocked during this period and cannot be canceled. <a>Learn more</a>",
+  "TR_STAKE_ETH_WILL_BE_BLOCKED": "Your {networkDisplaySymbol} will be blocked during this period and can't be canceled. <a>Learn more</a>",
   "TR_STAKE_EVERSTAKE_MANAGES": "Everstake maintains and protects your staked {networkDisplaySymbol} <t>with their smart contracts, infrastructure, and technology.</t>",
   "TR_STAKE_INSTANT": "Instant",
   "TR_STAKE_INSTANTLY_UNSTAKED_WITH_DAYS": "You've received {amount} {symbol} instantly. {days, plural, =0 {} one {The remaining is paid out within # day.} other {The remaining is paid out within # days}}",

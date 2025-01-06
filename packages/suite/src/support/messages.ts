@@ -8846,7 +8846,7 @@ export default defineMessages({
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',
         defaultMessage:
-            'Your {networkDisplaySymbol} will be blocked during this period and cannot be canceled. <a>Learn more</a>',
+            "Your {networkDisplaySymbol} will be blocked during this period and can't be canceled. <a>Learn more</a>",
     },
     TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD: {
         id: 'TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD',
