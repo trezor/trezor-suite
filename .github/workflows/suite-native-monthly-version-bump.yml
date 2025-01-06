@@ -1,5 +1,6 @@
 name: "[Bot] suite-native monthly version bump"
-
+permissions:
+  pull-requests: write
 on:
   schedule:
     # Runs on the first day of every month at 00:00 UTC
@@ -7,6 +8,7 @@ on:
 
 jobs:
   bump_native_version:
+    if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
 
     steps:
@@ -27,6 +29,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
+          commit-message: "chore(suite-native): bump version to ${{ env.NEW_VERSION }}"
           title: "chore(suite-native): bump version to ${{ env.NEW_VERSION }}"
           body: |
             Automated version bump to follow YY.MM.MINOR convention
@@ -35,4 +38,4 @@ jobs:
           branch: "chore/native/bump-version-to-${{ env.NEW_VERSION }}"
           base: "develop"
           delete-branch: true
-          labels: mobile ci
+          labels: mobile, ci
