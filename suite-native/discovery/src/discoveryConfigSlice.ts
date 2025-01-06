@@ -123,8 +123,12 @@ const selectIsSolanaEnabled = createMemoizedSelector(
 );
 
 export const selectFeatureFlagEnabledNetworkSymbols = createMemoizedSelector(
-    [selectIsSolanaEnabled, selectAreTestnetsEnabled],
-    (isSolanaEnabled, areTestnetsEnabled) => {
+    [
+        selectIsSolanaEnabled,
+        selectAreTestnetsEnabled,
+        state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreEthL2sEnabled),
+    ],
+    (isSolanaEnabled, areTestnetsEnabled, areEthL2sEnabled) => {
         const allowlist: NetworkSymbol[] = [];
 
         if (isSolanaEnabled) {
@@ -132,6 +136,9 @@ export const selectFeatureFlagEnabledNetworkSymbols = createMemoizedSelector(
             if (areTestnetsEnabled) {
                 allowlist.push('dsol');
             }
+        }
+        if (areEthL2sEnabled) {
+            allowlist.push('base', 'op', 'arb');
         }
 
         return returnStableArrayIfEmpty(allowlist);

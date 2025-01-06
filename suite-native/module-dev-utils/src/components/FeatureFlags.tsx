@@ -8,6 +8,7 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsSolanaEnabled]: 'Solana',
     [FeatureFlagEnum.IsConnectPopupEnabled]: 'Connect Popup',
     [FeatureFlagEnum.IsFirmwareUpdateEnabled]: 'Firmware update',
+    [FeatureFlagEnum.AreEthL2sEnabled]: 'Eth L2s',
 } as const satisfies Record<FeatureFlagEnum, string>;
 
 const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {

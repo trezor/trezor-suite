@@ -10,6 +10,7 @@ export const FeatureFlag = {
     IsSolanaEnabled: 'IsSolanaEnabled',
     IsConnectPopupEnabled: 'IsConnectPopupEnabled',
     IsFirmwareUpdateEnabled: 'IsFirmwareUpdateEnabled',
+    AreEthL2sEnabled: 'AreEthL2sEnabled',
 } as const;
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
 
@@ -26,6 +27,7 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsSolanaEnabled]: false,
     [FeatureFlag.IsConnectPopupEnabled]: isDevelopOrDebugEnv(),
     [FeatureFlag.IsFirmwareUpdateEnabled]: isDevelopOrDebugEnv(),
+    [FeatureFlag.AreEthL2sEnabled]: isDevelopOrDebugEnv(),
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
@@ -35,6 +37,7 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsSolanaEnabled,
     FeatureFlag.IsConnectPopupEnabled,
     FeatureFlag.IsFirmwareUpdateEnabled,
+    FeatureFlag.AreEthL2sEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({

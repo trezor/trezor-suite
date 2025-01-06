@@ -14,6 +14,9 @@ export const NETWORK_SYMBOLS_WITH_TOKENS = [
     'pol',
     'bsc',
     'sol',
+    'op',
+    'base',
+    'arb',
 ] satisfies Array<NetworkSymbol>;
 export type NetworkSymbolWithTokens = (typeof NETWORK_SYMBOLS_WITH_TOKENS)[number];
 
