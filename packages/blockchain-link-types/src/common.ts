@@ -239,6 +239,14 @@ export interface AccountInfo {
             isActive: boolean;
             rewards: string;
             poolId: string | null;
+            drep: {
+                drep_id: string;
+                hex: string;
+                amount: string;
+                active: boolean;
+                active_epoch: number | null;
+                has_script: boolean;
+            } | null;
         };
         // SOL
         owner?: string; // The Solana program owning the account
