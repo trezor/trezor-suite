@@ -2093,9 +2093,13 @@ export default defineMessages({
         defaultMessage: 'Security',
         id: 'TR_DEVICE_SECURITY',
     },
-    TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE: {
+    TR_DEVICE_SETTINGS_FACTORY_RESET: {
         defaultMessage: 'Factory reset',
-        id: 'TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE',
+        id: 'TR_DEVICE_SETTINGS_FACTORY_RESET',
+    },
+    TR_DEVICE_SETTINGS_WIPE_DEVICE: {
+        defaultMessage: 'Wipe device',
+        id: 'TR_DEVICE_SETTINGS_WIPE_DEVICE',
     },
     TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_BUTTON: {
         defaultMessage: 'Install firmware',
@@ -3335,10 +3339,15 @@ export default defineMessages({
         defaultMessage: 'Learn more about the difference',
         id: 'TR_WHAT_IS_PASSPHRASE',
     },
-    TR_WIPING_YOUR_DEVICE: {
+    TR_FACTORY_RESET_DESCRIPTION: {
         defaultMessage:
-            'Factory reset wipes the device memory, erasing all information including the wallet backup and PIN. Only perform a factory reset if you have your wallet backup, which is needed to restore access to your funds.',
-        id: 'TR_WIPING_YOUR_DEVICE',
+            'Performing a factory reset in bootloader mode will erase all device data, including the wallet backup, PIN, and firmware. Without your wallet backup, any funds stored on the device will be lost forever. Ensure you have your backup on hand, as it’s required to restore access to your funds after the reset. Only proceed if you’re fully prepared.',
+        id: 'TR_FACTORY_RESET_DESCRIPTION',
+    },
+    TR_WIPE_DEVICE_DESCRIPTION: {
+        defaultMessage:
+            'Wiping the device will permanently erase all stored data, including the wallet backup and PIN. If you do not have your wallet backup, any funds on the device will be lost forever. Ensure you have your backup available before wiping the device, as it is essential for restoring access to your funds. Proceed with caution.',
+        id: 'TR_WIPE_DEVICE_DESCRIPTION',
     },
     TR_WORDS: {
         defaultMessage: '{count} words',

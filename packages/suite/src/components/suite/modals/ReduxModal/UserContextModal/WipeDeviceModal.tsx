@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { NewModal, Card, Column, H3, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 
 import { Translation, CheckItem } from 'src/components/suite';
 import { wipeDevice } from 'src/actions/settings/deviceSettingsActions';
@@ -15,11 +16,16 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
     const [checkbox1, setCheckbox1] = useState(false);
     const [checkbox2, setCheckbox2] = useState(false);
 
+    const { device, isLocked } = useDevice();
     const dispatch = useDispatch();
 
-    const { isLocked } = useDevice();
+    const isBootloaderMode = isDeviceInBootloaderMode(device);
 
     const handleWipeDevice = () => dispatch(wipeDevice());
+
+    const headingTranslation = isBootloaderMode
+        ? 'TR_DEVICE_SETTINGS_FACTORY_RESET'
+        : 'TR_DEVICE_SETTINGS_WIPE_DEVICE';
 
     return (
         <NewModal
@@ -35,7 +41,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
                         isDisabled={isLocked() || !checkbox1 || !checkbox2}
                         data-testid="@wipe/wipe-button"
                     >
-                        <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />
+                        <Translation id={headingTranslation} />
                     </NewModal.Button>
                     <NewModal.Button variant="tertiary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
@@ -44,7 +50,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
             }
         >
             <H3>
-                <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />
+                <Translation id={headingTranslation} />
             </H3>
             <Paragraph variant="tertiary" margin={{ top: spacings.xs }}>
                 <Translation id="TR_WIPE_DEVICE_TEXT" />
