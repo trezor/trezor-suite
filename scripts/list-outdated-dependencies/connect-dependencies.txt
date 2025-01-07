@@ -20,8 +20,6 @@ postcss-styled-syntax
 @sentry/core
 @sentry/electron
 @sentry/webpack-plugin
-@sentry/integrations
-@sentry/types
 @sinclair/typebox
 @sinclair/typebox-codegen
 @hbsnow/rehype-sectionize

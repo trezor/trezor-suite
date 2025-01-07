@@ -1,7 +1,7 @@
 /**
  * Tor feature (toggle, configure)
  */
-import { captureException } from '@sentry/electron';
+import { captureException } from '@sentry/electron/main';
 import { session } from 'electron';
 import path from 'path';
 

@@ -15,7 +15,7 @@
         "@react-navigation/bottom-tabs": "6.6.1",
         "@react-navigation/native": "6.1.18",
         "@react-navigation/native-stack": "6.11.0",
-        "@sentry/react-native": "6.1.0",
+        "@sentry/react-native": "6.5.0",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",

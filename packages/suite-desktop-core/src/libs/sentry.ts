@@ -1,4 +1,4 @@
-import { init, ElectronOptions, IPCMode } from '@sentry/electron';
+import { init, ElectronMainOptions, IPCMode } from '@sentry/electron/main';
 import { session } from 'electron';
 
 import { TorStatus } from '@trezor/suite-desktop-api';
@@ -20,18 +20,12 @@ export const initSentry = ({ mainThreadEmitter, store }: InitSentryParams) => {
     });
 
     const transportOptions = {
-        beforeSend: () => {
-            if (store.getTorSettings().running && torStatus !== TorStatus.Enabled) {
-                // If Tor is enabled but not running, don't send the event but put it in a queue.
-                // Queue can be inspected in @trezor/suite-desktop/sentry/queue folder.
-                return 'queue';
-            }
-
-            return 'send';
-        },
+        // If Tor is enabled but not running, don't send the event but put it in a queue.
+        // Queue can be inspected in @trezor/suite-desktop/sentry/queue folder.
+        shouldSend: () => !(store.getTorSettings().running && torStatus !== TorStatus.Enabled),
     };
 
-    const sentryConfig: ElectronOptions = {
+    const sentryConfig: ElectronMainOptions = {
         ...SENTRY_CONFIG,
         ipcMode: IPCMode.Classic,
         getSessions: () => [session.defaultSession],

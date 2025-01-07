@@ -3,7 +3,7 @@
  */
 
 import { ipcMain } from 'electron';
-import { captureMessage, withScope } from '@sentry/electron';
+import { captureMessage, withScope } from '@sentry/electron/main';
 
 import { coinjoinReportTag, coinjoinNetworkTag } from '@suite-common/sentry';
 import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy';

@@ -1,5 +1,4 @@
-import { CaptureConsole, Dedupe } from '@sentry/integrations';
-import type { Options, Event as SentryEvent } from '@sentry/types';
+import { captureConsoleIntegration, Options, Event as SentryEvent } from '@sentry/core';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import { redactUserPathFromString } from '@trezor/utils';
@@ -94,10 +93,9 @@ export const SENTRY_CONFIG: Options = {
     dsn: 'https://6d91ca6e6a5d4de7b47989455858b5f6@o117836.ingest.sentry.io/5193825',
     autoSessionTracking: false, // do not send analytical data to Sentry
     integrations: [
-        new CaptureConsole({
+        captureConsoleIntegration({
             levels: ['error'],
         }),
-        new Dedupe(),
     ],
     beforeSend,
     enabled: !isDevEnv,

@@ -1,7 +1,7 @@
 /**
  * Request Filter feature (blocks non-allowed requests)
  */
-import { captureMessage } from '@sentry/electron';
+import { captureMessage } from '@sentry/electron/main';
 
 import { allowedDomains } from '../config';
 

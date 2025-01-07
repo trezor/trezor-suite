@@ -14,7 +14,7 @@
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "6.1.18",
         "@reduxjs/toolkit": "1.9.5",
-        "@sentry/react-native": "6.1.0",
+        "@sentry/react-native": "6.5.0",
         "@shopify/react-native-skia": "^1.5.10",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/graph": "workspace:*",
