@@ -88,6 +88,18 @@ export type ERC1155 = BaseERC & {
     type: 'ERC1155';
 } & Required<Pick<BlockbookToken, 'multiTokenValues'>>;
 
+export type BEP20 = BaseERC & {
+    type: 'BEP20';
+} & Pick<BlockbookToken, 'balance' | 'baseValue' | 'secondaryValue'>;
+
+export type BEP721 = BaseERC & {
+    type: 'BEP721';
+} & Required<Pick<BlockbookToken, 'ids'>>;
+
+export type BEP1155 = BaseERC & {
+    type: 'BEP1155';
+} & Required<Pick<BlockbookToken, 'multiTokenValues'>>;
+
 export interface AccountInfo {
     address: string;
     balance: string;
@@ -103,7 +115,7 @@ export interface AccountInfo {
     nonTokenTxs?: number;
     transactions?: Transaction[];
     nonce?: string;
-    tokens?: (XPUBAddress | ERC20 | ERC721 | ERC1155)[];
+    tokens?: (XPUBAddress | ERC20 | ERC721 | ERC1155 | BEP20 | BEP721 | BEP1155)[];
     contractInfo?: ContractInfo;
     addressAliases?: { [key: string]: AddressAlias };
     stakingPools?: StakingPool[];

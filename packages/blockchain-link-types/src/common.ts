@@ -67,7 +67,15 @@ export interface ServerInfo {
     network: string;
 }
 
-export type TokenStandard = 'ERC20' | 'ERC1155' | 'ERC721' | 'SPL' | 'SPL-2022' | 'BEP20';
+export type TokenStandard =
+    | 'ERC20'
+    | 'BEP20'
+    | 'BEP721'
+    | 'ERC721'
+    | 'ERC1155'
+    | 'BEP1155'
+    | 'SPL'
+    | 'SPL-2022';
 
 export type TransferType = 'sent' | 'recv' | 'self' | 'unknown';
 

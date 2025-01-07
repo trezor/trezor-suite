@@ -134,7 +134,7 @@ export interface ContractInfo {
     destructedInBlock?: number;
 }
 export interface Token {
-    type: 'XPUBAddress' | 'ERC20' | 'ERC721' | 'ERC1155';
+    type: 'XPUBAddress' | 'ERC20' | 'ERC721' | 'ERC1155' | 'BEP20' | 'BEP721' | 'BEP1155';
     name: string;
     path?: string;
     contract?: string;
