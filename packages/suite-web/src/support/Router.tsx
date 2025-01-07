@@ -147,6 +147,11 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
             /* webpackChunkName: "settings" */ 'src/views/settings/SettingsDevice/SettingsDevice'
         ).then(({ SettingsDevice }) => ({ default: SettingsDevice })),
     ),
+    'settings-contacts': lazy(() =>
+        import(/* webpackChunkName: "contacts" */ 'src/views/contacts').then(
+            ({ SettingsContacts }) => ({ default: SettingsContacts }),
+        ),
+    ),
 };
 
 const AppRouter = () => (

@@ -11,6 +11,7 @@ import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
 import { MetadataState } from '@suite-common/metadata-types';
 import { DefinitionType, TokenManagementAction } from '@suite-common/token-definitions';
+import { Contact } from '@suite-common/contacts';
 
 import { db } from 'src/storage';
 import {
@@ -461,6 +462,18 @@ export const saveFirmware = () => async (_dispatch: Dispatch, getState: GetState
     const { firmware } = getState();
 
     db.addItem('firmware', { firmwareHashInvalid: firmware.firmwareHashInvalid }, 'firmware', true);
+};
+
+export const saveContact = (contact: Contact) => async () => {
+    if (!(await db.isAccessible())) return;
+
+    db.addItem('contacts', contact, undefined, true);
+};
+
+export const removeContact = (contact: Contact) => async () => {
+    if (!(await db.isAccessible())) return;
+
+    db.removeItemByPK('contacts', [contact.address, contact.deviceState]);
 };
 
 export const removeDatabase = () => async (dispatch: Dispatch, getState: GetState) => {

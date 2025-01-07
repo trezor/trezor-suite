@@ -14,6 +14,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StorageUpdateMessage } from '@trezor/suite-storage';
 import { AnalyticsState } from '@suite-common/analytics';
 import { SimpleTokenStructure } from '@suite-common/token-definitions';
+import { Contact } from '@suite-common/contacts';
 
 import type { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 import type { Account, Discovery, WalletAccountTransaction } from 'src/types/wallet';
@@ -130,6 +131,10 @@ export interface SuiteDBSchema extends DBSchema {
         value: {
             firmwareHashInvalid: string[];
         };
+    };
+    contacts: {
+        key: string[];
+        value: Contact;
     };
 }
 

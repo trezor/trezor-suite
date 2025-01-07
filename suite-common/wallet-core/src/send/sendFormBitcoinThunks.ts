@@ -25,6 +25,7 @@ import {
     PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { createThunk } from '@suite-common/redux-utils';
+import { findContactBySignedMessage, selectContactsForDevice } from '@suite-common/contacts';
 
 import { selectTransactions } from '../transactions/transactionsReducer';
 import { selectDevice } from '../device/deviceReducer';
@@ -344,8 +345,46 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
             ...signEnhancement,
         };
 
+        const contacts = selectContactsForDevice(device)(getState());
+
+        signPayload.outputs = signPayload.outputs.map(output => {
+            if (output.address) {
+                const contactSignature = formState.contactSignatures?.[output.address];
+                if (contactSignature) {
+                    const contact = findContactBySignedMessage(
+                        contacts,
+                        output.address,
+                        contactSignature,
+                    );
+                    if (contact) {
+                        return {
+                            ...output,
+                            label: contact.label,
+                            label_sig: contact.signature,
+                            label_pk: contact.address,
+                            address_pk_sig: contactSignature,
+                        };
+                    }
+                }
+
+                const contact = contacts.find(c => c.address === output.address);
+                if (contact) {
+                    return {
+                        ...output,
+                        label: contact.label,
+                        label_sig: contact.signature,
+                    };
+                }
+            }
+
+            return output;
+        });
+
+        //console.log('signPayload', signPayload);
         const response = await TrezorConnect.signTransaction(signPayload);
         if (!response.success) {
+            console.error('sign-transaction-failed', response.payload);
+
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 errorCode: response.payload.code,

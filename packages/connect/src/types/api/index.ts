@@ -51,6 +51,8 @@ import { getFirmwareHash } from './getFirmwareHash';
 import { getOwnershipId } from './getOwnershipId';
 import { getOwnershipProof } from './getOwnershipProof';
 import { getPublicKey } from './getPublicKey';
+import { nostrGetPublicKey } from './nostrGetPublicKey';
+import { nostrSignEvent } from './nostrSignEvent';
 import { getSettings } from './getSettings';
 import { init } from './init';
 import { manifest } from './manifest';
@@ -247,6 +249,12 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/bitcoin/getPublicKey/
     getPublicKey: typeof getPublicKey;
+
+    // todo:
+    nostrGetPublicKey: typeof nostrGetPublicKey;
+
+    // todo:
+    nostrSignEvent: typeof nostrSignEvent;
 
     // todo: link docs
     getSettings: typeof getSettings;

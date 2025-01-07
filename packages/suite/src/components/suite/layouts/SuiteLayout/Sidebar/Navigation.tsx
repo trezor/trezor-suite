@@ -36,7 +36,13 @@ const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationIte
         nameId: 'TR_SETTINGS',
         icon: 'gearSix',
         goToRoute: 'settings-index',
-        routes: ['settings-index', 'settings-device', 'settings-coins', 'settings-debug'],
+        routes: [
+            'settings-index',
+            'settings-device',
+            'settings-coins',
+            'settings-debug',
+            'settings-contacts',
+        ],
         'data-testid': '@suite/menu/settings',
     },
 ];

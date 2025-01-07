@@ -1,0 +1,133 @@
+import { useState } from 'react';
+
+import TrezorConnect from '@trezor/connect';
+import { Banner, Button, Row } from '@trezor/components';
+import { selectDevice } from '@suite-common/wallet-core';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { spacings } from '@trezor/theme';
+import {
+    Contact,
+    findContactBySignedMessage,
+    selectContactsForDevice,
+} from '@suite-common/contacts';
+
+import { useSelector } from 'src/hooks/suite';
+
+import { SettingsLayout } from '../../components/settings';
+import { AddNewContactModal } from './AddNewContactModal';
+import { ContactList } from './ContactList';
+import { RemoveContactConfirmation } from './RemoveContactConfirmation';
+
+const FindContactButton = ({ contacts }: { contacts: Contact[] }) => {
+    const handleClick = () => {
+        const address = prompt('Address signed by the recipient');
+        const signature = prompt('Signature from the recipient');
+
+        if (!address || !signature) {
+            alert('Missing data');
+
+            return;
+        }
+
+        const contact = findContactBySignedMessage(contacts, address, signature);
+        if (contact) alert(`Address "${address}" was signed by your contact "${contact.label}"`);
+        else alert('Recipient not in your contacts');
+    };
+
+    return (
+        <Button variant="tertiary" onClick={handleClick} icon="magnifyingGlass">
+            Find contact
+        </Button>
+    );
+};
+
+const GetMyPubkeyButton = () => {
+    const device = useSelector(selectDevice);
+
+    const getMyPubkey = async () => {
+        if (!device) return;
+
+        const response = await TrezorConnect.nostrGetPublicKey({
+            device,
+            useEmptyPassphrase: device.useEmptyPassphrase,
+            path: "m/44'/1237'/0'/0/0",
+        });
+        if (response.success) {
+            alert(`Your identity pubkey: ${response.payload.pubkey}`);
+        } else {
+            alert(`Failed to get pubkey: ${response.payload.error}`);
+        }
+    };
+
+    return (
+        <Button variant="tertiary" onClick={getMyPubkey} icon="eye">
+            Show your identity
+        </Button>
+    );
+};
+
+const Contacts = ({ device }: { device: TrezorDevice }) => {
+    const contacts = useSelector(selectContactsForDevice(device));
+
+    const [isAddNewContactModalVisible, setAddNewContactModalVisible] = useState(false);
+    const [contactToRemove, setContactToRemove] = useState<Contact | null>(null);
+
+    const onAdd = () => {
+        setAddNewContactModalVisible(true);
+    };
+
+    const removeContact = (contact: Contact) => {
+        setContactToRemove(contact);
+    };
+
+    return (
+        <>
+            {contacts.length ? (
+                <ContactList contacts={contacts} remove={removeContact} onAdd={onAdd} />
+            ) : (
+                <Banner
+                    variant="info"
+                    icon
+                    rightContent={
+                        <Banner.Button icon="plus" onClick={onAdd}>
+                            Add new contact
+                        </Banner.Button>
+                    }
+                >
+                    You have no contacts yet
+                </Banner>
+            )}
+            <Row gap={spacings.sm}>
+                <GetMyPubkeyButton />
+                <FindContactButton contacts={contacts} />
+            </Row>
+            {isAddNewContactModalVisible && (
+                <AddNewContactModal onClose={() => setAddNewContactModalVisible(false)} />
+            )}
+            {contactToRemove && (
+                <RemoveContactConfirmation
+                    contact={contactToRemove}
+                    onClose={() => setContactToRemove(null)}
+                />
+            )}
+        </>
+    );
+};
+
+export const SettingsContacts = () => {
+    const device = useSelector(selectDevice);
+
+    if (!device) {
+        return (
+            <Banner variant="warning" icon>
+                Connect your device to see your contacts.
+            </Banner>
+        );
+    }
+
+    return (
+        <SettingsLayout data-testid="@settings/contacts">
+            <Contacts device={device} />
+        </SettingsLayout>
+    );
+};

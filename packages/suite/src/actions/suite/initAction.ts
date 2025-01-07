@@ -15,6 +15,8 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as languageActions from 'src/actions/settings/languageActions';
+import * as nostrActions from 'src/actions/suite/nostrActions';
+
 import type { Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
@@ -117,6 +119,8 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     if (isDesktop()) {
         dispatch(trezorConnectActions.connectPopupInitThunk());
     }
+
+    dispatch(nostrActions.init());
 
     // 15. backend connected, suite is ready to use
     dispatch(onSuiteReady());

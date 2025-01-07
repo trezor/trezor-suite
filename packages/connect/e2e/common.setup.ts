@@ -145,6 +145,7 @@ export const initTrezorConnect = async (
             patch_version,
             internal_model,
             revision,
+            firmwareType: device.firmwareType,
         });
     });
 

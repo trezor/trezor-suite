@@ -27,6 +27,7 @@ export type UserContextPayload =
           value: string;
           addressPath: string;
           isConfirmed?: boolean;
+          signature?: string;
       }
     | {
           type: 'xpub';

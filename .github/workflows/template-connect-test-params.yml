@@ -86,7 +86,7 @@ jobs:
       - if: ${{ inputs.testEnv == 'node' }}
         run: sed -i "/\"node\"/d" package.json
       - if: ${{ inputs.testEnv == 'node' }}
-        run: yarn install
+        run: yarn workspaces focus @trezor/connect
 
       - if: ${{ inputs.cache_tx == 'true' }}
         run: echo "ADDITIONAL_ARGS=-c" >> "$GITHUB_ENV"

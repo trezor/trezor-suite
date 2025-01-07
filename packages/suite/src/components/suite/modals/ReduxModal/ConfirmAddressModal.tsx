@@ -16,11 +16,16 @@ import { cryptoIdToSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { ConfirmActionModal } from './DeviceContextModal/ConfirmActionModal';
 
 interface ConfirmAddressModalProps
-    extends Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel' | 'value'> {
+    extends Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel' | 'value' | 'signature'> {
     addressPath: string;
 }
 
-export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAddressModalProps) => {
+export const ConfirmAddressModal = ({
+    addressPath,
+    value,
+    signature,
+    ...props
+}: ConfirmAddressModalProps) => {
     const device = useSelector(selectDevice);
     const account = useSelector(selectAccountIncludingChosenInCoinmarket);
     const { modalCryptoId } = useSelector(state => state.wallet.coinmarket);
@@ -82,6 +87,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
             copyButtonText={<Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />}
             validateOnDevice={validateAddress}
             value={value}
+            signature={signature}
             data-testid="@metadata/copy-address-button"
             displayMode={displayMode}
             {...props}

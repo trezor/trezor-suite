@@ -291,6 +291,7 @@ export const Address = Type.Object(
     {
         address: Type.String(),
         mac: Type.Optional(Type.String()),
+        signature: Type.Optional(Type.String()),
     },
     { $id: 'Address' },
 );
@@ -511,6 +512,10 @@ export const TxOutputType = Type.Union(
             orig_hash: Type.Optional(Type.String()),
             orig_index: Type.Optional(Type.Number()),
             payment_req_index: Type.Optional(Type.Number()),
+            label: Type.Optional(Type.String()),
+            label_sig: Type.Optional(Type.String()),
+            label_pk: Type.Optional(Type.String()),
+            address_pk_sig: Type.Optional(Type.String()),
         }),
         Type.Object({
             address: Type.Optional(Type.Undefined()),
@@ -2941,6 +2946,45 @@ export const NEMDecryptedMessage = Type.Object(
     { $id: 'NEMDecryptedMessage' },
 );
 
+export type NostrGetPubkey = Static<typeof NostrGetPubkey>;
+export const NostrGetPubkey = Type.Object(
+    {
+        address_n: Type.Array(Type.Number()),
+        show_display: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'NostrGetPubkey' },
+);
+
+export type NostrPubkey = Static<typeof NostrPubkey>;
+export const NostrPubkey = Type.Object(
+    {
+        pubkey: Type.String(),
+    },
+    { $id: 'NostrPubkey' },
+);
+
+export type NostrSignEvent = Static<typeof NostrSignEvent>;
+export const NostrSignEvent = Type.Object(
+    {
+        address_n: Type.Array(Type.Number()),
+        created_at: Type.Optional(Type.Number()),
+        kind: Type.Optional(Type.Number()),
+        tags: Type.Array(Type.String()),
+        content: Type.Optional(Type.String()),
+    },
+    { $id: 'NostrSignEvent' },
+);
+
+export type NostrEventSignature = Static<typeof NostrEventSignature>;
+export const NostrEventSignature = Type.Object(
+    {
+        pubkey: Type.String(),
+        id: Type.String(),
+        signature: Type.String(),
+    },
+    { $id: 'NostrEventSignature' },
+);
+
 export type RippleGetAddress = Static<typeof RippleGetAddress>;
 export const RippleGetAddress = Type.Object(
     {
@@ -3747,6 +3791,10 @@ export const MessageType = Type.Object(
         NEMSignedTx,
         NEMDecryptMessage,
         NEMDecryptedMessage,
+        NostrGetPubkey,
+        NostrPubkey,
+        NostrSignEvent,
+        NostrEventSignature,
         RippleGetAddress,
         RippleAddress,
         RipplePayment,

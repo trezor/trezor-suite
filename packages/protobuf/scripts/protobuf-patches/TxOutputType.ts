@@ -16,6 +16,10 @@ export type TxOutputType =
           orig_hash?: string;
           orig_index?: number;
           payment_req_index?: number;
+          label?: string;
+          label_sig?: string;
+          label_pk?: string;
+          address_pk_sig?: string;
       }
     | {
           address?: typeof undefined;

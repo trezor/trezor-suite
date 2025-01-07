@@ -3111,6 +3111,10 @@ export default defineMessages({
         defaultMessage: 'Migrate Dropbox passwords',
         id: 'TR_PASSWORD_MANAGER',
     },
+    TR_CONTACTS: {
+        defaultMessage: 'Contacts',
+        id: 'TR_CONTACTS',
+    },
     TR_SETTINGS: {
         defaultMessage: 'Settings',
         id: 'TR_SETTINGS',

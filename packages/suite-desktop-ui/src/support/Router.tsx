@@ -34,6 +34,7 @@ import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
 import { SettingsDevice } from 'src/views/settings/SettingsDevice/SettingsDevice';
 import { Tokens } from 'src/views/wallet/tokens';
 import PasswordManager from 'src/views/password-manager';
+import Contacts from 'src/views/contacts';
 
 const components: { [key: string]: ComponentType<any> } = {
     'suite-index': Dashboard,
@@ -68,6 +69,7 @@ const components: { [key: string]: ComponentType<any> } = {
     'settings-index': SettingsGeneral,
     'settings-coins': SettingsCoins,
     'settings-debug': SettingsDebug,
+    'settings-contacts': Contacts,
     'settings-device': SettingsDevice,
 };
 

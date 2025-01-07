@@ -49,6 +49,14 @@ const SettingsHeader = () => {
                 callback: () => dispatch(goto('settings-coins', { preserveParams: true })),
             },
             {
+                id: 'settings-contacts',
+                title: <Translation id="TR_CONTACTS" />,
+                position: 'primary',
+                isHidden: !isDebugModeActive,
+                'data-testid': '@settings/menu/contacts',
+                callback: () => dispatch(goto('settings-contacts', { preserveParams: true })),
+            },
+            {
                 id: 'settings-debug',
                 title: <Translation id="TR_DEBUG_SETTINGS" />,
                 position: 'primary',

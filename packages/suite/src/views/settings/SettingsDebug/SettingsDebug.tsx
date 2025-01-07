@@ -21,6 +21,7 @@ import { TriggerHighlight } from './TriggerHighlight';
 import { Backends } from './Backends';
 import { PreField } from './PreField';
 import { Tor } from './Tor';
+import { Nostr } from './Nostr';
 
 export const SettingsDebug = () => {
     const flags = useSelector(selectSuiteFlags);
@@ -75,6 +76,9 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SettingsSection title="Flags JSON">
                 <PreField>{JSON.stringify(flags)}</PreField>
+            </SettingsSection>
+            <SettingsSection title="Nostr">
+                <Nostr />
             </SettingsSection>
         </SettingsLayout>
     );

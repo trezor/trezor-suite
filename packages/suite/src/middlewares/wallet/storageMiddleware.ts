@@ -17,6 +17,7 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { firmwareActions } from '@suite-common/firmware';
+import { contactsActions } from '@suite-common/contacts';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { messageSystemActions } from '@suite-common/message-system';
 import { findAccountDevice } from '@suite-common/wallet-utils';
@@ -347,6 +348,13 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     });
                     break;
                 }
+
+                case contactsActions.addContact.type:
+                    api.dispatch(storageActions.saveContact(action.payload));
+                    break;
+                case contactsActions.removeContact.type:
+                    api.dispatch(storageActions.removeContact(action.payload));
+                    break;
 
                 default:
                     break;

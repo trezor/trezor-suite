@@ -2,6 +2,7 @@ import type { ThunkDispatch, ThunkAction as TAction } from 'redux-thunk';
 import type { Store as ReduxStore } from 'redux';
 
 import { deviceActions, discoveryActions, transactionsActions } from '@suite-common/wallet-core';
+import { contactsActions } from '@suite-common/contacts';
 import { firmwareActions } from '@suite-common/firmware';
 import { analyticsActions } from '@suite-common/analytics';
 import type { UiEvent, TransportEvent, BlockchainEvent } from '@trezor/connect';
@@ -25,6 +26,7 @@ import type { WalletAction } from 'src/types/wallet';
 import type { BackupAction } from 'src/actions/backup/backupActions';
 import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
 import type { GuideAction } from 'src/actions/suite/guideActions';
+import { NostrAction } from 'src/actions/suite/nostrActions';
 
 // reexport
 export type { ExtendedMessageDescriptor } from 'src/components/suite/Translation';
@@ -52,6 +54,7 @@ export type MessageSystemAction = ReturnType<
     (typeof messageSystemActions)[keyof typeof messageSystemActions]
 >;
 type AnalyticsAction = ReturnType<(typeof analyticsActions)[keyof typeof analyticsActions]>;
+type ContactsAction = ReturnType<(typeof contactsActions)[keyof typeof contactsActions]>;
 type FirmwareAction = ReturnType<(typeof firmwareActions)[keyof typeof firmwareActions]>;
 type DeviceAction = ReturnType<(typeof deviceActions)[keyof typeof deviceActions]>;
 type DiscoveryAction = ReturnType<(typeof discoveryActions)[keyof typeof discoveryActions]>;
@@ -80,10 +83,12 @@ export type Action =
     | DesktopUpdateAction
     | MessageSystemAction
     | GuideAction
+    | ContactsAction
     | ProtocolAction
     | DiscoveryAction
     | DeviceAction
-    | DeviceAuthenticityAction;
+    | DeviceAuthenticityAction
+    | NostrAction;
 
 export type ThunkAction = TAction<any, AppState, any, Action>;
 

@@ -12,6 +12,7 @@ export const getMethod = async (message: IFrameCallMessage): Promise<AbstractMet
     if (typeof method !== 'string') {
         throw TypedError('Method_InvalidParameter', 'Message method is not set');
     }
+    console.log('methods getMethod', Methods);
 
     const methodModule = getMethodModule(method);
     const methods = methodModule
