@@ -40,7 +40,9 @@ export const DeviceAuthenticity = ({ goToNext }: DeviceAuthenticityProps) => {
     if (!device) return null;
 
     const isWaitingForConfirmation = device.buttonRequests.some(
-        request => request.code === 'ButtonRequest_Other',
+        request =>
+            request.code === 'ButtonRequest_Other' || // Device Authenticity prompt
+            request.code === 'ButtonRequest_PinEntry', // Device can be locked, and we can get Pin Request first
     );
     const isCheckFailed = isSubmitted && selectedDeviceAuthenticity?.valid === false;
     const isCheckSuccessful = isSubmitted && selectedDeviceAuthenticity?.valid;
