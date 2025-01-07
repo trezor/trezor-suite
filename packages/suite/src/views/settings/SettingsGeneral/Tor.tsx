@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { LoadingContent, Switch } from '@trezor/components';
-import { TOR_PROJECT_URL } from '@trezor/urls';
+import { HELP_CENTER_TOR_URL } from '@trezor/urls';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { toggleTor } from 'src/actions/suite/suiteActions';
@@ -68,7 +68,7 @@ export const Tor = () => {
                         }}
                     />
                 }
-                buttonLink={TOR_PROJECT_URL}
+                buttonLink={HELP_CENTER_TOR_URL}
             />
             <ActionColumn>
                 <Switch

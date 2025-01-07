@@ -1,6 +1,6 @@
 import { TranslationKey } from '@suite-common/intl-types';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { EXPERIMENTAL_PASSWORD_MANAGER_KB_URL, Url } from '@trezor/urls';
+import { EXPERIMENTAL_PASSWORD_MANAGER_KB_URL, HELP_CENTER_TOR_URL, Url } from '@trezor/urls';
 import { Route } from '@suite-common/suite-types';
 import { isDesktop } from '@trezor/env-utils';
 
@@ -31,8 +31,7 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
     'tor-external': {
         title: 'TR_EXPERIMENTAL_TOR_EXTERNAL',
         description: 'TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION',
-        // TODO: create knowledge base page for this!
-        // knowledgeBaseUrl: TOR_EXTERNAL_KNOWLEDGE_BASE,
+        knowledgeBaseUrl: HELP_CENTER_TOR_URL,
         isDisabled: () => !isDesktop(),
         onToggle: async ({ newValue }) => {
             const result = await desktopApi.getTorSettings();
