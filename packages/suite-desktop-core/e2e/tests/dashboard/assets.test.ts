@@ -27,13 +27,14 @@ test.describe('Assets', { tag: ['@group=suite'] }, () => {
         dashboardPage,
         settingsPage,
     }) => {
+        await dashboardPage.discoveryShouldFinish();
         await assetsPage.enableMoreCoins.click();
         await settingsPage.coins.enableNetwork('eth');
 
         await dashboardPage.navigateTo();
         await dashboardPage.discoveryShouldFinish();
         await expect(assetsPage.section).toHaveScreenshot('new-asset-grid.png', {
-            mask: [assetsPage.assetExchangeRate, assetsPage.assetWeekChange],
+            mask: [assetsPage.bottomInfo],
         });
 
         await assetsPage.tableIcon.click();
