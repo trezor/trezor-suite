@@ -24,21 +24,7 @@ import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
 const BOTTOM_OFFSET = 12;
 const BUTTON_HEIGHT = 48;
 
-const headerWrapperStyle = prepareNativeStyle(utils => ({
-    zIndex: 2,
-    paddingTop: utils.spacings.sp32,
-}));
-
-const gradientBackgroundTopStyle = prepareNativeStyle(utils => ({
-    width: '100%',
-    height: utils.spacings.sp16,
-    position: 'absolute',
-    bottom: -utils.spacings.sp16,
-    pointerEvents: 'none',
-}));
-
-const contentStyle = prepareNativeStyle(utils => ({
-    paddingTop: utils.spacings.sp16,
+const contentStyle = prepareNativeStyle(_ => ({
     paddingBottom: BOTTOM_OFFSET,
 }));
 
@@ -100,21 +86,14 @@ export const CoinEnablingInitScreen = () => {
     return (
         <Screen
             screenHeader={
-                <View style={applyStyle(headerWrapperStyle)}>
-                    <VStack paddingBottom="sp16" paddingHorizontal="sp16">
-                        <Text variant="titleSmall">
-                            <Translation id="moduleSettings.coinEnabling.initialSetup.title" />
-                        </Text>
-                        <Text color="textSubdued">
-                            <Translation id="moduleSettings.coinEnabling.initialSetup.subtitle" />
-                        </Text>
-                    </VStack>
-                    <LinearGradient
-                        dither={false}
-                        colors={[utils.colors.backgroundSurfaceElevation0, transparentColor]}
-                        style={applyStyle(gradientBackgroundTopStyle)}
-                    />
-                </View>
+                <VStack paddingHorizontal="sp16" paddingVertical="sp16">
+                    <Text variant="titleSmall">
+                        <Translation id="moduleSettings.coinEnabling.initialSetup.title" />
+                    </Text>
+                    <Text color="textSubdued">
+                        <Translation id="moduleSettings.coinEnabling.initialSetup.subtitle" />
+                    </Text>
+                </VStack>
             }
             footer={
                 <View style={applyStyle(buttonWrapperStyle)}>

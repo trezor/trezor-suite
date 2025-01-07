@@ -150,6 +150,7 @@ export const Screen = ({
             {screenHeader}
             <ScreenContentWrapper
                 isScrollable={isScrollable}
+                hasScreenHeader={!!screenHeader}
                 extraKeyboardAvoidingViewHeight={extraKeyboardAvoidingViewHeight}
                 refreshControl={refreshControl}
                 keyboardDismissMode={keyboardDismissMode}

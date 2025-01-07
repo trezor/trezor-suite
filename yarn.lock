@@ -10864,7 +10864,6 @@ __metadata:
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
@@ -10888,7 +10887,6 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    expo-linear-gradient: "npm:^14.0.1"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.76.1"
@@ -10942,6 +10940,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.76.1"
     react-native-keyboard-aware-scroll-view: "npm:0.9.5"
+    react-native-reanimated: "npm:3.16.1"
     react-native-safe-area-context: "npm:^4.14.0"
     react-redux: "npm:8.0.7"
   languageName: unknown

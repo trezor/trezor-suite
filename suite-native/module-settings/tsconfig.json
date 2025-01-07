@@ -15,9 +15,6 @@
             "path": "../../suite-common/suite-types"
         },
         {
-            "path": "../../suite-common/suite-utils"
-        },
-        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../alerts" },

@@ -1,14 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect } from 'react';
-import { View } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
 
 import { Screen, ScreenSubHeader } from '@suite-native/navigation';
 import { useTranslate } from '@suite-native/intl';
 import { BtcOnlyCoinEnablingContent, DiscoveryCoinsFilter } from '@suite-native/coin-enabling';
-import { Box } from '@suite-native/atoms';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import {
     selectDiscoveryNetworkSymbols,
@@ -16,25 +13,10 @@ import {
     setEnabledDiscoveryNetworkSymbols,
     setIsCoinEnablingInitFinished,
 } from '@suite-native/discovery';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { hexToRgba } from '@suite-common/suite-utils';
 import { selectViewOnlyDevicesAccountsNetworkSymbols } from '@suite-native/device';
-
-const gradientBaseStyleParams = prepareNativeStyle(utils => ({
-    width: '100%',
-    height: utils.spacings.sp16,
-    position: 'absolute',
-    bottom: -utils.spacings.sp16,
-    pointerEvents: 'none',
-}));
-
-const headerWrapperStyle = prepareNativeStyle(_ => ({
-    zIndex: 2,
-}));
 
 export const SettingsCoinEnablingScreen = () => {
     const dispatch = useDispatch();
-    const { applyStyle, utils } = useNativeStyles();
     const { translate } = useTranslate();
 
     const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
@@ -65,32 +47,16 @@ export const SettingsCoinEnablingScreen = () => {
             };
         }, [dispatch, enabledNetworkSymbols.length]),
     );
-    const transparentColor = hexToRgba(utils.colors.backgroundSurfaceElevation0, 0.001);
 
     return (
         <Screen
             screenHeader={
-                <View style={applyStyle(headerWrapperStyle)}>
-                    <ScreenSubHeader
-                        content={translate('moduleSettings.coinEnabling.settings.title')}
-                    />
-                    {showNetworks && (
-                        <LinearGradient
-                            dither={false}
-                            colors={[utils.colors.backgroundSurfaceElevation0, transparentColor]}
-                            style={applyStyle(gradientBaseStyleParams)}
-                        />
-                    )}
-                </View>
+                <ScreenSubHeader
+                    content={translate('moduleSettings.coinEnabling.settings.title')}
+                />
             }
         >
-            {showNetworks ? (
-                <Box paddingTop="sp16">
-                    <DiscoveryCoinsFilter />
-                </Box>
-            ) : (
-                <BtcOnlyCoinEnablingContent />
-            )}
+            {showNetworks ? <DiscoveryCoinsFilter /> : <BtcOnlyCoinEnablingContent />}
         </Screen>
     );
 };

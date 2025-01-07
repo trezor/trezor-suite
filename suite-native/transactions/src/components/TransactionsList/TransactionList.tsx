@@ -25,6 +25,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { arrayPartition } from '@trezor/utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
+import { useScrollDivider } from '@suite-native/navigation';
 
 import { TransactionsEmptyState } from '../TransactionsEmptyState';
 import { TokenTransferListItem } from './TokenTransferListItem';
@@ -155,6 +156,8 @@ export const TransactionList = ({
     const initialPageNumber = Math.ceil((transactions.length || 1) / txnsPerPage);
     const [page, setPage] = useState(initialPageNumber);
 
+    const { scrollDivider, handleScroll } = useScrollDivider();
+
     useEffect(() => {
         // We need to check manually if the first page was already fetched, because fetchTransactionsPageThunk will
         // always force refetch the first page, but we want to save resources and not do that if it's not necessary.
@@ -275,6 +278,7 @@ export const TransactionList = ({
 
     return (
         <Box flex={1}>
+            {scrollDivider}
             <FlashList<TransactionListItem>
                 data={data}
                 renderItem={renderItem}
@@ -297,6 +301,7 @@ export const TransactionList = ({
                 }
                 estimatedItemSize={72}
                 refreshing={isRefreshing}
+                onScroll={handleScroll}
             />
         </Box>
     );
