@@ -6,6 +6,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { FormState } from '@suite-common/wallet-types';
 import { useDidUpdate } from '@trezor/react-utils';
 import { NumberInput } from '@trezor/product-components';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import {
@@ -26,7 +27,6 @@ import {
 import {
     coinmarketGetAccountLabel,
     getCoinmarketNetworkDecimals,
-    getCoinmarketNetworkDisplaySymbol,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     FORM_OUTPUT_AMOUNT,
@@ -60,7 +60,7 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
     const context = useCoinmarketFormContext();
     const { amountLimits, account, network } = context;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
     const {
         control,
         formState: { errors },
@@ -76,9 +76,9 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
         cryptoInputName === FORM_OUTPUT_AMOUNT
             ? (errors as FieldErrors<CoinmarketSellExchangeFormProps>)?.outputs?.[0]?.amount
             : (errors as FieldErrors<CoinmarketBuyFormProps>).cryptoInput;
-    const symbol = cryptoSelect?.value && cryptoIdToCoinSymbol(cryptoSelect?.value);
+    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoSelect?.value);
     const displaySymbol = coinmarketGetAccountLabel(
-        getCoinmarketNetworkDisplaySymbol(symbol ?? ''),
+        getDisplaySymbol(coinSymbol ?? '', contractAddress),
         shouldSendInSats,
     );
     const decimals = getCoinmarketNetworkDecimals({

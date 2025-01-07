@@ -7,7 +7,7 @@ import { CryptoId } from 'invity-api';
 import type { AccountAddress } from '@trezor/connect';
 import { Select, InfoSegments, Column } from '@trezor/components';
 import { formatAmount } from '@suite-common/wallet-utils';
-import { getNetwork } from '@suite-common/wallet-config';
+import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import type { Account } from 'src/types/wallet';
@@ -15,10 +15,7 @@ import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { useSelector } from 'src/hooks/suite';
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
-import {
-    getCoinmarketNetworkDecimals,
-    getCoinmarketNetworkDisplaySymbol,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { getCoinmarketNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
@@ -78,7 +75,7 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
     const accountMetadata = useSelector(state =>
         selectLabelingDataForAccount(state, account?.key || ''),
     );
-    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
 
     useEffect(() => {
         if (!address && addresses) {
@@ -114,9 +111,10 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
                             ? formatAmount(accountAddress.balance, networkDecimals)
                             : accountAddress.balance;
 
-                        const coinSymbol = cryptoIdToCoinSymbol(receiveSymbol);
+                        const { coinSymbol, contractAddress } =
+                            cryptoIdToSymbolAndContractAddress(receiveSymbol);
                         const displaySymbol =
-                            coinSymbol && getCoinmarketNetworkDisplaySymbol(coinSymbol);
+                            coinSymbol && getDisplaySymbol(coinSymbol, contractAddress);
 
                         return (
                             <Column>

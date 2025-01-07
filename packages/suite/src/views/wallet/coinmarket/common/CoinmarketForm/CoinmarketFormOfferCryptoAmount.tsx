@@ -16,8 +16,8 @@ export const CoinmarketFormOfferCryptoAmount = ({
     amount,
     cryptoId,
 }: CoinmarketCryptoAmountProps) => {
-    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
-    const coinSymbol = cryptoIdToCoinSymbol(cryptoId)?.toLowerCase(); // lowercase - possible can be a NetworkSymbol
+    const { cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
+    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoId);
 
     if (!coinSymbol) {
         return;
@@ -34,6 +34,7 @@ export const CoinmarketFormOfferCryptoAmount = ({
                 <FormattedCryptoAmount
                     value={amount}
                     symbol={coinSymbol}
+                    contractAddress={contractAddress}
                     isRawString
                     isBalance={false}
                 />

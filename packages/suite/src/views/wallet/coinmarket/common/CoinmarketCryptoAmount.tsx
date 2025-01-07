@@ -3,12 +3,12 @@ import { CryptoId } from 'invity-api';
 
 import { spacings } from '@trezor/theme';
 import { Row } from '@trezor/components';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { CoinmarketTestWrapper } from 'src/views/wallet/coinmarket';
-import { getCoinmarketNetworkDisplaySymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const LogoWrapper = styled.div`
     line-height: 0;
@@ -25,8 +25,8 @@ export const CoinmarketCryptoAmount = ({
     cryptoId,
     displayLogo,
 }: CoinmarketCryptoAmountProps) => {
-    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
-    const symbol = cryptoIdToCoinSymbol(cryptoId)?.toLowerCase();
+    const { cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
+    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoId);
 
     if (!amount || amount === '') {
         return (
@@ -36,7 +36,7 @@ export const CoinmarketCryptoAmount = ({
                         <CoinmarketCoinLogo cryptoId={cryptoId} margin={{ right: spacings.xs }} />
                     </LogoWrapper>
                 )}
-                {symbol ? getCoinmarketNetworkDisplaySymbol(symbol) : ''}
+                {coinSymbol ? getDisplaySymbol(coinSymbol, contractAddress) : ''}
             </Row>
         );
     }
@@ -51,7 +51,8 @@ export const CoinmarketCryptoAmount = ({
                 )}
                 <FormattedCryptoAmount
                     value={amount}
-                    symbol={symbol}
+                    symbol={coinSymbol}
+                    contractAddress={contractAddress}
                     disableHiddenPlaceholder
                     data-testid="@coinmarket/offers/quote/crypto-amount"
                 />

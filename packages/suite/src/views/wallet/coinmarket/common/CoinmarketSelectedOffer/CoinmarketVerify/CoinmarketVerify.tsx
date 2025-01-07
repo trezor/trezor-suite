@@ -6,6 +6,7 @@ import addressValidator from '@trezor/address-validator';
 import { Input, Button, Paragraph, Divider, Column, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
@@ -23,10 +24,7 @@ import {
     isCoinmarketBuyContext,
     isCoinmarketExchangeContext,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import {
-    cryptoIdToNetwork,
-    getCoinmarketNetworkDisplaySymbol,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { cryptoIdToNetwork } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 interface CoinmarketVerifyProps {
     coinmarketVerifyAccount: CoinmarketVerifyAccountReturnProps;
@@ -36,7 +34,7 @@ interface CoinmarketVerifyProps {
 export const CoinmarketVerify = ({ coinmarketVerifyAccount, cryptoId }: CoinmarketVerifyProps) => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const { cryptoIdToCoinSymbol, cryptoIdToNativeCoinSymbol } = useCoinmarketInfo();
+    const { cryptoIdToNativeCoinSymbol, cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
     const context = useCoinmarketFormContext<CoinmarketTradeBuyExchangeType>();
     const { callInProgress, device, verifyAddress, addressVerified, confirmTrade } = context;
     const exchangeQuote = isCoinmarketExchangeContext(context) ? context.selectedQuote : null;
@@ -63,7 +61,8 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, cryptoId }: Coinmark
     const { accountTooltipTranslationId, addressTooltipTranslationId } = getTranslationIds(
         selectedAccountOption?.type,
     );
-    const coinSymbol = getCoinmarketNetworkDisplaySymbol(cryptoIdToCoinSymbol(cryptoId) ?? '');
+    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoId);
+    const displaySymbol = coinSymbol && getDisplaySymbol(coinSymbol, contractAddress);
 
     const { ref: networkRef, ...networkField } = form.register('address', {
         required: translationString('TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED'),
@@ -111,7 +110,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, cryptoId }: Coinmark
             <Paragraph typographyStyle="hint" variant="tertiary">
                 <Translation
                     id="TR_EXCHANGE_RECEIVING_ADDRESS_INFO"
-                    values={{ symbol: coinSymbol }}
+                    values={{ symbol: displaySymbol }}
                 />
             </Paragraph>
             <CoinmarketVerifyOptions

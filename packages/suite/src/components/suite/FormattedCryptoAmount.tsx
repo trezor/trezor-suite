@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 
 import {
-    getNetworkDisplaySymbol,
+    getDisplaySymbol,
     getNetworkOptional,
-    isNetworkSymbol,
     type NetworkSymbolExtended,
 } from '@suite-common/wallet-config';
 import { SignValue } from '@suite-common/suite-types';
@@ -33,6 +32,7 @@ const Value = styled.span`
 export interface FormattedCryptoAmountProps {
     value?: string | number;
     symbol?: NetworkSymbolExtended;
+    contractAddress?: string | null;
     isBalance?: boolean;
     signValue?: SignValue;
     disableHiddenPlaceholder?: boolean;
@@ -44,6 +44,7 @@ export interface FormattedCryptoAmountProps {
 export const FormattedCryptoAmount = ({
     value, // expects a value in full units (BTC not sats)
     symbol,
+    contractAddress, // include contractAddress whenever the symbol is an token
     isBalance,
     signValue,
     disableHiddenPlaceholder,
@@ -69,8 +70,7 @@ export const FormattedCryptoAmount = ({
     const areSatsSupported = !!networkFeatures?.includes('amount-unit');
 
     let formattedValue = value;
-    let formattedSymbol =
-        symbol && isNetworkSymbol(symbol) ? getNetworkDisplaySymbol(symbol) : symbol?.toUpperCase();
+    let formattedSymbol = symbol && getDisplaySymbol(symbol, contractAddress);
 
     const isSatoshis = areSatsSupported && areSatsDisplayed;
 

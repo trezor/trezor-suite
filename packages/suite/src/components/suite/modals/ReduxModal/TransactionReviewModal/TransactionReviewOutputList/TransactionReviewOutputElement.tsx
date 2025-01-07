@@ -198,6 +198,7 @@ export const TransactionReviewOutputElement = forwardRef<
                                                 // TX fee is so far always paid in network native coin
                                                 line.id !== 'fee' && token ? token.symbol : symbol
                                             }
+                                            contractAddress={token?.contract}
                                         />
                                     )}
                                 </OutputValueWrapper>

@@ -264,6 +264,7 @@ export const TransactionReviewSummary = ({
                                 disableHiddenPlaceholder
                                 value={amount}
                                 symbol={tx.token?.symbol ?? symbol}
+                                contractAddress={tx.token?.contract}
                             />
                         </HeadlineAmount>
                     )}

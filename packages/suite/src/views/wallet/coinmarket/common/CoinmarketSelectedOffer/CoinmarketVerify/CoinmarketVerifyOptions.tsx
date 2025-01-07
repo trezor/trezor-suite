@@ -1,3 +1,4 @@
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Select } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
@@ -6,10 +7,7 @@ import {
     CoinmarketVerifyOptionsProps,
     CoinmarketVerifyFormAccountOptionProps,
 } from 'src/types/coinmarket/coinmarketVerify';
-import {
-    getCoinmarketNetworkDisplaySymbol,
-    parseCryptoId,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketVerifyOptionsItem } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketVerify/CoinmarketVerifyOptionsItem';
 
 export const CoinmarketVerifyOptions = ({
@@ -23,10 +21,10 @@ export const CoinmarketVerifyOptions = ({
     const { cryptoIdToPlatformName, cryptoIdToCoinName } = useCoinmarketInfo();
 
     const { networkId, contractAddress } = parseCryptoId(receiveNetwork);
-    const coinName = contractAddress
+    const coinSymbol = contractAddress
         ? cryptoIdToPlatformName(networkId)
         : cryptoIdToCoinName(networkId);
-    const displaySymbol = coinName && getCoinmarketNetworkDisplaySymbol(coinName);
+    const displaySymbol = coinSymbol && getDisplaySymbol(coinSymbol, contractAddress);
 
     return (
         <Select

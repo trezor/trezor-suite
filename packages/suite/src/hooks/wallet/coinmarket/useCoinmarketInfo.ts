@@ -3,9 +3,10 @@ import { useCallback } from 'react';
 import { CoinInfo, CryptoId } from 'invity-api';
 
 import {
+    getDisplaySymbol,
     getNetwork,
     getNetworkByCoingeckoNativeId,
-    isNetworkSymbol,
+    NetworkSymbolExtended,
 } from '@suite-common/wallet-config';
 import addressValidator from '@trezor/address-validator';
 
@@ -31,10 +32,7 @@ const toCryptoOption = (
 ): CoinmarketCryptoSelectItemProps => {
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
     const coinInfoSymbol = coinInfo.symbol.toLowerCase();
-    const displaySymbol =
-        isNetworkSymbol(coinInfoSymbol) && !contractAddress
-            ? getNetwork(coinInfoSymbol)?.displaySymbol
-            : coinInfoSymbol.toUpperCase();
+    const displaySymbol = getDisplaySymbol(coinInfoSymbol, contractAddress);
 
     return {
         type: 'currency',
@@ -86,6 +84,14 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
 
     const cryptoIdToCoinSymbol = useCallback(
         (cryptoId: CryptoId) => coins[cryptoId]?.symbol?.toUpperCase(),
+        [coins],
+    );
+
+    const cryptoIdToSymbolAndContractAddress = useCallback(
+        (cryptoId: CryptoId | undefined) => ({
+            coinSymbol: cryptoId && (coins[cryptoId]?.symbol as NetworkSymbolExtended | undefined),
+            contractAddress: cryptoId && parseCryptoId(cryptoId).contractAddress,
+        }),
         [coins],
     );
 
@@ -194,6 +200,7 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
         cryptoIdToCoinName,
         cryptoIdToCoinSymbol,
         cryptoIdToNativeCoinSymbol,
+        cryptoIdToSymbolAndContractAddress,
         buildCryptoOptions,
         buildDefaultCryptoOption,
     };

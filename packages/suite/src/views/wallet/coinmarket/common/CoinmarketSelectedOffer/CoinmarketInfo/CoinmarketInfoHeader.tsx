@@ -2,13 +2,11 @@ import { CryptoId } from 'invity-api';
 
 import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import {
-    getCoinmarketNetworkDisplaySymbol,
-    parseCryptoId,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
 
 interface CoinmarketInfoHeaderProps {
@@ -16,28 +14,28 @@ interface CoinmarketInfoHeaderProps {
 }
 
 export const CoinmarketInfoHeader = ({ receiveCurrency }: CoinmarketInfoHeaderProps) => {
-    const { cryptoIdToCoinSymbol, cryptoIdToPlatformName } = useCoinmarketInfo();
+    const { cryptoIdToPlatformName, cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
 
-    const { networkId, contractAddress } = parseCryptoId(receiveCurrency!);
+    const { networkId } = parseCryptoId(receiveCurrency!);
     const platform = cryptoIdToPlatformName(networkId);
-    const displaySymbol = platform ? getCoinmarketNetworkDisplaySymbol(platform) : platform;
-    const tokenNameHelper = receiveCurrency && cryptoIdToCoinSymbol(receiveCurrency);
-    const tokenName = tokenNameHelper ? getCoinmarketNetworkDisplaySymbol(tokenNameHelper) : '';
+
+    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(receiveCurrency);
+    const displaySymbol = coinSymbol ? getDisplaySymbol(coinSymbol, contractAddress) : '';
 
     return (
         <Row gap={spacings.xs}>
             {receiveCurrency && <CoinmarketCoinLogo cryptoId={receiveCurrency} size={24} />}
             <Text typographyStyle="titleSmall">
-                {contractAddress && displaySymbol ? (
+                {coinSymbol && contractAddress ? (
                     <Translation
                         id="TR_COINMARKET_TOKEN_NETWORK"
                         values={{
-                            tokenName,
-                            networkName: displaySymbol,
+                            tokenName: displaySymbol,
+                            networkName: platform,
                         }}
                     />
                 ) : (
-                    tokenName
+                    displaySymbol
                 )}
             </Text>
         </Row>

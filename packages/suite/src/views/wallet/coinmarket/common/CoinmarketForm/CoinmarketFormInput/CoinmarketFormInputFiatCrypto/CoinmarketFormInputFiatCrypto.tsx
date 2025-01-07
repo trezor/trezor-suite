@@ -1,3 +1,5 @@
+import { getDisplaySymbol } from '@suite-common/wallet-config';
+
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import {
     CoinmarketBuyFormProps,
@@ -6,10 +8,7 @@ import {
     CoinmarketSellFormProps,
 } from 'src/types/coinmarket/coinmarketForm';
 import { CoinmarketFormSwitcherCryptoFiat } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormSwitcherCryptoFiat';
-import {
-    coinmarketGetAmountLabels,
-    getCoinmarketNetworkDisplaySymbol,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { coinmarketGetAmountLabels } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketFormInputCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputCryptoAmount';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { CoinmarketFormInputFiat } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputFiat';
@@ -24,7 +23,7 @@ export const CoinmarketFormInputFiatCrypto = <
     showLabel = true,
     ...formProps
 }: CoinmarketFormInputFiatCryptoWrapProps<TFieldValues>) => {
-    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
     const {
         type,
         form: {
@@ -41,11 +40,8 @@ export const CoinmarketFormInputFiatCrypto = <
     } = formProps;
     const { amountInCrypto } = methods.getValues();
     const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto });
-    const coinSymbol =
-        !amountInCrypto && cryptoCurrencyLabel
-            ? cryptoIdToCoinSymbol(cryptoCurrencyLabel)
-            : currencySelectLabel ?? '';
-    const displaySymbol = coinSymbol && getCoinmarketNetworkDisplaySymbol(coinSymbol);
+    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoCurrencyLabel);
+    const displaySymbol = coinSymbol && getDisplaySymbol(coinSymbol, contractAddress);
 
     const inputProps = {
         cryptoInputName,
@@ -55,7 +51,7 @@ export const CoinmarketFormInputFiatCrypto = <
         labelLeft: showLabel ? <Translation id={amountLabels.inputLabel} /> : undefined,
         labelRight: showLabel ? (
             <CoinmarketFormSwitcherCryptoFiat
-                currency={displaySymbol}
+                currency={!amountInCrypto ? displaySymbol : currencySelectLabel ?? ''}
                 isDisabled={isFormLoading}
                 toggleAmountInCrypto={toggleAmountInCrypto}
             />

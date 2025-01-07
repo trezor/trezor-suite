@@ -90,6 +90,17 @@ export const getNetworkByCoingeckoNativeId = (coingeckoId: string) =>
 
 export const getNetworkDisplaySymbol = (symbol: NetworkSymbol) => getNetwork(symbol).displaySymbol;
 
+export const getDisplaySymbol = (coinSymbol: string, contractAddress?: string | null) => {
+    const symbol = coinSymbol.toLowerCase();
+
+    // TODO: L2 networks - Base, Arbitrum, Optimism native tokens
+    if (isNetworkSymbol(symbol) && !contractAddress) {
+        return getNetworkDisplaySymbol(symbol);
+    }
+
+    return coinSymbol.toUpperCase();
+};
+
 export const getNetworkDisplaySymbolName = (symbol: NetworkSymbol) => {
     const network = getNetwork(symbol);
 

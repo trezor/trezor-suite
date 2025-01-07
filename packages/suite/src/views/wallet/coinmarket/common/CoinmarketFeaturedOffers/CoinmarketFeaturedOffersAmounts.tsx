@@ -58,11 +58,14 @@ const CoinmarketFeaturedOffersAmount = ({
 export const CoinmarketFeaturedOffersAmounts = ({
     quote,
 }: CoinmarketFeaturedOffersAmountsProps) => {
-    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
     const context = useCoinmarketFormContext();
     const quoteProps = getCryptoQuoteAmountProps(quote, context);
 
     if (!quoteProps?.receiveCurrency) return null;
+
+    const { coinSymbol: receiveCoinSymbol, contractAddress: receiveContractAddress } =
+        cryptoIdToSymbolAndContractAddress(quoteProps.receiveCurrency);
 
     if (isCoinmarketBuyContext(context)) {
         return (
@@ -77,7 +80,8 @@ export const CoinmarketFeaturedOffersAmounts = ({
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
                         value={quoteProps.receiveAmount}
-                        symbol={cryptoIdToCoinSymbol(quoteProps.receiveCurrency)}
+                        symbol={receiveCoinSymbol}
+                        contractAddress={receiveContractAddress}
                     />
                 }
             />
@@ -91,7 +95,8 @@ export const CoinmarketFeaturedOffersAmounts = ({
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
                         value={quoteProps.receiveAmount}
-                        symbol={cryptoIdToCoinSymbol(quoteProps.receiveCurrency)}
+                        symbol={receiveCoinSymbol}
+                        contractAddress={receiveContractAddress}
                     />
                 }
                 toAmount={
@@ -108,20 +113,25 @@ export const CoinmarketFeaturedOffersAmounts = ({
 
     if (!sendCurrencyExchange) return null;
 
+    const { coinSymbol: sendCoinSymbol, contractAddress: sendContractAddress } =
+        cryptoIdToSymbolAndContractAddress(sendCurrencyExchange);
+
     return (
         <CoinmarketFeaturedOffersAmount
             fromAmount={
                 <FormattedCryptoAmount
                     disableHiddenPlaceholder
                     value={quoteProps.sendAmount}
-                    symbol={cryptoIdToCoinSymbol(sendCurrencyExchange)}
+                    symbol={sendCoinSymbol}
+                    contractAddress={sendContractAddress}
                 />
             }
             toAmount={
                 <FormattedCryptoAmount
                     disableHiddenPlaceholder
                     value={quoteProps.receiveAmount}
-                    symbol={cryptoIdToCoinSymbol(quoteProps.receiveCurrency)}
+                    symbol={receiveCoinSymbol}
+                    contractAddress={receiveContractAddress}
                 />
             }
         />

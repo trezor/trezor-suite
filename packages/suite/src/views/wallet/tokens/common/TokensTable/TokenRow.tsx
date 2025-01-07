@@ -175,6 +175,7 @@ export const TokenRow = ({
                         <FormattedCryptoAmount
                             value={token.balance}
                             symbol={formatTokenSymbol(token.symbol ?? '')}
+                            contractAddress={token.contract}
                         />
                     </Text>
                 </Column>

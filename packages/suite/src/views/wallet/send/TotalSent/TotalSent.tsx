@@ -49,6 +49,7 @@ export const TotalSent = () => {
                                         : formatNetworkAmount(transactionInfo.totalSpent, symbol)
                                 }
                                 symbol={tokenInfo?.symbol ?? symbol}
+                                contractAddress={tokenInfo?.contract}
                             />
                         )}
                     </InfoItem>
@@ -62,6 +63,7 @@ export const TotalSent = () => {
                                     disableHiddenPlaceholder
                                     value={formatNetworkAmount(transactionInfo.fee, symbol)}
                                     symbol={symbol}
+                                    contractAddress={tokenInfo.contract}
                                 />
                             ) : (
                                 <FiatValue

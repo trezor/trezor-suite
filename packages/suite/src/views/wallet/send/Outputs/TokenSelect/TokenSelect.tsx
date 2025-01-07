@@ -348,6 +348,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                                 selectedToken?.balance || account.formattedBalance
                                             }
                                             symbol={selectedToken?.symbol ?? account.symbol}
+                                            contractAddress={selectedToken?.contract}
                                         />
                                     </HiddenPlaceholder>{' '}
                                     <FiatValue

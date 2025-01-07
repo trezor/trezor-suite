@@ -39,6 +39,7 @@ export const AmountComponent = ({
             <FormattedCryptoAmount
                 value={formatAmount(transfer.amount, transfer.decimals)}
                 symbol={transfer.symbol}
+                contractAddress={transfer.contract}
                 signValue={operation}
             />
         );

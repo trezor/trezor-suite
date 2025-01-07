@@ -20,6 +20,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { BottomText } from '@trezor/components/src/components/form/BottomText';
 import { TranslationKey } from '@suite-common/intl-types';
 import { spacings } from '@trezor/theme';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
@@ -82,7 +83,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
         sendTransaction,
         getValues,
     } = useCoinmarketFormContext<CoinmarketTradeExchangeType>();
-    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
     const [slippage, setSlippage] = useState(selectedQuote?.swapSlippage ?? '1');
     const [customSlippage, setCustomSlippage] = useState(slippage);
     const [customSlippageError, setCustomSlippageError] = useState<
@@ -115,17 +116,26 @@ export const CoinmarketOfferExchangeSendSwap = () => {
         [customSlippage, slippage],
     );
 
-    if (!selectedQuote?.send) return null;
+    if (!selectedQuote) return null;
 
-    const { exchange, dexTx, receive, receiveStringAmount } = selectedQuote;
-    if (!exchange || !dexTx || !receive) return null;
+    const { exchange, dexTx, receive, send, receiveStringAmount } = selectedQuote;
+    if (!exchange || !dexTx || !receive || !send) return null;
 
     const providerName =
         exchangeInfo?.providerInfos[exchange]?.companyName || selectedQuote.exchange;
 
+    const { coinSymbol: sendCoinSymbol, contractAddress: sendContractAddress } =
+        cryptoIdToSymbolAndContractAddress(send);
+    const sendDisplaySymbol =
+        sendCoinSymbol && getDisplaySymbol(sendCoinSymbol, sendContractAddress);
+    const { coinSymbol: receiveCoinSymbol, contractAddress: receiveContractAddress } =
+        cryptoIdToSymbolAndContractAddress(receive);
+    const receiveDisplaySymbol =
+        receiveCoinSymbol && getDisplaySymbol(receiveCoinSymbol, receiveContractAddress);
+
     const translationValues = {
         value: selectedQuote.approvalStringAmount,
-        send: cryptoIdToCoinSymbol(selectedQuote.send),
+        send: sendDisplaySymbol,
         provider: providerName,
     };
 
@@ -238,7 +248,8 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                         <InfoItem label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED" />}>
                             <FormattedCryptoAmount
                                 value={receiveStringAmount}
-                                symbol={cryptoIdToCoinSymbol(receive)}
+                                symbol={receive}
+                                contractAddress={receiveContractAddress}
                             />
                         </InfoItem>
 
@@ -248,7 +259,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                                     Number(receiveStringAmount),
                                 Number(receiveStringAmount),
                                 decimals,
-                            )} ${cryptoIdToCoinSymbol(receive)}`}
+                            )} ${receiveDisplaySymbol}`}
                         </InfoItem>
 
                         <InfoItem label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM" />}>
@@ -257,7 +268,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                                     Number(receiveStringAmount),
                                 Number(receiveStringAmount),
                                 decimals,
-                            )} ${cryptoIdToCoinSymbol(receive)}`}
+                            )} ${receiveDisplaySymbol}`}
                         </InfoItem>
                     </Column>
                 </ElevationContext>

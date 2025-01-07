@@ -17,16 +17,18 @@ interface CoinmarketTransactionAmountsProps {
 }
 
 export const CoinmarketTransactionAmounts = ({ trade }: CoinmarketTransactionAmountsProps) => {
-    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
 
     if (trade.tradeType === 'sell') {
         const { cryptoStringAmount, cryptoCurrency, fiatStringAmount, fiatCurrency } = trade.data;
+        const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoCurrency);
 
         return (
             <Row flexWrap="wrap">
                 <FormattedCryptoAmount
                     value={cryptoStringAmount}
-                    symbol={cryptoCurrency ? cryptoIdToCoinSymbol(cryptoCurrency) : cryptoCurrency}
+                    symbol={coinSymbol}
+                    contractAddress={contractAddress}
                 />
                 <Arrow />
                 <HiddenPlaceholder>
@@ -38,23 +40,30 @@ export const CoinmarketTransactionAmounts = ({ trade }: CoinmarketTransactionAmo
 
     if (trade.tradeType === 'exchange') {
         const { send, sendStringAmount, receive, receiveStringAmount } = trade.data;
+        const { coinSymbol: sendCoinSymbol, contractAddress: sendContractAddress } =
+            cryptoIdToSymbolAndContractAddress(send);
+        const { coinSymbol: receiveCoinSymbol, contractAddress: receiveContractAddress } =
+            cryptoIdToSymbolAndContractAddress(receive);
 
         return (
             <Row flexWrap="wrap">
                 <FormattedCryptoAmount
                     value={sendStringAmount}
-                    symbol={send ? cryptoIdToCoinSymbol(send) : send}
+                    symbol={sendCoinSymbol}
+                    contractAddress={sendContractAddress}
                 />
                 <Arrow />
                 <FormattedCryptoAmount
                     value={receiveStringAmount}
-                    symbol={receive ? cryptoIdToCoinSymbol(receive) : receive}
+                    symbol={receiveCoinSymbol}
+                    contractAddress={receiveContractAddress}
                 />
             </Row>
         );
     }
 
     const { fiatStringAmount, fiatCurrency, receiveStringAmount, receiveCurrency } = trade.data;
+    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(receiveCurrency);
 
     return (
         <Row flexWrap="wrap">
@@ -65,9 +74,8 @@ export const CoinmarketTransactionAmounts = ({ trade }: CoinmarketTransactionAmo
             <CoinmarketTestWrapper data-testid="@coinmarket/transaction/crypto-amount">
                 <FormattedCryptoAmount
                     value={receiveStringAmount}
-                    symbol={
-                        receiveCurrency ? cryptoIdToCoinSymbol(receiveCurrency) : receiveCurrency
-                    }
+                    symbol={coinSymbol}
+                    contractAddress={contractAddress}
                 />
             </CoinmarketTestWrapper>
         </Row>

@@ -19,7 +19,7 @@ import {
 import { AnyAction, Dispatch } from 'redux';
 
 import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { AccountType } from '@suite-common/wallet-config';
+import { AccountType, NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { Timer } from '@trezor/react-utils';
 import { AccountsState } from '@suite-common/wallet-core';
 import { TokenDefinitionsState } from '@suite-common/token-definitions';
@@ -161,6 +161,10 @@ export interface CoinmarketInfoProps {
     cryptoIdToCoinName: (cryptoId: CryptoId) => string | undefined;
     cryptoIdToCoinSymbol: (cryptoId: CryptoId) => string | undefined;
     cryptoIdToNativeCoinSymbol: (cryptoId: CryptoId) => string | undefined;
+    cryptoIdToSymbolAndContractAddress: (cryptoId: CryptoId | undefined) => {
+        coinSymbol: NetworkSymbolExtended | undefined;
+        contractAddress: string | undefined;
+    };
     buildCryptoOptions: (
         cryptoIds: Set<CryptoId>,
         excludedCryptoIds?: Set<CryptoId>,

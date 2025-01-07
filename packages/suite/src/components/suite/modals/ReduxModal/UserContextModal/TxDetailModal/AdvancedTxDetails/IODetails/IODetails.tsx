@@ -42,12 +42,20 @@ type IODetails = WalletAccountTransaction['details']['vin'][number];
 type IOItem = {
     anonymitySet?: AnonymitySet;
     symbol?: NetworkSymbolExtended;
+    contractAddress?: string;
     address?: string;
     amount?: string | ReactNode;
     isPhishingTransaction?: boolean;
 };
 
-const IOItem = ({ anonymitySet, address, symbol, amount, isPhishingTransaction }: IOItem) => {
+const IOItem = ({
+    anonymitySet,
+    address,
+    symbol,
+    contractAddress,
+    amount,
+    isPhishingTransaction,
+}: IOItem) => {
     const network = useSelector(state => state.wallet.selectedAccount.network);
     const anonymity = address && anonymitySet?.[address];
 
@@ -71,6 +79,7 @@ const IOItem = ({ anonymitySet, address, symbol, amount, isPhishingTransaction }
                                         : amount
                                 }
                                 symbol={symbol}
+                                contractAddress={contractAddress}
                             />
                         ) : (
                             amount
@@ -86,6 +95,7 @@ type IOGroupProps = {
      * Transaction details can be passed also token's details so NetworkSymbolExtended is necessary
      */
     tx: Omit<WalletAccountTransaction, 'symbol'> & { symbol: NetworkSymbolExtended };
+    contractAddress?: string;
     inputs: IODetails[];
     outputs: IODetails[];
     isPhishingTransaction?: boolean;
@@ -95,6 +105,7 @@ type IOGroupProps = {
 
 const IOGroup = ({
     tx,
+    contractAddress,
     inputs,
     outputs,
     isPhishingTransaction,
@@ -131,6 +142,7 @@ const IOGroup = ({
                                 key={`input-${input.n}`}
                                 anonymitySet={anonymitySet}
                                 symbol={tx.symbol}
+                                contractAddress={contractAddress}
                                 address={input.addresses?.[0]}
                                 amount={input.value}
                                 isPhishingTransaction={isPhishingTransaction}
@@ -153,6 +165,7 @@ const IOGroup = ({
                                 key={`output-${output.n}`}
                                 anonymitySet={anonymitySet}
                                 symbol={tx.symbol}
+                                contractAddress={contractAddress}
                                 address={output.addresses?.[0]}
                                 amount={output.value}
                                 isPhishingTransaction={isPhishingTransaction}
@@ -241,6 +254,7 @@ const EthereumSpecificBalanceDetailsRow = ({
                             <IOGroup
                                 key={index}
                                 tx={{ ...tx, symbol: transfer.symbol }}
+                                contractAddress={transfer.contract}
                                 inputs={[{ addresses: [transfer.from], value }] as IODetails[]}
                                 outputs={[{ addresses: [transfer.to] }] as IODetails[]}
                                 isPhishingTransaction={isPhishingTransaction}
@@ -265,10 +279,11 @@ const SolanaSpecificBalanceDetailsRow = ({
 }: SolanaSpecificBalanceDetailsRowProps) => {
     const { tokens } = tx;
 
-    return tokens.map(({ from, to, amount, decimals }, index) => (
+    return tokens.map(({ from, to, amount, decimals, contract }, index) => (
         <IOGroup
             key={index}
             tx={tx}
+            contractAddress={contract}
             inputs={[{ addresses: [from], value: formatAmount(amount, decimals) }] as IODetails[]}
             outputs={[{ addresses: [to] }] as IODetails[]}
             isPhishingTransaction={isPhishingTransaction}
