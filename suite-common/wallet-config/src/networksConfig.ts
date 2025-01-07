@@ -79,6 +79,7 @@ export const networks = {
     pol: {
         symbol: 'pol',
         displaySymbol: 'POL',
+        displaySymbolName: 'Polygon',
         name: 'Polygon PoS',
         networkType: 'ethereum',
         chainId: 137,
@@ -102,6 +103,7 @@ export const networks = {
     bsc: {
         symbol: 'bsc',
         displaySymbol: 'BNB',
+        displaySymbolName: 'BNB',
         name: 'BNB Smart Chain',
         networkType: 'ethereum',
         chainId: 56,
@@ -125,6 +127,7 @@ export const networks = {
     arb: {
         symbol: 'arb',
         displaySymbol: 'ETH',
+        displaySymbolName: 'Ethereum',
         name: 'Arbitrum One',
         networkType: 'ethereum',
         chainId: 42161,
@@ -148,6 +151,7 @@ export const networks = {
     base: {
         symbol: 'base',
         displaySymbol: 'ETH',
+        displaySymbolName: 'Ethereum',
         name: 'Base',
         networkType: 'ethereum',
         chainId: 8453,
@@ -171,6 +175,7 @@ export const networks = {
     op: {
         symbol: 'op',
         displaySymbol: 'ETH',
+        displaySymbolName: 'Ethereum',
         name: 'Optimism',
         networkType: 'ethereum',
         chainId: 10,

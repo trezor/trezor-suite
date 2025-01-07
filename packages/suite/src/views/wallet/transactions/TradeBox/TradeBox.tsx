@@ -9,9 +9,12 @@ import {
     Button,
     useMediaQuery,
 } from '@trezor/components';
-import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { CoinLogo } from '@trezor/product-components';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    getNetwork,
+    getNetworkDisplaySymbol,
+    getNetworkDisplaySymbolName,
+} from '@suite-common/wallet-config';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
@@ -77,7 +80,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                         <Row gap={spacings.sm}>
                             <CoinLogo size={24} symbol={account.symbol} />
                             <InfoItem
-                                label={<Translation id={getTitleForNetwork(account.symbol)} />}
+                                label={getNetworkDisplaySymbolName(account.symbol)}
                                 typographyStyle="highlight"
                                 variant="default"
                                 gap={0}

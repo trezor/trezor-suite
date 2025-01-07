@@ -211,7 +211,7 @@ describe('coinmarket utils', () => {
                     {
                         accountType: 'normal',
                         balance: '250',
-                        cryptoName: 'Polygon PoS',
+                        cryptoName: 'Polygon',
                         descriptor: 'descriptor6',
                         label: 'POL',
                         value: 'polygon-ecosystem-token',

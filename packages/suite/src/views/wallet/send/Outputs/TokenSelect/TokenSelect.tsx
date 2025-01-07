@@ -27,7 +27,12 @@ import {
     selectIsSpecificCoinDefinitionKnown,
     TokenDefinitions,
 } from '@suite-common/token-definitions';
-import { getCoingeckoId, getNetwork, type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    getCoingeckoId,
+    getNetwork,
+    getNetworkDisplaySymbolName,
+    type NetworkSymbol,
+} from '@suite-common/wallet-config';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 
@@ -78,7 +83,7 @@ const buildTokenOptions = (
         result.push({
             ticker: symbol,
             symbol,
-            cryptoName: getNetwork(symbol).name,
+            cryptoName: getNetworkDisplaySymbolName(symbol),
             badge: undefined,
             contractAddress: null,
             height: ITEM_HEIGHT,
@@ -331,7 +336,8 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">
                                 <Text variant="default" typographyStyle="body">
-                                    {selectedToken?.name || getNetwork(account.symbol).name}
+                                    {selectedToken?.name ||
+                                        getNetworkDisplaySymbolName(account.symbol)}
                                 </Text>
                             </Row>
                             <Row>

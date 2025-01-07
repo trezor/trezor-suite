@@ -102,6 +102,7 @@ export type NetworkDeviceSupport = Partial<Record<DeviceModelInternal, string>>;
 type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
     symbol: TKey;
     displaySymbol: string;
+    displaySymbolName?: string;
     name: string;
     networkType: NetworkType;
     bip43Path: Bip43PathTemplate;
