@@ -1441,7 +1441,7 @@ export default defineMessages({
         id: 'TR_COPY_TO_CLIPBOARD',
     },
     TR_ADDRESS_MODAL_TITLE: {
-        defaultMessage: '{networkName} receive address',
+        defaultMessage: '{networkName} network receive address',
         id: 'TR_ADDRESS_MODAL_TITLE',
     },
     TR_ADDRESS_MODAL_TITLE_EXCHANGE: {
@@ -2266,7 +2266,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_WIPE_CODE_DESC: {
         defaultMessage:
-            'The wipe code is an advanced feature that enables you to create a “self-destruct” code, which can be entered at a later time.',
+            'A wipe code is an advanced feature that lets you create a "self-destruct" code. When entered on your Trezor, this code securely erases the data stored on the device.',
         id: 'TR_DEVICE_SETTINGS_WIPE_CODE_DESC',
     },
     TR_DEVICE_SETTINGS_AUTO_LOCK: {
@@ -3357,12 +3357,12 @@ export default defineMessages({
     },
     TR_FACTORY_RESET_DESCRIPTION: {
         defaultMessage:
-            'Performing a factory reset in bootloader mode will erase all device data, including the wallet backup, PIN, and firmware. Without your wallet backup, any funds stored on the device will be lost forever. Ensure you have your backup on hand, as it’s required to restore access to your funds after the reset. Only proceed if you’re fully prepared.',
+            'Performing a factory reset in bootloader mode erases all device data, including your wallet backup, PIN, and firmware. Without a wallet backup, any funds on the device will be irrecoverable. Make sure you have your wallet backup before performing a factory reset, as it is essential for restoring access to your funds. Proceed with caution.',
         id: 'TR_FACTORY_RESET_DESCRIPTION',
     },
     TR_WIPE_DEVICE_DESCRIPTION: {
         defaultMessage:
-            'Wiping the device will permanently erase all stored data, including the wallet backup and PIN. If you do not have your wallet backup, any funds on the device will be lost forever. Ensure you have your backup available before wiping the device, as it is essential for restoring access to your funds. Proceed with caution.',
+            'Wiping the device will permanently erase all stored data, including your wallet backup and PIN. Without a wallet backup, any funds on the device will be irrecoverable. Make sure you have your wallet backup before wiping the device, as it is essential for restoring access to your funds. Proceed with caution.',
         id: 'TR_WIPE_DEVICE_DESCRIPTION',
     },
     TR_WORDS: {
@@ -7399,7 +7399,7 @@ export default defineMessages({
     },
     TR_STAKING_GETTING_READY: {
         id: 'TR_STAKING_GETTING_READY',
-        defaultMessage: 'Your {networkSymbol} is getting ready to work',
+        defaultMessage: 'Your {networkDisplaySymbol} is getting ready to work',
     },
     TR_STAKING_REWARDS_ARE_RESTAKED: {
         id: 'TR_STAKING_REWARDS_ARE_RESTAKED',
@@ -7487,7 +7487,7 @@ export default defineMessages({
     TR_CARDANO_WITHDRAW_MODAL_TITLE_DESCRIPTION: {
         id: 'TR_CARDANO_WITHDRAW_MODAL_TITLE_DESCRIPTION',
         defaultMessage:
-            "When withdrawing your rewards, you can choose to support the Cardano ecosystem by delegating your community voting rights. Your votes will be delegated to Five Binaries, the operators of Cardano staking in Trezor Suite. This helps strengthen the network's resilience, sustainability, and community-driven governance. If you prefer, you can easily opt out of governance.",
+            "When withdrawing your rewards, you can choose to support the Cardano ecosystem by delegating your community voting rights. Your votes will be delegated to Five Binaries, the operators of Cardano staking in Trezor Suite. This helps strengthen the network's resilience, sustainability, and community-driven governance. If you prefer, you can easily opt out.",
     },
     TR_CARDANO_WITHDRAW_MODAL_SUB_TITLE: {
         id: 'TR_CARDANO_WITHDRAW_MODAL_SUB_TITLE',
@@ -7495,7 +7495,7 @@ export default defineMessages({
     },
     TR_CARDANO_WITHDRAW_MODAL_BUTTON_ABSTAIN: {
         id: 'TR_CARDANO_WITHDRAW_MODAL_BUTTON_ABSTAIN',
-        defaultMessage: 'Opt Out',
+        defaultMessage: 'Opt out',
     },
     TR_CARDANO_WITHDRAW_MODAL_BUTTON_DELEGATE: {
         id: 'TR_CARDANO_WITHDRAW_MODAL_BUTTON_DELEGATE',
@@ -8621,7 +8621,7 @@ export default defineMessages({
     TR_STAKE_ANY_AMOUNT_ETH: {
         id: 'TR_STAKE_ANY_AMOUNT_ETH',
         defaultMessage:
-            'Stake a minimum amount of {amount} {networkSymbol} and start earning rewards. With our current APY rate of {apyPercent}%, your rewards earn too!',
+            'Stake a minimum amount of {amount} {networkDisplaySymbol} and start earning rewards. With our current APY rate of {apyPercent}%, your rewards earn too!',
     },
     TR_STAKE_LEARN_MORE: {
         id: 'TR_STAKE_LEARN_MORE',
@@ -8649,11 +8649,11 @@ export default defineMessages({
     },
     TR_STAKE_WAIT_FOR_ACTIVATION: {
         id: 'TR_STAKE_WAIT_FOR_ACTIVATION',
-        defaultMessage: 'Wait for the next epoch until your stake activated',
+        defaultMessage: 'Your staking will be activated at the start of the next epoch.',
     },
     TR_STAKE_WARM_UP_PERIOD: {
         id: 'TR_STAKE_WARM_UP_PERIOD',
-        defaultMessage: 'Warm Up period',
+        defaultMessage: 'Warm-up period',
     },
     TR_STAKE_EARN_REWARDS_EVERY: {
         id: 'TR_STAKE_EARN_REWARDS_EVERY',
@@ -8661,11 +8661,11 @@ export default defineMessages({
     },
     TR_STAKE_COOL_DOWN_PERIOD: {
         id: 'TR_STAKE_COOL_DOWN_PERIOD',
-        defaultMessage: 'Cool Down Period',
+        defaultMessage: 'Cool-down period',
     },
     TR_STAKE_WAIT_FOR_DEACTIVATION: {
         id: 'TR_STAKE_WAIT_FOR_DEACTIVATION',
-        defaultMessage: 'Wait for the next epoch until your stake deactivated',
+        defaultMessage: 'Your staking will be deactivated at the start of the next epoch.',
     },
     TR_STAKE_EARN_REWARDS_WEEKLY: {
         id: 'TR_STAKE_EARN_REWARDS_WEEKLY',
@@ -8904,7 +8904,7 @@ export default defineMessages({
     },
     TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED: {
         id: 'TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED',
-        defaultMessage: 'The claimed amount is transferred to your {networkSymbol} account.',
+        defaultMessage: 'The claimed amount is transferred to your {networkDisplaySymbol} account.',
     },
     TR_STAKE_CLAIMING_PERIOD: {
         id: 'TR_STAKE_CLAIMING_PERIOD',
