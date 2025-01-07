@@ -1,6 +1,6 @@
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { convertTaprootXpub } from '@trezor/utils';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
@@ -45,7 +45,7 @@ export const ConfirmXpubModal = (
                     <Translation
                         id="TR_XPUB_MODAL_TITLE"
                         values={{
-                            networkName: getNetworkDisplaySymbol(account.symbol),
+                            networkName: getNetwork(account.symbol).name,
                             accountIndex: `#${account.index + 1}`,
                         }}
                     />

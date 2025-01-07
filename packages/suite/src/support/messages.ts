@@ -1437,7 +1437,7 @@ export default defineMessages({
         id: 'TR_XPUB_MODAL_CLIPBOARD',
     },
     TR_XPUB_MODAL_TITLE: {
-        defaultMessage: '{networkName} Account {accountIndex} public key (XPUB)',
+        defaultMessage: '{networkName} {accountIndex} public key (XPUB)',
         id: 'TR_XPUB_MODAL_TITLE',
     },
     TR_XPUB_MODAL_TITLE_METADATA: {
