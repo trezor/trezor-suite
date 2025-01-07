@@ -24,6 +24,7 @@ export { default as getAccountDescriptor } from './getAccountDescriptor';
 export { default as getAccountInfo } from './getAccountInfo';
 export { default as getAddress } from './getAddress';
 export { default as getAddressMultisig } from './getAddressMultisig';
+export { default as getAddressMultisigOrder } from './getAddressMultisigOrder';
 export { default as getAddressSegwit } from './getAddressSegwit';
 export { default as getFeatures } from './getFeatures';
 export { default as getFirmwareHash } from './getFirmwareHash';

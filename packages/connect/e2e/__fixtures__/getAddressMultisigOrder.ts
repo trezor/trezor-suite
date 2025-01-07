@@ -66,3 +66,72 @@ Please enter passphrase on your Trezor device.
 33jEiWu9kUTSiq4Z9xuwVHC6oZrhaE4RAf
 
  */
+
+// All seed trezorctl btc get-public-node -n m/45h/0 without passprhase
+const node1 = 'xpub69numS2foCPDWvbnTE95o7m92kWr1CFoSA91EHAADBDHcaQw6VwrDFbg5KUGGnyLdKjJ3ohRG4BHQNzpM1kBbVPKkBQB5j221NcvByaWDz2';
+// All seed trezorctl btc get-public-node -n m/45h/0 with passprhase `a`.
+const node2 = 'xpub6Aa2xqN8KL1Z7pkp6fVhKdw9LfCiFnrE2ob7sf3K3JMro1TQhzirx6715Jg4BDLaQ6Hx5jGdPmpv1Vah8nacjooyGVEpdAt6Uh3RVbvrpzP';
+// All seed trezorctl btc get-public-node -n m/45h/0 with passphrase `b`.
+const node3 = 'xpub6BGrXGfWm6MtezCbx6zmm73uZwve9DvLX2QhS5FXchkJ6GSkJom8Bekqr7ezyqHHCvPTTwMcmzLsSddCQBnnxtXqjqpeE2oQVZ1ftxVQfrr';
+
+const multisigUnordered = {
+    pubkeys: [
+        {
+            node: node1,
+            address_n: [1],
+        },
+        {
+            node: node2,
+            address_n: [2],
+        },
+        {
+            node: node3,
+            address_n: [3],
+        },
+    ],
+    signatures: ['', '', ''],
+    m: 2,
+};
+
+const multisigOrdered = {
+    pubkeys: [
+        {
+            node: node1,
+            address_n: [1],
+        },
+        {
+            node: node2,
+            address_n: [2],
+        },
+        {
+            node: node3,
+            address_n: [3],
+        },
+    ],
+    signatures: ['', '', ''],
+    m: 2,
+};
+
+export default {
+    method: 'getAddress',
+    setup: {
+        mnemonic: 'mnemonic_all',
+        settings: {
+            safety_checks: 2,
+        },
+    },
+    tests: [
+        {
+            description: 'show multisig address (1)',
+            params: {
+                path: [1],
+                multisigUnordered,
+                scriptType: 'SPENDMULTISIG',
+                showOnTrezor: true,
+            },
+            result: {
+                address: '33jEiWu9kUTSiq4Z9xuwVHC6oZrhaE4RAf',
+            },
+        },
+    ],
+};
