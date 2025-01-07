@@ -2,7 +2,7 @@ import { test, expect } from '../../support/fixtures';
 
 test.use({
     emulatorStartConf: { wipe: true },
-    emulatorSetupConf: { needs_backup: true, mnemonic: 'mnemonic_all' },
+    emulatorSetupConf: { mnemonic: 'mnemonic_all' },
 });
 
 test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
@@ -19,6 +19,6 @@ test.describe('Wallet discover tests', { tag: ['@group=wallet'] }, () => {
         await dashboardPage.openDeviceSwitcher();
         await dashboardPage.ejectWallet();
         await dashboardPage.addStandardWallet();
-        await expect(walletPage.balanceOfNetwork('btc').first()).toBeVisible();
+        await expect(walletPage.balanceOfAccount('btc').first()).toBeVisible();
     });
 });

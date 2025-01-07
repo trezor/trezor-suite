@@ -16,7 +16,7 @@ export class WalletActions {
     readonly coinMarketBuyButton: Locator;
     readonly coinExchangeButton: Locator;
     readonly coinMarketDropdownBuyButton: Locator;
-    readonly balanceOfNetwork = (symbol: NetworkSymbol) =>
+    readonly balanceOfAccount = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@wallet/coin-balance/value-${symbol}`);
     readonly accountDetailsTabButton: Locator;
     readonly accountDetails: Locator;
@@ -59,6 +59,14 @@ export class WalletActions {
         this.stakingCardano = this.page.getByTestId('@wallet/cardano/staking');
     }
 
+    accountButton = ({ symbol = 'btc', atIndex = 0 }: WalletParams = {}): Locator => {
+        return this.page.getByTestId(`@account-menu/${symbol}/normal/${atIndex}`);
+    };
+
+    accountLabel = ({ symbol = 'btc', atIndex = 0 }: WalletParams = {}): Locator => {
+        return this.page.getByTestId(`@account-menu/${symbol}/normal/${atIndex}/label`);
+    };
+
     @step()
     async filterTransactions(transaction: string) {
         await this.searchInput.click();
@@ -87,10 +95,6 @@ export class WalletActions {
             .locator(`[data-testid*="@account-menu/${symbol}"][tabindex]`)
             .count();
     }
-
-    accountButton = ({ symbol = 'btc', atIndex = 0 }: WalletParams = {}): Locator => {
-        return this.page.getByTestId(`@account-menu/${symbol}/normal/${atIndex}`);
-    };
 
     @step()
     async openCoinMarket(params: WalletParams = {}) {
