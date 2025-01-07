@@ -104,7 +104,13 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
             }
             stepLabel={<Translation id="TR_RECEIVE_ADDRESS" />}
             confirmStepLabel={<Translation id="TR_RECEIVE_ADDRESS_MATCH" />}
-            copyButtonText={<Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />}
+            copyButtonText={
+                modalCryptoId ? (
+                    <Translation id="TR_CONFIRM" />
+                ) : (
+                    <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
+                )
+            }
             validateOnDevice={validateAddress}
             value={value}
             data-testid="@metadata/copy-address-button"
