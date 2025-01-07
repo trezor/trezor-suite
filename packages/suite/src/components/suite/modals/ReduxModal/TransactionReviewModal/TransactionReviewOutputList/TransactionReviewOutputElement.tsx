@@ -181,7 +181,7 @@ export const TransactionReviewOutputElement = forwardRef<
                                 ? line.confirmLabel
                                 : line.label}
                         </OutputHeadline>
-                        <OutputValue>
+                        <OutputValue data-testid="@modal/output-value">
                             {isActive &&
                             displayMode &&
                             TYPES_TO_BE_DISPLAYED_IN_SCREEN_BOX.includes(line.id) ? (

@@ -8,11 +8,13 @@ export class DevicePromptActions {
     readonly confirmOnDevicePrompt: Locator;
     private readonly connectDevicePrompt: Locator;
     readonly modal: Locator;
+    readonly displayText: Locator;
 
     constructor(page: Page) {
         this.confirmOnDevicePrompt = page.getByTestId('@prompts/confirm-on-device');
         this.connectDevicePrompt = page.getByTestId('@connect-device-prompt');
         this.modal = page.getByTestId('@modal');
+        this.displayText = page.getByTestId('@device-display/paginated-text');
     }
 
     @step()

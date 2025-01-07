@@ -105,13 +105,13 @@ export class SettingsActions {
             await this.settingsMenuButton.click();
             await expect(this.settingsHeader).toHaveText('Settings', { timeout: 10000 });
         }
-        const tabActions: { [key: string]: () => Promise<void> } = {
+        const tabNavigation: { [key: string]: () => Promise<void> } = {
             application: () => this.applicationTabButton.click(),
             coins: () => this.coinsTabButton.click(),
             device: () => this.deviceTabButton.click(),
             debug: () => this.debugTabButton.click(),
         };
-        await tabActions[tab]();
+        await tabNavigation[tab]();
     }
 
     @step()

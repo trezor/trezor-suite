@@ -32,7 +32,7 @@ test.describe('Cardano', { tag: ['@group=wallet'] }, () => {
 
         await test.step('Verify Cardano account details', async () => {
             await dashboardPage.navigateTo();
-            await walletPage.accountButton({ symbol: 'tada', atIndex: 0 }).click();
+            await walletPage.accountButton({ symbol: 'tada' }).click();
             await walletPage.accountDetailsTabButton.click();
             await expect(walletPage.accountDetails).toMatchAriaSnapshot(cardanoAccountDetails);
         });
