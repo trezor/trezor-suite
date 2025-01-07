@@ -97,12 +97,12 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
         [refetch],
     );
 
+    const showHeader = isAnyMainnetAccountPresent || isLoading;
     const showGraph = hasDeviceHistoryEnabledAccounts || hasDeviceDiscovery;
 
     return (
         <VStack spacing="sp24" testID="@home/portfolio/graph">
-            {isAnyMainnetAccountPresent ? <PortfolioHeader /> : null}
-
+            {showHeader && <PortfolioHeader isLoading={isLoading} />}
             {showGraph && (
                 <Graph
                     points={graphPoints}

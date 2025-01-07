@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { selectHasDeviceDiscovery, selectIsDeviceAuthorized } from '@suite-common/wallet-core';
 import { Button, VStack } from '@suite-native/atoms';
 import { Assets } from '@suite-native/assets';
 import {
@@ -18,7 +18,9 @@ import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
 export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
+    const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const hasDiscovery = useSelector(selectHasDeviceDiscovery);
+    const showReceiveButton = isDeviceAuthorized && !hasDiscovery;
 
     const handleReceive = () => {
         navigation.navigate(RootStackRoutes.ReceiveModal, { closeActionType: 'back' });
@@ -28,7 +30,7 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
         <VStack spacing="sp32" marginTop="sp8">
             <PortfolioGraph ref={ref} />
             <VStack spacing="sp24" marginHorizontal="sp16">
-                {!hasDiscovery && (
+                {showReceiveButton && (
                     <Button
                         data-testID="@home/portolio/recieve-button"
                         onPress={handleReceive}

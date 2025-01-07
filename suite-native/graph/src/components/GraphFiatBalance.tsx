@@ -17,6 +17,7 @@ type GraphFiatBalanceProps = BalanceProps & {
     percentageChangeAtom: Atom<number>;
     hasPriceIncreasedAtom: Atom<boolean>;
     showChange?: boolean;
+    isLoading?: boolean;
 };
 
 const wrapperStyle = prepareNativeStyle(_ => ({
@@ -50,11 +51,12 @@ export const GraphFiatBalance = ({
     percentageChangeAtom,
     hasPriceIncreasedAtom,
     showChange = true,
+    isLoading = false,
 }: GraphFiatBalanceProps) => {
     const { applyStyle } = useNativeStyles();
     const firstGraphPoint = useAtomValue(referencePointAtom);
 
-    if (!firstGraphPoint) {
+    if (isLoading || !firstGraphPoint) {
         return <Skeleton />;
     }
 
