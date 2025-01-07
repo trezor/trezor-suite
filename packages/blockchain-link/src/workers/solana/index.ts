@@ -50,7 +50,7 @@ import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
-import { BigNumber, createLazy } from '@trezor/utils';
+import { BigNumber, createDeferred, createLazy } from '@trezor/utils';
 import {
     transformTokenInfo,
     tokenProgramsInfo,
@@ -298,6 +298,23 @@ const getAccountInfo = async (
             )
             .send();
 
+    const getEpoch = async (): Promise<number> => {
+        const cachedEpoch = await request.state.cache.get('epoch');
+
+        if (cachedEpoch) {
+            return cachedEpoch;
+        }
+
+        // for parallel requests we store the promise in the cache immediately
+        const deferred = createDeferred<number>();
+        request.state.cache.set('epoch', deferred.promise, 3_600_000);
+
+        const { epoch } = await api.rpc.getEpochInfo().send();
+        deferred.resolve(Number(epoch));
+
+        return deferred.promise;
+    };
+
     const tokenAccounts = (
         await Promise.all(
             Object.values(tokenProgramsInfo).map(programInfo =>
@@ -355,7 +372,7 @@ const getAccountInfo = async (
                 owner: accountInfo?.owner,
                 rent: Number(rent),
                 solStakingAccounts: stakingData?.stakingAccounts,
-                solEpoch: stakingData?.epoch,
+                solEpoch: await getEpoch(),
             };
         }
     }

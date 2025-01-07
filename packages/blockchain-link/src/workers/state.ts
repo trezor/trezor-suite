@@ -1,14 +1,18 @@
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import type { SubscriptionAccountInfo } from '@trezor/blockchain-link-types';
+import { Cache } from '@trezor/utils';
 
 export class WorkerState {
     addresses: string[];
     accounts: SubscriptionAccountInfo[];
     subscription: { [key: string]: unknown };
+    cache: Cache;
+
     constructor() {
         this.addresses = [];
         this.accounts = [];
         this.subscription = {};
+        this.cache = new Cache();
     }
 
     private validateAddresses(addr: string[]) {

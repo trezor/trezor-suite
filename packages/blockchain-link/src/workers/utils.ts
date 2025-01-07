@@ -43,11 +43,5 @@ export const getSolanaStakingData = async (descriptor: string, isTestnet: boolea
     }
     const { result: stakingAccounts } = delegations;
 
-    const epochInfo = await solanaClient.getEpochInfo();
-    if (!epochInfo || !epochInfo.result) {
-        throw new Error('Failed to fetch epoch info');
-    }
-    const { epoch } = epochInfo.result;
-
-    return { stakingAccounts, epoch };
+    return { stakingAccounts };
 };
