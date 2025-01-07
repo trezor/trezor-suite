@@ -7,7 +7,7 @@ import { Button } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { DialogModal } from 'src/components/suite/modals/Modal/DialogRenderer';
-import * as metadataUtils from 'src/utils/suite/metadata';
+import * as metadataUtils from '@trezor/metadata/src/utils';
 import type { PasswordEntry as PasswordEntryType } from 'src/types/suite/metadata';
 import { PATH } from 'src/actions/suite/constants/metadataPasswordsConstants';
 import { getDisplayKey } from 'src/utils/suite/passwords';

@@ -7,13 +7,18 @@ import type { TimerId } from '@trezor/type-utils';
 import { StaticSessionId } from '@trezor/connect';
 
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
+import { init, setEditing } from 'src/actions/suite/metadataLabelingActions';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { Translation } from 'src/components/suite';
 import {
     selectIsLabelingAvailableForEntity,
     selectIsLabelingInitPossible,
 } from 'src/reducers/suite/metadataReducer';
+
+import { Metadata } from '@trezor/metadata';
+
+// todo: replace  Metadata.getSingleton(); by direct import from @trezor/metadata. just like connect does it
+const metadataClient = Metadata.getSingleton();
 
 import { Props, ExtendedProps } from './definitions';
 import { withEditable } from './withEditable';
@@ -355,12 +360,11 @@ export const MetadataLabeling = ({
     const defaultOnSubmit = async (value: string | undefined) => {
         isSubscribedToSubmitResult.current = payload.defaultValue;
         setPending(true);
-        const result = await dispatch(
-            addMetadata({
-                ...payload,
-                value: value || undefined,
-            }),
-        );
+        const result = metadataClient.addMetadata({
+            ...payload,
+            value: value || undefined,
+        });
+
         // payload.defaultValue might change during next render, this comparison
         // ensures that success state does not appear if it is no longer relevant.
         if (isSubscribedToSubmitResult.current === payload.defaultValue) {

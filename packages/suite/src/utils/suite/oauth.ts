@@ -4,7 +4,7 @@ import type { Credentials } from '@trezor/metadata';
 
 import { getPrefixedURL } from 'src/utils/suite/router';
 import { METADATA_PROVIDER } from 'src/actions/suite/constants';
-import { urlHashParams, urlSearchParams } from 'src/utils/suite/metadata';
+import { urlHashParams, urlSearchParams } from '@trezor/metadata/src/utils';
 
 /**
  * For web, use oauth_receiver.html hosted on the same origin (localhost/sldev/trezor.io)

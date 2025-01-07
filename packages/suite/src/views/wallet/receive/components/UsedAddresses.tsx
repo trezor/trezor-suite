@@ -43,6 +43,7 @@ type ItemProps = {
     addr: AccountAddress;
     locked: boolean;
     symbol: NetworkSymbol;
+    // todo
     metadataPayload: MetadataAddPayload;
     onClick: () => void;
 };

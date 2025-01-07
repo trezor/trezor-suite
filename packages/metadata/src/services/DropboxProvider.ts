@@ -14,7 +14,7 @@ export class DropboxProvider extends AbstractMetadataProvider {
     clientId: string;
 
     constructor({ token, clientId }: { token?: string; clientId: string }) {
-        super('dropbox');
+        super({ type: 'dropbox', clientId });
 
         const fetch = window.fetch.bind(window);
 
@@ -151,7 +151,7 @@ export class DropboxProvider extends AbstractMetadataProvider {
                         path: match!.metadata.metadata.path_lower!,
                     });
 
-                    // @ts-expect-error fileBlob is missing in dropbox lib types file, but it is available
+                    // @ts-expect-error fileBlob is missing in dropbox lib types file, but it is available the runtime
                     const ab = await result2.fileBlob.arrayBuffer();
 
                     return this.ok(Buffer.from(ab));

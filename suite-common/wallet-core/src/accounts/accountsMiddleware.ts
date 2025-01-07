@@ -3,6 +3,9 @@ import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { accountsActions } from './accountsActions';
 import { fetchAndUpdateAccountThunk } from './accountsThunks';
 import { DEFAULT_ACCOUNT_SYNC_INTERVAL } from '../blockchain/blockchainThunks';
+import { Metadata } from '@trezor/metadata';
+
+const metadataClient = Metadata.getSingleton();
 
 export const prepareAccountsMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next }) => {
@@ -10,6 +13,15 @@ export const prepareAccountsMiddleware = createMiddlewareWithExtraDeps(
 
         next(action);
 
+        if (accountsActions.createAccount.match(action)) {
+            metadataClient.addEntity({
+                type: 'account',
+                parentKey: action.payload.deviceState.split('@')[0],
+
+                // todo: too much indirection here
+                entityKey: action.payload.metadata.key,
+            });
+        }
         if (
             accountsActions.updateSelectedAccount.match(action) &&
             action.payload.status === 'loaded'

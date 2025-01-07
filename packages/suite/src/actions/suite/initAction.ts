@@ -14,7 +14,7 @@ import { isDesktop } from '@trezor/env-utils';
 
 import * as routerActions from 'src/actions/suite/routerActions';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
-import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
+// import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as languageActions from 'src/actions/settings/languageActions';
 import type { Dispatch, GetState } from 'src/types/suite';
 
@@ -109,7 +109,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // 12. fetch metadata. metadata is not saved together with other data in storage.
     // historically it was saved in indexedDB together with devices and accounts and we did not need to load them
     // immediately after suite start.
-    dispatch(metadataLabelingActions.fetchAndSaveMetadataForAllDevices());
+    // dispatch(metadataLabelingActions.fetchAndSaveMetadataForAllDevices());
 
     // 13. start fetching staking data if needed, does need to be waited
     dispatch(periodicCheckStakeDataThunk());

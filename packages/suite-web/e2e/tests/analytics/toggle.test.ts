@@ -2,7 +2,7 @@
 // @retry=2
 
 import { EventType } from '@trezor/suite-analytics';
-import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
+import { urlSearchParams } from '@trezor/suite/@trezor/metadata/src/utils';
 
 import { onNavBar } from '../../support/pageObjects/topBarObject';
 

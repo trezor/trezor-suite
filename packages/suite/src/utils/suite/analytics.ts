@@ -67,11 +67,11 @@ export const getSuiteReadyPayload = async (
         platformLanguages: getPlatformLanguages().join(','),
         tor: getIsTorEnabled(state.suite.torStatus),
         // todo: duplicated with suite/src/utils/suite/logUtils
-        labeling: state.metadata.enabled
-            ? state.metadata.providers.find(
-                  p => p.clientId === state.metadata.selectedProvider.labels,
-              )?.type || 'missing-provider'
-            : '',
+        // labeling: state.metadata.enabled
+        //     ? state.metadata.providers.find(
+        //           p => p.clientId === state.metadata.selectedProvider.labels,
+        //       )?.type || 'missing-provider'
+        //     : '',
         rememberedStandardWallets: selectRememberedStandardWalletsCount(state),
         rememberedHiddenWallets: selectRememberedHiddenWalletsCount(state),
         theme: state.suite.settings.theme.variant,

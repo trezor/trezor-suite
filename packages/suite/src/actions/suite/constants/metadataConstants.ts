@@ -10,3 +10,5 @@ export const SET_INITIATING = '@metadata/set-initiating';
 export const SET_DATA = '@metadata/set-data';
 export const SET_SELECTED_PROVIDER = '@metadata/set-selected-provider';
 export const SET_ERROR_FOR_DEVICE = '@metadata/set-error-for-device';
+export const SET_KEY_FILENAME = '@metadata/set-key-filename';
+export const SET_DEVICE_SECRET = '@metadata/set-device-secret';

@@ -7,12 +7,8 @@ export class FileSystemProvider extends AbstractMetadataProvider {
     desktopApi: DesktopApi;
 
     constructor({ desktopApi }: { desktopApi: DesktopApi }) {
-        super('fileSystem');
+        super({ type: 'fileSystem', clientId: 'fileSystem' });
         this.desktopApi = desktopApi;
-    }
-
-    get clientId() {
-        return this.type;
     }
 
     connect() {

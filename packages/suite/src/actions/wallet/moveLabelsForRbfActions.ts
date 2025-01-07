@@ -4,62 +4,54 @@ import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types
 
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { Dispatch, GetState } from 'src/types/suite';
-import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import { RbfLabelsToBeUpdated } from 'src/types/wallet/sendForm';
+
+import { Metadata } from '@trezor/metadata';
+
+// todo: replace  Metadata.getSingleton(); by direct import from @trezor/metadata. just like connect does it
+const metadataClient = Metadata.getSingleton();
 
 type DeleteAllOutputLabelsParams = {
     labels: AccountLabels['outputLabels']['labels'];
-    dispatch: Dispatch;
     accountKey: AccountKey;
     txid: string;
 };
 
-const deleteDanglingLabels = async ({
-    labels,
-    dispatch,
-    accountKey,
-    txid,
-}: DeleteAllOutputLabelsParams) => {
+const deleteDanglingLabels = async ({ labels, accountKey, txid }: DeleteAllOutputLabelsParams) => {
     for (const outputIndex of Object.keys(labels)) {
-        await dispatch(
-            metadataLabelingActions.addMetadata({
-                type: 'outputLabel',
-                entityKey: accountKey,
-                txid,
-                outputIndex: Number(outputIndex),
-                defaultValue: '',
-                value: '',
-            }),
-        );
+        metadataClient.addMetadata({
+            type: 'outputLabel',
+            entityKey: accountKey,
+            txid,
+            outputIndex: Number(outputIndex),
+            defaultValue: '',
+            value: '',
+        });
     }
 };
 
 type MoveLabelToNewTransactionParams = {
     accountOutputLabels: AccountOutputLabels;
-    dispatch: Dispatch;
     accountKey: AccountKey;
     newTxid: string;
 };
 
 export const copyLabelToNewTransaction = async ({
     accountOutputLabels,
-    dispatch,
     accountKey,
     newTxid,
 }: MoveLabelToNewTransactionParams) => {
     for (const outputIndex of Object.keys(accountOutputLabels)) {
         const value = accountOutputLabels[outputIndex];
 
-        await dispatch(
-            metadataLabelingActions.addMetadata({
-                type: 'outputLabel',
-                entityKey: accountKey,
-                txid: newTxid,
-                outputIndex: Number(outputIndex),
-                defaultValue: '',
-                value,
-            }),
-        );
+        metadataClient.addMetadata({
+            type: 'outputLabel',
+            entityKey: accountKey,
+            txid: newTxid,
+            outputIndex: Number(outputIndex),
+            defaultValue: '',
+            value,
+        });
     }
 };
 
@@ -104,7 +96,7 @@ type MoveLabelsForRbfParams = {
 
 export const moveLabelsForRbfAction =
     ({ toBeMovedOrDeletedList, newTxid }: MoveLabelsForRbfParams) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (_dispatch: Dispatch, getState: GetState) => {
         for (const toBeMovedOrDeleted of Object.entries(toBeMovedOrDeletedList)) {
             const [accountKey, data] = toBeMovedOrDeleted;
 
@@ -116,7 +108,6 @@ export const moveLabelsForRbfAction =
                 accountKey,
                 accountOutputLabels: accountOutputLabelsToBeMoved,
                 newTxid,
-                dispatch,
             });
 
             for (const transactionToDrop of data.toBeDeleted) {
@@ -125,7 +116,6 @@ export const moveLabelsForRbfAction =
 
                 const deleteParams: DeleteAllOutputLabelsParams = {
                     accountKey,
-                    dispatch,
                     labels: accountOutputLabelsToBeDeleted,
                     txid: transactionToDrop.txid,
                 };

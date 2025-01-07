@@ -67,6 +67,7 @@ interface TransactionItemProps {
     isActionDisabled?: boolean; // Used in "chained transactions" transaction detail modal
     accountMetadata?: AccountLabels;
     accountKey: string;
+    accountMetadataKey: string;
     network: Network;
     accountType: AccountType;
     className?: string;
@@ -78,6 +79,7 @@ export const TransactionItem = memo(
     ({
         transaction,
         accountKey,
+        accountMetadataKey,
         accountMetadata,
         isActionDisabled,
         isPending,
@@ -281,7 +283,9 @@ export const TransactionItem = memo(
                                                                           previewTargets.length - 1
                                                                 } // if list of targets is expanded we won't get last item here
                                                                 accountMetadata={accountMetadata}
-                                                                accountKey={accountKey}
+                                                                accountMetadataKey={
+                                                                    accountMetadataKey
+                                                                }
                                                                 isActionDisabled={isActionDisabled}
                                                                 isPhishingTransaction={
                                                                     isPhishingTransaction
@@ -358,7 +362,9 @@ export const TransactionItem = memo(
                                                                             accountMetadata={
                                                                                 accountMetadata
                                                                             }
-                                                                            accountKey={accountKey}
+                                                                            accountMetadataKey={
+                                                                                accountMetadataKey
+                                                                            }
                                                                             isPhishingTransaction={
                                                                                 isPhishingTransaction
                                                                             }

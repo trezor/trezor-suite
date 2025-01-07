@@ -74,6 +74,8 @@ export const connectInitThunk = createThunk(
             'cipherKeyValue',
             'ethereumGetAddress',
             'ethereumSignTransaction',
+            // todo: there is already existing racecondition with getAccount info. problem: 2 overloads (with and without device)
+            'getAccountInfo',
             'getAddress',
             'getDeviceState',
             'getFeatures',
@@ -99,7 +101,13 @@ export const connectInitThunk = createThunk(
             if (!original) return;
             (TrezorConnect[key] as any) = async (params: any) => {
                 dispatch(lockDevice(true));
-                const result = await synchronize(() => original(params));
+                // console.log('calling connect', key);
+                const result = await synchronize(() => {
+                    // console.log('calling connect inside sync', key);
+                    return original(params);
+                });
+                // console.log('calling connect', key, 'done', result);
+
                 dispatch(lockDevice(false));
 
                 return result;

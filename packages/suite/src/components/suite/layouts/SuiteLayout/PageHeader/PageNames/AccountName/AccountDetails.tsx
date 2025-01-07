@@ -92,7 +92,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     const [hasMounted, setHasMounted] = useState(false);
     const selectedAccountLabels = useSelector(selectLabelingDataForSelectedAccount);
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
-    const { symbol, key, path, index, accountType, formattedBalance } = selectedAccount;
+    const { symbol, path, index, accountType, formattedBalance } = selectedAccount;
 
     useEffect(() => {
         setHasMounted(true);
@@ -125,7 +125,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                     }
                     payload={{
                         type: 'accountLabel',
-                        entityKey: key,
+                        entityKey: selectedAccount.metadata.key,
                         defaultValue: path,
                         value: selectedAccountLabels.accountLabel,
                     }}

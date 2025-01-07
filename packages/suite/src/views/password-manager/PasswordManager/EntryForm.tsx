@@ -11,7 +11,7 @@ import { isUrl } from '@trezor/utils';
 import { spacingsPx } from '@trezor/theme';
 
 import { usePasswords, useSelector } from 'src/hooks/suite';
-import * as metadataUtils from 'src/utils/suite/metadata';
+import * as metadataUtils from '@trezor/metadata/src/utils';
 import { PATH } from 'src/actions/suite/constants/metadataPasswordsConstants';
 import { getDisplayKey } from 'src/utils/suite/passwords';
 

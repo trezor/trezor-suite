@@ -205,10 +205,10 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
     tor: getIsTorEnabled(state.suite.torStatus),
     torOnionLinks: state.suite.settings.torOnionLinks,
     // todo: duplicated with suite/src/utils/suite/analytics
-    labeling: state.metadata.enabled
-        ? state.metadata.providers.find(p => p.clientId === state.metadata.selectedProvider.labels)
-              ?.type || 'missing-provider'
-        : '',
+    // labeling: state.metadata.enabled
+    //     ? state.metadata.providers.find(p => p.clientId === state.metadata.selectedProvider.labels)
+    //           ?.type || 'missing-provider'
+    //     : '',
     analytics: state.analytics.enabled,
     instanceId: hideSensitiveInfo ? REDACTED_REPLACEMENT : state.analytics.instanceId,
     sessionId: hideSensitiveInfo ? REDACTED_REPLACEMENT : state.analytics.sessionId,

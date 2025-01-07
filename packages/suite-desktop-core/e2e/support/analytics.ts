@@ -2,7 +2,7 @@ import { Page } from '@playwright/test';
 
 import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
 import { Requests, EventPayload } from '@trezor/suite-web/e2e/support/types';
-import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
+import { urlSearchParams } from '@trezor/suite/@trezor/metadata/src/utils';
 
 import { step } from './common';
 

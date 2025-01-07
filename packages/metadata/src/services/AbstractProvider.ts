@@ -18,8 +18,13 @@ export abstract class AbstractMetadataProvider extends TypedEmitter<Events> {
     /* isCloud means that this provider is not local and allows multi client sync. These providers are suitable for backing up data. */
     abstract isCloud: boolean;
 
-    constructor(public type: MetadataProviderType) {
+    public type: MetadataProviderType;
+    public clientId: string;
+
+    constructor({ type, clientId }: { type: MetadataProviderType; clientId: string }) {
         super();
+        this.type = type;
+        this.clientId = clientId;
     }
 
     abstract connect(): Result<void>;

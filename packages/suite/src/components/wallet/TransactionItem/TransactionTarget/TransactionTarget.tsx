@@ -141,7 +141,7 @@ export const InternalTransfer = ({
 interface TransactionTargetProps extends BaseTransfer {
     target: ArrayElement<WalletAccountTransaction['targets']>;
     transaction: WalletAccountTransaction;
-    accountKey: string;
+    accountMetadataKey: string;
     accountMetadata?: AccountLabels;
     isActionDisabled?: boolean;
     isPhishingTransaction: boolean;
@@ -151,7 +151,7 @@ export const TransactionTarget = ({
     target,
     transaction,
     accountMetadata,
-    accountKey,
+    accountMetadataKey,
     isActionDisabled,
     isPhishingTransaction,
     ...baseLayoutProps
@@ -216,7 +216,7 @@ export const TransactionTarget = ({
                     ]}
                     payload={{
                         type: 'outputLabel',
-                        entityKey: accountKey,
+                        entityKey: accountMetadataKey,
                         txid: transaction.txid,
                         outputIndex: target.n,
                         defaultValue: defaultMetadataValue,

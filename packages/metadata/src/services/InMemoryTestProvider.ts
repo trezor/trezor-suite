@@ -5,11 +5,7 @@ export class InMemoryTestProvider extends AbstractMetadataProvider {
 
     isCloud = false;
     constructor() {
-        super('inMemoryTest');
-    }
-
-    get clientId() {
-        return this.type;
+        super({ type: 'inMemoryTest', clientId: 'inMemoryTest' });
     }
 
     connect() {

@@ -11,9 +11,9 @@ const metadata =
     (next: Dispatch) =>
     (action: Action): Action => {
         if (accountsActions.createAccount.match(action)) {
-            action.payload = api.dispatch(
-                metadataLabelingActions.setAccountMetadataKey(action.payload),
-            );
+            // action.payload = api.dispatch(
+            //     metadataLabelingActions.setAccountMetadataKey(action.payload),
+            // );
         }
 
         // pass action

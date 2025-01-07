@@ -15,13 +15,7 @@ import {
 } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AcquiredDevice, Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
-import {
-    BlockchainBlock,
-    ConnectSettings,
-    Manifest,
-    PROTO,
-    StaticSessionId,
-} from '@trezor/connect';
+import { BlockchainBlock, ConnectSettings, Manifest, PROTO } from '@trezor/connect';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 
@@ -44,10 +38,6 @@ export type ExtraDependencies = {
         }>;
         cardanoFetchTrezorData: SuiteCompatibleThunk<'tADA' | 'ADA'>;
         initMetadata: SuiteCompatibleThunk<boolean>;
-        fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
-        addAccountMetadata: SuiteCompatibleThunk<
-            Exclude<MetadataAddPayload, { type: 'walletLabel' }>
-        >;
         findLabelsToBeMovedOrDeleted: SuiteCompatibleThunk<{
             prevTxid: string;
         }>;

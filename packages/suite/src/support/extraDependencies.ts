@@ -62,8 +62,6 @@ export const extraDependencies: ExtraDependencies = {
         cardanoValidatePendingTxOnBlock: cardanoStakingActions.validatePendingTxOnBlock,
         cardanoFetchTrezorData: cardanoStakingActions.fetchTrezorData,
         initMetadata: metadataLabelingActions.init,
-        fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
-        addAccountMetadata: metadataLabelingActions.addAccountMetadata,
         findLabelsToBeMovedOrDeleted,
         moveLabelsForRbfAction,
         openSwitchDeviceDialog,

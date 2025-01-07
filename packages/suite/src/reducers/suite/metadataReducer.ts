@@ -38,12 +38,14 @@ export const initialState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?
     enabled: false,
     initiating: false,
-    providers: [],
+    providers: {},
     selectedProvider: {
         labels: '',
         passwords: '',
     },
     error: {},
+    key_filename: {},
+    deviceSecrets: {},
 };
 
 type MetadataRootState = {
@@ -67,14 +69,15 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                 draft.enabled = false;
                 break;
             case METADATA.ADD_PROVIDER:
-                draft.providers.push(action.payload);
+                if (!draft.providers[action.payload.clientId]) {
+                    draft.providers[action.payload.clientId] = {
+                        ...action.payload,
+                        data: {},
+                    };
+                }
                 break;
             case METADATA.REMOVE_PROVIDER:
-                // todo: identification should be dataType + clientId
-                // at the moment, it is not needed because each feature (passwords, labels) has distinct provider. In case we wanted to support 2 different features in 1 provider. we would need to add this?
-                draft.providers = draft.providers.filter(
-                    p => p.clientId !== action.payload.clientId,
-                );
+                delete draft.providers[action.payload.clientId];
                 break;
             case METADATA.SET_SELECTED_PROVIDER:
                 draft.selectedProvider[action.payload.dataType] = action.payload.clientId;
@@ -86,19 +89,11 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                 draft.initiating = action.payload;
                 break;
             case METADATA.SET_DATA: {
-                const targetProvider = draft.providers.find(
-                    p =>
-                        p.type === action.payload.provider.type &&
-                        p.clientId === action.payload.provider.clientId,
-                );
+                const targetProvider = draft.providers[action.payload.provider.clientId];
                 if (!targetProvider) {
                     break;
                 }
-                if (!action.payload.data) {
-                    targetProvider.data = {};
-                } else {
-                    targetProvider.data = { ...targetProvider.data, ...action.payload.data };
-                }
+                targetProvider.data = { ...targetProvider.data, ...action.payload.data };
 
                 break;
             }
@@ -114,6 +109,13 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                 if (action.payload.device.state?.staticSessionId) {
                     delete draft.error?.[action.payload.device.state.staticSessionId];
                 }
+                break;
+            case METADATA.SET_KEY_FILENAME:
+                draft.key_filename[action.payload.key] = action.payload.fileName;
+                break;
+            case METADATA.SET_DEVICE_SECRET:
+                draft.deviceSecrets[action.payload.staticSessionId] = action.payload.value;
+                break;
 
             // no default
         }
@@ -125,10 +127,10 @@ export const selectMetadata = (state: MetadataRootState) => state.metadata;
  * Select currently selected provider for metadata of type 'labels'
  */
 export const selectSelectedProviderForLabels = (state: { metadata: MetadataState }) =>
-    state.metadata.providers.find(p => p.clientId === state.metadata.selectedProvider.labels);
+    state.metadata.providers[state.metadata.selectedProvider.labels];
 
 export const selectSelectedProviderForPasswords = (state: { metadata: MetadataState }) =>
-    state.metadata.providers.find(p => p.clientId === state.metadata.selectedProvider.passwords);
+    state.metadata.providers[state.metadata.selectedProvider.passwords];
 
 /**
  * Select metadata of type 'labels' for currently selected account
@@ -138,14 +140,15 @@ export const selectLabelingDataForSelectedAccount = (state: {
     wallet: { selectedAccount: { account?: Account } };
 }) => {
     const provider = selectSelectedProviderForLabels(state);
-    const { selectedAccount } = state.wallet;
+    const { account } = state.wallet?.selectedAccount || {};
 
-    const metadataKeys = selectedAccount?.account?.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
-    if (!metadataKeys || !metadataKeys.fileName || !provider?.data[metadataKeys.fileName]) {
+    if (!account?.metadata.key) {
         return DEFAULT_ACCOUNT_METADATA;
     }
 
-    return provider.data[metadataKeys.fileName] as AccountLabels;
+    const filename = state.metadata.key_filename[account?.metadata.key];
+
+    return (provider?.data[filename] as AccountLabels) || DEFAULT_ACCOUNT_METADATA;
 };
 
 /**
@@ -157,13 +160,13 @@ export const selectLabelingDataForAccount = (
 ) => {
     const provider = selectSelectedProviderForLabels(state);
     const account = selectAccountByKey(state, accountKey);
-    const metadataKeys = account?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION];
-
-    if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
+    if (!account?.metadata.key) {
         return DEFAULT_ACCOUNT_METADATA;
     }
 
-    return provider.data[metadataKeys.fileName] as AccountLabels;
+    const filename = state.metadata.key_filename[account?.metadata.key];
+
+    return (provider?.data[filename] as AccountLabels) || DEFAULT_ACCOUNT_METADATA;
 };
 
 /**
@@ -173,19 +176,9 @@ export const selectAccountLabels = (state: {
     metadata: MetadataState;
     wallet: { accounts: Account[] };
 }) => {
-    const provider = selectSelectedProviderForLabels(state);
-
     return state.wallet.accounts.reduce(
         (dict, account) => {
-            const metadataKeys = account?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION];
-            if (
-                !metadataKeys ||
-                !metadataKeys?.fileName ||
-                !provider?.data[metadataKeys.fileName]
-            ) {
-                return dict;
-            }
-            const data = provider.data[metadataKeys.fileName];
+            const data = selectLabelingDataForAccount(state, account.key);
             if ('accountLabel' in data) {
                 dict[account.key] = data.accountLabel;
             }
@@ -211,16 +204,19 @@ export const selectLabelingDataForWallet = (
         typeof deviceState === 'string'
             ? selectDeviceByStaticSessionId(state, deviceState)
             : selectDeviceByState(state, deviceState);
-    if (!device?.metadata[METADATA_LABELING.ENCRYPTION_VERSION]) {
+    const key = device?.state?.staticSessionId;
+
+    if (!key) {
         return DEFAULT_WALLET_METADATA;
     }
-    const metadataKeys = device?.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
 
-    if (metadataKeys && metadataKeys.fileName && provider?.data[metadataKeys.fileName]) {
-        return provider.data[metadataKeys.fileName] as WalletLabels;
+    const filename = state.metadata.key_filename[key];
+
+    if (!filename) {
+        return DEFAULT_WALLET_METADATA;
     }
 
-    return DEFAULT_WALLET_METADATA;
+    return (provider?.data[filename] as WalletLabels) || DEFAULT_ACCOUNT_METADATA;
 };
 
 export const selectLabelableEntities = (state: MetadataRootState, deviceState: StaticSessionId) => {
@@ -240,7 +236,9 @@ export const selectLabelableEntities = (state: MetadataRootState, deviceState: S
             .filter((device: TrezorDevice) => device.state?.staticSessionId === deviceState)
             .map((device: TrezorDevice) => ({
                 ...device.metadata,
+                // todo:
                 state: device.state,
+                staticSessionId: device.state?.staticSessionId,
                 type: 'device' as const,
             })),
     ];

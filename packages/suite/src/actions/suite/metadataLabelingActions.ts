@@ -1,551 +1,87 @@
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
-import { cloneObject } from '@trezor/utils';
 import {
-    selectDevices,
     selectSelectedDevice,
     selectDeviceByStaticSessionId,
+    selectDevices,
 } from '@suite-common/wallet-core';
 
-import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
-import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
-import {
-    MetadataProvider,
-    MetadataAddPayload,
-    ProviderErrorAction,
-    MetadataEncryptionVersion,
-    WalletLabels,
-    AccountLabels,
-} from 'src/types/suite/metadata';
-import { Account } from 'src/types/wallet';
-import * as metadataUtils from 'src/utils/suite/metadata';
-import {
-    selectLabelableEntities,
-    selectMetadata,
-    selectSelectedProviderForLabels,
-} from 'src/reducers/suite/metadataReducer';
+import { METADATA, METADATA_LABELING, METADATA_PROVIDER } from 'src/actions/suite/constants';
+import { Dispatch, GetState } from 'src/types/suite';
+import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
 
 import type { MetadataAction } from './metadataActions';
 import * as metadataActions from './metadataActions';
 import * as metadataProviderActions from './metadataProviderActions';
+import { Metadata, MetadataProvider } from '@trezor/metadata';
+import { CreateProviderParams } from '@trezor/metadata/src/api';
+import {
+    extractCredentialsFromAuthorizationFlow,
+    getOauthReceiverUrl,
+} from 'src/utils/suite/oauth';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
-export const getLabelableEntities =
-    (deviceState: StaticSessionId) => (_dispatch: Dispatch, getState: GetState) =>
-        selectLabelableEntities(getState(), deviceState);
+const metadataClient = Metadata.getSingleton();
 
-type LabelableEntity = ReturnType<ReturnType<typeof getLabelableEntities>>[number];
+export const getOrInitProvider =
+    (provider: MetadataProvider) => async (dispatch: Dispatch, getState: GetState) => {
+        let params: CreateProviderParams =
+            provider.type === 'dropbox'
+                ? {
+                      type: provider.type,
+                      clientId: provider.clientId,
+                      tokens: provider.tokens || {},
+                  }
+                : provider.type === 'google'
+                  ? {
+                        type: provider.type,
+                        clientId: provider.clientId,
+                        tokens: provider.tokens || {},
+                        code: METADATA_PROVIDER.GOOGLE_CODE_FLOW_CLIENT_ID,
+                        implicit: METADATA_PROVIDER.GOOGLE_IMPLICIT_FLOW_CLIENT_ID,
+                        environment:
+                            getState().suite.settings.debug.oauthServerEnvironment || 'production',
+                    }
+                  : provider.type === 'fileSystem'
+                    ? { type: provider.type, clientId: provider.clientId, desktopApi }
+                    : { type: provider.type, clientId: provider.clientId };
 
-const fetchMetadata =
-    ({
-        provider,
-        entity,
-        encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION,
-    }: {
-        provider: MetadataProvider;
-        entity: LabelableEntity;
-        encryptionVersion?: MetadataEncryptionVersion;
-    }) =>
-    async (dispatch: Dispatch) => {
-        const dataType = 'labels';
+        console.log('getOrInitProvider', params);
+        const onRequestReceiverUrl = async callback => {
+            const url = await getOauthReceiverUrl();
+            if (!url) {
+                console.error('no url found');
 
-        const providerInstance = dispatch(
-            metadataProviderActions.getProviderInstance({
-                clientId: provider.clientId,
-                dataType,
-            }),
-        );
-
-        if (!providerInstance) {
-            throw new Error('no provider instance');
-        }
-
-        const entityMetadata = entity[encryptionVersion];
-        if (!entityMetadata) {
-            throw new Error('trying to fetch entity without metadata');
-        }
-
-        const { fileName, aesKey } = entityMetadata;
-
-        const response = await providerInstance.getFileContent(fileName);
-
-        if (!response.success) {
-            throw response;
-        }
-
-        if (!response.payload) {
-            return undefined;
-        }
-
-        // we found associated metadata file for given account, decrypt it and return it
-        const decryptedData = metadataUtils.decrypt(
-            metadataUtils.arrayBufferToBuffer(response.payload),
-            aesKey,
-        );
-
-        // validation of fetched data structure. in theory, user may save any data in metadata file (although it is very unlikely)
-        // so we should make sure that it at least matches AccountLabels types
-        if (entity.type === 'account') {
-            if (!decryptedData.addressLabels) {
-                console.error('fetchMetadata: addressLabels missing in metadata file');
-                decryptedData.addressLabels = {};
+                return;
             }
-            if (!decryptedData.outputLabels) {
-                console.error('fetchMetadata: outputLabels missing in metadata file');
-                decryptedData.outputLabels = {};
-            }
-        }
 
-        return {
-            fileName,
-            data: decryptedData,
+            return callback(url);
         };
-    };
 
-export const setAccountMetadataKey =
-    (account: Account, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
-    (dispatch: Dispatch, getState: GetState) => {
-        const device = selectDeviceByStaticSessionId(getState(), account.deviceState);
-        const deviceMetaKey = device?.metadata[encryptionVersion]?.key;
+        // provider will ask for a code. it is now implementators (suite, suite mobile) responsibility to extract it
+        // and pass it back.
+        const onRequestCode = async (url, callback) => {
+            const res = await extractCredentialsFromAuthorizationFlow(url);
 
-        if (!deviceMetaKey) {
-            // account keys can't be set without device keys
-            return account;
-        }
-        try {
-            const metaKey = metadataUtils.deriveMetadataKey(deviceMetaKey, account.metadata.key);
-            const fileName = metadataUtils.deriveFilenameForLabeling(metaKey, encryptionVersion);
+            return callback(res);
+        };
 
-            const aesKey = metadataUtils.deriveAesKey(metaKey);
-
-            return {
-                ...account,
-                metadata: {
-                    ...account.metadata,
-                    [encryptionVersion]: { fileName, aesKey },
-                },
-            };
-        } catch (error) {
-            dispatch(
-                metadataProviderActions.handleProviderError({
-                    error,
-                    action: ProviderErrorAction.SAVE,
-                }),
-            );
+        if (params.type === 'dropbox' || params.type === 'google') {
+            params.onRequestReceiverUrl = onRequestReceiverUrl;
+            params.onRequestCode = onRequestCode;
         }
 
-        return account;
-    };
-
-/**
- * Fill any record in reducer that may have metadata with metadata keys (not values).
- */
-const syncMetadataKeys =
-    (device: TrezorDevice, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
-    (dispatch: Dispatch, getState: GetState) => {
-        if (!device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]) {
-            return;
-        }
-        const targetAccounts = getState().wallet.accounts.filter(
-            acc =>
-                !acc.metadata[encryptionVersion]?.fileName &&
-                acc.deviceState === device.state?.staticSessionId,
-        );
-
-        targetAccounts.forEach(account => {
-            const accountWithMetadata = dispatch(setAccountMetadataKey(account, encryptionVersion));
-            dispatch(metadataActions.setAccountAdd(accountWithMetadata));
-        });
-        // note that devices are intentionally omitted here - device receives metadata
-        // keys sooner when enabling labeling on device;
-    };
-
-export const fetchAndSaveMetadata =
-    (deviceStateArg?: StaticSessionId) => async (dispatch: Dispatch, getState: GetState) => {
-        const provider = selectSelectedProviderForLabels(getState());
-        if (!provider) return;
-
-        let device = deviceStateArg
-            ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
-            : selectSelectedDevice(getState());
-
-        if (
-            !device?.state?.staticSessionId ||
-            !device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]
-        )
-            return;
-
-        const fetchIntervalTrackingId = metadataUtils.getFetchTrackingId(
-            'labels',
-            provider.clientId,
-            device.state.staticSessionId,
-        );
-
-        const providerInstance = dispatch(
-            metadataProviderActions.getProviderInstance({
-                clientId: provider.clientId,
-                dataType: 'labels',
-            }),
-        );
-        if (!providerInstance) {
-            return;
-        }
-
-        try {
-            // this triggers renewal of access token if needed. Otherwise multiple requests
-            // to renew access token are issued by every provider.getFileContent
-            const response = await providerInstance.getProviderDetails();
-
-            device = deviceStateArg
-                ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
-                : selectSelectedDevice(getState());
-            if (
-                !device?.state?.staticSessionId ||
-                !device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]
-            )
-                return;
-
-            dispatch(syncMetadataKeys(device));
-
-            if (!response.success) {
-                dispatch(
-                    metadataProviderActions.handleProviderError({
-                        error: response,
-                        action: ProviderErrorAction.LOAD,
-                        clientId: provider.clientId,
-                    }),
-                );
-
-                return;
-            }
-
-            // device is disconnected or something is wrong with it
-            if (!device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]) {
-                if (metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
-                    clearInterval(metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]);
-                    delete metadataProviderActions.fetchIntervals[fetchIntervalTrackingId];
-                }
-
-                return;
-            }
-
-            const labelableEntities = dispatch(getLabelableEntities(device.state.staticSessionId));
-            const promises = labelableEntities.map(entity =>
-                dispatch(fetchMetadata({ provider, entity })).then(result => {
-                    if (result) {
-                        dispatch(metadataActions.setMetadata({ ...result, provider }));
-                    }
-                }),
-            );
-            await Promise.all(promises);
-        } catch (error) {
-            // This handles cases of providers that do not support token renewal.
-            // We want those to work normally as long as their short-lived token allows. And only if
-            // it expires, we want them to silently disconnect provider, keep metadata in place.
-            // So that users will not notice that token expired until they will try to add or edit
-            // already existing label
-            if (device?.state && metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
-                return dispatch(
-                    metadataProviderActions.disconnectProvider({
-                        removeMetadata: false,
-                        dataType: 'labels',
-                        clientId: provider.clientId,
-                    }),
-                );
-            }
-            // If there is no interval set, it means that error occurred in the first fetch
-            // in such case, display error notification
-            dispatch(
-                metadataProviderActions.handleProviderError({
-                    error,
-                    action: ProviderErrorAction.LOAD,
-                    clientId: provider.clientId,
-                }),
-            );
-        }
-    };
-
-export const fetchAndSaveMetadataForAllDevices = () => (dispatch: Dispatch, getState: GetState) => {
-    const metadata = selectMetadata(getState());
-    if (!metadata.enabled) {
-        return;
-    }
-    const devices = selectDevices(getState());
-    devices.forEach(device => {
-        if (
-            !device.state?.staticSessionId ||
-            !device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]
-        )
-            return;
-        dispatch(fetchAndSaveMetadata(device.state.staticSessionId));
-    });
-};
-
-export const addDeviceMetadata =
-    (payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>) =>
-    (dispatch: Dispatch, getState: GetState) => {
-        const devices = selectDevices(getState());
-        const device = devices.find(d => d.state?.staticSessionId === payload.entityKey);
-        const provider = selectSelectedProviderForLabels(getState());
-
-        if (!provider)
-            return Promise.resolve({
-                success: false as const,
-                error: 'provider missing',
-            });
-
-        const { fileName, aesKey } = device?.metadata[METADATA_LABELING.ENCRYPTION_VERSION] || {};
-        if (!fileName || !aesKey) {
-            return Promise.resolve({
-                success: false as const,
-                error: `fileName or aesKey is missing for device ${device?.state}`,
-            });
-        }
-
-        // todo: not danger overwrite empty?
-        const metadata = fileName ? provider.data[fileName] : undefined;
-
-        const nextMetadata = cloneObject(
-            metadata ?? METADATA_LABELING.DEFAULT_WALLET_METADATA,
-        ) as WalletLabels;
-
-        const walletLabel =
-            typeof payload.value === 'string' && payload.value.length > 0
-                ? payload.value
-                : undefined;
-
-        nextMetadata.walletLabel = walletLabel;
-
-        dispatch(
-            metadataActions.setMetadata({
-                provider,
-                fileName,
-                data: nextMetadata,
-            }),
-        );
-
-        const providerInstance = dispatch(
-            metadataProviderActions.getProviderInstance({
-                clientId: selectSelectedProviderForLabels(getState())!.clientId,
-                dataType: 'labels',
-            }),
-        );
-        if (!providerInstance) {
-            // provider should always be set here
-            return Promise.resolve({ success: false as const, error: 'no provider instance' });
-        }
-
-        return metadataActions.encryptAndSaveMetadata({
-            data: { walletLabel },
-            aesKey,
-            fileName,
-            providerInstance,
-        });
-    };
-
-/**
- * @param payload - metadata payload
- * @param save - should metadata be saved into persistent storage? this is useful when you are updating multiple records
- *               in a single account you may want to set "save" param to true only for the last call
- */
-export const addAccountMetadata =
-    (payload: Exclude<MetadataAddPayload, { type: 'walletLabel' }>) =>
-    (dispatch: Dispatch, getState: GetState) => {
-        const account = getState().wallet.accounts.find(a => a.key === payload.entityKey);
-        const provider = selectSelectedProviderForLabels(getState());
-
-        if (!account || !provider) {
-            return Promise.resolve({
-                success: false as const,
-                error: 'account or provider missing',
-            });
-        }
-
-        // todo: not danger overwrite empty?
-        const { fileName, aesKey } = account.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION] || {};
-
-        if (!fileName || !aesKey) {
-            return Promise.resolve({
-                success: false as const,
-                error: `filename of version ${METADATA_LABELING.ENCRYPTION_VERSION} does not exist for account ${account.path}`,
-            });
-        }
-        const data = provider.data[fileName];
-
-        const nextMetadata = cloneObject(
-            data ?? METADATA_LABELING.DEFAULT_ACCOUNT_METADATA,
-        ) as AccountLabels;
-
-        if (payload.type === 'outputLabel') {
-            if (typeof payload.value !== 'string' || payload.value.length === 0) {
-                if (!nextMetadata.outputLabels[payload.txid]) {
-                    // If we try to delete already deleted label it's ok.
-                    // No problem happened. ¯\_ (ツ)_/¯
-
-                    return Promise.resolve({ success: true as const });
-                }
-
-                delete nextMetadata.outputLabels[payload.txid][payload.outputIndex];
-                if (Object.keys(nextMetadata.outputLabels[payload.txid]).length === 0) {
-                    delete nextMetadata.outputLabels[payload.txid];
-                }
-            } else {
-                if (!nextMetadata.outputLabels[payload.txid]) {
-                    nextMetadata.outputLabels[payload.txid] = {};
-                }
-
-                nextMetadata.outputLabels[payload.txid][payload.outputIndex] = payload.value;
-
-                // 2.0.0
-                // metadata.outputLabels[payload.txid][payload.outputIndex] = {
-                //     ts,
-                //     value: payload.value,
-                // };
-            }
-        }
-
-        if (payload.type === 'addressLabel') {
-            if (typeof payload.value !== 'string' || payload.value.length === 0) {
-                delete nextMetadata.addressLabels[payload.defaultValue];
-            } else {
-                nextMetadata.addressLabels[payload.defaultValue] = payload.value;
-            }
-        }
-
-        if (payload.type === 'accountLabel') {
-            if (typeof payload.value !== 'string' || payload.value.length === 0) {
-                delete nextMetadata.accountLabel;
-            } else {
-                nextMetadata.accountLabel = payload.value;
-            }
-        }
-
-        dispatch(
-            metadataActions.setMetadata({
-                fileName,
-                provider,
-                data: nextMetadata,
-            }),
-        );
-
-        // we might intentionally skip saving metadata content to persistent storage.
-        if (payload.skipSave) {
-            return Promise.resolve({ success: true as const });
-        }
-
-        const providerInstance = dispatch(
-            metadataProviderActions.getProviderInstance({
-                clientId: selectSelectedProviderForLabels(getState())!.clientId,
-                dataType: 'labels',
-            }),
-        );
-        if (!providerInstance) {
-            // provider should always be set here
-            return Promise.resolve({ success: false as const, error: 'no provider instance' });
-        }
-
-        return metadataActions.encryptAndSaveMetadata({
-            data: {
-                accountLabel: nextMetadata.accountLabel,
-                outputLabels: nextMetadata.outputLabels,
-                addressLabels: nextMetadata.addressLabels,
-            },
-            aesKey,
-            fileName,
-            providerInstance,
-        });
-    };
-
-/**
- * Generate device master-key
- * */
-export const setDeviceMetadataKey =
-    (device: TrezorDevice, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        if (!device.state?.staticSessionId || !device.connected) return;
-
-        const result = await TrezorConnect.cipherKeyValue({
-            device: {
-                path: device.path,
-                state: device.state,
-                instance: device.instance,
-            },
-            useEmptyPassphrase: device.useEmptyPassphrase,
-            ...METADATA_LABELING.ENCRYPTION_VERSION_CONFIGS[encryptionVersion],
-        });
-
-        if (result.success) {
-            if (!getState().metadata.enabled) {
-                dispatch({
-                    type: METADATA.ENABLE,
-                });
-            }
-
-            const [stateAddress] = device.state.staticSessionId.split('@'); // address@device_id:instance
-            const metaKey = metadataUtils.deriveMetadataKey(result.payload.value, stateAddress);
-            const fileName = metadataUtils.deriveFilenameForLabeling(metaKey, encryptionVersion);
-            const aesKey = metadataUtils.deriveAesKey(metaKey);
-
+        metadataClient.initProvider(params);
+        return metadataClient.connectProvider(params).finally(() => {
             dispatch({
-                type: METADATA.SET_DEVICE_METADATA,
+                type: METADATA.SET_SELECTED_PROVIDER,
                 payload: {
-                    deviceState: device.state?.staticSessionId,
-                    metadata: {
-                        ...device.metadata,
-                        [encryptionVersion]: {
-                            fileName,
-                            aesKey,
-                            key: result.payload.value,
-                        },
-                    },
+                    dataType: 'labels',
+                    clientId: provider.clientId,
                 },
             });
-
-            return { success: true };
-        }
-
-        return { success: false };
-    };
-
-export const addMetadata =
-    (payload: MetadataAddPayload) => (dispatch: Dispatch, getState: GetState) =>
-        (payload.type === 'walletLabel'
-            ? dispatch(addDeviceMetadata(payload))
-            : dispatch(addAccountMetadata(payload))
-        ).then(result => {
-            if (!result.success) {
-                if ('code' in result) {
-                    console.log(result.code);
-                    dispatch(
-                        metadataProviderActions.handleProviderError({
-                            error: result,
-                            action: ProviderErrorAction.SAVE,
-                            clientId: selectSelectedProviderForLabels(getState())!.clientId,
-                        }),
-                    );
-                } else {
-                    const providerInstance = dispatch(
-                        metadataProviderActions.getProviderInstance({
-                            clientId: selectSelectedProviderForLabels(getState())!.clientId,
-                            dataType: 'labels',
-                        }),
-                    );
-                    if (providerInstance) {
-                        dispatch(
-                            metadataProviderActions.handleProviderError({
-                                error: providerInstance.error(
-                                    'OTHER_ERROR',
-                                    'error' in result ? result.error : '',
-                                ),
-                                action: ProviderErrorAction.SAVE,
-                                clientId: selectSelectedProviderForLabels(getState())!.clientId,
-                            }),
-                        );
-                    }
-                }
-            }
-
-            return result.success;
         });
-
+        // metadataClient.selectProvider({ dataType: 'labels', clientId: provider.clientId });
+    };
 /**
  * init - prepare everything needed to load + decrypt and upload + decrypt metadata. Note that this method
  * consists of number of steps of which not all have to necessarily happen. For example
@@ -558,19 +94,121 @@ export const addMetadata =
 export const init =
     (force: boolean, deviceStateArg?: StaticSessionId) =>
     async (dispatch: Dispatch, getState: GetState) => {
+        console.log('metadata actions init==');
+        metadataClient.removeAllListeners();
+
+        metadataClient.on('@metadata/set-data', payload => {
+            dispatch({
+                type: METADATA.SET_DATA,
+                payload,
+            });
+        });
+
+        metadataClient.on('@metadata/add-provider', payload => {
+            console.log('on add provider');
+            dispatch({
+                type: METADATA.ADD_PROVIDER,
+                payload,
+            });
+        });
+
+        metadataClient.on('@metadata/remove-provider', payload => {
+            console.log('on remove provider');
+            dispatch({
+                type: METADATA.REMOVE_PROVIDER,
+                payload: {
+                    //todo:
+                    clientId: payload.provider.clientId,
+                },
+            });
+        });
+
+        metadataClient.on('@metadata/set-key-filename', payload => {
+            dispatch({
+                type: METADATA.SET_KEY_FILENAME,
+                payload,
+            });
+        });
+
+        metadataClient.on('@metadata/set-selected-provider', payload => {
+            dispatch({
+                type: METADATA.SET_SELECTED_PROVIDER,
+                payload,
+            });
+        });
+
+        // todo: request-entity-key should get more information to be really agnostic. here I assume that entityKey is staticSessionId
+        metadataClient.on('request-parent-secret', async (entity, callback) => {
+            if (entity.type !== 'device') return; //ts
+
+            const devices = selectDevices(getState());
+            const device = devices.find(d =>
+                d.state?.staticSessionId?.startsWith(`${entity.entityKey}@`),
+            );
+            if (!device?.state?.staticSessionId) {
+                console.warn('problem 1');
+                return;
+            }
+            const deviceSecret = getState().metadata.deviceSecrets[device.state?.staticSessionId];
+
+            if (!deviceSecret) {
+                console.warn('problem 2');
+            }
+            callback(deviceSecret);
+        });
+
         let device = deviceStateArg
             ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
             : selectSelectedDevice(getState());
 
         if (!device?.state?.staticSessionId) {
+            console.warn('device hasnt been authorized yet');
+            return false;
+        }
+        console.log('device.state.staticSessionId', device.state.staticSessionId);
+
+        if (!getState().metadata.deviceSecrets[device.state.staticSessionId]) {
+            const result = await TrezorConnect.cipherKeyValue({
+                device,
+                useEmptyPassphrase: device.useEmptyPassphrase,
+                ...METADATA_LABELING.ENCRYPTION_VERSION_CONFIGS[1],
+            });
+
+            if (result.success) {
+                dispatch({
+                    type: METADATA.SET_DEVICE_SECRET,
+                    payload: {
+                        staticSessionId: device.state.staticSessionId,
+                        value: result.payload.value,
+                    },
+                });
+            } else {
+                dispatch({ type: METADATA.SET_INITIATING, payload: false });
+                dispatch({ type: METADATA.SET_EDITING, payload: undefined });
+                dispatch({
+                    type: METADATA.SET_ERROR_FOR_DEVICE,
+                    payload: {
+                        deviceState: device.state!.staticSessionId,
+                        failed: true,
+                    },
+                });
+            }
+        }
+
+        // todo: duplicate
+        device = deviceStateArg
+            ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
+            : selectSelectedDevice(getState());
+
+        if (!device?.state?.staticSessionId) {
+            console.warn('device hasnt been authorized yet');
             return false;
         }
 
+        // todo: is this logic needed?
         if (!force && getState().metadata.error?.[device.state.staticSessionId]) {
             return false;
         }
-
-        dispatch({ type: METADATA.SET_INITIATING, payload: true });
         if (getState().metadata.error?.[device.state.staticSessionId]) {
             // remove error note about failed migration potentially set in a previous run
             dispatch({
@@ -582,32 +220,17 @@ export const init =
             });
         }
 
+        dispatch({ type: METADATA.SET_INITIATING, payload: true });
+
         // 1. set metadata enabled globally
         if (!getState().metadata.enabled) {
             dispatch(metadataActions.enableMetadata());
         }
 
-        if (!device.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]) {
-            const result = await dispatch(
-                setDeviceMetadataKey(device, METADATA_LABELING.ENCRYPTION_VERSION),
-            );
-            if (!result?.success) {
-                dispatch({ type: METADATA.SET_INITIATING, payload: false });
-                dispatch({ type: METADATA.SET_EDITING, payload: undefined });
-                dispatch({
-                    type: METADATA.SET_ERROR_FOR_DEVICE,
-                    payload: {
-                        deviceState: device.state!.staticSessionId,
-                        failed: true,
-                    },
-                });
-
-                return false;
-            }
-        }
-
-        // 3. we have master key. use it to derive account keys
-        dispatch(syncMetadataKeys(device, METADATA_LABELING.ENCRYPTION_VERSION));
+        metadataClient.addEntity({
+            type: 'device',
+            entityKey: device.state.staticSessionId.split('@')[0],
+        });
 
         device = deviceStateArg
             ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
@@ -615,8 +238,11 @@ export const init =
 
         if (!device) return false;
 
+        const provider = selectSelectedProviderForLabels(getState());
+        console.log('metadataActions. init provider from redux  ', provider);
+
         // 4. connect to provider
-        if (!selectSelectedProviderForLabels(getState())) {
+        if (!provider) {
             const providerResult = await dispatch(metadataProviderActions.initProvider());
             if (!providerResult) {
                 dispatch({ type: METADATA.SET_INITIATING, payload: false });
@@ -624,12 +250,10 @@ export const init =
 
                 return false;
             }
+        } else {
+            // get or init
+            await dispatch(getOrInitProvider(provider));
         }
-
-        // todo: 5. migration
-
-        // 6. fetch metadata
-        await dispatch(fetchAndSaveMetadata(device.state?.staticSessionId));
 
         // now we may allow user to edit labels. everything is ready, local data is synced with provider
         if (getState().metadata.initiating) {
@@ -645,24 +269,27 @@ export const init =
             return true;
         }
 
-        const fetchIntervalTrackingId = metadataUtils.getFetchTrackingId(
-            'labels',
-            selectedProvider.clientId,
-            device.state.staticSessionId,
-        );
+        // const fetchIntervalTrackingId = metadataUtils.getFetchTrackingId(
+        //     'labels',
+        //     selectedProvider.clientId,
+        //     device.state.staticSessionId,
+        // );
 
         // 7. if interval for watching provider is not set, create it
-        if (device.state && !metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
-            // todo: possible race condition that has been around since always
-            // user is editing label and at that very moment update arrives. updates to specific entities should be probably discarded in such case?
-            metadataProviderActions.fetchIntervals[fetchIntervalTrackingId] = setInterval(() => {
-                const device = selectSelectedDevice(getState());
-                if (!getState().suite.online || !device?.state?.staticSessionId) {
-                    return;
-                }
-                dispatch(fetchAndSaveMetadata(device.state.staticSessionId));
-            }, 60_000);
-        }
+        // if (device.state && !metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
+        //     // todo: possible race condition that has been around since always
+        //     // user is editing label and at that very moment update arrives. updates to specific entities should be probably discarded in such case?
+        //     metadataProviderActions.fetchIntervals[fetchIntervalTrackingId] = setInterval(
+        //         () => {
+        //             const device = selectSelectedDevice(getState());
+        //             if (!getState().suite.online || !device?.state?.staticSessionId) {
+        //                 return;
+        //             }
+        //             dispatch(fetchAndSaveMetadata(device.state.staticSessionId));
+        //         },
+        //         60_000,
+        //     );
+        // }
 
         return true;
     };

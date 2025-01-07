@@ -170,40 +170,6 @@ describe('Metadata Actions', () => {
         });
     });
 
-    fixtures.setAccountMetadataKey.forEach(f => {
-        it(`setAccountMetadataKey - ${f.description}`, async () => {
-            const store = initStore(getInitialState(f.initialState));
-            const account = await store.dispatch(
-                metadataLabelingActions.setAccountMetadataKey(...f.params),
-            );
-            expect(account).toMatchObject(f.result);
-        });
-    });
-
-    fixtures.addDeviceMetadata.forEach(f => {
-        it(`addDeviceMetadata - ${f.description}`, async () => {
-            const store = initStore(getInitialState(f.initialState));
-            await store.dispatch(metadataLabelingActions.addDeviceMetadata(...f.params));
-            if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
-            }
-        });
-    });
-
-    fixtures.addAccountMetadata.forEach(f => {
-        it(`addAccountMetadata - ${f.description}`, async () => {
-            const store = initStore(getInitialState(f.initialState));
-            await store.dispatch(metadataLabelingActions.addAccountMetadata(...f.params));
-
-            const result = store.getActions();
-            if (!f.result) {
-                expect(result.length).toEqual(0);
-            } else {
-                expect(result).toEqual(f.result);
-            }
-        });
-    });
-
     fixtures.connectProvider.forEach(f => {
         it(`connectProvider - ${f.description}`, async () => {
             const store = initStore(getInitialState(f.initialState));
@@ -213,20 +179,6 @@ describe('Metadata Actions', () => {
                 expect(store.getActions().length).toEqual(0);
             } else {
                 expect(store.getActions()).toEqual(f.result);
-            }
-        });
-    });
-
-    fixtures.addMetadata.forEach(f => {
-        it(`add metadata - ${f.description}`, async () => {
-            const store = initStore(getInitialState(f.initialState));
-
-            await store.dispatch(metadataLabelingActions.addMetadata(...f.params));
-
-            if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
-            } else {
-                expect(store.getActions()).toEqual(expect.arrayContaining(f.result));
             }
         });
     });

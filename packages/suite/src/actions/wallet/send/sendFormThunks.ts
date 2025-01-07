@@ -32,7 +32,12 @@ import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActi
 import * as modalActions from 'src/actions/suite/modalActions';
 import { RbfLabelsToBeUpdated } from 'src/types/wallet/sendForm';
 
+import { Metadata } from '@trezor/metadata';
+
 import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from '../moveLabelsForRbfActions';
+
+// todo: replace  Metadata.getSingleton(); by direct import from @trezor/metadata. just like connect does it
+const metadataClient = Metadata.getSingleton();
 
 export const MODULE_PREFIX = '@send';
 
@@ -175,12 +180,10 @@ const applySendFormMetadataLabelsThunk = createThunk(
                 const isLast = index === arr.length - 1;
 
                 synchronize(() =>
-                    dispatch(
-                        metadataLabelingActions.addAccountMetadata({
-                            ...output,
-                            skipSave: !isLast,
-                        }),
-                    ),
+                    metadataClient.addMetadata({
+                        ...output,
+                        skipSave: !isLast,
+                    }),
                 );
             });
     },

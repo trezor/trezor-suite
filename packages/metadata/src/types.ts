@@ -1,3 +1,5 @@
+import { StaticSessionId } from '@trezor/connect';
+
 export interface LabelableEntityKeys {
     fileName: string; // file name in data provider
     aesKey: string; // symmetric key for file encryption
@@ -114,7 +116,7 @@ export type Labels = AccountLabels | WalletLabels;
 
 export type DeviceMetadata = DeviceEntityKeys;
 
-type Data = Record<
+export type Data = Record<
     LabelableEntityKeys['fileName'], // unique "id" for mapping with labelable entitties
     Labels | PasswordManagerState
 >;
@@ -143,7 +145,9 @@ export type MetadataProvider = {
 
 export interface MetadataState {
     enabled: boolean; // global for all devices
-    providers: MetadataProvider[];
+    providers: {
+        [clientId: string]: MetadataProvider;
+    };
     // being selected means:
     // - see data from this provider
     // - save data to this provider when making changes
@@ -159,6 +163,8 @@ export interface MetadataState {
      * - device disconnected
      */
     error?: { [deviceState: string]: boolean };
+    key_filename: Record<string, `${string}.mtdt`>;
+    deviceSecrets: Record<StaticSessionId, string>;
 }
 
 export type OAuthServerEnvironment = 'production' | 'staging' | 'localhost';

@@ -59,6 +59,7 @@ export const TransactionGroupedList = ({
                         isPending={isPending}
                         accountMetadata={accountMetadata}
                         accountKey={account.key}
+                        accountMetadataKey={account.metadata.key}
                         network={network}
                         accountType={account.accountType}
                         index={index}

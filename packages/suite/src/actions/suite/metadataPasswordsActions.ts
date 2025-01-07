@@ -7,12 +7,12 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { METADATA, METADATA_PROVIDER, METADATA_PASSWORDS } from 'src/actions/suite/constants';
 import { Dispatch, GetState } from 'src/types/suite';
 import { ProviderErrorAction, PasswordEntry, LabelableEntityKeys } from 'src/types/suite/metadata';
-import * as metadataUtils from 'src/utils/suite/metadata';
+import * as metadataUtils from '@trezor/metadata/src/utils';
 import { selectSelectedProviderForPasswords } from 'src/reducers/suite/metadataReducer';
 
 import * as metadataActions from './metadataActions';
 import * as metadataProviderActions from './metadataProviderActions';
-import type { FetchIntervalTrackingId } from './metadataProviderActions';
+// import type { getFetchTrackingId } from './metadataProviderActions';
 
 export const fetchPasswords =
     (keys: LabelableEntityKeys) => async (dispatch: Dispatch, _getState: GetState) => {
@@ -166,28 +166,28 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         // ts, should not happen
         return;
     }
-    const fetchIntervalTrackingId: FetchIntervalTrackingId = metadataUtils.getFetchTrackingId(
-        'passwords',
-        selectedProvider.clientId,
-        device.state.staticSessionId,
-    );
+    // const fetchIntervalTrackingId: FetchIntervalTrackingId = metadataUtils.getFetchTrackingId(
+    //     'passwords',
+    //     selectedProvider.clientId,
+    //     device.state.staticSessionId,
+    // );
 
-    if (device?.state && !metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
-        metadataProviderActions.fetchIntervals[fetchIntervalTrackingId] = setInterval(() => {
-            device = selectSelectedDevice(getState());
-            const { fileName, aesKey } = device?.passwords?.[1] || {};
+    // if (device?.state && !metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
+    //     metadataProviderActions.fetchIntervals[fetchIntervalTrackingId] = setInterval(() => {
+    //         device = selectSelectedDevice(getState());
+    //         const { fileName, aesKey } = device?.passwords?.[1] || {};
 
-            if (!getState().suite.online || !device?.state || !fileName || !aesKey) {
-                return;
-            }
-            dispatch(
-                fetchPasswords({
-                    fileName,
-                    aesKey,
-                }),
-            );
-        }, METADATA_PASSWORDS.FETCH_INTERVAL);
-    }
+    //         if (!getState().suite.online || !device?.state || !fileName || !aesKey) {
+    //             return;
+    //         }
+    //         dispatch(
+    //             fetchPasswords({
+    //                 fileName,
+    //                 aesKey,
+    //             }),
+    //         );
+    //     }, METADATA_PASSWORDS.FETCH_INTERVAL);
+    // }
 };
 
 export const addPasswordMetadata =
@@ -217,13 +217,13 @@ export const addPasswordMetadata =
         if ('config' in metadata) {
             metadata.entries[nextId] = payload;
 
-            dispatch(
-                metadataActions.setMetadata({
-                    provider,
-                    fileName,
-                    data: metadata,
-                }),
-            );
+            // dispatch(
+            //     metadataActions.setMetadata({
+            //         provider,
+            //         fileName,
+            //         data: metadata,
+            //     }),
+            // );
 
             metadataActions.encryptAndSaveMetadata({
                 providerInstance,
@@ -258,13 +258,13 @@ export const removePasswordMetadata =
         if (metadata && 'config' in metadata) {
             delete metadata.entries[index];
 
-            dispatch(
-                metadataActions.setMetadata({
-                    provider,
-                    fileName,
-                    data: metadata,
-                }),
-            );
+            // dispatch(
+            //     metadataActions.setMetadata({
+            //         provider,
+            //         fileName,
+            //         data: metadata,
+            //     }),
+            // );
 
             metadataActions.encryptAndSaveMetadata({
                 providerInstance,

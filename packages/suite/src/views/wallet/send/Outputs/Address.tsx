@@ -380,7 +380,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                                 defaultVisibleValue=""
                                 payload={{
                                     type: 'outputLabel',
-                                    entityKey: account.key,
+                                    entityKey: account.metadata.key,
                                     // txid is not known at this moment. metadata is only saved
                                     // along with other sendForm data and processed in sendFormActions.
                                     txid: 'will-be-replaced',

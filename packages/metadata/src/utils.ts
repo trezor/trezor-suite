@@ -1,11 +1,6 @@
 import * as crypto from 'crypto';
 import base58check from 'bs58check';
 
-import { DataType, MetadataProvider } from '@suite-common/metadata-types';
-import { StaticSessionId } from '@trezor/connect';
-
-import { FetchIntervalTrackingId } from 'src/actions/suite/metadataProviderActions';
-
 // note we only need base58 conversion fn from base58check, other functions from there might
 // be supplemented from crypto module
 
@@ -13,8 +8,8 @@ const CIPHER_TYPE = 'aes-256-gcm';
 const CIPHER_IVSIZE = 96 / 8;
 const AUTH_SIZE = 128 / 8;
 
-export const deriveMetadataKey = (masterKey: string, xpub: string) => {
-    const hmac = crypto.createHmac('sha256', Buffer.from(masterKey, 'hex'));
+export const deriveMetadataKey = (parentKey: string, xpub: string) => {
+    const hmac = crypto.createHmac('sha256', Buffer.from(parentKey, 'hex'));
     hmac.update(xpub);
     const hash = hmac.digest();
 
@@ -150,9 +145,3 @@ export const urlSearchParams = (search: string) => {
 
     return urlHashParams(search);
 };
-
-export const getFetchTrackingId = (
-    dataType: DataType,
-    clientId: MetadataProvider['clientId'],
-    deviceState: StaticSessionId,
-): FetchIntervalTrackingId => `${dataType}-${clientId}-${deviceState}`;

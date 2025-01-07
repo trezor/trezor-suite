@@ -17,7 +17,7 @@ import type { AbstractMetadataProvider, PasswordManagerState } from '@trezor/met
 
 import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
 import { Dispatch, GetState } from 'src/types/suite';
-import * as metadataUtils from 'src/utils/suite/metadata';
+import * as metadataUtils from '@trezor/metadata/src/utils';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
 
 import { getProviderInstance } from './metadataProviderActions';
@@ -64,6 +64,20 @@ export type MetadataAction =
     | {
           type: typeof METADATA.ACCOUNT_ADD;
           payload: Account;
+      }
+    | {
+          type: typeof METADATA.SET_KEY_FILENAME;
+          payload: {
+              key: string;
+              fileName: string;
+          };
+      }
+    | {
+          type: typeof METADATA.SET_DEVICE_SECRET;
+          payload: {
+              staticSessionId: StaticSessionId;
+              value: string;
+          };
       };
 
 export const setAccountAdd = createAction(METADATA.ACCOUNT_ADD, (payload: Account) => ({
@@ -125,28 +139,6 @@ export const disableMetadata = () => (dispatch: Dispatch) => {
     dispatch(disposeMetadata());
     dispatch(disposeMetadataKeys());
 };
-
-export const setMetadata =
-    ({
-        provider,
-        fileName,
-        data,
-    }: {
-        provider: MetadataProvider;
-        fileName: string;
-        data: WalletLabels | AccountLabels | PasswordManagerState | undefined;
-    }) =>
-    (dispatch: Dispatch) => {
-        dispatch({
-            type: METADATA.SET_DATA,
-            payload: {
-                provider,
-                data: {
-                    [fileName]: data,
-                },
-            },
-        });
-    };
 
 export const encryptAndSaveMetadata = async ({
     data,

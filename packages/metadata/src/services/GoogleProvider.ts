@@ -7,16 +7,12 @@ export class GoogleProvider extends AbstractMetadataProvider {
     isCloud = true;
 
     constructor(
-        tokens: Tokens,
+        tokens: Tokens = {},
         environment: OAuthServerEnvironment,
         clientIds: { code: string; implicit: string },
     ) {
-        super('google');
+        super({ type: 'google', clientId: clientIds.code });
         GoogleClient.init(tokens, environment, clientIds);
-    }
-
-    get clientId() {
-        return GoogleClient.clientId;
     }
 
     async connect() {

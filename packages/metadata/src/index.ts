@@ -5,3 +5,4 @@ export { GoogleProvider } from './services/GoogleProvider';
 export { InMemoryTestProvider } from './services/InMemoryTestProvider';
 
 export * from './types';
+export { Metadata } from './api';

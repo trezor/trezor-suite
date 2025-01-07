@@ -2,6 +2,7 @@ import { createThunk, ExtraDependencies } from '@suite-common/redux-utils';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { AccountInfo, BundleProgress, StaticSessionId, UI } from '@trezor/connect';
+
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
     tryGetAccountIdentity,
@@ -418,7 +419,7 @@ export const startDiscoveryThunk = createThunk(
     async (_, { dispatch, getState, extra }): Promise<void> => {
         const {
             selectors: { selectMetadata, selectDevice },
-            thunks: { initMetadata, fetchAndSaveMetadata },
+            thunks: { initMetadata },
             actions: { requestAuthConfirm },
         } = extra;
         const device = selectDevice(getState());
@@ -530,7 +531,7 @@ export const startDiscoveryThunk = createThunk(
             // if previous discovery status was running (typically after application start or when user added a new account)
             // trigger fetch metadata; necessary to load account labels
             if (discovery.status === DiscoveryStatus.RUNNING) {
-                dispatch(fetchAndSaveMetadata(deviceState));
+                // dispatch(fetchAndSaveMetadata(deviceState));
             }
 
             dispatch(
@@ -573,6 +574,7 @@ export const startDiscoveryThunk = createThunk(
             skipFinalReload: true,
             useEmptyPassphrase: device.useEmptyPassphrase,
         });
+        // register for metadata
 
         TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
 

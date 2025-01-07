@@ -20,6 +20,7 @@ import {
     OAuthServerEnvironment,
     ProviderErrorAction,
     DataType,
+    Metadata,
 } from 'src/types/suite/metadata';
 import * as modalActions from 'src/actions/suite/modalActions';
 import {
@@ -43,63 +44,11 @@ export type ProviderInstance =
     | FileSystemProvider
     | InMemoryTestProvider;
 
-// needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
-export const providerInstance: Record<DataType, ProviderInstance | undefined> = {
-    labels: undefined,
-    passwords: undefined,
-};
-
 export type FetchIntervalTrackingId =
     `${DataType}-${MetadataProvider['clientId']}-${Required<Device>['state']}`;
 export const fetchIntervals: { [id: FetchIntervalTrackingId]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
-const createProviderInstance = (
-    type: MetadataProvider['type'],
-    tokens: Tokens = {},
-    environment: OAuthServerEnvironment = 'production',
-    clientId?: string,
-) => {
-    const provider = (() => {
-        switch (type) {
-            case 'dropbox':
-                return new DropboxProvider({
-                    token: tokens?.refreshToken,
-                    clientId: clientId || METADATA_PROVIDER.DROPBOX_CLIENT_ID,
-                });
-            case 'google':
-                return new GoogleProvider(tokens, environment, {
-                    code: METADATA_PROVIDER.GOOGLE_CODE_FLOW_CLIENT_ID,
-                    implicit: METADATA_PROVIDER.GOOGLE_IMPLICIT_FLOW_CLIENT_ID,
-                });
-            case 'fileSystem':
-                return new FileSystemProvider({ desktopApi });
-            case 'inMemoryTest':
-                return new InMemoryTestProvider();
-        }
-    })();
-
-    // provider will ask for a url that will be used to send token back from the auth flow
-    provider.on('request-receiver-url', async callback => {
-        const url = await getOauthReceiverUrl();
-        if (!url) {
-            console.error('no url found');
-
-            return;
-        }
-
-        return callback(url);
-    });
-
-    // provider will ask for a code. it is now implementators (suite, suite mobile) responsibility to extract it
-    // and pass it back.
-    provider.on('request-code', async (url, callback) => {
-        const res = await extractCredentialsFromAuthorizationFlow(url);
-
-        return callback(res);
-    });
-
-    return provider;
-};
+const metadataClient = Metadata.getSingleton();
 
 /**
  * Return already existing instance of AbstractProvider or recreate it from token;
@@ -110,25 +59,44 @@ export const getProviderInstance =
         const state = getState();
         const { providers } = state.metadata;
 
-        const provider = providers.find(p => p.clientId === clientId);
+        // const provider = providers.find(p => p.clientId === clientId);
 
-        if (!provider) return;
+        // if (!provider) return;
 
-        // instance already exists but user did not finish log in and decided to use another provider;
-        if (providerInstance[dataType] && providerInstance[dataType]?.type !== provider.type) {
-            providerInstance[dataType] = undefined;
+        // // instance already exists but user did not finish log in and decided to use another provider;
+        // if (providerInstance2[dataType] && providerInstance[dataType]?.type !== provider.type) {
+        //     providerInstance[dataType] = undefined;
+        // }
+
+        // if (providerInstance[dataType]) return providerInstance[dataType];
+
+        // provider will ask for a url that will be used to send token back from the auth flow
+        const onRequestReceiverUrl = async callback => {
+            const url = await getOauthReceiverUrl();
+            if (!url) {
+                console.error('no url found');
+
+                return;
+            }
+
+            return callback(url);
+        };
+
+        // provider will ask for a code. it is now implementators (suite, suite mobile) responsibility to extract it
+        // and pass it back.
+        const onRequestCode = async (url, callback) => {
+            const res = await extractCredentialsFromAuthorizationFlow(url);
+
+            return callback(res);
+        };
+        if (params.type === 'dropbox' || params.type === 'google') {
+            params.onRequestReceiverUrl = onRequestReceiverUrl;
+            params.onRequestCode = onRequestCode;
         }
 
-        if (providerInstance[dataType]) return providerInstance[dataType];
+        // const providerInstance2 = metadataClient.initProvider(params);
 
-        providerInstance[dataType] = createProviderInstance(
-            provider.type,
-            provider.tokens,
-            state.suite.settings.debug.oauthServerEnvironment,
-            clientId,
-        );
-
-        return providerInstance[dataType];
+        // return provider;
     };
 
 export const disconnectProvider =
@@ -142,36 +110,23 @@ export const disconnectProvider =
         removeMetadata?: boolean;
     }) =>
     async (dispatch: Dispatch) => {
-        (Object.keys(fetchIntervals) as FetchIntervalTrackingId[]).forEach(
-            (id: FetchIntervalTrackingId) => {
-                const [trackedDataType, trackedClientId] = id.split('-');
-                if (trackedDataType === dataType && trackedClientId === clientId) {
-                    clearInterval(fetchIntervals[id]);
-                    delete fetchIntervals[id];
-                }
-            },
-        );
-
         // dispose metadata values (not keys)
-        if (removeMetadata) {
-            dispatch(metadataActions.disposeMetadata());
-        }
+        // if (removeMetadata) {
+        //     dispatch(metadataActions.disposeMetadata());
+        // }
 
-        const provider = dispatch(getProviderInstance({ clientId, dataType }));
+        metadataClient.disconnectProvider({ dataType, clientId, removeMetadata });
 
-        if (provider) {
-            await provider.disconnect();
-            providerInstance[dataType] = undefined;
-            dispatch({
-                type: METADATA.REMOVE_PROVIDER,
-                payload: provider,
-            });
-        }
+        // providerInstance[dataType] = undefined;
+        // dispatch({
+        //     type: METADATA.REMOVE_PROVIDER,
+        //     payload: provider,
+        // });
         // flush reducer
-        dispatch({
-            type: METADATA.SET_SELECTED_PROVIDER,
-            payload: { dataType, clientId: undefined },
-        });
+        // dispatch({
+        //     type: METADATA.SET_SELECTED_PROVIDER,
+        //     payload: { dataType, clientId: undefined },
+        // });
 
         analytics.report({
             type: EventType.SettingsGeneralLabelingProvider,
@@ -272,53 +227,17 @@ export const connectProvider =
     }: {
         type: MetadataProviderType;
         dataType?: DataType;
-        clientId?: string;
+        clientId: string;
     }) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const providerInstance = createProviderInstance(
-            type,
-            {},
-            getState().suite.settings.debug.oauthServerEnvironment,
-            clientId,
-        );
+        await metadataClient.connectProvider({ dataType, clientId });
 
-        const isConnected = await providerInstance.isConnected();
-        if (!isConnected) {
-            const connectionResult = await providerInstance.connect();
-            if ('error' in connectionResult) {
-                return connectionResult.error;
-            }
-        }
-
-        const providerDetails = await providerInstance.getProviderDetails();
-        if (!providerDetails.success) {
-            dispatch(
-                handleProviderError({
-                    error: providerDetails,
-                    action: ProviderErrorAction.CONNECT,
-                    clientId: providerInstance.clientId,
-                }),
-            );
-
-            return;
-        }
-
-        dispatch({
-            type: METADATA.ADD_PROVIDER,
-            payload: {
-                ...providerDetails.payload,
-                data: {},
-            },
-        });
-
-        analytics.report({
-            type: EventType.SettingsGeneralLabelingProvider,
-            payload: {
-                provider: providerDetails.payload.type,
-            },
-        });
-
-        dispatch(selectProvider({ dataType, clientId: providerInstance.clientId }));
+        // analytics.report({
+        //     type: EventType.SettingsGeneralLabelingProvider,
+        //     payload: {
+        //         provider: providerDetails.payload.type,
+        //     },
+        // });
 
         return true;
     };
