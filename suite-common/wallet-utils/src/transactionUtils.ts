@@ -477,17 +477,20 @@ export const getTxOperation = (
 };
 
 export const isNftTokenTransfer = (transfer: TokenTransfer) =>
-    ['ERC1155', 'ERC721'].includes(transfer.standard || '');
+    ['ERC1155', 'ERC721', 'BEP1155', 'BEP721'].includes(transfer.standard || '');
 
 export const isNftMultitokenTransfer = (transfer: TokenTransfer) =>
     !!transfer.multiTokenValues && transfer.multiTokenValues.length > 0;
 
 // TODO: TokenInfo should use TokenStandard type
-export const isNftToken = (token: TokenInfo) => ['ERC1155', 'ERC721'].includes(token.type || '');
+export const isNftToken = (token: TokenInfo) =>
+    ['ERC1155', 'ERC721', 'BEP1155', 'BEP721'].includes(token.type || '');
 
 export const getNftTokenId = (transfer: TokenTransfer) =>
     // use 0 index, haven't found an example where multiTokenValues.length > 1
-    transfer.standard === 'ERC1155' && transfer.multiTokenValues?.length
+    transfer.standard &&
+    ['ERC1155', 'BEP1155'].includes(transfer.standard) &&
+    transfer.multiTokenValues?.length
         ? transfer.multiTokenValues[0].id
         : transfer.amount;
 

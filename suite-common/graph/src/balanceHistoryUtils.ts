@@ -231,9 +231,11 @@ export const getAccountHistoryMovementItemETH = ({
         }
 
         tx.tokens.forEach(token => {
-            // skip empty amounts and non-ERC20 non-BEP20 tokens
-            // BEP20 is BNB Smart Chain (BSC) token standard
-            if (token.amount === '' || (token.standard !== 'ERC20' && token.standard !== 'BEP20'))
+            // skip empty amounts and non-ERC20, non-BEP20
+            if (
+                token.amount === '' ||
+                (token.standard && !['ERC20', 'BEP20'].includes(token.standard))
+            )
                 return;
 
             if (token.type === 'sent' || token.type === 'recv' || token.type === 'self') {
