@@ -6,6 +6,7 @@ import {
     categorizeMessages,
     getValidMessages,
     selectMessageSystemConfig,
+    getValidExperiments,
 } from '@suite-common/message-system';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
@@ -30,17 +31,21 @@ export const messageSystemMiddleware = createMiddleware((action, { next, dispatc
         const device = selectSelectedDevice(getState());
         const enabledNetworks = selectDeviceEnabledDiscoveryNetworkSymbols(getState());
 
-        const validMessages = getValidMessages(config, {
+        const validationParams = {
             device,
             settings: {
                 tor: false, // not supported in suite-native
                 enabledNetworks,
             },
-        });
+        };
 
+        const validMessages = getValidMessages(config, validationParams);
         const categorizedValidMessages = categorizeMessages(validMessages);
 
+        const validExperiments = getValidExperiments(config, validationParams);
+
         dispatch(messageSystemActions.updateValidMessages(categorizedValidMessages));
+        dispatch(messageSystemActions.updateValidExperiments(validExperiments));
     }
 
     return action;

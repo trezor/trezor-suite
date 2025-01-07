@@ -21,7 +21,6 @@ import type {
     Device,
     Environment,
     Condition,
-    ExperimentsItem,
 } from '@suite-common/suite-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { TransportInfo } from '@trezor/connect';
@@ -289,10 +288,7 @@ export const getValidMessages = (config: MessageSystem | null, options: Options)
         .map(action => action.message);
 };
 
-export const getValidExperiments = (
-    config: MessageSystem | null,
-    options: Options,
-): ExperimentsItem[] => {
+export const getValidExperiments = (config: MessageSystem | null, options: Options): string[] => {
     if (!config?.experiments) {
         return [];
     }
@@ -303,5 +299,5 @@ export const getValidExperiments = (
                 !experiment.conditions.length ||
                 experiment.conditions.some(condition => validateConditions(condition, options)),
         )
-        .map(experiment => experiment.experiment);
+        .map(experiment => experiment?.experiment?.id);
 };

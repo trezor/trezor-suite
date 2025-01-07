@@ -38,24 +38,19 @@ const messageSystemMiddleware =
             const device = selectSelectedDevice(api.getState());
             const { enabledNetworks } = api.getState().wallet.settings;
 
-            const validMessages = getValidMessages(config, {
+            const validationParams = {
                 device,
                 transports,
                 settings: {
                     tor: getIsTorEnabled(torStatus),
                     enabledNetworks,
                 },
-            });
+            };
+
+            const validMessages = getValidMessages(config, validationParams);
             const categorizedValidMessages = categorizeMessages(validMessages);
 
-            const validExperiments = getValidExperiments(config, {
-                device,
-                transports,
-                settings: {
-                    tor: getIsTorEnabled(torStatus),
-                    enabledNetworks,
-                },
-            }).map(item => item.id);
+            const validExperiments = getValidExperiments(config, validationParams);
 
             api.dispatch(messageSystemActions.updateValidMessages(categorizedValidMessages));
             api.dispatch(messageSystemActions.updateValidExperiments(validExperiments));

@@ -275,6 +275,12 @@ Structure of config, types and optionality of specific keys can be found in the 
                         "desktop": ">=24.5.1",
                         "mobile": "!",
                         "web": ">=24.5.1"
+                    },
+                    // It's very useful to define a duration for each experiment that starts the next day at the earliest,
+                    // to minimize changing the application under the hands of those who have it open at the moment.
+                    "duration": {
+                        "from": "2021-03-01T12:10:00.000Z",
+                        "to": "2022-01-31T12:10:00.000Z"
                     }
                 }
             ],
