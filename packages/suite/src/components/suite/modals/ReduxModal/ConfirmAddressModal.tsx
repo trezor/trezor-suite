@@ -1,7 +1,12 @@
 import { useCallback } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    getNetwork,
+    getNetworkDisplaySymbol,
+    getNetworkFeatures,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Translation } from 'src/components/suite';
@@ -37,6 +42,8 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
     // TODO: special case for Connect Popup
     if (!account) return <ConfirmActionModal device={device} />;
 
+    const isTokensNetwork = getNetworkFeatures(account.symbol).includes('tokens');
+
     const getHeading = () => {
         if (modalCryptoId) {
             const coinSymbol = cryptoIdToCoinSymbol(modalCryptoId)?.toLowerCase();
@@ -47,7 +54,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
                     <Translation
                         id="TR_ADDRESS_MODAL_TITLE_EXCHANGE"
                         values={{
-                            networkName: getNetworkDisplaySymbol(symbol),
+                            networkName: getNetwork(symbol).name,
                             networkCurrencyName: coinSymbol?.toUpperCase(),
                         }}
                     />
@@ -60,7 +67,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
                     values={{
                         networkName:
                             coinSymbol && isNetworkSymbol(coinSymbol)
-                                ? getNetworkDisplaySymbol(coinSymbol)
+                                ? getNetwork(coinSymbol).name
                                 : coinSymbol?.toUpperCase(),
                     }}
                 />
@@ -71,7 +78,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
             <Translation
                 id="TR_ADDRESS_MODAL_TITLE"
                 values={{
-                    networkName: getNetworkDisplaySymbol(account.symbol),
+                    networkName: getNetwork(account.symbol).name,
                 }}
             />
         );
@@ -81,6 +88,20 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
         <ConfirmValueModal
             account={account}
             heading={getHeading()}
+            description={
+                modalCryptoId ? null : (
+                    <Translation
+                        id={
+                            isTokensNetwork
+                                ? 'TR_ADDRESS_MODAL_DESCRIPTION_TOKENS'
+                                : 'TR_ADDRESS_MODAL_DESCRIPTION'
+                        }
+                        values={{
+                            displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                        }}
+                    />
+                )
+            }
             stepLabel={<Translation id="TR_RECEIVE_ADDRESS" />}
             confirmStepLabel={<Translation id="TR_RECEIVE_ADDRESS_MATCH" />}
             copyButtonText={<Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />}

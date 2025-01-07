@@ -15,7 +15,6 @@ import { copyToClipboard } from '@trezor/dom-utils';
 import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { palette, spacings } from '@trezor/theme';
-import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { ConfirmOnDevice } from '@trezor/product-components';
 
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
@@ -28,7 +27,8 @@ import { DisplayMode, ThunkAction } from 'src/types/suite';
 import { TransactionReviewStepIndicator } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewStepIndicator';
 import { TransactionReviewOutputElement } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
 
-export interface ConfirmValueModalProps extends Pick<NewModalProps, 'onCancel' | 'heading'> {
+export interface ConfirmValueModalProps
+    extends Pick<NewModalProps, 'onCancel' | 'heading' | 'description'> {
     account: Account;
     copyButtonText: ReactNode;
     stepLabel: ReactNode;
@@ -47,6 +47,7 @@ export const ConfirmValueModal = ({
     stepLabel,
     confirmStepLabel,
     heading,
+    description,
     isConfirmed,
     onCancel,
     validateOnDevice,
@@ -72,7 +73,6 @@ export const ConfirmValueModal = ({
             confirmLabel: confirmStepLabel,
         },
     ];
-    const showTokensSubheading = getNetworkFeatures(account.symbol).includes('tokens');
 
     const copy = () => {
         const result = copyToClipboard(value);
@@ -111,7 +111,7 @@ export const ConfirmValueModal = ({
             )}
             <NewModal.ModalBase
                 heading={heading}
-                description={showTokensSubheading && <Translation id="TR_INCLUDING_TOKENS" />}
+                description={description}
                 onCancel={isCancelable ? onCancel : undefined}
             >
                 <Column gap={spacings.xl}>

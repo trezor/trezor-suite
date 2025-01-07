@@ -1425,12 +1425,20 @@ export default defineMessages({
         id: 'TR_COPY_TO_CLIPBOARD',
     },
     TR_ADDRESS_MODAL_TITLE: {
-        defaultMessage: '{networkName} receive address',
+        defaultMessage: '{networkName} network receive address',
         id: 'TR_ADDRESS_MODAL_TITLE',
     },
     TR_ADDRESS_MODAL_TITLE_EXCHANGE: {
         defaultMessage: '{networkCurrencyName} receive address on {networkName} network',
         id: 'TR_ADDRESS_MODAL_TITLE_EXCHANGE',
+    },
+    TR_ADDRESS_MODAL_DESCRIPTION: {
+        defaultMessage: 'Receive {displaySymbol}',
+        id: 'TR_ADDRESS_MODAL_DESCRIPTION',
+    },
+    TR_ADDRESS_MODAL_DESCRIPTION_TOKENS: {
+        defaultMessage: 'Receive {displaySymbol} and tokens',
+        id: 'TR_ADDRESS_MODAL_DESCRIPTION_TOKENS',
     },
     TR_XPUB_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy public key',
