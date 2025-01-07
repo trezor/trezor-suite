@@ -8,6 +8,7 @@ export * from './arrayPartition';
 export * from './arrayShuffle';
 export * from './arrayToDictionary';
 export * from './bytesToHumanReadable';
+export * from './cache';
 export * from './capitalizeFirstLetter';
 export * from './cloneObject';
 export * from './countBytesInString';
