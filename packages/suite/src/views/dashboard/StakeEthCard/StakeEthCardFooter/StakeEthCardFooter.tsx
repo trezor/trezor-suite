@@ -1,5 +1,6 @@
 import { Button, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { getNetwork } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { useAccountSearch, useDispatch } from 'src/hooks/suite';
@@ -36,7 +37,7 @@ export const StakeEthCardFooter = ({ accountIndex = 0, hideSection }: StakeEthCa
                 <Paragraph variant="tertiary" typographyStyle="label">
                     <Translation id="TR_AVAILABLE_NOW_FOR" />
                 </Paragraph>
-                <NetworkBadge symbol="eth" name={<Translation id="TR_NETWORK_ETHEREUM" />} />
+                <NetworkBadge symbol="eth" name={getNetwork('eth').name} />
             </div>
 
             <Row gap={spacings.xs}>

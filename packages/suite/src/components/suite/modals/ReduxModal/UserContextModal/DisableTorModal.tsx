@@ -3,10 +3,9 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, H3, Paragraph, variables } from '@trezor/components';
-import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { blockchainActions } from '@suite-common/wallet-core';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork, type NetworkSymbol } from '@suite-common/wallet-config';
 import { CoinLogo } from '@trezor/product-components';
 
 import { Modal, Translation } from 'src/components/suite';
@@ -61,9 +60,7 @@ const BackendRow = ({ symbol, urls, onSettings }: BackendRowProps) => (
     <BackendRowWrapper>
         <CoinLogo symbol={symbol} />
         <CoinDescription>
-            <CoinTitle>
-                <Translation id={getTitleForNetwork(symbol)} />
-            </CoinTitle>
+            <CoinTitle>{getNetwork(symbol).name}</CoinTitle>
             <CoinUrls>{urls.join(', ')}</CoinUrls>
         </CoinDescription>
         <Button variant="tertiary" onClick={onSettings} icon="settings">

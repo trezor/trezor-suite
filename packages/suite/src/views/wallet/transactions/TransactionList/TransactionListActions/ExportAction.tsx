@@ -5,8 +5,9 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { ExportFileType } from '@suite-common/wallet-types';
-import { getTitleForNetwork, getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
+import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 import { AccountLabels } from '@suite-common/metadata-types';
+import { getNetwork } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
@@ -33,7 +34,7 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
         }
 
         return translationString('LABELING_ACCOUNT', {
-            networkName: translationString(getTitleForNetwork(account.symbol)),
+            networkName: getNetwork(account.symbol).name,
             index: account.index + 1,
         });
     }, [account, translationString]);

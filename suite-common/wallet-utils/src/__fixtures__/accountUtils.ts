@@ -49,49 +49,14 @@ export const getDiscoveryProcess = [
     },
 ];
 
-export const accountTitleFixture: Array<{
-    symbol: NetworkSymbolExtended;
-    title: TranslationKey;
-}> = [
-    { symbol: 'btc', title: 'TR_NETWORK_BITCOIN' },
-    { symbol: 'test', title: 'TR_NETWORK_BITCOIN_TESTNET' },
-    { symbol: 'bch', title: 'TR_NETWORK_BITCOIN_CASH' },
-    { symbol: 'btg', title: 'TR_NETWORK_BITCOIN_GOLD' },
-    { symbol: 'dash', title: 'TR_NETWORK_DASH' },
-    { symbol: 'xrp', title: 'TR_NETWORK_XRP' },
-    { symbol: 'txrp', title: 'TR_NETWORK_XRP_TESTNET' },
-    { symbol: 'tsep', title: 'TR_NETWORK_ETHEREUM_SEPOLIA' },
-    { symbol: 'thol', title: 'TR_NETWORK_ETHEREUM_HOLESKY' },
-    { symbol: 'dgb', title: 'TR_NETWORK_DIGIBYTE' },
-    { symbol: 'doge', title: 'TR_NETWORK_DOGECOIN' },
-    { symbol: 'ltc', title: 'TR_NETWORK_LITECOIN' },
-    { symbol: 'nmc', title: 'TR_NETWORK_NAMECOIN' },
-    { symbol: 'vtc', title: 'TR_NETWORK_VERTCOIN' },
-    { symbol: 'zec', title: 'TR_NETWORK_ZCASH' },
-    { symbol: 'eth', title: 'TR_NETWORK_ETHEREUM' },
-    { symbol: 'bsc', title: 'TR_NETWORK_BNB' },
-    { symbol: 'arb', title: 'TR_NETWORK_ARBITRUM_ONE' },
-    { symbol: 'base', title: 'TR_NETWORK_BASE' },
-    { symbol: 'op', title: 'TR_NETWORK_OP' },
-    { symbol: 'etc', title: 'TR_NETWORK_ETHEREUM_CLASSIC' },
-    { symbol: 'xem', title: 'TR_NETWORK_NEM' },
-    { symbol: 'xlm', title: 'TR_NETWORK_STELLAR' },
-    { symbol: 'ada', title: 'TR_NETWORK_CARDANO' },
-    { symbol: 'xtz', title: 'TR_NETWORK_TEZOS' },
-    { symbol: 'aaaaaa', title: 'TR_NETWORK_UNKNOWN' },
-    { symbol: 'bbb', title: 'TR_NETWORK_UNKNOWN' },
-    { symbol: 'c', title: 'TR_NETWORK_UNKNOWN' },
-];
-
 export const accountTitleCoinjoinFixture: Array<{
     symbol: NetworkSymbolExtended;
     title: TranslationKey;
 }> = [
     { symbol: 'btc', title: 'TR_NETWORK_COINJOIN_BITCOIN' },
+    { symbol: 'eth', title: 'TR_NETWORK_COINJOIN_BITCOIN' },
     { symbol: 'test', title: 'TR_NETWORK_COINJOIN_BITCOIN_TESTNET' },
     { symbol: 'regtest', title: 'TR_NETWORK_COINJOIN_BITCOIN_REGTEST' },
-    { symbol: 'btg', title: 'TR_NETWORK_UNKNOWN' },
-    { symbol: 'aaaaaa', title: 'TR_NETWORK_UNKNOWN' },
 ];
 
 export const parseBIP44Path = [

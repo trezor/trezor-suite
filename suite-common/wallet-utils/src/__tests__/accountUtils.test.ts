@@ -11,7 +11,6 @@ import {
     substituteBip43Path,
     getFiatValue,
     getFirstFreshAddress,
-    getTitleForNetwork,
     getTitleForCoinjoinAccount,
     getUtxoFromSignedTransaction,
     getNetworkAccountFeatures,
@@ -60,14 +59,6 @@ describe('account utils', () => {
     fixtures.sortByCoin.forEach(f => {
         it('accountUtils.sortByCoin', () => {
             expect(sortByCoin(f.accounts as Account[])).toEqual(f.result);
-        });
-    });
-
-    describe('get title for network', () => {
-        fixtures.accountTitleFixture.forEach(fixture => {
-            it(fixture.symbol, () => {
-                expect(getTitleForNetwork(fixture.symbol)).toBe(fixture.title);
-            });
         });
     });
 

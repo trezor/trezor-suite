@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
-import { getTitleForNetwork, getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
-import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
+import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
+import { AccountType, getNetwork, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { useTranslation } from './useTranslation';
 
@@ -23,7 +23,7 @@ export const useDefaultAccountLabel = () => {
             const displayedAccountNumber = index + 1;
 
             return translationString('LABELING_ACCOUNT', {
-                networkName: translationString(getTitleForNetwork(symbol)), // Bitcoin, Ethereum, ...
+                networkName: getNetwork(symbol).name,
                 index: displayedAccountNumber,
             });
         },

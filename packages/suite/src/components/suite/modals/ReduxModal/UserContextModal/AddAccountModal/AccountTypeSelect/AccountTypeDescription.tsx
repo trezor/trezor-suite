@@ -1,16 +1,16 @@
 import { Paragraph, Column } from '@trezor/components';
-import { Bip43PathTemplate, AccountType, NetworkType } from '@suite-common/wallet-config';
 import {
-    getAccountTypeDesc,
-    getAccountTypeUrl,
-    getTitleForNetwork,
-} from '@suite-common/wallet-utils';
+    Bip43PathTemplate,
+    AccountType,
+    NetworkType,
+    getNetwork,
+} from '@suite-common/wallet-config';
+import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-utils';
 import { spacings } from '@trezor/theme';
 import { Account } from '@suite-common/wallet-types';
 
 import { Translation } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { useTranslation } from 'src/hooks/suite';
 
 interface AccountTypeDescriptionProps {
     bip43Path: Bip43PathTemplate;
@@ -25,16 +25,13 @@ export const AccountTypeDescription = ({
     symbol,
     networkType,
 }: AccountTypeDescriptionProps) => {
-    const { translationString } = useTranslation();
     const accountTypeUrl = getAccountTypeUrl(bip43Path);
     const accountTypeDescId = getAccountTypeDesc({ path: bip43Path, accountType, networkType });
 
     const renderAccountTypeDesc = () => {
         if (symbol && accountType === 'normal' && networkType === 'ethereum') {
-            const value = getTitleForNetwork(symbol);
-
             return (
-                <Translation id={accountTypeDescId} values={{ value: translationString(value) }} />
+                <Translation id={accountTypeDescId} values={{ value: getNetwork(symbol).name }} />
             );
         }
 
