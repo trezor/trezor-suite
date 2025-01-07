@@ -27,11 +27,15 @@ const reportCheckWarning = (checkType: 'Firmware revision' | 'Firmware hash', co
 
 const useCommonData = () => {
     const { device } = useDevice();
+    const model = device?.features?.internal_model;
     const revision = device?.features?.revision;
     const version = getFirmwareVersion(device);
     const vendor = device?.features?.fw_vendor;
 
-    return useMemo(() => ({ revision, version, vendor }), [revision, version, vendor]);
+    return useMemo(
+        () => ({ model, revision, version, vendor }),
+        [model, revision, version, vendor],
+    );
 };
 
 const useReportRevisionCheck = () => {
