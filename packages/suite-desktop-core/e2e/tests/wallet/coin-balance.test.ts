@@ -13,7 +13,7 @@ test.describe('Coin balance', { tag: ['@group=wallet'] }, () => {
         await dashboardPage.discoveryShouldFinish();
     });
 
-    test('Coin balance is increased', async ({
+    test('Account balance is increased', async ({
         trezorUserEnvLink,
         dashboardPage,
         settingsPage,
