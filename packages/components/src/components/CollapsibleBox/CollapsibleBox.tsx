@@ -1,6 +1,5 @@
-import { useState, ReactNode, MouseEvent } from 'react';
+import { useState, ReactNode } from 'react';
 
-import { motion } from 'framer-motion';
 import styled, { css } from 'styled-components';
 
 import {
@@ -15,6 +14,7 @@ import {
 import { Icon, IconName } from '../Icon/Icon';
 import { Row, Column } from '../Flex/Flex';
 import { Text } from '../typography/Text/Text';
+import { Collapsible } from '../Collapsible/Collapsible';
 import { motionEasing } from '../../config/motion';
 import { ElevationUp, useElevation } from './../ElevationContext/ElevationContext';
 import {
@@ -37,21 +37,6 @@ export const allowedCollapsibleBoxFrameProps = ['margin'] as const satisfies Fra
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedCollapsibleBoxFrameProps)[number]>;
 
 const ANIMATION_DURATION = 0.4;
-
-const animationVariants = {
-    closed: {
-        opacity: 0,
-        height: 0,
-        transitionEnd: {
-            display: 'none',
-        },
-    },
-    expanded: {
-        opacity: 1,
-        height: 'auto',
-        display: 'block',
-    },
-};
 
 type ContainerProps = {
     $paddingType: PaddingType;
@@ -148,10 +133,6 @@ const Content = styled.div<ContentProps>`
     `}
 `;
 
-const Collapser = styled(motion.div)`
-    overflow: hidden;
-`;
-
 export const CollapsibleBox = ({
     defaultIsOpen = false,
     toggleLabel,
@@ -171,12 +152,6 @@ export const CollapsibleBox = ({
     const { elevation } = useElevation();
     const [isOpen, setIsOpen] = useState(defaultIsOpen);
     const frameProps = pickAndPrepareFrameProps(rest, allowedCollapsibleBoxFrameProps);
-
-    const onClick = (e: MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsOpen(!isOpen);
-    };
 
     const headerContent = (
         <Row gap={spacings.xs} justifyContent="space-between">
@@ -231,27 +206,29 @@ export const CollapsibleBox = ({
             $fillType={fillType}
             data-testid={dataTest}
         >
-            <Header $paddingType={paddingType} onClick={onClick}>
-                {fillType === 'none' ? headerContent : <ElevationUp>{headerContent}</ElevationUp>}
-            </Header>
-            <Collapser
-                initial={false} // Prevents animation on mount when expanded === false
-                variants={animationVariants}
-                animate={isOpen ? 'expanded' : 'closed'}
-                onAnimationComplete={() => onAnimationComplete?.(isOpen)}
-                transition={{
-                    duration: ANIMATION_DURATION,
-                    ease: motionEasing.transition,
-                    opacity: {
-                        ease: isOpen ? motionEasing.exit : motionEasing.enter,
-                    },
-                }}
-                data-testid="@collapsible-box/body"
-            >
-                <Content $elevation={elevation} $paddingType={paddingType} $hasDivider={hasDivider}>
-                    {fillType === 'none' ? children : <ElevationUp>{children}</ElevationUp>}
-                </Content>
-            </Collapser>
+            <Collapsible isOpen={isOpen}>
+                <Collapsible.Toggle onClick={() => setIsOpen(!isOpen)}>
+                    <Header $paddingType={paddingType}>
+                        {fillType === 'none' ? (
+                            headerContent
+                        ) : (
+                            <ElevationUp>{headerContent}</ElevationUp>
+                        )}
+                    </Header>
+                </Collapsible.Toggle>
+                <Collapsible.Content
+                    data-testid="@collapsible-box/body"
+                    onAnimationComplete={onAnimationComplete}
+                >
+                    <Content
+                        $elevation={elevation}
+                        $paddingType={paddingType}
+                        $hasDivider={hasDivider}
+                    >
+                        {fillType === 'none' ? children : <ElevationUp>{children}</ElevationUp>}
+                    </Content>
+                </Collapsible.Content>
+            </Collapsible>
         </Container>
     );
 };

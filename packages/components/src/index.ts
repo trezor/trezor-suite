@@ -23,6 +23,7 @@ export {
     type BulletListItemState,
 } from './components/BulletList/BulletList';
 export { Card, type CardProps } from './components/Card/Card';
+export { Collapsible, type CollapsibleProps } from './components/Collapsible/Collapsible';
 export {
     CollapsibleBox,
     type CollapsibleBoxProps,
