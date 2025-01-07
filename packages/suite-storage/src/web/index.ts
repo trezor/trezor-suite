@@ -189,8 +189,7 @@ class CommonDB<TDBStructure> {
         // TODO: When using idb wrapper something throws 'Uncaught (in promise) null'
         // and I couldn't figure out how to catch it. Maybe a bug in idb?
         // So instead of using idb wrapper I use indexedDB directly, wrapped in my own promise.
-        // @ts-expect-error
-        const db = unwrap(await this.getDB()) as IDBDatabase;
+        const db: IDBDatabase = unwrap(await this.getDB());
 
         const storeName = store as string;
 
