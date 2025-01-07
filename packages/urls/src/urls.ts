@@ -68,7 +68,7 @@ export const HELP_CENTER_ADDRESSES_URL: Url =
 export const HELP_CENTER_COINJOIN_URL: Url = 'https://trezor.io/learn/a/what-is-coinjoin';
 export const HELP_CENTER_TAPROOT_URL: Url = 'https://trezor.io/learn/a/what-is-taproot';
 export const HELP_CENTER_UDEV_URL: Url = 'https://trezor.io/learn/a/udev-rules';
-export const HELP_CENTER_TOR_URL: Url = 'https://trezor.io/learn/a/tor-in-trezor-suite-app';
+export const HELP_CENTER_TOR_URL: Url = 'https://trezor.io/learn/a/tor-in-trezor-suite';
 export const HELP_CENTER_FW_DOWNGRADE_T1B1_URL: Url =
     'https://trezor.io/learn/a/downgrade-firmware-trezor-model-one';
 export const HELP_CENTER_FW_DOWNGRADE_T2T1_URL: Url =
@@ -129,7 +129,6 @@ export const CHROME_URL: Url = 'https://www.google.com/chrome/';
 export const CHROME_UPDATE_URL: Url = 'https://support.google.com/chrome/answer/95414';
 export const CHROME_ANDROID_URL: Url =
     'https://play.google.com/store/apps/details?id=com.android.chrome';
-export const TOR_PROJECT_URL: Url = 'https://www.torproject.org/';
 export const EXPERIMENTAL_FEATURES_KB_URL: Url =
     'https://trezor.io/learn/a/experimental-features-in-trezor-suite';
 export const EXPERIMENTAL_PASSWORD_MANAGER_KB_URL: Url =
