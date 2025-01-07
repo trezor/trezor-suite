@@ -39,7 +39,7 @@ test.describe('Discreet Mode', { tag: ['@group=suite'] }, () => {
 
         await test.step('Verify account value is hidden', async () => {
             await verifyHiddenAndRevealedValue({
-                locator: walletPage.balanceOfNetwork('btc'),
+                locator: walletPage.balanceOfAccount('btc'),
                 hiddenValue: '###',
                 revealedValue: '0',
             });

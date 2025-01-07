@@ -6,7 +6,7 @@ export class DashboardActions {
     readonly dashboardMenuButton: Locator;
     readonly discoveryHeader: Locator;
     readonly discoveryBar: Locator;
-    readonly dashboardGraph: Locator;
+    readonly graph: Locator;
     readonly deviceSwitchingOpenButton: Locator;
     readonly modal: Locator;
     //TODO: Refactor to wallet page object
@@ -25,7 +25,7 @@ export class DashboardActions {
         this.dashboardMenuButton = this.page.getByTestId('@suite/menu/suite-index');
         this.discoveryHeader = this.page.getByRole('heading', { name: 'Dashboard' });
         this.discoveryBar = this.page.getByTestId('@wallet/discovery-progress-bar');
-        this.dashboardGraph = this.page.getByTestId('@dashboard/graph');
+        this.graph = this.page.getByTestId('@dashboard/graph');
         this.deviceSwitchingOpenButton = this.page.getByTestId('@menu/switch-device');
         this.modal = this.page.getByTestId('@modal');
         this.confirmDeviceEjectButton = this.page.getByTestId('@switch-device/eject');
@@ -42,7 +42,9 @@ export class DashboardActions {
 
     @step()
     async discoveryShouldFinish() {
-        await this.discoveryBar.waitFor({ state: 'attached', timeout: 10_000 });
+        await expect(this.discoveryBar, 'discovery bar should be visible').toBeVisible({
+            timeout: 10_000,
+        });
         await this.discoveryBar.waitFor({ state: 'detached', timeout: 120_000 });
     }
 

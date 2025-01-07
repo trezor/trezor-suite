@@ -2,7 +2,7 @@ import { test, expect } from '../../support/fixtures';
 
 test.use({
     emulatorStartConf: { wipe: true },
-    emulatorSetupConf: { needs_backup: true, mnemonic: 'mnemonic_all' },
+    emulatorSetupConf: { mnemonic: 'mnemonic_all' },
 });
 
 test.describe.serial(
@@ -33,7 +33,7 @@ test.describe.serial(
             await dashboardPage.navigateTo();
             await dashboardPage.discoveryShouldFinish();
 
-            await expect(walletPage.balanceOfNetwork('regtest').first()).toBeVisible();
+            await expect(walletPage.balanceOfAccount('regtest').first()).toBeVisible();
         });
     },
 );

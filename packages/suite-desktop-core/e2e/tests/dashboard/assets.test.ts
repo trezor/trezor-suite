@@ -3,7 +3,6 @@ import { test, expect } from '../../support/fixtures';
 test.describe('Assets', { tag: ['@group=suite'] }, () => {
     test.use({
         emulatorStartConf: { wipe: true },
-        emulatorSetupConf: { needs_backup: true },
     });
 
     test.beforeEach(async ({ onboardingPage }) => {

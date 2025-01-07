@@ -112,7 +112,7 @@ export const AccountItemContent = ({
                 )}
             </Row>
             {isBalanceShown && type !== 'tokens' && (
-                <CoinBalance value={formattedBalance} symbol={symbol} />
+                <CoinBalance data-testid="@wallet" value={formattedBalance} symbol={symbol} />
             )}
             {!isBalanceShown && (
                 <Column gap={spacings.xs}>

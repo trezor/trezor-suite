@@ -5,13 +5,18 @@ import { FormattedCryptoAmount } from 'src/components/suite';
 interface CoinBalanceProps {
     value: string;
     symbol: NetworkSymbolExtended;
+    'data-testid'?: string;
 }
 
-export const CoinBalance = ({ value, symbol }: CoinBalanceProps) => (
+export const CoinBalance = ({
+    value,
+    symbol,
+    'data-testid': dataTestId = '@dashboard',
+}: CoinBalanceProps) => (
     <FormattedCryptoAmount
         value={value}
         symbol={symbol}
         isBalance
-        data-testid={`@wallet/coin-balance/value-${symbol}`}
+        data-testid={`${dataTestId}/coin-balance/value-${symbol}`}
     />
 );
