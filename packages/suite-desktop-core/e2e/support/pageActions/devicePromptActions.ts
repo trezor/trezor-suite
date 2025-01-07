@@ -19,7 +19,10 @@ export class DevicePromptActions {
 
     @step()
     async confirmOnDevicePromptIsShown() {
-        await expect(this.confirmOnDevicePrompt).toBeVisible();
+        await expect(
+            this.confirmOnDevicePrompt,
+            "'confirm on device' prompt should be visible",
+        ).toBeVisible();
     }
 
     @step()
