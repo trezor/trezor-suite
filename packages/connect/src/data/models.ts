@@ -38,7 +38,7 @@ export const models: Record<DeviceModelInternal, ModelConfig> = {
             '2': 'Violet Ore',
             '3': 'Green Beryl',
             '4': 'Bitcoin Orange',
-            '5': 'Special Edition', // TODO T3T1 - Special Edition, do not forget to update the animation (rotation) as well
+            '5': 'Freedom Edition',
         },
     },
     T3W1: {
