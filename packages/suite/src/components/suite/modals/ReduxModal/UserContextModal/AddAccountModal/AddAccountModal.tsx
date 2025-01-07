@@ -82,7 +82,7 @@ export const AddAccountModal = ({
     const [enabledNetworks, disabledNetworks] = arrayPartition(supportedNetworks, network =>
         enabledNetworkSymbols.includes(network.symbol),
     );
-    const [, disabledTestnetNetworks] = arrayPartition(
+    const [disabledMainnetNetworks, disabledTestnetNetworks] = arrayPartition(
         disabledNetworks,
         network => !network?.testnet,
     );
@@ -102,7 +102,10 @@ export const AddAccountModal = ({
     const filterNetworksBySymbol = (networks: Network[], symbol?: NetworkSymbol) =>
         symbol ? networks.filter(network => network.symbol === symbol) : networks;
 
-    const filteredDisabledNetworks = filterNetworksBySymbol(disabledNetworks, symbol);
+    const filteredDisabledNetworks = filterNetworksBySymbol(
+        symbol ? disabledNetworks : disabledMainnetNetworks,
+        symbol,
+    );
     const filteredEnabledNetworks = filterNetworksBySymbol(enabledNetworks, symbol);
 
     const visibleNetworks =
