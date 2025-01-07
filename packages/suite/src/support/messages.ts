@@ -1425,7 +1425,7 @@ export default defineMessages({
         id: 'TR_COPY_TO_CLIPBOARD',
     },
     TR_ADDRESS_MODAL_TITLE: {
-        defaultMessage: '{networkName} network receive address',
+        defaultMessage: '{networkName} receive address',
         id: 'TR_ADDRESS_MODAL_TITLE',
     },
     TR_ADDRESS_MODAL_TITLE_EXCHANGE: {
@@ -7383,7 +7383,7 @@ export default defineMessages({
     },
     TR_STAKING_GETTING_READY: {
         id: 'TR_STAKING_GETTING_READY',
-        defaultMessage: 'Your {networkDisplaySymbol} is getting ready to work',
+        defaultMessage: 'Your {networkSymbol} is getting ready to work',
     },
     TR_STAKING_REWARDS_ARE_RESTAKED: {
         id: 'TR_STAKING_REWARDS_ARE_RESTAKED',
@@ -7470,7 +7470,8 @@ export default defineMessages({
     },
     TR_CARDANO_WITHDRAW_MODAL_TITLE_DESCRIPTION: {
         id: 'TR_CARDANO_WITHDRAW_MODAL_TITLE_DESCRIPTION',
-        defaultMessage: `When withdrawing your rewards, you can choose to support the Cardano ecosystem by delegating your community voting rights. Your votes will be delegated to Five Binaries, the operators of Cardano staking in Trezor Suite. This helps strengthen the network's resilience, sustainability, and community-driven governance. If you prefer, you can easily opt out of governance.`,
+        defaultMessage:
+            "When withdrawing your rewards, you can choose to support the Cardano ecosystem by delegating your community voting rights. Your votes will be delegated to Five Binaries, the operators of Cardano staking in Trezor Suite. This helps strengthen the network's resilience, sustainability, and community-driven governance. If you prefer, you can easily opt out of governance.",
     },
     TR_CARDANO_WITHDRAW_MODAL_SUB_TITLE: {
         id: 'TR_CARDANO_WITHDRAW_MODAL_SUB_TITLE',
@@ -8604,7 +8605,7 @@ export default defineMessages({
     TR_STAKE_ANY_AMOUNT_ETH: {
         id: 'TR_STAKE_ANY_AMOUNT_ETH',
         defaultMessage:
-            'Stake a minimum amount of {amount} {networkDisplaySymbol} and start earning rewards. With our current APY rate of {apyPercent}%, your rewards earn too!',
+            'Stake a minimum amount of {amount} {networkSymbol} and start earning rewards. With our current APY rate of {apyPercent}%, your rewards earn too!',
     },
     TR_STAKE_LEARN_MORE: {
         id: 'TR_STAKE_LEARN_MORE',
@@ -8887,7 +8888,7 @@ export default defineMessages({
     },
     TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED: {
         id: 'TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED',
-        defaultMessage: 'The claimed amount is transferred to your {networkDisplaySymbol} account.',
+        defaultMessage: 'The claimed amount is transferred to your {networkSymbol} account.',
     },
     TR_STAKE_CLAIMING_PERIOD: {
         id: 'TR_STAKE_CLAIMING_PERIOD',
