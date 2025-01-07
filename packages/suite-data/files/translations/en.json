@@ -2146,7 +2146,7 @@
   "TR_XPUB": "Public key (XPUB)",
   "TR_XPUB_MATCH": "Public key (XPUB) match?",
   "TR_XPUB_MODAL_CLIPBOARD": "Copy public key",
-  "TR_XPUB_MODAL_TITLE": "{networkName} Account {accountIndex} public key (XPUB)",
+  "TR_XPUB_MODAL_TITLE": "{networkName} {accountIndex} public key (XPUB)",
   "TR_XPUB_MODAL_TITLE_METADATA": "{accountLabel} public key (XPUB)",
   "TR_XPUB_PHISHING_WARNING": "To prevent phishing attacks, you should verify the public key on your Trezor. {claim}",
   "TR_XRP_RESERVE_INFO": "XRP addresses require a minimum balance of {minBalance} XRP to activate and maintain the account.",
