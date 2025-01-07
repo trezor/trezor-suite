@@ -246,3 +246,11 @@ export const conditionalTest = (rules: string[], ...args: any) => {
     // @ts-expect-error
     return testMethod(...args);
 };
+
+export const conditionalDescribe = (rules: string[], ...args: any) => {
+    const skipMethod = typeof jest !== 'undefined' ? describe.skip : xdescribe;
+    const testMethod = skipTest(rules) ? skipMethod : describe;
+
+    // @ts-expect-error
+    return testMethod(...args);
+};
