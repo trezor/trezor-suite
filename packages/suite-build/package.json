@@ -44,7 +44,7 @@
     },
     "devDependencies": {
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
-        "@sentry/webpack-plugin": "^2.14.0",
+        "@sentry/webpack-plugin": "^2.22.7",
         "@trezor/eslint": "workspace:*",
         "@types/copy-webpack-plugin": "^10.1.0",
         "@types/webpack-bundle-analyzer": "^4.7.0",
