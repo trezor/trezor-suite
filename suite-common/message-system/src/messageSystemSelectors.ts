@@ -1,9 +1,13 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { Message, Category } from '@suite-common/suite-types';
+import { ExperimentId } from '@suite-common/message-system';
 
-import { ContextDomain, FeatureDomain, MessageSystemRootState } from './messageSystemTypes';
-import { ExperimentIdType } from './experiment/experiments';
-import { ExperimentsItemUuidType } from './experiment';
+import {
+    ContextDomain,
+    ExperimentsItemType,
+    FeatureDomain,
+    MessageSystemRootState,
+} from './messageSystemTypes';
 
 // Create app-specific selectors with correct types
 export const createMemoizedSelector = createWeakMapSelector.withTypes<MessageSystemRootState>();
@@ -167,9 +171,9 @@ export const selectAllValidExperiments = createMemoizedSelector(
     },
 );
 
-export const selectExperimentById = (id: ExperimentIdType) =>
+export const selectExperimentById = (id: ExperimentId) =>
     createMemoizedSelector([selectAllValidExperiments], allValidExperiments =>
         allValidExperiments.find(
-            (experiment): experiment is ExperimentsItemUuidType => experiment.id === id,
+            (experiment): experiment is ExperimentsItemType => experiment.id === id,
         ),
     );

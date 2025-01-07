@@ -9610,6 +9610,8 @@ __metadata:
     fs-extra: "npm:^11.2.0"
     json-schema-to-typescript: "npm:^13.1.2"
     jws: "npm:^4.0.0"
+    react: "npm:18.2.0"
+    react-redux: "npm:8.0.7"
     semver: "npm:^7.6.3"
     tsx: "npm:^4.16.3"
   languageName: unknown

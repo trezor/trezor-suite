@@ -2,12 +2,12 @@ import {
     getExperimentGroupByInclusion,
     getInclusionFromInstanceId,
     selectActiveExperimentGroup,
-} from '../';
-import { experimentTest, getArrayOfInstanceIds } from '../__fixtures__';
-import { ExperimentIdType } from '../experiments';
+} from '../experimentUtils';
+import { experimentTest, getArrayOfInstanceIds } from '../__fixtures__/experimentUtils';
+import { ExperimentId } from '../messageSystemTypes';
 
 describe('testing experiment utils', () => {
-    const experimentId = 'e2e8d05f-1469-4e47-9ab0-53544e5cad07' as ExperimentIdType;
+    const experimentId = 'e2e8d05f-1469-4e47-9ab0-53544e5cad07' as ExperimentId;
 
     it('test getInclusionFromInstanceId whether returns percentage between 0 and 99', () => {
         const arrayOfIds = getArrayOfInstanceIds(100);

@@ -1,19 +1,15 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { selectAnalyticsInstanceId } from '@suite-common/analytics';
-import {
-    ExperimentNameType,
-    experiments,
-    selectActiveExperimentGroup,
-    selectExperimentById,
-} from '@suite-common/message-system';
 
-import { useSelector } from 'src/hooks/suite';
+import { selectActiveExperimentGroup } from './experimentUtils';
+import { selectExperimentById } from './messageSystemSelectors';
+import { ExperimentId } from './messageSystemTypes';
 
-export const useExperiment = (id: ExperimentNameType) => {
-    const experimentUuid = experiments[id];
+export const useExperiment = (experimentId: ExperimentId) => {
     const instanceId = useSelector(selectAnalyticsInstanceId);
-    const experiment = useSelector(selectExperimentById(experimentUuid));
+    const experiment = useSelector(selectExperimentById(experimentId));
     const activeExperimentVariant = useMemo(
         () => selectActiveExperimentGroup({ instanceId, experiment }),
         [instanceId, experiment],

@@ -1,17 +1,13 @@
 import { createHash } from 'crypto';
 
-import { ExperimentsItem } from '@suite-common/suite-types';
-
-import { ExperimentIdType } from './experiments';
-
-export type ExperimentsItemUuidType = Omit<ExperimentsItem, 'id'> & { id: ExperimentIdType };
+import { ExperimentId, ExperimentsItemType } from './messageSystemTypes';
 
 type ExperimentCategoriesProps = {
-    experiment: ExperimentsItemUuidType | undefined;
+    experiment: ExperimentsItemType | undefined;
     instanceId: string | undefined;
 };
 
-type ExperimentsGroupsType = ExperimentsItemUuidType['groups'];
+type ExperimentsGroupsType = ExperimentsItemType['groups'];
 type ExperimentsGroupType = ExperimentsGroupsType[number];
 
 type ExperimentGetGroupByInclusion = {
@@ -22,7 +18,7 @@ type ExperimentGetGroupByInclusion = {
 /**
  * @returns number between 0 and 99 generated from instanceId and experimentId
  */
-export const getInclusionFromInstanceId = (instanceId: string, experimentId: ExperimentIdType) => {
+export const getInclusionFromInstanceId = (instanceId: string, experimentId: ExperimentId) => {
     const combinedId = `${instanceId}-${experimentId}`;
     const hash = createHash('sha256').update(combinedId).digest('hex').slice(0, 8);
 

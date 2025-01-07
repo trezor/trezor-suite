@@ -1957,7 +1957,7 @@ export const getValidExperiments = [
         config: getMessageSystemConfig(),
         result: [
             ...(getMessageSystemConfig().experiments ?? []).map(
-                experiment => experiment.experiment,
+                experiment => experiment.experiment.id,
             ),
         ],
     },

@@ -1,4 +1,4 @@
-import { MessageSystem, Category } from '@suite-common/suite-types';
+import { ExperimentsItem, MessageSystem, Category } from '@suite-common/suite-types';
 
 export type MessageState = { [key in Category]: boolean };
 
@@ -35,3 +35,11 @@ export const Context = {
 } as const;
 
 export type ContextDomain = (typeof Context)[keyof typeof Context];
+
+export const Experiment = {
+    // e.g. orangeSendButton: 'fb0eb1bc-8ec3-44d4-98eb-53301d73d981',
+} as const;
+
+export type ExperimentId = (typeof Experiment)[keyof typeof Experiment];
+
+export type ExperimentsItemType = Omit<ExperimentsItem, 'id'> & { id: ExperimentId };

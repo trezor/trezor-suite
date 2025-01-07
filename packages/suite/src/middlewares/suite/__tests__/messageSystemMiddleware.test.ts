@@ -169,7 +169,7 @@ describe('Message system middleware', () => {
         };
 
         jest.spyOn(messageSystemUtils, 'getValidExperiments').mockImplementation(() => [
-            experiment1,
+            experiment1.id,
         ]);
 
         const store = initStore(getInitialState(undefined, undefined));
