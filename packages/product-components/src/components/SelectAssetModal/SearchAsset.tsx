@@ -22,5 +22,7 @@ export const SearchAsset = ({
         showClearButton="always"
         innerAddon={<Icon name="search" variant="tertiary" size="medium" />}
         innerAddonAlign="left"
+        // eslint-disable-next-line jsx-a11y/no-autofocus
+        autoFocus
     />
 );
