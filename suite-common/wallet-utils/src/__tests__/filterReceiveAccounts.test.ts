@@ -78,9 +78,9 @@ describe('filter receive accounts', () => {
 
     it('returns all accounts when debug mode is on', () => {
         const filteredAccounts = [
-            getWalletAccount({ symbol: 'eth', accountType: 'legacy' }),
             getWalletAccount({ symbol: 'eth', accountType: 'normal' }),
             getWalletAccount({ symbol: 'eth', accountType: 'ledger' }),
+            getWalletAccount({ symbol: 'eth', accountType: 'legacy' }),
         ];
         expect(runFilterReceiveAccouns({})).toEqual(filteredAccounts);
     });
@@ -99,10 +99,10 @@ describe('filter receive accounts', () => {
 
     it('excludes coinjoin accounts for BTC network (also tests isAnotherNetwork and isCoinjoinAccount methods)', () => {
         const filteredAccounts = [
-            getWalletAccount({ symbol: 'btc', accountType: 'taproot' }),
-            getWalletAccount({ symbol: 'btc', accountType: 'legacy' }),
-            getWalletAccount({ symbol: 'btc', accountType: 'segwit' }),
             getWalletAccount({ symbol: 'btc', accountType: 'ledger' }),
+            getWalletAccount({ symbol: 'btc', accountType: 'taproot' }),
+            getWalletAccount({ symbol: 'btc', accountType: 'segwit' }),
+            getWalletAccount({ symbol: 'btc', accountType: 'legacy' }),
         ];
 
         expect(runFilterReceiveAccouns({ symbol: 'btc' })).toEqual(filteredAccounts);

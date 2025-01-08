@@ -2,6 +2,8 @@ import { AccountType, NetworkSymbol, getNetwork } from '@suite-common/wallet-con
 import { Account } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
 
+import { sortByCoin } from './accountUtils';
+
 export const isDebugOnlyAccountType = (
     accountType: AccountType,
     symbol?: NetworkSymbol,
@@ -38,14 +40,12 @@ export const filterReceiveAccounts = ({
         account.accountType === 'normal' && account.index === 0;
     const isCoinjoinAccount = (account: Account) => account.accountType === 'coinjoin';
 
-    return accounts.filter(
-        account =>
-            isSameDevice(account) &&
-            isSameNetwork(account) &&
-            !isCoinjoinAccount(account) &&
-            shouldDisplayDebugOnly(account) &&
-            (isNotEmptyAccount(account) ||
-                isVisibleAccount(account) ||
-                isFirstNormalAccount(account)),
-    );
+    const isRelevantAccount = (account: Account) =>
+        isSameDevice(account) &&
+        isSameNetwork(account) &&
+        !isCoinjoinAccount(account) &&
+        shouldDisplayDebugOnly(account) &&
+        (isNotEmptyAccount(account) || isVisibleAccount(account) || isFirstNormalAccount(account));
+
+    return sortByCoin(accounts.filter(isRelevantAccount));
 };
