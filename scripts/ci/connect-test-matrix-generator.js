@@ -79,6 +79,12 @@ const groups = {
         pattern: 'methods',
         includeFilter: 'binanceGetAddress,binanceGetPublicKey,binanceSignTransaction',
     },
+    solana: {
+        name: 'solana',
+        pattern: 'methods',
+        includeFilter:
+            'solanaGetAddress,solanaGetPublicKey,solanaSignTransaction,solanaComposeTransaction',
+    },
 };
 
 const firmwares1 = ['1.9.0', '1-latest', '1-main'];
