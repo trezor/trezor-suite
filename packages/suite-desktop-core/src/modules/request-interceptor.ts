@@ -47,6 +47,6 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
         handler: requestInterceptorEventHandler,
         getTorSettings: () => store.getTorSettings(),
         allowTorBypass: isDevEnv,
-        whitelistedHosts: ['127.0.0.1', 'localhost', '.sldev.cz'],
+        notRequiredTorDomainsList: ['127.0.0.1', 'localhost', '.sldev.cz'],
     });
 };

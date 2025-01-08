@@ -156,7 +156,7 @@ const interceptNetConnect = (context: InterceptorContext) => {
     };
 };
 
-// http(s).request could have different arguments according to it's types definition,
+// http(s).request could have different arguments according to its types definition,
 // but we only care when second argument (url) is object containing RequestOptions.
 const overloadHttpRequest = (
     context: InterceptorContext,
@@ -169,7 +169,7 @@ const overloadHttpRequest = (
         !callback &&
         typeof url === 'object' &&
         'headers' in url &&
-        !isWhitelistedHost(url.hostname, context.whitelistedHosts) &&
+        !isWhitelistedHost(url.hostname, context.notRequiredTorDomainsList) &&
         (!options || typeof options === 'function')
     ) {
         const isTorEnabled = context.getTorSettings().running;
@@ -231,14 +231,14 @@ const overloadWebsocketHandshake = (
     // this condition should be removed once suite will stop using TrezorConnect.setProxy
     if (
         typeof url === 'object' &&
-        isWhitelistedHost(url.host, context.whitelistedHosts) &&
+        isWhitelistedHost(url.host, context.notRequiredTorDomainsList) &&
         'agent' in url
     ) {
         delete url.agent;
     }
     if (
         typeof url === 'object' &&
-        !isWhitelistedHost(url.host, context.whitelistedHosts) && // difference between overloadHttpRequest
+        !isWhitelistedHost(url.host, context.notRequiredTorDomainsList) && // difference between overloadHttpRequest
         'headers' in url &&
         url.headers?.Upgrade === 'websocket'
     ) {
@@ -319,7 +319,7 @@ const interceptTlsConnect = (context: InterceptorContext) => {
             // allow untrusted/self-signed certificates for whitelisted domains (like https://*.sldev.cz)
             options.rejectUnauthorized =
                 options.rejectUnauthorized ??
-                !isWhitelistedHost(options.host, context.whitelistedHosts);
+                !isWhitelistedHost(options.host, context.notRequiredTorDomainsList);
         }
 
         return originalTlsConnect(...(args as Parameters<typeof tls.connect>));

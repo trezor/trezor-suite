@@ -69,7 +69,7 @@ export type InterceptorOptions = {
     handler: (event: InterceptedEvent) => void;
     getTorSettings: () => TorSettings;
     allowTorBypass?: boolean;
-    whitelistedHosts?: string[];
+    notRequiredTorDomainsList?: string[];
 };
 
 export const TOR_CONTROLLER_STATUS = {

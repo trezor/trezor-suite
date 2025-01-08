@@ -34,7 +34,7 @@ const init = (settings: BackgroundCoinjoinBackendSettings) => {
         handler: event => backend.emit('interceptor' as any, event),
         getTorSettings: () => backend.torSettings,
         allowTorBypass: isDevEnv,
-        whitelistedHosts: ['127.0.0.1', 'localhost', '.sldev.cz'],
+        notRequiredTorDomainsList: ['127.0.0.1', 'localhost', '.sldev.cz'],
     });
 
     return backend;
