@@ -1,11 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { A, F, pipe } from '@mobily/ts-belt';
 
-import {
-    Feature,
-    MessageSystemRootState,
-    selectIsFeatureEnabled,
-} from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     AccountsRootState,
@@ -106,37 +101,14 @@ export const selectDiscoveryInfo = (state: DiscoveryConfigSliceRootState) =>
     state.discoveryConfig.discoveryInfo;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
-    DeviceRootState & DiscoveryConfigSliceRootState & FeatureFlagsRootState & MessageSystemRootState
+    DeviceRootState & DiscoveryConfigSliceRootState & FeatureFlagsRootState
 >();
 
-//delete once we finally release Solana
-export const selectIsSolanaMessageFeatureEnabled = (state: MessageSystemRootState) =>
-    selectIsFeatureEnabled(state, Feature.solanaMobile, false);
-
-const selectIsSolanaEnabled = createMemoizedSelector(
-    [
-        selectIsSolanaMessageFeatureEnabled,
-        state => selectIsFeatureFlagEnabled(state, FeatureFlag.IsSolanaEnabled),
-    ],
-    (isSolanaMessageFeatureEnabled, isSolanaFeatureFlagEnabled) =>
-        isSolanaMessageFeatureEnabled || isSolanaFeatureFlagEnabled,
-);
-
 export const selectFeatureFlagEnabledNetworkSymbols = createMemoizedSelector(
-    [
-        selectIsSolanaEnabled,
-        selectAreTestnetsEnabled,
-        state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreEthL2sEnabled),
-    ],
-    (isSolanaEnabled, areTestnetsEnabled, areEthL2sEnabled) => {
+    [state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreEthL2sEnabled)],
+    areEthL2sEnabled => {
         const allowlist: NetworkSymbol[] = [];
 
-        if (isSolanaEnabled) {
-            allowlist.push('sol');
-            if (areTestnetsEnabled) {
-                allowlist.push('dsol');
-            }
-        }
         if (areEthL2sEnabled) {
             allowlist.push('base', 'op', 'arb');
         }

@@ -18,7 +18,7 @@ export const orderedAccountTypes: AccountType[] = [
     'ledger',
 ];
 
-const discoveryBlacklist: NetworkSymbol[] = ['sol', 'dsol', 'op', 'base', 'arb'];
+const discoveryBlacklist: NetworkSymbol[] = ['op', 'base', 'arb'];
 
 // All supported coins for device discovery
 export const networkSymbolsWhitelistMap: Record<'mainnet' | 'testnet', readonly NetworkSymbol[]> = {
@@ -26,6 +26,7 @@ export const networkSymbolsWhitelistMap: Record<'mainnet' | 'testnet', readonly 
         'btc',
         'eth',
         'pol',
+        'sol',
         'bsc',
         'ltc',
         'etc',
@@ -40,7 +41,7 @@ export const networkSymbolsWhitelistMap: Record<'mainnet' | 'testnet', readonly 
         'vtc',
         'zec',
     ],
-    testnet: ['test', 'regtest', 'tsep', 'thol', 'tada', 'txrp'],
+    testnet: ['test', 'regtest', 'tsep', 'thol', 'dsol', 'tada', 'txrp'],
 };
 
 // Blacklisting coins that are allowed inside `networkSymbolsWhitelistMap` so that we don't have to configs and just filter these out

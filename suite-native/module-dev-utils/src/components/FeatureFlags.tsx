@@ -5,7 +5,6 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsDeviceConnectEnabled]: 'Connect device',
     [FeatureFlagEnum.IsCardanoSendEnabled]: 'Cardano send',
     [FeatureFlagEnum.IsRegtestEnabled]: 'Regtest',
-    [FeatureFlagEnum.IsSolanaEnabled]: 'Solana',
     [FeatureFlagEnum.IsConnectPopupEnabled]: 'Connect Popup',
     [FeatureFlagEnum.IsFirmwareUpdateEnabled]: 'Firmware update',
     [FeatureFlagEnum.AreEthL2sEnabled]: 'Eth L2s',
