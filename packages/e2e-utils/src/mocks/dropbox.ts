@@ -22,6 +22,25 @@ export class DropboxMock {
         app.use(express.json());
 
         app.use((req, res, next) => {
+            if (req.method === 'OPTIONS') {
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+                res.setHeader(
+                    'Access-Control-Allow-Headers',
+                    'Content-Type, Authorization, dropbox-api-arg',
+                );
+                res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+                return res.status(200).end();
+            }
+
+            // Handle normal requests
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+            res.setHeader(
+                'Access-Control-Allow-Headers',
+                'Content-Type, Authorization, dropbox-api-arg',
+            );
             this.requests.push(req.url);
 
             if (this.nextResponse.length) {
@@ -45,7 +64,6 @@ export class DropboxMock {
         // https://api.dropboxapi.com/oauth2/token
         app.post('/oauth2/token', (req, res) => {
             console.log('[dropbox]: token');
-
             const { grant_type } = req.query;
             if (grant_type === 'authorization_code') {
                 return res.send({

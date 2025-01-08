@@ -28,6 +28,8 @@ import { RecoveryActions } from './pageActions/recoveryActions';
 import { TrezorInputActions } from './pageActions/trezorInputActions';
 import { MarketActions } from './pageActions/marketActions';
 import { AssetsActions } from './pageActions/assetsActions';
+import { MetadataProviderMocks } from './metadataProviderMocks';
+import { MetadataActions } from './pageActions/metadataActions';
 
 type Fixtures = {
     startEmulator: boolean;
@@ -46,11 +48,13 @@ type Fixtures = {
     analyticsPage: AnalyticsActions;
     devicePrompt: DevicePromptActions;
     recoveryPage: RecoveryActions;
+    marketPage: MarketActions;
+    assetsPage: AssetsActions;
+    metadataPage: MetadataActions;
     trezorInput: TrezorInputActions;
     analytics: AnalyticsFixture;
     indexedDb: IndexedDbFixture;
-    marketPage: MarketActions;
-    assetsPage: AssetsActions;
+    metadataProviderMocks: MetadataProviderMocks;
 };
 
 const test = base.extend<Fixtures>({
@@ -173,6 +177,18 @@ const test = base.extend<Fixtures>({
         const recoveryPage = new RecoveryActions(page);
         await use(recoveryPage);
     },
+    marketPage: async ({ page }, use) => {
+        const marketPage = new MarketActions(page);
+        await use(marketPage);
+    },
+    assetsPage: async ({ page }, use) => {
+        const assetPage = new AssetsActions(page);
+        await use(assetPage);
+    },
+    metadataPage: async ({ page, devicePrompt }, use) => {
+        const metadataPage = new MetadataActions(page, devicePrompt);
+        await use(metadataPage);
+    },
     trezorInput: async ({ page }, use) => {
         const trezorInput = new TrezorInputActions(page);
         await use(trezorInput);
@@ -185,13 +201,9 @@ const test = base.extend<Fixtures>({
         const indexedDb = new IndexedDbFixture(page);
         await use(indexedDb);
     },
-    marketPage: async ({ page }, use) => {
-        const marketPage = new MarketActions(page);
-        await use(marketPage);
-    },
-    assetsPage: async ({ page }, use) => {
-        const assetPage = new AssetsActions(page);
-        await use(assetPage);
+    metadataProviderMocks: async ({ page }, use) => {
+        const metadataProviderMocks = new MetadataProviderMocks(page);
+        await use(metadataProviderMocks);
     },
 });
 
