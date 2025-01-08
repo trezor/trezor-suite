@@ -24,7 +24,6 @@ export const SettingsAboutUsScreen = () => {
     return (
         <Screen
             screenHeader={<ScreenSubHeader content={translate('moduleSettings.aboutUs.title')} />}
-            noTopPadding
         >
             <VStack spacing="sp24">
                 <AboutUsBanners />

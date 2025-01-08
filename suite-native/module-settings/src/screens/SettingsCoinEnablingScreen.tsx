@@ -83,7 +83,6 @@ export const SettingsCoinEnablingScreen = () => {
                     )}
                 </View>
             }
-            noTopPadding
         >
             {showNetworks ? (
                 <Box paddingTop="sp16">

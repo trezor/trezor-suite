@@ -152,7 +152,6 @@ export const ReceiveModalScreen = () => {
 
     return (
         <Screen
-            noTopPadding
             hasBottomInset={false}
             screenHeader={
                 <ReceiveModalScreenSubHeader

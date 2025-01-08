@@ -22,8 +22,9 @@ type SearchableAccountsListScreenHeaderProps = {
 
 const HEADER_ANIMATION_DURATION = 100;
 
-const searchFormContainerStyle = prepareNativeStyle(_ => ({
+const searchFormContainerStyle = prepareNativeStyle(({ spacings }) => ({
     height: 48,
+    marginBottom: spacings.sp16,
 }));
 
 export const SearchableAccountsListScreenHeader = ({

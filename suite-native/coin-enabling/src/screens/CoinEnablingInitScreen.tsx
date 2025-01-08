@@ -37,7 +37,8 @@ const gradientBackgroundTopStyle = prepareNativeStyle(utils => ({
     pointerEvents: 'none',
 }));
 
-const contentStyle = prepareNativeStyle(_ => ({
+const contentStyle = prepareNativeStyle(utils => ({
+    paddingTop: utils.spacings.sp16,
     paddingBottom: BOTTOM_OFFSET,
 }));
 
@@ -124,7 +125,6 @@ export const CoinEnablingInitScreen = () => {
                             showButton: canBeSaved,
                         })}
                     />
-
                     {canBeSaved && (
                         <Animated.View
                             entering={SlideInDown}

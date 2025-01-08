@@ -73,7 +73,6 @@ export const AccountSettingsScreen = ({
                     rightIcon={<AccountRenameButton accountKey={accountKey} />}
                 />
             }
-            noTopPadding
         >
             <Box flex={1} justifyContent="space-between">
                 <Card>

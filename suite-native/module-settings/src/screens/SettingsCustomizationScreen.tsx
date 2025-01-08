@@ -12,7 +12,6 @@ export const SettingsCustomizationScreen = () => {
             screenHeader={
                 <ScreenSubHeader content={translate('moduleSettings.customization.title')} />
             }
-            noTopPadding
         >
             <Card>
                 <ColorSchemePicker />

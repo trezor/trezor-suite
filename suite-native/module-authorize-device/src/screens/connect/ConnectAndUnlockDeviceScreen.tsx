@@ -79,7 +79,6 @@ export const ConnectAndUnlockDeviceScreen = ({
                     onCancelNavigationTarget={params?.onCancelNavigationTarget}
                 />
             }
-            noTopPadding
             noHorizontalPadding
             hasBottomInset={false}
             isScrollable={false}

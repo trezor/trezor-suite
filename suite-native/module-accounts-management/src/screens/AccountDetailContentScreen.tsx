@@ -69,8 +69,6 @@ export const AccountDetailContentScreen = ({
                     />
                 )
             }
-            // The padding is handled inside the TransactionList to prevent scrollbar glitches.
-            noTopPadding
             noHorizontalPadding
             isScrollable={false}
         >

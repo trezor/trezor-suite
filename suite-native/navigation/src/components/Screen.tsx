@@ -24,7 +24,6 @@ type ScreenProps = {
     hasStatusBar?: boolean;
     isScrollable?: boolean;
     backgroundColor?: Color;
-    noTopPadding?: boolean;
     noHorizontalPadding?: boolean;
     noBottomPadding?: boolean;
     extraKeyboardAvoidingViewHeight?: number;
@@ -36,25 +35,17 @@ type ScreenProps = {
 const screenContainerStyle = prepareNativeStyle<{
     backgroundColor: Color;
     insets: EdgeInsets;
-    topPadding: number;
     bottomPadding: number;
     hasBottomPadding: boolean;
     isMessageBannerDisplayed: boolean;
 }>(
     (
         utils,
-        {
-            backgroundColor,
-            topPadding,
-            bottomPadding,
-            insets,
-            hasBottomPadding,
-            isMessageBannerDisplayed,
-        },
+        { backgroundColor, bottomPadding, insets, hasBottomPadding, isMessageBannerDisplayed },
     ) => ({
         flex: 1,
         backgroundColor: utils.colors[backgroundColor],
-        paddingTop: Math.max(insets.top, topPadding),
+        paddingTop: Math.max(insets.top, utils.spacings.sp8),
         extend: [
             {
                 condition: hasBottomPadding,
@@ -76,16 +67,14 @@ const screenContainerStyle = prepareNativeStyle<{
 
 const screenContentBaseStyle = prepareNativeStyle<{
     insets: EdgeInsets;
-    topPadding: number;
     horizontalPadding: number;
     bottomPadding: number;
     isScrollable: boolean;
-}>((_, { topPadding, horizontalPadding, bottomPadding, insets, isScrollable }) => {
+}>((_, { horizontalPadding, bottomPadding, insets, isScrollable }) => {
     const { left, right } = insets;
 
     return {
         flexGrow: 1,
-        paddingTop: topPadding,
         paddingLeft: Math.max(left, horizontalPadding),
         paddingRight: Math.max(right, horizontalPadding),
 
@@ -110,7 +99,6 @@ export const Screen = ({
     isScrollable = true,
     hasStatusBar = true,
     backgroundColor = 'backgroundSurfaceElevation0',
-    noTopPadding = false,
     noHorizontalPadding = false,
     noBottomPadding = false,
     extraKeyboardAvoidingViewHeight = 0,
@@ -122,7 +110,6 @@ export const Screen = ({
     } = useNativeStyles();
 
     const insets = useOfflineBannerAwareSafeAreaInsets();
-    const topPadding = noTopPadding ? 0 : spacings.sp16;
     const horizontalPadding = noHorizontalPadding ? 0 : spacings.sp16;
     const bottomPadding = noBottomPadding ? 0 : spacings.sp16;
     const hasBottomPadding = !useContext(BottomTabBarHeightContext) && hasBottomInset;
@@ -148,7 +135,6 @@ export const Screen = ({
             style={applyStyle(screenContainerStyle, {
                 backgroundColor,
                 insets,
-                topPadding,
                 bottomPadding,
                 hasBottomPadding,
                 isMessageBannerDisplayed,
@@ -172,7 +158,6 @@ export const Screen = ({
                 <Box
                     style={applyStyle(screenContentBaseStyle, {
                         insets,
-                        topPadding,
                         horizontalPadding,
                         bottomPadding,
                         isScrollable,
