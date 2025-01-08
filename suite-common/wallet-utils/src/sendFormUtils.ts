@@ -489,8 +489,3 @@ export const getSendFormDraftKey = (
     accountKey: AccountKey,
     tokenAddress?: TokenAddress,
 ): SendFormDraftKey => (tokenAddress ? `${accountKey}-${tokenAddress}` : accountKey);
-
-// SOL Specific
-
-export const getLamportsFromSol = (amountInSol: string) =>
-    BigInt(new BigNumber(amountInSol).times(10 ** 9).toString());

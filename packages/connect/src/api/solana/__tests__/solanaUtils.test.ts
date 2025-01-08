@@ -4,6 +4,7 @@ import {
     buildTokenTransferInstruction,
     buildTokenTransferTransaction,
     getMinimumRequiredTokenAccountsForTransfer,
+    getLamportsFromSol,
 } from '../solanaUtils';
 
 describe('solana utils', () => {
@@ -82,5 +83,10 @@ describe('solana utils', () => {
                 expect(message).toEqual(expectedOutput);
             });
         });
+    });
+
+    it('getLamportsFromSol', () => {
+        expect(getLamportsFromSol('1')).toEqual(1000000000n);
+        expect(getLamportsFromSol('0.000000001')).toEqual(1n);
     });
 });

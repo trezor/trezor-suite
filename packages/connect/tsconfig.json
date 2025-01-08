@@ -4,6 +4,7 @@
     "references": [
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
+        { "path": "../blockchain-link-utils" },
         { "path": "../connect-analytics" },
         { "path": "../connect-common" },
         { "path": "../crypto-utils" },

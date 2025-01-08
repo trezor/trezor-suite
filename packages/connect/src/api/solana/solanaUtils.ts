@@ -4,6 +4,7 @@ import {
     type Blockhash,
     type CompilableTransactionMessage,
     type TransactionMessage,
+    type Transaction,
 } from '@solana/web3.js';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -11,25 +12,36 @@ import type { TokenAccount } from '@trezor/blockchain-link-types';
 import { solanaUtils as SolanaBlockchainLinkUtils } from '@trezor/blockchain-link-utils';
 import type { TokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
 
-import { getLamportsFromSol } from './sendFormUtils';
+import { Blockchain } from '../../backend/Blockchain';
 
 const { SYSTEM_PROGRAM_PUBLIC_KEY, tokenProgramsInfo } = SolanaBlockchainLinkUtils;
 
-const loadSolanaLib = async () => await import('@solana/web3.js');
+const loadSolanaLib = async () =>
+    await import(/* webpackChunkName: "vendor-solana-web3js" */ '@solana/web3.js');
 const loadSolanaComputeBudgetProgramLib = async () =>
-    await import('@solana-program/compute-budget');
-const loadSolanaSystemProgramLib = async () => await import('@solana-program/system');
+    await import(
+        /* webpackChunkName: "vendor-solana-program-compute-budget" */ '@solana-program/compute-budget'
+    );
+const loadSolanaSystemProgramLib = async () =>
+    await import(/* webpackChunkName: "vendor-solana-program-system" */ '@solana-program/system');
 
 const loadSolanaTokenProgramLib = async (tokenProgramName: TokenProgramName) => {
     switch (tokenProgramName) {
         case 'spl-token':
-            return await import('@solana-program/token');
+            return await import(
+                /* webpackChunkName: "vendor-solana-program-token" */ '@solana-program/token'
+            );
         case 'spl-token-2022':
-            return await import('@solana-program/token-2022');
+            return await import(
+                /* webpackChunkName: "vendor-solana-program-token-2022" */ '@solana-program/token-2022'
+            );
         default:
             throw new Error(`Unsupported token program: ${tokenProgramName}`);
     }
 };
+
+export const getLamportsFromSol = (amountInSol: string) =>
+    BigInt(new BigNumber(amountInSol).times(10 ** 9).toString());
 
 type PriorityFees = { computeUnitPrice: string; computeUnitLimit: string };
 
@@ -38,10 +50,8 @@ export const dummyPriorityFeesForFeeEstimation: PriorityFees = {
     computeUnitLimit: '200000',
 };
 
-async function createTransactionShim(message: CompilableTransactionMessage) {
-    const { compileTransaction, getBase16Codec, getTransactionEncoder } = await loadSolanaLib();
-
-    let transaction = compileTransaction(message);
+async function createTransactionShimCommon(transaction: Transaction) {
+    const { getBase16Codec, getTransactionEncoder } = await loadSolanaLib();
 
     return {
         addSignature(signerPubKey: string, signatureHex: string) {
@@ -64,6 +74,23 @@ async function createTransactionShim(message: CompilableTransactionMessage) {
             return pipe(transaction, getTransactionEncoder().encode, getBase16Codec().decode);
         },
     };
+}
+
+export async function createTransactionShim(message: CompilableTransactionMessage) {
+    const { compileTransaction } = await loadSolanaLib();
+
+    const transaction = compileTransaction(message);
+
+    return createTransactionShimCommon(transaction);
+}
+
+export async function createTransactionShimFromHex(rawTx: string) {
+    const { getBase16Encoder, getTransactionDecoder } = await loadSolanaLib();
+
+    const txByteArray = getBase16Encoder().encode(rawTx);
+    const transaction = getTransactionDecoder().decode(txByteArray);
+
+    return createTransactionShimCommon(transaction);
 }
 
 const addPriorityFees = async <TMessage extends TransactionMessage>(
@@ -373,4 +400,36 @@ export const buildTokenTransferTransaction = async (
               }
             : undefined,
     };
+};
+
+export const fetchAccountOwnerAndTokenInfoForAddress = async (
+    blockchain: Blockchain,
+    address: string,
+    mint: string,
+    tokenProgram: TokenProgramName,
+) => {
+    // Fetch data about recipient account owner if this is a token transfer
+    // We need this in order to validate the address and ensure transfers go through
+    let accountOwner: string | undefined;
+    let tokenInfo: TokenAccount | undefined;
+
+    const accountInfoResponse = await blockchain.getAccountInfo({
+        descriptor: address,
+        details: 'tokens',
+    });
+
+    if (accountInfoResponse) {
+        const associatedTokenAccount = await getAssociatedTokenAccountAddress(
+            address,
+            mint,
+            tokenProgram,
+        );
+
+        accountOwner = accountInfoResponse?.misc?.owner;
+        tokenInfo = accountInfoResponse?.tokens
+            ?.find(token => token.contract === mint)
+            ?.accounts?.find(account => associatedTokenAccount.toString() === account.publicKey);
+    }
+
+    return [accountOwner, tokenInfo] as const;
 };

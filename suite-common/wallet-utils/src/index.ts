@@ -13,7 +13,6 @@ export * from './localizePercentage';
 export * from './networkUtils';
 export * from './sendFormUtils';
 export * from './settingsUtils';
-export * from './solanaUtils';
 export * from './transactionUtils';
 export * from './validationUtils';
 export * from './ethereumStakingUtils';
