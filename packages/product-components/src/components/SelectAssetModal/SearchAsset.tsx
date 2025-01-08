@@ -4,10 +4,17 @@ interface SearchAssetProps {
     searchPlaceholder: string;
     search: string;
     setSearch: (value: string) => void;
+    'data-testid'?: string;
 }
 
-export const SearchAsset = ({ searchPlaceholder, search, setSearch }: SearchAssetProps) => (
+export const SearchAsset = ({
+    searchPlaceholder,
+    search,
+    setSearch,
+    'data-testid': dataTestId,
+}: SearchAssetProps) => (
     <Input
+        data-testid={dataTestId}
         placeholder={searchPlaceholder}
         value={search}
         onChange={event => setSearch(event.target.value)}

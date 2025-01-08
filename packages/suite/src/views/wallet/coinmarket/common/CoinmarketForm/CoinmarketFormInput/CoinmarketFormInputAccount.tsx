@@ -87,7 +87,7 @@ export const CoinmarketFormInputAccount = <
                             isSelected={context === 'value'}
                         />
                     )}
-                    data-testid="@coinmarket/form/select-account"
+                    data-testid="@coinmarket/form/select-crypto"
                     isClearable={false}
                     isSearchable
                     bottomText={

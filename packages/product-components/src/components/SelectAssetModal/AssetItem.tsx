@@ -30,6 +30,7 @@ const BadgeWrapper = styled.div`
 
 interface AssetItemProps extends AssetOptionBaseProps {
     handleClick: (selectedAsset: AssetOptionBaseProps) => void;
+    'data-testid'?: string;
 }
 
 export const AssetItem = ({
@@ -41,6 +42,7 @@ export const AssetItem = ({
     shouldTryToFetch,
     contractAddress,
     handleClick,
+    'data-testid': dataTestId,
 }: AssetItemProps) => {
     const getCoinLogo = () =>
         isCoinSymbol(symbol) ? <CoinLogo size={24} symbol={symbol} /> : null;
@@ -58,7 +60,7 @@ export const AssetItem = ({
                 })
             }
         >
-            <Row gap={spacings.sm}>
+            <Row data-testid={dataTestId} gap={spacings.sm}>
                 {coingeckoId ? (
                     <AssetLogo
                         size={24}

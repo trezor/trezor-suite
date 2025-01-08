@@ -33,6 +33,7 @@ export interface SelectAssetModalProps {
     searchInput?: ReactNode;
     filterTabs?: ReactNode;
     noItemsAvailablePlaceholder: { heading: ReactNode; body?: ReactNode };
+    'data-testid'?: string;
 }
 
 export const SelectAssetModal = ({
@@ -42,6 +43,7 @@ export const SelectAssetModal = ({
     filterTabs,
     searchInput,
     noItemsAvailablePlaceholder,
+    'data-testid': dataTestId,
 }: SelectAssetModalProps) => {
     const intl = useIntl();
 
@@ -90,6 +92,7 @@ export const SelectAssetModal = ({
                                 shouldTryToFetch,
                             }: AssetProps) => (
                                 <AssetItem
+                                    data-testid={`${dataTestId}/option/${cryptoName}-${symbol}`}
                                     key={`${symbol}${contractAddress ? `-${contractAddress}` : ''}`}
                                     cryptoName={cryptoName}
                                     ticker={ticker}

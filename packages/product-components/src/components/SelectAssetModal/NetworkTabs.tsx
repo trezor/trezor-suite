@@ -37,9 +37,16 @@ interface NetworkTabsProps {
     activeTab: SelectAssetSearchCategory;
     setActiveTab: (value: SelectAssetSearchCategory) => void;
     networkCount: number;
+    'data-testid'?: string;
 }
 
-export const NetworkTabs = ({ tabs, activeTab, setActiveTab, networkCount }: NetworkTabsProps) => {
+export const NetworkTabs = ({
+    tabs,
+    activeTab,
+    setActiveTab,
+    networkCount,
+    'data-testid': dataTestId,
+}: NetworkTabsProps) => {
     const { elevation } = useElevation();
 
     // TODO: FormattedMessage - resolve messages sharing https://github.com/trezor/trezor-suite/issues/5325}
@@ -47,6 +54,7 @@ export const NetworkTabs = ({ tabs, activeTab, setActiveTab, networkCount }: Net
         <NetworkTabsWrapper $elevation={elevation}>
             <Row gap={spacings.xs} flexWrap="wrap">
                 <CheckableTag
+                    data-testid={`${dataTestId}/all-networks`}
                     $elevation={elevation}
                     $variant={activeTab === null ? 'primary' : 'tertiary'}
                     onClick={() => {
@@ -71,6 +79,7 @@ export const NetworkTabs = ({ tabs, activeTab, setActiveTab, networkCount }: Net
                 </CheckableTag>
                 {tabs.map(network => (
                     <CheckableTag
+                        data-testid={`${dataTestId}/${network.symbol}`}
                         $elevation={elevation}
                         $variant={
                             activeTab?.coingeckoId === network.coingeckoId ? 'primary' : 'tertiary'

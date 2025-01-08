@@ -15,6 +15,7 @@ export const CoinmarketFormSwitcherCryptoFiat = ({
     toggleAmountInCrypto,
 }: CoinmarketFormSwitcherCryptoFiatProps) => (
     <TextButton
+        data-testid="@coinmarket/form/switch-crypto-fiat"
         size="small"
         onClick={() => {
             toggleAmountInCrypto();

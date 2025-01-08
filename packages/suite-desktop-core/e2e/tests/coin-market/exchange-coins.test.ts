@@ -34,10 +34,10 @@ test.describe('Coinmarket Exchange', { tag: ['@group=other'] }, () => {
         });
 
         await page
-            .getByTestId('@coinmarket/form/select-account/input')
+            .getByTestId('@coinmarket/form/select-crypto/input')
             .getByRole('combobox')
             .fill('ETH');
-        await page.getByTestId('@coinmarket/form/select-account/option/ethereum').first().click();
+        await page.getByTestId('@coinmarket/form/select-crypto/option/ethereum').first().click();
 
         await page.getByTestId('@coinmarket/form/crypto-input').fill('0.005');
         await expect(page.getByText('Not enough funds')).toBeVisible();

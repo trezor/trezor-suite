@@ -201,11 +201,13 @@ export const CoinmarketFormInputCryptoSelect = <
         <>
             {isModalActive && (
                 <SelectAssetModal
+                    data-testid="@coinmarket/form/select-crypto"
                     options={filteredData}
                     onSelectAsset={handleSelectChange}
                     onClose={() => setIsModalActive(false)}
                     searchInput={
                         <SearchAsset
+                            data-testid="@coinmarket/form/select-crypto/search-input"
                             searchPlaceholder={translationString('TR_SELECT_NAME_OR_ADDRESS')}
                             search={search}
                             setSearch={setSearch}
@@ -227,6 +229,7 @@ export const CoinmarketFormInputCryptoSelect = <
                     }}
                     filterTabs={
                         <NetworkTabs
+                            data-testid="@coinmarket/form/select-crypto/network-tab"
                             tabs={tabs}
                             networkCount={getNetworkCount(modalOptions)}
                             activeTab={activeTab}
