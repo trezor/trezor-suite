@@ -12454,7 +12454,7 @@ __metadata:
     fs-extra: "npm:^11.2.0"
     glob: "npm:^10.3.10"
     openpgp: "npm:^6.0.1"
-    systeminformation: "npm:^5.23.5"
+    systeminformation: "npm:^5.25.4"
     terser-webpack-plugin: "npm:^5.3.9"
     webpack: "npm:^5.96.1"
     ws: "npm:^8.18.0"
@@ -40031,12 +40031,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"systeminformation@npm:^5.23.5":
-  version: 5.23.5
-  resolution: "systeminformation@npm:5.23.5"
+"systeminformation@npm:^5.25.4":
+  version: 5.25.5
+  resolution: "systeminformation@npm:5.25.5"
   bin:
     systeminformation: lib/cli.js
-  checksum: 10/cc7afa317cf6f106ae89fb533f65ea47982972e3a5b4a8747ddc34d4bf06052bfba4ca64a0320828b62155f0e34c42a9b79520a75f9c8db632cad2dfc77dce98
+  checksum: 10/310fe8e6e168c5aefdbf36020761d2a4ddfe74d28a814c1fece9195d2ed78ec908e79a3264e9c462111e8696b5028201bbb5d2d3414b1e572eeaff9d02ff041a
   conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
   languageName: node
   linkType: hard
