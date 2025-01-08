@@ -1,5 +1,9 @@
 import { Box, Card, CheckBox, Text, VStack } from '@suite-native/atoms';
-import { FeatureFlag as FeatureFlagEnum, useFeatureFlag } from '@suite-native/feature-flags';
+import {
+    FeatureFlag as FeatureFlagEnum,
+    useFeatureFlag,
+    useToggleFeatureFlag,
+} from '@suite-native/feature-flags';
 
 const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsDeviceConnectEnabled]: 'Connect device',
@@ -11,12 +15,13 @@ const featureFlagsTitleMap = {
 } as const satisfies Record<FeatureFlagEnum, string>;
 
 const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {
-    const [value, setValue] = useFeatureFlag(featureFlag);
+    const value = useFeatureFlag(featureFlag);
+    const toggleFeatureFlag = useToggleFeatureFlag(featureFlag);
 
     return (
         <Box flexDirection="row" justifyContent="space-between">
             <Text>{featureFlagsTitleMap[featureFlag]}</Text>
-            <CheckBox isChecked={value} onChange={setValue} />
+            <CheckBox isChecked={value} onChange={toggleFeatureFlag} />
         </Box>
     );
 };

@@ -32,7 +32,7 @@ export const OnboardingScreenHeader = ({
 }: OnboardingScreenHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     return (
         <Box alignItems="center" style={applyStyle(wrapperStyle)} alignSelf="center">

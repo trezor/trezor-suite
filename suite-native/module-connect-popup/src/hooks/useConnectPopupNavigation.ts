@@ -31,7 +31,7 @@ const isConnectPopupUrl = (url: string): boolean => {
 // TODO: will be necessary to handle if device is not connected/unlocked so we probably want to wait until user unlock device
 // we already have some modals like biometrics or coin enabled which are waiting for device to be connected
 export const useConnectPopupNavigation = () => {
-    const [featureFlagEnabled] = useFeatureFlag(FeatureFlag.IsConnectPopupEnabled);
+    const featureFlagEnabled = useFeatureFlag(FeatureFlag.IsConnectPopupEnabled);
     const navigation = useNavigation<NavigationProp>();
 
     const navigateToConnectPopup = useCallback(

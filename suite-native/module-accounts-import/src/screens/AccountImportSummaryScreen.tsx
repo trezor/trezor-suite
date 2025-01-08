@@ -30,7 +30,7 @@ export const AccountImportSummaryScreen = ({
 >) => {
     const { accountInfo, networkSymbol } = route.params;
 
-    const [isRegtestEnabled] = useFeatureFlag(FeatureFlag.IsRegtestEnabled);
+    const isRegtestEnabled = useFeatureFlag(FeatureFlag.IsRegtestEnabled);
     const account = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccountByDescriptorAndNetworkSymbol(
             state,

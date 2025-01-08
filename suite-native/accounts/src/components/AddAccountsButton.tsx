@@ -31,7 +31,7 @@ export const AddAccountButton = ({ flowType, testID }: AddAccountButtonProps) =>
 
     const isSelectedDevicePortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
     const hasDiscovery = useSelector(selectHasDeviceDiscovery);
-    const [isDeviceConnectEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const isDeviceConnectEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
     const { showViewOnlyAddAccountAlert } = useAccountAlerts();
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
 

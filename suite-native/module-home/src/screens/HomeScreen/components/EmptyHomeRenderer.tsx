@@ -13,7 +13,7 @@ import { EmptyConnectedDeviceState } from './EmptyConnectedDeviceState';
 import { EmptyPortfolioCrossroads } from './EmptyPortfolioCrossroads';
 
 export const EmptyHomeRenderer = () => {
-    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);

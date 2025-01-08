@@ -20,7 +20,7 @@ import { isDevButtonVisibleAtom } from './ProductionDebug';
 
 export const FeaturesSettings = () => {
     const isDevButtonVisible = useAtomValue(isDevButtonVisibleAtom);
-    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const navigateTo = useSettingsNavigateTo();
 

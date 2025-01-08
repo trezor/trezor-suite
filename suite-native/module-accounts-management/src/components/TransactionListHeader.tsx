@@ -84,7 +84,7 @@ const TransactionListHeaderContent = ({
 export const TransactionListHeader = memo(
     ({ accountKey, tokenContract }: TransactionListHeaderProps) => {
         const navigation = useNavigation<AccountsNavigationProps>();
-        const [isDeviceConnectEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+        const isDeviceConnectEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
         const account = useSelector((state: AccountsRootState) =>
             selectAccountByKey(state, accountKey),

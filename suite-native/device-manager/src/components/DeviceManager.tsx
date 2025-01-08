@@ -6,7 +6,7 @@ import { DeviceManagerContent } from './DeviceManagerContent';
 import { PortfolioTrackerDeviceManagerContent } from './PortfolioTrackerDeviceManagerContent';
 
 export const DeviceManager = () => {
-    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     return (
         <Box flexDirection="row" flex={1}>

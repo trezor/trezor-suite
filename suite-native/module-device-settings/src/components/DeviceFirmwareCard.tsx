@@ -66,7 +66,7 @@ export const DeviceFirmwareCard = () => {
         selectIsDiscoveryActiveByDeviceState(state, device?.state),
     );
     const navigation = useNavigation<NavigationProp>();
-    const [isFirmwareUpdateEnabled] = useFeatureFlag(FeatureFlag.IsFirmwareUpdateEnabled);
+    const isFirmwareUpdateEnabled = useFeatureFlag(FeatureFlag.IsFirmwareUpdateEnabled);
 
     if (!device || !deviceModel) {
         return null;

@@ -40,7 +40,7 @@ type NavigationProp = StackNavigationProps<
 >;
 
 const IconWrapper = ({ children }: { children: ReactNode }) => {
-    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     if (!isUsbDeviceConnectFeatureEnabled) return <>{children}</>;
 
@@ -52,7 +52,7 @@ const IconWrapper = ({ children }: { children: ReactNode }) => {
 };
 
 export const TrackBalancesScreen = () => {
-    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     const navigation = useNavigation<NavigationProp>();
 

@@ -27,7 +27,7 @@ const trezorLinkStyle = prepareNativeStyle(utils => ({
 }));
 
 export const WelcomeScreen = () => {
-    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     const navigation =
         useNavigation<

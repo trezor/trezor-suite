@@ -109,7 +109,7 @@ const DisabledUsbFAQ = () => {
 };
 
 export const FAQInfoPanel = () => {
-    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     return (
         <VStack paddingHorizontal="sp8">

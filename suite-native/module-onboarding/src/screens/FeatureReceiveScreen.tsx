@@ -40,7 +40,7 @@ const receiveScreenContentMap = {
 } as const satisfies Record<'device' | 'portfolioTracker', ScreenContent>;
 
 const IconWrapper = ({ children }: { children: ReactNode }) => {
-    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     if (!isUsbDeviceConnectFeatureEnabled) return <>{children}</>;
 
@@ -53,7 +53,7 @@ const IconWrapper = ({ children }: { children: ReactNode }) => {
 
 export const FeatureReceiveScreen = () => {
     const navigation = useNavigation<NavigationProps>();
-    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     const content =
         receiveScreenContentMap[isUsbDeviceConnectFeatureEnabled ? 'device' : 'portfolioTracker'];
