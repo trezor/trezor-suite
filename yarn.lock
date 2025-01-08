@@ -3963,12 +3963,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:3.9.1":
-  version: 3.9.1
-  resolution: "@hookform/resolvers@npm:3.9.1"
+"@hookform/resolvers@npm:3.10.0":
+  version: 3.10.0
+  resolution: "@hookform/resolvers@npm:3.10.0"
   peerDependencies:
     react-hook-form: ^7.0.0
-  checksum: 10/4e7a24f79ead48db5c869c17b5f47412a7d628939f743bdc1248ea3a291b1a9dd777cd02f84326e91d258283a6351566f13bca5cb30f996e5a9db7ee490b5cc5
+  checksum: 10/92d3601b2cedb4f52e9e086cc4bd6a20b493f59ecfb1af8b8e465057f0445aa83cf5a6d482a831cdf5d1321a73269173633222eefde0adb515d3820c1525b0cb
   languageName: node
   linkType: hard
 
@@ -9807,7 +9807,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
-    react-hook-form: "npm:^7.53.2"
+    react-hook-form: "npm:^7.54.2"
     web3-utils: "npm:^4.3.1"
   languageName: unknown
   linkType: soft
@@ -9857,7 +9857,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
     react: "npm:18.2.0"
-    react-hook-form: "npm:^7.53.2"
+    react-hook-form: "npm:^7.54.2"
     web3-utils: "npm:^4.3.1"
   languageName: unknown
   linkType: soft
@@ -10380,12 +10380,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/forms@workspace:suite-native/forms"
   dependencies:
-    "@hookform/resolvers": "npm:3.9.1"
+    "@hookform/resolvers": "npm:3.10.0"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     react: "npm:18.2.0"
-    react-hook-form: "npm:^7.53.2"
+    react-hook-form: "npm:^7.54.2"
     react-native: "npm:0.76.1"
     yup: "npm:^1.4.0"
   languageName: unknown
@@ -10587,7 +10587,7 @@ __metadata:
     date-fns: "npm:^2.30.0"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
-    react-hook-form: "npm:^7.53.2"
+    react-hook-form: "npm:^7.54.2"
     react-native: "npm:0.76.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -10842,7 +10842,7 @@ __metadata:
     expo-linear-gradient: "npm:^14.0.1"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
-    react-hook-form: "npm:^7.53.2"
+    react-hook-form: "npm:^7.54.2"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:3.16.1"
     react-native-svg: "npm:^15.9.0"
@@ -12188,7 +12188,7 @@ __metadata:
     "@types/react": "npm:18.2.79"
     framer-motion: "npm:^11.0.3"
     react: "npm:18.2.0"
-    react-hook-form: "npm:^7.53.2"
+    react-hook-form: "npm:^7.54.2"
     react-intl: "npm:^6.6.8"
     react-svg: "npm:^16.1.33"
     storybook: "npm:^7.6.13"
@@ -12580,7 +12580,7 @@ __metadata:
     "@floating-ui/react": "npm:^0.26.9"
     "@formatjs/cli": "npm:^6.2.7"
     "@formatjs/intl": "npm:2.10.0"
-    "@hookform/resolvers": "npm:3.9.1"
+    "@hookform/resolvers": "npm:3.10.0"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@sentry/core": "npm:^8.47.0"
@@ -12679,7 +12679,7 @@ __metadata:
     react-dom: "npm:18.2.0"
     react-focus-lock: "npm:^2.9.7"
     react-helmet-async: "npm:^2.0.4"
-    react-hook-form: "npm:^7.53.2"
+    react-hook-form: "npm:^7.54.2"
     react-intl: "npm:^6.6.8"
     react-qr-reader: "npm:^2.2.1"
     react-redux: "npm:8.0.7"
@@ -35887,12 +35887,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.53.2":
-  version: 7.53.2
-  resolution: "react-hook-form@npm:7.53.2"
+"react-hook-form@npm:^7.54.2":
+  version: 7.54.2
+  resolution: "react-hook-form@npm:7.54.2"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 10/172589ac5871bd41717e8c6bc4c825d149db88eb02e356a8fef4115615a56b21bf66ad16954575b1d6302ed265b8780f1975a2730d5aa10a53e412b56d9f72ca
+  checksum: 10/b156d15b6246c76d0275e5722d9056014693e014d0e3dec06e44bf2672ee549aaba4366de5144d18c4cab29e631f3b2b84269d4fd5727ca17aad9b970fde6960
   languageName: node
   linkType: hard
 
