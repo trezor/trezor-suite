@@ -53,7 +53,13 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
                 <Translation id={headingTranslation} />
             </H3>
             <Paragraph variant="tertiary" margin={{ top: spacings.xs }}>
-                <Translation id="TR_WIPE_DEVICE_TEXT" />
+                <Translation
+                    id={
+                        isBootloaderMode
+                            ? 'TR_FACTORY_RESET_MODAL_DESCRIPTION'
+                            : 'TR_WIPE_DEVICE_MODAL_DESCRIPTION'
+                    }
+                />
             </Paragraph>
             <Card margin={{ top: spacings.lg }}>
                 <Column gap={spacings.md} alignItems="center">

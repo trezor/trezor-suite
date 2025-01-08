@@ -4027,10 +4027,15 @@ export default defineMessages({
         id: 'EVENT_WALLET_CREATED',
         defaultMessage: 'Wallet added successfully',
     },
-    TR_WIPE_DEVICE_TEXT: {
-        id: 'TR_WIPE_DEVICE_TEXT',
+    TR_FACTORY_RESET_MODAL_DESCRIPTION: {
+        id: 'TR_FACTORY_RESET_MODAL_DESCRIPTION',
         defaultMessage:
             'Resetting the device removes all its data. Reset your device only if you have your wallet backup, which can restore access to your funds.',
+    },
+    TR_WIPE_DEVICE_MODAL_DESCRIPTION: {
+        id: 'TR_WIPE_DEVICE_MODAL_DESCRIPTION',
+        defaultMessage:
+            'Wiping the device removes all its data. Wipe your device only if you have your wallet backup, which can restore access to your funds.',
     },
     TR_WIPE_DEVICE_CHECKBOX_1_TITLE: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_1_TITLE',
