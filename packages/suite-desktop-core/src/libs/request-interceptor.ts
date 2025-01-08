@@ -1,8 +1,10 @@
 import { session } from 'electron';
 
-// Should be used for all webRequest.on* events as there can be only
-// one listener for each of them, but sometimes we need to bind more
-// of them
+/**
+ * Should be used for all webRequest.on* events as there can be only
+ * one listener for each of them, but sometimes we need to bind more
+ * of them.
+ */
 export const createInterceptor = (): RequestInterceptor => {
     let beforeRequestListeners: BeforeRequestListener[] = [];
     const filter = { urls: ['*://*/*'] };

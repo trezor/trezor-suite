@@ -12,17 +12,7 @@ export const SERVICE_NAME = 'request-filter';
 export const init: ModuleInit = ({ interceptor }) => {
     const { logger } = global;
 
-    const resourceTypeFilter = ['xhr']; // What resource types we want to filter
     interceptor.onBeforeRequest(details => {
-        if (!resourceTypeFilter.includes(details.resourceType)) {
-            logger.debug(
-                SERVICE_NAME,
-                `${details.url} was allowed because its resource type (${details.resourceType}) is not filtered`,
-            );
-
-            return;
-        }
-
         const { hostname } = new URL(details.url);
 
         if (allowedDomains.find(d => hostname.endsWith(d)) !== undefined) {
