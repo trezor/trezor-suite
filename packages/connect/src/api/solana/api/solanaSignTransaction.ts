@@ -6,12 +6,12 @@ import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import { transformAdditionalInfo } from '../additionalInfo';
+import { createTransactionShimFromHex } from '../solanaUtils';
 import { SolanaSignTransaction as SolanaSignTransactionSchema } from '../../../types/api/solana';
 
-export default class SolanaSignTransaction extends AbstractMethod<
-    'solanaSignTransaction',
-    PROTO.SolanaSignTx
-> {
+type Params = PROTO.SolanaSignTx & { serialize: boolean };
+
+export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTransaction', Params> {
     init() {
         this.requiredPermissions = ['read', 'write'];
         this.requiredDeviceCapabilities = ['Capability_Solana'];
@@ -33,6 +33,7 @@ export default class SolanaSignTransaction extends AbstractMethod<
             address_n: path,
             serialized_tx: payload.serializedTx,
             additional_info: transformAdditionalInfo(payload.additionalInfo),
+            serialize: !!payload.serialize,
         };
     }
 
@@ -42,6 +43,28 @@ export default class SolanaSignTransaction extends AbstractMethod<
 
     async run() {
         const cmd = this.device.getCommands();
+
+        if (this.params.serialize) {
+            const tx = await createTransactionShimFromHex(this.params.serialized_tx);
+
+            const { message } = await cmd.typedCall('SolanaSignTx', 'SolanaTxSignature', {
+                ...this.params,
+                serialized_tx: tx.serializeMessage(),
+            });
+
+            const addressCall = await cmd.typedCall('SolanaGetAddress', 'SolanaAddress', {
+                address_n: this.params.address_n,
+                show_display: false,
+                chunkify: false,
+            });
+            const { address } = addressCall.message;
+
+            tx.addSignature(address, message.signature);
+            const signedSerializedTx = tx.serialize();
+
+            return { signature: message.signature, serializedTx: signedSerializedTx };
+        }
+
         const { message } = await cmd.typedCall('SolanaSignTx', 'SolanaTxSignature', this.params);
 
         return { signature: message.signature };

@@ -19,6 +19,8 @@ import signTransaction from '../../../data/methods/solana/signTransaction.ts';
 export const paramDescriptions = {
     path: 'minimum length is `2`. [read more](/details/path)',
     serializedTx: '',
+    serialize:
+        'If `true`, the transaction will be deserialized before signing and serialized back after signing. Without this option, the method will only return the signature by itself.',
 };
 
 ## Solana: Sign transaction
