@@ -1,0 +1,96 @@
+import { SolanaComposeTransaction } from '@trezor/connect/src/types/api/solana';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[
+        {
+            title: 'Advanced schema',
+            method: 'solanaComposeTransaction',
+            schema: SolanaComposeTransaction,
+        },
+    ]}
+/>
+
+export const paramDescriptions = {
+    path: 'minimum length is `2`. [read more](/details/path)',
+    fromAddress: 'Sender address',
+    toAddress:
+        'Recipient address. In case of token transfer, this still means the owner address of the token account. The associated token account is created automatically.',
+    amount: 'Amount to send in decimal string format',
+    priorityFees:
+        'Fee configuration. If not set, it defaults to hardcoded values. It is recommended to simulate the transaction using `blockchainEstimateFee`',
+    token: 'Token details in case of token transfer',
+    blockHash: 'Recent Block hash',
+    lastValidBlockHeight: 'Recent Block height',
+    coin: '"SOL" for mainnet (default), "DSOL" for devnet',
+    identity: "Blockchain connection identity. It's used to separate multiple connections.",
+};
+
+## Solana: Compose transaction
+
+Compose a Solana transfer transaction that can be later signed on device using [solanaSignTransaction](/methods/solana/solanaSignTransaction/).
+
+The transaction may be a native SOL transfer or a token transfer.
+
+```javascript
+const result = await TrezorConnect.solanaComposeTransaction(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### SolanaComposeTransaction
+
+<ParamsTable schema={SolanaComposeTransaction} descriptions={paramDescriptions} />
+
+### Examples
+
+```javascript
+TrezorConnect.solanaComposeTransaction({
+    fromAddress: '...',
+    toAddress: '...',
+    amount: '0.1',
+    blockHash: '...',
+    lastValidBlockHeight: 123456,
+    coin: 'SOL',
+});
+```
+
+### Result
+
+[SolanaComposedTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/solana/index.ts)
+
+```javascript
+{
+    success: true,
+    payload: {
+        serializedTx: string,
+        additionalInfo: {
+            isCreatingAccount: boolean,
+            // in case of token transfer:
+            newTokenAccountProgramName: "spl-token" | "spl-token-2022",
+            tokenAccountInfo: {
+                baseAddress: string,
+                tokenProgram: string,
+                tokenMint: string,
+                tokenAccount: string,
+            },
+        }
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

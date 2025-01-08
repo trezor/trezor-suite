@@ -73,6 +73,7 @@ import { setTransports } from './setTransports';
 import { showDeviceTutorial } from './showDeviceTutorial';
 import { signMessage } from './signMessage';
 import { signTransaction } from './signTransaction';
+import { solanaComposeTransaction } from './solanaComposeTransaction';
 import { solanaGetAddress } from './solanaGetAddress';
 import { solanaGetPublicKey } from './solanaGetPublicKey';
 import { solanaSignTransaction } from './solanaSignTransaction';
@@ -311,6 +312,9 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/bitcoin/signTransaction/
     signTransaction: typeof signTransaction;
+
+    // https://connect.trezor.io/9/methods/solana/solanaComposeTransaction/
+    solanaComposeTransaction: typeof solanaComposeTransaction;
 
     // https://connect.trezor.io/9/methods/solana/solanaGetPublicKey/
     solanaGetPublicKey: typeof solanaGetPublicKey;

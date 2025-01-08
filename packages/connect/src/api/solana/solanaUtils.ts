@@ -85,12 +85,14 @@ export async function createTransactionShim(message: CompilableTransactionMessag
 }
 
 export async function createTransactionShimFromHex(rawTx: string) {
-    const { getBase16Encoder, getTransactionDecoder } = await loadSolanaLib();
+    const { getBase16Encoder, getCompiledTransactionMessageDecoder, decompileTransactionMessage } =
+        await loadSolanaLib();
 
     const txByteArray = getBase16Encoder().encode(rawTx);
-    const transaction = getTransactionDecoder().decode(txByteArray);
+    const compiledMessage = getCompiledTransactionMessageDecoder().decode(txByteArray);
+    const message = decompileTransactionMessage(compiledMessage);
 
-    return createTransactionShimCommon(transaction);
+    return createTransactionShim(message);
 }
 
 const addPriorityFees = async <TMessage extends TransactionMessage>(

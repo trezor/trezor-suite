@@ -175,6 +175,8 @@ export const factory = <
 
     signTransaction: params => call({ ...params, method: 'signTransaction' }),
 
+    solanaComposeTransaction: params => call({ ...params, method: 'solanaComposeTransaction' }),
+
     solanaGetPublicKey: params => call({ ...params, method: 'solanaGetPublicKey' }),
 
     solanaGetAddress: params => call({ ...params, method: 'solanaGetAddress' }),

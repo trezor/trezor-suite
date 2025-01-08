@@ -56,6 +56,7 @@ export { default as signTransactionReplace } from './signTransactionReplace';
 export { default as signTransactionSegwit } from './signTransactionSegwit';
 export { default as signTransactionTaproot } from './signTransactionTaproot';
 export { default as signTransactionZcash } from './signTransactionZcash';
+export { default as solanaComposeTransaction } from './solanaComposeTransaction';
 export { default as solanaGetAddress } from './solanaGetAddress';
 export { default as solanaGetPublicKey } from './solanaGetPublicKey';
 export { default as solanaSignTransaction } from './solanaSignTransaction';
