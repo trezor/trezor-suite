@@ -1219,7 +1219,21 @@ export const setMax = [
             },
             selectedAccount: SOL_ACCOUNT,
         },
+        connect: [
+            undefined,
+            {
+                success: true,
+                payload: {
+                    serializedTx: 'serializedABCD',
+                    additionalInfo: {
+                        isCreatingAccount: false,
+                        newTokenAccountProgramName: undefined,
+                    },
+                },
+            },
+        ],
         finalResult: {
+            solanaComposeTransactionCalls: 1,
             estimateFeeCalls: 1,
             composedLevels: {
                 normal: {

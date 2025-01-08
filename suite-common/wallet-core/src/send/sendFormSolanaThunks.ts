@@ -1,11 +1,7 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
-import type { TokenInfo, TokenAccount } from '@trezor/blockchain-link-types';
-import {
-    SYSTEM_PROGRAM_PUBLIC_KEY,
-    TokenProgramName,
-    tokenStandardToTokenProgramName,
-} from '@trezor/blockchain-link-utils/src/solana';
+import type { TokenInfo } from '@trezor/blockchain-link-types';
+import { tokenStandardToTokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
 import {
     ExternalOutput,
     PrecomposedTransaction,
@@ -18,12 +14,8 @@ import {
     calculateMax,
     calculateTotal,
     formatAmount,
-    getExternalComposeOutput,
-    buildTransferTransaction,
-    buildTokenTransferTransaction,
-    getAssociatedTokenAccountAddress,
-    dummyPriorityFeesForFeeEstimation,
     getAccountIdentity,
+    getExternalComposeOutput,
 } from '@suite-common/wallet-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
@@ -114,39 +106,6 @@ const calculate = (
     return payloadData;
 };
 
-const fetchAccountOwnerAndTokenInfoForAddress = async (
-    address: string,
-    symbol: string,
-    mint: string,
-    tokenProgram: TokenProgramName,
-) => {
-    // Fetch data about recipient account owner if this is a token transfer
-    // We need this in order to validate the address and ensure transfers go through
-    let accountOwner: string | undefined;
-    let tokenInfo: TokenAccount | undefined;
-
-    const accountInfoResponse = await TrezorConnect.getAccountInfo({
-        coin: symbol,
-        descriptor: address,
-        details: 'tokens',
-    });
-
-    if (accountInfoResponse.success) {
-        const associatedTokenAccount = await getAssociatedTokenAccountAddress(
-            address,
-            mint,
-            tokenProgram,
-        );
-
-        accountOwner = accountInfoResponse.payload?.misc?.owner;
-        tokenInfo = accountInfoResponse.payload?.tokens
-            ?.find(token => token.contract === mint)
-            ?.accounts?.find(account => associatedTokenAccount.toString() === account.publicKey);
-    }
-
-    return [accountOwner, tokenInfo] as const;
-};
-
 function assertIsSolanaAccount(
     account: Account,
 ): asserts account is Extract<Account, { networkType: 'solana' }> {
@@ -171,19 +130,8 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
 
         const { output, decimals, tokenInfo } = composedOutput;
 
-        const { blockhash, blockHeight: lastValidBlockHeight } = selectBlockchainBlockInfoBySymbol(
-            getState(),
-            account.symbol,
-        );
-
-        const [recipientAccountOwner, recipientTokenAccount] = tokenInfo
-            ? await fetchAccountOwnerAndTokenInfoForAddress(
-                  formState.outputs[0].address,
-                  account.symbol,
-                  tokenInfo.contract,
-                  tokenStandardToTokenProgramName(tokenInfo.type),
-              )
-            : [undefined, undefined];
+        const { blockhash: blockHash, blockHeight: lastValidBlockHeight } =
+            selectBlockchainBlockInfoBySymbol(getState(), account.symbol);
 
         // invalid token transfer -- should never happen
         if (tokenInfo && !tokenInfo.accounts)
@@ -201,56 +149,43 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             }
         }
 
-        const tokenTransferTxAndDestinationAddress =
-            tokenInfo && tokenInfo.accounts
-                ? await buildTokenTransferTransaction(
-                      account.descriptor,
-                      formState.outputs[0].address || account.descriptor,
-                      recipientAccountOwner || SYSTEM_PROGRAM_PUBLIC_KEY,
-                      tokenInfo.contract,
-                      formState.outputs[0].amount || '0',
-                      tokenInfo.decimals,
-                      tokenInfo.accounts,
-                      recipientTokenAccount,
-                      blockhash,
-                      lastValidBlockHeight,
-                      dummyPriorityFeesForFeeEstimation,
-                      tokenStandardToTokenProgramName(tokenInfo.type),
-                  )
-                : undefined;
-
         // To estimate fees on Solana we need to turn a transaction into a message for which fees are estimated.
         // Since all the values don't have to be filled in the form at the time of this function call, we use dummy values
         // for the estimation, since these values don't affect the final fee.
         // The real transaction is constructed in `signTransaction`, this one is used solely for fee estimation and is never submitted.
-        const transferTx =
-            tokenTransferTxAndDestinationAddress != null
-                ? tokenTransferTxAndDestinationAddress.transaction
-                : await buildTransferTransaction(
-                      account.descriptor,
-                      formState.outputs[0].address || account.descriptor,
-                      formState.outputs[0].amount || '0',
-                      blockhash,
-                      lastValidBlockHeight,
-                      dummyPriorityFeesForFeeEstimation,
-                  );
+        const transaction = await TrezorConnect.solanaComposeTransaction({
+            fromAddress: account.descriptor,
+            toAddress: formState.outputs[0].address,
+            amount: formState.outputs[0].amount,
+            token: tokenInfo
+                ? {
+                      mint: tokenInfo.contract,
+                      program: tokenStandardToTokenProgramName(tokenInfo.type),
+                      decimals: tokenInfo.decimals,
+                      accounts: tokenInfo.accounts ?? [],
+                  }
+                : undefined,
+            blockHash,
+            lastValidBlockHeight,
+            coin: account.symbol,
+            identity: getAccountIdentity(account),
+        });
 
-        const isCreatingAccount =
-            tokenInfo &&
-            recipientTokenAccount === undefined &&
-            // if the recipient account has no owner, it means it's a new account and needs the token account to be created
-            (recipientAccountOwner === SYSTEM_PROGRAM_PUBLIC_KEY || recipientAccountOwner == null);
-        const newTokenAccountProgramName = isCreatingAccount
-            ? tokenStandardToTokenProgramName(tokenInfo.type)
-            : undefined;
+        if (!transaction.success) {
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: transaction.payload.error,
+            });
+        }
 
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
             coin: account.symbol,
             request: {
                 specific: {
-                    data: transferTx.serialize(),
-                    isCreatingAccount,
-                    newTokenAccountProgramName,
+                    data: transaction.payload.serializedTx,
+                    isCreatingAccount: transaction.payload.additionalInfo.isCreatingAccount,
+                    newTokenAccountProgramName:
+                        transaction.payload.additionalInfo.newTokenAccountProgramName,
                 },
             },
         });
@@ -353,61 +288,40 @@ export const signSolanaSendFormTransactionThunk = createThunk<
         }
         const { blockHash, blockHeight: lastValidBlockHeight } = blockchainInfo.payload;
 
-        const [recipientAccountOwner, recipientTokenAccounts] = token
-            ? await fetchAccountOwnerAndTokenInfoForAddress(
-                  formState.outputs[0].address,
-                  selectedAccount.symbol,
-                  token.contract,
-                  tokenStandardToTokenProgramName(token.type),
-              )
-            : [undefined, undefined];
-
         if (token && !token.accounts)
             rejectWithValue({
                 error: 'sign-transaction-failed',
                 message: 'Missing token accounts.',
             });
 
-        const tokenTransferTxAndDestinationAddress =
-            token && token.accounts
-                ? await buildTokenTransferTransaction(
-                      selectedAccount.descriptor,
-                      formState.outputs[0].address || selectedAccount.descriptor,
-                      recipientAccountOwner || SYSTEM_PROGRAM_PUBLIC_KEY,
-                      token.contract,
-                      formState.outputs[0].amount || '0',
-                      token.decimals,
-                      token.accounts,
-                      recipientTokenAccounts,
-                      blockHash,
-                      lastValidBlockHeight,
-                      {
-                          computeUnitPrice: precomposedTransaction.feePerByte,
-                          computeUnitLimit: precomposedTransaction.feeLimit,
-                      },
-                      tokenStandardToTokenProgramName(token.type),
-                  )
-                : undefined;
+        const transaction = await TrezorConnect.solanaComposeTransaction({
+            fromAddress: selectedAccount.descriptor,
+            toAddress: formState.outputs[0].address,
+            amount: formState.outputs[0].amount,
+            token: token
+                ? {
+                      mint: token.contract,
+                      program: tokenStandardToTokenProgramName(token.type),
+                      decimals: token.decimals,
+                      accounts: token.accounts ?? [],
+                  }
+                : undefined,
+            blockHash,
+            lastValidBlockHeight,
+            priorityFees: {
+                computeUnitPrice: precomposedTransaction.feePerByte,
+                computeUnitLimit: precomposedTransaction.feeLimit,
+            },
+            coin: selectedAccount.symbol,
+            identity: getAccountIdentity(selectedAccount),
+        });
 
-        if (token && !tokenTransferTxAndDestinationAddress)
+        if (!transaction.success) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                message: 'Token transfer address missing.',
+                message: transaction.payload.error,
             });
-
-        const tx = tokenTransferTxAndDestinationAddress
-            ? tokenTransferTxAndDestinationAddress.transaction
-            : await buildTransferTransaction(
-                  selectedAccount.descriptor,
-                  formState.outputs[0].address,
-                  formState.outputs[0].amount,
-                  blockHash,
-                  lastValidBlockHeight,
-                  {
-                      computeUnitPrice: precomposedTransaction.feePerByte,
-                      computeUnitLimit: precomposedTransaction.feeLimit,
-                  },
-              );
+        }
 
         const response = await TrezorConnect.solanaSignTransaction({
             device: {
@@ -417,16 +331,13 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             },
             useEmptyPassphrase: device.useEmptyPassphrase,
             path: selectedAccount.path,
-            serializedTx: tx.serializeMessage(),
-            additionalInfo:
-                tokenTransferTxAndDestinationAddress &&
-                tokenTransferTxAndDestinationAddress.tokenAccountInfo
-                    ? {
-                          tokenAccountsInfos: [
-                              tokenTransferTxAndDestinationAddress.tokenAccountInfo,
-                          ],
-                      }
-                    : undefined,
+            serializedTx: transaction.payload.serializedTx,
+            serialize: true,
+            additionalInfo: transaction.payload.additionalInfo.tokenAccountInfo
+                ? {
+                      tokenAccountsInfos: [transaction.payload.additionalInfo.tokenAccountInfo],
+                  }
+                : undefined,
         });
 
         if (!response.success) {
@@ -438,17 +349,6 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             });
         }
 
-        try {
-            tx.addSignature(selectedAccount.descriptor, response.payload.signature);
-            const signedSerializedTx = tx.serialize();
-
-            return { serializedTx: signedSerializedTx };
-        } catch (e) {
-            return rejectWithValue({
-                error: 'sign-transaction-failed',
-                errorCode: e.code,
-                message: e.error,
-            });
-        }
+        return { serializedTx: response.payload.serializedTx! };
     },
 );

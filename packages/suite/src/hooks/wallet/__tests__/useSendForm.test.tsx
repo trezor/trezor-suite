@@ -103,6 +103,7 @@ const Component = ({ callback }: { callback: TestCallback }) => {
 interface Result {
     composeTransactionCalls?: number;
     composeTransactionParams?: any; // partial @trezor/connect params
+    solanaComposeTransactionCalls?: number;
     estimateFeeCalls?: number; // used in ETH
     estimateFeeParams?: any; // partial @trezor/connect params
     getAccountInfoCalls?: number; // used in XRP
@@ -124,6 +125,11 @@ const actionCallback = (
     if (typeof result.composeTransactionCalls === 'number') {
         expect(TrezorConnect.composeTransaction).toHaveBeenCalledTimes(
             result.composeTransactionCalls,
+        );
+    }
+    if (typeof result.solanaComposeTransactionCalls === 'number') {
+        expect(TrezorConnect.solanaComposeTransaction).toHaveBeenCalledTimes(
+            result.solanaComposeTransactionCalls,
         );
     }
     if (typeof result.estimateFeeCalls === 'number') {
