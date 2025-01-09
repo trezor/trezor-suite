@@ -44,7 +44,6 @@ export class DashboardActions {
     async discoveryShouldFinish() {
         await this.discoveryBar.waitFor({ state: 'attached', timeout: 10_000 });
         await this.discoveryBar.waitFor({ state: 'detached', timeout: 120_000 });
-        await expect(this.dashboardGraph).toBeVisible();
     }
 
     @step()

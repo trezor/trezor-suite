@@ -7,7 +7,8 @@ import { step } from '../common';
 type WalletParams = { symbol?: NetworkSymbol; atIndex?: number };
 
 export class WalletActions {
-    readonly searchInput: Locator;
+    readonly transactionSearch: Locator;
+    readonly accountSearch: Locator;
     readonly accountChevron: Locator;
     readonly cardanoAccountLabels: { [key: string]: Locator };
     readonly walletStakingButton: Locator;
@@ -31,7 +32,8 @@ export class WalletActions {
     readonly stakingCardano: Locator;
 
     constructor(private readonly page: Page) {
-        this.searchInput = this.page.getByTestId('@wallet/accounts/search-icon');
+        this.transactionSearch = this.page.getByTestId('@wallet/accounts/search-icon');
+        this.accountSearch = this.page.getByTestId('@account-menu/search-input');
         this.accountChevron = this.page.getByTestId('@account-menu/arrow');
         this.cardanoAccountLabels = {
             normal: this.page.getByTestId('@account-menu/ada/normal/0/label'),
@@ -61,8 +63,8 @@ export class WalletActions {
 
     @step()
     async filterTransactions(transaction: string) {
-        await this.searchInput.click();
-        await this.searchInput.fill(transaction, { force: true });
+        await this.transactionSearch.click();
+        await this.transactionSearch.fill(transaction, { force: true });
     }
 
     @step()
