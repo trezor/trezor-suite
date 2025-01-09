@@ -149,6 +149,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow.'
         await onSendFees.submitFee();
         await onSendAddressReview.nextStep();
         await onSendAddressReview.nextStep();
+        await wait(2000); // Wait for the device to register that the transaction is being signed.
         await element(by.id('@screen/sub-header/icon-left')).tap();
         await onAlertSheet.tapPrimaryButton();
         await onAccountDetail.waitForScreen();
@@ -158,7 +159,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow.'
         await prepareTransactionForOnDeviceReview({ isFormEmpty: false });
         await onSendAddressReview.nextStep();
         await onSendAddressReview.nextStep();
-
         await wait(3000); // Wait for the device to get info about the transaction.
         await TrezorUserEnvLink.stopEmu();
         await onAlertSheet.tapSecondaryButton();
