@@ -15,7 +15,11 @@ export const CoinmarketFormOfferFiatAmount = ({ amount }: CoinmarketFormOfferFia
 
     return (
         <Row gap={spacings.sm}>
-            <Text typographyStyle="titleMedium" ellipsisLineCount={1}>
+            <Text
+                data-testid="@coinmarket/best-offer/amount"
+                typographyStyle="titleMedium"
+                ellipsisLineCount={1}
+            >
                 {formattedAmount}
             </Text>
             <CoinmarketFormInputCurrency isClean={false} />

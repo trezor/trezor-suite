@@ -79,7 +79,7 @@ export const CoinmarketFormOffer = () => {
 
     return (
         <Column gap={spacings.lg}>
-            <Column gap={spacings.xs} data-testid="@coinmarket/best-offer/amount">
+            <Column gap={spacings.xs} data-testid="@coinmarket/best-offer">
                 <Translation id={amountLabels.offerLabel} />
                 {shouldDisplayFiatAmount ? (
                     <CoinmarketFormOfferFiatAmount

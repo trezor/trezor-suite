@@ -28,6 +28,7 @@ export const CoinmarketVerifyOptions = ({
 
     return (
         <Select
+            data-testid="@coinmarket/verify-options/account"
             onChange={(selected: CoinmarketVerifyFormAccountOptionProps) =>
                 onChangeAccount(selected)
             }

@@ -29,7 +29,7 @@ export class MarketActions {
     readonly section: Locator;
     readonly form: Locator;
     readonly bestOfferProvider: Locator;
-    readonly bestOfferYouGet: Locator;
+    readonly bestOfferSection: Locator;
     readonly bestOfferAmount: Locator;
     readonly buyBestOfferButton: Locator;
     readonly youPayInput: Locator;
@@ -37,6 +37,11 @@ export class MarketActions {
     readonly youPayCurrencyOption = (currency: FiatCurrencyCode) =>
         this.page.getByTestId(`@coinmarket/form/fiat-currency-select/option/${currency}`);
     readonly youPayFiatCryptoSwitchButton: Locator;
+    readonly youPayFractionButton = (amount: '10%' | '25%' | '50%' | 'Max') =>
+        this.page.getByRole('button', { name: amount });
+    readonly feeButton = (fee: 'economy' | 'normal' | 'high' | 'custom') =>
+        this.page.getByTestId(`select-bar/${fee}`);
+    readonly customFeeInput: Locator;
     readonly countryOfResidenceDropdown: Locator;
     readonly countryOfResidenceOption = (countryCode: string) =>
         this.page.getByTestId(`@coinmarket/form/country-select/option/${countryCode}`);
@@ -56,6 +61,7 @@ export class MarketActions {
         this.page.getByTestId(`@coinmarket/offers/quote-${provider}`);
     readonly quoteProvider: Locator;
     readonly quoteAmount: Locator;
+    readonly refreshTime: Locator;
     readonly selectThisQuoteButton: Locator;
     readonly modal: Locator;
     readonly buyTermsConfirmButton: Locator;
@@ -72,8 +78,8 @@ export class MarketActions {
         this.section = this.page.getByTestId('@coinmarket');
         this.form = this.page.getByTestId('@coinmarket/form');
         this.bestOfferProvider = this.page.getByTestId('@coinmarket/offers/quote/provider');
-        this.bestOfferYouGet = this.page.getByTestId('@coinmarket/best-offer/amount');
-        this.bestOfferAmount = this.page.getByTestId('@coinmarket/form/offer/crypto-amount');
+        this.bestOfferSection = this.page.getByTestId('@coinmarket/best-offer');
+        this.bestOfferAmount = this.page.getByTestId('@coinmarket/best-offer/amount');
         this.buyBestOfferButton = this.page.getByTestId('@coinmarket/form/buy-button');
         this.youPayInput = this.page.getByTestId('@coinmarket/form/fiat-input');
         this.youPayCurrencyDropdown = this.page.getByTestId(
@@ -82,6 +88,7 @@ export class MarketActions {
         this.youPayFiatCryptoSwitchButton = this.page.getByTestId(
             '@coinmarket/form/switch-crypto-fiat',
         );
+        this.customFeeInput = this.page.getByTestId('feePerUnit');
         this.countryOfResidenceDropdown = this.page.getByTestId(
             '@coinmarket/form/country-select/input',
         );
@@ -97,6 +104,7 @@ export class MarketActions {
         this.quotes = this.page.getByTestId('@coinmarket/offers/quote');
         this.quoteProvider = this.page.getByTestId('@coinmarket/offers/quote/provider');
         this.quoteAmount = this.page.getByTestId('@coinmarket/offers/quote/crypto-amount');
+        this.refreshTime = this.page.getByTestId('@coinmarket/refresh-time');
         this.selectThisQuoteButton = this.page.getByTestId(
             '@coinmarket/offers/get-this-deal-button',
         );

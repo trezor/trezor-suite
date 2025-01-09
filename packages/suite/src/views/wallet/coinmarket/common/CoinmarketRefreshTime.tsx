@@ -63,7 +63,7 @@ export const CoinmarketRefreshTime = ({
                     <ProgressPieWrap>
                         <ProgressPie valueInPercents={progress} />
                     </ProgressPieWrap>
-                    <TimerText>
+                    <TimerText data-test="@coinmarket/refresh-time">
                         <RefreshLabel>{label}</RefreshLabel>
                         <RefreshTime>{`0:${remaining < 10 ? '0' : ''}${remaining}`}</RefreshTime>
                     </TimerText>

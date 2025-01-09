@@ -27,7 +27,7 @@ export const CoinmarketFormOfferCryptoAmount = ({
         <Row gap={spacings.sm}>
             <CoinmarketCoinLogo cryptoId={cryptoId} />
             <Text
-                data-testid="@coinmarket/form/offer/crypto-amount"
+                data-testid="@coinmarket/best-offer/amount"
                 typographyStyle="titleMedium"
                 ellipsisLineCount={2}
             >
