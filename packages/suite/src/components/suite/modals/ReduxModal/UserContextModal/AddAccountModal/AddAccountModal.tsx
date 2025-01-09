@@ -230,7 +230,7 @@ export const AddAccountModal = ({
                               )}
                               <SelectNetwork
                                   heading={<Translation id="TR_INACTIVE_COINS" />}
-                                  networks={visibleNetworks}
+                                  networks={symbol ? visibleNetworks : disabledMainnetNetworks}
                                   selectedNetworks={selectedNetworks}
                                   handleNetworkSelection={selectNetwork}
                               />
