@@ -239,22 +239,22 @@ export default defineConfig({
                 trezorUserEnvConnect() {
                     return TrezorUserEnvLink.connect();
                 },
-                ...(() => {
-                    return Object.getOwnPropertyNames(
-                        Object.getPrototypeOf(TrezorUserEnvLink),
-                    ).reduce((acc, key) => {
-                        // @ts-expect-error
-                        if (typeof TrezorUserEnvLink[key] === 'function') {
-                            return {
-                                ...acc,
-                                // @ts-expect-error
-                                [key]: TrezorUserEnvLink[key].bind(TrezorUserEnvLink),
-                            };
-                        }
+                ...(() =>
+                    Object.getOwnPropertyNames(Object.getPrototypeOf(TrezorUserEnvLink)).reduce(
+                        (acc, key) => {
+                            // @ts-expect-error
+                            if (typeof TrezorUserEnvLink[key] === 'function') {
+                                return {
+                                    ...acc,
+                                    // @ts-expect-error
+                                    [key]: TrezorUserEnvLink[key].bind(TrezorUserEnvLink),
+                                };
+                            }
 
-                        return acc;
-                    }, {});
-                })(),
+                            return acc;
+                        },
+                        {},
+                    ))(),
                 async setupEmu(opts: Parameters<typeof TrezorUserEnvLink.setupEmu>[0]) {
                     await TrezorUserEnvLink.setupEmu(opts);
 

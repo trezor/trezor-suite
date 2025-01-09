@@ -47,11 +47,7 @@ class Controller extends TrezorUserEnvLinkClass {
             stopEmu: super.stopEmu.bind(this),
         };
 
-        this.connect = !env.USE_HW
-            ? this.originalApi.connect
-            : () => {
-                  return Promise.resolve(null);
-              };
+        this.connect = !env.USE_HW ? this.originalApi.connect : () => Promise.resolve(null);
 
         this.startBridge =
             !env.USE_HW && !env.USE_NODE_BRIDGE
@@ -123,8 +119,8 @@ class Controller extends TrezorUserEnvLinkClass {
         );
 
         return scheduleAction(
-            () => {
-                return fetch('http://localhost:21325/', {
+            () =>
+                fetch('http://localhost:21325/', {
                     method: 'POST',
                     headers: {
                         ['Origin']: 'https://wallet.trezor.io',
@@ -151,8 +147,7 @@ class Controller extends TrezorUserEnvLinkClass {
                         }
 
                         return null;
-                    });
-            },
+                    }),
             {
                 deadline: Date.now() + 60_000,
                 gap: 1000,

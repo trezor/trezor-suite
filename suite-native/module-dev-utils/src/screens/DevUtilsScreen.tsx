@@ -22,48 +22,46 @@ import { MessageSystemInfo } from '../components/MessageSystemInfo';
 
 export const DevUtilsScreen = ({
     navigation,
-}: StackProps<DevUtilsStackParamList, DevUtilsStackRoutes.DevUtils>) => {
-    return (
-        <Screen screenHeader={<ScreenSubHeader content="DEV utils" />}>
-            <VStack spacing="sp16">
-                <Card>
-                    <VStack spacing="sp16">
-                        <TitleHeader
-                            title="Build version"
-                            subtitle={`${getEnv()}-${getSuiteVersion()}, commit ${getCommitHash() || 'N/A in debug build'}`}
-                        />
-                        {isDevelopOrDebugEnv() && (
-                            <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
-                                See Component Demo
-                            </Button>
-                        )}
-                        <FeatureFlags />
-                        {isDevelopOrDebugEnv() && (
-                            <>
-                                <RenderingUtils />
-                                <DevicePassphraseSwitch />
-                            </>
-                        )}
+}: StackProps<DevUtilsStackParamList, DevUtilsStackRoutes.DevUtils>) => (
+    <Screen screenHeader={<ScreenSubHeader content="DEV utils" />}>
+        <VStack spacing="sp16">
+            <Card>
+                <VStack spacing="sp16">
+                    <TitleHeader
+                        title="Build version"
+                        subtitle={`${getEnv()}-${getSuiteVersion()}, commit ${getCommitHash() || 'N/A in debug build'}`}
+                    />
+                    {isDevelopOrDebugEnv() && (
+                        <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
+                            See Component Demo
+                        </Button>
+                    )}
+                    <FeatureFlags />
+                    {isDevelopOrDebugEnv() && (
+                        <>
+                            <RenderingUtils />
+                            <DevicePassphraseSwitch />
+                        </>
+                    )}
 
-                        <Button
-                            onPress={() => {
-                                const errorMessage = `Sentry test error - ${Date.now()}`;
-                                Sentry.captureException(new Error(errorMessage));
-                                Alert.alert('Sentry error thrown', errorMessage);
-                            }}
-                        >
-                            Throw Sentry error
-                        </Button>
-                        <Button colorScheme="redElevation0" onPress={clearStorage}>
-                            Wipe all data
-                        </Button>
-                    </VStack>
-                </Card>
-                <Card>
-                    <TestnetsToggle />
-                </Card>
-                <MessageSystemInfo />
-            </VStack>
-        </Screen>
-    );
-};
+                    <Button
+                        onPress={() => {
+                            const errorMessage = `Sentry test error - ${Date.now()}`;
+                            Sentry.captureException(new Error(errorMessage));
+                            Alert.alert('Sentry error thrown', errorMessage);
+                        }}
+                    >
+                        Throw Sentry error
+                    </Button>
+                    <Button colorScheme="redElevation0" onPress={clearStorage}>
+                        Wipe all data
+                    </Button>
+                </VStack>
+            </Card>
+            <Card>
+                <TestnetsToggle />
+            </Card>
+            <MessageSystemInfo />
+        </VStack>
+    </Screen>
+);

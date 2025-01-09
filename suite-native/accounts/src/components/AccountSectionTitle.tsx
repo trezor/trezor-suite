@@ -28,9 +28,10 @@ export const AccountSectionTitle: React.FC<AccountSectionTitleProps> = ({
         selectAccountCryptoBalanceWithStaking(state, account.key),
     );
 
-    const fiatBalance = useMemo(() => {
-        return getAccountFiatBalance({ account, localCurrency, rates });
-    }, [account, localCurrency, rates]);
+    const fiatBalance = useMemo(
+        () => getAccountFiatBalance({ account, localCurrency, rates }),
+        [account, localCurrency, rates],
+    );
 
     return (
         <HStack alignItems="center" justifyContent="space-between" marginBottom="sp16">

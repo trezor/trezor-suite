@@ -30,13 +30,10 @@ export const isFirmwareVersionSupported = (
     return semver.satisfies(versionString, `>=${minimalVersionString}`);
 };
 
-export const isAnyDeviceEventAction = (action: AnyAction): action is DeviceEvent => {
-    return Object.values(DEVICE).includes(action.type);
-};
+export const isAnyDeviceEventAction = (action: AnyAction): action is DeviceEvent =>
+    Object.values(DEVICE).includes(action.type);
 
 export const isDeviceEventAction = <T extends DeviceEvent['type']>(
     action: AnyAction,
     actionType: T,
-): action is { type: T; payload: Device } => {
-    return action.type === actionType;
-};
+): action is { type: T; payload: Device } => action.type === actionType;

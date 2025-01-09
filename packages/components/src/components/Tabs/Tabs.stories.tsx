@@ -93,9 +93,7 @@ const TabsApp = (props: Partial<TabsProps>) => {
 };
 
 export const Tabs: StoryObj = {
-    render: props => {
-        return <TabsApp {...props} />;
-    },
+    render: props => <TabsApp {...props} />,
     args: {
         hasBorder: true,
         isDisabled: false,

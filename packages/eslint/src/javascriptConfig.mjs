@@ -6,7 +6,7 @@ export const javascriptConfig = [
         rules: {
             // Additional rules
             'no-console': ['error', { allow: ['warn', 'error'] }],
-            "arrow-body-style": ["error", "as-needed"],
+            'arrow-body-style': ['error', 'as-needed'],
             'require-await': ['error'],
             'no-nested-ternary': 'error',
             'prefer-destructuring': [

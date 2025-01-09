@@ -105,86 +105,83 @@ export const withFrameProps = ({
     $position,
     $cursor,
     $zIndex,
-}: TransientFrameProps) => {
-    return css`
-        ${$margin &&
-        (typeof $margin === 'object'
-            ? css`
-                  margin: ${getValueWithUnit($margin?.top ?? $margin.vertical ?? 0)}
-                      ${getValueWithUnit($margin?.right ?? $margin.horizontal ?? 0)}
-                      ${getValueWithUnit($margin?.bottom ?? $margin.vertical ?? 0)}
-                      ${getValueWithUnit($margin?.left ?? $margin.horizontal ?? 0)};
-              `
-            : css`
-                  margin: ${getValueWithUnit($margin)};
-              `)}
-        ${$padding &&
-        (typeof $padding === 'object'
-            ? css`
-                  padding: ${getValueWithUnit($padding?.top ?? $padding.vertical ?? 0)}
-                      ${getValueWithUnit($padding?.right ?? $padding.horizontal ?? 0)}
-                      ${getValueWithUnit($padding?.bottom ?? $padding.vertical ?? 0)}
-                      ${getValueWithUnit($padding?.left ?? $padding.horizontal ?? 0)};
-              `
-            : css`
-                  padding: ${getValueWithUnit($padding)};
-              `)}
+}: TransientFrameProps) => css`
+    ${$margin &&
+    (typeof $margin === 'object'
+        ? css`
+              margin: ${getValueWithUnit($margin?.top ?? $margin.vertical ?? 0)}
+                  ${getValueWithUnit($margin?.right ?? $margin.horizontal ?? 0)}
+                  ${getValueWithUnit($margin?.bottom ?? $margin.vertical ?? 0)}
+                  ${getValueWithUnit($margin?.left ?? $margin.horizontal ?? 0)};
+          `
+        : css`
+              margin: ${getValueWithUnit($margin)};
+          `)}
+    ${$padding &&
+    (typeof $padding === 'object'
+        ? css`
+              padding: ${getValueWithUnit($padding?.top ?? $padding.vertical ?? 0)}
+                  ${getValueWithUnit($padding?.right ?? $padding.horizontal ?? 0)}
+                  ${getValueWithUnit($padding?.bottom ?? $padding.vertical ?? 0)}
+                  ${getValueWithUnit($padding?.left ?? $padding.horizontal ?? 0)};
+          `
+        : css`
+              padding: ${getValueWithUnit($padding)};
+          `)}
         ${$minWidth &&
-        css`
-            min-width: ${getValueWithUnit($minWidth)};
-        `};
-        ${$maxWidth &&
-        css`
-            max-width: ${getValueWithUnit($maxWidth)};
-        `};
-        ${$minHeight &&
-        css`
-            min-height: ${getValueWithUnit($minHeight)};
-        `};
-        ${$maxHeight &&
-        css`
-            max-height: ${getValueWithUnit($maxHeight)};
-        `};
-        ${$width &&
-        css`
-            width: ${getValueWithUnit($width)};
-        `};
-        ${$height &&
-        css`
-            height: ${getValueWithUnit($height)};
-        `};
-        ${$overflow &&
-        css`
-            overflow: ${$overflow};
-        `};
-        ${$pointerEvents &&
-        css`
-            pointer-events: ${$pointerEvents};
-        `};
-        ${$flex &&
-        css`
-            flex: ${$flex};
-        `};
-        ${$position &&
-        css`
-            position: ${$position.type};
-            ${typeof $position.top !== 'undefined' && `top: ${getValueWithUnit($position.top)};`}
-            ${typeof $position.right !== 'undefined' &&
-            `right: ${getValueWithUnit($position.right)};`}
+    css`
+        min-width: ${getValueWithUnit($minWidth)};
+    `};
+    ${$maxWidth &&
+    css`
+        max-width: ${getValueWithUnit($maxWidth)};
+    `};
+    ${$minHeight &&
+    css`
+        min-height: ${getValueWithUnit($minHeight)};
+    `};
+    ${$maxHeight &&
+    css`
+        max-height: ${getValueWithUnit($maxHeight)};
+    `};
+    ${$width &&
+    css`
+        width: ${getValueWithUnit($width)};
+    `};
+    ${$height &&
+    css`
+        height: ${getValueWithUnit($height)};
+    `};
+    ${$overflow &&
+    css`
+        overflow: ${$overflow};
+    `};
+    ${$pointerEvents &&
+    css`
+        pointer-events: ${$pointerEvents};
+    `};
+    ${$flex &&
+    css`
+        flex: ${$flex};
+    `};
+    ${$position &&
+    css`
+        position: ${$position.type};
+        ${typeof $position.top !== 'undefined' && `top: ${getValueWithUnit($position.top)};`}
+        ${typeof $position.right !== 'undefined' && `right: ${getValueWithUnit($position.right)};`}
             ${typeof $position.bottom !== 'undefined' &&
-            `bottom: ${getValueWithUnit($position.bottom)};`}
+        `bottom: ${getValueWithUnit($position.bottom)};`}
             ${typeof $position.left !== 'undefined' && `left: ${getValueWithUnit($position.left)};`}
-        `};
-        ${$cursor &&
-        css`
-            cursor: ${$cursor};
-        `};
-        ${$zIndex &&
-        css`
-            z-index: ${$zIndex};
-        `}
-    `;
-};
+    `};
+    ${$cursor &&
+    css`
+        cursor: ${$cursor};
+    `};
+    ${$zIndex &&
+    css`
+        z-index: ${$zIndex};
+    `}
+`;
 
 const getStorybookType = (key: FramePropsKeys) => {
     switch (key) {

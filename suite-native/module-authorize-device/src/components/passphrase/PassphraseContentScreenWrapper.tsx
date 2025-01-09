@@ -14,16 +14,14 @@ export const PassphraseContentScreenWrapper = ({
     children,
     title,
     subtitle,
-}: PassphraseContentScreenWrapperProps) => {
-    return (
-        <PassphraseScreenWrapper>
-            <VStack spacing="sp16">
-                <VStack>
-                    <Text variant="titleMedium">{title}</Text>
-                    {subtitle && <Text>{subtitle}</Text>}
-                </VStack>
-                {children}
+}: PassphraseContentScreenWrapperProps) => (
+    <PassphraseScreenWrapper>
+        <VStack spacing="sp16">
+            <VStack>
+                <Text variant="titleMedium">{title}</Text>
+                {subtitle && <Text>{subtitle}</Text>}
             </VStack>
-        </PassphraseScreenWrapper>
-    );
-};
+            {children}
+        </VStack>
+    </PassphraseScreenWrapper>
+);

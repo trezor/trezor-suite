@@ -44,40 +44,38 @@ type NonAsciiBannerProps = {
     variant: BannerVariant;
 };
 
-export const NonAsciiBanner = ({ variant }: NonAsciiBannerProps) => {
-    return (
-        <Banner variant={variant}>
-            <Text>
+export const NonAsciiBanner = ({ variant }: NonAsciiBannerProps) => (
+    <Banner variant={variant}>
+        <Text>
+            <FormattedMessage
+                defaultMessage="We recommend using <code>ABC</code>, <code>abc</code>, <code>123</code>, <code>spaces</code> or <code>these special characters</code>"
+                id="TR_PASSPHRASE_NON_ASCII_CHARS"
+                values={{ code: text => <Code>{text}</Code> }}
+            />
+        </Text>
+        <SpecialCharsWrapper>
+            <SpecialChars>
+                {'! " # $ % & \\ \' ( ) * +  - . / : ; < = > ? @ [  ] ^ _ ` { | } ~'}
+            </SpecialChars>
+            <SpecialDescription>
                 <FormattedMessage
-                    defaultMessage="We recommend using <code>ABC</code>, <code>abc</code>, <code>123</code>, <code>spaces</code> or <code>these special characters</code>"
-                    id="TR_PASSPHRASE_NON_ASCII_CHARS"
-                    values={{ code: text => <Code>{text}</Code> }}
+                    defaultMessage="Using non-listed special characters risk future compatibility"
+                    id="TR_PASSPHRASE_NON_ASCII_CHARS_WARNING"
                 />
-            </Text>
-            <SpecialCharsWrapper>
-                <SpecialChars>
-                    {'! " # $ % & \\ \' ( ) * +  - . / : ; < = > ? @ [  ] ^ _ ` { | } ~'}
-                </SpecialChars>
-                <SpecialDescription>
-                    <FormattedMessage
-                        defaultMessage="Using non-listed special characters risk future compatibility"
-                        id="TR_PASSPHRASE_NON_ASCII_CHARS_WARNING"
-                    />
-                    <ButtonWrapper>
-                        {/* TODO: better would be to reuse LearnMoreButton */}
-                        <Button
-                            href={HELP_CENTER_PASSPHRASE_URL}
-                            target="_blank"
-                            variant="tertiary"
-                            size="tiny"
-                            icon="arrowUpRight"
-                            iconAlignment="right"
-                        >
-                            <FormattedMessage id="TR_LEARN_MORE" defaultMessage="Learn" />
-                        </Button>
-                    </ButtonWrapper>
-                </SpecialDescription>
-            </SpecialCharsWrapper>
-        </Banner>
-    );
-};
+                <ButtonWrapper>
+                    {/* TODO: better would be to reuse LearnMoreButton */}
+                    <Button
+                        href={HELP_CENTER_PASSPHRASE_URL}
+                        target="_blank"
+                        variant="tertiary"
+                        size="tiny"
+                        icon="arrowUpRight"
+                        iconAlignment="right"
+                    >
+                        <FormattedMessage id="TR_LEARN_MORE" defaultMessage="Learn" />
+                    </Button>
+                </ButtonWrapper>
+            </SpecialDescription>
+        </SpecialCharsWrapper>
+    </Banner>
+);

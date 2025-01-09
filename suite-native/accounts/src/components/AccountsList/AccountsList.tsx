@@ -32,9 +32,7 @@ export const AccountsList = ({
     const groupedAccounts = useSelector((state: NativeAccountsRootState) =>
         selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, filterValue),
     );
-    const groups = useMemo(() => {
-        return Object.entries(groupedAccounts);
-    }, [groupedAccounts]);
+    const groups = useMemo(() => Object.entries(groupedAccounts), [groupedAccounts]);
     const bottomSheetAccountAtom = useMemo(() => atom<Account | null>(null), []);
     const setBottomSheetAccountAtom = useSetAtom(bottomSheetAccountAtom);
 

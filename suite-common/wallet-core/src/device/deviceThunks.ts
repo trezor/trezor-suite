@@ -492,8 +492,8 @@ export const switchDuplicatedDevice = createThunk(
 );
 
 // Sort devices by timestamp and put Portfolio Tracker device at the end.
-const sortDevices = (devices: TrezorDevice[]) => {
-    return sortByTimestamp([...devices]).sort((a, b) => {
+const sortDevices = (devices: TrezorDevice[]) =>
+    sortByTimestamp([...devices]).sort((a, b) => {
         if (a.id === b.id) {
             return 0;
         }
@@ -503,7 +503,6 @@ const sortDevices = (devices: TrezorDevice[]) => {
 
         return -1;
     });
-};
 
 export const initDevices = createThunk(
     `${DEVICE_MODULE_PREFIX}/initDevices`,

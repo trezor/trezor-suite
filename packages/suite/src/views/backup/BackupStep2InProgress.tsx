@@ -11,16 +11,14 @@ export const BackupStep2InProgress = ({
 }: {
     onCancel: () => void;
     backup: BackupState;
-}) => {
-    return (
-        <NewModal
-            onCancel={onCancel}
-            variant="primary"
-            data-testid="@backup"
-            heading={null}
-            description={<BackupStepDescription backupStatus={backup.status} />}
-        >
-            <Loading />
-        </NewModal>
-    );
-};
+}) => (
+    <NewModal
+        onCancel={onCancel}
+        variant="primary"
+        data-testid="@backup"
+        heading={null}
+        description={<BackupStepDescription backupStatus={backup.status} />}
+    >
+        <Loading />
+    </NewModal>
+);

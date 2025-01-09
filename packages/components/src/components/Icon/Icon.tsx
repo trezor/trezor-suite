@@ -76,9 +76,8 @@ export const getColorForIconVariant = ({
     variant,
     theme,
     color,
-}: Pick<IconProps, 'color' | 'variant'> & { theme: DefaultTheme }): CSSColor => {
-    return color ?? (variant ? theme[variantColorMap[variant]] : 'currentColor');
-};
+}: Pick<IconProps, 'color' | 'variant'> & { theme: DefaultTheme }): CSSColor =>
+    color ?? (variant ? theme[variantColorMap[variant]] : 'currentColor');
 
 type SvgWrapperProps = TransientProps<Pick<IconProps, 'color' | 'variant'>> & {
     $hoverColor?: string;

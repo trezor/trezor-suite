@@ -21,9 +21,9 @@ const waitForNthEventOfType = (
     emitter: { on: (...args: any[]) => any },
     type: string,
     number: number,
-) => {
+) =>
     // wait for all device-connect events
-    return new Promise<void>(resolve => {
+    new Promise<void>(resolve => {
         let i = 0;
         emitter.on(type, () => {
             if (++i === number) {
@@ -31,8 +31,6 @@ const waitForNthEventOfType = (
             }
         });
     });
-};
-
 // todo: Szymon is about to re-use this from a single file
 const createTransportApi = (override = {}) => {
     const api = new UdpApi({ logger: muteLogger });
@@ -40,27 +38,18 @@ const createTransportApi = (override = {}) => {
     return {
         ...api,
         chunkSize: 0,
-        enumerate: () => {
-            return Promise.resolve({ success: true, payload: [{ path: '1' }] });
-        },
+        enumerate: () => Promise.resolve({ success: true, payload: [{ path: '1' }] }),
         on: () => {},
         off: () => {},
-        openDevice: (path: string) => {
-            return Promise.resolve({ success: true, payload: [{ path }] });
-        },
-        closeDevice: () => {
-            return Promise.resolve({ success: true });
-        },
-        write: () => {
-            return Promise.resolve({ success: true });
-        },
-        read: () => {
-            return Promise.resolve({
+        openDevice: (path: string) => Promise.resolve({ success: true, payload: [{ path }] }),
+        closeDevice: () => Promise.resolve({ success: true }),
+        write: () => Promise.resolve({ success: true }),
+        read: () =>
+            Promise.resolve({
                 success: true,
                 payload: Buffer.from('3f232300110000000c1002180020006000aa010154', 'hex'), // partial proto.Features
                 // payload: Buffer.from('3f23230002000000060a046d656f77', 'hex'), // proto.Success
-            });
-        },
+            }),
         dispose: () => {},
         listen: () => {},
 
@@ -71,14 +60,13 @@ const createTransportApi = (override = {}) => {
 const createTrezordNode = (
     constructorParams?: Partial<ConstructorParameters<typeof TrezordNode>[0]>,
     apiOverride?: any,
-) => {
-    return new TrezordNode({
+) =>
+    new TrezordNode({
         api: createTransportApi(apiOverride),
         // @ts-expect-error
         logger: muteLogger,
         ...constructorParams,
     });
-};
 
 describe('http', () => {
     let port: number;
@@ -696,9 +684,7 @@ describe('http', () => {
                         },
                     },
                     {
-                        enumerate: () => {
-                            return { success: true, payload: [] };
-                        },
+                        enumerate: () => ({ success: true, payload: [] }),
                         on: (eventName: string, callback: typeof changeDescriptorsOnApi) => {
                             if (eventName === 'transport-interface-change') {
                                 changeDescriptorsOnApi = callback;

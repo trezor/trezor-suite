@@ -22,9 +22,7 @@ const outputLabelTranslationMap = {
 
 const isTranslationDefined = (
     type: ReviewOutputType,
-): type is keyof typeof outputLabelTranslationMap => {
-    return type in outputLabelTranslationMap;
-};
+): type is keyof typeof outputLabelTranslationMap => type in outputLabelTranslationMap;
 
 export const ReviewOutputItem = ({ reviewOutput, onLayout }: ReviewOutputItemProps) => {
     const { state, type, value } = reviewOutput;

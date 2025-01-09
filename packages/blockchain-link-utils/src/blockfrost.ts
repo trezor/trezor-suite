@@ -114,13 +114,11 @@ export const transformTokenInfo = (
         return undefined;
     }
 
-    const info = tokens.map(token => {
-        return {
-            type: 'BLOCKFROST',
-            balance: token.quantity,
-            ...transformToken(token),
-        };
-    });
+    const info = tokens.map(token => ({
+        type: 'BLOCKFROST',
+        balance: token.quantity,
+        ...transformToken(token),
+    }));
 
     return info.length > 0 ? info : undefined;
 };

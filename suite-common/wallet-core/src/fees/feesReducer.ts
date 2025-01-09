@@ -33,12 +33,10 @@ const initialState = networksCollection.reduce((state, network) => {
 }, {} as FeesState);
 
 export const feesReducer = createReducer(initialState, builder => {
-    builder.addCase(blockchainActions.updateFee, (state, { payload }) => {
-        return {
-            ...state,
-            ...payload,
-        };
-    });
+    builder.addCase(blockchainActions.updateFee, (state, { payload }) => ({
+        ...state,
+        ...payload,
+    }));
 });
 
 // Create app selector with WeakMap memoization since we'll be using parameters

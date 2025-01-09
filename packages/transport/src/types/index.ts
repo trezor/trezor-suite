@@ -3,17 +3,11 @@ import type { DEVICE_TYPE } from '../api/abstract';
 export * from './apiCall';
 
 export type Session = `${number}` & { __type: 'Session' };
-export const Session = (input: `${number}`) => {
-    return `${input}` as Session;
-};
+export const Session = (input: `${number}`) => `${input}` as Session;
 export type PathInternal = string & { __type: 'PathInternal' };
-export const PathInternal = (input: string) => {
-    return input as PathInternal;
-};
+export const PathInternal = (input: string) => input as PathInternal;
 export type PathPublic = `${number}` & { __type: 'PathPublic' };
-export const PathPublic = (input: `${number}`) => {
-    return `${input}` as PathPublic;
-};
+export const PathPublic = (input: `${number}`) => `${input}` as PathPublic;
 
 export type DescriptorApiLevel = {
     path: PathInternal;

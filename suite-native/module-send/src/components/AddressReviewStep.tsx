@@ -19,8 +19,8 @@ type AddressReviewStepProps = {
     onLayout?: (event: LayoutChangeEvent) => void;
 };
 
-const getIconProps = (stepNumber: AddressReviewStepProps['stepNumber']): OrderedListIconProps => {
-    return stepNumber
+const getIconProps = (stepNumber: AddressReviewStepProps['stepNumber']): OrderedListIconProps =>
+    stepNumber
         ? {
               iconNumber: stepNumber,
               iconBackgroundColor: 'backgroundTertiaryDefaultOnElevation0',
@@ -33,7 +33,6 @@ const getIconProps = (stepNumber: AddressReviewStepProps['stepNumber']): Ordered
               iconColor: 'iconDefaultInverted',
               iconSize: 'medium',
           };
-};
 
 const cardStyle = prepareNativeStyle<{ isFinalStep: boolean }>((utils, { isFinalStep }) => ({
     borderWidth: utils.borders.widths.small,

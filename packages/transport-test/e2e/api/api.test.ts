@@ -13,9 +13,7 @@ const setupApisUnderTest = async () => {
         window.Buffer = (await import('buffer')).Buffer;
         usbInterface = window.navigator.usb;
     } else {
-        usbInterface = await import('usb').then(lib => {
-            return new lib.WebUSB({ allowAllDevices: true });
-        });
+        usbInterface = await import('usb').then(lib => new lib.WebUSB({ allowAllDevices: true }));
     }
 
     type ApiTestFixture = {
@@ -38,9 +36,7 @@ const setupApisUnderTest = async () => {
         );
     }
 
-    return apiTestFixture.map(f => {
-        return { api: new UsbApi(f.initArgs), description: f.description };
-    });
+    return apiTestFixture.map(f => ({ api: new UsbApi(f.initArgs), description: f.description }));
 };
 
 const runTests = async () => {

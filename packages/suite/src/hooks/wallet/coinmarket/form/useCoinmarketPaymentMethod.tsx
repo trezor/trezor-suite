@@ -38,12 +38,11 @@ const useCoinmarketPaymentMethod = <
         ) => {
             if (!quotes) return;
 
-            return quotes.filter(quote => {
-                return (
+            return quotes.filter(
+                quote =>
                     quote.paymentMethod === currentPaymentMethod &&
-                    typeof quote.error === 'undefined'
-                );
-            });
+                    typeof quote.error === 'undefined',
+            );
         },
         [],
     );

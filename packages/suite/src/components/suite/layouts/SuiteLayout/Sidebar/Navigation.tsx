@@ -41,14 +41,12 @@ const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationIte
     },
 ];
 
-export const Navigation = () => {
-    return (
-        <Nav>
-            {navItems.map(item => {
-                const Component = item.CustomComponent ? item.CustomComponent : NavigationItem;
+export const Navigation = () => (
+    <Nav>
+        {navItems.map(item => {
+            const Component = item.CustomComponent ? item.CustomComponent : NavigationItem;
 
-                return <Component key={item.nameId} {...item} />;
-            })}
-        </Nav>
-    );
-};
+            return <Component key={item.nameId} {...item} />;
+        })}
+    </Nav>
+);

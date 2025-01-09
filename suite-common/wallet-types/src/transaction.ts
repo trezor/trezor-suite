@@ -289,6 +289,4 @@ export type FeeLevelLabel = FeeLevel['label'];
 
 export const isFinalPrecomposedTransaction = (
     tx?: GeneralPrecomposedTransaction,
-): tx is PrecomposedTransactionFinal => {
-    return !!tx && tx.type === 'final';
-};
+): tx is PrecomposedTransactionFinal => !!tx && tx.type === 'final';

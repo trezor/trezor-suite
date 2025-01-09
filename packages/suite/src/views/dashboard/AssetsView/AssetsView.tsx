@@ -63,8 +63,8 @@ const useAssetsFiatBalances = (
     accounts: { [key: string]: Account[] },
     localCurrency: FiatCurrencyCode,
     currentFiatRates?: RatesByKey,
-) => {
-    return assetsData.reduce<AssetFiatBalance[]>((acc, asset) => {
+) =>
+    assetsData.reduce<AssetFiatBalance[]>((acc, asset) => {
         if (!asset) return acc;
 
         const fiatRateKey = getFiatRateKey(asset.network.symbol, localCurrency);
@@ -78,7 +78,6 @@ const useAssetsFiatBalances = (
 
         return [...acc, { fiatBalance, symbol: asset.network.symbol }];
     }, []);
-};
 
 export const AssetsView = () => {
     const { dashboardAssetsGridMode } = useSelector(s => s.suite.flags);

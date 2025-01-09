@@ -26,34 +26,36 @@ export const CoinmarketOffersExchange = () => {
     const kycFilter = getValues(EXCHANGE_COMPARATOR_KYC_FILTER);
     const showAll = exchangeTypeFilter === EXCHANGE_COMPARATOR_RATE_FILTER_ALL;
 
-    const { fixed, float, dex } = useMemo(() => {
-        return (quotes ?? []).reduce<Record<'fixed' | 'float' | 'dex', ExchangeTrade[]>>(
-            (groups, quote) => {
-                const providerInfo = exchangeInfo?.providerInfos[quote.exchange || ''];
-                if (
-                    kycFilter === EXCHANGE_COMPARATOR_KYC_FILTER_NO_KYC &&
-                    providerInfo?.kycPolicyType !== KYC_NO_KYC &&
-                    providerInfo?.kycPolicyType !== KYC_DEX
-                )
+    const { fixed, float, dex } = useMemo(
+        () =>
+            (quotes ?? []).reduce<Record<'fixed' | 'float' | 'dex', ExchangeTrade[]>>(
+                (groups, quote) => {
+                    const providerInfo = exchangeInfo?.providerInfos[quote.exchange || ''];
+                    if (
+                        kycFilter === EXCHANGE_COMPARATOR_KYC_FILTER_NO_KYC &&
+                        providerInfo?.kycPolicyType !== KYC_NO_KYC &&
+                        providerInfo?.kycPolicyType !== KYC_DEX
+                    )
+                        return groups;
+
+                    if (quote.isDex) {
+                        groups.dex.push(quote);
+                    } else if (providerInfo?.isFixedRate) {
+                        groups.fixed.push(quote);
+                    } else {
+                        groups.float.push(quote);
+                    }
+
                     return groups;
-
-                if (quote.isDex) {
-                    groups.dex.push(quote);
-                } else if (providerInfo?.isFixedRate) {
-                    groups.fixed.push(quote);
-                } else {
-                    groups.float.push(quote);
-                }
-
-                return groups;
-            },
-            {
-                fixed: [],
-                float: [],
-                dex: [],
-            },
-        );
-    }, [exchangeInfo?.providerInfos, kycFilter, quotes]);
+                },
+                {
+                    fixed: [],
+                    float: [],
+                    dex: [],
+                },
+            ),
+        [exchangeInfo?.providerInfos, kycFilter, quotes],
+    );
 
     if (!quotes) return null;
 

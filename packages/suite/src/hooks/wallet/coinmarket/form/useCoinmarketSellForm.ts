@@ -647,13 +647,14 @@ export const useCoinmarketSellForm = ({
         handleChange,
     ]);
 
-    useEffect(() => {
-        return () => {
+    useEffect(
+        () => () => {
             if (abortControllerRef.current) {
                 abortControllerRef.current.abort();
             }
-        };
-    }, []);
+        },
+        [],
+    );
 
     return {
         type,

@@ -66,9 +66,7 @@ export const prepareRootReducers = async () => {
         key: 'appSettings',
         version: 2,
         migrations: {
-            2: (oldState: any) => {
-                return { ...oldState, fiatCurrencyCode: oldState.fiatCurrency.label };
-            },
+            2: (oldState: any) => ({ ...oldState, fiatCurrencyCode: oldState.fiatCurrency.label }),
         },
     });
 

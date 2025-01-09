@@ -19,9 +19,7 @@ const meta: Meta = {
 export default meta;
 
 export const FractionButton: StoryObj<FractionButtonProps> = {
-    render: args => {
-        return <FractionButtonComponent {...args} />;
-    },
+    render: args => <FractionButtonComponent {...args} />,
     args: {
         id: 'TR_FRACTION_BUTTONS_REWARDS',
         children: 'Rewards',

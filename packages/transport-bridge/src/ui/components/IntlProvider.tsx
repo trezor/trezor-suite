@@ -7,16 +7,14 @@ interface IntlProviderProps {
     messages: Record<string, string>;
 }
 
-export const IntlProvider = ({ children, locale, messages }: IntlProviderProps) => {
-    return (
-        <IntlProviderComponent
-            locale={locale}
-            messages={messages}
-            onError={err => {
-                console.error(err);
-            }}
-        >
-            {children}
-        </IntlProviderComponent>
-    );
-};
+export const IntlProvider = ({ children, locale, messages }: IntlProviderProps) => (
+    <IntlProviderComponent
+        locale={locale}
+        messages={messages}
+        onError={err => {
+            console.error(err);
+        }}
+    >
+        {children}
+    </IntlProviderComponent>
+);

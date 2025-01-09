@@ -7,15 +7,13 @@ export type SettingsSectionItemTextProps = {
     subtitle?: ReactNode;
 };
 
-export const SettingsSectionItemText = ({ title, subtitle }: SettingsSectionItemTextProps) => {
-    return (
-        <Box justifyContent="center" flexDirection="column" flex={1}>
-            <Text>{title}</Text>
-            {subtitle && (
-                <Text variant="hint" color="textSubdued">
-                    {subtitle}
-                </Text>
-            )}
-        </Box>
-    );
-};
+export const SettingsSectionItemText = ({ title, subtitle }: SettingsSectionItemTextProps) => (
+    <Box justifyContent="center" flexDirection="column" flex={1}>
+        <Text>{title}</Text>
+        {subtitle && (
+            <Text variant="hint" color="textSubdued">
+                {subtitle}
+            </Text>
+        )}
+    </Box>
+);

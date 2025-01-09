@@ -3,13 +3,12 @@ import { StartEmu, SetupEmu } from '@trezor/trezor-user-env-link';
 import { conditionalTest, getController, initTrezorConnect } from '../../common.setup';
 import TrezorConnect from '../../../src';
 
-const getAddress = (showOnTrezor: boolean, coin: string = 'regtest') => {
-    return TrezorConnect.getAddress({
+const getAddress = (showOnTrezor: boolean, coin: string = 'regtest') =>
+    TrezorConnect.getAddress({
         path: "m/84'/1'/0'/0/0",
         coin,
         showOnTrezor,
     });
-};
 
 const passphraseHandler = (value: string) => () => {
     TrezorConnect.uiResponse({

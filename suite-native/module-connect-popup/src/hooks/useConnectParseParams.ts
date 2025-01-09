@@ -20,8 +20,8 @@ type UseConnectParseParamsType =
           parseParamsError: TrezorError;
       };
 
-export const useConnectParseParams = (url: ParsedURL): UseConnectParseParamsType => {
-    return useMemo(() => {
+export const useConnectParseParams = (url: ParsedURL): UseConnectParseParamsType =>
+    useMemo(() => {
         const { queryParams, path } = url;
         const version = path && path.split('/').slice(-2, -1)[0];
         if (
@@ -45,4 +45,3 @@ export const useConnectParseParams = (url: ParsedURL): UseConnectParseParamsType
 
         return { popupOptions: { method: methodName, params, callback } };
     }, [url]);
-};

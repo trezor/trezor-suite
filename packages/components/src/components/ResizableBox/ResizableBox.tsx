@@ -176,9 +176,8 @@ const getMinResult = (min: number, result: number) => (result > min ? result : m
 const getMaxResult = (max: number | undefined, result: number) =>
     max === undefined || result < max ? result : max;
 
-const isInDisabledInterval = (value: number, interval?: DisabledInterval) => {
-    return interval && value > interval[0] && value < interval[1];
-};
+const isInDisabledInterval = (value: number, interval?: DisabledInterval) =>
+    interval && value > interval[0] && value < interval[1];
 
 const calculateDisabledHeightInterval = (
     result: number,
@@ -394,15 +393,13 @@ export const ResizableBox = ({
         }
     };
 
-    const divsProps = (direction2: Direction) => {
-        return {
-            onMouseDown: handleMouseDown(direction2),
-            onMouseOver: handleMouseOver(direction2),
-            onMouseOut: handleMouseOut,
-            $highlightDirection: highlightDirection,
-            $zIndex: zIndex,
-        };
-    };
+    const divsProps = (direction2: Direction) => ({
+        onMouseDown: handleMouseDown(direction2),
+        onMouseOver: handleMouseOver(direction2),
+        onMouseOut: handleMouseOut,
+        $highlightDirection: highlightDirection,
+        $zIndex: zIndex,
+    });
 
     return (
         <Resizers

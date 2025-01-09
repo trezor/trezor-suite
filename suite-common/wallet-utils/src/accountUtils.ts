@@ -1121,20 +1121,14 @@ export const isAddressBasedNetwork = (networkType: NetworkType) => {
     return !!exhaustiveCheck;
 };
 
-export const isTokenMatchesSearch = (token: TokenInfo, search: string) => {
-    return (
-        token.symbol?.toLowerCase().includes(search) ||
-        token.name?.toLowerCase().includes(search) ||
-        token.contract.toLowerCase().includes(search) ||
-        token.fingerprint?.toLowerCase().includes(search) ||
-        token.policyId?.toLowerCase().includes(search)
-    );
-};
+export const isTokenMatchesSearch = (token: TokenInfo, search: string) =>
+    token.symbol?.toLowerCase().includes(search) ||
+    token.name?.toLowerCase().includes(search) ||
+    token.contract.toLowerCase().includes(search) ||
+    token.fingerprint?.toLowerCase().includes(search) ||
+    token.policyId?.toLowerCase().includes(search);
 
-export const isNftMatchesSearch = (token: TokenInfo, search: string) => {
-    return (
-        token.symbol?.toLowerCase().includes(search) ||
-        token.name?.toLowerCase().includes(search) ||
-        token.contract?.toLowerCase().includes(search)
-    );
-};
+export const isNftMatchesSearch = (token: TokenInfo, search: string) =>
+    token.symbol?.toLowerCase().includes(search) ||
+    token.name?.toLowerCase().includes(search) ||
+    token.contract?.toLowerCase().includes(search);

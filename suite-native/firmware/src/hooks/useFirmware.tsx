@@ -71,9 +71,7 @@ export const useFirmware = (params: UseFirmwareInstallationParams) => {
                 }
                 throw error;
             })
-            .then(({ connectResponse }) => {
-                return connectResponse;
-            })
+            .then(({ connectResponse }) => connectResponse)
             .finally(() => {
                 setPriorityMode(false);
                 resetMayBeStuckedTimeout();

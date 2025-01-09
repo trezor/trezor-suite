@@ -35,9 +35,8 @@ export const getAccountTotalStakingBalance = (account: Account) => {
     }
 };
 
-export const isSupportedStakingNetworkSymbol = (symbol: NetworkSymbol) => {
-    return isSupportedEthStakingNetworkSymbol(symbol) || isSupportedSolStakingNetworkSymbol(symbol);
-};
+export const isSupportedStakingNetworkSymbol = (symbol: NetworkSymbol) =>
+    isSupportedEthStakingNetworkSymbol(symbol) || isSupportedSolStakingNetworkSymbol(symbol);
 
 export const getStakingLimitsByNetwork = (account: Account) => {
     switch (account.networkType) {

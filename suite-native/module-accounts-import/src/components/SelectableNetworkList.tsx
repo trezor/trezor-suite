@@ -22,17 +22,15 @@ const NetworkItemSection = ({
     title: ReactNode;
     symbols: NetworkSymbol[];
     onSelectItem: SelectableAssetListProps['onSelectItem'];
-}) => {
-    return (
-        <HeaderedCard title={title}>
-            <VStack spacing="sp24">
-                {symbols.map(symbol => (
-                    <SelectableNetworkItem key={symbol} symbol={symbol} onPress={onSelectItem} />
-                ))}
-            </VStack>
-        </HeaderedCard>
-    );
-};
+}) => (
+    <HeaderedCard title={title}>
+        <VStack spacing="sp24">
+            {symbols.map(symbol => (
+                <SelectableNetworkItem key={symbol} symbol={symbol} onPress={onSelectItem} />
+            ))}
+        </VStack>
+    </HeaderedCard>
+);
 
 export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps) => {
     const portfolioMainnetNetworkSymbols = useSelector(selectPortfolioTrackerMainnetNetworkSymbols);

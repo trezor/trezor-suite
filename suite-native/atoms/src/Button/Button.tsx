@@ -251,12 +251,10 @@ export const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
 );
 
 const buttonTextStyle = prepareNativeStyle<ButtonTextStyleProps>(
-    (_, { additionalSpacing, hasLeftView, hasRightView }) => {
-        return {
-            marginLeft: !hasLeftView ? additionalSpacing : undefined,
-            marginRight: !hasRightView ? additionalSpacing : undefined,
-        };
-    },
+    (_, { additionalSpacing, hasLeftView, hasRightView }) => ({
+        marginLeft: !hasLeftView ? additionalSpacing : undefined,
+        marginRight: !hasRightView ? additionalSpacing : undefined,
+    }),
 );
 
 export const ButtonIcon = ({

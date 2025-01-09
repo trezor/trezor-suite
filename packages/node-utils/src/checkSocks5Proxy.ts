@@ -1,7 +1,7 @@
 import net from 'net';
 
-export const checkSocks5Proxy = (host: string, port: number): Promise<boolean> => {
-    return new Promise((resolve, reject) => {
+export const checkSocks5Proxy = (host: string, port: number): Promise<boolean> =>
+    new Promise((resolve, reject) => {
         const socket = new net.Socket();
 
         socket.setTimeout(2_000);
@@ -32,4 +32,3 @@ export const checkSocks5Proxy = (host: string, port: number): Promise<boolean> =
 
         socket.connect(port, host);
     });
-};

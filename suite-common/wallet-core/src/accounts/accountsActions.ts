@@ -175,11 +175,9 @@ const updateAccount = createAction(
 
 const updateAccountRefreshTimestamp = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/updateAccountRefreshTimestamp`,
-    (account: Account): { payload: Account } => {
-        return {
-            payload: { ...account, ts: Date.now() },
-        };
-    },
+    (account: Account): { payload: Account } => ({
+        payload: { ...account, ts: Date.now() },
+    }),
 );
 
 const renameAccount = createAction(

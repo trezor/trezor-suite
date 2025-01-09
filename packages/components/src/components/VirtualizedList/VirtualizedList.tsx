@@ -48,9 +48,7 @@ const Item = styled.div`
     width: 100%;
 `;
 
-const calculateItemHeight = <T extends { height: number }>(item: T): number => {
-    return item.height;
-};
+const calculateItemHeight = <T extends { height: number }>(item: T): number => item.height;
 
 type VirtualizedListProps<T> = {
     items: Array<T & { height: number }>;

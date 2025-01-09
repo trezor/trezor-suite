@@ -251,11 +251,8 @@ export const TYPE_PATCH = {
     'Features.recovery_type': 'RecoveryType',
 };
 
-export const readPatch = (file: string) => {
-    return fs
-        .readFileSync(path.join(__dirname, file), 'utf8')
-        .replace(/^\/\/ @ts-nocheck.*\n?/gm, '');
-};
+export const readPatch = (file: string) =>
+    fs.readFileSync(path.join(__dirname, file), 'utf8').replace(/^\/\/ @ts-nocheck.*\n?/gm, '');
 
 export const DEFINITION_PATCH = {
     TxInputType: () => readPatch('./TxInputType.ts'),

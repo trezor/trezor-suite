@@ -238,18 +238,16 @@ type SubmitButtonProps = {
     text?: string;
 };
 
-const SubmitButton = ({ onClick, text, isFullWidth, isLoading }: SubmitButtonProps) => {
-    return (
-        <Button
-            onClick={onClick}
-            data-testid="@submit-button"
-            isFullWidth={isFullWidth}
-            isLoading={isLoading}
-        >
-            {text || 'Submit'}
-        </Button>
-    );
-};
+const SubmitButton = ({ onClick, text, isFullWidth, isLoading }: SubmitButtonProps) => (
+    <Button
+        onClick={onClick}
+        data-testid="@submit-button"
+        isFullWidth={isFullWidth}
+        isLoading={isLoading}
+    >
+        {text || 'Submit'}
+    </Button>
+);
 
 export const Method = () => {
     const theme = useTheme();

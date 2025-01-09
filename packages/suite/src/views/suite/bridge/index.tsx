@@ -24,17 +24,15 @@ const Footer = styled.div`
     justify-content: space-between;
 `;
 
-const DownloadStandalone = ({ target }: { target: string }) => {
-    return (
-        <Modal.Description>
-            Alternatively you may{' '}
-            <Link variant="underline" href={target}>
-                download
-            </Link>{' '}
-            a standalone Trezor Bridge binary
-        </Modal.Description>
-    );
-};
+const DownloadStandalone = ({ target }: { target: string }) => (
+    <Modal.Description>
+        Alternatively you may{' '}
+        <Link variant="underline" href={target}>
+            download
+        </Link>{' '}
+        a standalone Trezor Bridge binary
+    </Modal.Description>
+);
 
 // it actually changes to "Install suite desktop"
 export const BridgeUnavailable = () => {

@@ -20,12 +20,13 @@ export const useCoinmarketModalCrypto = ({ receiveCurrency }: CoinmarketModalCry
     }, [receiveCurrency, dispatch]);
 
     // after unmount set off CryptoSymbol for modals
-    useEffect(() => {
-        return () => {
+    useEffect(
+        () => () => {
             dispatch({
                 type: SET_MODAL_CRYPTO_CURRENCY,
                 modalCryptoId: undefined,
             });
-        };
-    }, [dispatch]);
+        },
+        [dispatch],
+    );
 };

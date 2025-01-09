@@ -4,18 +4,19 @@ export class IndexedDbFixture {
     constructor(private page: Page) {}
 
     async reset() {
-        await this.page.evaluate(() => {
-            return new Promise<void>((resolve, reject) => {
-                const request = indexedDB.deleteDatabase('trezor-suite');
+        await this.page.evaluate(
+            () =>
+                new Promise<void>((resolve, reject) => {
+                    const request = indexedDB.deleteDatabase('trezor-suite');
 
-                request.onsuccess = () => {
-                    resolve();
-                };
+                    request.onsuccess = () => {
+                        resolve();
+                    };
 
-                request.onerror = () => {
-                    reject('Error resetting database');
-                };
-            });
-        });
+                    request.onerror = () => {
+                        reject('Error resetting database');
+                    };
+                }),
+        );
     }
 }

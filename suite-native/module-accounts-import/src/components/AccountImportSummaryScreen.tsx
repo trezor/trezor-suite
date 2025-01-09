@@ -20,29 +20,27 @@ export const AccountImportSummaryScreen = ({
     subtitle,
     footer,
     testID,
-}: AccountImportSummaryScreenProps) => {
-    return (
-        <Screen
-            screenHeader={<AccountImportSubHeader />}
-            footer={
-                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-                    <Box margin="sp16">{footer}</Box>
-                </KeyboardAvoidingView>
-            }
-        >
-            <VStack spacing="sp32" flex={1}>
-                <Box flex={1} alignItems="center" justifyContent="center">
-                    <PictogramTitleHeader
-                        variant="success"
-                        icon="coinVerticalCheck"
-                        title={title}
-                        subtitle={subtitle}
-                    />
-                </Box>
-                <Box flex={1} justifyContent="flex-end" testID={testID}>
-                    {children}
-                </Box>
-            </VStack>
-        </Screen>
-    );
-};
+}: AccountImportSummaryScreenProps) => (
+    <Screen
+        screenHeader={<AccountImportSubHeader />}
+        footer={
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                <Box margin="sp16">{footer}</Box>
+            </KeyboardAvoidingView>
+        }
+    >
+        <VStack spacing="sp32" flex={1}>
+            <Box flex={1} alignItems="center" justifyContent="center">
+                <PictogramTitleHeader
+                    variant="success"
+                    icon="coinVerticalCheck"
+                    title={title}
+                    subtitle={subtitle}
+                />
+            </Box>
+            <Box flex={1} justifyContent="flex-end" testID={testID}>
+                {children}
+            </Box>
+        </VStack>
+    </Screen>
+);

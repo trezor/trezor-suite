@@ -40,9 +40,9 @@ const handleStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.borderDashed,
 }));
 
-const WindowOverlay = ({ children }: { children: ReactNode }) => {
-    return <View style={StyleSheet.absoluteFill}>{children}</View>;
-};
+const WindowOverlay = ({ children }: { children: ReactNode }) => (
+    <View style={StyleSheet.absoluteFill}>{children}</View>
+);
 
 export const BottomSheetFlashList = <TItem,>({
     isVisible,

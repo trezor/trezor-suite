@@ -65,8 +65,8 @@ export const mapCryptoBalanceMovementToFixedTimeFrame = ({
         };
     }>;
     fiatCurrency: FiatCurrencyCode;
-}): readonly FiatGraphPointWithCryptoBalance[] => {
-    return pipe(
+}): readonly FiatGraphPointWithCryptoBalance[] =>
+    pipe(
         fiatRates,
         A.map(fiatRatePoint => {
             let fiatRate = fiatRatePoint.rates[fiatCurrency] ?? 0;
@@ -100,7 +100,6 @@ export const mapCryptoBalanceMovementToFixedTimeFrame = ({
             };
         }),
     );
-};
 
 export const mergeMultipleFiatBalanceHistories = (
     fiatBalancesHistories: readonly (readonly FiatGraphPointWithCryptoBalance[])[],

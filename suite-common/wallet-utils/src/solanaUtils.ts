@@ -15,15 +15,10 @@ import { getLamportsFromSol } from './sendFormUtils';
 
 const { SYSTEM_PROGRAM_PUBLIC_KEY, tokenProgramsInfo } = SolanaBlockchainLinkUtils;
 
-const loadSolanaLib = async () => {
-    return await import('@solana/web3.js');
-};
-const loadSolanaComputeBudgetProgramLib = async () => {
-    return await import('@solana-program/compute-budget');
-};
-const loadSolanaSystemProgramLib = async () => {
-    return await import('@solana-program/system');
-};
+const loadSolanaLib = async () => await import('@solana/web3.js');
+const loadSolanaComputeBudgetProgramLib = async () =>
+    await import('@solana-program/compute-budget');
+const loadSolanaSystemProgramLib = async () => await import('@solana-program/system');
 
 const loadSolanaTokenProgramLib = async (tokenProgramName: TokenProgramName) => {
     switch (tokenProgramName) {

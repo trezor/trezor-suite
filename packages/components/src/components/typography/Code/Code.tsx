@@ -17,6 +17,6 @@ const StyledCode = styled.code`
     border-radius: ${() => borders.radii.xxs};
 `;
 
-export const Code: React.FC<{ children: ReactNode }> = ({ children }) => {
-    return <StyledCode>{children}</StyledCode>;
-};
+export const Code: React.FC<{ children: ReactNode }> = ({ children }) => (
+    <StyledCode>{children}</StyledCode>
+);

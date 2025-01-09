@@ -32,9 +32,7 @@ export const filterKnownTokens = (
     tokenDefinitions: SimpleTokenStructure | undefined,
     symbol: NetworkSymbol,
     tokens: TokenInfo[],
-) => {
-    return tokens.filter(token => isTokenDefinitionKnown(tokenDefinitions, symbol, token.contract));
-};
+) => tokens.filter(token => isTokenDefinitionKnown(tokenDefinitions, symbol, token.contract));
 
 export const getSupportedDefinitionTypes = (symbol: NetworkSymbol) => {
     const isCoinDefinitionsEnabled = getNetworkFeatures(symbol).includes('coin-definitions');

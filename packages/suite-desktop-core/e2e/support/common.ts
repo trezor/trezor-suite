@@ -141,9 +141,7 @@ export function step(stepName?: string) {
         return function replacementMethod(this: any, ...args: any) {
             const name = stepName || `${this.constructor.name + '.' + (context.name as string)}`;
 
-            return test.step(name, async () => {
-                return await target.call(this, ...args);
-            });
+            return test.step(name, async () => await target.call(this, ...args));
         };
     };
     /* eslint-enable @typescript-eslint/no-unsafe-function-type */
@@ -158,9 +156,8 @@ const TrezorUserEnvLinkProxy = new Proxy(TrezorUserEnvLink, {
             const params = JSON.stringify(args).slice(1, -1);
             const methodName = String(propKey);
 
-            return test.step(`TrezorLink.${methodName}(${params})`, () => {
-                return origMethod.apply(target, args);
-            });
+            return test.step(`TrezorLink.${methodName}(${params})`, () =>
+                origMethod.apply(target, args));
         };
     },
 });

@@ -28,6 +28,4 @@ export const usePinWithoutSelector = (buttonRequests: Pick<ButtonRequest, 'code'
     };
 };
 
-export const usePin = () => {
-    return usePinWithoutSelector(useSelector(selectDeviceButtonRequests));
-};
+export const usePin = () => usePinWithoutSelector(useSelector(selectDeviceButtonRequests));

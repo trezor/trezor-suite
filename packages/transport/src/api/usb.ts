@@ -502,9 +502,7 @@ export class UsbApi extends AbstractApi {
                 // web usb
                 ERRORS.INTERFACE_DATA_TRANSFER,
                 'The device was disconnected.',
-            ].some(disconnectedErr => {
-                return err.message.includes(disconnectedErr);
-            })
+            ].some(disconnectedErr => err.message.includes(disconnectedErr))
         ) {
             return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
         }

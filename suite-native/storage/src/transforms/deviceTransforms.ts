@@ -15,13 +15,12 @@ export const devicePersistTransform = createTransform<
     TrezorDevice[],
     Readonly<(Omit<TrezorDevice, 'path'> & { path: '' })[]>
 >(
-    inboundState => {
-        return pipe(
+    inboundState =>
+        pipe(
             inboundState,
             A.filter(device => !!device.remember),
             A.map(serializeDevice),
-        );
-    },
+        ),
     undefined,
     { whitelist: ['devices'] },
 );

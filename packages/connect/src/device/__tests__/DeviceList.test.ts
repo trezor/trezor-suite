@@ -9,9 +9,9 @@ const waitForNthEventOfType = (
     emitter: { on: (...args: any[]) => any },
     type: string,
     number: number,
-) => {
+) =>
     // wait for all device-connect events
-    return new Promise<void>(resolve => {
+    new Promise<void>(resolve => {
         let i = 0;
         emitter.on(type, () => {
             if (++i === number) {
@@ -19,8 +19,6 @@ const waitForNthEventOfType = (
             }
         });
     });
-};
-
 const DEVICE_CONNECTION_SEQUENCE = ['device-changed', 'device-changed', 'device-connect'];
 
 describe('DeviceList', () => {
@@ -165,12 +163,11 @@ describe('DeviceList', () => {
 
     it('.init() with pendingTransportEvent (unreadable device)', async () => {
         const transport = createTestTransport({
-            read: () => {
-                return Promise.resolve({
+            read: () =>
+                Promise.resolve({
                     success: true,
                     payload: Buffer.from('3f23230002000000060a046d656f77', 'hex'), // proto.Success
-                });
-            },
+                }),
         });
 
         list.setTransports([transport]);
@@ -183,9 +180,10 @@ describe('DeviceList', () => {
 
     it('.init() with pendingTransportEvent (multiple acquired devices)', async () => {
         const transport = createTestTransport({
-            enumerate: () => {
-                return { success: true, payload: [{ path: '1' }, { path: '2' }, { path: '3' }] };
-            },
+            enumerate: () => ({
+                success: true,
+                payload: [{ path: '1' }, { path: '2' }, { path: '3' }],
+            }),
         });
 
         list.setTransports([transport]);
@@ -256,9 +254,7 @@ describe('DeviceList', () => {
     it('multiple devices connected after .init()', async () => {
         let onChangeCallback = (..._args: any[]) => {};
         const transport = createTestTransport({
-            enumerate: () => {
-                return { success: true, payload: [] };
-            },
+            enumerate: () => ({ success: true, payload: [] }),
             on: (eventName: string, callback: typeof onChangeCallback) => {
                 if (eventName === 'transport-interface-change') {
                     onChangeCallback = callback;

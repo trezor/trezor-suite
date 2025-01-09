@@ -20,9 +20,10 @@ export const handleTokensAndStakingData = (
     coinDefinitions?: TokenDefinition,
     currentFiatRates?: RatesByKey,
 ) => {
-    const assetStakingBalance = accountsThatStaked.reduce((total, account) => {
-        return total.plus(getAccountTotalStakingBalance(account) ?? '0');
-    }, new BigNumber(0));
+    const assetStakingBalance = accountsThatStaked.reduce(
+        (total, account) => total.plus(getAccountTotalStakingBalance(account) ?? '0'),
+        new BigNumber(0),
+    );
     const tokens = getTokens({
         tokens: assetTokens ?? [],
         symbol,
@@ -35,9 +36,10 @@ export const handleTokensAndStakingData = (
         currentFiatRates,
     );
     const sortedTokens = tokensWithRates.sort(sortTokensWithRates);
-    const tokensFiatBalance = sortedTokens.reduce((total, token) => {
-        return total.plus(token?.fiatValue ?? 0);
-    }, new BigNumber(0));
+    const tokensFiatBalance = sortedTokens.reduce(
+        (total, token) => total.plus(token?.fiatValue ?? 0),
+        new BigNumber(0),
+    );
     const shouldRenderStakingRow = accountsThatStaked.length > 0 && assetStakingBalance.gt(0);
     const shouldRenderTokenRow = tokens.shownWithBalance?.length > 0 && tokensFiatBalance.gt(0);
 

@@ -32,28 +32,21 @@ interface Page {
 export default function GuideIndex(): ReactNode {
     const pages: Page[] = getPagesUnderRoute('/guides');
 
-    return pages.map(page => {
-        return (
-            <Link
-                href={page.route}
-                style={{ color: 'inherit', textDecoration: 'none' }}
-                key={page.route}
-            >
-                <SectionCard>
-                    <H3>{page.meta?.title || page.frontMatter?.title || page.name}</H3>
-                    <Paragraph>{page.frontMatter?.description}</Paragraph>
-                    <BottomRow>
-                        <Button
-                            variant="primary"
-                            size="tiny"
-                            icon="arrowRight"
-                            iconAlignment="right"
-                        >
-                            Read more
-                        </Button>
-                    </BottomRow>
-                </SectionCard>
-            </Link>
-        );
-    });
+    return pages.map(page => (
+        <Link
+            href={page.route}
+            style={{ color: 'inherit', textDecoration: 'none' }}
+            key={page.route}
+        >
+            <SectionCard>
+                <H3>{page.meta?.title || page.frontMatter?.title || page.name}</H3>
+                <Paragraph>{page.frontMatter?.description}</Paragraph>
+                <BottomRow>
+                    <Button variant="primary" size="tiny" icon="arrowRight" iconAlignment="right">
+                        Read more
+                    </Button>
+                </BottomRow>
+            </SectionCard>
+        </Link>
+    ));
 }

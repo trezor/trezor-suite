@@ -53,14 +53,13 @@ export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = createMem
         selectVisibleDeviceAccounts,
         (_state: NativeAccountsRootState, filterValue: string) => filterValue,
     ],
-    (accounts, filterValue) => {
-        return pipe(
+    (accounts, filterValue) =>
+        pipe(
             accounts,
             sortAccountsByNetworksAndAccountTypes,
             accountsSorted => filterAccountsByLabelAndNetworkNames(accountsSorted, filterValue),
             groupAccountsByNetworkAccountType,
-        ) as GroupedByTypeAccounts;
-    },
+        ) as GroupedByTypeAccounts,
 );
 
 export const selectIsAccountAlreadyDiscovered = (

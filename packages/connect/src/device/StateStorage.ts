@@ -34,8 +34,8 @@ export class WebextensionStateStorage implements IStateStorage {
     saveState(device: Device, state: DeviceState) {
         // Expiration is based on auto lock delay, but minimum is 15 minutes
         const expirationDelay = Math.max(1000 * 60 * 15, device.features.auto_lock_delay_ms ?? 0);
-        storage.saveForOrigin(store => {
-            return {
+        storage.saveForOrigin(
+            store => ({
                 ...store,
                 preferredDevice: store.preferredDevice
                     ? {
@@ -45,7 +45,8 @@ export class WebextensionStateStorage implements IStateStorage {
                           internalStateExpiration: Date.now() + expirationDelay,
                       }
                     : undefined,
-            };
-        }, this.origin);
+            }),
+            this.origin,
+        );
     }
 }

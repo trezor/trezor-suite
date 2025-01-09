@@ -36,9 +36,7 @@ export const transformTx = (
     return transformedTx;
 };
 
-export const getPubKeyFromAddress = (address: string) => {
-    return new PublicKey(address);
-};
+export const getPubKeyFromAddress = (address: string) => new PublicKey(address);
 
 interface PrepareStakeSolTxParams {
     from: string;

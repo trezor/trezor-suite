@@ -134,9 +134,10 @@ export class TrezordNode {
     }
 
     private checkAffectedSubscriptions() {
-        const [aborted, notAborted] = arrayPartition(this.listenSubscriptions, subscription => {
-            return subscription.res.destroyed;
-        });
+        const [aborted, notAborted] = arrayPartition(
+            this.listenSubscriptions,
+            subscription => subscription.res.destroyed,
+        );
 
         if (aborted.length) {
             this.logger?.debug(
@@ -144,9 +145,10 @@ export class TrezordNode {
             );
         }
 
-        const [affected, unaffected] = arrayPartition(notAborted, subscription => {
-            return stringify(subscription.descriptors) !== stringify(this.descriptors);
-        });
+        const [affected, unaffected] = arrayPartition(
+            notAborted,
+            subscription => stringify(subscription.descriptors) !== stringify(this.descriptors),
+        );
 
         this.logger?.debug(
             `http: affected subscriptions ${affected.length}. unaffected subscriptions ${unaffected.length}`,
@@ -195,9 +197,9 @@ export class TrezordNode {
             this.logger?.debug(
                 `http: sessionsClient reported descriptors: ${JSON.stringify(descriptors)}`,
             );
-            this.throttler.throttle('resolve-listen-subscriptions', () => {
-                return this.resolveListenSubscriptions(descriptors);
-            });
+            this.throttler.throttle('resolve-listen-subscriptions', () =>
+                this.resolveListenSubscriptions(descriptors),
+            );
         });
 
         return new Promise<void>((resolve, reject) => {

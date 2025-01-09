@@ -7,11 +7,9 @@ type AddressReviewSheetSectionProps = {
     content: ReactNode;
 };
 
-export const AddressReviewSheetSection = ({ title, content }: AddressReviewSheetSectionProps) => {
-    return (
-        <VStack spacing="sp4">
-            <Text variant="highlight">{title}</Text>
-            <Text color="textSubdued">{content}</Text>
-        </VStack>
-    );
-};
+export const AddressReviewSheetSection = ({ title, content }: AddressReviewSheetSectionProps) => (
+    <VStack spacing="sp4">
+        <Text variant="highlight">{title}</Text>
+        <Text color="textSubdued">{content}</Text>
+    </VStack>
+);

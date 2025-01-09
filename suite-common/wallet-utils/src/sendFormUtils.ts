@@ -488,9 +488,7 @@ export const getExcludedUtxos = ({
 export const getSendFormDraftKey = (
     accountKey: AccountKey,
     tokenAddress?: TokenAddress,
-): SendFormDraftKey => {
-    return tokenAddress ? `${accountKey}-${tokenAddress}` : accountKey;
-};
+): SendFormDraftKey => (tokenAddress ? `${accountKey}-${tokenAddress}` : accountKey);
 
 // SOL Specific
 

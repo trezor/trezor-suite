@@ -11,12 +11,10 @@ const Content = styled.div`
     width: 100%; /* to fit the DeviceAuthenticity steps  */
 `;
 
-export const ViewOnlyPromo = () => {
-    return (
-        <WelcomeLayout>
-            <Content data-testid="@onboarding/view-only-promo">
-                <ViewOnlyPromoContent />
-            </Content>
-        </WelcomeLayout>
-    );
-};
+export const ViewOnlyPromo = () => (
+    <WelcomeLayout>
+        <Content data-testid="@onboarding/view-only-promo">
+            <ViewOnlyPromoContent />
+        </Content>
+    </WelcomeLayout>
+);

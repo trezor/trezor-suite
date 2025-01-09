@@ -670,13 +670,14 @@ export const useCoinmarketExchangeForm = ({
         handleChange,
     ]);
 
-    useEffect(() => {
-        return () => {
+    useEffect(
+        () => () => {
             if (abortControllerRef.current) {
                 abortControllerRef.current.abort();
             }
-        };
-    }, []);
+        },
+        [],
+    );
 
     // handle edge case when there are no longer quotes of selected exchange type
     useEffect(() => {

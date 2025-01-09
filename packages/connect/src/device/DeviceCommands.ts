@@ -435,11 +435,10 @@ export class DeviceCommands {
 
         if (res.type === 'PassphraseRequest') {
             return promptPassphrase(this.device).then(
-                ({ value, passphraseOnDevice }) => {
-                    return !passphraseOnDevice
+                ({ value, passphraseOnDevice }) =>
+                    !passphraseOnDevice
                         ? this._commonCall('PassphraseAck', { passphrase: value.normalize('NFKD') })
-                        : this._commonCall('PassphraseAck', { on_device: true });
-                },
+                        : this._commonCall('PassphraseAck', { on_device: true }),
                 error => Promise.reject(error),
             );
         }

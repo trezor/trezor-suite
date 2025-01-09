@@ -40,9 +40,9 @@ export const cancelPrompt = (device: Device, expectResponse = true) => {
     return expectResponse ? device.transport.call(cancelArgs) : device.transport.send(cancelArgs);
 };
 
-const prompt = <E extends PromptEvents>(event: E, ...[device, ...args]: DeviceEventArgs<E>) => {
+const prompt = <E extends PromptEvents>(event: E, ...[device, ...args]: DeviceEventArgs<E>) =>
     // return non nullable first arg of PromptCallback<E>
-    return new Promise<NonNullable<Parameters<DeviceEventCallback<E>>[0]>>((resolve, reject) => {
+    new Promise<NonNullable<Parameters<DeviceEventCallback<E>>[0]>>((resolve, reject) => {
         const cancelAndReject = (error?: Error) =>
             cancelPrompt(device).then(onCancel =>
                 reject(
@@ -76,16 +76,10 @@ const prompt = <E extends PromptEvents>(event: E, ...[device, ...args]: DeviceEv
             cancelAndReject(ERRORS.TypedError('Runtime', `${event} callback not configured`));
         }
     });
-};
+export const promptPassphrase = (device: Device) => prompt(DEVICE.PASSPHRASE, device);
 
-export const promptPassphrase = (device: Device) => {
-    return prompt(DEVICE.PASSPHRASE, device);
-};
+export const promptPin = (device: Device, type?: Messages.PinMatrixRequestType) =>
+    prompt(DEVICE.PIN, device, type);
 
-export const promptPin = (device: Device, type?: Messages.PinMatrixRequestType) => {
-    return prompt(DEVICE.PIN, device, type);
-};
-
-export const promptWord = (device: Device, type: Messages.WordRequestType) => {
-    return prompt(DEVICE.WORD, device, type);
-};
+export const promptWord = (device: Device, type: Messages.WordRequestType) =>
+    prompt(DEVICE.WORD, device, type);

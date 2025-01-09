@@ -35,30 +35,28 @@ export const DropdownRow = ({
     shouldDisplayIcon = true,
     nftName,
     nftItemsCount,
-}: DropdownRowProps) => {
-    return (
-        <DropdownRowToggle>
-            <Row gap={spacings.xs}>
-                {shouldDisplayIcon && (
-                    <IconWrapper $isActive={isActive}>
-                        <Icon size={18} variant="tertiary" name="chevronDown" />
-                    </IconWrapper>
-                )}
-                {nftName ? (
-                    <HiddenPlaceholder>
-                        <Row gap={spacings.xs}>
-                            <Text textWrap="nowrap">{nftName}</Text>
-                            {nftItemsCount && <Badge size="small">{nftItemsCount}</Badge>}
-                        </Row>
-                    </HiddenPlaceholder>
-                ) : (
-                    text && (
-                        <Text typographyStyle={typographyStyle} variant={variant}>
-                            <Translation id={text} />
-                        </Text>
-                    )
-                )}
-            </Row>
-        </DropdownRowToggle>
-    );
-};
+}: DropdownRowProps) => (
+    <DropdownRowToggle>
+        <Row gap={spacings.xs}>
+            {shouldDisplayIcon && (
+                <IconWrapper $isActive={isActive}>
+                    <Icon size={18} variant="tertiary" name="chevronDown" />
+                </IconWrapper>
+            )}
+            {nftName ? (
+                <HiddenPlaceholder>
+                    <Row gap={spacings.xs}>
+                        <Text textWrap="nowrap">{nftName}</Text>
+                        {nftItemsCount && <Badge size="small">{nftItemsCount}</Badge>}
+                    </Row>
+                </HiddenPlaceholder>
+            ) : (
+                text && (
+                    <Text typographyStyle={typographyStyle} variant={variant}>
+                        <Translation id={text} />
+                    </Text>
+                )
+            )}
+        </Row>
+    </DropdownRowToggle>
+);

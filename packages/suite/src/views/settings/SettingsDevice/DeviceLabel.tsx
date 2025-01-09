@@ -8,18 +8,16 @@ interface DeviceLabelProps {
     isDeviceLocked: boolean;
 }
 
-export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
-    return (
-        <SettingsSectionItem anchorId={SettingsAnchor.DeviceLabel}>
-            <TextColumn
-                title={<Translation id="TR_DEVICE_SETTINGS_DEVICE_LABEL" />}
-                description={
-                    <Translation id="TR_LABEL_REQUIREMENTS" values={{ length: MAX_LABEL_LENGTH }} />
-                }
-            />
-            <ActionColumn>
-                <ChangeDeviceLabel isVertical isDeviceLocked={isDeviceLocked} />
-            </ActionColumn>
-        </SettingsSectionItem>
-    );
-};
+export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => (
+    <SettingsSectionItem anchorId={SettingsAnchor.DeviceLabel}>
+        <TextColumn
+            title={<Translation id="TR_DEVICE_SETTINGS_DEVICE_LABEL" />}
+            description={
+                <Translation id="TR_LABEL_REQUIREMENTS" values={{ length: MAX_LABEL_LENGTH }} />
+            }
+        />
+        <ActionColumn>
+            <ChangeDeviceLabel isVertical isDeviceLocked={isDeviceLocked} />
+        </ActionColumn>
+    </SettingsSectionItem>
+);

@@ -19,22 +19,17 @@ export const TitleHeader = ({
     titleVariant = 'titleSmall',
     textAlign = 'left',
     titleSpacing = 'sp8',
-}: TitleHeaderProps) => {
-    return (
-        <VStack
-            spacing={titleSpacing}
-            alignItems={textAlign === 'center' ? 'center' : 'flex-start'}
-        >
-            {title && (
-                <Text variant={titleVariant} textAlign={textAlign}>
-                    {title}
-                </Text>
-            )}
-            {subtitle && (
-                <Text color="textSubdued" textAlign={textAlign}>
-                    {subtitle}
-                </Text>
-            )}
-        </VStack>
-    );
-};
+}: TitleHeaderProps) => (
+    <VStack spacing={titleSpacing} alignItems={textAlign === 'center' ? 'center' : 'flex-start'}>
+        {title && (
+            <Text variant={titleVariant} textAlign={textAlign}>
+                {title}
+            </Text>
+        )}
+        {subtitle && (
+            <Text color="textSubdued" textAlign={textAlign}>
+                {subtitle}
+            </Text>
+        )}
+    </VStack>
+);

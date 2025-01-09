@@ -59,10 +59,8 @@ const Component = ({ isActive = true, hotkey }: HotkeyBadgeProps) => {
     );
 };
 
-export const HotkeyBadge = (props: HotkeyBadgeProps) => {
-    return (
-        <ElevationDown>
-            <Component {...props} />
-        </ElevationDown>
-    );
-};
+export const HotkeyBadge = (props: HotkeyBadgeProps) => (
+    <ElevationDown>
+        <Component {...props} />
+    </ElevationDown>
+);

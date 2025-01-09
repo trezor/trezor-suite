@@ -142,11 +142,10 @@ export const selectPassphraseError = (state: DeviceAuthorizationRootState) =>
 export const selectHasAuthFailed = (state: DeviceAuthorizationRootState) =>
     selectPassphraseError(state)?.error === 'auth-failed';
 
-export const selectPassphraseDuplicateError = (state: DeviceAuthorizationRootState) => {
-    return selectPassphraseError(state)?.error === 'passphrase-duplicate'
+export const selectPassphraseDuplicateError = (state: DeviceAuthorizationRootState) =>
+    selectPassphraseError(state)?.error === 'passphrase-duplicate'
         ? (state.deviceAuthorization.passphraseError as AuthorizeDeviceError)
         : null;
-};
 
 export const selectHasVerificationCancelledError = (state: DeviceAuthorizationRootState) =>
     selectPassphraseError(state)?.error === 'action-cancelled';

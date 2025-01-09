@@ -9,15 +9,13 @@ type SendScreenProps = {
     footer?: ReactNode;
 };
 
-export const SendScreen = ({ children, footer, screenHeader, subheader }: SendScreenProps) => {
-    return (
-        <Screen
-            screenHeader={screenHeader}
-            subheader={subheader}
-            footer={footer}
-            keyboardDismissMode="on-drag"
-        >
-            {children}
-        </Screen>
-    );
-};
+export const SendScreen = ({ children, footer, screenHeader, subheader }: SendScreenProps) => (
+    <Screen
+        screenHeader={screenHeader}
+        subheader={subheader}
+        footer={footer}
+        keyboardDismissMode="on-drag"
+    >
+        {children}
+    </Screen>
+);

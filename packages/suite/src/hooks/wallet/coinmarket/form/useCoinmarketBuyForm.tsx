@@ -476,13 +476,14 @@ export const useCoinmarketBuyForm = ({
         ],
     );
 
-    useEffect(() => {
-        return () => {
+    useEffect(
+        () => () => {
             if (abortControllerRef.current) {
                 abortControllerRef.current.abort();
             }
-        };
-    }, []);
+        },
+        [],
+    );
 
     return {
         type,

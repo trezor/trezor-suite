@@ -22,21 +22,19 @@ const TooltipValue = styled.div`
 `;
 
 // IN TESTING MODE
-export const CoinmarketUtilsTooltipFee = (_props: Pick<CoinmarketOffersItemProps, 'quote'>) => {
-    return (
-        <>
-            <TooltipRow>
-                <TooltipProperty>
-                    <Translation id="TR_COINMARKET_NETWORK_FEE" />:
-                </TooltipProperty>
-                <TooltipValue>$2.0</TooltipValue>
-            </TooltipRow>
-            <TooltipRow>
-                <TooltipProperty>
-                    <Translation id="TR_COINMARKET_TRADE_FEE" />:
-                </TooltipProperty>
-                <TooltipValue>$1.5</TooltipValue>
-            </TooltipRow>
-        </>
-    );
-};
+export const CoinmarketUtilsTooltipFee = (_props: Pick<CoinmarketOffersItemProps, 'quote'>) => (
+    <>
+        <TooltipRow>
+            <TooltipProperty>
+                <Translation id="TR_COINMARKET_NETWORK_FEE" />:
+            </TooltipProperty>
+            <TooltipValue>$2.0</TooltipValue>
+        </TooltipRow>
+        <TooltipRow>
+            <TooltipProperty>
+                <Translation id="TR_COINMARKET_TRADE_FEE" />:
+            </TooltipProperty>
+            <TooltipValue>$1.5</TooltipValue>
+        </TooltipRow>
+    </>
+);

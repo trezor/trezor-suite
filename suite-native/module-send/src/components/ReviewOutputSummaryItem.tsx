@@ -29,20 +29,18 @@ type TokenEnabledValuesProps = {
     tokenContract?: TokenAddress;
 } & BitcoinValuesProps;
 
-const BitcoinValues = ({ totalSpent, fee }: BitcoinValuesProps) => {
-    return (
-        <>
-            <ReviewOutputItemValues
-                value={totalSpent}
-                translationKey="moduleSend.review.outputs.summary.totalAmount"
-            />
-            <ReviewOutputItemValues
-                value={fee}
-                translationKey="moduleSend.review.outputs.summary.fee"
-            />
-        </>
-    );
-};
+const BitcoinValues = ({ totalSpent, fee }: BitcoinValuesProps) => (
+    <>
+        <ReviewOutputItemValues
+            value={totalSpent}
+            translationKey="moduleSend.review.outputs.summary.totalAmount"
+        />
+        <ReviewOutputItemValues
+            value={fee}
+            translationKey="moduleSend.review.outputs.summary.fee"
+        />
+    </>
+);
 
 const TokenEnabledValues = ({ totalSpent, fee, tokenContract }: TokenEnabledValuesProps) => {
     const amount = tokenContract ? totalSpent : BigNumber(totalSpent).minus(fee).toString();

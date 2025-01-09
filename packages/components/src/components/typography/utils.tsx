@@ -32,36 +32,34 @@ export const withTextProps = ({
     $typographyStyle,
     $align,
     $ellipsisLineCount = 0,
-}: TransientTextProps) => {
-    return css`
-        ${$textWrap &&
-        css`
-            text-wrap: ${$textWrap};
-        `}
-        ${$typographyStyle
-            ? css`
-                  ${typography[$typographyStyle]}
-              `
-            : ''}
+}: TransientTextProps) => css`
+    ${$textWrap &&
+    css`
+        text-wrap: ${$textWrap};
+    `}
+    ${$typographyStyle
+        ? css`
+              ${typography[$typographyStyle]}
+          `
+        : ''}
         ${$align &&
-        css`
-            text-align: ${$align};
-        `}
+    css`
+        text-align: ${$align};
+    `}
         ${$ellipsisLineCount > 0 &&
-        css`
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-        `}
+    css`
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    `}
         ${$ellipsisLineCount > 1 &&
-        css`
-            white-space: initial;
-            -webkit-line-clamp: ${$ellipsisLineCount};
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-        `}
-    `;
-};
+    css`
+        white-space: initial;
+        -webkit-line-clamp: ${$ellipsisLineCount};
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+    `}
+`;
 
 const getStorybookType = (key: TextPropsKeys) => {
     switch (key) {

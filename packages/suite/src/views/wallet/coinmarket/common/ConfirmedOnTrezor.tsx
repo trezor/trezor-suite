@@ -30,17 +30,15 @@ interface ConfirmedOnTrezorProps {
     device?: TrezorDevice;
 }
 
-export const ConfirmedOnTrezor = ({ device }: ConfirmedOnTrezorProps) => {
-    return (
-        <Confirmed>
-            <StyledRotateDeviceImage
-                deviceModel={device?.features?.internal_model}
-                deviceColor={device?.features?.unit_color}
-                animationHeight="34px"
-                animationWidth="34px"
-            />
+export const ConfirmedOnTrezor = ({ device }: ConfirmedOnTrezorProps) => (
+    <Confirmed>
+        <StyledRotateDeviceImage
+            deviceModel={device?.features?.internal_model}
+            deviceColor={device?.features?.unit_color}
+            animationHeight="34px"
+            animationWidth="34px"
+        />
 
-            <Translation id="TR_BUY_CONFIRMED_ON_TREZOR" />
-        </Confirmed>
-    );
-};
+        <Translation id="TR_BUY_CONFIRMED_ON_TREZOR" />
+    </Confirmed>
+);

@@ -90,9 +90,8 @@ export class WalletActions {
             .count();
     }
 
-    accountButton = ({ symbol = 'btc', atIndex = 0 }: WalletParams = {}): Locator => {
-        return this.page.getByTestId(`@account-menu/${symbol}/normal/${atIndex}`);
-    };
+    accountButton = ({ symbol = 'btc', atIndex = 0 }: WalletParams = {}): Locator =>
+        this.page.getByTestId(`@account-menu/${symbol}/normal/${atIndex}`);
 
     @step()
     async openCoinMarket(params: WalletParams = {}) {

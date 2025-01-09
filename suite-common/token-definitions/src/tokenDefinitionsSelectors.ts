@@ -44,8 +44,4 @@ export const selectFilterKnownTokens = (
     state: TokenDefinitionsRootState,
     symbol: NetworkSymbol,
     tokens: TokenInfo[],
-) => {
-    return tokens.filter(token =>
-        selectCoinDefinition(state, symbol, token.contract as TokenAddress),
-    );
-};
+) => tokens.filter(token => selectCoinDefinition(state, symbol, token.contract as TokenAddress));

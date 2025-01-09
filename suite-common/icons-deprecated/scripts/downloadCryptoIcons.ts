@@ -97,9 +97,9 @@ const updateIcon = async (coin: CoinListData) => {
     }
 
     // process missing icons and icons updated the longest time ago first
-    coins.sort((a, b) => {
-        return (updatedIcons[a.id]?.updatedAt ?? 0) - (updatedIcons[b.id]?.updatedAt ?? 0);
-    });
+    coins.sort(
+        (a, b) => (updatedIcons[a.id]?.updatedAt ?? 0) - (updatedIcons[b.id]?.updatedAt ?? 0),
+    );
 
     fs.mkdirSync(FILES_CRYPTOICONS_PATH, { recursive: true });
 

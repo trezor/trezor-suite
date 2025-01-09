@@ -304,8 +304,8 @@ const CollapsibleIOSection = ({
     heading,
     opened,
     isPhishingTransaction,
-}: CollapsibleIOSectionProps) => {
-    return inputs?.length || outputs?.length ? (
+}: CollapsibleIOSectionProps) =>
+    inputs?.length || outputs?.length ? (
         <CollapsibleBox
             heading={heading}
             defaultIsOpen={opened}
@@ -322,7 +322,6 @@ const CollapsibleIOSection = ({
             />
         </CollapsibleBox>
     ) : null;
-};
 
 type IODetailsProps = {
     tx: WalletAccountTransaction;

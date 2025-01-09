@@ -20,29 +20,27 @@ export const AccountsListStakingItem = ({
     stakingCryptoBalance,
     isLast,
     ...props
-}: AccountsListStakingItemProps) => {
-    return (
-        <AccountsListItemBase
-            {...props}
-            isLast={isLast}
-            showDivider={!isLast}
-            icon={<RoundedIcon name="piggyBankFilled" color="iconSubdued" />}
-            title={<Translation id="accountList.staking" />}
-            mainValue={
-                <CryptoToFiatAmountFormatter
-                    value={stakingCryptoBalance}
-                    symbol={account.symbol}
-                    isBalance
-                />
-            }
-            secondaryValue={
-                <CryptoAmountFormatter
-                    value={stakingCryptoBalance}
-                    symbol={account.symbol}
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                />
-            }
-        />
-    );
-};
+}: AccountsListStakingItemProps) => (
+    <AccountsListItemBase
+        {...props}
+        isLast={isLast}
+        showDivider={!isLast}
+        icon={<RoundedIcon name="piggyBankFilled" color="iconSubdued" />}
+        title={<Translation id="accountList.staking" />}
+        mainValue={
+            <CryptoToFiatAmountFormatter
+                value={stakingCryptoBalance}
+                symbol={account.symbol}
+                isBalance
+            />
+        }
+        secondaryValue={
+            <CryptoAmountFormatter
+                value={stakingCryptoBalance}
+                symbol={account.symbol}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+            />
+        }
+    />
+);

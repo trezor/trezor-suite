@@ -83,13 +83,12 @@ export const portfolioTrackerMainnets = sortNetworks(
         .filter(network => !portfolioTrackerBlacklist.includes(network.symbol)),
 ).map(network => network.symbol);
 
-const getPortfolioTrackerTestnets = () => {
-    return sortNetworks(
+const getPortfolioTrackerTestnets = () =>
+    sortNetworks(
         getTestnets().filter(network =>
             networkSymbolsWhitelistMap.testnet.includes(network.symbol),
         ),
     ).map(network => network.symbol);
-};
 
 export const portfolioTrackerTestnets = getPortfolioTrackerTestnets();
 

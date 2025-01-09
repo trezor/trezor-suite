@@ -81,34 +81,32 @@ export const withDivider = ({
     $direction: FlexDirection;
     $dividerColor?: string;
     $elevation: Elevation;
-}) => {
-    return css`
-        & > * {
-            position: relative;
-        }
+}) => css`
+    & > * {
+        position: relative;
+    }
 
-        & > *:not(:first-child)::before {
-            content: '';
-            display: block;
-            position: absolute;
+    & > *:not(:first-child)::before {
+        content: '';
+        display: block;
+        position: absolute;
 
-            ${$direction === 'column' &&
-            `
+        ${$direction === 'column' &&
+        `
         top: -${$gap / 2}px;
         height: 1px;
         width: 100%;
         left: 0;
         border-top: 1px solid ${$dividerColor ? $dividerColor : mapElevationToBorder({ theme, $elevation })};`}
-            ${$direction === 'row' &&
-            `
+        ${$direction === 'row' &&
+        `
         top: 0;
         height: 100%;
         width: 1px;
         left: -${$gap / 2}px;
         border-left: 1px solid ${$dividerColor ? $dividerColor : mapElevationToBorder({ theme, $elevation })};`}
-        }
-    `;
-};
+    }
+`;
 
 type ContainerProps = TransientProps<AllowedFrameProps> & {
     $gap: SpacingValues;

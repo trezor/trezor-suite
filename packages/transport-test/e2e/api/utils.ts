@@ -9,9 +9,8 @@ export const MESSAGES = {
     FEATURES: '11',
 } as const;
 
-export const buildMessage = (message: keyof typeof MESSAGES) => {
-    return Buffer.from(MAGIC + MESSAGES[message], 'hex');
-};
+export const buildMessage = (message: keyof typeof MESSAGES) =>
+    Buffer.from(MAGIC + MESSAGES[message], 'hex');
 
 export const assertMessage = (message: Buffer, expected: keyof typeof MESSAGES) => {
     const assertedChunk = message.toString('hex').substring(0, MAGIC.length + 2);

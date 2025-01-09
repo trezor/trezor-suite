@@ -51,30 +51,28 @@ const buttonWrapperStyle = prepareNativeStyle(() => ({
     width: '100%',
 }));
 
-const MainnetSummary = ({ amount, symbol }: { amount: string; symbol: NetworkSymbol }) => {
-    return (
-        <HStack justifyContent="space-between" alignItems="center">
-            <Text variant="callout">
-                <Translation id="moduleSend.fees.totalAmount" />
-            </Text>
-            <VStack spacing="sp4" alignItems="flex-end">
-                <CryptoToFiatAmountFormatter
-                    variant="callout"
-                    color="textDefault"
-                    value={amount}
-                    symbol={symbol}
-                />
-                <CryptoAmountFormatter
-                    variant="hint"
-                    color="textSubdued"
-                    value={amount}
-                    symbol={symbol}
-                    isBalance={false}
-                />
-            </VStack>
-        </HStack>
-    );
-};
+const MainnetSummary = ({ amount, symbol }: { amount: string; symbol: NetworkSymbol }) => (
+    <HStack justifyContent="space-between" alignItems="center">
+        <Text variant="callout">
+            <Translation id="moduleSend.fees.totalAmount" />
+        </Text>
+        <VStack spacing="sp4" alignItems="flex-end">
+            <CryptoToFiatAmountFormatter
+                variant="callout"
+                color="textDefault"
+                value={amount}
+                symbol={symbol}
+            />
+            <CryptoAmountFormatter
+                variant="hint"
+                color="textSubdued"
+                value={amount}
+                symbol={symbol}
+                isBalance={false}
+            />
+        </VStack>
+    </HStack>
+);
 
 const TokenSummary = ({
     accountKey,

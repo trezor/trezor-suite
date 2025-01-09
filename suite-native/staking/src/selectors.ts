@@ -43,9 +43,7 @@ export const selectDeviceAccountsWithStaking = (
 export const selectHasAnyDeviceAccountsWithStaking = (
     state: NativeStakingRootState,
     symbol: NetworkSymbol,
-) => {
-    return selectDeviceAccountsWithStaking(state, symbol).length > 0;
-};
+) => selectDeviceAccountsWithStaking(state, symbol).length > 0;
 
 export const getAccountCryptoBalanceWithStaking = (account: Account | null) => {
     if (!account) return '0';

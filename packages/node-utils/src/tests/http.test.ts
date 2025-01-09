@@ -267,12 +267,11 @@ describe('HttpServer', () => {
         await server.start();
         const { address, port } = server.getServerAddress();
 
-        const post = (url: string, body: any) => {
-            return fetch(`http://${address}:${port}/${url}`, {
+        const post = (url: string, body: any) =>
+            fetch(`http://${address}:${port}/${url}`, {
                 method: 'POST',
                 body: body ? JSON.stringify(body) : undefined,
             });
-        };
 
         let res;
         res = await post('foo-1/321', { foo: 'bar' }); // body != array, fails in bodyValidator

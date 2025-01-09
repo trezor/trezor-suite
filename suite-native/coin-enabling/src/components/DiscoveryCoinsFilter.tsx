@@ -28,10 +28,13 @@ export const DiscoveryCoinsFilter = ({
     const availableNetworks = useSelector(selectDiscoverySupportedNetworks);
 
     useFocusEffect(
-        useCallback(() => {
-            // run on leaving the screen
-            return () => dispatch(applyDiscoveryChangesThunk());
-        }, [dispatch]),
+        useCallback(
+            () =>
+                // run on leaving the screen
+                () =>
+                    dispatch(applyDiscoveryChangesThunk()),
+            [dispatch],
+        ),
     );
 
     const uniqueNetworkSymbols = [...new Set(availableNetworks.map(n => n.symbol))];

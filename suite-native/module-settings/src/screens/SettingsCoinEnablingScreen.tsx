@@ -38,14 +38,16 @@ export const SettingsCoinEnablingScreen = () => {
     }, [enabledNetworkSymbols.length, dispatch, viewOnlyDevicesAccountsNetworkSymbols]);
 
     useFocusEffect(
-        useCallback(() => {
-            // mark coin init as finished if there are enabled coins on leaving the screen
-            return () => {
-                if (enabledNetworkSymbols.length > 0) {
-                    dispatch(setIsCoinEnablingInitFinished(true));
-                }
-            };
-        }, [dispatch, enabledNetworkSymbols.length]),
+        useCallback(
+            () =>
+                // mark coin init as finished if there are enabled coins on leaving the screen
+                () => {
+                    if (enabledNetworkSymbols.length > 0) {
+                        dispatch(setIsCoinEnablingInitFinished(true));
+                    }
+                },
+            [dispatch, enabledNetworkSymbols.length],
+        ),
     );
 
     return (

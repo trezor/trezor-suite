@@ -155,6 +155,4 @@ export const getFetchTrackingId = (
     dataType: DataType,
     clientId: MetadataProvider['clientId'],
     deviceState: StaticSessionId,
-): FetchIntervalTrackingId => {
-    return `${dataType}-${clientId}-${deviceState}`;
-};
+): FetchIntervalTrackingId => `${dataType}-${clientId}-${deviceState}`;

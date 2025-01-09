@@ -20,18 +20,16 @@ export const FractionButton = ({
     isDisabled,
     variant,
     onClick,
-}: FractionButtonProps) => {
-    return (
-        <Tooltip key={id} content={tooltip} cursor="pointer">
-            <Button
-                variant={variant ?? DEFAULT_VARIANT}
-                type="button"
-                size="tiny"
-                isDisabled={isDisabled}
-                onClick={onClick}
-            >
-                {children}
-            </Button>
-        </Tooltip>
-    );
-};
+}: FractionButtonProps) => (
+    <Tooltip key={id} content={tooltip} cursor="pointer">
+        <Button
+            variant={variant ?? DEFAULT_VARIANT}
+            type="button"
+            size="tiny"
+            isDisabled={isDisabled}
+            onClick={onClick}
+        >
+            {children}
+        </Button>
+    </Tooltip>
+);

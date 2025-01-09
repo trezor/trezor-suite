@@ -42,9 +42,7 @@ export const AccountImportSummaryScreen = ({
 
     useEffect(() => {
         // prevent dismissing screen via HW
-        const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
-            return true;
-        });
+        const subscription = BackHandler.addEventListener('hardwareBackPress', () => true);
 
         return () => subscription.remove();
     }, []);

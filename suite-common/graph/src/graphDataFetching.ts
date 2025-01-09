@@ -392,14 +392,12 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
                     D.filterWithKey(
                         (contractId, _) => !tokensFilter || tokensFilter.includes(contractId),
                     ),
-                    D.mapWithKey((contractId, tokenBalanceHistory) => {
-                        return {
-                            symbol,
-                            descriptor,
-                            contractId,
-                            balanceHistory: tokenBalanceHistory!,
-                        };
-                    }),
+                    D.mapWithKey((contractId, tokenBalanceHistory) => ({
+                        symbol,
+                        descriptor,
+                        contractId,
+                        balanceHistory: tokenBalanceHistory!,
+                    })),
                     D.values,
                 );
 

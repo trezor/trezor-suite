@@ -295,43 +295,37 @@ const SegmentsComponent = ({
     sliderMin,
     sliderMax,
     onLabelClick,
-}: SegmentsComponentProps) => {
-    return (
-        <Segments>
-            {labels.map(({ max, value: labelValue, component }, index) => {
-                if (sliderMin === max) return;
+}: SegmentsComponentProps) => (
+    <Segments>
+        {labels.map(({ max, value: labelValue, component }, index) => {
+            if (sliderMin === max) return;
 
-                const previousSegment = labels?.[index - 1] ?? DEFAULT_SEGMENT;
-                const progress = getProgress(value, max, previousSegment.max, sliderMin, sliderMax);
-                const normalizedPreviousMax = normalizeValue(
-                    previousSegment.max,
-                    sliderMin,
-                    sliderMax,
-                );
-                const normalizedSegmentMax = normalizeValue(max, sliderMin, sliderMax);
+            const previousSegment = labels?.[index - 1] ?? DEFAULT_SEGMENT;
+            const progress = getProgress(value, max, previousSegment.max, sliderMin, sliderMax);
+            const normalizedPreviousMax = normalizeValue(previousSegment.max, sliderMin, sliderMax);
+            const normalizedSegmentMax = normalizeValue(max, sliderMin, sliderMax);
 
-                return (
-                    <StyledSegment
-                        key={`${index}_${labelValue}`}
-                        $start={normalizedPreviousMax}
-                        $end={normalizedSegmentMax}
-                    >
-                        <SegmentLine $progress={progress} disabled={disabled} />
-                        <SegmentLabel>
-                            <SegmentLabelButton
-                                type="button"
-                                onClick={() => onLabelClick?.(max)}
-                                style={{ all: 'unset', cursor: 'pointer' }}
-                            >
-                                {component || labelValue}
-                            </SegmentLabelButton>
-                        </SegmentLabel>
-                    </StyledSegment>
-                );
-            })}
-        </Segments>
-    );
-};
+            return (
+                <StyledSegment
+                    key={`${index}_${labelValue}`}
+                    $start={normalizedPreviousMax}
+                    $end={normalizedSegmentMax}
+                >
+                    <SegmentLine $progress={progress} disabled={disabled} />
+                    <SegmentLabel>
+                        <SegmentLabelButton
+                            type="button"
+                            onClick={() => onLabelClick?.(max)}
+                            style={{ all: 'unset', cursor: 'pointer' }}
+                        >
+                            {component || labelValue}
+                        </SegmentLabelButton>
+                    </SegmentLabel>
+                </StyledSegment>
+            );
+        })}
+    </Segments>
+);
 
 export interface RangeProps {
     className?: string;

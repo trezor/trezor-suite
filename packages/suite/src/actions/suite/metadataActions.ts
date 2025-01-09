@@ -193,13 +193,13 @@ export const exportMetadataToLocalFile = () => async (dispatch: Dispatch, getSta
     const files = filesListResult.payload;
 
     return Promise.all(
-        files.map(file => {
-            return providerInstance.getFileContent(file).then(result => {
+        files.map(file =>
+            providerInstance.getFileContent(file).then(result => {
                 if (!result.success) throw new Error(result.error);
 
                 return { name: file, content: result.payload };
-            });
-        }),
+            }),
+        ),
     )
         .then(filesContent => {
             const zipBlob = createZip(filesContent);

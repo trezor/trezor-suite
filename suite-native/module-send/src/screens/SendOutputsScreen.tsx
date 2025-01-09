@@ -55,8 +55,8 @@ const getDefaultValues = ({
     tokenContract,
 }: {
     tokenContract?: TokenAddress;
-}): Readonly<SendOutputsFormValues> => {
-    return {
+}): Readonly<SendOutputsFormValues> =>
+    ({
         outputs: [
             {
                 amount: '',
@@ -65,8 +65,7 @@ const getDefaultValues = ({
                 token: tokenContract ?? null,
             },
         ],
-    } as const;
-};
+    }) as const;
 
 export const SendOutputsScreen = ({
     route: { params },

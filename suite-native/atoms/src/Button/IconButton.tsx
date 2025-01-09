@@ -35,15 +35,13 @@ const sizeDimensions = {
 
 const iconButtonStyle = mergeNativeStyles([
     buttonStyle,
-    prepareNativeStyle<ButtonStyleProps>((_, { size, hasTitle }) => {
-        return {
-            height: sizeDimensions[size],
-            width: hasTitle ? 'auto' : sizeDimensions[size],
-            // padding must be set using paddingVertical and paddingHorizontal otverwise it won't override the default padding
-            paddingVertical: 0,
-            paddingHorizontal: 0,
-        };
-    }),
+    prepareNativeStyle<ButtonStyleProps>((_, { size, hasTitle }) => ({
+        height: sizeDimensions[size],
+        width: hasTitle ? 'auto' : sizeDimensions[size],
+        // padding must be set using paddingVertical and paddingHorizontal otverwise it won't override the default padding
+        paddingVertical: 0,
+        paddingHorizontal: 0,
+    })),
 ]);
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);

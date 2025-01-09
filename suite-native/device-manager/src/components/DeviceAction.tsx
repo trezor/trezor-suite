@@ -24,18 +24,16 @@ const contentStyle = prepareNativeStyle(utils => ({
 }));
 
 const pressableStyle = prepareNativeStyle<{ showAsFullWidth: boolean; flex: number | undefined }>(
-    (_, { showAsFullWidth, flex }) => {
-        return {
-            flex,
-            extend: {
-                condition: showAsFullWidth,
-                style: {
-                    flex: 1,
-                    justifyContent: 'center',
-                },
+    (_, { showAsFullWidth, flex }) => ({
+        flex,
+        extend: {
+            condition: showAsFullWidth,
+            style: {
+                flex: 1,
+                justifyContent: 'center',
             },
-        };
-    },
+        },
+    }),
 );
 
 export const DeviceAction = ({

@@ -223,18 +223,16 @@ export const clearInput = (elementSelector: string) => {
 
 export const forceLightMode = {
     onBeforeLoad(win: Window): void {
-        const matchMediaStub = cy.stub().callsFake(query => {
-            return {
-                matches: query === '(prefers-color-scheme: light)',
-                media: query,
-                onchange: null,
-                addListener: cy.stub(),
-                removeListener: cy.stub(),
-                addEventListener: cy.stub(),
-                removeEventListener: cy.stub(),
-                dispatchEvent: cy.stub(),
-            };
-        });
+        const matchMediaStub = cy.stub().callsFake(query => ({
+            matches: query === '(prefers-color-scheme: light)',
+            media: query,
+            onchange: null,
+            addListener: cy.stub(),
+            removeListener: cy.stub(),
+            addEventListener: cy.stub(),
+            removeEventListener: cy.stub(),
+            dispatchEvent: cy.stub(),
+        }));
 
         cy.stub(win, 'matchMedia').callsFake(matchMediaStub);
     },

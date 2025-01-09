@@ -58,8 +58,8 @@ export const selectVisibleDeviceAccountsKeysByNetworkSymbol = (
 
 export const selectDeviceNetworksWithAssets = createMemoizedSelector(
     [selectVisibleDeviceAccounts],
-    accounts => {
-        return pipe(
+    accounts =>
+        pipe(
             accounts,
             A.map(account => account.symbol),
             A.uniq,
@@ -69,8 +69,7 @@ export const selectDeviceNetworksWithAssets = createMemoizedSelector(
 
                 return aOrder - bOrder;
             }),
-        );
-    },
+        ),
 );
 
 export const selectBottomSheetDeviceNetworkItems = createMemoizedSelector(

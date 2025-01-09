@@ -3,16 +3,14 @@ import UDP from 'dgram';
 import { UdpApi } from '../src/api/udp';
 
 // mock dgram api
-jest.mock('dgram', () => {
-    return {
-        __esModule: true,
-        default: {
-            createSocket: jest.fn(() => {
-                throw new Error('use mockImplementation');
-            }),
-        },
-    };
-});
+jest.mock('dgram', () => ({
+    __esModule: true,
+    default: {
+        createSocket: jest.fn(() => {
+            throw new Error('use mockImplementation');
+        }),
+    },
+}));
 
 // mock of UDP.Socket
 const createUdpSocketMock = (optional = {}) =>

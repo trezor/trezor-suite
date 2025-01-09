@@ -107,13 +107,15 @@ export const TransactionItem = memo(
         const isUnknown = type === 'unknown';
 
         // Filter out internal transfers that are instant staking transactions
-        const filteredInternalTransfers = useMemo(() => {
-            return internalTransfers.filter(t => {
-                const stakeType = getInstantStakeType(t, address, symbol);
+        const filteredInternalTransfers = useMemo(
+            () =>
+                internalTransfers.filter(t => {
+                    const stakeType = getInstantStakeType(t, address, symbol);
 
-                return stakeType !== 'stake';
-            });
-        }, [internalTransfers, address, symbol]);
+                    return stakeType !== 'stake';
+                }),
+            [internalTransfers, address, symbol],
+        );
 
         const isStakingTx: boolean = useMemo(() => isStakeTypeTx(txSignature), [txSignature]);
 

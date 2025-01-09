@@ -168,9 +168,7 @@ export const createTypes = (
     options?: ParseMessageOptions,
 ) => {
     const root = def.nested ? def.nested : def;
-    const types = Object.keys(root).flatMap(key => {
-        return parseMessage(key, root[key], options);
-    });
+    const types = Object.keys(root).flatMap(key => parseMessage(key, root[key], options));
     skipTypes(types);
     if (options?.fixOrder) {
         fixOrder(types);

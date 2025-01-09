@@ -320,20 +320,18 @@ export const DEFAULT_THEME: DocsThemeConfig = {
     },
     sidebar: {
         defaultMenuCollapseLevel: 1,
-        titleComponent: ({ title, icon }) => {
-            return (
-                <div
-                    style={{
-                        alignItems: 'center',
-                        display: 'flex',
-                        gap: '0.5rem',
-                    }}
-                >
-                    {icon && <Icon name={icon as IconName} size={16} color="currentColor" />}
-                    {title}
-                </div>
-            );
-        },
+        titleComponent: ({ title, icon }) => (
+            <div
+                style={{
+                    alignItems: 'center',
+                    display: 'flex',
+                    gap: '0.5rem',
+                }}
+            >
+                {icon && <Icon name={icon as IconName} size={16} color="currentColor" />}
+                {title}
+            </div>
+        ),
         toggleButton: false,
     },
     themeSwitch: {

@@ -1074,9 +1074,7 @@ export class Core extends EventEmitter {
             resolveWaitForFirstMethod: () => {
                 this.waitForFirstMethod.resolve();
             },
-            getOverridePromise: () => {
-                return this.overridePromise;
-            },
+            getOverridePromise: () => this.overridePromise,
             setOverridePromise: (promise: Promise<void>) => {
                 this.overridePromise = promise;
             },

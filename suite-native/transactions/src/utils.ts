@@ -56,6 +56,5 @@ const transactionTypeToSignValueMap = {
     unknown: undefined,
 } as const satisfies Record<TransactionType, SignValue | undefined>;
 
-export const getTransactionValueSign = (transactionType: TransactionType) => {
-    return transactionTypeToSignValueMap[transactionType];
-};
+export const getTransactionValueSign = (transactionType: TransactionType) =>
+    transactionTypeToSignValueMap[transactionType];

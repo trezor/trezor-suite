@@ -19,15 +19,13 @@ type WalletPageHeaderProps = {
     isSubpage?: boolean;
 };
 
-const WalletPageHeader = ({ isSubpage }: WalletPageHeaderProps) => {
-    return (
-        <>
-            <PageHeader />
-            {!isSubpage && <AccountTopPanel />}
-            {!isSubpage && <AccountNavigation />}
-        </>
-    );
-};
+const WalletPageHeader = ({ isSubpage }: WalletPageHeaderProps) => (
+    <>
+        <PageHeader />
+        {!isSubpage && <AccountTopPanel />}
+        {!isSubpage && <AccountNavigation />}
+    </>
+);
 
 type WalletLayoutProps = {
     title: TranslationKey;

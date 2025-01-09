@@ -68,14 +68,11 @@ export const filterByAddress: FilterAndCategorize[] = [
             ],
             outputLabels: {},
         },
-        checkResult: result => {
-            return (
-                result.filteredUtxos.length == 1 &&
-                result.filteredSpendableUtxos.length == 1 &&
-                result.filteredLowAnonymityUtxos.length == 0 &&
-                result.filteredDustUtxos.length == 0
-            );
-        },
+        checkResult: result =>
+            result.filteredUtxos.length == 1 &&
+            result.filteredSpendableUtxos.length == 1 &&
+            result.filteredLowAnonymityUtxos.length == 0 &&
+            result.filteredDustUtxos.length == 0,
     },
 ];
 
@@ -117,14 +114,11 @@ export const filterByTxid: FilterAndCategorize[] = [
             ],
             outputLabels: {},
         },
-        checkResult: result => {
-            return (
-                result.filteredUtxos.length == 3 &&
-                result.filteredSpendableUtxos.length == 1 &&
-                result.filteredLowAnonymityUtxos.length == 1 &&
-                result.filteredDustUtxos.length == 1
-            );
-        },
+        checkResult: result =>
+            result.filteredUtxos.length == 3 &&
+            result.filteredSpendableUtxos.length == 1 &&
+            result.filteredLowAnonymityUtxos.length == 1 &&
+            result.filteredDustUtxos.length == 1,
     },
 ];
 
@@ -172,13 +166,10 @@ export const filterByLabel: FilterAndCategorize[] = [
                 },
             },
         },
-        checkResult: result => {
-            return (
-                result.filteredUtxos.length == 1 &&
-                result.filteredSpendableUtxos.length == 0 &&
-                result.filteredLowAnonymityUtxos.length == 1 &&
-                result.filteredDustUtxos.length == 0
-            );
-        },
+        checkResult: result =>
+            result.filteredUtxos.length == 1 &&
+            result.filteredSpendableUtxos.length == 0 &&
+            result.filteredLowAnonymityUtxos.length == 1 &&
+            result.filteredDustUtxos.length == 0,
     },
 ];

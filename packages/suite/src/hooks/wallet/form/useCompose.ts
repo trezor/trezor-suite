@@ -92,9 +92,7 @@ export const useCompose = <TFieldValues extends FormState>({
                         formState,
                         composeContext: state,
                     }),
-                ).then(res => {
-                    return isFulfilled(res) ? res.payload : undefined;
-                });
+                ).then(res => (isFulfilled(res) ? res.payload : undefined));
             });
 
             // RACE-CONDITION NOTE:

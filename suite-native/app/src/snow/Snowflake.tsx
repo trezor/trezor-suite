@@ -87,20 +87,18 @@ export const Snowflake: React.FC<{
         );
     }, []);
 
-    const animatedStyle = useAnimatedStyle(() => {
-        return {
-            fontSize: size,
-            left: offset,
-            transform: [
-                {
-                    translateX: interpolate(translateX.value, [0, 1], [0, amplitude]),
-                },
-                {
-                    translateY: interpolate(translateY.value, [0, 1], [0, windowHeight]),
-                },
-            ],
-        };
-    });
+    const animatedStyle = useAnimatedStyle(() => ({
+        fontSize: size,
+        left: offset,
+        transform: [
+            {
+                translateX: interpolate(translateX.value, [0, 1], [0, amplitude]),
+            },
+            {
+                translateY: interpolate(translateY.value, [0, 1], [0, windowHeight]),
+            },
+        ],
+    }));
 
     if (props.glyph === 'btc') {
         return (

@@ -63,32 +63,30 @@ export const AccountRow = forwardRef<HTMLDivElement, AccountRowProps>(
             formattedBalance,
         },
         ref,
-    ) => {
-        return (
-            <Wrapper
-                $isSelected={isSelected}
-                $isGroup={isGroup}
-                $isGroupSelected={isGroupSelected}
-                ref={ref}
-                onClick={handleHeaderClick}
-                data-testid={dataTestKey}
-                tabIndex={0}
-            >
-                <Left>
-                    <AccountItemLeft type={type} symbol={symbol} account={account} />
-                </Left>
-                <AccountItemContent
-                    customFiatValue={customFiatValue}
-                    account={account}
-                    type={type}
-                    accountLabel={accountLabel}
-                    accountType={accountType}
-                    symbol={symbol}
-                    index={index}
-                    formattedBalance={formattedBalance}
-                    dataTestKey={dataTestKey}
-                />
-            </Wrapper>
-        );
-    },
+    ) => (
+        <Wrapper
+            $isSelected={isSelected}
+            $isGroup={isGroup}
+            $isGroupSelected={isGroupSelected}
+            ref={ref}
+            onClick={handleHeaderClick}
+            data-testid={dataTestKey}
+            tabIndex={0}
+        >
+            <Left>
+                <AccountItemLeft type={type} symbol={symbol} account={account} />
+            </Left>
+            <AccountItemContent
+                customFiatValue={customFiatValue}
+                account={account}
+                type={type}
+                accountLabel={accountLabel}
+                accountType={accountType}
+                symbol={symbol}
+                index={index}
+                formattedBalance={formattedBalance}
+                dataTestKey={dataTestKey}
+            />
+        </Wrapper>
+    ),
 );

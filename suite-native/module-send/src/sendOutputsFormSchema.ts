@@ -133,9 +133,8 @@ export const sendOutputsFormValidationSchema = yup.object({
                     .test(
                         'is-dust-amount',
                         'The value is lower than the dust limit.',
-                        (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                            return !isAmountDust(value, context);
-                        },
+                        (value, { options: { context } }: yup.TestContext<SendFormFormContext>) =>
+                            !isAmountDust(value, context),
                     )
                     .test(
                         'ripple-higher-than-reserve',

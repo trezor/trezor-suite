@@ -23,9 +23,8 @@ const screenNameToAnalyticsLabelMap = {
 
 const isAnalyticsRelevantSendRoute = (
     routeName?: string,
-): routeName is AnalyticsRelevantSendRoute => {
-    return G.isNotNullable(routeName) && orderedRelevantScreensForAnalytics.includes(routeName);
-};
+): routeName is AnalyticsRelevantSendRoute =>
+    G.isNotNullable(routeName) && orderedRelevantScreensForAnalytics.includes(routeName);
 
 export const useReportSendFlowExitToAnalytics = () => {
     const [furthestSendStep, setFurthestSendStep] = useState<AnalyticsRelevantSendRoute | null>(

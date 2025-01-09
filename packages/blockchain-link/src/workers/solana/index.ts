@@ -117,8 +117,8 @@ const getAllSignatures = async (
 const fetchTransactionPage = async (
     api: SolanaAPI,
     signatures: Signature[],
-): Promise<ParsedTransactionWithMeta[]> => {
-    return (
+): Promise<ParsedTransactionWithMeta[]> =>
+    (
         await Promise.all(
             signatures.map(signature =>
                 api.rpc
@@ -131,7 +131,6 @@ const fetchTransactionPage = async (
             ),
         )
     ).filter(nonNullable);
-};
 
 const isValidTransaction = (tx: ParsedTransactionWithMeta): tx is SolanaValidParsedTxWithMeta =>
     !!(tx && tx.meta && tx.transaction && tx.blockTime);

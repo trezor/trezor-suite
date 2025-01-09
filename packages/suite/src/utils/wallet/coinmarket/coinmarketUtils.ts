@@ -262,9 +262,7 @@ export const getDefaultCountry = (country: string = regional.unknownCountry) => 
 
 export const filterQuotesAccordingTags = <T extends CoinmarketTradeBuySellType>(
     allQuotes: CoinmarketTradeBuySellDetailMapProps[T][],
-) => {
-    return allQuotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
-};
+) => allQuotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
 
 // fill orderId for all, paymentId for sell and buy, quoteId for exchange
 export const addIdsToQuotes = <T extends CoinmarketTradeType>(

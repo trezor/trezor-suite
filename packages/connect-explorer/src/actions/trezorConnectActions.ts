@@ -39,14 +39,12 @@ export const onConnectOptionChange = (option: Field<any>, value: any) => ({
     },
 });
 
-const isRelativePath = (path: string) => {
+const isRelativePath = (path: string) =>
     // This regex checks if the path starts with a scheme (like http://, https://, file://, etc.)
     // or an absolute path indicator (like //)
-    return !/^(?:[a-z]+:)?\/\//i.test(path);
-};
-
-const testLoadingScript = (src: string) => {
-    return new Promise((resolve, reject) => {
+    !/^(?:[a-z]+:)?\/\//i.test(path);
+const testLoadingScript = (src: string) =>
+    new Promise((resolve, reject) => {
         if (process.env.BUILD_TARGET === 'webextension') {
             // Webextension does not support loading scripts in this way, we skip this check
             resolve(null);
@@ -66,7 +64,6 @@ const testLoadingScript = (src: string) => {
         };
         document.body.appendChild(script);
     });
-};
 
 export const init =
     (options: Partial<Parameters<(typeof TrezorConnect)['init']>[0]> = {}) =>
