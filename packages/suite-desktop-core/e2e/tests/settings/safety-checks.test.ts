@@ -1,7 +1,6 @@
 import { test, expect } from '../../support/fixtures';
 
 test.describe('Safety Checks Settings', { tag: ['@group=settings'] }, () => {
-    test.use({ emulatorStartConf: { wipe: true } });
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('device');

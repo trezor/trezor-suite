@@ -22,7 +22,6 @@ const verifyHiddenAndRevealedValue = async ({
 };
 
 test.describe('Discreet Mode', { tag: ['@group=suite'] }, () => {
-    test.use({ emulatorStartConf: { wipe: true } });
     test.beforeEach(async ({ analytics, dashboardPage, onboardingPage }) => {
         await analytics.interceptAnalytics();
         await onboardingPage.completeOnboarding();

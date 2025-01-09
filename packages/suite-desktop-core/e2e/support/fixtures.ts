@@ -60,7 +60,7 @@ type Fixtures = {
 const test = base.extend<Fixtures>({
     startEmulator: true,
     setupEmulator: true,
-    emulatorStartConf: {},
+    emulatorStartConf: { model: 'T3T1', wipe: true },
     emulatorSetupConf: {},
     apiURL: async ({ baseURL }, use, testInfo) => {
         await use(getApiUrl(baseURL, testInfo));

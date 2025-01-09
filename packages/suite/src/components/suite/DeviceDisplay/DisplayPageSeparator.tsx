@@ -38,7 +38,7 @@ const Label = styled.span`
 export const DisplayPageSeparator = () => (
     <Wrapper>
         <Line />
-        <Label>
+        <Label data-testid="@device-display/paginated-text/separator">
             <Translation id="NEXT_PAGE" />
         </Label>
         <Line />

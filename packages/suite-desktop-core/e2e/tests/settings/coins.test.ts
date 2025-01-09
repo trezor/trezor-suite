@@ -3,7 +3,6 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { test, expect } from '../../support/fixtures';
 
 test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
-    test.use({ emulatorStartConf: { wipe: true } });
     test.beforeEach(async ({ analytics, onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
@@ -22,12 +21,7 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
             'etc',
             'xrp',
             'bch',
-            'btg',
-            'dash',
-            'dgb',
             'doge',
-            'nmc',
-            'vtc',
             'zec',
             'ada',
             'sol',

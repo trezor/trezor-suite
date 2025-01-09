@@ -10,7 +10,6 @@ export enum Currency {
 }
 
 test.describe('General settings', { tag: ['@group=settings'] }, () => {
-    test.use({ emulatorStartConf: { wipe: true } });
     test.beforeEach(async ({ analytics, onboardingPage }) => {
         await onboardingPage.completeOnboarding();
         await analytics.interceptAnalytics();

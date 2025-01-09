@@ -8,8 +8,6 @@ import { test, expect } from '../../support/fixtures';
 //mnemonic: 'clot trim improve bag pigeon party wave mechanic beyond clean cake maze protect left assist carry guitar bridge nest faith critic excuse tooth dutch',
 
 test.describe('Cardano', { tag: ['@group=wallet'] }, () => {
-    test.use({ emulatorStartConf: { wipe: true } });
-
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();

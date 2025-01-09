@@ -1,11 +1,7 @@
 import { test, expect } from '../../support/fixtures';
 
-test.use({
-    emulatorStartConf: { wipe: true },
-    emulatorSetupConf: { mnemonic: 'mnemonic_all' },
-});
-
-test.describe.serial(
+test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
+test.describe(
     'Suite works with Electrum server',
     { tag: ['@group=settings', '@desktopOnly'] },
     () => {

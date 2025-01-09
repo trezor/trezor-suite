@@ -5,7 +5,6 @@ import { MetadataProvider, MetadataProviderMock } from '../../support/metadataPr
 // Hovering over fields that may be labeled shows "add label" button upon which is clicked, Suite initiates metadata flow
 test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () => {
     test.use({
-        emulatorStartConf: { wipe: true },
         emulatorSetupConf: { mnemonic: 'mnemonic_all' },
     });
 

@@ -2,7 +2,6 @@ import { test, expect } from '../../support/fixtures';
 
 test.describe('Coinmarket Exchange', { tag: ['@group=other'] }, () => {
     test.use({
-        emulatorStartConf: { wipe: true },
         emulatorSetupConf: {
             mnemonic:
                 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',

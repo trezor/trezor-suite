@@ -1,7 +1,6 @@
 import { test, expect } from '../../support/fixtures';
 
 test.describe('Passphrase', { tag: ['@group=settings'] }, () => {
-    test.use({ emulatorStartConf: { wipe: true } });
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();

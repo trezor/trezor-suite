@@ -1,10 +1,6 @@
 import { test, expect } from '../../support/fixtures';
 
 test.describe('Assets', { tag: ['@group=suite'] }, () => {
-    test.use({
-        emulatorStartConf: { wipe: true },
-    });
-
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });

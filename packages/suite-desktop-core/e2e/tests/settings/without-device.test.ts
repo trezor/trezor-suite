@@ -4,7 +4,6 @@ test.describe(
     'Settings changes persist when device disconnected',
     { tag: ['@group=settings'] },
     () => {
-        test.use({ emulatorStartConf: { wipe: true } });
         test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
             await onboardingPage.completeOnboarding({ enableViewOnly: true });
             await dashboardPage.discoveryShouldFinish();

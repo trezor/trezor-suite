@@ -3,7 +3,6 @@ import { test, expect } from '../../support/fixtures';
 const regexpBtcValue = /^\d+(\.\d+)? BTC$/;
 
 test.describe('Coin market buy', { tag: ['@group=other'] }, () => {
-    test.use({ emulatorStartConf: { wipe: true } });
     test.beforeEach(async ({ onboardingPage, dashboardPage, walletPage }) => {
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();

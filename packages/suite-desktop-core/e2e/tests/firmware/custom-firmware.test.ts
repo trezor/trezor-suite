@@ -5,7 +5,6 @@ import { test, expect } from '../../support/fixtures';
 const firmwarePath = path.join(__dirname, '../../fixtures/trezor-2.5.1.bin');
 
 test.describe('Custom firmware', { tag: ['@group=device-management'] }, () => {
-    test.use({ emulatorStartConf: { wipe: true } });
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('device');
