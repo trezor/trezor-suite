@@ -109,7 +109,7 @@ describe('Coinmarket Common Actions', () => {
                 feePerByte: '13',
                 estimatedFeeLimit: '123',
                 token: {
-                    type: 'abc',
+                    standard: 'abc',
                     contract: 'cde',
                     decimals: 0,
                 },

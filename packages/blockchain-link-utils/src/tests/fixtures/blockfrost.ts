@@ -152,7 +152,7 @@ export default {
             ],
             result: [
                 {
-                    type: 'BLOCKFROST',
+                    standard: 'BLOCKFROST',
                     fingerprint: 'asset1hwnpal5vap799t6kkjmjf6myhse4zl2vu4ahzz',
                     policyId: 'b863bc7369f46136ac1048adb2fa7dae3af944c3bbb2be2f216a8d4f',
                     symbol: 'BerrySapphire',
@@ -163,7 +163,7 @@ export default {
                         'b863bc7369f46136ac1048adb2fa7dae3af944c3bbb2be2f216a8d4f42657272795361707068697265',
                 },
                 {
-                    type: 'BLOCKFROST',
+                    standard: 'BLOCKFROST',
                     decimals: 0,
                     fingerprint: 'asset108xu02ckwrfc8qs9d97mgyh4kn8gdu9w8f5sxk',
                     name: 'Snek',
@@ -173,7 +173,7 @@ export default {
                     contract: '279c909f348e533da5808898f87f9a14bb2c3dfbbacccd631d927a3f534e454b',
                 },
                 {
-                    type: 'BLOCKFROST',
+                    standard: 'BLOCKFROST',
                     fingerprint: 'asset1zvclg2cvj4e5jfz5vswf3sx0lasy79xn8cdap9',
                     policyId: '02477d7c23b4c2834b0be8ca8578dde47af0cc82a964688f6fc95a7a',
                     symbol: 'GRIC',
@@ -514,7 +514,7 @@ export default {
                 },
                 tokens: [
                     {
-                        type: 'BLOCKFROST',
+                        standard: 'BLOCKFROST',
                         fingerprint: 'asset1eevmdlaz5424s3663ypw8w4vyxdlxkm3lefz06',
                         contract:
                             '2f712364ec46f0cf707d412106ce71ef3370f76e27fb56b6bb14708776657465726e696b4e657a6a6564656e79',

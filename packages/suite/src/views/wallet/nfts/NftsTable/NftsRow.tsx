@@ -174,7 +174,7 @@ const NftsRow = ({
                     </Row>
                 </Table.Cell>
             </Table.Row>
-            {['ERC721', 'BEP721'].includes(nft.type) &&
+            {['ERC721', 'BEP721'].includes(nft.standard) &&
                 nft.ids?.map((id, index) => (
                     <Table.Row
                         key={`${id}-${index}`}
@@ -211,7 +211,7 @@ const NftsRow = ({
                         </Table.Cell>
                     </Table.Row>
                 ))}
-            {['ERC1155', 'BEP1155'].includes(nft.type) &&
+            {['ERC1155', 'BEP1155'].includes(nft.standard) &&
                 nft.multiTokenValues?.map((value, index) => (
                     <Table.Row
                         key={`${nft.contract}-${index}`}

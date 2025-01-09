@@ -1,5 +1,7 @@
 /* Do not change, this code is generated from Golang structs */
 
+import { TokenStandard } from './common';
+
 export interface APIError {
     Text: string;
     Public: boolean;
@@ -125,7 +127,7 @@ export interface StakingPool {
     autocompoundBalance: string;
 }
 export interface ContractInfo {
-    type: string;
+    standard: string;
     contract: string;
     name: string;
     symbol: string;
@@ -134,7 +136,11 @@ export interface ContractInfo {
     destructedInBlock?: number;
 }
 export interface Token {
-    type: 'XPUBAddress' | 'ERC20' | 'ERC721' | 'ERC1155' | 'BEP20' | 'BEP721' | 'BEP1155';
+    standard: TokenStandard;
+    /**
+     * @deprecated Use `standard` instead.
+     */
+    type?: TokenStandard;
     name: string;
     path?: string;
     contract?: string;

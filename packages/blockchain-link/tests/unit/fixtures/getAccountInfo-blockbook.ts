@@ -81,13 +81,13 @@ const fixtures: {
                         unconfirmedTxs: 0,
                         tokens: [
                             {
-                                type: 'XPUBAddress',
+                                standard: 'XPUBAddress',
                                 path: "m/44'/0'/100'/1/0",
                                 name: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
                                 transfers: 0,
                             },
                             {
-                                type: 'XPUBAddress',
+                                standard: 'XPUBAddress',
                                 path: "m/44'/0'/100'/0/0",
                                 name: '19SW698tGLusJZVBmGDYmHvSwn79WqJP65',
                                 transfers: 0,
@@ -144,7 +144,7 @@ const fixtures: {
                         txs: 1,
                         tokens: [
                             {
-                                type: 'XPUBAddress',
+                                standard: 'XPUBAddress',
                                 path: "m/44'/0'/100'/1/0",
                                 name: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
                                 transfers: 1,
@@ -257,13 +257,13 @@ const fixtures: {
                         txs: 2,
                         tokens: [
                             {
-                                type: 'XPUBAddress',
+                                standard: 'XPUBAddress',
                                 path: "m/44'/0'/100'/1/0",
                                 name: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
                                 transfers: 2,
                             },
                             {
-                                type: 'XPUBAddress',
+                                standard: 'XPUBAddress',
                                 path: "m/44'/0'/100'/1/1",
                                 name: '1RXiBGixLSBRAAXtZMsCx75EuFqqJnmXZ',
                                 transfers: 1,
@@ -455,7 +455,7 @@ const fixtures: {
                         nonTokenTxs: 0,
                         tokens: [
                             {
-                                type: 'ERC20',
+                                standard: 'ERC20',
                                 name: 'Token name',
                                 symbol: 'TKNNME',
                                 contract: '0x0',
@@ -475,7 +475,7 @@ const fixtures: {
             },
             tokens: [
                 {
-                    type: 'ERC20',
+                    standard: 'ERC20',
                     name: 'Token name',
                     symbol: 'TKNNME',
                     contract: '0x0',
@@ -599,7 +599,7 @@ const fixtures: {
                         nonce: '100',
                         address: '0x3c205C8B3e02421Da82064646788c82f7bd753B9',
                         contractInfo: {
-                            type: 'ERC20',
+                            standard: 'ERC20',
                             contract: '0x3c205C8B3e02421Da82064646788c82f7bd753B9',
                             name: 'PureFi Token',
                             symbol: 'UFI',
@@ -618,7 +618,7 @@ const fixtures: {
                 stakingPools: undefined,
                 addressAliases: undefined,
                 contractInfo: {
-                    type: 'ERC20',
+                    standard: 'ERC20',
                     contract: '0x3c205C8B3e02421Da82064646788c82f7bd753B9',
                     name: 'PureFi Token',
                     symbol: 'UFI',

@@ -68,7 +68,11 @@ type BlockFiltersBatch = `${string}:${string}:${string}`[];
 
 // XPUBAddress, ERC20, ERC721, ERC1155 - blockbook generated type (Token) is not strict enough
 export type XPUBAddress = {
+    /**
+     * @deprecated Use `standard` instead.
+     */
     type: 'XPUBAddress';
+    standard: 'XPUBAddress';
 } & Required<Pick<BlockbookToken, 'path' | 'decimals' | 'balance'>> &
     Pick<BlockbookToken, 'name' | 'transfers'>;
 
@@ -77,27 +81,51 @@ type BaseERC = Required<Pick<BlockbookToken, 'contract'>> &
     Pick<BlockbookToken, 'name' | 'symbol' | 'decimals'>;
 
 export type ERC20 = BaseERC & {
+    /**
+     * @deprecated Use `standard` instead.
+     */
     type: 'ERC20';
+    standard: 'ERC20';
 } & Pick<BlockbookToken, 'balance' | 'baseValue' | 'secondaryValue'>;
 
 export type ERC721 = BaseERC & {
+    /**
+     * @deprecated Use `standard` instead.
+     */
     type: 'ERC721';
+    standard: 'ERC721';
 } & Required<Pick<BlockbookToken, 'ids'>>;
 
 export type ERC1155 = BaseERC & {
+    /**
+     * @deprecated Use `standard` instead.
+     */
     type: 'ERC1155';
+    standard: 'ERC1155';
 } & Required<Pick<BlockbookToken, 'multiTokenValues'>>;
 
 export type BEP20 = BaseERC & {
+    /**
+     * @deprecated Use `standard` instead.
+     */
     type: 'BEP20';
+    standard: 'BEP20';
 } & Pick<BlockbookToken, 'balance' | 'baseValue' | 'secondaryValue'>;
 
 export type BEP721 = BaseERC & {
+    /**
+     * @deprecated Use `standard` instead.
+     */
     type: 'BEP721';
+    standard: 'BEP721';
 } & Required<Pick<BlockbookToken, 'ids'>>;
 
 export type BEP1155 = BaseERC & {
+    /**
+     * @deprecated Use `standard` instead.
+     */
     type: 'BEP1155';
+    standard: 'BEP1155';
 } & Required<Pick<BlockbookToken, 'multiTokenValues'>>;
 
 export interface AccountInfo {
@@ -137,7 +165,11 @@ export interface EthereumInternalTransfer {
 export interface Transaction extends BlockbookTx {
     fees: string; // optional in Tx, seems to always be there
     tokenTransfers?: (BlockbookTokenTransfer & {
-        type: TokenStandard; // string in Tx, seems to always be ERC20 | ERC721 | ERC1155
+        standard: TokenStandard; // string in Tx, seems to always be ERC20 | ERC721 | ERC1155
+        /**
+         * @deprecated Use `standard` instead.
+         */
+        type: TokenStandard;
     })[];
 }
 

@@ -149,7 +149,7 @@ export const transformTokenInfo = (
                 } = tokenAccount.account.data;
 
                 return {
-                    type: tokenProgramsInfo[program].tokenStandard,
+                    standard: tokenProgramsInfo[program].tokenStandard,
                     contract: info.mint,
                     balance: info.tokenAmount.amount,
                     decimals: info.tokenAmount.decimals,
@@ -171,9 +171,9 @@ export const transformTokenInfo = (
                             balance: token.balance || '0',
                         });
                     } else {
-                        const { type, contract, balance, decimals, name, symbol } = token;
+                        const { standard, contract, balance, decimals, name, symbol } = token;
                         acc[token.contract] = {
-                            type,
+                            standard,
                             contract,
                             balance,
                             decimals,

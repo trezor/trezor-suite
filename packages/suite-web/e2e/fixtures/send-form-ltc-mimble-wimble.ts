@@ -54,7 +54,7 @@ const LTC_ACCOUNT = {
     usedTokens: 1,
     tokens: [
         {
-            type: 'XPUBAddress',
+            standard: 'XPUBAddress',
             name: 'ltc1q7n0fvt6thqksq4uhggqjq2kd0r2kmdlje4dvjg',
             path: "m/84'/2'/0'/0/0",
             transfers: 1,
@@ -64,14 +64,14 @@ const LTC_ACCOUNT = {
             totalSent: '0',
         },
         {
-            type: 'XPUBAddress',
+            standard: 'XPUBAddress',
             name: 'ltc1qjwamf85d5ua429l256pugmkp89rhkezndh8t3t',
             path: "m/84'/2'/0'/1/0",
             transfers: 0,
             decimals: 8,
         },
         {
-            type: 'XPUBAddress',
+            standard: 'XPUBAddress',
             name: 'ltc1q6fwte9tar4dftxuarz8lwyfnwdmmt9azxjatpl',
             path: "m/84'/2'/0'/1/1",
             transfers: 0,

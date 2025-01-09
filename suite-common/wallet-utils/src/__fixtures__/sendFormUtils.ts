@@ -25,7 +25,7 @@ export const prepareEthereumTransaction = [
         description: 'erc20',
         txInfo: {
             token: {
-                type: 'ERC20',
+                standard: 'ERC20',
                 symbol: 'gnt',
                 decimals: 18,
                 contract: '0xa74476443119A942dE498590Fe1f2454d7D4aC0d',

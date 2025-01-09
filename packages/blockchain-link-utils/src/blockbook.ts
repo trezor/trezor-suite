@@ -82,7 +82,7 @@ export const filterTokenTransfers = (
                 type,
                 decimals: transfer.decimals || 0,
                 amount: transfer.value || '',
-                standard: transfer.type,
+                standard: transfer.standard,
             };
             delete tokenTransfer.value;
 
@@ -309,7 +309,7 @@ export const transformTokenInfo = (
 ): TokenInfo[] | undefined => {
     if (!tokens || !Array.isArray(tokens)) return undefined;
     const info = tokens.reduce((arr, token) => {
-        if (token.type === 'XPUBAddress') return arr;
+        if (token.standard === 'XPUBAddress') return arr;
 
         return arr.concat([
             {
@@ -327,7 +327,7 @@ export const transformAddresses = (
 ): AccountAddresses | undefined => {
     if (!tokens || !Array.isArray(tokens)) return undefined;
     const addresses = tokens.reduce((arr, t) => {
-        if (t.type !== 'XPUBAddress') return arr;
+        if (t.standard !== 'XPUBAddress') return arr;
 
         return arr.concat([
             {

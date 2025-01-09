@@ -82,7 +82,7 @@ const DOGE_ACCOUNT = {
         usedTokens: 1,
         tokens: [
             {
-                type: 'XPUBAddress',
+                standard: 'XPUBAddress',
                 name: 'DHoUv6AUXrxadt5GhqK2TLN6Lw4bgKZnjG',
                 path: "m/44'/3'/0'/0/0",
                 transfers: 1,
@@ -92,21 +92,21 @@ const DOGE_ACCOUNT = {
                 totalSent: '0',
             },
             {
-                type: 'XPUBAddress',
+                standard: 'XPUBAddress',
                 name: 'DBNkNukxRcH6QTPSp69KhVHQWkUpVLotWs',
                 path: "m/44'/3'/0'/0/1",
                 transfers: 0,
                 decimals: 8,
             },
             {
-                type: 'XPUBAddress',
+                standard: 'XPUBAddress',
                 name: 'DCsP6RCfFHvTKFRocJEoW1CjYEPMk9pk3i',
                 path: "m/44'/3'/0'/1/0",
                 transfers: 0,
                 decimals: 8,
             },
             {
-                type: 'XPUBAddress',
+                standard: 'XPUBAddress',
                 name: 'DMRZ3D9ppogDQoY7AUCLy5EaRTTEv6xJ5f',
                 path: "m/44'/3'/0'/1/1",
                 transfers: 0,

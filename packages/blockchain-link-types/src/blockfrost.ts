@@ -233,6 +233,10 @@ export interface AssetBalance {
 }
 
 export type BlockfrostToken = {
+    standard: 'BLOCKFROST';
+    /**
+     * @deprecated Use `standard` instead.
+     */
     type: 'BLOCKFROST';
     name: string; // from unit or fingerprint
     contract: string; // unit

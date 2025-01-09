@@ -30,19 +30,19 @@ export const accountEth = {
     path: "m/44'/60'/0'/0/1",
     tokens: [
         {
-            type: 'ERC20',
+            standard: 'ERC20',
             contract: '0x1234123412341234123412341234123412341234',
             symbol: 'usdt',
             decimals: 18,
         },
         {
-            type: 'ERC20',
+            standard: 'ERC20',
             contract: '0x1234123412341234123412341234123412341235',
             symbol: 'usdc',
             decimals: 18,
         },
         {
-            type: 'ERC20',
+            standard: 'ERC20',
             contract: '0x1234123412341234123412341234123412341236',
             symbol: 'other',
             decimals: 18,
@@ -95,7 +95,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
                 decimals: 6,
                 name: 'Tether USD',
                 symbol: 'usdt',
-                type: 'ERC20',
+                standard: 'ERC20',
             },
             // unknown token
             {
@@ -104,7 +104,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
                 decimals: 6,
                 name: 'USDC',
                 symbol: 'usdc',
-                type: 'ERC20',
+                standard: 'ERC20',
             },
             // supported and known token
             {
@@ -113,7 +113,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
                 decimals: 6,
                 name: 'VeChain',
                 symbol: 'VEE',
-                type: 'ERC20',
+                standard: 'ERC20',
             },
         ],
     },
@@ -138,7 +138,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
                 decimals: 6,
                 name: 'Tether USD',
                 symbol: 'usdt',
-                type: 'ERC20',
+                standard: 'ERC20',
             },
         ],
         descriptor: 'descriptor5',
@@ -157,7 +157,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
                 decimals: 6,
                 name: 'USDC',
                 symbol: 'usdc',
-                type: 'ERC20',
+                standard: 'ERC20',
             },
         ],
         descriptor: 'descriptor6',
@@ -176,7 +176,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
                 decimals: 6,
                 name: 'USDC',
                 symbol: 'usdc',
-                type: 'ERC20',
+                standard: 'ERC20',
             },
         ],
         descriptor: 'descriptor6',

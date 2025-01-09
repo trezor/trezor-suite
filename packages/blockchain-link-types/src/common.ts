@@ -75,7 +75,8 @@ export type TokenStandard =
     | 'ERC1155'
     | 'BEP1155'
     | 'SPL'
-    | 'SPL-2022';
+    | 'SPL-2022'
+    | 'BLOCKFROST';
 
 export type TransferType = 'sent' | 'recv' | 'self' | 'unknown';
 
@@ -201,7 +202,11 @@ export interface TokenAccount {
 }
 
 export interface TokenInfo extends Partial<Pick<Token, 'multiTokenValues' | 'ids'>> {
-    type: string; // token type: ERC20...
+    standard: string; // token type: ERC20...
+    /**
+     * @deprecated Use `standard` instead.
+     */
+    type?: string;
     contract: string; // token address, token unit for ADA
     balance?: string; // token balance
     name?: string; // token name

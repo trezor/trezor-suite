@@ -181,7 +181,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                   formState.outputs[0].address,
                   account.symbol,
                   tokenInfo.contract,
-                  tokenStandardToTokenProgramName(tokenInfo.type),
+                  tokenStandardToTokenProgramName(tokenInfo.standard),
               )
             : [undefined, undefined];
 
@@ -215,7 +215,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                       blockhash,
                       lastValidBlockHeight,
                       dummyPriorityFeesForFeeEstimation,
-                      tokenStandardToTokenProgramName(tokenInfo.type),
+                      tokenStandardToTokenProgramName(tokenInfo.standard),
                   )
                 : undefined;
 
@@ -241,7 +241,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             // if the recipient account has no owner, it means it's a new account and needs the token account to be created
             (recipientAccountOwner === SYSTEM_PROGRAM_PUBLIC_KEY || recipientAccountOwner == null);
         const newTokenAccountProgramName = isCreatingAccount
-            ? tokenStandardToTokenProgramName(tokenInfo.type)
+            ? tokenStandardToTokenProgramName(tokenInfo.standard)
             : undefined;
 
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
@@ -358,7 +358,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                   formState.outputs[0].address,
                   selectedAccount.symbol,
                   token.contract,
-                  tokenStandardToTokenProgramName(token.type),
+                  tokenStandardToTokenProgramName(token.standard),
               )
             : [undefined, undefined];
 
@@ -385,7 +385,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                           computeUnitPrice: precomposedTransaction.feePerByte,
                           computeUnitLimit: precomposedTransaction.feeLimit,
                       },
-                      tokenStandardToTokenProgramName(token.type),
+                      tokenStandardToTokenProgramName(token.standard),
                   )
                 : undefined;
 
