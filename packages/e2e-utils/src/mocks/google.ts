@@ -50,6 +50,25 @@ export class GoogleMock {
         const app = express();
 
         app.use((req, res, next) => {
+            if (req.method === 'OPTIONS') {
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+                res.setHeader(
+                    'Access-Control-Allow-Headers',
+                    'Content-Type, Authorization, dropbox-api-arg',
+                );
+                res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+                return res.status(200).end();
+            }
+
+            // Handle normal requests
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+            res.setHeader(
+                'Access-Control-Allow-Headers',
+                'Content-Type, Authorization, dropbox-api-arg',
+            );
             this.requests.push(req.url);
 
             if (this.nextResponse.length) {

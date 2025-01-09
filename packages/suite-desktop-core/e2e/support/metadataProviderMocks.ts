@@ -54,24 +54,34 @@ const rerouteFetch = `
 `;
 
 export class MetadataProviderMocks {
-    private readonly dropBoxMock = new DropboxMock();
-    private readonly googleMock = new GoogleMock();
+    private providerMock: MetadataProviderMock | undefined;
     constructor(private readonly page: Page) {}
 
-    getMetadataProvider(provider: MetadataProvider): MetadataProviderMock {
+    @step()
+    async initializeProviderMocking(provider: MetadataProvider) {
         switch (provider) {
             case MetadataProvider.DROPBOX:
-                return this.dropBoxMock;
+                this.providerMock = new DropboxMock();
+                break;
             case MetadataProvider.GOOGLE:
-                return this.googleMock;
+                this.providerMock = new GoogleMock();
+                break;
             default:
                 throw new Error(`Provider ${provider} not supported`);
         }
+
+        await this.providerMock.start();
+
+        await this.page.evaluate(rerouteFetch);
+        await this.page.evaluate(stubOpen);
     }
 
     @step()
-    async initializeProviderMocking() {
-        await this.page.evaluate(rerouteFetch);
-        await this.page.evaluate(stubOpen);
+    stopProviderMocking() {
+        if (!this.providerMock) {
+            throw new Error('Provider mock not initialized');
+        }
+
+        this.providerMock.stop();
     }
 }
