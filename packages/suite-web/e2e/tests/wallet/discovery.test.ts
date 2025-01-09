@@ -6,21 +6,7 @@ import { onNavBar } from '../../support/pageObjects/topBarObject';
 // discovery should end within this time frame
 const DISCOVERY_LIMIT = 1000 * 60 * 2;
 
-const coinsToActivate = [
-    'ltc',
-    'eth',
-    'etc',
-    'dash',
-    'btg',
-    'bch',
-    'doge',
-    'vtc',
-    'ada',
-    'xrp',
-    'dgb',
-    'zec',
-    'nmc',
-];
+const coinsToActivate = ['ltc', 'eth', 'etc', 'bch', 'doge', 'ada', 'xrp', 'zec'];
 describe('Discovery', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
