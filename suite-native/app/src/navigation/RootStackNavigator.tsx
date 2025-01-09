@@ -9,6 +9,7 @@ import {
     AccountSettingsScreen,
 } from '@suite-native/module-accounts-management';
 import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
+import { DeviceCompromisedModalScreen } from '@suite-native/module-authenticity-checks';
 import { AuthorizeDeviceStackNavigator } from '@suite-native/module-authorize-device';
 import { ConnectPopupScreen } from '@suite-native/module-connect-popup';
 import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
@@ -79,6 +80,10 @@ export const RootStackNavigator = () => {
             <RootStack.Screen
                 name={RootStackRoutes.SettingsScreenStack}
                 component={SettingsStackNavigator}
+            />
+            <RootStack.Screen
+                name={RootStackRoutes.DeviceCompromisedModalScreen}
+                component={DeviceCompromisedModalScreen}
             />
             {/* Navigation flows that start by push from bottom animation on the first screen of its stack. */}
             <RootStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>

@@ -10000,6 +10000,7 @@ __metadata:
     "@suite-native/module-accounts-import": "workspace:*"
     "@suite-native/module-accounts-management": "workspace:*"
     "@suite-native/module-add-accounts": "workspace:*"
+    "@suite-native/module-authenticity-checks": "workspace:*"
     "@suite-native/module-authorize-device": "workspace:*"
     "@suite-native/module-connect-popup": "workspace:*"
     "@suite-native/module-dev-utils": "workspace:*"
@@ -10644,6 +10645,20 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.76.1"
     react-native-safe-area-context: "npm:^4.14.0"
+    react-redux: "npm:8.0.7"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/module-authenticity-checks@workspace:*, @suite-native/module-authenticity-checks@workspace:suite-native/module-authenticity-checks":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-authenticity-checks@workspace:suite-native/module-authenticity-checks"
+  dependencies:
+    "@react-navigation/native": "npm:6.1.18"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/link": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft

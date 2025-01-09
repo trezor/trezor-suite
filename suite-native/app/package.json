@@ -59,6 +59,7 @@
         "@suite-native/module-accounts-import": "workspace:*",
         "@suite-native/module-accounts-management": "workspace:*",
         "@suite-native/module-add-accounts": "workspace:*",
+        "@suite-native/module-authenticity-checks": "workspace:*",
         "@suite-native/module-authorize-device": "workspace:*",
         "@suite-native/module-connect-popup": "workspace:*",
         "@suite-native/module-dev-utils": "workspace:*",

@@ -48,6 +48,9 @@
             "path": "../module-accounts-management"
         },
         { "path": "../module-add-accounts" },
+        {
+            "path": "../module-authenticity-checks"
+        },
         { "path": "../module-authorize-device" },
         { "path": "../module-connect-popup" },
         { "path": "../module-dev-utils" },

@@ -1,0 +1,22 @@
+{
+    "name": "@suite-native/module-authenticity-checks",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@react-navigation/native": "6.1.18",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/link": "workspace:*",
+        "@suite-native/navigation": "workspace:*",
+        "react-redux": "8.0.7"
+    }
+}

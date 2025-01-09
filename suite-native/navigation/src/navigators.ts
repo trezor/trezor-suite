@@ -216,6 +216,7 @@ export type RootStackParamList = {
         parsedUrl: ParsedURL;
     };
     [RootStackRoutes.SettingsScreenStack]: NavigatorScreenParams<SettingsStackParamList>;
+    [RootStackRoutes.DeviceCompromisedModalScreen]: undefined;
 };
 
 export type TradingStackParamList = {

@@ -16,6 +16,7 @@ export enum RootStackRoutes {
     CoinEnablingInit = 'CoinEnablingInit',
     ConnectPopup = 'ConnectPopup',
     SettingsScreenStack = 'SettingsScreenStack',
+    DeviceCompromisedModalScreen = 'DeviceCompromisedModalScreen',
 }
 
 export enum AppTabsRoutes {

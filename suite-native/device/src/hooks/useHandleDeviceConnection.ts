@@ -10,6 +10,7 @@ import {
     selectIsDeviceInitialized,
     selectIsDeviceRemembered,
     selectIsDeviceUsingPassphrase,
+    selectIsFirmwareAuthenticityCheckDismissed,
     selectIsNoPhysicalDeviceConnected,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
@@ -29,7 +30,10 @@ import {
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 
-import { selectIsDeviceSetupSupported } from '../selectors';
+import {
+    selectHasFirmwareAuthenticityCheckHardFailed,
+    selectIsDeviceSetupSupported,
+} from '../selectors';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList | RootStackParamList,
@@ -51,6 +55,16 @@ export const useHandleDeviceConnection = () => {
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
 
     const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
+
+    const hasFirmwareAuthenticityCheckHardFailed = useSelector(
+        selectHasFirmwareAuthenticityCheckHardFailed,
+    );
+    const isFirmwareAuthenticityCheckDismissed = useSelector(
+        selectIsFirmwareAuthenticityCheckDismissed,
+    );
+    const shouldNavigateToDeviceCompromisedModal =
+        hasFirmwareAuthenticityCheckHardFailed && !isFirmwareAuthenticityCheckDismissed;
+
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
 
@@ -58,6 +72,8 @@ export const useHandleDeviceConnection = () => {
     const isDeviceSettingsStackFocused = lastRoute === RootStackRoutes.DeviceSettingsStack;
     const isSendStackFocused = lastRoute === RootStackRoutes.SendStack;
     const shouldBlockSendReviewRedirect = isDeviceRemembered && isSendStackFocused;
+    const isDeviceCompromisedModalFocused =
+        lastRoute === RootStackRoutes.DeviceCompromisedModalScreen;
 
     // When is an uninitialized device model that supports device setup, navigate to device onboarding.
     useEffect(() => {
@@ -103,7 +119,8 @@ export const useHandleDeviceConnection = () => {
             isOnboardingFinished &&
             !isPortfolioTrackerDevice &&
             !isDeviceConnectedAndAuthorized &&
-            !isBiometricsOverlayVisible
+            !isBiometricsOverlayVisible &&
+            !shouldNavigateToDeviceCompromisedModal
         ) {
             requestPrioritizedDeviceAccess({
                 deviceCallback: () => dispatch(authorizeDeviceThunk()),
@@ -116,6 +133,9 @@ export const useHandleDeviceConnection = () => {
                     screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
                 });
             }
+        }
+        if (shouldNavigateToDeviceCompromisedModal) {
+            navigation.navigate(RootStackRoutes.DeviceCompromisedModalScreen);
         }
     }, [
         dispatch,
@@ -130,6 +150,7 @@ export const useHandleDeviceConnection = () => {
         shouldBlockSendReviewRedirect,
         isFirmwareInstallationRunning,
         isDeviceInitialized,
+        shouldNavigateToDeviceCompromisedModal,
     ]);
 
     // In case that the physical device is disconnected, redirect to the home screen and
@@ -139,6 +160,13 @@ export const useHandleDeviceConnection = () => {
 
         if (isNoPhysicalDeviceConnected && isOnboardingFinished) {
             if (shouldBlockSendReviewRedirect) {
+                return;
+            }
+            // DeviceCompromisedModal is persistent, so postpone navigating to away until it's dismissed
+            // TODO: this hook is getting very complex, and it's hard to understand the logic when it navigates there and back again.
+            //  Ideally there'd be a single source of truth, a function returning "where we should be as per current state"
+            //  rather than multiple useEffects with imperative instructions "go there when X changes"
+            if (isDeviceCompromisedModalFocused) {
                 return;
             }
             navigation.navigate(RootStackRoutes.AppTabs, {
@@ -154,6 +182,7 @@ export const useHandleDeviceConnection = () => {
         navigation,
         shouldBlockSendReviewRedirect,
         isFirmwareInstallationRunning,
+        isDeviceCompromisedModalFocused,
     ]);
 
     // When trezor gets locked, it is necessary to display a PIN matrix for T1 so that it can be unlocked
