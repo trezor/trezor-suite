@@ -94,7 +94,7 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
 
         // Check metadata requests when switching routes
         await page.getByTestId('@suite/menu/suite-index').click();
-        await expect(dashboardPage.dashboardGraph).toBeVisible();
+        await expect(dashboardPage.graph).toBeVisible();
 
         // Add and label a new account
         await page.getByTestId('@account-menu/btc/normal/0').click();

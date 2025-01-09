@@ -155,14 +155,15 @@ jobs:
           echo "Starting Playwright Web test group ${{ matrix.TEST_GROUP }}"
           yarn workspace @trezor/suite-desktop-core test:e2e:web --forbid-only --grep=${{ matrix.TEST_GROUP }}
 
-      - name: Extract Trezor-user-env logs
+      - name: Extract Trezor-user-env and Regtest logs
         if: ${{ ! cancelled() }}
         run: |
           docker cp docker-trezor-user-env-unix-1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log || true
           docker cp docker-trezor-user-env-unix-1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log || true
           docker cp docker-trezor-user-env-unix-1:/trezor-user-env/docker/version.txt trezor-user-env-version.txt || true
+          docker logs docker-electrum-regtest-1 > electrum-regtest.txt || true
 
-      - name: Upload Trezor-user-env logs
+      - name: Upload Trezor-user-env and Regtest logs
         if: ${{ ! cancelled() }}
         uses: actions/upload-artifact@v4
         with:
@@ -171,6 +172,7 @@ jobs:
             trezor-user-env-debugging.log
             tenv-emulator-bridge-debugging.log
             trezor-user-env-version.txt
+            electrum-regtest.txt
           retention-days: 30
 
       - name: Docker compose down
