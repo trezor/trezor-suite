@@ -270,6 +270,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
     if (oldVersion < 26) {
         await updateAll(transaction, 'accounts', account => {
+            // @ts-expect-error
             if (account.symbol === 'vtc' && account.accountType === 'normal') {
                 // change account type from normal to segwit
                 account.accountType = 'segwit';
@@ -280,6 +281,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
         await updateAll(transaction, 'discovery', d => {
             // reset discovery
+            // @ts-expect-error
             if (d.networks.includes('vtc')) {
                 d.index = 0;
                 d.loaded = 0;
@@ -1175,5 +1177,53 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
             return account;
         });
+    }
+
+    // Deprecate Vertcoin (VTC) and other networks
+    if (oldVersion < 52) {
+        const deprecatedNetworks = ['vtc', 'btg', 'nmc', 'dgb', 'dash'];
+
+        // Remove transactions related to deprecated networks
+        await updateAll(transaction, 'txs', tx => {
+            if (deprecatedNetworks.includes(tx.tx.symbol)) {
+                return null; // Delete transaction
+            }
+
+            return tx;
+        });
+
+        // Remove accounts related to deprecated networks
+        await updateAll(transaction, 'accounts', account => {
+            if (deprecatedNetworks.includes(account.symbol)) {
+                return null; // Delete account
+            }
+
+            return account;
+        });
+
+        // Remove deprecated networks from enabled networks in wallet settings
+        await updateAll(transaction, 'walletSettings', walletSettings => {
+            walletSettings.enabledNetworks = walletSettings.enabledNetworks.filter(
+                network => !deprecatedNetworks.includes(network), // Exclude deprecated networks from enabled networks
+            );
+
+            return walletSettings;
+        });
+
+        // Remove deprecated networks from discovery networks
+        await updateAll(transaction, 'discovery', discovery => {
+            discovery.networks = discovery.networks.filter(
+                network => !deprecatedNetworks.includes(network), // Exclude deprecated networks from discovery
+            );
+            discovery.failed = []; // Clear failed discovery attempts
+
+            return discovery;
+        });
+
+        // Remove deprecated networks from backend settings
+        const backendSettings = transaction.objectStore('backendSettings');
+        for (const network of deprecatedNetworks) {
+            await backendSettings.delete(network as NetworkSymbol); // Delete backend settings for each deprecated network
+        }
     }
 };

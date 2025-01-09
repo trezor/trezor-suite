@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 52
+
+-   Deprecated Vertcoin (VTC), Bitcoin Gold (BTG), Namecoin (NMC), DigiByte (DGB), and Dash (DASH) networks. Removed related transactions, accounts, and settings.
+
 ## 51
 
 -   Changed `metadata.key` on non-eth EVM networks accounts to be `descriptor-chainId`
