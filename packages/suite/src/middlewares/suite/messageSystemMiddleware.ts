@@ -6,7 +6,7 @@ import {
     messageSystemActions,
     categorizeMessages,
     getValidMessages,
-    getValidExperiments,
+    getValidExperimentIds,
 } from '@suite-common/message-system';
 
 import { SUITE } from 'src/actions/suite/constants';
@@ -50,10 +50,10 @@ const messageSystemMiddleware =
             const validMessages = getValidMessages(config, validationParams);
             const categorizedValidMessages = categorizeMessages(validMessages);
 
-            const validExperiments = getValidExperiments(config, validationParams);
+            const validExperimentIds = getValidExperimentIds(config, validationParams);
 
             api.dispatch(messageSystemActions.updateValidMessages(categorizedValidMessages));
-            api.dispatch(messageSystemActions.updateValidExperiments(validExperiments));
+            api.dispatch(messageSystemActions.updateValidExperiments(validExperimentIds));
         }
 
         return action;

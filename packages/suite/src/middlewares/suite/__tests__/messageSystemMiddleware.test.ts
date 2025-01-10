@@ -96,7 +96,7 @@ describe('Message system middleware', () => {
             message3,
             message4,
         ]);
-        jest.spyOn(messageSystemUtils, 'getValidExperiments').mockImplementation(() => []);
+        jest.spyOn(messageSystemUtils, 'getValidExperimentIds').mockImplementation(() => []);
 
         const store = initStore(getInitialState(undefined, undefined));
         store.dispatch({
@@ -128,7 +128,7 @@ describe('Message system middleware', () => {
 
     it('saves messages even if there are no valid messages', () => {
         jest.spyOn(messageSystemUtils, 'getValidMessages').mockImplementation(() => []);
-        jest.spyOn(messageSystemUtils, 'getValidExperiments').mockImplementation(() => []);
+        jest.spyOn(messageSystemUtils, 'getValidExperimentIds').mockImplementation(() => []);
 
         const store = initStore(getInitialState(undefined, undefined));
         store.dispatch({
@@ -168,7 +168,7 @@ describe('Message system middleware', () => {
             ],
         };
 
-        jest.spyOn(messageSystemUtils, 'getValidExperiments').mockImplementation(() => [
+        jest.spyOn(messageSystemUtils, 'getValidExperimentIds').mockImplementation(() => [
             experiment1.id,
         ]);
 

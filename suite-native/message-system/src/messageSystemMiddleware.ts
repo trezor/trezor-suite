@@ -6,7 +6,7 @@ import {
     categorizeMessages,
     getValidMessages,
     selectMessageSystemConfig,
-    getValidExperiments,
+    getValidExperimentIds,
 } from '@suite-common/message-system';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
@@ -42,10 +42,10 @@ export const messageSystemMiddleware = createMiddleware((action, { next, dispatc
         const validMessages = getValidMessages(config, validationParams);
         const categorizedValidMessages = categorizeMessages(validMessages);
 
-        const validExperiments = getValidExperiments(config, validationParams);
+        const validExperimentIds = getValidExperimentIds(config, validationParams);
 
         dispatch(messageSystemActions.updateValidMessages(categorizedValidMessages));
-        dispatch(messageSystemActions.updateValidExperiments(validExperiments));
+        dispatch(messageSystemActions.updateValidExperiments(validExperimentIds));
     }
 
     return action;

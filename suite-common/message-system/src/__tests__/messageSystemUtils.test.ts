@@ -127,7 +127,7 @@ describe('Message system utils', () => {
         });
     });
 
-    describe('getValidExperiments', () => {
+    describe('getValidExperimentIds', () => {
         let userAgentGetter: any;
         const OLD_ENV = { ...process.env };
 
@@ -140,7 +140,7 @@ describe('Message system utils', () => {
             process.env = OLD_ENV;
         });
 
-        fixtures.getValidExperiments.forEach(f => {
+        fixtures.getValidExperimentIds.forEach(f => {
             it(f.description, () => {
                 jest.spyOn(Date, 'now').mockImplementation(() => new Date(f.currentDate).getTime());
                 // @ts-expect-error (getOsName returns union of string literals)
@@ -151,7 +151,7 @@ describe('Message system utils', () => {
                 process.env.VERSION = f.suiteVersion;
 
                 // @ts-expect-error
-                expect(messageSystem.getValidExperiments(f.config, f.options)).toEqual(f.result);
+                expect(messageSystem.getValidExperimentIds(f.config, f.options)).toEqual(f.result);
             });
         });
     });

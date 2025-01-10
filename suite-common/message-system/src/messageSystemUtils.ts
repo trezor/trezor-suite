@@ -288,7 +288,7 @@ export const getValidMessages = (config: MessageSystem | null, options: Options)
         .map(action => action.message);
 };
 
-export const getValidExperiments = (config: MessageSystem | null, options: Options): string[] => {
+export const getValidExperimentIds = (config: MessageSystem | null, options: Options): string[] => {
     if (!config?.experiments) {
         return [];
     }

@@ -1945,9 +1945,9 @@ export const validateExperiments = [
     },
 ];
 
-export const getValidExperiments = [
+export const getValidExperimentIds = [
     {
-        description: 'getValidExperiments - case 1',
+        description: 'getValidExperimentIds - case 1',
         currentDate: '2021-04-01T12:10:00.000Z',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
