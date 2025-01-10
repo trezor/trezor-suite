@@ -79,10 +79,7 @@ const useAnimationStyles = ({ isChecked }: Pick<SwitchProps, 'isChecked'>) => {
         backgroundColor: interpolateColor(
             translateX.value,
             [0, SWITCH_CIRCLE_TRACK_WIDTH],
-            [
-                utils.colors.backgroundNeutralSubtleOnElevationNegative,
-                utils.colors.backgroundPrimaryDefault,
-            ],
+            [utils.colors.backgroundNeutralSubdued, utils.colors.backgroundPrimaryDefault],
         ),
     }));
 
