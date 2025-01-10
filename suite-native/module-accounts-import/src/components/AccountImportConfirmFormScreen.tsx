@@ -68,7 +68,7 @@ export const AccountImportConfirmFormScreen = ({
     const form = useAccountLabelForm(defaultAccountLabel);
     const {
         handleSubmit,
-        formState: { errors },
+        formState: { isValid },
     } = form;
 
     const handleImportAccount = handleSubmit(async ({ accountLabel }: AccountFormValues) => {
@@ -121,7 +121,7 @@ export const AccountImportConfirmFormScreen = ({
                         testID="@account-import/coin-synced/confirm-button"
                         onPress={handleImportAccount}
                         size="large"
-                        isDisabled={!!errors.accountLabel}
+                        isDisabled={!isValid}
                     >
                         <Translation id="generic.buttons.confirm" />
                     </Button>
@@ -133,7 +133,11 @@ export const AccountImportConfirmFormScreen = ({
                     ListEmptyComponent={null}
                     ListHeaderComponent={
                         <>
-                            <AccountImportOverview balance={accountInfo.balance} symbol={symbol} />
+                            <AccountImportOverview
+                                balance={accountInfo.balance}
+                                symbol={symbol}
+                                formControl={form.control}
+                            />
                             {knownTokens.length > 0 && (
                                 <Box marginTop="sp16" marginBottom="sp8">
                                     <Text variant="titleSmall">

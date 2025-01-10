@@ -9893,6 +9893,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
+    react-hook-form: "npm:^7.54.2"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:3.16.1"
     react-redux: "npm:8.0.7"
@@ -10547,6 +10548,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     react: "npm:18.2.0"
+    react-hook-form: "npm:^7.54.2"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:3.16.1"
     react-redux: "npm:8.0.7"
@@ -10587,7 +10589,6 @@ __metadata:
     date-fns: "npm:^2.30.0"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
-    react-hook-form: "npm:^7.54.2"
     react-native: "npm:0.76.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
