@@ -7,17 +7,7 @@ const {
 } = require('./jest.config.base');
 
 const babelConfig = {
-    presets: [
-        'module:metro-react-native-babel-preset',
-        ['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }],
-        '@babel/preset-typescript',
-        [
-            '@babel/preset-react',
-            {
-                runtime: 'automatic',
-            },
-        ],
-    ],
+    presets: ['babel-preset-expo'],
 };
 
 module.exports = {

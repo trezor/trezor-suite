@@ -9,7 +9,7 @@ import {
     MAX_ACCOUNT_LABEL_LENGTH,
 } from '../hooks/useAccountLabelForm';
 
-type AccountLabelFieldHintProps = {
+export type AccountLabelFieldHintProps = {
     formControl: Control<AccountFormValues>;
 };
 

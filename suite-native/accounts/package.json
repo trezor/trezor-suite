@@ -41,5 +41,8 @@
         "react-native": "0.76.1",
         "react-native-reanimated": "^3.16.7",
         "react-redux": "8.0.7"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*"
     }
 }

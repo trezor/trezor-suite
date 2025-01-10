@@ -39,6 +39,7 @@
         { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles" },
+        { "path": "../test-utils" }
     ]
 }
