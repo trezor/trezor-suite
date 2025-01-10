@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { Box, Text, Card, RoundedIcon, Badge, BoxSkeleton } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { getNetwork } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { FiatAmountFormatter } from '@suite-native/formatters';
 import { AccountKey } from '@suite-common/wallet-types';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
@@ -82,7 +82,7 @@ export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
 
     if (!symbol) return null;
 
-    const coinName = getNetwork(symbol).name;
+    const coinName = getNetworkDisplaySymbolName(symbol);
 
     return (
         <Card style={applyStyle(cardStyle)}>
