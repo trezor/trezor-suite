@@ -4,8 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
-    OnboardingStackParamList,
-    OnboardingStackRoutes,
+    LegacyOnboardingStackParamList as OnboardingStackParamList,
+    LegacyOnboardingStackRoutes as OnboardingStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { Box } from '@suite-native/atoms';
@@ -13,31 +13,31 @@ import { TxKeyPath, Translation } from '@suite-native/intl';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
 import { OnboardingScreen } from '../components/OnboardingScreen';
-import { CoinsSvg } from '../components/CoinsSvg';
+import { GraphSvg } from '../components/GraphSvg';
 import { OnboardingScreenHeader } from '../components/OnboardingScreenHeader';
-
-type NavigationProps = StackNavigationProps<
-    OnboardingStackParamList,
-    OnboardingStackRoutes.AboutReceiveCoinsFeature
->;
 
 type ScreenContent = {
     title: TxKeyPath;
     subtitle: TxKeyPath;
     redirectTarget: OnboardingStackRoutes;
 };
-const receiveScreenContentMap = {
+const trackBalancesScreenContentMap = {
     device: {
-        title: 'moduleOnboarding.featureReceiveScreen.device.title',
-        subtitle: 'moduleOnboarding.featureReceiveScreen.device.subtitle',
-        redirectTarget: OnboardingStackRoutes.TrackBalances,
-    },
-    portfolioTracker: {
-        title: 'moduleOnboarding.featureReceiveScreen.portfolioTracker.title',
-        subtitle: 'moduleOnboarding.featureReceiveScreen.portfolioTracker.subtitle',
+        title: 'moduleOnboarding.trackBalancesScreen.device.title',
+        subtitle: 'moduleOnboarding.trackBalancesScreen.device.subtitle',
         redirectTarget: OnboardingStackRoutes.AnalyticsConsent,
     },
+    portfolioTracker: {
+        title: 'moduleOnboarding.trackBalancesScreen.portfolioTracker.title',
+        subtitle: 'moduleOnboarding.trackBalancesScreen.portfolioTracker.subtitle',
+        redirectTarget: OnboardingStackRoutes.AboutReceiveCoinsFeature,
+    },
 } as const satisfies Record<'device' | 'portfolioTracker', ScreenContent>;
+
+type NavigationProp = StackNavigationProps<
+    OnboardingStackParamList,
+    OnboardingStackRoutes.TrackBalances
+>;
 
 const IconWrapper = ({ children }: { children: ReactNode }) => {
     const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
@@ -45,18 +45,21 @@ const IconWrapper = ({ children }: { children: ReactNode }) => {
     if (!isUsbDeviceConnectFeatureEnabled) return <>{children}</>;
 
     return (
-        <Box alignItems="center" flex={1} justifyContent="center">
+        <Box alignSelf="center" flex={2} justifyContent="center" paddingHorizontal="sp8">
             {children}
         </Box>
     );
 };
 
-export const FeatureReceiveScreen = () => {
-    const navigation = useNavigation<NavigationProps>();
+export const TrackBalancesScreen = () => {
     const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
+    const navigation = useNavigation<NavigationProp>();
+
     const content =
-        receiveScreenContentMap[isUsbDeviceConnectFeatureEnabled ? 'device' : 'portfolioTracker'];
+        trackBalancesScreenContentMap[
+            isUsbDeviceConnectFeatureEnabled ? 'device' : 'portfolioTracker'
+        ];
 
     return (
         <OnboardingScreen
@@ -64,7 +67,7 @@ export const FeatureReceiveScreen = () => {
                 <OnboardingScreenHeader
                     title={<Translation id={content.title} />}
                     subtitle={<Translation id={content.subtitle} />}
-                    activeStep={2}
+                    activeStep={isUsbDeviceConnectFeatureEnabled ? 3 : 1}
                 />
             }
             footer={
@@ -77,7 +80,7 @@ export const FeatureReceiveScreen = () => {
             }
         >
             <IconWrapper>
-                <CoinsSvg />
+                <GraphSvg />
             </IconWrapper>
         </OnboardingScreen>
     );

@@ -4,8 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
-    OnboardingStackParamList,
-    OnboardingStackRoutes,
+    LegacyOnboardingStackParamList as OnboardingStackParamList,
+    LegacyOnboardingStackRoutes as OnboardingStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { Box } from '@suite-native/atoms';
@@ -13,31 +13,31 @@ import { TxKeyPath, Translation } from '@suite-native/intl';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
 import { OnboardingScreen } from '../components/OnboardingScreen';
-import { GraphSvg } from '../components/GraphSvg';
+import { CoinsSvg } from '../components/CoinsSvg';
 import { OnboardingScreenHeader } from '../components/OnboardingScreenHeader';
+
+type NavigationProps = StackNavigationProps<
+    OnboardingStackParamList,
+    OnboardingStackRoutes.AboutReceiveCoinsFeature
+>;
 
 type ScreenContent = {
     title: TxKeyPath;
     subtitle: TxKeyPath;
     redirectTarget: OnboardingStackRoutes;
 };
-const trackBalancesScreenContentMap = {
+const receiveScreenContentMap = {
     device: {
-        title: 'moduleOnboarding.trackBalancesScreen.device.title',
-        subtitle: 'moduleOnboarding.trackBalancesScreen.device.subtitle',
-        redirectTarget: OnboardingStackRoutes.AnalyticsConsent,
+        title: 'moduleOnboarding.featureReceiveScreen.device.title',
+        subtitle: 'moduleOnboarding.featureReceiveScreen.device.subtitle',
+        redirectTarget: OnboardingStackRoutes.TrackBalances,
     },
     portfolioTracker: {
-        title: 'moduleOnboarding.trackBalancesScreen.portfolioTracker.title',
-        subtitle: 'moduleOnboarding.trackBalancesScreen.portfolioTracker.subtitle',
-        redirectTarget: OnboardingStackRoutes.AboutReceiveCoinsFeature,
+        title: 'moduleOnboarding.featureReceiveScreen.portfolioTracker.title',
+        subtitle: 'moduleOnboarding.featureReceiveScreen.portfolioTracker.subtitle',
+        redirectTarget: OnboardingStackRoutes.AnalyticsConsent,
     },
 } as const satisfies Record<'device' | 'portfolioTracker', ScreenContent>;
-
-type NavigationProp = StackNavigationProps<
-    OnboardingStackParamList,
-    OnboardingStackRoutes.TrackBalances
->;
 
 const IconWrapper = ({ children }: { children: ReactNode }) => {
     const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
@@ -45,21 +45,18 @@ const IconWrapper = ({ children }: { children: ReactNode }) => {
     if (!isUsbDeviceConnectFeatureEnabled) return <>{children}</>;
 
     return (
-        <Box alignSelf="center" flex={2} justifyContent="center" paddingHorizontal="sp8">
+        <Box alignItems="center" flex={1} justifyContent="center">
             {children}
         </Box>
     );
 };
 
-export const TrackBalancesScreen = () => {
+export const FeatureReceiveScreen = () => {
+    const navigation = useNavigation<NavigationProps>();
     const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
-    const navigation = useNavigation<NavigationProp>();
-
     const content =
-        trackBalancesScreenContentMap[
-            isUsbDeviceConnectFeatureEnabled ? 'device' : 'portfolioTracker'
-        ];
+        receiveScreenContentMap[isUsbDeviceConnectFeatureEnabled ? 'device' : 'portfolioTracker'];
 
     return (
         <OnboardingScreen
@@ -67,7 +64,7 @@ export const TrackBalancesScreen = () => {
                 <OnboardingScreenHeader
                     title={<Translation id={content.title} />}
                     subtitle={<Translation id={content.subtitle} />}
-                    activeStep={isUsbDeviceConnectFeatureEnabled ? 3 : 1}
+                    activeStep={2}
                 />
             }
             footer={
@@ -80,7 +77,7 @@ export const TrackBalancesScreen = () => {
             }
         >
             <IconWrapper>
-                <GraphSvg />
+                <CoinsSvg />
             </IconWrapper>
         </OnboardingScreen>
     );

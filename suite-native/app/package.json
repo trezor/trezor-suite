@@ -65,6 +65,7 @@
         "@suite-native/module-device-settings": "workspace:*",
         "@suite-native/module-home": "workspace:*",
         "@suite-native/module-onboarding": "workspace:*",
+        "@suite-native/module-onboarding-legacy": "workspace:*",
         "@suite-native/module-send": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/module-staking-management": "workspace:*",

@@ -1,5 +1,6 @@
 export enum RootStackRoutes {
     AppTabs = 'AppTabs',
+    LegacyOnboarding = 'LegacyOnboarding',
     Onboarding = 'Onboarding',
     AccountsImport = 'AccountsImport',
     AuthorizeDeviceStack = 'AuthorizeDeviceStack',
@@ -23,12 +24,16 @@ export enum AppTabsRoutes {
     Settings = 'Settings',
 }
 
-export enum OnboardingStackRoutes {
+export enum LegacyOnboardingStackRoutes {
     Welcome = 'Welcome',
     TrackBalances = 'TrackBalances',
     AboutReceiveCoinsFeature = 'AboutReceiveCoinsFeature',
     AnalyticsConsent = 'AnalyticsConsent',
     ConnectTrezor = 'ConnectTrezor',
+}
+
+export enum OnboardingStackRoutes {
+    Welcome = 'Welcome',
 }
 
 export enum AccountsImportStackRoutes {

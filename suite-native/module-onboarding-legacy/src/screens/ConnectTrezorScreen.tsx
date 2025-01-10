@@ -3,8 +3,8 @@ import { Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    OnboardingStackParamList,
-    OnboardingStackRoutes,
+    LegacyOnboardingStackParamList as OnboardingStackParamList,
+    LegacyOnboardingStackRoutes as OnboardingStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';

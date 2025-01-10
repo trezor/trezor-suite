@@ -4,8 +4,8 @@ import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Link } from '@suite-native/link';
 import { Box, Text, TrezorSuiteLiteHeader } from '@suite-native/atoms';
 import {
-    OnboardingStackParamList,
-    OnboardingStackRoutes,
+    LegacyOnboardingStackParamList as OnboardingStackParamList,
+    LegacyOnboardingStackRoutes as OnboardingStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
@@ -67,7 +67,7 @@ export const WelcomeScreen = () => {
                     </Box>
                 </Box>
                 <Text color="textSubdued" textAlign="center">
-                    <Translation id="moduleOnboarding.welcomeScreen.subtitle" />
+                    <Translation id="moduleOnboarding.welcomeScreen.subtitleLegacy" />
                 </Text>
             </Box>
             <Box flex={1} style={applyStyle(trezorLinkStyle)}>

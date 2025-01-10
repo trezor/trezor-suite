@@ -8,8 +8,8 @@ import { CommonActions } from '@react-navigation/core';
 import { setIsOnboardingFinished } from '@suite-native/settings';
 import {
     HomeStackRoutes,
-    OnboardingStackParamList,
-    OnboardingStackRoutes,
+    LegacyOnboardingStackParamList as OnboardingStackParamList,
+    LegacyOnboardingStackRoutes as OnboardingStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     Screen,
