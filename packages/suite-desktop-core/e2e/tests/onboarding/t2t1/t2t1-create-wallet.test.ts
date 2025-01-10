@@ -1,3 +1,4 @@
+import { isWebProject } from '../../../support/common';
 import { SeedType } from '../../../support/enums/seedType';
 import { test, expect } from '../../../support/fixtures';
 
@@ -19,9 +20,13 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         onboardingPage,
         devicePrompt,
         trezorUserEnvLink,
-    }) => {
+    }, testInfo) => {
         await analyticsPage.passThroughAnalytics();
-        await onboardingPage.firmware.continueButton.click();
+        if (isWebProject(testInfo)) {
+            await onboardingPage.firmware.skip();
+        } else {
+            await onboardingPage.firmware.continueButton.click();
+        }
 
         // Will be clicking on Shamir backup button
         await onboardingPage.createWalletButton.click();

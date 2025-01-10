@@ -75,6 +75,7 @@ describe('Account types suite', () => {
                 // Test execution
                 //
                 onAccountsPage.clickAllAccountArrows();
+                cy.getTestElement(`@account-menu/normal`).click();
 
                 // for a specific type of BTC acc, get the current number of accounts
                 cy.getTestElement(`@account-menu/${type}/group`)
