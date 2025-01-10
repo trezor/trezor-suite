@@ -9,8 +9,9 @@ import {
     nextElevation,
     palette,
     spacings,
+    zIndices,
 } from '@trezor/theme';
-import { Row, useElevation, Box, Badge, IconButton, Tooltip } from '@trezor/components';
+import { Row, useElevation, Badge, IconButton, Tooltip, Spinner } from '@trezor/components';
 
 type MaxWidth = number | string;
 
@@ -18,6 +19,9 @@ export type EditableTextProps = {
     children: React.ReactNode;
     maxWidth?: MaxWidth;
     onSave: (value: string) => void;
+    isLoading?: boolean;
+    isDisabled?: boolean;
+    textLoading: string; // TODO not obligatory
 };
 
 const BORDER_SIZE = 6;
@@ -27,10 +31,14 @@ const EditableContainer = styled.span<{ $maxWidth?: MaxWidth }>`
     overflow: auto;
     display: inline-flex;
 
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
     ${({ $maxWidth }) =>
         $maxWidth &&
         css`
-            max-width: ${$maxWidth};
+            max-width: ${typeof $maxWidth === 'number' ? `${$maxWidth}px` : $maxWidth};
         `}
 `;
 
@@ -46,6 +54,7 @@ const ActionsContainer = styled.span`
     left: 100%;
     height: 100%;
     top: 0;
+    z-index: ${zIndices.tooltip};
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -57,6 +66,7 @@ const Container = styled.span<{ $elevation: Elevation; $isEditable: boolean }>`
     ${({ $isEditable, $elevation, theme }) =>
         $isEditable &&
         css`
+            cursor: ${$isEditable ? 'text' : 'inherit'};
             &::before {
                 content: '';
                 position: absolute;
@@ -101,7 +111,15 @@ const useShortcuts = ({ isEditable, handleSave, handleCancel }: ShortcutsProps) 
     }, [handleCancel, handleSave, isEditable]);
 };
 // TODO při focus out ukládat
-export const EditableText = ({ children, maxWidth, onSave }: EditableTextProps) => {
+// trim
+export const EditableText = ({
+    children,
+    maxWidth,
+    onSave,
+    isLoading,
+    textLoading,
+    isDisabled,
+}: EditableTextProps) => {
     const [isEditable, setIsEditable] = React.useState(false);
     const [isHovered, setIsHovered] = React.useState(false);
     const [isJustSaved, setIsJustSaved] = React.useState(false);
@@ -135,6 +153,15 @@ export const EditableText = ({ children, maxWidth, onSave }: EditableTextProps) 
             valueRef.current?.focus();
             selectInputText();
         }, 0);
+    };
+    const handleDelete = () => {
+        onSave('abc');
+        setOriginValue('abc');
+
+        // is this neccesary?
+        if (valueRef.current) {
+            valueRef.current.textContent = '';
+        }
     };
 
     const handleSave = () => {
@@ -172,53 +199,97 @@ export const EditableText = ({ children, maxWidth, onSave }: EditableTextProps) 
             $isEditable={isEditable}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            onClick={
+                isEditable
+                    ? e => {
+                          e.stopPropagation();
+                      }
+                    : undefined
+            }
         >
             <EditableContainer
                 ref={valueRef}
                 contentEditable={isEditable}
                 onFocus={handleFocus}
                 $maxWidth={maxWidth}
-                onInput={e => {
-                    // console.log('___aaa', e.target.textContent);
-                    // add to state
-                }}
+                // onInput={e => {
+                //     console.log('___aaa', e.target.textContent);
+                //     add to state
+                // }}
             >
                 {children}
             </EditableContainer>
             <ActionsContainer>
-                {!isJustSaved && isEditable && (
+                {isLoading ? (
                     <ActionsBackground $elevation={elevation}>
                         <Row gap={spacings.xxs}>
-                            <Tooltip content="Save" hasArrow delayShow={1000} cursor="inherit">
-                                <IconButton icon="check" size="tiny" onClick={handleSave} />
-                            </Tooltip>
-                            <Tooltip content="Cancel" hasArrow delayShow={1000} cursor="inherit">
-                                <IconButton
-                                    variant="destructive"
-                                    icon="x"
-                                    size="tiny"
-                                    onClick={handleCancel}
-                                />
-                            </Tooltip>
+                            <Spinner size={20} />
+                            {textLoading}
                         </Row>
                     </ActionsBackground>
-                )}
-                {!isJustSaved && !isEditable && isHovered && (
-                    <Box margin={{ left: spacings.sm }}>
-                        <IconButton
-                            variant="tertiary"
-                            icon="pencil"
-                            size="tiny"
-                            onClick={handleEdit}
-                        />
-                    </Box>
-                )}
-                {isJustSaved && (
-                    <Row gap={spacings.xxs} margin={{ left: spacings.sm }}>
-                        <Badge icon="check" variant="primary">
-                            Saved
-                        </Badge>
-                    </Row>
+                ) : (
+                    <>
+                        {!isJustSaved && isEditable && (
+                            <ActionsBackground $elevation={elevation}>
+                                <Row gap={spacings.xxs}>
+                                    <Tooltip
+                                        content="Save"
+                                        hasArrow
+                                        delayShow={1000}
+                                        cursor="inherit"
+                                    >
+                                        <IconButton
+                                            icon="check"
+                                            size="tiny"
+                                            onClick={handleSave}
+                                            isDisabled={isDisabled}
+                                        />
+                                    </Tooltip>
+                                    <Tooltip
+                                        content="Cancel"
+                                        hasArrow
+                                        delayShow={1000}
+                                        cursor="inherit"
+                                    >
+                                        <IconButton
+                                            variant="destructive"
+                                            icon="x"
+                                            size="tiny"
+                                            onClick={handleCancel}
+                                            isDisabled={isDisabled}
+                                        />
+                                    </Tooltip>
+                                </Row>
+                            </ActionsBackground>
+                        )}
+                        {!isJustSaved && !isEditable && isHovered && (
+                            <Row gap={spacings.xxs} margin={{ left: spacings.sm }}>
+                                <IconButton
+                                    variant="tertiary"
+                                    icon="pencil"
+                                    size="tiny"
+                                    onClick={handleEdit}
+                                    isDisabled={isDisabled}
+                                />
+                                {children && (
+                                    <IconButton
+                                        variant="tertiary"
+                                        icon="x"
+                                        size="tiny"
+                                        onClick={handleDelete}
+                                        isDisabled={isDisabled}
+                                    />
+                                )}
+                            </Row>
+                        )}
+                        {isJustSaved && (
+                            <Row gap={spacings.xxs} margin={{ left: spacings.sm }}>
+                                <Badge icon="check" variant="primary">
+                                    Saved
+                                </Badge>
+                            </Row>
+                        )}
+                    </>
                 )}
             </ActionsContainer>
         </Container>

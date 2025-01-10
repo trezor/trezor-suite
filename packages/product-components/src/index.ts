@@ -15,6 +15,7 @@ export { CoinLogo } from './components/CoinLogo/CoinLogo';
 export { AssetShareIndicator } from './components/AssetShareIndicator/AssetShareIndicator';
 export * from './components/TokenIconSet/TokenIconSet';
 export { TokenTabs, type TokenTab } from './components/SelectAssetModal/TokenTabs';
+export { EditableText } from './components/EditableText/EditableText';
 export {
     NetworkTabs,
     type NetworkFilterCategory,

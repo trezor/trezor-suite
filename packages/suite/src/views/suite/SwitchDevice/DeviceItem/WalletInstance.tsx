@@ -10,8 +10,10 @@ import {
 import { Card, Icon, Tooltip, Row, Column, Text, Divider, Box } from '@trezor/components';
 import { getAllAccounts } from '@suite-common/wallet-utils';
 import { spacings, negativeSpacings } from '@trezor/theme';
+import { EditableText } from '@trezor/product-components';
+import { MetadataAddPayload } from '@suite-common/metadata-types/libDev/src';
 
-import { WalletLabeling, Translation, MetadataLabeling } from 'src/components/suite';
+import { WalletLabeling, Translation, MetadataLabelingLegacy } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
@@ -26,6 +28,7 @@ import { EjectConfirmation, EjectConfirmationDisableViewOnly } from './EjectConf
 import { ContentType } from '../types';
 import { ViewOnly } from './ViewOnly';
 import { EjectButton } from './EjectButton';
+import { useMetadataLabeling } from '../../../../components/suite/labeling/MetadataLabeling/useMetadataLabeling';
 
 interface WalletInstanceProps {
     instance: AcquiredDevice;
@@ -34,6 +37,50 @@ interface WalletInstanceProps {
     index: number; // used only in data-test
     onCancel: ForegroundAppProps['onCancel'];
 }
+
+// <MetadataLabelingLegacy
+//     defaultVisibleValue={
+//         walletLabel === undefined ||
+//         walletLabel.trim() === ''
+//             ? defaultWalletLabel
+//             : walletLabel
+//     }
+//     payload={}
+//     defaultEditableValue={defaultWalletLabel}
+// />
+
+type LabelingProps = {
+    payload: MetadataAddPayload;
+    defaultVisibleValue?: string;
+    defaultEditableValue?: string;
+    onSubmit?: (value: string | undefined) => void;
+};
+
+const Labeling = ({
+    payload,
+    defaultVisibleValue,
+    defaultEditableValue,
+    onSubmit,
+}: LabelingProps) => {
+    const { onSubmit: onDefaultSubmit, isDisabled } = useMetadataLabeling({
+        payload,
+        defaultVisibleValue,
+        defaultEditableValue,
+    });
+
+    return (
+        <EditableText
+            isDisabled={isDisabled}
+            maxWidth={190}
+            onSave={onSubmit || onDefaultSubmit}
+            text={{
+                loading: 'Loading',
+            }}
+        >
+            {defaultVisibleValue}
+        </EditableText>
+    );
+};
 
 export const WalletInstance = ({
     instance,
@@ -130,8 +177,9 @@ export const WalletInstance = ({
                                             <Icon name="asterisk" size={12} />
                                         </Tooltip>
                                     )}
+
                                     {instance.state?.staticSessionId ? (
-                                        <MetadataLabeling
+                                        <MetadataLabelingLegacy
                                             defaultVisibleValue={
                                                 walletLabel === undefined ||
                                                 walletLabel.trim() === ''
@@ -149,6 +197,50 @@ export const WalletInstance = ({
                                                     : '',
                                             }}
                                             defaultEditableValue={defaultWalletLabel}
+                                        />
+                                    ) : (
+                                        <WalletLabeling device={instance} />
+                                    )}
+
+                                    {/*<MetadataLabeling*/}
+                                    {/*    defaultVisibleValue={*/}
+                                    {/*        walletLabel === undefined ||*/}
+                                    {/*        walletLabel.trim() === ''*/}
+                                    {/*            ? defaultWalletLabel*/}
+                                    {/*            : walletLabel*/}
+                                    {/*    }*/}
+                                    {/*    payload={{*/}
+                                    {/*        type: 'walletLabel',*/}
+                                    {/*        entityKey: instance.state.staticSessionId,*/}
+                                    {/*        defaultValue: instance.state.staticSessionId,*/}
+                                    {/*        value: instance?.metadata[*/}
+                                    {/*            METADATA_LABELING.ENCRYPTION_VERSION*/}
+                                    {/*            ]*/}
+                                    {/*            ? walletLabel*/}
+                                    {/*            : '',*/}
+                                    {/*    }}*/}
+                                    {/*    defaultEditableValue={defaultWalletLabel}*/}
+                                    {/*/>*/}
+
+                                    {instance.state?.staticSessionId ? (
+                                        <Labeling
+                                            defaultEditableValue={defaultWalletLabel}
+                                            defaultVisibleValue={
+                                                walletLabel === undefined ||
+                                                walletLabel.trim() === ''
+                                                    ? defaultWalletLabel
+                                                    : walletLabel
+                                            }
+                                            payload={{
+                                                type: 'walletLabel',
+                                                entityKey: instance.state.staticSessionId,
+                                                defaultValue: instance.state.staticSessionId,
+                                                value: instance?.metadata[
+                                                    METADATA_LABELING.ENCRYPTION_VERSION
+                                                ]
+                                                    ? walletLabel
+                                                    : '',
+                                            }}
                                         />
                                     ) : (
                                         <WalletLabeling device={instance} />

@@ -31,6 +31,9 @@ export const EditableText: StoryObj<EditableTextProps> = {
         children: 'hello',
         maxWidth: undefined,
         onSave: action('onSave'),
+        isLoading: false,
+        isDisabled: false,
+        textLoading: 'Loading',
     },
     argTypes: {
         maxWidth: {

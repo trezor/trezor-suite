@@ -12,7 +12,7 @@ import { openModal } from 'src/actions/suite/modalActions';
 import {
     FiatValue,
     FormattedCryptoAmount,
-    MetadataLabeling,
+    MetadataLabelingLegacy,
     Translation,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -278,7 +278,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                     {isLabelingPossible && (
                         <LabelPart>
                             <span>•</span>
-                            <MetadataLabeling
+                            <MetadataLabelingLegacy
                                 visible
                                 payload={{
                                     type: 'outputLabel',

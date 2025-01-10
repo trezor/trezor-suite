@@ -18,7 +18,7 @@ import {
     AccountLabeling,
     AddressLabeling,
     WalletLabeling,
-    MetadataLabeling,
+    MetadataLabelingLegacy,
     useGetWalletLabel,
 } from './labeling';
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
@@ -70,7 +70,7 @@ export {
     AddressLabeling,
     WalletLabeling,
     useGetWalletLabel,
-    MetadataLabeling,
+    MetadataLabelingLegacy,
     QuestionTooltip,
     FormattedCryptoAmount,
     FormattedNftAmount,

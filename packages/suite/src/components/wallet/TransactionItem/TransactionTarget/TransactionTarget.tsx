@@ -15,7 +15,7 @@ import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
     FiatValue,
     Translation,
-    MetadataLabeling,
+    MetadataLabelingLegacy,
     AddressLabeling,
     FormattedCryptoAmount,
 } from 'src/components/suite';
@@ -197,7 +197,7 @@ export const TransactionTarget = ({
             {...baseLayoutProps}
             useHiddenPlaceholder={!isBeingEdited}
             addressLabel={
-                <MetadataLabeling
+                <MetadataLabelingLegacy
                     isDisabled={isActionDisabled}
                     defaultVisibleValue={
                         <TargetAddressLabel

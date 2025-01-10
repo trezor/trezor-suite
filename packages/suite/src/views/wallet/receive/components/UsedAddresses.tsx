@@ -17,7 +17,7 @@ import { spacings } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 
-import { Translation, MetadataLabeling, FormattedCryptoAmount } from 'src/components/suite';
+import { Translation, MetadataLabelingLegacy, FormattedCryptoAmount } from 'src/components/suite';
 import { AppState } from 'src/types/suite';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { showAddress } from 'src/actions/wallet/receiveActions';
@@ -65,7 +65,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
         <Table.Row onHover={setIsHovered}>
             <Table.Cell>
                 <Text typographyStyle="hint" data-testid={`@wallet/receive/used-address/${index}`}>
-                    <MetadataLabeling
+                    <MetadataLabelingLegacy
                         payload={{
                             ...metadataPayload,
                         }}

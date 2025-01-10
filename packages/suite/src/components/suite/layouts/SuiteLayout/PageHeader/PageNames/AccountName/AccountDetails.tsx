@@ -8,7 +8,7 @@ import { H2 } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
 import {
-    MetadataLabeling,
+    MetadataLabelingLegacy,
     AccountLabel,
     FormattedCryptoAmount,
     FiatValue,
@@ -108,7 +108,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     return (
         <DetailsContainer $isBalanceShown={isBalanceShown} $shouldAnimate={shouldAnimate}>
             <AccountHeading $isBalanceShown={isBalanceShown}>
-                <MetadataLabeling
+                <MetadataLabelingLegacy
                     accountType={accountType}
                     networkType={selectedAccount.networkType}
                     path={path}

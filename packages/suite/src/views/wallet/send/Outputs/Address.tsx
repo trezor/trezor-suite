@@ -31,7 +31,7 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { getProtocolInfo } from 'src/utils/suite/protocol';
 import { InputError } from 'src/components/wallet';
 import { InputErrorProps } from 'src/components/wallet/InputError';
-import { AddressLabeling, MetadataLabeling } from 'src/components/suite';
+import { AddressLabeling, MetadataLabelingLegacy } from 'src/components/suite';
 import { useSelector, useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
 
@@ -376,7 +376,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 innerAddon={
                     metadataEnabled && broadcastEnabled ? (
                         <MetadataLabelingWrapper>
-                            <MetadataLabeling
+                            <MetadataLabelingLegacy
                                 defaultVisibleValue=""
                                 payload={{
                                     type: 'outputLabel',

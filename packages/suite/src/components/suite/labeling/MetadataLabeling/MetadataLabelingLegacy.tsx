@@ -270,7 +270,7 @@ const getLocalizedActions = (type: MetadataAddPayload['type']) => {
  * - This component shows defaultVisibleValue and "Add label" button if no metadata is present.
  * - Otherwise it shows metadata value and provides way to edit it.
  */
-export const MetadataLabeling = ({
+export const MetadataLabelingLegacy = ({
     payload,
     accountType,
     networkType,
@@ -289,6 +289,7 @@ export const MetadataLabeling = ({
     const [showSuccess, setShowSuccess] = useState(false);
     const [pending, setPending] = useState(false);
 
+    console.log('___P', payload);
     const l10nLabelling = getLocalizedActions(payload.type);
     const dataTestBase = `@metadata/${payload.type}/${payload.defaultValue}`;
     const actionButtonsDisabled = isDiscoveryRunning || pending;
