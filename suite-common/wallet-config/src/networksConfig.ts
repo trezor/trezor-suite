@@ -271,7 +271,7 @@ export const networks = {
         decimals: 18,
         testnet: false,
         explorer: getExplorerUrls('https://etc1.trezor.io', 'ethereum'),
-        features: ['sign-verify', 'tokens', 'coin-definitions', 'nfts', 'nft-definitions'],
+        features: ['sign-verify', 'tokens', 'coin-definitions'],
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'ethereum-classic',
