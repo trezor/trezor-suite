@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Box, BottomSheet, IconButton } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 
 import { AccountRenameForm } from './AccountRenameForm';
 
@@ -22,7 +23,13 @@ export const AccountRenameButton = ({ accountKey }: AccountRenameModalProps) => 
                 onPress={handleOpen}
                 testID="@account-detail/settings/edit-button"
             />
-            <BottomSheet title="Rename coin" isVisible={isVisible} onClose={handleClose}>
+            <BottomSheet
+                title={
+                    <Translation id="moduleAccountManagement.accountSettingsScreen.renameForm.title" />
+                }
+                isVisible={isVisible}
+                onClose={handleClose}
+            >
                 <AccountRenameForm accountKey={accountKey} onSubmit={handleClose} />
             </BottomSheet>
         </Box>

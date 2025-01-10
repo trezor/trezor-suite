@@ -1,15 +1,14 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useWatch, Control } from 'react-hook-form';
 
 import { TextInput } from 'react-native/types';
 
-import { Box, Text, Button, VStack } from '@suite-native/atoms';
-import { TextInputField, Form } from '@suite-native/forms';
+import { Box, Button, VStack } from '@suite-native/atoms';
+import { Form, TextInputField } from '@suite-native/forms';
 import {
-    useAccountLabelForm,
     AccountFormValues,
     MAX_ACCOUNT_LABEL_LENGTH,
+    useAccountLabelForm,
 } from '@suite-native/accounts';
 import {
     accountsActions,
@@ -17,29 +16,17 @@ import {
     selectAccountByKey,
     selectAccountLabel,
 } from '@suite-common/wallet-core';
+import { useTranslate } from '@suite-native/intl';
+
+import { AccountLabelFieldHint } from './AccountLabelFieldHint';
 
 type AccountRenameFormProps = {
     accountKey: string;
     onSubmit: () => void;
 };
 
-type AccountLabelFieldHintProps = {
-    formControl: Control<AccountFormValues>;
-};
-
-const AccountLabelFieldHint = ({ formControl }: AccountLabelFieldHintProps) => {
-    const { accountLabel } = useWatch({ control: formControl });
-
-    return (
-        <Box paddingLeft="sp8">
-            <Text variant="label" color="textSubdued">
-                {accountLabel ? accountLabel.length : 0} / {MAX_ACCOUNT_LABEL_LENGTH} letters
-            </Text>
-        </Box>
-    );
-};
-
 export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormProps) => {
+    const { translate } = useTranslate();
     const dispatch = useDispatch();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -75,6 +62,10 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
         onSubmit();
     });
 
+    const coinLabelFieldLabel = translate(
+        'moduleAccountManagement.accountSettingsScreen.renameForm.coinLabel',
+    );
+
     return (
         <Box marginTop="sp16">
             <Form form={form}>
@@ -82,7 +73,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
                     <TextInputField
                         ref={inputRef}
                         name="accountLabel"
-                        label="Coin label"
+                        label={coinLabelFieldLabel}
                         maxLength={MAX_ACCOUNT_LABEL_LENGTH}
                         testID="@account-detail/settings/account-rename/input"
                     />
