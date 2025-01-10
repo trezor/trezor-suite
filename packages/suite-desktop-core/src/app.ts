@@ -1,5 +1,5 @@
 import path from 'path';
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, systemPreferences } from 'electron';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
@@ -203,6 +203,7 @@ const init = async () => {
         let mainWindow = mainWindowProxy.getInstance();
         if (!mainWindow || mainWindow.isDestroyed()) {
             logger.info('main', 'Main window destroyed, recreating');
+
             mainWindow = createMainWindow(winBounds);
             mainWindowProxy.setInstance(mainWindow);
         }
@@ -334,7 +335,18 @@ const init = async () => {
     });
 
     // Create main window last, so all listeners are set up
-    mainWindowProxy.setInstance(createMainWindow(winBounds));
+
+    systemPreferences
+        .promptTouchID('TOUCH ID!!!')
+        .then(success => {
+            mainWindowProxy.setInstance(createMainWindow(winBounds));
+            logger.info('main', '____1');
+            // console.log('You have successfully authenticated with Touch ID!');
+        })
+        .catch(err => {
+            logger.info('main', '____2');
+            // console.log(err);
+        });
 };
 
 init();
