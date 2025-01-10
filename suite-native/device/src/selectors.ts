@@ -21,6 +21,7 @@ import {
     selectIsDiscoveredDeviceAccountless,
     selectIsUnacquiredDevice,
 } from '@suite-common/wallet-core';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { getTotalFiatBalance } from '@suite-common/wallet-utils';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
 
@@ -106,3 +107,17 @@ export const selectHasNoDeviceWithEmptyPassphrase = createMemoizedSelector(
     [selectDeviceInstances],
     deviceInstances => A.isEmpty(deviceInstances.filter(d => d.useEmptyPassphrase)),
 );
+
+/**
+ * Get firmware revision check error, or null if check was successful / skipped.
+ */
+export const selectFirmwareRevisionCheckError = (state: DeviceRootState) => {
+    const device = selectSelectedDevice(state);
+    if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
+    const checkResult = device.authenticityChecks.firmwareRevision;
+
+    // null means not performed, then don't consider it failed
+    if (!checkResult || checkResult.success) return null;
+
+    return checkResult.error;
+};

@@ -15,6 +15,7 @@
         "@reduxjs/toolkit": "1.9.5",
         "@sentry/react-native": "6.5.0",
         "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/alerts": "workspace:*",
