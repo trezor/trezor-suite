@@ -155,6 +155,14 @@ export const useAddCoinAccount = () => {
                     closeActionType: 'close',
                 });
                 break;
+            case 'receive':
+                navigation.replace(RootStackRoutes.ReceiveModal, {
+                    networkSymbol: symbol,
+                    accountType,
+                    accountIndex,
+                    closeActionType: 'back',
+                });
+                break;
         }
     };
 

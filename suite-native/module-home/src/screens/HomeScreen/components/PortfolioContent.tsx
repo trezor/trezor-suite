@@ -7,6 +7,7 @@ import { selectHasDeviceDiscovery, selectIsDeviceAuthorized } from '@suite-commo
 import { Button, VStack } from '@suite-native/atoms';
 import { Assets } from '@suite-native/assets';
 import {
+    ReceiveStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
@@ -23,7 +24,9 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const showReceiveButton = isDeviceAuthorized && !hasDiscovery;
 
     const handleReceive = () => {
-        navigation.navigate(RootStackRoutes.ReceiveModal, { closeActionType: 'back' });
+        navigation.navigate(RootStackRoutes.ReceiveStack, {
+            screen: ReceiveStackRoutes.ReceiveAccounts,
+        });
     };
 
     return (

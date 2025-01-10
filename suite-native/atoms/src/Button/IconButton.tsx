@@ -19,11 +19,13 @@ import {
     buttonToIconSizeMap,
 } from './Button';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
+import { Loader } from '../Loader';
 type IconButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'> & {
     iconName: IconName;
     colorScheme?: ButtonColorScheme;
     size?: ButtonSize;
     style?: NativeStyleObject;
+    isLoading?: boolean;
     isDisabled?: boolean;
 };
 const sizeDimensions = {
@@ -51,6 +53,7 @@ export const IconButton = ({
     style,
     colorScheme = 'primary',
     size = 'medium',
+    isLoading = false,
     isDisabled = false,
     ...pressableProps
 }: IconButtonProps) => {
@@ -85,7 +88,11 @@ export const IconButton = ({
                 style,
             ]}
         >
-            <Icon name={iconName} color={iconColor} size={buttonToIconSizeMap[size]} />
+            {isLoading ? (
+                <Loader color={iconColor} />
+            ) : (
+                <Icon name={iconName} color={iconColor} size={buttonToIconSizeMap[size]} />
+            )}
         </AnimatedPressable>
     );
 };

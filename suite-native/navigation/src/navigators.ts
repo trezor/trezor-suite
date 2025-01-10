@@ -132,7 +132,7 @@ export type AccountsImportStackParamList = {
     };
 };
 
-export type AddCoinFlowType = 'home' | 'accounts';
+export type AddCoinFlowType = 'home' | 'receive' | 'accounts';
 
 export type AddCoinAccountStackParamList = {
     [AddCoinAccountStackRoutes.AddCoinAccount]: {
@@ -212,6 +212,7 @@ export type RootStackParamList = {
     [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
     [RootStackRoutes.DeviceSettingsStack]: NavigatorScreenParams<DeviceSettingsStackParamList>;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
+    [RootStackRoutes.ReceiveStack]: NavigatorScreenParams<ReceiveStackParamList>;
     [RootStackRoutes.SendStack]: NavigatorScreenParams<SendStackParamList>;
     [RootStackRoutes.CoinEnablingInit]: undefined;
     [RootStackRoutes.ConnectPopup]: {

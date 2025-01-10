@@ -16,7 +16,6 @@ import {
     selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 import { useAccountAlerts } from '../hooks/useAccountAlerts';
 
@@ -29,14 +28,10 @@ export const AddAccountButton = ({ flowType, testID }: AddAccountButtonProps) =>
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountsImport>>();
 
+    const hasDeviceDiscovery = useSelector(selectHasDeviceDiscovery);
     const isSelectedDevicePortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
-    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
-    const isDeviceConnectEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
     const { showViewOnlyAddAccountAlert } = useAccountAlerts();
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
-
-    const shouldShowAddAccountButton =
-        isSelectedDevicePortfolioTracker || (isDeviceConnectEnabled && !hasDiscovery);
 
     const navigateToImportScreen = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
@@ -58,7 +53,7 @@ export const AddAccountButton = ({ flowType, testID }: AddAccountButtonProps) =>
         });
     };
 
-    return shouldShowAddAccountButton ? (
+    return (
         <IconButton
             iconName="plus"
             onPress={
@@ -66,7 +61,9 @@ export const AddAccountButton = ({ flowType, testID }: AddAccountButtonProps) =>
             }
             colorScheme="tertiaryElevation0"
             size="medium"
+            isLoading={hasDeviceDiscovery}
+            isDisabled={hasDeviceDiscovery}
             testID={testID}
         />
-    ) : null;
+    );
 };

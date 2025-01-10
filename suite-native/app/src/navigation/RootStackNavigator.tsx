@@ -18,7 +18,7 @@ import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
 import { TransactionDetailScreen } from '@suite-native/transactions';
 import { OnboardingStackNavigator as LegacyOnboardingStackNavigator } from '@suite-native/module-onboarding-legacy';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
-import { ReceiveModalScreen } from '@suite-native/receive';
+import { ReceiveStackNavigator, ReceiveModalScreen } from '@suite-native/receive';
 import { AuthorizeDeviceStackNavigator } from '@suite-native/module-authorize-device';
 import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
 import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
@@ -94,6 +94,7 @@ export const RootStackNavigator = () => {
             <RootStack.Screen
                 name={RootStackRoutes.AddCoinAccountStack}
                 component={AddCoinAccountStackNavigator}
+                options={{ animation: 'slide_from_bottom' }}
             />
             <RootStack.Screen
                 name={RootStackRoutes.CoinEnablingInit}
@@ -101,6 +102,11 @@ export const RootStackNavigator = () => {
                 options={{ animation: 'slide_from_bottom' }}
             />
             <RootStack.Screen name={RootStackRoutes.ReceiveModal} component={ReceiveModalScreen} />
+            <RootStack.Screen
+                name={RootStackRoutes.ReceiveStack}
+                component={ReceiveStackNavigator}
+                options={{ animation: 'slide_from_bottom' }}
+            />
             <RootStack.Screen
                 name={RootStackRoutes.AuthorizeDeviceStack}
                 component={AuthorizeDeviceStackNavigator}

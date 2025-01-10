@@ -24,7 +24,7 @@ const HEADER_ANIMATION_DURATION = 100;
 
 const searchFormContainerStyle = prepareNativeStyle(({ spacings }) => ({
     height: 48,
-    marginBottom: spacings.sp16,
+    marginBottom: spacings.sp8,
 }));
 
 export const SearchableAccountsListHeader = ({

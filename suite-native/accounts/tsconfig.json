@@ -29,7 +29,6 @@
         { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../config" },
-        { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../icons" },

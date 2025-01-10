@@ -52,6 +52,7 @@ export const AddCoinAccountScreen = ({
             screenHeader={
                 <ScreenSubHeader
                     content={translate('moduleAddAccounts.addCoinAccountScreen.title')}
+                    closeActionType="close"
                 />
             }
         >

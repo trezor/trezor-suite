@@ -508,6 +508,7 @@ export const en = {
         },
     },
     moduleReceive: {
+        receiveTitle: 'Receive',
         screenTitle: '{coinSymbol} Receive address',
         accountNotFound: 'Account {accountKey} not found.',
         deviceCancelError: 'Address confirmation canceled.',

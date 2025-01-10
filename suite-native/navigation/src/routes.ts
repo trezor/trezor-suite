@@ -10,6 +10,7 @@ export enum RootStackRoutes {
     AccountSettings = 'AccountSettings',
     TransactionDetail = 'TransactionDetail',
     ReceiveModal = 'ReceiveModal',
+    ReceiveStack = 'ReceiveStack',
     SendStack = 'SendStack',
     DeviceSettingsStack = 'DeviceSettingsStack',
     AddCoinAccountStack = 'AddCoinAccountStack',

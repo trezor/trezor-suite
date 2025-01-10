@@ -12,18 +12,20 @@ import {
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 import { ConfirmOnTrezorImage } from '@suite-native/device';
+import { Screen } from '@suite-native/navigation';
 
 import { useAccountReceiveAddress } from '../hooks/useAccountReceiveAddress';
-import { ReceiveAddressCard } from './ReceiveAddressCard';
-import { ReceiveAccountDetailsCard } from './ReceiveAccountDetailsCard';
+import { ReceiveAddressCard } from '../components/ReceiveAddressCard';
+import { ReceiveAccountDetailsCard } from '../components/ReceiveAccountDetailsCard';
 import { hasReceiveAddressButtonRequest } from '../hooks/receiveSelectors';
+import { ReceiveScreenHeader } from '../components/ReceiveScreenHeader';
 
 type AccountReceiveProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
 };
 
-export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProps) => {
+export const ReceiveAccountScreen = ({ accountKey, tokenContract }: AccountReceiveProps) => {
     const dispatch = useDispatch();
 
     const account = useSelector((state: AccountsRootState) =>
@@ -50,31 +52,38 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
         isUnverifiedAddressRevealed && !isReceiveApproved && hasReceiveButtonRequest;
 
     return (
-        <Box flex={1}>
-            <VStack spacing="sp16">
-                {isAccountDetailVisible && (
-                    <ReceiveAccountDetailsCard
-                        accountKey={accountKey}
-                        tokenContract={tokenContract}
+        <Screen
+            screenHeader={
+                <ReceiveScreenHeader accountKey={accountKey} tokenContract={tokenContract} />
+            }
+            footer={
+                isConfirmOnTrezorReady && (
+                    <ConfirmOnTrezorImage
+                        bottomSheetText={
+                            <Translation id="moduleReceive.bottomSheets.confirmOnDeviceMessage" />
+                        }
                     />
-                )}
-                <ReceiveAddressCard
-                    symbol={account.symbol}
-                    address={address}
-                    isTokenAddress={!!tokenContract}
-                    isReceiveApproved={isReceiveApproved}
-                    isUnverifiedAddressRevealed={isUnverifiedAddressRevealed}
-                    onShowAddress={handleShowAddressAndRemoveButtonRequests}
-                />
-            </VStack>
-
-            {isConfirmOnTrezorReady && (
-                <ConfirmOnTrezorImage
-                    bottomSheetText={
-                        <Translation id="moduleReceive.bottomSheets.confirmOnDeviceMessage" />
-                    }
-                />
-            )}
-        </Box>
+                )
+            }
+        >
+            <Box flex={1}>
+                <VStack marginTop="sp8" spacing="sp16">
+                    {isAccountDetailVisible && (
+                        <ReceiveAccountDetailsCard
+                            accountKey={accountKey}
+                            tokenContract={tokenContract}
+                        />
+                    )}
+                    <ReceiveAddressCard
+                        symbol={account.symbol}
+                        address={address}
+                        isTokenAddress={!!tokenContract}
+                        isReceiveApproved={isReceiveApproved}
+                        isUnverifiedAddressRevealed={isUnverifiedAddressRevealed}
+                        onShowAddress={handleShowAddressAndRemoveButtonRequests}
+                    />
+                </VStack>
+            </Box>
+        </Screen>
     );
 };
