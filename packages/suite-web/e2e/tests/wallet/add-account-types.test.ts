@@ -134,7 +134,7 @@ describe('Account types suite', () => {
             onAccountsPage.applyCoinFilter(symbol);
             // get the element containing all accounts
             cy.get(
-                `[data-testid="@account-menu/normal"] > [data-testid*="@account-menu/${symbol}/normal"]`,
+                `[data-testid="@account-menu/normal/group"] > [data-testid*="@account-menu/${symbol}/normal"]`,
             ).then(currentAccounts => {
                 const numberOfAccounts1 = currentAccounts.length;
 
@@ -147,7 +147,7 @@ describe('Account types suite', () => {
                 cy.discoveryShouldFinish();
 
                 cy.get(
-                    `[data-testid="@account-menu/normal"] > [data-testid*="@account-menu/${symbol}/normal"]`,
+                    `[data-testid="@account-menu/normal/group"] > [data-testid*="@account-menu/${symbol}/normal"]`,
                 ).then(newAccounts => {
                     const numberOfAccounts2 = newAccounts.length;
                     expect(numberOfAccounts2).to.be.equal(numberOfAccounts1 + 1);
