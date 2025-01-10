@@ -476,14 +476,14 @@ export const useCoinmarketBuyForm = ({
         ],
     );
 
-    useEffect(
-        () => () => {
+    // eslint-disable-next-line arrow-body-style
+    useEffect(() => {
+        return () => {
             if (abortControllerRef.current) {
                 abortControllerRef.current.abort();
             }
-        },
-        [],
-    );
+        };
+    }, []);
 
     return {
         type,

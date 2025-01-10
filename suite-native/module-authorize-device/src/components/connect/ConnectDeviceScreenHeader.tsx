@@ -104,12 +104,12 @@ export const ConnectDeviceScreenHeader = ({
     }, [handleCancel]);
 
     // Hide alert when navigating away from the PIN entry screen (PIN entered or canceled on device)
-    useEffect(
-        () => () => {
+    // eslint-disable-next-line arrow-body-style
+    useEffect(() => {
+        return () => {
             hideAlert();
-        },
-        [hideAlert],
-    );
+        };
+    }, [hideAlert]);
 
     return (
         <ScreenHeaderWrapper>
