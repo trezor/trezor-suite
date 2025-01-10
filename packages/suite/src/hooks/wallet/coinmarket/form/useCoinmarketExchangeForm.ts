@@ -142,16 +142,13 @@ export const useCoinmarketExchangeForm = ({
         if (isNotFormPage) return draft;
 
         const defaultReceiveCryptoSelect = coinmarketGetExchangeReceiveCryptoId(
-            defaultValues.sendCryptoSelect?.value,
+            draft.sendCryptoSelect?.value,
             draft.receiveCryptoSelect?.value,
         );
 
         return {
-            ...defaultValues,
-            amountInCrypto: draft.amountInCrypto,
+            ...draft,
             receiveCryptoSelect: buildDefaultCryptoOption(defaultReceiveCryptoSelect),
-            rateType: draft.rateType,
-            exchangeType: draft.exchangeType,
         };
     };
     const draftUpdated = getDraftUpdated();
@@ -670,14 +667,11 @@ export const useCoinmarketExchangeForm = ({
         handleChange,
     ]);
 
-    // eslint-disable-next-line arrow-body-style
-    useEffect(() => {
-        return () => {
+    useEffect(() => () => {
             if (abortControllerRef.current) {
                 abortControllerRef.current.abort();
             }
-        };
-    }, []);
+        }, []);
 
     // handle edge case when there are no longer quotes of selected exchange type
     useEffect(() => {

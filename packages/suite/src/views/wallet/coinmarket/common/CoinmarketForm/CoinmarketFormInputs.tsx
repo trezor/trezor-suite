@@ -23,8 +23,11 @@ import {
 } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import {
+    CoinmarketBuyFormContextProps,
     CoinmarketBuyFormProps,
+    CoinmarketExchangeFormContextProps,
     CoinmarketExchangeFormProps,
+    CoinmarketSellFormContextProps,
     CoinmarketSellFormProps,
     CoinmarketUseFormActionsReturnProps,
 } from 'src/types/coinmarket/coinmarketForm';
@@ -70,174 +73,172 @@ const generateFractionButtons = (
     },
 ];
 
-export const CoinmarketFormInputs = () => {
-    const context = useCoinmarketFormContext();
+const CoinmarketSellForm = ({ context }: { context: CoinmarketSellFormContextProps }) => {
+    const {
+        control,
+        feeInfo,
+        account,
+        composedLevels,
+        formState: { errors },
+        form: { helpers },
+        shouldSendInSats,
+        register,
+        setValue,
+        getValues,
+        changeFeeLevel,
+    } = context;
+    const { outputs, sendCryptoSelect, amountInCrypto } = getValues();
+    const output = outputs[0];
+    const currencySelect = output.currency;
+    const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
+    const outputAmount =
+        shouldSendInSats && output.amount
+            ? formatAmount(output.amount, getCoinmarketNetworkDecimals({ sendCryptoSelect }))
+            : output.amount;
 
-    if (isCoinmarketSellContext(context)) {
-        const {
-            control,
-            feeInfo,
-            account,
-            composedLevels,
-            formState: { errors },
-            form: { helpers },
-            shouldSendInSats,
-            register,
-            setValue,
-            getValues,
-            changeFeeLevel,
-        } = context;
-        const { outputs, sendCryptoSelect, amountInCrypto } = getValues();
-        const output = outputs[0];
-        const currencySelect = output.currency;
-        const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
-        const outputAmount =
-            shouldSendInSats && output.amount
-                ? formatAmount(output.amount, getCoinmarketNetworkDecimals({ sendCryptoSelect }))
-                : output.amount;
-
-        return (
-            <>
-                <CoinmarketFormInputAccount<CoinmarketSellFormProps>
-                    accountSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                    label="TR_COINMARKET_YOU_SELL"
+    return (
+        <>
+            <CoinmarketFormInputAccount<CoinmarketSellFormProps>
+                accountSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                label="TR_COINMARKET_YOU_SELL"
+                methods={{ ...context }}
+            />
+            <Column gap={spacings.xs}>
+                <CoinmarketFormInputFiatCrypto<CoinmarketSellFormProps>
+                    cryptoInputName={FORM_OUTPUT_AMOUNT}
+                    fiatInputName={FORM_OUTPUT_FIAT}
+                    cryptoSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                    currencySelectLabel={currencySelect.label}
+                    cryptoCurrencyLabel={sendCryptoSelect?.value}
                     methods={{ ...context }}
                 />
-                <Column gap={spacings.xs}>
-                    <CoinmarketFormInputFiatCrypto<CoinmarketSellFormProps>
-                        cryptoInputName={FORM_OUTPUT_AMOUNT}
-                        fiatInputName={FORM_OUTPUT_FIAT}
-                        cryptoSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                        currencySelectLabel={currencySelect.label}
-                        cryptoCurrencyLabel={sendCryptoSelect?.value}
-                        methods={{ ...context }}
-                    />
-                    {amountInCrypto && (
-                        <Row justifyContent="space-between" alignItems="flex-start">
-                            <Row gap={spacings.xs}>
-                                {generateFractionButtons(helpers).map(button => (
-                                    <FractionButton key={button.id} {...button} />
-                                ))}
-                            </Row>
-                            <CoinmarketBalance
-                                balance={outputAmount}
-                                displaySymbol={sendCryptoSelect?.value}
-                                symbol={account.symbol}
-                                tokenAddress={tokenAddress as TokenAddress}
-                                showOnlyAmount
-                                amountInCrypto={amountInCrypto}
-                                sendCryptoSelect={sendCryptoSelect}
-                            />
+                {amountInCrypto && (
+                    <Row justifyContent="space-between" alignItems="flex-start">
+                        <Row gap={spacings.xs}>
+                            {generateFractionButtons(helpers).map(button => (
+                                <FractionButton key={button.id} {...button} />
+                            ))}
                         </Row>
-                    )}
-                </Column>
-                <Card margin={{ vertical: spacings.sm }}>
-                    <ElevationContext baseElevation={0}>
-                        <Fees
-                            control={control}
-                            feeInfo={feeInfo}
-                            account={account}
-                            composedLevels={composedLevels}
-                            errors={errors}
-                            register={register}
-                            setValue={setValue}
-                            getValues={getValues}
-                            changeFeeLevel={changeFeeLevel}
+                        <CoinmarketBalance
+                            balance={outputAmount}
+                            displaySymbol={sendCryptoSelect?.value}
+                            symbol={account.symbol}
+                            tokenAddress={tokenAddress as TokenAddress}
+                            showOnlyAmount
+                            amountInCrypto={amountInCrypto}
+                            sendCryptoSelect={sendCryptoSelect}
                         />
-                    </ElevationContext>
-                </Card>
-                <CoinmarketFormInputPaymentMethod label="TR_COINMARKET_RECEIVE_METHOD" />
-                <CoinmarketFormInputCountry label="TR_COINMARKET_COUNTRY" />
-            </>
-        );
-    }
-
-    if (isCoinmarketExchangeContext(context)) {
-        const {
-            control,
-            feeInfo,
-            account,
-            composedLevels,
-            formState: { errors },
-            form: { helpers },
-            exchangeInfo,
-            register,
-            setValue,
-            getValues,
-            changeFeeLevel,
-            shouldSendInSats,
-        } = context;
-        const { rateType, sendCryptoSelect, outputs, amountInCrypto } = getValues();
-        const output = outputs[0];
-        const currencySelect = output.currency;
-        const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
-        const supportedCryptoCurrencies = exchangeInfo?.buySymbols;
-        const outputAmount =
-            shouldSendInSats && output.amount
-                ? formatAmount(output.amount, getCoinmarketNetworkDecimals({ sendCryptoSelect }))
-                : output.amount;
-
-        return (
-            <>
-                <CoinmarketFormInputAccount<CoinmarketExchangeFormProps>
-                    accountSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                    label="TR_FROM"
-                    methods={{ ...context }}
-                />
-                <Column gap={spacings.xs}>
-                    <CoinmarketFormInputFiatCrypto<CoinmarketExchangeFormProps>
-                        cryptoInputName={FORM_OUTPUT_AMOUNT}
-                        fiatInputName={FORM_OUTPUT_FIAT}
-                        cryptoSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                        currencySelectLabel={currencySelect.label}
-                        cryptoCurrencyLabel={sendCryptoSelect?.value}
-                        methods={{ ...context }}
+                    </Row>
+                )}
+            </Column>
+            <Card margin={{ vertical: spacings.sm }}>
+                <ElevationContext baseElevation={0}>
+                    <Fees
+                        control={control}
+                        feeInfo={feeInfo}
+                        account={account}
+                        composedLevels={composedLevels}
+                        errors={errors}
+                        register={register}
+                        setValue={setValue}
+                        getValues={getValues}
+                        changeFeeLevel={changeFeeLevel}
                     />
-                    {amountInCrypto && (
-                        <Row justifyContent="space-between" alignItems="flex-start">
-                            <Row gap={spacings.xs}>
-                                {generateFractionButtons(helpers).map(button => (
-                                    <FractionButton key={button.id} {...button} />
-                                ))}
-                            </Row>
-                            <CoinmarketBalance
-                                balance={outputAmount}
-                                displaySymbol={sendCryptoSelect?.value}
-                                symbol={account.symbol}
-                                tokenAddress={tokenAddress}
-                                showOnlyAmount
-                                amountInCrypto={amountInCrypto}
-                                sendCryptoSelect={sendCryptoSelect}
-                            />
-                        </Row>
-                    )}
-                </Column>
-                <CoinmarketFormInputCryptoSelect<CoinmarketExchangeFormProps>
-                    label="TR_TO"
-                    cryptoSelectName={FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
-                    supportedCryptoCurrencies={supportedCryptoCurrencies}
+                </ElevationContext>
+            </Card>
+            <CoinmarketFormInputPaymentMethod label="TR_COINMARKET_RECEIVE_METHOD" />
+            <CoinmarketFormInputCountry label="TR_COINMARKET_COUNTRY" />
+        </>
+    );
+};
+
+const CoinmarketExchangeForm = ({ context }: { context: CoinmarketExchangeFormContextProps }) => {
+    const {
+        control,
+        feeInfo,
+        account,
+        composedLevels,
+        formState: { errors },
+        form: { helpers },
+        exchangeInfo,
+        register,
+        setValue,
+        getValues,
+        changeFeeLevel,
+        shouldSendInSats,
+    } = context;
+    const { rateType, sendCryptoSelect, outputs, amountInCrypto } = getValues();
+    const output = outputs[0];
+    const currencySelect = output.currency;
+    const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
+    const supportedCryptoCurrencies = exchangeInfo?.buySymbols;
+    const outputAmount =
+        shouldSendInSats && output.amount
+            ? formatAmount(output.amount, getCoinmarketNetworkDecimals({ sendCryptoSelect }))
+            : output.amount;
+
+    return (
+        <>
+            <CoinmarketFormInputAccount<CoinmarketExchangeFormProps>
+                accountSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                label="TR_FROM"
+                methods={{ ...context }}
+            />
+            <Column gap={spacings.xs}>
+                <CoinmarketFormInputFiatCrypto<CoinmarketExchangeFormProps>
+                    cryptoInputName={FORM_OUTPUT_AMOUNT}
+                    fiatInputName={FORM_OUTPUT_FIAT}
+                    cryptoSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                    currencySelectLabel={currencySelect.label}
+                    cryptoCurrencyLabel={sendCryptoSelect?.value}
                     methods={{ ...context }}
                 />
-                <Card margin={{ vertical: spacings.sm }}>
-                    <ElevationContext baseElevation={0}>
-                        <Fees
-                            control={control}
-                            feeInfo={feeInfo}
-                            account={account}
-                            composedLevels={composedLevels}
-                            errors={errors}
-                            register={register}
-                            setValue={setValue}
-                            getValues={getValues}
-                            changeFeeLevel={changeFeeLevel}
+                {amountInCrypto && (
+                    <Row justifyContent="space-between" alignItems="flex-start">
+                        <Row gap={spacings.xs}>
+                            {generateFractionButtons(helpers).map(button => (
+                                <FractionButton key={button.id} {...button} />
+                            ))}
+                        </Row>
+                        <CoinmarketBalance
+                            balance={outputAmount}
+                            displaySymbol={sendCryptoSelect?.value}
+                            symbol={account.symbol}
+                            tokenAddress={tokenAddress}
+                            showOnlyAmount
+                            amountInCrypto={amountInCrypto}
+                            sendCryptoSelect={sendCryptoSelect}
                         />
-                    </ElevationContext>
-                </Card>
-                <CoinmarketFormSwitcherExchangeRates rateType={rateType} setValue={setValue} />
-            </>
-        );
-    }
+                    </Row>
+                )}
+            </Column>
+            <CoinmarketFormInputCryptoSelect<CoinmarketExchangeFormProps>
+                label="TR_TO"
+                cryptoSelectName={FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
+                supportedCryptoCurrencies={supportedCryptoCurrencies}
+                methods={{ ...context }}
+            />
+            <Card margin={{ vertical: spacings.sm }}>
+                <ElevationContext baseElevation={0}>
+                    <Fees
+                        control={control}
+                        feeInfo={feeInfo}
+                        account={account}
+                        composedLevels={composedLevels}
+                        errors={errors}
+                        register={register}
+                        setValue={setValue}
+                        getValues={getValues}
+                        changeFeeLevel={changeFeeLevel}
+                    />
+                </ElevationContext>
+            </Card>
+            <CoinmarketFormSwitcherExchangeRates rateType={rateType} setValue={setValue} />
+        </>
+    );
+};
 
+const CoinmarketBuyForm = ({ context }: { context: CoinmarketBuyFormContextProps }) => {
     const { buyInfo, device } = context;
     const { currencySelect, cryptoSelect } = context.getValues();
     const supportedCryptoCurrencies = buyInfo?.supportedCryptoCurrencies;
@@ -263,4 +264,18 @@ export const CoinmarketFormInputs = () => {
             <CoinmarketFormInputCountry label="TR_COINMARKET_COUNTRY" />
         </>
     );
+};
+
+export const CoinmarketFormInputs = () => {
+    const context = useCoinmarketFormContext();
+
+    if (isCoinmarketSellContext(context)) {
+        return <CoinmarketSellForm context={context} />;
+    }
+
+    if (isCoinmarketExchangeContext(context)) {
+        return <CoinmarketExchangeForm context={context} />;
+    }
+
+    return <CoinmarketBuyForm context={context} />;
 };
