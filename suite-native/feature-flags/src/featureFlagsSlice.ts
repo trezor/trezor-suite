@@ -27,7 +27,7 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsSolanaEnabled]: false,
     [FeatureFlag.IsConnectPopupEnabled]: isDevelopOrDebugEnv(),
     [FeatureFlag.IsFirmwareUpdateEnabled]: isDevelopOrDebugEnv(),
-    [FeatureFlag.AreEthL2sEnabled]: isDevelopOrDebugEnv(),
+    [FeatureFlag.AreEthL2sEnabled]: isDebugEnv(),
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
