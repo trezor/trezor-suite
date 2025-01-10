@@ -1,8 +1,9 @@
 import { ReactNode } from 'react';
 
 import { VStack, Text } from '@suite-native/atoms';
+import { Screen } from '@suite-native/navigation';
 
-import { PassphraseScreenWrapper } from './PassphraseScreenWrapper';
+import { PassphraseScreenHeader } from './PassphraseScreenHeader';
 
 type PassphraseContentScreenWrapperProps = {
     children: ReactNode;
@@ -15,13 +16,13 @@ export const PassphraseContentScreenWrapper = ({
     title,
     subtitle,
 }: PassphraseContentScreenWrapperProps) => (
-    <PassphraseScreenWrapper>
-        <VStack spacing="sp16">
+    <Screen screenHeader={<PassphraseScreenHeader />}>
+        <VStack marginTop="sp8" spacing="sp16">
             <VStack>
                 <Text variant="titleMedium">{title}</Text>
                 {subtitle && <Text>{subtitle}</Text>}
             </VStack>
             {children}
         </VStack>
-    </PassphraseScreenWrapper>
+    </Screen>
 );

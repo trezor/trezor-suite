@@ -1,5 +1,5 @@
-import { Screen, ScreenHeader, useNavigateToInitialScreen } from '@suite-native/navigation';
-import { IconButton, Text, VStack } from '@suite-native/atoms';
+import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
+import { IconButton, ScreenHeaderWrapper, Text, VStack } from '@suite-native/atoms';
 import TrezorConnect from '@trezor/connect';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useIsConnectPopupOpened } from '@suite-native/module-connect-popup';
@@ -20,7 +20,7 @@ export const PassphraseFeatureUnlockFormScreen = () => {
     return (
         <Screen
             screenHeader={
-                <ScreenHeader>
+                <ScreenHeaderWrapper>
                     <IconButton
                         iconName="x"
                         onPress={handleClose}
@@ -29,7 +29,7 @@ export const PassphraseFeatureUnlockFormScreen = () => {
                         accessibilityRole="button"
                         accessibilityLabel="Close"
                     />
-                </ScreenHeader>
+                </ScreenHeaderWrapper>
             }
         >
             <VStack spacing="sp24">

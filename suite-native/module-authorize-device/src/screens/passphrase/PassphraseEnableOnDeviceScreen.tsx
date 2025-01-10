@@ -43,7 +43,7 @@ export const PassphraseEnableOnDeviceScreen = () => {
                 <ScreenHeaderWrapper>
                     <IconButton
                         size="medium"
-                        colorScheme="tertiaryElevation1"
+                        colorScheme="tertiaryElevation0"
                         accessibilityRole="button"
                         accessibilityLabel="close"
                         iconName="x"

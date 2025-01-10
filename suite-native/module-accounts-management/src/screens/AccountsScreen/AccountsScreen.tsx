@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import {
     AccountsList,
     OnSelectAccount,
-    SearchableAccountsListScreenHeader,
+    SearchableAccountsListHeader,
 } from '@suite-native/accounts';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import {
@@ -41,16 +41,12 @@ export const AccountsScreen = () => {
     };
 
     return (
-        <Screen
-            screenHeader={<DeviceManagerScreenHeader />}
-            subheader={
-                <SearchableAccountsListScreenHeader
-                    title="My assets"
-                    onSearchInputChange={handleFilterChange}
-                    flowType="accounts"
-                />
-            }
-        >
+        <Screen screenHeader={<DeviceManagerScreenHeader />}>
+            <SearchableAccountsListHeader
+                title="My assets"
+                onSearchInputChange={handleFilterChange}
+                flowType="accounts"
+            />
             <AccountsList
                 onSelectAccount={handleSelectAccount}
                 filterValue={accountsFilterValue}

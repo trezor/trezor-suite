@@ -61,7 +61,7 @@ export const FirmwareUpdateScreen = () => {
 
     return (
         <Screen
-            subheader={<ScreenSubHeader closeActionType="close" />}
+            screenHeader={<ScreenSubHeader closeActionType="close" />}
             footer={
                 <Button
                     onPress={handleShowSeedBottomSheet}

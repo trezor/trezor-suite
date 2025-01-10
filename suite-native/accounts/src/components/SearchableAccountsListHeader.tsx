@@ -7,14 +7,14 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { Box, IconButton } from '@suite-native/atoms';
-import { AddCoinFlowType, ScreenSubHeader } from '@suite-native/navigation';
+import { Box, HStack, IconButton, Text } from '@suite-native/atoms';
+import { AddCoinFlowType } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountsSearchForm, SEARCH_INPUT_ANIMATION_DURATION } from './AccountsSearchForm';
 import { AddAccountButton } from './AddAccountsButton';
 
-type SearchableAccountsListScreenHeaderProps = {
+type SearchableAccountsListHeaderProps = {
     title: string;
     onSearchInputChange: (value: string) => void;
     flowType: AddCoinFlowType;
@@ -27,11 +27,11 @@ const searchFormContainerStyle = prepareNativeStyle(({ spacings }) => ({
     marginBottom: spacings.sp16,
 }));
 
-export const SearchableAccountsListScreenHeader = ({
+export const SearchableAccountsListHeader = ({
     title,
     onSearchInputChange,
     flowType,
-}: SearchableAccountsListScreenHeaderProps) => {
+}: SearchableAccountsListHeaderProps) => {
     const isFirstRender = useSharedValue(true);
     const { applyStyle } = useNativeStyles();
 
@@ -76,23 +76,18 @@ export const SearchableAccountsListScreenHeader = ({
                     entering={enteringFadeInAnimation}
                     exiting={FadeOut.duration(HEADER_ANIMATION_DURATION)}
                 >
-                    <ScreenSubHeader
-                        content={title}
-                        rightIcon={
-                            <AddAccountButton
-                                flowType={flowType}
-                                testID="@myAssets/addAccountButton"
-                            />
-                        }
-                        leftIcon={
-                            <IconButton
-                                iconName="magnifyingGlass"
-                                onPress={() => setIsSearchActive(true)}
-                                colorScheme="tertiaryElevation1"
-                                size="medium"
-                            />
-                        }
-                    />
+                    <HStack justifyContent="space-between" alignItems="center">
+                        <IconButton
+                            iconName="magnifyingGlass"
+                            onPress={() => setIsSearchActive(true)}
+                            colorScheme="tertiaryElevation1"
+                            size="medium"
+                        />
+                        <Text variant="highlight" numberOfLines={1} adjustsFontSizeToFit>
+                            {title}
+                        </Text>
+                        <AddAccountButton flowType={flowType} testID="@myAssets/addAccountButton" />
+                    </HStack>
                 </Animated.View>
             )}
         </Box>

@@ -93,7 +93,7 @@ export const PassphraseScreenHeader = () => {
             <IconButton
                 iconName="x"
                 size="medium"
-                colorScheme="tertiaryElevation1"
+                colorScheme="tertiaryElevation0"
                 accessibilityRole="button"
                 accessibilityLabel="close"
                 onPress={handleCancel}
