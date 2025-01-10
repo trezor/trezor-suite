@@ -4,8 +4,9 @@ import { test, expect } from '../../support/fixtures';
 
 test.describe('Application Logs', { tag: ['@group=settings'] }, () => {
     test.use({ emulatorStartConf: { wipe: true } });
-    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
+    test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
+        await dashboardPage.discoveryShouldFinish();
         await settingsPage.navigateTo('application');
     });
 

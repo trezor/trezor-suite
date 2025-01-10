@@ -1,4 +1,3 @@
-import { isWebProject } from '../../../support/common';
 import { test } from '../../../support/fixtures';
 
 test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-management'] }, () => {
@@ -19,14 +18,9 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-managem
         analyticsPage,
         devicePrompt,
         trezorUserEnvLink,
-    }, testInfo) => {
+    }) => {
         await analyticsPage.passThroughAnalytics();
-        if (isWebProject(testInfo)) {
-            await onboardingPage.firmware.skip();
-        } else {
-            await onboardingPage.firmware.continueButton.click();
-        }
-
+        await onboardingPage.firmware.skip();
         // Start wallet recovery process and confirm on device
         await onboardingPage.recoverWalletButton.click();
         await onboardingPage.startRecoveryButton.click();
