@@ -7,6 +7,7 @@ import { Box, Button, VStack } from '@suite-native/atoms';
 import { Form, TextInputField } from '@suite-native/forms';
 import {
     AccountFormValues,
+    AccountLabelFieldHint,
     MAX_ACCOUNT_LABEL_LENGTH,
     useAccountLabelForm,
 } from '@suite-native/accounts';
@@ -17,8 +18,6 @@ import {
     selectAccountLabel,
 } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
-
-import { AccountLabelFieldHint } from './AccountLabelFieldHint';
 
 type AccountRenameFormProps = {
     accountKey: string;

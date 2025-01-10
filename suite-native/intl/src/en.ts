@@ -91,6 +91,11 @@ export const en = {
             },
         },
     },
+    accounts: {
+        accountLabelFieldHint: {
+            letterCount: '{current} / {max} letters',
+        },
+    },
     accountList: {
         numberOfTokens: '+{numberOfTokens, plural, one{1 Token} other{# Tokens}}',
         tokens: 'Tokens',
@@ -829,9 +834,6 @@ export const en = {
                 title: 'Rename coin',
                 coinLabel: 'Coin label',
             },
-        },
-        accountLabelFieldHint: {
-            letterCount: '{current} / {max} letters',
         },
     },
     moduleAccounts: {

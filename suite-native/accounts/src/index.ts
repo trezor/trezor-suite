@@ -8,6 +8,7 @@ export * from './components/SelectableNetworkItem';
 export * from './components/AccountsList/AccountsListTokenItem';
 export * from './components/TokenSelectBottomSheet';
 export * from './components/AccountSectionTitle';
+export * from './components/AccountLabelFieldHint';
 export * from './hooks/useAccountLabelForm';
 export * from './selectors';
 export * from './hooks/useAccountAlerts';

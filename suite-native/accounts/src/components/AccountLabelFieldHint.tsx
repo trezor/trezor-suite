@@ -2,7 +2,8 @@ import { Control, useWatch } from 'react-hook-form';
 
 import { Box, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { AccountFormValues, MAX_ACCOUNT_LABEL_LENGTH } from '@suite-native/accounts';
+
+import { AccountFormValues, MAX_ACCOUNT_LABEL_LENGTH } from '../hooks/useAccountLabelForm';
 
 type AccountLabelFieldHintProps = {
     formControl: Control<AccountFormValues>;
@@ -17,7 +18,7 @@ export const AccountLabelFieldHint = ({ formControl }: AccountLabelFieldHintProp
         <Box paddingLeft="sp8">
             <Text variant="label" color="textSubdued">
                 <Translation
-                    id="moduleAccountManagement.accountLabelFieldHint.letterCount"
+                    id="accounts.accountLabelFieldHint.letterCount"
                     values={{
                         current: accountLabelLength,
                         max: MAX_ACCOUNT_LABEL_LENGTH,
