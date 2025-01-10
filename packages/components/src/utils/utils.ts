@@ -12,7 +12,7 @@ type LabelColorOptions = {
 
 export const getInputColor = (theme: DefaultTheme, { checked, disabled }: InputColorOptions) => {
     if (!checked) {
-        return theme.backgroundNeutralDisabled;
+        return theme.backgroundNeutralSubdued;
     }
 
     return disabled ? theme.backgroundPrimarySubtleOnElevation0 : theme.backgroundPrimaryDefault;
