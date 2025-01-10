@@ -1,7 +1,6 @@
 import { test, expect } from '../../support/fixtures';
 
-//TODO: We have a failing Desktop version on websocket parsing JSON response
-test.describe('Coin balance', { tag: ['@group=wallet', '@webOnly'] }, () => {
+test.describe('Coin balance', { tag: ['@group=wallet'] }, () => {
     const address = 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v';
 
     test.use({

@@ -18,6 +18,6 @@ export default [
         },
     },
     {
-        ignores: ['**/playwright-report/'],
+        ignores: ['**/playwright-report/', '**/test-results/'],
     },
 ];
