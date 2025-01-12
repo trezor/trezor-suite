@@ -1,21 +1,37 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { BottomSheet, Box, Button, NumberedListItem, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { FirmwareUpdateStuckedState } from '@suite-native/analytics';
 
 type MayBeStuckedBottomSheetProps = {
     isOpened: boolean;
     onClose: () => void;
+    onAnalyticsReportStucked: (state: FirmwareUpdateStuckedState) => void;
 };
 
-export const MayBeStuckedBottomSheet = ({ isOpened, onClose }: MayBeStuckedBottomSheetProps) => {
+export const MayBeStuckedBottomSheet = ({
+    isOpened,
+    onClose,
+    onAnalyticsReportStucked,
+}: MayBeStuckedBottomSheetProps) => {
     const [visiblePart, setVisiblePart] = useState<1 | 2>(1);
 
     const handleClose = () => {
         onClose();
         setVisiblePart(1);
     };
+
+    useEffect(() => {
+        if (isOpened) {
+            if (visiblePart === 1) {
+                onAnalyticsReportStucked('modalPart1');
+            } else if (visiblePart === 2) {
+                onAnalyticsReportStucked('modalPart2');
+            }
+        }
+    }, [visiblePart, onAnalyticsReportStucked, isOpened]);
 
     return (
         <BottomSheet

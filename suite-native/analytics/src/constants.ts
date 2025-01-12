@@ -50,4 +50,8 @@ export enum EventType {
     SendFlowExited = 'send/flow_exited',
     DeviceSettingsPinProtectionChange = 'device_settings/pin_protection_change',
     DeviceSettingsAuthenticityCheck = 'device_settings/authenticity_check',
+    FirmwareUpdateStarted = 'firmware/firmware_update_started',
+    FirmwareUpdateCancel = 'firmware/firmware_update_cancel',
+    FirmwareUpdateFinished = 'firmware/firmware_update_finished',
+    FirmwareUpdateStucked = 'firmware/firmware_update_stucked',
 }

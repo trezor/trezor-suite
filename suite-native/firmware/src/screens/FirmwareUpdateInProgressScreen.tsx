@@ -32,6 +32,7 @@ import {
 } from '../components/UpdateProgressIndicator';
 import { useFirmware } from '../hooks/useFirmware';
 import { MayBeStuckedBottomSheet } from '../components/MayBeStuckedBottomSheet';
+import { useFirmwareAnalytics } from '../hooks/useFirmwareAnalytics';
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
@@ -68,7 +69,18 @@ export const FirmwareUpdateInProgressScreen = () => {
         resetReducer,
         translatedText,
         mayBeStucked,
+        originalDevice,
+        targetFirmwareType,
     } = useFirmware({});
+    const {
+        handleAnalyticsReportFinished,
+        handleAnalyticsReportStucked,
+        handleAnalyticsReportCancelled,
+        handleAnalyticsReportStarted,
+    } = useFirmwareAnalytics({
+        device: originalDevice,
+        targetFirmwareType,
+    });
     const openLink = useOpenLink();
 
     useEffect(() => {
@@ -98,6 +110,8 @@ export const FirmwareUpdateInProgressScreen = () => {
         const result = await firmwareUpdate();
 
         if (!result) {
+            handleAnalyticsReportFinished({ error: 'Unknown error swallowed by redux.' });
+
             // some error happened probably, handled in redux, we don't want to navigate anywhere
             return;
         }
@@ -106,11 +120,18 @@ export const FirmwareUpdateInProgressScreen = () => {
                 // Action cancelled on device
                 result.payload?.code === 'Failure_ActionCancelled'
             ) {
+                handleAnalyticsReportCancelled();
                 navigation.navigate(DeviceStackRoutes.FirmwareUpdate);
+
+                return;
             }
+
+            handleAnalyticsReportFinished({ error: result.payload?.error ?? 'Unknown error' });
 
             return;
         }
+
+        handleAnalyticsReportFinished();
 
         // wait few seconds to animation to finish and let user orientate little bit
         setTimeout(() => {
@@ -123,13 +144,17 @@ export const FirmwareUpdateInProgressScreen = () => {
         navigation,
         handleFirmwareUpdateFinished,
         firmwareUpdate,
+        handleAnalyticsReportFinished,
+        handleAnalyticsReportCancelled,
     ]);
 
     const handleRetry = useCallback(async () => {
         await TrezorConnect.cancel();
+        // We should put retry before resetReducer because then we may not have information about the device
+        handleAnalyticsReportStarted({ startType: 'retry' });
         resetReducer();
         startFirmwareUpdate();
-    }, [startFirmwareUpdate, resetReducer]);
+    }, [startFirmwareUpdate, resetReducer, handleAnalyticsReportStarted]);
 
     const openMayBeStuckedBottomSheet = useCallback(() => {
         setIsMayBeStuckedBottomSheetOpened(true);
@@ -146,11 +171,12 @@ export const FirmwareUpdateInProgressScreen = () => {
     useEffect(() => {
         // Small delay to let initial screen animation finish
         const timeout = setTimeout(() => {
+            handleAnalyticsReportStarted({ startType: 'normal' });
             startFirmwareUpdate();
         }, 2000);
 
         return () => clearTimeout(timeout);
-    }, [startFirmwareUpdate]);
+    }, [startFirmwareUpdate, handleAnalyticsReportStarted]);
 
     const isError = status === 'error';
 
@@ -238,6 +264,7 @@ export const FirmwareUpdateInProgressScreen = () => {
             <MayBeStuckedBottomSheet
                 isOpened={isMayBeStuckedBottomSheetOpened}
                 onClose={closeMayBeStuckedBottomSheet}
+                onAnalyticsReportStucked={handleAnalyticsReportStucked}
             />
         </Screen>
     );

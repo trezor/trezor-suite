@@ -10,6 +10,7 @@ import { TxKeyPath, useTranslate } from '@suite-native/intl';
 import { setPriorityMode } from '@trezor/react-native-usb';
 
 import { nativeFirmwareActions } from '../nativeFirmwareSlice';
+import { useFirmwareAnalytics } from './useFirmwareAnalytics';
 
 // If progress doesn't change for 1 minute
 const MAYBE_STUCKED_TIMEOUT = 1 * 60 * 1000; // 1 minute
@@ -28,6 +29,10 @@ export const useFirmware = (params: UseFirmwareInstallationParams) => {
     const { translate } = useTranslate();
     const [mayBeStucked, setMayBeStucked] = useState(false);
     const mayBeStuckedTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const { handleAnalyticsReportStucked } = useFirmwareAnalytics({
+        device: firmwareInstallation.originalDevice,
+        targetFirmwareType: firmwareInstallation.targetFirmwareType,
+    });
 
     const setIsFirmwareInstallationRunning = useCallback(
         (isRunning: boolean) => {
@@ -46,9 +51,10 @@ export const useFirmware = (params: UseFirmwareInstallationParams) => {
     const setMayBeStuckedTimeout = useCallback(() => {
         resetMayBeStuckedTimeout();
         mayBeStuckedTimeout.current = setTimeout(() => {
+            handleAnalyticsReportStucked('buttonVisible');
             setMayBeStucked(true);
         }, MAYBE_STUCKED_TIMEOUT);
-    }, [resetMayBeStuckedTimeout]);
+    }, [resetMayBeStuckedTimeout, handleAnalyticsReportStucked]);
 
     useEffect(() => {
         if (status === 'started' && progress < 100) {

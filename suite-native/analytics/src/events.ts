@@ -5,7 +5,13 @@ import { FeeLevelLabel, TokenAddress, TokenSymbol } from '@suite-common/wallet-t
 import { DeviceModelInternal, VersionArray } from '@trezor/connect';
 
 import { EventType } from './constants';
-import { AnalyticsSendFlowStep, DeviceAuthenticityCheckResult } from './types';
+import {
+    AnalyticsSendFlowStep,
+    DeviceAuthenticityCheckResult,
+    FirmwareUpdatePayload,
+    FirmwareUpdateStartType,
+    FirmwareUpdateStuckedState,
+} from './types';
 
 export type SuiteNativeAnalyticsEvent =
     | {
@@ -315,5 +321,29 @@ export type SuiteNativeAnalyticsEvent =
           type: EventType.DeviceSettingsAuthenticityCheck;
           payload: {
               result: DeviceAuthenticityCheckResult;
+          };
+      }
+    | {
+          type: EventType.FirmwareUpdateStarted;
+          payload: FirmwareUpdatePayload & {
+              startType: FirmwareUpdateStartType;
+          };
+      }
+    | {
+          type: EventType.FirmwareUpdateCancel;
+          payload: FirmwareUpdatePayload;
+      }
+    | {
+          type: EventType.FirmwareUpdateFinished;
+          payload: FirmwareUpdatePayload & {
+              duration: number;
+              error?: string;
+          };
+      }
+    | {
+          type: EventType.FirmwareUpdateStucked;
+          payload: FirmwareUpdatePayload & {
+              duration: number;
+              stuckedType: FirmwareUpdateStuckedState;
           };
       };
