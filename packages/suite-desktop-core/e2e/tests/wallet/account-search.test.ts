@@ -2,7 +2,6 @@ import { test, expect } from '../../support/fixtures';
 
 test.describe('Look up a BTC account', { tag: ['@group=wallet'] }, () => {
     test.use({
-        emulatorStartConf: { wipe: true },
         emulatorSetupConf: {
             mnemonic: 'cancel solid bulb sample fury scrap whale ranch raven razor sight skin',
         },

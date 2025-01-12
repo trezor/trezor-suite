@@ -152,6 +152,7 @@ export const GraphRangeSelector = ({
                             onSelectedRange(range);
                         }
                     }}
+                    data-testid={`@dashboard/graph/range-${range.label}`}
                 >
                     {getFormattedLabel(range.label)}
                 </RangeItem>

@@ -36,7 +36,7 @@ export const TargetAddressLabel = ({
     }
 
     return (
-        <TruncatedSpan>
+        <TruncatedSpan data-testid="@wallet/transaction/target-address">
             {target.addresses?.map((a, i) =>
                 // either it may be AddressLabeling - sent to another account associated with this device, e.g: "Bitcoin #2"
                 // or it may show address metadata label added from receive tab e.g "My address for illegal things"

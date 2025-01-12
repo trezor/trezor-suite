@@ -67,24 +67,29 @@ export const InfoCard = (props: InfoCardProps) => {
     return (
         <Card minHeight={100}>
             <Column>
-                <Title>{props.title}</Title>
+                <Title data-testid="@wallet/transactions/summary-card/title">{props.title}</Title>
                 {props.isLoading && <SkeletonRectangle width="160px" />}
 
                 {!props.isLoading && (
                     <>
                         {bigValue && props.symbol && (
                             <StyledFormattedValue
+                                data-testid="@wallet/transactions/summary-card/value"
                                 signValue={bigValue}
                                 value={bigValue.abs().toFixed()}
                                 symbol={props.symbol}
                             />
                         )}
 
-                        {!bigValue && <Value>{props.value}</Value>}
+                        {!bigValue && (
+                            <Value data-testid="@wallet/transactions/summary-card/value">
+                                {props.value}
+                            </Value>
+                        )}
 
                         {props.isNumeric && props.secondaryValue && (
                             <StyledHiddenPlaceholder>
-                                <Value>
+                                <Value data-testid="@wallet/transactions/summary-card/secondary-value">
                                     <Sign value="positive" placeholderOnly />
                                     <SecondaryValueWrapper>
                                         {props.secondaryValue}
@@ -94,7 +99,9 @@ export const InfoCard = (props: InfoCardProps) => {
                         )}
 
                         {!props.isNumeric && props.secondaryValue && (
-                            <SecondaryValueWrapper>{props.secondaryValue}</SecondaryValueWrapper>
+                            <SecondaryValueWrapper data-testid="@wallet/transactions/summary-card/secondary-value">
+                                {props.secondaryValue}
+                            </SecondaryValueWrapper>
                         )}
                     </>
                 )}

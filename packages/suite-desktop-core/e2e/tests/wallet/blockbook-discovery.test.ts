@@ -1,11 +1,7 @@
 import { test, expect } from '../../support/fixtures';
 
 test.describe('Custom-blockbook-discovery', { tag: ['@group=wallet'] }, () => {
-    test.use({
-        emulatorStartConf: { wipe: true },
-        emulatorSetupConf: { mnemonic: 'mnemonic_all' },
-    });
-
+    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
     test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();

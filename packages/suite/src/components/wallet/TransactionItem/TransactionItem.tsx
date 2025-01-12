@@ -216,6 +216,7 @@ export const TransactionItem = memo(
                 ref={anchorRef}
                 $isPhishingTransaction={isPhishingTransaction}
                 className={className}
+                data-testid="@wallet/transaction-item"
             >
                 <Card variant={isPending ? 'warning' : undefined}>
                     <OutlineHighlight shouldHighlight={shouldHighlight}>

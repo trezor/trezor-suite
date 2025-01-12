@@ -2,6 +2,7 @@
 import { test as base, Page } from '@playwright/test';
 
 import {
+    Model,
     SetupEmu,
     StartEmu,
     TrezorUserEnvLink,
@@ -31,10 +32,12 @@ import { AssetsActions } from './pageActions/assetsActions';
 import { MetadataProviderMocks } from './metadataProviderMocks';
 import { MetadataActions } from './pageActions/metadataActions';
 
+type StartEmuModelRequired = StartEmu & { model: Model };
+
 type Fixtures = {
     startEmulator: boolean;
     setupEmulator: boolean;
-    emulatorStartConf: StartEmu;
+    emulatorStartConf: StartEmuModelRequired;
     emulatorSetupConf: SetupEmu;
     apiURL: string;
     trezorUserEnvLink: TrezorUserEnvLinkClass;

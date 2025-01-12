@@ -2,11 +2,15 @@ import { Locator, Page, expect } from '@playwright/test';
 
 import { step } from '../common';
 
+export type graphRangeOptions = 'day' | 'week' | 'month' | 'year' | 'all';
+
 export class DashboardActions {
     readonly dashboardMenuButton: Locator;
     readonly discoveryHeader: Locator;
     readonly discoveryBar: Locator;
     readonly graph: Locator;
+    readonly graphRangeSelector = (range: graphRangeOptions) =>
+        this.page.getByTestId(`@dashboard/graph/range-${range}`);
     readonly deviceSwitchingOpenButton: Locator;
     readonly modal: Locator;
     //TODO: Refactor to wallet page object

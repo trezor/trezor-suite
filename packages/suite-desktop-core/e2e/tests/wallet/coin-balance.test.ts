@@ -2,12 +2,7 @@ import { test, expect } from '../../support/fixtures';
 
 test.describe('Coin balance', { tag: ['@group=wallet'] }, () => {
     const address = 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v';
-
-    test.use({
-        emulatorStartConf: { wipe: true },
-        emulatorSetupConf: { mnemonic: 'mnemonic_all' },
-    });
-
+    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
     test.beforeEach(async ({ dashboardPage, onboardingPage }) => {
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
