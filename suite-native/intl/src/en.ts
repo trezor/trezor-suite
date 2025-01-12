@@ -91,6 +91,14 @@ export const en = {
                 enable: 'Enable',
             },
         },
+        firmwareUpdateAlert: {
+            title: 'New Trezor firmware version available.',
+            version: 'Version {version}',
+            button: {
+                close: 'Close',
+                update: 'Update',
+            },
+        },
     },
     accounts: {
         accountLabelFieldHint: {

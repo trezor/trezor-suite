@@ -20,6 +20,7 @@ import {
     selectDeviceState,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 import { FirmwareUpdateVersionCard } from './FirmwareVersionCard';
 
@@ -42,6 +43,7 @@ export const FirmwareUpdateScreen = () => {
     const isDiscoveryRunning = useSelector((state: DiscoveryRootState & DeviceRootState) =>
         selectIsDiscoveryActiveByDeviceState(state, deviceState),
     );
+    const isFirmwareUpdateEnabled = useFeatureFlag(FeatureFlag.IsFirmwareUpdateEnabled);
 
     const handleShowSeedBottomSheet = useCallback(() => {
         showAlert({
@@ -66,7 +68,7 @@ export const FirmwareUpdateScreen = () => {
                 <Button
                     onPress={handleShowSeedBottomSheet}
                     style={applyStyle(firmwareUpdateButtonStyle)}
-                    isDisabled={isDiscoveryRunning}
+                    isDisabled={isDiscoveryRunning || isFirmwareUpdateEnabled}
                     isLoading={isDiscoveryRunning}
                 >
                     <Translation id="moduleDeviceSettings.firmware.firmwareUpdateScreen.updateButton" />

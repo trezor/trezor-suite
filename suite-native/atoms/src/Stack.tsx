@@ -1,4 +1,6 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
+import Animated from 'react-native-reanimated';
+import { View } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NativeSpacing } from '@trezor/theme';
@@ -27,30 +29,34 @@ const spacerStyle = prepareNativeStyle<SpacerStyleProps>((utils, { spacing, orie
     };
 });
 
-export const Stack = ({
-    children,
-    style,
-    spacing,
-    orientation = 'vertical',
-    ...rest
-}: StackProps) => {
-    const { applyStyle } = useNativeStyles();
+export const Stack = React.forwardRef<View, StackProps>(
+    ({ children, style, spacing, orientation = 'vertical', ...rest }: StackProps, ref) => {
+        const { applyStyle } = useNativeStyles();
 
-    return (
-        <Box
-            style={[
-                applyStyle(spacerStyle, {
-                    spacing,
-                    orientation,
-                }),
-                style,
-            ]}
-            {...rest}
-        >
-            {children}
-        </Box>
-    );
-};
+        return (
+            <Box
+                ref={ref}
+                style={[
+                    applyStyle(spacerStyle, {
+                        spacing,
+                        orientation,
+                    }),
+                    style,
+                ]}
+                {...rest}
+            >
+                {children}
+            </Box>
+        );
+    },
+);
 
 export const VStack = Stack;
 export const HStack = (props: StackProps) => <Stack {...props} orientation="horizontal" />;
+
+const AnimatedStack = Animated.createAnimatedComponent(Stack);
+AnimatedStack.displayName = 'AnimatedStack';
+export const AnimatedVStack = AnimatedStack;
+export const AnimatedHStack = (props: StackProps) => (
+    <AnimatedStack {...props} orientation="horizontal" />
+);
