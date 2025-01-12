@@ -26,7 +26,7 @@ import {
     DeviceStackRoutes,
 } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
+import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 
 const containerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
@@ -76,7 +76,7 @@ export const FirmwareUpdateAlert = () => {
     );
 
     const isClosed = useAtomValue(isClosedAtom);
-    const isFirmwareUpdateEnabled = useFeatureFlag(FeatureFlag.IsFirmwareUpdateEnabled);
+    const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
 
     const isUpgradable = deviceReleaseInfo?.isNewer;
 

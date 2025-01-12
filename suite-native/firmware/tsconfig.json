@@ -4,6 +4,9 @@
     "references": [
         { "path": "../../suite-common/firmware" },
         { "path": "../../suite-common/icons" },
+        {
+            "path": "../../suite-common/message-system"
+        },
         { "path": "../link" },
         { "path": "../../packages/connect" },
         {

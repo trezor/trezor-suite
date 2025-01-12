@@ -24,7 +24,7 @@ import {
     DeviceSettingsStackParamList,
 } from '@suite-native/navigation';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
+import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 
 import { DeviceSettingsCardLayout } from './DeviceSettingsCardLayout';
 
@@ -66,7 +66,7 @@ export const DeviceFirmwareCard = () => {
         selectIsDiscoveryActiveByDeviceState(state, device?.state),
     );
     const navigation = useNavigation<NavigationProp>();
-    const isFirmwareUpdateEnabled = useFeatureFlag(FeatureFlag.IsFirmwareUpdateEnabled);
+    const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
 
     if (!device || !deviceModel) {
         return null;

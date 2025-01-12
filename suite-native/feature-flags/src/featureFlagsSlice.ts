@@ -8,7 +8,6 @@ export const FeatureFlag = {
     IsCardanoSendEnabled: 'isCardanoSendEnabled',
     IsRegtestEnabled: 'isRegtestEnabled',
     IsConnectPopupEnabled: 'IsConnectPopupEnabled',
-    IsFirmwareUpdateEnabled: 'IsFirmwareUpdateEnabled',
     AreEthL2sEnabled: 'AreEthL2sEnabled',
 } as const;
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
@@ -24,7 +23,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsCardanoSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
     [FeatureFlag.IsRegtestEnabled]: isDebugEnv() || isDetoxTestBuild(),
     [FeatureFlag.IsConnectPopupEnabled]: isDevelopOrDebugEnv(),
-    [FeatureFlag.IsFirmwareUpdateEnabled]: isDevelopOrDebugEnv(),
     [FeatureFlag.AreEthL2sEnabled]: isDebugEnv(),
 };
 
@@ -33,7 +31,6 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsCardanoSendEnabled,
     FeatureFlag.IsRegtestEnabled,
     FeatureFlag.IsConnectPopupEnabled,
-    FeatureFlag.IsFirmwareUpdateEnabled,
     FeatureFlag.AreEthL2sEnabled,
 ];
 

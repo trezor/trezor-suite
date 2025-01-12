@@ -25,6 +25,8 @@ export const Feature = {
     ethClaim: 'eth.staking.claim',
     firmwareRevisionCheck: 'security.firmware.check',
     firmwareHashCheck: 'security.firmware.hashCheck',
+    // FW update feature flag implemented only for mobile app
+    firmwareUpdate: 'device.firmware.update',
 } as const;
 
 export type FeatureDomain = (typeof Feature)[keyof typeof Feature];

@@ -16,6 +16,7 @@
         "@shopify/react-native-skia": "^1.5.10",
         "@suite-common/firmware": "workspace:*",
         "@suite-common/icons": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/react-native-usb": "workspace:*",
