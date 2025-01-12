@@ -17,26 +17,26 @@ test.describe('Assets', { tag: ['@group=suite'] }, () => {
         await expect(marketPage.section).toBeVisible();
     });
 
-    test('New asset is shown in both grid and row', async ({
-        assetsPage,
-        dashboardPage,
-        settingsPage,
-    }) => {
-        await dashboardPage.discoveryShouldFinish();
-        await assetsPage.enableMoreCoins.click();
-        await settingsPage.coins.enableNetwork('eth');
+    test(
+        'New asset is shown in both grid and row',
+        { tag: ['@snapshot'] },
+        async ({ assetsPage, dashboardPage, settingsPage }) => {
+            await dashboardPage.discoveryShouldFinish();
+            await assetsPage.enableMoreCoins.click();
+            await settingsPage.coins.enableNetwork('eth');
 
-        await dashboardPage.navigateTo();
-        await dashboardPage.discoveryShouldFinish();
-        await expect(assetsPage.section).toHaveScreenshot('new-asset-grid.png', {
-            mask: [assetsPage.bottomInfo],
-        });
+            await dashboardPage.navigateTo();
+            await dashboardPage.discoveryShouldFinish();
+            await expect(assetsPage.section).toHaveScreenshot('new-asset-grid.png', {
+                mask: [assetsPage.bottomInfo],
+            });
 
-        await assetsPage.tableIcon.click();
-        await expect(assetsPage.section).toHaveScreenshot('new-asset-table.png', {
-            mask: [assetsPage.assetExchangeRate, assetsPage.assetWeekChange],
-            //The width of the table is not fixed -> higher maxDiffPixelRatio
-            maxDiffPixelRatio: 0.025,
-        });
-    });
+            await assetsPage.tableIcon.click();
+            await expect(assetsPage.section).toHaveScreenshot('new-asset-table.png', {
+                mask: [assetsPage.assetExchangeRate, assetsPage.assetWeekChange],
+                //The width of the table is not fixed -> higher maxDiffPixelRatio
+                maxDiffPixelRatio: 0.025,
+            });
+        },
+    );
 });

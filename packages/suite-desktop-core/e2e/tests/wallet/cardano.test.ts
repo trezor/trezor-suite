@@ -7,7 +7,7 @@ import { test, expect } from '../../support/fixtures';
 // todo: setup emu with 24 words mnemonic so that we can test different cardano derivation and its 'auto-discovery; feature
 //mnemonic: 'clot trim improve bag pigeon party wave mechanic beyond clean cake maze protect left assist carry guitar bridge nest faith critic excuse tooth dutch',
 
-test.describe('Cardano', { tag: ['@group=wallet'] }, () => {
+test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();

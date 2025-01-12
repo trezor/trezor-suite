@@ -1,6 +1,6 @@
 import { test, expect } from '../../support/fixtures';
 
-test.describe('Coinmarket Exchange', { tag: ['@group=other'] }, () => {
+test.describe('Coinmarket Exchange', { tag: ['@group=other', '@snapshot'] }, () => {
     test.use({
         emulatorSetupConf: {
             mnemonic:

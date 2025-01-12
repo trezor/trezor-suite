@@ -12,7 +12,8 @@
         "test:unit": "yarn g:jest",
         "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
         "test:e2e:web": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=web",
-        "test:e2e:desktop": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=desktop"
+        "test:e2e:desktop": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=desktop",
+        "test:e2e:update-snapshots": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=web --grep @snapshot --update-snapshots"
     },
     "dependencies": {
         "@sentry/electron": "^5.9.0",

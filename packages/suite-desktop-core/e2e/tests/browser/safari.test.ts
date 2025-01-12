@@ -14,7 +14,7 @@ const safariAria = `
 `;
 
 test.use({ startEmulator: false, browserName: 'webkit' });
-test.describe('Safari', { tag: ['@group=other', '@webOnly'] }, () => {
+test.describe('Safari', { tag: ['@group=other', '@webOnly', '@snapshot'] }, () => {
     test('Suite does not support Safari', async ({ page, onboardingPage }) => {
         await expect(page.locator('body')).toMatchAriaSnapshot(safariAria);
         await expect(page.getByTestId('@continue-to-suite')).toHaveText('Continue at my own risk');
