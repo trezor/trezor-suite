@@ -5,15 +5,13 @@ import styled, { css } from 'styled-components';
 import { Button, Column, Icon, Image, Row, Tooltip, variables } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { spacings } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { SUITE_MOBILE_APP_STORE, SUITE_MOBILE_PLAY_STORE, SUITE_URL } from '@trezor/urls';
 
 import { QrCode, Translation, TrezorLink } from 'src/components/suite';
-import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH_NUMERIC } from 'src/constants/suite/layout';
+import { HORIZONTAL_LAYOUT_PADDINGS } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-
-import { useResponsiveContext } from '../../support/suite/ResponsiveContext';
 
 const Container = styled.div`
     position: absolute;
@@ -23,13 +21,17 @@ const Container = styled.div`
     flex-wrap: wrap;
     align-items: center;
     width: 100%;
-    height: 70px;
+    height: 90px;
     border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        border-radius: 20px;
-        box-shadow: 0 -4px 6px -4px ${({ theme }) => theme.legacy.BOX_SHADOW_OPTION_CARD};
+    ${variables.SCREEN_QUERY.MOBILE} {
+        position: static;
+        margin-left: -${spacingsPx.md};
+        margin-right: -${spacingsPx.md};
+        padding-left: ${spacingsPx.md};
+        padding-right: ${spacingsPx.md};
+        width: calc(100% + ${spacingsPx.xxl});
     }
 `;
 
@@ -56,7 +58,7 @@ const MobilePromoContainer = styled.div`
     ${promoContainerCss}
     justify-content: start;
 
-    ${variables.SCREEN_QUERY.MOBILE} {
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         flex-direction: column;
         padding: 20px 16px;
     }
@@ -182,7 +184,6 @@ const StoreBadge = ({
 export const PromoBanner = () => {
     const shownQRState = useState<QrType>();
     const { isMobileLayout } = useLayoutSize();
-    const { contentWidth } = useResponsiveContext();
 
     return (
         <Container>
@@ -209,7 +210,7 @@ export const PromoBanner = () => {
                             })
                         }
                     >
-                        <DesktopLinkButton>
+                        <DesktopLinkButton size="small">
                             <Translation id="TR_DESKTOP_APP_PROMO_GET" />
                         </DesktopLinkButton>
                     </StyledLink>
@@ -217,17 +218,7 @@ export const PromoBanner = () => {
             )}
 
             <MobilePromoContainer>
-                <Row
-                    justifyContent="space-between"
-                    width="100%"
-                    margin={{
-                        right:
-                            contentWidth &&
-                            contentWidth < MAX_CONTENT_WIDTH_NUMERIC + spacings.xxxxxl
-                                ? spacings.xxxxxl
-                                : 0,
-                    }}
-                >
+                <Column justifyContent="space-between" width="100%" gap={spacings.xs}>
                     <Translation
                         values={{ b: text => <b>{text}</b> }}
                         id="TR_MOBILE_APP_PROMO_TEXT_FOOTER"
@@ -249,7 +240,7 @@ export const PromoBanner = () => {
                             shownQRState={shownQRState}
                         />
                     </Row>
-                </Row>
+                </Column>
             </MobilePromoContainer>
         </Container>
     );

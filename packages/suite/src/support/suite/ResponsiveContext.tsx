@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useState } from 'react';
 
-import { SIDEBAR_COLLAPSED_WIDTH } from '../../components/suite/layouts/SuiteLayout/Sidebar/consts';
+import {
+    SIDEBAR_COLLAPSED_WIDTH,
+    SIDEBAR_MIN_WIDTH,
+} from '../../components/suite/layouts/SuiteLayout/Sidebar/consts';
 
 type ResponsiveContextType = {
     sidebarWidth?: number;
@@ -15,19 +18,27 @@ export const ResponsiveContext = createContext<ResponsiveContextType | undefined
 export const ResponsiveContextProvider = ({
     children,
     sidebarWidthFromRedux,
+    isMobileLayout,
 }: {
     children: React.ReactNode;
+    isMobileLayout: boolean;
     sidebarWidthFromRedux: number;
 }) => {
     const [sidebarWidth, setSidebarWidth] = useState<number>(sidebarWidthFromRedux);
     const [contentWidth, setContentWidth] = useState<number | undefined>(undefined);
 
+    const getIsSidebarCollapsed = () => {
+        if (isMobileLayout) return true;
+
+        return sidebarWidth ? sidebarWidth <= SIDEBAR_COLLAPSED_WIDTH : false;
+    };
+
     const value: ResponsiveContextType = {
-        sidebarWidth,
+        sidebarWidth: isMobileLayout ? SIDEBAR_MIN_WIDTH : sidebarWidth,
         setSidebarWidth,
         contentWidth,
         setContentWidth,
-        isSidebarCollapsed: sidebarWidth ? sidebarWidth < SIDEBAR_COLLAPSED_WIDTH : false,
+        isSidebarCollapsed: getIsSidebarCollapsed(),
     };
 
     return <ResponsiveContext.Provider value={value}>{children}</ResponsiveContext.Provider>;

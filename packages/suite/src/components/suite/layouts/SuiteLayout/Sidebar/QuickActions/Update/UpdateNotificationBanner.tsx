@@ -13,6 +13,7 @@ import {
     mapSuiteUpdateToClick,
 } from './updateQuickActionTypes';
 import { useDiscovery, useDispatch } from '../../../../../../../hooks/suite';
+import { useResponsiveContext } from '../../../../../../../support/suite/ResponsiveContext';
 import { Translation, TranslationKey } from '../../../../../Translation';
 
 type ContainerProps = { $elevation: Elevation };
@@ -80,6 +81,7 @@ export const UpdateNotificationBanner = ({
     const { getDiscoveryStatus } = useDiscovery();
     const discoveryStatus = getDiscoveryStatus();
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
+    const { isSidebarCollapsed } = useResponsiveContext();
 
     const translationHeader =
         updateStatusSuite !== 'up-to-date' // Update suite first, because it will contain the newest firmware
@@ -91,7 +93,12 @@ export const UpdateNotificationBanner = ({
             updateStatusSuite !== 'up-to-date' ? updateStatusSuite : updateStatusDevice
         ];
 
-    if (translationHeader === null || translationCallToAction === null || discoveryInProgress) {
+    if (
+        translationHeader === null ||
+        translationCallToAction === null ||
+        discoveryInProgress ||
+        isSidebarCollapsed
+    ) {
         return null;
     }
 

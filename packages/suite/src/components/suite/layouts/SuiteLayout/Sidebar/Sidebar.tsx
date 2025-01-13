@@ -14,6 +14,7 @@ import { TrafficLightOffset } from '../../../TrafficLightOffset';
 import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
 import { UpdateNotificationBanner } from './QuickActions/Update/UpdateNotificationBanner';
 import { useUpdateStatus } from './QuickActions/Update/useUpdateStatus';
+import { SIDEBAR_MAX_WIDTH } from './consts';
 import { setSidebarWidth as setSidebarWidthInRedux } from '../../../../../actions/suite/suiteActions';
 import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 
@@ -37,9 +38,13 @@ const Content = styled.div`
     flex-direction: column;
 `;
 
+type SidebarProps = {
+    isMobileLayout: boolean;
+};
+
 export const SIDEBAR_MIN_WIDTH = 84;
 
-export const Sidebar = () => {
+export const Sidebar = ({ isMobileLayout }: SidebarProps) => {
     const [closedNotificationDevice, setClosedNotificationDevice] = useState(false);
     const [closedNotificationSuite, setClosedNotificationSuite] = useState(false);
     const { isSidebarCollapsed, setSidebarWidth, sidebarWidth } = useResponsiveContext();
@@ -78,12 +83,13 @@ export const Sidebar = () => {
                 directions={['right']}
                 width={sidebarWidth}
                 minWidth={SIDEBAR_MIN_WIDTH}
-                maxWidth={600}
+                maxWidth={SIDEBAR_MAX_WIDTH}
                 zIndex={zIndices.draggableComponent}
                 updateHeightOnWindowResize
                 onWidthResizeEnd={handleSidebarWidthChanged}
                 onWidthResizeMove={handleSidebarWidthUpdate}
                 disabledWidthInterval={[84, 240]}
+                isLocked={isMobileLayout}
             >
                 <Container $elevation={elevation}>
                     <ElevationUp>

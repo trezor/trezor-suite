@@ -15,12 +15,10 @@ import { GuideButton, GuideRouter } from 'src/components/guide';
 import { Metadata } from 'src/components/suite';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { DiscoveryProgress } from 'src/components/wallet';
-import { MobileAccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/MobileAccountsMenu';
 import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
 import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import {
@@ -29,7 +27,6 @@ import {
 } from 'src/support/suite/ResponsiveContext';
 
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
-import { MobileMenu } from './MobileMenu/MobileMenu';
 import { Sidebar } from './Sidebar/Sidebar';
 import { useAppShortcuts } from './useAppShortcuts';
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
@@ -142,7 +139,6 @@ interface SuiteLayoutProps {
 }
 
 export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
-    const selectedAccount = useSelector(selectSelectedAccount);
     const sidebarWidthFromRedux = useSelector(state => state.suite.settings.sidebarWidth);
 
     const [{ title, layoutHeader }, setLayoutPayload] = useState<LayoutContextPayload>({});
@@ -152,15 +148,16 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     const { scrollRef } = useResetScrollOnUrl();
     useClearAnchorHighlightOnClick(wrapperRef);
 
-    const isAccountPage = !!selectedAccount;
-
     useAppShortcuts();
 
     return (
         <ElevationContext baseElevation={-1}>
             <Wrapper ref={wrapperRef} data-testid="@suite-layout">
                 <PageWrapper>
-                    <ResponsiveContextProvider sidebarWidthFromRedux={sidebarWidthFromRedux}>
+                    <ResponsiveContextProvider
+                        sidebarWidthFromRedux={sidebarWidthFromRedux}
+                        isMobileLayout={isMobileLayout}
+                    >
                         <NewModal.Provider>
                             <ModalContextProvider>
                                 <Metadata title={title} />
@@ -169,18 +166,14 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
 
                                 {isMobileLayout && <CoinjoinBars />}
 
-                                {isMobileLayout && <MobileMenu />}
-
                                 <DiscoveryProgress />
 
                                 <LayoutContext.Provider value={setLayoutPayload}>
                                     <Body data-testid="@suite-layout/body">
                                         <Columns>
-                                            {!isMobileLayout && (
-                                                <ElevationDown>
-                                                    <Sidebar />
-                                                </ElevationDown>
-                                            )}
+                                            <ElevationDown>
+                                                <Sidebar isMobileLayout={isMobileLayout} />
+                                            </ElevationDown>
                                             <MainContent>
                                                 {!isMobileLayout && <CoinjoinBars />}
                                                 <SuiteBanners />
@@ -190,9 +183,6 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                                     id={SCROLL_WRAPPER_ID}
                                                 >
                                                     <ElevationUp>
-                                                        {isMobileLayout && isAccountPage && (
-                                                            <MobileAccountsMenu />
-                                                        )}
                                                         {layoutHeader}
 
                                                         <ContentWrapper>{children}</ContentWrapper>

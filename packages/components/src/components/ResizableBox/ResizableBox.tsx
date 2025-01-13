@@ -237,6 +237,18 @@ export const ResizableBox = ({
 
     const resizeCooldown = createCooldown(150);
 
+    useEffect(() => {
+        if (width) {
+            setNewWidth(width);
+        }
+    }, [width]);
+
+    useEffect(() => {
+        if (height) {
+            setNewHeight(height);
+        }
+    }, [height]);
+
     const resize = useCallback(
         (e: MouseEvent) => {
             e.preventDefault();
