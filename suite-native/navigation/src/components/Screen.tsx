@@ -1,10 +1,10 @@
 import { useEffect, useContext, ReactNode } from 'react';
-import { Platform, ScrollViewProps, StatusBar, View } from 'react-native';
+import { ScrollViewProps, View } from 'react-native';
 import { EdgeInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
+import { SystemBars, SystemBarStyle } from 'react-native-edge-to-edge';
 
 import * as SystemUI from 'expo-system-ui';
-import * as NavigationBar from 'expo-navigation-bar';
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { useRoute } from '@react-navigation/native';
 
@@ -21,7 +21,6 @@ type ScreenProps = {
     footer?: ReactNode;
     subheader?: ReactNode;
     screenHeader?: ReactNode;
-    hasStatusBar?: boolean;
     isScrollable?: boolean;
     backgroundColor?: Color;
     noHorizontalPadding?: boolean;
@@ -97,7 +96,6 @@ export const Screen = ({
     refreshControl,
     keyboardDismissMode,
     isScrollable = true,
-    hasStatusBar = true,
     backgroundColor = 'backgroundSurfaceElevation0',
     noHorizontalPadding = false,
     noBottomPadding = false,
@@ -114,7 +112,7 @@ export const Screen = ({
     const bottomPadding = noBottomPadding ? 0 : spacings.sp16;
     const hasBottomPadding = !useContext(BottomTabBarHeightContext) && hasBottomInset;
     const backgroundCSSColor = colors[backgroundColor];
-    const barStyle = isDarkColor(backgroundCSSColor) ? 'light-content' : 'dark-content';
+    const systemBarsStyle: SystemBarStyle = isDarkColor(backgroundCSSColor) ? 'light' : 'dark';
 
     const isMessageBannerDisplayed = useSelector(selectIsAnyBannerMessageActive);
 
@@ -123,12 +121,7 @@ export const Screen = ({
     useEffect(() => {
         // this prevents some weird flashing of splash screen on Android during screen transitions
         SystemUI.setBackgroundColorAsync(backgroundCSSColor);
-
-        if (Platform.OS === 'android') {
-            NavigationBar.setBackgroundColorAsync(backgroundCSSColor);
-            NavigationBar.setButtonStyleAsync(isDarkColor(backgroundCSSColor) ? 'light' : 'dark');
-        }
-    }, [backgroundCSSColor, isDarkColor]);
+    }, [backgroundCSSColor]);
 
     return (
         <View
@@ -141,12 +134,7 @@ export const Screen = ({
             })}
             testID={`@screen/${name}`}
         >
-            <StatusBar
-                barStyle={barStyle}
-                hidden={!hasStatusBar}
-                translucent={false}
-                backgroundColor={backgroundCSSColor}
-            />
+            <SystemBars style={systemBarsStyle} />
             {screenHeader}
             <ScreenContentWrapper
                 isScrollable={isScrollable}

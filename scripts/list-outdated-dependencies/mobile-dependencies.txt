@@ -44,7 +44,6 @@ expo-haptics
 expo-image
 expo-linear-gradient
 expo-local-authentication
-expo-navigation-bar
 expo-secure-store
 expo-splash-screen
 expo-status-bar
@@ -60,6 +59,7 @@ react-native-restart
 react-native-safe-area-context
 react-native-screens
 react-native-svg
+react-native-edge-to-edge
 react-qr-code
 redux-devtools-expo-dev-plugin
 redux-persist

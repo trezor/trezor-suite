@@ -135,6 +135,7 @@ const getPlugins = (): ExpoPlugins => {
                 subdomains: '*',
             },
         ],
+        ['react-native-edge-to-edge'],
     ];
 
     return [
