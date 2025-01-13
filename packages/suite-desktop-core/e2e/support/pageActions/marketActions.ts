@@ -72,6 +72,10 @@ export class MarketActions {
     readonly tradeConfirmationProvider: Locator;
     readonly tradeConfirmationContinueButton: Locator;
     readonly exchangeFeeDetails: Locator;
+    readonly broadcastButton: Locator;
+    readonly sendAddressInput: Locator;
+    readonly sendAmountInput: Locator;
+    readonly sendButton: Locator;
 
     constructor(private page: Page) {
         this.offerSpinner = this.page.getByTestId('@coinmarket/offers/loading-spinner');
@@ -125,6 +129,10 @@ export class MarketActions {
             '@coinmarket/offer/continue-transaction-button',
         );
         this.exchangeFeeDetails = this.page.getByTestId('@wallet/fee-details');
+        this.broadcastButton = this.page.getByTestId('broadcast-button');
+        this.sendAddressInput = this.page.getByTestId('outputs.0.address');
+        this.sendAmountInput = this.page.getByTestId('outputs.0.amount');
+        this.sendButton = this.page.getByTestId('@send/review-button');
     }
 
     @step()

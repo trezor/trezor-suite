@@ -175,8 +175,8 @@ export const TransactionReviewOutputElement = forwardRef<
             </OutputLeft>
             <OutputRight>
                 {lines.map(line => (
-                    <OutputRightLine key={line.id}>
-                        <OutputHeadline>
+                    <OutputRightLine data-testid={`@modal/output-${line.id}`} key={line.id}>
+                        <OutputHeadline data-testid="@modal/output-headline">
                             {isActive && (line.id === 'address' || line.id === 'regular_legacy')
                                 ? line.confirmLabel
                                 : line.label}

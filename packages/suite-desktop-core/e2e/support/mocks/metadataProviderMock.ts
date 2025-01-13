@@ -1,15 +1,15 @@
 import { Page } from '@playwright/test';
 
-import { DropboxMock } from '../../../e2e-utils/src/mocks/dropbox';
-import { GoogleMock } from '../../../e2e-utils/src/mocks/google';
-import { step } from './common';
+import { GoogleMock, DropboxMock } from '@trezor/e2e-utils';
+
+import { step } from '../common';
 
 export enum MetadataProvider {
     DROPBOX = 'dropbox',
     GOOGLE = 'google',
 }
 
-export type MetadataProviderMock = DropboxMock | GoogleMock;
+export type ProviderMocks = DropboxMock | GoogleMock;
 
 const stubOpen = `
     // Override Math.random for deterministic behavior
@@ -53,12 +53,12 @@ const rerouteFetch = `
     };
 `;
 
-export class MetadataProviderMocks {
-    private providerMock: MetadataProviderMock | undefined;
+export class MetadataProviderMock {
+    private providerMock: ProviderMocks | undefined;
     constructor(private readonly page: Page) {}
 
     @step()
-    async initializeProviderMocking(provider: MetadataProvider) {
+    async start(provider: MetadataProvider) {
         switch (provider) {
             case MetadataProvider.DROPBOX:
                 this.providerMock = new DropboxMock();
@@ -77,7 +77,7 @@ export class MetadataProviderMocks {
     }
 
     @step()
-    stopProviderMocking() {
+    stop() {
         if (!this.providerMock) {
             throw new Error('Provider mock not initialized');
         }

@@ -1,12 +1,12 @@
 import { test, expect } from '../../support/fixtures';
-import { MetadataProvider } from '../../support/metadataProviderMocks';
+import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
 
 const metadataEl = '@metadata/addressLabel/bc1q7e6qu5smalrpgqrx9k2gnf0hgjyref5p36ru2m';
 
 test.describe('Metadata - address labeling', { tag: ['@group=metadata', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
-    test.beforeEach(async ({ metadataProviderMocks }) => {
-        await metadataProviderMocks.initializeProviderMocking(MetadataProvider.GOOGLE);
+    test.beforeEach(async ({ metadataProviderMock }) => {
+        await metadataProviderMock.start(MetadataProvider.GOOGLE);
     });
 
     test('google provider', async ({ page, onboardingPage, metadataPage, dashboardPage }) => {
@@ -40,7 +40,7 @@ test.describe('Metadata - address labeling', { tag: ['@group=metadata', '@webOnl
         await expect(page.getByTestId(metadataEl)).toHaveText('meow meow');
     });
 
-    test.afterEach(({ metadataProviderMocks }) => {
-        metadataProviderMocks.stopProviderMocking();
+    test.afterEach(({ metadataProviderMock }) => {
+        metadataProviderMock.stop();
     });
 });

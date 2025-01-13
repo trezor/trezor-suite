@@ -29,7 +29,8 @@ import { RecoveryActions } from './pageActions/recoveryActions';
 import { TrezorInputActions } from './pageActions/trezorInputActions';
 import { MarketActions } from './pageActions/marketActions';
 import { AssetsActions } from './pageActions/assetsActions';
-import { MetadataProviderMocks } from './metadataProviderMocks';
+import { MetadataProviderMock } from './mocks/metadataProviderMock';
+import { BlockbookMock } from './mocks/blockBookMock';
 import { MetadataActions } from './pageActions/metadataActions';
 
 type StartEmuModelRequired = StartEmu & { model: Model };
@@ -57,7 +58,8 @@ type Fixtures = {
     trezorInput: TrezorInputActions;
     analytics: AnalyticsFixture;
     indexedDb: IndexedDbFixture;
-    metadataProviderMocks: MetadataProviderMocks;
+    metadataProviderMock: MetadataProviderMock;
+    blockbookMock: BlockbookMock;
 };
 
 const test = base.extend<Fixtures>({
@@ -204,9 +206,14 @@ const test = base.extend<Fixtures>({
         const indexedDb = new IndexedDbFixture(page);
         await use(indexedDb);
     },
-    metadataProviderMocks: async ({ page }, use) => {
-        const metadataProviderMocks = new MetadataProviderMocks(page);
-        await use(metadataProviderMocks);
+    metadataProviderMock: async ({ page }, use) => {
+        const metadataProviderMock = new MetadataProviderMock(page);
+        await use(metadataProviderMock);
+    },
+    /* eslint-disable-next-line no-empty-pattern */
+    blockbookMock: async ({}, use) => {
+        const blockbookMock = new BlockbookMock();
+        await use(blockbookMock);
     },
 });
 

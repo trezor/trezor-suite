@@ -2,7 +2,7 @@ import { Locator, Page, expect } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { MetadataProvider } from '../metadataProviderMocks';
+import { MetadataProvider } from '../mocks/metadataProviderMock';
 import { DevicePromptActions } from './devicePromptActions';
 import { step } from '../common';
 
