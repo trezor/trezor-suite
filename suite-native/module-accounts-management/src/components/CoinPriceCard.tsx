@@ -6,6 +6,7 @@ import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { FiatAmountFormatter } from '@suite-native/formatters';
 import { AccountKey } from '@suite-common/wallet-types';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { Translation } from '@suite-native/intl';
 
 import { useDayCoinPriceChange } from '../hooks/useDayCoinPriceChange';
 
@@ -53,7 +54,7 @@ const PriceChangeIndicator = ({ valuePercentageChange }: PriceChangeIndicatorPro
     return (
         <Box style={applyStyle(indicatorContainer)}>
             <Text variant="label" color="textSubdued">
-                24h change
+                <Translation id="moduleAccountManagement.accountDetailContentScreen.coinPriceCard.changeIn24h" />
             </Text>
             <Box justifyContent="center" alignItems="center" flexDirection="row">
                 {valuePercentageChange ? (
@@ -92,7 +93,10 @@ export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
                 </Box>
                 <Box style={applyStyle(cardContentStyle)}>
                     <Text variant="label" color="textSubdued">
-                        {coinName} price
+                        <Translation
+                            id="moduleAccountManagement.accountDetailContentScreen.coinPriceCard.coinPrice"
+                            values={{ coinName }}
+                        />
                     </Text>
                     {currentValue && (
                         <FiatAmountFormatter

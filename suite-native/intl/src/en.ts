@@ -835,6 +835,12 @@ export const en = {
                 coinLabel: 'Coin label',
             },
         },
+        accountDetailContentScreen: {
+            coinPriceCard: {
+                changeIn24h: '24h change',
+                coinPrice: '{coinName} price',
+            },
+        },
     },
     moduleAccounts: {
         accountDetail: {
