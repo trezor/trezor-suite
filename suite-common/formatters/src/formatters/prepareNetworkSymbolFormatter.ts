@@ -1,5 +1,5 @@
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
-import { getNetwork, NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork, getNetworkDisplaySymbol, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { FormatterConfig } from '../types';
 import { makeFormatter } from '../makeFormatter';
@@ -14,13 +14,13 @@ export const prepareNetworkSymbolFormatter = (config: FormatterConfig) =>
 
             const { features: networkFeatures, testnet: isTestnet } = getNetwork(symbol);
             const areAmountUnitsSupported = !!networkFeatures?.includes('amount-unit');
-            let formattedSymbol = symbol.toUpperCase();
+            let formattedSymbol = getNetworkDisplaySymbol(symbol);
 
             // convert to different units if needed
             if (areAmountUnitsEnabled && areAmountUnitsSupported) {
                 const unitAbbreviation = UNIT_ABBREVIATIONS[bitcoinAmountUnit];
                 formattedSymbol = isTestnet
-                    ? `${unitAbbreviation} ${symbol.toUpperCase()}`
+                    ? `${unitAbbreviation} ${formattedSymbol}`
                     : unitAbbreviation;
             }
 
