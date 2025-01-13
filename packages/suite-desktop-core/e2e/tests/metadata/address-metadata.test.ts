@@ -4,14 +4,11 @@ import { MetadataProvider } from '../../support/metadataProviderMocks';
 const metadataEl = '@metadata/addressLabel/bc1q7e6qu5smalrpgqrx9k2gnf0hgjyref5p36ru2m';
 
 test.describe('Metadata - address labeling', { tag: ['@group=metadata', '@webOnly'] }, () => {
-    test.use({
-        emulatorStartConf: { wipe: true },
-        emulatorSetupConf: { mnemonic: 'mnemonic_all' },
-    });
-
+    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
     test.beforeEach(async ({ metadataProviderMocks }) => {
         await metadataProviderMocks.initializeProviderMocking(MetadataProvider.GOOGLE);
     });
+
     test('google provider', async ({ page, onboardingPage, metadataPage, dashboardPage }) => {
         // Pass through onboarding and device authentication
         await onboardingPage.completeOnboarding();
