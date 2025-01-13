@@ -32,6 +32,9 @@ on:
       - ".github/workflows/release*"
       - ".github/workflows/template*"
       - ".github/actions/release*/**"
+  push:
+    branches:
+      - release/2*
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
