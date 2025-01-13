@@ -542,9 +542,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
                             ? GET_FEATURES_TIMEOUT_REACT_NATIVE
                             : GET_FEATURES_TIMEOUT;
 
+                    let getFeaturesTimeoutId: ReturnType<typeof setTimeout> | undefined;
+
                     // do not initialize while firstRunPromise otherwise `features.session_id` could be affected
                     await Promise.race([
-                        this.getFeatures(),
+                        this.getFeatures().finally(() => clearTimeout(getFeaturesTimeoutId)),
                         // note: tested on 24.7.2024 and whatever is written below this line is still valid
                         // We do not support T1B1 <1.9.0 but we still need Features even from not supported devices to determine your version
                         // and tell you that update is required.
@@ -552,12 +554,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         // transport response is pending endlessly, calling any other message will end up with "device call in progress"
                         // set the timeout for this call so whenever it happens "unacquired device" will be created instead
                         // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
-                        new Promise((_resolve, reject) =>
-                            setTimeout(
+                        new Promise((_resolve, reject) => {
+                            getFeaturesTimeoutId = setTimeout(
                                 () => reject(new Error('GetFeatures timeout')),
                                 getFeaturesTimeout,
-                            ),
-                        ),
+                            );
+                        }),
                     ]);
                 }
             } catch (error) {
