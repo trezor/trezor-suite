@@ -1,5 +1,6 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { RequireAllOrNone } from 'type-fest';
 import { G } from '@mobily/ts-belt';
@@ -55,34 +56,42 @@ const alertBoxWrapperStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp4,
 }));
 
-export const Card = ({
-    children,
-    style,
-    alertVariant,
-    alertTitle,
-    borderColor,
-    noPadding = false,
-}: CardProps) => {
-    const { applyStyle } = useNativeStyles();
+export const Card = React.forwardRef<View, CardProps>(
+    (
+        { children, style, alertVariant, alertTitle, borderColor, noPadding = false }: CardProps,
+        ref,
+    ) => {
+        const { applyStyle } = useNativeStyles();
 
-    const isAlertDisplayed = !!alertVariant;
+        const isAlertDisplayed = !!alertVariant;
 
-    return (
-        <View>
-            {isAlertDisplayed && (
-                <View style={applyStyle(alertBoxWrapperStyle)}>
-                    <AlertBox variant={alertVariant} title={alertTitle} borderRadius={12} />
+        return (
+            <View>
+                {isAlertDisplayed && (
+                    <View style={applyStyle(alertBoxWrapperStyle)}>
+                        <AlertBox variant={alertVariant} title={alertTitle} borderRadius={12} />
+                    </View>
+                )}
+                {/* CAUTION: in case that alert is displayed, it is not possible to change styles of the top borders by the `style` prop. */}
+                <View
+                    style={[
+                        applyStyle(cardContainerStyle, {
+                            isAlertDisplayed,
+                            noPadding,
+                            borderColor,
+                        }),
+                        style,
+                    ]}
+                    // Ref must be here otherwise the animation will not work
+                    ref={ref}
+                >
+                    {children}
                 </View>
-            )}
-            {/* CAUTION: in case that alert is displayed, it is not possible to change styles of the top borders by the `style` prop. */}
-            <View
-                style={[
-                    applyStyle(cardContainerStyle, { isAlertDisplayed, noPadding, borderColor }),
-                    style,
-                ]}
-            >
-                {children}
             </View>
-        </View>
-    );
-};
+        );
+    },
+);
+
+Card.displayName = 'Card';
+export const AnimatedCard = Animated.createAnimatedComponent(Card);
+AnimatedCard.displayName = 'AnimatedCard';

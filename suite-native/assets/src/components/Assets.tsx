@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeInDown, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -8,7 +8,7 @@ import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsDeviceAuthorized, selectHasDeviceDiscovery } from '@suite-common/wallet-core';
 import { OnSelectAccount } from '@suite-native/accounts';
-import { Card } from '@suite-native/atoms';
+import { AnimatedCard } from '@suite-native/atoms';
 import {
     AppTabsParamList,
     AppTabsRoutes,
@@ -63,14 +63,18 @@ export const Assets = () => {
 
     return (
         <>
-            <Card noPadding>
+            <AnimatedCard noPadding layout={LinearTransition}>
                 {deviceNetworks.map(symbol => (
-                    <Animated.View entering={isLoading ? FadeInDown : undefined} key={symbol}>
+                    <Animated.View
+                        entering={isLoading ? FadeInDown : undefined}
+                        layout={LinearTransition}
+                        key={symbol}
+                    >
                         <AssetItem cryptoCurrencySymbol={symbol} onPress={setSelectedAssetSymbol} />
                     </Animated.View>
                 ))}
                 {isLoading && <DiscoveryAssetsLoader isListEmpty={deviceNetworks.length < 1} />}
-            </Card>
+            </AnimatedCard>
             {selectedAssetSymbol && (
                 <NetworkAssetsBottomSheet
                     symbol={selectedAssetSymbol}
