@@ -1176,4 +1176,24 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             return account;
         });
     }
+
+    if (oldVersion < 52) {
+        await updateAll(transaction, 'accounts', account => {
+            if (
+                account.networkType === 'ethereum' ||
+                account.networkType === 'cardano' ||
+                account.networkType === 'solana' ||
+                account.networkType === 'ripple'
+            ) {
+                account.tokens?.forEach(token => {
+                    token.standard = token.type || '';
+                    delete token.type;
+                });
+
+                return account;
+            }
+
+            return account;
+        });
+    }
 };
