@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Platform } from 'react-native';
 
 import { analytics, EventType } from '@suite-native/analytics';
-import { Screen, ScreenSubHeader } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { Box, Card, DiscreetCanvas, Text, useDiscreetMode } from '@suite-native/atoms';
 import { useNativeStyles } from '@trezor/styles';
@@ -113,9 +113,7 @@ export const SettingsPrivacyAndSecurity = () => {
 
     return (
         <Screen
-            screenHeader={
-                <ScreenSubHeader content={translate('moduleSettings.privacyAndSecurity.title')} />
-            }
+            header={<ScreenHeader content={translate('moduleSettings.privacyAndSecurity.title')} />}
         >
             <Card>
                 <BiometricsSwitchRow />

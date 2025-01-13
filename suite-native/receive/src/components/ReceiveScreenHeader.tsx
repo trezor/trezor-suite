@@ -16,7 +16,7 @@ import {
     GoBackIcon,
     RootStackParamList,
     RootStackRoutes,
-    ScreenSubHeader,
+    ScreenHeader,
 } from '@suite-native/navigation';
 import { selectAccountTokenSymbol, TokensRootState } from '@suite-native/tokens';
 import TrezorConnect from '@trezor/connect';
@@ -51,7 +51,7 @@ export const ReceiveScreenHeader = ({ accountKey, tokenContract }: ReceiveScreen
     }, [navigation]);
 
     return (
-        <ScreenSubHeader
+        <ScreenHeader
             content={
                 <>
                     <Text variant="highlight">

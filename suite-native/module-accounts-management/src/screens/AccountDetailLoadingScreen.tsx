@@ -7,8 +7,7 @@ import {
     RootStackParamList,
     RootStackRoutes,
     Screen,
-    ScreenSubHeader,
-    GoBackIcon,
+    ScreenHeader,
 } from '@suite-native/navigation';
 import { BoxSkeleton, Card, VStack } from '@suite-native/atoms';
 
@@ -24,11 +23,7 @@ export const AccountDetailLoadingScreen = () => {
     const { closeActionType } = route.params;
 
     return (
-        <Screen
-            screenHeader={
-                <ScreenSubHeader leftIcon={<GoBackIcon closeActionType={closeActionType} />} />
-            }
-        >
+        <Screen header={<ScreenHeader closeActionType={closeActionType} />}>
             <VStack spacing="sp32" alignItems="center">
                 <Card style={applyStyle(cardStyle)}>
                     <BoxSkeleton width={SCREEN_WIDTH - 32} height={70} />

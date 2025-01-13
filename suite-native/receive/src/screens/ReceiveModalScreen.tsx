@@ -93,9 +93,7 @@ export const ReceiveModalScreen = () => {
     return (
         <Screen
             hasBottomInset={false}
-            screenHeader={
-                <ReceiveScreenHeader accountKey={accountKey} tokenContract={tokenContract} />
-            }
+            header={<ReceiveScreenHeader accountKey={accountKey} tokenContract={tokenContract} />}
         >
             {isLoading && <LoadingReceiveAccount />}
             {isSelecting && <AccountsList onSelectAccount={handleSelectAccount} />}

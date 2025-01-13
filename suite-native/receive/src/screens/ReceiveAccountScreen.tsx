@@ -53,9 +53,7 @@ export const ReceiveAccountScreen = ({ accountKey, tokenContract }: AccountRecei
 
     return (
         <Screen
-            screenHeader={
-                <ReceiveScreenHeader accountKey={accountKey} tokenContract={tokenContract} />
-            }
+            header={<ReceiveScreenHeader accountKey={accountKey} tokenContract={tokenContract} />}
             footer={
                 isConfirmOnTrezorReady && (
                     <ConfirmOnTrezorImage

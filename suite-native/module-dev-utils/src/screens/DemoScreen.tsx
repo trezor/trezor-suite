@@ -30,7 +30,7 @@ import {
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Link } from '@suite-native/link';
-import { Screen, ScreenSubHeader } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TypographyStyle } from '@trezor/theme';
 import { UpdateProgressIndicatorDemo } from '@suite-native/firmware';
@@ -99,7 +99,7 @@ export const DemoScreen = () => {
     if (!isDevelopOrDebugEnv()) return null;
 
     return (
-        <Screen screenHeader={<ScreenSubHeader />}>
+        <Screen header={<ScreenHeader />}>
             <VStack spacing="sp16">
                 <VStack>
                     <Text variant="titleSmall">Badge:</Text>

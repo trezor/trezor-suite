@@ -55,7 +55,7 @@ export const PassphraseLoadingScreen = () => {
     };
 
     return (
-        <Screen screenHeader={<PassphraseScreenHeader />}>
+        <Screen header={<PassphraseScreenHeader />}>
             <VStack flex={1} justifyContent="center" alignItems="center" spacing="sp32">
                 <Spinner loadingState={loadingResult} onComplete={handleSuccess} />
                 <VStack spacing="sp4">

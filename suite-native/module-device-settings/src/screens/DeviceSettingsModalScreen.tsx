@@ -10,7 +10,7 @@ import {
 import { Button, Text, VStack } from '@suite-native/atoms';
 import { DeviceImage } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { Screen, ScreenSubHeader } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { DeviceAuthenticityCard } from '../components/DeviceAuthenticityCard';
 import { DeviceFirmwareCard } from '../components/DeviceFirmwareCard';
@@ -36,8 +36,8 @@ export const DeviceSettingsModalScreen = () => {
 
     return (
         <Screen
-            screenHeader={
-                <ScreenSubHeader
+            header={
+                <ScreenHeader
                     content={translate('moduleDeviceSettings.title')}
                     closeActionType="close"
                 />

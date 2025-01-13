@@ -9,7 +9,7 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountsListItem } from '@suite-native/accounts';
 import { Card, Button, Text, TextDivider, Box } from '@suite-native/atoms';
-import { GoBackIcon, Screen, ScreenSubHeader } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { Account } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -69,9 +69,7 @@ export const AddCoinDiscoveryFinishedScreen = ({ route }) => {
             : 'moduleAddAccounts.coinDiscoveryFinishedScreen.title.plural';
 
     return (
-        <Screen
-            screenHeader={<ScreenSubHeader leftIcon={<GoBackIcon closeActionType="close" />} />}
-        >
+        <Screen header={<ScreenHeader closeActionType="close" />}>
             <Box paddingTop="sp24" paddingHorizontal="sp8" paddingBottom="sp32">
                 <Text variant="titleMedium">
                     <Translation

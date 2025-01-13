@@ -41,7 +41,7 @@ export const AccountsScreen = () => {
     };
 
     return (
-        <Screen screenHeader={<DeviceManagerScreenHeader />}>
+        <Screen header={<DeviceManagerScreenHeader />}>
             <SearchableAccountsListHeader
                 title="My assets"
                 onSearchInputChange={handleFilterChange}

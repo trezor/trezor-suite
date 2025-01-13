@@ -7,7 +7,7 @@ import { HStack, Text } from '@suite-native/atoms';
 import {
     RootStackParamList,
     RootStackRoutes,
-    ScreenSubHeader,
+    ScreenHeader,
     GoBackIcon,
 } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
@@ -36,7 +36,7 @@ export const StakingDetailScreenHeader = () => {
     );
 
     return (
-        <ScreenSubHeader
+        <ScreenHeader
             content={
                 <>
                     <HStack style={applyStyle(headerStyle)}>

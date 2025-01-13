@@ -1,22 +1,22 @@
 import { useTranslate } from '@suite-native/intl';
 import {
     CloseActionType,
-    ScreenSubHeader,
+    ScreenHeader,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 
-type AccountImportSubHeaderProps = {
+type AccountImportScreenHeaderProps = {
     closeActionType?: CloseActionType;
 };
 
-export const AccountImportSubHeader = ({
+export const AccountImportScreenHeader = ({
     closeActionType = 'close',
-}: AccountImportSubHeaderProps) => {
+}: AccountImportScreenHeaderProps) => {
     const { translate } = useTranslate();
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
     return (
-        <ScreenSubHeader
+        <ScreenHeader
             closeActionType={closeActionType}
             closeAction={closeActionType === 'close' ? navigateToInitialScreen : undefined}
             content={translate('moduleAccountImport.title')}

@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import {
     RootStackParamList,
     RootStackRoutes,
-    ScreenSubHeader,
+    ScreenHeader,
     SendStackParamList,
     SendStackRoutes,
     StackProps,
@@ -61,7 +61,7 @@ export const SendOutputsReviewScreen = ({
     return (
         <SendScreen
             screenHeader={
-                <ScreenSubHeader
+                <ScreenHeader
                     content={translate('moduleSend.review.outputs.title')}
                     closeActionType="close"
                 />

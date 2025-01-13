@@ -16,7 +16,7 @@ export const PassphraseContentScreenWrapper = ({
     title,
     subtitle,
 }: PassphraseContentScreenWrapperProps) => (
-    <Screen screenHeader={<PassphraseScreenHeader />}>
+    <Screen header={<PassphraseScreenHeader />}>
         <VStack marginTop="sp8" spacing="sp16">
             <VStack>
                 <Text variant="titleMedium">{title}</Text>

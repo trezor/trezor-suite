@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
 import {
-    ScreenSubHeader,
+    ScreenHeader,
     SendStackParamList,
     SendStackRoutes,
     StackProps,
@@ -45,7 +45,7 @@ export const SendAddressReviewScreen = ({
     return (
         <SendScreen
             screenHeader={
-                <ScreenSubHeader
+                <ScreenHeader
                     content={translate('moduleSend.review.outputs.title')}
                     closeActionType={isTransactionReviewInProgress ? 'close' : 'back'}
                 />

@@ -9,7 +9,7 @@ import {
     RootStackParamList,
     RootStackRoutes,
     Screen,
-    ScreenSubHeader,
+    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
 import { DeviceManager } from '@suite-native/device-manager';
@@ -178,8 +178,8 @@ export const ConnectPopupScreen = ({
 
     return (
         <Screen
-            screenHeader={
-                <ScreenSubHeader
+            header={
+                <ScreenHeader
                     closeActionType="close"
                     content={
                         <Text>

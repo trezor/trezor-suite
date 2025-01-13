@@ -1,4 +1,4 @@
-import { Screen, ScreenSubHeader } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { VStack, Divider } from '@suite-native/atoms';
 import { useOpenLink } from '@suite-native/link';
 import { useTranslate } from '@suite-native/intl';
@@ -22,9 +22,7 @@ export const SettingsAboutUsScreen = () => {
     };
 
     return (
-        <Screen
-            screenHeader={<ScreenSubHeader content={translate('moduleSettings.aboutUs.title')} />}
-        >
+        <Screen header={<ScreenHeader content={translate('moduleSettings.aboutUs.title')} />}>
             <VStack spacing="sp24">
                 <AboutUsBanners />
                 <Divider />

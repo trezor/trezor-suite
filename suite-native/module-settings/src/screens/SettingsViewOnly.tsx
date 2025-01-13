@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { A } from '@mobily/ts-belt';
 
-import { Screen, ScreenSubHeader } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { useTranslate } from '@suite-native/intl';
 import { selectPhysicalDevices } from '@suite-common/wallet-core';
 
@@ -20,9 +20,7 @@ export const SettingsViewOnly = () => {
     const showAboutViewOnly = () => setIsVisibleAboutViewOnly(true);
 
     return (
-        <Screen
-            screenHeader={<ScreenSubHeader content={translate('moduleSettings.viewOnly.title')} />}
-        >
+        <Screen header={<ScreenHeader content={translate('moduleSettings.viewOnly.title')} />}>
             {A.isEmpty(devices) ? (
                 <DevicesEmpty onPressAbout={showAboutViewOnly} />
             ) : (

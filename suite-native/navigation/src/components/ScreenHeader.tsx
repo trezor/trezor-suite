@@ -37,7 +37,7 @@ const iconWrapperStyle = prepareNativeStyle(() => ({
     height: ICON_SIZE,
 }));
 
-export const ScreenSubHeader = ({
+export const ScreenHeader = ({
     content,
     rightIcon,
     leftIcon,

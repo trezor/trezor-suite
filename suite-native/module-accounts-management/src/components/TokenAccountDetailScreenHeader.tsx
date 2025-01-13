@@ -6,7 +6,7 @@ import { Box, HStack, Text } from '@suite-native/atoms';
 import {
     RootStackParamList,
     RootStackRoutes,
-    ScreenSubHeader,
+    ScreenHeader,
     GoBackIcon,
 } from '@suite-native/navigation';
 import {
@@ -22,7 +22,7 @@ type TokenAccountDetailScreenHeaderProps = {
     tokenName: string;
 };
 
-export const TokenAccountDetailScreenSubHeader = ({
+export const TokenAccountDetailScreenHeader = ({
     accountKey,
     tokenName,
 }: TokenAccountDetailScreenHeaderProps) => {
@@ -37,7 +37,7 @@ export const TokenAccountDetailScreenSubHeader = ({
     const { closeActionType } = route.params;
 
     return (
-        <ScreenSubHeader
+        <ScreenHeader
             content={
                 <Box alignItems="center">
                     <Text ellipsizeMode="tail" numberOfLines={1}>

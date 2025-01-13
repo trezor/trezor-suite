@@ -9,7 +9,7 @@ import {
     AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes,
     Screen,
-    ScreenSubHeader,
+    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
 import {
@@ -111,8 +111,8 @@ export const SelectAccountTypeScreen = ({
     return (
         <>
             <Screen
-                screenHeader={
-                    <ScreenSubHeader
+                header={
+                    <ScreenHeader
                         content={translate('moduleAddAccounts.selectAccountTypeScreen.title', {
                             symbol: _ => networkSymbol.toUpperCase(),
                         })}

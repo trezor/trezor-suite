@@ -58,7 +58,7 @@ export const PassphraseConfirmOnTrezorScreen = () => {
     }, [device, dispatch, isDeviceConnectedAndAuthorized, hasDiscovery, navigation]);
 
     return (
-        <Screen screenHeader={<PassphraseScreenHeader />}>
+        <Screen header={<PassphraseScreenHeader />}>
             <VStack
                 spacing="sp24"
                 alignItems="center"

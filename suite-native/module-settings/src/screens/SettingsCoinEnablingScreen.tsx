@@ -3,7 +3,7 @@ import { useCallback, useEffect } from 'react';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { Screen, ScreenSubHeader } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { useTranslate } from '@suite-native/intl';
 import { BtcOnlyCoinEnablingContent, DiscoveryCoinsFilter } from '@suite-native/coin-enabling';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
@@ -52,10 +52,8 @@ export const SettingsCoinEnablingScreen = () => {
 
     return (
         <Screen
-            screenHeader={
-                <ScreenSubHeader
-                    content={translate('moduleSettings.coinEnabling.settings.title')}
-                />
+            header={
+                <ScreenHeader content={translate('moduleSettings.coinEnabling.settings.title')} />
             }
         >
             {showNetworks ? <DiscoveryCoinsFilter /> : <BtcOnlyCoinEnablingContent />}

@@ -1,7 +1,7 @@
 import { AccountsList, OnSelectAccount } from '@suite-native/accounts';
 import { useTranslate } from '@suite-native/intl';
 import {
-    ScreenSubHeader,
+    ScreenHeader,
     SendStackParamList,
     SendStackRoutes,
     StackProps,
@@ -26,7 +26,7 @@ export const SendAccountsScreen = ({
     // TODO: move text content to @suite-native/intl package when is copy ready
     return (
         <SendScreen
-            screenHeader={<ScreenSubHeader content={translate('moduleSend.accountsList.title')} />}
+            screenHeader={<ScreenHeader content={translate('moduleSend.accountsList.title')} />}
         >
             {/* TODO: Enable filtering same as receive screen account list has. */}
             <AccountsList

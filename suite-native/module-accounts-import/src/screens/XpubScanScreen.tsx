@@ -29,7 +29,7 @@ import { SelectableNetworkItem } from '@suite-native/accounts';
 import { ScanQRBottomSheet } from '@suite-native/qr-code';
 
 import { XpubImportSection, networkTypeToTitleMap } from '../components/XpubImportSection';
-import { AccountImportSubHeader } from '../components/AccountImportSubHeader';
+import { AccountImportScreenHeader } from '../components/AccountImportScreenHeader';
 import { DevXpub } from '../components/DevXpub';
 import { XpubHint } from '../components/XpubHint';
 import { XpubHintBottomSheet } from '../components/XpubHintBottomSheet';
@@ -174,7 +174,7 @@ export const XpubScanScreen = ({
 
     return (
         <Screen
-            screenHeader={<AccountImportSubHeader closeActionType="back" />}
+            header={<AccountImportScreenHeader closeActionType="back" />}
             footer={<XpubHint networkType={networkType} handleOpen={handleOpenHint} />}
             extraKeyboardAvoidingViewHeight={EXTRA_KEYBOARD_AVOIDING_VIEW_HEIGHT}
         >

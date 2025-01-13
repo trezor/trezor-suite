@@ -15,7 +15,7 @@ import {
     RootStackParamList,
     RootStackRoutes,
     Screen,
-    ScreenSubHeader,
+    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
@@ -66,8 +66,8 @@ export const TransactionDetailScreen = ({
 
     return (
         <Screen
-            screenHeader={
-                <ScreenSubHeader
+            header={
+                <ScreenHeader
                     closeActionType={closeActionType}
                     content={
                         <Text>

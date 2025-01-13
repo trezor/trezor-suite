@@ -6,7 +6,7 @@ export * from './useNavigateToInitialScreen';
 export * from './useScrollDivider';
 export * from './components/TabBar';
 export * from './components/Screen';
-export * from './components/ScreenSubHeader';
+export * from './components/ScreenHeader';
 export * from './components/NavigationContainerWithAnalytics';
 export * from './components/GoBackIcon';
 export * from './components/ScrollViewContext';

@@ -39,7 +39,7 @@ export const HomeScreen = () => {
 
     return (
         <Screen
-            screenHeader={<DeviceManagerScreenHeader />}
+            header={<DeviceManagerScreenHeader />}
             refreshControl={refreshControl}
             noHorizontalPadding
         >

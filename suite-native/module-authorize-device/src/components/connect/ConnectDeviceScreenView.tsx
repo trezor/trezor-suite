@@ -25,7 +25,7 @@ export const ConnectDeviceScreenView = ({
 
     return (
         <Screen
-            screenHeader={
+            header={
                 <ConnectDeviceScreenHeader shouldDisplayCancelButton={shouldDisplayCancelButton} />
             }
             noHorizontalPadding

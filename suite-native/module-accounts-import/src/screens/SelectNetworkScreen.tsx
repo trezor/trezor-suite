@@ -6,7 +6,7 @@ import {
 } from '@suite-native/navigation';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { AccountImportSubHeader } from '../components/AccountImportSubHeader';
+import { AccountImportScreenHeader } from '../components/AccountImportScreenHeader';
 import { SelectableNetworkList } from '../components/SelectableNetworkList';
 
 export const SelectNetworkScreen = ({
@@ -19,7 +19,7 @@ export const SelectNetworkScreen = ({
     };
 
     return (
-        <Screen screenHeader={<AccountImportSubHeader />}>
+        <Screen header={<AccountImportScreenHeader />}>
             <SelectableNetworkList onSelectItem={handleSelectNetworkSymbol} />
         </Screen>
     );

@@ -8,7 +8,7 @@ import {
     RootStackParamList,
     RootStackRoutes,
     Screen,
-    ScreenSubHeader,
+    ScreenHeader,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
@@ -31,8 +31,8 @@ export const ReceiveAccountsScreen = () => {
 
     return (
         <Screen
-            screenHeader={
-                <ScreenSubHeader
+            header={
+                <ScreenHeader
                     content={translate('moduleReceive.receiveTitle')}
                     rightIcon={<AddAccountButton flowType="receive" />}
                     closeActionType="close"

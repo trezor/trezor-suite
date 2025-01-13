@@ -45,7 +45,7 @@ export const StakingDetailScreen = () => {
     );
 
     return (
-        <Screen screenHeader={<StakingDetailScreenHeader />} refreshControl={refreshControl}>
+        <Screen header={<StakingDetailScreenHeader />} refreshControl={refreshControl}>
             <StakingInfo accountKey={accountKey} />
         </Screen>
     );

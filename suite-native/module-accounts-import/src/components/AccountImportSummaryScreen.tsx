@@ -4,7 +4,7 @@ import { KeyboardAvoidingView, Platform } from 'react-native';
 import { Box, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Screen } from '@suite-native/navigation';
 
-import { AccountImportSubHeader } from './AccountImportSubHeader';
+import { AccountImportScreenHeader } from './AccountImportScreenHeader';
 
 type AccountImportSummaryScreenProps = {
     children: ReactNode;
@@ -22,7 +22,7 @@ export const AccountImportSummaryScreen = ({
     testID,
 }: AccountImportSummaryScreenProps) => (
     <Screen
-        screenHeader={<AccountImportSubHeader />}
+        header={<AccountImportScreenHeader />}
         footer={
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <Box margin="sp16">{footer}</Box>

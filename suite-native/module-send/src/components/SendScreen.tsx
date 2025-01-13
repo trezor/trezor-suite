@@ -9,7 +9,7 @@ type SendScreenProps = {
 };
 
 export const SendScreen = ({ children, footer, screenHeader }: SendScreenProps) => (
-    <Screen screenHeader={screenHeader} footer={footer} keyboardDismissMode="on-drag">
+    <Screen header={screenHeader} footer={footer} keyboardDismissMode="on-drag">
         {children}
     </Screen>
 );

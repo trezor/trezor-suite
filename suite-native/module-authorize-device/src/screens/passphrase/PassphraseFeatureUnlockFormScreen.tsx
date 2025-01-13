@@ -19,7 +19,7 @@ export const PassphraseFeatureUnlockFormScreen = () => {
 
     return (
         <Screen
-            screenHeader={
+            header={
                 <ScreenHeaderWrapper>
                     <IconButton
                         iconName="x"

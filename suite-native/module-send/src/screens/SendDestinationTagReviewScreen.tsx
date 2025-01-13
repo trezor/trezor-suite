@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 
 import {
-    ScreenSubHeader,
+    ScreenHeader,
     SendStackParamList,
     SendStackRoutes,
     StackProps,
@@ -67,7 +67,7 @@ export const SendDestinationTagReviewScreen = ({
     return (
         <SendScreen
             screenHeader={
-                <ScreenSubHeader
+                <ScreenHeader
                     content={translate('moduleSend.review.outputs.title')}
                     closeActionType={isTransactionReviewInProgress ? 'close' : 'back'}
                 />

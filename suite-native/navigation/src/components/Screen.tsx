@@ -18,9 +18,8 @@ import { ScreenContentWrapper } from './ScreenContentWrapper';
 
 type ScreenProps = {
     children: ReactNode;
+    header?: ReactNode;
     footer?: ReactNode;
-    subheader?: ReactNode;
-    screenHeader?: ReactNode;
     isScrollable?: boolean;
     backgroundColor?: Color;
     noHorizontalPadding?: boolean;
@@ -90,9 +89,8 @@ const screenContentBaseStyle = prepareNativeStyle<{
 
 export const Screen = ({
     children,
+    header,
     footer,
-    screenHeader,
-    subheader,
     refreshControl,
     keyboardDismissMode,
     isScrollable = true,
@@ -135,15 +133,14 @@ export const Screen = ({
             testID={`@screen/${name}`}
         >
             <SystemBars style={systemBarsStyle} />
-            {screenHeader}
+            {header}
             <ScreenContentWrapper
                 isScrollable={isScrollable}
-                hasScreenHeader={!!screenHeader}
+                hasHeader={!!header}
                 extraKeyboardAvoidingViewHeight={extraKeyboardAvoidingViewHeight}
                 refreshControl={refreshControl}
                 keyboardDismissMode={keyboardDismissMode}
             >
-                {subheader}
                 <Box
                     style={applyStyle(screenContentBaseStyle, {
                         insets,

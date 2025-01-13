@@ -10,7 +10,7 @@ import { ScrollViewContext } from './ScrollViewContext';
 type ScreenContentProps = {
     children: ReactNode;
     isScrollable: boolean;
-    hasScreenHeader: boolean;
+    hasHeader: boolean;
     extraKeyboardAvoidingViewHeight: number;
     refreshControl?: ScrollViewProps['refreshControl'];
     keyboardDismissMode?: ScrollViewProps['keyboardDismissMode'];
@@ -21,7 +21,7 @@ const screenContentWrapperStyle = prepareNativeStyle(() => ({ flexGrow: 1 }));
 export const ScreenContentWrapper = ({
     children,
     isScrollable,
-    hasScreenHeader,
+    hasHeader,
     extraKeyboardAvoidingViewHeight,
     refreshControl,
     keyboardDismissMode,
@@ -46,7 +46,7 @@ export const ScreenContentWrapper = ({
                 contentContainerStyle={applyStyle(screenContentWrapperStyle)}
                 refreshControl={refreshControl}
                 testID="@screen/mainScrollView"
-                onScroll={hasScreenHeader ? handleScroll : undefined}
+                onScroll={hasHeader ? handleScroll : undefined}
             >
                 <ScrollViewContext.Provider value={scrollViewRef}>
                     {children}

@@ -13,7 +13,7 @@ import { Screen } from '@suite-native/navigation';
 import { TransactionList } from '@suite-native/transactions';
 
 import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHeader';
-import { TokenAccountDetailScreenSubHeader } from '../components/TokenAccountDetailScreenSubHeader';
+import { TokenAccountDetailScreenHeader } from '../components/TokenAccountDetailScreenHeader';
 import { TransactionListHeader } from '../components/TransactionListHeader';
 
 type AccountDetailContentScreenProps = {
@@ -56,9 +56,9 @@ export const AccountDetailContentScreen = ({
 
     return (
         <Screen
-            screenHeader={
+            header={
                 token?.name ? (
-                    <TokenAccountDetailScreenSubHeader
+                    <TokenAccountDetailScreenHeader
                         tokenName={token.name}
                         accountKey={accountKey}
                     />

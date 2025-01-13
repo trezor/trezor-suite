@@ -10,7 +10,7 @@ import {
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { VStack, HStack, Text } from '@suite-native/atoms';
 import { CoinAmountFormatter, CoinToFiatAmountFormatter } from '@suite-native/formatters';
-import { ScreenSubHeader, GoBackIcon } from '@suite-native/navigation';
+import { ScreenHeader, GoBackIcon } from '@suite-native/navigation';
 import {
     selectAccountTokenBalance,
     selectAccountTokenSymbol,
@@ -53,7 +53,7 @@ export const AccountBalanceScreenHeader = ({
     const accountTitle = tokenSymbol ? `${accountLabel} – ${tokenSymbol}` : accountLabel;
 
     return (
-        <ScreenSubHeader
+        <ScreenHeader
             content={
                 <VStack spacing="sp4" alignItems="center">
                     <HStack spacing="sp8" alignItems="center">

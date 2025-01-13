@@ -13,7 +13,7 @@ import {
     DeviceAuthenticityStackRoutes,
     DeviceSettingsStackParamList,
     Screen,
-    ScreenSubHeader,
+    ScreenHeader,
     StackToTabCompositeScreenProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
@@ -57,9 +57,7 @@ export const DeviceAuthenticitySummaryScreen = ({
 
     return (
         <Screen
-            screenHeader={
-                <ScreenSubHeader closeActionType="close" closeAction={navigateToInitialScreen} />
-            }
+            header={<ScreenHeader closeActionType="close" closeAction={navigateToInitialScreen} />}
         >
             <VStack flex={1} spacing="sp40" justifyContent="center">
                 <PictogramTitleHeader

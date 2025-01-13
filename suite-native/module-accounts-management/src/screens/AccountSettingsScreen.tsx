@@ -6,7 +6,7 @@ import {
     RootStackParamList,
     RootStackRoutes,
     Screen,
-    ScreenSubHeader,
+    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
@@ -67,8 +67,8 @@ export const AccountSettingsScreen = ({
 
     return (
         <Screen
-            screenHeader={
-                <ScreenSubHeader
+            header={
+                <ScreenHeader
                     content={accountLabel}
                     rightIcon={<AccountRenameButton accountKey={accountKey} />}
                 />

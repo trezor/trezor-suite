@@ -4,7 +4,7 @@ import {
     AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes,
     Screen,
-    ScreenSubHeader,
+    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
 import { Card, VStack } from '@suite-native/atoms';
@@ -49,8 +49,8 @@ export const AddCoinAccountScreen = ({
 
     return (
         <Screen
-            screenHeader={
-                <ScreenSubHeader
+            header={
+                <ScreenHeader
                     content={translate('moduleAddAccounts.addCoinAccountScreen.title')}
                     closeActionType="close"
                 />

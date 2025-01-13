@@ -9,7 +9,7 @@ import {
     DeviceSettingsStackParamList,
     DeviceStackRoutes,
     Screen,
-    ScreenSubHeader,
+    ScreenHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -61,7 +61,7 @@ export const FirmwareUpdateScreen = () => {
 
     return (
         <Screen
-            screenHeader={<ScreenSubHeader closeActionType="close" />}
+            header={<ScreenHeader closeActionType="close" />}
             footer={
                 <Button
                     onPress={handleShowSeedBottomSheet}

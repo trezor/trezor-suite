@@ -9,7 +9,7 @@ import {
     Screen,
     DevUtilsStackParamList,
     DevUtilsStackRoutes,
-    ScreenSubHeader,
+    ScreenHeader,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
     RootStackParamList,
@@ -39,7 +39,7 @@ export const DevUtilsScreen = () => {
         });
 
     return (
-        <Screen screenHeader={<ScreenSubHeader content="DEV utils" />}>
+        <Screen header={<ScreenHeader content="DEV utils" />}>
             <VStack spacing="sp16">
                 <Card>
                     <VStack spacing="sp16">

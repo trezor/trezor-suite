@@ -83,7 +83,7 @@ export const CoinEnablingInitScreen = () => {
 
     return (
         <Screen
-            screenHeader={
+            header={
                 <VStack paddingHorizontal="sp16" paddingVertical="sp16">
                     <Text variant="titleSmall">
                         <Translation id="moduleSettings.coinEnabling.initialSetup.title" />
