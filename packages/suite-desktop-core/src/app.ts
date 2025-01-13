@@ -268,9 +268,11 @@ const init = async () => {
 
         const mainWindow = mainWindowProxy.getInstance();
         const windowExists =
-            mainWindow && !mainWindow.isDestroyed() && mainWindow.isClosable() && !app.isHidden();
-        const autoStartCurrentlyEnabled =
-            isAutoStartEnabled() || app.commandLine.hasSwitch('bridge-test');
+            mainWindow &&
+            !mainWindow.isDestroyed() &&
+            mainWindow.isClosable() &&
+            (!isMacOs() || !app.isHidden());
+        const autoStartCurrentlyEnabled = isAutoStartEnabled();
         logger.info('main', `Before quit, window exists: ${windowExists}`);
         if (
             !stoppingDaemon &&
