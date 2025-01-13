@@ -12,12 +12,12 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@suite-native/atoms": "workspace:*",
-        "@suite-native/connection-status": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "jotai": "1.9.1",
         "react": "18.2.0",
-        "react-native-reanimated": "3.16.1"
+        "react-native-reanimated": "3.16.1",
+        "react-native-safe-area-context": "4.14.0"
     }
 }

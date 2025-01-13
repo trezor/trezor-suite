@@ -11161,13 +11161,13 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/connection-status": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native-reanimated: "npm:3.16.1"
+    react-native-safe-area-context: "npm:4.14.0"
   languageName: unknown
   linkType: soft
 
