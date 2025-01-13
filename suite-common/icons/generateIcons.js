@@ -1,7 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
-import chalk from 'chalk';
-
+const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 const prettier = require('prettier');
