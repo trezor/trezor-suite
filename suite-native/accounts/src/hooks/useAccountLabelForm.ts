@@ -2,6 +2,7 @@ import { yup } from '@suite-common/validators';
 import { useForm } from '@suite-native/forms';
 
 export const MAX_ACCOUNT_LABEL_LENGTH = 30;
+export const ALMOST_MAX_ACCOUNT_LABEL_LENGTH = MAX_ACCOUNT_LABEL_LENGTH - 5;
 
 export type AccountFormValues = yup.InferType<typeof accountFormValidationSchema>;
 
