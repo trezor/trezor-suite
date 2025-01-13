@@ -13,7 +13,7 @@ This package contains source assets for icons used in the app.
 
 1. Register new icon in `generateIconFont.ts` file.
 2. Run `yarn generate-icons` to generate new font file.
-3. Sometimes you need to rebuild/restart app to see changes.
+3. Rebuild/restart app (incl. shutting down emulator & rerunning `yarn native:prebuild`).
 
 ## In case some icons are not rendering correctly in icon font
 
