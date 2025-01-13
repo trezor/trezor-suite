@@ -186,7 +186,12 @@ const init = async () => {
     const computerInfo = await getComputerInfo();
     logger.debug('computer', computerInfo);
 
-    const winBounds = store.getWinBounds();
+    const widthArg = parseInt(app.commandLine.getSwitchValue('width'), 10);
+    const heightArg = parseInt(app.commandLine.getSwitchValue('height'), 10);
+    const winBounds = {
+        width: !isNaN(widthArg) ? Math.max(widthArg, MIN_WIDTH) : store.getWinBounds().width,
+        height: !isNaN(heightArg) ? Math.max(heightArg, MIN_HEIGHT) : store.getWinBounds().height,
+    };
     logger.debug('init', `Create Browser Window (${winBounds.width}x${winBounds.height})`);
 
     // init modules
