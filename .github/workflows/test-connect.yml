@@ -109,7 +109,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
 
-  randomized:
+  randomized-order:
     needs: [build, set-matrix]
     name: randomized ${{ matrix.key }}
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
