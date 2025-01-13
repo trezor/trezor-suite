@@ -89,7 +89,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         });
         if (res.error) {
             await cancelPrompt(this.device);
-            throw ERRORS.TypedError('Failure_EntropyCheck', res.error);
+            throw new Error(res.error);
         }
 
         return currentData;
@@ -113,7 +113,11 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
             for (let i = 0; i < tries; i++) {
                 // steps: 5 - 6
                 // GetPublicKey > ResetDeviceContinue > EntropyRequest > EntropyAck > EntropyCheckReady
-                entropyData = await this.entropyCheck(entropyData);
+                try {
+                    entropyData = await this.entropyCheck(entropyData);
+                } catch (error) {
+                    throw ERRORS.TypedError('Failure_EntropyCheck', error.message);
+                }
             }
             // step 7 EntropyCheckContinue > Success
             await cmd.typedCall('EntropyCheckContinue', 'Success', { finish: true });
