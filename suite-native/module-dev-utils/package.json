@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
+        "@react-navigation/native": "6.1.18",
         "@react-navigation/native-stack": "6.11.0",
         "@sentry/react-native": "6.5.0",
         "@suite-common/message-system": "workspace:*",

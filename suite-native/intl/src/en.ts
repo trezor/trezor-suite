@@ -5,6 +5,7 @@
 
 export const en = {
     generic: {
+        trezorSuite: 'Trezor Suite',
         header: '<green>Trezor Suite</green> <grey>Lite</grey>',
         buttons: {
             back: 'Back',
@@ -763,8 +764,12 @@ export const en = {
     },
     moduleOnboarding: {
         welcomeScreen: {
+            subtitle: 'Take control.',
+            button: "Let's get started",
+
+            // TODO: this should be removed when is the new onboarding enabled by default
             welcome: 'Welcome to',
-            subtitle: 'Securely track, manage & receive\ncrypto on the go',
+            subtitleLegacy: 'Securely track, manage & receive\ncrypto on the go',
             trezorLink: 'Don’t have a Trezor? <trezorLink>Get one here.</trezorLink>',
             nextButton: 'Get started',
         },
