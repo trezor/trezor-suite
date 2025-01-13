@@ -20,6 +20,7 @@ import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { AccountSection } from './AccountSection';
 import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
+import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
 
 interface AccountListProps {
     onItemClick?: () => void;
@@ -78,7 +79,7 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
     const accountLabels = useSelector(selectAccountLabels);
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
-
+    const isSidebarCollapsed = useIsSidebarCollapsed();
     const { discovery, getDiscoveryStatus } = useDiscovery();
     const { coinFilter, searchString } = useAccountSearch();
     const discoveryStatus = getDiscoveryStatus();
@@ -186,6 +187,8 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
     if (discoveryInProgress) {
         return <AccountItemSkeleton />;
     }
+
+    if (isSidebarCollapsed) return <AccountsMenuNotice />;
 
     return (
         <AccountsMenuNotice>
