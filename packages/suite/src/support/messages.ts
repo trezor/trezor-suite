@@ -8891,6 +8891,10 @@ export default defineMessages({
         id: 'TR_STAKE_ONLY_REWARDS',
         defaultMessage: 'Only rewards',
     },
+    TR_STAKE_NO_REWARDS: {
+        id: 'TR_STAKE_NO_REWARDS',
+        defaultMessage: 'No rewards available',
+    },
     TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM: {
         id: 'TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM',
         defaultMessage: 'Unstaked and ready to claim',

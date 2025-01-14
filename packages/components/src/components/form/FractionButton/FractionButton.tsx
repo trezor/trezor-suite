@@ -9,6 +9,7 @@ export type FractionButtonProps = {
     children: React.ReactNode;
     tooltip?: React.ReactNode;
     isDisabled?: boolean;
+    isSubtle?: boolean;
     variant?: ButtonVariant;
     onClick: () => void;
 };
@@ -18,6 +19,7 @@ export const FractionButton = ({
     children,
     tooltip,
     isDisabled,
+    isSubtle,
     variant,
     onClick,
 }: FractionButtonProps) => (
@@ -27,6 +29,7 @@ export const FractionButton = ({
             type="button"
             size="tiny"
             isDisabled={isDisabled}
+            isSubtle={isSubtle}
             onClick={onClick}
         >
             {children}

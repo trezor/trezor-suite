@@ -48,7 +48,7 @@ export const getIconColor = ({
 
     switch (variant) {
         case 'primary':
-            return theme.iconOnPrimary;
+            return isSubtle ? theme.iconPrimaryDefault : theme.iconOnPrimary;
         case 'tertiary':
             return theme.iconOnTertiary;
         case 'info':
@@ -117,8 +117,11 @@ export const useVariantStyle = (
     const variantsColors: Record<ButtonVariant, Record<string, string | Colors>> = {
         primary: {
             background: theme.backgroundPrimaryDefault,
+            backgroundSubtle: hexToRgba(theme.backgroundPrimaryDefault, SUBTLE_ALPHA),
             backgroundHover: theme.backgroundPrimaryPressed,
+            backgroundSubtleHover: hexToRgba(theme.backgroundPrimaryDefault, SUBTLE_ALPHA_HOVER),
             text: theme.textOnPrimary,
+            textSubtle: theme.textPrimaryDefault,
         },
         tertiary: {
             background: mapElevationToButtonBackground({
