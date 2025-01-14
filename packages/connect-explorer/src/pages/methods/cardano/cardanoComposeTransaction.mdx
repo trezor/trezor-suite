@@ -1,0 +1,125 @@
+import { CardanoComposeTransactionParamsSchema } from '@trezor/connect/src/types/api/cardanoComposeTransaction';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[
+        {
+            title: 'Advanced schema',
+            method: 'cardanoComposeTransaction',
+            schema: CardanoComposeTransactionParamsSchema,
+        },
+    ]}
+/>
+
+export const paramDescriptions = {};
+
+## Cardano: Compose transaction
+
+Composes a transaction from the given account information and outputs.
+
+```javascript
+const result = await TrezorConnect.cardanoComposeTransaction(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+<ParamsTable schema={CardanoComposeTransactionParamsSchema} descriptions={paramDescriptions} />
+
+### Examples
+
+```javascript
+// Get account info
+const accountInfo = await TrezorConnect.getAccountInfo({
+    path: "m/1852'/1815'/0'/0/0",
+    coin: 'cardano',
+    details: 'txs',
+});
+const account = accountInfo.payload;
+
+// Find an unused change address
+const changeAddress = account.addresses.change.find(a => a.transfers === 0);
+
+TrezorConnect.cardanoComposeTransaction({
+    account: {
+        descriptor: account.descriptor,
+        addresses: account.addresses,
+        utxo: account.utxo,
+    },
+    changeAddress,
+    addressParameters: {
+        addressType: CardanoAddressType.BASE,
+        path: changeAddress.path,
+    },
+    outputs: [
+        {
+            format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
+            address:
+                'addr1q84sh2j72ux0l03fxndjnhctdg7hcppsaejafsa84vh7lwgmcs5wgus8qt4atk45lvt4xfxpjtwfhdmvchdf2m3u3hlsd5tq5r',
+            amount: '1',
+        },
+    ],
+    feeLevels: [{ feePerUnit: '1' }, { feePerUnit: '5' }, { feePerUnit: '30' }],
+    testnet: false,
+});
+```
+
+### Result
+
+[PrecomposedTransactionCardano[] type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardanoComposeTransaction.ts#L41)
+
+PrecomposedTransactionFinalCardano
+
+```javascript
+{
+    success: true,
+    payload: {
+        type: 'final';
+        max?: string;
+        totalSpent: string; // all the outputs, no fee, no change
+        fee: string;
+        feePerByte: string;
+        bytes: number;
+        deposit?: string;
+        ttl?: number;
+        inputs: CardanoInput[];
+        outputs: CardanoOutput[];
+        unsignedTx: {
+            body: string;
+            hash: string;
+        };
+    }
+}
+```
+
+PrecomposedTransactionNonFinalCardano
+
+```javascript
+{
+    success: true,
+    payload: {
+        type: 'nonfinal';
+        max?: string;
+        totalSpent: string; // all the outputs, no fee, no change
+        fee: string;
+        feePerByte: string;
+        bytes: number;
+        deposit?: string;
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```
