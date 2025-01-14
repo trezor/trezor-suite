@@ -168,13 +168,13 @@ export const resetDevice =
         });
 
         if (!result.success) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: 'Something went wrong, try again.',
-                }),
-            );
             if (result.payload.code === 'Failure_EntropyCheck') {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'error',
+                        error: 'Something went wrong, try again.',
+                    }),
+                );
                 const model = device?.features?.internal_model;
                 const revision = device?.features?.revision;
                 const version = getFirmwareVersion(device);
