@@ -335,6 +335,8 @@ export const transformAddresses = (
                 path: t.path,
                 transfers: t.transfers,
                 balance: t.balance,
+                sent: t.totalSent,
+                received: t.totalReceived,
             },
         ]);
     }, [] as Address[]);
