@@ -1780,7 +1780,6 @@
   "TR_WIPE_DEVICE_CHECKBOX_1_TITLE": "I understand this action deletes all data on the device",
   "TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION": "Your wallet backup is absolutely essential for regaining access to your funds in case of device loss, theft, or damage. Without it, there's nothing anybody can do, not even Trezor Support. Write it down on paper or your wallet backup card and store it somewhere safe and secure. Just remember where you have it.",
   "TR_WIPE_DEVICE_CHECKBOX_2_TITLE": "I understand I must have a backup of my wallet backup in order to regain access to my funds",
-  "TR_WIPE_DEVICE_TEXT": "Resetting the device removes all its data. Reset your device only if you have your wallet backup, which can restore access to your funds.",
   "TR_WIPE_OR_UPDATE": "Reset device or update firmware",
   "TR_WIPE_OR_UPDATE_DESCRIPTION": "Prejdite na Nastavenia zariadenia",
   "TR_WORDS": "{count} slov",
