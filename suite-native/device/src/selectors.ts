@@ -29,8 +29,14 @@ import { BigNumber } from '@trezor/utils';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { doesCoinSupportStaking } from '@suite-native/staking';
+import {
+    FeatureFlag,
+    FeatureFlagsRootState,
+    selectIsFeatureFlagEnabled,
+} from '@suite-native/feature-flags';
 
 import { isFirmwareVersionSupported } from './utils';
+import { revisionCheckErrorScenarios } from './config/firmware';
 
 type NativeDeviceRootState = DeviceRootState &
     AccountsRootState &
@@ -148,4 +154,34 @@ export const selectFirmwareRevisionCheckError = (state: DeviceRootState) => {
     if (!checkResult || checkResult.success) return null;
 
     return checkResult.error;
+};
+
+type FwAuthenticityCheckState = NativeDeviceRootState & FeatureFlagsRootState;
+/**
+ * Get firmware revision check error, or null if check was successful / skipped, if the check is enabled in settings and through message system.
+ */
+export const selectFirmwareRevisionCheckErrorIfEnabled = (state: FwAuthenticityCheckState) => {
+    const revisionCheckError = selectFirmwareRevisionCheckError(state);
+    const { isFirmwareRevisionCheckEnabled } = state.appSettings;
+    const isFeatureFlagEnabled = selectIsFeatureFlagEnabled(
+        state,
+        FeatureFlag.IsFwRevisionCheckEnabled,
+    );
+    const isCheckEnabled = isFirmwareRevisionCheckEnabled && isFeatureFlagEnabled;
+    // TODO #16456 disable also by message-system feature flag
+
+    return isCheckEnabled ? revisionCheckError : null;
+};
+
+/**
+ * Determine if either of firmware authenticity checks is considered as hard failure (in order to restrict interaction with device).
+ */
+export const selectHasFirmwareAuthenticityCheckHardFailed = (state: FwAuthenticityCheckState) => {
+    const revisionError = selectFirmwareRevisionCheckErrorIfEnabled(state);
+    const isRevisionHardError =
+        revisionError !== null && revisionCheckErrorScenarios[revisionError].type === 'hardModal';
+
+    // FW hash check to be implemented
+
+    return isRevisionHardError;
 };

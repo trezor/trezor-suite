@@ -9,6 +9,8 @@ export interface AppSettingsState {
     fiatCurrencyCode: FiatCurrencyCode;
     bitcoinUnits: PROTO.AmountUnit;
     viewOnlyCancelationTimestamp?: number;
+    isFirmwareRevisionCheckEnabled: boolean;
+    isFirmwareHashCheckEnabled: boolean;
 }
 
 export type SettingsSliceRootState = {
@@ -20,6 +22,8 @@ export const appSettingsInitialState: AppSettingsState = {
     bitcoinUnits: PROTO.AmountUnit.BITCOIN,
     isOnboardingFinished: false,
     viewOnlyCancelationTimestamp: undefined,
+    isFirmwareRevisionCheckEnabled: true,
+    isFirmwareHashCheckEnabled: true,
 };
 
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
@@ -27,6 +31,8 @@ export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'fiatCurrencyCode',
     'bitcoinUnits',
     'viewOnlyCancelationTimestamp',
+    'isFirmwareRevisionCheckEnabled',
+    'isFirmwareHashCheckEnabled',
 ];
 
 export const appSettingsSlice = createSlice({
@@ -48,6 +54,10 @@ export const appSettingsSlice = createSlice({
         setViewOnlyCancelationTimestamp: (state, { payload }: PayloadAction<number>) => {
             state.viewOnlyCancelationTimestamp = payload;
         },
+        setCheckFirmwareAuthenticity: (state, { payload }: PayloadAction<boolean>) => {
+            state.isFirmwareRevisionCheckEnabled = payload;
+            state.isFirmwareHashCheckEnabled = payload;
+        },
     },
 });
 
@@ -60,6 +70,14 @@ export const selectIsOnboardingFinished = (state: SettingsSliceRootState) =>
     state.appSettings.isOnboardingFinished;
 export const selectViewOnlyCancelationTimestamp = (state: SettingsSliceRootState) =>
     state.appSettings.viewOnlyCancelationTimestamp;
+
+/**
+ * Determine if either FW revision or FW hash check is disabled
+ * (both are controlled by the same setting, see setCheckFirmwareAuthenticity reducer)
+ */
+export const selectIsFirmwareAuthenticityCheckEnabled = (state: SettingsSliceRootState) =>
+    state.appSettings.isFirmwareRevisionCheckEnabled &&
+    state.appSettings.isFirmwareHashCheckEnabled;
 
 export const selectIsAmountInSats = (
     state: SettingsSliceRootState,
@@ -80,5 +98,6 @@ export const {
     setFiatCurrency,
     setBitcoinUnits,
     setViewOnlyCancelationTimestamp,
+    setCheckFirmwareAuthenticity,
 } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;
