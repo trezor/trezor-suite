@@ -69,7 +69,9 @@ type BlockFiltersBatch = `${string}:${string}:${string}`[];
 // XPUBAddress, ERC20, ERC721, ERC1155 - blockbook generated type (Token) is not strict enough
 export type XPUBAddress = {
     type: 'XPUBAddress';
-} & Required<Pick<BlockbookToken, 'path' | 'decimals' | 'balance'>> &
+} & Required<
+    Pick<BlockbookToken, 'path' | 'decimals' | 'balance' | 'totalSent' | 'totalReceived'>
+> &
     Pick<BlockbookToken, 'name' | 'transfers'>;
 
 type BaseERC = Required<Pick<BlockbookToken, 'contract'>> &

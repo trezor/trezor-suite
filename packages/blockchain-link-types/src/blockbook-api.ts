@@ -146,6 +146,8 @@ export interface Token {
     secondaryValue?: number;
     ids?: string[];
     multiTokenValues?: MultiTokenValue[];
+    totalReceived?: string;
+    totalSent?: string;
 }
 export interface Address {
     page?: number;
