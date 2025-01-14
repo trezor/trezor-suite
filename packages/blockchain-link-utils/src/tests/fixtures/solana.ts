@@ -1,17 +1,24 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { TOKEN_PROGRAM_PUBLIC_KEY } from '../../solana';
+
 const instructions = {
     transfer: {
         parsed: {
             type: 'transfer',
         },
+        program: 'spl-token',
+        programId: TOKEN_PROGRAM_PUBLIC_KEY,
     },
     nonTransfer: {
         parsed: {
             type: 'nonTransfer',
         },
     },
-    notParsed: {},
+    tokenTransferNotParsed: {
+        program: 'spl-token',
+        programId: TOKEN_PROGRAM_PUBLIC_KEY,
+    },
     tokenTransfer: {
         parsed: {
             info: {
@@ -29,6 +36,7 @@ const instructions = {
             type: 'transferChecked',
         },
         program: 'spl-token',
+        programId: TOKEN_PROGRAM_PUBLIC_KEY,
     },
     secondTokenTransfer: {
         parsed: {
@@ -47,6 +55,7 @@ const instructions = {
             type: 'transferChecked',
         },
         program: 'spl-token',
+        programId: TOKEN_PROGRAM_PUBLIC_KEY,
     },
     ownReceivedTokenTransfer: {
         parsed: {
@@ -65,6 +74,7 @@ const instructions = {
             type: 'transferChecked',
         },
         program: 'spl-token',
+        programId: TOKEN_PROGRAM_PUBLIC_KEY,
     },
     // without mint and tokenAmount
     tokenTransferToAssociated: {
@@ -78,6 +88,7 @@ const instructions = {
             type: 'transfer',
         },
         program: 'spl-token',
+        programId: TOKEN_PROGRAM_PUBLIC_KEY,
     },
 };
 
@@ -421,7 +432,7 @@ export const fixtures = {
             expectedOutput: 'failed',
         },
         {
-            description: 'should return "unknown" if instructions are not transfer',
+            description: 'should return "contract" if instructions are not transfer',
             input: {
                 transaction: {
                     transaction: {
@@ -434,15 +445,15 @@ export const fixtures = {
                 accountAddress: effects.negative.address,
                 tokenEffects: [],
             },
-            expectedOutput: 'unknown',
+            expectedOutput: 'contract',
         },
         {
-            description: 'should return "unknown" if at least single instruction is not parsed',
+            description: 'should return "unknown" if all transfer instruction are not parsed',
             input: {
                 transaction: {
                     transaction: {
                         message: {
-                            instructions: [instructions.notParsed],
+                            instructions: [instructions.tokenTransferNotParsed],
                         },
                     },
                 },
@@ -776,7 +787,13 @@ export const fixtures = {
                 transaction: parsedTransactions.multiTokenTransfer.transaction,
                 accountAddress: 'H8TGGw7Z85w1wDxcH3aTBAyCoCYsDQZrKUim7fwtKAMs',
                 map: sampleMintToDetailMap,
-                tokenAccountsInfos: [],
+                tokenAccountsInfos: [
+                    {
+                        address: 'H8TGGw7Z85w1wDxcH3aTBAyCoCYsDQZrKUim7fwtKAMs',
+                        mint: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                        decimals: 1,
+                    },
+                ],
             },
             expectedOutput: [
                 {
@@ -798,7 +815,13 @@ export const fixtures = {
                 transaction: parsedTransactions.singleTokenTransfer.transaction,
                 accountAddress: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
                 map: sampleMintToDetailMap,
-                tokenAccountsInfos: [],
+                tokenAccountsInfos: [
+                    {
+                        address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        mint: 'So11111111111111111111111111111111111111112',
+                        decimals: 9,
+                    },
+                ],
             },
             expectedOutput: [
                 {
@@ -820,7 +843,18 @@ export const fixtures = {
                 transaction: parsedTransactions.multiTokenTransfer.transaction,
                 accountAddress: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
                 map: sampleMintToDetailMap,
-                tokenAccountsInfos: [],
+                tokenAccountsInfos: [
+                    {
+                        address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        mint: 'So11111111111111111111111111111111111111112',
+                        decimals: 9,
+                    },
+                    {
+                        address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                        mint: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                        decimals: 1,
+                    },
+                ],
             },
             expectedOutput: [
                 {

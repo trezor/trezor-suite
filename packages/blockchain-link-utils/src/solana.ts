@@ -37,6 +37,7 @@ export const SYSTEM_PROGRAM_PUBLIC_KEY = '11111111111111111111111111111111';
 // when parsing tx effects.
 export const WSOL_MINT = 'So11111111111111111111111111111111111111112';
 export const STAKE_PROGRAM_PUBLIC_KEY = 'Stake11111111111111111111111111111111111111';
+export const COMPUTE_BUDGET_PROGRAM_ID = 'ComputeBudget111111111111111111111111111111';
 
 const tokenProgramNames = ['spl-token', 'spl-token-2022'] as const;
 export type TokenProgramName = (typeof tokenProgramNames)[number];
@@ -376,7 +377,23 @@ export const getTxType = (
         return 'failed';
     }
 
-    // we consider only parsed instructions because only based on them we can determine the type of transaction
+    const isUnknownProgramInstruction = (
+        instruction: ParsedTransactionWithMeta['transaction']['message']['instructions'][number],
+    ) =>
+        ![
+            SYSTEM_PROGRAM_PUBLIC_KEY,
+            ...Object.values(tokenProgramsInfo).map(info => info.publicKey),
+            ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY,
+            STAKE_PROGRAM_PUBLIC_KEY,
+            COMPUTE_BUDGET_PROGRAM_ID,
+        ].includes(instruction.programId);
+
+    // if there are any unknown program instructions, we interpret the transaction as `contract`
+    if (transaction.transaction.message.instructions.some(isUnknownProgramInstruction)) {
+        return 'contract';
+    }
+
+    // then, we consider only parsed instructions because only based on them we can determine the type of transaction
     const parsedInstructions = transaction.transaction.message.instructions.filter(
         (instruction): instruction is ParsedInstruction => 'parsed' in instruction,
     );
@@ -397,7 +414,6 @@ export const getTxType = (
             isInstructionCreatingTokenAccount(instruction),
     );
 
-    // for now we support only transfers, so we interpret all other transactions as `unknown`
     if (isTransfer) {
         return tokenTransfers.length > 0
             ? getTokenTransferTxType(tokenTransfers)
@@ -559,8 +575,20 @@ export const getTokens = (
         address === parsed.info.destination ||
         address === parsed.info?.authority;
 
-    const effects = tx.transaction.message.instructions
-        .filter(isTokenTransferInstruction)
+    const instructions = [
+        ...tx.transaction.message.instructions,
+        ...(tx.meta?.innerInstructions?.flatMap(innerIx => innerIx.instructions) ?? []),
+    ];
+
+    const effects = instructions
+        // filter token transfer instructions that are relevant to the user token accounts
+        .filter(
+            (instruction): instruction is TokenTransferInstruction =>
+                isTokenTransferInstruction(instruction) &&
+                tokenAccountsInfos.some(tokenAccountInfo =>
+                    matchTokenAccountInfo(instruction, tokenAccountInfo.address),
+                ),
+        )
         .map<TokenTransfer>((ix): TokenTransfer => {
             const { parsed, program } = ix;
 
