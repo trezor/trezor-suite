@@ -1,8 +1,12 @@
 import type { types, trezorUtils } from '@fivebinaries/coin-selection';
 
+import { Static, Type } from '@trezor/schema-utils';
+
+import { PROTO } from '../../exports';
 import type { AccountAddresses, AccountUtxo } from '../../exports';
-import type { Params, Response } from '../params';
-import type { CardanoCertificate, CardanoInput, CardanoOutput } from './cardano';
+import { DerivationPath, type Params, type Response } from '../params';
+import { CardanoCertificatePointer, CardanoCertificate } from './cardano';
+import type { CardanoInput, CardanoOutput } from './cardano';
 import type {
     PrecomposeResultFinal,
     PrecomposeResultNonFinal,
@@ -39,6 +43,20 @@ export type PrecomposedTransactionCardano =
     | PrecomposedTransactionNonFinalCardano
     | PrecomposedTransactionErrorCardano;
 
+export const AccountAddress = Type.Object(
+    {
+        address: Type.String(),
+        path: Type.String(),
+        transfers: Type.Number(),
+        balance: Type.Optional(Type.String()),
+        sent: Type.Optional(Type.String()),
+        received: Type.Optional(Type.String()),
+    },
+    {
+        $id: 'AccountAddress',
+    },
+);
+
 export type CardanoComposeTransactionParams = {
     account: {
         descriptor: string;
@@ -53,6 +71,120 @@ export type CardanoComposeTransactionParams = {
     addressParameters: Parameters<(typeof trezorUtils)['transformToTrezorOutputs']>[1];
     testnet?: boolean;
 };
+
+// Typebox schema for CardanoComposeTransactionParams, used in Explorer
+export type CardanoComposeTransactionParamsSchema = Static<
+    typeof CardanoComposeTransactionParamsSchema
+>;
+export const CardanoComposeTransactionParamsSchema = Type.Object({
+    account: Type.Object({
+        descriptor: Type.String(),
+        addresses: Type.Object({
+            change: Type.Array(AccountAddress),
+            used: Type.Array(AccountAddress),
+            unused: Type.Array(AccountAddress),
+        }),
+        utxo: Type.Array(
+            Type.Object(
+                {
+                    txid: Type.String(),
+                    vout: Type.Number(),
+                    amount: Type.String(),
+                    blockHeight: Type.Number(),
+                    address: Type.String(),
+                    path: Type.String(),
+                    confirmations: Type.Number(),
+                    coinbase: Type.Optional(Type.Boolean()),
+                    cardanoSpecific: Type.Optional(
+                        Type.Object({
+                            unit: Type.String(),
+                        }),
+                    ),
+                },
+                { $id: 'AccountUtxo' },
+            ),
+        ),
+    }),
+    feeLevels: Type.Optional(
+        Type.Array(
+            Type.Object({
+                feePerUnit: Type.Optional(Type.String()),
+            }),
+        ),
+    ),
+    outputs: Type.Optional(
+        Type.Array(
+            Type.Intersect(
+                [
+                    Type.Object(
+                        {
+                            isChange: Type.Optional(Type.Boolean()),
+                            assets: Type.Array(
+                                Type.Object({
+                                    unit: Type.String(),
+                                    quantity: Type.String(),
+                                }),
+                            ),
+                        },
+                        { $id: 'BaseOutput' },
+                    ),
+                    Type.Union([
+                        Type.Object(
+                            {
+                                address: Type.String(),
+                                amount: Type.String(),
+                                setMax: Type.Optional(Type.Literal(false)),
+                            },
+                            { $id: 'ExternalOutput' },
+                        ),
+                        Type.Object(
+                            {
+                                address: Type.Optional(Type.String()),
+                                amount: Type.Optional(Type.String()),
+                                setMax: Type.Boolean(),
+                            },
+                            { $id: 'ExternalOutputIncomplete' },
+                        ),
+                    ]),
+                ],
+                { $id: 'UserOutput' },
+            ),
+        ),
+    ),
+    certificates: Type.Optional(Type.Array(CardanoCertificate)),
+    withdrawals: Type.Optional(
+        Type.Array(
+            Type.Object(
+                {
+                    stakeAddress: Type.String(),
+                    amount: Type.String(),
+                },
+                { $id: 'Withdrawal' },
+            ),
+        ),
+    ),
+    changeAddress: Type.Object({
+        address: Type.String(),
+        path: Type.String(),
+    }),
+    addressParameters: Type.Object(
+        {
+            addressType: PROTO.EnumCardanoAddressType,
+            path: DerivationPath,
+            stakingPath: Type.Optional(DerivationPath),
+            stakingKeyHash: Type.Optional(Type.String()),
+            certificatePointer: Type.Optional(CardanoCertificatePointer),
+        },
+        { $id: 'CardanoAddressParameters' },
+    ),
+    testnet: Type.Optional(Type.Boolean()),
+});
+
+// TS - Assert type of CardanoComposeTransactionParams is compatible with CardanoComposeTransactionParamsSchema
+const _params: CardanoComposeTransactionParamsSchema = {} as CardanoComposeTransactionParams;
+const _paramsOld: CardanoComposeTransactionParams = {} as CardanoComposeTransactionParamsSchema;
+// eslint-disable-next-line
+[_params, _paramsOld];
 
 export declare function cardanoComposeTransaction(
     params: Params<CardanoComposeTransactionParams>,

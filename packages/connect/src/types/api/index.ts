@@ -171,7 +171,7 @@ export interface TrezorConnect {
     // https://connect.trezor.io/9/methods/cardano/cardanoSignTransaction/
     cardanoSignTransaction: typeof cardanoSignTransaction;
 
-    // todo: link docs
+    // https://connect.trezor.io/9/methods/cardano/cardanoComposeTransaction/
     cardanoComposeTransaction: typeof cardanoComposeTransaction;
 
     // https://connect.trezor.io/9/methods/device/changeLanguage/
