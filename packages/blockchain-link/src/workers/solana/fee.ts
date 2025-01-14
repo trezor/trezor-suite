@@ -17,10 +17,9 @@ import {
     TransactionMessageBytesBase64,
 } from '@solana/web3.js';
 
+import { COMPUTE_BUDGET_PROGRAM_ID } from '@trezor/blockchain-link-utils/src/solana';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-const COMPUTE_BUDGET_PROGRAM_ID =
-    'ComputeBudget111111111111111111111111111111' as Address<'ComputeBudget111111111111111111111111111111'>;
 const DEFAULT_COMPUTE_UNIT_PRICE_MICROLAMPORTS = BigInt(300_000); // micro-lamports, value taken from other wallets
 
 const stripComputeBudgetInstructions = (message: CompiledTransactionMessage) => ({
