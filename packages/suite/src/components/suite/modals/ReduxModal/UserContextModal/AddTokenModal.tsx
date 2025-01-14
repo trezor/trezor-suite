@@ -11,7 +11,6 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 interface AddTokenModalProps {
     onCancel: () => void;
@@ -23,7 +22,6 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     const [isFetching, setIsFetching] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const account = useSelector(selectSelectedAccount);
-    const localCurrency = useSelector(selectLocalCurrency);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
@@ -99,7 +97,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
 
     const handleAddTokenButtonClick = () => {
         if (tokenInfo) {
-            dispatch(addToken(account, tokenInfo, localCurrency));
+            dispatch(addToken(account, tokenInfo));
             onCancel();
 
             analytics.report({

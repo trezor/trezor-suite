@@ -17,6 +17,7 @@ import { fetchAllTransactionsForAccountThunk } from '../transactions/transaction
 
 export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, extra, next, getState }) => {
+        next(action); //next must be at the beginning, othervise tickers are not going to be updated and fiat rates wont fetch (the user will have to wait for 1m timeout)
         const {
             actions: { setWalletSettingsLocalCurrency },
             selectors: { selectLocalCurrency },
@@ -126,6 +127,6 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
             );
         }
 
-        return next(action);
+        return action;
     },
 );
