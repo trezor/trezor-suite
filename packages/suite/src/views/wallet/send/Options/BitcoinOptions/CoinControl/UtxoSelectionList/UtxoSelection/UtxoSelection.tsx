@@ -29,10 +29,12 @@ import { UtxoTag } from './UtxoTag';
 
 const transitionSpeed = '0.16s';
 
+const ROW_GAP = spacings.xxs;
+
 const LabelPart = styled.div`
     display: flex;
     align-items: center;
-    gap: ${spacingsPx.xs};
+    gap: ${ROW_GAP};
     color: ${({ theme }) => theme.textSubdued};
     overflow: hidden;
 `;
@@ -40,7 +42,7 @@ const LabelPart = styled.div`
 const DetailPartVisibleOnHover = styled.div<{ $alwaysVisible?: boolean }>`
     display: flex;
     align-items: center;
-    gap: ${spacingsPx.xs};
+    gap: ${ROW_GAP};
     color: ${({ theme }) => theme.textSubdued};
 
     ${({ $alwaysVisible }) =>
@@ -81,6 +83,10 @@ const Wrapper = styled.div<{ $isChecked: boolean; $isDisabled: boolean }>`
                     border-color: ${({ theme }) => theme.borderFocus};
                 }
             `};
+
+        ${DetailPartVisibleOnHover} {
+            opacity: 1;
+        }
     }
 `;
 
@@ -217,7 +223,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
             </Tooltip>
 
             <Body>
-                <Row gap={spacings.xs}>
+                <Row gap={ROW_GAP}>
                     {isPendingTransaction && (
                         <UtxoTag
                             tooltipMessage={<Translation id="TR_IN_PENDING_TRANSACTION" />}
@@ -250,7 +256,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                     />
                 </Row>
 
-                <Row margin={{ top: spacings.xxs }} minHeight={spacings.xl}>
+                <Row margin={{ top: spacings.xxs }} minHeight={spacings.xl} gap={ROW_GAP}>
                     {transaction ? (
                         <TransactionTimestamp showDate transaction={transaction} />
                     ) : (
