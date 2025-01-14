@@ -26,8 +26,8 @@ const bootloaderDeviceNoIntermediaryT1 = {
     ),
 };
 const firmwareUpdateResponsePayload = {
-    hash: 'abc',
-    challenge: 'def',
+    check: 'valid',
+    versionCheck: true,
 };
 
 export const actions = [

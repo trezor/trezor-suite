@@ -154,7 +154,7 @@ export const firmwareUpdate = createThunk<
                 connectResponse: firmwareUpdateResponse,
             });
         } else {
-            const { check } = firmwareUpdateResponse.payload;
+            const { check, versionCheck } = firmwareUpdateResponse.payload;
             if (check === 'mismatch') {
                 // hash check was performed, and it does not match, so consider firmware counterfeit
                 dispatch(handleFwHashMismatch(device));
@@ -165,6 +165,8 @@ export const firmwareUpdate = createThunk<
                         errorMessage: firmwareUpdateResponse.payload.checkError,
                     }),
                 );
+            } else if (!binary && !versionCheck) {
+                // TODO: log to sentry
             } else {
                 dispatch(handleFwHashValid(device));
             }

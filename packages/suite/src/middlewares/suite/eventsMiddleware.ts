@@ -67,6 +67,10 @@ const eventsMiddleware =
             }
         }
 
+        if (action.type === DEVICE.FIRMWARE_VERSION_CHANGED) {
+            // TODO: show warning? move this to different middleware?
+        }
+
         if (deviceActions.selectDevice.match(action)) {
             // Find and mark all notification associated (new connected!, update required etc)
             if (!action.payload) return action;
