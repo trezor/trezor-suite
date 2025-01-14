@@ -478,4 +478,10 @@ export const selectAssetModalNetworks: NetworkFilterCategory[] = [
         coingeckoId: 'binance-smart-chain',
         coingeckoNativeId: 'binancecoin',
     },
+    {
+        name: 'Base',
+        symbol: 'base',
+        coingeckoId: 'base',
+        coingeckoNativeId: 'ethereum',
+    },
 ];

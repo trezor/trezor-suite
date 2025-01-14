@@ -2,15 +2,12 @@ import { FormattedMessage } from 'react-intl';
 
 import styled from 'styled-components';
 
-import { AssetLogo, Row, Tooltip, useElevation } from '@trezor/components';
+import { Row, Tooltip, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
-import {
-    getNetworkDisplaySymbol,
-    type NetworkSymbol,
-    type Network,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol, type Network } from '@suite-common/wallet-config';
 
 import { CheckableTag } from './CheckableTag';
+import { CoinLogo } from '../CoinLogo/CoinLogo';
 
 const NetworkTabsWrapper = styled.div<{ $elevation: Elevation }>`
     margin-left: -${spacingsPx.md};
@@ -27,10 +24,7 @@ export type NetworkFilterCategory = {
     coingeckoNativeId?: Network['coingeckoNativeId'];
 };
 
-export type SelectAssetSearchCategory = {
-    coingeckoId: string;
-    coingeckoNativeId?: string;
-} | null;
+export type SelectAssetSearchCategory = NetworkFilterCategory | null;
 
 interface NetworkTabsProps {
     tabs: NetworkFilterCategory[];
@@ -95,21 +89,14 @@ export const NetworkTabs = ({
                             }
 
                             if (network.coingeckoId) {
-                                setActiveTab({
-                                    coingeckoId: network.coingeckoId,
-                                    coingeckoNativeId: network.coingeckoNativeId,
-                                });
+                                setActiveTab(network);
                             }
                         }}
                         key={network.coingeckoId}
                     >
                         <Row gap={spacings.xxs}>
                             {network.coingeckoNativeId && (
-                                <AssetLogo
-                                    size={20}
-                                    coingeckoId={network.coingeckoNativeId}
-                                    placeholder={getNetworkDisplaySymbol(network.symbol)}
-                                />
+                                <CoinLogo size={20} symbol={network.symbol} />
                             )}
                             {network.name}
                         </Row>
