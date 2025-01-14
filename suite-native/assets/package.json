@@ -30,7 +30,7 @@
         "@suite-native/tokens": "workspace:*",
         "react": "^18.2.0",
         "react-native": "0.76.1",
-        "react-native-reanimated": "3.16.1",
+        "react-native-reanimated": "^3.16.7",
         "react-redux": "8.0.7"
     }
 }
