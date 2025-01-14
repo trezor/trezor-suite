@@ -1,0 +1,76 @@
+import { Type } from '@sinclair/typebox';
+
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ParamsTable } from '../../../components/ParamsTable';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+export const BlockchainEvmRpcCallParams = Type.Object({
+    from: Type.String({
+        description: 'From address',
+    }),
+    to: Type.String({
+        description: 'To address',
+    }),
+    data: Type.String({
+        description: 'Data field',
+    }),
+    coin: Type.String(),
+    identity: Type.Optional(Type.String()),
+});
+
+<ApiPlayground
+    options={[
+        {
+            title: 'Advanced schema',
+            method: 'blockchainEvmRpcCall',
+            schema: BlockchainEvmRpcCallParams,
+        },
+    ]}
+/>
+
+## Blockchain: EVM RPC call
+
+Make an EVM RPC call.
+
+```javascript
+const result = await TrezorConnect.blockchainEvmRpcCall(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+<ParamsTable schema={BlockchainEvmRpcCallParams} />
+
+### Example
+
+```javascript
+TrezorConnect.blockchainEvmRpcCall({
+    coin: 'eth',
+    from: '0x1234567890abcdef1234567890abcdef12345678',
+    to: '0x00000abc00000abc00000abc00000abc00000abc',
+    data: '0x11111111',
+});
+```
+
+### Result
+
+```javascript
+{
+    success: true,
+    payload: {
+        data: string // result of the call
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```
