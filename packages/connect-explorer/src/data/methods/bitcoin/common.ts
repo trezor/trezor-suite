@@ -1,4 +1,4 @@
-export { coinsSelect as select } from '../../../constants/coins';
+export { coinsSelectBitcoin as select } from '../../../constants/coins';
 
 export const xpubs = [
     'ypub6XKbB5DSkq8Royg8isNtGktj6bmEfGJXDs83Ad5CZ5tpDV8QofwSWQFTWP2Pv24vNdrPhquehL7vRMvSTj2GpKv6UaTQCBKZALm6RJAmxG6',
