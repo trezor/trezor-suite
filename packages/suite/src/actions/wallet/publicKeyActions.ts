@@ -35,6 +35,7 @@ export const showXpub = () => async (dispatch: Dispatch, getState: GetState) => 
         useEmptyPassphrase: device.useEmptyPassphrase,
         showOnTrezor: true,
         derivationType: getDerivationType(account.accountType),
+        coin: account.symbol, // must be here to distinguish between testnet and regtest
     };
 
     let response: Success<unknown> | Unsuccessful;
