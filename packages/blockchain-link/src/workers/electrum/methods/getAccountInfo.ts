@@ -116,6 +116,8 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
         path,
         transfers: history.length,
         balance: confirmed.toString(), // TODO or confirmed + unconfirmed?
+        sent: '0',
+        received: '0',
     });
 
     const addresses = {
@@ -134,6 +136,9 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
         address,
         path,
         transfers,
+        balance: '0',
+        sent: '0',
+        received: '0',
         ...(['tokenBalances', 'txids', 'txs'].includes(details) && transfers
             ? {
                   balance,

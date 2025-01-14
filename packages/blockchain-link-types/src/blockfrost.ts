@@ -133,9 +133,9 @@ export interface Address {
     address: string;
     path: string;
     transfers: number;
-    balance?: string;
-    sent?: string;
-    received?: string;
+    balance: string;
+    sent: string;
+    received: string;
 }
 
 export interface AccountAddresses {
@@ -223,6 +223,7 @@ export type AccountUtxo = {
 export interface UtxosData extends AddressUtxoContent {
     blockInformation: BlockContent;
 }
+
 export interface AssetBalance {
     unit: string; // policy id + encoded name
     quantity: string;
@@ -297,4 +298,5 @@ declare function FSend(
     params: AccountBalanceHistoryParams,
 ): Promise<AccountBalanceHistory[]>;
 declare function FSend(method: 'ESTIMATE_FEE', params: EstimateFeeParams): Promise<Fee>;
+
 export type Send = typeof FSend;

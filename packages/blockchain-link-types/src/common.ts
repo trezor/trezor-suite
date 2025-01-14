@@ -167,9 +167,9 @@ export interface Address {
     path: string;
     transfers: number;
     // decimal: number,
-    balance?: string;
-    sent?: string;
-    received?: string;
+    balance: string;
+    sent: string;
+    received: string;
 }
 
 export interface AccountAddresses {

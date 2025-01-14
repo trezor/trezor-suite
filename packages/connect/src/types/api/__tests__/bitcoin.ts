@@ -380,7 +380,16 @@ export const signTransaction = async (api: TrezorConnect) => {
             addresses: {
                 used: [],
                 unused: [],
-                change: [{ path: 'm/44', address: 'a', transfers: 0 }],
+                change: [
+                    {
+                        path: 'm/44',
+                        address: 'a',
+                        transfers: 0,
+                        sent: '0',
+                        balance: '0',
+                        received: '0',
+                    },
+                ],
             },
         },
         coin: 'btc',

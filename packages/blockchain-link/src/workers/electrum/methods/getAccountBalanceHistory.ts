@@ -4,15 +4,18 @@ import { sumVinVout } from '@trezor/blockchain-link-utils';
 import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
 import type { GetAccountBalanceHistory as Req } from '@trezor/blockchain-link-types/src/messages';
 import type { GetAccountBalanceHistory as Res } from '@trezor/blockchain-link-types/src/responses';
-import type { AccountAddresses, Transaction } from '@trezor/blockchain-link-types/src/common';
+import { AccountAddresses, Address, Transaction } from '@trezor/blockchain-link-types/src/common';
 import type { HistoryTx } from '@trezor/blockchain-link-types/src/electrum';
 
 import { Api, tryGetScripthash, getTransactions, discoverAddress, AddressHistory } from '../utils';
 
-const transformAddress = (addr: AddressHistory) => ({
+const transformAddress = (addr: AddressHistory): Address => ({
     address: addr.address,
     path: addr.path,
     transfers: addr.history.length,
+    balance: '0',
+    sent: '0',
+    received: '0',
 });
 
 const aggregateTransactions = (txs: (Transaction & { blockTime: number })[], groupBy = 3600) => {

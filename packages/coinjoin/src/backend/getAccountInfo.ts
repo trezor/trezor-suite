@@ -9,6 +9,7 @@ import type {
     ScanAccountCheckpoint,
     PrederivedAddress,
     AccountCache,
+    Address,
 } from '../types/backend';
 import { getAccountUtxo } from './getAccountUtxo';
 import { CoinjoinAddressController } from './CoinjoinAddressController';
@@ -39,7 +40,7 @@ const sumBalance = (current: number, tx: Transaction) => current + getDelta(tx);
 
 const enhanceAddress =
     (transactions: Transaction[]) =>
-    ({ address, path }: PrederivedAddress) => {
+    ({ address, path }: PrederivedAddress): Address => {
         const txs = transactions.filter(tx => doesTxContainAddress(address)(tx.details));
         const sent = sumAddressValues(txs, address, tx => tx.details.vin);
         const received = sumAddressValues(txs, address, tx => tx.details.vout);
@@ -48,9 +49,9 @@ const enhanceAddress =
             address,
             path,
             transfers: txs.length,
-            balance: txs.length ? (received - sent).toString() : undefined,
-            sent: txs.length ? sent.toString() : undefined,
-            received: txs.length ? received.toString() : undefined,
+            balance: txs.length ? (received - sent).toString() : '0',
+            sent: txs.length ? sent.toString() : '0',
+            received: txs.length ? received.toString() : '0',
         };
     };
 

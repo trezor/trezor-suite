@@ -6,14 +6,14 @@ on:
     - cron: "0 0 * * *"
   pull_request:
     paths:
-      - "packages/blockchain-link"
-      - "packages/blockchain-link-utils"
-      - "packages/blockchain-link-types"
+      - "packages/blockchain-link/**"
+      - "packages/blockchain-link-utils/**"
+      - "packages/blockchain-link-types/**"
       - "packages/e2e-utils/src/fixtures/blockbook.ts"
       - "packages/e2e-utils/src/mocks/backendServer.ts"
       # dependencies of packages/blockchain-link
-      - "packages/utxo-lib"
-      - "packages/utils"
+      - "packages/utxo-lib/**"
+      - "packages/utils/**"
       - "docker/docker-blockchain-link-test.sh"
       - ".github/workflows/blockchain-link-test.yml"
       - "yarn.lock"
