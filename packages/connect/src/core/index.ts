@@ -651,6 +651,9 @@ const onCallDevice = async (
             createUiMessage(UI.REQUEST_PASSPHRASE_ON_DEVICE, { device: device.toMessageObject() }),
         );
     });
+    device.on(DEVICE.FIRMWARE_VERSION_CHANGED, payload => {
+        sendCoreMessage(createDeviceMessage(DEVICE.FIRMWARE_VERSION_CHANGED, payload));
+    });
     if (useCoreInPopup && env === 'webextension' && origin) {
         device.initStorage(new WebextensionStateStorage(origin));
     }

@@ -1,5 +1,6 @@
 import type { PROTO } from '../constants';
 import type { Device } from '../types/device';
+import type { VersionArray } from '../types/firmware';
 import type { MessageFactoryFn } from '../types/utils';
 
 export const DEVICE_EVENT = 'DEVICE_EVENT';
@@ -9,6 +10,7 @@ export const DEVICE = {
     CONNECT_UNACQUIRED: 'device-connect_unacquired',
     DISCONNECT: 'device-disconnect',
     CHANGED: 'device-changed',
+    FIRMWARE_VERSION_CHANGED: 'device-firmware_version_changed',
 
     // trezor-link events in protobuf format
     BUTTON: 'button',
@@ -27,6 +29,15 @@ export interface DeviceButtonRequest {
     payload: DeviceButtonRequestPayload & { device: Device };
 }
 
+export interface DeviceVersionChanged {
+    type: typeof DEVICE.FIRMWARE_VERSION_CHANGED;
+    payload: {
+        device: Device;
+        oldVersion: VersionArray;
+        newVersion: VersionArray;
+    };
+}
+
 export type DeviceEvent =
     | {
           type:
@@ -36,7 +47,8 @@ export type DeviceEvent =
               | typeof DEVICE.DISCONNECT;
           payload: Device;
       }
-    | DeviceButtonRequest;
+    | DeviceButtonRequest
+    | DeviceVersionChanged;
 
 export type DeviceEventMessage = DeviceEvent & { event: typeof DEVICE_EVENT };
 

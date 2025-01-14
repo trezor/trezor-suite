@@ -275,4 +275,41 @@ describe('DeviceList', () => {
             ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, events[8][1]]), // path 4
         ]);
     });
+
+    it('FIRMWARE_VERSION_CHANGED event', async () => {
+        let readCount = 0;
+        const transport = createTestTransport({
+            read: () => {
+                let features = '3f232300110000000c1002180020006000aa010154'; // 2.0.0
+                if (readCount > 0) {
+                    features = `3f232300110000000c10021800200${1}6000aa010154`; // 2.0.1
+                }
+                readCount++;
+
+                return Promise.resolve({
+                    success: true,
+                    payload: Buffer.from(features, 'hex'),
+                });
+            },
+        });
+
+        list.init({ transports: [transport], pendingTransportEvent: true });
+        await list.pendingConnection();
+
+        const device = list.getOnlyDevice();
+        if (!device) throw new Error('Device is missing');
+
+        const spyEvent = jest.fn();
+        device.on('device-firmware_version_changed', spyEvent);
+
+        // Initialize > GetFeatures
+        await device.acquire();
+        await device.initialize(false);
+        await device.release();
+
+        expect(spyEvent.mock.calls[0][0]).toMatchObject({
+            oldVersion: [2, 0, 0],
+            newVersion: [2, 0, 1],
+        });
+    });
 });

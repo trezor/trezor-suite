@@ -22,6 +22,7 @@ import {
     UiResponsePin,
     UiResponsePassphrase,
     UiResponseWord,
+    DeviceVersionChanged,
 } from '../events';
 import { getAllNetworks } from '../data/coinInfo';
 import { DataManager } from '../data/DataManager';
@@ -106,6 +107,7 @@ export interface DeviceEvents {
     ) => void;
     [DEVICE.PASSPHRASE_ON_DEVICE]: () => void;
     [DEVICE.BUTTON]: (device: Device, payload: DeviceButtonRequestPayload) => void;
+    [DEVICE.FIRMWARE_VERSION_CHANGED]: (payload: DeviceVersionChanged['payload']) => void;
 }
 
 type DeviceLifecycle =
@@ -983,6 +985,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         // check if FW version or capabilities did change
         if (!version || !versionUtils.isEqual(version, newVersion)) {
+            if (version) {
+                this.emit(DEVICE.FIRMWARE_VERSION_CHANGED, {
+                    oldVersion: version,
+                    newVersion,
+                    device: this.toMessageObject(),
+                });
+            }
             this._unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
             this._firmwareStatus = getFirmwareStatus(feat);
             this._firmwareRelease = getRelease(feat);

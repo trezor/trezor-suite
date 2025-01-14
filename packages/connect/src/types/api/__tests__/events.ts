@@ -22,6 +22,13 @@ export const events = (api: TrezorConnect) => {
 
             return;
         }
+        if (event.type === 'device-firmware_version_changed') {
+            const { payload } = event;
+            payload.oldVersion.join('.');
+            payload.newVersion.join('.');
+
+            return;
+        }
         const { payload } = event;
         payload.path.toLowerCase();
         if (payload.type === 'acquired') {
