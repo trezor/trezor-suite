@@ -1022,7 +1022,6 @@
   "TR_WIPE_DEVICE_CHECKBOX_1_TITLE": "Înțeleg că această acțiune șterge toate datele de pe dispozitiv",
   "TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION": "Bunurile dvs. sunt în siguranță și accesibile numai dacă ați creat un Recovery Seed și păstrați o copie privată pe un Recovery Seed Card. Vă rugăm să vă asigurați că aveți la îndemână Recovery Seed sau că știți unde îl păstrați.",
   "TR_WIPE_DEVICE_CHECKBOX_2_TITLE": "Înțeleg că trebuie să am o copie de rezervă a seed-ului de recuperare pentru a păstra accesul la fondurile mele",
-  "TR_WIPE_DEVICE_TEXT": "Resetarea dispozitivului elimină toate datele acestuia. Reinițializați dispozitivul numai dacă aveți o copie de rezervă sigură offline a seed-ului de recuperare, care vă permite să vă restaurați fondurile.",
   "TR_WIPE_OR_UPDATE": "Resetați dispozitivul sau actualizați firmware-ul",
   "TR_WIPE_OR_UPDATE_DESCRIPTION": "Mergeți la Setări dispozitiv",
   "TR_WORDS": "{count} cuvinte",

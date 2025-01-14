@@ -3052,7 +3052,7 @@ export default defineMessages({
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_UNAVAILABLE',
     },
     TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED: {
-        defaultMessage: 'Connect your Trezor to change settings',
+        defaultMessage: 'Connect & unlock your Trezor to change settings',
         id: 'TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER: {
@@ -3060,7 +3060,7 @@ export default defineMessages({
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED: {
-        defaultMessage: 'Connect your Trezor to change settings',
+        defaultMessage: 'Connect & unlock your Trezor to change settings',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED',
     },
     TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION: {
@@ -3696,7 +3696,7 @@ export default defineMessages({
     },
     TOAST_TX_CONFIRMED: {
         id: 'TOAST_TX_CONFIRMED',
-        defaultMessage: 'Transaction {amount} on {account} successfully confirmed',
+        defaultMessage: 'Transaction {amount} on {account} confirmed successfully',
     },
     TOAST_TX_BUTTON: {
         id: 'TOAST_TX_BUTTON',
@@ -4030,12 +4030,12 @@ export default defineMessages({
     TR_FACTORY_RESET_MODAL_DESCRIPTION: {
         id: 'TR_FACTORY_RESET_MODAL_DESCRIPTION',
         defaultMessage:
-            'Resetting the device removes all its data. Reset your device only if you have your wallet backup, which can restore access to your funds.',
+            'Resetting your device will erase all its data. Make sure you have your wallet backup before resetting, so you can restore access to your funds.',
     },
     TR_WIPE_DEVICE_MODAL_DESCRIPTION: {
         id: 'TR_WIPE_DEVICE_MODAL_DESCRIPTION',
         defaultMessage:
-            'Wiping the device removes all its data. Wipe your device only if you have your wallet backup, which can restore access to your funds.',
+            'Wiping your device will erase all its data. Make sure you have your wallet backup before wiping, so you can restore access to your funds.',
     },
     TR_WIPE_DEVICE_CHECKBOX_1_TITLE: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_1_TITLE',
@@ -4111,7 +4111,7 @@ export default defineMessages({
     },
     TR_ENTER_ALL_WORDS_IN_CORRECT: {
         id: 'TR_ENTER_ALL_WORDS_IN_CORRECT',
-        defaultMessage: 'Enter all words in the correct order',
+        defaultMessage: 'Enter all words in the correct order.',
     },
     TR_SEED_WORDS_ENTER_COMPUTER: {
         id: 'TR_SEED_WORDS_ENTER_COMPUTER',
@@ -4144,7 +4144,7 @@ export default defineMessages({
     TR_SEED_CHECK_SUCCESS_DESC: {
         id: 'TR_SEED_CHECK_SUCCESS_DESC',
         defaultMessage:
-            'Your wallet backup is valid and has been verified successfully. Look after it and store it in a safe, secure location.',
+            'Your wallet backup is valid and has been verified successfully. Safeguard it carefully and store it in a secure, protected location. Your future access depends on it.',
     },
     TR_SEED_CHECK_FAIL_TITLE: {
         id: 'TR_SEED_CHECK_FAIL_TITLE',
@@ -4163,7 +4163,8 @@ export default defineMessages({
     },
     TR_DRY_RUN_CHECK_ITEM_TITLE: {
         id: 'TR_DRY_RUN_CHECK_ITEM_TITLE',
-        defaultMessage: 'I understand this is a simulated check and it won’t affect my device',
+        defaultMessage:
+            'I understand this is a simulated check. It won’t affect my device or funds.',
     },
     TR_DRY_RUN_CHECK_ITEM_DESCRIPTION: {
         id: 'TR_DRY_RUN_CHECK_ITEM_DESCRIPTION',
@@ -6957,7 +6958,7 @@ export default defineMessages({
     TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_2: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_2',
         defaultMessage:
-            'Don’t turn off this feature unless your device has successfully passed the check before. Using an unverified device may lead to the loss of your funds.',
+            'Don’t turn off this feature unless your device has successfully passed the device check before. Using an unverified device may lead to the loss of your funds.',
     },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_3: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_3',
@@ -9155,7 +9156,8 @@ export default defineMessages({
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_WARNING: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_WARNING',
-        defaultMessage: 'No one can recover it, not even Trezor Support.',
+        defaultMessage:
+            'No one can recover your passphrase or wallet backup, not even Trezor Support.',
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION',
@@ -9194,7 +9196,8 @@ export default defineMessages({
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM3: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM3',
-        defaultMessage: 'No one can recover it, not even Trezor Support.',
+        defaultMessage:
+            'No one can recover your passphrase or wallet backup, not even Trezor Support.',
     },
     TR_UNRECOGNIZED: {
         id: 'TR_UNRECOGNIZED',
