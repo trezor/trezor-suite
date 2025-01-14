@@ -78,7 +78,7 @@ ENV variables for each Expo profile are defined in `eas.json` config.
 
 You can override ENV variables locally using `.env.development.local` (or `.env.test.local` for tests) files. If you use `.env` file, it has the lowest priority. See [what other .env\* files you can use](https://github.com/bkeepers/dotenv/blob/c6e583a/README.md#what-other-env-files-can-i-use).
 
-> You can use `EXPO_PUBLIC_IS_ANALYTICS_LOGGER_ENABLED=true` in `.env.development.local` to debug analytics locally.
+> You can use `EXPO_PUBLIC_IS_ANALYTICS_LOGGER_ENABLED=true` in `.env.development.local` to debug analytics locally and `EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED=true` to debug Sentry locally.
 
 ## Native changes - bumping runtimeVersion
 

@@ -136,24 +136,18 @@ const getPlugins = (): ExpoPlugins => {
             },
         ],
         ['react-native-edge-to-edge'],
+        [
+            '@sentry/react-native/expo',
+            {
+                url: 'https://sentry.io/',
+                project: 'suite-native',
+                organization: 'satoshilabs',
+            },
+        ],
     ];
 
     return [
         ...plugins,
-        // EXPLAINER: plugins.push("@sentry...") does not work for some reason during `expo prebuild` and
-        // this plugin is never included in the final array. For this reason the spread operator is used instead.
-        ...(buildType === 'debug'
-            ? []
-            : [
-                  [
-                      '@sentry/react-native/expo',
-                      {
-                          url: 'https://sentry.io/',
-                          project: 'suite-native',
-                          organization: 'satoshilabs',
-                      },
-                  ],
-              ]),
         // These should come last
         './plugins/withRemoveXcodeLocalEnv.js',
         './plugins/withRemoveiOSNotificationEntitlement.js',

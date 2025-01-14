@@ -13,7 +13,6 @@ import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { KillswitchMessageScreen, MessageSystemBannerRenderer } from '@suite-native/message-system';
 import { configureNetInfo, OfflineBanner } from '@suite-native/connection-status';
 import { IntlProvider } from '@suite-native/intl';
-import { isDebugEnv } from '@suite-native/config';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
@@ -94,4 +93,4 @@ const PureApp = () => (
     </GestureHandlerRootView>
 );
 
-export const App = isDebugEnv() ? PureApp : Sentry.wrap(PureApp);
+export const App = Sentry.wrap(PureApp);
