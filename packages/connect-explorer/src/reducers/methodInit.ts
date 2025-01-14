@@ -51,6 +51,7 @@ const schemaToFields = (method: string, schema: TSchema, name = ''): Field<any>[
             {
                 name: '',
                 type: 'array',
+                optional: schema[OptionalKind] === 'Optional',
                 batch: [
                     {
                         type: '',
