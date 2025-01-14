@@ -1,4 +1,8 @@
-import { useDetectDeviceError, useHandleDeviceConnection } from '@suite-native/device';
+import {
+    useDetectDeviceError,
+    useHandleDeviceConnection,
+    useReportDeviceCompromised,
+} from '@suite-native/device';
 import { useConnectPopupNavigation } from '@suite-native/module-connect-popup';
 
 import { useCoinEnablingInitialCheck } from './useCoinEnablingInitialCheck';
@@ -14,4 +18,5 @@ export const useGlobalHooks = () => {
 
     useHandleDeviceConnection();
     useDetectDeviceError();
+    useReportDeviceCompromised();
 };

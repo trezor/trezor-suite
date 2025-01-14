@@ -10289,6 +10289,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     lottie-react-native: "npm:^7.1.0"
     react: "npm:18.2.0"
