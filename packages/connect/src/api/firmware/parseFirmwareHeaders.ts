@@ -1,3 +1,4 @@
+import type { VersionArray } from '../../types/firmware';
 /**
  * parse firmware headers
  * based on
@@ -42,7 +43,7 @@ export const parseFirmwareHeaders = (buff: Buffer) => {
 
     const version_patch = restbuff.readInt8(14);
 
-    const version: [number, number, number] = [version_major, version_minor, version_patch];
+    const version: VersionArray = [version_major, version_minor, version_patch];
 
     return {
         version,

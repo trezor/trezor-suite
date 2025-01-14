@@ -1,7 +1,7 @@
 import { randomBytes } from 'crypto';
 
 import { createTimeoutPromise } from '@trezor/utils';
-import { isNewer } from '@trezor/utils/src/versionUtils';
+import { isNewer, isEqual } from '@trezor/utils/src/versionUtils';
 
 import { DeviceList } from '../device/DeviceList';
 import { UI, DEVICE, createUiMessage, createDeviceMessage, CoreEventMessage } from '../events';
@@ -15,7 +15,8 @@ import {
     stripFwHeaders,
 } from '../api/firmware';
 import { getReleases } from '../data/firmwareInfo';
-import { CommonParams, DeviceUniquePath, IntermediaryVersion } from '../types';
+import { CommonParams, DeviceUniquePath } from '../types';
+import { FirmwareUpdateResponse } from '../types/api/firmwareUpdate';
 import { FIRMWARE, PROTO, ERRORS } from '../constants';
 import type { Log } from '../utils/debug';
 import type { Device } from '../device/Device';
@@ -183,18 +184,28 @@ const getBinaryHelper = (
     log: Log,
     postMessage: PostMessage,
     btcOnly: boolean,
-    intermediaryVersion?: IntermediaryVersion,
 ) => {
     if (!device.firmwareRelease) {
         throw ERRORS.TypedError('Runtime', 'device.firmwareRelease is not set');
     }
+    if (params.binary) {
+        return {
+            binary: params.binary,
+            binaryVersion: parseFirmwareHeaders(Buffer.from(params.binary)).version,
+            releaseVersion: undefined,
+        };
+    }
 
+    const {
+        intermediaryVersion,
+        release: { version },
+    } = device.firmwareRelease;
     log.debug(
         'onCallFirmwareUpdate loading binary',
         'intermediaryVersion',
         intermediaryVersion,
         'version',
-        device.firmwareRelease.release.version,
+        version,
         'btcOnly',
         btcOnly,
     );
@@ -212,7 +223,7 @@ const getBinaryHelper = (
         features: device.features,
         releases: getReleases(device.features?.internal_model),
         baseUrl: params.baseUrl || 'https://data.trezor.io',
-        version: device.firmwareRelease.release.version,
+        version,
         btcOnly,
         intermediaryVersion,
     })
@@ -234,7 +245,11 @@ const getBinaryHelper = (
                 }),
             );
 
-            return res;
+            return {
+                binary: res,
+                binaryVersion: parseFirmwareHeaders(Buffer.from(res)).version,
+                releaseVersion: version,
+            };
         });
 };
 
@@ -299,7 +314,7 @@ export const onCallFirmwareUpdate = async ({
 }: {
     params: Params;
     context: Context;
-}) => {
+}): Promise<FirmwareUpdateResponse> => {
     log.debug('onCallFirmwareUpdate with params: ', params);
 
     const device = await initDevice(params?.device?.path);
@@ -326,16 +341,8 @@ export const onCallFirmwareUpdate = async ({
         btcOnly,
     });
 
-    const binary =
-        params.binary ||
-        (await getBinaryHelper(
-            device,
-            params,
-            log,
-            postMessage,
-            btcOnly,
-            device.firmwareRelease.intermediaryVersion,
-        ));
+    let binaryInfo = await getBinaryHelper(device, params, log, postMessage, btcOnly);
+    const { binary } = binaryInfo;
 
     const deviceInitiallyConnectedInBootloader = device.features.bootloader_mode;
     const deviceInitiallyConnectedWithoutFirmware = device.features.firmware_present === false;
@@ -432,6 +439,7 @@ export const onCallFirmwareUpdate = async ({
     }
 
     const intermediary = !params.binary && device.firmwareRelease.intermediaryVersion;
+    const bootloaderVersion = reconnectedDevice.getVersion();
 
     // note: fw major_version 1 requires calling initialize before calling FirmwareErase. Without it device would not respond
     await reconnectedDevice.initialize(false);
@@ -454,9 +462,8 @@ export const onCallFirmwareUpdate = async ({
             { deviceList, device: reconnectedDevice, log, postMessage, abortSignal },
         );
 
-        stripped = stripFwHeaders(
-            await getBinaryHelper(reconnectedDevice, params, log, postMessage, btcOnly),
-        );
+        binaryInfo = await getBinaryHelper(reconnectedDevice, params, log, postMessage, btcOnly);
+        stripped = stripFwHeaders(binaryInfo.binary);
         // note: fw major_version 1 requires calling initialize before calling FirmwareErase. Without it device would not respond
         await reconnectedDevice.initialize(false);
 
@@ -497,6 +504,26 @@ export const onCallFirmwareUpdate = async ({
     const checkSupported =
         reconnectedDevice.atLeast(FIRMWARE.FW_HASH_SUPPORTED_VERSIONS) && !params.binary;
 
+    let check: FirmwareUpdateResponse['check'];
+    const installedVersion = reconnectedDevice.getVersion();
+    if (!bootloaderVersion || !installedVersion) {
+        throw ERRORS.TypedError('Runtime', 'reconnectedDevice.installedVersion is not set');
+    }
+
+    const { binaryVersion, releaseVersion } = binaryInfo;
+    // check if installed version matches binary version
+    const assertBinaryVersion = isEqual(installedVersion, binaryVersion);
+    // check if installed version matches requested release version
+    const assertReleaseVersion = releaseVersion ? isEqual(installedVersion, releaseVersion) : true; // binary
+
+    const versionDetails = {
+        versionCheck: assertBinaryVersion && assertReleaseVersion,
+        bootloaderVersion,
+        installedVersion,
+        binaryVersion,
+        releaseVersion,
+    };
+
     if (checkSupported) {
         try {
             log.debug(
@@ -509,18 +536,19 @@ export const onCallFirmwareUpdate = async ({
             await reconnectedDevice.release();
             if (isValid) {
                 log.debug('onCallFirmwareUpdate', 'installed fw hash and calculated hash match');
-
-                return { check: 'valid' as const };
+                check = 'valid';
             } else {
-                return { check: 'mismatch' as const };
+                check = 'mismatch';
             }
         } catch (err) {
             // device failed to respond to the hash check, consider the firmware counterfeit
-            return { check: 'other-error' as const, checkError: err.message };
+            return { check: 'other-error', checkError: err.message, ...versionDetails };
         }
     } else {
         await reconnectedDevice.release();
 
-        return { check: 'omitted' };
+        check = 'omitted';
     }
+
+    return { check, ...versionDetails };
 };

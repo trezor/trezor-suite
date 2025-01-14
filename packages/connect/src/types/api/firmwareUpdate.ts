@@ -1,6 +1,7 @@
 import { Static, Type } from '@trezor/schema-utils';
 
 import type { Params, Response } from '../params';
+import type { VersionArray } from '../firmware';
 
 export type FirmwareUpdate = Static<typeof FirmwareUpdate>;
 export const FirmwareUpdate = Type.Union([
@@ -15,17 +16,27 @@ export const FirmwareUpdate = Type.Union([
     }),
 ]);
 
-export type FirmwareUpdateResponse =
-    | {
-          check:
-              | 'mismatch' //  firmware is not legitimate
-              | 'valid' // ok
-              | 'omitted'; // custom fw binary, or maybe older fw
-      }
-    | {
-          check: 'other-error';
-          checkError: string; // unable to carry out the check due to a non-related error such as disconnected device
-      };
+type FirmwareUpdateDetails = {
+    versionCheck: boolean; // installedVersion == binaryVersion == releaseVersion
+    bootloaderVersion: VersionArray; // bootloader version
+    installedVersion: VersionArray; // version installed by this process
+    binaryVersion: VersionArray; // version read from the binary
+    releaseVersion?: VersionArray; // version offered automatically by config. undefined if params.binary is used
+};
+
+export type FirmwareUpdateResponse = FirmwareUpdateDetails &
+    (
+        | {
+              check:
+                  | 'mismatch' //  firmware is not legitimate
+                  | 'valid' // ok
+                  | 'omitted'; // custom fw binary, or maybe older fw
+          }
+        | {
+              check: 'other-error';
+              checkError: string; // unable to carry out the check due to a non-related error such as disconnected device
+          }
+    );
 
 export declare function firmwareUpdate(
     params: Params<FirmwareUpdate>,
