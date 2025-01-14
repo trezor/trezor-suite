@@ -44,6 +44,8 @@ export const Inputs = () => {
         restakedReward = '0',
     } = getStakingDataForNetwork(account) ?? {};
 
+    const isRewardsDisabled = restakedReward === '0';
+
     const { symbol } = account;
     const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
 
@@ -172,7 +174,9 @@ export const Inputs = () => {
                     {
                         id: 'TR_FRACTION_BUTTONS_REWARDS',
                         children: <Translation id="TR_FRACTION_BUTTONS_REWARDS" />,
-                        tooltip: (
+                        tooltip: isRewardsDisabled ? (
+                            <Translation id="TR_STAKE_NO_REWARDS" />
+                        ) : (
                             <Column alignItems="flex-end">
                                 <FormattedCryptoAmount value={restakedReward} symbol={symbol} />
                                 <Text variant="primary">
@@ -180,7 +184,9 @@ export const Inputs = () => {
                                 </Text>
                             </Column>
                         ),
+                        isSubtle: true,
                         variant: 'primary',
+                        isDisabled: isRewardsDisabled,
                         onClick: () => onCryptoAmountChange(restakedReward),
                     },
                 ]}

@@ -9,6 +9,7 @@ export type FractionButtonProps = {
     children: React.ReactNode;
     tooltip?: React.ReactNode;
     isDisabled?: boolean;
+    isSubtle?: boolean;
     variant?: ButtonVariant;
     onClick: () => void;
 };
@@ -18,20 +19,20 @@ export const FractionButton = ({
     children,
     tooltip,
     isDisabled,
+    isSubtle,
     variant,
     onClick,
-}: FractionButtonProps) => {
-    return (
-        <Tooltip key={id} content={tooltip} cursor="pointer">
-            <Button
-                variant={variant ?? DEFAULT_VARIANT}
-                type="button"
-                size="tiny"
-                isDisabled={isDisabled}
-                onClick={onClick}
-            >
-                {children}
-            </Button>
-        </Tooltip>
-    );
-};
+}: FractionButtonProps) => (
+    <Tooltip key={id} content={tooltip} cursor="pointer">
+        <Button
+            variant={variant ?? DEFAULT_VARIANT}
+            type="button"
+            size="tiny"
+            isDisabled={isDisabled}
+            isSubtle={isSubtle}
+            onClick={onClick}
+        >
+            {children}
+        </Button>
+    </Tooltip>
+);
