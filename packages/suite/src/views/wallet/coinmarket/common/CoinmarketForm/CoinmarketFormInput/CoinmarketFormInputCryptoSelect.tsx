@@ -7,19 +7,12 @@ import { Badge, Row, Select, Text } from '@trezor/components';
 import {
     SearchAsset,
     SelectAssetModal,
-    NetworkFilterCategory,
     NetworkTabs,
-    SelectAssetSearchCategory,
     AssetProps,
     ITEM_HEIGHT,
     AssetOptionBaseProps,
 } from '@trezor/product-components';
-import {
-    type NetworkSymbol,
-    getNetworkByCoingeckoId,
-    getNetwork,
-    networkSymbolCollection,
-} from '@suite-common/wallet-config';
+import { getNetworkByCoingeckoId, Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { spacings } from '@trezor/theme';
 
 import {
@@ -101,7 +94,7 @@ export const CoinmarketFormInputCryptoSelect = <
     const { buildCryptoOptions, cryptoIdToPlatformName } = useCoinmarketInfo();
     const { control } = methods;
     const [isModalActive, setIsModalActive] = useState(false);
-    const [activeTab, setActiveTab] = useState<SelectAssetSearchCategory>(null); // coingeckoNativeId as fallback for ex. polygon
+    const [activeTab, setActiveTab] = useState<Network | null>(null);
     const [search, setSearch] = useState('');
     const { translationString } = useTranslation();
 
@@ -172,23 +165,6 @@ export const CoinmarketFormInputCryptoSelect = <
         setIsModalActive(false);
     };
 
-    const getNetworks = () => {
-        const networksToSelect: NetworkSymbol[] = ['eth', 'sol', 'pol', 'bsc', 'base', 'op', 'arb'];
-        const networkKeys = networkSymbolCollection.filter(item => networksToSelect.includes(item));
-        const networksSelected: NetworkFilterCategory[] = networkKeys.map(networkKey => {
-            const network = getNetwork(networkKey);
-
-            return {
-                name: network.name,
-                symbol: network.symbol,
-                coingeckoId: network.coingeckoId,
-                coingeckoNativeId: network.coingeckoNativeId,
-            };
-        });
-
-        return networksSelected;
-    };
-
     const data = useMemo(() => getData(modalOptions), [modalOptions]);
 
     const filteredData = data.filter(item => {
@@ -213,7 +189,7 @@ export const CoinmarketFormInputCryptoSelect = <
         );
     });
 
-    const tabs = getNetworks();
+    const quickTabs: NetworkSymbol[] = ['eth', 'sol', 'pol', 'bsc', 'base', 'op', 'arb'];
 
     return (
         <>
@@ -236,10 +212,7 @@ export const CoinmarketFormInputCryptoSelect = <
                             <Translation
                                 id="TR_TOKEN_NOT_FOUND_ON_NETWORK"
                                 values={{
-                                    networkName: tabs.find(
-                                        (category: NetworkFilterCategory) =>
-                                            category.coingeckoId === activeTab?.coingeckoId,
-                                    )?.name,
+                                    networkName: activeTab?.name ?? '',
                                 }}
                             />
                         ),
@@ -248,7 +221,7 @@ export const CoinmarketFormInputCryptoSelect = <
                     filterTabs={
                         <NetworkTabs
                             data-testid="@coinmarket/form/select-crypto/network-tab"
-                            tabs={tabs}
+                            tabs={quickTabs}
                             networkCount={getNetworkCount(modalOptions)}
                             activeTab={activeTab}
                             setActiveTab={setActiveTab}

@@ -17,7 +17,6 @@ export * from './components/TokenIconSet/TokenIconSet';
 export { TokenTabs, type TokenTab } from './components/SelectAssetModal/TokenTabs';
 export {
     NetworkTabs,
-    type NetworkFilterCategory,
     type SelectAssetSearchCategory,
 } from './components/SelectAssetModal/NetworkTabs';
 export { NumberInput } from './components/NumberInput/NumberInput';

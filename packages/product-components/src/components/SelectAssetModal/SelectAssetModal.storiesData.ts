@@ -1,4 +1,3 @@
-import { NetworkFilterCategory } from './NetworkTabs';
 import { AssetOptionBaseProps } from './SelectAssetModal';
 
 interface SelectAssetOptionCurrencyProps extends AssetOptionBaseProps {
@@ -450,38 +449,5 @@ export const selectAssetModalOptions: (
         networkName: 'Base',
         ticker: 'BRETT',
         symbol: 'base',
-    },
-];
-
-export const selectAssetModalNetworks: NetworkFilterCategory[] = [
-    {
-        name: 'Ethereum',
-        symbol: 'eth',
-        coingeckoId: 'ethereum',
-        coingeckoNativeId: 'ethereum',
-    },
-    {
-        name: 'Polygon PoS',
-        symbol: 'pol',
-        coingeckoId: 'polygon-pos',
-        coingeckoNativeId: 'polygon-ecosystem-token',
-    },
-    {
-        name: 'Solana',
-        symbol: 'sol',
-        coingeckoId: 'solana',
-        coingeckoNativeId: 'solana',
-    },
-    {
-        name: 'BNB Smart Chain',
-        symbol: 'bsc',
-        coingeckoId: 'binance-smart-chain',
-        coingeckoNativeId: 'binancecoin',
-    },
-    {
-        name: 'Base',
-        symbol: 'base',
-        coingeckoId: 'base',
-        coingeckoNativeId: 'ethereum',
     },
 ];

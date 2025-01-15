@@ -4,7 +4,12 @@ import styled from 'styled-components';
 
 import { Row, Tooltip, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
-import { type NetworkSymbol, type Network } from '@suite-common/wallet-config';
+import {
+    getNetwork,
+    NetworkSymbol,
+    networkSymbolCollection,
+    type Network,
+} from '@suite-common/wallet-config';
 
 import { CheckableTag } from './CheckableTag';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
@@ -17,17 +22,10 @@ const NetworkTabsWrapper = styled.div<{ $elevation: Elevation }>`
         ${({ theme, $elevation }) => mapElevationToBorder({ $elevation, theme })};
 `;
 
-export type NetworkFilterCategory = {
-    name: Network['name'];
-    symbol: NetworkSymbol;
-    coingeckoId: Network['coingeckoId'];
-    coingeckoNativeId?: Network['coingeckoNativeId'];
-};
-
-export type SelectAssetSearchCategory = NetworkFilterCategory | null;
+export type SelectAssetSearchCategory = Network | null;
 
 interface NetworkTabsProps {
-    tabs: NetworkFilterCategory[];
+    tabs: NetworkSymbol[];
     activeTab: SelectAssetSearchCategory;
     setActiveTab: (value: SelectAssetSearchCategory) => void;
     networkCount: number;
@@ -42,6 +40,9 @@ export const NetworkTabs = ({
     'data-testid': dataTestId,
 }: NetworkTabsProps) => {
     const { elevation } = useElevation();
+    // sort according to networks
+    const networkKeys = networkSymbolCollection.filter(item => tabs.includes(item));
+    const networkTabs = networkKeys.map(key => getNetwork(key));
 
     // TODO: FormattedMessage - resolve messages sharing https://github.com/trezor/trezor-suite/issues/5325}
     return (
@@ -71,7 +72,7 @@ export const NetworkTabs = ({
                         />
                     </Tooltip>
                 </CheckableTag>
-                {tabs.map(network => (
+                {networkTabs.map(network => (
                     <CheckableTag
                         data-testid={`${dataTestId}/${network.symbol}`}
                         $elevation={elevation}
