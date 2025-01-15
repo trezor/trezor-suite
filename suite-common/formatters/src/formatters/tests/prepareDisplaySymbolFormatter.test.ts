@@ -1,13 +1,13 @@
 import { PROTO } from '@trezor/connect';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { prepareNetworkSymbolFormatter } from '../prepareNetworkSymbolFormatter';
+import { prepareDisplaySymbolFormatter } from '../prepareDisplaySymbolFormatter';
 
-describe('prepareNetworkSymbolFormatter', () => {
-    let networkSymbolFormatter: ReturnType<typeof prepareNetworkSymbolFormatter>;
+describe('prepareDisplaySymbolFormatter', () => {
+    let displaySymbolFormatter: ReturnType<typeof prepareDisplaySymbolFormatter>;
 
     beforeEach(() => {
-        networkSymbolFormatter = prepareNetworkSymbolFormatter({
+        displaySymbolFormatter = prepareDisplaySymbolFormatter({
             coins: [],
             locale: 'en',
             bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
@@ -24,7 +24,7 @@ describe('prepareNetworkSymbolFormatter', () => {
     ] as [NetworkSymbol, string][])(
         'should display symbolName (#16190) case %#',
         (symbol: NetworkSymbol, expectedValue: string) => {
-            expect(networkSymbolFormatter.format(symbol, {})).toBe(expectedValue);
+            expect(displaySymbolFormatter.format(symbol, {})).toBe(expectedValue);
         },
     );
 });

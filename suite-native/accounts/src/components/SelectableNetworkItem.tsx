@@ -28,7 +28,7 @@ const tokensBadgeStyle = prepareNativeStyle(utils => ({
 
 export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: SelectableAssetItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const { NetworkSymbolFormatter } = useFormatters();
+    const { DisplaySymbolFormatter } = useFormatters();
 
     const handlePress = () => {
         if (!onPress) return;
@@ -52,7 +52,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
                         <Text variant="body">{networkName}</Text>
                         <HStack alignItems="center" justifyContent="center">
                             <Text variant="hint" color="textSubdued">
-                                <NetworkSymbolFormatter
+                                <DisplaySymbolFormatter
                                     value={symbol}
                                     areAmountUnitsEnabled={false}
                                 />

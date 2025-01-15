@@ -15,7 +15,7 @@ import { PROTO } from '@trezor/connect';
 
 import { makeFormatter } from '../makeFormatter';
 import { FormatterConfig } from '../types';
-import { prepareNetworkSymbolFormatter } from './prepareNetworkSymbolFormatter';
+import { prepareDisplaySymbolFormatter } from './prepareDisplaySymbolFormatter';
 
 export type CryptoAmountFormatterInputValue = string;
 
@@ -70,9 +70,9 @@ const convertToUnit = (
 };
 
 const appendSymbol = (value: string, config: FormatterConfig, symbol: NetworkSymbol) => {
-    const NetworkSymbolFormatter = prepareNetworkSymbolFormatter(config);
+    const DisplaySymbolFormatter = prepareDisplaySymbolFormatter(config);
 
-    return `${value} ${NetworkSymbolFormatter.format(symbol)}`;
+    return `${value} ${DisplaySymbolFormatter.format(symbol)}`;
 };
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>

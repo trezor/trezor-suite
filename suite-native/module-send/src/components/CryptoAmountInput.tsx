@@ -53,7 +53,7 @@ export const CryptoAmountInput = ({
     const { applyStyle } = useNativeStyles();
     const { setValue, trigger } = useFormContext<SendOutputsFormValues>();
     const { cryptoAmountTransformer } = useSendAmountTransformers(symbol);
-    const { NetworkSymbolFormatter: formatter } = useFormatters();
+    const { DisplaySymbolFormatter: formatter } = useFormatters();
     const debounce = useDebounce();
 
     const tokenSymbol = useSelector((state: TokensRootState) =>

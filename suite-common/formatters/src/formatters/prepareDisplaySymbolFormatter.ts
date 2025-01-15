@@ -4,10 +4,10 @@ import { getNetwork, getNetworkDisplaySymbol, NetworkSymbol } from '@suite-commo
 import { FormatterConfig } from '../types';
 import { makeFormatter } from '../makeFormatter';
 
-export type NetworkSymbolFormatterDataContext = { areAmountUnitsEnabled?: boolean };
+export type DisplaySymbolFormatterDataContext = { areAmountUnitsEnabled?: boolean };
 
-export const prepareNetworkSymbolFormatter = (config: FormatterConfig) =>
-    makeFormatter<NetworkSymbol, string, NetworkSymbolFormatterDataContext>(
+export const prepareDisplaySymbolFormatter = (config: FormatterConfig) =>
+    makeFormatter<NetworkSymbol, string, DisplaySymbolFormatterDataContext>(
         (symbol, dataContext) => {
             const { bitcoinAmountUnit } = config;
             const { areAmountUnitsEnabled = true } = dataContext;
@@ -26,5 +26,5 @@ export const prepareNetworkSymbolFormatter = (config: FormatterConfig) =>
 
             return formattedSymbol;
         },
-        'NetworkSymbolFormatter',
+        'DisplaySymbolFormatter',
     );

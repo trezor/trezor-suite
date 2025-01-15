@@ -21,9 +21,9 @@ import {
 } from './formatters/prepareFiatAmountFormatter';
 import { MonthNameFormatter } from './formatters/prepareMonthNameFormatter';
 import {
-    NetworkSymbolFormatterDataContext,
-    prepareNetworkSymbolFormatter,
-} from './formatters/prepareNetworkSymbolFormatter';
+    DisplaySymbolFormatterDataContext,
+    prepareDisplaySymbolFormatter,
+} from './formatters/prepareDisplaySymbolFormatter';
 import { prepareTimeFormatter } from './formatters/prepareTimeFormatter';
 import { Formatter } from './makeFormatter';
 import { FormatterConfig, FormatterProviderConfig } from './types';
@@ -39,7 +39,7 @@ export type Formatters = {
         string,
         CryptoAmountFormatterDataContext
     >;
-    NetworkSymbolFormatter: Formatter<NetworkSymbol, string, NetworkSymbolFormatterDataContext>;
+    DisplaySymbolFormatter: Formatter<NetworkSymbol, string, DisplaySymbolFormatterDataContext>;
     NetworkNameFormatter: Formatter<NetworkSymbol, string>;
     SignValueFormatter: Formatter<SignValue | undefined, string>;
     FiatAmountFormatter: Formatter<
@@ -57,7 +57,7 @@ export const FormatterProviderContext = createContext<Formatters>({} as Formatte
 
 export const getFormatters = (config: FormatterConfig): Formatters => {
     const CryptoAmountFormatter = prepareCryptoAmountFormatter(config);
-    const NetworkSymbolFormatter = prepareNetworkSymbolFormatter(config);
+    const DisplaySymbolFormatter = prepareDisplaySymbolFormatter(config);
     const FiatAmountFormatter = prepareFiatAmountFormatter(config);
     const DateFormatter = prepareDateFormatter(config);
     const TimeFormatter = prepareTimeFormatter(config);
@@ -65,7 +65,7 @@ export const getFormatters = (config: FormatterConfig): Formatters => {
 
     return {
         CryptoAmountFormatter,
-        NetworkSymbolFormatter,
+        DisplaySymbolFormatter,
         NetworkNameFormatter,
         FiatAmountFormatter,
         DateFormatter,
