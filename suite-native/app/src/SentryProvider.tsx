@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/react-native';
 import { captureConsoleIntegration } from '@sentry/core';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
-import { getEnv, isDebugEnv, isDevelopEnv } from '@suite-native/config';
+import { getEnv, isDebugEnv, isDevelopEnv, isDetoxTestBuild } from '@suite-native/config';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 
 const initSentry = () => {
@@ -14,7 +14,7 @@ const initSentry = () => {
         // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
         // We recommend adjusting this value in production.
         tracesSampleRate: 0.5,
-        environment: getEnv(),
+        environment: isDetoxTestBuild() ? 'test' : getEnv(),
         integrations: [
             captureConsoleIntegration({
                 levels: ['error'],

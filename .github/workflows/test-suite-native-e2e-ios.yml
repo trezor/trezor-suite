@@ -15,6 +15,7 @@ concurrency:
 env:
   NODE_ENV: "test"
   DETOX_BINARY_PATH: ../../node_modules/.bin/detox
+  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
 jobs:
   prepare_ios_test_app:
