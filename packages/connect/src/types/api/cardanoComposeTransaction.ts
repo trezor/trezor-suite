@@ -3,7 +3,7 @@ import type { types, trezorUtils } from '@fivebinaries/coin-selection';
 import { Static, Type } from '@trezor/schema-utils';
 
 import { PROTO } from '../../exports';
-import type { AccountAddresses, AccountUtxo } from '../../exports';
+import type { AccountUtxo } from '../../exports';
 import { DerivationPath, type Params, type Response } from '../params';
 import { CardanoCertificatePointer, CardanoCertificate } from './cardano';
 import type { CardanoInput, CardanoOutput } from './cardano';
@@ -60,7 +60,6 @@ export const AccountAddress = Type.Object(
 export type CardanoComposeTransactionParams = {
     account: {
         descriptor: string;
-        addresses: AccountAddresses;
         utxo: AccountUtxo[];
     };
     feeLevels?: { feePerUnit?: string }[];
@@ -79,11 +78,6 @@ export type CardanoComposeTransactionParamsSchema = Static<
 export const CardanoComposeTransactionParamsSchema = Type.Object({
     account: Type.Object({
         descriptor: Type.String(),
-        addresses: Type.Object({
-            change: Type.Array(AccountAddress),
-            used: Type.Array(AccountAddress),
-            unused: Type.Array(AccountAddress),
-        }),
         utxo: Type.Array(
             Type.Object(
                 {

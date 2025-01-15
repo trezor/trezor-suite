@@ -47,7 +47,6 @@ const changeAddress = account.addresses.change.find(a => a.transfers === 0);
 TrezorConnect.cardanoComposeTransaction({
     account: {
         descriptor: account.descriptor,
-        addresses: account.addresses,
         utxo: account.utxo,
     },
     changeAddress,

@@ -151,7 +151,6 @@ export const useCardanoStaking = (): CardanoStaking => {
 
             const response = await trezorConnect.cardanoComposeTransaction({
                 account: {
-                    addresses: account.addresses,
                     descriptor: account.descriptor,
                     utxo: account.utxo,
                 },

@@ -62,7 +62,6 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
             outputs,
             account: {
                 descriptor: account.descriptor,
-                addresses: account.addresses,
                 utxo: account.utxo,
             },
             changeAddress,
