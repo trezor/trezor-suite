@@ -146,7 +146,7 @@ export const networks = {
             },
         },
         coingeckoId: 'arbitrum-one',
-        coingeckoNativeId: 'ethereum',
+        coingeckoNativeId: 'arbitrum-one--0x0000000000000000000000000000000000000000',
     },
     base: {
         symbol: 'base',
@@ -170,7 +170,7 @@ export const networks = {
             },
         },
         coingeckoId: 'base',
-        coingeckoNativeId: 'ethereum',
+        coingeckoNativeId: 'base--0x0000000000000000000000000000000000000000',
     },
     op: {
         symbol: 'op',
@@ -194,7 +194,7 @@ export const networks = {
             },
         },
         coingeckoId: 'optimistic-ethereum',
-        coingeckoNativeId: 'ethereum',
+        coingeckoNativeId: 'optimistic-ethereum--0x0000000000000000000000000000000000000000',
     },
     sol: {
         symbol: 'sol',

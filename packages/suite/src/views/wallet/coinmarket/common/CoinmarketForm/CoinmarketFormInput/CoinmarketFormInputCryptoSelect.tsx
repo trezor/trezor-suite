@@ -1,6 +1,8 @@
 import { Controller } from 'react-hook-form';
 import { useMemo, useState } from 'react';
 
+import { CryptoId } from 'invity-api';
+
 import { Badge, Row, Select, Text } from '@trezor/components';
 import {
     SearchAsset,
@@ -14,7 +16,6 @@ import {
 } from '@trezor/product-components';
 import {
     type NetworkSymbol,
-    getNetworkByCoingeckoNativeId,
     getNetworkByCoingeckoId,
     getNetwork,
     networkSymbolCollection,
@@ -35,7 +36,9 @@ import {
 } from 'src/types/coinmarket/coinmarketForm';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import {
+    cryptoIdToNetwork,
     cryptoPlatformSeparator,
+    isCryptoIdForNativeToken,
     parseCryptoId,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
@@ -117,28 +120,42 @@ export const CoinmarketFormInputCryptoSelect = <
 
     const modalOptions: SelectAssetOptionProps[] = useMemo(
         () =>
-            formOptions.map(
-                (option): SelectAssetOptionProps =>
-                    option.type === 'currency'
-                        ? {
-                              ...option,
-                              ticker: option.ticker || option.label,
-                              symbol:
-                                  getNetworkByCoingeckoNativeId(
-                                      parseCryptoId(option.value).networkId,
-                                  )?.symbol || parseCryptoId(option.value).networkId,
-                              contractAddress: option.contractAddress ?? null,
-                          }
-                        : option,
-            ),
+            formOptions
+                .map(option => {
+                    if (option.type !== 'currency') return option; // label
+
+                    const network = cryptoIdToNetwork(option.value);
+
+                    if (!network) return null;
+
+                    const { symbol } = network;
+                    const isNativeToken = isCryptoIdForNativeToken(option.value);
+                    // for native tokens (eg. base) to use coingeckoNativeId
+                    const coingeckoId = isNativeToken
+                        ? network.coingeckoNativeId
+                        : option.coingeckoId;
+
+                    return {
+                        ...option,
+                        ticker: option.ticker || option.label,
+                        symbol,
+                        contractAddress: option.contractAddress ?? null,
+                        coingeckoId,
+                    };
+                })
+                .filter(option => option !== null),
         [formOptions],
     );
 
     const handleSelectChange = (selectedAsset: AssetOptionBaseProps) => {
         const findOption = formOptions.find(option => {
-            const cryptoId = selectedAsset.contractAddress
-                ? `${selectedAsset.coingeckoId}${cryptoPlatformSeparator}${selectedAsset.contractAddress}`
-                : selectedAsset.coingeckoId;
+            const { coingeckoId, contractAddress } = selectedAsset;
+            const isNativeTokenSymbol = isCryptoIdForNativeToken(coingeckoId as CryptoId);
+            const tokenCryptoId = isNativeTokenSymbol
+                ? coingeckoId
+                : `${coingeckoId}${cryptoPlatformSeparator}${contractAddress}`;
+
+            const cryptoId = contractAddress ? tokenCryptoId : coingeckoId;
 
             return option.type === 'currency' && option.value === cryptoId;
         }) as CoinmarketCryptoSelectItemProps | undefined;

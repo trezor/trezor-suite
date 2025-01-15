@@ -47,6 +47,7 @@ export const AssetItem = ({
     const getCoinLogo = () =>
         isCoinSymbol(symbol) ? <CoinLogo size={24} symbol={symbol} /> : null;
     const displaySymbol = getDisplaySymbol(ticker, contractAddress);
+    const nativeContractAddress = '0x0000000000000000000000000000000000000000';
 
     return (
         <ClickableContainer
@@ -61,7 +62,7 @@ export const AssetItem = ({
             }
         >
             <Row data-testid={dataTestId} gap={spacings.sm}>
-                {coingeckoId ? (
+                {coingeckoId && !coingeckoId.includes(nativeContractAddress) ? (
                     <AssetLogo
                         size={24}
                         coingeckoId={coingeckoId}

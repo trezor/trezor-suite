@@ -17,6 +17,7 @@ import {
     coinmarketGetAccountLabel,
     testnetToProdCryptoId,
     getAddressAndTokenFromAccountOptionsGroupProps,
+    isCryptoIdForNativeToken,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     FIXTURE_ACCOUNTS,
@@ -318,5 +319,24 @@ describe('coinmarket utils', () => {
                 item.result,
             );
         });
+    });
+
+    it('isCryptoIdForNativeToken - test if token is L2 native token', () => {
+        expect(isCryptoIdForNativeToken('ethereum' as CryptoId)).toEqual(false);
+        expect(
+            isCryptoIdForNativeToken(
+                'ethereum--0x1234123412341234123412341234123412341236' as CryptoId,
+            ),
+        ).toEqual(false);
+        expect(
+            isCryptoIdForNativeToken(
+                'ethereum--0x0000000000000000000000000000000000000000' as CryptoId,
+            ),
+        ).toEqual(true);
+        expect(
+            isCryptoIdForNativeToken(
+                'base--0x0000000000000000000000000000000000000000' as CryptoId,
+            ),
+        ).toEqual(true);
     });
 });

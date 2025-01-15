@@ -1,9 +1,14 @@
 import styled from 'styled-components';
 
 import { AssetLogo } from '@trezor/components';
+import { CoinLogo } from '@trezor/product-components';
 
 import { CoinmarketCoinLogoProps } from 'src/types/coinmarket/coinmarket';
-import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    cryptoIdToNetwork,
+    isCryptoIdForNativeToken,
+    parseCryptoId,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const Wrapper = styled.div``;
 
@@ -14,6 +19,11 @@ export const CoinmarketCoinLogo = ({
     className,
 }: CoinmarketCoinLogoProps) => {
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
+    const network = cryptoIdToNetwork(cryptoId);
+
+    if (isCryptoIdForNativeToken(cryptoId) && network) {
+        return <CoinLogo size={size} symbol={network.symbol} />;
+    }
 
     return (
         <Wrapper className={className}>

@@ -40,43 +40,51 @@ import {
 } from 'src/types/coinmarket/coinmarket';
 
 export const cryptoPlatformSeparator = '--';
+/**
+ * Used for for L2 networks (e.g. base, op)
+ */
+export const contractAddressForNativeToken = '0x0000000000000000000000000000000000000000';
 
 interface ParsedCryptoId {
     networkId: CryptoId;
     contractAddress: string | undefined;
 }
 
-export function parseCryptoId(cryptoId: CryptoId): ParsedCryptoId {
+export const parseCryptoId = (cryptoId: CryptoId): ParsedCryptoId => {
     const parts = cryptoId.split(cryptoPlatformSeparator);
 
     return { networkId: parts[0] as CryptoId, contractAddress: parts[1] };
-}
+};
 
-export function cryptoIdToNetwork(cryptoId: CryptoId): Network | undefined {
+export const cryptoIdToNetwork = (cryptoId: CryptoId): Network | undefined => {
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
 
     return contractAddress
         ? getNetworkByCoingeckoId(networkId)
         : getNetworkByCoingeckoNativeId(networkId);
-}
+};
 
-export function cryptoIdToSymbol(cryptoId: CryptoId): NetworkSymbol | undefined {
-    return cryptoIdToNetwork(cryptoId)?.symbol;
-}
+export const cryptoIdToSymbol = (cryptoId: CryptoId): NetworkSymbol | undefined =>
+    cryptoIdToNetwork(cryptoId)?.symbol;
 
-export function toTokenCryptoId(symbol: NetworkSymbol, contractAddress: string): CryptoId {
-    return `${getCoingeckoId(symbol)}${cryptoPlatformSeparator}${contractAddress}` as CryptoId;
-}
+export const toTokenCryptoId = (symbol: NetworkSymbol, contractAddress: string): CryptoId =>
+    `${getCoingeckoId(symbol)}${cryptoPlatformSeparator}${contractAddress}` as CryptoId;
 
 /** Convert testnet cryptoId to prod cryptoId (test-bitcoin -> bitcoin) */
-export function testnetToProdCryptoId(cryptoId: CryptoId): CryptoId {
+export const testnetToProdCryptoId = (cryptoId: CryptoId): CryptoId => {
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
 
     return ((networkId.split('test-')?.[1] ?? networkId) +
         (contractAddress ? `${cryptoPlatformSeparator}${contractAddress}` : '')) as CryptoId;
-}
+};
 
-interface CoinmarketGetDecimalsProps {
+export const isCryptoIdForNativeToken = (cryptoId: CryptoId) => {
+    const { contractAddress } = parseCryptoId(cryptoId);
+
+    return contractAddress === contractAddressForNativeToken;
+};
+
+export interface CoinmarketGetDecimalsProps {
     sendCryptoSelect?: CoinmarketAccountOptionsGroupOptionProps;
     network?: Network | null;
 }
@@ -337,12 +345,6 @@ export const coinmarketBuildAccountOptions = ({
         deviceState,
     });
 
-    /**
-     * TODO: allow second layer ETH coins to trade, now it is not working -> skip them
-     * Temporary solution to skip not native network symbols
-     */
-    const skipNotNativeNetworkSymbols: readonly NetworkSymbol[] = ['op', 'base', 'arb'];
-
     const groups: CoinmarketAccountsOptionsGroupProps[] = [];
 
     accountsSorted.forEach(account => {
@@ -379,8 +381,7 @@ export const coinmarketBuildAccountOptions = ({
             accountType: account.accountType,
             decimals: accountDecimals,
         };
-        const options: CoinmarketAccountOptionsGroupOptionProps[] =
-            !skipNotNativeNetworkSymbols.includes(network.symbol) ? [option] : [];
+        const options: CoinmarketAccountOptionsGroupOptionProps[] = [option];
 
         const hasNativeToken = options.length > 0;
 

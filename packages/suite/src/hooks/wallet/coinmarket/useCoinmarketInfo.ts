@@ -18,6 +18,7 @@ import {
 } from 'src/types/coinmarket/coinmarket';
 import {
     cryptoIdToNetwork,
+    isCryptoIdForNativeToken,
     parseCryptoId,
     testnetToProdCryptoId,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -31,7 +32,11 @@ const toCryptoOption = (
     coinInfo: CoinInfo,
 ): CoinmarketCryptoSelectItemProps => {
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
+    const isNativeToken = isCryptoIdForNativeToken(cryptoId);
     const coinInfoSymbol = coinInfo.symbol.toLowerCase();
+    const symbol = isNativeToken
+        ? cryptoIdToNetwork(cryptoId)?.symbol ?? coinInfoSymbol
+        : coinInfoSymbol;
     const displaySymbol = getDisplaySymbol(coinInfoSymbol, contractAddress);
 
     return {
@@ -41,7 +46,7 @@ const toCryptoOption = (
         cryptoName: coinInfo.name,
         coingeckoId: networkId,
         contractAddress: contractAddress || null,
-        symbol: coinInfo.symbol,
+        symbol,
     };
 };
 
@@ -106,6 +111,7 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
 
             cryptoIds.forEach(cryptoId => {
                 const coinInfo = coins[cryptoId];
+
                 if (!coinInfo) {
                     return;
                 }
@@ -122,14 +128,19 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
                 }
 
                 const { networkId, contractAddress } = parseCryptoId(cryptoId);
+                const networkName = cryptoIdToPlatformName(networkId) ?? networkId;
                 const option = toCryptoOption(cryptoId, coinInfo);
 
                 if (getNetworkByCoingeckoNativeId(cryptoId)) {
-                    popularCurrencies.push(option);
+                    const isNativeToken = isCryptoIdForNativeToken(cryptoId);
+                    const optionWithNetworkName = isNativeToken
+                        ? { ...option, networkName }
+                        : option;
+
+                    popularCurrencies.push(optionWithNetworkName);
                 } else if (!contractAddress) {
                     otherCurrencies.push(option);
                 } else {
-                    const networkName = cryptoIdToPlatformName(networkId) || networkId;
                     const tokenGroup = tokenGroups.find(group =>
                         group.find(item => item.networkName === networkName),
                     );
