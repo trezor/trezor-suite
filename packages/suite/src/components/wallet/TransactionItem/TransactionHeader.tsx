@@ -1,8 +1,13 @@
-import { getTxHeaderSymbol, isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
+import {
+    getTxHeaderSymbol,
+    isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
+} from '@suite-common/wallet-utils';
 import { AccountTransaction } from '@trezor/connect';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { StakeType } from '@suite-common/wallet-types';
 
 import { useTranslation } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
@@ -65,6 +70,17 @@ const getTransactionMessageId = ({ transaction, isPending }: GetTransactionMessa
     }
 };
 
+const getSolTransactionStakeTypeName = (stakeType: StakeType) => {
+    switch (stakeType) {
+        case 'stake':
+            return 'Stake';
+        case 'unstake':
+            return 'Unstake';
+        case 'claim':
+            return 'Claim Withdraw Request';
+    }
+};
+
 export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderProps) => {
     const { translationString } = useTranslation();
 
@@ -73,6 +89,17 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
             <Row gap={spacings.xxs} overflow="hidden">
                 <span>{transaction.ethereumSpecific.parsedData.name}</span>
                 {isSupportedEthStakingNetworkSymbol(transaction.symbol) && (
+                    <UnstakingTxAmount transaction={transaction} />
+                )}
+            </Row>
+        );
+    }
+    const solanaStakeType = transaction?.solanaSpecific?.stakeType;
+    if (solanaStakeType) {
+        return (
+            <Row gap={spacings.xxs} overflow="hidden">
+                <span>{getSolTransactionStakeTypeName(solanaStakeType)}</span>
+                {isSupportedSolStakingNetworkSymbol(transaction.symbol) && (
                     <UnstakingTxAmount transaction={transaction} />
                 )}
             </Row>

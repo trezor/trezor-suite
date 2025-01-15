@@ -24,7 +24,7 @@ import { ClaimCard } from '../../StakingDashboard/components/ClaimCard';
 import { StakingDashboard } from '../../StakingDashboard/StakingDashboard';
 import { ApyCard } from '../../StakingDashboard/components/ApyCard';
 import { PayoutCard } from '../../StakingDashboard/components/PayoutCard';
-import { Transactions } from './Transactions';
+import { Transactions } from '../../StakingDashboard/components/Transactions';
 import { InstantStakeBanner } from './InstantStakeBanner';
 
 interface EthStakingDashboardProps {

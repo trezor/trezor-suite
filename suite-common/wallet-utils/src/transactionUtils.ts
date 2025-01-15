@@ -145,8 +145,14 @@ export const formatCardanoDeposit = (tx: WalletAccountTransaction) =>
         ? formatNetworkAmount(tx.cardanoSpecific.deposit, tx.symbol)
         : undefined;
 
-export const isTxFeePaid = (tx: WalletAccountTransaction) =>
-    !!tx.details.vin.find(vin => vin.isOwn || vin.isAccountOwned) && tx.type !== 'joint';
+export const isTxFeePaid = (tx: WalletAccountTransaction) => {
+    const showFeeRowForSolClaim = tx?.solanaSpecific?.stakeType === 'claim';
+
+    return (
+        (!!tx.details.vin.find(vin => vin.isOwn || vin.isAccountOwned) && tx.type !== 'joint') ||
+        showFeeRowForSolClaim
+    );
+};
 
 /**
  * Returns a sum of sent/recv txs amounts as a BigNumber.

@@ -65,8 +65,6 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                             />
                         </Column>
                     </DashboardSection>
-                    {/* TODO: implement Transactions component */}
-                    {/* <Transactions /> */}
                 </Column>
             }
         />
