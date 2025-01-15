@@ -25,14 +25,29 @@ export const isValidReleases = (extReleases: any): extReleases is FirmwareReleas
 export const filterSafeListByBootloader = (
     releasesList: FirmwareRelease[],
     bootloaderVersion: VersionArray,
-) =>
-    releasesList.filter(
+) => {
+    // bootloader_version indicates that there could be more than one version
+    const bootloaderVersions = releasesList.flatMap(item =>
+        item.bootloader_version ? [item.bootloader_version] : [],
+    );
+    // find at least one compatible release by bootloader_version
+    const compatibleRelease = bootloaderVersions.find(item =>
+        versionUtils.isNewerOrEqual(item, bootloaderVersion),
+    );
+
+    if (bootloaderVersions.length > 0 && !compatibleRelease) {
+        // no compatible releases, bootloaderVersion is greater than any known
+        return [];
+    }
+
+    return releasesList.filter(
         item =>
             (!item.min_bootloader_version ||
                 versionUtils.isNewerOrEqual(bootloaderVersion, item.min_bootloader_version)) &&
             (!item.bootloader_version ||
                 versionUtils.isNewerOrEqual(item.bootloader_version, bootloaderVersion)),
     );
+};
 
 export const filterSafeListByFirmware = (
     releasesList: FirmwareRelease[],

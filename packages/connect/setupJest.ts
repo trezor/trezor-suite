@@ -90,7 +90,6 @@ const getRelease = (model: 1 | 2): FirmwareRelease => ({
 
 const getReleaseT1 = (release: any): FirmwareRelease => ({
     ...getRelease(1),
-    bootloader_version: [1, 0, 0],
     ...release,
 });
 

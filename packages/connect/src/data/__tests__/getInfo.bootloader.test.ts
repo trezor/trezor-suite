@@ -139,7 +139,7 @@ const fixtures = [
         },
     },
     {
-        desc: 'test bootloader lower version',
+        desc: 'T1 test bootloader lower version',
         features: getDeviceFeatures({
             bootloader_mode: true,
             major_version: 1,
@@ -155,12 +155,34 @@ const fixtures = [
             {
                 version: [1, 1, 0],
                 min_bootloader_version: [1, 0, 0],
-                bootloader_version: [1, 0, 0],
+                bootloader_version: undefined,
+            },
+        ]),
+        result: null,
+    },
+    {
+        desc: 'T2 test bootloader lower version',
+        features: getDeviceFeatures({
+            bootloader_mode: true,
+            major_version: 2,
+            minor_version: 5,
+            patch_version: 0,
+        }),
+        releases: getReleasesT2([
+            {
+                version: [2, 2, 0],
+                min_bootloader_version: [2, 0, 0],
+                bootloader_version: undefined,
             },
             {
-                version: [1, 0, 0],
-                min_bootloader_version: [1, 0, 0],
-                bootloader_version: [1, 0, 0],
+                version: [2, 2, 0],
+                min_bootloader_version: [2, 0, 0],
+                bootloader_version: [2, 1, 0],
+            },
+            {
+                version: [2, 1, 0],
+                min_bootloader_version: [2, 0, 0],
+                bootloader_version: undefined,
             },
         ]),
         result: null,
