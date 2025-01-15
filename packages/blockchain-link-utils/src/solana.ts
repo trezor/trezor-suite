@@ -14,7 +14,7 @@ import type {
     SolanaValidParsedTxWithMeta,
     TokenDetailByMint,
 } from '@trezor/blockchain-link-types/src/solana';
-import type { TokenInfo, TokenStandard } from '@trezor/blockchain-link-types/src';
+import type { TokenInfo, TokenStandard, StakeType } from '@trezor/blockchain-link-types/src';
 import { isCodesignBuild } from '@trezor/env-utils';
 
 import { formatTokenSymbol } from './utils';
@@ -36,6 +36,7 @@ export const SYSTEM_PROGRAM_PUBLIC_KEY = '11111111111111111111111111111111';
 // WSOL transfers are denoted as transfers of SOL as well as WSOL, so we use this to filter out SOL values
 // when parsing tx effects.
 export const WSOL_MINT = 'So11111111111111111111111111111111111111112';
+export const STAKE_PROGRAM_PUBLIC_KEY = 'Stake11111111111111111111111111111111111111';
 
 const tokenProgramNames = ['spl-token', 'spl-token-2022'] as const;
 export type TokenProgramName = (typeof tokenProgramNames)[number];
@@ -605,6 +606,83 @@ export const getTokens = (
     return effects;
 };
 
+function getTransactionStakeType(tx: SolanaValidParsedTxWithMeta): StakeType | undefined {
+    const { instructions } = tx.transaction.message;
+
+    if (!instructions) {
+        throw new Error('Invalid transaction data');
+    }
+
+    for (const instruction of instructions) {
+        if (instruction.programId === STAKE_PROGRAM_PUBLIC_KEY && 'parsed' in instruction) {
+            const { type } = instruction.parsed || {};
+
+            if (type === 'delegate') return 'stake';
+            if (type === 'deactivate') return 'unstake';
+            if (type === 'withdraw') return 'claim';
+        }
+    }
+
+    return undefined;
+}
+
+const getUnstakeAmount = (tx: SolanaValidParsedTxWithMeta): string => {
+    const { transaction, meta } = tx;
+    const { instructions, accountKeys } = transaction.message;
+
+    if (!instructions || !meta) {
+        throw new Error('Invalid transaction data');
+    }
+
+    const stakeAccountIndexes = instructions
+        .filter(
+            (instruction): instruction is ParsedInstruction =>
+                instruction.programId === STAKE_PROGRAM_PUBLIC_KEY &&
+                'parsed' in instruction &&
+                instruction.parsed?.type === 'deactivate',
+        )
+        .map(instruction => {
+            if (
+                typeof instruction.parsed?.info === 'object' &&
+                'stakeAccount' in instruction.parsed.info
+            ) {
+                const stakeAccount = instruction.parsed.info?.stakeAccount;
+
+                return accountKeys.findIndex(key => key.pubkey === stakeAccount);
+            }
+
+            return -1;
+        })
+        .filter(index => index >= 0);
+
+    const totalPostBalance = stakeAccountIndexes.reduce(
+        (sum, stakeAccountIndex) =>
+            sum.plus(new BigNumber(meta.postBalances[stakeAccountIndex]?.toString(10) || 0)),
+        new BigNumber(0),
+    );
+
+    return totalPostBalance.toString();
+};
+
+const determineTransactionType = (
+    type: Transaction['type'],
+    stakeType?: StakeType,
+): Transaction['type'] => {
+    if (type !== 'unknown' || !stakeType) {
+        return type;
+    }
+
+    switch (stakeType) {
+        case 'claim':
+            return 'recv';
+        case 'stake':
+        case 'unstake':
+            return 'sent';
+        default:
+            return 'unknown';
+    }
+};
+
 export const transformTransaction = (
     tx: SolanaValidParsedTxWithMeta,
     accountAddress: string,
@@ -617,17 +695,24 @@ export const transformTransaction = (
 
     const type = getTxType(tx, nativeEffects, accountAddress, tokens);
 
-    const targets = getTargets(nativeEffects, type, accountAddress);
+    const stakeType = getTransactionStakeType(tx);
 
-    const amount = getAmount(
-        nativeEffects.find(({ address }) => address === accountAddress),
-        type,
-    );
+    const txType = determineTransactionType(type, stakeType);
+
+    const targets = getTargets(nativeEffects, txType, accountAddress);
+
+    const amount =
+        stakeType === 'unstake'
+            ? getUnstakeAmount(tx)
+            : getAmount(
+                  nativeEffects.find(({ address }) => address === accountAddress),
+                  type,
+              );
 
     const details = getDetails(tx, nativeEffects, accountAddress, type);
 
     return {
-        type,
+        type: txType,
         txid: tx.transaction.signatures[0].toString(),
         blockTime: tx.blockTime == null ? undefined : Number(tx.blockTime),
         amount,
@@ -641,6 +726,7 @@ export const transformTransaction = (
         blockHash: tx.transaction.message.recentBlockhash,
         solanaSpecific: {
             status: 'confirmed',
+            stakeType,
         },
     };
 };

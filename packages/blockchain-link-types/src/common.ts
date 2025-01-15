@@ -152,6 +152,7 @@ export interface Transaction {
     };
     solanaSpecific?: {
         status: 'confirmed';
+        stakeType?: StakeType;
     };
     details: TransactionDetail;
     vsize?: number;
@@ -286,3 +287,5 @@ export interface SubscriptionAccountInfo {
 }
 
 export type ChannelMessage<T> = T & { id: number };
+
+export type StakeType = 'stake' | 'unstake' | 'claim';
