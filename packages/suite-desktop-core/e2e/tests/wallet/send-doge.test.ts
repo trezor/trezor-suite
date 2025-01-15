@@ -16,14 +16,14 @@ test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage, blockbookMock }) => {
         await blockbookMock.start('doge');
         await onboardingPage.completeOnboarding();
+        await dashboardPage.discoveryShouldFinish();
         await settingsPage.navigateTo('coins');
         await settingsPage.coins.disableNetwork('btc');
         await settingsPage.coins.enableNetwork('doge');
         await settingsPage.coins.openNetworkAdvanceSettings('doge');
         await settingsPage.coins.changeBackend('blockbook', blockbookMock.url);
-        await settingsPage.coins.activateCoinsButton.click();
-        await dashboardPage.discoveryShouldFinish();
         await dashboardPage.navigateTo();
+        await dashboardPage.discoveryShouldFinish();
     });
 
     test.afterEach(({ blockbookMock }) => {
