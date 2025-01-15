@@ -117,6 +117,7 @@ describe('Database migration', () => {
         // TO:
         cy.visit(`${baseUrl}/${to}`);
         cy.getTestElement('@dashboard/graph', { timeout: 40000 }).should('be.visible');
+        cy.getTestElement('@account-menu/normal').click();
         cy.getTestElement('@account-menu/btc/normal/0').click();
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@deviceStatus-disconnected');
