@@ -1,4 +1,4 @@
-import { Text, Column } from '@trezor/components';
+import { Text, Column, FractionButtonProps } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { useFormatters } from '@suite-common/formatters';
@@ -44,6 +44,7 @@ export const Inputs = () => {
         restakedReward = '0',
     } = getStakingDataForNetwork(account) ?? {};
 
+    const isRewardsVisible = restakedReward != '';
     const isRewardsDisabled = restakedReward === '0';
 
     const { symbol } = account;
@@ -171,24 +172,31 @@ export const Inputs = () => {
                         ),
                         onClick: () => onCryptoAmountChange(autocompoundBalance),
                     },
-                    {
-                        id: 'TR_FRACTION_BUTTONS_REWARDS',
-                        children: <Translation id="TR_FRACTION_BUTTONS_REWARDS" />,
-                        tooltip: isRewardsDisabled ? (
-                            <Translation id="TR_STAKE_NO_REWARDS" />
-                        ) : (
-                            <Column alignItems="flex-end">
-                                <FormattedCryptoAmount value={restakedReward} symbol={symbol} />
-                                <Text variant="primary">
-                                    <FiatValue amount={restakedReward} symbol={symbol} />
-                                </Text>
-                            </Column>
-                        ),
-                        isSubtle: true,
-                        variant: 'primary',
-                        isDisabled: isRewardsDisabled,
-                        onClick: () => onCryptoAmountChange(restakedReward),
-                    },
+                    ...(isRewardsVisible
+                        ? [
+                              {
+                                  id: 'TR_FRACTION_BUTTONS_REWARDS',
+                                  children: <Translation id="TR_FRACTION_BUTTONS_REWARDS" />,
+                                  tooltip: isRewardsDisabled ? (
+                                      <Translation id="TR_STAKE_NO_REWARDS" />
+                                  ) : (
+                                      <Column alignItems="flex-end">
+                                          <FormattedCryptoAmount
+                                              value={restakedReward}
+                                              symbol={symbol}
+                                          />
+                                          <Text variant="primary">
+                                              <FiatValue amount={restakedReward} symbol={symbol} />
+                                          </Text>
+                                      </Column>
+                                  ),
+                                  isSubtle: true,
+                                  variant: 'primary',
+                                  isDisabled: isRewardsDisabled,
+                                  onClick: () => onCryptoAmountChange(restakedReward),
+                              } as FractionButtonProps,
+                          ]
+                        : []),
                 ]}
             />
         </Column>
