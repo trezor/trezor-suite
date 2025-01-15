@@ -114,6 +114,7 @@ export type LegacyOnboardingStackParamList = {
 
 export type OnboardingStackParamList = {
     [OnboardingStackRoutes.Welcome]: undefined;
+    [OnboardingStackRoutes.AnalyticsConsent]: undefined;
 };
 
 export type AccountsImportStackParamList = {

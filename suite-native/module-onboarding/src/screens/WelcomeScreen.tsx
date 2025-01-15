@@ -2,14 +2,18 @@ import { ImageBackground, StyleSheet } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { Screen } from '@suite-native/navigation';
+import {
+    OnboardingStackParamList,
+    OnboardingStackRoutes,
+    Screen,
+    StackProps,
+} from '@suite-native/navigation';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { hexToRgba } from '@suite-common/suite-utils';
 import { getWindowHeight } from '@trezor/env-utils';
-import { useToast } from '@suite-native/toasts';
 import { colorVariants } from '@trezor/theme';
 
 const GRADIENT_HEIGHT = getWindowHeight() / 3;
@@ -29,13 +33,17 @@ const textColorStyle = prepareNativeStyle(() => ({
     color: colorVariants.dark.textDefault,
 }));
 
-export const WelcomeScreen = () => {
-    const { showToast } = useToast();
-
+export const WelcomeScreen = ({
+    navigation,
+}: StackProps<OnboardingStackParamList, OnboardingStackRoutes.Welcome>) => {
     const { applyStyle } = useNativeStyles();
 
     // 'transparent' color is not working in context of LinearGradient on iOS. RGBA has to be used instead.
     const transparentColor = hexToRgba('#000000', 0.01);
+
+    const navigateToAnalyticsConsent = () => {
+        navigation.navigate(OnboardingStackRoutes.AnalyticsConsent);
+    };
 
     return (
         <>
@@ -69,14 +77,7 @@ export const WelcomeScreen = () => {
                         </Box>
                     </VStack>
                     <Box style={applyStyle(buttonWrapperStyle)}>
-                        <Button
-                            onPress={() =>
-                                showToast({
-                                    variant: 'warning',
-                                    message: 'TODO: implement next screen',
-                                })
-                            }
-                        >
+                        <Button onPress={navigateToAnalyticsConsent}>
                             <Translation id="moduleOnboarding.welcomeScreen.button" />
                         </Button>
                     </Box>

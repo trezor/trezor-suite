@@ -7,6 +7,7 @@ import {
 } from '@suite-native/navigation';
 
 import { WelcomeScreen } from '../screens/WelcomeScreen';
+import { AnalyticsConsentScreen } from '../screens/AnalyticsConsentScreen';
 
 export const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
 
@@ -16,5 +17,9 @@ export const OnboardingStackNavigator = () => (
         screenOptions={stackNavigationOptionsConfig}
     >
         <OnboardingStack.Screen name={OnboardingStackRoutes.Welcome} component={WelcomeScreen} />
+        <OnboardingStack.Screen
+            name={OnboardingStackRoutes.AnalyticsConsent}
+            component={AnalyticsConsentScreen}
+        />
     </OnboardingStack.Navigator>
 );

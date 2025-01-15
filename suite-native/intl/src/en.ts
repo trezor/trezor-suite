@@ -803,8 +803,9 @@ export const en = {
             },
         },
         analyticsConsentScreen: {
-            title: 'Better with you',
-            subtitle: 'Improve Trezor Suite Lite with your anonymous data.',
+            title: 'Better—with you.',
+            subtitle:
+                'Help us shape a better experience for you by allowing anonymous data collection.',
             bulletPoints: {
                 privacy: {
                     title: 'Your data is private',
@@ -818,6 +819,11 @@ export const en = {
                 },
             },
             helpSwitchTitle: 'Help us anonymously',
+            learnMoreButton: 'More about privacy',
+
+            // TODO: this should be removed when is the new onboarding enabled by default
+            titleLegacy: 'Better with you',
+            subtitleLegacy: 'Improve Trezor Suite Lite with your anonymous data.',
             learnMore: '<securityLink>More</securityLink> about privacy',
         },
     },

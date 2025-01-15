@@ -35,6 +35,7 @@ export enum LegacyOnboardingStackRoutes {
 
 export enum OnboardingStackRoutes {
     Welcome = 'Welcome',
+    AnalyticsConsent = 'AnalyticsConsent',
 }
 
 export enum AccountsImportStackRoutes {

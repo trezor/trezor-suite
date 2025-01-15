@@ -140,10 +140,10 @@ export const AnalyticsConsentScreen = () => {
             >
                 <Icon size="extraLarge" name="trezorLogo" color="iconDefault" />
                 <Text variant="titleMedium" style={applyStyle(titleStyle)}>
-                    <Translation id="moduleOnboarding.analyticsConsentScreen.title" />
+                    <Translation id="moduleOnboarding.analyticsConsentScreen.titleLegacy" />
                 </Text>
                 <Text color="textSubdued" style={applyStyle(subtitleStyle)}>
-                    <Translation id="moduleOnboarding.analyticsConsentScreen.subtitle" />
+                    <Translation id="moduleOnboarding.analyticsConsentScreen.subtitleLegacy" />
                 </Text>
                 <VStack style={applyStyle(analyticsConsentStyle)}>
                     <Stack spacing="sp24" paddingBottom="sp16">
