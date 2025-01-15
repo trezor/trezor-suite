@@ -69,9 +69,10 @@ export const FiatInput = ({
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const error = outputError ? outputError.fiat : undefined;
     const fiatValue = getDefaultValue(fiatInputName, output.fiat || '');
-    const tokenValue = getDefaultValue(tokenInputName, output.token);
+    const tokenContractAddress = getDefaultValue(tokenInputName, output.token);
+
     const amountValue = getDefaultValue(amountInputName, '');
-    const token = findToken(account.tokens, tokenValue);
+    const token = findToken(account.tokens, tokenContractAddress);
 
     const currencyValue = watch(currencyInputName);
 
@@ -107,7 +108,7 @@ export const FiatInput = ({
     const inputState = isLowAnonymity ? 'warning' : getInputState(errorToDisplay);
     const bottomText = isLowAnonymity ? null : errorToDisplay?.message;
 
-    const handleChange = (value: string) => handleFiatChange({ outputId, value });
+    const handleChange = (value: string) => handleFiatChange({ outputId, token, value });
 
     const rules = {
         required: translationString('AMOUNT_IS_NOT_SET'),
