@@ -1,12 +1,13 @@
 import { useEffect, useContext, ReactNode } from 'react';
-import { ScrollViewProps, View } from 'react-native';
+import { ScrollViewProps, View, Platform } from 'react-native';
 import { EdgeInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import { SystemBars, SystemBarStyle } from 'react-native-edge-to-edge';
 
 import * as SystemUI from 'expo-system-ui';
+import * as NavigationBar from 'expo-navigation-bar';
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
-import { useRoute } from '@react-navigation/native';
+import { useIsFocused, useRoute } from '@react-navigation/native';
 
 import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -116,12 +117,23 @@ export const Screen = ({
 
     const isMessageBannerDisplayed = useSelector(selectIsAnyBannerMessageActive);
 
+    const isFocused = useIsFocused();
     const { name } = useRoute();
 
     useEffect(() => {
-        // this prevents some weird flashing of splash screen on Android during screen transitions
-        SystemUI.setBackgroundColorAsync(backgroundCSSColor);
-    }, [backgroundCSSColor]);
+        if (isFocused) {
+            // this prevents some weird flashing of splash screen on Android during screen transitions
+            SystemUI.setBackgroundColorAsync(backgroundCSSColor);
+
+            // change colors of button navigation bar on Android
+            if (Platform.OS === 'android') {
+                NavigationBar.setBackgroundColorAsync(backgroundCSSColor);
+                NavigationBar.setButtonStyleAsync(
+                    isDarkColor(backgroundCSSColor) ? 'light' : 'dark',
+                );
+            }
+        }
+    }, [backgroundCSSColor, isDarkColor, isFocused]);
 
     return (
         <View
