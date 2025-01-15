@@ -21,8 +21,9 @@ test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
         await settingsPage.coins.enableNetwork('doge');
         await settingsPage.coins.openNetworkAdvanceSettings('doge');
         await settingsPage.coins.changeBackend('blockbook', blockbookMock.url);
-        await dashboardPage.navigateTo();
+        await settingsPage.coins.activateCoinsButton.click();
         await dashboardPage.discoveryShouldFinish();
+        await dashboardPage.navigateTo();
     });
 
     test.afterEach(({ blockbookMock }) => {
