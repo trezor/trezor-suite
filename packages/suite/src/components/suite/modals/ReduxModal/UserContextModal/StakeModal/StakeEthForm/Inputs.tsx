@@ -5,7 +5,6 @@ import { formInputsMaxLength } from '@suite-common/validators';
 import { spacings } from '@trezor/theme';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BigNumber } from '@trezor/utils';
-import { MIN_ETH_AMOUNT_FOR_STAKING } from '@suite-common/wallet-constants';
 import { InputWithOptions } from '@trezor/product-components';
 import { StakeFormState } from '@suite-common/wallet-types';
 
@@ -45,7 +44,8 @@ export const Inputs = () => {
         setMax,
     } = useStakeEthFormContext();
 
-    const { MIN_FOR_WITHDRAWALS, MAX_AMOUNT_FOR_STAKING } = getStakingLimitsByNetwork(account);
+    const { MIN_FOR_WITHDRAWALS, MAX_AMOUNT_FOR_STAKING, MIN_AMOUNT_FOR_STAKING } =
+        getStakingLimitsByNetwork(account);
 
     const cryptoError = errors.cryptoInput;
     const fiatError = errors.fiatInput;
@@ -87,21 +87,21 @@ export const Inputs = () => {
         return new BigNumber(account.formattedBalance)
             .dividedBy(divisor)
             .decimalPlaces(network.decimals)
-            .lte(MIN_ETH_AMOUNT_FOR_STAKING);
+            .lte(MIN_AMOUNT_FOR_STAKING);
     };
 
     const tooltip = (
         <Translation
             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
             values={{
-                amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
+                amount: MIN_AMOUNT_FOR_STAKING.toString(),
                 networkDisplaySymbol,
             }}
         />
     );
 
     const isBalanceBelowMinStake = new BigNumber(account.formattedBalance || '0').lt(
-        MIN_ETH_AMOUNT_FOR_STAKING,
+        MIN_AMOUNT_FOR_STAKING,
     );
 
     return (
