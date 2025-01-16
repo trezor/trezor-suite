@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
+import { FlexAlignType } from 'react-native';
 
-import { IconName } from '@suite-native/icons';
+import { IconName, IconSize } from '@suite-native/icons';
 import { Color } from '@trezor/theme';
 
 import { Box } from './Box';
@@ -8,7 +9,7 @@ import { OrderedListIcon } from './OrderedListIcon';
 import { HStack } from './Stack';
 import { Text } from './Text';
 
-type Variant = 'default' | 'red';
+type Variant = 'default' | 'red' | 'yellow';
 type IconColors = {
     iconColor: Color;
     iconBorderColor: Color;
@@ -26,23 +27,40 @@ const iconColorsMap = {
         iconBorderColor: 'backgroundAlertRedSubtleOnElevation0',
         iconBackgroundColor: 'backgroundAlertRedSubtleOnElevation1',
     },
+    yellow: {
+        iconColor: 'iconAlertYellow',
+        iconBorderColor: 'backgroundAlertYellowSubtleOnElevation0',
+        iconBackgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
+    },
 } as const satisfies Record<Variant, IconColors>;
 
 type IconListItemProps = {
     children: ReactNode;
     icon: IconName;
+    iconSize?: IconSize;
     variant?: Variant;
+    verticalAlign?: FlexAlignType;
 };
 
-export const IconListItem = ({ icon, children, variant = 'default' }: IconListItemProps) => {
+export const IconListItem = ({
+    icon,
+    children,
+    iconSize = 'medium',
+    variant = 'default',
+    verticalAlign = 'center',
+}: IconListItemProps) => {
     const iconColors = iconColorsMap[variant];
 
     return (
-        <HStack spacing="sp12" alignItems="center">
-            <OrderedListIcon iconName={icon} iconSize="medium" {...iconColors} />
-            <Box flexShrink={1}>
-                <Text variant="hint">{children}</Text>
-            </Box>
+        <HStack spacing="sp12" alignItems={verticalAlign}>
+            <OrderedListIcon iconName={icon} iconSize={iconSize} {...iconColors} />
+            <Box flexShrink={1}>{children}</Box>
         </HStack>
     );
 };
+
+export const IconListTextItem = ({ children, ...rest }: IconListItemProps) => (
+    <IconListItem {...rest}>
+        <Text variant="hint">{children}</Text>
+    </IconListItem>
+);

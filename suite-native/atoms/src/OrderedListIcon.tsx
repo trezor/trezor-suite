@@ -12,8 +12,7 @@ const iconBackgroundStyle = prepareNativeStyle<{ color: Color; borderColor: Colo
     (utils, { color, borderColor }) => ({
         alignItems: 'center',
         justifyContent: 'center',
-        width: utils.spacings.sp32,
-        height: utils.spacings.sp32,
+        padding: utils.spacings.sp8,
         borderRadius: utils.borders.radii.r12,
         extend: [
             {

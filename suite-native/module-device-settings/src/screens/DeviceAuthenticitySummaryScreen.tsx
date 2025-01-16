@@ -2,7 +2,7 @@ import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import {
     Button,
     ButtonColorScheme,
-    IconListItem,
+    IconListTextItem,
     PictogramTitleHeader,
     PictogramVariant,
     VStack,
@@ -68,15 +68,15 @@ export const DeviceAuthenticitySummaryScreen = ({
                 />
                 {checkResult === 'compromised' && (
                     <VStack spacing="sp24" justifyContent="center">
-                        <IconListItem icon="plugs" variant="red">
+                        <IconListTextItem icon="plugs" variant="red">
                             <Translation id="moduleDeviceSettings.authenticity.summary.compromised.item1" />
-                        </IconListItem>
-                        <IconListItem icon="handPalm" variant="red">
+                        </IconListTextItem>
+                        <IconListTextItem icon="handPalm" variant="red">
                             <Translation id="moduleDeviceSettings.authenticity.summary.compromised.item2" />
-                        </IconListItem>
-                        <IconListItem icon="chatCircle" variant="red">
+                        </IconListTextItem>
+                        <IconListTextItem icon="chatCircle" variant="red">
                             <Translation id="moduleDeviceSettings.authenticity.summary.compromised.item3" />
-                        </IconListItem>
+                        </IconListTextItem>
                     </VStack>
                 )}
             </VStack>

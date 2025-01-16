@@ -7,7 +7,7 @@ import { analytics, DeviceAuthenticityCheckResult, EventType } from '@suite-nati
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useAlert } from '@suite-native/alerts';
-import { Button, IconListItem, Text, VStack } from '@suite-native/atoms';
+import { Button, IconListTextItem, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceAuthenticityStackParamList,
@@ -84,15 +84,15 @@ export const DeviceAuthenticityCard = () => {
             textAlign: 'left',
             appendix: (
                 <VStack spacing="sp24">
-                    <IconListItem icon="shieldCheck">
+                    <IconListTextItem icon="shieldCheck">
                         <Translation id="moduleDeviceSettings.authenticity.info.item1" />
-                    </IconListItem>
-                    <IconListItem icon="cpu">
+                    </IconListTextItem>
+                    <IconListTextItem icon="cpu">
                         <Translation id="moduleDeviceSettings.authenticity.info.item2" />
-                    </IconListItem>
-                    <IconListItem icon="check">
+                    </IconListTextItem>
+                    <IconListTextItem icon="check">
                         <Translation id="moduleDeviceSettings.authenticity.info.item3" />
-                    </IconListItem>
+                    </IconListTextItem>
                 </VStack>
             ),
             primaryButtonTitle: (
