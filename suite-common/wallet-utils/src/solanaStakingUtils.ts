@@ -57,7 +57,11 @@ export const calculateTotalSolStakingBalance = (stakingAccounts: SolanaStakingAc
         const { account } = solAccount;
 
         if ('parsed' in account.data) {
-            return acc.plus(account.data.parsed.info.stake.delegation.stake);
+            const delegationStake = account.data.parsed?.info?.stake?.delegation?.stake;
+
+            if (delegationStake != null) {
+                return acc.plus(delegationStake);
+            }
         }
 
         return acc;
