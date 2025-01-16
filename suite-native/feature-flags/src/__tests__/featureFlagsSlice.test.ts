@@ -28,6 +28,7 @@ describe('featureFlagsSlice', () => {
                 areEthL2sEnabled: true,
                 isTradingEnabled: true,
                 isDeviceOnboardingEnabled: true,
+                IsFwRevisionCheckEnabled: true,
             });
         });
 
@@ -54,6 +55,7 @@ describe('featureFlagsSlice', () => {
                 areEthL2sEnabled: false,
                 isTradingEnabled: false,
                 isDeviceOnboardingEnabled: false,
+                IsFwRevisionCheckEnabled: false,
             });
         });
 
@@ -80,6 +82,7 @@ describe('featureFlagsSlice', () => {
                 areEthL2sEnabled: false,
                 isTradingEnabled: false,
                 isDeviceOnboardingEnabled: false,
+                IsFwRevisionCheckEnabled: false,
             });
         });
     });
