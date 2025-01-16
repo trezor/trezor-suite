@@ -56,7 +56,7 @@ export const getNetworkFeatures = (symbol: NetworkSymbol): NetworkFeature[] =>
 
 export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol].coingeckoId;
 
-export const getCoingeckoNativeId = (symbol: NetworkSymbol) => networks[symbol].coingeckoNativeId;
+export const getTradeCryptoId = (symbol: NetworkSymbol) => networks[symbol].tradeCryptoId;
 
 export const isNetworkSymbol = (symbol: NetworkSymbolExtended): symbol is NetworkSymbol =>
     Object.prototype.hasOwnProperty.call(networks, symbol);
@@ -85,8 +85,8 @@ export const isAccountOfNetwork = (
 export const getNetworkByCoingeckoId = (coingeckoId: string) =>
     networksCollection.find(n => n.coingeckoId === coingeckoId);
 
-export const getNetworkByCoingeckoNativeId = (coingeckoId: string) =>
-    networksCollection.find(n => n.coingeckoNativeId === coingeckoId);
+export const getNetworkByTradeCryptoId = (coingeckoId: string) =>
+    networksCollection.find(n => n.tradeCryptoId === coingeckoId);
 
 export const getNetworkDisplaySymbol = (symbol: NetworkSymbol) => getNetwork(symbol).displaySymbol;
 

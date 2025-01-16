@@ -24,7 +24,7 @@ export const useCoinmarketBuyFormDefaultValues = (
     const prefilledFromCryptoId = useSelector(
         state => state.wallet.coinmarket.prefilledFromCryptoId,
     );
-    const cryptoId = prefilledFromCryptoId || networks[accountSymbol]?.coingeckoNativeId;
+    const cryptoId = prefilledFromCryptoId || networks[accountSymbol]?.tradeCryptoId;
 
     const country = buyInfo?.buyInfo?.country;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);

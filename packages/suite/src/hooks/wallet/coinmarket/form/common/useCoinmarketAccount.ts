@@ -32,10 +32,7 @@ export const useCoinmarketAccount = ({
             return coinmarketAccount;
         }
 
-        if (
-            isTestnet(selectedAccount.account.symbol) &&
-            !selectedAccount.network.coingeckoNativeId
-        ) {
+        if (isTestnet(selectedAccount.account.symbol) && !selectedAccount.network.tradeCryptoId) {
             const defaultSymbol = mapTestnetSymbol(selectedAccount.account.symbol);
             const accountsSorted = coinmarketGetSortedAccounts({
                 accounts,

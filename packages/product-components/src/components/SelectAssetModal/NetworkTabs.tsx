@@ -82,7 +82,7 @@ export const NetworkTabs = ({
                         onClick={() => {
                             if (
                                 activeTab?.coingeckoId === network.coingeckoId &&
-                                activeTab?.coingeckoNativeId === network.coingeckoNativeId
+                                activeTab?.tradeCryptoId === network.tradeCryptoId
                             ) {
                                 setActiveTab(null);
 
@@ -96,7 +96,7 @@ export const NetworkTabs = ({
                         key={network.coingeckoId}
                     >
                         <Row gap={spacings.xxs}>
-                            {network.coingeckoNativeId && (
+                            {network.tradeCryptoId && (
                                 <CoinLogo size={20} symbol={network.symbol} />
                             )}
                             {network.name}

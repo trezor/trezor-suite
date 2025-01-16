@@ -49,8 +49,8 @@ const getNetworkCount = (options: SelectAssetOptionProps[]) => {
         .filter(item => item.type === 'group' && item.networkName)
         .map(networkGroup => ({
             ...networkGroup,
-            coingeckoNativeId: networkGroup.coingeckoId
-                ? getNetworkByCoingeckoId(networkGroup.coingeckoId)?.coingeckoNativeId
+            tradeCryptoId: networkGroup.coingeckoId
+                ? getNetworkByCoingeckoId(networkGroup.coingeckoId)?.tradeCryptoId
                 : undefined,
         }));
 
@@ -61,7 +61,7 @@ const getNetworkCount = (options: SelectAssetOptionProps[]) => {
             !networkNetworkGroups.find(
                 group =>
                     group.coingeckoId === item.coingeckoId ||
-                    group.coingeckoNativeId === item.coingeckoId,
+                    group.tradeCryptoId === item.coingeckoId,
             ),
     );
 
@@ -123,10 +123,8 @@ export const CoinmarketFormInputCryptoSelect = <
 
                     const { symbol } = network;
                     const isNativeToken = isCryptoIdForNativeToken(option.value);
-                    // for native tokens (eg. base) to use coingeckoNativeId
-                    const coingeckoId = isNativeToken
-                        ? network.coingeckoNativeId
-                        : option.coingeckoId;
+                    // for native tokens (eg. base) to use tradeCryptoId
+                    const coingeckoId = isNativeToken ? network.tradeCryptoId : option.coingeckoId;
 
                     return {
                         ...option,

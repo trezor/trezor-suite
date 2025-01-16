@@ -7,7 +7,7 @@ import {
     getCoingeckoId,
     getNetwork,
     getNetworkByCoingeckoId,
-    getNetworkByCoingeckoNativeId,
+    getNetworkByTradeCryptoId,
     getNetworkDisplaySymbol,
     getNetworkDisplaySymbolName,
     getNetworkFeatures,
@@ -61,7 +61,7 @@ export const cryptoIdToNetwork = (cryptoId: CryptoId): Network | undefined => {
 
     return contractAddress
         ? getNetworkByCoingeckoId(networkId)
-        : getNetworkByCoingeckoNativeId(networkId);
+        : getNetworkByTradeCryptoId(networkId);
 };
 
 export const cryptoIdToSymbol = (cryptoId: CryptoId): NetworkSymbol | undefined =>
@@ -359,7 +359,7 @@ export const coinmarketBuildAccountOptions = ({
 
         const network = getNetwork(accountSymbol);
 
-        if (!network.coingeckoNativeId) {
+        if (!network.tradeCryptoId) {
             return;
         }
 
@@ -373,7 +373,7 @@ export const coinmarketBuildAccountOptions = ({
 
         const accountDecimals = network.decimals;
         const option: CoinmarketAccountOptionsGroupOptionProps = {
-            value: network.coingeckoNativeId as CryptoId,
+            value: network.tradeCryptoId as CryptoId,
             label: getNetworkDisplaySymbol(accountSymbol),
             cryptoName: getNetworkDisplaySymbolName(accountSymbol),
             descriptor,

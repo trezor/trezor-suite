@@ -5,7 +5,7 @@ import { CoinInfo, CryptoId } from 'invity-api';
 import {
     getDisplaySymbol,
     getNetwork,
-    getNetworkByCoingeckoNativeId,
+    getNetworkByTradeCryptoId,
     NetworkSymbolExtended,
 } from '@suite-common/wallet-config';
 import addressValidator from '@trezor/address-validator';
@@ -131,7 +131,7 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
                 const networkName = cryptoIdToPlatformName(networkId) ?? networkId;
                 const option = toCryptoOption(cryptoId, coinInfo);
 
-                if (getNetworkByCoingeckoNativeId(cryptoId)) {
+                if (getNetworkByTradeCryptoId(cryptoId)) {
                     const isNativeToken = isCryptoIdForNativeToken(cryptoId);
                     const optionWithNetworkName = isNativeToken
                         ? { ...option, networkName }

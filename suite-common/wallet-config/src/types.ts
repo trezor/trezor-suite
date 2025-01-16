@@ -117,7 +117,7 @@ type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
     support?: NetworkDeviceSupport;
     isDebugOnlyNetwork?: boolean;
     coingeckoId?: string;
-    coingeckoNativeId?: string;
+    tradeCryptoId?: string;
 };
 export type Network = NetworkWithSpecificKey<NetworkSymbol>;
 

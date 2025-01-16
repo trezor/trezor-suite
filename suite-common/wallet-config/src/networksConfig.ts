@@ -37,7 +37,7 @@ export const networks = {
             },
         },
         coingeckoId: 'bitcoin',
-        coingeckoNativeId: 'bitcoin',
+        tradeCryptoId: 'bitcoin',
     },
     eth: {
         symbol: 'eth',
@@ -74,7 +74,7 @@ export const networks = {
             },
         },
         coingeckoId: 'ethereum',
-        coingeckoNativeId: 'ethereum',
+        tradeCryptoId: 'ethereum',
     },
     pol: {
         symbol: 'pol',
@@ -98,7 +98,7 @@ export const networks = {
             },
         },
         coingeckoId: 'polygon-pos',
-        coingeckoNativeId: 'polygon-ecosystem-token',
+        tradeCryptoId: 'polygon-ecosystem-token',
     },
     bsc: {
         symbol: 'bsc',
@@ -122,7 +122,7 @@ export const networks = {
             },
         },
         coingeckoId: 'binance-smart-chain',
-        coingeckoNativeId: 'binancecoin',
+        tradeCryptoId: 'binancecoin',
     },
     arb: {
         symbol: 'arb',
@@ -146,7 +146,7 @@ export const networks = {
             },
         },
         coingeckoId: 'arbitrum-one',
-        coingeckoNativeId: 'arbitrum-one--0x0000000000000000000000000000000000000000',
+        tradeCryptoId: 'arbitrum-one--0x0000000000000000000000000000000000000000',
     },
     base: {
         symbol: 'base',
@@ -170,7 +170,7 @@ export const networks = {
             },
         },
         coingeckoId: 'base',
-        coingeckoNativeId: 'base--0x0000000000000000000000000000000000000000',
+        tradeCryptoId: 'base--0x0000000000000000000000000000000000000000',
     },
     op: {
         symbol: 'op',
@@ -194,7 +194,7 @@ export const networks = {
             },
         },
         coingeckoId: 'optimistic-ethereum',
-        coingeckoNativeId: 'optimistic-ethereum--0x0000000000000000000000000000000000000000',
+        tradeCryptoId: 'optimistic-ethereum--0x0000000000000000000000000000000000000000',
     },
     sol: {
         symbol: 'sol',
@@ -223,7 +223,7 @@ export const networks = {
             },
         },
         coingeckoId: 'solana',
-        coingeckoNativeId: 'solana',
+        tradeCryptoId: 'solana',
     },
     ada: {
         // icarus derivation
@@ -259,7 +259,7 @@ export const networks = {
             },
         },
         coingeckoId: 'cardano',
-        coingeckoNativeId: 'cardano',
+        tradeCryptoId: 'cardano',
     },
     etc: {
         symbol: 'etc',
@@ -275,7 +275,7 @@ export const networks = {
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'ethereum-classic',
-        coingeckoNativeId: 'ethereum-classic',
+        tradeCryptoId: 'ethereum-classic',
     },
     xrp: {
         symbol: 'xrp',
@@ -290,7 +290,7 @@ export const networks = {
         backendTypes: ['ripple'],
         accountTypes: {},
         coingeckoId: 'ripple',
-        coingeckoNativeId: 'ripple',
+        tradeCryptoId: 'ripple',
     },
     ltc: {
         symbol: 'ltc',
@@ -314,7 +314,7 @@ export const networks = {
             },
         },
         coingeckoId: 'litecoin',
-        coingeckoNativeId: 'litecoin',
+        tradeCryptoId: 'litecoin',
     },
     bch: {
         symbol: 'bch',
@@ -329,7 +329,7 @@ export const networks = {
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'bitcoin-cash',
-        coingeckoNativeId: 'bitcoin-cash',
+        tradeCryptoId: 'bitcoin-cash',
     },
     doge: {
         symbol: 'doge',
@@ -344,7 +344,7 @@ export const networks = {
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'dogecoin',
-        coingeckoNativeId: 'dogecoin',
+        tradeCryptoId: 'dogecoin',
     },
     zec: {
         symbol: 'zec',
@@ -359,7 +359,7 @@ export const networks = {
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'zcash',
-        coingeckoNativeId: 'zcash',
+        tradeCryptoId: 'zcash',
     },
     dash: {
         symbol: 'dash',
@@ -374,7 +374,7 @@ export const networks = {
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'dash',
-        coingeckoNativeId: 'dash',
+        tradeCryptoId: 'dash',
     },
     btg: {
         symbol: 'btg',
@@ -394,7 +394,7 @@ export const networks = {
             },
         },
         coingeckoId: 'bitcoin-gold',
-        coingeckoNativeId: 'bitcoin-gold',
+        tradeCryptoId: 'bitcoin-gold',
     },
     dgb: {
         symbol: 'dgb',
@@ -414,7 +414,7 @@ export const networks = {
             },
         },
         coingeckoId: 'digibyte',
-        coingeckoNativeId: 'digibyte',
+        tradeCryptoId: 'digibyte',
     },
     nmc: {
         symbol: 'nmc',
@@ -429,7 +429,7 @@ export const networks = {
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'namecoin',
-        coingeckoNativeId: 'namecoin',
+        tradeCryptoId: 'namecoin',
     },
     vtc: {
         symbol: 'vtc',
@@ -453,7 +453,7 @@ export const networks = {
             },
         },
         coingeckoId: 'vertcoin',
-        coingeckoNativeId: 'vertcoin',
+        tradeCryptoId: 'vertcoin',
     },
     // testnets
     test: {
@@ -489,7 +489,7 @@ export const networks = {
             },
         },
         coingeckoId: undefined,
-        coingeckoNativeId: 'test-bitcoin', // fake, coingecko does not have testnets
+        tradeCryptoId: 'test-bitcoin', // fake, coingecko does not have testnets
     },
     regtest: {
         symbol: 'regtest',
@@ -525,7 +525,7 @@ export const networks = {
         },
         isDebugOnlyNetwork: true,
         coingeckoId: undefined,
-        coingeckoNativeId: undefined,
+        tradeCryptoId: undefined,
     },
     tsep: {
         symbol: 'tsep',
@@ -541,7 +541,7 @@ export const networks = {
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: undefined,
-        coingeckoNativeId: undefined,
+        tradeCryptoId: undefined,
     },
     thol: {
         symbol: 'thol',
@@ -557,7 +557,7 @@ export const networks = {
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: undefined,
-        coingeckoNativeId: undefined,
+        tradeCryptoId: undefined,
     },
     dsol: {
         symbol: 'dsol',
@@ -579,7 +579,7 @@ export const networks = {
         backendTypes: ['solana'],
         accountTypes: {},
         coingeckoId: undefined,
-        coingeckoNativeId: undefined,
+        tradeCryptoId: undefined,
     },
     tada: {
         // icarus derivation
@@ -613,7 +613,7 @@ export const networks = {
             },
         },
         coingeckoId: undefined,
-        coingeckoNativeId: undefined,
+        tradeCryptoId: undefined,
     },
     txrp: {
         symbol: 'txrp',
@@ -628,6 +628,6 @@ export const networks = {
         backendTypes: [],
         accountTypes: {},
         coingeckoId: undefined,
-        coingeckoNativeId: 'test-ripple', // fake, coingecko does not have testnets
+        tradeCryptoId: 'test-ripple', // fake, coingecko does not have testnets
     },
 } as const satisfies Networks;
