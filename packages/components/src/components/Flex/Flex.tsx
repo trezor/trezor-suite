@@ -143,7 +143,13 @@ const Container = styled.div<ContainerProps>`
 
 export type FlexProps = AllowedFrameProps & {
     gap?: SpacingValues;
+    /**
+     * Distributes space between and around content items along the **main** axis
+     */
     justifyContent?: FlexJustifyContent;
+    /**
+     * Controls the alignment of items on the **cross** axis
+     */
     alignItems?: FlexAlignItems;
     children: React.ReactNode;
     direction?: FlexDirection;
