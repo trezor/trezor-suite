@@ -80,7 +80,7 @@ export type FramePropsKeys = keyof FrameProps;
 type TransientFrameProps = TransientProps<FrameProps>;
 
 const getValueWithUnit = (value: string | number) =>
-    typeof value === 'string' ? value : `${value}px`;
+    typeof value === 'number' ? `${value}px` : value;
 
 export const pickAndPrepareFrameProps = (
     props: Record<string, any>,
