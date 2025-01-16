@@ -6,7 +6,10 @@ import regional from '@trezor/suite/src/constants/wallet/coinmarket/regional';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { step } from '../common';
+import { invityResponses } from '../../fixtures/invity/index';
 
+const quoteProviderLocator = '@coinmarket/offers/quote/provider';
+const quoteAmountLocator = '@coinmarket/offers/quote/crypto-amount';
 const getCountryLabel = (country: string) => {
     const labelWithFlag = regional.countriesMap.get(country);
     if (!labelWithFlag) {
@@ -16,7 +19,13 @@ const getCountryLabel = (country: string) => {
     return labelWithFlag.substring(labelWithFlag.indexOf(' ') + 1);
 };
 
-type paymentMethods =
+const paymentMethodToCamelCase = (text: string) =>
+    text
+        .split(' ')
+        .map((word, index) => (index === 0 ? word.toLowerCase() : word))
+        .join('') as PaymentMethods;
+
+type PaymentMethods =
     | 'googlePay'
     | 'applePay'
     | 'creditCard'
@@ -28,7 +37,7 @@ export class MarketActions {
     readonly offerSpinner: Locator;
     readonly section: Locator;
     readonly form: Locator;
-    readonly bestOfferProvider: Locator;
+    readonly quoteProvider: Locator;
     readonly bestOfferSection: Locator;
     readonly bestOfferAmount: Locator;
     readonly buyBestOfferButton: Locator;
@@ -52,14 +61,13 @@ export class MarketActions {
     readonly accountOption = (cryptoName: string, symbol: NetworkSymbol) =>
         this.page.getByTestId(`@coinmarket/form/select-crypto/option/${cryptoName}-${symbol}`);
     readonly paymentMethodDropdown: Locator;
-    readonly paymentMethodOption = (method: paymentMethods) =>
+    readonly paymentMethodOption = (method: PaymentMethods) =>
         this.page.getByTestId(`@coinmarket/form/payment-method-select/option/${method}`);
     readonly buyOffersPage: Locator;
     readonly compareButton: Locator;
     readonly quotes: Locator;
     readonly quoteOfProvider = (provider: string) =>
         this.page.getByTestId(`@coinmarket/offers/quote-${provider}`);
-    readonly quoteProvider: Locator;
     readonly quoteAmount: Locator;
     readonly refreshTime: Locator;
     readonly selectThisQuoteButton: Locator;
@@ -81,7 +89,7 @@ export class MarketActions {
         this.offerSpinner = this.page.getByTestId('@coinmarket/offers/loading-spinner');
         this.section = this.page.getByTestId('@coinmarket');
         this.form = this.page.getByTestId('@coinmarket/form');
-        this.bestOfferProvider = this.page.getByTestId('@coinmarket/offers/quote/provider');
+        this.quoteProvider = this.page.getByTestId(quoteProviderLocator);
         this.bestOfferSection = this.page.getByTestId('@coinmarket/best-offer');
         this.bestOfferAmount = this.page.getByTestId('@coinmarket/best-offer/amount');
         this.buyBestOfferButton = this.page.getByTestId('@coinmarket/form/buy-button');
@@ -106,8 +114,7 @@ export class MarketActions {
         this.buyOffersPage = this.page.getByTestId('@coinmarket/buy-offers');
         this.compareButton = this.page.getByTestId('@coinmarket/form/compare-button');
         this.quotes = this.page.getByTestId('@coinmarket/offers/quote');
-        this.quoteProvider = this.page.getByTestId('@coinmarket/offers/quote/provider');
-        this.quoteAmount = this.page.getByTestId('@coinmarket/offers/quote/crypto-amount');
+        this.quoteAmount = this.page.getByTestId(quoteAmountLocator);
         this.refreshTime = this.page.getByTestId('@coinmarket/refresh-time');
         this.selectThisQuoteButton = this.page.getByTestId(
             '@coinmarket/offers/get-this-deal-button',
@@ -173,7 +180,7 @@ export class MarketActions {
     }
 
     @step()
-    async selectPaymentMethod(method: paymentMethods) {
+    async selectPaymentMethod(method: PaymentMethods) {
         await this.paymentMethodDropdown.click();
         await this.paymentMethodOption(method).click();
     }
@@ -207,7 +214,7 @@ export class MarketActions {
     async readBestOfferValues() {
         await expect(this.bestOfferAmount).not.toHaveText('0 BTC');
         const amount = await this.bestOfferAmount.textContent();
-        const provider = await this.bestOfferProvider.textContent();
+        const provider = await this.quoteProvider.textContent();
         if (!amount || !provider) {
             throw new Error(
                 `Test was not able to extract amount or provider from the page. Amount: ${amount}, Provider: ${provider}`,
@@ -215,5 +222,42 @@ export class MarketActions {
         }
 
         return { amount, provider };
+    }
+
+    @step()
+    async mockInvity() {
+        const invityUrl = 'https://exchange.trezor.io';
+        for (const [path, response] of Object.entries(invityResponses)) {
+            await this.page.route(`${invityUrl}/${path}`, async route => {
+                await route.fulfill({ json: response });
+            });
+        }
+    }
+
+    @step()
+    async getSelectedPaymentMethod() {
+        const dropdownText = await this.paymentMethodDropdown.textContent();
+        if (!dropdownText || typeof dropdownText !== 'string') {
+            throw new Error('Payment method dropdown is empty or not a string');
+        }
+
+        return paymentMethodToCamelCase(dropdownText);
+    }
+
+    @step()
+    async validateBuyQuotes() {
+        const paymentMethod = await this.getSelectedPaymentMethod();
+        const expectedQuotes = invityResponses[`api/v3/buy/quotes`].filter(
+            quote => quote.paymentMethod === paymentMethod && quote.error === undefined,
+        );
+        expect.soft(await this.quotes.count()).toBe(expectedQuotes.length);
+
+        const displayedQuotes = await this.quotes.all();
+        for (const [index, quote] of displayedQuotes.entries()) {
+            const provider = await quote.getByTestId(quoteProviderLocator).textContent();
+            const amount = await quote.getByTestId(quoteAmountLocator).textContent();
+            expect.soft(provider?.toLowerCase()).toBe(expectedQuotes[index].exchange);
+            expect.soft(amount).toBe(expectedQuotes[index].receiveStringAmount);
+        }
     }
 }
