@@ -141,20 +141,14 @@ describe('DeviceList', () => {
         list.init({ transports: [transport], pendingTransportEvent: true });
         const transportFirstEvent = list.pendingConnection();
 
-        // NOTE: this behavior is wrong, if device creation fails DeviceList shouldn't wait 10 secs.
-        jest.useFakeTimers();
-        // move 9 sec forward
-        await jest.advanceTimersByTimeAsync(9 * 1000);
         // no events yet
         expect(eventsSpy).toHaveBeenCalledTimes(0);
-        // move 2 sec forward
-        await jest.advanceTimersByTimeAsync(2 * 1000);
-        // promise should be resolved by now
         await transportFirstEvent;
-        jest.useRealTimers();
+        const events = eventsSpy.mock.calls.map(call => call[0]);
+        expect(events).toEqual(['device-disconnect', 'transport-start']);
 
-        expect(eventsSpy).toHaveBeenCalledTimes(1);
-        expect(eventsSpy.mock.calls[0][0]).toEqual('transport-start');
+        // todo: device should also disappear from DeviceList but it does not. this needs to get discussed
+        expect(list.getDeviceCount()).toEqual(0);
     });
 
     it('.init() with pendingTransportEvent (unreadable device)', async () => {

@@ -363,6 +363,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         error.message === TRANSPORT_ERROR.HTTP_ERROR // bridge died during device initialization
                     ) {
                         // disconnected, do nothing
+                        this.emitLifecycle(DEVICE.DISCONNECT);
                     } else if (
                         // we don't know what really happened
                         error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR ||
