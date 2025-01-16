@@ -135,3 +135,6 @@ packages/suite-data/files/translations/master.json
 # cypress download folder
 
 packages/suite-web/e2e/downloads
+
+# python
+.venv/

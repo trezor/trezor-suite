@@ -22,6 +22,23 @@ _Make sure that desired `[coin].json` definition is present in `trezor-firmware`
 
 2. Build `src/data/coins.json` file using `trezor-common/cointool`:
 
+You need to have a python3 environment setup in order to be able to run it.
+
+Create a python `virtualenv`:
+
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
 ```
+
+Then you run pip with the `requirements.txt` file form the trezor-common submodule:
+
+```bash
+pip install -r submodules/trezor-common/tools/requirements.txt
+```
+
+Now you have all the required dependencies install so you can finally run the script that will update the coins:
+
+```bash
 yarn update-coins
 ```
