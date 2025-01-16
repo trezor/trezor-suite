@@ -45,42 +45,18 @@ export class UsbApi extends AbstractApi {
         this.debugLink = debugLink;
     }
 
-    public listen() {
-        this.usbInterface.onconnect = event => {
-            this.logger?.debug(`usb: onconnect: ${this.formatDeviceForLog(event.device)}`);
+    public async listen() {
+        this.listening = true;
 
-            return this.createDevices([event.device], this.abortController.signal)
-                .then(newDevices => {
-                    this.devices = [...this.devices, ...newDevices];
-                    this.emit('transport-interface-change', this.devicesToDescriptors());
-                })
-                .catch(err => {
-                    // empty
-                    this.logger?.error(`usb: createDevices error: ${err.message}`);
-                });
-        };
+        while (this.listening) {
+            const previousDescriptors = this.devicesToDescriptors();
+            await this.enumerate();
+            await createTimeoutPromise(200);
 
-        this.usbInterface.ondisconnect = event => {
-            const { device } = event;
-            if (!device.serialNumber) {
-                this.logger?.debug(
-                    `usb: ondisconnect: device without serial number:, ${device.productName}, ${device.manufacturerName}`,
-                );
-
-                // trezor devices have serial number 468E58AE386B5D2EA8C572A2 or 000000000000000000000000 (for bootloader devices)
-                return;
-            }
-
-            const index = this.devices.findIndex(d => d.path === device.serialNumber);
-            if (index > -1) {
-                this.devices.splice(index, 1);
+            if (previousDescriptors.length !== this.devicesToDescriptors().length) {
                 this.emit('transport-interface-change', this.devicesToDescriptors());
-            } else {
-                // todo: this doesn't make sense. this error is fired for disconnected dongles, keyboards etc. we are not consuming transport-interface-error anywhere so it doesn't matter, it is just useless
-                this.emit('transport-interface-error', ERRORS.DEVICE_NOT_FOUND);
-                this.logger?.error('usb: device that should be removed does not exist in state');
             }
-        };
+        }
     }
 
     private formatDeviceForLog(device: USBDevice) {
@@ -511,10 +487,7 @@ export class UsbApi extends AbstractApi {
     }
 
     public dispose() {
-        if (this.usbInterface) {
-            this.usbInterface.onconnect = null;
-            this.usbInterface.ondisconnect = null;
-        }
+        this.listening = false;
         this.abortController.abort();
     }
 }
