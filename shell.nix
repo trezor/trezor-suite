@@ -32,6 +32,8 @@ in
       (yarn.override {
         nodejs = null; # use input nodejs
       })
+      python3
+      python3Packages.pip
       jre
       p7zip
       electron
