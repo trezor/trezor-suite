@@ -11076,7 +11076,12 @@ __metadata:
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/icons": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    react: "npm:18.2.0"
+    react-native: "npm:0.76.1"
   languageName: unknown
   linkType: soft
 

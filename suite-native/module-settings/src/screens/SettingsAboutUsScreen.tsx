@@ -1,11 +1,10 @@
 import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { VStack, Divider } from '@suite-native/atoms';
+import { Divider, VStack } from '@suite-native/atoms';
 import { useOpenLink } from '@suite-native/link';
 import { useTranslate } from '@suite-native/intl';
+import { SettingsSection, SettingsSectionItem } from '@suite-native/settings';
 
 import { AboutUsBanners } from '../components/AboutUsBanners';
-import { SettingsSection } from '../components/SettingsSection';
-import { SettingsSectionItem } from '../components/SettingsSectionItem';
 import { AppVersion } from '../components/AppVersion';
 
 export const SettingsAboutUsScreen = () => {

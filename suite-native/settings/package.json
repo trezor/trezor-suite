@@ -13,6 +13,11 @@
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
-        "@trezor/connect": "workspace:*"
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/icons": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/styles": "workspace:*",
+        "react": "18.2.0",
+        "react-native": "0.76.1"
     }
 }

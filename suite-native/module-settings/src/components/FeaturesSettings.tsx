@@ -4,18 +4,17 @@ import { useNavigation } from '@react-navigation/core';
 import { useAtomValue } from 'jotai';
 
 import {
-    SettingsStackRoutes,
-    RootStackRoutes,
-    StackNavigationProps,
     RootStackParamList,
+    RootStackRoutes,
+    SettingsStackRoutes,
+    StackNavigationProps,
 } from '@suite-native/navigation';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { SettingsSection, SettingsSectionItem } from '@suite-native/settings';
 
 import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
-import { SettingsSection } from './SettingsSection';
-import { SettingsSectionItem } from './SettingsSectionItem';
 import { isDevButtonVisibleAtom } from './ProductionDebug';
 
 export const FeaturesSettings = () => {
