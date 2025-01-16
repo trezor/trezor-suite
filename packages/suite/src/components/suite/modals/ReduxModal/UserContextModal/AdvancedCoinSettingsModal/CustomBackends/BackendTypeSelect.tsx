@@ -65,6 +65,7 @@ export const BackendTypeSelect = ({ network, value, onChange }: BackendTypeSelec
             onChange={changeType}
             options={backendOptions}
             data-testid="@settings/advance/select-type"
+            size="small"
         />
     ) : null;
 };

@@ -8,11 +8,15 @@ import { TransientProps, makePropsTransient } from '../../utils/transientProps';
 export const textWraps = ['balance', 'break-word', 'pretty', 'nowrap'];
 export type TextWrap = (typeof textWraps)[number];
 
+export const textCase = ['uppercase', 'lowercase', 'titlecase'] as const;
+export type TextCase = (typeof textCase)[number];
+
 export type TextProps = {
     typographyStyle?: TypographyStyle;
     textWrap?: TextWrap;
     align?: UIHorizontalAlignment;
     ellipsisLineCount?: number;
+    case?: TextCase;
 };
 
 export type TextPropsKeys = keyof TextProps;
@@ -32,6 +36,7 @@ export const withTextProps = ({
     $typographyStyle,
     $align,
     $ellipsisLineCount = 0,
+    $case,
 }: TransientTextProps) => css`
     ${$textWrap &&
     css`
@@ -42,23 +47,34 @@ export const withTextProps = ({
               ${typography[$typographyStyle]}
           `
         : ''}
-        ${$align &&
+    ${$align &&
     css`
         text-align: ${$align};
     `}
-        ${$ellipsisLineCount > 0 &&
+    ${$ellipsisLineCount > 0 &&
     css`
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
     `}
-        ${$ellipsisLineCount > 1 &&
+    ${$ellipsisLineCount > 1 &&
     css`
         white-space: initial;
         -webkit-line-clamp: ${$ellipsisLineCount};
         display: -webkit-box;
         -webkit-box-orient: vertical;
     `}
+    ${$case && $case === 'titlecase'
+        ? css`
+              text-transform: lowercase;
+
+              &::first-letter {
+                  text-transform: uppercase;
+              }
+          `
+        : css`
+              text-transform: ${$case};
+          `}
 `;
 
 const getStorybookType = (key: TextPropsKeys) => {
@@ -91,6 +107,13 @@ const getStorybookType = (key: TextPropsKeys) => {
                     min: 0,
                 },
             };
+        case 'case':
+            return {
+                options: [undefined, ...textCase],
+                control: {
+                    type: 'select',
+                },
+            };
         default:
             return {
                 control: {
@@ -120,6 +143,7 @@ export const getTextPropsStory = (allowedTextProps: Array<TextPropsKeys>) => {
             ...(allowedTextProps.includes('typographyStyle') ? { typographyStyle: undefined } : {}),
             ...(allowedTextProps.includes('align') ? { align: undefined } : {}),
             ...(allowedTextProps.includes('ellipsisLineCount') ? { hasEllipsis: undefined } : {}),
+            ...(allowedTextProps.includes('case') ? { case: undefined } : {}),
         },
         argTypes,
     };

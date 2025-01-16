@@ -42,13 +42,18 @@ const ContentWrapper = styled.div`
 export type ListItemProps = {
     children: React.ReactNode;
     bulletComponent?: React.ReactNode;
+    'data-testid'?: string;
 };
 
-export const ListItem = ({ bulletComponent, children }: ListItemProps) => {
+export const ListItem = ({
+    bulletComponent,
+    'data-testid': dataTestId,
+    children,
+}: ListItemProps) => {
     const { bulletGap, bulletAlignment, bulletComponent: listBulletComponent } = useList();
 
     return (
-        <Item $gap={bulletGap} $bulletAlignment={bulletAlignment}>
+        <Item $gap={bulletGap} $bulletAlignment={bulletAlignment} data-testid={dataTestId}>
             <BulletWrapper>{bulletComponent ?? listBulletComponent}</BulletWrapper>
             <ContentWrapper>{children}</ContentWrapper>
         </Item>

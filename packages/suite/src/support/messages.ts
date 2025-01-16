@@ -4532,6 +4532,10 @@ export default defineMessages({
         id: 'TR_BACKUP_CREATED',
         defaultMessage: 'Wallet backup complete',
     },
+    TR_REMOVE: {
+        id: 'TR_REMOVE',
+        defaultMessage: 'Remove',
+    },
     TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED: {
         id: 'TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED',
         defaultMessage: 'Completed',

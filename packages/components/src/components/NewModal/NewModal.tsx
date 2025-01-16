@@ -104,7 +104,7 @@ const InnerNewModalBase = ({
                     {hasHeader && (
                         <Row
                             padding={{ horizontal: spacings.md, top: spacings.md }}
-                            alignItems="center"
+                            alignItems={description ? 'flex-start' : 'center'}
                             gap={spacings.md}
                             as="header"
                         >

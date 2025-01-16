@@ -1,21 +1,12 @@
-import styled from 'styled-components';
-
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Paragraph } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Wrapper = styled(Paragraph)`
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-`;
-
-interface ConnectionInfoProps {
+type ConnectionInfoProps = {
     symbol: NetworkSymbol;
-}
+};
 
 const ConnectionInfo = ({ symbol }: ConnectionInfoProps) => {
     const blockchain = useSelector(state => state.wallet.blockchain);
@@ -23,21 +14,24 @@ const ConnectionInfo = ({ symbol }: ConnectionInfoProps) => {
     const { connected, url, blockHash: hash, blockHeight: height, version } = blockchain[symbol];
 
     return (
-        <Wrapper typographyStyle="hint">
+        <Paragraph typographyStyle="hint">
             {connected ? (
                 <>
                     <Translation id="SETTINGS_ADV_COIN_CONN_INFO_URL" values={{ url }} />
+                    <br />
                     <Translation id="SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH" values={{ hash }} />
+                    <br />
                     <Translation
                         id="SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HEIGHT"
                         values={{ height }}
                     />
+                    <br />
                     <Translation id="SETTINGS_ADV_COIN_CONN_INFO_VERSION" values={{ version }} />
                 </>
             ) : (
                 <Translation id="SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED" />
             )}
-        </Wrapper>
+        </Paragraph>
     );
 };
 

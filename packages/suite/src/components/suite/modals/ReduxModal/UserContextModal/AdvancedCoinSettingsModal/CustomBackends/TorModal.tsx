@@ -1,20 +1,9 @@
-import styled from 'styled-components';
-
-import { Button, Paragraph } from '@trezor/components';
+import { H3, NewModal, Paragraph } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
-import { Modal, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { getIsTorLoading } from 'src/utils/suite/tor';
-
-const StyledModal = styled(Modal)`
-    width: 550px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Content = styled(Paragraph)`
-    margin: 16px 0;
-`;
 
 export type TorResult = 'use-defaults' | 'enable-tor';
 
@@ -26,29 +15,31 @@ export const TorModal = ({ onResult }: TorModalProps) => {
     const isTorLoading = useSelector(state => getIsTorLoading(state.suite.torStatus));
 
     return (
-        <StyledModal
-            heading={<Translation id="TR_TOR_ENABLE" />}
-            bottomBarComponents={
+        <NewModal
+            bottomContent={
                 <>
-                    <Button variant="tertiary" onClick={() => onResult('use-defaults')}>
-                        <Translation id="TR_USE_DEFAULT_BACKENDS" />
-                    </Button>
-
                     {isDesktop() && (
-                        <Button
-                            variant="primary"
+                        <NewModal.Button
                             isLoading={isTorLoading}
                             onClick={() => onResult('enable-tor')}
                         >
                             <Translation id="TR_TOR_ENABLE_AND_CONFIRM" />
-                        </Button>
+                        </NewModal.Button>
                     )}
+                    <NewModal.Button variant="tertiary" onClick={() => onResult('use-defaults')}>
+                        <Translation id="TR_USE_DEFAULT_BACKENDS" />
+                    </NewModal.Button>
                 </>
             }
+            size="small"
+            iconName="tor"
         >
-            <Content>
+            <H3>
+                <Translation id="TR_TOR_ENABLE" />
+            </H3>
+            <Paragraph variant="tertiary">
                 <Translation id="TR_ONION_BACKEND_TOR_NEEDED" />
-            </Content>
-        </StyledModal>
+            </Paragraph>
+        </NewModal>
     );
 };
