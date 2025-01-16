@@ -96,47 +96,57 @@ const getFirmwareRelease = (): NonNullable<Device['firmwareRelease']> => ({
  * @param {Partial<Features>} [feat]
  * @returns {Features}
  */
-const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
-    vendor: 'trezor.io',
-    major_version: 2,
-    minor_version: 1,
-    patch_version: 1,
-    bootloader_mode: null,
-    device_id: 'device-id',
-    pin_protection: false,
-    passphrase_protection: false,
-    language: 'en-US',
-    label: 'My Trezor',
-    initialized: true,
-    revision: 'df0963ec',
-    bootloader_hash: '7447a41717022e3eb32011b00b2a68ebb9c7f603cdc730e7307850a3f4d62a5c',
-    imported: null,
-    unlocked: true,
-    firmware_present: null,
-    backup_availability: 'NotAvailable',
-    flags: 0,
-    model: 'T',
-    internal_model: DeviceModelInternal.T2T1,
-    fw_major: null,
-    fw_minor: null,
-    fw_patch: null,
-    fw_vendor: null,
-    unfinished_backup: false,
-    no_backup: false,
-    recovery_status: 'Nothing',
-    capabilities: [],
-    backup_type: 'Bip39',
-    sd_card_present: false,
-    sd_protection: false,
-    wipe_code_protection: false,
-    session_id: 'session-id',
-    passphrase_always_on_device: false,
-    safety_checks: 'Strict',
-    auto_lock_delay_ms: 60000,
-    display_rotation: 'North',
-    experimental_features: false,
-    ...feat,
-});
+const getDeviceFeatures = (feat?: Partial<Features>): Features => {
+    const isBootloader = feat?.bootloader_mode;
+    const major_version = feat?.major_version || 2;
+    const [_, minor_version, patch_version] = isBootloader ? [2, 0, 0] : [2, 1, 1];
+    const [fw_major, fw_minor, fw_patch] = isBootloader
+        ? [major_version, 1, 1]
+        : [null, null, null];
+    const firmware_present = isBootloader ? false : null;
+
+    return {
+        vendor: 'trezor.io',
+        major_version,
+        minor_version,
+        patch_version,
+        bootloader_mode: null,
+        device_id: 'device-id',
+        pin_protection: false,
+        passphrase_protection: false,
+        language: 'en-US',
+        label: 'My Trezor',
+        initialized: true,
+        revision: 'df0963ec',
+        bootloader_hash: '7447a41717022e3eb32011b00b2a68ebb9c7f603cdc730e7307850a3f4d62a5c',
+        imported: null,
+        unlocked: true,
+        firmware_present,
+        backup_availability: 'NotAvailable',
+        flags: 0,
+        model: 'T',
+        internal_model: DeviceModelInternal.T2T1,
+        fw_major,
+        fw_minor,
+        fw_patch,
+        fw_vendor: null,
+        unfinished_backup: false,
+        no_backup: false,
+        recovery_status: 'Nothing',
+        capabilities: [],
+        backup_type: 'Bip39',
+        sd_card_present: false,
+        sd_protection: false,
+        wipe_code_protection: false,
+        session_id: 'session-id',
+        passphrase_always_on_device: false,
+        safety_checks: 'Strict',
+        auto_lock_delay_ms: 60000,
+        display_rotation: 'North',
+        experimental_features: false,
+        ...feat,
+    };
+};
 
 type StringPath<T extends { path: DeviceUniquePath }> = Omit<T, 'path'> & { path: string };
 
@@ -213,7 +223,8 @@ const getSuiteDevice = (
     >,
     feat?: Partial<Features>,
 ): TrezorDevice => {
-    const device = getConnectDevice(dev, feat);
+    const bootloader_mode = dev?.mode === 'bootloader';
+    const device = getConnectDevice(dev, { bootloader_mode, ...feat });
     if (device.type === 'acquired') {
         return {
             useEmptyPassphrase: true,
