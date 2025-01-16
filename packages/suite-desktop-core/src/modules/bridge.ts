@@ -88,8 +88,10 @@ const shouldUseLegacyBridge = (store: Dependencies['store']) => {
 
     // Legacy bridge explicitly requested
     if (bridgeLegacy || legacyRequestedBySettings) return true;
-    // EAP or dev uses node-bridge by default
-    if (allowPrerelease || isDevEnv) return false;
+    // dev uses node-bridge by default
+    if (isDevEnv) return false;
+    // eap has node-bridge temporarily disabled
+    if (allowPrerelease) return true;
 
     // handle rollout for regular users
     if (skipNewBridgeRollout) return false;
