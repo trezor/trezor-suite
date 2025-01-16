@@ -45,10 +45,28 @@ const devXpubs: Partial<Record<NetworkSymbol, string | DevXpub[]>> = {
         },
     ],
     etc: '0x500910C4c42F1F2eeAF7E36d0c6f41e0F8858d5f', // Public key, not xpub
-    ada: '432505dc5010ec888c650319035dff62f964002f02473fa7fd65dd67f9bd80b327674cabf29c39a14c367dbae5ee01f967f8b4c3ad63a45468da8f28bb2e03d5',
+    ada: [
+        {
+            title: 'No tokens',
+            address:
+                '432505dc5010ec888c650319035dff62f964002f02473fa7fd65dd67f9bd80b327674cabf29c39a14c367dbae5ee01f967f8b4c3ad63a45468da8f28bb2e03d5',
+        },
+        {
+            title: 'Has tokens',
+            address:
+                '0c8b8b13536f2e46ad2cf696dc6849e435e2da680ec9fbf00b346eed093e1b26b8584f456117cda444289858548456f3d174e3659bd8fea8fdaffe8d517dc2ce',
+        },
+    ],
     txrp: 'rJX2KwzaLJDyFhhtXKi3htaLfaUH2tptEX',
     xrp: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
-    sol: 'C4pFbTQGpEXmsmiToPPL2Qix1UDeD8bHXpi77Hk9WesZ',
+    sol: [
+        { title: 'tokens', address: 'J3Zxo9RQzwdm176Qt1FZ84HCha5ftMhs8QHEAfFsn6BX' },
+        { title: 'has staking', address: '3YY83cYm9BvAJP8gBwMc15t7YLne4R6cadiv2oDdaK7j' },
+    ],
+    op: '0xeF3aA93917616a2B5CA152D6B7Ddd797896c6303',
+    arb: '0xeF3aA93917616a2B5CA152D6B7Ddd797896c6303',
+    base: '0xeF3aA93917616a2B5CA152D6B7Ddd797896c6303',
+    pol: '0xeF3aA93917616a2B5CA152D6B7Ddd797896c6303',
 };
 
 type DevXpub = {
