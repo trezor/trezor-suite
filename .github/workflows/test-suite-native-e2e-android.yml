@@ -21,6 +21,7 @@ concurrency:
 env:
   NODE_ENV: "test"
   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+  RN_SRC_EXT: "e2e.tsx"
 
 jobs:
   prepare_android_test_app:

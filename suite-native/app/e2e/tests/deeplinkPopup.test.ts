@@ -60,7 +60,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
 
         await prepareTrezorEmulator();
         await openApp({ newInstance: true });
-        await onOnboarding.finishOnboarding();
+        await onOnboarding.skipOnboarding();
 
         await onCoinEnablingInit.waitForScreen();
         await onCoinEnablingInit.enableNetwork('regtest');

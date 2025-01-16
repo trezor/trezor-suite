@@ -4,6 +4,11 @@ const nodejs = require('node-libs-browser');
 const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const { mergeConfig } = require('@react-native/metro-config');
 
+const jsonExpoConfig = getSentryExpoConfig(__dirname);
+const defaultSourceExts = jsonExpoConfig.resolver.sourceExts;
+const additionalSOurceExts = process.env.RN_SRC_EXT ? process.env.RN_SRC_EXT.split(',') : [];
+const sourceExts = [...additionalSOurceExts, ...defaultSourceExts];
+
 /**
  * Metro configuration
  * https://facebook.github.io/metro/docs/configuration
@@ -29,6 +34,7 @@ const config = {
             http: nodejs.http,
             zlib: nodejs.zlib,
         },
+        sourceExts,
         resolveRequest: (context, moduleName, platform) => {
             // index 0 refers to suite-native/app node_modules directory
             const rootNodeModulesPath = context.nodeModulesPaths[1];
@@ -67,4 +73,4 @@ const config = {
         },
     },
 };
-module.exports = mergeConfig(getSentryExpoConfig(__dirname), config);
+module.exports = mergeConfig(jsonExpoConfig, config);

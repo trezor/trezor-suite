@@ -8,7 +8,7 @@ import { onTabBar } from '../pageObjects/tabBarActions';
 describe('Import Bitcoin network accounts.', () => {
     beforeAll(async () => {
         await openApp({ newInstance: true });
-        await onOnboarding.finishOnboarding();
+        await onOnboarding.skipOnboarding();
         await onTabBar.navigateToMyAssets();
     });
 

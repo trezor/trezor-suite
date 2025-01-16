@@ -16,7 +16,7 @@ const goToBtcImportXpubScreen = async () => {
 describe('Import invalid accounts', () => {
     beforeAll(async () => {
         await openApp({ newInstance: true });
-        await onOnboarding.finishOnboarding();
+        await onOnboarding.skipOnboarding();
     });
 
     beforeEach(async () => {

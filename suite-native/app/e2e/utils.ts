@@ -121,3 +121,13 @@ export const disconnectTrezorUserEnv = async () => {
 export const wait = async (ms: number) => {
     await new Promise(resolve => setTimeout(resolve, ms));
 };
+
+export const waitForElementByTextToBeVisible = (text: string, timeout = 2000) =>
+    waitFor(element(by.text(text)))
+        .toBeVisible()
+        .withTimeout(timeout);
+
+export const waitForElementByIdToBeVisible = (testId: string, timeout = 2000) =>
+    waitFor(element(by.id(testId)))
+        .toBeVisible()
+        .withTimeout(timeout);

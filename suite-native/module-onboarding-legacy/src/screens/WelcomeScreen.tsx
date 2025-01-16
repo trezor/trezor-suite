@@ -14,6 +14,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
 import { OnboardingScreen } from '../components/OnboardingScreen';
+import { E2ESkipOnboardingButton } from '../components/E2ESkipOnboardingButton';
 
 const titleStyle = prepareNativeStyle(utils => ({
     textAlign: 'center',
@@ -56,6 +57,7 @@ export const WelcomeScreen = () => {
             <Box flex={1} />
             <Box alignItems="center" justifyContent="center">
                 <Box alignItems="center">
+                    <E2ESkipOnboardingButton />
                     <Box marginBottom="sp24">
                         <Icon size="extraLarge" name="trezorLogo" color="iconDefault" />
                     </Box>

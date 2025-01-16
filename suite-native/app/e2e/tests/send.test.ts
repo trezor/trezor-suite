@@ -70,7 +70,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow.'
     beforeAll(async () => {
         await prepareTrezorEmulator();
         await openApp({ newInstance: true });
-        await onOnboarding.finishOnboarding();
+        await onOnboarding.skipOnboarding();
 
         await TrezorUserEnvLink.sendToAddressAndMineBlock({
             address: 'bcrt1q34up3cga3fkmph47t22mpk5d0xxj3ppghph9da',

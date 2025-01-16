@@ -21,7 +21,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
         await prepareTrezorEmulator();
         await openApp({ newInstance: true });
 
-        await onOnboarding.finishOnboarding();
+        await onOnboarding.skipOnboarding();
 
         await onCoinEnablingInit.waitForScreen();
         await onCoinEnablingInit.enableNetwork('btc');

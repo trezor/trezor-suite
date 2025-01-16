@@ -1,16 +1,15 @@
 import { expect as detoxExpect } from 'detox';
 
 import { onAlertSheet } from './alertSheetActions';
+import { waitForElementByIdToBeVisible } from '../utils';
 
 const platform = device.getPlatform();
 
 class OnOnboardingActions {
     async finishOnboarding() {
-        await waitFor(element(by.id('@onboarding/Welcome/nextBtn')))
-            .toBeVisible()
-            .withTimeout(20000); // Debug build takes some time to load.
-
-        await element(by.id('@onboarding/Welcome/nextBtn')).tap();
+        const testId = '@onboarding/Welcome/nextBtn';
+        await waitForElementByIdToBeVisible(testId, 20000);
+        await element(by.id(testId)).tap();
 
         if (platform === 'android') {
             await element(by.id('@onboarding/ConnectTrezor/nextBtn')).tap();
@@ -35,6 +34,12 @@ class OnOnboardingActions {
                 'Biometrics not supported by device, skipping close of biometrics bottom sheet.',
             );
         }
+    }
+
+    async skipOnboarding() {
+        const testId = '@onboarding/e2eSkipOnboarding';
+        await waitForElementByIdToBeVisible(testId, 20000);
+        await element(by.id(testId)).tap();
     }
 }
 

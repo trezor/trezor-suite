@@ -13,7 +13,7 @@ import { onTabBar } from '../pageObjects/tabBarActions';
 describe('Account management', () => {
     beforeAll(async () => {
         await openApp({ newInstance: true });
-        await onOnboarding.finishOnboarding();
+        await onOnboarding.skipOnboarding();
     });
 
     beforeEach(async () => {
