@@ -628,6 +628,12 @@ export const useCoinmarketExchangeForm = ({
         }
     }, [defaultValues, values, removeDraft]);
 
+    useEffect(() => {
+        if (account.key === coinmarketAccount?.key) {
+            setAccount(coinmarketAccount);
+        }
+    }, [account, setAccount, coinmarketAccount]);
+
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
         register('options');

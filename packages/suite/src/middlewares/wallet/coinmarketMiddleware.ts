@@ -2,6 +2,7 @@ import { MiddlewareAPI } from 'redux';
 
 import { UI } from '@trezor/connect';
 import { Route } from '@suite-common/suite-types';
+import { accountsActions } from '@suite-common/wallet-core';
 
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import {
@@ -211,6 +212,18 @@ export const coinmarketMiddleware =
 
             if (account) {
                 invityAPI.createInvityAPIKey(account.descriptor);
+            }
+        }
+
+        if (isCoinmarketRoute && action.type === accountsActions.updateAccount.type) {
+            const account = action.payload;
+
+            if (state.wallet.coinmarket.sell.coinmarketAccount?.key === account.key) {
+                api.dispatch(coinmarketSellActions.setCoinmarketSellAccount(account));
+            }
+
+            if (state.wallet.coinmarket.exchange.coinmarketAccount?.key === account.key) {
+                api.dispatch(coinmarketExchangeActions.setCoinmarketExchangeAccount(account));
             }
         }
 
