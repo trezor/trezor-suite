@@ -8701,7 +8701,7 @@ export default defineMessages({
     TR_STAKE_UNSTAKING_TAKES: {
         id: 'TR_STAKE_UNSTAKING_TAKES',
         defaultMessage:
-            'Unstaking currently takes {count, plural, one {# day} other {# days}}. Once completed, you can trade or send your funds.',
+            'Unstaking currently takes up to {count, plural, one {# day} other {# days}}. Once completed, you can trade or send your funds.',
     },
     TR_STAKE_ETH_REWARDS_EARN: {
         id: 'TR_STAKE_ETH_REWARDS_EARN',
@@ -8751,7 +8751,8 @@ export default defineMessages({
     },
     TR_STAKE_ACTIVATION_COULD_TAKE: {
         id: 'TR_STAKE_ACTIVATION_COULD_TAKE',
-        defaultMessage: 'Stake activation usually takes 1 epoch (~3 days).',
+        defaultMessage:
+            'Stake activation usually takes 1 epoch (up to {count, plural, one {# day} other {# days}}).',
     },
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',
@@ -8829,7 +8830,8 @@ export default defineMessages({
     },
     TR_STAKE_EXPECTED_REWARDS: {
         id: 'TR_STAKE_EXPECTED_REWARDS',
-        defaultMessage: 'Expected rewards per 1 epoch (~{days} days)',
+        defaultMessage:
+            'Expected rewards per 1 epoch (up to {count, plural, one {# day} other {# days}})',
     },
     TR_TX_CONFIRMED: {
         id: 'TR_TX_CONFIRMED',

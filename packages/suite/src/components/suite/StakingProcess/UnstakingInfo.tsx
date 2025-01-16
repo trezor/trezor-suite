@@ -20,7 +20,7 @@ import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 import { InfoRow } from './InfoRow';
 
 type InfoRowsData = {
-    readyForClaimDays: number | undefined;
+    readyForClaimDays: JSX.Element;
     deactivatePeriodHeading: JSX.Element;
     deactivatePeriodSubheading: JSX.Element;
 };
@@ -33,7 +33,9 @@ const getInfoRowsData = (
     switch (networkType) {
         case 'ethereum':
             return {
-                readyForClaimDays: daysToUnstake,
+                readyForClaimDays: (
+                    <Translation id="TR_STAKE_DAYS" values={{ count: daysToUnstake }} />
+                ),
                 deactivatePeriodHeading: <Translation id="TR_STAKE_LEAVE_STAKING_POOL" />,
                 deactivatePeriodSubheading: (
                     <Translation
@@ -44,7 +46,9 @@ const getInfoRowsData = (
             };
         case 'solana':
             return {
-                readyForClaimDays: SOLANA_EPOCH_DAYS,
+                readyForClaimDays: (
+                    <Translation id="TR_UP_TO_DAYS" values={{ count: SOLANA_EPOCH_DAYS }} />
+                ),
                 deactivatePeriodHeading: <Translation id="TR_STAKE_COOL_DOWN_PERIOD" />,
                 deactivatePeriodSubheading: <Translation id="TR_STAKE_WAIT_FOR_DEACTIVATION" />,
             };
@@ -85,12 +89,7 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
             heading: infoRowsData?.deactivatePeriodHeading,
             subheading: infoRowsData?.deactivatePeriodSubheading,
             content: {
-                text: (
-                    <Translation
-                        id="TR_STAKE_DAYS"
-                        values={{ count: infoRowsData?.readyForClaimDays }}
-                    />
-                ),
+                text: infoRowsData?.readyForClaimDays,
             },
         },
         {

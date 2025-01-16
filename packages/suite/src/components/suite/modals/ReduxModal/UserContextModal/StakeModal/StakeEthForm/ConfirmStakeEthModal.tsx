@@ -5,6 +5,7 @@ import { spacings } from '@trezor/theme';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
 import { getNetworkDisplaySymbol, type NetworkType } from '@suite-common/wallet-config';
+import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -35,6 +36,7 @@ export const ConfirmStakeEthModal = ({
     const validatorsQueue = useSelector(state => selectValidatorsQueueData(state, account?.symbol));
 
     const daysToAddToPoolInitial = getDaysToAddToPoolInitial(validatorsQueue);
+    const daysToAddToPool = daysToAddToPoolInitial === undefined ? 30 : daysToAddToPoolInitial;
 
     const isDisabled = !hasAgreed || isLoading;
 
@@ -72,7 +74,9 @@ export const ConfirmStakeEthModal = ({
                         id={getStakeEnteringMessage(account?.networkType)}
                         values={{
                             count:
-                                daysToAddToPoolInitial === undefined ? 30 : daysToAddToPoolInitial,
+                                account?.networkType === 'ethereum'
+                                    ? daysToAddToPool
+                                    : SOLANA_EPOCH_DAYS,
                         }}
                     />
                 </Banner>

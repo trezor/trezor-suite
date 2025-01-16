@@ -108,9 +108,8 @@ export const useProgressLabelsData = ({
                         <Translation id="TR_STAKE_WARM_UP_PERIOD" />
 
                         <Paragraph typographyStyle="label" variant="tertiary">
-                            ~
                             <Translation
-                                id="TR_STAKE_DAYS"
+                                id="TR_UP_TO_DAYS"
                                 values={{
                                     count: SOLANA_EPOCH_DAYS,
                                 }}
@@ -133,9 +132,8 @@ export const useProgressLabelsData = ({
                         <Translation id="TR_STAKE_STAKED_AND_EARNING" />
 
                         <Paragraph typographyStyle="label" variant="tertiary">
-                            ~
                             <Translation
-                                id="TR_STAKE_DAYS"
+                                id="TR_UP_TO_DAYS"
                                 values={{
                                     count: SOLANA_EPOCH_DAYS,
                                 }}

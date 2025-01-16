@@ -186,7 +186,7 @@ export const StakingCard = ({
                                             : 'TR_STAKE_REWARDS'
                                     }
                                     values={{
-                                        days: SOLANA_EPOCH_DAYS,
+                                        count: SOLANA_EPOCH_DAYS,
                                     }}
                                 />
                                 <Tooltip

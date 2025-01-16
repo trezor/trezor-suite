@@ -21,7 +21,7 @@ import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 import { InfoRow } from './InfoRow';
 
 type InfoRowsData = {
-    payoutDays: number | undefined;
+    payoutDays: JSX.Element;
     rewardsPeriodHeading: JSX.Element;
     rewardsPeriodSubheading: JSX.Element;
     rewardsEarningHeading: JSX.Element;
@@ -35,7 +35,12 @@ const getInfoRowsData = (
     switch (networkType) {
         case 'ethereum':
             return {
-                payoutDays: daysToAddToPool,
+                payoutDays: (
+                    <>
+                        ~
+                        <Translation id="TR_STAKE_DAYS" values={{ count: daysToAddToPool }} />
+                    </>
+                ),
                 rewardsPeriodHeading: <Translation id="TR_STAKE_ENTER_THE_STAKING_POOL" />,
                 rewardsPeriodSubheading: (
                     <Translation
@@ -47,7 +52,9 @@ const getInfoRowsData = (
             };
         case 'solana':
             return {
-                payoutDays: SOLANA_EPOCH_DAYS,
+                payoutDays: (
+                    <Translation id="TR_UP_TO_DAYS" values={{ count: SOLANA_EPOCH_DAYS }} />
+                ),
                 rewardsPeriodHeading: <Translation id="TR_STAKE_WARM_UP_PERIOD" />,
                 rewardsPeriodSubheading: <Translation id="TR_STAKE_WAIT_FOR_ACTIVATION" />,
                 rewardsEarningHeading: (
@@ -94,15 +101,7 @@ export const StakingInfo = ({ isExpanded }: StakingInfoProps) => {
             heading: infoRowsData?.rewardsPeriodHeading,
             subheading: infoRowsData?.rewardsPeriodSubheading,
             content: {
-                text: (
-                    <>
-                        ~
-                        <Translation
-                            id="TR_STAKE_DAYS"
-                            values={{ count: infoRowsData?.payoutDays }}
-                        />
-                    </>
-                ),
+                text: infoRowsData?.payoutDays,
             },
         },
         {
