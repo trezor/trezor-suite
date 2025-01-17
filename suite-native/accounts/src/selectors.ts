@@ -24,10 +24,12 @@ import { Account, AccountKey, TokenInfoBranded } from '@suite-common/wallet-type
 import {
     getAccountFiatBalance,
     getAccountTotalStakingBalance,
+    getFiatRateKey,
     getFirstFreshAddress,
+    toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
-import { isCoinWithTokens } from '@suite-native/tokens';
+import { isCoinWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
 import type { StaticSessionId } from '@trezor/connect';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { doesCoinSupportStaking } from '@suite-native/staking';
@@ -43,7 +45,8 @@ export type NativeAccountsRootState = AccountsRootState &
     FiatRatesRootState &
     SettingsSliceRootState &
     DeviceRootState &
-    TokenDefinitionsRootState;
+    TokenDefinitionsRootState &
+    TransactionsRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeAccountsRootState>();
 
@@ -82,25 +85,54 @@ export const selectIsAccountAlreadyDiscovered = (
         ),
     );
 
-export const selectAccountFiatBalance = (state: NativeAccountsRootState, accountKey: string) => {
-    const fiatRates = selectCurrentFiatRates(state);
-    const account = selectAccountByKey(state, accountKey);
-    const localCurrency = selectFiatCurrencyCode(state);
-    const shouldIncludeStaking = !!account && doesCoinSupportStaking(account.symbol);
+export const selectAccountFiatBalance = createMemoizedSelector(
+    [
+        selectCurrentFiatRates,
+        selectAccountByKey,
+        selectFiatCurrencyCode,
+        (_, _accountKey: AccountKey, shouldIncludeStaking?: boolean) =>
+            shouldIncludeStaking ?? true,
+        (
+            _,
+            _accountKey: AccountKey,
+            _shouldIncludeStaking?: boolean,
+            shouldIncludeTokens?: boolean,
+        ) => shouldIncludeTokens ?? true,
+    ],
+    (fiatRates, account, localCurrency, shouldIncludeStaking, shouldIncludeTokens) => {
+        if (!account) {
+            return '0';
+        }
 
-    if (!account) {
-        return '0';
-    }
+        const totalBalance = getAccountFiatBalance({
+            account,
+            rates: fiatRates,
+            localCurrency,
+            shouldIncludeStaking,
+            shouldIncludeTokens,
+        });
 
-    const totalBalance = getAccountFiatBalance({
-        account,
-        rates: fiatRates,
-        localCurrency,
-        shouldIncludeStaking,
-    });
+        if (!totalBalance) {
+            return '0';
+        }
 
-    return totalBalance;
-};
+        return totalBalance;
+    },
+);
+
+export const selectAccountTokenFiatBalance = createMemoizedSelector(
+    [selectCurrentFiatRates, selectFiatCurrencyCode, selectAccountByKey, selectAccountTokenInfo],
+    (fiatRates, localCurrency, account, tokenInfo) => {
+        if (!account || !fiatRates || !tokenInfo) return '0';
+        const { contract, balance } = tokenInfo;
+        const fiatRateKey = getFiatRateKey(account.symbol, localCurrency, contract);
+        const rate = fiatRates[fiatRateKey]?.rate;
+
+        if (!rate || !balance) return '0';
+
+        return toFiatCurrency(balance, rate) ?? '0';
+    },
+);
 
 export const getAccountListSections = (
     account: Account,

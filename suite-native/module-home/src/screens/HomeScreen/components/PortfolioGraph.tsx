@@ -1,25 +1,25 @@
-import { forwardRef, useCallback, useEffect, useImperativeHandle } from 'react';
+import { forwardRef, useImperativeHandle } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useSetAtom } from 'jotai';
-
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { Box, Text, VStack } from '@suite-native/atoms';
+import { selectSelectedDeviceTotalFiatBalance } from '@suite-native/device';
+import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
 import {
-    useGraphForAllDeviceAccounts,
     Graph,
-    TimeSwitch,
     selectHasDeviceHistoryEnabledAccounts,
     selectHasDeviceHistoryIgnoredAccounts,
+    TimeSwitch,
+    useGraphAtoms,
+    useGraphForAllDeviceAccounts,
 } from '@suite-native/graph';
-import { selectFiatCurrencyCode } from '@suite-native/settings';
-import { Box, VStack, Text } from '@suite-native/atoms';
-import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
 
-import { PortfolioHeader } from './PortfolioHeader';
 import { referencePointAtom, selectedPointAtom } from '../portfolioGraphAtoms';
+import { PortfolioHeader } from './PortfolioHeader';
 
 export type PortfolioGraphRef = {
     refetchGraph: () => Promise<void>;
@@ -61,6 +61,7 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const hasDeviceHistoryEnabledAccounts = useSelector(selectHasDeviceHistoryEnabledAccounts);
     const hasDeviceDiscovery = useSelector(selectHasDeviceDiscovery);
     const loadingTakesLongerThanExpected = useIsDiscoveryDurationTooLong();
+    const totalFiatBalance = useSelector(selectSelectedDeviceTotalFiatBalance);
 
     const {
         graphPoints,
@@ -74,20 +75,12 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
         fiatCurrency: fiatCurrencyCode,
     });
 
-    const setSelectedPoint = useSetAtom(selectedPointAtom);
-    const setReferencePoint = useSetAtom(referencePointAtom);
-
-    const lastPoint = graphPoints[graphPoints.length - 1];
-    const firstPoint = graphPoints[0];
-
-    const setInitialSelectedPoints = useCallback(() => {
-        if (lastPoint && firstPoint) {
-            setSelectedPoint(lastPoint);
-            setReferencePoint(firstPoint);
-        }
-    }, [lastPoint, firstPoint, setSelectedPoint, setReferencePoint]);
-
-    useEffect(setInitialSelectedPoints, [setInitialSelectedPoints]);
+    const { handleGestureStart, setInitialSelectedPoints, setSelectedPoint } = useGraphAtoms({
+        referencePointAtom,
+        selectedPointAtom,
+        graphPoints,
+        totalFiatBalance,
+    });
 
     useImperativeHandle(
         ref,
@@ -102,7 +95,9 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
 
     return (
         <VStack spacing="sp24" testID="@home/portfolio/graph">
-            {showHeader && <PortfolioHeader isLoading={isLoading} />}
+            {showHeader && (
+                <PortfolioHeader isLoading={isLoading} totalFiatBalance={totalFiatBalance} />
+            )}
             {showGraph && (
                 <Graph
                     points={graphPoints}
@@ -110,6 +105,7 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
                     loadingTakesLongerThanExpected={loadingTakesLongerThanExpected}
                     onPointSelected={setSelectedPoint}
                     onGestureEnd={setInitialSelectedPoints}
+                    onGestureStart={handleGestureStart}
                     onTryAgain={refetch}
                     error={error}
                 />

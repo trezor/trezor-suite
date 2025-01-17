@@ -12,9 +12,10 @@ import {
 
 type PortfolioHeaderProps = {
     isLoading: boolean;
+    totalFiatBalance: string;
 };
 
-export const PortfolioHeader = ({ isLoading }: PortfolioHeaderProps) => {
+export const PortfolioHeader = ({ isLoading, totalFiatBalance }: PortfolioHeaderProps) => {
     const hasDeviceHistoryEnabledAccounts = useSelector(selectHasDeviceHistoryEnabledAccounts);
 
     return (
@@ -27,6 +28,7 @@ export const PortfolioHeader = ({ isLoading }: PortfolioHeaderProps) => {
                     hasPriceIncreasedAtom={hasPriceIncreasedAtom}
                     showChange={hasDeviceHistoryEnabledAccounts}
                     isLoading={isLoading}
+                    totalFiatBalance={totalFiatBalance}
                 />
             </VStack>
         </Box>

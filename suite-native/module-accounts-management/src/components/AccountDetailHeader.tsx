@@ -1,19 +1,28 @@
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    DeviceRootState,
+    selectAccountByKey,
+    selectAccountFormattedBalance,
+    TransactionsRootState,
+} from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { DiscreetTextTrigger, VStack } from '@suite-native/atoms';
-import { selectAccountTokenSymbol, TokensRootState } from '@suite-native/tokens';
+import {
+    selectAccountTokenBalance,
+    selectAccountTokenSymbol,
+    TokensRootState,
+} from '@suite-native/tokens';
 import { GraphFiatBalance } from '@suite-native/graph';
 import { selectIsHistoryEnabledAccountByAccountKey } from '@suite-native/graph/src/selectors';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import {
-    emptyGraphPoint,
     hasPriceIncreasedAtom,
     percentageChangeAtom,
     referencePointAtom,
@@ -23,18 +32,22 @@ import {
 type AccountBalanceProps = {
     accountKey: AccountKey;
     tokenAddress?: TokenAddress;
+    totalFiatBalance: string;
 };
 
 const CryptoBalance = ({
     symbol,
     tokenSymbol,
     tokenAddress,
+    totalCryptoBalance,
 }: {
     symbol: NetworkSymbol;
     tokenSymbol?: TokenSymbol | null;
     tokenAddress?: TokenAddress;
+    totalCryptoBalance: string | null;
 }) => {
     const selectedPoint = useAtomValue(selectedPointAtom);
+    const value = selectedPoint?.cryptoBalance || totalCryptoBalance || '0';
 
     return (
         <DiscreetTextTrigger>
@@ -42,13 +55,17 @@ const CryptoBalance = ({
                 symbol={symbol}
                 tokenSymbol={tokenSymbol}
                 tokenAddress={tokenAddress}
-                value={selectedPoint.cryptoBalance}
+                value={value}
             />
         </DiscreetTextTrigger>
     );
 };
 
-export const AccountDetailHeader = ({ accountKey, tokenAddress }: AccountBalanceProps) => {
+export const AccountDetailHeader = ({
+    accountKey,
+    tokenAddress,
+    totalFiatBalance,
+}: AccountBalanceProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -58,10 +75,20 @@ export const AccountDetailHeader = ({ accountKey, tokenAddress }: AccountBalance
     const isHistoryEnabledAccount = useSelector((state: AccountsRootState) =>
         selectIsHistoryEnabledAccountByAccountKey(state, accountKey),
     );
-    const setPoint = useSetAtom(selectedPointAtom);
+    const totalCryptoBalance = useSelector(
+        (
+            state: AccountsRootState &
+                DeviceRootState &
+                TokenDefinitionsRootState &
+                TransactionsRootState,
+        ) => {
+            if (tokenSymbol) {
+                return selectAccountTokenBalance(state, accountKey, tokenAddress);
+            }
 
-    // Reset selected point on unmount so that it doesn't display on device change
-    useEffect(() => () => setPoint(emptyGraphPoint), [setPoint]);
+            return selectAccountFormattedBalance(state, accountKey);
+        },
+    );
 
     if (!account) return null;
 
@@ -71,6 +98,7 @@ export const AccountDetailHeader = ({ accountKey, tokenAddress }: AccountBalance
                 symbol={account.symbol}
                 tokenSymbol={tokenSymbol}
                 tokenAddress={tokenAddress}
+                totalCryptoBalance={totalCryptoBalance}
             />
             <GraphFiatBalance
                 selectedPointAtom={selectedPointAtom}
@@ -78,6 +106,8 @@ export const AccountDetailHeader = ({ accountKey, tokenAddress }: AccountBalance
                 percentageChangeAtom={percentageChangeAtom}
                 hasPriceIncreasedAtom={hasPriceIncreasedAtom}
                 showChange={isHistoryEnabledAccount}
+                totalFiatBalance={totalFiatBalance}
+                isHistoryEnabledAccount={isHistoryEnabledAccount}
             />
         </VStack>
     );

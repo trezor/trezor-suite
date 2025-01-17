@@ -1,22 +1,24 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { A } from '@mobily/ts-belt';
-import { useSetAtom } from 'jotai';
-
-import { useGraphForSingleAccount, Graph, TimeSwitch } from '@suite-native/graph';
+import { useGraphForSingleAccount, Graph, TimeSwitch, useGraphAtoms } from '@suite-native/graph';
 import { VStack } from '@suite-native/atoms';
 import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { selectIsHistoryEnabledAccountByAccountKey } from '@suite-native/graph/src/selectors';
 import { AccountsRootState } from '@suite-common/wallet-core';
+import {
+    NativeAccountsRootState,
+    selectAccountFiatBalance,
+    selectAccountTokenFiatBalance,
+} from '@suite-native/accounts';
 
 import { AccountDetailHeader } from './AccountDetailHeader';
 import { referencePointAtom, selectedPointAtom } from '../accountDetailGraphAtoms';
 
 type AccountDetailGraphProps = {
-    accountKey: string;
+    accountKey: AccountKey;
     tokenContract?: TokenAddress;
 };
 
@@ -33,30 +35,34 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
             tokensFilter,
             hideMainAccount: !!tokenContract,
         });
+    const totalFiatBalance = useSelector((state: NativeAccountsRootState) =>
+        tokenContract
+            ? selectAccountTokenFiatBalance(state, accountKey, tokenContract)
+            : selectAccountFiatBalance(state, accountKey, false, false),
+    );
 
-    const setSelectedPoint = useSetAtom(selectedPointAtom);
-    const setReferencePoint = useSetAtom(referencePointAtom);
-    const lastPoint = A.last(graphPoints);
-    const firstPoint = A.head(graphPoints);
-
-    const setInitialSelectedPoints = useCallback(() => {
-        if (lastPoint && firstPoint) {
-            setSelectedPoint(lastPoint);
-            setReferencePoint(firstPoint);
-        }
-    }, [lastPoint, firstPoint, setSelectedPoint, setReferencePoint]);
-
-    useEffect(setInitialSelectedPoints, [setInitialSelectedPoints]);
+    const { handleGestureStart, setInitialSelectedPoints, setSelectedPoint } =
+        useGraphAtoms<FiatGraphPointWithCryptoBalance>({
+            referencePointAtom,
+            selectedPointAtom,
+            graphPoints,
+            totalFiatBalance,
+        });
 
     return (
         <VStack spacing="sp24">
-            <AccountDetailHeader accountKey={accountKey} tokenAddress={tokenContract} />
+            <AccountDetailHeader
+                accountKey={accountKey}
+                tokenAddress={tokenContract}
+                totalFiatBalance={totalFiatBalance}
+            />
 
             {isHistoryEnabledAccount && (
                 <>
                     <Graph<FiatGraphPointWithCryptoBalance>
                         onPointSelected={setSelectedPoint}
                         onGestureEnd={setInitialSelectedPoints}
+                        onGestureStart={handleGestureStart}
                         points={graphPoints}
                         loading={isLoading}
                         error={error}

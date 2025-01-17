@@ -4,26 +4,31 @@ import { useFormatters } from '@suite-common/formatters';
 import { FiatGraphPoint } from '@suite-common/graph';
 import { Text } from '@suite-native/atoms';
 
-type SelectedPointAtom = Atom<FiatGraphPoint>;
+type SelectedPointAtom = Atom<FiatGraphPoint | null>;
 
 type GraphDateFormatterProps = {
     firstPointDate: Date;
-    selectedPointAtom: Atom<FiatGraphPoint>;
+    selectedPointAtom: SelectedPointAtom;
 };
 
 const WeekFormatter = ({ selectedPointAtom }: { selectedPointAtom: SelectedPointAtom }) => {
     const { DateTimeFormatter } = useFormatters();
-    const { date: value } = useAtomValue(selectedPointAtom);
+    const selectedPoint = useAtomValue(selectedPointAtom);
 
-    return <DateTimeFormatter value={value} />;
+    // Empty space to prevent layout shift
+    if (!selectedPoint) return <Text> </Text>;
+
+    return <DateTimeFormatter value={selectedPoint.date} />;
 };
 
 const OtherDateFormatter = ({ selectedPointAtom }: { selectedPointAtom: SelectedPointAtom }) => {
     const { DateFormatter } = useFormatters();
 
-    const { date: value } = useAtomValue(selectedPointAtom);
+    const selectedPoint = useAtomValue(selectedPointAtom);
 
-    return <DateFormatter value={value} />;
+    if (!selectedPoint) return null;
+
+    return <DateFormatter value={selectedPoint.date} />;
 };
 
 const millisecondsPerTwoWeek = 1209600000;
@@ -36,13 +41,11 @@ export const GraphDateFormatter = ({
     // this check is significantly faster than using date-fns/differenceInWeeks(days)
     const isWeekFormatted = millisecondElapsedFromFistPoint < millisecondsPerTwoWeek;
 
+    const Formatter = isWeekFormatted ? WeekFormatter : OtherDateFormatter;
+
     return (
         <Text variant="hint" color="textSubdued">
-            {isWeekFormatted ? (
-                <WeekFormatter selectedPointAtom={selectedPointAtom} />
-            ) : (
-                <OtherDateFormatter selectedPointAtom={selectedPointAtom} />
-            )}
+            <Formatter selectedPointAtom={selectedPointAtom} />
         </Text>
     );
 };

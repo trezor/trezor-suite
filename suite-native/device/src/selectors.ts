@@ -9,7 +9,6 @@ import {
     getAccountsByDeviceState,
     PORTFOLIO_TRACKER_DEVICE_ID,
     selectAccounts,
-    selectAccountsByDeviceState,
     selectCurrentFiatRates,
     selectSelectedDevice,
     selectDeviceFirmwareVersion,
@@ -20,6 +19,8 @@ import {
     selectIsDeviceConnectedAndAuthorized,
     selectIsDiscoveredDeviceAccountless,
     selectIsUnacquiredDevice,
+    selectDeviceAccounts,
+    selectAccountsByDeviceState,
 } from '@suite-common/wallet-core';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { getTotalFiatBalance } from '@suite-common/wallet-utils';
@@ -70,17 +71,29 @@ export const selectDeviceError = (
     return device?.error;
 };
 
-export const selectDeviceTotalFiatBalanceNative = createMemoizedSelector(
-    [selectAccountsByDeviceState, selectCurrentFiatRates, selectFiatCurrencyCode],
+export const selectSelectedDeviceTotalFiatBalance = createMemoizedSelector(
+    [selectDeviceAccounts, selectCurrentFiatRates, selectFiatCurrencyCode],
     (deviceAccounts, rates, localCurrency) => {
         const fiatBalance = getTotalFiatBalance({
             deviceAccounts,
             localCurrency,
             rates,
-            shouldIncludeStaking: false,
         });
 
-        return fiatBalance;
+        return fiatBalance.toFixed(2);
+    },
+);
+
+export const selectDeviceTotalFiatBalanceNative = createMemoizedSelector(
+    [selectAccountsByDeviceState, selectCurrentFiatRates, selectFiatCurrencyCode],
+    (accounts, rates, localCurrency) => {
+        const fiatBalance = getTotalFiatBalance({
+            deviceAccounts: accounts,
+            localCurrency,
+            rates,
+        });
+
+        return fiatBalance.toFixed(2);
     },
 );
 

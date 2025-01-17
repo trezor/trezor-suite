@@ -26,6 +26,7 @@ type GraphProps<TGraphPoint extends GraphPoint> = {
     loading?: boolean;
     onPointSelected?: (point: TGraphPoint) => void;
     onGestureEnd?: () => void;
+    onGestureStart?: () => void;
     animated?: boolean;
     error?: string | null;
     onTryAgain: () => void;
@@ -70,6 +71,7 @@ const getAccessibilityLineThickness = () => {
 export const Graph = <TGraphPoint extends FiatGraphPoint>({
     onPointSelected,
     onGestureEnd,
+    onGestureStart,
     onTryAgain,
     error,
     events,
@@ -144,6 +146,7 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
                 BottomAxisLabel={axisLabels?.BottomAxisLabel}
                 onPointSelected={onPointSelected as any /* because of ExtendedGraphPoint */}
                 onGestureEnd={onGestureEnd}
+                onGestureStart={onGestureStart}
                 panGestureDelay={panGestureDelay}
                 events={events}
                 EventComponent={TransactionEvent}

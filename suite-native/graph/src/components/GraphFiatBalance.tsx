@@ -1,15 +1,17 @@
 import { Atom, useAtomValue } from 'jotai';
 
 import { FiatGraphPoint } from '@suite-common/graph';
-import { Box, BoxSkeleton, DiscreetTextTrigger, HStack, VStack } from '@suite-native/atoms';
+import { Box, BoxSkeleton, DiscreetTextTrigger, HStack, VStack, Text } from '@suite-native/atoms';
 import { FiatBalanceFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { useFormatters } from '@suite-common/formatters';
 
 import { GraphDateFormatter } from './GraphDateFormatter';
 import { PriceChangeIndicator } from './PriceChangeIndicator';
 
 type BalanceProps = {
-    selectedPointAtom: Atom<FiatGraphPoint>;
+    selectedPointAtom: Atom<FiatGraphPoint | null>;
+    latestValue?: string;
 };
 
 type GraphFiatBalanceProps = BalanceProps & {
@@ -18,6 +20,8 @@ type GraphFiatBalanceProps = BalanceProps & {
     hasPriceIncreasedAtom: Atom<boolean>;
     showChange?: boolean;
     isLoading?: boolean;
+    totalFiatBalance: string;
+    isHistoryEnabledAccount?: boolean;
 };
 
 const wrapperStyle = prepareNativeStyle(_ => ({
@@ -32,9 +36,10 @@ const Skeleton = () => (
     </VStack>
 );
 
-const Balance = ({ selectedPointAtom }: BalanceProps) => {
+const Balance = ({ selectedPointAtom, latestValue }: BalanceProps) => {
     const point = useAtomValue(selectedPointAtom);
-    const fiatValue = String(point.value);
+    const fiatValue =
+        latestValue || point?.valueLatestTotal || (point?.value ? String(point.value) : '0');
 
     return (
         <DiscreetTextTrigger>
@@ -50,11 +55,36 @@ export const GraphFiatBalance = ({
     hasPriceIncreasedAtom,
     showChange = true,
     isLoading = false,
+    totalFiatBalance,
+    isHistoryEnabledAccount = true,
 }: GraphFiatBalanceProps) => {
     const { applyStyle } = useNativeStyles();
     const firstGraphPoint = useAtomValue(referencePointAtom);
+    const { DateTimeFormatter } = useFormatters();
 
-    if (isLoading || !firstGraphPoint) {
+    const showLoading = isLoading || !firstGraphPoint;
+
+    // During loading or error we just show latest total balance
+    if (
+        (Number(totalFiatBalance) !== 0 && (isLoading || !firstGraphPoint)) ||
+        !isHistoryEnabledAccount
+    ) {
+        return (
+            <Box style={applyStyle(wrapperStyle)}>
+                <Balance selectedPointAtom={selectedPointAtom} latestValue={totalFiatBalance} />
+                {showChange && (
+                    <HStack alignItems="center">
+                        {/*  Empty space to prevent layout shift */}
+                        <Text variant="hint" color="textSubdued">
+                            <DateTimeFormatter value={new Date()} />
+                        </Text>
+                    </HStack>
+                )}
+            </Box>
+        );
+    }
+
+    if (showLoading) {
         return <Skeleton />;
     }
 

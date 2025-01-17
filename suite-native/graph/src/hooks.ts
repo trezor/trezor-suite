@@ -1,12 +1,14 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { captureException } from '@sentry/react-native';
 import { A } from '@mobily/ts-belt';
+import { useSetAtom, WritableAtom } from 'jotai';
 
 import {
     AccountItem,
     CommonUseGraphParams,
+    FiatGraphPoint,
     useGetTimeFrameForHistoryHours,
     useGraphForAccounts,
 } from '@suite-common/graph';
@@ -218,5 +220,70 @@ export const useGraphForAllDeviceAccounts = ({ fiatCurrency }: CommonUseGraphPar
         isAnyMainnetAccountPresent: A.isNotEmpty(accountItems),
         timeframe: portfolioGraphTimeframe,
         onSelectTimeFrame: handleSelectPortfolioTimeframe,
+    };
+};
+
+export const useGraphAtoms = <TGraphPoint extends FiatGraphPoint>({
+    referencePointAtom,
+    selectedPointAtom,
+    graphPoints,
+    totalFiatBalance,
+}: {
+    referencePointAtom: WritableAtom<TGraphPoint | null, TGraphPoint | null>;
+    selectedPointAtom: WritableAtom<TGraphPoint | null, TGraphPoint | null>;
+    graphPoints: TGraphPoint[];
+    totalFiatBalance: string;
+}): {
+    handleGestureStart: () => void;
+    setInitialSelectedPoints: () => void;
+    setSelectedPoint: (point: TGraphPoint) => void;
+} => {
+    const [isGestureActive, setIsGestureActive] = useState(false);
+    const setSelectedPoint = useSetAtom(selectedPointAtom);
+    const setReferencePoint = useSetAtom(referencePointAtom);
+
+    const lastPoint: TGraphPoint | undefined = graphPoints[graphPoints.length - 1];
+    const referencePoint: TGraphPoint | undefined = useMemo(
+        () => graphPoints.find(point => point.value > 0) ?? graphPoints[0],
+        [graphPoints],
+    );
+
+    useEffect(
+        () => () => {
+            // we should reset everything to default on unmount otherwise it will broke loading state when navigating to same or another account
+            setSelectedPoint(null);
+            setReferencePoint(null);
+        },
+        [setSelectedPoint, setReferencePoint],
+    );
+
+    const setInitialSelectedPoints = useCallback(() => {
+        setIsGestureActive(false);
+        if (lastPoint && referencePoint) {
+            setSelectedPoint({
+                ...lastPoint,
+                valueLatestTotal: totalFiatBalance,
+            });
+            setReferencePoint(referencePoint);
+        }
+    }, [lastPoint, referencePoint, setSelectedPoint, setReferencePoint, totalFiatBalance]);
+
+    const handleGestureStart = useCallback(() => {
+        setIsGestureActive(true);
+    }, [setIsGestureActive]);
+
+    useEffect(() => {
+        if (!isGestureActive && lastPoint) {
+            setSelectedPoint({
+                ...lastPoint,
+                valueLatestTotal: totalFiatBalance,
+            });
+        }
+    }, [isGestureActive, setInitialSelectedPoints, totalFiatBalance, lastPoint, setSelectedPoint]);
+
+    return {
+        handleGestureStart,
+        setInitialSelectedPoints,
+        setSelectedPoint,
     };
 };
