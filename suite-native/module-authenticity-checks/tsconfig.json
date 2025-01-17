@@ -6,9 +6,13 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../atoms" },
+        { "path": "../connection-status" },
+        { "path": "../device" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../../packages/styles" },
         { "path": "../../packages/urls" }
     ]
 }

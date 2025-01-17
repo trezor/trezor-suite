@@ -37,7 +37,7 @@ export const OfflineBanner = () => {
             <HStack style={applyStyle(contentStyle, { topSafeAreaInset })}>
                 <Icon name="wifiSlash" size="mediumLarge" />
                 <Text>
-                    <Translation id="generic.offline" />
+                    <Translation id="generic.banners.offline.title" />
                 </Text>
             </HStack>
         </View>

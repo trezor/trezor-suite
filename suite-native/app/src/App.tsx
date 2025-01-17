@@ -11,6 +11,7 @@ import { FormatterProvider } from '@suite-common/formatters';
 import { OfflineBanner, configureNetInfo } from '@suite-native/connection-status';
 import { IntlProvider } from '@suite-native/intl';
 import { KillswitchMessageScreen, MessageSystemBannerRenderer } from '@suite-native/message-system';
+import { DeviceCompromisedBanner } from '@suite-native/module-authenticity-checks';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { StoreProvider, selectIsAppReady, selectIsConnectInitialized } from '@suite-native/state';
 
@@ -64,6 +65,7 @@ const AppComponent = () => {
     return (
         <FormatterProvider config={formattersConfig}>
             <OfflineBanner />
+            <DeviceCompromisedBanner />
             <MessageSystemBannerRenderer />
             <BottomSheetModalProvider>
                 <RootStackNavigator />
