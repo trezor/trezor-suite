@@ -26,11 +26,7 @@ const deriveHmac = (metadataKey: string) => {
     const buf = Buffer.from('0123456789abcdeffedcba9876543210', 'hex');
     hmac.update(buf);
 
-    return hmac.digest();
-};
-
-export const deriveAesKey = (metadataKey: string) => {
-    const hash = deriveHmac(metadataKey);
+    const hash = hmac.digest();
     if (hash.length !== 64 && Buffer.byteLength(hash) !== 64) {
         throw new Error(
             `Strange buffer length when deriving account hmac ${hash.length} ; ${Buffer.byteLength(
@@ -38,6 +34,13 @@ export const deriveAesKey = (metadataKey: string) => {
             )}`,
         );
     }
+
+    return hash;
+};
+
+export const deriveAesKey = (metadataKey: string) => {
+    const hash = deriveHmac(metadataKey);
+
     const secondHalf = hash.subarray(32, 64);
 
     return secondHalf.toString('hex');
