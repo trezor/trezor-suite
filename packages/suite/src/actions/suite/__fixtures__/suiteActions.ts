@@ -206,6 +206,7 @@ const initialRun = [
                 showDashboardT3T1PromoBanner: false,
                 showSettingsDesktopAppPromoBanner: true,
                 stakeEthBannerClosed: false,
+                stakeSolBannerClosed: false,
                 showDashboardStakingPromoBanner: true,
                 viewOnlyPromoClosed: true,
                 viewOnlyTooltipClosed: true,

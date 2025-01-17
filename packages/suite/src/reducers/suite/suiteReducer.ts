@@ -70,6 +70,7 @@ export interface Flags {
     showDashboardT3T1PromoBanner: boolean;
     showSettingsDesktopAppPromoBanner: boolean;
     stakeEthBannerClosed: boolean; // banner in account view (Overview tab) presenting ETH staking feature
+    stakeSolBannerClosed: boolean; // banner in account view (Overview tab) presenting SOL staking feature
     showDashboardStakingPromoBanner: boolean;
     isDashboardPassphraseBannerVisible: boolean;
     viewOnlyPromoClosed: boolean;
@@ -145,6 +146,7 @@ const initialState: SuiteState = {
         showDashboardT3T1PromoBanner: true,
         showSettingsDesktopAppPromoBanner: true,
         stakeEthBannerClosed: false,
+        stakeSolBannerClosed: false,
         showDashboardStakingPromoBanner: true,
         viewOnlyPromoClosed: false,
         viewOnlyTooltipClosed: false,

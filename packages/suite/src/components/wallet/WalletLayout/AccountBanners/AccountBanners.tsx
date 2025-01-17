@@ -14,7 +14,7 @@ import { AccountImported } from './AccountImported';
 import { AccountOutOfSync } from './AccountOutOfSync';
 import { TorDisconnected } from './TorDisconnected';
 import { ContextMessage } from './ContextMessage';
-import { StakeEthBanner } from './StakeEthBanner';
+import { StakingBanner } from './StakingBanner';
 import { EvmExplanationBanner } from './EvmExplanationBanner';
 import { TaprootBanner } from './TaprootBanner';
 
@@ -40,7 +40,7 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
             <AccountOutOfSync account={account} />
             <EvmExplanationBanner account={account} />
             <TaprootBanner account={account} />
-            {account?.symbol && <StakeEthBanner account={account} />}
+            {account?.symbol && <StakingBanner account={account} />}
         </Column>
     );
 };
