@@ -93,7 +93,7 @@ export const useCoinmarketExchangeForm = ({
         isNotFormPage,
     });
     const { callInProgress, timer, device, setCallInProgress, checkQuotesTimer } =
-        useCoinmarketInitializer({ selectedAccount, type });
+        useCoinmarketInitializer({ selectedAccount, pageType });
     const { buildDefaultCryptoOption } = useCoinmarketInfo();
 
     const dispatch = useDispatch();

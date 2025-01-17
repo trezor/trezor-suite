@@ -42,9 +42,11 @@ import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import type { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 
+type CoinmarketPageType = 'form' | 'offers' | 'confirm';
+
 export type UseCoinmarketProps = { selectedAccount: SelectedAccountLoaded };
 export type UseCoinmarketCommonProps = UseCoinmarketProps & {
-    type: CoinmarketTradeType;
+    pageType: CoinmarketPageType;
 };
 export interface UseCoinmarketCommonReturnProps {
     callInProgress: boolean;
@@ -54,7 +56,6 @@ export interface UseCoinmarketCommonReturnProps {
     setCallInProgress: (state: boolean) => void;
     checkQuotesTimer: (callback: () => Promise<void>) => void;
 }
-type CoinmarketPageType = 'form' | 'offers' | 'confirm';
 export type UseCoinmarketFormProps = UseCoinmarketProps & {
     /**
      * Difference between form and offers is that on the offers page are used all data filled in the form

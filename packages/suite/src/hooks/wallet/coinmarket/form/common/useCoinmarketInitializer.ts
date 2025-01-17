@@ -12,6 +12,7 @@ import {
 
 export const useCoinmarketInitializer = ({
     selectedAccount,
+    pageType,
 }: UseCoinmarketCommonProps): UseCoinmarketCommonReturnProps => {
     const timer = useTimer();
     const { account } = selectedAccount;
@@ -22,6 +23,12 @@ export const useCoinmarketInitializer = ({
         if (!timer.isLoading && !timer.isStopped) {
             if (timer.resetCount >= 40) {
                 timer.stop();
+            }
+
+            if (pageType === 'confirm') {
+                timer.stop();
+
+                return;
             }
 
             if (timer.timeSpend.seconds === INVITY_API_RELOAD_QUOTES_AFTER_SECONDS) {

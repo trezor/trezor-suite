@@ -82,7 +82,7 @@ export const useCoinmarketSellForm = ({
         isNotFormPage,
     });
     const { callInProgress, timer, device, setCallInProgress, checkQuotesTimer } =
-        useCoinmarketInitializer({ selectedAccount, type });
+        useCoinmarketInitializer({ selectedAccount, pageType });
     const { paymentMethods, getPaymentMethods, getQuotesByPaymentMethod } =
         useCoinmarketPaymentMethod<CoinmarketTradeSellType>();
     const {

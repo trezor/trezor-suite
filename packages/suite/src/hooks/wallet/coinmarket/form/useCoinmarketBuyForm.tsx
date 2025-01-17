@@ -64,7 +64,7 @@ export const useCoinmarketBuyForm = ({
         useSelector(state => state.wallet.coinmarket.buy);
     const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
     const { callInProgress, account, timer, device, setCallInProgress, checkQuotesTimer } =
-        useCoinmarketInitializer({ selectedAccount, type });
+        useCoinmarketInitializer({ selectedAccount, pageType });
     const { paymentMethods, getPaymentMethods, getQuotesByPaymentMethod } =
         useCoinmarketPaymentMethod<CoinmarketTradeBuyType>();
     const { navigateToBuyForm, navigateToBuyOffers, navigateToBuyConfirm } =
@@ -386,6 +386,10 @@ export const useCoinmarketBuyForm = ({
     // call change handler on every change of text inputs with debounce
     useDebounce(
         () => {
+            if (pageType === 'confirm') {
+                return;
+            }
+
             if (
                 isChanged(previousValues.current?.fiatInput, values.fiatInput) ||
                 isChanged(previousValues.current?.cryptoInput, values.cryptoInput)
@@ -398,11 +402,22 @@ export const useCoinmarketBuyForm = ({
             }
         },
         500,
-        [previousValues, values.fiatInput, values.cryptoInput, handleChange, handleSubmit],
+        [
+            previousValues,
+            values.fiatInput,
+            values.cryptoInput,
+            pageType,
+            handleChange,
+            handleSubmit,
+        ],
     );
 
     // call change handler on every change of select inputs
     useEffect(() => {
+        if (pageType === 'confirm') {
+            return;
+        }
+
         if (
             isChanged(previousValues.current?.countrySelect, values.countrySelect) ||
             isChanged(previousValues.current?.currencySelect, values.currencySelect) ||
@@ -414,7 +429,7 @@ export const useCoinmarketBuyForm = ({
 
             previousValues.current = values;
         }
-    }, [previousValues, values, handleChange, handleSubmit, isNotFormPage]);
+    }, [previousValues, values, isNotFormPage, pageType, handleChange, handleSubmit]);
 
     useEffect(() => {
         // when draft doesn't exist, we need to bind actual default values - that happens when we've got buyInfo from Invity API server
