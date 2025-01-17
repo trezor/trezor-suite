@@ -40,7 +40,7 @@ test.describe('Metadata - address labeling', { tag: ['@group=metadata', '@webOnl
         await expect(page.getByTestId(metadataEl)).toHaveText('meow meow');
     });
 
-    test.afterEach(({ metadataProviderMock }) => {
-        metadataProviderMock.stop();
+    test.afterEach(async ({ metadataProviderMock }) => {
+        await metadataProviderMock.stop();
     });
 });

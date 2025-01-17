@@ -195,21 +195,34 @@ export class GoogleMock {
 
         console.log('[mockGoogleDrive]: start');
 
-        return new Promise(resolve => {
-            // @ts-expect-error
-            this.app.listen(port, server => {
-                console.log(`[mockGoogleDrive] listening at http://localhost:${port}`);
+        return new Promise<void>(resolve => {
+            const server = this.app!.listen(port, () => {
+                console.log(`[mockGoogleDrive]: listening at http://localhost:${port}`);
                 this.running = true;
                 this.server = server;
-                resolve(undefined);
+                resolve();
             });
         });
     }
 
-    stop() {
-        console.log('[mockGoogleDrive]: start');
+    async stop() {
+        console.log('[mockGoogleDrive]: stop');
         if (this.server) {
-            this.server.close();
+            await new Promise<void>((resolve, reject) => {
+                this.server.close((err: Error | undefined) => {
+                    if (err) {
+                        console.error('[mockGoogleDrive]: Error stopping server', err);
+
+                        return reject(err);
+                    }
+                    console.log('[mockGoogleDrive]: Server stopped successfully');
+                    this.running = false;
+                    this.server = null;
+                    resolve();
+                });
+            });
+        } else {
+            console.log('[mockGoogleDrive]: Server is not running');
         }
     }
 

@@ -29,10 +29,18 @@ export class MetadataActions {
     }
 
     @step()
-    async passThroughInitMetadata(provider: MetadataProvider) {
+    async passThroughInitMetadata(
+        provider: MetadataProvider,
+        options?: { skipVerification?: boolean },
+    ) {
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLink.pressYes();
         await this.page.getByTestId(`@modal/metadata-provider/${provider}-button`).click();
+
+        if (options?.skipVerification) {
+            return;
+        }
+
         await expect(this.page.getByTestId('@modal/metadata-provider')).not.toBeVisible({
             timeout: 30000,
         });

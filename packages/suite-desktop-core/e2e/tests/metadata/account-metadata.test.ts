@@ -23,8 +23,6 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
         // Discovery process completed
         await dashboardPage.discoveryShouldFinish();
 
-        await expect(page.getByTestId('@account-menu/btc/normal/0')).toBeVisible();
-
         // Interact with accounts and metadata
         // Clicking "Bitcoin" label in account menu is not possible, click triggers metadata flow
         await page.getByTestId('@account-menu/btc/normal/0/label').click();
@@ -105,7 +103,7 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
         );
     });
 
-    test.afterEach(({ metadataProviderMock }) => {
-        metadataProviderMock.stop();
+    test.afterEach(async ({ metadataProviderMock }) => {
+        await metadataProviderMock.stop();
     });
 });

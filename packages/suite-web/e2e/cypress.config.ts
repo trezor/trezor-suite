@@ -109,7 +109,7 @@ export default defineConfig({
                     const encrypted = await metadataUtils.encrypt(content, aesKey);
                     switch (provider) {
                         case 'dropbox':
-                            mocked.dropbox.files[file] = encrypted;
+                            mocked.dropbox.setFile(file, encrypted);
                             break;
                         case 'google':
                             mocked.google.setFile(file, encrypted);

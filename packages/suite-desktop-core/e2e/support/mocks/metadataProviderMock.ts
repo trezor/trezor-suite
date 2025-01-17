@@ -1,5 +1,6 @@
 import { Page } from '@playwright/test';
 
+import * as metadataUtils from '@trezor/suite/src/utils/suite/metadata';
 import { GoogleMock, DropboxMock } from '@trezor/e2e-utils';
 
 import { step } from '../common';
@@ -77,11 +78,30 @@ export class MetadataProviderMock {
     }
 
     @step()
-    stop() {
+    setNextResponse(response: Record<string, any>): void {
         if (!this.providerMock) {
             throw new Error('Provider mock not initialized');
         }
 
-        this.providerMock.stop();
+        this.providerMock.nextResponse.push(response);
+    }
+
+    @step()
+    async setFileContent(file: string, content: Record<string, any> | string, aesKey: string) {
+        if (!this.providerMock) {
+            throw new Error('Provider mock not initialized');
+        }
+
+        const encrypted = await metadataUtils.encrypt(content, aesKey);
+        this.providerMock.setFile(file, encrypted);
+    }
+
+    @step()
+    async stop() {
+        if (!this.providerMock) {
+            throw new Error('Provider mock not initialized');
+        }
+
+        await this.providerMock.stop();
     }
 }

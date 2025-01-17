@@ -64,6 +64,7 @@ export class SettingsActions {
     readonly languageInputOption = (language: Language) =>
         this.page.getByTestId(`@settings/language-select/option/${language}`);
     readonly checkSeedButton: Locator;
+    readonly metadataSwitch: Locator;
 
     constructor(
         private readonly page: Page,
@@ -96,6 +97,7 @@ export class SettingsActions {
         this.themeInput = this.page.getByTestId('@theme/color-scheme-select/input');
         this.languageInput = this.page.getByTestId('@settings/language-select/input');
         this.checkSeedButton = this.page.getByTestId('@settings/device/check-seed-button');
+        this.metadataSwitch = this.page.getByTestId('@settings/metadata-switch');
     }
 
     @step()
