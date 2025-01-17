@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { useHandleDeviceConnection } from '@suite-native/device';
 import {
     AccountDetailScreen,
     AccountSettingsScreen,
@@ -24,19 +23,17 @@ import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts'
 import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
 import { SendStackNavigator } from '@suite-native/module-send';
 import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
-import { ConnectPopupScreen, useConnectPopupNavigation } from '@suite-native/module-connect-popup';
+import { ConnectPopupScreen } from '@suite-native/module-connect-popup';
 import { StakingDetailScreen } from '@suite-native/module-staking-management';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
 
 import { AppTabNavigator } from './AppTabNavigator';
-import { useCoinEnablingInitialCheck } from '../hooks/useCoinEnablingInitialCheck';
+import { useGlobalHooks } from '../hooks/useGlobalHooks';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootStackNavigator = () => {
-    useHandleDeviceConnection();
-    useCoinEnablingInitialCheck();
-    useConnectPopupNavigation();
+    useGlobalHooks();
 
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
 
