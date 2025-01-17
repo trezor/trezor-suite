@@ -27,6 +27,7 @@ import {
     RootStackRoutes,
     AuthorizeDeviceStackRoutes,
 } from '@suite-native/navigation';
+import { selectIsOnboardingFinished } from '@suite-native/settings';
 
 import { selectDeviceError, selectIsDeviceFirmwareSupported } from '../selectors';
 import { IncompatibleFirmwareModalAppendix } from '../components/IncompatibleFirmwareModalAppendix';
@@ -57,6 +58,7 @@ export const useDetectDeviceError = () => {
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
     const isDeviceInBootloader = useSelector(selectIsDeviceInBootloader);
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
+    const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
 
     const isDeviceFirmwareSupported = useSelector(selectIsDeviceFirmwareSupported);
     const deviceError = useSelector(selectDeviceError);
@@ -79,7 +81,7 @@ export const useDetectDeviceError = () => {
     // If device is unacquired (restarted app, another app fetched device session, ...),
     // we cannot work with device anymore. Shouldn't happen on mobile app but just in case.
     useEffect(() => {
-        if (isUnacquiredDevice) {
+        if (isUnacquiredDevice && isOnboardingFinished) {
             showAlert({
                 title: <Translation id="moduleDevice.unacquiredDeviceModal.title" />,
                 description: <Translation id="moduleDevice.unacquiredDeviceModal.description" />,
@@ -92,10 +94,15 @@ export const useDetectDeviceError = () => {
         } else {
             hideAlert();
         }
-    }, [isUnacquiredDevice, dispatch, hideAlert, showAlert]);
+    }, [isOnboardingFinished, isUnacquiredDevice, dispatch, hideAlert, showAlert]);
 
     useEffect(() => {
-        if (!isDeviceFirmwareSupported && !isPortfolioTrackerDevice && !wasDeviceEjectedByUser) {
+        if (
+            !isDeviceFirmwareSupported &&
+            isOnboardingFinished &&
+            !isPortfolioTrackerDevice &&
+            !wasDeviceEjectedByUser
+        ) {
             showAlert({
                 title: <Translation id="moduleDevice.unsupportedFirmwareModal.title" />,
                 description: <Translation id="moduleDevice.unsupportedFirmwareModal.description" />,
@@ -115,6 +122,7 @@ export const useDetectDeviceError = () => {
         }
     }, [
         isDeviceFirmwareSupported,
+        isOnboardingFinished,
         isPortfolioTrackerDevice,
         wasDeviceEjectedByUser,
         dispatch,
@@ -123,6 +131,8 @@ export const useDetectDeviceError = () => {
     ]);
 
     useEffect(() => {
+        if (!isOnboardingFinished) return;
+
         if (
             isConnectedDeviceUninitialized &&
             !wasDeviceEjectedByUser &&
@@ -173,6 +183,7 @@ export const useDetectDeviceError = () => {
     }, [
         hasDeviceFirmwareInstalled,
         isConnectedDeviceUninitialized,
+        isOnboardingFinished,
         isUnacquiredDevice,
         wasDeviceEjectedByUser,
         showAlert,
@@ -182,7 +193,12 @@ export const useDetectDeviceError = () => {
     ]);
 
     useEffect(() => {
-        if (isDeviceInBootloader && hasDeviceFirmwareInstalled && !wasDeviceEjectedByUser) {
+        if (
+            isDeviceInBootloader &&
+            hasDeviceFirmwareInstalled &&
+            !wasDeviceEjectedByUser &&
+            isOnboardingFinished
+        ) {
             showAlert({
                 title: <Translation id="moduleDevice.bootloaderModal.title" />,
                 description: <Translation id="moduleDevice.bootloaderModal.description" />,
@@ -202,6 +218,7 @@ export const useDetectDeviceError = () => {
         }
     }, [
         isDeviceInBootloader,
+        isOnboardingFinished,
         hasDeviceFirmwareInstalled,
         wasDeviceEjectedByUser,
         showAlert,
@@ -209,7 +226,7 @@ export const useDetectDeviceError = () => {
     ]);
 
     useEffect(() => {
-        if (deviceError && !isUnacquiredDevice) {
+        if (deviceError && !isUnacquiredDevice && isOnboardingFinished) {
             Sentry.captureException(new Error(`device error - ${deviceError}`));
 
             showAlert({
@@ -234,7 +251,15 @@ export const useDetectDeviceError = () => {
                 testID: '@device/errors/alert/error',
             });
         }
-    }, [deviceError, handleDisconnect, showAlert, openLink, navigation, isUnacquiredDevice]);
+    }, [
+        deviceError,
+        handleDisconnect,
+        isOnboardingFinished,
+        isUnacquiredDevice,
+        navigation,
+        openLink,
+        showAlert,
+    ]);
 
     useEffect(() => {
         // Hide the error alert when the device is disconnected.
