@@ -1,4 +1,4 @@
-import { useHandleDeviceConnection } from '@suite-native/device';
+import { useDetectDeviceError, useHandleDeviceConnection } from '@suite-native/device';
 import { useConnectPopupNavigation } from '@suite-native/module-connect-popup';
 
 import { useCoinEnablingInitialCheck } from './useCoinEnablingInitialCheck';
@@ -8,7 +8,10 @@ import { useCoinEnablingInitialCheck } from './useCoinEnablingInitialCheck';
  * that are supposed to be active globally once the app is ready.
  */
 export const useGlobalHooks = () => {
-    useHandleDeviceConnection();
-    useCoinEnablingInitialCheck();
     useConnectPopupNavigation();
+
+    useCoinEnablingInitialCheck();
+
+    useHandleDeviceConnection();
+    useDetectDeviceError();
 };

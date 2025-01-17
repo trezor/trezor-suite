@@ -11,7 +11,7 @@ import {
     selectDeviceRequestedPin,
     useHandleDuplicatePassphrase,
 } from '@suite-native/device-authorization';
-import { useDetectDeviceError, useReportDeviceConnectToAnalytics } from '@suite-native/device';
+import { useReportDeviceConnectToAnalytics } from '@suite-native/device';
 
 import { ConnectAndUnlockDeviceScreen } from '../screens/connect/ConnectAndUnlockDeviceScreen';
 import { PinScreen } from '../screens/connect/PinScreen';
@@ -30,7 +30,8 @@ export const AuthorizeDeviceStack = createNativeStackNavigator<AuthorizeDeviceSt
 export const AuthorizeDeviceStackNavigator = () => {
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
 
-    useDetectDeviceError();
+    // TODO: This should be in global hook to be reported if view-only enabled device is connected.
+    // But we should prevent the re-reporting of an already connected device when the state changes.
     useReportDeviceConnectToAnalytics();
     useHandleDuplicatePassphrase();
 
