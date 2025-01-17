@@ -194,7 +194,7 @@ const Top = () => {
                 <LargeDeviceImageContainer>
                     <LargeDeviceImage
                         alt="Trezor"
-                        image={`TREZOR_${selectedDeviceModelInternal}`}
+                        image={`TREZOR_${selectedDeviceModelInternal}_LARGE`}
                     />
                 </LargeDeviceImageContainer>
             </ElevationContext>
