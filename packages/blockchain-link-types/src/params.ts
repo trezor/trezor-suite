@@ -1,61 +1,106 @@
-export interface AccountBalanceHistoryParams {
-    descriptor: string;
-    from?: number;
-    to?: number;
-    currencies?: string[];
-    groupBy?: number;
-}
+import { Type, Static } from '@trezor/schema-utils';
 
-export interface GetCurrentFiatRatesParams {
-    currencies?: string[];
-    token?: string;
-}
+export type AccountBalanceHistoryParams = Static<typeof AccountBalanceHistoryParams>;
+export const AccountBalanceHistoryParams = Type.Object(
+    {
+        descriptor: Type.String(),
+        from: Type.Optional(Type.Number()),
+        to: Type.Optional(Type.Number()),
+        currencies: Type.Optional(Type.Array(Type.String())),
+        groupBy: Type.Optional(Type.Number()),
+    },
+    { $id: 'AccountBalanceHistoryParams' },
+);
 
-export interface GetFiatRatesForTimestampsParams {
-    timestamps: number[];
-    currencies?: string[];
-    token?: string;
-}
+export type GetCurrentFiatRatesParams = Static<typeof GetCurrentFiatRatesParams>;
+export const GetCurrentFiatRatesParams = Type.Object(
+    {
+        currencies: Type.Optional(Type.Array(Type.String())),
+        token: Type.Optional(Type.String()),
+    },
+    { $id: 'GetCurrentFiatRatesParams' },
+);
 
-export interface GetFiatRatesTickersListParams {
-    timestamp?: number;
-    token?: string;
-}
+export type GetFiatRatesForTimestampsParams = Static<typeof GetFiatRatesForTimestampsParams>;
+export const GetFiatRatesForTimestampsParams = Type.Object(
+    {
+        timestamps: Type.Array(Type.Number()),
+        currencies: Type.Optional(Type.Array(Type.String())),
+        token: Type.Optional(Type.String()),
+    },
+    { $id: 'GetFiatRatesForTimestampsParams' },
+);
 
-export interface EstimateFeeParams {
-    blocks?: number[];
-    specific?: {
-        conservative?: boolean; // btc
-        txsize?: number; // btc transaction size
-        from?: string; // eth from
-        to?: string; // eth to
-        data?: string; // eth tx data, sol tx message
-        value?: string; // eth tx amount
-        isCreatingAccount?: boolean; // sol account creation
-        newTokenAccountProgramName?: 'spl-token' | 'spl-token-2022'; // program name of the Solana Token account that is being created, ignored if isCreatingAccount is false, default: 'spl-token'
-    };
-}
+export type GetFiatRatesTickersListParams = Static<typeof GetFiatRatesTickersListParams>;
+export const GetFiatRatesTickersListParams = Type.Object(
+    {
+        timestamp: Type.Optional(Type.Number()),
+        token: Type.Optional(Type.String()),
+    },
+    { $id: 'GetFiatRatesTickersListParams' },
+);
 
-export interface RpcCallParams {
-    from: string;
-    to: string;
-    data: string;
-}
+export type EstimateFeeParams = Static<typeof EstimateFeeParams>;
+export const EstimateFeeParams = Type.Object(
+    {
+        blocks: Type.Optional(Type.Array(Type.Number())),
+        specific: Type.Optional(
+            Type.Object({
+                conservative: Type.Optional(Type.Boolean()),
+                txsize: Type.Optional(Type.Number()),
+                from: Type.Optional(Type.String()),
+                to: Type.Optional(Type.String()),
+                data: Type.Optional(Type.String()),
+                value: Type.Optional(Type.String()),
+                isCreatingAccount: Type.Optional(Type.Boolean()),
+                newTokenAccountProgramName: Type.Optional(
+                    Type.Union([Type.Literal('spl-token'), Type.Literal('spl-token-2022')]),
+                ),
+            }),
+        ),
+    },
+    { $id: 'EstimateFeeParams' },
+);
 
-export interface AccountInfoParams {
-    descriptor: string; // address or xpub
-    details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs'; // depth, default: 'basic'
-    tokens?: 'nonzero' | 'used' | 'derived'; // blockbook only, default: 'derived' - show all derived addresses, 'used' - show only used addresses, 'nonzero' - show only address with balance
-    page?: number; // blockbook only, page index
-    pageSize?: number; // how many transactions on page
-    from?: number; // from block
-    to?: number; // to block
-    contractFilter?: string; // blockbook only, ethereum token filter
-    gap?: number; // blockbook only, derived addresses gap
-    // since ripple-lib cannot use pages "marker" is used as first unknown point in history (block and sequence of transaction)
-    marker?: {
-        ledger: number;
-        seq: number;
-    };
-    tokenAccountsPubKeys?: string[]; // solana only, token accounts to fetch txids for
-}
+export type RpcCallParams = Static<typeof RpcCallParams>;
+export const RpcCallParams = Type.Object(
+    {
+        from: Type.String(),
+        to: Type.String(),
+        data: Type.String(),
+    },
+    { $id: 'RpcCallParams' },
+);
+
+export type AccountInfoParams = Static<typeof AccountInfoParams>;
+export const AccountInfoParams = Type.Object(
+    {
+        descriptor: Type.String(),
+        details: Type.Optional(
+            Type.Union([
+                Type.Literal('basic'),
+                Type.Literal('tokens'),
+                Type.Literal('tokenBalances'),
+                Type.Literal('txids'),
+                Type.Literal('txs'),
+            ]),
+        ),
+        tokens: Type.Optional(
+            Type.Union([Type.Literal('nonzero'), Type.Literal('used'), Type.Literal('derived')]),
+        ),
+        page: Type.Optional(Type.Number()),
+        pageSize: Type.Optional(Type.Number()),
+        from: Type.Optional(Type.Number()),
+        to: Type.Optional(Type.Number()),
+        contractFilter: Type.Optional(Type.String()),
+        gap: Type.Optional(Type.Number()),
+        marker: Type.Optional(
+            Type.Object({
+                ledger: Type.Number(),
+                seq: Type.Number(),
+            }),
+        ),
+        tokenAccountsPubKeys: Type.Optional(Type.Array(Type.String())),
+    },
+    { $id: 'AccountInfoParams' },
+);

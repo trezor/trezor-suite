@@ -11575,6 +11575,7 @@ __metadata:
   dependencies:
     "@everstake/wallet-sdk": "npm:^1.0.7"
     "@solana/web3.js": "npm:^2.0.0"
+    "@trezor/schema-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     tsx: "npm:^4.16.3"
