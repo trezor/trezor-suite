@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useRef, useMemo } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import type {
@@ -29,7 +29,6 @@ import {
     coinmarketGetExchangeReceiveCryptoId,
     createQuoteLink,
     getAmountLimits,
-    getCexQuotesByRateType,
     getSuccessQuotesOrdered,
 } from 'src/utils/wallet/coinmarket/exchangeUtils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
@@ -45,13 +44,7 @@ import {
     CoinmarketExchangeFormProps,
     CoinmarketExchangeStepType,
 } from 'src/types/coinmarket/coinmarketForm';
-import {
-    FORM_EXCHANGE_CEX,
-    FORM_EXCHANGE_DEX,
-    FORM_OUTPUT_AMOUNT,
-    FORM_OUTPUT_FIAT,
-    FORM_EXCHANGE_TYPE,
-} from 'src/constants/wallet/coinmarket/form';
+import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_FIAT } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketExchangeFormDefaultValues } from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeFormDefaultValues';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
@@ -65,6 +58,7 @@ import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/us
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { useCoinmarketFiatValues } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketFiatValues';
 import type { CryptoAmountLimitProps } from 'src/utils/suite/validation';
+import { useCoinmarketExchangeQuotesFilter } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketExchangeQuotesFilter';
 
 import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
 
@@ -181,13 +175,15 @@ export const useCoinmarketExchangeForm = ({
 
     const isFormInvalid = !(formIsValid && hasValues);
     const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
-
-    const filteredCexQuotes = useMemo(
-        () => getCexQuotesByRateType(rateType, innerQuotes, exchangeInfo),
-        [rateType, innerQuotes, exchangeInfo],
-    );
-    const dexQuotes = useMemo(() => innerQuotes?.filter(q => q.isDex), [innerQuotes]);
     const decimals = getCoinmarketNetworkDecimals({ sendCryptoSelect, network });
+
+    const { cexQuotes, dexQuotes } = useCoinmarketExchangeQuotesFilter({
+        exchangeType,
+        rateType,
+        quotes,
+        exchangeInfo,
+        setValue,
+    });
 
     const {
         isComposing,
@@ -679,25 +675,6 @@ export const useCoinmarketExchangeForm = ({
         };
     }, []);
 
-    // handle edge case when there are no longer quotes of selected exchange type
-    useEffect(() => {
-        if (exchangeType === FORM_EXCHANGE_DEX && !dexQuotes?.length && filteredCexQuotes?.length) {
-            setValue(FORM_EXCHANGE_TYPE, FORM_EXCHANGE_CEX);
-        } else if (
-            exchangeType === FORM_EXCHANGE_CEX &&
-            !filteredCexQuotes?.length &&
-            dexQuotes?.length
-        ) {
-            setValue(FORM_EXCHANGE_TYPE, FORM_EXCHANGE_DEX);
-        } else if (
-            exchangeType === FORM_EXCHANGE_DEX &&
-            !dexQuotes?.length &&
-            !filteredCexQuotes?.length
-        ) {
-            setValue(FORM_EXCHANGE_TYPE, FORM_EXCHANGE_CEX);
-        }
-    }, [dexQuotes, exchangeType, filteredCexQuotes, setValue]);
-
     return {
         type,
         ...methods,
@@ -718,9 +695,9 @@ export const useCoinmarketExchangeForm = ({
         timer,
         callInProgress,
         exchangeInfo,
-        allQuotes: innerQuotes,
-        quotes: filteredCexQuotes,
+        quotes: innerQuotes,
         dexQuotes,
+        cexQuotes,
         quotesRequest,
         composedLevels,
         defaultCurrency,

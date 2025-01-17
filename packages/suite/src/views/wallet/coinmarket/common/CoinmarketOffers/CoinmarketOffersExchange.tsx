@@ -17,11 +17,8 @@ import { CoinmarketOffersExchangeQuotesByTypeSection } from 'src/views/wallet/co
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 export const CoinmarketOffersExchange = () => {
-    const {
-        allQuotes: quotes,
-        exchangeInfo,
-        getValues,
-    } = useCoinmarketFormContext<CoinmarketTradeExchangeType>();
+    const { quotes, exchangeInfo, getValues } =
+        useCoinmarketFormContext<CoinmarketTradeExchangeType>();
     const exchangeTypeFilter = getValues(EXCHANGE_COMPARATOR_RATE_FILTER);
     const kycFilter = getValues(EXCHANGE_COMPARATOR_KYC_FILTER);
     const showAll = exchangeTypeFilter === EXCHANGE_COMPARATOR_RATE_FILTER_ALL;

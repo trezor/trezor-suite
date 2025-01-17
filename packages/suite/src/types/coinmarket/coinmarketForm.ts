@@ -247,8 +247,8 @@ export interface CoinmarketExchangeFormContextProps
     defaultCurrency: Option;
     amountLimits?: CryptoAmountLimitProps;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
-    allQuotes: ExchangeTrade[] | undefined;
     quotes: ExchangeTrade[] | undefined;
+    cexQuotes: ExchangeTrade[] | undefined;
     dexQuotes: ExchangeTrade[] | undefined;
     quotesRequest: ExchangeTradeQuoteRequest | undefined;
     receiveAccount?: Account;

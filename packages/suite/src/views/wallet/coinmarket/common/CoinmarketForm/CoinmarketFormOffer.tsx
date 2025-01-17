@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { CryptoId, ExchangeTrade } from 'invity-api';
+import { CryptoId } from 'invity-api';
 
 import { Button, TextButton, Row, Column, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -38,7 +38,7 @@ const getSelectedQuote = (
     if (isCoinmarketExchangeContext(context)) {
         return context.getValues(FORM_EXCHANGE_TYPE) === FORM_EXCHANGE_DEX
             ? context.dexQuotes?.[0]
-            : context.quotes?.[0];
+            : context.cexQuotes?.[0];
     } else {
         return bestScoredQuote;
     }
@@ -133,7 +133,6 @@ export const CoinmarketFormOffer = () => {
                         isFormLoading={state.isFormLoading}
                         isFormInvalid={state.isFormInvalid}
                         providers={providers}
-                        quotes={quotes as ExchangeTrade[] | undefined}
                         bestRatedQuote={bestRatedQuote}
                     />
                 ) : (

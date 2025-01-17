@@ -1,5 +1,3 @@
-import { ExchangeTrade } from 'invity-api';
-
 import { spacings } from '@trezor/theme';
 import { Row, Card, Column, Spinner, Paragraph } from '@trezor/components';
 
@@ -23,7 +21,6 @@ interface CoinmarketFormOffersSwitcherProps {
     isFormLoading: boolean;
     isFormInvalid: boolean;
     providers: CoinmarketUtilsProvidersProps | undefined;
-    quotes: ExchangeTrade[] | undefined;
     bestRatedQuote: CoinmarketTradeDetailType | undefined;
 }
 
@@ -32,12 +29,11 @@ export const CoinmarketFormOffersSwitcher = ({
     isFormLoading,
     isFormInvalid,
     providers,
-    quotes,
     bestRatedQuote,
 }: CoinmarketFormOffersSwitcherProps) => {
-    const { setValue, getValues, dexQuotes } = context;
+    const { setValue, getValues, dexQuotes, cexQuotes } = context;
     const { exchangeType } = getValues();
-    const cexQuote = quotes?.[0];
+    const cexQuote = cexQuotes?.[0];
     const dexQuote = dexQuotes?.[0];
     const hasSingleOption = !cexQuote !== !dexQuote;
     const bestQuote = cexQuote ?? dexQuote;
