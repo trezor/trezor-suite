@@ -112,6 +112,7 @@ const getBalanceFromAccountInfo = ({
             return accountInfo.balance;
         case 'ethereum':
         case 'solana':
+        case 'cardano':
             if (contractId) {
                 const token = accountInfo.tokens?.find(t => t.contract === contractId);
 
