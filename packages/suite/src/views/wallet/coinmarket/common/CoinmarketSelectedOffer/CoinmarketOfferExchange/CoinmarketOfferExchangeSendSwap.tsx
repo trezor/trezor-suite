@@ -248,7 +248,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                         <InfoItem label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED" />}>
                             <FormattedCryptoAmount
                                 value={receiveStringAmount}
-                                symbol={receive}
+                                symbol={receiveCoinSymbol}
                                 contractAddress={receiveContractAddress}
                             />
                         </InfoItem>
