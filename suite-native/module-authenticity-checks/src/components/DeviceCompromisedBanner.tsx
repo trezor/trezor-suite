@@ -13,6 +13,8 @@ import { deviceCompromisedBannerAtom } from '../DeviceCompromisedBannerAtoms';
 
 const containerStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundAlertRedSubtleOnElevation0,
+    // MessageSystemBanner critical variant has the same bgColor, so the margin serves to separate them visually
+    marginBottom: utils.spacings.sp1,
 }));
 
 const contentStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(

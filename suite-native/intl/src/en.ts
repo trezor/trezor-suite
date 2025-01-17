@@ -30,6 +30,8 @@ export const en = {
         banners: {
             offline: {
                 title: "You're offline.",
+                fwRevisionCheckOfflineError:
+                    "Firmware authenticity check couldn't be performed.\nGo online to verify your firmware version.",
             },
             deviceCompromised: {
                 title: 'Unofficial firmware detected',
