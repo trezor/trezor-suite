@@ -30,6 +30,7 @@ import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/se
 import { isCoinWithTokens } from '@suite-native/tokens';
 import type { StaticSessionId } from '@trezor/connect';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { doesCoinSupportStaking } from '@suite-native/staking';
 
 import { AccountSelectBottomSheetSection, GroupedByTypeAccounts } from './types';
 import {
@@ -85,6 +86,7 @@ export const selectAccountFiatBalance = (state: NativeAccountsRootState, account
     const fiatRates = selectCurrentFiatRates(state);
     const account = selectAccountByKey(state, accountKey);
     const localCurrency = selectFiatCurrencyCode(state);
+    const shouldIncludeStaking = !!account && doesCoinSupportStaking(account.symbol);
 
     if (!account) {
         return '0';
@@ -94,6 +96,7 @@ export const selectAccountFiatBalance = (state: NativeAccountsRootState, account
         account,
         rates: fiatRates,
         localCurrency,
+        shouldIncludeStaking,
     });
 
     return totalBalance;
@@ -104,12 +107,12 @@ export const getAccountListSections = (
     tokenDefinitions: SimpleTokenStructure | undefined,
 ) => {
     const sections: AccountSelectBottomSheetSection[] = [];
-
     const canHasTokens = isCoinWithTokens(account.symbol);
+
     const tokens = filterKnownTokens(tokenDefinitions, account.symbol, account.tokens ?? []);
     const hasAnyKnownTokens = canHasTokens && !!tokens.length;
     const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
-    const hasStaking = stakingBalance !== '0';
+    const hasStaking = doesCoinSupportStaking(account.symbol) && stakingBalance !== '0';
 
     if (canHasTokens) {
         sections.push({

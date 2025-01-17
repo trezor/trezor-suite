@@ -10,6 +10,7 @@ import { selectFiatCurrencyCode } from '@suite-native/settings';
 import {
     NativeStakingRootState,
     selectAccountCryptoBalanceWithStaking,
+    doesCoinSupportStaking,
 } from '@suite-native/staking';
 
 type AccountSectionTitleProps = {
@@ -27,10 +28,11 @@ export const AccountSectionTitle: React.FC<AccountSectionTitleProps> = ({
     const cryptoBalanceWithStaking = useSelector((state: NativeStakingRootState) =>
         selectAccountCryptoBalanceWithStaking(state, account.key),
     );
+    const shouldIncludeStaking = doesCoinSupportStaking(account.symbol);
 
     const fiatBalance = useMemo(
-        () => getAccountFiatBalance({ account, localCurrency, rates }),
-        [account, localCurrency, rates],
+        () => getAccountFiatBalance({ account, localCurrency, rates, shouldIncludeStaking }),
+        [account, localCurrency, rates, shouldIncludeStaking],
     );
 
     return (

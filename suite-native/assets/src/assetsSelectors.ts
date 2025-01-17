@@ -21,7 +21,11 @@ import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { getAccountListSections } from '@suite-native/accounts';
 import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
-import { getAccountCryptoBalanceWithStaking, NativeStakingRootState } from '@suite-native/staking';
+import {
+    doesCoinSupportStaking,
+    getAccountCryptoBalanceWithStaking,
+    NativeStakingRootState,
+} from '@suite-native/staking';
 
 export interface AssetType {
     symbol: NetworkSymbol;
@@ -102,10 +106,13 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
     ],
     (accounts, deviceNetworksWithAssets, fiatCurrencyCode, rates) => {
         const accountsWithFiatBalance = accounts.map(account => {
+            const shouldIncludeStaking = doesCoinSupportStaking(account.symbol);
+
             const fiatValue = getAccountFiatBalance({
                 account,
                 localCurrency: fiatCurrencyCode,
                 rates,
+                shouldIncludeStaking,
             });
 
             return {
