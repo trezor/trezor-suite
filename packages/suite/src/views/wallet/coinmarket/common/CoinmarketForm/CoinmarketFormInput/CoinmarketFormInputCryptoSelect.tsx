@@ -151,6 +151,7 @@ export const CoinmarketFormInputCryptoSelect = <
             context.setValue(FORM_CRYPTO_CURRENCY_SELECT, findOption);
         }
 
+        context.setAmountLimits(undefined);
         setIsModalActive(false);
     };
 
