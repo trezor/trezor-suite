@@ -23,9 +23,10 @@ import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { useCoinmarketExchangeWatchSendApproval } from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeWatchSendApproval';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { saveSelectedQuote } from 'src/actions/wallet/coinmarketExchangeActions';
-import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { cryptoIdToSymbol, parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { IOAddress } from 'src/components/suite/copy/IOAddress';
 
 // add APPROVED means no approval request is necessary
 type ExtendedDexApprovalType = DexApprovalType | 'APPROVED';
@@ -51,6 +52,8 @@ export const CoinmarketOfferExchangeSendApproval = () => {
         selectedQuote?.status === 'CONFIRM' ? 'APPROVED' : 'MINIMAL',
     );
 
+    const blockchain = useSelector(state => state.wallet.blockchain);
+
     const { navigateToExchangeForm } = useCoinmarketNavigation(account);
 
     useCoinmarketExchangeWatchSendApproval({
@@ -69,6 +72,9 @@ export const CoinmarketOfferExchangeSendApproval = () => {
     const isFullApproval = !(Number(selectedQuote.preapprovedStringAmount) > 0);
 
     if (!selectedQuote.send) return null;
+
+    const symbol = cryptoIdToSymbol(selectedQuote.send);
+    const blockchainNetwork = symbol && blockchain[symbol];
 
     const isToken = parseCryptoId(selectedQuote.send)?.contractAddress !== undefined;
 
@@ -141,7 +147,11 @@ export const CoinmarketOfferExchangeSendApproval = () => {
             </InfoItem>
             {selectedQuote.approvalSendTxHash && (
                 <InfoItem label={<Translation id="TR_EXCHANGE_APPROVAL_TXID" />}>
-                    {selectedQuote.approvalSendTxHash}
+                    <IOAddress
+                        txAddress={selectedQuote.approvalSendTxHash}
+                        explorerUrl={blockchainNetwork?.explorer.tx}
+                        explorerUrlQueryString={blockchainNetwork?.explorer.queryString}
+                    />
                 </InfoItem>
             )}
             {selectedQuote.status === 'APPROVAL_PENDING' && (
