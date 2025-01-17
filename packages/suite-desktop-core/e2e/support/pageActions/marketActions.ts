@@ -41,7 +41,7 @@ export class MarketActions {
     readonly bestOfferSection: Locator;
     readonly bestOfferAmount: Locator;
     readonly buyBestOfferButton: Locator;
-    readonly youPayInput: Locator;
+    readonly youPayFiatInput: Locator;
     readonly youPayCurrencyDropdown: Locator;
     readonly youPayCurrencyOption = (currency: FiatCurrencyCode) =>
         this.page.getByTestId(`@coinmarket/form/fiat-currency-select/option/${currency}`);
@@ -93,7 +93,7 @@ export class MarketActions {
         this.bestOfferSection = this.page.getByTestId('@coinmarket/best-offer');
         this.bestOfferAmount = this.page.getByTestId('@coinmarket/best-offer/amount');
         this.buyBestOfferButton = this.page.getByTestId('@coinmarket/form/buy-button');
-        this.youPayInput = this.page.getByTestId('@coinmarket/form/fiat-input');
+        this.youPayFiatInput = this.page.getByTestId('@coinmarket/form/fiat-input');
         this.youPayCurrencyDropdown = this.page.getByTestId(
             '@coinmarket/form/fiat-currency-select/input',
         );
@@ -192,10 +192,10 @@ export class MarketActions {
         country: string = 'CZ',
     ) {
         // Warning: the field is initialized empty and gets default value after the first offer sync
-        await expect(this.youPayInput).not.toHaveValue('');
+        await expect(this.youPayFiatInput).not.toHaveValue('');
         await this.selectCountryOfResidence(country);
         await this.selectFiatCurrency(currency);
-        await this.youPayInput.fill(amount);
+        await this.youPayFiatInput.fill(amount);
         // Warning: Bug #16054, as a workaround we wait for offer sync after setting the amount
         await this.waitForOffersSyncToFinish();
     }

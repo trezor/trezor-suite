@@ -5,30 +5,24 @@ const mockedInputAmount = buyQuotes[0].fiatStringAmount; // 1234, The mocked quo
 
 // TODO: #16041 Fix the Invity mocking on desktop
 test.describe('Coin market buy', { tag: ['@group=other', '@snapshot', '@webOnly'] }, () => {
-    test.beforeEach(async ({ page, marketPage, onboardingPage, dashboardPage, walletPage }) => {
-        await page.clock.install();
+    test.beforeEach(async ({ marketPage, onboardingPage, dashboardPage, walletPage }) => {
         await marketPage.mockInvity();
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
         await walletPage.openCoinMarket();
     });
 
-    test('Buy crypto from compared offers', async ({ page, marketPage }) => {
+    test('Buy crypto from compared offers', async ({ marketPage }) => {
         await test.step('Fill input amount and opens offer comparison', async () => {
             await marketPage.setYouPayAmount(mockedInputAmount);
             await expect(marketPage.section).toHaveScreenshot('buy-coins-layout.png');
-            await page.clock.pauseAt(Date.now());
             await marketPage.compareButton.click();
         });
 
         await test.step('Check offers and chooses the first one', async () => {
-            await expect(marketPage.buyOffersPage).toHaveScreenshot('compared-buy-offers.png', {
-                // defualt animation: disabled were interfering with page.clock.pauseAt
-                animations: 'allow',
-                // This mask just doesn't work, I have no idea why. So instead we pausing the clock
+            await expect(marketPage.buyOffersPage).toHaveScreenshot('compared-offers-buy.png', {
                 mask: [marketPage.refreshTime],
             });
-            await page.clock.resume();
             await marketPage.validateBuyQuotes();
             await marketPage.selectThisQuoteButton.first().click();
         });
