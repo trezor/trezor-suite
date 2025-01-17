@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { A, F, pipe } from '@mobily/ts-belt';
+import { A, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
@@ -23,6 +23,7 @@ import {
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 import {
+    isCoinWithTokens,
     selectNetworkSymbolsOfAccountsWithTokensAllowed,
     TokensRootState,
 } from '@suite-native/tokens';
@@ -185,7 +186,11 @@ export const selectTokenDefinitionsEnabledNetworks = createMemoizedSelector(
     [selectEnabledDiscoveryNetworkSymbols, selectNetworkSymbolsOfAccountsWithTokensAllowed],
     (enabledNetworkSymbols, accountNetworkSymbols) =>
         returnStableArrayIfEmpty(
-            F.toMutable(A.uniq([...enabledNetworkSymbols, ...accountNetworkSymbols])),
+            pipe(
+                [...enabledNetworkSymbols, ...accountNetworkSymbols],
+                A.filter(s => isCoinWithTokens(s)),
+                A.uniq,
+            ),
         ),
 );
 

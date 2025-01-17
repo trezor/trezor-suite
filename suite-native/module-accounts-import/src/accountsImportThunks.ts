@@ -23,6 +23,7 @@ import {
     selectFilterKnownTokens,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
+import { isCoinWithTokens } from '@suite-native/tokens';
 
 import { paymentTypeToAccountType } from './constants';
 
@@ -120,7 +121,7 @@ export const getAccountInfoThunk = createThunk<
                 const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
 
                 // fetch token definitions for this network in case they are needed
-                if (!tokenDefinitions) {
+                if (!tokenDefinitions && isCoinWithTokens(symbol)) {
                     const definitionTypes = getSupportedDefinitionTypes(symbol);
 
                     definitionTypes.forEach(async type => {
