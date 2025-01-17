@@ -56,6 +56,7 @@ const Container = styled.div<
     overflow: hidden;
     background: ${mapElevationToBackground};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
+    -webkit-app-region: no-drag;
 
     ${withFrameProps}
 `;

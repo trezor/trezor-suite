@@ -17,6 +17,7 @@ type SwitchDeviceModalProps = {
 
 const Container = styled.div`
     width: 378px;
+    -webkit-app-region: no-drag;
 `;
 
 const initial = {
@@ -51,7 +52,11 @@ export const SwitchDeviceModal = ({
                                 width: 369,
                                 height: 'auto',
                             }}
-                            style={{ originX: 0, originY: 0, overflow: 'hidden' }}
+                            style={{
+                                originX: 0,
+                                originY: 0,
+                                overflow: 'hidden',
+                            }}
                         >
                             {children}
                         </motion.div>
