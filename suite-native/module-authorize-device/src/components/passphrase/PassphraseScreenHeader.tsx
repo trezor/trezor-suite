@@ -97,6 +97,7 @@ export const PassphraseScreenHeader = () => {
                 accessibilityRole="button"
                 accessibilityLabel="close"
                 onPress={handleCancel}
+                testID="@passphrase/closeButton"
             />
         </ScreenHeaderWrapper>
     );

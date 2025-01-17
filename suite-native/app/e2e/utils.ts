@@ -97,7 +97,10 @@ export const appIsFullyLoaded = async () => {
         .withTimeout(35000);
 };
 
-export const prepareTrezorEmulator = async (seed: string = MNEMONICS.mnemonic_immune) => {
+export const prepareTrezorEmulator = async (
+    seed: string = MNEMONICS.mnemonic_immune,
+    passphrase_protection: boolean = false,
+) => {
     if (platform === 'android') {
         // Prepare Trezor device for test scenario
         await TrezorUserEnvLink.disconnect();
@@ -106,6 +109,7 @@ export const prepareTrezorEmulator = async (seed: string = MNEMONICS.mnemonic_im
         await TrezorUserEnvLink.setupEmu({
             label: TREZOR_DEVICE_LABEL,
             mnemonic: seed,
+            passphrase_protection,
         });
         await TrezorUserEnvLink.startBridge();
     }
@@ -122,12 +126,12 @@ export const wait = async (ms: number) => {
     await new Promise(resolve => setTimeout(resolve, ms));
 };
 
-export const waitForElementByTextToBeVisible = (text: string, timeout = 2000) =>
+export const waitForElementByTextToBeVisible = (text: string, timeout = 30000) =>
     waitFor(element(by.text(text)))
         .toBeVisible()
         .withTimeout(timeout);
 
-export const waitForElementByIdToBeVisible = (testId: string, timeout = 2000) =>
+export const waitForElementByIdToBeVisible = (testId: string, timeout = 30000) =>
     waitFor(element(by.id(testId)))
         .toBeVisible()
         .withTimeout(timeout);

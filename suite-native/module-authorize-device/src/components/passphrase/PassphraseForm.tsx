@@ -130,6 +130,7 @@ export const PassphraseForm = ({
                             onFocus={handleFocusInput}
                             onBlur={() => setIsInputFocused(false)}
                             secureTextEntry
+                            testID="@passphrase/passphraseInput"
                         />
                         {isDirty && (
                             <Animated.View entering={FadeIn} exiting={FadeOut}>
@@ -137,6 +138,7 @@ export const PassphraseForm = ({
                                     accessibilityRole="button"
                                     accessibilityLabel="confirm passphrase"
                                     onPress={handleCreateHiddenWallet}
+                                    testID="@passphrase/confirmButton"
                                 >
                                     <Translation id="modulePassphrase.form.enterWallet" />
                                 </Button>

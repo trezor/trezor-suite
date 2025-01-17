@@ -70,7 +70,10 @@ export const PassphraseEmptyWalletScreen = () => {
                         <Translation id="modulePassphrase.emptyPassphraseWallet.confirmCard.description" />
                     </Text>
                 </VStack>
-                <Button onPress={toggleBottomSheet}>
+                <Button
+                    onPress={toggleBottomSheet}
+                    testID="@passphrase/emptyPassphraseWallet/confirmButton"
+                >
                     <Translation id="modulePassphrase.emptyPassphraseWallet.confirmCard.button" />
                 </Button>
             </Card>

@@ -89,6 +89,7 @@ events
 jssha
 wait-on
 @jest/types
+@jest/globals
 jest-extended
 jest-environment-node
 scroll-into-view-if-needed

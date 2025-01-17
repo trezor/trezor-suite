@@ -57,6 +57,7 @@ const CryptoAmount = React.memo(({ symbol }: AssetItemSubComponentProps) => {
             // Every asset crypto amount is rounded to 8 decimals to prevent UI overflow.
 
             decimals={8}
+            testID={`@assets/cryptoAmount/${symbol}`}
         />
     );
 });

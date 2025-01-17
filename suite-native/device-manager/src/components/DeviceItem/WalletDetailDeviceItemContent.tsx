@@ -57,7 +57,7 @@ export const WalletDetailDeviceItemContent = ({
                 </Text>
                 {!isPortfolioTrackerDevice && <ConnectionDot isConnected={device.connected} />}
             </HStack>
-            <Text variant="hint" color="textSubdued">
+            <Text variant="hint" color="textSubdued" testID="@deviceManager/walletDetail/subheader">
                 {isPortfolioTrackerDevice && (
                     <Translation id="deviceManager.status.portfolioTracker" />
                 )}

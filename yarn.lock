@@ -9944,6 +9944,7 @@ __metadata:
     "@config-plugins/detox": "npm:^8.0.0"
     "@currents/cmd": "npm:^1.6.0"
     "@gorhom/bottom-sheet": "npm:5.0.5"
+    "@jest/globals": "npm:^29.7.0"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-native-community/cli": "npm:^15.1.2"
     "@react-native-community/netinfo": "npm:^11.4.1"

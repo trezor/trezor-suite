@@ -12,6 +12,13 @@ class DeviceManagerActions {
         await waitFor(deviceSettingsButton).toBeVisible().withTimeout(30000);
         await deviceSettingsButton.tap();
     }
+
+    async tapOpenPassphraseButton() {
+        const openPassphraseButton = element(by.id('@device-manager/passphrase/add'));
+
+        await waitFor(openPassphraseButton).toBeVisible().withTimeout(30000);
+        await openPassphraseButton.tap();
+    }
 }
 
 export const onDeviceManager = new DeviceManagerActions();
