@@ -1,87 +1,88 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { G } from '@mobily/ts-belt';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
-import { ErrorMessage, VStack, Box } from '@suite-native/atoms';
+import { getScreenWidth } from '@trezor/env-utils';
 import {
     AccountsRootState,
-    removeButtonRequests,
-    selectAccountByKey,
-    selectSelectedDevice,
+    DeviceRootState,
+    selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { Translation } from '@suite-native/intl';
-import { ConfirmOnTrezorImage } from '@suite-native/device';
-import { Screen } from '@suite-native/navigation';
+import { BoxSkeleton, Card, VStack } from '@suite-native/atoms';
+import { ReceiveStackParamList, ReceiveStackRoutes, Screen } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useAccountReceiveAddress } from '../hooks/useAccountReceiveAddress';
-import { ReceiveAddressCard } from '../components/ReceiveAddressCard';
-import { ReceiveAccountDetailsCard } from '../components/ReceiveAccountDetailsCard';
-import { hasReceiveAddressButtonRequest } from '../hooks/receiveSelectors';
+import { ReceiveAddressScreen } from './ReceiveAddressScreen';
 import { ReceiveScreenHeader } from '../components/ReceiveScreenHeader';
 
-type AccountReceiveProps = {
-    accountKey: AccountKey;
-    tokenContract?: TokenAddress;
+const SCREEN_WIDTH = getScreenWidth();
+
+const cardStyle = prepareNativeStyle(utils => ({
+    padding: utils.spacings.sp8,
+}));
+
+const ReceiveAccountLoader = () => {
+    const { applyStyle } = useNativeStyles();
+
+    return (
+        <VStack spacing="sp32" alignItems="center" paddingHorizontal="sp8">
+            <Card style={applyStyle(cardStyle)}>
+                <BoxSkeleton width={SCREEN_WIDTH - 32} height={70} />
+            </Card>
+            <Card style={applyStyle(cardStyle)}>
+                <VStack spacing="sp24" alignItems="center" paddingHorizontal="sp24">
+                    <BoxSkeleton width={SCREEN_WIDTH - 80} height={200} />
+                    <BoxSkeleton width={SCREEN_WIDTH - 80} height={48} borderRadius={24} />
+                </VStack>
+            </Card>
+        </VStack>
+    );
 };
 
-export const ReceiveAccountScreen = ({ accountKey, tokenContract }: AccountReceiveProps) => {
-    const dispatch = useDispatch();
+export const ReceiveAccountScreen = () => {
+    const {
+        params: {
+            accountKey: routeAccountKey,
+            tokenContract,
+            networkSymbol: routeNetworkSymbol,
+            accountType: routeAccountType,
+            accountIndex: routeAccountIndex,
+            closeActionType,
+        },
+    } = useRoute<RouteProp<ReceiveStackParamList, ReceiveStackRoutes.ReceiveAccount>>();
 
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
+    const foundAccountKey = useSelector((state: AccountsRootState & DeviceRootState) =>
+        selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex(
+            state,
+            routeNetworkSymbol,
+            routeAccountType,
+            routeAccountIndex,
+        ),
     );
-    const device = useSelector(selectSelectedDevice);
-    const hasReceiveButtonRequest = useSelector(hasReceiveAddressButtonRequest);
 
-    const { address, isReceiveApproved, isUnverifiedAddressRevealed, handleShowAddress } =
-        useAccountReceiveAddress(accountKey);
+    const accountKey = routeAccountKey ?? foundAccountKey;
 
-    const isAccountDetailVisible = !isUnverifiedAddressRevealed && !isReceiveApproved;
-
-    if (G.isNullable(account) || G.isNullable(address))
-        return <ErrorMessage errorMessage={<Translation id="generic.unknownError" />} />;
-
-    const handleShowAddressAndRemoveButtonRequests = async () => {
-        await handleShowAddress();
-        if (!device) return;
-        dispatch(removeButtonRequests({ device }));
-    };
-
-    const isConfirmOnTrezorReady =
-        isUnverifiedAddressRevealed && !isReceiveApproved && hasReceiveButtonRequest;
+    if (accountKey) {
+        return (
+            <ReceiveAddressScreen
+                accountKey={accountKey}
+                tokenContract={tokenContract}
+                closeActionType={closeActionType}
+            />
+        );
+    }
 
     return (
         <Screen
-            header={<ReceiveScreenHeader accountKey={accountKey} tokenContract={tokenContract} />}
-            footer={
-                isConfirmOnTrezorReady && (
-                    <ConfirmOnTrezorImage
-                        bottomSheetText={
-                            <Translation id="moduleReceive.bottomSheets.confirmOnDeviceMessage" />
-                        }
-                    />
-                )
+            header={
+                <ReceiveScreenHeader
+                    accountKey={accountKey}
+                    tokenContract={tokenContract}
+                    closeActionType={closeActionType}
+                />
             }
         >
-            <Box flex={1}>
-                <VStack marginTop="sp8" spacing="sp16">
-                    {isAccountDetailVisible && (
-                        <ReceiveAccountDetailsCard
-                            accountKey={accountKey}
-                            tokenContract={tokenContract}
-                        />
-                    )}
-                    <ReceiveAddressCard
-                        symbol={account.symbol}
-                        address={address}
-                        isTokenAddress={!!tokenContract}
-                        isReceiveApproved={isReceiveApproved}
-                        isUnverifiedAddressRevealed={isUnverifiedAddressRevealed}
-                        onShowAddress={handleShowAddressAndRemoveButtonRequests}
-                    />
-                </VStack>
-            </Box>
+            <ReceiveAccountLoader />
         </Screen>
     );
 };

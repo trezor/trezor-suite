@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import {
+    ReceiveStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
@@ -10,12 +11,19 @@ import { Translation } from '@suite-native/intl';
 
 import { NoTransactionsSvg } from './NoTransactionsSvg';
 
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>;
+
 export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) => {
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.ReceiveModal>>();
+    const navigation = useNavigation<NavigationProp>();
 
     const handleReceive = () => {
-        navigation.navigate(RootStackRoutes.ReceiveModal, { accountKey, closeActionType: 'back' });
+        navigation.navigate(RootStackRoutes.ReceiveStack, {
+            screen: ReceiveStackRoutes.ReceiveAccount,
+            params: {
+                accountKey,
+                closeActionType: 'close',
+            },
+        });
     };
 
     return (

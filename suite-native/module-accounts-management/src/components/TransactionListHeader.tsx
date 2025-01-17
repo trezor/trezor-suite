@@ -13,11 +13,11 @@ import {
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import {
-    AppTabsParamList,
+    ReceiveStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     SendStackRoutes,
-    TabToStackCompositeNavigationProp,
+    StackNavigationProps,
 } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
 import { FeatureFlag, FeatureFlagsRootState, useFeatureFlag } from '@suite-native/feature-flags';
@@ -37,11 +37,7 @@ type TransactionListHeaderContentProps = {
     tokenContract?: TokenAddress;
 };
 
-type AccountsNavigationProps = TabToStackCompositeNavigationProp<
-    AppTabsParamList,
-    RootStackRoutes.ReceiveModal,
-    RootStackParamList
->;
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>;
 
 const TransactionListHeaderContent = ({
     accountKey,
@@ -83,7 +79,7 @@ const TransactionListHeaderContent = ({
 
 export const TransactionListHeader = memo(
     ({ accountKey, tokenContract }: TransactionListHeaderProps) => {
-        const navigation = useNavigation<AccountsNavigationProps>();
+        const navigation = useNavigation<NavigationProp>();
         const isDeviceConnectEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
         const account = useSelector((state: AccountsRootState) =>
@@ -104,10 +100,13 @@ export const TransactionListHeader = memo(
         if (!account) return null;
 
         const handleReceive = () => {
-            navigation.navigate(RootStackRoutes.ReceiveModal, {
-                accountKey,
-                tokenContract,
-                closeActionType: 'back',
+            navigation.navigate(RootStackRoutes.ReceiveStack, {
+                screen: ReceiveStackRoutes.ReceiveAccount,
+                params: {
+                    accountKey,
+                    tokenContract,
+                    closeActionType: 'close',
+                },
             });
         };
 

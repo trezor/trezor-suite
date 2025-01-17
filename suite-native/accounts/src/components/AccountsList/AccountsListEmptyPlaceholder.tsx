@@ -3,7 +3,7 @@ import { useRoute } from '@react-navigation/native';
 import { Box, PictogramTitleHeader } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TxKeyPath, Translation } from '@suite-native/intl';
-import { ReceiveStackRoutes, RootStackRoutes } from '@suite-native/navigation';
+import { ReceiveStackRoutes } from '@suite-native/navigation';
 import { IconName } from '@suite-native/icons';
 
 const PLACEHOLDER_HEIGHT = 380;
@@ -26,7 +26,7 @@ export const AccountsListEmptyPlaceholder = ({
 
     const isReceiveRoute =
         route.name === ReceiveStackRoutes.ReceiveAccounts ||
-        route.name === RootStackRoutes.ReceiveModal;
+        route.name === ReceiveStackRoutes.ReceiveAccount;
 
     const getIcon = (): IconName => {
         if (!isFilterEmpty) {

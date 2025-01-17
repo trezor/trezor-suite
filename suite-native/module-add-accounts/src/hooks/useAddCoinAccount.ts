@@ -37,6 +37,7 @@ import {
     RootStackRoutes,
     AddCoinFlowType,
     AppTabsRoutes,
+    ReceiveStackRoutes,
 } from '@suite-native/navigation';
 import { useAccountAlerts } from '@suite-native/accounts';
 
@@ -156,11 +157,14 @@ export const useAddCoinAccount = () => {
                 });
                 break;
             case 'receive':
-                navigation.replace(RootStackRoutes.ReceiveModal, {
-                    networkSymbol: symbol,
-                    accountType,
-                    accountIndex,
-                    closeActionType: 'back',
+                navigation.navigate(RootStackRoutes.ReceiveStack, {
+                    screen: ReceiveStackRoutes.ReceiveAccount,
+                    params: {
+                        networkSymbol: symbol,
+                        accountType,
+                        accountIndex,
+                        closeActionType: 'back',
+                    },
                 });
                 break;
         }

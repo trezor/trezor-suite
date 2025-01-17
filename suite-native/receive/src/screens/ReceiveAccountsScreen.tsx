@@ -5,25 +5,22 @@ import { useTranslate } from '@suite-native/intl';
 import {
     ReceiveStackParamList,
     ReceiveStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
     Screen,
     ScreenHeader,
-    StackToStackCompositeNavigationProps,
+    StackNavigationProps,
 } from '@suite-native/navigation';
 
-type NavigationProps = StackToStackCompositeNavigationProps<
+type NavigationProp = StackNavigationProps<
     ReceiveStackParamList,
-    ReceiveStackRoutes.ReceiveAccounts,
-    RootStackParamList
+    ReceiveStackRoutes.ReceiveAccounts
 >;
 
 export const ReceiveAccountsScreen = () => {
     const { translate } = useTranslate();
-    const navigation = useNavigation<NavigationProps>();
+    const navigation = useNavigation<NavigationProp>();
 
     const navigateToReceiveScreen: OnSelectAccount = ({ account, tokenAddress }) =>
-        navigation.navigate(RootStackRoutes.ReceiveModal, {
+        navigation.navigate(ReceiveStackRoutes.ReceiveAccount, {
             accountKey: account.key,
             tokenContract: tokenAddress,
             closeActionType: 'back',

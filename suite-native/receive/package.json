@@ -34,6 +34,7 @@
         "@suite-native/toasts": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "18.2.0",

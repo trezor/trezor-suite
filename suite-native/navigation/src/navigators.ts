@@ -69,6 +69,7 @@ export type SettingsStackParamList = {
 
 export type ReceiveStackParamList = {
     [ReceiveStackRoutes.ReceiveAccounts]: undefined;
+    [ReceiveStackRoutes.ReceiveAccount]: AccountDetailParams;
 };
 
 export type SendStackParamList = {
@@ -200,7 +201,6 @@ export type RootStackParamList = {
     [RootStackRoutes.Onboarding]: NavigatorScreenParams<OnboardingStackParamList>;
     [RootStackRoutes.AuthorizeDeviceStack]: NavigatorScreenParams<AuthorizeDeviceStackParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
-    [RootStackRoutes.ReceiveModal]: AccountDetailParams;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
     [RootStackRoutes.TransactionDetail]: {
         txid: string;

@@ -9,7 +9,6 @@ export enum RootStackRoutes {
     DevUtilsStack = 'DevUtilsStack',
     AccountSettings = 'AccountSettings',
     TransactionDetail = 'TransactionDetail',
-    ReceiveModal = 'ReceiveModal',
     ReceiveStack = 'ReceiveStack',
     SendStack = 'SendStack',
     DeviceSettingsStack = 'DeviceSettingsStack',
@@ -96,6 +95,7 @@ export enum AccountsStackRoutes {
 
 export enum ReceiveStackRoutes {
     ReceiveAccounts = 'ReceiveAccounts',
+    ReceiveAccount = 'ReceiveAccount',
 }
 
 export enum SendStackRoutes {

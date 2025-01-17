@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -13,10 +13,10 @@ import { HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
+    CloseActionType,
     GoBackIcon,
-    RootStackParamList,
-    RootStackRoutes,
     ScreenHeader,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { selectAccountTokenSymbol, TokensRootState } from '@suite-native/tokens';
 import TrezorConnect from '@trezor/connect';
@@ -24,13 +24,17 @@ import TrezorConnect from '@trezor/connect';
 type ReceiveScreenHeaderProps = {
     accountKey?: AccountKey;
     tokenContract?: TokenAddress;
+    closeActionType: CloseActionType;
 };
 
-export const ReceiveScreenHeader = ({ accountKey, tokenContract }: ReceiveScreenHeaderProps) => {
-    const {
-        params: { closeActionType },
-    } = useRoute<RouteProp<RootStackParamList, RootStackRoutes.ReceiveModal>>();
+export const ReceiveScreenHeader = ({
+    accountKey,
+    tokenContract,
+    closeActionType,
+}: ReceiveScreenHeaderProps) => {
     const navigation = useNavigation();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
+
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
     );
@@ -75,7 +79,12 @@ export const ReceiveScreenHeader = ({ accountKey, tokenContract }: ReceiveScreen
                     </HStack>
                 </>
             }
-            leftIcon={<GoBackIcon closeActionType={closeActionType} />}
+            leftIcon={
+                <GoBackIcon
+                    closeActionType={closeActionType}
+                    closeAction={closeActionType === 'close' ? navigateToInitialScreen : undefined}
+                />
+            }
         />
     );
 };
