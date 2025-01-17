@@ -30,7 +30,6 @@ const config: PlaywrightTestConfig = {
     workers: 1, // to disable parallelism between test files
     use: {
         viewport: { width: 1280, height: 720 },
-        headless: process.env.HEADLESS === 'true',
         trace: 'on',
         video: 'on',
         screenshot: 'on',

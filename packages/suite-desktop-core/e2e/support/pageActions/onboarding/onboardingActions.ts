@@ -36,6 +36,7 @@ export class OnboardingActions {
     readonly createWalletButton: Locator;
     readonly selectSeedTypeOpenButton: Locator;
     readonly selectSeedConfirmButton: Locator;
+    readonly continueAtYourOwnRiskButton: Locator;
 
     isModelWithSecureElement = () => ['T2B1', 'T3T1'].includes(this.model);
 
@@ -77,6 +78,7 @@ export class OnboardingActions {
         this.selectSeedConfirmButton = this.page.getByTestId(
             '@onboarding/select-seed-type-confirm',
         );
+        this.continueAtYourOwnRiskButton = this.page.getByTestId('@continue-to-suite');
     }
 
     @step()
@@ -86,6 +88,13 @@ export class OnboardingActions {
         this.page
             .$('[data-testid="@device-compromised/back-button"]')
             .then(dismissFwHashCheckButton => dismissFwHashCheckButton?.click());
+    }
+
+    @step()
+    async continueToSuiteFromBrowserWarning() {
+        if (await this.continueAtYourOwnRiskButton.isVisible()) {
+            await this.page.getByTestId('@continue-to-suite').click();
+        }
     }
 
     @step()
@@ -107,6 +116,8 @@ export class OnboardingActions {
 
     @step()
     async disableFirmwareHashCheck() {
+        //TODO: Rework
+        await this.continueToSuiteFromBrowserWarning();
         // Desktop starts with already disabled firmware hash check. Web needs to disable it.
         if (!isWebProject(this.testInfo)) {
             return;

@@ -38,6 +38,7 @@ testCases.forEach(({ testName, userPreferences, text, textColor, bodyBackgroundC
     test.describe.serial('Language and theme detection', { tag: ['@group=settings'] }, () => {
         test.use(userPreferences);
         test(testName, async ({ onboardingPage, analyticsPage }) => {
+            await onboardingPage.continueToSuiteFromBrowserWarning();
             await onboardingPage.optionallyDismissFwHashCheckError();
             await expect(analyticsPage.heading).toHaveText(text);
             await expect(analyticsPage.heading).toHaveCSS('color', textColor);
