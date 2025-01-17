@@ -77,7 +77,10 @@ export const WelcomeScreen = ({
                         </Box>
                     </VStack>
                     <Box style={applyStyle(buttonWrapperStyle)}>
-                        <Button onPress={navigateToAnalyticsConsent}>
+                        <Button
+                            onPress={navigateToAnalyticsConsent}
+                            testID="@onboarding/Welcome/nextBtn"
+                        >
                             <Translation id="moduleOnboarding.welcomeScreen.button" />
                         </Button>
                     </Box>

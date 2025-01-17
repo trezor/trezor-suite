@@ -17,6 +17,7 @@ type SwitchProps = {
     isChecked: boolean;
     onChange: (value: boolean) => void;
     isDisabled?: boolean; // Functionality of disabled works but styles are not implemented yet (waiting for design)
+    testID?: string;
 };
 
 const SWITCH_CONTAINER_BORDER_WIDTH = 1;
@@ -89,7 +90,7 @@ const useAnimationStyles = ({ isChecked }: Pick<SwitchProps, 'isChecked'>) => {
     };
 };
 
-export const Switch = ({ isChecked, onChange, isDisabled = false }: SwitchProps) => {
+export const Switch = ({ isChecked, onChange, isDisabled = false, testID }: SwitchProps) => {
     const { applyStyle } = useNativeStyles();
 
     const { animatedSwitchCircleStyle, animatedSwitchContainerStyle } = useAnimationStyles({
@@ -102,7 +103,7 @@ export const Switch = ({ isChecked, onChange, isDisabled = false }: SwitchProps)
     };
 
     return (
-        <Pressable onPress={handlePress} accessibilityRole="switch">
+        <Pressable onPress={handlePress} accessibilityRole="switch" testID={testID}>
             <Animated.View
                 style={[
                     animatedSwitchContainerStyle,

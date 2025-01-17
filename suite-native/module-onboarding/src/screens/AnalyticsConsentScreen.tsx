@@ -98,6 +98,7 @@ export const AnalyticsConsentScreen = () => {
                                         <Translation id="moduleOnboarding.analyticsConsentScreen.helpSwitchTitle" />
                                     </Text>
                                     <Switch
+                                        testID="@onboarding/AnalyticsConsent/consentSwitch"
                                         isChecked={isEnabled}
                                         onChange={enabled => {
                                             setIsEnabled(enabled);
@@ -110,14 +111,14 @@ export const AnalyticsConsentScreen = () => {
                 </VStack>
                 <VStack spacing="sp12">
                     <Button
-                        testID="@onboarding/UserDataConsent/allow"
+                        testID="@onboarding/AnalyticsConsent/nextBtn"
                         onPress={isEnabled ? handleAnalyticsConsent : handleRedirect}
                     >
                         <Translation id="generic.buttons.confirm" />
                     </Button>
                     <Button
                         colorScheme="tertiaryElevation0"
-                        testID="@onboarding/UserDataConsent/allow"
+                        testID="@onboarding/AnalyticsConsent/learMoreBtn"
                         onPress={handleClickOnLearMoreLink}
                     >
                         <Translation id="moduleOnboarding.analyticsConsentScreen.learnMoreButton" />
