@@ -22,6 +22,7 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },

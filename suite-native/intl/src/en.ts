@@ -567,6 +567,9 @@ export const en = {
                 reportIssueButton: 'Report security issue',
             },
         },
+        deviceCompromisedScreen: {
+            title: 'Receiving is disabled',
+        },
     },
     moduleSettings: {
         items: {

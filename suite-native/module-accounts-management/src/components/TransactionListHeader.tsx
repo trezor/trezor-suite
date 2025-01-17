@@ -12,6 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
 import { FeatureFlag, FeatureFlagsRootState, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
@@ -96,6 +97,9 @@ export const TransactionListHeader = memo(
             selectIsNetworkSendFlowEnabled(state, account?.symbol),
         );
         const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+        const hasFirmwareAuthenticityCheckHardFailed = useSelector(
+            selectHasFirmwareAuthenticityCheckHardFailed,
+        );
 
         if (!account) return null;
 
@@ -125,6 +129,7 @@ export const TransactionListHeader = memo(
 
         const isSendButtonDisplayed =
             isDeviceConnectEnabled && isNetworkSendFlowEnabled && !isPortfolioTrackerDevice;
+        const isReceiveButtonDisplayed = !hasFirmwareAuthenticityCheckHardFailed;
 
         return (
             <>
@@ -135,15 +140,17 @@ export const TransactionListHeader = memo(
                     />
                     {accountHasTransactions && (
                         <HStack paddingTop="sp8" paddingHorizontal="sp16" flex={1} spacing="sp12">
-                            <Box flex={1}>
-                                <Button
-                                    viewLeft="arrowLineDown"
-                                    onPress={handleReceive}
-                                    testID="@account-detail/receive-button"
-                                >
-                                    <Translation id="transactions.receive" />
-                                </Button>
-                            </Box>
+                            {isReceiveButtonDisplayed && (
+                                <Box flex={1}>
+                                    <Button
+                                        viewLeft="arrowLineDown"
+                                        onPress={handleReceive}
+                                        testID="@account-detail/receive-button"
+                                    >
+                                        <Translation id="transactions.receive" />
+                                    </Button>
+                                </Box>
+                            )}
                             {isSendButtonDisplayed && (
                                 <Box flex={1}>
                                     <Button

@@ -1,6 +1,9 @@
+import { useSelector } from 'react-redux';
+
 import { useNavigation } from '@react-navigation/native';
 
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
+import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
     ReceiveStackRoutes,
@@ -15,6 +18,10 @@ type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.A
 
 export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) => {
     const navigation = useNavigation<NavigationProp>();
+    const hasFirmwareAuthenticityCheckHardFailed = useSelector(
+        selectHasFirmwareAuthenticityCheckHardFailed,
+    );
+    const showReceiveButton = !hasFirmwareAuthenticityCheckHardFailed;
 
     const handleReceive = () => {
         navigation.navigate(RootStackRoutes.ReceiveStack, {
@@ -39,9 +46,11 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) =
                     </Text>
                 </VStack>
             </Box>
-            <Button viewLeft="arrowLineDown" onPress={handleReceive} size="large">
-                <Translation id="transactions.emptyState.button" />
-            </Button>
+            {showReceiveButton && (
+                <Button viewLeft="arrowLineDown" onPress={handleReceive} size="large">
+                    <Translation id="transactions.emptyState.button" />
+                </Button>
+            )}
         </VStack>
     );
 };

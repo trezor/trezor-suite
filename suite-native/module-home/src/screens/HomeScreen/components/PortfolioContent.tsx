@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { selectHasDeviceDiscovery, selectIsDeviceAuthorized } from '@suite-common/wallet-core';
 import { Assets } from '@suite-native/assets';
 import { AnimatedVStack, Button, VStack } from '@suite-native/atoms';
+import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
     ReceiveStackRoutes,
@@ -22,7 +23,11 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
 
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const hasDiscovery = useSelector(selectHasDeviceDiscovery);
-    const showReceiveButton = isDeviceAuthorized && !hasDiscovery;
+    const hasFirmwareAuthenticityCheckHardFailed = useSelector(
+        selectHasFirmwareAuthenticityCheckHardFailed,
+    );
+    const showReceiveButton =
+        isDeviceAuthorized && !hasDiscovery && !hasFirmwareAuthenticityCheckHardFailed;
 
     const handleReceive = () => {
         navigation.navigate(RootStackRoutes.ReceiveStack, {

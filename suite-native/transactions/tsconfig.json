@@ -28,6 +28,7 @@
         },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../device" },
         { "path": "../formatters" },
         { "path": "../helpers" },
         { "path": "../icons" },

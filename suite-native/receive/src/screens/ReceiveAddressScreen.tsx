@@ -10,10 +10,14 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Box, ErrorMessage, VStack } from '@suite-native/atoms';
-import { ConfirmOnTrezorImage } from '@suite-native/device';
+import {
+    ConfirmOnTrezorImage,
+    selectHasFirmwareAuthenticityCheckHardFailed,
+} from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { CloseActionType, Screen } from '@suite-native/navigation';
 
+import { ReceiveBlockedDeviceCompromisedScreen } from './ReceiveBlockedDeviceCompromisedScreen';
 import { ReceiveAccountDetailsCard } from '../components/ReceiveAccountDetailsCard';
 import { ReceiveAddressCard } from '../components/ReceiveAddressCard';
 import { ReceiveScreenHeader } from '../components/ReceiveScreenHeader';
@@ -41,6 +45,11 @@ export const ReceiveAddressScreen = ({
 
     const { address, isReceiveApproved, isUnverifiedAddressRevealed, handleShowAddress } =
         useAccountReceiveAddress(accountKey);
+
+    const hasFirmwareAuthenticityCheckHardFailed = useSelector(
+        selectHasFirmwareAuthenticityCheckHardFailed,
+    );
+    if (hasFirmwareAuthenticityCheckHardFailed) return <ReceiveBlockedDeviceCompromisedScreen />;
 
     const isAccountDetailVisible = !isUnverifiedAddressRevealed && !isReceiveApproved;
 
