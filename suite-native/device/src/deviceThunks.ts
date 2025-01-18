@@ -5,7 +5,7 @@ const NATIVE_DEVICE_MODULE_PREFIX = 'nativeDevice';
 
 export const setDeviceForceRememberedThunk = createThunk(
     `${NATIVE_DEVICE_MODULE_PREFIX}/setDeviceForceRemembered`,
-    ({ forceRemember }: { forceRemember: boolean }, { getState, rejectWithValue, dispatch }) => {
+    ({ remember }: { remember: boolean }, { getState, rejectWithValue, dispatch }) => {
         const device = selectSelectedDevice(getState());
         if (!device) {
             return rejectWithValue('Device not found');
@@ -17,8 +17,8 @@ export const setDeviceForceRememberedThunk = createThunk(
         dispatch(
             deviceActions.rememberDevice({
                 device,
-                remember: false,
-                forceRemember: forceRemember ? true : undefined,
+                remember,
+                forceRemember: remember ? true : undefined,
             }),
         );
 

@@ -19,6 +19,8 @@ import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
     DeviceStackRoutes,
+    HomeStackParamList,
+    HomeStackRoutes,
     Screen,
     StackNavigationProps,
 } from '@suite-native/navigation';
@@ -35,7 +37,7 @@ import { MayBeStuckedBottomSheet } from '../components/MayBeStuckedBottomSheet';
 import { useFirmwareAnalytics } from '../hooks/useFirmwareAnalytics';
 
 type NavigationProp = StackNavigationProps<
-    DeviceSettingsStackParamList,
+    DeviceSettingsStackParamList & HomeStackParamList,
     DeviceStackRoutes.FirmwareUpdateInProgress
 >;
 
@@ -59,6 +61,7 @@ export const FirmwareUpdateInProgressScreen = () => {
     const [isMayBeStuckedBottomSheetOpened, setIsMayBeStuckedBottomSheetOpened] =
         useState<boolean>(false);
     const { bottom: bottomSafeAreaInset } = useSafeAreaInsets();
+
     const {
         operation,
         setIsFirmwareInstallationRunning,
@@ -85,10 +88,10 @@ export const FirmwareUpdateInProgressScreen = () => {
 
     useEffect(() => {
         // This will prevent device from being forgotten after firmware update, so discovery will not run again
-        dispatch(setDeviceForceRememberedThunk({ forceRemember: true }));
+        dispatch(setDeviceForceRememberedThunk({ remember: true }));
 
         return () => {
-            dispatch(setDeviceForceRememberedThunk({ forceRemember: false }));
+            dispatch(setDeviceForceRememberedThunk({ remember: false }));
             resetReducer();
         };
     }, [dispatch, resetReducer]);
@@ -97,7 +100,7 @@ export const FirmwareUpdateInProgressScreen = () => {
         requestPrioritizedDeviceAccess({
             deviceCallback: () => dispatch(authorizeDeviceThunk()),
         });
-        navigation.goBack();
+        navigation.navigate(HomeStackRoutes.Home);
     }, [dispatch, navigation]);
 
     const handleCancel = useCallback(() => {
