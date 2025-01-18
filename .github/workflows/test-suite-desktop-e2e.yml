@@ -16,8 +16,8 @@ on:
       - ".github/workflows/release*"
       - ".github/workflows/template*"
   push:
-      branches:
-        - release/2*
+    branches:
+      - release/2*
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
@@ -29,7 +29,7 @@ concurrency:
 jobs:
   run-desktop-tests:
     if: github.repository == 'trezor/trezor-suite'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -50,6 +50,13 @@ jobs:
             CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
 
     steps:
+        # Electron requires unprivileged user namespaces to function properly. 
+        # Disabling this security rule allows Electron to create sandboxed processes
+        # without requiring elevated privileges, which is essential for running the application.
+        # This is workaround until electron builder solves this issue in future release.
+      - name: Disable security rule 'Restricted unprivileged user namespaces'
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
