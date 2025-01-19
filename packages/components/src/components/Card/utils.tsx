@@ -5,7 +5,6 @@ import {
     Elevation,
     SpacingPxValues,
     mapElevationToBackground,
-    mapElevationToBorder,
     spacingsPx,
 } from '@trezor/theme';
 
@@ -61,6 +60,7 @@ export const mapFillTypeToCSS = ({
         default: css`
             background: ${mapElevationToBackground({ $elevation, theme })};
             box-shadow: ${$elevation === 1 && !$hasLabel && theme.boxShadowBase};
+            border: 1px solid transparent;
 
             ${$isClickable &&
             css`
@@ -69,9 +69,16 @@ export const mapFillTypeToCSS = ({
                 }
             `}
         `,
-        none: css`
-            border: 1px solid ${mapElevationToBorder({ $elevation, theme })};
-        `,
+        flat:
+            theme.variant === 'dark'
+                ? css`
+                      background: none;
+                      border: 1px solid ${theme.borderElevation3};
+                  `
+                : css`
+                      background: ${theme.backgroundSurfaceElevationNegative};
+                      border: 1px solid ${theme.borderElevation0};
+                  `,
     };
 
     return cssMap[$fillType];

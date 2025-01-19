@@ -61,7 +61,7 @@ export const AdvancedTxDetails = ({
     };
 
     return (
-        <Card fillType="none">
+        <Card fillType="flat">
             <Tabs activeItemId={selectedTab} margin={{ bottom: spacings.md }}>
                 <Tabs.Item id="amount" onClick={() => setSelectedTab('amount')}>
                     <Translation id="TR_TX_TAB_AMOUNT" />

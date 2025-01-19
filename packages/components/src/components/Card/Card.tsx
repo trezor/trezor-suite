@@ -1,6 +1,6 @@
 import { HTMLAttributes, ReactNode, forwardRef } from 'react';
 
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
 import { Elevation, borders, spacingsPx } from '@trezor/theme';
 
@@ -19,7 +19,7 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
-import { ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
+import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 
 export const allowedCardFrameProps = [
     'margin',
@@ -38,7 +38,7 @@ const Container = styled.div<{ $fillType: FillType } & TransientProps<AllowedFra
     width: 100%;
     border-radius: ${borders.radii.md};
     background: ${({ theme, $fillType }) =>
-        $fillType !== 'none' && theme.backgroundTertiaryDefaultOnElevation0};
+        $fillType !== 'flat' && theme.backgroundTertiaryDefaultOnElevation0};
     padding: ${spacingsPx.xxxs};
 
     ${withFrameProps}
@@ -65,11 +65,11 @@ const CardContainer = styled.div<
     position: relative;
     padding: ${mapPaddingTypeToPadding};
     border-radius: ${borders.radii.md};
-    transition:
-        background 0.3s,
-        box-shadow 0.2s,
-        border-color 0.2s;
     cursor: ${({ $isClickable }) => ($isClickable ? 'pointer' : 'default')};
+    transition:
+        background 0.5s,
+        border 0.5s,
+        box-shadow 0.5s;
 
     ${({ theme, $variant, $paddingType }) =>
         $variant &&
@@ -127,6 +127,7 @@ const CardComponent = forwardRef<HTMLDivElement, CardPropsWithTransientProps>(
         ref,
     ) => {
         const { elevation } = useElevation();
+        const theme = useTheme();
 
         return (
             <CardContainer
@@ -145,7 +146,13 @@ const CardComponent = forwardRef<HTMLDivElement, CardPropsWithTransientProps>(
                 {...rest}
                 data-testid={dataTest}
             >
-                {fillType === 'none' ? children : <ElevationUp>{children}</ElevationUp>}
+                {fillType === 'flat' ? (
+                    <ElevationContext baseElevation={theme.variant === 'dark' ? 0 : -1}>
+                        {children}
+                    </ElevationContext>
+                ) : (
+                    <ElevationUp>{children}</ElevationUp>
+                )}
             </CardContainer>
         );
     },

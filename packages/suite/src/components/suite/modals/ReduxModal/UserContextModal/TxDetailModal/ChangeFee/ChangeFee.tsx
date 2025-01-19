@@ -31,7 +31,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
     const fee = formatNetworkAmount(tx.fee, tx.symbol);
 
     return (
-        <Card fillType="none">
+        <Card fillType="flat">
             <InfoItem
                 direction="row"
                 label={
