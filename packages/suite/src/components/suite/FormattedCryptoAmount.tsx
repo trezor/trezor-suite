@@ -23,8 +23,8 @@ import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 import { RedactNumericalValue } from './RedactNumericalValue';
 
-const Value = styled.span`
-    font-variant-numeric: tabular-nums;
+const Value = styled.span<{ $isTabular: boolean }>`
+    ${({ $isTabular }) => $isTabular && 'font-variant-numeric: tabular-nums;'}
     overflow: hidden;
     text-overflow: ellipsis;
 `;
@@ -37,6 +37,7 @@ export interface FormattedCryptoAmountProps {
     signValue?: SignValue;
     disableHiddenPlaceholder?: boolean;
     isRawString?: boolean;
+    isTabular?: boolean;
     'data-testid'?: string;
     className?: string;
 }
@@ -49,6 +50,7 @@ export const FormattedCryptoAmount = ({
     signValue,
     disableHiddenPlaceholder,
     isRawString,
+    isTabular = true,
     className,
     'data-testid': dataTest,
 }: FormattedCryptoAmountProps) => {
@@ -101,10 +103,10 @@ export const FormattedCryptoAmount = ({
     }
 
     const content = (
-        <Row width="100%" gap={spacings.xxs}>
+        <Row gap={spacings.xxs}>
             <Row data-testid={dataTest}>
                 {!!signValue && <Sign value={signValue} />}
-                <Value>
+                <Value $isTabular={isTabular}>
                     <RedactNumericalValue value={formattedValue} />
                 </Value>
             </Row>
