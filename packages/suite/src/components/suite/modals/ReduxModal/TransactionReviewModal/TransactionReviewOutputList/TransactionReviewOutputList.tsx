@@ -17,7 +17,7 @@ import type { TransactionReviewOutputElementProps } from './TransactionReviewOut
 export type TransactionReviewOutputListProps = {
     account: Account;
     precomposedTx: GeneralPrecomposedTransactionFinal;
-    signedTx?: { tx: string }; // send reducer // send reducer
+    signedTx?: { tx: string };
     outputs: ReviewOutput[];
     buttonRequestsCount: number;
     isRbfAction: boolean;
@@ -59,35 +59,6 @@ const SectionHeading = ({ output, index }: { output: ReviewOutput; index: number
         )}
     </H4>
 );
-    if (hasSignedTx || index < buttonRequestsCount - 1) {
-        return 'done';
-    }
-
-    if (index === buttonRequestsCount - 1) {
-        return 'default';
-    }
-
-    return 'pending';
-};
-
-const Wrapper = styled.div`
-    scroll-margin-top: ${spacingsPx.xxxxl};
-`;
-
-const SectionHeading = ({ output, index }: { output: ReviewOutput; index: number }) => (
-    <H4 margin={{ top: index === 0 ? spacings.zero : spacings.xs }}>
-        {output.type === 'address' ? (
-            <Translation
-                id="TR_SEND_RECIPIENT_ADDRESS"
-                values={{
-                    index: index + 1,
-                }}
-            />
-        ) : (
-            <Translation id="TR_SUMMARY" />
-        )}
-    </H4>
-);
 
 export const TransactionReviewOutputList = ({
     account,
@@ -99,6 +70,8 @@ export const TransactionReviewOutputList = ({
     isSending,
     stakeType,
 }: TransactionReviewOutputListProps) => {
+    const outputRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const totalOutputRef = useRef<HTMLDivElement | null>(null);
     const { networkType } = account;
     const isMultirecipient = outputs.filter(({ type }) => type === 'address').length > 1;
 

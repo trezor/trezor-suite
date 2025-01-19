@@ -165,60 +165,62 @@ export const TransactionReviewOutputElement = ({
                         />
                     );
 
-                    return (
-                        <div data-testid={`@modal/output-${line.id}`} key={line.id}>
-                            <Text typographyStyle="hint" as="div">
-                                {line.label ? (
-                                    <InfoItem
-                                        label={
-                                            <Text
-                                                variant="default"
-                                                data-testid="@modal/output-headline"
+                            return (
+                                <div data-testid={`@modal/output-${line.id}`} key={line.id}>
+                                    <Text typographyStyle="hint" as="div">
+                                        {line.label ? (
+                                            <InfoItem
+                                                label={
+                                                    <Text
+                                                        variant="default"
+                                                        data-testid="@modal/output-headline"
+                                                    >
+                                                        {line.label}
+                                                    </Text>
+                                                }
+                                                direction="row"
                                             >
-                                                {line.label}
-                                            </Text>
-                                        }
-                                        direction="row"
-                                    >
-                                        <Column
-                                            alignItems="flex-end"
-                                            data-testid="@modal/output-value"
+                                                <Column
+                                                    alignItems="flex-end"
+                                                    data-testid="@modal/output-value"
+                                                >
+                                                    {value}
+                                                </Column>
+                                            </InfoItem>
+                                        ) : (
+                                            <Text data-testid="@modal/output-value">{value}</Text>
+                                        )}
+                                    </Text>
+                                    {networkType === 'cardano' && cardanoFingerprint && (
+                                        <InfoItem
+                                            label={
+                                                <Text variant="default" typographyStyle="hint">
+                                                    <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />
+                                                </Text>
+                                            }
+                                            direction="row"
                                         >
-                                            {value}
-                                        </Column>
-                                    </InfoItem>
-                                ) : (
-                                    <Text data-testid="@modal/output-value">{value}</Text>
-                                )}
-                            </Text>
-                            {networkType === 'cardano' && cardanoFingerprint && (
-                                <InfoItem
-                                    label={
-                                        <Text variant="default" typographyStyle="hint">
-                                            <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />
-                                        </Text>
-                                    }
-                                    direction="row"
-                                >
-                                    {cardanoFingerprint}
-                                </InfoItem>
-                            )}
-                            {networkType === 'cardano' && token && token.decimals !== 0 && (
-                                <InfoItem
-                                    label={
-                                        <Text variant="default" typographyStyle="hint">
-                                            <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />
-                                        </Text>
-                                    }
-                                    direction="row"
-                                >
-                                    {amountToSmallestUnit(line.value, token.decimals)}
-                                </InfoItem>
-                            )}
-                        </div>
-                    );
-                })}
-            </Column>
+                                            {cardanoFingerprint}
+                                        </InfoItem>
+                                    )}
+                                    {networkType === 'cardano' && token && token.decimals !== 0 && (
+                                        <InfoItem
+                                            label={
+                                                <Text variant="default" typographyStyle="hint">
+                                                    <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />
+                                                </Text>
+                                            }
+                                            direction="row"
+                                        >
+                                            {amountToSmallestUnit(line.value, token.decimals)}
+                                        </InfoItem>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </Column>
+                </>
+            )}
         </Card>
     );
 };
