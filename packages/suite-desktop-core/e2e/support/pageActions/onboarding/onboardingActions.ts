@@ -91,13 +91,6 @@ export class OnboardingActions {
     }
 
     @step()
-    async continueToSuiteFromBrowserWarning() {
-        if (await this.continueAtYourOwnRiskButton.isVisible()) {
-            await this.page.getByTestId('@continue-to-suite').click();
-        }
-    }
-
-    @step()
     async completeOnboarding({ enableViewOnly = false } = {}) {
         await this.disableFirmwareHashCheck();
         await this.optionallyDismissFwHashCheckError();
@@ -116,8 +109,6 @@ export class OnboardingActions {
 
     @step()
     async disableFirmwareHashCheck() {
-        //TODO: Rework
-        await this.continueToSuiteFromBrowserWarning();
         // Desktop starts with already disabled firmware hash check. Web needs to disable it.
         if (!isWebProject(this.testInfo)) {
             return;

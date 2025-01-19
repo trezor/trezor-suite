@@ -2,9 +2,6 @@ import { test, expect } from '../../support/fixtures';
 
 test.describe('Suite Guide', { tag: '@group=suite' }, () => {
     test.use({ startEmulator: false });
-    test.beforeEach(async ({ onboardingPage }) => {
-        await onboardingPage.continueToSuiteFromBrowserWarning();
-    });
     /**
      * Test case:
      * 1. Go to Bug section in Suite Guide

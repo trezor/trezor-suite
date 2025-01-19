@@ -1,3 +1,5 @@
+import { devices } from '@playwright/test';
+
 import { test, expect } from '../../support/fixtures';
 
 const safariAria = `
@@ -13,7 +15,7 @@ const safariAria = `
     - paragraph: Continue at my own risk
 `;
 
-test.use({ startEmulator: false, browserName: 'webkit' });
+test.use({ startEmulator: false, ...devices['Desktop Safari'], channel: 'webkit' });
 test.describe('Safari', { tag: ['@group=other', '@webOnly', '@snapshot'] }, () => {
     test('Suite does not support Safari', async ({ page, onboardingPage }) => {
         await expect(page.locator('body')).toMatchAriaSnapshot(safariAria);

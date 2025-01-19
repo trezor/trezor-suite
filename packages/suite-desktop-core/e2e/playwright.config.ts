@@ -1,5 +1,6 @@
 import path from 'path';
 import type { PlaywrightTestConfig } from '@playwright/test';
+import { devices } from '@playwright/test';
 
 export enum PlaywrightProjects {
     Web = 'web',
@@ -13,7 +14,8 @@ const config: PlaywrightTestConfig = {
         {
             name: PlaywrightProjects.Web,
             use: {
-                browserName: 'chromium',
+                ...devices['Desktop Chrome'],
+                channel: 'chromium',
                 baseURL: process.env.BASE_URL || 'http://localhost:8000/',
             },
             grepInvert: /@desktopOnly/,
