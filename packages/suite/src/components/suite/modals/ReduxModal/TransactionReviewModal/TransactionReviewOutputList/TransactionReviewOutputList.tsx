@@ -17,7 +17,7 @@ import type { TransactionReviewOutputElementProps } from './TransactionReviewOut
 export type TransactionReviewOutputListProps = {
     account: Account;
     precomposedTx: GeneralPrecomposedTransactionFinal;
-    signedTx?: { tx: string }; // send reducer
+    signedTx?: { tx: string }; // send reducer // send reducer
     outputs: ReviewOutput[];
     buttonRequestsCount: number;
     isRbfAction: boolean;
@@ -30,6 +30,35 @@ const getState = (
     buttonRequestsCount: number,
     hasSignedTx: boolean,
 ): TransactionReviewOutputElementProps['state'] => {
+    if (hasSignedTx || index < buttonRequestsCount - 1) {
+        return 'done';
+    }
+
+    if (index === buttonRequestsCount - 1) {
+        return 'default';
+    }
+
+    return 'pending';
+};
+
+const Wrapper = styled.div`
+    scroll-margin-top: ${spacingsPx.xxxxl};
+`;
+
+const SectionHeading = ({ output, index }: { output: ReviewOutput; index: number }) => (
+    <H4 margin={{ top: index === 0 ? spacings.zero : spacings.xs }}>
+        {output.type === 'address' ? (
+            <Translation
+                id="TR_SEND_RECIPIENT_ADDRESS"
+                values={{
+                    index: index + 1,
+                }}
+            />
+        ) : (
+            <Translation id="TR_SUMMARY" />
+        )}
+    </H4>
+);
     if (hasSignedTx || index < buttonRequestsCount - 1) {
         return 'done';
     }
