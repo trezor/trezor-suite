@@ -1,17 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import { Button, TrezorSuiteLiteHeader } from '@suite-native/atoms';
 import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import {
-    AppTabsRoutes,
-    HomeStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import { useNavigateToInitialScreen } from '@suite-native/navigation';
 import { useAlert } from '@suite-native/alerts';
 
 type AccountSettingsRemoveCoinButtonProps = {
@@ -22,25 +14,18 @@ export const AccountSettingsRemoveCoinButton = ({
     accountKey,
 }: AccountSettingsRemoveCoinButtonProps) => {
     const dispatch = useDispatch();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
     const { showAlert, hideAlert } = useAlert();
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountSettings>>();
 
     if (!account) return null;
 
     const handleRemoveAccount = () => {
         dispatch(accountsActions.removeAccount([account]));
-
-        navigation.navigate(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.HomeStack,
-            params: {
-                screen: HomeStackRoutes.Home,
-            },
-        });
+        navigateToInitialScreen();
     };
 
     const handleShowAlert = () => {
