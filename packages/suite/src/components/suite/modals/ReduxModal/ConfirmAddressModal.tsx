@@ -14,7 +14,7 @@ import {
     ConfirmValueModal,
     ConfirmValueModalProps,
 } from 'src/components/suite/modals/ReduxModal/ConfirmValueModal/ConfirmValueModal';
-import { useDisplayMode, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
 import { cryptoIdToSymbol } from 'src/utils/wallet/trading/tradingUtils';
@@ -30,7 +30,6 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
     const device = useSelector(selectSelectedDevice);
     const account = useSelector(selectAccountIncludingChosenInTrading);
     const { modalCryptoId } = useSelector(state => state.wallet.trading);
-    const displayMode = useDisplayMode({ type: 'address' });
     const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
 
     const validateAddress = useCallback(
@@ -103,7 +102,6 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
                 )
             }
             stepLabel={<Translation id="TR_RECEIVE_ADDRESS" />}
-            confirmStepLabel={<Translation id="TR_RECEIVE_ADDRESS_MATCH" />}
             copyButtonText={
                 modalCryptoId ? (
                     <Translation id="TR_CONFIRM" />
@@ -114,7 +112,6 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
             validateOnDevice={validateAddress}
             value={value}
             data-testid="@metadata/copy-address-button"
-            displayMode={displayMode}
             {...props}
         />
     );

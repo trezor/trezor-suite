@@ -1,13 +1,12 @@
-import { getNetwork } from '@suite-common/wallet-config';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { convertTaprootXpub } from '@trezor/utils';
+import { getNetwork } from '@suite-common/wallet-config';
 
-import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { DisplayMode } from 'src/types/suite';
+import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { useSelector } from 'src/hooks/suite';
 
 import { ConfirmValueModal, ConfirmValueModalProps } from './ConfirmValueModal/ConfirmValueModal';
 import { ConfirmActionModal } from './DeviceContextModal/ConfirmActionModal';
@@ -52,11 +51,9 @@ export const ConfirmXpubModal = (
                 )
             }
             stepLabel={<Translation id="TR_XPUB" />}
-            confirmStepLabel={<Translation id="TR_XPUB_MATCH" />}
             validateOnDevice={showXpub}
             copyButtonText={<Translation id="TR_XPUB_MODAL_CLIPBOARD" />}
             value={xpubWithReplacedApostropheWithH ?? xpub}
-            displayMode={DisplayMode.PAGINATED_TEXT}
             {...props}
         />
     );

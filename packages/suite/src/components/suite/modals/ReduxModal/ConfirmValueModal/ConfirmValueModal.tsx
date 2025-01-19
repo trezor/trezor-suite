@@ -1,43 +1,43 @@
-import { ReactNode, useEffect } from 'react';
+import { useEffect, ReactNode } from 'react';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
 import {
-    Banner,
-    Card,
-    Column,
+    Tooltip,
     NewModal,
+    Banner,
     NewModalProps,
     Paragraph,
+    Column,
+    Card,
     Row,
-    Tooltip,
 } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { ConfirmOnDevice } from '@trezor/product-components';
+import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
 import { palette, spacings } from '@trezor/theme';
+import { ConfirmOnDevice } from '@trezor/product-components';
 
-import { MODAL } from 'src/actions/suite/constants';
-import { Translation } from 'src/components/suite';
+import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { QrCode } from 'src/components/suite/QrCode';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
-import { DisplayMode, ThunkAction } from 'src/types/suite';
+import { Translation } from 'src/components/suite';
+import { MODAL } from 'src/actions/suite/constants';
+import { ThunkAction } from 'src/types/suite';
 
-import { TransactionReviewOutputElement } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
-import { TransactionReviewStepIndicator } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewStepIndicator';
+import {
+    OutputElementLine,
+    TransactionReviewOutputElement,
+} from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
 
 export interface ConfirmValueModalProps
     extends Pick<NewModalProps, 'onCancel' | 'heading' | 'description'> {
     account: Account;
     copyButtonText: ReactNode;
     stepLabel: ReactNode;
-    confirmStepLabel: ReactNode;
     'data-testid'?: string;
     isConfirmed?: boolean;
     validateOnDevice: () => ThunkAction;
     value: string;
-    displayMode: DisplayMode;
 }
 
 export const ConfirmValueModal = ({
@@ -45,14 +45,12 @@ export const ConfirmValueModal = ({
     copyButtonText,
     'data-testid': copyButtonDataTest,
     stepLabel,
-    confirmStepLabel,
     heading,
     description,
     isConfirmed,
     onCancel,
     validateOnDevice,
     value,
-    displayMode,
 }: ConfirmValueModalProps) => {
     const device = useSelector(selectSelectedDevice);
     const modalContext = useSelector(state => state.modal.context);
@@ -63,14 +61,12 @@ export const ConfirmValueModal = ({
     const canConfirmOnDevice = !!(device?.connected && device?.available);
     const addressConfirmed = isConfirmed || !canConfirmOnDevice;
     const isCancelable = isActionAbortable || addressConfirmed;
-    const state = addressConfirmed ? 'success' : 'active';
-    const outputLines = [
+    const state = addressConfirmed ? 'done' : 'default';
+    const outputLines: OutputElementLine[] = [
         {
             id: 'address',
-            label: stepLabel,
             value,
-            plainValue: true,
-            confirmLabel: confirmStepLabel,
+            type: 'address',
         },
     ];
 
@@ -113,6 +109,7 @@ export const ConfirmValueModal = ({
                 heading={heading}
                 description={description}
                 onCancel={isCancelable ? onCancel : undefined}
+                size="large"
             >
                 <Column gap={spacings.xl}>
                     {!device?.connected && (
@@ -134,25 +131,20 @@ export const ConfirmValueModal = ({
                         </Banner>
                     )}
                     <Row gap={spacings.xl} alignItems="stretch">
-                        <Column flex="1 1 50%" alignItems="center">
-                            <Card>
-                                <QrCode
-                                    value={value}
-                                    bgColor="transparent"
-                                    fgColor={qrCodeFgColor}
-                                    showMessage={!addressConfirmed}
-                                />
-                            </Card>
-                        </Column>
-                        <Column flex="1 1 50%" justifyContent="space-between" gap={spacings.lg}>
+                        <Card flex="1" paddingType="small">
+                            <QrCode
+                                value={value}
+                                bgColor="transparent"
+                                fgColor={qrCodeFgColor}
+                                showMessage={!addressConfirmed}
+                            />
+                        </Card>
+                        <Column flex="2" justifyContent="space-between" gap={spacings.lg}>
                             <TransactionReviewOutputElement
-                                indicator={
-                                    <TransactionReviewStepIndicator state={state} size={16} />
-                                }
+                                title={stepLabel}
                                 lines={outputLines}
                                 state={state}
                                 account={account}
-                                displayMode={displayMode}
                             />
                             <Tooltip content={buttonTooltipContent()}>
                                 <NewModal.Button
