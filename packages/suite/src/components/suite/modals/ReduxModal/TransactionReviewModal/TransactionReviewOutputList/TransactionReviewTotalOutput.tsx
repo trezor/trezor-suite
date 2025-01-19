@@ -1,60 +1,36 @@
-import { forwardRef } from 'react';
-
-import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { StakeType } from '@suite-common/wallet-types';
-import {
-    formatAmount,
-    formatNetworkAmount,
-    getIsUpdatedEthereumSendFlow,
-    getIsUpdatedSendFlow,
-    getTransactionReviewOutputState,
-    isTestnet,
-} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import {
+    isTestnet,
+    getIsUpdatedSendFlow,
+    getIsUpdatedEthereumSendFlow,
+} from '@suite-common/wallet-utils';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { Account, GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
+import { BulletListItemState } from '@trezor/components';
+import { NetworkType } from '@suite-common/wallet-config';
 
+import { TrezorDevice } from 'src/types/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { TrezorDevice } from 'src/types/suite';
 
 import {
-    OutputElementLine,
     TransactionReviewOutputElement,
+    OutputElementLine,
 } from './TransactionReviewOutputElement';
-import type { TransactionReviewOutputListProps } from './TransactionReviewOutputList';
-import { TransactionReviewStepIndicator } from './TransactionReviewStepIndicator';
-
-type StepIndicatorProps = Pick<
-    TransactionReviewOutputListProps,
-    'signedTx' | 'outputs' | 'buttonRequestsCount'
->;
-
-const StepIndicator = ({ signedTx, outputs, buttonRequestsCount }: StepIndicatorProps) => {
-    const state = signedTx
-        ? 'success'
-        : getTransactionReviewOutputState(outputs.length, buttonRequestsCount);
-
-    return <TransactionReviewStepIndicator state={state} size={16} />;
-};
-
-type TransactionReviewTotalOutputProps = Omit<
-    TransactionReviewOutputListProps,
-    'precomposedForm' | 'decision' | 'detailsOpen' | 'actionText'
->;
 
 const getLines = (
     device: TrezorDevice,
-    networkType: TransactionReviewOutputListProps['account']['networkType'],
-    symbol: TransactionReviewOutputListProps['account']['symbol'],
-    precomposedTx: TransactionReviewOutputListProps['precomposedTx'],
+    networkType: NetworkType,
+    precomposedTx: GeneralPrecomposedTransactionFinal,
     isRbfAction?: boolean,
     stakeType?: StakeType,
-): Array<OutputElementLine> => {
+): OutputElementLine[] => {
     const isUpdatedSendFlow = getIsUpdatedSendFlow(device);
     const isUpdatedEthereumSendFlow = getIsUpdatedEthereumSendFlow(device, networkType);
     const isEthereum = networkType === 'ethereum';
     const isSolana = networkType === 'solana';
     const showAmountWithoutFee = isEthereum || isSolana;
-    const feeLabel = ((network: TransactionReviewOutputListProps['account']['networkType']) => {
+    const feeLabel = ((network: NetworkType) => {
         switch (network) {
             case 'ethereum':
                 return 'MAX_FEE';
@@ -71,37 +47,38 @@ const getLines = (
 
     if (isUpdatedEthereumSendFlow) {
         const isUnknownStakingClaimValue = isRbfAction && stakeType === 'claim';
-        const amountLine = {
+
+        const amountLine: OutputElementLine = {
             id: 'amount', // In updated ethereum send flow there is no total amount shown, only amount without fee
             label: <Translation id="AMOUNT" />,
-            value: tokenInfo
-                ? formatAmount(precomposedTx.totalSpent, tokenInfo.decimals)
-                : formatNetworkAmount(amountWithoutFee, symbol),
+            value: tokenInfo ? precomposedTx.totalSpent : amountWithoutFee,
+            type: 'amount',
         };
-        const feeLine = {
+
+        const feeLine: OutputElementLine = {
             id: 'fee',
             label: <Translation id="MAX_FEE" />,
-            value: formatNetworkAmount(precomposedTx.fee, symbol),
+            value: precomposedTx.fee,
+            type: 'amount',
         };
 
         return isUnknownStakingClaimValue ? [feeLine] : [amountLine, feeLine];
     }
     if (isUpdatedSendFlow) {
+        const amount = showAmountWithoutFee ? amountWithoutFee : precomposedTx.totalSpent;
+
         return [
             {
                 id: 'total',
                 label: <Translation id={showAmountWithoutFee ? 'AMOUNT' : 'TR_TOTAL_AMOUNT'} />,
-                value: tokenInfo
-                    ? formatAmount(precomposedTx.totalSpent, tokenInfo.decimals)
-                    : formatNetworkAmount(
-                          showAmountWithoutFee ? amountWithoutFee : precomposedTx.totalSpent,
-                          symbol,
-                      ),
+                value: tokenInfo ? precomposedTx.totalSpent : amount,
+                type: 'amount',
             },
             {
                 id: 'fee',
                 label: <Translation id={feeLabel} />,
-                value: formatNetworkAmount(precomposedTx.fee, symbol),
+                value: precomposedTx.fee,
+                type: 'amount',
             },
         ];
     }
@@ -110,45 +87,44 @@ const getLines = (
         {
             id: 'total',
             label: <Translation id="TR_TOTAL" />,
-            value: formatNetworkAmount(precomposedTx.totalSpent, symbol),
+            value: precomposedTx.totalSpent,
+            type: 'amount',
         },
     ];
 };
 
-export const TransactionReviewTotalOutput = forwardRef<
-    HTMLDivElement,
-    TransactionReviewTotalOutputProps
->(
-    (
-        { account, signedTx, outputs, buttonRequestsCount, precomposedTx, stakeType, isRbfAction },
-        ref,
-    ) => {
-        const device = useSelector(selectSelectedDevice);
+export type TransactionReviewTotalOutputProps = {
+    state: BulletListItemState;
+    precomposedTx: GeneralPrecomposedTransactionFinal;
+    account: Account;
+    isRbf: boolean;
+    stakeType?: StakeType;
+};
 
-        if (!device) {
-            return null;
-        }
+export const TransactionReviewTotalOutput = ({
+    account,
+    state,
+    precomposedTx,
+    stakeType,
+    isRbf,
+}: TransactionReviewTotalOutputProps) => {
+    const device = useSelector(selectSelectedDevice);
 
-        const { symbol, networkType } = account;
+    if (!device) {
+        return null;
+    }
 
-        const lines = getLines(device, networkType, symbol, precomposedTx, isRbfAction, stakeType);
+    const { networkType, symbol } = account;
+    const lines = getLines(device, networkType, precomposedTx, isRbf, stakeType);
 
-        return (
-            <TransactionReviewOutputElement
-                account={account}
-                indicator={
-                    <StepIndicator
-                        signedTx={signedTx}
-                        outputs={outputs}
-                        buttonRequestsCount={buttonRequestsCount}
-                    />
-                }
-                lines={lines}
-                symbol={symbol}
-                fiatVisible={!isTestnet(symbol)}
-                ref={ref}
-                token={precomposedTx?.token}
-            />
-        );
-    },
-);
+    return (
+        <TransactionReviewOutputElement
+            title={<Translation id="TR_TOTAL_INCLUDING_FEE" />}
+            account={account}
+            lines={lines}
+            state={state}
+            fiatVisible={!isTestnet(symbol)}
+            token={precomposedTx?.token}
+        />
+    );
+};

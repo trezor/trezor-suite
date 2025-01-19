@@ -1,123 +1,30 @@
-import { ReactNode, forwardRef } from 'react';
+import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { amountToSmallestUnit } from '@suite-common/wallet-utils';
-import { variables } from '@trezor/components';
+import {
+    Address,
+    H4,
+    Column,
+    Row,
+    InfoItem,
+    Text,
+    Card,
+    Divider,
+    Icon,
+    Indicator,
+} from '@trezor/components';
 import { TokenInfo } from '@trezor/connect';
-import { zIndices } from '@trezor/theme';
+import {
+    amountToSmallestUnit,
+    formatNetworkAmount,
+    formatAmount,
+} from '@suite-common/wallet-utils';
+import { spacings } from '@trezor/theme';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
-import { DisplayMode } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
-
-import { TransactionReviewStepIndicatorProps } from './TransactionReviewStepIndicator';
-import { DeviceDisplay } from '../../../../DeviceDisplay/DeviceDisplay';
-
-const TYPES_TO_BE_DISPLAYED_IN_SCREEN_BOX = ['address', 'regular_legacy', 'data', 'opreturn'];
-
-const OutputWrapper = styled.div`
-    display: flex;
-    margin-top: 32px;
-
-    &:first-child {
-        margin-top: 0;
-    }
-`;
-
-const OutputHeadline = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    margin-bottom: 6px;
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    word-break: break-word;
-`;
-
-const OutputValue = styled.div`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-
-    display: flex;
-    flex-wrap: wrap;
-`;
-
-const OutputLeft = styled.div<{ $isCentered: boolean }>`
-    display: flex;
-    width: 30px;
-    justify-content: ${({ $isCentered }) => ($isCentered ? 'center' : 'flex-start')};
-    padding-top: ${({ $isCentered }) => ($isCentered ? undefined : '5px')};
-    flex-direction: column;
-`;
-
-const MultiIndicatorWrapper = styled.div<{ $linesCount: number }>`
-    display: flex;
-    align-self: flex-start;
-    height: ${({ $linesCount }) => $linesCount * 80}px;
-    align-items: center;
-    position: relative;
-    z-index: ${zIndices.base};
-
-    &::after {
-        z-index: -2;
-        width: 10px;
-        left: 10px;
-        position: absolute;
-        height: 100%;
-        border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-        border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-        border-left: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-        content: '';
-        display: block;
-    }
-
-    &::before {
-        z-index: -1;
-        width: 20px;
-        background: ${({ theme }) => theme.legacy.BG_WHITE};
-        position: absolute;
-        height: 50%;
-        content: '';
-        display: block;
-    }
-`;
-
-const OutputRight = styled.div`
-    flex: 1;
-    text-align: left;
-`;
-
-const CardanoTrezorAmountWrapper = styled.div`
-    margin-top: 10px;
-`;
-
-const OutputRightLine = styled.div`
-    & + & {
-        margin-top: 37px;
-    }
-`;
-
-const OutputValueWrapper = styled.div`
-    display: inline-block;
-    overflow: hidden;
-    word-break: break-word;
-`;
-
-const DotSeparatorWrapper = styled.div`
-    margin: 7px 7px 0;
-    width: 8px;
-    display: inline-flex;
-    align-items: center;
-    flex-direction: column;
-`;
-
-const DotSeparator = styled.div`
-    width: 3px;
-    height: 3px;
-    border-radius: 50%;
-    background: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-`;
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 
 // token name is fingerprint in Cardano
 const getFingerprint = (
@@ -133,113 +40,185 @@ const getFingerprint = (
     return token?.name;
 };
 
+const DataWrapper = styled.p`
+    word-break: break-all;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+`;
+
+const StatusIndicator = ({ state }: { state: TransactionReviewOutputElementProps['state'] }) => {
+    switch (state) {
+        case 'done':
+            return <Icon size={spacings.md} variant="primary" name="check" />;
+        case 'pending':
+            return <Indicator />;
+        default:
+            return <Indicator isActive={true} />;
+    }
+};
+
+const Value = ({
+    value,
+    type,
+    symbol,
+    token,
+    isFee,
+    isFiatVisible,
+}: {
+    value: string;
+    type: OutputElementLine['type'];
+    symbol: NetworkSymbol;
+    isFiatVisible: boolean;
+    isFee: boolean;
+    token?: TokenInfo;
+}) => {
+    switch (type) {
+        case 'address':
+            return <Address value={value} />;
+        case 'data':
+            return <DataWrapper>{value}</DataWrapper>;
+        case 'amount': {
+            const formattedValue = token
+                ? formatAmount(value, token.decimals)
+                : formatNetworkAmount(value, symbol);
+
+            return (
+                <>
+                    <FormattedCryptoAmount
+                        disableHiddenPlaceholder
+                        value={formattedValue}
+                        symbol={
+                            // TX fee is so far always paid in network native coin
+                            !isFee && token ? token.symbol : symbol
+                        }
+                        contractAddress={token?.contract}
+                        isTabular={false}
+                    />
+                    {symbol && isFiatVisible && !(!isFee && token) && (
+                        <Text variant="tertiary">
+                            <FiatValue
+                                disableHiddenPlaceholder
+                                amount={formattedValue}
+                                symbol={symbol}
+                            />
+                        </Text>
+                    )}
+                </>
+            );
+        }
+        default:
+            return <Text>{value}</Text>;
+    }
+};
+
 export type OutputElementLine = {
     id: string;
-    label: ReactNode;
     value: string;
-    plainValue?: boolean;
-    confirmLabel?: ReactNode;
+    type: 'default' | 'address' | 'data' | 'amount';
+    label?: ReactNode;
 };
 
 export type TransactionReviewOutputElementProps = {
-    indicator?: JSX.Element;
+    title: ReactNode;
     lines: OutputElementLine[];
-    symbol?: NetworkSymbol;
+    account: Account;
+    state: 'default' | 'done' | 'pending';
     fiatVisible?: boolean;
     token?: TokenInfo;
-    account?: Account;
-    state?: TransactionReviewStepIndicatorProps['state'];
-    displayMode?: DisplayMode;
 };
 
-export const TransactionReviewOutputElement = forwardRef<
-    HTMLDivElement,
-    TransactionReviewOutputElementProps
->(({ indicator, lines, token, symbol, fiatVisible = false, account, state, displayMode }, ref) => {
-    const network = account?.networkType;
+export const TransactionReviewOutputElement = ({
+    title,
+    lines,
+    token,
+    fiatVisible = false,
+    account,
+    state,
+}: TransactionReviewOutputElementProps) => {
+    const { networkType, symbol } = account;
     const cardanoFingerprint = getFingerprint(account?.tokens, token?.symbol);
-    const isActive = state === 'active';
-
-    const showMultiIndicator = lines.length > 1;
 
     return (
-        <OutputWrapper ref={ref}>
-            <OutputLeft $isCentered={showMultiIndicator}>
-                {showMultiIndicator ? (
-                    <MultiIndicatorWrapper $linesCount={lines.length - 1}>
-                        {indicator}
-                    </MultiIndicatorWrapper>
-                ) : (
-                    <>{indicator}</>
-                )}
-            </OutputLeft>
-            <OutputRight>
-                {lines.map(line => (
-                    <OutputRightLine data-testid={`@modal/output-${line.id}`} key={line.id}>
-                        <OutputHeadline data-testid="@modal/output-headline">
-                            {isActive && (line.id === 'address' || line.id === 'regular_legacy')
-                                ? line.confirmLabel
-                                : line.label}
-                        </OutputHeadline>
-                        <OutputValue data-testid="@modal/output-value">
-                            {isActive &&
-                            displayMode &&
-                            TYPES_TO_BE_DISPLAYED_IN_SCREEN_BOX.includes(line.id) ? (
-                                <DeviceDisplay displayMode={displayMode} address={line.value} />
-                            ) : (
-                                <OutputValueWrapper>
-                                    {line.plainValue ? (
-                                        line.value
-                                    ) : (
-                                        <FormattedCryptoAmount
-                                            disableHiddenPlaceholder
-                                            value={line.value}
-                                            symbol={
-                                                // TX fee is so far always paid in network native coin
-                                                line.id !== 'fee' && token ? token.symbol : symbol
-                                            }
-                                            contractAddress={token?.contract}
-                                        />
-                                    )}
-                                </OutputValueWrapper>
+        <Card paddingType="none" fillType={state === 'done' ? 'flat' : 'default'}>
+            <Row padding={{ vertical: spacings.sm, horizontal: spacings.md }} gap={spacings.sm}>
+                <StatusIndicator state={state} />
+                <H4 typographyStyle={state !== 'pending' ? 'callout' : 'hint'}>{title}</H4>
+            </Row>
+            <Divider margin={{}} />
+            <Column
+                gap={spacings.md}
+                padding={{
+                    vertical: spacings.sm,
+                    horizontal: spacings.md,
+                    left: spacings.xxxxl,
+                }}
+            >
+                {lines.map(line => {
+                    const value = (
+                        <Value
+                            value={line.value}
+                            type={line.type}
+                            symbol={symbol}
+                            token={token}
+                            isFiatVisible={fiatVisible}
+                            isFee={line.id === 'fee'}
+                        />
+                    );
+
+                    return (
+                        <div data-testid={`@modal/output-${line.id}`} key={line.id}>
+                            <Text typographyStyle="hint" as="div">
+                                {line.label ? (
+                                    <InfoItem
+                                        label={
+                                            <Text
+                                                variant="default"
+                                                data-testid="@modal/output-headline"
+                                            >
+                                                {line.label}
+                                            </Text>
+                                        }
+                                        direction="row"
+                                    >
+                                        <Column
+                                            alignItems="flex-end"
+                                            data-testid="@modal/output-value"
+                                        >
+                                            {value}
+                                        </Column>
+                                    </InfoItem>
+                                ) : (
+                                    <Text data-testid="@modal/output-value">{value}</Text>
+                                )}
+                            </Text>
+                            {networkType === 'cardano' && cardanoFingerprint && (
+                                <InfoItem
+                                    label={
+                                        <Text variant="default" typographyStyle="hint">
+                                            <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />
+                                        </Text>
+                                    }
+                                    direction="row"
+                                >
+                                    {cardanoFingerprint}
+                                </InfoItem>
                             )}
-                            {/* temporary solution until fiat value for ERC20 tokens will be fixed  */}
-                            {symbol && fiatVisible && !(line.id !== 'fee' && token) && (
-                                <>
-                                    <DotSeparatorWrapper>
-                                        <DotSeparator />
-                                    </DotSeparatorWrapper>
-                                    <OutputValueWrapper>
-                                        <FiatValue
-                                            disableHiddenPlaceholder
-                                            amount={line.value}
-                                            symbol={symbol}
-                                        />
-                                    </OutputValueWrapper>
-                                </>
-                            )}
-                        </OutputValue>
-                        {network === 'cardano' && cardanoFingerprint && (
-                            <CardanoTrezorAmountWrapper>
-                                <OutputHeadline>
-                                    <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />
-                                </OutputHeadline>
-                                <OutputValue>{cardanoFingerprint}</OutputValue>
-                            </CardanoTrezorAmountWrapper>
-                        )}
-                        {network === 'cardano' && token && token.decimals !== 0 && (
-                            <CardanoTrezorAmountWrapper>
-                                <OutputHeadline>
-                                    <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />
-                                </OutputHeadline>
-                                <OutputValue>
+                            {networkType === 'cardano' && token && token.decimals !== 0 && (
+                                <InfoItem
+                                    label={
+                                        <Text variant="default" typographyStyle="hint">
+                                            <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />
+                                        </Text>
+                                    }
+                                    direction="row"
+                                >
                                     {amountToSmallestUnit(line.value, token.decimals)}
-                                </OutputValue>
-                            </CardanoTrezorAmountWrapper>
-                        )}
-                    </OutputRightLine>
-                ))}
-            </OutputRight>
-        </OutputWrapper>
+                                </InfoItem>
+                            )}
+                        </div>
+                    );
+                })}
+            </Column>
+        </Card>
     );
-});
+};

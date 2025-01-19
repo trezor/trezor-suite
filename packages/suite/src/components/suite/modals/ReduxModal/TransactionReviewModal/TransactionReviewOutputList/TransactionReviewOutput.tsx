@@ -1,26 +1,23 @@
-import { ReactNode, forwardRef } from 'react';
+import { ReactNode } from 'react';
 
-import { TranslationKey } from '@suite-common/intl-types';
-import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
-import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
-import { formatAmount, formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { isTestnet } from '@suite-common/wallet-utils';
+import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
+import { getNetworkDisplaySymbol, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
+import { TranslationKey } from '@suite-common/intl-types';
 
-import { Translation } from 'src/components/suite';
-import { useDisplayMode, useTranslation } from 'src/hooks/suite';
 import type { Account } from 'src/types/wallet';
+import { useTranslation } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
 
 import {
-    OutputElementLine,
     TransactionReviewOutputElement,
+    TransactionReviewOutputElementProps,
+    OutputElementLine,
 } from './TransactionReviewOutputElement';
-import {
-    TransactionReviewStepIndicator,
-    TransactionReviewStepIndicatorProps,
-} from './TransactionReviewStepIndicator';
 
-const getFeeLabel = (networkType: Account['networkType']) => {
+const getFeeLabel = (networkType: NetworkType) => {
     switch (networkType) {
         case 'ethereum':
             return 'MAX_FEE';
@@ -33,212 +30,238 @@ const getFeeLabel = (networkType: Account['networkType']) => {
 
 const getDisplayModeStringsMap = (): Record<
     StakeType,
-    { value: TranslationKey; confirmLabel: TranslationKey }
+    { value: TranslationKey; label: TranslationKey }
 > => ({
     stake: {
         value: 'TR_STAKE_ON_EVERSTAKE',
-        confirmLabel: 'TR_STAKE_STAKE',
+        label: 'TR_STAKE_STAKE',
     },
     unstake: {
         value: 'TR_UNSTAKE_FROM_EVERSTAKE',
-        confirmLabel: 'TR_STAKE_UNSTAKE',
+        label: 'TR_STAKE_UNSTAKE',
     },
     claim: {
         value: 'TR_CLAIM_FROM_EVERSTAKE',
-        confirmLabel: 'TR_STAKE_CLAIM',
+        label: 'TR_STAKE_CLAIM',
     },
 });
 
+const getOutputTitle = (
+    type: ReviewOutput['type'],
+    networkType: NetworkType,
+    value: string,
+    isRbf: boolean,
+    stakeType: StakeType | undefined,
+): ReactNode | undefined => {
+    const displayModeStringsMap = getDisplayModeStringsMap();
+
+    switch (type) {
+        case 'locktime': {
+            const label = new BigNumber(value).gte(BTC_LOCKTIME_VALUE)
+                ? 'LOCKTIME_TIMESTAMP'
+                : 'LOCKTIME_BLOCKHEIGHT';
+
+            return <Translation id={label} />;
+        }
+        case 'fee':
+            return <Translation id={getFeeLabel(networkType)} />;
+        case 'fee-replace':
+        case 'reduce-output':
+            return <Translation id="TR_SUMMARY" />;
+        case 'contract':
+            return <Translation id={networkType === 'solana' ? 'TR_TOKEN' : 'TR_CONTRACT'} />;
+        case 'address':
+            return (
+                <Translation
+                    id={stakeType ? displayModeStringsMap[stakeType].label : 'TR_RECIPIENT_ADDRESS'}
+                />
+            );
+        case 'regular_legacy':
+            return <Translation id="TR_RECIPIENT_ADDRESS" />;
+        case 'amount':
+            return <Translation id="TR_AMOUNT_SENT" />;
+        case 'destination-tag':
+            return <Translation id="DESTINATION_TAG" />;
+        case 'gas':
+            return <Translation id="TR_GAS_PRICE" />;
+        case 'txid':
+            return <Translation id={isRbf ? 'TR_TXID_RBF' : 'TR_TXID'} />;
+        case 'data':
+            return (
+                <Translation id={stakeType ? displayModeStringsMap[stakeType].label : 'DATA_ETH'} />
+            );
+        case 'opreturn':
+            return <Translation id="OP_RETURN" />;
+        default: {
+            const _unhandledCase: never = type;
+            throw new Error(`Unhandled output type: ${_unhandledCase}`);
+        }
+    }
+};
+
+const getOutputLines = (
+    type: ReviewOutput['type'],
+    value: string,
+    value2: string = '',
+    label: string = '',
+    symbol: NetworkSymbol,
+    stakeType: StakeType | undefined,
+    translationString: (key: TranslationKey, values: any) => string,
+): OutputElementLine[] => {
+    const displayModeStringsMap = getDisplayModeStringsMap();
+
+    switch (type) {
+        case 'gas':
+        case 'fee':
+            return [
+                {
+                    id: type,
+                    type: 'amount',
+                    value,
+                },
+            ];
+        case 'fee-replace':
+            return [
+                {
+                    id: 'increase-fee-by',
+                    type: 'amount',
+                    label: <Translation id="TR_INCREASE_FEE_BY" />,
+                    value,
+                },
+                {
+                    id: 'increased-fee',
+                    type: 'amount',
+                    label: <Translation id="TR_INCREASED_FEE" />,
+                    value: value2,
+                },
+            ];
+        case 'reduce-output':
+            return [
+                {
+                    id: 'decrease-address',
+                    type: 'address',
+                    label: <Translation id="TR_RECIPIENT_ADDRESS" />,
+                    value: label,
+                },
+                {
+                    id: 'decrease-by',
+                    type: 'amount',
+                    label: <Translation id="TR_DECREASE_AMOUNT_BY" />,
+                    value,
+                },
+                {
+                    id: 'decreased-amount',
+                    type: 'amount',
+                    label: <Translation id="TR_DECREASED_AMOUNT" />,
+                    value: value2,
+                },
+            ];
+        case 'address':
+        case 'data':
+            if (stakeType) {
+                return [
+                    {
+                        id: 'data',
+                        type: 'default',
+                        value: translationString(displayModeStringsMap[stakeType].value, {
+                            symbol: getNetworkDisplaySymbol(symbol),
+                        }),
+                    },
+                ];
+            }
+
+            return [
+                {
+                    id: type,
+                    type,
+                    value,
+                },
+            ];
+        case 'regular_legacy':
+            return [
+                {
+                    id: type,
+                    type: 'address',
+                    value,
+                },
+            ];
+        case 'txid':
+        case 'contract':
+        case 'opreturn':
+        case 'destination-tag':
+        case 'locktime':
+            return [
+                {
+                    id: type,
+                    type: 'data',
+                    value,
+                },
+            ];
+        case 'amount':
+            return [
+                {
+                    id: type,
+                    label: <Translation id="AMOUNT" />,
+                    value,
+                    type: 'amount',
+                },
+            ];
+        default: {
+            const _unhandledCase: never = type;
+            throw new Error(`Unhandled output type: ${_unhandledCase}`);
+        }
+    }
+};
+
 export type TransactionReviewOutputProps = {
-    state: TransactionReviewStepIndicatorProps['state'];
-    symbol: NetworkSymbol;
+    state: TransactionReviewOutputElementProps['state'];
     account: Account;
     isRbf: boolean;
     stakeType?: StakeType;
 } & ReviewOutput;
 
-export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionReviewOutputProps>(
-    (props, ref) => {
-        const { type, state, label, value, symbol, token, account, stakeType, isRbf } = props;
-        let outputLabel: ReactNode = label;
-        const { networkType } = account;
-        const { translationString } = useTranslation();
-        const displayMode = useDisplayMode({ stakeType, type });
+export const TransactionReviewOutput = ({
+    type,
+    state,
+    label,
+    value,
+    value2,
+    token,
+    account,
+    stakeType,
+    isRbf,
+}: TransactionReviewOutputProps) => {
+    const { networkType, symbol } = account;
+    const { translationString } = useTranslation();
+    const isFiatVisible =
+        ['fee', 'amount', 'gas', 'fee-replace', 'reduce-output'].includes(type) &&
+        !isTestnet(symbol);
 
-        if (type === 'locktime') {
-            const isTimestamp = new BigNumber(value).gte(BTC_LOCKTIME_VALUE);
-            outputLabel = (
-                <Translation id={isTimestamp ? 'LOCKTIME_TIMESTAMP' : 'LOCKTIME_BLOCKHEIGHT'} />
-            );
-        }
-        if (type === 'fee') {
-            outputLabel = <Translation id={getFeeLabel(networkType)} />;
-        }
-        if (type === 'contract') {
-            if (networkType === 'solana') {
-                outputLabel = <Translation id="TR_TOKEN" />;
-            } else {
-                outputLabel = <Translation id="TR_CONTRACT" />;
-            }
-        }
-        if (type === 'address' || type === 'regular_legacy') {
-            outputLabel = <Translation id="TR_RECIPIENT_ADDRESS" />;
-        }
-        if (type === 'amount') {
-            outputLabel = <Translation id="TR_AMOUNT_SENT" />;
-        }
-        if (type === 'destination-tag') {
-            outputLabel = <Translation id="DESTINATION_TAG" />;
-        }
-        if (type === 'gas') {
-            outputLabel = <Translation id="TR_GAS_PRICE" />;
-        }
+    const outputTitle = getOutputTitle(type, networkType, value, isRbf, stakeType);
 
-        let outputValue = value;
-        let fiatVisible = false;
-        if (token) {
-            outputValue = formatAmount(value, token.decimals);
-        } else if (type === 'fee' || type === 'amount') {
-            outputValue = formatNetworkAmount(value, symbol);
-            fiatVisible = !isTestnet(symbol);
-        } else if (type === 'gas') {
-            fiatVisible = !isTestnet(symbol);
-        }
+    const outputLines = getOutputLines(
+        type,
+        value,
+        value2,
+        label,
+        symbol,
+        stakeType,
+        translationString,
+    );
 
-        let outputLines: OutputElementLine[];
+    // prevents double label when bumping stake type txs
+    if (type === 'address' && isRbf && stakeType) {
+        return null;
+    }
 
-        if (type === 'fee-replace') {
-            outputLines = [
-                {
-                    id: 'increase-fee-by',
-                    label: <Translation id="TR_INCREASE_FEE_BY" />,
-                    value: formatNetworkAmount(value, symbol),
-                },
-                {
-                    id: 'increased-fee',
-                    label: <Translation id="TR_INCREASED_FEE" />,
-                    value: formatNetworkAmount(props.value2, symbol),
-                },
-            ];
-            fiatVisible = !isTestnet(symbol);
-        } else if (type === 'reduce-output') {
-            outputLines = [
-                {
-                    id: 'decrease-address',
-                    label: <Translation id="TR_RECIPIENT_ADDRESS" />,
-                    value: props.label,
-                    plainValue: true,
-                },
-                {
-                    id: 'decrease-by',
-                    label: <Translation id="TR_DECREASE_AMOUNT_BY" />,
-                    value: formatNetworkAmount(value, symbol),
-                },
-                {
-                    id: 'decreased-amount',
-                    label: <Translation id="TR_DECREASED_AMOUNT" />,
-                    value: formatNetworkAmount(props.value2, symbol),
-                },
-            ];
-            fiatVisible = !isTestnet(symbol);
-        } else if (type === 'txid') {
-            outputLines = [
-                {
-                    id: 'txid',
-                    label: <Translation id={props.isRbf ? 'TR_TXID_RBF' : 'TR_TXID'} />,
-                    value: outputValue,
-                    plainValue: true,
-                },
-            ];
-        } else if (['data', 'address'].includes(type) && stakeType) {
-            const displayModeStringsMap = getDisplayModeStringsMap();
-
-            // prevents double label when bumping stake type txs
-            if (type === 'address' && isRbf) {
-                return null;
-            }
-
-            outputLines = [
-                {
-                    id: 'data',
-                    label: translationString(displayModeStringsMap[stakeType].confirmLabel, {
-                        symbol: getNetworkDisplaySymbol(symbol),
-                    }),
-                    value: translationString(displayModeStringsMap[stakeType].value, {
-                        symbol: getNetworkDisplaySymbol(symbol),
-                    }),
-                    plainValue: true,
-                },
-            ];
-        } else if (type === 'data') {
-            outputLines = [
-                {
-                    id: 'data',
-                    label: <Translation id="DATA_ETH" />,
-                    value: outputValue,
-                    plainValue: true,
-                },
-            ];
-        } else if (type === 'regular_legacy') {
-            outputLines = [
-                {
-                    id: 'regular_legacy',
-                    label: outputLabel,
-                    value: outputValue,
-                    confirmLabel: <Translation id="TR_RECIPIENT_ADDRESS_MATCH" />,
-                    plainValue: true,
-                },
-            ];
-        } else if (type === 'contract') {
-            outputLines = [
-                {
-                    id: 'contract',
-                    label: outputLabel,
-                    value: outputValue,
-                    plainValue: true,
-                },
-            ];
-        } else if (type === 'address') {
-            outputLines = [
-                {
-                    id: 'address',
-                    label: outputLabel,
-                    value: outputValue,
-                    confirmLabel: <Translation id="TR_RECIPIENT_ADDRESS_MATCH" />,
-                    plainValue: true,
-                },
-            ];
-        } else if (type === 'opreturn') {
-            outputLines = [
-                {
-                    id: 'opreturn',
-                    label: <Translation id="OP_RETURN" />,
-                    value: outputValue,
-                    plainValue: true,
-                },
-            ];
-        } else {
-            outputLines = [
-                {
-                    id: 'default',
-                    label: outputLabel,
-                    value: outputValue,
-                },
-            ];
-        }
-
-        return (
-            <TransactionReviewOutputElement
-                ref={ref}
-                account={account}
-                indicator={<TransactionReviewStepIndicator state={state} size={16} />}
-                lines={outputLines}
-                token={token}
-                state={state}
-                symbol={symbol}
-                fiatVisible={fiatVisible}
-                displayMode={displayMode}
-            />
-        );
-    },
-);
+    return (
+        <TransactionReviewOutputElement
+            title={outputTitle}
+            account={account}
+            lines={outputLines}
+            token={token}
+            state={state}
+            fiatVisible={isFiatVisible}
+        />
+    );
+};

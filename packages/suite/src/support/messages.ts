@@ -8404,9 +8404,17 @@ export default defineMessages({
         id: 'TR_AMOUNT_SENT',
         defaultMessage: 'Amount sent',
     },
+    TR_SUMMARY: {
+        id: 'TR_SUMMARY',
+        defaultMessage: 'Summary',
+    },
     TR_TOTAL_AMOUNT: {
         id: 'TR_TOTAL_AMOUNT',
         defaultMessage: 'Total amount',
+    },
+    TR_TOTAL_INCLUDING_FEE: {
+        id: 'TR_TOTAL_INCLUDING_FEE',
+        defaultMessage: 'Total including fee',
     },
     TR_INCLUDING_FEE: {
         id: 'TR_INCLUDING_FEE',

@@ -5,7 +5,7 @@ import {
 import { expect, test } from '../../support/fixtures';
 
 const receiveAddress =
-    'addr_test1qphsv6vspp4l3nvmqzw529teq2ha08s0fgjvzghzh628uccfey0wtrgp5rmxvld7khc745x9mk7gts5ctuzerlf4edrq5at0x5';
+    'addr _tes t1qp hsv6 vspp 4l3n vmqz w529 teq2 ha08 s0fg jvzg hzh6 28uc cfey 0wtr gp5r mxvl d7kh c745 x9mk 7gts 5ctu zerl f4ed rq5a t0x5';
 
 // todo: setup emu with 24 words mnemonic so that we can test different cardano derivation and its 'auto-discovery; feature
 //mnemonic: 'clot trim improve bag pigeon party wave mechanic beyond clean cake maze protect left assist carry guitar bridge nest faith critic excuse tooth dutch',

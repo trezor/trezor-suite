@@ -22,7 +22,7 @@ export const TransactionReviewEvmExplanation = ({
     }
 
     return (
-        <Banner margin={{ top: spacings.sm }}>
+        <Banner>
             <Translation
                 id="TR_EVM_EXPLANATION_SEND_MODAL_DESCRIPTION"
                 values={{

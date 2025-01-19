@@ -2,287 +2,142 @@ import { useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { TranslationKey } from '@suite-common/intl-types';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import type { FormState, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { ReviewOutput, StakeFormState, StakeType } from '@suite-common/wallet-types';
-import { getTransactionReviewOutputState } from '@suite-common/wallet-utils';
-import { Banner, Button, variables } from '@trezor/components';
-import { copyToClipboard, download } from '@trezor/dom-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
-import { spacingsPx } from '@trezor/theme';
+import { Banner, Column, H4, Text } from '@trezor/components';
+import type { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
+import { spacings, spacingsPx } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
 import type { Account } from 'src/types/wallet';
+import { Translation } from 'src/components/suite';
 
-import { TransactionReviewDetails } from './TransactionReviewDetails';
-import { TransactionReviewOutput } from './TransactionReviewOutput';
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
+import { TransactionReviewOutput } from './TransactionReviewOutput';
+import type { TransactionReviewOutputElementProps } from './TransactionReviewOutputElement';
 
-const Content = styled.div`
-    display: flex;
-    padding: 0;
-    flex: 1;
-`;
-const Flex = styled.div`
-    display: flex;
-    gap: ${spacingsPx.xxs};
-`;
-
-const Right = styled.div`
-    flex: 1;
-    margin: 20px 10px 10px 25px;
-    max-width: 460px;
-    position: relative;
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        margin: 20px 10px 10px;
-    }
-`;
-
-const RightTop = styled.div`
-    flex: 1;
-    height: 320px;
-    overflow-y: auto;
-`;
-
-const RightTopInner = styled.div`
-    padding: 10px 0 20px;
-`;
-
-const RightBottom = styled.div`
-    margin-left: 30px;
-    padding: 20px 0 0;
-    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-    display: flex;
-    flex-direction: column;
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        display: block;
-        margin-left: 0;
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    display: flex;
-    flex: 1;
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        width: 100%;
-
-        & + & {
-            margin: 10px 0 0;
-        }
-    }
-`;
-
-const TxReviewFootnote = styled.div`
-    margin-top: ${spacingsPx.md};
-`;
-
-const Nowrap = styled.span`
-    white-space: nowrap;
-`;
-
-export interface TransactionReviewOutputListProps {
+export type TransactionReviewOutputListProps = {
     account: Account;
-    precomposedForm: FormState | StakeFormState;
     precomposedTx: GeneralPrecomposedTransactionFinal;
     signedTx?: { tx: string }; // send reducer
-    decision?: { resolve: (success: boolean) => void }; // dfd
-    detailsOpen: boolean;
     outputs: ReviewOutput[];
     buttonRequestsCount: number;
     isRbfAction: boolean;
-    actionText: TranslationKey;
     isSending?: boolean;
-    setIsSending?: () => void;
     stakeType?: StakeType;
-}
+};
+
+const getState = (
+    index: number,
+    buttonRequestsCount: number,
+    hasSignedTx: boolean,
+): TransactionReviewOutputElementProps['state'] => {
+    if (hasSignedTx || index < buttonRequestsCount - 1) {
+        return 'done';
+    }
+
+    if (index === buttonRequestsCount - 1) {
+        return 'default';
+    }
+
+    return 'pending';
+};
+
+const Wrapper = styled.div`
+    scroll-margin-top: ${spacingsPx.xxxxl};
+`;
+
+const SectionHeading = ({ output, index }: { output: ReviewOutput; index: number }) => (
+    <H4 margin={{ top: index === 0 ? spacings.zero : spacings.xs }}>
+        {output.type === 'address' ? (
+            <Translation
+                id="TR_SEND_RECIPIENT_ADDRESS"
+                values={{
+                    index: index + 1,
+                }}
+            />
+        ) : (
+            <Translation id="TR_SUMMARY" />
+        )}
+    </H4>
+);
 
 export const TransactionReviewOutputList = ({
     account,
-    precomposedForm,
     precomposedTx,
     signedTx,
-    decision,
-    detailsOpen,
     outputs,
     buttonRequestsCount,
     isRbfAction,
-    actionText,
     isSending,
-    setIsSending,
     stakeType,
 }: TransactionReviewOutputListProps) => {
-    const dispatch = useDispatch();
     const { networkType } = account;
+    const isMultirecipient = outputs.filter(({ type }) => type === 'address').length > 1;
 
-    const { symbol } = account;
-    const { options, selectedFee } = precomposedForm;
-    let isCoinControlEnabled = false;
-    let hasCoinControlBeenOpened = false;
-    if ('isCoinControlEnabled' in precomposedForm) {
-        ({ isCoinControlEnabled } = precomposedForm);
-    }
-    if ('hasCoinControlBeenOpened' in precomposedForm) {
-        ({ hasCoinControlBeenOpened } = precomposedForm);
-    }
-    const broadcastEnabled = options.includes('broadcast');
-
-    const reportTransactionCreatedEvent = (action: 'sent' | 'copied' | 'downloaded' | 'replaced') =>
-        analytics.report({
-            type: EventType.TransactionCreated,
-            payload: {
-                action,
-                symbol,
-                tokens: outputs
-                    .filter(output => output.token?.symbol)
-                    .map(output => output.token?.symbol)
-                    .join(','),
-                outputsCount: precomposedForm.outputs.length,
-                broadcast: broadcastEnabled,
-                bitcoinLockTime: !!options.includes('bitcoinLockTime'),
-                ethereumData: !!options.includes('ethereumData'),
-                rippleDestinationTag: !!options.includes('rippleDestinationTag'),
-                ethereumNonce: !!options.includes('ethereumNonce'),
-                selectedFee: selectedFee || 'normal',
-                isCoinControlEnabled,
-                hasCoinControlBeenOpened,
-            },
-        });
-    const handleSend = () => {
-        if (networkType === 'solana') {
-            setIsSending?.();
-        }
-        if (decision) {
-            decision.resolve(true);
-
-            reportTransactionCreatedEvent(isRbfAction ? 'replaced' : 'sent');
-        }
-    };
-    const handleCopy = () => {
-        const result = copyToClipboard(signedTx!.tx);
-        if (typeof result !== 'string') {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'copy-to-clipboard',
-                }),
-            );
-        }
-
-        reportTransactionCreatedEvent('copied');
-    };
-    const handleDownload = () => {
-        download(signedTx!.tx, 'signed-transaction.txt');
-
-        reportTransactionCreatedEvent('downloaded');
-    };
-
-    const outputRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-    const totalRef = useRef<HTMLDivElement>(null);
+    const summaryIndex = outputs.findIndex(
+        ({ type }) => !['address', 'amount', 'opreturn'].includes(type),
+    );
 
     useEffect(() => {
-        const isLastStep =
-            getTransactionReviewOutputState(outputs.length, buttonRequestsCount) === 'active';
-
-        if (isLastStep) {
-            totalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else {
-            const activeIndex = outputs.findIndex(
-                (_, index) =>
-                    getTransactionReviewOutputState(index, buttonRequestsCount) === 'active',
-            );
-
-            outputRefs.current[activeIndex]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (buttonRequestsCount - 1 === outputs.length || signedTx) {
+            // When the tx is signed, the outputs are updated, so we use instant scroll to prevent jumping
+            totalOutputRef.current?.scrollIntoView({ behavior: signedTx ? 'instant' : 'smooth' });
+        } else if (buttonRequestsCount !== 0) {
+            outputRefs.current[buttonRequestsCount - 1]?.scrollIntoView({ behavior: 'smooth' });
         }
-    }, [buttonRequestsCount, outputs]);
+    }, [buttonRequestsCount, outputs.length, signedTx]);
 
     return (
-        <Content>
-            <Right>
-                {detailsOpen && (
-                    <TransactionReviewDetails tx={precomposedTx} txHash={signedTx?.tx} />
-                )}
-                <RightTop>
-                    <RightTopInner>
-                        {outputs.map((output, index) => {
-                            const state = signedTx
-                                ? 'success'
-                                : getTransactionReviewOutputState(index, buttonRequestsCount);
+        <Column gap={spacings.md}>
+            {outputs.map((output, index) => {
+                const isHeadingShown =
+                    isMultirecipient && (output.type === 'address' || index === summaryIndex);
+                const recipientIndex = outputs
+                    .filter(({ type }) => type === 'address')
+                    .indexOf(output);
 
-                            return (
-                                <TransactionReviewOutput
-                                    // it's safe to use array index since outputs do not change
-
-                                    key={index}
-                                    ref={el => (outputRefs.current[index] = el)}
-                                    {...output}
-                                    state={state}
-                                    symbol={symbol}
-                                    account={account}
-                                    isRbf={isRbfAction}
-                                    stakeType={stakeType}
-                                />
-                            );
-                        })}
-                        {!(isRbfAction && networkType === 'bitcoin') && (
-                            <TransactionReviewTotalOutput
-                                ref={totalRef}
+                return (
+                    <Wrapper key={index} ref={ref => (outputRefs.current[index] = ref)}>
+                        <Column gap={spacings.sm}>
+                            {isHeadingShown && (
+                                <SectionHeading output={output} index={recipientIndex} />
+                            )}
+                            <TransactionReviewOutput
+                                {...output}
+                                state={getState(index, buttonRequestsCount, !!signedTx)}
                                 account={account}
-                                signedTx={signedTx}
-                                outputs={outputs}
-                                buttonRequestsCount={buttonRequestsCount}
-                                precomposedTx={precomposedTx}
+                                isRbf={isRbfAction}
                                 stakeType={stakeType}
-                                isRbfAction={isRbfAction}
                             />
+                        </Column>
+                    </Wrapper>
+                );
+            })}
+            {!(isRbfAction && networkType === 'bitcoin') && (
+                <Wrapper ref={totalOutputRef}>
+                    <Column gap={spacings.sm}>
+                        {isMultirecipient && summaryIndex === -1 && (
+                            <H4 margin={{ top: spacings.xs }}>
+                                <Translation id="TR_SUMMARY" />
+                            </H4>
                         )}
-                    </RightTopInner>
-                </RightTop>
-                <RightBottom>
-                    {broadcastEnabled ? (
-                        <StyledButton
-                            data-testid="@modal/send"
-                            isDisabled={!signedTx}
-                            isLoading={isSending}
-                            onClick={handleSend}
-                        >
-                            <Translation id={actionText} />
-                        </StyledButton>
-                    ) : (
-                        <Flex>
-                            <StyledButton
-                                isDisabled={!signedTx}
-                                onClick={handleCopy}
-                                data-testid="@send/copy-raw-transaction"
-                            >
-                                <Translation id="COPY_TRANSACTION_TO_CLIPBOARD" />
-                            </StyledButton>
-                            <StyledButton
-                                variant="tertiary"
-                                isDisabled={!signedTx}
-                                onClick={handleDownload}
-                            >
-                                <Translation id="DOWNLOAD_TRANSACTION" />
-                            </StyledButton>
-                        </Flex>
-                    )}
-                    {isSending && networkType === 'solana' ? (
-                        <TxReviewFootnote>
-                            <Banner variant="tertiary" icon="info">
-                                <Translation
-                                    id="TR_SOLANA_TX_CONFIRMATION_MAY_TAKE_UP_TO_1_MIN"
-                                    values={{ nowrap: chunks => <Nowrap>{chunks}</Nowrap> }}
-                                />
-                            </Banner>
-                        </TxReviewFootnote>
-                    ) : null}
-                </RightBottom>
-            </Right>
-        </Content>
+                        <TransactionReviewTotalOutput
+                            account={account}
+                            state={getState(outputs.length, buttonRequestsCount, !!signedTx)}
+                            precomposedTx={precomposedTx}
+                            stakeType={stakeType}
+                            isRbf={isRbfAction}
+                        />
+                    </Column>
+                </Wrapper>
+            )}
+            {isSending && networkType === 'solana' ? (
+                <Banner variant="tertiary" icon="info">
+                    <Translation
+                        id="TR_SOLANA_TX_CONFIRMATION_MAY_TAKE_UP_TO_1_MIN"
+                        values={{ nowrap: chunks => <Text textWrap="nowrap">{chunks}</Text> }}
+                    />
+                </Banner>
+            ) : null}
+        </Column>
     );
 };

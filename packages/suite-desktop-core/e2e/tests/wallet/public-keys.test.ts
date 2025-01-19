@@ -43,13 +43,18 @@ test.describe('Public Keys', { tag: ['@group=wallet'] }, () => {
                 await walletPage.accountDetailsTabButton.click();
                 await walletPage.showPublicKeyButton.click();
                 await expect(async () => {
-                    expect(await devicePrompt.combinedPaginatedText()).toBe(xpub);
+                    const value = await page.getByTestId('@modal/output-value').textContent();
+
+                    expect(value?.replace(/\s+/g, '')).toBe(xpub);
                 }).toPass({ timeout: 5000 });
             });
 
             await test.step('Display and Verify Public key again', async () => {
                 await devicePrompt.waitForPromptAndConfirm();
-                await expect(page.getByTestId('@modal/output-value')).toHaveText(xpub);
+
+                const value = await page.getByTestId('@modal/output-value').textContent();
+
+                expect(value?.replace(/\s+/g, '')).toBe(xpub);
             });
         });
     });

@@ -63,7 +63,6 @@ test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
             await expect(devicePrompt.modal).toHaveScreenshot('send-doge.png');
             await trezorUserEnvLink.pressYes();
             await expect(devicePrompt.modal).toHaveScreenshot('send-doge-confirmed.png');
-            await trezorUserEnvLink.pressYes();
         });
 
         await expect(page.getByTestId('@toast/sign-tx-error')).toHaveText(
