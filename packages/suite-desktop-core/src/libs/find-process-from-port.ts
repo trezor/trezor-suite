@@ -45,9 +45,9 @@ export async function findProcessFromIncomingPort(port: number) {
             const lines = stdout.split('\n');
             const record = lines
                 .map(line => {
-                    const parts = line.split(/\s+/);
+                    const parts = line.trim().split(/\s+/);
                     const pid = parts[parts.length - 1];
-                    const local = parts[2];
+                    const local = parts[1];
 
                     return { pid, local };
                 })
