@@ -1,4 +1,4 @@
-import { createSlice, isAnyOf, isRejected } from '@reduxjs/toolkit';
+import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 
 import { UI } from '@trezor/connect';
 import {
@@ -16,7 +16,7 @@ import {
     verifyPassphraseOnEmptyWalletThunk,
 } from './passphraseThunks';
 
-type DeviceAuthorizationState = {
+export type DeviceAuthorizationState = {
     hasDeviceRequestedPin: boolean;
     hasDeviceRequestedPassphrase: boolean;
     passphraseError:
@@ -32,7 +32,7 @@ type DeviceAuthorizationRootState = {
     deviceAuthorization: DeviceAuthorizationState;
 };
 
-const deviceAuthorizationInitialState: DeviceAuthorizationState = {
+export const deviceAuthorizationInitialState: DeviceAuthorizationState = {
     hasDeviceRequestedPin: false,
     hasDeviceRequestedPassphrase: false,
     passphraseError: null,
@@ -96,20 +96,18 @@ export const deviceAuthorizationSlice = createSlice({
                 state.isCreatingNewWalletInstance = true;
                 state.passphraseError = null;
             })
-            .addMatcher(
-                isAnyOf(
-                    verifyPassphraseOnEmptyWalletThunk.fulfilled,
-                    verifyPassphraseOnEmptyWalletThunk.rejected,
-                ),
-                (state, action) => {
-                    if (isRejected(action) && action.payload) {
-                        state.passphraseError = action.payload;
-                    } else {
-                        state.isVerifyingPassphraseOnEmptyWallet = false;
-                        state.isCreatingNewWalletInstance = false;
-                    }
-                },
-            )
+            .addCase(verifyPassphraseOnEmptyWalletThunk.fulfilled, state => {
+                state.isVerifyingPassphraseOnEmptyWallet = false;
+                state.isCreatingNewWalletInstance = false;
+            })
+            .addCase(verifyPassphraseOnEmptyWalletThunk.rejected, (state, action) => {
+                if (action.payload) {
+                    state.passphraseError = action.payload;
+                } else {
+                    state.isVerifyingPassphraseOnEmptyWallet = false;
+                    state.isCreatingNewWalletInstance = false;
+                }
+            })
             .addMatcher(
                 isAnyOf(authorizeDeviceThunk.rejected, createDeviceInstanceThunk.rejected),
                 (state, { payload }) => {
