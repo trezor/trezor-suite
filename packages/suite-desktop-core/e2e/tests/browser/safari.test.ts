@@ -22,5 +22,7 @@ test.describe('Safari', { tag: ['@group=other', '@webOnly', '@snapshot'] }, () =
         await expect(onboardingPage.continueAtYourOwnRiskButton).toHaveText(
             'Continue at my own risk',
         );
+        await onboardingPage.continueAtYourOwnRiskButton.click({ force: true });
+        await expect(onboardingPage.welcomeTitle).toBeVisible({ timeout: 20_000 });
     });
 });

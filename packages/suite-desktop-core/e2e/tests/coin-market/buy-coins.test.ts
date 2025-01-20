@@ -12,13 +12,12 @@ test.describe('Coin market buy', { tag: ['@group=other', '@snapshot', '@webOnly'
         await walletPage.openCoinMarket();
     });
 
-    test('Buy crypto from compared offers', async ({ page, marketPage }) => {
+    test('Buy crypto from compared offers', async ({ marketPage }) => {
         await test.step('Fill input amount and opens offer comparison', async () => {
             await marketPage.setYouPayAmount(mockedInputAmount);
             await expect(marketPage.section).toHaveScreenshot('buy-coins-layout.png');
             await marketPage.compareButton.click();
         });
-        await page.pause();
 
         await test.step('Check offers and chooses the first one', async () => {
             await expect(marketPage.buyOffersPage).toHaveScreenshot('compared-offers-buy.png', {
