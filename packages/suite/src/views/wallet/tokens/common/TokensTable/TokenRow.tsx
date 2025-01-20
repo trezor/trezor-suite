@@ -199,7 +199,7 @@ export const TokenRow = ({
             <Table.Cell align="right">
                 <Row gap={spacings.xs}>
                     <Dropdown
-                        alignMenu="bottom-right"
+                        placement={{ position: 'bottom', alignment: 'start' }}
                         items={
                             [
                                 {

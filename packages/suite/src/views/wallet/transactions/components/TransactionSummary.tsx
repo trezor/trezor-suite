@@ -88,7 +88,10 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
             {account.networkType !== 'solana' && (
                 <>
                     <Row justifyContent="space-between" alignItems="center">
-                        <GraphRangeSelector onSelectedRange={onSelectedRange} align="bottom-left" />
+                        <GraphRangeSelector
+                            onSelectedRange={onSelectedRange}
+                            placement={{ position: 'bottom', alignment: 'end' }}
+                        />
                         <TransactionSummaryDropdown />
                     </Row>
 

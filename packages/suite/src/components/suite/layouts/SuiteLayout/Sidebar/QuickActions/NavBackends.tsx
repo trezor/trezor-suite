@@ -144,7 +144,7 @@ export const NavBackends = ({ customBackends, children }: NavBackendsProps) => {
     return (
         <StyledDropdown
             ref={dropdownRef}
-            alignMenu="top-right"
+            placement={{ position: 'top' }}
             addon={{
                 onClick: goToCoinsSettings,
                 label: <Translation id="TR_MANAGE" />,

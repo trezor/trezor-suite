@@ -26,7 +26,10 @@ type Props = RequiredKey<ExtendedProps, 'dropdownOptions'>;
 export const withDropdown = (WrappedComponent: FC<ExtendedProps>) => (props: Props) => (
     <StyledDropdown
         isDisabled={props.editActive}
-        alignMenu="bottom-left"
+        placement={{
+            position: 'bottom',
+            alignment: 'end',
+        }}
         renderOnClickPosition
         items={[
             {

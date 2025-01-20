@@ -11,7 +11,14 @@ import {
     differenceInMonths,
 } from 'date-fns';
 
-import { variables, Dropdown, DropdownRef, Timerange, intermediaryTheme } from '@trezor/components';
+import {
+    variables,
+    Dropdown,
+    DropdownRef,
+    Timerange,
+    intermediaryTheme,
+    PopoverPlacement,
+} from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { useGraph, useLocales } from 'src/hooks/suite';
@@ -105,13 +112,13 @@ const getFormattedLabel = (rangeLabel: GraphRange['label']) => {
 interface GraphRangeSelectorProps {
     onSelectedRange?: (range: GraphRange) => void;
     className?: string;
-    align?: 'bottom-left' | 'bottom-right';
+    placement?: PopoverPlacement;
 }
 
 export const GraphRangeSelector = ({
     onSelectedRange,
     className,
-    align,
+    placement,
 }: GraphRangeSelectorProps) => {
     const [customTimerangeStart, setCustomTimerangeStart] = useState<Date>();
     const [customTimerangeEnd, setCustomTimerangeEnd] = useState<Date>();
@@ -159,7 +166,7 @@ export const GraphRangeSelector = ({
             ))}
             <Dropdown
                 ref={dropdownRef}
-                alignMenu={align}
+                placement={placement}
                 content={
                     <Timerange
                         onSubmit={(startDate: Date, endDate: Date) =>

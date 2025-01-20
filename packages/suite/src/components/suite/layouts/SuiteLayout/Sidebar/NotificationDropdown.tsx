@@ -1,17 +1,17 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { DropdownRef, Dropdown, Box, useMediaQuery, variables } from '@trezor/components';
+import { Box, useMediaQuery, variables, Popover, Menu } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { useOnClickOutside } from '@trezor/react-utils';
 
 import { Notifications } from 'src/components/suite/notifications';
 import { useDispatch } from 'src/hooks/suite';
 
 import { NavigationItem, NavigationItemProps } from './NavigationItem';
-import { useIsSidebarCollapsed } from './utils';
 
 const StyledNavigationItem = styled(NavigationItem)`
     ${({ theme, isActive }) =>
@@ -23,42 +23,50 @@ const StyledNavigationItem = styled(NavigationItem)`
 `;
 
 export const NotificationDropdown = (props: NavigationItemProps) => {
+    const [isOpen, setIsOpen] = useState(false);
     const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
-    const dropdownRef = useRef<DropdownRef>();
+    const contentRef = useRef<HTMLUListElement>(null);
     const dispatch = useDispatch();
-    const isSidebarCollapsed = useIsSidebarCollapsed();
 
-    const handleToggleChange = useCallback(
-        (isToggled: boolean) => {
-            if (!isToggled) {
-                // if the dropdown is going to be closed, mark all notifications as seen and "deactivate" ActionItem
-                dispatch(notificationsActions.resetUnseen());
-            }
+    useOnClickOutside([contentRef], () => {
+        if (isOpen) {
+            setIsOpen(false);
+        }
+    });
 
-            analytics.report({
-                type: EventType.MenuNotificationsToggle,
-                payload: {
-                    value: isToggled,
-                },
-            });
-        },
-        [dispatch],
-    );
+    const handleToggleChange = useCallback(() => {
+        if (isOpen) {
+            // if the dropdown is going to be closed, mark all notifications as seen and "deactivate" ActionItem
+            dispatch(notificationsActions.resetUnseen());
+        }
+
+        analytics.report({
+            type: EventType.MenuNotificationsToggle,
+            payload: {
+                value: isOpen,
+            },
+        });
+
+        setIsOpen(prev => !prev);
+    }, [isOpen, dispatch]);
 
     return (
-        <Dropdown
-            onToggle={handleToggleChange}
-            ref={dropdownRef}
-            alignMenu="right-top"
-            offsetY={-12}
+        <Popover
             content={
-                <Box width={isBelowLaptop ? 330 : 450} margin={spacings.xs}>
-                    <Notifications onCancel={() => dropdownRef.current!.close()} />
-                </Box>
+                <Menu
+                    ref={contentRef}
+                    content={
+                        <Box width={isBelowLaptop ? 330 : 450} margin={spacings.xs}>
+                            <Notifications onCancel={handleToggleChange} />
+                        </Box>
+                    }
+                    setToggled={handleToggleChange}
+                />
             }
-            width={isSidebarCollapsed ? undefined : '100%'}
+            placement={{ position: 'right', alignment: 'start' }}
+            isOpen={isOpen}
         >
-            {isToggled => <StyledNavigationItem {...props} isActive={isToggled} />}
-        </Dropdown>
+            <StyledNavigationItem {...props} isActive={isOpen} onClick={handleToggleChange} />
+        </Popover>
     );
 };

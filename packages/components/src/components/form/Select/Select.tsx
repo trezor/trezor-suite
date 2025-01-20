@@ -30,7 +30,7 @@ import {
 } from './customComponents';
 import { useOnKeyDown } from './useOnKeyDown';
 import { useDetectPortalTarget } from './useDetectPortalTarget';
-import { DROPDOWN_MENU, menuStyle } from '../../Dropdown/menuStyle';
+import { DROPDOWN_MENU, menuStyle } from '../../Menu/menuStyle';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { TransientProps } from '../../../utils/transientProps';

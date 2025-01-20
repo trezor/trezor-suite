@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Icon, Tabs, Row, Divider } from '@trezor/components';
+import { Tabs, Row, Divider, IconButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -30,7 +30,7 @@ export const Notifications = (props: NotificationsProps) => {
 
     return (
         <>
-            <Row justifyContent="space-between">
+            <Row justifyContent="space-between" alignItems="baseline">
                 <Tabs activeItemId={selectedTab} hasBorder={false}>
                     <Tabs.Item id="important" onClick={() => setSelectedTab('important')}>
                         <Translation id="NOTIFICATIONS_IMPORTANT_TITLE" />
@@ -40,7 +40,7 @@ export const Notifications = (props: NotificationsProps) => {
                     </Tabs.Item>
                 </Tabs>
                 {props.onCancel && (
-                    <Icon name="close" variant="tertiary" size="medium" onClick={onCancel} />
+                    <IconButton variant="tertiary" icon="close" onClick={onCancel} size="tiny" />
                 )}
             </Row>
             <Divider margin={{ top: 0, bottom: spacings.md }} />

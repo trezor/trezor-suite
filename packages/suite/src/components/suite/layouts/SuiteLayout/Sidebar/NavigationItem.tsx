@@ -88,6 +88,7 @@ export interface NavigationItemProps {
     itemsCount?: number;
     isRounded?: boolean;
     typographyStyle?: TypographyStyle;
+    onClick?: () => void;
 }
 
 type TitleProps = {
@@ -112,6 +113,7 @@ const NavItem = (props: NavigationItemProps) => {
         itemsCount,
         isRounded = false,
         typographyStyle = 'body',
+        onClick,
     } = props;
 
     const activeRoute = useSelector(selectRouteName);
@@ -121,10 +123,13 @@ const NavItem = (props: NavigationItemProps) => {
     const handleClick = (e: MouseEvent) => {
         e.stopPropagation();
 
+        onClick?.();
+
         if (goToRoute !== undefined) {
             dispatch(goto(goToRoute, preserveParams === true ? { preserveParams } : undefined));
         }
     };
+
     const theme = useTheme();
     const isActiveRoute = routes?.some(route => route === activeRoute);
 

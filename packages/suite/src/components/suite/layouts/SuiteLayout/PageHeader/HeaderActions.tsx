@@ -86,7 +86,7 @@ export const HeaderActions = () => {
             {visibleAdditionalActions?.length > 0 && (
                 <AppNavigationTooltip>
                     <Dropdown
-                        alignMenu="bottom-right"
+                        placement={{ position: 'bottom', alignment: 'start' }}
                         isDisabled={isAccountLoading}
                         data-testid="@wallet/menu/extra-dropdown"
                         items={[

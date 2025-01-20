@@ -106,7 +106,7 @@ export const PortfolioCard = memo(() => {
             actions={
                 !isWalletEmpty && !isWalletLoading && !isWalletError ? (
                     <StyledDropdown
-                        alignMenu="bottom-right"
+                        placement={{ position: 'bottom', alignment: 'start' }}
                         items={[
                             {
                                 key: 'group1',

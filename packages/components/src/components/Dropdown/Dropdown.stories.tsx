@@ -67,7 +67,10 @@ export const Dropdown: StoryObj<DropdownProps> = {
             label: 'some link',
             icon: 'arrowRightLong',
         },
-        alignMenu: 'right-top',
+        placement: {
+            position: 'bottom',
+            alignment: 'center',
+        },
         items: [
             {
                 key: '1',
@@ -135,24 +138,13 @@ export const Dropdown: StoryObj<DropdownProps> = {
     argTypes: {
         addon: { control: { disable: true } },
         items: { control: { disable: true } },
-        alignMenu: {
+        placement: {
             control: {
-                type: 'select',
+                type: 'object',
             },
-            options: [
-                'bottom-left',
-                'bottom-right',
-                'left-bottom',
-                'left-top',
-                'right-bottom',
-                'right-top',
-                'top-left',
-                'top-right',
-            ],
         },
         content: { control: { disable: true } },
         className: { control: { disable: true } },
-        coords: { control: { disable: true } },
         ...getFramePropsStory(allowedDropdownFrameProps).argTypes,
     },
 };

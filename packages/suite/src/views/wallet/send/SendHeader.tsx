@@ -70,7 +70,7 @@ export const SendHeader = () => {
                 )}
 
                 <Dropdown
-                    alignMenu="bottom-right"
+                    placement={{ position: 'bottom', alignment: 'start' }}
                     data-testid="@send/header-dropdown"
                     items={[
                         {

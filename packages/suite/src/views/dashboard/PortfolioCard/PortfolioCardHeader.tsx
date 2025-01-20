@@ -95,7 +95,12 @@ export const PortfolioCardHeader = ({
                 </>
             );
         } else if (showGraphControls) {
-            actions = <GraphRangeSelector onSelectedRange={onSelectedRange} align="bottom-right" />;
+            actions = (
+                <GraphRangeSelector
+                    onSelectedRange={onSelectedRange}
+                    placement={{ position: 'bottom', alignment: 'start' }}
+                />
+            );
         }
     }
 

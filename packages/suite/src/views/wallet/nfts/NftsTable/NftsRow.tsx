@@ -74,7 +74,7 @@ const NftsRow = ({
                 <Table.Cell colSpan={1} align="right">
                     <Row gap={spacings.xs}>
                         <Dropdown
-                            alignMenu="bottom-right"
+                            placement={{ position: 'bottom', alignment: 'start' }}
                             items={[
                                 {
                                     key: 'export',

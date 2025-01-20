@@ -105,7 +105,7 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
 
     return (
         <Dropdown
-            alignMenu="bottom-right"
+            placement={{ position: 'bottom', alignment: 'start' }}
             items={[
                 {
                     key: 'export',

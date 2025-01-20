@@ -141,7 +141,12 @@ export const TransactionsGraph = memo(
             <Wrapper>
                 {!hideToolbar && (
                     <Toolbar>
-                        <GraphRangeSelector align="bottom-right" />
+                        <GraphRangeSelector
+                            placement={{
+                                position: 'bottom',
+                                alignment: 'start',
+                            }}
+                        />
                         {onRefresh && <Icon size={14} name="refresh" onClick={onRefresh} />}
                     </Toolbar>
                 )}

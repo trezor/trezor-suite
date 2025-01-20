@@ -12,7 +12,6 @@ import {
     nextElevation,
 } from '@trezor/theme';
 
-import type { Coords } from './getAdjustedCoords';
 import { menuStyle } from './menuStyle';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { Icon, IconName } from '../Icon/Icon';
@@ -57,21 +56,13 @@ const AddonContainer = styled.div<AddonContainerProps>`
 `;
 
 type ContainerProps = {
-    $coords?: Coords;
-    $alignMenu?: MenuAlignment;
     $elevation: Elevation;
 };
 
 const Container = styled.ul<ContainerProps>`
-    position: fixed;
-    ${menuStyle};
+    position: relative;
 
-    ${({ $coords }) =>
-        $coords &&
-        css`
-            top: ${$coords.y}px;
-            left: ${$coords.x}px;
-        `}
+    ${menuStyle};
 `;
 
 const GroupLabel = styled.li`
@@ -320,32 +311,18 @@ const getDefaultFocusItemIndex = (items: MenuProps['items'], addon: MenuProps['a
     return null;
 };
 
-export type MenuAlignment =
-    | 'bottom-left'
-    | 'bottom-right'
-    | 'left-bottom'
-    | 'left-top'
-    | 'right-bottom'
-    | 'right-top'
-    | 'top-left'
-    | 'top-right';
-
 export interface MenuProps {
     items?: GroupedMenuItems[];
     content?: React.ReactNode;
     /**
      * @description first word is position of the dropdown from the toggle icon, the second one is an alignment on the dropdown itself related to this toggle icon
      */
-    alignMenu?: MenuAlignment;
-    offsetX?: number;
-    offsetY?: number;
-    coords?: Coords;
     addon?: Omit<AddonProps, 'setToggled'>;
     setToggled: (toggled: boolean) => void;
 }
 
 export const Menu = forwardRef<HTMLUListElement, MenuProps>(
-    ({ items, content, setToggled, alignMenu, coords, addon }, ref) => {
+    ({ items, content, setToggled, addon }, ref) => {
         const { elevation } = useElevation();
 
         const [focusedItemIndex, setFocusedItemIndex] = useState(
@@ -434,8 +411,6 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
             <Container
                 $elevation={elevation}
                 ref={ref}
-                $alignMenu={alignMenu}
-                $coords={coords}
                 tabIndex={content ? 0 : 1} // do not affect tab order when there is no content
                 onClick={e => e.stopPropagation()} // prevent closing the menu when clicking on the menu itself or within the menu
             >
