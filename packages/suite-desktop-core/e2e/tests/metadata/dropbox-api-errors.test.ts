@@ -63,14 +63,18 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
         await expect(page.getByTestId('@toast/error')).toHaveText(
             'Error: Failed to save labeling data: Error in call to API function "files/upload": The given OAuth 2 access token is malformed.',
         );
+
+        await expect(metadataPage.accountLabel(AccountLabelId.BitcoinDefault1)).toContainText(
+            'Bitcoin #1',
+        );
     });
 
     test('Success after retrying GET request', async ({
         page,
         onboardingPage,
+        dashboardPage,
         settingsPage,
         metadataPage,
-        dashboardPage,
         metadataProviderMock,
     }) => {
         await metadataProviderMock.setFileContent(
@@ -118,6 +122,9 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
 
         await page.getByTestId('@account-menu/btc/normal/0').click();
         await metadataPage.editLabel(AccountLabelId.BitcoinDefault1, 'Kvooo');
+        await expect(metadataPage.accountLabel(AccountLabelId.BitcoinDefault1)).toContainText(
+            'Kvooo',
+        );
     });
 
     test('Incomplete data returned from provider', async ({

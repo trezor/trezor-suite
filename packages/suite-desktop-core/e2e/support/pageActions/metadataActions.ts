@@ -14,7 +14,7 @@ export class MetadataActions {
     readonly successLabel = (accountId: string) =>
         this.page.getByTestId(`${this.getAccountLabelTestId(accountId)}/success`);
     readonly accountLabel = (accountId: string) =>
-        this.page.getByTestId(this.getAccountLabelTestId(accountId));
+        this.page.getByTestId(`${this.getAccountLabelTestId(accountId)}/hover-container`);
 
     constructor(
         private readonly page: Page,
@@ -47,13 +47,6 @@ export class MetadataActions {
     }
 
     @step()
-    async hoverAccountLabel(accountId: string) {
-        await this.page
-            .getByTestId(`${this.getAccountLabelTestId(accountId)}/hover-container`)
-            .hover();
-    }
-
-    @step()
     async editLabel(accountId: string, newLabel: string) {
         await this.accountLabel(accountId).click();
         await this.editLabelButton(accountId).click();
@@ -63,7 +56,7 @@ export class MetadataActions {
 
     @step()
     async clickAddLabelButton(accountId: string) {
-        await this.hoverAccountLabel(accountId);
+        await this.accountLabel(accountId).hover();
         await this.page
             .getByTestId(`${this.getAccountLabelTestId(accountId)}/add-label-button`)
             .click();

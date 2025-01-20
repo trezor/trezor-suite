@@ -67,7 +67,7 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
         await searchInput.clear();
 
         // Remove metadata by clearing input
-        await metadataPage.hoverAccountLabel(AccountLabelId.BitcoinDefault1);
+        await metadataPage.accountLabel(AccountLabelId.BitcoinDefault1).hover();
         await metadataPage.editLabelButton(AccountLabelId.BitcoinDefault1).click();
         await metadataPage.metadataInput.clear();
         await page.keyboard.press('Enter');

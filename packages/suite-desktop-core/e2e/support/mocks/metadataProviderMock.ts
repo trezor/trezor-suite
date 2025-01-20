@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 
-import * as metadataUtils from '@trezor/suite/src/utils/suite/metadata';
+import { encrypt } from '@trezor/suite/src/utils/suite/metadata';
 import { GoogleMock, DropboxMock } from '@trezor/e2e-utils';
 
 import { step } from '../common';
@@ -58,6 +58,14 @@ export class MetadataProviderMock {
     private providerMock: ProviderMocks | undefined;
     constructor(private readonly page: Page) {}
 
+    private getProviderMock(): ProviderMocks {
+        if (!this.providerMock) {
+            throw new Error('Provider mock not initialized');
+        }
+
+        return this.providerMock;
+    }
+
     @step()
     async start(provider: MetadataProvider) {
         switch (provider) {
@@ -79,29 +87,17 @@ export class MetadataProviderMock {
 
     @step()
     setNextResponse(response: Record<string, any>): void {
-        if (!this.providerMock) {
-            throw new Error('Provider mock not initialized');
-        }
-
-        this.providerMock.nextResponse.push(response);
+        this.getProviderMock().nextResponse.push(response);
     }
 
     @step()
     async setFileContent(file: string, content: Record<string, any> | string, aesKey: string) {
-        if (!this.providerMock) {
-            throw new Error('Provider mock not initialized');
-        }
-
-        const encrypted = await metadataUtils.encrypt(content, aesKey);
-        this.providerMock.setFile(file, encrypted);
+        const encrypted = await encrypt(content, aesKey);
+        this.getProviderMock().setFile(file, encrypted);
     }
 
     @step()
     async stop() {
-        if (!this.providerMock) {
-            throw new Error('Provider mock not initialized');
-        }
-
-        await this.providerMock.stop();
+        await this.getProviderMock().stop();
     }
 }
