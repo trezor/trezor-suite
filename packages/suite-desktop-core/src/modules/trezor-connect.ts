@@ -2,10 +2,40 @@ import { ipcMain } from 'electron';
 
 import TrezorConnect, { DEVICE_EVENT } from '@trezor/connect';
 import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy';
+import { parseElectrumUrl } from '@trezor/utils';
 
-import { ModuleInit, ModuleInitBackground } from './index';
+import { MainThreadEmitter, ModuleInit, ModuleInitBackground } from './index';
 
 export const SERVICE_NAME = '@trezor/connect';
+
+type EmitOnSetCustomBackendToMainThreadToAllowDomainsParams = {
+    params: Parameters<typeof TrezorConnect.blockchainSetCustomBackend>;
+    mainThreadEmitter: MainThreadEmitter;
+};
+
+const emitOnSetCustomBackendToMainThreadToAllowDomains = ({
+    params,
+    mainThreadEmitter,
+}: EmitOnSetCustomBackendToMainThreadToAllowDomainsParams) => {
+    const param = params[0];
+
+    if (param !== undefined && param.blockchainLink !== undefined) {
+        const domains = (param.blockchainLink.url ?? []).map(url => {
+            const electrumUrlResult = parseElectrumUrl(url);
+            if (electrumUrlResult !== undefined) {
+                return electrumUrlResult.host;
+            }
+
+            return new URL(url).hostname;
+        });
+
+        mainThreadEmitter.emit('module/request-interceptor', {
+            type: 'SET_WHITELISTED_DOMAINS_FOR_CUSTOM_BACKENDS',
+            coin: param.coin,
+            domains,
+        });
+    }
+};
 
 export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store }) => {
     const { logger } = global;
@@ -30,6 +60,10 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                     await setProxy();
 
                     return response;
+                }
+
+                if (method === 'blockchainSetCustomBackend') {
+                    emitOnSetCustomBackendToMainThreadToAllowDomains({ params, mainThreadEmitter });
                 }
 
                 return (TrezorConnect[method] as any)(...params);

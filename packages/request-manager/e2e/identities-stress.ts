@@ -2,6 +2,7 @@ import path from 'path';
 
 import { createInterceptor, TorController } from '../src';
 import { torRunner } from './torRunner';
+import { InterceptorOptions } from '../src/types';
 
 // The purpose of this script is to allow "manual" testing Tor identities changing some parameters.
 // Run it like:
@@ -16,7 +17,8 @@ const processId = process.pid;
 const torDataDir = path.join(__dirname, 'tmp');
 const ipRegex = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
 
-const INTERCEPTOR = {
+const interceptorOptions: InterceptorOptions = {
+    getWhitelistedDomains: () => ['check.torproject.org'],
     handler: () => {},
     getTorSettings: () => ({ running: true, host, port }),
 };
@@ -28,7 +30,7 @@ const intervalBetweenRequests = 1000 * 20;
 
 (async () => {
     // Callback in in createInterceptor should return true in order for the request to use Tor.
-    createInterceptor(INTERCEPTOR);
+    createInterceptor(interceptorOptions);
 
     console.log('Starting Tor.');
     // Starting Tor controller to make sure that Tor is running.

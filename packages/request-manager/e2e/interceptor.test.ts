@@ -2,9 +2,14 @@ import path from 'path';
 import http from 'http';
 import WebSocket from 'ws';
 
+// Todo: Currently this needs to be done in order to interceptor in test to work.
+//       This shall be taken care of, as we shall be intercepting the native fetch as well.
+// import fetch from 'node-fetch';
+
 import { TorController, createInterceptor } from '../src';
 import { torRunner } from './torRunner';
 import { TorIdentities } from '../src/torIdentities';
+import { InterceptorOptions } from '../src/types';
 
 const hostIp = '127.0.0.1';
 const port = 38835;
@@ -30,14 +35,21 @@ describe('Interceptor', () => {
 
     const torSettings = { running: true, host: hostIp, port };
 
-    const INTERCEPTOR = {
+    const interceptorOptions: InterceptorOptions = {
+        getWhitelistedDomains: () => [
+            'check.torproject.org',
+            'httpbin.org',
+            'tbtc1.trezor.io',
+            'localhost',
+            '127.0.0.1',
+        ],
         handler: () => {},
         getTorSettings: () => torSettings,
     };
 
     beforeAll(async () => {
         // Callback in createInterceptor should return true in order for the request to use Tor.
-        torIdentities = createInterceptor(INTERCEPTOR).torIdentities;
+        torIdentities = createInterceptor(interceptorOptions).torIdentities;
         // Starting Tor controller to make sure that Tor is running.
         torController = new TorController({
             host: hostIp,

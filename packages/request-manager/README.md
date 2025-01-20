@@ -1,7 +1,7 @@
 # @trezor/request-manager
 
 Library to allow efficient and stable proxy for requests using Tor or other similar systems.
-For now it works specifically with Tor, but it may be more generic in future and integrate with other similar proxy systems like Tor.
+For now, it works specifically with Tor, but it may be more generic in future and integrate with other similar proxy systems like Tor.
 
 ## Examples
 

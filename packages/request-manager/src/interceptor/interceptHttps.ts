@@ -1,14 +1,24 @@
 import https from 'https';
 
-import { InterceptorContext } from './interceptorTypesAndUtils';
 import { overloadHttpRequest } from './overloadHttpRequest';
 import { overloadWebsocketHandshake } from './overloadWebsocketHandshake';
+import { Interceptor } from './interceptorTypes';
 
-export const interceptHttps = (context: InterceptorContext) => {
+export const interceptHttps: Interceptor = ({ context, validateRequest }) => {
     const originalHttpsRequest = https.request;
 
     https.request = (...args) => {
-        const overload = overloadHttpRequest(context, 'https', ...args);
+        const [url, options, callback] = args;
+
+        const overload = overloadHttpRequest({
+            context,
+            protocol: 'https',
+            url,
+            options,
+            callback,
+            validateRequest,
+        });
+
         if (overload) {
             const [identity, ...overloadedArgs] = overload;
 
@@ -22,7 +32,17 @@ export const interceptHttps = (context: InterceptorContext) => {
     const originalHttpsGet = https.get;
 
     https.get = (...args) => {
-        const overload = overloadWebsocketHandshake(context, 'https', ...args);
+        const [url, options, callback] = args;
+
+        const overload = overloadWebsocketHandshake({
+            context,
+            protocol: 'https',
+            url,
+            options,
+            callback,
+            validateRequest,
+        });
+
         if (overload) {
             const [identity, ...overloadedArgs] = overload;
 

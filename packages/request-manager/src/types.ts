@@ -57,6 +57,15 @@ export type InterceptedEvent =
     | {
           type: 'ERROR';
           error: Error;
+      }
+    | {
+          type: 'SET_WHITELISTED_DOMAINS_FOR_CUSTOM_BACKENDS';
+          coin: string;
+          domains: string[];
+      }
+    | {
+          type: 'ADD_WHITELISTED_DOMAIN';
+          domain: string;
       };
 
 export type TorSettings = {
@@ -70,6 +79,7 @@ export type InterceptorOptions = {
     getTorSettings: () => TorSettings;
     allowTorBypass?: boolean;
     notRequiredTorDomainsList?: string[];
+    getWhitelistedDomains: () => string[];
 };
 
 export const TOR_CONTROLLER_STATUS = {

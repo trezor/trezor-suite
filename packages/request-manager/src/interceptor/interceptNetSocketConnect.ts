@@ -1,8 +1,8 @@
 import net from 'net';
 
-import { InterceptorContext } from './interceptorTypesAndUtils';
+import { Interceptor } from './interceptorTypes';
 
-export const interceptNetSocketConnect = (context: InterceptorContext) => {
+export const interceptNetSocketConnect: Interceptor = ({ context, validateRequest }) => {
     // To avoid disclosure that the request was sent by trezor-suite
     // remove headers added by underlying libs before they are sent to the server.
     // 1. nodejs http always(!) adds "Connection: close" header
@@ -10,8 +10,10 @@ export const interceptNetSocketConnect = (context: InterceptorContext) => {
     // 2. node-fetch always(!) adds "User-Agent", "Accept", "Connection"...
     //    https://github.com/node-fetch/node-fetch/blob/7b86e946b02dfdd28f4f8fca3d73a022cbb5ca1e/src/request.js#L226
     const originalSocketWrite = net.Socket.prototype.write;
+
     net.Socket.prototype.write = function (data, ...args) {
         const overloadedHeaders: string[] = [];
+
         if (typeof data === 'string' && /Allowed-Headers/gi.test(data)) {
             const headers = data.split('\r\n');
             const allowedHeaders = headers
@@ -50,6 +52,7 @@ export const interceptNetSocketConnect = (context: InterceptorContext) => {
 
     net.Socket.prototype.connect = function (...args) {
         const [options, callback] = args;
+
         let request: typeof options;
         let details: string;
         if (Array.isArray(options)) {
@@ -72,6 +75,9 @@ export const interceptNetSocketConnect = (context: InterceptorContext) => {
         } else {
             details = typeof callback === 'string' ? `${callback}:${request}` : request.toString();
         }
+
+        const hostname = details.split(':')[0];
+        validateRequest({ hostname });
 
         context.handler({
             type: 'INTERCEPTED_REQUEST',

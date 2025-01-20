@@ -3,19 +3,26 @@
  */
 import { captureMessage } from '@sentry/electron/main';
 
+import { isWhitelistedHost } from '@trezor/utils';
+
 import { allowedDomains } from '../config';
 
 import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = 'request-filter';
 
+/**
+ * This module handles request interception for the renderer thread. Requests are happening
+ * in the Chromium browser, so we have to relay on the apo we get from Electron
+ * (it falls down to `session.defaultSession.webRequest.onBeforeRequest`).
+ */
 export const init: ModuleInit = ({ interceptor }) => {
     const { logger } = global;
 
     interceptor.onBeforeRequest(details => {
         const { hostname } = new URL(details.url);
 
-        if (allowedDomains.find(d => hostname.endsWith(d)) !== undefined) {
+        if (isWhitelistedHost(hostname, allowedDomains)) {
             logger.info(
                 SERVICE_NAME,
                 `${details.url} was allowed because ${hostname} is in the exception list`,

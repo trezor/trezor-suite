@@ -12292,6 +12292,7 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/node-utils": "workspace:^"
     "@trezor/utils": "workspace:*"
+    node-fetch: "npm:^2.6.4"
     socks-proxy-agent: "npm:8.0.4"
     ts-node: "npm:^10.9.1"
     ws: "npm:^8.18.0"

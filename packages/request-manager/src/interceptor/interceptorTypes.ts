@@ -7,9 +7,7 @@ export type InterceptorContext = InterceptorOptions & {
     torIdentities: TorIdentities;
 };
 
-export const isWhitelistedHost = (
-    hostname: unknown,
-    whitelist: string[] = ['127.0.0.1', 'localhost'],
-) =>
-    typeof hostname === 'string' &&
-    whitelist.some(url => url === hostname || hostname.endsWith(url));
+export type Interceptor = (params: {
+    context: InterceptorContext;
+    validateRequest: ({ hostname }: { hostname: string }) => void;
+}) => void;

@@ -1,8 +1,8 @@
 import http from 'http';
 
-import { getWeakRandomId } from '@trezor/utils';
+import { getWeakRandomId, isWhitelistedHost } from '@trezor/utils';
 
-import { InterceptorContext, isWhitelistedHost } from './interceptorTypesAndUtils';
+import { InterceptorContext } from './interceptorTypes';
 
 const getIdentityName = (proxyAuthorization?: http.OutgoingHttpHeader) => {
     const identity = Array.isArray(proxyAuthorization) ? proxyAuthorization[0] : proxyAuthorization;
@@ -27,22 +27,44 @@ const getIdentityForAgent = (options: Readonly<http.RequestOptions>) => {
     }
 };
 
+type OverloadHttpRequestParams = {
+    context: InterceptorContext;
+    protocol: 'http' | 'https';
+    url: string | URL | http.RequestOptions;
+    options?: http.RequestOptions | ((r: http.IncomingMessage) => void);
+    callback?: unknown;
+    validateRequest: (params: { hostname: string }) => void;
+};
+
+const resolveHostname = (url: string | URL | http.RequestOptions) => {
+    if (typeof url !== 'string') {
+        return url.hostname ?? url.host ?? '';
+    }
+
+    return new URL(url).hostname;
+};
+
 /**
  * http(s).request could have different arguments according to its types definition,
  * but we only care when second argument (url) is object containing RequestOptions.
  */
-export const overloadHttpRequest = (
-    context: InterceptorContext,
-    protocol: 'http' | 'https',
-    url: string | URL | http.RequestOptions,
-    options?: http.RequestOptions | ((r: http.IncomingMessage) => void),
-    callback?: unknown,
-) => {
+export const overloadHttpRequest = ({
+    context,
+    protocol,
+    url,
+    options,
+    callback,
+    validateRequest,
+}: OverloadHttpRequestParams) => {
+    const hostname = resolveHostname(url);
+
+    validateRequest({ hostname });
+
     if (
         !callback &&
         typeof url === 'object' &&
         'headers' in url &&
-        !isWhitelistedHost(url.hostname, context.notRequiredTorDomainsList) &&
+        !isWhitelistedHost(hostname, context.notRequiredTorDomainsList) &&
         (!options || typeof options === 'function')
     ) {
         const isTorEnabled = context.getTorSettings().running;

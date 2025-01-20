@@ -6,6 +6,7 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "scripts": {
+        "test:unit": "yarn g:jest  --testPathIgnorePatterns e2e -c ../../jest.config.base.js",
         "test:e2e": "yarn g:jest --runInBand -c ../../jest.config.base.js",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:stress": "ts-node  -O '{\"module\": \"commonjs\"}' ./e2e/identities-stress.ts"
@@ -17,6 +18,7 @@
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
+        "node-fetch": "^2.6.4",
         "ts-node": "^10.9.1",
         "ws": "^8.18.0"
     }

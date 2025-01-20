@@ -117,6 +117,13 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
 
     const clientProxyOptions: IpcProxyHandlerOptions<CoinjoinClient> = {
         onCreateInstance: async (settings: ConstructorParameters<typeof CoinjoinClient>[0]) => {
+            const urlObj = new URL(settings.coordinatorUrl);
+
+            mainThreadEmitter.emit('module/request-interceptor', {
+                type: 'ADD_WHITELISTED_DOMAIN',
+                domain: urlObj.hostname ?? urlObj.host,
+            });
+
             const coinjoinMiddleware = await synchronize(getCoinjoinProcess);
             const port = coinjoinMiddleware.getPort();
             // override default url in coinjoin settings
