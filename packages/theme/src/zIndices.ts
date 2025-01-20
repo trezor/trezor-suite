@@ -4,6 +4,7 @@
 export const zIndices = {
     windowControls: 100,
     tooltip: 60, // above all content to be always fully visible when toggled
+    popover: 55, // above other content to be fully visible
     guide: 50, // above MODAL to stay accessible when modal is open
     guideButton: 49, // below GUIDE to get covered by the guide when it is opening
 
