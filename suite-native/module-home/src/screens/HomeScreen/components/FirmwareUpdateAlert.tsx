@@ -122,10 +122,16 @@ export const FirmwareUpdateAlert = () => {
                     </Text>
                 </Box>
                 <HStack spacing="sp8" style={flex1Style}>
-                    <Button colorScheme="blueElevation0" onPress={handleClose} style={flex1Style}>
+                    <Button
+                        size="small"
+                        colorScheme="blueElevation0"
+                        onPress={handleClose}
+                        style={flex1Style}
+                    >
                         <Translation id="moduleHome.firmwareUpdateAlert.button.close" />
                     </Button>
                     <Button
+                        size="small"
                         colorScheme="blueBold"
                         onPress={handleUpdateFirmware}
                         style={flex1Style}
