@@ -50,12 +50,18 @@ export const ConnectPopupScreen = ({
     const { method, methodError } = useConnectMethod(popupOptions);
 
     const callDevice = useCallback(async () => {
-        if (!popupOptions) return;
+        if (!popupOptions || !device) return;
 
         setLoading(true);
         // @ts-expect-error method is dynamic
         const response = await TrezorConnect[popupOptions.method]({
             ...popupOptions.params,
+            device: {
+                path: device.path,
+                instance: device.instance,
+                state: device.state,
+            },
+            useEmptyPassphrase: device.useEmptyPassphrase,
         });
         setCallResult(response);
         dispatch(deviceActions.removeButtonRequests({ device }));
