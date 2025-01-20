@@ -554,4 +554,53 @@ describe('onCallFirmwareUpdate', () => {
 
         await deviceList.dispose();
     });
+
+    it('T3W1: from binary', async () => {
+        const { context, deviceList, waitForDeviceList, buildFixture } = setupTest();
+        const t3 = {
+            internal_model: 'T3W1',
+        };
+
+        await waitForDeviceList([
+            // GetFeatures before reboot
+            buildFixture('0037', { ...t3 }),
+            // GetFeatures in bootloader mode
+            buildFixture('0037', { ...t3, bootloader_mode: true }),
+            // Initialize in bootloader mode
+            buildFixture('0000', { ...t3 }),
+            // GetFeatures after reboot
+            buildFixture('0037', { ...t3 }),
+        ]);
+
+        const binary = await httpRequestMock();
+        const result = await runFirmwareUpdate({
+            params: { binary },
+            context,
+        });
+
+        expect(result.check).toEqual('omitted');
+        expect(result.versionCheck).toEqual(true);
+
+        await deviceList.dispose();
+    });
+
+    // NOTE: this test fails because there are no official releases for T3W1, should be removed after release
+    it('T3W1: failed from config', async () => {
+        const { context, deviceList, waitForDeviceList, buildFixture } = setupTest();
+        const t3 = { internal_model: 'T3W1' };
+
+        await waitForDeviceList([
+            // GetFeatures before reboot
+            buildFixture('0037', { ...t3 }),
+        ]);
+
+        await expect(() =>
+            onCallFirmwareUpdate({
+                params: {},
+                context,
+            }),
+        ).rejects.toThrow('firmwareRelease is not set');
+
+        await deviceList.dispose();
+    });
 });

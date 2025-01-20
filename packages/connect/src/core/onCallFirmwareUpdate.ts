@@ -185,15 +185,16 @@ const getBinaryHelper = (
     postMessage: PostMessage,
     btcOnly: boolean,
 ) => {
-    if (!device.firmwareRelease) {
-        throw ERRORS.TypedError('Runtime', 'device.firmwareRelease is not set');
-    }
     if (params.binary) {
         return {
             binary: params.binary,
             binaryVersion: parseFirmwareHeaders(Buffer.from(params.binary)).version,
             releaseVersion: undefined,
         };
+    }
+
+    if (!device.firmwareRelease) {
+        throw ERRORS.TypedError('Runtime', 'device.firmwareRelease is not set');
     }
 
     const {
@@ -318,10 +319,6 @@ export const onCallFirmwareUpdate = async ({
     log.debug('onCallFirmwareUpdate with params: ', params);
 
     const device = await initDevice(params?.device?.path);
-    if (!device.firmwareRelease) {
-        throw ERRORS.TypedError('Runtime', 'device.firmwareRelease is not set');
-    }
-
     if (deviceList.getDeviceCount() > 1) {
         throw ERRORS.TypedError(
             'Device_MultipleNotSupported',
@@ -378,7 +375,7 @@ export const onCallFirmwareUpdate = async ({
 
         const targetLanguage = params.language || device.features.language || 'en-US';
         const languageBlob =
-            language && targetLanguage !== 'en-US'
+            device.firmwareRelease && language && targetLanguage !== 'en-US'
                 ? await getLanguage({
                       language: targetLanguage,
                       version: device.firmwareRelease.release.version,
@@ -438,7 +435,7 @@ export const onCallFirmwareUpdate = async ({
         );
     }
 
-    const intermediary = !params.binary && device.firmwareRelease.intermediaryVersion;
+    const intermediary = !params.binary && device.firmwareRelease?.intermediaryVersion;
     const bootloaderVersion = reconnectedDevice.getVersion();
 
     // note: fw major_version 1 requires calling initialize before calling FirmwareErase. Without it device would not respond
