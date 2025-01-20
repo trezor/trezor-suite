@@ -1,5 +1,6 @@
 import { ActivityIndicator } from 'react-native';
 
+import { useHandleHardwareBackNavigation } from '@suite-native/navigation';
 import { Text, VStack, Box } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
@@ -16,6 +17,8 @@ const screenStyle = prepareNativeStyle(() => ({
 
 export const ConnectingDeviceScreen = () => {
     useOnDeviceReadyNavigation();
+    useHandleHardwareBackNavigation();
+
     const { applyStyle } = useNativeStyles();
 
     return (

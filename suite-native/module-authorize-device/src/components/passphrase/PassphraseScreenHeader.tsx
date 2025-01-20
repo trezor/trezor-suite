@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useEffect } from 'react';
-import { BackHandler } from 'react-native';
+import { useCallback } from 'react';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -20,6 +19,7 @@ import {
     RootStackParamList,
     StackToTabCompositeProps,
     useNavigateToInitialScreen,
+    useHandleHardwareBackNavigation,
 } from '@suite-native/navigation';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
@@ -78,15 +78,7 @@ export const PassphraseScreenHeader = () => {
         }
     }, [handleClose, navigateToInitialScreen, isCreatingNewWalletInstance, showAlert]);
 
-    useEffect(() => {
-        const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
-            handleCancel();
-
-            return true;
-        });
-
-        return () => subscription.remove();
-    }, [handleCancel]);
+    useHandleHardwareBackNavigation(handleCancel);
 
     return (
         <ScreenHeaderWrapper>

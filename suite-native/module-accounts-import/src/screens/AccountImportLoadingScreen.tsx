@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { BackHandler } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectFiatCurrencyCode } from '@suite-native/settings';
@@ -9,6 +8,7 @@ import {
     RootStackParamList,
     Screen,
     StackToStackCompositeScreenProps,
+    useHandleHardwareBackNavigation,
 } from '@suite-native/navigation';
 import { AccountInfo } from '@trezor/connect';
 import { SpinnerLoadingState } from '@suite-native/atoms';
@@ -35,6 +35,8 @@ export const AccountImportLoadingScreen = ({
     const [error, setError] = useState<string>();
     const [accountInfoFetchResult, setAccountInfoFetchResult] =
         useState<SpinnerLoadingState>('idle');
+
+    useHandleHardwareBackNavigation();
 
     const fetchAccountInfo = useCallback(async () => {
         try {
@@ -70,13 +72,6 @@ export const AccountImportLoadingScreen = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [error, showImportError],
     );
-
-    useEffect(() => {
-        // prevent dismissing screen via HW
-        const subscription = BackHandler.addEventListener('hardwareBackPress', () => true);
-
-        return () => subscription.remove();
-    }, []);
 
     useEffect(() => {
         fetchAccountInfo();

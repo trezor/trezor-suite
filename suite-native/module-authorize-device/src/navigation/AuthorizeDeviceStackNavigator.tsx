@@ -36,7 +36,9 @@ export const AuthorizeDeviceStackNavigator = () => {
     useHandleDuplicatePassphrase();
 
     return (
-        <AuthorizeDeviceStack.Navigator screenOptions={stackNavigationOptionsConfig}>
+        <AuthorizeDeviceStack.Navigator
+            screenOptions={{ ...stackNavigationOptionsConfig, gestureEnabled: false }}
+        >
             {
                 // For proper screen transitions on both cancel and success PIN entry
                 // we need to remove those screens from the stack so we can navigate

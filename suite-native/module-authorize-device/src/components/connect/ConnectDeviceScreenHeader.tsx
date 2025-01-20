@@ -1,4 +1,3 @@
-import { BackHandler } from 'react-native';
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -11,6 +10,7 @@ import {
     NavigateParameters,
     RootStackParamList,
     StackToTabCompositeProps,
+    useHandleHardwareBackNavigation,
 } from '@suite-native/navigation';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { useAlert } from '@suite-native/alerts';
@@ -49,18 +49,22 @@ export const ConnectDeviceScreenHeader = ({
 
     const handleCancel = useCallback(() => {
         if (hasDiscovery) {
-            // Do not allow to cancel PIN entry while discovery is in progress
-            showAlert({
-                title: <Translation id="moduleConnectDevice.pinCanceledDuringDiscovery.title" />,
-                description: (
-                    <Translation id="moduleConnectDevice.pinCanceledDuringDiscovery.subtitle" />
-                ),
-                pictogramVariant: 'critical',
-                primaryButtonTitle: (
-                    <Translation id="moduleConnectDevice.pinCanceledDuringDiscovery.button" />
-                ),
-                onPressPrimaryButton: hideAlert,
-            });
+            if (hasDeviceRequestedPin) {
+                // Do not allow to cancel PIN entry while discovery is in progress
+                showAlert({
+                    title: (
+                        <Translation id="moduleConnectDevice.pinCanceledDuringDiscovery.title" />
+                    ),
+                    description: (
+                        <Translation id="moduleConnectDevice.pinCanceledDuringDiscovery.subtitle" />
+                    ),
+                    pictogramVariant: 'critical',
+                    primaryButtonTitle: (
+                        <Translation id="moduleConnectDevice.pinCanceledDuringDiscovery.button" />
+                    ),
+                    onPressPrimaryButton: hideAlert,
+                });
+            }
         } else {
             // Remove unauthorized passphrase device if it was created before prompting the PIN.
             if (isCreatingNewWalletInstance) {
@@ -92,16 +96,7 @@ export const ConnectDeviceScreenHeader = ({
         onCancelNavigationTarget,
     ]);
 
-    // Handle hardware back button press same as cancel button
-    useEffect(() => {
-        const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
-            handleCancel();
-
-            return true;
-        });
-
-        return () => subscription.remove();
-    }, [handleCancel]);
+    useHandleHardwareBackNavigation(handleCancel);
 
     // Hide alert when navigating away from the PIN entry screen (PIN entered or canceled on device)
     // eslint-disable-next-line arrow-body-style

@@ -1,13 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
-import { useEffect } from 'react';
-import { BackHandler, View } from 'react-native';
+import { View } from 'react-native';
 
 import { A } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { Screen } from '@suite-native/navigation';
+import { Screen, useHandleHardwareBackNavigation } from '@suite-native/navigation';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import {
     applyDiscoveryChangesThunk,
@@ -52,6 +51,7 @@ const buttonStyle = prepareNativeStyle(utils => ({
 export const CoinEnablingInitScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    useHandleHardwareBackNavigation();
 
     const { applyStyle, utils } = useNativeStyles();
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
@@ -68,13 +68,6 @@ export const CoinEnablingInitScreen = () => {
             navigation.goBack();
         }
     };
-
-    useEffect(() => {
-        //prevent dismissing screen via HW
-        const subscription = BackHandler.addEventListener('hardwareBackPress', () => true);
-
-        return () => subscription.remove();
-    }, []);
 
     // 'transparent' color is not working in context of LinearGradient on iOS. RGBA has to be used instead.
     const transparentColor = hexToRgba(utils.colors.backgroundSurfaceElevation0, 0.01);

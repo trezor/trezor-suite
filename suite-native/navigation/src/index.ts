@@ -2,6 +2,7 @@ export * from './navigators';
 export * from './routes';
 export * from './types';
 export * from './config';
+export * from './useHandleHardwareBackNavigation';
 export * from './useNavigateToInitialScreen';
 export * from './useScrollDivider';
 export * from './components/TabBar';

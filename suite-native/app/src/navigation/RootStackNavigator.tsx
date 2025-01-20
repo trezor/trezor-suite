@@ -109,6 +109,7 @@ export const RootStackNavigator = () => {
                 options={{
                     ...stackNavigationOptionsConfig,
                     animation: 'slide_from_bottom',
+                    gestureEnabled: false,
                 }}
             />
             <RootStack.Screen

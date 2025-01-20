@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-import { BackHandler } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import {
@@ -16,6 +14,7 @@ import {
     AccountsImportStackRoutes,
     RootStackParamList,
     StackToTabCompositeScreenProps,
+    useHandleHardwareBackNavigation,
 } from '@suite-native/navigation';
 
 import { AccountAlreadyImportedScreen } from '../components/AccountAlreadyImportedScreen';
@@ -31,6 +30,8 @@ export const AccountImportSummaryScreen = ({
     const { accountInfo, networkSymbol } = route.params;
 
     const isRegtestEnabled = useFeatureFlag(FeatureFlag.IsRegtestEnabled);
+    useHandleHardwareBackNavigation();
+
     const account = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccountByDescriptorAndNetworkSymbol(
             state,
@@ -39,13 +40,6 @@ export const AccountImportSummaryScreen = ({
         ),
     );
     const portfolioTrackerSupportedNetworks = useSelector(selectPortfolioTrackerNetworkSymbols);
-
-    useEffect(() => {
-        // prevent dismissing screen via HW
-        const subscription = BackHandler.addEventListener('hardwareBackPress', () => true);
-
-        return () => subscription.remove();
-    }, []);
 
     const isAccountImportSupported =
         portfolioTrackerSupportedNetworks.some(
