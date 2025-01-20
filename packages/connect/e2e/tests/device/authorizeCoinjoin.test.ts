@@ -1,17 +1,9 @@
 import TrezorConnect from '../../../src';
-import {
-    getController,
-    setup,
-    conditionalTest,
-    conditionalDescribe,
-    initTrezorConnect,
-} from '../../common.setup';
+import { getController, setup, conditionalTest, initTrezorConnect } from '../../common.setup';
 
 const controller = getController();
 
-// skip T3T1 until `emulator-apply-settings` with `auto_lock_delay_ms` is fixed on emu
-// https://github.com/trezor/trezor-user-env/issues/280
-conditionalDescribe(['!T3T1'], 'TrezorConnect.authorizeCoinjoin', () => {
+describe('TrezorConnect.authorizeCoinjoin', () => {
     beforeAll(async () => {
         await setup(controller, {
             mnemonic: 'mnemonic_all',
