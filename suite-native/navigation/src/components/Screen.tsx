@@ -1,13 +1,11 @@
-import { useEffect, useContext, ReactNode } from 'react';
-import { ScrollViewProps, View, Platform } from 'react-native';
+import { useContext, ReactNode } from 'react';
+import { ScrollViewProps, View } from 'react-native';
 import { EdgeInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
-import { SystemBars, SystemBarStyle } from 'react-native-edge-to-edge';
+import { SystemBars } from 'react-native-edge-to-edge';
 
-import * as SystemUI from 'expo-system-ui';
-import * as NavigationBar from 'expo-navigation-bar';
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
-import { useIsFocused, useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -16,6 +14,7 @@ import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
 import { Box } from '@suite-native/atoms';
 
 import { ScreenContentWrapper } from './ScreenContentWrapper';
+import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';
 
 type ScreenProps = {
     children: ReactNode;
@@ -103,35 +102,18 @@ export const Screen = ({
 }: ScreenProps) => {
     const {
         applyStyle,
-        utils: { colors, isDarkColor, spacings },
+        utils: { spacings },
     } = useNativeStyles();
 
     const insets = useOfflineBannerAwareSafeAreaInsets();
     const horizontalPadding = noHorizontalPadding ? 0 : spacings.sp16;
     const bottomPadding = noBottomPadding ? 0 : spacings.sp16;
     const hasBottomPadding = !useContext(BottomTabBarHeightContext) && hasBottomInset;
-    const backgroundCSSColor = colors[backgroundColor];
-    const systemBarsStyle: SystemBarStyle = isDarkColor(backgroundCSSColor) ? 'light' : 'dark';
+    const systemBarsStyle = useAndroidNavigationBarStyle({ backgroundColor });
 
     const isMessageBannerDisplayed = useSelector(selectIsAnyBannerMessageActive);
 
-    const isFocused = useIsFocused();
     const { name } = useRoute();
-
-    useEffect(() => {
-        if (isFocused) {
-            // this prevents some weird flashing of splash screen on Android during screen transitions
-            SystemUI.setBackgroundColorAsync(backgroundCSSColor);
-
-            // change colors of button navigation bar on Android
-            if (Platform.OS === 'android') {
-                NavigationBar.setBackgroundColorAsync(backgroundCSSColor);
-                NavigationBar.setButtonStyleAsync(
-                    isDarkColor(backgroundCSSColor) ? 'light' : 'dark',
-                );
-            }
-        }
-    }, [backgroundCSSColor, isDarkColor, isFocused]);
 
     return (
         <View
