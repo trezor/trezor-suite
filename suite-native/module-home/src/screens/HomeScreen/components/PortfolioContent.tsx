@@ -16,7 +16,6 @@ import {
 import { Translation } from '@suite-native/intl';
 
 import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
-import { FirmwareUpdateAlert } from './FirmwareUpdateAlert';
 
 export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
@@ -33,8 +32,6 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
 
     return (
         <VStack spacing="sp32" marginTop="sp8">
-            <FirmwareUpdateAlert />
-
             <AnimatedVStack spacing="sp32" layout={LinearTransition}>
                 <PortfolioGraph ref={ref} />
                 <VStack spacing="sp24" marginHorizontal="sp16">
