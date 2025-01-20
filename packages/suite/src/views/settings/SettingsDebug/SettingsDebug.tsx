@@ -22,6 +22,7 @@ import { Transport } from './Transport';
 import { TransportBackends } from './TransportBackends';
 import { TriggerHighlight } from './TriggerHighlight';
 import { ViewOnlySettings } from './ViewOnlySettings';
+import { WalletConnect } from './WalletConnect';
 import { WipeData } from './WipeData';
 
 export const SettingsDebug = () => {
@@ -83,6 +84,9 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SettingsSection title="Message system info">
                 <MessageSystemDebugInfo />
+            </SettingsSection>
+            <SettingsSection title="WalletConnect">
+                <WalletConnect />
             </SettingsSection>
         </SettingsLayout>
     );

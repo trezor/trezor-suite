@@ -8,6 +8,7 @@ import {
     periodicFetchFiatRatesThunk,
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
+import * as walletConnectActions from '@suite-common/walletconnect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import * as trezorConnectPopupActions from '@trezor/suite-desktop-connect-popup';
@@ -16,6 +17,7 @@ import * as languageActions from 'src/actions/settings/languageActions';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as routerActions from 'src/actions/suite/routerActions';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import type { Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
@@ -117,6 +119,9 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // 14. init connect popup handler
     if (isDesktop()) {
         dispatch(trezorConnectPopupActions.connectPopupInitThunk());
+    }
+    if (selectIsDebugModeActive(getState())) {
+        dispatch(walletConnectActions.walletConnectInitThunk());
     }
 
     // 15. backend connected, suite is ready to use

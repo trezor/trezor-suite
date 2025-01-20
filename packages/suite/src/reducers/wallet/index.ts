@@ -10,6 +10,7 @@ import {
     prepareStakeReducer,
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
+import { prepareWalletConnectReducer } from '@suite-common/walletconnect';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 
@@ -30,6 +31,7 @@ export const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 export const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 export const stakeReducer = prepareStakeReducer(extraDependencies);
 export const sendFormReducer = prepareSendFormReducer(extraDependencies);
+export const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 
 const WalletReducers = combineReducers({
     fiat: fiatRatesReducer,
@@ -49,6 +51,7 @@ const WalletReducers = combineReducers({
     cardanoStaking: cardanoStakingReducer,
     coinjoin: coinjoinReducer,
     stake: stakeReducer,
+    walletConnect: walletConnectReducer,
 });
 
 export default WalletReducers;

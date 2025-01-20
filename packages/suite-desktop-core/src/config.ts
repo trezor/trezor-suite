@@ -30,6 +30,7 @@ export const allowedDomains = [
     'eth-api-b2c.everstake.one', // staking endpoint for Ethereum mainnet
     'dashboard-api.everstake.one', // staking enpoint for Solana
     'stake-sync-api.everstake.one', // staking rewards enpoint for Solana
+    'verify.walletconnect.org', // WalletConnect
 ];
 
 export const cspRules = [

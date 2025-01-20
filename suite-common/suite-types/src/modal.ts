@@ -199,4 +199,8 @@ export type UserContextPayload =
           method: string;
           processName?: string;
           origin?: string;
+      }
+    | {
+          type: 'walletconnect-proposal';
+          eventId: number;
       };

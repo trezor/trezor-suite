@@ -56,6 +56,7 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
+        "@suite-common/walletconnect": "workspace:*",
         "@trezor/address-validator": "workspace:*",
         "@trezor/analytics": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",

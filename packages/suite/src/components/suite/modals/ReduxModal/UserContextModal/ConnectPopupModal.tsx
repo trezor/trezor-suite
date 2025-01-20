@@ -38,18 +38,17 @@ export const ConnectPopupModal = ({
 
         {processName && (
             <Paragraph margin={{ top: spacings.xs }}>
-                Process: <strong>{processName}</strong>
+                <Translation id="TR_CONNECT_MODAL_PROCESS" /> <strong>{processName}</strong>
             </Paragraph>
         )}
         {origin && (
             <Paragraph>
-                Web Origin: <strong>{origin}</strong>
+                <Translation id="TR_CONNECT_MODAL_WEB_ORIGIN" /> <strong>{origin}</strong>
             </Paragraph>
         )}
 
         <Paragraph variant="tertiary" margin={{ top: spacings.xs }}>
-            A 3rd party application is trying to connect to your device. Do you want to allow this
-            action?
+            <Translation id="TR_CONNECT_MODAL_REQUEST_DESCRIPTION" />
         </Paragraph>
     </NewModal>
 );

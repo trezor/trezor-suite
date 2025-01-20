@@ -1,0 +1,23 @@
+{
+    "name": "@suite-common/walletconnect",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "1.9.5",
+        "@reown/walletkit": "^1.1.1",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@walletconnect/core": "^2.17.2",
+        "@walletconnect/utils": "^2.17.2"
+    }
+}

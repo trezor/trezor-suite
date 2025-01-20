@@ -51,6 +51,7 @@ import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
 import { PassphraseMismatchModal } from './PassphraseMismatchModal';
 import { CardanoWithdrawModal } from '../CardanoWithdrawModal';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
+import { WalletConnectProposalModal } from './WalletConnectProposalModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({
@@ -222,6 +223,8 @@ export const UserContextModal = ({
                     processName={payload.processName}
                 />
             );
+        case 'walletconnect-proposal':
+            return <WalletConnectProposalModal eventId={payload.eventId} />;
         default:
             return null;
     }

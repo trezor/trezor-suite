@@ -71,10 +71,10 @@ module.exports = {
         '/public/',
     ],
 
-    transformIgnorePatterns: ['/node_modules/(?!d3-(.*)|internmap)/'],
+    transformIgnorePatterns: ['/node_modules/(?!d3-(.*)|internmap|@walletconnect|uint8arrays)/'],
     testMatch: ['**/*.test.(ts|tsx|js)'],
     transform: {
-        '(d3-|internmap).*\\.js$': ['babel-jest', babelConfig],
+        '(d3-|internmap|esm).*\\.js$': ['babel-jest', babelConfig],
         '\\.(ts|tsx)$': ['babel-jest', babelConfig],
     },
     verbose: false,

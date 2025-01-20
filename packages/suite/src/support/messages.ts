@@ -9490,4 +9490,54 @@ export default defineMessages({
         id: 'TR_TREZOR_CONNECT',
         defaultMessage: 'Trezor Connect',
     },
+    TR_CONNECT_MODAL_REQUEST_DESCRIPTION: {
+        id: 'TR_CONNECT_MODAL_REQUEST_DESCRIPTION',
+        defaultMessage:
+            'A 3rd party application is trying to connect to your device. Do you want to allow this action?',
+    },
+    TR_CONNECT_MODAL_PROCESS: {
+        id: 'TR_CONNECT_MODAL_PROCESS',
+        defaultMessage: 'Process:',
+    },
+    TR_CONNECT_MODAL_WEB_ORIGIN: {
+        id: 'TR_CONNECT_MODAL_WEB_ORIGIN',
+        defaultMessage: 'Web Origin:',
+    },
+    TR_WALLETCONNECT_SERVICE_VERIFIED: {
+        id: 'TR_WALLETCONNECT_SERVICE_VERIFIED',
+        defaultMessage: 'Verified service',
+    },
+    TR_WALLETCONNECT_SERVICE_UNKNOWN: {
+        id: 'TR_WALLETCONNECT_SERVICE_UNKNOWN',
+        defaultMessage: 'Unknown service',
+    },
+    TR_WALLETCONNECT_SERVICE_DANGEROUS: {
+        id: 'TR_WALLETCONNECT_SERVICE_DANGEROUS',
+        defaultMessage: 'Dangerous service',
+    },
+    TR_WALLETCONNECT_REQUEST: {
+        id: 'TR_WALLETCONNECT_REQUEST',
+        defaultMessage: 'A WalletConnect application is requesting to connect.',
+    },
+    TR_WALLETCONNECT_REQUEST_EXPIRED: {
+        id: 'TR_WALLETCONNECT_REQUEST_EXPIRED',
+        defaultMessage: 'Request has expired. Please go back to the application and try again.',
+    },
+    TR_WALLETCONNECT_IS_SCAM: {
+        id: 'TR_WALLETCONNECT_IS_SCAM',
+        defaultMessage: 'The request was detected as a scam and was blocked automatically.',
+    },
+    TR_WALLETCONNECT_UNABLE_TO_VERIFY: {
+        id: 'TR_WALLETCONNECT_UNABLE_TO_VERIFY',
+        defaultMessage:
+            'We were unable to verify the request authenticity. Please make sure you trust the source.',
+    },
+    TR_WALLTCONNECT_NEW_CONNECTION_URL: {
+        id: 'TR_WALLTCONNECT_NEW_CONNECTION_URL',
+        defaultMessage: 'New Connection URL',
+    },
+    TR_WALLTCONNECT_SESSIONS: {
+        id: 'TR_WALLTCONNECT_SESSIONS',
+        defaultMessage: 'Sessions',
+    },
 });

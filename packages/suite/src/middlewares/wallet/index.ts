@@ -6,6 +6,7 @@ import {
     prepareStakeMiddleware,
 } from '@suite-common/wallet-core';
 import { prepareTokenDefinitionsMiddleware } from '@suite-common/token-definitions';
+import { prepareWalletConnectMiddleware } from '@suite-common/walletconnect';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 
@@ -30,4 +31,5 @@ export default [
     tradingMiddleware,
     coinjoinMiddleware,
     replaceByFeeErrorMiddleware,
+    prepareWalletConnectMiddleware(extraDependencies),
 ];

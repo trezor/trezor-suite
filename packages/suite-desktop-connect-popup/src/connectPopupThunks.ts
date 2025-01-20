@@ -7,24 +7,22 @@ import { createDeferred } from '@trezor/utils';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
 
-export const connectPopupCallThunk = createThunk(
+export const connectPopupCallThunk = createThunk<
+    Promise<{
+        id: number;
+        success: boolean;
+        payload: any;
+    }>,
+    {
+        id: number;
+        method: string;
+        payload: any;
+        processName?: string;
+        origin?: string;
+    }
+>(
     `${CONNECT_POPUP_MODULE}/callThunk`,
-    async (
-        {
-            id,
-            method,
-            payload,
-            processName,
-            origin,
-        }: {
-            id: number;
-            method: string;
-            payload: any;
-            processName?: string;
-            origin?: string;
-        },
-        { dispatch, getState, extra },
-    ) => {
+    async ({ id, method, payload, processName, origin }, { dispatch, getState, extra }) => {
         try {
             const device = selectSelectedDevice(getState());
 
@@ -66,22 +64,25 @@ export const connectPopupCallThunk = createThunk(
                     instance: device.instance,
                     state: device.state,
                 },
+                useEmptyPassphrase: device?.useEmptyPassphrase,
                 ...payload,
             });
 
             dispatch(extra.actions.onModalCancel());
 
-            desktopApi.connectPopupResponse({
+            return {
                 ...response,
                 id,
-            });
+            };
         } catch (error) {
             console.error('connectPopupCallThunk', error);
-            desktopApi.connectPopupResponse({
+            dispatch(extra.actions.onModalCancel());
+
+            return {
                 success: false,
                 payload: serializeError(error),
                 id,
-            });
+            };
         }
     },
 );
@@ -90,8 +91,9 @@ export const connectPopupInitThunk = createThunk(
     `${CONNECT_POPUP_MODULE}/initPopupThunk`,
     async (_, { dispatch }) => {
         if (desktopApi.available && (await desktopApi.connectPopupEnabled())) {
-            desktopApi.on('connect-popup/call', params => {
-                dispatch(connectPopupCallThunk(params));
+            desktopApi.on('connect-popup/call', async params => {
+                const response = await dispatch(connectPopupCallThunk(params)).unwrap();
+                desktopApi.connectPopupResponse(response);
             });
             desktopApi.connectPopupReady();
         }

@@ -84,6 +84,9 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        {
+            "path": "../../suite-common/walletconnect"
+        },
         { "path": "../address-validator" },
         { "path": "../analytics" },
         { "path": "../blockchain-link" },

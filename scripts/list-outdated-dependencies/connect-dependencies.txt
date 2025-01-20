@@ -91,3 +91,6 @@ scroll-into-view-if-needed
 @types/events
 @noble/hashes
 @scure/bip39
+@reown/walletkit
+@walletconnect/core
+@walletconnect/utils
