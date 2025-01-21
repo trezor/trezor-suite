@@ -162,11 +162,19 @@ export const Inputs = () => {
                                 />
                                 <Text typographyStyle="hint">
                                     <FiatValue amount={depositedBalance} symbol={symbol}>
-                                        {({ value }) => value && <span>{value} + </span>}
+                                        {({ value }) => value && <span>{value}</span>}
                                     </FiatValue>
-                                    <Text variant="primary">
-                                        <FiatValue amount={restakedReward} symbol={symbol} />
-                                    </Text>
+                                    {isRewardsVisible && (
+                                        <>
+                                            {' + '}
+                                            <Text variant="primary">
+                                                <FiatValue
+                                                    amount={restakedReward}
+                                                    symbol={symbol}
+                                                />
+                                            </Text>
+                                        </>
+                                    )}
                                 </Text>
                             </Column>
                         ),
