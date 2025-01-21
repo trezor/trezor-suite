@@ -14,11 +14,11 @@
     "dependencies": {
         "@trezor/node-utils": "workspace:^",
         "@trezor/utils": "workspace:*",
+        "node-fetch": "^2.6.4",
         "socks-proxy-agent": "8.0.4"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
-        "node-fetch": "^2.6.4",
         "ts-node": "^10.9.1",
         "ws": "^8.18.0"
     }

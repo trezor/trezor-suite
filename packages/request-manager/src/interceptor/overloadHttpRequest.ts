@@ -12,7 +12,7 @@ const getIdentityName = (proxyAuthorization?: http.OutgoingHttpHeader) => {
 };
 
 /** Should the request be blocked if Tor isn't enabled? */
-const getIsTorRequired = (options: Readonly<http.RequestOptions>) =>
+export const getIsTorRequired = (options: Readonly<http.RequestOptions>) =>
     !!options.headers?.['Proxy-Authorization'];
 
 const getIdentityForAgent = (options: Readonly<http.RequestOptions>) => {

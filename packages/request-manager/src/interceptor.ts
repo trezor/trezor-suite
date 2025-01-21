@@ -8,6 +8,7 @@ import { interceptHttps } from './interceptor/interceptHttps';
 import { interceptHttp } from './interceptor/interceptHttp';
 import { interceptNetConnect } from './interceptor/interceptNetConnect';
 import { interceptNetSocketConnect } from './interceptor/interceptNetSocketConnect';
+import { interceptFetch } from './interceptor/interceptFetch';
 
 export const createInterceptor = (interceptorOptions: InterceptorOptions) => {
     const requestPool = createRequestPool(interceptorOptions);
@@ -28,6 +29,7 @@ export const createInterceptor = (interceptorOptions: InterceptorOptions) => {
     interceptHttp({ context, validateRequest });
     interceptHttps({ context, validateRequest });
     interceptTlsConnect({ context, validateRequest });
+    interceptFetch({ context, validateRequest });
 
     return { requestPool, torIdentities };
 };
