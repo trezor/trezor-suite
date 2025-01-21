@@ -8,6 +8,7 @@ import {
 
 import { WelcomeScreen } from '../screens/WelcomeScreen';
 import { AnalyticsConsentScreen } from '../screens/AnalyticsConsentScreen';
+import { BiometricsScreen } from '../screens/BiometricsScreen';
 
 export const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
 
@@ -20,6 +21,10 @@ export const OnboardingStackNavigator = () => (
         <OnboardingStack.Screen
             name={OnboardingStackRoutes.AnalyticsConsent}
             component={AnalyticsConsentScreen}
+        />
+        <OnboardingStack.Screen
+            name={OnboardingStackRoutes.Biometrics}
+            component={BiometricsScreen}
         />
     </OnboardingStack.Navigator>
 );

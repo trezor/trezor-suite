@@ -23,13 +23,15 @@ export const useBiometricsSettings = () => {
         const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
 
         if (!isBiometricsAvailable) {
-            showAlert({
-                title: 'Biometrics',
-                description:
-                    'No security features on your device. Make sure you have biometrics setup on your phone and try again.',
-                primaryButtonTitle: 'Cancel',
-                onPressPrimaryButton: () => null,
-                pictogramVariant: 'warning',
+            await new Promise(resolve => {
+                showAlert({
+                    title: 'Biometrics',
+                    description:
+                        'No security features on your device. Make sure you have biometrics setup on your phone and try again.',
+                    primaryButtonTitle: 'Cancel',
+                    onPressPrimaryButton: () => resolve(undefined),
+                    pictogramVariant: 'warning',
+                });
             });
 
             return 'notAvailable';

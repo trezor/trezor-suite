@@ -53,7 +53,7 @@ export const useShowBiometricsAlert = () => {
 
     const showBiometricsAlert = useCallback(() => {
         showAlert({
-            primaryButtonTitle: <Translation id="moduleHome.biometricsModal.button.enable" />,
+            primaryButtonTitle: <Translation id="generic.buttons.enable" />,
             onPressPrimaryButton: handleEnable,
             secondaryButtonTitle: <Translation id="moduleHome.biometricsModal.button.later" />,
             onPressSecondaryButton: handleCancel,

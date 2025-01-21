@@ -10814,6 +10814,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-onboarding@workspace:suite-native/module-onboarding"
   dependencies:
+    "@react-navigation/core": "npm:^6.4.10"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
     "@suite-native/atoms": "workspace:*"
@@ -10825,6 +10826,7 @@ __metadata:
     expo-linear-gradient: "npm:^14.0.1"
     react: "npm:18.2.0"
     react-native: "npm:0.76.1"
+    react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
 

@@ -70,12 +70,13 @@ export const en = {
         buttons: {
             receive: 'Receive',
         },
+
+        // TODO: delete this when is the new welcome flow enabled by default
         biometricsModal: {
             title: 'Enable biometrics protection',
             description: 'You can always change this later.',
             button: {
                 later: 'I’ll do that later in Settings',
-                enable: 'Enable',
             },
             resultMsg: {
                 error: 'Unable to enable biometrics',
@@ -833,6 +834,13 @@ export const en = {
             titleLegacy: 'Better with you',
             subtitleLegacy: 'Improve Trezor Suite Lite with your anonymous data.',
             learnMore: '<securityLink>More</securityLink> about privacy',
+        },
+        biometricsScreen: {
+            title: 'Biometrics',
+            description: 'Enable biometrics to prevent unauthorized access to this app.',
+            button: {
+                notNow: 'Not now',
+            },
         },
     },
     moduleAccountManagement: {

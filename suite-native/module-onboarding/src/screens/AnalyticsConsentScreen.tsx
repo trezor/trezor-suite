@@ -1,12 +1,16 @@
 import { useState } from 'react';
 
-import { Screen } from '@suite-native/navigation';
+import {
+    OnboardingStackParamList,
+    OnboardingStackRoutes,
+    Screen,
+    StackProps,
+} from '@suite-native/navigation';
 import { Box, Button, Card, Switch, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useOpenLink } from '@suite-native/link';
-import { useToast } from '@suite-native/toasts';
 
 import { AnalyticsInfoRow } from '../components/AnalyticsInfoRow';
 
@@ -29,8 +33,9 @@ const reportAnalyticsOnboardingCompleted = (isTrackingAllowed: boolean) => {
     if (!isTrackingAllowed) analytics.disable();
 };
 
-export const AnalyticsConsentScreen = () => {
-    const { showToast } = useToast();
+export const AnalyticsConsentScreen = ({
+    navigation,
+}: StackProps<OnboardingStackParamList, OnboardingStackRoutes.AnalyticsConsent>) => {
     const [isEnabled, setIsEnabled] = useState(true);
 
     const { applyStyle } = useNativeStyles();
@@ -40,8 +45,7 @@ export const AnalyticsConsentScreen = () => {
     const handleRedirect = () => {
         reportAnalyticsOnboardingCompleted(isEnabled);
 
-        showToast({ variant: 'warning', message: 'TODO: implement next screen' });
-        // navigation.navigate(OnboardingStackRoutes.Biometrics);
+        navigation.navigate(OnboardingStackRoutes.Biometrics);
     };
 
     const handleAnalyticsConsent = () => {
