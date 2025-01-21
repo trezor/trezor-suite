@@ -28,6 +28,7 @@ import {
     AuthorizeDeviceStackRoutes,
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
+import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 
 import { selectDeviceError, selectIsDeviceFirmwareSupported } from '../selectors';
 import { IncompatibleFirmwareModalAppendix } from '../components/IncompatibleFirmwareModalAppendix';
@@ -57,6 +58,7 @@ export const useDetectDeviceError = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
     const isDeviceInBootloader = useSelector(selectIsDeviceInBootloader);
+    const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
 
@@ -135,6 +137,7 @@ export const useDetectDeviceError = () => {
 
         if (
             isConnectedDeviceUninitialized &&
+            !isFirmwareInstallationRunning &&
             !wasDeviceEjectedByUser &&
             !isUnacquiredDevice &&
             !deviceError
@@ -183,6 +186,7 @@ export const useDetectDeviceError = () => {
     }, [
         hasDeviceFirmwareInstalled,
         isConnectedDeviceUninitialized,
+        isFirmwareInstallationRunning,
         isOnboardingFinished,
         isUnacquiredDevice,
         wasDeviceEjectedByUser,
@@ -196,6 +200,7 @@ export const useDetectDeviceError = () => {
         if (
             isDeviceInBootloader &&
             hasDeviceFirmwareInstalled &&
+            !isFirmwareInstallationRunning &&
             !wasDeviceEjectedByUser &&
             isOnboardingFinished
         ) {
@@ -218,6 +223,7 @@ export const useDetectDeviceError = () => {
         }
     }, [
         isDeviceInBootloader,
+        isFirmwareInstallationRunning,
         isOnboardingFinished,
         hasDeviceFirmwareInstalled,
         wasDeviceEjectedByUser,
