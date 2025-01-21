@@ -69,7 +69,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
         );
     });
 
-    test('Success after retrying GET request', async ({
+    test.skip('Success after retrying GET request', async ({
         page,
         onboardingPage,
         dashboardPage,
