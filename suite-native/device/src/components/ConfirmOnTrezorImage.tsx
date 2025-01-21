@@ -13,7 +13,8 @@ type ConfirmOnTrezorImageProps = {
 const imageContainerStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
     bottom: utils.spacings.sp4 * -1, // Hides a part of the image under bottom screen edge.
-    width: '100%',
+    left: 0,
+    right: 0,
     alignItems: 'center',
 }));
 

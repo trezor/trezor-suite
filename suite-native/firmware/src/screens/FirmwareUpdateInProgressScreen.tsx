@@ -97,7 +97,14 @@ export const FirmwareUpdateInProgressScreen = () => {
         requestPrioritizedDeviceAccess({
             deviceCallback: () => dispatch(authorizeDeviceThunk()),
         });
-        navigation.goBack();
+
+        const initialRoute = navigation.getState().routes.at(0)?.name;
+        if (initialRoute) {
+            navigation.navigate(initialRoute);
+        } else {
+            // This cause should not happen, but just to be safe
+            navigation.popToTop();
+        }
     }, [dispatch, navigation]);
 
     const handleCancel = useCallback(() => {
