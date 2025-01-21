@@ -698,6 +698,11 @@ export const selectIsDeviceProtectedByWipeCode = createMemoizedSelector(
     features => !!features?.wipe_code_protection,
 );
 
+export const selectIsDeviceBackedUp = createMemoizedSelector(
+    [selectDeviceFeatures],
+    features => features?.backup_availability !== 'Required' && !features?.unfinished_backup,
+);
+
 export const selectDeviceButtonRequests = createMemoizedSelector(
     [selectSelectedDevice],
     device => device?.buttonRequests ?? [],

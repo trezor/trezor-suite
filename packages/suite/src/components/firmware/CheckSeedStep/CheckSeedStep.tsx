@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Button, Checkbox, Column, variables } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
+import { selectIsDeviceBackedUp, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
@@ -32,12 +32,9 @@ type CheckSeedStepProps = {
 
 export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSeedStepProps) => {
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
+    const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
     const { device } = useDevice();
     const [isChecked, setIsChecked] = useState(false);
-
-    const isBackedUp =
-        device?.features?.backup_availability !== 'Required' &&
-        !device?.features?.unfinished_backup;
 
     const handleCheckboxClick = () => setIsChecked(prev => !prev);
     const getContent = () => {
@@ -47,7 +44,7 @@ export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSe
 
         if (deviceWillBeWiped) {
             return {
-                heading: isBackedUp ? (
+                heading: isDeviceBackedUp ? (
                     <Translation id="TR_CONTINUE_ONLY_WITH_SEED" />
                 ) : (
                     noBackupHeading
@@ -56,14 +53,14 @@ export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSe
                     <Column gap={spacings.md}>
                         <Translation
                             id={
-                                isBackedUp
+                                isDeviceBackedUp
                                     ? 'TR_CONTINUE_ONLY_WITH_SEED_DESCRIPTION'
                                     : 'TR_SWITCH_FIRMWARE_NO_BACKUP'
                             }
                         />
                         <Translation
                             id={
-                                isBackedUp
+                                isDeviceBackedUp
                                     ? 'TR_CONTINUE_ONLY_WITH_SEED_DESCRIPTION_2'
                                     : 'TR_SWITCH_FIRMWARE_NO_BACKUP_2'
                             }
@@ -74,7 +71,7 @@ export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSe
             };
         }
 
-        return isBackedUp
+        return isDeviceBackedUp
             ? {
                   heading: <Translation id="TR_SECURITY_CHECKPOINT_GOT_SEED" />,
                   description: <Translation id="TR_BEFORE_ANY_FURTHER_ACTIONS" />,
@@ -105,7 +102,7 @@ export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSe
                             id={deviceWillBeWiped ? 'TR_WIPE_AND_REINSTALL' : 'TR_CONTINUE'}
                         />
                     </Button>
-                    <FirmwareInstallationBackupButton isBackedUp={isBackedUp} />
+                    <FirmwareInstallationBackupButton isBackedUp={isDeviceBackedUp} />
                 </FirmwareButtonsRow>
             }
             disableConfirmWrapper
