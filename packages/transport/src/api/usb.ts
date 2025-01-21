@@ -36,6 +36,7 @@ export class UsbApi extends AbstractApi {
     private abortController = new AbortController();
     private debugLink?: boolean;
     private synchronizeCreateDevices = getSynchronize();
+    private synchronizeGetDevices = getSynchronize();
 
     constructor({ usbInterface, logger, forceReadSerialOnConnect, debugLink }: ConstructorParams) {
         super({ logger });
@@ -173,9 +174,12 @@ export class UsbApi extends AbstractApi {
     public async enumerate(signal?: AbortSignal) {
         try {
             this.logger?.debug('usb: enumerate');
-            const devices = await this.abortableMethod(() => this.usbInterface.getDevices(), {
-                signal,
-            });
+            const devices = await this.abortableMethod(
+                () => this.synchronizeGetDevices(() => this.usbInterface.getDevices()),
+                {
+                    signal,
+                },
+            );
 
             this.devices = await this.createDevices(devices, signal);
 

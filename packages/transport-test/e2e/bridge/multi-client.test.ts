@@ -250,9 +250,6 @@ describe('bridge', () => {
 
     test('2 clients enumerate at the same time', async () => {
         const promise1 = bridge1.enumerate();
-        // for some reason, there needs to be a short delay between the two calls. Otherwise the first call returns empty array
-        // todo: this should probably get implemented in the bridge server itself
-        await wait(10);
         const promise2 = bridge2.enumerate();
 
         const results = await Promise.all([promise1, promise2]);
