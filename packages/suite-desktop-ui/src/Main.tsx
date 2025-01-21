@@ -14,7 +14,7 @@ import TrezorConnect from '@trezor/connect';
 import { initStore } from 'src/reducers/store';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { Metadata } from 'src/components/suite/Metadata';
-import { Preloader, ToastContainer } from 'src/components/suite';
+import { Preloader, ToastContainer, TrafficLightDraggableWindowHeader } from 'src/components/suite';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import Resize from 'src/support/suite/Resize';
 import Autodetect from 'src/support/suite/Autodetect';
@@ -45,6 +45,7 @@ const Main = () => {
         // Todo: Enable when issues are fixed (ReactTruncate & BumpFee)
         // <StrictMode>
         <HelmetProvider>
+            <TrafficLightDraggableWindowHeader />
             <ConnectedThemeProvider>
                 <RouterProvider history={history}>
                     <ModalContextProvider>

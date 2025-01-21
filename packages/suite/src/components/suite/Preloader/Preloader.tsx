@@ -31,7 +31,6 @@ import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { RouterAppWithParams } from '../../../constants/suite/routes';
 import { useReportDeviceCompromised } from '../SecurityCheck/useReportDeviceCompromised';
-import { TrafficLightDraggableWindowHeader } from '../TrafficLightOffset';
 
 const ROUTES_TO_SKIP_FIRMWARE_CHECK: RouterAppWithParams['app'][] = [
     'settings',
@@ -51,7 +50,9 @@ const getFullscreenApp = (route: AppState['router']['route']): FC | undefined =>
     }
 };
 
-const usePreloaderData = ({ children }: PropsWithChildren) => {
+// Preloader is a top level wrapper used in _app.tsx.
+// Decides which content should be displayed basing on route and prerequisites.
+export const Preloader = ({ children }: PropsWithChildren) => {
     const lifecycle = useSelector(state => state.suite.lifecycle);
     const isTransportInitialized = useSelector(selectIsTransportInitialized);
     const router = useSelector(state => state.router);
@@ -146,17 +147,4 @@ const usePreloaderData = ({ children }: PropsWithChildren) => {
 
     // everything is set.
     return <SuiteLayout>{children}</SuiteLayout>;
-};
-
-// Preloader is a top level wrapper used in _app.tsx.
-// Decides which content should be displayed basing on route and prerequisites.
-export const Preloader = (props: PropsWithChildren) => {
-    const renderedComponent = usePreloaderData(props);
-
-    return (
-        <>
-            <TrafficLightDraggableWindowHeader />
-            {renderedComponent}
-        </>
-    );
 };

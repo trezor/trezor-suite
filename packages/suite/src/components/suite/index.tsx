@@ -47,6 +47,7 @@ import { QrCode } from './QrCode';
 import { CoinBalance } from './CoinBalance';
 import { DeviceAuthenticationExplainer } from './DeviceAuthenticationExplainer';
 import { Preloader } from './Preloader/Preloader';
+import { TrafficLightDraggableWindowHeader } from './TrafficLightOffset';
 import { PinMatrix } from './PinMatrix/PinMatrix';
 import { UdevDownload } from './UdevDownload';
 import { StakingFeature } from './StakingFeature';
@@ -100,6 +101,7 @@ export {
     CoinBalance,
     DeviceAuthenticationExplainer,
     Preloader,
+    TrafficLightDraggableWindowHeader,
     PinMatrix,
     UdevDownload,
     StakingFeature,

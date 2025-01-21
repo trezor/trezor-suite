@@ -11,11 +11,7 @@ type Props = {
     isVisible?: boolean;
 };
 
-// See: https://github.com/electron/electron/issues/5678
-// Visible all the time in the app
-
 const FixForNotBeingAbleToDragWindow = styled.div`
-    background: rgba(255, 0, 0, 0.1);
     -webkit-app-region: drag;
     pointer-events: none;
     height: 64px;
@@ -32,6 +28,8 @@ const Container = styled.div<{ $offset: number }>`
     height: 100%;
 `;
 
+// See: https://github.com/electron/electron/issues/5678
+// Visible all the time in the app
 export const TrafficLightDraggableWindowHeader = ({ children, isVisible = true }: Props) => {
     const isMac = isMacOs();
     const isDesktopApp = isDesktop();
