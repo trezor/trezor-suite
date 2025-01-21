@@ -1,3 +1,5 @@
+import { useSelector } from 'react-redux';
+
 import { Atom, useAtomValue } from 'jotai';
 
 import { FiatGraphPoint } from '@suite-common/graph';
@@ -5,6 +7,7 @@ import { Box, BoxSkeleton, DiscreetTextTrigger, HStack, VStack, Text } from '@su
 import { FiatBalanceFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useFormatters } from '@suite-common/formatters';
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
 
 import { GraphDateFormatter } from './GraphDateFormatter';
 import { PriceChangeIndicator } from './PriceChangeIndicator';
@@ -62,13 +65,14 @@ export const GraphFiatBalance = ({
     const firstGraphPoint = useAtomValue(referencePointAtom);
     const { DateTimeFormatter } = useFormatters();
 
+    const hasDeviceDiscovery = useSelector(selectHasDeviceDiscovery);
+    const hasBalance = Number(totalFiatBalance) !== 0;
     const showLoading = isLoading || !firstGraphPoint;
+    const showBalanceFallback =
+        !hasDeviceDiscovery && ((hasBalance && showLoading) || !isHistoryEnabledAccount);
 
-    // During loading or error we just show latest total balance
-    if (
-        (Number(totalFiatBalance) !== 0 && (isLoading || !firstGraphPoint)) ||
-        !isHistoryEnabledAccount
-    ) {
+    // If discovery finished but graph still loading or missing first point we just show latest total balance
+    if (showBalanceFallback) {
         return (
             <Box style={applyStyle(wrapperStyle)}>
                 <Balance selectedPointAtom={selectedPointAtom} latestValue={totalFiatBalance} />
