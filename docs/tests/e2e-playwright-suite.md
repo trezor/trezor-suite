@@ -51,7 +51,7 @@ Steps:
 
 1. **To run both Web and Desktop at same time** you can do: `yarn workspace @trezor/suite-desktop-core test:e2e`
 
-1. **To run tests headed (showing UI)** you can add: `--headed`
+1. **To run tests headed (showing UI)** you can add: `--headed --ignore-snapshots`. Some snapshots differ between headless and headed mode, ergo we need to ignore them when running in headed mode.
 
 1. **To run just one test file** you can do: `yarn workspace @trezor/suite-desktop-core test:e2e general/wallet-discovery.test.ts`
 

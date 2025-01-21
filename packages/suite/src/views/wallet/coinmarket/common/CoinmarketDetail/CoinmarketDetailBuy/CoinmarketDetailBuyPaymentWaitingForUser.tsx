@@ -80,7 +80,7 @@ export const CoinmarketDetailBuyPaymentWaitingForUser = ({
     return (
         <Wrapper>
             <Image image="COINMARKET_WAITING" />
-            <Title>
+            <Title data-testid="@coinmarket/transaction/detail/status">
                 <Translation id={translations.titleTranslationId} />
             </Title>
             <Description>

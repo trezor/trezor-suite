@@ -14,16 +14,28 @@ export const allowedInfoSegmentsFrameProps = ['margin'] as const satisfies Frame
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedInfoSegmentsFrameProps)[number]>;
 
 export type InfoSegmentsProps = AllowedFrameProps &
-    AllowedTextProps & {
-        variant?: TextVariant;
-    } & { children: Array<ReactNode> };
+    AllowedTextProps & { variant?: TextVariant } & { children: Array<ReactNode> } & {
+        'data-testid'?: string;
+    };
 
-export const InfoSegments = ({ children, typographyStyle, variant, margin }: InfoSegmentsProps) => {
+export const InfoSegments = ({
+    children,
+    typographyStyle,
+    variant,
+    margin,
+    'data-testid': dataTestId,
+}: InfoSegmentsProps) => {
     const validChildren = Children.toArray(children).filter(child => Boolean(child));
     const id = useId();
 
     return (
-        <Text as="div" typographyStyle={typographyStyle} margin={margin} variant={variant}>
+        <Text
+            data-testid={dataTestId}
+            as="div"
+            typographyStyle={typographyStyle}
+            margin={margin}
+            variant={variant}
+        >
             <Row gap={spacings.xxs}>
                 {validChildren.map((child, index) => (
                     <Fragment key={`${id}-${index}`}>

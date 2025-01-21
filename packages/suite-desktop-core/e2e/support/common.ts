@@ -3,6 +3,7 @@
 import test, { _electron as electron, TestInfo } from '@playwright/test';
 import path from 'path';
 import { readdirSync, removeSync } from 'fs-extra';
+import { isEqual, omit } from 'lodash';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
@@ -111,9 +112,9 @@ export const isDesktopProject = (testInfo: TestInfo) =>
 export const isWebProject = (testInfo: TestInfo) =>
     testInfo.project.name === PlaywrightProjects.Web;
 
-export const getApiUrl = (webBaseUrl: string | undefined, testInfo: TestInfo) => {
+export const getUrl = (testInfo: TestInfo) => {
     const electronApiURL = 'file:///';
-    const apiURL = isDesktopProject(testInfo) ? electronApiURL : webBaseUrl;
+    const apiURL = isDesktopProject(testInfo) ? electronApiURL : testInfo.project.use.baseURL;
     if (!apiURL) {
         throw new Error('apiURL is not defined');
     }
@@ -163,3 +164,6 @@ const TrezorUserEnvLinkProxy = new Proxy(TrezorUserEnvLink, {
 });
 
 export { TrezorUserEnvLinkProxy };
+
+export const isEqualWithMask = (param: { object1: any; object2: any; mask: string[] }) =>
+    isEqual(omit(param.object1, param.mask), omit(param.object2, param.mask));

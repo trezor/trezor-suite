@@ -54,7 +54,7 @@ export const CoinmarketDetailBuyPaymentPaymentSuccessful = ({
     return (
         <Wrapper>
             <Image image="COINMARKET_SUCCESS" />
-            <Title data-testid="@coinmarket/detail/success">
+            <Title data-testid="@coinmarket/transaction/detail/status">
                 <Translation id="TR_BUY_DETAIL_SUCCESS_TITLE" />
             </Title>
             <Description>

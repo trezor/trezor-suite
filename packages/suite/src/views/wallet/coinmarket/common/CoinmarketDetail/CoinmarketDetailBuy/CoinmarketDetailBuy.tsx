@@ -60,8 +60,8 @@ export const CoinmarketDetailBuy = () => {
     };
 
     return (
-        <Wrapper>
-            <Card>
+        <Wrapper data-testid="@coinmarket/transaction/detail">
+            <Card data-testid="@coinmarket/transaction/detail/status-card">
                 {showError && (
                     <CoinmarketDetailBuyPaymentFailed account={account} supportUrl={supportUrl} />
                 )}

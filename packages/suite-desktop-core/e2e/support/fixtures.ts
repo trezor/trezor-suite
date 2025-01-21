@@ -11,7 +11,7 @@ import {
 
 import { DashboardActions } from './pageActions/dashboardActions';
 import {
-    getApiUrl,
+    getUrl,
     getElectronVideoPath,
     isDesktopProject,
     launchSuite,
@@ -40,7 +40,7 @@ type Fixtures = {
     setupEmulator: boolean;
     emulatorStartConf: StartEmuModelRequired;
     emulatorSetupConf: SetupEmu;
-    apiURL: string;
+    url: string;
     trezorUserEnvLink: TrezorUserEnvLinkClass;
     electronWindow: Page | undefined;
     page: Page;
@@ -67,8 +67,9 @@ const test = base.extend<Fixtures>({
     setupEmulator: true,
     emulatorStartConf: { model: 'T3T1', wipe: true },
     emulatorSetupConf: {},
-    apiURL: async ({ baseURL }, use, testInfo) => {
-        await use(getApiUrl(baseURL, testInfo));
+    /* eslint-disable-next-line no-empty-pattern */
+    url: async ({}, use, testInfo) => {
+        await use(getUrl(testInfo));
     },
     /* eslint-disable-next-line no-empty-pattern */
     trezorUserEnvLink: async ({}, use) => {
@@ -144,8 +145,8 @@ const test = base.extend<Fixtures>({
         const dashboardPage = new DashboardActions(page);
         await use(dashboardPage);
     },
-    settingsPage: async ({ page, apiURL }, use) => {
-        const settingsPage = new SettingsActions(page, apiURL);
+    settingsPage: async ({ page, url }, use) => {
+        const settingsPage = new SettingsActions(page, url);
         await use(settingsPage);
     },
     suiteGuidePage: async ({ page }, use) => {

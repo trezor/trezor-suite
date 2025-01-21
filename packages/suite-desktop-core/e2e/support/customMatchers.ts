@@ -1,4 +1,6 @@
-import { Locator, expect as baseExpect } from '@playwright/test';
+import { Locator, Request, expect as baseExpect } from '@playwright/test';
+
+import { isEqualWithMask } from './common';
 
 const compareTextAndNumber = async (
     locator: Locator,
@@ -48,5 +50,25 @@ export const expect = baseExpect.extend({
     },
     async toHaveTextLessThan(locator: Locator, expectedValue: number) {
         return await compareTextAndNumber(locator, expectedValue, (a, b) => a < b, 'less');
+    },
+    async toHavePayload(
+        requestPromise: Promise<Request>,
+        expectedPayload: any,
+        options?: { mask: string[] },
+    ) {
+        const requestPayload = (await requestPromise).postDataJSON();
+        const isRequestPayloadMatching = isEqualWithMask({
+            object1: requestPayload,
+            object2: expectedPayload,
+            mask: options?.mask ?? [],
+        });
+
+        return {
+            pass: isRequestPayloadMatching,
+            message: () =>
+                `Request payload differs from expected.
+                \nActual: ${JSON.stringify(requestPayload)}
+                \nExpected: ${JSON.stringify(expectedPayload)}`,
+        };
     },
 });

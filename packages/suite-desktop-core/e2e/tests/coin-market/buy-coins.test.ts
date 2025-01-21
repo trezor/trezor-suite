@@ -1,5 +1,7 @@
 import { test, expect } from '../../support/fixtures';
 import buyQuotes from '../../fixtures/invity/buy/quotes.json';
+import expectedWatchRequestPayload from '../../fixtures/invity/buy/watch-request.json';
+import { invityEndpoint } from '../../fixtures/invity';
 
 const mockedInputAmount = buyQuotes[0].fiatStringAmount; // 1234, The mocked quotes are for a fixed input amount
 
@@ -26,24 +28,41 @@ test.describe('Coin market buy', { tag: ['@group=other', '@snapshot', '@webOnly'
 
         await test.step('Confirm trade and verifies confirmation summary', async () => {
             await marketPage.confirmTrade();
-            await expect(marketPage.tradeConfirmation).toHaveScreenshot(
+            await expect(marketPage.confirmationSection).toHaveScreenshot(
                 'compared-offers-buy-confirmation.png',
                 { mask: [marketPage.confirmOnTrezorButton] },
             );
-            await expect(marketPage.tradeConfirmationContinueButton).toBeEnabled();
+            await expect(marketPage.confirmTradeButton).toBeEnabled();
         });
     });
 
-    test('Buy crypto from best offer', async ({ marketPage }) => {
-        await marketPage.setYouPayAmount(mockedInputAmount);
-        const { amount, provider } = await marketPage.readBestOfferValues();
-        await marketPage.buyBestOfferButton.click();
-        await marketPage.confirmTrade();
-        await expect(marketPage.tradeConfirmation).toHaveScreenshot(
-            'best-offer-buy-confirmation.png',
-        );
-        await expect(marketPage.tradeConfirmationCryptoAmount).toHaveText(amount);
-        await expect(marketPage.tradeConfirmationProvider).toHaveText(provider);
-        await expect(marketPage.tradeConfirmationContinueButton).toBeEnabled();
+    test('Buy crypto from best offer', async ({ page, marketPage }) => {
+        await test.step('Request a trade', async () => {
+            await marketPage.setYouPayAmount(mockedInputAmount);
+            await marketPage.buyBestOfferButton.click();
+            await marketPage.confirmTrade();
+        });
+
+        const watchRequestPromise = page.waitForRequest(invityEndpoint.buyWatch);
+        await page.clock.install();
+        // We bypass the provider part of the flow by having a modified redirect in trade response.
+        // This redirect is provided by Invity and normaly leads to provider's page.
+        // But our mocked response redirects us to transaction detail where our flow continues.
+        await test.step('Confirm the trade and get redirected to transaction detail', async () => {
+            await marketPage.finishMockedTrade();
+            await expect(watchRequestPromise).toHavePayload(expectedWatchRequestPayload);
+            await expect(marketPage.transactionDetailStatus).toHaveText(
+                'Waiting for your payment...',
+            );
+            await expect(marketPage.proceedToPayButton).toBeVisible();
+        });
+
+        await test.step('Wait 30s for watch refresh and change of status to Approved', async () => {
+            await marketPage.changeTransactionWatchResponseTo('SUCCESS');
+            await page.clock.fastForward(marketPage.transactionWatchPeriod);
+            await expect(watchRequestPromise).toHavePayload(expectedWatchRequestPayload);
+            await expect(marketPage.transactionDetailStatus).toHaveText('Approved');
+            await expect(marketPage.transactionDetail).toHaveScreenshot('transactions-detail.png');
+        });
     });
 });

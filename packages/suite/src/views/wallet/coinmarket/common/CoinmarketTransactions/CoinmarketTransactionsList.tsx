@@ -66,9 +66,13 @@ export const CoinmarketTransactionsList = () => {
         (!isBuyAndSell && exchangeTransactions.length === 0);
 
     return (
-        <Wrapper>
+        <Wrapper data-testid="@coinmarket/transactions/list">
             {isEmpty && (
-                <Paragraph align="center" variant="tertiary">
+                <Paragraph
+                    data-testid="@coinmarket/transactions/no-transaction"
+                    align="center"
+                    variant="tertiary"
+                >
                     <Translation id="TR_BUY_NOT_TRANSACTIONS" />
                 </Paragraph>
             )}
@@ -78,7 +82,7 @@ export const CoinmarketTransactionsList = () => {
                         <H3>
                             <Translation id="TR_COINMARKET_LAST_TRANSACTIONS" />
                         </H3>
-                        <TransactionCount>
+                        <TransactionCount data-testid="@coinmarket/transactions/count">
                             {isBuyAndSell ? (
                                 <Translation
                                     id="TR_COINMARKET_BUY_AND_SELL_COUNTER"

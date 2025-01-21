@@ -26,7 +26,12 @@ export const CoinmarketTransactionInfo = ({ trade }: CoinmarketTransactionInfoPr
     const tradeType = translationString(translationKeys[trade.tradeType]).toUpperCase();
 
     return (
-        <InfoSegments variant="tertiary" typographyStyle="label" margin={{ top: spacings.xs }}>
+        <InfoSegments
+            data-testid="@coinmarket/transactions/info"
+            variant="tertiary"
+            typographyStyle="label"
+            margin={{ top: spacings.xs }}
+        >
             {tradeType}
             <FormattedDate value={date} date time />
             <CoinmarketTransactionStatus trade={trade} />

@@ -10,16 +10,32 @@ import buyTrade from './buy/trade.json';
 import buyWatch from './buy/watch.json';
 import sellList from './sell/list.json';
 
+const invityUrl = 'https://exchange.trezor.io';
+
+export const invityEndpoint = {
+    exchangeCoins: `${invityUrl}/api/exchange/coins`,
+    exchangeList: `${invityUrl}/api/v3/exchange/list`,
+    exchangeQuotes: `${invityUrl}/api/exchange/quotes`,
+    exchangeTrade: `${invityUrl}/api/exchange/trade`,
+    exchangeWatch: `${invityUrl}/api/exchange/watch/*`,
+    info: `${invityUrl}/api/info`,
+    buyList: `${invityUrl}/api/v3/buy/list`,
+    buyQuotes: `${invityUrl}/api/v3/buy/quotes`,
+    buyTrade: `${invityUrl}/api/v3/buy/trade`,
+    buyWatch: `${invityUrl}/api/v3/buy/watch/*`,
+    sellList: `${invityUrl}/api/v3/sell/list`,
+};
+
 export const invityResponses = {
-    'api/exchange/coins': exchangeCoins,
-    'api/v3/exchange/list': exchangeList,
-    'api/exchange/quotes': exchangeQuotes,
-    'api/exchange/trade': exchangeTrade,
-    'api/exchange/watch/0': exchangeWatch,
-    'api/info': info,
-    'api/v3/buy/list': buyList,
-    'api/v3/buy/quotes': buyQuotes,
-    'api/v3/buy/trade': buyTrade,
-    'api/v3/buy/watch/0': buyWatch,
-    'api/v3/sell/list': sellList,
+    [invityEndpoint.exchangeCoins]: exchangeCoins,
+    [invityEndpoint.exchangeList]: exchangeList,
+    [invityEndpoint.exchangeQuotes]: exchangeQuotes,
+    [invityEndpoint.exchangeTrade]: exchangeTrade,
+    [invityEndpoint.exchangeWatch]: exchangeWatch,
+    [invityEndpoint.info]: info,
+    [invityEndpoint.buyList]: buyList,
+    [invityEndpoint.buyQuotes]: buyQuotes,
+    [invityEndpoint.buyTrade]: buyTrade,
+    [invityEndpoint.buyWatch]: buyWatch,
+    [invityEndpoint.sellList]: sellList,
 };

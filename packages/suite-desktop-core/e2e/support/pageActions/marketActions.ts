@@ -1,12 +1,15 @@
-import { Locator, Page, expect } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import regional from '@trezor/suite/src/constants/wallet/coinmarket/regional';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
+import { expect } from '../customMatchers';
 import { step } from '../common';
-import { invityResponses } from '../../fixtures/invity/index';
+import { invityEndpoint, invityResponses } from '../../fixtures/invity/index';
+import buyQuotes from '../../fixtures/invity/buy/quotes.json';
+import expectedTradeRequestPayload from '../../fixtures/invity/buy/trade-request.json';
 
 const quoteProviderLocator = '@coinmarket/offers/quote/provider';
 const quoteAmountLocator = '@coinmarket/offers/quote/crypto-amount';
@@ -34,6 +37,7 @@ type PaymentMethods =
     | 'revolutPay';
 
 export class MarketActions {
+    // Input and general
     readonly offerSpinner: Locator;
     readonly section: Locator;
     readonly form: Locator;
@@ -63,6 +67,7 @@ export class MarketActions {
     readonly paymentMethodDropdown: Locator;
     readonly paymentMethodOption = (method: PaymentMethods) =>
         this.page.getByTestId(`@coinmarket/form/payment-method-select/option/${method}`);
+    // Compared offers
     readonly buyOffersPage: Locator;
     readonly compareButton: Locator;
     readonly quotes: Locator;
@@ -71,19 +76,30 @@ export class MarketActions {
     readonly quoteAmount: Locator;
     readonly refreshTime: Locator;
     readonly selectThisQuoteButton: Locator;
+    // Confirmation modal
     readonly modal: Locator;
     readonly buyTermsConfirmButton: Locator;
     readonly confirmOnTrezorButton: Locator;
     readonly confirmOnDevicePrompt: Locator;
-    readonly tradeConfirmation: Locator;
-    readonly tradeConfirmationCryptoAmount: Locator;
-    readonly tradeConfirmationProvider: Locator;
-    readonly tradeConfirmationContinueButton: Locator;
+    readonly confirmationSection: Locator;
+    readonly confirmationCryptoAmount: Locator;
+    readonly confirmationProvider: Locator;
+    readonly confirmTradeButton: Locator;
+    // Exchange
     readonly exchangeFeeDetails: Locator;
     readonly broadcastButton: Locator;
     readonly sendAddressInput: Locator;
     readonly sendAmountInput: Locator;
     readonly sendButton: Locator;
+    // Transactions
+    readonly transactionList: Locator;
+    readonly transactionInfo: Locator;
+    readonly transactionStatus: Locator;
+    readonly transactionDetailsButton: Locator;
+    readonly transactionDetailStatus: Locator;
+    readonly proceedToPayButton: Locator;
+    readonly transactionDetail: Locator;
+    readonly transactionWatchPeriod = '00:30';
 
     constructor(private page: Page) {
         this.offerSpinner = this.page.getByTestId('@coinmarket/offers/loading-spinner');
@@ -127,12 +143,12 @@ export class MarketActions {
             '@coinmarket/offer/confirm-on-trezor-button',
         );
         this.confirmOnDevicePrompt = this.page.getByTestId('@prompts/confirm-on-device');
-        this.tradeConfirmation = this.page.getByTestId('@coinmarket/selected-offer');
-        this.tradeConfirmationCryptoAmount = this.page.getByTestId(
+        this.confirmationSection = this.page.getByTestId('@coinmarket/selected-offer');
+        this.confirmationCryptoAmount = this.page.getByTestId(
             '@coinmarket/form/info/crypto-amount',
         );
-        this.tradeConfirmationProvider = this.page.getByTestId('@coinmarket/form/info/provider');
-        this.tradeConfirmationContinueButton = this.page.getByTestId(
+        this.confirmationProvider = this.page.getByTestId('@coinmarket/form/info/provider');
+        this.confirmTradeButton = this.page.getByTestId(
             '@coinmarket/offer/continue-transaction-button',
         );
         this.exchangeFeeDetails = this.page.getByTestId('@wallet/fee-details');
@@ -140,6 +156,15 @@ export class MarketActions {
         this.sendAddressInput = this.page.getByTestId('outputs.0.address');
         this.sendAmountInput = this.page.getByTestId('outputs.0.amount');
         this.sendButton = this.page.getByTestId('@send/review-button');
+        this.transactionList = this.page.getByTestId('@coinmarket/transactions/list');
+        this.transactionInfo = this.page.getByTestId('@coinmarket/transactions/info');
+        this.transactionStatus = this.page.getByTestId('@coinmarket/transactions/status');
+        this.transactionDetailsButton = this.page.getByRole('button', { name: 'View Details' });
+        this.transactionDetailStatus = this.page.getByTestId(
+            '@coinmarket/transaction/detail/status',
+        );
+        this.proceedToPayButton = this.page.getByRole('button', { name: 'Proceed to pay' });
+        this.transactionDetail = this.page.getByTestId('@coinmarket/transaction/detail');
     }
 
     @step()
@@ -211,27 +236,28 @@ export class MarketActions {
     }
 
     @step()
-    async readBestOfferValues() {
-        await expect(this.bestOfferAmount).not.toHaveText('0 BTC');
-        const amount = await this.bestOfferAmount.textContent();
-        const provider = await this.quoteProvider.textContent();
-        if (!amount || !provider) {
-            throw new Error(
-                `Test was not able to extract amount or provider from the page. Amount: ${amount}, Provider: ${provider}`,
-            );
-        }
-
-        return { amount, provider };
+    async finishMockedTrade() {
+        const tradeRequestPromise = this.page.waitForRequest(invityEndpoint.buyTrade);
+        await this.confirmTradeButton.click();
+        await expect(tradeRequestPromise).toHavePayload(expectedTradeRequestPayload, {
+            mask: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
+        });
     }
 
     @step()
     async mockInvity() {
-        const invityUrl = 'https://exchange.trezor.io';
-        for (const [path, response] of Object.entries(invityResponses)) {
-            await this.page.route(`${invityUrl}/${path}`, async route => {
+        for (const [url, response] of Object.entries(invityResponses)) {
+            await this.page.route(url, async route => {
                 await route.fulfill({ json: response });
             });
         }
+    }
+
+    @step()
+    async changeTransactionWatchResponseTo(status: 'SUBMITTED' | 'SUCCESS') {
+        await this.page.route(invityEndpoint.buyWatch, async route => {
+            await route.fulfill({ json: { status } });
+        });
     }
 
     @step()
@@ -247,7 +273,7 @@ export class MarketActions {
     @step()
     async validateBuyQuotes() {
         const paymentMethod = await this.getSelectedPaymentMethod();
-        const expectedQuotes = invityResponses[`api/v3/buy/quotes`].filter(
+        const expectedQuotes = buyQuotes.filter(
             quote => quote.paymentMethod === paymentMethod && quote.error === undefined,
         );
         expect.soft(await this.quotes.count()).toBe(expectedQuotes.length);

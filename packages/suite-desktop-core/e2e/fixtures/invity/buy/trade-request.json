@@ -1,10 +1,5 @@
 {
     "trade": {
-        "receiveAddress": "bc1q7ceqvaq7fqyywxqcx7qnfxkfk2ykpsla9pe80q",
-        "paymentId": "5e895ff7-c444-4371-a41f-c1735edca46c",
-        "status": "SUBMITTED",
-        "originalPaymentId": "e17a2bed-86c6-4974-9d87-9fc926b16614",
-        "partnerData": "/coinmarket-redirect#detail/btc/normal/0/5e895ff7-c444-4371-a41f-c1735edca46c",
         "exchange": "topper",
         "fiatCurrency": "CZK",
         "receiveCurrency": "bitcoin",
@@ -21,13 +16,9 @@
         "maxCrypto": 0.516867383239845,
         "paymentMethod": "creditCard",
         "quoteId": "f0efbc62-dcee-4639-be77-0c3d2d47efaf",
-        "orderId": "f0efbc62-dcee-4639-be77-0c3d2d47efaf"
+        "orderId": "63cfc1bf-e0d7-4afa-af6a-77d33941a694",
+        "paymentId": "6d666a5f-b99c-4482-b8bc-2df04fc11b7b",
+        "receiveAddress": "bc1q7ceqvaq7fqyywxqcx7qnfxkfk2ykpsla9pe80q"
     },
-    "tradeForm": {
-        "form": {
-            "formMethod": "GET",
-            "formAction": "/coinmarket-redirect#detail/btc/normal/0/5e895ff7-c444-4371-a41f-c1735edca46c",
-            "fields": {}
-        }
-    }
+    "returnUrl": "http://localhost:8000/coinmarket-redirect#detail/btc/normal/0/6d666a5f-b99c-4482-b8bc-2df04fc11b7b"
 }
