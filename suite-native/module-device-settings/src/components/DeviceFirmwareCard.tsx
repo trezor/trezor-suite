@@ -14,6 +14,7 @@ import {
     selectDeviceReleaseInfo,
     selectIsDiscoveryActiveByDeviceState,
     selectIsDeviceBackedUp,
+    selectIsDeviceConnected,
 } from '@suite-common/wallet-core';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -64,6 +65,8 @@ export const DeviceFirmwareCard = () => {
     const deviceModel = useSelector(selectDeviceModel);
     const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
+
     const isDiscoveryRunning = useSelector((state: DiscoveryRootState & DeviceRootState) =>
         selectIsDiscoveryActiveByDeviceState(state, device?.state),
     );
@@ -80,7 +83,7 @@ export const DeviceFirmwareCard = () => {
         : 'moduleDeviceSettings.firmware.typeUniversal';
 
     const firmwareUpdateProps = (() => {
-        if (!isFirmwareUpdateEnabled || !isDeviceBackedUp) {
+        if (!isFirmwareUpdateEnabled || !isDeviceBackedUp || !isDeviceConnected) {
             return undefined;
         }
 
