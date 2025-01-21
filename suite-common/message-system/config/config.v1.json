@@ -1,8 +1,65 @@
 {
     "version": 1,
     "timestamp": "2025-01-28T00:00:00+00:00",
-    "sequence": 76,
+    "sequence": 77,
     "actions": [
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=25.1.2",
+                        "mobile": "!",
+                        "web": "*"
+                    },
+                    "settings": [
+                        {
+                            "test": true
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "2855131c-c871-4fe3-a758-ab7bd92b9934",
+                "priority": 90,
+                "dismissible": true,
+                "variant": "info",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "Testnet account has been updated to new Testnet 4.",
+                    "en": "Testnet account has been updated to new Testnet 4.",
+                    "es": "Testnet account has been updated to new Testnet 4.",
+                    "cs": "Testnet account has been updated to new Testnet 4.",
+                    "ru": "Testnet account has been updated to new Testnet 4.",
+                    "ja": "Testnet account has been updated to new Testnet 4.",
+                    "hu": "Testnet account has been updated to new Testnet 4.",
+                    "it": "Testnet account has been updated to new Testnet 4.",
+                    "fr": "Testnet account has been updated to new Testnet 4.",
+                    "de": "Testnet account has been updated to new Testnet 4.",
+                    "tr": "Testnet account has been updated to new Testnet 4.",
+                    "pt": "Testnet account has been updated to new Testnet 4.",
+                    "uk": "Testnet account has been updated to new Testnet 4.."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://trezor.io/learn/a/bitcoin-testnet#testnet4",
+                    "label": {
+                        "en-GB": "Learn More",
+                        "en": "Learn More",
+                        "es": "Learn More",
+                        "cs": "Learn More",
+                        "ru": "Learn More",
+                        "ja": "Learn More",
+                        "hu": "Learn More",
+                        "it": "Learn More",
+                        "fr": "Learn More",
+                        "de": "Learn More",
+                        "tr": "Learn More",
+                        "pt": "Learn More",
+                        "uk": "Learn More"
+                    }
+                }
+            }
+        },
         {
             "conditions": [
                 {
