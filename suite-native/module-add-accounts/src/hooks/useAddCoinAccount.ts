@@ -148,6 +148,17 @@ export const useAddCoinAccount = () => {
         accountIndex: number;
     }) => {
         switch (flowType) {
+            case 'home':
+                navigation.replace(RootStackRoutes.ReceiveStack, {
+                    screen: ReceiveStackRoutes.ReceiveAccount,
+                    params: {
+                        networkSymbol: symbol,
+                        accountType,
+                        accountIndex,
+                        closeActionType: 'close',
+                    },
+                });
+                break;
             case 'accounts':
                 navigation.replace(RootStackRoutes.AccountDetail, {
                     networkSymbol: symbol,
