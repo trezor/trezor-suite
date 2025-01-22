@@ -166,7 +166,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     const api = await request.connect();
     const transactionsData: RawTxData = await api.request('account_tx', requestOptions);
     account.history.transactions = transactionsData.transactions.map(raw =>
-        utils.transformTransaction(raw.tx, payload.descriptor),
+        utils.transformTransaction(raw.tx, raw.meta, payload.descriptor),
     );
 
     return {
@@ -180,8 +180,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
 const getTransaction = async ({ connect, payload }: Request<MessageTypes.GetTransaction>) => {
     const api = await connect();
-    const rawtx = await api.request('tx', { transaction: payload, binary: false });
-    const tx = utils.transformTransaction(rawtx);
+    const rawTx = await api.request('tx', { transaction: payload, binary: false });
+    const tx = utils.transformTransaction(rawTx, null);
 
     return {
         type: RESPONSES.GET_TRANSACTION,
@@ -253,7 +253,7 @@ const onTransaction = ({ state, post }: Context, event: any) => {
                 type: 'notification',
                 payload: {
                     descriptor,
-                    tx: utils.transformTransaction({ ...event, ...tx }, descriptor),
+                    tx: utils.transformTransaction({ ...event, ...tx }, null, descriptor),
                 },
             },
         });

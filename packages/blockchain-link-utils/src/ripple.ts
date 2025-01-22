@@ -1,5 +1,13 @@
 import type { Transaction } from '@trezor/blockchain-link-types';
 
+type RippleTransactionMetadata = {
+    AffectedNodes: any[];
+    DeliveredAmount?: any[];
+    TransactionIndex: number;
+    TransactionResult: string;
+    delivered_amount?: string;
+};
+
 // export const transformServerInfo = (payload: GetServerInfoResponse) => {
 export const transformServerInfo = (payload: any) => ({
     name: 'Ripple',
@@ -15,20 +23,32 @@ export const transformServerInfo = (payload: any) => ({
 // https://bitcoin.stackexchange.com/questions/23061/ripple-ledger-time-format/23065#23065
 const BLOCKTIME_OFFSET = 946684800;
 
-export const transformTransaction = (tx: any, descriptor?: string): Transaction => {
+export const transformTransaction = (
+    tx: any,
+    meta: RippleTransactionMetadata | null,
+    descriptor?: string,
+): Transaction => {
     const blockTime =
         typeof tx.date === 'number' && tx.date > 0 ? tx.date + BLOCKTIME_OFFSET : tx.date;
-    const type =
-        tx.TransactionType !== 'Payment' || !descriptor
-            ? 'unknown'
-            : (tx.Account === descriptor && 'sent') || 'recv';
+
+    let txType: Transaction['type'];
+
+    // https://xrpl.org/docs/references/protocol/transactions/transaction-results
+    if (meta != null && !meta.TransactionResult?.startsWith('tes')) {
+        txType = 'failed';
+    } else if (tx.TransactionType !== 'Payment' || !descriptor) {
+        txType = 'unknown';
+    } else {
+        txType = tx.Account === descriptor ? 'sent' : 'recv';
+    }
+
     const addresses = [tx.Destination];
     const amount = tx.Amount;
     const fee = tx.Fee;
 
     // TODO: https://github.com/ripple/ripple-lib/blob/develop/docs/index.md#transaction-types
     return {
-        type,
+        type: txType,
         txid: tx.hash,
         amount,
         fee,
@@ -36,7 +56,7 @@ export const transformTransaction = (tx: any, descriptor?: string): Transaction 
         blockHeight: tx.ledger_index,
         blockHash: tx.hash,
         targets:
-            type === 'unknown'
+            txType === 'unknown'
                 ? []
                 : [
                       {
