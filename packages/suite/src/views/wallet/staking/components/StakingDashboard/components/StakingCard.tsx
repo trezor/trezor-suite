@@ -31,7 +31,6 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
-import { ProgressBar } from './styled';
 import { ProgressLabels } from './ProgressLabels/ProgressLabels';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
@@ -151,7 +150,7 @@ export const StakingCard = ({
 
     return (
         <Card>
-            <Column flex="1" gap={spacings.xxxxl}>
+            <Column flex="1" gap={spacings.xxl}>
                 {(isStakeConfirming || isTxStatusShown) && (
                     <ProgressLabels labels={progressLabelsData} />
                 )}
@@ -245,17 +244,6 @@ export const StakingCard = ({
                         />
                     )}
                 </Grid>
-
-                <ProgressBar
-                    $rewards={Number(stakingReward)}
-                    $unstaking={Number(withdrawTotalAmount)}
-                    $total={
-                        Number(depositedBalance) +
-                        Number(stakingReward) +
-                        Number(withdrawTotalAmount)
-                    }
-                    $isPendingUnstakeShown={isPendingUnstakeShown}
-                />
 
                 <Row margin={{ top: 'auto' }} gap={spacings.xs}>
                     <Tooltip content={stakingMessageContent}>
