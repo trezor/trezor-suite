@@ -158,6 +158,10 @@ export const onCodeChange = (value: string) => (dispatch: Dispatch, getState: Ge
         };
         fields.forEach(processField);
     } catch (error) {
-        console.error('Invalid JSON', error);
+        if (error.message.includes('JSON5:')) {
+            console.warn('Invalid JSON', error);
+        } else {
+            console.error(error);
+        }
     }
 };
