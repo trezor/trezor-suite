@@ -7,7 +7,6 @@ import {
     selectIsDeviceUnlocked,
     selectIsDiscoveredDeviceAccountless,
 } from '@suite-common/wallet-core';
-import { Box } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen } from '@suite-native/navigation';
 
@@ -44,9 +43,7 @@ export const HomeScreen = () => {
             noHorizontalPadding
         >
             {isEmptyHomeRendererShown ? (
-                <Box marginHorizontal="sp16">
-                    <EmptyHomeRenderer />
-                </Box>
+                <EmptyHomeRenderer />
             ) : (
                 <PortfolioContent ref={portfolioContentRef} />
             )}

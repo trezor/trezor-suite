@@ -7,6 +7,7 @@ import {
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { selectIsDeviceReadyToUse } from '@suite-native/device';
+import { Box } from '@suite-native/atoms';
 
 import { EmptyPortfolioTrackerState } from './EmptyPortfolioTrackerState';
 import { EmptyConnectedDeviceState } from './EmptyConnectedDeviceState';
@@ -26,17 +27,21 @@ export const EmptyHomeRenderer = () => {
         return null;
     }
 
+    let ScreenContent = EmptyPortfolioTrackerState;
+
     if (isUsbDeviceConnectFeatureEnabled) {
         // Crossroads should be displayed if there is no real device connected and portfolio tracker has no accounts
         // or if there is device connected, but not authorized (PIN enter cancelled).
         if (hasOnlyEmptyPortfolioTracker || !isDeviceAuthorized) {
-            return <EmptyPortfolioCrossroads />;
-        }
-
-        if (!isPortfolioTrackerDevice && isDeviceAuthorized) {
-            return <EmptyConnectedDeviceState />;
+            ScreenContent = EmptyPortfolioCrossroads;
+        } else if (!isPortfolioTrackerDevice && isDeviceAuthorized) {
+            ScreenContent = EmptyConnectedDeviceState;
         }
     }
 
-    return <EmptyPortfolioTrackerState />;
+    return (
+        <Box marginHorizontal="sp16">
+            <ScreenContent />
+        </Box>
+    );
 };

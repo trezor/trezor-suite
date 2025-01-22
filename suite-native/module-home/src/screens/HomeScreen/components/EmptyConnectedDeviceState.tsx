@@ -14,8 +14,9 @@ const cardStyle = prepareNativeStyle(utils => ({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: utils.spacings.sp32,
-    paddingHorizontal: utils.spacings.sp24,
+    paddingTop: utils.spacings.sp32,
+    paddingBottom: utils.spacings.sp16,
+    paddingHorizontal: utils.spacings.sp16,
 }));
 
 const contentStyle = prepareNativeStyle(_ => ({

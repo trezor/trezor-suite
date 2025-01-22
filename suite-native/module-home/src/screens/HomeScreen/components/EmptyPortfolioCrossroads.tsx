@@ -22,8 +22,8 @@ const cardStyle = prepareNativeStyle<{ flex: 1 | 2 }>((utils, { flex }) => ({
     flex,
     justifyContent: 'center',
     paddingTop: utils.spacings.sp40,
-    paddingBottom: utils.spacings.sp32,
-    paddingHorizontal: utils.spacings.sp24,
+    paddingBottom: utils.spacings.sp16,
+    paddingHorizontal: utils.spacings.sp16,
 }));
 
 const buttonWrapperStyle = prepareNativeStyle(() => ({
