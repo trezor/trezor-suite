@@ -354,10 +354,20 @@ export class DeviceCommands {
         } catch (error) {
             // handle possible race condition
             // Bridge may have some unread message in buffer, read it
-            await this.transport.receive({
-                session: this.transportSession,
-                protocol: this.device.protocol,
-            });
+            const abortController = new AbortController();
+            const timeout = setTimeout(() => {
+                abortController.abort();
+            }, 500);
+
+            await this.transport
+                .receive({
+                    session: this.transportSession,
+                    protocol: this.device.protocol,
+                    signal: abortController.signal,
+                })
+                .finally(() => {
+                    clearTimeout(timeout);
+                });
             // throw error anyway, next call should be resolved properly
             throw error;
         }
