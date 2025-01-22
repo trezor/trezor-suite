@@ -2,9 +2,9 @@ import styled from 'styled-components';
 
 import { spacings } from '@trezor/theme';
 import { Row } from '@trezor/components';
+import { invityAPI } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite';
-import invityAPI from 'src/services/suite/invityAPI';
 import { CoinmarketUtilsProvidersProps } from 'src/types/coinmarket/coinmarket';
 
 const Icon = styled.img`

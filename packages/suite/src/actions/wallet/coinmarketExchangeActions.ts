@@ -6,9 +6,10 @@ import {
     CryptoId,
 } from 'invity-api';
 
+import { invityAPI } from '@suite-common/invity';
+
 import { Account } from 'src/types/wallet';
 import { Dispatch } from 'src/types/suite';
-import invityAPI from 'src/services/suite/invityAPI';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { verifyAddress as verifyExchangeAddress } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 

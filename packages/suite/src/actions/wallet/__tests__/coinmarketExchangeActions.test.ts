@@ -1,8 +1,9 @@
 import { CryptoId, ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
 
+import { invityAPI } from '@suite-common/invity';
+
 import { configureStore } from 'src/support/tests/configureStore';
 import { coinmarketReducer } from 'src/reducers/wallet/coinmarketReducer';
-import invityAPI from 'src/services/suite/invityAPI';
 
 import * as coinmarketExchangeActions from '../coinmarketExchangeActions';
 

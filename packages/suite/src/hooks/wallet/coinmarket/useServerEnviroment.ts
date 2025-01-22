@@ -1,5 +1,6 @@
+import { invityAPI } from '@suite-common/invity';
+
 import { useSelector } from 'src/hooks/suite';
-import invityAPI from 'src/services/suite/invityAPI';
 
 export const useServerEnvironment = () => {
     const invityServerEnvironment = useSelector(

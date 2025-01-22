@@ -15,9 +15,9 @@ import { Account } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { networks } from '@suite-common/wallet-config';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { invityAPI } from '@suite-common/invity';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import invityAPI from 'src/services/suite/invityAPI';
 import { saveQuoteRequest, saveQuotes } from 'src/actions/wallet/coinmarketExchangeActions';
 import {
     addIdsToQuotes,

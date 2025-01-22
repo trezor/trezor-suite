@@ -5,10 +5,10 @@ import { BuyTrade, BuyTradeStatus } from 'invity-api';
 
 import { Button, variables, Image } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { invityAPI } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite/Translation';
 import { Account } from 'src/types/wallet';
-import invityAPI from 'src/services/suite/invityAPI';
 import { createTxLink } from 'src/utils/wallet/coinmarket/buyUtils';
 import { submitRequestForm } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { useDispatch } from 'src/hooks/suite';

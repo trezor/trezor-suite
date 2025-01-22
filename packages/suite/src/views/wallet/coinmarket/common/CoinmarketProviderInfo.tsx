@@ -1,8 +1,8 @@
 import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { invityAPI } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite';
-import invityAPI from 'src/services/suite/invityAPI';
 import { CoinmarketIcon } from 'src/views/wallet/coinmarket/common/CoinmarketIcon';
 
 export interface CoinmarketProviderInfoProps {

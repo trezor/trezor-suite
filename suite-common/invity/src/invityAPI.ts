@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import {
+import type {
     ExchangeListResponse,
     ExchangeTradeQuoteResponse,
     ExchangeTradeQuoteRequest,
@@ -24,15 +24,15 @@ import {
     InfoResponse,
 } from 'invity-api';
 
+import type {
+    InvityServerEnvironment,
+    InvityServers,
+    TradingTradeType,
+    TradingPaymentMethodType,
+    TradingType,
+    TradingWatchTradeResponsePropsMap,
+} from '@suite-common/invity';
 import { getSuiteVersion, isDesktop } from '@trezor/env-utils';
-import type { InvityServerEnvironment, InvityServers } from '@suite-common/invity';
-
-import {
-    CoinmarketPaymentMethodType,
-    CoinmarketTradeDetailType,
-    CoinmarketTradeType,
-    CoinmarketWatchTradeResponseMapProps,
-} from 'src/types/coinmarket/coinmarket';
 
 type BodyType =
     | BuyTrade
@@ -48,41 +48,41 @@ type BodyType =
 type SignalType = AbortSignal | null | undefined;
 
 class InvityAPI {
-    unknownCountry = 'unknown';
+    private readonly UNKNOWN_COUNTRY = 'unknown';
 
-    servers = {
+    readonly SERVERS: InvityServers = {
         production: 'https://exchange.trezor.io',
         staging: 'https://staging-exchange.invity.io',
         dev: 'https://dev-exchange.invity.io',
         localhost: 'http://localhost:3330',
-    } as InvityServers;
+    };
 
-    private serverEnvironment = 'production' as InvityServerEnvironment;
+    private serverEnvironment: InvityServerEnvironment = 'production';
 
     // info service
-    private INFO = '/api/info';
-    private DETECT_COUNTRY_INFO = '/api/info/country';
-    private GET_COUNTRY_INFO = '/api/info/country/{{country}}';
+    private readonly INFO = '/api/info';
+    private readonly DETECT_COUNTRY_INFO = '/api/info/country';
+    private readonly GET_COUNTRY_INFO = '/api/info/country/{{country}}';
 
     // exchange service
-    private EXCHANGE_LIST = '/api/v3/exchange/list';
-    private EXCHANGE_QUOTES = '/api/v3/exchange/quotes';
-    private EXCHANGE_DO_TRADE = '/api/v3/exchange/trade';
-    private EXCHANGE_WATCH_TRADE = '/api/v3/exchange/watch/{{counter}}';
+    private readonly EXCHANGE_LIST = '/api/v3/exchange/list';
+    private readonly EXCHANGE_QUOTES = '/api/v3/exchange/quotes';
+    private readonly EXCHANGE_DO_TRADE = '/api/v3/exchange/trade';
+    private readonly EXCHANGE_WATCH_TRADE = '/api/v3/exchange/watch/{{counter}}';
 
     // buy service
-    private BUY_LIST = '/api/v3/buy/list';
-    private BUY_QUOTES = '/api/v3/buy/quotes';
-    private BUY_DO_TRADE = '/api/v3/buy/trade';
-    private BUY_GET_TRADE_FORM = '/api/v3/buy/tradeform';
-    private BUY_WATCH_TRADE = '/api/v3/buy/watch/{{counter}}';
+    private readonly BUY_LIST = '/api/v3/buy/list';
+    private readonly BUY_QUOTES = '/api/v3/buy/quotes';
+    private readonly BUY_DO_TRADE = '/api/v3/buy/trade';
+    private readonly BUY_GET_TRADE_FORM = '/api/v3/buy/tradeform';
+    private readonly BUY_WATCH_TRADE = '/api/v3/buy/watch/{{counter}}';
 
     // sell service
-    private SELL_LIST = '/api/v3/sell/list';
-    private SELL_FIAT_QUOTES = '/api/v3/sell/fiat/quotes';
-    private SELL_FIAT_DO_TRADE = '/api/v3/sell/fiat/trade';
-    private SELL_FIAT_CONFIRM = '/api/v3/sell/fiat/confirm';
-    private SELL_FIAT_WATCH_TRADE = '/api/v3/sell/fiat/watch/{{counter}}';
+    private readonly SELL_LIST = '/api/v3/sell/list';
+    private readonly SELL_FIAT_QUOTES = '/api/v3/sell/fiat/quotes';
+    private readonly SELL_FIAT_DO_TRADE = '/api/v3/sell/fiat/trade';
+    private readonly SELL_FIAT_CONFIRM = '/api/v3/sell/fiat/confirm';
+    private readonly SELL_FIAT_WATCH_TRADE = '/api/v3/sell/fiat/watch/{{counter}}';
 
     private static accountDescriptor: string;
     private static apiKey: string;
@@ -96,7 +96,7 @@ class InvityAPI {
     }
 
     getApiServerUrl() {
-        return this.servers[this.serverEnvironment];
+        return this.SERVERS[this.serverEnvironment];
     }
 
     getCurrentAccountDescriptor() {
@@ -175,17 +175,17 @@ class InvityAPI {
     fetchCountryInfo = async (country: string): Promise<CountryInfo> => {
         try {
             const url =
-                country && country !== this.unknownCountry
+                country && country !== this.UNKNOWN_COUNTRY
                     ? this.GET_COUNTRY_INFO.replace('{{country}}', country)
                     : this.DETECT_COUNTRY_INFO;
             const response: CountryInfo = await this.request(url, {}, 'GET');
 
             return response;
         } catch (error) {
-            console.log('[fetchCountryInfo]', error);
+            console.error('[fetchCountryInfo]', error);
         }
 
-        return { country: this.unknownCountry };
+        return { country: this.UNKNOWN_COUNTRY };
     };
 
     getInfo = async (): Promise<InfoResponse> => {
@@ -195,7 +195,7 @@ class InvityAPI {
                 return response;
             }
         } catch (error) {
-            console.log('[getInfo]', error);
+            console.error('[getInfo]', error);
         }
 
         return { platforms: {}, coins: {} };
@@ -210,7 +210,7 @@ class InvityAPI {
 
             return response;
         } catch (error) {
-            console.log('[getExchangeList]', error);
+            console.error('[getExchangeList]', error);
         }
 
         return [];
@@ -231,7 +231,7 @@ class InvityAPI {
 
             return response;
         } catch (error) {
-            console.log('[getExchangeQuotes]', error);
+            console.error('[getExchangeQuotes]', error);
         }
     };
 
@@ -245,7 +245,7 @@ class InvityAPI {
 
             return response;
         } catch (error) {
-            console.log('[doExchangeTrade]', error);
+            console.error('[doExchangeTrade]', error);
 
             return { error: error.toString(), exchange: tradeRequest.trade.exchange };
         }
@@ -257,7 +257,7 @@ class InvityAPI {
 
             return response;
         } catch (error) {
-            console.log('[getBuyList]', error);
+            console.error('[getBuyList]', error);
         }
     };
 
@@ -276,7 +276,7 @@ class InvityAPI {
 
             return response;
         } catch (error) {
-            console.log('[getBuyQuotes]', error);
+            console.error('[getBuyQuotes]', error);
         }
     };
 
@@ -290,7 +290,7 @@ class InvityAPI {
 
             return response;
         } catch (error) {
-            console.log('[doBuyTrade]', error);
+            console.error('[doBuyTrade]', error);
 
             return { trade: { error: error.toString(), exchange: tradeRequest.trade.exchange } };
         }
@@ -306,7 +306,7 @@ class InvityAPI {
 
             return response;
         } catch (error) {
-            console.log('[getBuyTradeForm]', error);
+            console.error('[getBuyTradeForm]', error);
 
             return { error: error.toString() };
         }
@@ -318,7 +318,7 @@ class InvityAPI {
 
             return response;
         } catch (error) {
-            console.log('[getSellList]', error);
+            console.error('[getSellList]', error);
         }
     };
 
@@ -337,7 +337,7 @@ class InvityAPI {
 
             return response;
         } catch (error) {
-            console.log('[getSellQuotes]', error);
+            console.error('[getSellQuotes]', error);
         }
     };
 
@@ -351,7 +351,7 @@ class InvityAPI {
 
             return response;
         } catch (error) {
-            console.log('[doSellTrade]', error);
+            console.error('[doSellTrade]', error);
 
             return { trade: { error: error.toString(), exchange: tradeRequest.trade.exchange } };
         }
@@ -367,7 +367,7 @@ class InvityAPI {
 
             return response;
         } catch (error) {
-            console.log('[doSellConfirm]', error);
+            console.error('[doSellConfirm]', error);
 
             return { error: error.toString(), exchange: trade.exchange };
         }
@@ -381,11 +381,11 @@ class InvityAPI {
         return `${this.getApiServerUrl()}/images/exchange/${logo}`;
     }
 
-    getPaymentMethodUrl(paymentMethod: CoinmarketPaymentMethodType): string {
+    getPaymentMethodUrl(paymentMethod: TradingPaymentMethodType): string {
         return `${this.getApiServerUrl()}/images/paymentMethods/suite/${paymentMethod}.svg`;
     }
 
-    private getWatchTradeData = (tradeType: CoinmarketTradeType) => {
+    private getWatchTradeData = (tradeType: TradingType) => {
         const tradesData = {
             exchange: {
                 url: this.EXCHANGE_WATCH_TRADE,
@@ -405,15 +405,15 @@ class InvityAPI {
         return tradesData[tradeType];
     };
 
-    watchTrade = async <T extends CoinmarketTradeType>(
-        tradeData: CoinmarketTradeDetailType,
-        tradeType: CoinmarketTradeType,
+    watchTrade = async <T extends TradingType>(
+        tradeData: TradingTradeType,
+        tradeType: TradingType,
         counter: number,
-    ): Promise<CoinmarketWatchTradeResponseMapProps[T]> => {
+    ): Promise<TradingWatchTradeResponsePropsMap[T]> => {
         const tradesData = this.getWatchTradeData(tradeType);
 
         try {
-            const response: CoinmarketWatchTradeResponseMapProps[T] = await this.request(
+            const response: TradingWatchTradeResponsePropsMap[T] = await this.request(
                 tradesData.url.replace('{{counter}}', counter.toString()),
                 tradeData,
                 'POST',
@@ -421,13 +421,11 @@ class InvityAPI {
 
             return response;
         } catch (error) {
-            console.log(tradesData.logPrefix, error);
+            console.error(tradesData.logPrefix, error);
 
             return { error: error.toString() };
         }
     };
 }
 
-const invityAPI = new InvityAPI();
-
-export default invityAPI;
+export const invityAPI = new InvityAPI();

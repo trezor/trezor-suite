@@ -7,8 +7,9 @@ import {
     FiatCurrencyCode,
 } from 'invity-api';
 
+import { invityAPI } from '@suite-common/invity';
+
 import { Account } from 'src/types/wallet';
-import invityAPI from 'src/services/suite/invityAPI';
 import { Dispatch } from 'src/types/suite';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import * as modalActions from 'src/actions/suite/modalActions';

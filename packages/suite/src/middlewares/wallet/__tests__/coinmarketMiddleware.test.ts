@@ -1,4 +1,5 @@
 import { UI } from '@trezor/connect';
+import { invityAPI } from '@suite-common/invity';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import { coinmarketReducer, initialState } from 'src/reducers/wallet/coinmarketReducer';
@@ -6,14 +7,13 @@ import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import { coinmarketMiddleware } from 'src/middlewares/wallet/coinmarketMiddleware';
 import { Action } from 'src/types/suite';
 import { COINMARKET_COMMON } from 'src/actions/wallet/constants';
-import invityAPI from 'src/services/suite/invityAPI';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants';
 import routerReducer, { RouterState } from 'src/reducers/suite/routerReducer';
 import modalReducer, { State as ModalState } from 'src/reducers/suite/modalReducer';
 import { MODAL, ROUTER } from 'src/actions/suite/constants';
 
-jest.mock('src/services/suite/invityAPI');
+jest.mock('@suite-common/invity');
 invityAPI.setInvityServersEnvironment = () => {};
 invityAPI.createInvityAPIKey = () => {};
 invityAPI.getInfo = () =>
