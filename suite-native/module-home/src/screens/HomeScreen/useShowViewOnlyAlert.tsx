@@ -11,10 +11,7 @@ import {
 import { useAlert } from '@suite-native/alerts';
 import { analytics, EventType } from '@suite-native/analytics';
 import { CenteredTitleHeader, LottieAnimation, VStack } from '@suite-native/atoms';
-import {
-    getIsBiometricsFeatureAvailable,
-    useIsBiometricsInitialSetupFinished,
-} from '@suite-native/biometrics';
+import { getIsBiometricsFeatureAvailable } from '@suite-native/biometrics';
 import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
@@ -34,7 +31,6 @@ export const useShowViewOnlyAlert = () => {
     const { showAlert } = useAlert();
     const { showToast } = useToast();
 
-    const { isBiometricsInitialSetupFinished } = useIsBiometricsInitialSetupFinished();
     const device = useSelector(selectSelectedDevice);
     const isDeviceReadyToUseAndAuthorized = useSelector(selectIsDeviceReadyToUseAndAuthorized);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
@@ -110,8 +106,7 @@ export const useShowViewOnlyAlert = () => {
             !isPortfolioTrackerDevice &&
             !hasDiscovery &&
             !viewOnlyCancelationTimestamp &&
-            !isCreatingNewPassphraseWallet &&
-            (isBiometricsInitialSetupFinished || !isAvailableBiometrics);
+            !isCreatingNewPassphraseWallet;
 
         //show after a delay
         if (canBeShowed) {
@@ -129,7 +124,6 @@ export const useShowViewOnlyAlert = () => {
     }, [
         hasDiscovery,
         isAvailableBiometrics,
-        isBiometricsInitialSetupFinished,
         isDeviceReadyToUseAndAuthorized,
         isDeviceRemembered,
         isPortfolioTrackerDevice,

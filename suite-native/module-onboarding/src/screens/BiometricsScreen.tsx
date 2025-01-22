@@ -89,14 +89,14 @@ export const BiometricsScreen = ({
                     </VStack>
                     <VStack spacing="sp12">
                         <Button
-                            testID="@onboarding/UserDataConsent/enable"
+                            testID="@onboarding/UserDataConsent/enableBtn"
                             onPress={handleEnableButtonPress}
                         >
                             <Translation id="generic.buttons.enable" />
                         </Button>
                         <Button
                             colorScheme="tertiaryElevation0"
-                            testID="@onboarding/Biometrics/skip"
+                            testID="@onboarding/Biometrics/skipBtn"
                             onPress={handleNotNowButtonPress}
                         >
                             <Translation id="moduleOnboarding.biometricsScreen.button.notNow" />

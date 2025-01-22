@@ -10,10 +10,8 @@ import {
     DevUtilsStackParamList,
     DevUtilsStackRoutes,
     ScreenHeader,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
     RootStackParamList,
-    OnboardingStackRoutes,
 } from '@suite-native/navigation';
 import { clearStorage } from '@suite-native/storage';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
@@ -33,11 +31,6 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const DevUtilsScreen = () => {
     const navigation = useNavigation<NavigationProps>();
 
-    const navigateToNewWelcomeFlow = () =>
-        navigation.navigate(RootStackRoutes.Onboarding, {
-            screen: OnboardingStackRoutes.Welcome,
-        });
-
     return (
         <Screen header={<ScreenHeader content="DEV utils" />}>
             <VStack spacing="sp16">
@@ -48,17 +41,9 @@ export const DevUtilsScreen = () => {
                             subtitle={`${getEnv()}-${getSuiteVersion()}, commit ${getCommitHash() || 'N/A in debug build'}`}
                         />
                         {isDevelopOrDebugEnv() && (
-                            <>
-                                <Button
-                                    onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}
-                                >
-                                    See Component Demo
-                                </Button>
-                                {/* This button will be present for limited time only, until the new welcome flow is finished and enabled by default. */}
-                                <Button onPress={navigateToNewWelcomeFlow}>
-                                    Open New Welcome Flow
-                                </Button>
-                            </>
+                            <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
+                                See Component Demo
+                            </Button>
                         )}
                         <FeatureFlags />
                         {isDevelopOrDebugEnv() && (

@@ -10,12 +10,12 @@ import {
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen } from '@suite-native/navigation';
 
-import { useShowBiometricsAlert } from './useShowBiometricsAlert';
 import { EmptyHomeRenderer } from './components/EmptyHomeRenderer';
 import { PortfolioContent } from './components/PortfolioContent';
 import { useHomeRefreshControl } from './useHomeRefreshControl';
 import { PortfolioGraphRef } from './components/PortfolioGraph';
 import { useShowViewOnlyAlert } from './useShowViewOnlyAlert';
+
 export const HomeScreen = () => {
     const isDiscoveredDeviceAccountless = useSelector(selectIsDiscoveredDeviceAccountless);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
@@ -33,7 +33,6 @@ export const HomeScreen = () => {
         portfolioContentRef,
     });
 
-    useShowBiometricsAlert();
     useShowViewOnlyAlert();
 
     return (

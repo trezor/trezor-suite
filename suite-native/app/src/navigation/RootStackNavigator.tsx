@@ -15,7 +15,6 @@ import {
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
 import { TransactionDetailScreen } from '@suite-native/transactions';
-import { OnboardingStackNavigator as LegacyOnboardingStackNavigator } from '@suite-native/module-onboarding-legacy';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { ReceiveStackNavigator } from '@suite-native/receive';
 import { AuthorizeDeviceStackNavigator } from '@suite-native/module-authorize-device';
@@ -42,7 +41,7 @@ export const RootStackNavigator = () => {
             return RootStackRoutes.AppTabs;
         }
 
-        return RootStackRoutes.LegacyOnboarding;
+        return RootStackRoutes.Onboarding;
     };
 
     return (
@@ -50,10 +49,6 @@ export const RootStackNavigator = () => {
             initialRouteName={getInitialRouteName()}
             screenOptions={stackNavigationOptionsConfig}
         >
-            <RootStack.Screen
-                name={RootStackRoutes.LegacyOnboarding}
-                component={LegacyOnboardingStackNavigator}
-            />
             <RootStack.Screen
                 name={RootStackRoutes.Onboarding}
                 component={OnboardingStackNavigator}

@@ -54,7 +54,6 @@
         { "path": "../module-device-settings" },
         { "path": "../module-home" },
         { "path": "../module-onboarding" },
-        { "path": "../module-onboarding-legacy" },
         { "path": "../module-send" },
         { "path": "../module-settings" },
         {
