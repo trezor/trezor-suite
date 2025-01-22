@@ -12775,7 +12775,7 @@ __metadata:
     "@types/json-stable-stringify": "npm:^1"
     esbuild: "npm:^0.23.1"
     html-webpack-plugin: "npm:^5.6.0"
-    json-stable-stringify: "npm:^1.1.1"
+    json-stable-stringify: "npm:^1.2.1"
     pkg: "npm:^5.8.1"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
@@ -28558,7 +28558,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-stable-stringify@npm:^1.0.2, json-stable-stringify@npm:^1.1.1":
+"json-stable-stringify@npm:^1.0.2":
   version: 1.1.1
   resolution: "json-stable-stringify@npm:1.1.1"
   dependencies:
@@ -28567,6 +28567,19 @@ __metadata:
     jsonify: "npm:^0.0.1"
     object-keys: "npm:^1.1.1"
   checksum: 10/60853c1f63451319b5c7953465a555aa816cf84e60e3ca36b6c05225d8fdc4615127fb4ecb92f9f5ad880c552ab8cbae9a519f78b995e7788d6d89e57afafdeb
+  languageName: node
+  linkType: hard
+
+"json-stable-stringify@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "json-stable-stringify@npm:1.2.1"
+  dependencies:
+    call-bind: "npm:^1.0.8"
+    call-bound: "npm:^1.0.3"
+    isarray: "npm:^2.0.5"
+    jsonify: "npm:^0.0.1"
+    object-keys: "npm:^1.1.1"
+  checksum: 10/f4600d34605e1da81a615ddf7dc62f021a5a5c822aee38b3c878e9a703bbd72623402944dbd7848140602c9ec54bfa2df65dfe75cc40afcfd79f3f072ca5307b
   languageName: node
   linkType: hard
 
