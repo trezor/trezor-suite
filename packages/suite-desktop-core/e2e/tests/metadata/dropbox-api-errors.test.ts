@@ -43,7 +43,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
         await page.getByTestId('@account-menu/btc/normal/0').click();
 
         await metadataPage.accountLabel(AccountLabelId.BitcoinDefault1).click();
-        await metadataPage.editLabelButton(AccountLabelId.BitcoinDefault1).click();
+        await metadataPage.editAccountLabelButton(AccountLabelId.BitcoinDefault1).click();
 
         // Simulated API responses for retries with malformed token must be supplied exactly at this point in the flow
         for (let i = 0; i < 4; i++) {
@@ -121,7 +121,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
         });
 
         await page.getByTestId('@account-menu/btc/normal/0').click();
-        await metadataPage.editLabel(AccountLabelId.BitcoinDefault1, 'Kvooo');
+        await metadataPage.editAccountLabel(AccountLabelId.BitcoinDefault1, 'Kvooo');
         await expect(metadataPage.accountLabel(AccountLabelId.BitcoinDefault1)).toContainText(
             'Kvooo',
         );
@@ -157,7 +157,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
 
         await page.getByTestId('@account-menu/btc/normal/0').click();
         // just enter some label, this indicates that app did not crash
-        await metadataPage.editLabel(AccountLabelId.BitcoinDefault1, 'Kvooo');
+        await metadataPage.editAccountLabel(AccountLabelId.BitcoinDefault1, 'Kvooo');
     });
 
     test.afterEach(async ({ metadataProviderMock }) => {

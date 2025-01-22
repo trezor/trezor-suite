@@ -6,26 +6,47 @@ import { MetadataProvider } from '../mocks/metadataProviderMock';
 import { DevicePromptActions } from './devicePromptActions';
 import { step } from '../common';
 
+interface MetadataSubmitOptions {
+    useButton?: boolean;
+}
+
 export class MetadataActions {
     private readonly metadataSubmitButton: Locator;
+    readonly metadataCancelButton: Locator;
     readonly metadataInput: Locator;
-    readonly editLabelButton = (accountId: string) =>
+
+    readonly editAccountLabelButton = (accountId: string) =>
         this.page.getByTestId(`${this.getAccountLabelTestId(accountId)}/edit-label-button`);
-    readonly successLabel = (accountId: string) =>
+    readonly successAccountLabel = (accountId: string) =>
         this.page.getByTestId(`${this.getAccountLabelTestId(accountId)}/success`);
     readonly accountLabel = (accountId: string) =>
         this.page.getByTestId(`${this.getAccountLabelTestId(accountId)}/hover-container`);
+    readonly outputLabel = (outputId: string, txNumber: number) =>
+        this.page.getByTestId(`${this.getOutputLabelTestId(outputId, txNumber)}/hover-container`);
+    readonly outputDropdownCopyAddress = (outputId: string, txNumber: number) =>
+        this.page.getByTestId(
+            `${this.getOutputLabelTestId(outputId, txNumber)}/dropdown/copy-address`,
+        );
+    readonly outputDropdownEditLabel = (outputId: string, txNumber: number) =>
+        this.page.getByTestId(
+            `${this.getOutputLabelTestId(outputId, txNumber)}/dropdown/edit-label`,
+        );
 
     constructor(
         private readonly page: Page,
         private readonly devicePrompt: DevicePromptActions,
     ) {
         this.metadataSubmitButton = page.getByTestId('@metadata/submit');
+        this.metadataCancelButton = page.getByTestId('@metadata/cancel');
         this.metadataInput = page.getByTestId('@metadata/input');
     }
 
     private getAccountLabelTestId(accountId: string): string {
         return `@metadata/accountLabel/${accountId}`;
+    }
+
+    private getOutputLabelTestId(outputId: string, txNumber: number): string {
+        return `@metadata/outputLabel/${outputId}-${txNumber}`;
     }
 
     @step()
@@ -47,15 +68,14 @@ export class MetadataActions {
     }
 
     @step()
-    async editLabel(accountId: string, newLabel: string) {
+    async editAccountLabel(accountId: string, newLabel: string) {
         await this.accountLabel(accountId).click();
-        await this.editLabelButton(accountId).click();
-        await this.metadataInput.fill(newLabel);
-        await this.metadataSubmitButton.click();
+        await this.editAccountLabelButton(accountId).click();
+        await this.fillLabelInput(newLabel, { useButton: true });
     }
 
     @step()
-    async clickAddLabelButton(accountId: string) {
+    async clickAddAccountLabelButton(accountId: string) {
         await this.accountLabel(accountId).hover();
         await this.page
             .getByTestId(`${this.getAccountLabelTestId(accountId)}/add-label-button`)
@@ -63,9 +83,42 @@ export class MetadataActions {
     }
 
     @step()
-    async addLabel(accountId: string, label: string) {
-        await this.clickAddLabelButton(accountId);
+    async addAccountLabel(accountId: string, label: string) {
+        await this.clickAddAccountLabelButton(accountId);
+        await this.fillLabelInput(label);
+    }
+
+    @step()
+    async clickAddOutputLabelButton(outputId: string, txNumber: number) {
+        await this.outputLabel(outputId, txNumber).hover();
+        await this.page
+            .getByTestId(`${this.getOutputLabelTestId(outputId, txNumber)}/add-label-button`)
+            .click();
+    }
+
+    @step()
+    async addOutputLabel(outputId: string, txNumber: number, label: string) {
+        await this.clickAddOutputLabelButton(outputId, txNumber);
+        await this.fillLabelInput(label);
+    }
+
+    @step()
+    async editOutputLabel(outputId: string, txNumber: number, newLabel: string) {
+        await this.outputLabel(outputId, txNumber).click();
+        await this.outputDropdownEditLabel(outputId, txNumber).click();
+        await this.fillLabelInput(newLabel);
+    }
+
+    @step()
+    async fillLabelInput(label: string, options?: MetadataSubmitOptions) {
         await this.metadataInput.fill(label);
+
+        if (options?.useButton) {
+            await this.metadataSubmitButton.click();
+
+            return;
+        }
+
         await this.page.keyboard.press('Enter');
     }
 }
