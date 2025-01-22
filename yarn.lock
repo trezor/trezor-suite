@@ -11657,7 +11657,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    "@types/web": "npm:^0.0.174"
+    "@types/web": "npm:^0.0.197"
     events: "npm:^3.3.0"
     fs-extra: "npm:^11.2.0"
     html-webpack-plugin: "npm:^5.6.0"
@@ -12013,7 +12013,7 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/chrome": "npm:^0.0.278"
+    "@types/chrome": "npm:^0.0.299"
     "@types/w3c-web-usb": "npm:^1.0.10"
     babel-loader: "npm:^9.1.3"
     html-webpack-plugin: "npm:^5.6.0"
@@ -12044,7 +12044,7 @@ __metadata:
     "@trezor/node-utils": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/chrome": "npm:^0.0.278"
+    "@types/chrome": "npm:^0.0.299"
     babel-loader: "npm:^9.1.3"
     copy-webpack-plugin: "npm:^12.0.2"
     events: "npm:^3.3.0"
@@ -12091,7 +12091,7 @@ __metadata:
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    "@types/karma": "npm:^6.3.8"
+    "@types/karma": "npm:^6.3.9"
     babel-loader: "npm:^9.1.3"
     blakejs: "npm:^1.2.1"
     bs58: "npm:^6.0.0"
@@ -12490,7 +12490,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/electron-localshortcut": "npm:^3.1.3"
-    "@types/ws": "npm:^8.5.12"
+    "@types/ws": "npm:^8.5.13"
     chalk: "npm:^4.1.2"
     electron: "npm:32.2.6"
     electron-localshortcut: "npm:^3.2.1"
@@ -12827,7 +12827,7 @@ __metadata:
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/bytebuffer": "npm:^5.0.49"
-    "@types/sharedworker": "npm:^0.0.130"
+    "@types/sharedworker": "npm:^0.0.143"
     "@types/w3c-web-usb": "npm:^1.0.10"
     cross-fetch: "npm:^4.0.0"
     jest: "npm:29.7.0"
@@ -12848,7 +12848,7 @@ __metadata:
   dependencies:
     "@trezor/utils": "workspace:*"
     "@types/semver": "npm:^7.5.8"
-    "@types/ws": "npm:^8.5.12"
+    "@types/ws": "npm:^8.5.13"
     cross-fetch: "npm:^4.0.0"
     semver: "npm:^7.6.3"
     ws: "npm:^8.18.0"
@@ -13134,13 +13134,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chrome@npm:^0.0.278":
-  version: 0.0.278
-  resolution: "@types/chrome@npm:0.0.278"
+"@types/chrome@npm:^0.0.299":
+  version: 0.0.299
+  resolution: "@types/chrome@npm:0.0.299"
   dependencies:
     "@types/filesystem": "npm:*"
     "@types/har-format": "npm:*"
-  checksum: 10/8fa2e68bd28b28f14599aee36ecd40f32f42fd68e4012145205930f4bf2d62f57b1b0b5af033e15d0fbdeadb211fd51c14f8ef3caf34176f8c5d127ac3fe8641
+  checksum: 10/2acfcfa29f76af89d28182703a0d213ae1f2874d7f4c57438f7f2db0491e4a37d84d55567036d7edc6b77ffb15e7330dfec05552892419ba9eee12d239a0d415
   languageName: node
   linkType: hard
 
@@ -13771,13 +13771,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/karma@npm:^6.3.8":
-  version: 6.3.8
-  resolution: "@types/karma@npm:6.3.8"
+"@types/karma@npm:^6.3.9":
+  version: 6.3.9
+  resolution: "@types/karma@npm:6.3.9"
   dependencies:
     "@types/node": "npm:*"
     log4js: "npm:^6.4.1"
-  checksum: 10/d516cd4473ec13abb65dc1e5bbd337e35d9ab9e78861f18f4e3ee1267e5b7bb2fce53421a21553bfd8d183a301a9d8c3ae2776652c2535257c036612a5c81b68
+  checksum: 10/137a81a1ec64b32fa71de23839a6aa0a8f5df01a28433338005ddc46d9aeb05ff4bd9b5c227ff69d48a9ea81276d1a227c09a1ff06e52fc96f9343b3ad6d17b1
   languageName: node
   linkType: hard
 
@@ -14315,10 +14315,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sharedworker@npm:^0.0.130":
-  version: 0.0.130
-  resolution: "@types/sharedworker@npm:0.0.130"
-  checksum: 10/23c4b09f5c1c4ac421d7e8b0c9f2da3d4ef2e3fdaa29e1d899722311dbd4d57e50360efd2a6d05e7cecf2a9b5c7d6dc35df52115c58fe28cccab2614f5675251
+"@types/sharedworker@npm:^0.0.143":
+  version: 0.0.143
+  resolution: "@types/sharedworker@npm:0.0.143"
+  checksum: 10/321d88d6955f719ce920d0a4934dfc5edf4a2e933541138fe116ef63854274a65520591b5b126e0504e5a93d07cf43b00ea5a7857985d873369704cf32437952
   languageName: node
   linkType: hard
 
@@ -14455,10 +14455,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/web@npm:^0.0.174":
-  version: 0.0.174
-  resolution: "@types/web@npm:0.0.174"
-  checksum: 10/e249ac2b2ce8a11d0933fd9a307dc2fd8d627c93b3c15b2d6fe959133aa6ee2608cdef58c39ce237b7cd081fa6c12e7cd720dbf2a53f7161475c3f551f89a86d
+"@types/web@npm:^0.0.197":
+  version: 0.0.197
+  resolution: "@types/web@npm:0.0.197"
+  checksum: 10/8b6b13301d0ae63e4a8686bc942d7a3e782c41fedeca02bb0fe3e0f0f934e63d76df5119473ddc7f6dfce8a8185b1e65974172f39f306822f2774c95a0b7c2ff
   languageName: node
   linkType: hard
 
@@ -14516,12 +14516,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ws@npm:^8.2.2, @types/ws@npm:^8.5.10, @types/ws@npm:^8.5.12":
+"@types/ws@npm:^8.2.2, @types/ws@npm:^8.5.10":
   version: 8.5.12
   resolution: "@types/ws@npm:8.5.12"
   dependencies:
     "@types/node": "npm:*"
   checksum: 10/d8a3ddfb5ff8fea992a043113579d61ac1ea21e8464415af9e2b01b205ed19d817821ad64ca1b3a90062d1df1c23b0f586d8351d25ca6728844df99a74e8f76d
+  languageName: node
+  linkType: hard
+
+"@types/ws@npm:^8.5.13":
+  version: 8.5.13
+  resolution: "@types/ws@npm:8.5.13"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10/21369beafa75c91ae3b00d3a2671c7408fceae1d492ca2abd5ac7c8c8bf4596d513c1599ebbddeae82c27c4a2d248976d0d714c4b3d34362b2ae35b964e2e637
   languageName: node
   linkType: hard
 

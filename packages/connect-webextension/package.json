@@ -48,7 +48,7 @@
         "@trezor/eslint": "workspace:*",
         "@trezor/node-utils": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
-        "@types/chrome": "^0.0.278",
+        "@types/chrome": "^0.0.299",
         "babel-loader": "^9.1.3",
         "copy-webpack-plugin": "^12.0.2",
         "rimraf": "^6.0.1",
