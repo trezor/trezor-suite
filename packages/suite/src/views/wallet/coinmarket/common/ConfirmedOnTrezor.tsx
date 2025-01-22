@@ -31,7 +31,7 @@ interface ConfirmedOnTrezorProps {
 }
 
 export const ConfirmedOnTrezor = ({ device }: ConfirmedOnTrezorProps) => (
-    <Confirmed>
+    <Confirmed data-testid="@coinmarket/offer/confirm-on-trezor-button">
         <StyledRotateDeviceImage
             deviceModel={device?.features?.internal_model}
             deviceColor={device?.features?.unit_color}

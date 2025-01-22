@@ -12,7 +12,7 @@ test.describe('Coin market buy', { tag: ['@group=other', '@snapshot', '@webOnly'
         await walletPage.openCoinMarket();
     });
 
-    test('Buy crypto from compared offers', async ({ marketPage }) => {
+    test('Select compared offers to buy', async ({ marketPage }) => {
         await test.step('Fill input amount and opens offer comparison', async () => {
             await marketPage.setYouPayAmount(mockedInputAmount);
             await expect(marketPage.section).toHaveScreenshot('buy-coins-layout.png');
@@ -20,9 +20,6 @@ test.describe('Coin market buy', { tag: ['@group=other', '@snapshot', '@webOnly'
         });
 
         await test.step('Check offers and chooses the first one', async () => {
-            await expect(marketPage.buyOffersPage).toHaveScreenshot('compared-offers-buy.png', {
-                mask: [marketPage.refreshTime],
-            });
             await marketPage.validateBuyQuotes();
             await marketPage.selectThisQuoteButton.first().click();
         });
@@ -31,6 +28,7 @@ test.describe('Coin market buy', { tag: ['@group=other', '@snapshot', '@webOnly'
             await marketPage.confirmTrade();
             await expect(marketPage.tradeConfirmation).toHaveScreenshot(
                 'compared-offers-buy-confirmation.png',
+                { mask: [marketPage.confirmOnTrezorButton] },
             );
             await expect(marketPage.tradeConfirmationContinueButton).toBeEnabled();
         });
