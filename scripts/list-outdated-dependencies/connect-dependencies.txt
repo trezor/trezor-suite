@@ -9,10 +9,6 @@ postcss-cli
 postcss-import
 postcss-lightningcss
 postcss-loader
-postcss-modules-extract-imports
-postcss-modules-local-by-default
-postcss-modules-scope
-postcss-modules-values
 postcss-styled-syntax
 @tailwindcss/nesting
 @codemirror/state
