@@ -3,6 +3,7 @@ import { MiddlewareAPI } from 'redux';
 import { UI } from '@trezor/connect';
 import { Route } from '@suite-common/suite-types';
 import { accountsActions } from '@suite-common/wallet-core';
+import { invityAPI } from '@suite-common/invity/src/invityAPI';
 
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import {
@@ -11,7 +12,6 @@ import {
     COINMARKET_SELL,
 } from 'src/actions/wallet/constants';
 import { INVITY_API_RELOAD_DATA_AFTER_MS } from 'src/constants/wallet/coinmarket/metadata';
-import invityAPI from 'src/services/suite/invityAPI';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import * as coinmarketInfoAction from 'src/actions/wallet/coinmarketInfoActions';
 import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
