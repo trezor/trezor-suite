@@ -25,6 +25,10 @@ export enum EverstakeAssetEndpointType {
     GetAssets = 'getAssets',
 }
 
+export enum EverstakeRewardsEndpointType {
+    GetRewards = 'stakingRewards',
+}
+
 export const EVERSTAKE_ASSET_ENDPOINT_TYPES = {
     [EverstakeAssetEndpointType.GetAssets]: 'chain',
 };
@@ -89,3 +93,14 @@ export type UnstakeContextValues = UseFormReturn<UnstakeFormState> &
         onFiatAmountChange: (amount: string) => void;
         currentRate: Rate | undefined;
     };
+
+export type StakeAccountRewards = {
+    height: number;
+    epoch: number;
+    validator: string;
+    authority: string;
+    stake_account: string;
+    amount: string;
+    currency: string;
+    time: string;
+};

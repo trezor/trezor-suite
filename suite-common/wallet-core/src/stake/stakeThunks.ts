@@ -11,13 +11,15 @@ import {
 import { TimerId } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { EVERSTAKE_ENDPOINT_PREFIX } from './stakeConstants';
+import { EVERSTAKE_ENDPOINT_PREFIX, EVERSTAKE_REWARDS_SOLANA_ENPOINT } from './stakeConstants';
 import { selectEverstakeData } from './stakeSelectors';
 import {
     EVERSTAKE_ASSET_ENDPOINT_TYPES,
     EVERSTAKE_ENDPOINT_TYPES,
     EverstakeAssetEndpointType,
     EverstakeEndpointType,
+    EverstakeRewardsEndpointType,
+    StakeAccountRewards,
     ValidatorsQueue,
 } from './stakeTypes';
 import { selectAllNetworkSymbolsOfVisibleAccounts } from '../accounts/accountsReducer';
@@ -98,6 +100,41 @@ export const fetchEverstakeAssetData = createThunk<
 
             return fulfillWithValue({
                 apy: data.blockchain.apr,
+            });
+        } catch (error) {
+            return rejectWithValue(error.toString());
+        }
+    },
+);
+
+export const fetchEverstakeRewards = createThunk<
+    { rewards: StakeAccountRewards[] },
+    {
+        symbol: SupportedSolanaNetworkSymbols;
+        endpointType: EverstakeRewardsEndpointType;
+        address: string;
+        signal?: AbortSignal;
+    },
+    { rejectValue: string }
+>(
+    `${STAKE_MODULE}/fetchEverstakeRewardsData`,
+    async (params, { fulfillWithValue, rejectWithValue }) => {
+        const { address, signal } = params;
+
+        try {
+            const response = await fetch(`${EVERSTAKE_REWARDS_SOLANA_ENPOINT}/${address}`, {
+                method: 'POST',
+                signal,
+            });
+
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+
+            const data = await response.json();
+
+            return fulfillWithValue({
+                rewards: data,
             });
         } catch (error) {
             return rejectWithValue(error.toString());

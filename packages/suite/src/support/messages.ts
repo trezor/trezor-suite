@@ -5214,6 +5214,14 @@ export default defineMessages({
         id: 'TR_MY_PORTFOLIO',
         defaultMessage: 'Portfolio',
     },
+    TR_REWARD: {
+        id: 'TR_REWARD',
+        defaultMessage: 'Reward',
+    },
+    TR_REWARDS: {
+        id: 'TR_REWARDS',
+        defaultMessage: 'Rewards',
+    },
     TR_ALL_TRANSACTIONS: {
         id: 'TR_ALL_TRANSACTIONS',
         defaultMessage: 'Transactions',
@@ -8696,6 +8704,15 @@ export default defineMessages({
     TR_STAKE_RESTAKED_BADGE: {
         id: 'TR_STAKE_RESTAKED_BADGE',
         defaultMessage: 'Restaked',
+    },
+    TR_STAKE_REWARDS_BAGE: {
+        id: 'TR_STAKE_REWARDS_BAGE',
+        defaultMessage: 'Epoch number {count}',
+    },
+    TR_STAKE_REWARDS_TOOLTIP: {
+        id: 'TR_STAKE_REWARDS_TOOLTIP',
+        defaultMessage:
+            'An epoch in Solana is approximately {count, plural, one {# day} other {# days}} long.',
     },
     TR_STAKE_ETH_CARD_TITLE: {
         id: 'TR_STAKE_ETH_CARD_TITLE',

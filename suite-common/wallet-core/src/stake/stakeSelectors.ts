@@ -47,3 +47,11 @@ export const selectValidatorsQueue = (state: StakeRootState, symbol?: NetworkSym
 
     return state.wallet.stake?.data?.[symbol]?.validatorsQueue;
 };
+
+export const selectStakingRewards = (state: StakeRootState, symbol?: NetworkSymbol) => {
+    if (!symbol) {
+        return undefined;
+    }
+
+    return state.wallet.stake?.data?.[symbol]?.stakingRewards;
+};

@@ -4,8 +4,8 @@ import { PrecomposedTransactionFinal, StakeFormState, Timestamp } from '@suite-c
 import { cloneObject } from '@trezor/utils';
 
 import { stakeActions } from './stakeActions';
-import { fetchEverstakeAssetData, fetchEverstakeData } from './stakeThunks';
-import { ValidatorsQueue } from './stakeTypes';
+import { fetchEverstakeAssetData, fetchEverstakeData, fetchEverstakeRewards } from './stakeThunks';
+import { StakeAccountRewards, ValidatorsQueue } from './stakeTypes';
 import { SerializedTx } from '../send/sendFormTypes';
 
 export interface StakeState {
@@ -35,6 +35,12 @@ export interface StakeState {
                 isLoading: boolean;
                 lastSuccessfulFetchTimestamp: Timestamp;
                 data: { apy?: number };
+            };
+            stakingRewards?: {
+                error: boolean | string;
+                isLoading: boolean;
+                lastSuccessfulFetchTimestamp: Timestamp;
+                data: { rewards?: StakeAccountRewards[] };
             };
         };
     };
@@ -124,10 +130,11 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
             }
         })
         .addCase(fetchEverstakeAssetData.pending, (state, action) => {
-            const { symbol } = action.meta.arg;
+            const { symbol, endpointType } = action.meta.arg;
 
-            if (!state.data[symbol]) {
+            if (!state.data[symbol]?.[endpointType]) {
                 state.data[symbol] = {
+                    ...state.data[symbol],
                     getAssets: {
                         error: false,
                         isLoading: true,
@@ -152,6 +159,50 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
             }
         })
         .addCase(fetchEverstakeAssetData.rejected, (state, action) => {
+            const { symbol, endpointType } = action.meta.arg;
+
+            const data = state.data[symbol];
+
+            if (data?.[endpointType]) {
+                data[endpointType] = {
+                    error: true,
+                    isLoading: false,
+                    lastSuccessfulFetchTimestamp: 0 as Timestamp,
+                    data: {},
+                };
+            }
+        })
+        .addCase(fetchEverstakeRewards.pending, (state, action) => {
+            const { symbol, endpointType } = action.meta.arg;
+
+            if (!state.data[symbol]?.[endpointType]) {
+                state.data[symbol] = {
+                    ...state.data[symbol],
+                    stakingRewards: {
+                        error: false,
+                        isLoading: true,
+                        lastSuccessfulFetchTimestamp: 0 as Timestamp,
+                        data: {},
+                    },
+                };
+            }
+        })
+        .addCase(fetchEverstakeRewards.fulfilled, (state, action) => {
+            const { symbol, endpointType } = action.meta.arg;
+
+            const data = state.data[symbol];
+
+            if (data?.[endpointType]) {
+                data[endpointType] = {
+                    error: false,
+                    isLoading: false,
+                    lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                    data: action.payload,
+                };
+            }
+        })
+
+        .addCase(fetchEverstakeRewards.rejected, (state, action) => {
             const { symbol, endpointType } = action.meta.arg;
 
             const data = state.data[symbol];

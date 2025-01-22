@@ -12,3 +12,6 @@ export const EVERSTAKE_ENDPOINT_PREFIX: Record<
     sol: 'https://dashboard-api.everstake.one',
     dsol: 'https://dashboard-api.everstake.one',
 };
+
+export const EVERSTAKE_REWARDS_SOLANA_ENPOINT =
+    'https://stake-sync-api.everstake.one/solana/rewards';
