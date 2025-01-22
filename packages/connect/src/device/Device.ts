@@ -56,7 +56,7 @@ import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { IStateStorage } from './StateStorage';
 import type { PromptCallback } from './prompts';
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../api/firmware';
-
+import { cancelPrompt } from './prompts';
 // custom log
 const _log = initLog('Device');
 
@@ -555,10 +555,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         // set the timeout for this call so whenever it happens "unacquired device" will be created instead
                         // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
                         new Promise((_resolve, reject) => {
-                            getFeaturesTimeoutId = setTimeout(
-                                () => reject(new Error('GetFeatures timeout')),
-                                getFeaturesTimeout,
-                            );
+                            getFeaturesTimeoutId = setTimeout(() => {
+                                cancelPrompt(this, false).finally(() => {
+                                    reject(new Error('GetFeatures timeout'));
+                                });
+                            }, getFeaturesTimeout);
                         }),
                     ]);
                 }
