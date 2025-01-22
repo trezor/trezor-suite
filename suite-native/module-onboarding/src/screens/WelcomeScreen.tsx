@@ -17,6 +17,8 @@ import { hexToRgba } from '@suite-common/suite-utils';
 import { getWindowHeight } from '@trezor/env-utils';
 import { colorVariants } from '@trezor/theme';
 
+import { E2ESkipOnboardingButton } from '../components/E2ESkipOnboardingButton';
+
 const GRADIENT_HEIGHT = getWindowHeight() / 3;
 const BLACK_BACKGROUND_COLOR = '#000000';
 
@@ -27,7 +29,7 @@ const gradientBackgroundBottomStyle = prepareNativeStyle(() => ({
 
 const buttonWrapperStyle = prepareNativeStyle(utils => ({
     width: '100%',
-    paddingBottom: utils.spacings.sp32,
+    paddingBottom: utils.spacings.sp16,
 }));
 
 const textColorStyle = prepareNativeStyle(() => ({
@@ -73,11 +75,11 @@ export const WelcomeScreen = ({
                 >
                     <Box flex={1} justifyContent="space-between">
                         <LinearGradient
-                            colors={['#000000', transparentColor]}
+                            colors={[BLACK_BACKGROUND_COLOR, transparentColor]}
                             style={applyStyle(gradientBackgroundBottomStyle)}
                         />
                         <LinearGradient
-                            colors={[transparentColor, '#000000']}
+                            colors={[transparentColor, BLACK_BACKGROUND_COLOR]}
                             style={applyStyle(gradientBackgroundBottomStyle)}
                         />
                     </Box>
@@ -97,6 +99,7 @@ export const WelcomeScreen = ({
                         </Box>
                     </VStack>
                     <Box style={applyStyle(buttonWrapperStyle)}>
+                        <E2ESkipOnboardingButton />
                         <Button
                             onPress={navigateToAnalyticsConsent}
                             testID="@onboarding/Welcome/nextBtn"

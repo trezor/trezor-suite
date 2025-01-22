@@ -70,19 +70,6 @@ export const en = {
         buttons: {
             receive: 'Receive',
         },
-
-        // TODO: delete this when is the new welcome flow enabled by default
-        biometricsModal: {
-            title: 'Enable biometrics protection',
-            description: 'You can always change this later.',
-            button: {
-                later: 'I’ll do that later in Settings',
-            },
-            resultMsg: {
-                error: 'Unable to enable biometrics',
-                success: 'Biometrics enabled',
-            },
-        },
         rememberModeModal: {
             title: 'Enable view-only to check balances after you disconnect your Trezor',
             description:
@@ -776,40 +763,6 @@ export const en = {
         welcomeScreen: {
             subtitle: 'Take control.',
             button: "Let's get started",
-
-            // TODO: this should be removed when is the new onboarding enabled by default
-            welcome: 'Welcome to',
-            subtitleLegacy: 'Securely track, manage & receive\ncrypto on the go',
-            trezorLink: 'Don’t have a Trezor? <trezorLink>Get one here.</trezorLink>',
-            nextButton: 'Get started',
-        },
-        connectTrezorScreen: {
-            title: 'Connect',
-            subtitle:
-                'Manage your portfolio with your Trezor hardware wallet connected directly to your mobile device.',
-        },
-        featureReceiveScreen: {
-            portfolioTracker: {
-                title: 'Receive coins',
-                subtitle: 'Generate addresses and QR codes to receive crypto on the go.',
-            },
-            device: {
-                title: 'Receive',
-                subtitle:
-                    'Generate and verify addresses directly on your Trezor to get paid and receive crypto on the go.',
-            },
-        },
-        trackBalancesScreen: {
-            portfolioTracker: {
-                title: 'Track balances',
-                subtitle:
-                    'Easily sync your coin addresses and keep up with the crypto on your hardware wallet.',
-            },
-            device: {
-                title: 'Track balances',
-                subtitle:
-                    'Keep up with your favorite coins even without your Trezor connected. Simply sync and track your crypto from anywhere.',
-            },
         },
         analyticsConsentScreen: {
             title: 'Better—with you.',
@@ -829,11 +782,6 @@ export const en = {
             },
             helpSwitchTitle: 'Help us anonymously',
             learnMoreButton: 'More about privacy',
-
-            // TODO: this should be removed when is the new onboarding enabled by default
-            titleLegacy: 'Better with you',
-            subtitleLegacy: 'Improve Trezor Suite Lite with your anonymous data.',
-            learnMore: '<securityLink>More</securityLink> about privacy',
         },
         biometricsScreen: {
             title: 'Biometrics',

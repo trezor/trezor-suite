@@ -24,14 +24,6 @@ export enum AppTabsRoutes {
     Settings = 'Settings',
 }
 
-export enum LegacyOnboardingStackRoutes {
-    Welcome = 'Welcome',
-    TrackBalances = 'TrackBalances',
-    AboutReceiveCoinsFeature = 'AboutReceiveCoinsFeature',
-    AnalyticsConsent = 'AnalyticsConsent',
-    ConnectTrezor = 'ConnectTrezor',
-}
-
 export enum OnboardingStackRoutes {
     Welcome = 'Welcome',
     AnalyticsConsent = 'AnalyticsConsent',

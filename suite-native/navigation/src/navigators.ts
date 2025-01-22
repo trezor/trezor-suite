@@ -22,7 +22,6 @@ import {
     DeviceStackRoutes,
     DevUtilsStackRoutes,
     HomeStackRoutes,
-    LegacyOnboardingStackRoutes,
     OnboardingStackRoutes,
     ReceiveStackRoutes,
     RootStackRoutes,
@@ -103,14 +102,6 @@ export type AppTabsParamList = {
     [AppTabsRoutes.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
     [AppTabsRoutes.AccountsStack]: NavigatorScreenParams<AccountsStackParamList>;
     [AppTabsRoutes.Settings]: undefined;
-};
-
-export type LegacyOnboardingStackParamList = {
-    [LegacyOnboardingStackRoutes.Welcome]: undefined;
-    [LegacyOnboardingStackRoutes.AboutReceiveCoinsFeature]: undefined;
-    [LegacyOnboardingStackRoutes.TrackBalances]: undefined;
-    [LegacyOnboardingStackRoutes.AnalyticsConsent]: undefined;
-    [LegacyOnboardingStackRoutes.ConnectTrezor]: undefined;
 };
 
 export type OnboardingStackParamList = {
@@ -198,7 +189,6 @@ export type AuthorizeDeviceStackParamList = {
 
 export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
-    [RootStackRoutes.LegacyOnboarding]: NavigatorScreenParams<LegacyOnboardingStackParamList>;
     [RootStackRoutes.Onboarding]: NavigatorScreenParams<OnboardingStackParamList>;
     [RootStackRoutes.AuthorizeDeviceStack]: NavigatorScreenParams<AuthorizeDeviceStackParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
