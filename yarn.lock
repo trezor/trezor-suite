@@ -11880,7 +11880,7 @@ __metadata:
     es6-promise: "npm:^4.2.8"
     html-webpack-plugin: "npm:^5.6.0"
     rimraf: "npm:^6.0.1"
-    terser-webpack-plugin: "npm:^5.3.9"
+    terser-webpack-plugin: "npm:^5.3.11"
     webpack: "npm:^5.96.1"
     webpack-cli: "npm:^5.1.4"
     webpack-merge: "npm:^6.0.1"
@@ -11957,7 +11957,7 @@ __metadata:
     html-webpack-plugin: "npm:^5.6.0"
     react-dom: "npm:18.2.0"
     rimraf: "npm:^6.0.1"
-    terser-webpack-plugin: "npm:^5.3.9"
+    terser-webpack-plugin: "npm:^5.3.11"
     webpack: "npm:^5.96.1"
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^5.0.4"
@@ -12019,7 +12019,7 @@ __metadata:
     html-webpack-plugin: "npm:^5.6.0"
     rimraf: "npm:^6.0.1"
     selfsigned: "npm:^2.4.1"
-    terser-webpack-plugin: "npm:^5.3.9"
+    terser-webpack-plugin: "npm:^5.3.11"
     tsx: "npm:^4.16.3"
     webpack: "npm:^5.96.1"
     webpack-cli: "npm:^5.1.4"
@@ -12049,7 +12049,7 @@ __metadata:
     copy-webpack-plugin: "npm:^12.0.2"
     events: "npm:^3.3.0"
     rimraf: "npm:^6.0.1"
-    terser-webpack-plugin: "npm:^5.3.9"
+    terser-webpack-plugin: "npm:^5.3.11"
     webpack: "npm:^5.96.1"
     webpack-cli: "npm:^5.1.4"
     webpack-merge: "npm:^6.0.1"
@@ -12389,7 +12389,7 @@ __metadata:
     react-refresh: "npm:^0.14.0"
     stream-browserify: "npm:^3.0.0"
     style-loader: "npm:^3.3.4"
-    terser-webpack-plugin: "npm:^5.3.9"
+    terser-webpack-plugin: "npm:^5.3.11"
     webpack: "npm:^5.96.1"
     webpack-bundle-analyzer: "npm:^4.10.1"
     webpack-merge: "npm:^6.0.1"
@@ -12500,7 +12500,7 @@ __metadata:
     glob: "npm:^10.3.10"
     openpgp: "npm:^6.0.1"
     systeminformation: "npm:^5.25.4"
-    terser-webpack-plugin: "npm:^5.3.9"
+    terser-webpack-plugin: "npm:^5.3.11"
     webpack: "npm:^5.96.1"
     ws: "npm:^8.18.0"
     xvfb-maybe: "npm:^0.2.1"
@@ -18701,7 +18701,7 @@ __metadata:
     electron: "npm:32.2.6"
     electron-builder: "npm:25.1.8"
     html-webpack-plugin: "npm:^5.6.0"
-    terser-webpack-plugin: "npm:^5.3.9"
+    terser-webpack-plugin: "npm:^5.3.11"
     wait-on: "npm:^7.0.1"
     webpack: "npm:^5.96.1"
     webpack-cli: "npm:^5.1.4"
@@ -38117,6 +38117,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"schema-utils@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "schema-utils@npm:4.3.0"
+  dependencies:
+    "@types/json-schema": "npm:^7.0.9"
+    ajv: "npm:^8.9.0"
+    ajv-formats: "npm:^2.1.1"
+    ajv-keywords: "npm:^5.1.0"
+  checksum: 10/86c5a7c72a275c56f140bc3cdd832d56efb11428c88ad588127db12cb9b2c83ccaa9540e115d7baa9c6175b5e360094457e29c44e6fb76787c9498c2eb6df5d6
+  languageName: node
+  linkType: hard
+
 "scope-analyzer@npm:^2.0.1":
   version: 2.1.2
   resolution: "scope-analyzer@npm:2.1.2"
@@ -40366,7 +40378,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terser-webpack-plugin@npm:^5.3.1, terser-webpack-plugin@npm:^5.3.10, terser-webpack-plugin@npm:^5.3.9":
+"terser-webpack-plugin@npm:^5.3.1, terser-webpack-plugin@npm:^5.3.10":
   version: 5.3.10
   resolution: "terser-webpack-plugin@npm:5.3.10"
   dependencies:
@@ -40388,6 +40400,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"terser-webpack-plugin@npm:^5.3.11":
+  version: 5.3.11
+  resolution: "terser-webpack-plugin@npm:5.3.11"
+  dependencies:
+    "@jridgewell/trace-mapping": "npm:^0.3.25"
+    jest-worker: "npm:^27.4.5"
+    schema-utils: "npm:^4.3.0"
+    serialize-javascript: "npm:^6.0.2"
+    terser: "npm:^5.31.1"
+  peerDependencies:
+    webpack: ^5.1.0
+  peerDependenciesMeta:
+    "@swc/core":
+      optional: true
+    esbuild:
+      optional: true
+    uglify-js:
+      optional: true
+  checksum: 10/a8f7c92c75aa42628adfa4d171d4695c366c1852ecb4a24e72dd6fec86e383e12ac24b627e798fedff4e213c21fe851cebc61be3ab5a2537e6e42bea46690aa3
+  languageName: node
+  linkType: hard
+
 "terser@npm:^5.10.0, terser@npm:^5.15.0, terser@npm:^5.26.0":
   version: 5.27.0
   resolution: "terser@npm:5.27.0"
@@ -40399,6 +40433,20 @@ __metadata:
   bin:
     terser: bin/terser
   checksum: 10/9b2c5cb00747dea5994034ca064fb3cc7efc1be6b79a35247662d51ab43bdbe9cbf002bbf29170b5f3bd068c811d0212e22d94acd2cf0d8562687b96f1bffc9f
+  languageName: node
+  linkType: hard
+
+"terser@npm:^5.31.1":
+  version: 5.37.0
+  resolution: "terser@npm:5.37.0"
+  dependencies:
+    "@jridgewell/source-map": "npm:^0.3.3"
+    acorn: "npm:^8.8.2"
+    commander: "npm:^2.20.0"
+    source-map-support: "npm:~0.5.20"
+  bin:
+    terser: bin/terser
+  checksum: 10/3afacf7c38c47a5a25dbe1ba2e7aafd61166474d4377ec0af490bd41ab3686ab12679818d5fe4a3e7f76efee26f639c92ac334940c378bbc31176520a38379c3
   languageName: node
   linkType: hard
 
