@@ -13,22 +13,23 @@ import {
 interface CoinmarketUseAccountProps {
     coinmarketAccount: Account | undefined;
     selectedAccount: SelectedAccountLoaded;
-    isNotFormPage?: boolean;
+    shouldUseCoinmarketAccount?: boolean;
 }
-
+/**
+ * Hook used to get account for trade form (used in Sell/Swap)
+ *  - coinmarketAccount is used whether user is in the trading flow (persistent)
+ *  - selectedAccount is used as initial state if user entries from different page than trade
+ */
 export const useCoinmarketAccount = ({
     coinmarketAccount,
     selectedAccount,
-    isNotFormPage,
+    shouldUseCoinmarketAccount,
 }: CoinmarketUseAccountProps): [Account, (state: Account) => void] => {
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
 
-    // coinmarketAccount is used on offers page
-    // if is testnet, use
-    // selectedAccount is used as initial state if this is form page
     const [account, setAccount] = useState<Account>(() => {
-        if (coinmarketAccount && isNotFormPage) {
+        if (coinmarketAccount && shouldUseCoinmarketAccount) {
             return coinmarketAccount;
         }
 

@@ -59,6 +59,7 @@ import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo
 import { useCoinmarketFiatValues } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketFiatValues';
 import type { CryptoAmountLimitProps } from 'src/utils/suite/validation';
 import { useCoinmarketExchangeQuotesFilter } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketExchangeQuotesFilter';
+import { useCoinmarketPreviousRoute } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketPreviousRoute';
 
 import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
 
@@ -79,12 +80,11 @@ export const useCoinmarketExchangeForm = ({
         addressVerified,
     } = useSelector(state => state.wallet.coinmarket.exchange);
     const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
-    // selectedAccount is used as initial state if this is form page
-    // coinmarketAccount is used on offers page
+    const isPreviousRouteFromTradeSection = useCoinmarketPreviousRoute(type);
     const [account, setAccount] = useCoinmarketAccount({
         coinmarketAccount,
         selectedAccount,
-        isNotFormPage,
+        shouldUseCoinmarketAccount: isPreviousRouteFromTradeSection,
     });
     const { callInProgress, timer, device, setCallInProgress, checkQuotesTimer } =
         useCoinmarketInitializer({ selectedAccount, pageType });
@@ -133,7 +133,7 @@ export const useCoinmarketExchangeForm = ({
     const isDraft = !!draft;
     const getDraftUpdated = (): CoinmarketExchangeFormProps | null => {
         if (!draft) return null;
-        if (isNotFormPage) return draft;
+        if (isPreviousRouteFromTradeSection) return draft;
 
         const defaultReceiveCryptoSelect = coinmarketGetExchangeReceiveCryptoId(
             defaultValues.sendCryptoSelect?.value,

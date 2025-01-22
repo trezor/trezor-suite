@@ -50,6 +50,7 @@ import { useCoinmarketModalCrypto } from 'src/hooks/wallet/coinmarket/form/commo
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { useCoinmarketBuyFormDefaultValues } from 'src/hooks/wallet/coinmarket/form/useCoinmarketBuyFormDefaultValues';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
+import { useCoinmarketPreviousRoute } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketPreviousRoute';
 
 import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
 
@@ -78,6 +79,7 @@ export const useCoinmarketBuyForm = ({
     const [isSubmittingHelper, setIsSubmittingHelper] = useState(false);
     const abortControllerRef = useRef<AbortController | null>(null);
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const isPreviousRouteFromTradeSection = useCoinmarketPreviousRoute(type);
 
     const {
         defaultValues,
@@ -98,11 +100,14 @@ export const useCoinmarketBuyForm = ({
                       ? draft.fiatInput
                       : buyInfo?.buyInfo?.defaultAmountsOfFiatCurrencies.get(suggestedFiatCurrency),
               // remember only for offers page
-              cryptoSelect: pageType === 'form' ? defaultValues.cryptoSelect : draft.cryptoSelect,
+              cryptoSelect: isPreviousRouteFromTradeSection
+                  ? draft.cryptoSelect
+                  : defaultValues.cryptoSelect,
           }
         : null;
 
     const isDraft = !!draftUpdated || !!isNotFormPage;
+
     const methods = useForm<CoinmarketBuyFormProps>({
         mode: 'onChange',
         defaultValues: isDraft && draftUpdated ? draftUpdated : defaultValues,

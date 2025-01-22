@@ -297,33 +297,6 @@ describe('coinmarketMiddleware', () => {
         expect(store.getState().wallet.coinmarket.modalAccount).toEqual(undefined);
     });
 
-    it('Test of cleaning coinmarketAccount property', () => {
-        const store = initStore(
-            getInitialState({
-                coinmarket: {
-                    ...initialState,
-                    exchange: {
-                        ...initialState.exchange,
-                        coinmarketAccount: accounts[0],
-                    },
-                    sell: {
-                        ...initialState.sell,
-                        coinmarketAccount: accounts[0],
-                    },
-                },
-            }),
-        );
-
-        // go to coinmarket
-        store.dispatch({
-            type: ROUTER.LOCATION_CHANGE,
-            payload: COINMARKET_EXCHANGE_ROUTE,
-        });
-
-        expect(store.getState().wallet.coinmarket.sell.coinmarketAccount).toBe(accounts[0]);
-        expect(store.getState().wallet.coinmarket.exchange.coinmarketAccount).toEqual(undefined);
-    });
-
     it('Test of setting activeSection after changing route', () => {
         const store = initStore(
             getInitialState({

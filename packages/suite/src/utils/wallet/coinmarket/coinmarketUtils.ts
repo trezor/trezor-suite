@@ -24,7 +24,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { Account } from 'src/types/wallet';
 import regional from 'src/constants/wallet/coinmarket/regional';
-import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
+import { ExtendedMessageDescriptor, Route, TrezorDevice } from 'src/types/suite';
 import {
     CoinmarketAccountOptionsGroupOptionProps,
     CoinmarketAccountsOptionsGroupProps,
@@ -540,4 +540,20 @@ export const getAddressAndTokenFromAccountOptionsGroupProps = (
     }
 
     return { address: '', token: selected.contractAddress ?? null };
+};
+
+export const getTradeTypeByRoute = (
+    routeName: Route['name'] | undefined,
+): CoinmarketTradeType | undefined => {
+    if (routeName?.startsWith('wallet-coinmarket-buy')) {
+        return 'buy';
+    }
+
+    if (routeName?.startsWith('wallet-coinmarket-sell')) {
+        return 'sell';
+    }
+
+    if (routeName?.startsWith('wallet-coinmarket-exchange')) {
+        return 'exchange';
+    }
 };

@@ -18,6 +18,7 @@ import {
     testnetToProdCryptoId,
     getAddressAndTokenFromAccountOptionsGroupProps,
     isCryptoIdForNativeToken,
+    getTradeTypeByRoute,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     FIXTURE_ACCOUNTS,
@@ -338,5 +339,25 @@ describe('coinmarket utils', () => {
                 'base--0x0000000000000000000000000000000000000000' as CryptoId,
             ),
         ).toEqual(true);
+    });
+
+    it('getTradeTypeByRoute - testing correct returning trade section according to route', () => {
+        expect(getTradeTypeByRoute('wallet-coinmarket-buy')).toEqual('buy');
+        expect(getTradeTypeByRoute('wallet-coinmarket-buy-detail')).toEqual('buy');
+        expect(getTradeTypeByRoute('wallet-coinmarket-buy-offers')).toEqual('buy');
+        expect(getTradeTypeByRoute('wallet-coinmarket-buy-confirm')).toEqual('buy');
+
+        expect(getTradeTypeByRoute('wallet-coinmarket-sell')).toEqual('sell');
+        expect(getTradeTypeByRoute('wallet-coinmarket-sell-detail')).toEqual('sell');
+        expect(getTradeTypeByRoute('wallet-coinmarket-sell-offers')).toEqual('sell');
+        expect(getTradeTypeByRoute('wallet-coinmarket-sell-confirm')).toEqual('sell');
+
+        expect(getTradeTypeByRoute('wallet-coinmarket-exchange')).toEqual('exchange');
+        expect(getTradeTypeByRoute('wallet-coinmarket-exchange-detail')).toEqual('exchange');
+        expect(getTradeTypeByRoute('wallet-coinmarket-exchange-offers')).toEqual('exchange');
+        expect(getTradeTypeByRoute('wallet-coinmarket-exchange-confirm')).toEqual('exchange');
+
+        expect(getTradeTypeByRoute('wallet-coinmarket-dca')).toEqual(undefined);
+        expect(getTradeTypeByRoute('wallet-index')).toEqual(undefined);
     });
 });

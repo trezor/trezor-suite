@@ -58,9 +58,7 @@ import {
 } from 'src/reducers/suite/suiteReducer';
 import { SUITE } from 'src/actions/suite/constants';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
-import { setCoinmarketExchangeAccount } from 'src/actions/wallet/coinmarketExchangeActions';
 import { setCoinmarketPrefilledFromCryptoId } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import { setCoinmarketSellAccount } from 'src/actions/wallet/coinmarketSellActions';
 
 import { BlurUrls } from '../BlurUrls';
 
@@ -230,7 +228,6 @@ export const TokenRow = ({
                                             label: <Translation id="TR_COINMARKET_SELL" />,
                                             icon: 'currencyCircleDollar',
                                             onClick: () => {
-                                                dispatch(setCoinmarketSellAccount(account));
                                                 dispatch(
                                                     setCoinmarketPrefilledFromCryptoId(
                                                         tokenCryptoId,
@@ -250,7 +247,6 @@ export const TokenRow = ({
                                             label: <Translation id="TR_COINMARKET_SWAP" />,
                                             icon: 'arrowsLeftRight',
                                             onClick: () => {
-                                                dispatch(setCoinmarketExchangeAccount(account));
                                                 dispatch(
                                                     setCoinmarketPrefilledFromCryptoId(
                                                         tokenCryptoId,
@@ -444,7 +440,6 @@ export const TokenRow = ({
                             icon="arrowsLeftRight"
                             size="small"
                             onClick={() => {
-                                dispatch(setCoinmarketExchangeAccount(account));
                                 dispatch(setCoinmarketPrefilledFromCryptoId(tokenCryptoId));
                                 goToWithAnalytics('wallet-coinmarket-exchange', {
                                     params: {

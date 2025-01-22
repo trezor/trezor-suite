@@ -1,7 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
 import { UI } from '@trezor/connect';
-import { Route } from '@suite-common/suite-types';
 import { accountsActions } from '@suite-common/wallet-core';
 
 import { AppState, Action, Dispatch } from 'src/types/suite';
@@ -18,27 +17,13 @@ import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
 import { ROUTER, MODAL } from 'src/actions/suite/constants';
-import { CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
-
-const getTradeTypeByRoute = (route: Route | undefined): CoinmarketTradeType | undefined => {
-    if (route?.name.startsWith('wallet-coinmarket-buy')) {
-        return 'buy';
-    }
-
-    if (route?.name.startsWith('wallet-coinmarket-sell')) {
-        return 'sell';
-    }
-
-    if (route?.name.startsWith('wallet-coinmarket-exchange')) {
-        return 'exchange';
-    }
-};
+import { getTradeTypeByRoute } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 /**
  * In the Sell and Swap section an account can be changed by a user in the select
  */
 export const getAccountAccordingToRoute = (state: AppState) => {
-    const tradeType = getTradeTypeByRoute(state.router.route);
+    const tradeType = getTradeTypeByRoute(state.router.route?.name);
 
     const { account } = state.wallet.selectedAccount;
     const sellSelectedAccount = state.wallet.coinmarket.sell.coinmarketAccount;
@@ -81,7 +66,7 @@ export const coinmarketMiddleware =
                     invityAPI.setInvityServersEnvironment(invityServerEnvironment);
                 }
 
-                const tradeType = getTradeTypeByRoute(state.router.route);
+                const tradeType = getTradeTypeByRoute(state.router.route?.name);
                 if (tradeType) {
                     api.dispatch(coinmarketCommonActions.setActiveSection(tradeType));
                 }
@@ -158,24 +143,12 @@ export const coinmarketMiddleware =
 
         // get the new state after the action has been processed
         const newState = api.getState();
-        const sellCoinmarketAccount = newState.wallet.coinmarket.sell.coinmarketAccount;
-        const exchangeCoinmarketAccount = newState.wallet.coinmarket.exchange.coinmarketAccount;
 
         if (action.type === ROUTER.LOCATION_CHANGE) {
             const routeName = newState.router.route?.name;
             const isBuy = routeName === 'wallet-coinmarket-buy';
             const isSell = routeName === 'wallet-coinmarket-sell';
             const isExchange = routeName === 'wallet-coinmarket-exchange';
-
-            // clean coinmarketAccount in sell
-            if (isSell && sellCoinmarketAccount) {
-                api.dispatch(coinmarketSellActions.setCoinmarketSellAccount(undefined));
-            }
-
-            // clean coinmarketAccount in exchange
-            if (isExchange && exchangeCoinmarketAccount) {
-                api.dispatch(coinmarketExchangeActions.setCoinmarketExchangeAccount(undefined));
-            }
 
             if (isBuy) {
                 api.dispatch(coinmarketCommonActions.setActiveSection('buy'));

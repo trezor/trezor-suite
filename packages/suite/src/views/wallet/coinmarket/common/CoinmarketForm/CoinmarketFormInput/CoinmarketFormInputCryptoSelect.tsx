@@ -154,9 +154,11 @@ export const CoinmarketFormInputCryptoSelect = <
         if (!findOption) return;
 
         if (isCoinmarketExchangeContext(context)) {
-            context.setValue(FORM_RECEIVE_CRYPTO_CURRENCY_SELECT, findOption);
+            context.setValue(FORM_RECEIVE_CRYPTO_CURRENCY_SELECT, findOption, {
+                shouldDirty: true,
+            });
         } else {
-            context.setValue(FORM_CRYPTO_CURRENCY_SELECT, findOption);
+            context.setValue(FORM_CRYPTO_CURRENCY_SELECT, findOption, { shouldDirty: true });
         }
 
         context.setAmountLimits(undefined);

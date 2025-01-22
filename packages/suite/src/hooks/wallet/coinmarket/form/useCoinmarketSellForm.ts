@@ -55,6 +55,7 @@ import { useCoinmarketCurrencySwitcher } from 'src/hooks/wallet/coinmarket/form/
 import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketAccount';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
+import { useCoinmarketPreviousRoute } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketPreviousRoute';
 
 import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
 
@@ -75,11 +76,11 @@ export const useCoinmarketSellForm = ({
         selectedQuote,
     } = useSelector(state => state.wallet.coinmarket.sell);
     const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
-
+    const isPreviousRouteFromTradeSection = useCoinmarketPreviousRoute(type);
     const [account, setAccount] = useCoinmarketAccount({
         coinmarketAccount,
         selectedAccount,
-        isNotFormPage,
+        shouldUseCoinmarketAccount: isPreviousRouteFromTradeSection,
     });
     const { callInProgress, timer, device, setCallInProgress, checkQuotesTimer } =
         useCoinmarketInitializer({ selectedAccount, pageType });
@@ -119,7 +120,7 @@ export const useCoinmarketSellForm = ({
     const draft = getDraft(sellDraftKey);
     const getDraftUpdated = (): CoinmarketSellFormProps | null => {
         if (!draft) return null;
-        if (isNotFormPage) {
+        if (isPreviousRouteFromTradeSection) {
             const outputs = draft.outputs?.map(output => ({
                 ...output,
                 fiat: output.fiat ?? '',
