@@ -15,6 +15,12 @@
 @types/react-qr-reader
 @types/ua-parser-js
 autoprefixer
+postcss-loader
+postcss-modules-extract-imports
+postcss-modules-local-by-default
+postcss-modules-scope
+postcss-modules-values
+postcss-styled-syntax
 babel-plugin-styled-components
 css-in-js-utils
 css-loader
