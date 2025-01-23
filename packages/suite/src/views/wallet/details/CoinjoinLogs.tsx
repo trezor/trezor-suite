@@ -8,6 +8,7 @@ import { useSelector } from 'src/hooks/suite/useSelector';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { CoinjoinLogsAnchor } from 'src/constants/suite/anchors';
 import { anchorOutlineStyles } from 'src/utils/suite/anchor';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const SetupCard = styled(Card)<{ $shouldHighlight?: boolean }>`
@@ -19,10 +20,11 @@ const SetupCard = styled(Card)<{ $shouldHighlight?: boolean }>`
 `;
 
 export const CoinjoinLogs = () => {
-    const showDebugMenu = useSelector(state => state.suite.settings.debug.showDebugMenu);
+    const isDebug = useSelector(selectIsDebugModeActive);
+
     const { anchorRef, shouldHighlight } = useAnchor(CoinjoinLogsAnchor);
 
-    if (!showDebugMenu) return null;
+    if (!isDebug) return null;
 
     return (
         <SetupCard ref={anchorRef} $shouldHighlight={shouldHighlight}>

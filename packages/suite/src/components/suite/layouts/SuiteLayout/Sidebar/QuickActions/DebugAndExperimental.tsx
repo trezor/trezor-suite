@@ -6,6 +6,7 @@ import { spacings } from '@trezor/theme';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 import { QuickActionButton } from './QuickActionButton';
 import { TooltipRow } from './TooltipRow';
@@ -73,19 +74,19 @@ export const DebugAndExperimental = () => {
 
     const isEapEnabled = useSelector(state => state.desktopUpdate.allowPrerelease);
     const isExperimental = useSelector(state => state.suite.settings.experimental !== undefined);
-    const isDebugMode = useSelector(state => state.suite.settings.debug.showDebugMenu);
+    const isDebug = useSelector(selectIsDebugModeActive);
 
     const handleEapClick = () => {
         dispatch(goto('settings-index', { anchor: SettingsAnchor.EarlyAccess }));
     };
 
-    if (!isEapEnabled && !isExperimental && !isDebugMode) return null;
+    if (!isEapEnabled && !isExperimental && !isDebug) return null;
 
     return (
         <QuickActionButton
             tooltip={
                 <DebugAndExperimentalTooltip
-                    isDebugMode={isDebugMode}
+                    isDebugMode={isDebug}
                     isEapEnabled={isEapEnabled}
                     isExperimental={isExperimental}
                 />
@@ -93,7 +94,7 @@ export const DebugAndExperimental = () => {
             onClick={handleEapClick}
         >
             <Relative $size={getIconSize(iconSizes.medium)}>
-                {isDebugMode && (
+                {isDebug && (
                     <Absolute>
                         <Icon name="debug" variant="destructive" size={iconSizes.medium} />
                     </Absolute>

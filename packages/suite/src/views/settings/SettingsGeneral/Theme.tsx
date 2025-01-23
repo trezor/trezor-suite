@@ -8,13 +8,14 @@ import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/compone
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { getOsTheme } from 'src/utils/suite/env';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 type ThemeColorVariantWithSystem = ThemeColorVariant | 'system';
 type Option = { value: ThemeColorVariantWithSystem; label: string };
 
 const useThemeOptions = () => {
     const { translationString } = useTranslation();
-    const showDebugMenu = useSelector(state => state.suite.settings.debug.showDebugMenu);
+    const isDebug = useSelector(selectIsDebugModeActive);
 
     const systemOption: Option = {
         value: 'system',
@@ -29,7 +30,7 @@ const useThemeOptions = () => {
 
     const optionGroups = [
         { options: [systemOption] },
-        { options: [lightOption, darkOption, ...(showDebugMenu ? [debugOption] : [])] },
+        { options: [lightOption, darkOption, ...(isDebug ? [debugOption] : [])] },
     ];
 
     const getOption = (theme: ThemeColorVariantWithSystem) => {
