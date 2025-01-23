@@ -12,7 +12,7 @@ import {
     Card,
     Divider,
     Icon,
-    Indicator,
+    DotIndicator,
 } from '@trezor/components';
 import { TokenInfo } from '@trezor/connect';
 import {
@@ -46,14 +46,14 @@ const DataWrapper = styled.p`
     letter-spacing: 0;
 `;
 
-const StatusIndicator = ({ state }: { state: TransactionReviewOutputElementProps['state'] }) => {
+const Status = ({ state }: { state: TransactionReviewOutputElementProps['state'] }) => {
     switch (state) {
         case 'done':
             return <Icon size={spacings.md} variant="primary" name="check" />;
         case 'pending':
-            return <Indicator />;
+            return <DotIndicator />;
         default:
-            return <Indicator isActive={true} />;
+            return <DotIndicator isActive={true} />;
     }
 };
 
@@ -141,8 +141,13 @@ export const TransactionReviewOutputElement = ({
     return (
         <Card paddingType="none" fillType={state === 'done' ? 'flat' : 'default'}>
             <Row padding={{ vertical: spacings.sm, horizontal: spacings.md }} gap={spacings.sm}>
-                <StatusIndicator state={state} />
-                <H4 typographyStyle={state !== 'pending' ? 'callout' : 'hint'}>{title}</H4>
+                <Status state={state} />
+                <H4
+                    margin={{ left: spacings.xxxs }}
+                    typographyStyle={state !== 'pending' ? 'callout' : 'hint'}
+                >
+                    {title}
+                </H4>
             </Row>
             <Divider margin={{}} />
             <Column

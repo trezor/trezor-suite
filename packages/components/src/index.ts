@@ -5,6 +5,7 @@ export { motionAnimation, motionEasing } from './config/motion';
 export { Checkbox, type CheckboxProps } from './components/form/Checkbox/Checkbox';
 export * from './components/animations/DeviceAnimation';
 export * from './components/animations/LottieAnimation';
+export { Address, type AddressProps } from './components/Address/Address';
 export { AssetLogo, type AssetLogoProps } from './components/AssetLogo/AssetLogo';
 export * from './components/Flag/Flag';
 export * from './components/AutoScalingInput/AutoScalingInput';
@@ -49,6 +50,7 @@ export { Grid, type GridProps } from './components/Grid/Grid';
 export * from './components/HotkeyBadge/HotkeyBadge';
 export * from './components/Image/Image';
 export * from './components/Image/images';
+export { DotIndicator, type DotIndicatorProps } from './components/DotIndicator/DotIndicator';
 export * from './components/Icon/Icon';
 export {
     IconCircle,
