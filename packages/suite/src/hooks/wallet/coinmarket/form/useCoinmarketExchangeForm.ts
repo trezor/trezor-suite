@@ -60,6 +60,7 @@ import { useCoinmarketFiatValues } from 'src/hooks/wallet/coinmarket/form/common
 import type { CryptoAmountLimitProps } from 'src/utils/suite/validation';
 import { useCoinmarketExchangeQuotesFilter } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketExchangeQuotesFilter';
 import { useCoinmarketPreviousRoute } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketPreviousRoute';
+import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
 
 import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
 
@@ -680,6 +681,9 @@ export const useCoinmarketExchangeForm = ({
             }
         };
     }, []);
+
+    // Subscribe to blocks for Solana, since they are not fetched globally
+    useSolanaSubscribeBlocks(account);
 
     return {
         type,

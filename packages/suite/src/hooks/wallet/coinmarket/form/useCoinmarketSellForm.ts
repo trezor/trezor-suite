@@ -56,6 +56,7 @@ import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/us
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 import { useCoinmarketPreviousRoute } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketPreviousRoute';
+import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
 
 import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
 
@@ -656,6 +657,9 @@ export const useCoinmarketSellForm = ({
             }
         };
     }, []);
+
+    // Subscribe to blocks for Solana, since they are not fetched globally
+    useSolanaSubscribeBlocks(account);
 
     return {
         type,
