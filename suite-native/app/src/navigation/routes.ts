@@ -19,6 +19,13 @@ const accountsStack = enhanceTabOption({
     },
 });
 
+const tradeStack = enhanceTabOption({
+    routeName: AppTabsRoutes.TradeStack,
+    iconName: 'arrowsLeftRight',
+    focusedIconName: 'arrowsLeftRight',
+    label: 'Trade',
+});
+
 const settings = enhanceTabOption({
     routeName: AppTabsRoutes.Settings,
     iconName: 'gear',
@@ -29,5 +36,6 @@ const settings = enhanceTabOption({
 export const rootTabsOptions = {
     ...homeStack,
     ...accountsStack,
+    ...tradeStack,
     ...settings,
 };

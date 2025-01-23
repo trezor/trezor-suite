@@ -28,6 +28,7 @@ import {
     RootStackRoutes,
     SendStackRoutes,
     SettingsStackRoutes,
+    TradingStackRoutes,
 } from './routes';
 import { NavigateParameters } from './types';
 
@@ -102,6 +103,7 @@ export type SendStackParamList = {
 export type AppTabsParamList = {
     [AppTabsRoutes.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
     [AppTabsRoutes.AccountsStack]: NavigatorScreenParams<AccountsStackParamList>;
+    [AppTabsRoutes.TradeStack]: NavigatorScreenParams<TradingStackParamList>;
     [AppTabsRoutes.Settings]: undefined;
 };
 
@@ -221,4 +223,8 @@ export type RootStackParamList = {
         parsedUrl: ParsedURL;
     };
     [RootStackRoutes.SettingsScreenStack]: NavigatorScreenParams<SettingsStackParamList>;
+};
+
+export type TradingStackParamList = {
+    [TradingStackRoutes.Trading]: undefined;
 };

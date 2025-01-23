@@ -21,6 +21,7 @@ export enum RootStackRoutes {
 export enum AppTabsRoutes {
     HomeStack = 'HomeStack',
     AccountsStack = 'AccountsStack',
+    TradeStack = 'TradeStack',
     Settings = 'Settings',
 }
 
@@ -123,4 +124,8 @@ export enum SettingsStackRoutes {
     SettingsAbout = 'SettingsAbout',
     SettingsFAQ = 'SettingsFAQ',
     SettingsCoinEnabling = 'SettingsCoinEnabling',
+}
+
+export enum TradingStackRoutes {
+    Trading = 'Trading',
 }

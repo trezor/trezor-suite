@@ -1,3 +1,5 @@
+import { useSelector } from 'react-redux';
+
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { HomeStackNavigator } from '@suite-native/module-home';
@@ -5,6 +7,8 @@ import { AccountsStackNavigator } from '@suite-native/module-accounts-management
 import { SettingsScreen } from '@suite-native/module-settings';
 import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
 import { useHandleDeviceRequestsPassphrase } from '@suite-native/device-authorization';
+import { createSelectIsFeatureFlagEnabled, FeatureFlag } from '@suite-native/feature-flags';
+import { TradingStackNavigator } from '@suite-native/module-trading';
 
 import { rootTabsOptions } from './routes';
 
@@ -12,6 +16,10 @@ const Tab = createBottomTabNavigator<AppTabsParamList>();
 
 export const AppTabNavigator = () => {
     useHandleDeviceRequestsPassphrase();
+
+    const isTradingEnabled = useSelector(
+        createSelectIsFeatureFlagEnabled(FeatureFlag.IsTradingEnabled),
+    );
 
     return (
         <Tab.Navigator
@@ -26,6 +34,9 @@ export const AppTabNavigator = () => {
         >
             <Tab.Screen name={AppTabsRoutes.HomeStack} component={HomeStackNavigator} />
             <Tab.Screen name={AppTabsRoutes.AccountsStack} component={AccountsStackNavigator} />
+            {isTradingEnabled && (
+                <Tab.Screen name={AppTabsRoutes.TradeStack} component={TradingStackNavigator} />
+            )}
             <Tab.Screen name={AppTabsRoutes.Settings} component={SettingsScreen} />
         </Tab.Navigator>
     );

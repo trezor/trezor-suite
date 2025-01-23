@@ -1,14 +1,46 @@
-import { renderWithStore, waitFor } from '@suite-native/test-utils';
+import { renderWithStore, waitFor, PreloadedState, fireEvent } from '@suite-native/test-utils';
+import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 
 import { AppTabNavigator } from '../AppTabNavigator';
 
 describe('AppTabNavigator', () => {
+    const renderTabs = async (preloadedState?: PreloadedState) => {
+        const result = renderWithStore(<AppTabNavigator />, { preloadedState });
+        await waitFor(() => expect(result.getByText('Home')).toBeDefined());
+
+        return result;
+    };
+
     it('should render 3 buttons', async () => {
-        const { getByText } = renderWithStore(<AppTabNavigator />);
-        await waitFor(() => expect(getByText('Home')).toBeDefined());
+        const { getByText } = await renderTabs();
 
         expect(getByText('Home')).toBeDefined();
         expect(getByText('My assets')).toBeDefined();
         expect(getByText('Settings')).toBeDefined();
+    });
+
+    it('should not render Trade tab when IsTradingEnabled is false', async () => {
+        const { queryByText } = await renderTabs({
+            featureFlags: {
+                ...featureFlagsInitialState,
+                [FeatureFlag.IsTradingEnabled]: false,
+            },
+        });
+
+        expect(queryByText('Trade')).toBe(null);
+    });
+
+    it('should render Trade tab when IsTradingEnabled is true', async () => {
+        const { getByText } = await renderTabs({
+            featureFlags: {
+                ...featureFlagsInitialState,
+                [FeatureFlag.IsTradingEnabled]: true,
+            },
+        });
+
+        const tradeTab = getByText('Trade');
+        fireEvent.press(tradeTab);
+
+        expect(getByText('Trading placeholder')).toBeDefined();
     });
 });

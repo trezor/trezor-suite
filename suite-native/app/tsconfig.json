@@ -60,6 +60,7 @@
         {
             "path": "../module-staking-management"
         },
+        { "path": "../module-trading" },
         { "path": "../navigation" },
         { "path": "../notifications" },
         { "path": "../receive" },
