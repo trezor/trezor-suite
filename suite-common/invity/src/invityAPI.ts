@@ -32,7 +32,7 @@ import type {
     TradingType,
     TradingWatchTradeMapProps,
 } from '@suite-common/invity';
-import { getSuiteVersion, isDesktop } from '@trezor/env-utils';
+import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
 
 type BodyType =
     | BuyTrade
@@ -122,13 +122,26 @@ class InvityAPI {
         }
     }
 
+    private getOptionAPIHeader() {
+        const headersAPI = {
+            desktop: 'X-SuiteA-Api',
+            web: 'X-SuiteW-Api',
+            native: 'X-SuiteN-Api',
+        } as const;
+
+        if (isNative()) return headersAPI.native;
+        if (isDesktop()) return headersAPI.desktop;
+
+        return headersAPI.web;
+    }
+
     private options(
         body: BodyType = {},
         method = 'POST',
         apiHeaderValue?: string,
         signal?: SignalType,
     ): any {
-        const apiHeader = isDesktop() ? 'X-SuiteA-Api' : 'X-SuiteW-Api';
+        const apiHeader = this.getOptionAPIHeader();
 
         return {
             method,
