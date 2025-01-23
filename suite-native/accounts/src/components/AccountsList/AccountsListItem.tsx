@@ -76,7 +76,7 @@ export const AccountsListItem = ({
     );
 
     const fiatBalance = useSelector((state: NativeAccountsRootState) =>
-        selectAccountFiatBalance(state, account.key),
+        selectAccountFiatBalance(state, account.key, accountHasStaking),
     );
 
     const handleOnPress = useCallback(() => {
