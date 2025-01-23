@@ -184,14 +184,14 @@ function getBitcoinFee(
     const defaultFee = getFeeForBytes(feeRate, bytes);
 
     return baseFee && floorBaseFee
-        ? // increase baseFee for every started kb
+        ? // increase baseFee for every started kilobyte (case only for DOGE)
           baseFee * (1 + Math.floor(defaultFee / baseFee))
         : // simple increase baseFee
           baseFee + defaultFee;
 }
 
 // DOGE fee policy https://github.com/dogecoin/dogecoin/blob/3a29ba6d497cd1d0a32ecb039da0d35ea43c9c85/doc/fee-recommendation.md
-// 0.01 DOGE per every started kb + 0.01 DOGE for every output below 0.01 DOGE (dust limit)
+// 0.01 DOGE per every started kilobyte + 0.01 DOGE for every output below 0.01 DOGE (dust limit)
 function getDogeFee(
     inputs: CoinSelectInput[],
     outputs: CoinSelectOutput[],

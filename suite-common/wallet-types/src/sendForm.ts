@@ -19,7 +19,15 @@ export interface FormState {
     feePerUnit: string; // bitcoin/ethereum/ripple custom fee field (satB/gasPrice/drops)
     feeLimit: string; // ethereum only (gasLimit)
     estimatedFeeLimit?: string; // ethereum only (gasLimit)
-    baseFee?: number; // used by RBF from. pay for related transactions
+
+    /**
+     * Fee that was paid by chained transactions. To perform RBF transaction (bump fee or cancel)
+     * we must pay higher fee than all previous transactions + its own relay fee (see BIP-125 rules)
+     *
+     * This is passed down to `utxo-lib` as `baseFee` parameter (see `CoinSelectOptions`).
+     */
+    baseFee?: number;
+
     // advanced form inputs
     options: FormOptions[];
     bitcoinLockTime?: string; // bitcoin RBF/schedule

@@ -12,7 +12,18 @@ export interface CoinSelectOptions {
     own?: number;
     other?: number;
     coinbase?: number;
+
+    /**
+     * Fixed fee for (bitcoin-like) transaction, `finalFee = baseFee + (feeRate * size)`
+     *
+     * It is used for RBF and Cancel Transaction, where the new transaction must pay
+     * for the chained transaction, as well as for its own bandwidth (see BIP-125 rules).
+     */
     baseFee?: number;
+
+    /**
+     * Only for DOGE
+     */
     floorBaseFee?: boolean;
     sortingStrategy: TransactionInputOutputSortingStrategy;
     feePolicy?: 'bitcoin' | 'doge' | 'zcash';

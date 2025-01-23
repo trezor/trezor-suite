@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { DEFAULT_PAYMENT, DEFAULT_OPRETURN, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { getFeeInfo } from '@suite-common/wallet-utils';
+import { calculateChainedTransactionsFeeForRbf, getFeeInfo } from '@suite-common/wallet-utils';
 import {
     SelectedAccountLoaded,
     RbfTransactionParams,
@@ -148,6 +148,7 @@ const useRbfState = ({ selectedAccount, rbfParams, chainedTxs }: UseRbfProps) =>
                 token: o.token,
             };
         });
+
         // if there is no change output in the transaction **and** there is no other utxos to add try to decrease amount immediately
         // otherwise use decrease amount only as a fallback (see useEffect below)
         const setMaxOutputId =
@@ -156,13 +157,9 @@ const useRbfState = ({ selectedAccount, rbfParams, chainedTxs }: UseRbfProps) =>
             availableUtxo.length < 1
                 ? outputs.findIndex(o => o.type === 'payment')
                 : undefined;
-        // set baseFee only if chainedTxs are present.
-        // try to overprice them. offer fee higher than sum of both:
-        // - current tx with higher feeRate
-        // - sum of all fees of all chainedTxs
-        const baseFee =
-            chainedTxs &&
-            chainedTxs.own.concat(chainedTxs.others).reduce((f, ctx) => f + parseFloat(ctx.fee), 0);
+
+        // Set baseFee only if chainedTxs are present.
+        const baseFee = chainedTxs && calculateChainedTransactionsFeeForRbf({ chainedTxs });
 
         return {
             account: rbfAccount,
