@@ -1,4 +1,4 @@
-import { invityAPI } from '@suite-common/invity/src/invityAPI';
+import { invityAPI } from '@suite-common/invity';
 
 import { useSelector } from 'src/hooks/suite';
 

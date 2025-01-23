@@ -1,6 +1,6 @@
 import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { invityAPI } from '@suite-common/invity/src/invityAPI';
+import { invityAPI } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite';
 import { CoinmarketIcon } from 'src/views/wallet/coinmarket/common/CoinmarketIcon';

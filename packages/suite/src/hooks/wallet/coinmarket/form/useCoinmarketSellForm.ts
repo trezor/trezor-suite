@@ -9,7 +9,7 @@ import { isChanged } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { networks } from '@suite-common/wallet-config';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { invityAPI } from '@suite-common/invity/src/invityAPI';
+import { invityAPI } from '@suite-common/invity';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {

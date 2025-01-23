@@ -5,7 +5,7 @@ import { BuyTrade, BuyTradeStatus } from 'invity-api';
 
 import { Button, variables, Image } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { invityAPI } from '@suite-common/invity/src/invityAPI';
+import { invityAPI } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite/Translation';
 import { Account } from 'src/types/wallet';

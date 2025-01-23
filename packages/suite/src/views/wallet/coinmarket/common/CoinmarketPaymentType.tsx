@@ -1,6 +1,6 @@
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { invityAPI } from '@suite-common/invity/src/invityAPI';
+import { invityAPI } from '@suite-common/invity';
 
 import { CoinmarketPaymentPlainType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentPlainType';
 import { CoinmarketPaymentMethodType } from 'src/types/coinmarket/coinmarket';

@@ -3,7 +3,7 @@ import { useTimeoutFn, useUnmount } from 'react-use';
 
 import { ExchangeTrade } from 'invity-api';
 
-import { invityAPI } from '@suite-common/invity/src/invityAPI';
+import { invityAPI } from '@suite-common/invity';
 
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { useDispatch } from 'src/hooks/suite';

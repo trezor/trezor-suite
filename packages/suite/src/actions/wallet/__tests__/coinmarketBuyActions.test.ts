@@ -1,6 +1,6 @@
 import { BuyTrade, BuyTradeQuoteRequest, CryptoId } from 'invity-api';
 
-import { invityAPI } from '@suite-common/invity/src/invityAPI';
+import { invityAPI } from '@suite-common/invity';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import { coinmarketReducer } from 'src/reducers/wallet/coinmarketReducer';

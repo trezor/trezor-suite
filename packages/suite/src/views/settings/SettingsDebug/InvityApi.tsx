@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import type { InvityServerEnvironment } from '@suite-common/invity';
-import { invityAPI } from '@suite-common/invity/src/invityAPI';
+import { invityAPI } from '@suite-common/invity';
 
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';

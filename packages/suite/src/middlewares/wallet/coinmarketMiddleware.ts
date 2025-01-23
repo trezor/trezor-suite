@@ -3,7 +3,7 @@ import { MiddlewareAPI } from 'redux';
 import { UI } from '@trezor/connect';
 import { Route } from '@suite-common/suite-types';
 import { accountsActions } from '@suite-common/wallet-core';
-import { invityAPI } from '@suite-common/invity/src/invityAPI';
+import { invityAPI } from '@suite-common/invity';
 
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import {

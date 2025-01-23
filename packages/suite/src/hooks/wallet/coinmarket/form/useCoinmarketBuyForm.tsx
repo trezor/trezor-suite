@@ -10,7 +10,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { isDesktop } from '@trezor/env-utils';
 import { networks } from '@suite-common/wallet-config';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { invityAPI } from '@suite-common/invity/src/invityAPI';
+import { invityAPI } from '@suite-common/invity';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
