@@ -84,7 +84,7 @@ const getSolTransactionStakeTypeName = (stakeType: StakeType) => {
 export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderProps) => {
     const { translationString } = useTranslation();
 
-    if (transaction?.ethereumSpecific?.parsedData?.name) {
+    if (transaction?.ethereumSpecific?.parsedData?.name && transaction.type !== 'failed') {
         return (
             <Row gap={spacings.xxs} overflow="hidden">
                 <span>{transaction.ethereumSpecific.parsedData.name}</span>
