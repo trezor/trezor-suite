@@ -11,3 +11,5 @@ cypress-real-events
 eslint-plugin-cypress
 @currents/cmd
 jest-junit
+@types/lodash
+jest-diff
