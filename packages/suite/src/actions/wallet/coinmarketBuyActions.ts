@@ -7,11 +7,10 @@ import {
     FiatCurrencyCode,
 } from 'invity-api';
 
-import { invityAPI } from '@suite-common/invity';
+import { invityAPI, regional } from '@suite-common/invity';
 
 import { Account } from 'src/types/wallet';
 import { Dispatch } from 'src/types/suite';
-import regional from 'src/constants/wallet/coinmarket/regional';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { verifyAddress as verifyBuyAddress } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { CoinmarketFiatCurrenciesProps } from 'src/types/coinmarket/coinmarket';
@@ -68,7 +67,7 @@ export const loadBuyInfo = async (): Promise<BuyInfo> => {
     if (!buyInfo || !buyInfo.providers) {
         return {
             buyInfo: {
-                country: regional.unknownCountry,
+                country: regional.UNKNOWN_COUNTRY,
                 providers: [],
                 defaultAmountsOfFiatCurrencies,
             },

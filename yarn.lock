@@ -9587,6 +9587,7 @@ __metadata:
   resolution: "@suite-common/invity@workspace:suite-common/invity"
   dependencies:
     "@trezor/env-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.2"
   languageName: unknown
   linkType: soft

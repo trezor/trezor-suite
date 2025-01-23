@@ -21,9 +21,9 @@ import {
     sortByCoin,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
+import { regional } from '@suite-common/invity';
 
 import { Account } from 'src/types/wallet';
-import regional from 'src/constants/wallet/coinmarket/regional';
 import { ExtendedMessageDescriptor, Route, TrezorDevice } from 'src/types/suite';
 import {
     CoinmarketAccountOptionsGroupOptionProps,
@@ -253,13 +253,13 @@ export const coinmarketGetSuccessQuotes = <T extends CoinmarketTradeType>(
     quotes: CoinmarketTradeDetailMapProps[T][] | undefined,
 ) => (quotes ? quotes.filter(quote => quote.error === undefined) : undefined);
 
-export const getDefaultCountry = (country: string = regional.unknownCountry) => {
+export const getDefaultCountry = (country: string = regional.UNKNOWN_COUNTRY) => {
     const label = regional.countriesMap.get(country);
 
     if (!label)
         return {
-            label: regional.countriesMap.get(regional.unknownCountry)!,
-            value: regional.unknownCountry,
+            label: regional.countriesMap.get(regional.UNKNOWN_COUNTRY)!,
+            value: regional.UNKNOWN_COUNTRY,
         };
 
     return {
