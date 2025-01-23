@@ -30,6 +30,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { formatAmount, formatNetworkAmount, isTokenMatchesSearch } from './accountUtils';
 import { toFiatCurrency } from '../src/fiatConverterUtils';
 import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
+import { getMyInputsFromTransaction } from './getMyInputsFromTransaction';
 
 export const sortByBlockHeight = (a: { blockHeight?: number }, b: { blockHeight?: number }) => {
     // if both are missing the blockHeight don't change their order
@@ -623,29 +624,12 @@ const getBitcoinRbfParams = (
 ): RbfTransactionParams | undefined => {
     if (account.networkType !== 'bitcoin') return;
     if (tx.type === 'recv' || !tx.details || !isPending(tx)) return; // ignore mined transactions
-    const { vin, vout } = tx.details;
+    const { vout } = tx.details;
 
     const changeAddresses = account.addresses ? account.addresses.change : [];
-    const allAddresses = account.addresses
-        ? changeAddresses.concat(account.addresses.used).concat(account.addresses.unused)
-        : [];
-    const utxo = vin.flatMap(input => {
-        // find input AccountAddress
-        const addr = allAddresses.find(a => input.addresses?.includes(a.address));
-        if (!addr) return []; // skip utxo, TODO: set some error? is it even possible?
 
-        // re-create utxo from the input
-        return {
-            amount: input.value!,
-            txid: input.txid!,
-            vout: input.vout || 0,
-            address: addr!.address,
-            path: addr!.path,
-            blockHeight: 0,
-            confirmations: 0,
-            required: true,
-        };
-    });
+    const utxo = getMyInputsFromTransaction({ tx, account });
+
     // find change address and output
     let changeAddress: AccountAddress | undefined;
     const outputs: RbfTransactionParams['outputs'] = [];
