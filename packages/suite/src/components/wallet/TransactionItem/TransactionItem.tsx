@@ -62,7 +62,7 @@ const StyledFeeRow = styled(FeeRow)<{ $noInputsOutputs?: boolean }>`
 const DEFAULT_LIMIT = 3;
 
 type OpenModalParams = {
-    flow: 'detail' | 'bump-fee';
+    flow: 'detail' | 'bump-fee' | 'cancel-transaction';
 };
 
 interface TransactionItemProps {
@@ -155,6 +155,8 @@ export const TransactionItem = memo(
         const isExpandable = allOutputs.length - DEFAULT_LIMIT > 0;
         const toExpand = allOutputs.length - DEFAULT_LIMIT - limit;
 
+        const isTxCancellable = transaction.type !== 'self';
+
         const openTxDetailsModal = ({ flow }: OpenModalParams) => {
             if (isActionDisabled) return; // open explorer
             dispatch(
@@ -181,6 +183,17 @@ export const TransactionItem = memo(
                 isDisabled={isDisabled}
             >
                 <Translation id="TR_BUMP_FEE" />
+            </Button>
+        );
+
+        const CancelTransactionButton = ({ isDisabled }: { isDisabled: boolean }) => (
+            <Button
+                variant="tertiary"
+                icon="x"
+                onClick={() => openTxDetailsModal({ flow: 'cancel-transaction' })}
+                isDisabled={isDisabled}
+            >
+                <Translation id="TR_CANCEL_TX" />
             </Button>
         );
 
@@ -483,6 +496,9 @@ export const TransactionItem = memo(
                                                 <DisabledBumpFeeButtonWithTooltip />
                                             ) : (
                                                 <BumpFeeButton isDisabled={false} />
+                                            )}
+                                            {isTxCancellable && (
+                                                <CancelTransactionButton isDisabled={false} />
                                             )}
                                         </Row>
                                     )}

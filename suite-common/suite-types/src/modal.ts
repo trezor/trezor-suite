@@ -51,7 +51,7 @@ export type UserContextPayload =
     | {
           type: 'transaction-detail';
           tx: WalletAccountTransaction;
-          flow: 'detail' | 'bump-fee';
+          flow: 'detail' | 'bump-fee' | 'cancel-transaction';
       }
     | {
           type: 'review-transaction';

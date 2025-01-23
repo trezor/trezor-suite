@@ -1876,6 +1876,10 @@ export default defineMessages({
         defaultMessage: 'Close',
         id: 'TR_CLOSE',
     },
+    TR_CLOSE_WINDOW: {
+        defaultMessage: 'Close window',
+        id: 'TR_CLOSE_WINDOW',
+    },
     TR_COIN_DISCOVERY_LOADER_DESCRIPTION: {
         defaultMessage: 'Checking passphrase wallet for balances & transactions',
         id: 'TR_COIN_DISCOVERY_LOADER_DESCRIPTION',
@@ -6399,7 +6403,41 @@ export default defineMessages({
     },
     TR_BUMP_FEE: {
         id: 'TR_BUMP_FEE',
-        defaultMessage: 'Bump fee',
+        defaultMessage: 'Speed up',
+    },
+    TR_CANCEL_TX: {
+        id: 'TR_CANCEL_TX',
+        defaultMessage: 'Cancel',
+    },
+    TR_CANCEL_TX_BUTTON: {
+        id: 'TR_CANCEL_TX_BUTTON',
+        defaultMessage: 'Cancel transaction',
+    },
+    TR_CANCEL_TX_HEADER: {
+        id: 'TR_CANCEL_TX_HEADER',
+        defaultMessage: 'Cancel transaction',
+    },
+    TR_CANCEL_TX_NOTICE: {
+        id: 'TR_CANCEL_TX_NOTICE',
+        defaultMessage:
+            'Once the transaction is canceled successfully, your funds (minus the transaction fee) will be returned to your wallet.',
+    },
+    TR_CANCEL_TX_FEE: {
+        id: 'TR_CANCEL_TX_FEE',
+        defaultMessage: 'Transaction fee',
+    },
+    TR_CANCEL_TX_RETURN_TO_YOUR_WALLET: {
+        id: 'TR_CANCEL_TX_RETURN_TO_YOUR_WALLET',
+        defaultMessage: 'Return to your wallet',
+    },
+    TR_CANCEL_TX_FAILED: {
+        id: 'TR_CANCEL_TX_FAILED',
+        defaultMessage: 'Cancel transaction failed',
+    },
+    TR_CANCEL_TX_FAILED_DESCRIPTION: {
+        id: 'TR_CANCEL_TX_FAILED_DESCRIPTION',
+        defaultMessage:
+            'The transaction couldn’t be canceled as it has just been confirmed on the Bitcoin network.',
     },
     TR_BUMP_FEE_SUBTEXT: {
         id: 'TR_BUMP_FEE_SUBTEXT',

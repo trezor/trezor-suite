@@ -186,6 +186,12 @@ const applySendFormMetadataLabelsThunk = createThunk(
     },
 );
 
+type SignAndPushSendFormTransactionThunkParams = {
+    formState: FormState;
+    precomposedTransaction: GeneralPrecomposedTransactionFinal;
+    selectedAccount?: Account;
+};
+
 export const signAndPushSendFormTransactionThunk = createThunk(
     `${MODULE_PREFIX}/signSendFormTransactionThunk`,
     async (
@@ -193,11 +199,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             formState,
             precomposedTransaction,
             selectedAccount,
-        }: {
-            formState: FormState;
-            precomposedTransaction: GeneralPrecomposedTransactionFinal;
-            selectedAccount?: Account;
-        },
+        }: SignAndPushSendFormTransactionThunkParams,
         { dispatch, getState },
     ) => {
         const device = selectSelectedDevice(getState());

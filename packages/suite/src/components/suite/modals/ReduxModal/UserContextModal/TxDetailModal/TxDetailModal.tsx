@@ -8,6 +8,7 @@ import { findChainedTransactions, getAccountKey, isPending } from '@suite-common
 import { useSelector } from 'src/hooks/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 
+import { CancelTransactionModal } from './CancelTransaction/CancelTransactionModal';
 import { BumpFeeModal } from './ChangeFee/BumpFeeModal';
 import { TabID } from './Detail/AdvancedTxDetails/AdvancedTxDetails';
 import { DetailModal } from './Detail/DetailModal';
@@ -18,7 +19,7 @@ const hasRbfParams = (
 
 type TxDetailModalProps = {
     tx: WalletAccountTransaction;
-    flow: 'detail' | 'bump-fee';
+    flow: 'detail' | 'bump-fee' | 'cancel-transaction';
     onCancel: () => void;
 };
 
@@ -57,6 +58,11 @@ export const TxDetailModal = ({ tx, flow, onCancel }: TxDetailModalProps) => {
         setTab(undefined);
     };
 
+    const onCancelTxClick = () => {
+        setSection('cancel-transaction');
+        setTab(undefined);
+    };
+
     const canReplaceTransaction =
         hasRbfParams(tx) &&
         networkFeatures?.includes('rbf') &&
@@ -76,12 +82,26 @@ export const TxDetailModal = ({ tx, flow, onCancel }: TxDetailModalProps) => {
         );
     }
 
+    if (section === 'cancel-transaction' && canReplaceTransaction) {
+        return (
+            <CancelTransactionModal
+                tx={tx}
+                onCancel={onCancel}
+                onBackClick={onBackClick}
+                onShowChained={onShowChained}
+                chainedTxs={chainedTxs}
+                selectedAccount={selectedAccount}
+            />
+        );
+    }
+
     return (
         <DetailModal
             tx={tx}
             onCancel={onCancel}
             tab={tab}
             onChangeFeeClick={onChangeFeeClick}
+            onCancelTxClick={onCancelTxClick}
             chainedTxs={chainedTxs}
             canReplaceTransaction={canReplaceTransaction}
         />
