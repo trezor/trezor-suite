@@ -615,12 +615,13 @@ const handleAccountNotification = async (
             });
         }
     } catch (error) {
-        console.error('Solana subscription error:', error);
         if (isSolanaError(error, SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_CONNECTION_CLOSED)) {
             // The WS was closed, we should unsubscribe
             if (account.subscriptionId) abortSubscription(account.subscriptionId);
             state.removeAccounts([account]);
             context.onNetworkDisconnect();
+        } else {
+            console.error('Solana subscription error:', error);
         }
     }
 };
