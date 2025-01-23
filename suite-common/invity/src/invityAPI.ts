@@ -50,7 +50,7 @@ type SignalType = AbortSignal | null | undefined;
 class InvityAPI {
     private readonly UNKNOWN_COUNTRY = 'unknown';
 
-    private readonly SERVERS: InvityServers = {
+    readonly SERVERS: InvityServers = {
         production: 'https://exchange.trezor.io',
         staging: 'https://staging-exchange.invity.io',
         dev: 'https://dev-exchange.invity.io',

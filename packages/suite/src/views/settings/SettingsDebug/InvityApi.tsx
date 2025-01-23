@@ -18,7 +18,7 @@ export const InvityApi = () => {
     const debug = useSelector(state => state.suite.settings.debug);
     const dispatch = useDispatch();
 
-    const invityApiServerOptions = Object.entries(invityAPI.servers).map(
+    const invityApiServerOptions = Object.entries(invityAPI.SERVERS).map(
         ([environment, server]) => ({
             label: server,
             value: environment as InvityServerEnvironment,
