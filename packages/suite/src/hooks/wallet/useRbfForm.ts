@@ -10,6 +10,7 @@ import {
     ChainedTransactions,
     FormState,
     FeeInfo,
+    FormOptions,
 } from '@suite-common/wallet-types';
 import type { NetworkType } from '@suite-common/wallet-config';
 
@@ -175,11 +176,11 @@ const useRbfState = ({ selectedAccount, rbfParams, chainedTxs }: UseRbfProps) =>
                 outputs,
                 selectedFee: undefined,
                 setMaxOutputId,
-                options: ['broadcast'],
+                options: ['broadcast'] satisfies FormOptions[],
                 ethereumDataHex: rbfParams.ethereumData,
                 rbfParams,
                 baseFee,
-            } as FormState, // TODO: remove type casting (options string[])
+            },
         };
     }, [
         account,
@@ -259,7 +260,7 @@ export const useRbf = (props: UseRbfProps) => {
                 composeRequest();
             }
             // set-max was already used and still no effect?
-            // do not try compose again and show error
+            // do not try to compose again and show error
         }
     }, [
         account.networkType,
@@ -286,7 +287,7 @@ export const useRbf = (props: UseRbfProps) => {
     };
 };
 
-// context accepts only valid state (non nullable account)
+// context accepts only valid state (non-nullable account)
 type RbfContextValues = ReturnType<typeof useRbf> & NonNullable<ReturnType<typeof useRbfState>>;
 
 export const RbfContext = createContext<RbfContextValues | null>(null);

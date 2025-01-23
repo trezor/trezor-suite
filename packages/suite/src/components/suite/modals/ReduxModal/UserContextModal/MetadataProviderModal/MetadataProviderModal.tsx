@@ -5,7 +5,7 @@ import type { Deferred } from '@trezor/utils';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/index';
+import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { connectProvider } from 'src/actions/suite/metadataProviderActions';
 import { MetadataProviderType } from 'src/types/suite/metadata';

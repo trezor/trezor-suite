@@ -1,129 +1,29 @@
 import { useState, useMemo } from 'react';
 
-import { NewModal } from '@trezor/components';
 import { isPending, findChainedTransactions, getAccountKey } from '@suite-common/wallet-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import {
-    selectAccountByKey,
-    selectAllPendingTransactions,
-    selectIsPhishingTransaction,
-} from '@suite-common/wallet-core';
-import {
-    ChainedTransactions,
-    SelectedAccountLoaded,
-    WalletAccountTransactionWithRequiredRbfParams,
-} from '@suite-common/wallet-types';
+import { selectAccountByKey, selectAllPendingTransactions } from '@suite-common/wallet-core';
+import { WalletAccountTransactionWithRequiredRbfParams } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
-import { Translation } from 'src/components/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
-import { RbfContext, useRbf } from 'src/hooks/wallet/useRbfForm';
 
-import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
-import { ChangeFee } from './ChangeFee/ChangeFee';
-import { ReplaceTxButton } from './ChangeFee/ReplaceTxButton';
-import { TxDetailModalBase } from './TxDetailModalBase';
+import { TabID } from './Detail/AdvancedTxDetails/AdvancedTxDetails';
+import { BumpFeeModal } from './ChangeFee/BumpFeeModal';
+import { DetailModal } from './Detail/DetailModal';
 
 const hasRbfParams = (
     tx: WalletAccountTransaction,
 ): tx is WalletAccountTransactionWithRequiredRbfParams => tx.rbfParams !== undefined;
 
-type DetailModalProps = {
-    tx: WalletAccountTransaction;
-    onCancel: () => void;
-    tab: TabID | undefined;
-    onChangeFeeClick: () => void;
-    chainedTxs?: ChainedTransactions;
-    canBumpFee: boolean;
-};
-
-const DetailModal = ({
-    tx,
-    onCancel,
-    tab,
-    onChangeFeeClick,
-    chainedTxs,
-    canBumpFee,
-}: DetailModalProps) => {
-    const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
-    const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
-    const network = getNetwork(account.symbol);
-    const isPhishingTransaction = useSelector(state =>
-        selectIsPhishingTransaction(state, tx.txid, accountKey),
-    );
-    const blockchain = useSelector(state => state.wallet.blockchain[tx.symbol]);
-
-    return (
-        <TxDetailModalBase
-            tx={tx}
-            onCancel={onCancel}
-            heading={<Translation id="TR_TRANSACTION_DETAILS" />}
-            bottomContent={
-                canBumpFee ? (
-                    <NewModal.Button variant="tertiary" onClick={onChangeFeeClick}>
-                        <Translation id="TR_BUMP_FEE" />
-                    </NewModal.Button>
-                ) : null
-            }
-            onBackClick={undefined}
-        >
-            <AdvancedTxDetails
-                explorerUrl={blockchain.explorer.tx}
-                defaultTab={tab}
-                network={network}
-                accountType={account.accountType}
-                tx={tx}
-                chainedTxs={chainedTxs}
-                isPhishingTransaction={isPhishingTransaction}
-            />
-        </TxDetailModalBase>
-    );
-};
-
-type BumpFeeModalProps = {
-    tx: WalletAccountTransactionWithRequiredRbfParams;
-    onCancel: () => void;
-    onBackClick: () => void;
-    onShowChained: () => void;
-    chainedTxs?: ChainedTransactions;
-    selectedAccount: SelectedAccountLoaded;
-};
-
-const BumpFeeModal = ({
-    tx,
-    onCancel,
-    onBackClick,
-    onShowChained,
-    chainedTxs,
-    selectedAccount,
-}: BumpFeeModalProps) => {
-    const contextValues = useRbf({ rbfParams: tx.rbfParams, chainedTxs, selectedAccount });
-
-    return (
-        <RbfContext.Provider value={contextValues}>
-            <TxDetailModalBase
-                tx={tx}
-                onCancel={onCancel}
-                heading={<Translation id="TR_TRANSACTION_DETAILS" />}
-                bottomContent={<ReplaceTxButton />}
-                onBackClick={onBackClick}
-            >
-                <ChangeFee tx={tx} chainedTxs={chainedTxs} showChained={onShowChained} />
-            </TxDetailModalBase>
-        </RbfContext.Provider>
-    );
-};
-
 type TxDetailModalProps = {
     tx: WalletAccountTransaction;
-    rbfForm?: boolean;
+    flow: 'detail' | 'bump-fee';
     onCancel: () => void;
 };
 
-export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => {
-    const [section, setSection] = useState<'CHANGE_FEE' | 'DETAILS'>(
-        rbfForm ? 'CHANGE_FEE' : 'DETAILS',
-    );
+export const TxDetailModal = ({ tx, flow, onCancel }: TxDetailModalProps) => {
+    const [section, setSection] = useState<TxDetailModalProps['flow']>(flow);
     const [tab, setTab] = useState<TabID | undefined>(undefined);
 
     const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
@@ -143,27 +43,27 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
     }, [tx, transactions]);
 
     const onBackClick = () => {
-        setSection('DETAILS');
+        setSection('detail');
         setTab(undefined);
     };
 
     const onShowChained = () => {
-        setSection('DETAILS');
+        setSection('detail');
         setTab('chained');
     };
 
     const onChangeFeeClick = () => {
-        setSection('CHANGE_FEE');
+        setSection('bump-fee');
         setTab(undefined);
     };
 
-    const canBumpFee =
+    const canReplaceTransaction =
         hasRbfParams(tx) &&
         networkFeatures?.includes('rbf') &&
         !tx.deadline &&
         selectedAccount.status === 'loaded';
 
-    if (section === 'CHANGE_FEE' && canBumpFee) {
+    if (section === 'bump-fee' && canReplaceTransaction) {
         return (
             <BumpFeeModal
                 tx={tx}
@@ -183,7 +83,7 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
             tab={tab}
             onChangeFeeClick={onChangeFeeClick}
             chainedTxs={chainedTxs}
-            canBumpFee={canBumpFee}
+            canReplaceTransaction={canReplaceTransaction}
         />
     );
 };

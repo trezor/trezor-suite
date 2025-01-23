@@ -1,0 +1,64 @@
+import { Account, ChainedTransactions, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { getAccountKey } from '@suite-common/wallet-utils';
+import { selectAccountByKey, selectIsPhishingTransaction } from '@suite-common/wallet-core';
+import { getNetwork } from '@suite-common/wallet-config';
+import { NewModal } from '@trezor/components';
+
+import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
+import { useSelector } from '../../../../../../../hooks/suite';
+import { TxDetailModalBase } from '../TxDetailModalBase';
+import { Translation } from '../../../../../Translation';
+
+type DetailModalProps = {
+    tx: WalletAccountTransaction;
+    onCancel: () => void;
+    tab: TabID | undefined;
+    onChangeFeeClick: () => void;
+    chainedTxs?: ChainedTransactions;
+    canReplaceTransaction: boolean;
+};
+
+export const DetailModal = ({
+    tx,
+    onCancel,
+    tab,
+    onChangeFeeClick,
+    chainedTxs,
+    canReplaceTransaction,
+}: DetailModalProps) => {
+    const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
+    const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
+    const network = getNetwork(account.symbol);
+    const isPhishingTransaction = useSelector(state =>
+        selectIsPhishingTransaction(state, tx.txid, accountKey),
+    );
+    const blockchain = useSelector(state => state.wallet.blockchain[tx.symbol]);
+
+    return (
+        <TxDetailModalBase
+            tx={tx}
+            onCancel={onCancel}
+            heading={<Translation id="TR_TRANSACTION_DETAILS" />}
+            bottomContent={
+                canReplaceTransaction ? (
+                    <>
+                        <NewModal.Button icon="gauge" variant="tertiary" onClick={onChangeFeeClick}>
+                            <Translation id="TR_BUMP_FEE" />
+                        </NewModal.Button>
+                    </>
+                ) : null
+            }
+            onBackClick={undefined}
+        >
+            <AdvancedTxDetails
+                explorerUrl={blockchain.explorer.tx}
+                defaultTab={tab}
+                network={network}
+                accountType={account.accountType}
+                tx={tx}
+                chainedTxs={chainedTxs}
+                isPhishingTransaction={isPhishingTransaction}
+            />
+        </TxDetailModalBase>
+    );
+};

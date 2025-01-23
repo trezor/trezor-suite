@@ -10,7 +10,7 @@ import { Translation } from 'src/components/suite';
 
 import { AmountDetails } from './AmountDetails';
 import { IODetails } from './IODetails/IODetails';
-import { ChainedTxs } from '../ChainedTxs';
+import { ChainedTxs } from '../../ChainedTxs';
 import { Data } from './Data';
 
 export type TabID = 'amount' | 'io' | 'chained' | 'data';

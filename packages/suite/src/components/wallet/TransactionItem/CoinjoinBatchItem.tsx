@@ -56,6 +56,7 @@ const Round = ({ transaction }: { transaction: WalletAccountTransaction }) => {
             openModal({
                 type: 'transaction-detail',
                 tx: transaction,
+                flow: 'detail',
             }),
         );
 

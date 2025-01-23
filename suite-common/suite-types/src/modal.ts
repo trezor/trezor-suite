@@ -51,7 +51,7 @@ export type UserContextPayload =
     | {
           type: 'transaction-detail';
           tx: WalletAccountTransaction;
-          rbfForm?: boolean;
+          flow: 'detail' | 'bump-fee';
       }
     | {
           type: 'review-transaction';

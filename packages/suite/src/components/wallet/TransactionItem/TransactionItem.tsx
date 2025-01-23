@@ -61,6 +61,10 @@ const StyledFeeRow = styled(FeeRow)<{ $noInputsOutputs?: boolean }>`
 
 const DEFAULT_LIMIT = 3;
 
+type OpenModalParams = {
+    flow: 'detail' | 'bump-fee';
+};
+
 interface TransactionItemProps {
     transaction: WalletAccountTransaction;
     isPending: boolean;
@@ -151,13 +155,13 @@ export const TransactionItem = memo(
         const isExpandable = allOutputs.length - DEFAULT_LIMIT > 0;
         const toExpand = allOutputs.length - DEFAULT_LIMIT - limit;
 
-        const openTxDetailsModal = (rbfForm?: boolean) => {
+        const openTxDetailsModal = ({ flow }: OpenModalParams) => {
             if (isActionDisabled) return; // open explorer
             dispatch(
                 openModal({
                     type: 'transaction-detail',
                     tx: { ...transaction, internalTransfers: filteredInternalTransfers },
-                    rbfForm,
+                    flow,
                 }),
             );
         };
@@ -172,7 +176,8 @@ export const TransactionItem = memo(
         const BumpFeeButton = ({ isDisabled }: { isDisabled: boolean }) => (
             <Button
                 variant="tertiary"
-                onClick={() => openTxDetailsModal(true)}
+                icon="gauge"
+                onClick={() => openTxDetailsModal({ flow: 'bump-fee' })}
                 isDisabled={isDisabled}
             >
                 <Translation id="TR_BUMP_FEE" />
@@ -224,7 +229,7 @@ export const TransactionItem = memo(
                             <TxTypeIconWrapper
                                 onMouseEnter={() => setNestedItemIsHovered(true)}
                                 onMouseLeave={() => setNestedItemIsHovered(false)}
-                                onClick={() => openTxDetailsModal()}
+                                onClick={() => openTxDetailsModal({ flow: 'detail' })}
                             >
                                 <TransactionTypeIcon
                                     type={transaction.type}
@@ -240,7 +245,7 @@ export const TransactionItem = memo(
                                         useSingleRowLayout={useSingleRowLayout}
                                         txItemIsHovered={txItemIsHovered}
                                         nestedItemIsHovered={nestedItemIsHovered}
-                                        onClick={() => openTxDetailsModal()}
+                                        onClick={() => openTxDetailsModal({ flow: 'detail' })}
                                         isPhishingTransaction={isPhishingTransaction}
                                         dataTestBase={dataTestBase}
                                     />
@@ -253,7 +258,7 @@ export const TransactionItem = memo(
                                     <TimestampWrapper
                                         onMouseEnter={() => setNestedItemIsHovered(true)}
                                         onMouseLeave={() => setNestedItemIsHovered(false)}
-                                        onClick={() => openTxDetailsModal()}
+                                        onClick={() => openTxDetailsModal({ flow: 'detail' })}
                                     >
                                         <TransactionTimestamp transaction={transaction} />
                                     </TimestampWrapper>

@@ -10,7 +10,7 @@ import {
     roundTimestampToNearestPastHour,
     isStakeTypeTx,
 } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 import {
     selectHistoricFiatRates,
     selectHistoricFiatRatesByTimestamp,
