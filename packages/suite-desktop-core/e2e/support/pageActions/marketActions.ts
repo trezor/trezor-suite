@@ -2,8 +2,8 @@ import { Locator, Page, expect } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import regional from '@trezor/suite/src/constants/wallet/coinmarket/regional';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { regional } from '@suite-common/invity';
 
 import { step } from '../common';
 import { invityResponses } from '../../fixtures/invity/index';

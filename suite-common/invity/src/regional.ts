@@ -1,10 +1,10 @@
 import { isArrayMember } from '@trezor/utils';
 
 class Regional {
-    unknownCountry = 'unknown';
+    readonly UNKNOWN_COUNTRY = 'unknown';
 
     countries: [string, string][] = [
-        [this.unknownCountry, `🌍 Worldwide`],
+        [this.UNKNOWN_COUNTRY, `🌍 Worldwide`],
         ['AD', '🇦🇩 Andorra'],
         ['AE', '🇦🇪 United Arab Emirates'],
         ['AF', '🇦🇫 Afghanistan'],
@@ -311,6 +311,4 @@ class Regional {
 
 type EEACountryCodes = (typeof regional.EEACountryCodes)[number];
 
-const regional = new Regional();
-
-export default regional;
+export const regional = new Regional();

@@ -10,7 +10,8 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@trezor/env-utils": "workspace:*"
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
         "@types/invity-api": "^1.1.2"

@@ -2,8 +2,8 @@ import { Control, Controller } from 'react-hook-form';
 
 import { Flag, Select, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { regional } from '@suite-common/invity';
 
-import regional from 'src/constants/wallet/coinmarket/regional';
 import { CountryOption } from 'src/types/wallet/coinmarketCommonTypes';
 import { getCountryLabelParts } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
