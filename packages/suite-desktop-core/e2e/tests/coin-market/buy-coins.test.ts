@@ -1,7 +1,6 @@
 import { test, expect } from '../../support/fixtures';
-import buyQuotes from '../../fixtures/invity/buy/quotes.json';
 import expectedWatchRequestPayload from '../../fixtures/invity/buy/watch-request.json';
-import { invityEndpoint } from '../../fixtures/invity';
+import { invityEndpoint, buyQuotes } from '../../fixtures/invity';
 
 const mockedInputAmount = buyQuotes[0].fiatStringAmount; // 1234, The mocked quotes are for a fixed input amount
 
@@ -50,7 +49,9 @@ test.describe('Coin market buy', { tag: ['@group=other', '@snapshot', '@webOnly'
         // But our mocked response redirects us to transaction detail where our flow continues.
         await test.step('Confirm the trade and get redirected to transaction detail', async () => {
             await marketPage.finishMockedTrade();
-            await expect(watchRequestPromise).toHavePayload(expectedWatchRequestPayload);
+            await expect(watchRequestPromise).toHavePayload(expectedWatchRequestPayload, {
+                omit: ['partnerData'],
+            });
             await expect(marketPage.transactionDetailStatus).toHaveText(
                 'Waiting for your payment...',
             );
@@ -60,7 +61,9 @@ test.describe('Coin market buy', { tag: ['@group=other', '@snapshot', '@webOnly'
         await test.step('Wait 30s for watch refresh and change of status to Approved', async () => {
             await marketPage.changeTransactionWatchResponseTo('SUCCESS');
             await page.clock.fastForward(marketPage.transactionWatchPeriod);
-            await expect(watchRequestPromise).toHavePayload(expectedWatchRequestPayload);
+            await expect(watchRequestPromise).toHavePayload(expectedWatchRequestPayload, {
+                omit: ['partnerData'],
+            });
             await expect(marketPage.transactionDetailStatus).toHaveText('Approved');
             await expect(marketPage.transactionDetail).toHaveScreenshot('transactions-detail.png');
         });

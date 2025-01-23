@@ -1,3 +1,5 @@
+import { cloneDeep } from 'lodash';
+
 import exchangeCoins from './exchange/coins.json';
 import exchangeList from './exchange/list.json';
 import exchangeQuotes from './exchange/quotes.json';
@@ -35,7 +37,30 @@ export const invityResponses = {
     [invityEndpoint.info]: info,
     [invityEndpoint.buyList]: buyList,
     [invityEndpoint.buyQuotes]: buyQuotes,
-    [invityEndpoint.buyTrade]: buyTrade,
     [invityEndpoint.buyWatch]: buyWatch,
     [invityEndpoint.sellList]: sellList,
+};
+
+// This modification allows us to skip the provider's part of the flow and go directly to the transaction detail.
+export const createRedirectedTradeResponse = (url: string) => {
+    const redirectToDetail = `${url}coinmarket-redirect#detail/btc/normal/0/${buyTrade.trade.paymentId}`;
+    const modifiedTrade = cloneDeep(buyTrade);
+    modifiedTrade.trade.partnerData = redirectToDetail;
+    modifiedTrade.tradeForm.form.formAction = redirectToDetail;
+
+    return modifiedTrade;
+};
+
+export {
+    exchangeCoins,
+    exchangeList,
+    exchangeQuotes,
+    exchangeTrade,
+    exchangeWatch,
+    info,
+    buyList,
+    buyQuotes,
+    buyTrade,
+    buyWatch,
+    sellList,
 };

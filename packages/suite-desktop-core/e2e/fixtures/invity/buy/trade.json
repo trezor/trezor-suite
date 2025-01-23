@@ -4,7 +4,7 @@
         "paymentId": "5e895ff7-c444-4371-a41f-c1735edca46c",
         "status": "SUBMITTED",
         "originalPaymentId": "e17a2bed-86c6-4974-9d87-9fc926b16614",
-        "partnerData": "/coinmarket-redirect#detail/btc/normal/0/5e895ff7-c444-4371-a41f-c1735edca46c",
+        "partnerData": "",
         "exchange": "topper",
         "fiatCurrency": "CZK",
         "receiveCurrency": "bitcoin",
@@ -26,7 +26,7 @@
     "tradeForm": {
         "form": {
             "formMethod": "GET",
-            "formAction": "/coinmarket-redirect#detail/btc/normal/0/5e895ff7-c444-4371-a41f-c1735edca46c",
+            "formAction": "",
             "fields": {}
         }
     }

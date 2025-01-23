@@ -7,8 +7,12 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { expect } from '../customMatchers';
 import { step } from '../common';
-import { invityEndpoint, invityResponses } from '../../fixtures/invity/index';
-import buyQuotes from '../../fixtures/invity/buy/quotes.json';
+import {
+    createRedirectedTradeResponse,
+    invityEndpoint,
+    invityResponses,
+    buyQuotes,
+} from '../../fixtures/invity';
 import expectedTradeRequestPayload from '../../fixtures/invity/buy/trade-request.json';
 
 const quoteProviderLocator = '@coinmarket/offers/quote/provider';
@@ -101,7 +105,10 @@ export class MarketActions {
     readonly transactionDetail: Locator;
     readonly transactionWatchPeriod = '00:30';
 
-    constructor(private page: Page) {
+    constructor(
+        private page: Page,
+        private url: string,
+    ) {
         this.offerSpinner = this.page.getByTestId('@coinmarket/offers/loading-spinner');
         this.section = this.page.getByTestId('@coinmarket');
         this.form = this.page.getByTestId('@coinmarket/form');
@@ -240,7 +247,7 @@ export class MarketActions {
         const tradeRequestPromise = this.page.waitForRequest(invityEndpoint.buyTrade);
         await this.confirmTradeButton.click();
         await expect(tradeRequestPromise).toHavePayload(expectedTradeRequestPayload, {
-            mask: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
+            omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
         });
     }
 
@@ -251,6 +258,11 @@ export class MarketActions {
                 await route.fulfill({ json: response });
             });
         }
+
+        const redirecteTradeResponse = createRedirectedTradeResponse(this.url);
+        await this.page.route(invityEndpoint.buyTrade, async route => {
+            await route.fulfill({ json: redirecteTradeResponse });
+        });
     }
 
     @step()

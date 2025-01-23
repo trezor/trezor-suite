@@ -12500,6 +12500,7 @@ __metadata:
     electron-updater: "npm:6.3.9"
     fs-extra: "npm:^11.2.0"
     glob: "npm:^10.3.10"
+    jest-diff: "npm:^29.7.0"
     lodash: "npm:^4.17.21"
     openpgp: "npm:^6.0.1"
     systeminformation: "npm:^5.25.4"

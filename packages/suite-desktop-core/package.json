@@ -60,8 +60,9 @@
         "electron": "32.2.6",
         "fs-extra": "^11.2.0",
         "glob": "^10.3.10",
-        "terser-webpack-plugin": "^5.3.11",
+        "jest-diff": "^29.7.0",
         "lodash": "^4.17.21",
+        "terser-webpack-plugin": "^5.3.11",
         "webpack": "^5.96.1",
         "xvfb-maybe": "^0.2.1"
     }

@@ -165,5 +165,5 @@ const TrezorUserEnvLinkProxy = new Proxy(TrezorUserEnvLink, {
 
 export { TrezorUserEnvLinkProxy };
 
-export const isEqualWithMask = (param: { object1: any; object2: any; mask: string[] }) =>
+export const isEqualWithOmit = (param: { object1: any; object2: any; mask: string[] }) =>
     isEqual(omit(param.object1, param.mask), omit(param.object2, param.mask));

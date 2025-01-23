@@ -183,8 +183,8 @@ const test = base.extend<Fixtures>({
         const recoveryPage = new RecoveryActions(page);
         await use(recoveryPage);
     },
-    marketPage: async ({ page }, use) => {
-        const marketPage = new MarketActions(page);
+    marketPage: async ({ page, url }, use) => {
+        const marketPage = new MarketActions(page, url);
         await use(marketPage);
     },
     assetsPage: async ({ page }, use) => {
