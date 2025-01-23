@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import {
+import type {
     ExchangeListResponse,
     ExchangeTradeQuoteResponse,
     ExchangeTradeQuoteRequest,
@@ -48,41 +48,41 @@ type BodyType =
 type SignalType = AbortSignal | null | undefined;
 
 class InvityAPI {
-    unknownCountry = 'unknown';
+    private readonly UNKNOWN_COUNTRY = 'unknown';
 
-    servers = {
+    private readonly SERVERS: InvityServers = {
         production: 'https://exchange.trezor.io',
         staging: 'https://staging-exchange.invity.io',
         dev: 'https://dev-exchange.invity.io',
         localhost: 'http://localhost:3330',
-    } as InvityServers;
+    };
 
-    private serverEnvironment = 'production' as InvityServerEnvironment;
+    private serverEnvironment: InvityServerEnvironment = 'production';
 
     // info service
-    private INFO = '/api/info';
-    private DETECT_COUNTRY_INFO = '/api/info/country';
-    private GET_COUNTRY_INFO = '/api/info/country/{{country}}';
+    private readonly INFO = '/api/info';
+    private readonly DETECT_COUNTRY_INFO = '/api/info/country';
+    private readonly GET_COUNTRY_INFO = '/api/info/country/{{country}}';
 
     // exchange service
-    private EXCHANGE_LIST = '/api/v3/exchange/list';
-    private EXCHANGE_QUOTES = '/api/v3/exchange/quotes';
-    private EXCHANGE_DO_TRADE = '/api/v3/exchange/trade';
-    private EXCHANGE_WATCH_TRADE = '/api/v3/exchange/watch/{{counter}}';
+    private readonly EXCHANGE_LIST = '/api/v3/exchange/list';
+    private readonly EXCHANGE_QUOTES = '/api/v3/exchange/quotes';
+    private readonly EXCHANGE_DO_TRADE = '/api/v3/exchange/trade';
+    private readonly EXCHANGE_WATCH_TRADE = '/api/v3/exchange/watch/{{counter}}';
 
     // buy service
-    private BUY_LIST = '/api/v3/buy/list';
-    private BUY_QUOTES = '/api/v3/buy/quotes';
-    private BUY_DO_TRADE = '/api/v3/buy/trade';
-    private BUY_GET_TRADE_FORM = '/api/v3/buy/tradeform';
-    private BUY_WATCH_TRADE = '/api/v3/buy/watch/{{counter}}';
+    private readonly BUY_LIST = '/api/v3/buy/list';
+    private readonly BUY_QUOTES = '/api/v3/buy/quotes';
+    private readonly BUY_DO_TRADE = '/api/v3/buy/trade';
+    private readonly BUY_GET_TRADE_FORM = '/api/v3/buy/tradeform';
+    private readonly BUY_WATCH_TRADE = '/api/v3/buy/watch/{{counter}}';
 
     // sell service
-    private SELL_LIST = '/api/v3/sell/list';
-    private SELL_FIAT_QUOTES = '/api/v3/sell/fiat/quotes';
-    private SELL_FIAT_DO_TRADE = '/api/v3/sell/fiat/trade';
-    private SELL_FIAT_CONFIRM = '/api/v3/sell/fiat/confirm';
-    private SELL_FIAT_WATCH_TRADE = '/api/v3/sell/fiat/watch/{{counter}}';
+    private readonly SELL_LIST = '/api/v3/sell/list';
+    private readonly SELL_FIAT_QUOTES = '/api/v3/sell/fiat/quotes';
+    private readonly SELL_FIAT_DO_TRADE = '/api/v3/sell/fiat/trade';
+    private readonly SELL_FIAT_CONFIRM = '/api/v3/sell/fiat/confirm';
+    private readonly SELL_FIAT_WATCH_TRADE = '/api/v3/sell/fiat/watch/{{counter}}';
 
     private static accountDescriptor: string;
     private static apiKey: string;
@@ -96,7 +96,7 @@ class InvityAPI {
     }
 
     getApiServerUrl() {
-        return this.servers[this.serverEnvironment];
+        return this.SERVERS[this.serverEnvironment];
     }
 
     getCurrentAccountDescriptor() {
@@ -175,7 +175,7 @@ class InvityAPI {
     fetchCountryInfo = async (country: string): Promise<CountryInfo> => {
         try {
             const url =
-                country && country !== this.unknownCountry
+                country && country !== this.UNKNOWN_COUNTRY
                     ? this.GET_COUNTRY_INFO.replace('{{country}}', country)
                     : this.DETECT_COUNTRY_INFO;
             const response: CountryInfo = await this.request(url, {}, 'GET');
@@ -185,7 +185,7 @@ class InvityAPI {
             console.error('[fetchCountryInfo]', error);
         }
 
-        return { country: this.unknownCountry };
+        return { country: this.UNKNOWN_COUNTRY };
     };
 
     getInfo = async (): Promise<InfoResponse> => {

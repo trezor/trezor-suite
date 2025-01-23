@@ -1,4 +1,4 @@
-import {
+import type {
     BuyCryptoPaymentMethod,
     BuyTrade,
     ExchangeTrade,
@@ -10,9 +10,7 @@ import {
 } from 'invity-api';
 
 export type InvityServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
-export type InvityServers = {
-    [key in InvityServerEnvironment]: string;
-};
+export type InvityServers = Record<InvityServerEnvironment, string>;
 
 export type TradingBuyType = 'buy';
 export type TradingSellType = 'sell';
