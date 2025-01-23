@@ -23,8 +23,12 @@ import {
     selectAccountsByDeviceState,
 } from '@suite-common/wallet-core';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { getTotalFiatBalance } from '@suite-common/wallet-utils';
+import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
+import { BigNumber } from '@trezor/utils';
+import { Account, RatesByKey } from '@suite-common/wallet-types';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { doesCoinSupportStaking } from '@suite-native/staking';
 
 import { isFirmwareVersionSupported } from './utils';
 
@@ -71,30 +75,41 @@ export const selectDeviceError = (
     return device?.error;
 };
 
+// FIXME: this function can be removed and substituted with @suite-common/wallet-utils/getTotalFiatBalance when Solana supports staking on mobile.
+const getTotalFiatBalanceNative = ({
+    deviceAccounts,
+    localCurrency,
+    rates,
+}: {
+    deviceAccounts: Account[];
+    localCurrency: FiatCurrencyCode;
+    rates?: RatesByKey;
+}) => {
+    let instanceBalance = new BigNumber(0);
+    deviceAccounts.forEach(a => {
+        const accountFiatBalance =
+            getAccountFiatBalance({
+                account: a,
+                localCurrency,
+                rates,
+                shouldIncludeStaking: doesCoinSupportStaking(a.symbol),
+            }) ?? '0';
+        instanceBalance = instanceBalance.plus(accountFiatBalance);
+    });
+
+    return instanceBalance.toFixed(2);
+};
+
 export const selectSelectedDeviceTotalFiatBalance = createMemoizedSelector(
     [selectDeviceAccounts, selectCurrentFiatRates, selectFiatCurrencyCode],
-    (deviceAccounts, rates, localCurrency) => {
-        const fiatBalance = getTotalFiatBalance({
-            deviceAccounts,
-            localCurrency,
-            rates,
-        });
-
-        return fiatBalance.toFixed(2);
-    },
+    (deviceAccounts, rates, localCurrency) =>
+        getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
 );
 
-export const selectDeviceTotalFiatBalanceNative = createMemoizedSelector(
+export const selectDeviceTotalFiatBalanceByDeviceState = createMemoizedSelector(
     [selectAccountsByDeviceState, selectCurrentFiatRates, selectFiatCurrencyCode],
-    (accounts, rates, localCurrency) => {
-        const fiatBalance = getTotalFiatBalance({
-            deviceAccounts: accounts,
-            localCurrency,
-            rates,
-        });
-
-        return fiatBalance.toFixed(2);
-    },
+    (deviceAccounts, rates, localCurrency) =>
+        getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
 );
 
 // Unique symbols for all accounts that are on view only devices (excluding portfolio tracker)
