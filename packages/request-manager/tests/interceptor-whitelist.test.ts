@@ -1,5 +1,5 @@
 import WebSocket from 'ws';
-import fetch from 'node-fetch';
+import nodeFetch from 'node-fetch';
 import net, { Socket } from 'net';
 import tls, { TLSSocket } from 'tls';
 
@@ -73,18 +73,18 @@ describe('Interceptor', () => {
     });
 
     ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].forEach(method => {
-        it(`Blocks all not whitelisted requests for: ${method}`, async () => {
+        it(`Blocks all not whitelisted node-fetch requests for: ${method}`, async () => {
             await expect(
-                fetch(`https://${WHITELISTED_DOMAIN}/`, { method }),
+                nodeFetch(`https://${WHITELISTED_DOMAIN}/`, { method }),
             ).resolves.toBeDefined();
 
-            await expect(fetch(`https://${NOT_WHITELISTED_DOMAIN}/`, { method })).rejects.toThrow(
-                `Request blocked, not whitelisted domain: ${NOT_WHITELISTED_DOMAIN}`,
-            );
+            await expect(
+                nodeFetch(`https://${NOT_WHITELISTED_DOMAIN}/`, { method }),
+            ).rejects.toThrow(`Request blocked, not whitelisted domain: ${NOT_WHITELISTED_DOMAIN}`);
         });
     });
 
-    it('blocks the TCP connection', async () => {
+    it('Blocks the TCP connection', async () => {
         (await openTcpSocket(WHITELISTED_DOMAIN, 80)).end();
 
         await expect(openTcpSocket(NOT_WHITELISTED_DOMAIN, 80)).rejects.toThrow(
@@ -92,7 +92,7 @@ describe('Interceptor', () => {
         );
     });
 
-    it('blocks the TLS connection', async () => {
+    it('Blocks the TLS connection', async () => {
         (await openTlsSocket(WHITELISTED_DOMAIN, 80)).end();
 
         await expect(openTlsSocket(NOT_WHITELISTED_DOMAIN, 80)).rejects.toThrow(
@@ -100,7 +100,7 @@ describe('Interceptor', () => {
         );
     });
 
-    it('blocks net.Socket', async () => {
+    it('Blocks net.Socket', async () => {
         (await openNetSocket(WHITELISTED_DOMAIN, 80)).end();
 
         await expect(openNetSocket(NOT_WHITELISTED_DOMAIN, 80)).rejects.toThrow(
@@ -108,7 +108,7 @@ describe('Interceptor', () => {
         );
     });
 
-    it('blocks net.connect', async () => {
+    it('Blocks net.connect', async () => {
         (await performNetConnect(WHITELISTED_DOMAIN, 80)).end();
 
         try {
@@ -121,7 +121,7 @@ describe('Interceptor', () => {
         }
     });
 
-    it('blocks tls.connect', async () => {
+    it('Blocks tls.connect', async () => {
         (await performTlsConnect(WHITELISTED_DOMAIN, 80)).end();
 
         try {
@@ -132,5 +132,22 @@ describe('Interceptor', () => {
                 `Request blocked, not whitelisted domain: ${NOT_WHITELISTED_DOMAIN}`,
             );
         }
+    });
+
+    ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].forEach(method => {
+        it(`Blocks all not whitelisted native fetch for: ${method}`, async () => {
+            await expect(
+                fetch(`https://${WHITELISTED_DOMAIN}/`, { method }),
+            ).resolves.toBeDefined();
+
+            try {
+                await fetch(`https://${NOT_WHITELISTED_DOMAIN}/`, { method });
+                expect('').toBe('Should throw an error');
+            } catch (error) {
+                expect(error.message).toBe(
+                    `Request blocked, not whitelisted domain: ${NOT_WHITELISTED_DOMAIN}`,
+                );
+            }
+        });
     });
 });
