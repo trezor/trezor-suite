@@ -71,13 +71,15 @@ export type FlexWrap = (typeof flexWrap)[number];
 
 export const withDivider = ({
     theme,
-    $gap,
+    $rowGap,
+    $columnGap,
     $direction,
     $elevation,
     $dividerColor,
 }: {
     theme: DefaultTheme;
-    $gap: SpacingValues;
+    $rowGap: SpacingValues;
+    $columnGap: SpacingValues;
     $direction: FlexDirection;
     $dividerColor?: string;
     $elevation: Elevation;
@@ -93,7 +95,7 @@ export const withDivider = ({
 
         ${$direction === 'column' &&
         `
-        top: -${$gap / 2}px;
+        top: -${$rowGap / 2}px;
         height: 1px;
         width: 100%;
         left: 0;
@@ -103,13 +105,14 @@ export const withDivider = ({
         top: 0;
         height: 100%;
         width: 1px;
-        left: -${$gap / 2}px;
+        left: -${$columnGap / 2}px;
         border-left: 1px solid ${$dividerColor ? $dividerColor : mapElevationToBorder({ theme, $elevation })};`}
     }
 `;
 
 type ContainerProps = TransientProps<AllowedFrameProps> & {
-    $gap: SpacingValues;
+    $rowGap: SpacingValues;
+    $columnGap: SpacingValues;
     $justifyContent: FlexJustifyContent;
     $alignItems: FlexAlignItems;
     $direction: FlexDirection;
@@ -128,7 +131,8 @@ const Container = styled.div<ContainerProps>`
     flex-flow: ${({ $direction, $isReversed, $flexWrap }) =>
         `${$direction}${$isReversed === true ? '-reverse' : ''} ${$flexWrap}`};
     flex: ${({ $flex }) => $flex};
-    gap: ${({ $gap }) => $gap}px;
+    row-gap: ${({ $rowGap }) => $rowGap}px;
+    column-gap: ${({ $columnGap }) => $columnGap}px;
     justify-content: ${({ $justifyContent }) => $justifyContent};
     align-items: ${({ $alignItems }) => $alignItems};
     ${({ $order }) => (typeof $order !== 'undefined' ? `order: ${$order};` : '')}
@@ -143,6 +147,8 @@ const Container = styled.div<ContainerProps>`
 
 export type FlexProps = AllowedFrameProps & {
     gap?: SpacingValues;
+    rowGap?: SpacingValues;
+    columnGap?: SpacingValues;
     /**
      * Distributes space between and around content items along the **main** axis
      */
@@ -168,6 +174,8 @@ export type FlexProps = AllowedFrameProps & {
 
 export const Flex = ({
     gap = 0,
+    rowGap = gap,
+    columnGap = gap,
     justifyContent = 'flex-start',
     alignItems = 'normal',
     children,
@@ -194,7 +202,8 @@ export const Flex = ({
             className={className}
             data-testid={dataTestId}
             {...makePropsTransient({
-                gap,
+                rowGap,
+                columnGap,
                 justifyContent,
                 alignItems,
                 direction,

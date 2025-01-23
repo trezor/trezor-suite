@@ -38,7 +38,6 @@ const args: Partial<FlexProps> = {
             C
         </Box>,
     ],
-
     gap: 8,
     flexWrap: 'wrap',
     isReversed: false,
@@ -60,6 +59,18 @@ const argTypes: Partial<ArgTypes<FlexProps>> = {
         },
     },
     gap: {
+        options: Object.values(spacings),
+        control: {
+            type: 'select',
+        },
+    },
+    rowGap: {
+        options: Object.values(spacings),
+        control: {
+            type: 'select',
+        },
+    },
+    columnGap: {
         options: Object.values(spacings),
         control: {
             type: 'select',
