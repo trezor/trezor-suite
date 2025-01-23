@@ -2,23 +2,13 @@ import React, { useRef } from 'react';
 
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import {
-    Badge,
-    Card,
-    Column,
-    Icon,
-    IconButton,
-    Row,
-    SkeletonStack,
-    Text,
-    Tooltip,
-} from '@trezor/components';
+import { Badge, Card, Column, Icon, Row, SkeletonStack, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { DashboardSection } from 'src/components/dashboard';
 import {
-    CoinBalance,
     FiatValue,
+    FormattedCryptoAmount,
     FormattedDate,
     HiddenPlaceholder,
     Translation,
@@ -47,7 +37,6 @@ export const RewardsList = ({ account }: RewardsListProps) => {
         itemsPerPage,
         showPagination,
         isLastPage,
-        fetchRewards,
     } = useSolanaRewards(account);
 
     const isSolanaMainnet = account.symbol === 'sol';
@@ -58,6 +47,10 @@ export const RewardsList = ({ account }: RewardsListProps) => {
             sectionRef.current.scrollIntoView();
         }
     };
+
+    if (!isSolanaMainnet || !totalItems) {
+        return <RewardsEmpty />;
+    }
 
     return (
         <DashboardSection
@@ -108,7 +101,7 @@ export const RewardsList = ({ account }: RewardsListProps) => {
                                                 <Badge size="small">
                                                     <Row gap={spacings.xxs} alignItems="center">
                                                         <Translation
-                                                            id="TR_STAKE_REWARDS_BAGE"
+                                                            id="TR_STAKE_REWARDS_BADGE"
                                                             values={{ count: reward.epoch }}
                                                         />
                                                         <Icon name="info" size="small" />
@@ -120,7 +113,7 @@ export const RewardsList = ({ account }: RewardsListProps) => {
                                     {reward?.amount && (
                                         <Column alignItems="end">
                                             <HiddenPlaceholder>
-                                                <CoinBalance
+                                                <FormattedCryptoAmount
                                                     value={formatNetworkAmount(
                                                         reward?.amount,
                                                         account.symbol,
@@ -148,7 +141,7 @@ export const RewardsList = ({ account }: RewardsListProps) => {
                 </>
             )}
 
-            {showPagination && (
+            {showPagination && !isLoading && slicedRewards?.length && (
                 <Pagination
                     hasPages={true}
                     currentPage={currentPage}

@@ -104,3 +104,7 @@ export type StakeAccountRewards = {
     currency: string;
     time: string;
 };
+
+export type StakeRewardsByAccount = {
+    [address: string]: StakeAccountRewards[];
+};

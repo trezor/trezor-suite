@@ -8705,14 +8705,27 @@ export default defineMessages({
         id: 'TR_STAKE_RESTAKED_BADGE',
         defaultMessage: 'Restaked',
     },
-    TR_STAKE_REWARDS_BAGE: {
-        id: 'TR_STAKE_REWARDS_BAGE',
+    TR_STAKE_REWARDS_BADGE: {
+        id: 'TR_STAKE_REWARDS_BADGE',
         defaultMessage: 'Epoch number {count}',
     },
     TR_STAKE_REWARDS_TOOLTIP: {
         id: 'TR_STAKE_REWARDS_TOOLTIP',
         defaultMessage:
             'An epoch in Solana is approximately {count, plural, one {# day} other {# days}} long.',
+    },
+    TR_STAKE_REFRESH_REWARDS_TOOLTIP: {
+        id: 'TR_STAKE_REFRESH_REWARDS_TOOLTIP',
+        defaultMessage: 'Refresh your rewards for this account.',
+    },
+    TR_STAKE_REWARDS_ARE_EMPTY: {
+        id: 'TR_STAKE_REWARDS_ARE_EMPTY',
+        defaultMessage: 'No Rewards',
+    },
+    TR_STAKE_WAIT_TO_CHECK_REWARDS: {
+        id: 'TR_STAKE_WAIT_TO_CHECK_REWARDS',
+        defaultMessage:
+            'Wait up to {count, plural, one {# day} other {# days}} to check your rewards',
     },
     TR_STAKE_ETH_CARD_TITLE: {
         id: 'TR_STAKE_ETH_CARD_TITLE',

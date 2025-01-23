@@ -5,7 +5,7 @@ import { cloneObject } from '@trezor/utils';
 
 import { stakeActions } from './stakeActions';
 import { fetchEverstakeAssetData, fetchEverstakeData, fetchEverstakeRewards } from './stakeThunks';
-import { StakeAccountRewards, ValidatorsQueue } from './stakeTypes';
+import { StakeRewardsByAccount, ValidatorsQueue } from './stakeTypes';
 import { SerializedTx } from '../send/sendFormTypes';
 
 export interface StakeState {
@@ -40,7 +40,7 @@ export interface StakeState {
                 error: boolean | string;
                 isLoading: boolean;
                 lastSuccessfulFetchTimestamp: Timestamp;
-                data: { rewards?: StakeAccountRewards[] };
+                data: { rewards?: StakeRewardsByAccount };
             };
         };
     };

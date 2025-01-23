@@ -82,6 +82,5 @@ export const useSolanaRewards = (account: Account) => {
         itemsPerPage,
         showPagination,
         isLastPage,
-        fetchRewards,
     };
 };

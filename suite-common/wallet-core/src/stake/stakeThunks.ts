@@ -19,7 +19,7 @@ import {
     EverstakeAssetEndpointType,
     EverstakeEndpointType,
     EverstakeRewardsEndpointType,
-    StakeAccountRewards,
+    StakeRewardsByAccount,
     ValidatorsQueue,
 } from './stakeTypes';
 import { selectAllNetworkSymbolsOfVisibleAccounts } from '../accounts/accountsReducer';
@@ -108,7 +108,7 @@ export const fetchEverstakeAssetData = createThunk<
 );
 
 export const fetchEverstakeRewards = createThunk<
-    { rewards: StakeAccountRewards[] },
+    { rewards: StakeRewardsByAccount },
     {
         symbol: SupportedSolanaNetworkSymbols;
         endpointType: EverstakeRewardsEndpointType;
@@ -134,7 +134,9 @@ export const fetchEverstakeRewards = createThunk<
             const data = await response.json();
 
             return fulfillWithValue({
-                rewards: data,
+                rewards: {
+                    [address]: data,
+                },
             });
         } catch (error) {
             return rejectWithValue(error.toString());
