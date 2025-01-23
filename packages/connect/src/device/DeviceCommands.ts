@@ -319,7 +319,7 @@ export class DeviceCommands {
         logger.debug(
             'Received',
             res.payload.type,
-            filterForLog(res.payload.type, res.payload.message),
+            // filterForLog(res.payload.type, res.payload.message),
         );
 
         // TODO: https://github.com/trezor/trezor-suite/issues/5301

@@ -242,7 +242,7 @@ const handleMessageInIframeMode = (
 
     if (disposed) return;
 
-    log.debug('handleMessage', data);
+    // log.debug('handleMessage', data);
     if (data.type === RESPONSE_EVENT) {
         handleResponseEvent(data);
     }

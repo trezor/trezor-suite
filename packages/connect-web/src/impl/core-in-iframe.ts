@@ -103,7 +103,7 @@ export class CoreInIframe implements ConnectFactoryDependencies<ConnectSettingsW
 
         const message = parseMessage<CoreEventMessage>(messageEvent.data);
 
-        this._log.log('handleMessage', message);
+        // this._log.log('handleMessage', message);
 
         switch (message.event) {
             case RESPONSE_EVENT: {
