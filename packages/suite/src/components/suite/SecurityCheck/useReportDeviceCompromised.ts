@@ -10,20 +10,35 @@ import { hashCheckErrorScenarios } from 'src/constants/suite/firmware';
 
 export const reportCheckFail = (
     checkType: 'Firmware revision' | 'Firmware hash' | 'Entropy',
-    contextData: any,
-) =>
+    contextData: Record<string, any>,
+    errorPayload?: unknown,
+) => {
+    const payloadLabel = `${checkType} check failed!`;
+    console.warn(payloadLabel, contextData, errorPayload);
+
     withSentryScope(scope => {
         scope.setLevel('error');
         scope.setTag('deviceAuthenticityError', `firmware ${checkType} check failed`);
-        captureSentryMessage(`${checkType} check failed! ${JSON.stringify(contextData)}`, scope);
+        scope.setExtra('errorPayload', errorPayload);
+        captureSentryMessage(`${payloadLabel} ${JSON.stringify(contextData)}`, scope);
     });
+};
 
-const reportCheckWarning = (checkType: 'Firmware revision' | 'Firmware hash', contextData: any) =>
+const reportCheckWarning = (
+    checkType: 'Firmware revision' | 'Firmware hash',
+    contextData: Record<string, any>,
+    warningPayload?: unknown,
+) => {
+    const payloadLabel = `${checkType} check warning!`;
+    console.warn(payloadLabel, contextData, warningPayload);
+
     withSentryScope(scope => {
         scope.setLevel('warning');
         scope.setTag('deviceAuthenticityError', `firmware ${checkType} check warning`);
-        captureSentryMessage(`${checkType} check warning! ${JSON.stringify(contextData)}`, scope);
+        scope.setExtra('warningPayload', warningPayload);
+        captureSentryMessage(`${payloadLabel} ${JSON.stringify(contextData)}`, scope);
     });
+};
 
 const useCommonData = () => {
     const { device } = useDevice();
@@ -40,13 +55,13 @@ const useCommonData = () => {
 
 const useReportRevisionCheck = () => {
     const commonData = useCommonData();
-    const revisionCheckError = useSelector(selectFirmwareRevisionCheckError);
+    const errorType = useSelector(selectFirmwareRevisionCheckError);
 
     useEffect(() => {
-        if (revisionCheckError !== null) {
-            reportCheckFail('Firmware revision', { ...commonData, revisionCheckError });
+        if (errorType !== null) {
+            reportCheckFail('Firmware revision', { ...commonData, errorType });
         }
-    }, [commonData, revisionCheckError]);
+    }, [commonData, errorType]);
 };
 
 const useReportHashCheck = () => {
@@ -55,28 +70,29 @@ const useReportHashCheck = () => {
 
     // `errorPayload` must also be extracted, which is why `selectFirmwareHashCheckError` would be impractical
     const hashCheck = isDeviceAcquired(device) ? device.authenticityChecks?.firmwareHash : null;
-    const isHashCheckError = hashCheck && !hashCheck.success;
-    const hashCheckError = isHashCheckError ? hashCheck.error : null;
-    const hashCheckErrorPayload = isHashCheckError ? hashCheck.errorPayload : null;
+    const isError = hashCheck && !hashCheck.success;
+    const errorType = isError ? hashCheck.error : null;
+    const errorPayload = isError ? hashCheck.errorPayload : null;
+    const attemptCount = isError ? hashCheck.attemptCount : null;
 
     useEffect(() => {
-        if (hashCheckError && hashCheckErrorScenarios[hashCheckError].shouldReport) {
-            reportCheckFail('Firmware hash', {
-                ...commonData,
-                hashCheckError,
-                hashCheckErrorPayload,
-            });
+        if (errorType && hashCheckErrorScenarios[errorType].shouldReport) {
+            reportCheckFail(
+                'Firmware hash',
+                { ...commonData, errorType, attemptCount },
+                errorPayload,
+            );
         }
-    }, [commonData, hashCheckError, hashCheckErrorPayload]);
+    }, [commonData, errorType, errorPayload, attemptCount]);
 
     // success bears warning if it needed retries, so we report the previous error payload, see Device.ts in connect
     const isHashCheckSuccess = hashCheck && hashCheck.success;
-    const hashCheckWarning = isHashCheckSuccess ? hashCheck.warningPayload : null;
+    const warningPayload = isHashCheckSuccess ? hashCheck.warningPayload : null;
     useEffect(() => {
-        if (hashCheckWarning) {
-            reportCheckWarning('Firmware hash', { ...commonData, hashCheckWarning });
+        if (warningPayload) {
+            reportCheckWarning('Firmware hash', commonData, warningPayload);
         }
-    }, [commonData, hashCheckWarning]);
+    }, [commonData, warningPayload]);
 };
 
 export const useReportDeviceCompromised = () => {
