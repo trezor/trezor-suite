@@ -7,7 +7,7 @@ import { variables } from '@trezor/components';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
 
-import { AffectedTransactionItem } from './ChangeFee/AffectedTransactionItem';
+import { AffectedTransactionItem } from './AffectedTransactions/AffectedTransactionItem';
 
 const Wrapper = styled.div`
     text-align: left;

@@ -13,7 +13,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Link, Row, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { HELP_CENTER_REPLACE_BY_FEE } from '@trezor/urls';
+import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { OutlineHighlight } from 'src/components/OutlineHighlight';
@@ -193,7 +193,7 @@ export const TransactionItem = memo(
                             values={{
                                 a: chunks => (
                                     <Link
-                                        href={HELP_CENTER_REPLACE_BY_FEE}
+                                        href={HELP_CENTER_REPLACE_BY_FEE_ETHEREUM}
                                         variant="nostyle"
                                         icon="arrowUpRight"
                                         typographyStyle="hint"
@@ -477,6 +477,7 @@ export const TransactionItem = memo(
                                             flex="1"
                                             alignItems="flex-start"
                                             margin={{ bottom: spacings.xxs }}
+                                            gap={spacings.sm}
                                         >
                                             {disableBumpFee ? (
                                                 <DisabledBumpFeeButtonWithTooltip />

@@ -285,7 +285,8 @@ export const useRbf = (props: UseRbfProps) => {
 };
 
 // context accepts only valid state (non-nullable account)
-type RbfContextValues = ReturnType<typeof useRbf> & NonNullable<ReturnType<typeof useRbfState>>;
+export type RbfContextValues = ReturnType<typeof useRbf> &
+    NonNullable<ReturnType<typeof useRbfState>>;
 
 export const RbfContext = createContext<RbfContextValues | null>(null);
 RbfContext.displayName = 'RbfContext';

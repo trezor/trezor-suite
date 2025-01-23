@@ -55,7 +55,7 @@ export const TxDetailModalBase = ({
             bottomContent={bottomContent}
             onBackClick={onBackClick}
         >
-            <Column gap={spacings.lg}>
+            <Column gap={spacings.md}>
                 <BasicTxDetails
                     explorerUrl={blockchain.explorer.tx}
                     explorerUrlQueryString={blockchain.explorer.queryString}

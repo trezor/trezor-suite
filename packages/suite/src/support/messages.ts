@@ -6150,6 +6150,10 @@ export default defineMessages({
         id: 'TR_CHAINED_TXS',
         defaultMessage: 'Chained transactions',
     },
+    TR_AMOUNT_REDUCED_TXS: {
+        id: 'TR_AMOUNT_REDUCED_TXS',
+        defaultMessage: 'Amount reduced',
+    },
     TR_DATA: {
         id: 'TR_DATA',
         defaultMessage: 'Data',
@@ -6402,6 +6406,10 @@ export default defineMessages({
         id: 'TR_BUMP_FEE',
         defaultMessage: 'Bump fee',
     },
+    TR_BUMP_FEE_SUBTEXT: {
+        id: 'TR_BUMP_FEE_SUBTEXT',
+        defaultMessage: 'Speed up this transaction confirmation by paying a higher fee.',
+    },
     TR_REPLACE_TX: {
         id: 'TR_REPLACE_TX',
         defaultMessage: 'Replace transaction',
@@ -6430,9 +6438,17 @@ export default defineMessages({
         id: 'TR_DECREASE_TX',
         defaultMessage: 'No funds left for fee. Final amount needs to be reduced to bump fee.',
     },
-    TR_REDUCE_FROM: {
-        id: 'TR_REDUCE_FROM',
-        defaultMessage: 'Reduce from {value}',
+    TR_RBF_ORIGINAL_AMOUNT: {
+        id: 'TR_RBF_ORIGINAL_AMOUNT',
+        defaultMessage: 'Original amount',
+    },
+    TR_RBF_NEW_AMOUNT: {
+        id: 'TR_RBF_NEW_AMOUNT',
+        defaultMessage: 'New amount',
+    },
+    TR_DECREASED_AMOUNT_SELECTION_EXPLANATION: {
+        id: 'TR_DECREASED_AMOUNT_SELECTION_EXPLANATION',
+        defaultMessage: 'Select the amount that should be reduced to pay for the increased fee.',
     },
     TR_DECREASE_AMOUNT_BY: {
         id: 'TR_DECREASE_AMOUNT_BY',

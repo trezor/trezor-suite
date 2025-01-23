@@ -51,7 +51,6 @@ export * from './splitStringEveryNCharacters';
 export * from './throttler';
 export * from './throwError';
 export * from './topologicalSort';
-export * from './truncateMiddle';
 export * from './typedEventEmitter';
 export * from './urlToOnion';
 export * from './zip';
