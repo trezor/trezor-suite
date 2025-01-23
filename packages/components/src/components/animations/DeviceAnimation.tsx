@@ -32,6 +32,8 @@ type DeviceAnimationProps = {
     isOldT2B1Packaging?: boolean;
     deviceUnitColor?: number;
     className?: string;
+    sizeVariant?: 'LARGE';
+
     onVideoMouseOver?: MouseEventHandler<HTMLVideoElement>;
 };
 
@@ -46,6 +48,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
             deviceModelInternal = DEFAULT_FLAGSHIP_MODEL,
             isOldT2B1Packaging,
             deviceUnitColor,
+            sizeVariant,
             onVideoMouseOver,
             ...props
         },
@@ -141,7 +144,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                                 `videos/device/trezor_${deviceModelInFilename}_rotate_color_${
                                     // if device unit color is not set, use first color available
                                     deviceUnitColor ?? 1
-                                }.webm`,
+                                }${sizeVariant ? `_${sizeVariant.toLowerCase()}` : ''}.webm`,
                             )}
                             type="video/webm"
                         />
