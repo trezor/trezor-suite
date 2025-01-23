@@ -10950,6 +10950,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/module-trading@workspace:suite-native/module-trading":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-trading@workspace:suite-native/module-trading"
+  dependencies:
+    "@react-navigation/native-stack": "npm:6.11.0"
+    "@reduxjs/toolkit": "npm:1.9.5"
+    "@suite-native/navigation": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    react: "npm:18.2.0"
+    react-native: "npm:0.76.1"
+    react-native-reanimated: "npm:^3.16.7"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/navigation@workspace:*, @suite-native/navigation@workspace:suite-native/navigation":
   version: 0.0.0-use.local
   resolution: "@suite-native/navigation@workspace:suite-native/navigation"
@@ -11175,10 +11189,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/test-utils@workspace:suite-native/test-utils"
   dependencies:
+    "@react-navigation/native": "npm:6.1.18"
+    "@reduxjs/toolkit": "npm:1.9.5"
     "@testing-library/react-native": "npm:13.0.0"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     react: "npm:18.2.0"
+    react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
 

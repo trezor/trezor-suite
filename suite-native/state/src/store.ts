@@ -12,6 +12,9 @@ import { blockchainMiddleware } from '@suite-native/blockchain';
 import { extraDependencies } from './extraDependencies';
 import { prepareRootReducers } from './reducers';
 
+type RootReducerShape = Awaited<ReturnType<typeof prepareRootReducers>>;
+export type PreloadedState = Partial<RootReducerShape> | undefined;
+
 const ENABLE_REDUX_LOGGER = false;
 
 const middlewares: Middleware[] = [
@@ -33,7 +36,7 @@ if (__DEV__) {
     }
 }
 
-export const initStore = async () =>
+export const initStore = async (preloadedState?: PreloadedState) =>
     configureStore({
         reducer: await prepareRootReducers(),
         middleware: getDefaultMiddleware =>
@@ -45,4 +48,5 @@ export const initStore = async () =>
                 immutableCheck: false,
             }).concat(middlewares),
         enhancers: defaultEnhancers => defaultEnhancers.concat(enhancers),
+        preloadedState,
     });
