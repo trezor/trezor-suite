@@ -38,6 +38,9 @@ export const SYSTEM_PROGRAM_PUBLIC_KEY = '11111111111111111111111111111111';
 export const WSOL_MINT = 'So11111111111111111111111111111111111111112';
 export const STAKE_PROGRAM_PUBLIC_KEY = 'Stake11111111111111111111111111111111111111';
 export const COMPUTE_BUDGET_PROGRAM_ID = 'ComputeBudget111111111111111111111111111111';
+export const SERUM_ASSET_OWNER_PROGRAM_ID = '4MNPdKu9wFMvEeZBMt3Eipfs5ovVWTJb31pEXDJAAxX5';
+export const SERUM_ASSET_OWNER_PHANTOM_DEPLOYMENT_PROGRAM_ID =
+    'DeJBGdMFa1uynnnKiwrVioatTuHmNLpyFKnmB5kaFdzQ';
 
 const tokenProgramNames = ['spl-token', 'spl-token-2022'] as const;
 export type TokenProgramName = (typeof tokenProgramNames)[number];
@@ -386,6 +389,9 @@ export const getTxType = (
             ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY,
             STAKE_PROGRAM_PUBLIC_KEY,
             COMPUTE_BUDGET_PROGRAM_ID,
+            // some wallets use Serum's Assert Owner program during SPL transfer transactions, we don't want to report these as `contract` transactions
+            SERUM_ASSET_OWNER_PROGRAM_ID,
+            SERUM_ASSET_OWNER_PHANTOM_DEPLOYMENT_PROGRAM_ID,
         ].includes(instruction.programId);
 
     // if there are any unknown program instructions, we interpret the transaction as `contract`
