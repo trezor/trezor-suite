@@ -44,6 +44,7 @@ describe('restarting bridge', () => {
     });
 
     // This scenario crashes the old bridge (2.0.33) on Mac. New bridge seems to be performing correctly
+    // Note: for node-bridge this doesn't work for model One - model hangs on one of the device.reset calls and becomes unresponsive
     test('Bridge stops while device is acquired then starts again and client tries to force acquire device', async () => {
         await bridge.send({ session, name: 'GetFeatures', data: {} });
 
