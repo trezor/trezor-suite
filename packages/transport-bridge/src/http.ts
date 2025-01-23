@@ -178,6 +178,8 @@ export class TrezordNode {
         };
         res.addListener('close', listener);
 
+        // todo: is listener removed correctly? I noted it was firing long after the request was settled.
+
         return abortController.signal;
     }
 
