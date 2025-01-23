@@ -7,6 +7,7 @@ import { AcquiredDevice } from '@suite-common/suite-types';
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, Column, Divider, H2, Icon, Text, Tooltip } from '@trezor/components';
+import { models } from '@trezor/connect/src/data/models';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import {
     TREZOR_RESELLERS_URL,
@@ -14,7 +15,6 @@ import {
     TREZOR_SUPPORT_IS_MY_DEVICE_SAFE,
     TREZOR_URL,
 } from '@trezor/urls';
-import { models } from '@trezor/connect/src/data/models';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Hologram, OnboardingButtonSkip } from 'src/components/onboarding';
@@ -226,7 +226,7 @@ const SecurityCheckContent = ({
             supportUrl={supportUrl}
         />
     ) : (
-        <SecurityCheckLayout>
+        <SecurityCheckLayout imageMode="ROTATE">
             <Column alignItems="flex-start">
                 <DeviceNameSection>
                     <Text variant="tertiary">

@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Image, variables } from '@trezor/components';
+import { DeviceAnimation, Image, variables } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -45,19 +46,44 @@ const Content = styled.div`
 interface SecurityCheckLayoutProps {
     isFailed?: boolean;
     children: React.ReactNode;
+    imageMode?: 'ROTATE' | 'STATIC';
 }
 
-export const SecurityCheckLayout = ({ isFailed, children }: SecurityCheckLayoutProps) => {
+export const SecurityCheckLayout = ({
+    isFailed,
+    children,
+    imageMode,
+}: SecurityCheckLayoutProps) => {
     const device = useSelector(selectSelectedDevice);
 
     const deviceModelInternal = device?.features?.internal_model;
     const imageVariant = isFailed ? 'GHOST' : 'LARGE';
+    const isDeviceImageRotating =
+        imageMode === 'ROTATE' &&
+        deviceModelInternal &&
+        [
+            DeviceModelInternal.T1B1,
+            DeviceModelInternal.T2T1,
+            DeviceModelInternal.T2B1,
+            DeviceModelInternal.T3B1,
+            DeviceModelInternal.T3T1,
+        ].includes(deviceModelInternal);
 
     return (
         <Wrapper>
             {deviceModelInternal && (
                 <ImageWrapper>
-                    <StyledImage image={`TREZOR_${deviceModelInternal}_${imageVariant}`} />
+                    {isDeviceImageRotating ? (
+                        <DeviceAnimation
+                            type="ROTATE"
+                            deviceModelInternal={deviceModelInternal}
+                            deviceUnitColor={device.features?.unit_color}
+                            height="300px" // NOTE: fill out the fixed height, we know that the video is 2x
+                            sizeVariant="LARGE"
+                        />
+                    ) : (
+                        <StyledImage image={`TREZOR_${deviceModelInternal}_${imageVariant}`} />
+                    )}
                 </ImageWrapper>
             )}
             <Content>{children}</Content>
