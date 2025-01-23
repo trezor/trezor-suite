@@ -52,7 +52,6 @@ export const ResetDeviceStep = () => {
 
     const [submitted, setSubmitted] = useState(false);
     const [backupType, setBackupType] = useState<BackupType>(deviceDefaultBackupType);
-    const [isEntropyError, setIsEntropyError] = useState(false);
     const { goToPreviousStep, goToNextStep, updateAnalytics, updateBackupType } = useOnboarding();
 
     const dispatch = useDispatch();
@@ -68,21 +67,15 @@ export const ResetDeviceStep = () => {
         async (params?: Parameters<typeof resetDevice>[0]) => {
             setSubmitted(false);
 
-            if (isEntropyError) {
-                params = { ...params, entropy_check: false };
-            }
-
             const result = await dispatch(resetDevice(params));
 
             setSubmitted(true);
 
             if (result?.success) {
                 goToNextStep(STEP.ID_SECURITY_STEP);
-            } else {
-                setIsEntropyError(true);
             }
         },
-        [dispatch, goToNextStep, isEntropyError],
+        [dispatch, goToNextStep],
     );
 
     const handleSubmit = useCallback(

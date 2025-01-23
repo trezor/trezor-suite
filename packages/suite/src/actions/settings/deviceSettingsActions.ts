@@ -13,7 +13,10 @@ import { reportCheckFail } from 'src/components/suite/SecurityCheck/useReportDev
 import * as DEVICE from 'src/constants/suite/device';
 import { Dispatch, GetState } from 'src/types/suite';
 
-import { selectSuiteSettings } from '../../reducers/suite/suiteReducer';
+import {
+    selectIsEntropyCheckEnabled,
+    selectSuiteSettings,
+} from '../../reducers/suite/suiteReducer';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
@@ -150,6 +153,7 @@ export const resetDevice =
     (params: Parameters<typeof TrezorConnect.resetDevice>[0] = {}) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectSelectedDevice(getState());
+        const isEntropyCheckEnabled = selectIsEntropyCheckEnabled(getState());
 
         if (!device || !device.features) return;
 
@@ -165,16 +169,12 @@ export const resetDevice =
             },
             ...defaults,
             ...params,
+            entropy_check: isEntropyCheckEnabled,
         });
 
         if (!result.success) {
+            dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
             if (result.payload.code === 'Failure_EntropyCheck') {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'error',
-                        error: 'Something went wrong, try again.',
-                    }),
-                );
                 const model = device?.features?.internal_model;
                 const revision = device?.features?.revision;
                 const version = getFirmwareVersion(device);
