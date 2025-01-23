@@ -24,7 +24,7 @@ import { BigNumber } from '@trezor/utils';
 import { regional } from '@suite-common/invity';
 
 import { Account } from 'src/types/wallet';
-import { ExtendedMessageDescriptor, Route, TrezorDevice } from 'src/types/suite';
+import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
 import {
     CoinmarketAccountOptionsGroupOptionProps,
     CoinmarketAccountsOptionsGroupProps,
