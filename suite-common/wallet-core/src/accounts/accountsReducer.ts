@@ -474,13 +474,13 @@ export const selectIsDeviceNotEmpty = createMemoizedSelector(
 );
 
 export const selectSolStakingAccounts = createMemoizedSelector([selectAccountByKey], account => {
-    if (!account || account.networkType !== 'solana') return null;
+    if (!account?.misc || account.networkType !== 'solana') return null;
 
     return account.misc.solStakingAccounts ?? [];
 });
 
 export const selectSolAccountHasStaked = createMemoizedSelector([selectAccountByKey], account => {
-    if (!account || account.networkType !== 'solana') return false;
+    if (!account?.misc || account.networkType !== 'solana') return false;
 
     return !!account.misc.solStakingAccounts?.length;
 });

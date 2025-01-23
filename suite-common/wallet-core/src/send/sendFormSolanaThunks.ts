@@ -226,7 +226,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 output,
                 level,
                 decimals,
-                account.misc.rent ?? 0,
+                account.misc?.rent ?? 0,
                 tokenInfo,
             ),
         );

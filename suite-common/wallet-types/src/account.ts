@@ -68,7 +68,7 @@ type AccountNetworkSpecific =
       }
     | {
           networkType: 'solana';
-          misc: {
+          misc?: {
               rent?: number;
               solStakingAccounts?: SolanaStakingAccount[];
               solEpoch?: number;

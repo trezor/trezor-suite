@@ -71,7 +71,7 @@ export const calculateTotalSolStakingBalance = (stakingAccounts: SolanaStakingAc
 };
 
 export const getSolAccountTotalStakingBalance = (account: Account) => {
-    if (!account || account.networkType !== 'solana') {
+    if (!account?.misc || account.networkType !== 'solana') {
         return null;
     }
 
@@ -112,7 +112,7 @@ interface StakingAccountWithStatus extends SolDelegation {
 export const getSolanaStakingAccountsWithStatus = (
     account: Account,
 ): StakingAccountWithStatus[] | null => {
-    if (account.networkType !== 'solana') return null;
+    if (!account.misc || account.networkType !== 'solana') return null;
 
     const { solStakingAccounts, solEpoch } = account.misc;
     if (!solStakingAccounts?.length || !solEpoch) return null;
