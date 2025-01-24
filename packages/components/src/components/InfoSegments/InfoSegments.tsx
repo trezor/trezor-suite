@@ -14,8 +14,8 @@ export const allowedInfoSegmentsFrameProps = ['margin'] as const satisfies Frame
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedInfoSegmentsFrameProps)[number]>;
 
 export type InfoSegmentsProps = AllowedFrameProps &
-    AllowedTextProps & { variant?: TextVariant } & { children: Array<ReactNode> } & {
-        'data-testid'?: string;
+    AllowedTextProps & { variant?: TextVariant; 'data-testid'?: string } & {
+        children: Array<ReactNode>;
     };
 
 export const InfoSegments = ({
