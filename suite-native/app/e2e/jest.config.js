@@ -15,4 +15,5 @@ module.exports = {
     verbose: true,
     maxWorkers: 1,
     setupFilesAfterEnv: ['<rootDir>/e2e/jest.setup.ts'],
+    testMatch: ['<rootDir>/e2e/tests/*.test.ts'],
 };
