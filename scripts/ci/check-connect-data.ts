@@ -179,6 +179,8 @@ const updateConfigFromJSON = async () => {
                 'develop',
                 '--head',
                 branchName,
+                '--add-label',
+                'no-project',
             ]);
         }
     } catch (error) {
