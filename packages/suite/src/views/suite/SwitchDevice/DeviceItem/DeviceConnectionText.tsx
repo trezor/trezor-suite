@@ -26,6 +26,7 @@ type DeviceConnectionTextProps = {
     onClick?: () => void;
     variant: IconVariant;
     'data-testid'?: string;
+    'data-testid-alt'?: string;
     icon: IconName;
     children: ReactNode;
     isAction?: boolean;
@@ -35,11 +36,17 @@ export const DeviceConnectionText = ({
     onClick,
     variant,
     'data-testid': dataTest,
+    'data-testid-alt': dataTestAlt,
     children,
     icon,
     isAction,
 }: DeviceConnectionTextProps) => (
-    <Container $isAction={isAction} onClick={onClick} data-testid={dataTest}>
+    <Container
+        $isAction={isAction}
+        onClick={onClick}
+        data-testid={dataTest}
+        data-testid-alt={dataTestAlt}
+    >
         <TextRow>
             <Icon name={icon} size={12} variant={variant} />
             <Text variant={variant}>{children} </Text>

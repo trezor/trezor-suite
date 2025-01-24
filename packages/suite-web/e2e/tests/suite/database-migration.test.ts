@@ -119,7 +119,7 @@ describe('Database migration', () => {
         cy.getTestElement('@dashboard/graph', { timeout: 40000 }).should('be.visible');
         cy.getTestElement('@account-menu/btc/normal/0').click();
         cy.getTestElement('@menu/switch-device').click();
-        cy.getTestElement('@deviceStatus').should('have.text', 'Disconnected');
+        cy.getTestElement('@deviceStatus-disconnected');
         cy.contains('[data-testid^="@switch-device/wallet-on-index"]', 'Passphrase wallet #1')
             .find('input')
             .should('be.checked');
@@ -152,7 +152,7 @@ describe('Database migration', () => {
 
         cy.task('startEmu');
         cy.disableFirmwareHashCheck(); // only applicable for the `to` version, not the older `from` version
-        cy.getTestElement('@deviceStatus').should('have.text', 'Connected');
+        cy.getTestElement('@deviceStatus-connected').should('be.visible');
         cy.getTestElement('@account-subpage/back').last().click();
 
         // checking the Send form

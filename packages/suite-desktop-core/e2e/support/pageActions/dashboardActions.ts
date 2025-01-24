@@ -41,10 +41,10 @@ export class DashboardActions {
         this.addStandardWalletButton = this.page.getByTestId('@switch-device/add-wallet-button');
         this.hideBalanceButton = this.page.getByTestId('@quickActions/hideBalances');
         this.portfolioFiatAmount = this.page.getByTestId('@dashboard/portfolio/fiat-amount');
-        this.deviceStatus = this.page.getByTestId('@deviceStatus');
+        this.deviceStatus = this.page.locator("[data-testid-alt='@deviceStatus']");
         this.deviceStatusOnSwitchDevice = this.page
             .getByTestId('@menu/switch-device')
-            .getByTestId('@deviceStatus');
+            .locator("[data-testid-alt='@deviceStatus']");
         this.solveIssuesButton = this.page.getByTestId('@switch-device/solve-issue-button');
     }
 

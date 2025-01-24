@@ -2,6 +2,7 @@ import { BridgeTransport } from '@trezor/transport';
 import * as messages from '@trezor/protobuf/src/messages';
 
 import { test, expect } from '../../support/fixtures';
+import { DashboardActions } from '../../support/pageActions/dashboardActions';
 
 const stealBridgeSession = async () => {
     const bridge = new BridgeTransport({ messages, id: 'foo-bar' });
@@ -15,11 +16,11 @@ const stealBridgeSession = async () => {
 
 const testCases = [
     {
-        description: 'Multiple sessions for view-only disabled',
+        description: 'Session overtaken by another - View-Only Disabled',
         enableViewOnly: false,
     },
     {
-        description: 'Multiple sessions for view-only enabled',
+        description: 'Session overtaken by another - View-Only Enabled',
         enableViewOnly: true,
     },
 ];
@@ -68,4 +69,20 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
             });
         });
     }
+
+    test(
+        'Overtake session by opening suite new tab',
+        { tag: ['@webOnly'] },
+        async ({ context, onboardingPage, dashboardPage }) => {
+            await onboardingPage.completeOnboarding();
+            await dashboardPage.discoveryShouldFinish();
+
+            const pageTwo = await context.newPage();
+            await pageTwo.goto('');
+            const dashboardPageTwo = new DashboardActions(pageTwo);
+            await dashboardPageTwo.discoveryShouldFinish();
+            await expect(dashboardPageTwo.deviceStatus).toHaveText('Connected');
+            await expect(dashboardPage.deviceStatus).toHaveText('Refresh');
+        },
+    );
 });
