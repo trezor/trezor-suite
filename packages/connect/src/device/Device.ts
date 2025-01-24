@@ -331,15 +331,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.keepTransportSession = false;
     }
 
-    async cleanup(release = true) {
+    async cleanup() {
         // remove all listeners
         this.eventNames().forEach(e => this.removeAllListeners(e as keyof DeviceEvents));
 
         // make sure that Device_CallInProgress will not be thrown
         delete this.runPromise;
-        if (release) {
-            await this.release();
-        }
+        await this.release();
     }
 
     // call only once, right after device creation
