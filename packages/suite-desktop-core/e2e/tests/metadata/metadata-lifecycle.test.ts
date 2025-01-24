@@ -1,5 +1,3 @@
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { test, expect } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
@@ -25,6 +23,7 @@ test.describe(
             settingsPage,
             metadataPage,
             devicePrompt,
+            trezorUserEnvLink,
         }) => {
             await onboardingPage.completeOnboarding({ enableViewOnly: false });
             await dashboardPage.discoveryShouldFinish();
@@ -39,12 +38,12 @@ test.describe(
             await page.getByTestId('@account-menu/btc/normal/0').click();
             await metadataPage.clickAddAccountLabelButton(AccountLabelId.BitcoinDefault1);
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await TrezorUserEnvLink.pressNo();
+            await trezorUserEnvLink.pressNo();
 
             // Reload app, cancel metadata again, and remember device
             await page.reload();
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await TrezorUserEnvLink.pressNo();
+            await trezorUserEnvLink.pressNo();
 
             await dashboardPage.discoveryShouldFinish();
             await dashboardPage.deviceSwitchingOpenButton.click();
@@ -61,10 +60,10 @@ test.describe(
             await expect(page.getByTestId('@passphrase/input')).not.toBeVisible();
 
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await TrezorUserEnvLink.pressYes();
+            await trezorUserEnvLink.pressYes();
 
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await TrezorUserEnvLink.pressYes();
+            await trezorUserEnvLink.pressYes();
 
             await page
                 .getByTestId('@passphrase-confirmation/step1-open-unused-wallet-button')
@@ -74,16 +73,16 @@ test.describe(
             await page.getByTestId('@passphrase/hidden/submit-button').click();
 
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await TrezorUserEnvLink.pressYes();
+            await trezorUserEnvLink.pressYes();
 
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await TrezorUserEnvLink.pressYes();
+            await trezorUserEnvLink.pressYes();
 
             await expect(page.getByTestId('@passphrase/input')).not.toBeVisible();
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await TrezorUserEnvLink.pressYes();
+            await trezorUserEnvLink.pressYes();
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await TrezorUserEnvLink.pressYes();
+            await trezorUserEnvLink.pressYes();
 
             // Close connect to data provider modal
             await page.getByTestId('@modal/close-button').click();
@@ -99,7 +98,7 @@ test.describe(
 
             // Enable labeling dialogue appears again
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await TrezorUserEnvLink.pressNo();
+            await trezorUserEnvLink.pressNo();
         });
 
         test.afterEach(async ({ metadataProviderMock }) => {

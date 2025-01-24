@@ -1,5 +1,3 @@
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { test, expect } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
@@ -36,6 +34,7 @@ test.describe('Remembered device', { tag: ['@group=metadata', '@webOnly'] }, () 
         settingsPage,
         metadataPage,
         devicePrompt,
+        trezorUserEnvLink,
     }) => {
         await onboardingPage.completeOnboarding({ enableViewOnly: true });
         await dashboardPage.discoveryShouldFinish();
@@ -82,14 +81,14 @@ test.describe('Remembered device', { tag: ['@group=metadata', '@webOnly'] }, () 
 
         // disabling metadata removed also all keys, so metadata init flow takes all steps now expect for providers, these stay connected
         await devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLink.pressYes();
+        await trezorUserEnvLink.pressYes();
         await page.waitForTimeout(1000);
 
         // device saved, disconnect provider
         await page.getByTestId('@menu/switch-device').click();
         await page.getByTestId('@switch-device/wallet-on-index/0').click();
 
-        await TrezorUserEnvLink.stopEmu();
+        await trezorUserEnvLink.stopEmu();
 
         // Device is saved, when disconnected, user still can edit labels
         await metadataPage.editAccountLabel(
