@@ -54,6 +54,60 @@ type BaseItemProps = {
 
 const calculateItemHeight = <T extends BaseItemProps>(item: T): number => item.height;
 
+interface ListContainerProps<T extends BaseItemProps> {
+    listHeight: number | string;
+    listMinHeight: number | string;
+    totalHeight: number;
+    items: Array<T>;
+    itemHeights: Array<number>;
+    startIndex: number;
+    endIndex: number;
+    ref?: React.Ref<HTMLDivElement>; // NOTE: needs to be here due to typecasting due to forwardRef
+    renderItem: (item: T, index: number) => React.ReactNode;
+}
+
+function ListContainerComponent<T extends BaseItemProps>(
+    {
+        listHeight,
+        listMinHeight,
+        totalHeight,
+        items,
+        itemHeights,
+        startIndex,
+        endIndex,
+        renderItem,
+    }: ListContainerProps<T>,
+    ref: React.Ref<HTMLDivElement>,
+) {
+    return (
+        <Container ref={ref} $height={listHeight} $minHeight={listMinHeight}>
+            <Content style={{ height: `${totalHeight}px` }}>
+                {itemHeights.slice(startIndex, endIndex).map((height, index) => {
+                    const itemIndex = startIndex + index;
+                    const itemTop = itemHeights.slice(0, itemIndex).reduce((acc, h) => acc + h, 0);
+
+                    if (!items[itemIndex]) return null;
+
+                    return (
+                        <Item
+                            key={itemIndex}
+                            style={{
+                                top: `${itemTop}px`,
+                                height,
+                            }}
+                        >
+                            {renderItem(items[itemIndex], itemIndex)}
+                        </Item>
+                    );
+                })}
+            </Content>
+        </Container>
+    );
+}
+
+// NOTE: don't forget the forwardRef() because of passing the ref for useShadow()
+const ListContainer = memo(forwardRef(ListContainerComponent)) as typeof ListContainerComponent;
+
 type VirtualizedListProps<T extends BaseItemProps> = {
     items: Array<T>;
     onScroll?: (e: Event) => void;
@@ -80,7 +134,7 @@ export function VirtualizedListComponent<T extends BaseItemProps>(
     const [items, setItems] = useState(initialItems);
     const [startIndex, setStartIndex] = useState(0);
     const [endIndex, setEndIndex] = useState(DEFAULT_VISIBLE_ITEMS_COUNT);
-    const debouncedOnScrollEnd = debounce(onScrollEnd, 1000);
+    const debouncedOnScrollEnd = useMemo(() => debounce(onScrollEnd, 1000), [onScrollEnd]);
 
     const resetScroll = useCallback(() => {
         if (!containerRef.current) return;
@@ -152,28 +206,17 @@ export function VirtualizedListComponent<T extends BaseItemProps>(
     }, [containerRef, handleScroll]);
 
     return (
-        <Container ref={containerRef} $height={listHeight} $minHeight={listMinHeight}>
-            <Content style={{ height: `${totalHeight}px` }}>
-                {itemHeights.slice(startIndex, endIndex).map((height, index) => {
-                    const itemIndex = startIndex + index;
-                    const itemTop = itemHeights.slice(0, itemIndex).reduce((acc, h) => acc + h, 0);
-
-                    if (!items[itemIndex]) return null;
-
-                    return (
-                        <Item
-                            key={itemIndex}
-                            style={{
-                                top: `${itemTop}px`,
-                                height,
-                            }}
-                        >
-                            {renderItem(items[itemIndex], itemIndex)}
-                        </Item>
-                    );
-                })}
-            </Content>
-        </Container>
+        <ListContainer<T>
+            ref={containerRef}
+            listHeight={listHeight}
+            listMinHeight={listMinHeight}
+            totalHeight={totalHeight}
+            items={items}
+            itemHeights={itemHeights}
+            startIndex={startIndex}
+            endIndex={endIndex}
+            renderItem={renderItem}
+        />
     );
 }
 
