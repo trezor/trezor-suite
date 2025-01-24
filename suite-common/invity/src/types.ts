@@ -20,7 +20,7 @@ export type TradingType = TradingBuyType | TradingSellType | TradingExchangeType
 // information about created trade
 export type TradingTradeType = BuyTrade | SellFiatTrade | ExchangeTrade;
 
-export type TradingWatchTradeMapProps = {
+export type TradingWatchTradeResponsePropsMap = {
     buy: WatchBuyTradeResponse;
     sell: WatchSellTradeResponse;
     exchange: WatchExchangeTradeResponse;

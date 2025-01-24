@@ -30,7 +30,7 @@ import type {
     TradingTradeType,
     TradingPaymentMethodType,
     TradingType,
-    TradingWatchTradeMapProps,
+    TradingWatchTradeResponsePropsMap,
 } from '@suite-common/invity';
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
 
@@ -422,11 +422,11 @@ class InvityAPI {
         tradeData: TradingTradeType,
         tradeType: TradingType,
         counter: number,
-    ): Promise<TradingWatchTradeMapProps[T]> => {
+    ): Promise<TradingWatchTradeResponsePropsMap[T]> => {
         const tradesData = this.getWatchTradeData(tradeType);
 
         try {
-            const response: TradingWatchTradeMapProps[T] = await this.request(
+            const response: TradingWatchTradeResponsePropsMap[T] = await this.request(
                 tradesData.url.replace('{{counter}}', counter.toString()),
                 tradeData,
                 'POST',
