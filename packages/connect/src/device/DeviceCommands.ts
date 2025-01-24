@@ -311,7 +311,7 @@ export class DeviceCommands {
                 'Received error',
                 res.error,
                 // res.message is not propagated to higher levels, only logged here. webusb/node-bridge may return message with additional information
-                res.message,
+                // res.message,
             );
             throw new Error(res.error);
         }

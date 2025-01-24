@@ -300,9 +300,9 @@ export const onCallFirmwareUpdate = async ({
     params: Params;
     context: Context;
 }) => {
-    log.debug('onCallFirmwareUpdate with params: ', params);
+    log.debug('onCallFirmwareUpdate');
 
-    const device = await initDevice(params?.device?.path);
+    const device = await initDevice(params.device?.path);
     if (!device.firmwareRelease) {
         throw ERRORS.TypedError('Runtime', 'device.firmwareRelease is not set');
     }
