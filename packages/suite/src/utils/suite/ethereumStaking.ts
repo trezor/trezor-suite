@@ -512,12 +512,19 @@ export const getStakeTxGasLimit = async ({
     }
 };
 
-export const getUnstakingPeriodInDays = (validatorWithdrawTimeInSeconds?: number) => {
-    if (validatorWithdrawTimeInSeconds === undefined) {
+export const getUnstakingPeriodInDays = (
+    validatorWithdrawTimeInSeconds?: number,
+    validatorExitTime?: number,
+) => {
+    if (validatorWithdrawTimeInSeconds === undefined || validatorExitTime === undefined) {
         return UNSTAKING_ETH_PERIOD;
     }
 
-    return secondsToDays(validatorWithdrawTimeInSeconds);
+    const unstakingPeriodInSeconds = new BigNumber(validatorWithdrawTimeInSeconds)
+        .plus(validatorExitTime)
+        .toNumber();
+
+    return secondsToDays(unstakingPeriodInSeconds);
 };
 
 export const getDaysToAddToPool = (

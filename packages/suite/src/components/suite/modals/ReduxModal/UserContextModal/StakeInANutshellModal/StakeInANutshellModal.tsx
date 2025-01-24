@@ -57,11 +57,11 @@ interface StakeInANutshellModalProps {
 export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) => {
     const account = useSelector(selectSelectedAccount);
     const dispatch = useDispatch();
-    const { validatorWithdrawTime } = useSelector(state =>
+    const { validatorWithdrawTime, validatorExitTime } = useSelector(state =>
         selectValidatorsQueueData(state, account?.symbol),
     );
 
-    const unstakingPeriod = getUnstakingPeriodInDays(validatorWithdrawTime);
+    const unstakingPeriod = getUnstakingPeriodInDays(validatorWithdrawTime, validatorExitTime);
 
     const proceedToEverstakeModal = () => {
         onCancel();

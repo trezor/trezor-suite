@@ -3,18 +3,12 @@ import { useSelector } from 'react-redux';
 
 import { BulletList } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import {
-    selectAccountUnstakeTransactions,
-    selectValidatorsQueue,
-    TransactionsRootState,
-    StakeRootState,
-    AccountsRootState,
-} from '@suite-common/wallet-core';
+import { selectValidatorsQueue, StakeRootState } from '@suite-common/wallet-core';
 import { getNetworkDisplaySymbol, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 
 import { Translation } from 'src/components/suite';
-import { getDaysToUnstake } from 'src/utils/suite/ethereumStaking';
+import { getUnstakingPeriodInDays } from 'src/utils/suite/ethereumStaking';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 
 import { InfoRow } from './InfoRow';
@@ -67,13 +61,13 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
     const { data } =
         useSelector((state: StakeRootState) => selectValidatorsQueue(state, account?.symbol)) || {};
 
-    const unstakeTxs = useSelector((state: TransactionsRootState & AccountsRootState) =>
-        selectAccountUnstakeTransactions(state, account?.key ?? ''),
-    );
-
     if (!account) return null;
 
-    const daysToUnstake = getDaysToUnstake(unstakeTxs, data);
+    const daysToUnstake = getUnstakingPeriodInDays(
+        data?.validatorWithdrawTime,
+        data?.validatorExitTime,
+    );
+
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
     const infoRowsData = getInfoRowsData(account.networkType, account.symbol, daysToUnstake);
 

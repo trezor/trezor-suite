@@ -529,8 +529,9 @@ export const getUnstakingPeriodInDaysFixture = [
         description: 'should return correct unstaking period in days',
         args: {
             validatorWithdrawTimeInSeconds: 604800, // 7 days
+            validatorExitTimeInSeconds: 259200, // 3 days
         },
-        result: 7,
+        result: 10, // 7 + 3
     },
     {
         description:

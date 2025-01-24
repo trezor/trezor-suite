@@ -166,7 +166,10 @@ describe('getStakeTxGasLimit', () => {
 describe('getUnstakingPeriodInDays', () => {
     getUnstakingPeriodInDaysFixture.forEach(test => {
         it(test.description, async () => {
-            const result = await getUnstakingPeriodInDays(test.args.validatorWithdrawTimeInSeconds);
+            const result = await getUnstakingPeriodInDays(
+                test.args.validatorWithdrawTimeInSeconds,
+                test.args.validatorExitTimeInSeconds,
+            );
             expect(result).toEqual(test.result);
         });
     });
