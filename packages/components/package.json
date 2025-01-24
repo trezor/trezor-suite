@@ -13,7 +13,9 @@
         "type-check": "yarn g:tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
         "storybook": "storybook dev -p 9003 -c .storybook",
-        "storybook-build": "storybook build -c .storybook -o .build-storybook"
+        "storybook-build": "storybook build -c .storybook -o .build-storybook",
+        "test:unit": "yarn g:jest",
+        "test-unit:watch": "yarn g:jest -o --watch"
     },
     "dependencies": {
         "@floating-ui/react": "^0.26.9",
@@ -22,6 +24,7 @@
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/validators": "workspace:*",
+        "@testing-library/jest-dom": "^6.6.3",
         "@trezor/asset-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
@@ -55,6 +58,7 @@
         "@storybook/react": "^7.6.13",
         "@storybook/react-webpack5": "^7.6.13",
         "@storybook/theming": "^7.6.13",
+        "@testing-library/react": "14.2.1",
         "@trezor/eslint": "workspace:*",
         "@types/react": "18.2.79",
         "@types/react-date-range": "^1.4.9",

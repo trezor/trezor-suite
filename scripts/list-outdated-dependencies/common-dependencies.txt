@@ -12,6 +12,7 @@
 @pmmmwh/react-refresh-webpack-plugin
 @reduxjs/toolkit
 @testing-library/react
+@testing-library/jest-dom
 @testing-library/user-event
 @types/copy-webpack-plugin
 @types/file-saver
