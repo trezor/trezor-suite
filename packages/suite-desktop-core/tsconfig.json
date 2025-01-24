@@ -33,6 +33,7 @@
         { "path": "../request-manager" },
         { "path": "../suite" },
         { "path": "../suite-desktop-api" },
+        { "path": "../transport" },
         { "path": "../transport-bridge" },
         { "path": "../urls" },
         { "path": "../utils" },
