@@ -49,9 +49,9 @@ describe('Passphrase with cardano', () => {
 
         // restart device
         cy.task('stopEmu');
-        cy.getTestElement('@deviceStatus-disconnected');
+        cy.getTestElement('@deviceStatus').should('have.text', 'Disconnected');
         cy.task('startEmu');
-        cy.getTestElement('@deviceStatus-connected');
+        cy.getTestElement('@deviceStatus').should('have.text', 'Connected');
 
         // reveal cardano address
         cy.getTestElement('@account-menu/ada/normal/0').click();
@@ -77,9 +77,9 @@ describe('Passphrase with cardano', () => {
         // restart device again
         // restart device
         cy.task('stopEmu');
-        cy.getTestElement('@deviceStatus-disconnected');
+        cy.getTestElement('@deviceStatus').should('have.text', 'Disconnected');
         cy.task('startEmu');
-        cy.getTestElement('@deviceStatus-connected');
+        cy.getTestElement('@deviceStatus').should('have.text', 'Connected');
 
         // reveal cardano address, now enter wrong passphrase
         cy.getTestElement('@wallet/receive/reveal-address-button').click();

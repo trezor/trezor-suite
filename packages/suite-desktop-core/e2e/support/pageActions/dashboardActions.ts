@@ -12,6 +12,7 @@ export class DashboardActions {
     readonly graphRangeSelector = (range: graphRangeOptions) =>
         this.page.getByTestId(`@dashboard/graph/range-${range}`);
     readonly deviceSwitchingOpenButton: Locator;
+    readonly deviceSwitchingCloseButton: Locator;
     readonly modal: Locator;
     //TODO: Refactor to wallet page object
     readonly walletAtIndex = (index: number) =>
@@ -24,6 +25,9 @@ export class DashboardActions {
     readonly addStandardWalletButton: Locator;
     readonly hideBalanceButton: Locator;
     readonly portfolioFiatAmount: Locator;
+    readonly deviceStatus: Locator;
+    readonly deviceStatusOnSwitchDevice: Locator;
+    readonly solveIssuesButton: Locator;
 
     constructor(private readonly page: Page) {
         this.dashboardMenuButton = this.page.getByTestId('@suite/menu/suite-index');
@@ -31,11 +35,17 @@ export class DashboardActions {
         this.discoveryBar = this.page.getByTestId('@wallet/discovery-progress-bar');
         this.graph = this.page.getByTestId('@dashboard/graph');
         this.deviceSwitchingOpenButton = this.page.getByTestId('@menu/switch-device');
+        this.deviceSwitchingCloseButton = this.page.getByTestId('@switch-device/cancel-button');
         this.modal = this.page.getByTestId('@modal');
         this.confirmDeviceEjectButton = this.page.getByTestId('@switch-device/eject');
         this.addStandardWalletButton = this.page.getByTestId('@switch-device/add-wallet-button');
         this.hideBalanceButton = this.page.getByTestId('@quickActions/hideBalances');
         this.portfolioFiatAmount = this.page.getByTestId('@dashboard/portfolio/fiat-amount');
+        this.deviceStatus = this.page.getByTestId('@deviceStatus');
+        this.deviceStatusOnSwitchDevice = this.page
+            .getByTestId('@menu/switch-device')
+            .getByTestId('@deviceStatus');
+        this.solveIssuesButton = this.page.getByTestId('@switch-device/solve-issue-button');
     }
 
     @step()

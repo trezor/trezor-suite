@@ -38,7 +38,7 @@ const DeviceStatusVisible = ({ device, connected, forceConnectionInfo }: DeviceS
         <DeviceConnectionText
             variant={connected ? 'primary' : 'tertiary'}
             icon={connected ? 'link' : 'unlink'}
-            data-testid={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
+            data-testid="@deviceStatus"
         >
             {walletText && !forceConnectionInfo ? (
                 <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
@@ -65,7 +65,7 @@ export const DeviceStatusText = ({
             <DeviceConnectionText
                 variant="warning"
                 icon="refresh"
-                data-testid={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
+                data-testid="@deviceStatus"
                 isAction
             >
                 <Translation id="TR_SOLVE_ISSUE" />
