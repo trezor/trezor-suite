@@ -1,8 +1,7 @@
 import { ReactNode } from 'react';
 
-import { IconName } from '@trezor/components';
-
 export type SecurityChecklistItem = {
-    icon: IconName;
+    icon: ReactNode;
     content: ReactNode;
+    subtitle?: ReactNode;
 };

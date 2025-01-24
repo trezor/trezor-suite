@@ -6839,6 +6839,22 @@ export default defineMessages({
         defaultMessage:
             "Contact Trezor Support to figure out what's going on with your device and what to do next.",
     },
+    TR_FAILED_VERIFY_DEVICE_HEADING: {
+        id: 'TR_FAILED_VERIFY_DEVICE_HEADING',
+        defaultMessage: 'Failed to verify device',
+    },
+    TR_FAILED_VERIFY_DEVICE_TEXT: {
+        id: 'TR_FAILED_VERIFY_DEVICE_TEXT',
+        defaultMessage: 'Avoid using this device or sending any funds to it.',
+    },
+    TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT: {
+        id: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT',
+        defaultMessage: 'Your device firmware hash check failed.',
+    },
+    TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT: {
+        id: 'TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT',
+        defaultMessage: 'Your device firmware revision check failed.',
+    },
     TR_PLAY_IT_SAFE: {
         id: 'TR_PLAY_IT_SAFE',
         defaultMessage: "Let's play it safe",
@@ -6859,6 +6875,22 @@ export default defineMessages({
     TR_USE_CHAT: {
         id: 'TR_USE_CHAT',
         defaultMessage: 'Click below and use the <b>Chat</b> option on the next page.',
+    },
+    TR_DISCONNECT_YOUR_TREZOR: {
+        id: 'TR_DISCONNECT_YOUR_TREZOR',
+        defaultMessage: 'Reconnect the device',
+    },
+    TR_DISCONNECT_YOUR_TREZOR_SUBTITLE: {
+        id: 'TR_DISCONNECT_YOUR_TREZOR_SUBTITLE',
+        defaultMessage: 'This usually solves the issue.',
+    },
+    TR_PROBLEM_PERSISTS: {
+        id: 'TR_PROBLEM_PERSISTS',
+        defaultMessage: 'If the problem persists, contact Trezor Support',
+    },
+    TR_PROBLEM_PERSISTS_SUBTITLE: {
+        id: 'TR_PROBLEM_PERSISTS_SUBTITLE',
+        defaultMessage: 'Figure out what’s going on with your device and what to do next.',
     },
     TR_CONTACT_TREZOR_SUPPORT: {
         id: 'TR_CONTACT_TREZOR_SUPPORT',
@@ -7026,6 +7058,11 @@ export default defineMessages({
     TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH: {
         id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH',
         defaultMessage: 'Firmware hash check failed. Your Trezor might be counterfeit.',
+    },
+    TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR: {
+        id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR',
+        defaultMessage:
+            "Failed to verify device. Don't send any funds to it and reconnect your device. If the problem persists after reconnecting, contact Trezor Support.",
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',

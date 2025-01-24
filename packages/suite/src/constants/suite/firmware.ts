@@ -1,5 +1,6 @@
 import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
 import { FilterPropertiesByType } from '@trezor/type-utils';
+import { isDevEnv } from '@suite-common/suite-utils';
 
 /*
  * Various scenarios how firmware authenticity check errors are handled
@@ -31,8 +32,8 @@ export const hashCheckErrorScenarios = {
     'check-unsupported': { type: 'skipped', shouldReport: false },
     // could mean counterfeit firmware, but it's also caught by revision check, which handles edge-cases better
     'unknown-release': { type: 'skipped', shouldReport: false },
-    // TODO fix FW hash check unreliability & reenable
-    'other-error': { type: 'skipped', shouldReport: true },
+    // TODO fix FW hash check unreliability & reenable on production
+    'other-error': { type: isDevEnv ? 'hardModal' : 'skipped', shouldReport: true },
 } satisfies HashCheckErrorScenarios;
 
 export type SkippedHashCheckError = keyof FilterPropertiesByType<
