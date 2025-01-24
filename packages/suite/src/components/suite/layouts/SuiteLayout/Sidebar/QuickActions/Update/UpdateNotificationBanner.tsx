@@ -13,7 +13,7 @@ import {
     mapDeviceUpdateToClick,
 } from './updateQuickActionTypes';
 import { Translation, TranslationKey } from '../../../../../Translation';
-import { useDispatch } from '../../../../../../../hooks/suite';
+import { useDiscovery, useDispatch } from '../../../../../../../hooks/suite';
 
 type ContainerProps = { $elevation: Elevation };
 
@@ -77,6 +77,9 @@ export const UpdateNotificationBanner = ({
     onClose,
 }: UpdateNotificationBannerProps) => {
     const dispatch = useDispatch();
+    const { getDiscoveryStatus } = useDiscovery();
+    const discoveryStatus = getDiscoveryStatus();
+    const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
 
     const translationHeader =
         updateStatusSuite !== 'up-to-date' // Update suite first, because it will contain the newest firmware
@@ -88,7 +91,7 @@ export const UpdateNotificationBanner = ({
             updateStatusSuite !== 'up-to-date' ? updateStatusSuite : updateStatusDevice
         ];
 
-    if (translationHeader === null || translationCallToAction === null) {
+    if (translationHeader === null || translationCallToAction === null || discoveryInProgress) {
         return null;
     }
 
