@@ -80,23 +80,23 @@ jobs:
 
       - name: Set daily matrix
         id: set-matrix-daily
-        run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=all --groups=api,api-flaky --cache_tx=true --transport=2.0.33)" >> $GITHUB_OUTPUT
+        run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=all --groups=api,api-flaky --disable_cache_tx=true --transport=2.0.33)" >> $GITHUB_OUTPUT
 
       - name: Set all firmwares matrix
         id: set-matrix-all-firmwares
-        run: echo "allFwsMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=all --env=all --groups=all --cache_tx=false --transport=2.0.33)" >> $GITHUB_OUTPUT
+        run: echo "allFwsMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=all --env=all --groups=all --disable_cache_tx=false --transport=2.0.33)" >> $GITHUB_OUTPUT
 
       - name: Set other devices matrix
         id: set-matrix-other-devices
-        run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=all --firmware=2-main --env=node --groups=api --cache_tx=true --transport=2.0.33)" >> $GITHUB_OUTPUT
+        run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=all --firmware=2-main --env=node --groups=api --disable_cache_tx=true --transport=2.0.33)" >> $GITHUB_OUTPUT
 
       - name: Set all transports matrix
         id: set-matrix-all-transports
-        run: echo "allTransportsMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=node --groups=api --cache_tx=true --transport=all)" >> $GITHUB_OUTPUT
+        run: echo "allTransportsMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=node --groups=api --disable_cache_tx=true --transport=all)" >> $GITHUB_OUTPUT
 
       - name: Set trezor model one matrix
         id: set-matrix-model-one
-        run: echo "modelOneMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T1B1 --firmware=1-latest --env=node --groups=api --cache_tx=true --transport=2.0.33)" >> $GITHUB_OUTPUT
+        run: echo "modelOneMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T1B1 --firmware=1-latest --env=node --groups=api --disable_cache_tx=true --transport=2.0.33)" >> $GITHUB_OUTPUT
 
   PR-check:
     needs: [build, set-matrix]
@@ -108,7 +108,7 @@ jobs:
       includeFilter: ${{ matrix.groups.includeFilter }}
       testsFirmware: ${{ matrix.firmware }}
       testDescription: ${{ matrix.env }}-${{ matrix.groups.pattern }}-${{ matrix.groups.name }}
-      cache_tx: ${{ matrix.cache_tx }}
+      disable_cache_tx: ${{ matrix.disable_cache_tx }}
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
@@ -126,7 +126,7 @@ jobs:
       includeFilter: ${{ matrix.groups.includeFilter }}
       testsFirmware: ${{ matrix.firmware }}
       testDescription: ${{ matrix.env }}-${{ matrix.groups.pattern }}-${{ matrix.groups.name }}
-      cache_tx: ${{ matrix.cache_tx }}
+      disable_cache_tx: ${{ matrix.disable_cache_tx }}
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
@@ -145,7 +145,7 @@ jobs:
       includeFilter: ${{ matrix.groups.includeFilter }}
       testsFirmware: ${{ matrix.firmware }}
       testDescription: ${{ matrix.firmware }}-${{ matrix.groups.pattern }}-${{ matrix.groups.name }}-${{ matrix.env }}
-      cache_tx: ${{ matrix.cache_tx }}
+      disable_cache_tx: ${{ matrix.disable_cache_tx }}
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
@@ -163,7 +163,7 @@ jobs:
       includeFilter: ${{ matrix.groups.includeFilter }}
       testsFirmware: ${{ matrix.firmware }}
       testDescription: ${{ matrix.model }}-${{ matrix.firmware }}
-      cache_tx: ${{ matrix.cache_tx }}
+      disable_cache_tx: ${{ matrix.disable_cache_tx }}
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
@@ -181,7 +181,7 @@ jobs:
       includeFilter: ${{ matrix.groups.includeFilter }}
       testsFirmware: ${{ matrix.firmware }}
       testDescription: ${{ matrix.transport }}
-      cache_tx: ${{ matrix.cache_tx }}
+      disable_cache_tx: ${{ matrix.disable_cache_tx }}
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
@@ -199,7 +199,7 @@ jobs:
       includeFilter: ${{ matrix.groups.includeFilter }}
       testsFirmware: ${{ matrix.firmware }}
       testDescription: ${{ matrix.model }}-${{ matrix.firmware }}
-      cache_tx: ${{ matrix.cache_tx }}
+      disable_cache_tx: ${{ matrix.disable_cache_tx }}
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}

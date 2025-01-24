@@ -29,8 +29,9 @@ on:
         type: "boolean"
         required: false
         default: false
-      cache_tx:
-        description: "Cache transactions"
+      # After migrating from testnet 3 to testnet 4 using `disable_cache_tx=true` should be required for tests where tx are used. 
+      disable_cache_tx:
+        description: "Disable Cache transactions (when `true` tests don't use cache for transactions)"
         type: "string"
         required: false
         default: false
@@ -89,7 +90,7 @@ jobs:
       - if: ${{ inputs.testEnv == 'node' }}
         run: yarn workspaces focus @trezor/connect
 
-      - if: ${{ inputs.cache_tx == 'true' }}
+      - if: ${{ inputs.disable_cache_tx == 'true' }}
         run: echo "ADDITIONAL_ARGS=-c" >> "$GITHUB_ENV"
       - if: ${{ inputs.testFirmwareModel }}
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -m ${{ inputs.testFirmwareModel }}" >> "$GITHUB_ENV"
